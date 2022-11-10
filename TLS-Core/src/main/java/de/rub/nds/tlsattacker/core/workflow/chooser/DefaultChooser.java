@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.workflow.chooser;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -256,8 +255,8 @@ public class DefaultChooser extends Chooser {
     }
 
     /**
-     * Additional Check for Extended Random. If extended Random was negotiated, we add the additional bytes to the
-     * Client Random
+     * Additional Check for Extended Random. If extended Random was negotiated, we add the
+     * additional bytes to the Client Random
      */
     @Override
     public byte[] getClientRandom() {
@@ -287,8 +286,8 @@ public class DefaultChooser extends Chooser {
     }
 
     /**
-     * Additional Check for Extended Random.If extended Random was negotiated, we add the additional bytes to the Server
-     * Random
+     * Additional Check for Extended Random.If extended Random was negotiated, we add the additional
+     * bytes to the Server Random
      *
      * @return
      */
@@ -733,7 +732,6 @@ public class DefaultChooser extends Chooser {
         } else {
             return config.getDefaultClientApplicationTrafficSecret();
         }
-
     }
 
     @Override
@@ -770,8 +768,9 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public ConnectionEndType getMyConnectionPeer() {
-        return getConnection().getLocalConnectionEndType() == ConnectionEndType.CLIENT ? ConnectionEndType.SERVER
-            : ConnectionEndType.CLIENT;
+        return getConnection().getLocalConnectionEndType() == ConnectionEndType.CLIENT
+                ? ConnectionEndType.SERVER
+                : ConnectionEndType.CLIENT;
     }
 
     @Override
@@ -1072,7 +1071,7 @@ public class DefaultChooser extends Chooser {
     @Override
     public List<KeyShareStoreEntry> getEsniServerKeyShareEntries() {
         if (context.getTlsContext().getEsniServerKeyShareEntries() != null
-            && context.getTlsContext().getEsniServerKeyShareEntries().size() > 0) {
+                && context.getTlsContext().getEsniServerKeyShareEntries().size() > 0) {
             return context.getTlsContext().getEsniServerKeyShareEntries();
         } else {
             return config.getDefaultEsniServerKeyShareEntries();
@@ -1187,5 +1186,4 @@ public class DefaultChooser extends Chooser {
             return config.getDefaultMaxRecordData();
         }
     }
-
 }

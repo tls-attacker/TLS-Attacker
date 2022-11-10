@@ -1,22 +1,18 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.constants;
 
 import com.google.common.collect.Sets;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.certificate.CertificateKeyPair;
-import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
-import de.rub.nds.tlsattacker.core.exceptions.UnknownSignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-
 import java.io.ByteArrayInputStream;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.Signature;
@@ -28,8 +24,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Construction of a hash and signature algorithm. Very confusing, consists of two bytes, the first is hash algorithm:
- * {HashAlgorithm, SignatureAlgorithm}
+ * Construction of a hash and signature algorithm. Very confusing, consists of two bytes, the first
+ * is hash algorithm: {HashAlgorithm, SignatureAlgorithm}
  */
 public enum SignatureAndHashAlgorithm {
     ANONYMOUS_NONE(0x0000),
@@ -142,8 +138,8 @@ public enum SignatureAndHashAlgorithm {
 
     public static List<SignatureAndHashAlgorithm> getImplementedTls13SignatureAndHashAlgorithms() {
         return getTls13SignatureAndHashAlgorithms().stream()
-            .filter(algorithm -> SignatureAndHashAlgorithm.getImplemented().contains(algorithm))
-            .collect(Collectors.toList());
+                .filter(algorithm -> SignatureAndHashAlgorithm.getImplemented().contains(algorithm))
+                .collect(Collectors.toList());
     }
 
     private int value;
@@ -171,17 +167,24 @@ public enum SignatureAndHashAlgorithm {
         }
     }
 
-    public static List<SignatureAndHashAlgorithm> getSignatureAndHashAlgorithms(byte[] signatureAndHashBytes) {
+    public static List<SignatureAndHashAlgorithm> getSignatureAndHashAlgorithms(
+            byte[] signatureAndHashBytes) {
         List<SignatureAndHashAlgorithm> algoList = new LinkedList<>();
         if (signatureAndHashBytes.length % HandshakeByteLength.SIGNATURE_HASH_ALGORITHM != 0) {
             throw new ParserException("Error while parsing signatureAndHashAlgorithm Bytes");
         }
         ByteArrayInputStream algorithmsStream = new ByteArrayInputStream(signatureAndHashBytes);
         byte[] algoBytes = new byte[HandshakeByteLength.SIGNATURE_HASH_ALGORITHM];
-        while (algorithmsStream.read(algoBytes, 0, HandshakeByteLength.SIGNATURE_HASH_ALGORITHM) != -1) {
-            SignatureAndHashAlgorithm algo = SignatureAndHashAlgorithm.getSignatureAndHashAlgorithm(algoBytes);
-            if (algo == null || algo.getSignatureAlgorithm() == null || algo.getHashAlgorithm() == null) {
-                LOGGER.warn("Unknown SignatureAndHashAlgorithm:" + ArrayConverter.bytesToHexString(algoBytes));
+        while (algorithmsStream.read(algoBytes, 0, HandshakeByteLength.SIGNATURE_HASH_ALGORITHM)
+                != -1) {
+            SignatureAndHashAlgorithm algo =
+                    SignatureAndHashAlgorithm.getSignatureAndHashAlgorithm(algoBytes);
+            if (algo == null
+                    || algo.getSignatureAlgorithm() == null
+                    || algo.getHashAlgorithm() == null) {
+                LOGGER.warn(
+                        "Unknown SignatureAndHashAlgorithm:"
+                                + ArrayConverter.bytesToHexString(algoBytes));
             } else {
                 algoList.add(algo);
             }
@@ -198,15 +201,19 @@ public enum SignatureAndHashAlgorithm {
         return sigHashAlgo;
     }
 
-    public static SignatureAndHashAlgorithm getSignatureAndHashAlgorithm(SignatureAlgorithm signatureAlgo,
-        HashAlgorithm hashAlgo) {
+    public static SignatureAndHashAlgorithm getSignatureAndHashAlgorithm(
+            SignatureAlgorithm signatureAlgo, HashAlgorithm hashAlgo) {
         for (SignatureAndHashAlgorithm algo : values()) {
-            if (algo.getHashAlgorithm() == hashAlgo && algo.getSignatureAlgorithm() == signatureAlgo) {
+            if (algo.getHashAlgorithm() == hashAlgo
+                    && algo.getSignatureAlgorithm() == signatureAlgo) {
                 return algo;
             }
         }
         throw new UnsupportedOperationException(
-            "Requested SignatureHashAlgorithm is not supported. Requested Sign:" + signatureAlgo + " Hash:" + hashAlgo);
+                "Requested SignatureHashAlgorithm is not supported. Requested Sign:"
+                        + signatureAlgo
+                        + " Hash:"
+                        + hashAlgo);
     }
 
     public byte[] getByteValue() {
@@ -291,8 +298,9 @@ public enum SignatureAndHashAlgorithm {
                 default:
                     break;
             }
-            signature
-                .setParameter(new PSSParameterSpec(hashName, "MGF1", new MGF1ParameterSpec(hashName), saltLength, 1));
+            signature.setParameter(
+                    new PSSParameterSpec(
+                            hashName, "MGF1", new MGF1ParameterSpec(hashName), saltLength, 1));
         }
     }
 
@@ -330,18 +338,21 @@ public enum SignatureAndHashAlgorithm {
         }
     }
 
-    public static SignatureAndHashAlgorithm forCertificateKeyPair(CertificateKeyPair keyPair, Chooser chooser) {
+    public static SignatureAndHashAlgorithm forCertificateKeyPair(
+            CertificateKeyPair keyPair, Chooser chooser) {
         return forCertificateKeyPair(keyPair, chooser, false);
     }
 
-    public static SignatureAndHashAlgorithm forCertificateKeyPair(CertificateKeyPair keyPair, Chooser chooser,
-        boolean selectingCertificate) {
+    public static SignatureAndHashAlgorithm forCertificateKeyPair(
+            CertificateKeyPair keyPair, Chooser chooser, boolean selectingCertificate) {
         Sets.SetView<SignatureAndHashAlgorithm> intersection =
-            Sets.intersection(Sets.newHashSet(chooser.getClientSupportedSignatureAndHashAlgorithms()),
-                Sets.newHashSet(chooser.getServerSupportedSignatureAndHashAlgorithms()));
+                Sets.intersection(
+                        Sets.newHashSet(chooser.getClientSupportedSignatureAndHashAlgorithms()),
+                        Sets.newHashSet(chooser.getServerSupportedSignatureAndHashAlgorithms()));
         List<SignatureAndHashAlgorithm> algorithms = new ArrayList<>(intersection);
         List<SignatureAndHashAlgorithm> clientPreferredHash = new ArrayList<>(algorithms);
-        clientPreferredHash.removeIf(i -> i.getHashAlgorithm() != chooser.getConfig().getPreferredHashAlgorithm());
+        clientPreferredHash.removeIf(
+                i -> i.getHashAlgorithm() != chooser.getConfig().getPreferredHashAlgorithm());
         algorithms.addAll(0, clientPreferredHash);
 
         if (chooser.getSelectedProtocolVersion().isTLS13()) {
@@ -382,12 +393,15 @@ public enum SignatureAndHashAlgorithm {
                     }
                     break;
                 case GOST12:
-                    if (sig == SignatureAlgorithm.GOSTR34102012_256 || sig == SignatureAlgorithm.GOSTR34102012_512) {
+                    if (sig == SignatureAlgorithm.GOSTR34102012_256
+                            || sig == SignatureAlgorithm.GOSTR34102012_512) {
                         found = true;
                         if (keyPair.getGostCurve().is512bit2012()) {
-                            sigHashAlgo = SignatureAndHashAlgorithm.GOSTR34102012_512_GOSTR34112012_512;
+                            sigHashAlgo =
+                                    SignatureAndHashAlgorithm.GOSTR34102012_512_GOSTR34112012_512;
                         } else {
-                            sigHashAlgo = SignatureAndHashAlgorithm.GOSTR34102012_256_GOSTR34112012_256;
+                            sigHashAlgo =
+                                    SignatureAndHashAlgorithm.GOSTR34102012_256_GOSTR34112012_256;
                         }
                     }
                     break;
@@ -403,8 +417,8 @@ public enum SignatureAndHashAlgorithm {
 
         if (sigHashAlgo == null && !selectingCertificate) {
             LOGGER.warn(
-                "Could not auto select SignatureAndHashAlgorithm for certPublicKeyType={}, setting default value",
-                certPublicKeyType);
+                    "Could not auto select SignatureAndHashAlgorithm for certPublicKeyType={}, setting default value",
+                    certPublicKeyType);
             sigHashAlgo = SignatureAndHashAlgorithm.RSA_SHA256;
         }
 

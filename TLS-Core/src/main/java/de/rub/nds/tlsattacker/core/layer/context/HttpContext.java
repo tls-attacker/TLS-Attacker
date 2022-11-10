@@ -1,35 +1,25 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.layer.context;
 
 import de.rub.nds.tlsattacker.core.state.Context;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
-/**
- * Holds all runtime variables of the HTTPLayer.
- */
+/** Holds all runtime variables of the HTTPLayer. */
 public class HttpContext extends LayerContext {
 
-    /**
-     * Request path we queried before.
-     */
+    /** Request path we queried before. */
     private String lastRequestPath;
 
-    /**
-     * Add a cookie with this name to HTTP header if config.isAddHttpCookie is set.
-     */
+    /** Add a cookie with this name to HTTP header if config.isAddHttpCookie is set. */
     private String httpCookieName = null;
 
-    /**
-     * Add a cookie with this value to HTTP header if config.isAddHttpCookie is set.
-     */
+    /** Add a cookie with this value to HTTP header if config.isAddHttpCookie is set. */
     private String httpCookieValue = null;
 
     public HttpContext(Context context) {
@@ -60,5 +50,4 @@ public class HttpContext extends LayerContext {
     public void setHttpCookieValue(String httpCookieValue) {
         this.httpCookieValue = httpCookieValue;
     }
-
 }

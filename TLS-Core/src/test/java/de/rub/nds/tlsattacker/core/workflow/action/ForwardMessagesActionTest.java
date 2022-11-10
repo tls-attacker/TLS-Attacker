@@ -1,17 +1,16 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import static org.junit.jupiter.api.Assertions.*;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.AlertDescription;
@@ -30,14 +29,12 @@ import de.rub.nds.tlsattacker.core.workflow.filter.DefaultFilter;
 import de.rub.nds.tlsattacker.core.workflow.filter.Filter;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import jakarta.xml.bind.JAXBException;
-import org.junit.jupiter.api.Test;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.Before;
+import org.junit.jupiter.api.Test;
 
 public class ForwardMessagesActionTest extends AbstractActionTest<ForwardMessagesAction> {
 
@@ -56,7 +53,7 @@ public class ForwardMessagesActionTest extends AbstractActionTest<ForwardMessage
         TlsContext ctx1 = state.getTlsContext(ctx1Alias);
         TlsContext ctx2 = state.getTlsContext(ctx2Alias);
 
-        byte[] alertMsg = new byte[] { 0x15, 0x03, 0x03, 0x00, 0x02, 0x02, 50 };
+        byte[] alertMsg = new byte[] {0x15, 0x03, 0x03, 0x00, 0x02, 0x02, 50};
         setFetchableData(alertMsg);
         ctx2.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
         initContexts();
@@ -65,15 +62,16 @@ public class ForwardMessagesActionTest extends AbstractActionTest<ForwardMessage
     public void setFetchableData(byte[] data) {
         FakeTransportHandler th = new FakeTransportHandler(ConnectionEndType.SERVER);
         th.setFetchableByte(data);
-        state.getContext(ctx1Alias).getTlsContext()
-            .setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
+        state.getContext(ctx1Alias)
+                .getTlsContext()
+                .setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
         state.getContext(ctx1Alias).getTcpContext().setTransportHandler(th);
-
     }
 
     private void initContexts() throws IOException {
-        state.getContext(ctx2Alias).getTcpContext()
-            .setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
+        state.getContext(ctx2Alias)
+                .getTcpContext()
+                .setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
     }
 
     @Override
@@ -95,27 +93,41 @@ public class ForwardMessagesActionTest extends AbstractActionTest<ForwardMessage
     @Test
     public void testExecuteWithNullAliasThrowsException() {
         final ForwardMessagesAction action1 = new ForwardMessagesAction(null, ctx2Alias, alert);
-        ActionExecutionException exception = assertThrows(ActionExecutionException.class, () -> action1.execute(state));
-        assertTrue(exception.getMessage()
-            .startsWith("Can't execute ForwardMessagesAction with empty receive alias (if using XML: add <from/>"));
+        ActionExecutionException exception =
+                assertThrows(ActionExecutionException.class, () -> action1.execute(state));
+        assertTrue(
+                exception
+                        .getMessage()
+                        .startsWith(
+                                "Can't execute ForwardMessagesAction with empty receive alias (if using XML: add <from/>"));
 
         final ForwardMessagesAction action2 = new ForwardMessagesAction(ctx1Alias, null, alert);
         exception = assertThrows(ActionExecutionException.class, () -> action2.execute(state));
-        assertTrue(exception.getMessage()
-            .startsWith("Can't execute ForwardMessagesAction with empty forward alias (if using XML: add <to/>"));
+        assertTrue(
+                exception
+                        .getMessage()
+                        .startsWith(
+                                "Can't execute ForwardMessagesAction with empty forward alias (if using XML: add <to/>"));
     }
 
     @Test
     public void testExecuteWithEmptyAliasThrowsException() throws Exception {
         final ForwardMessagesAction action1 = new ForwardMessagesAction("", ctx2Alias, alert);
-        ActionExecutionException exception = assertThrows(ActionExecutionException.class, () -> action1.execute(state));
-        assertTrue(exception.getMessage()
-            .startsWith("Can't execute ForwardMessagesAction with empty receive alias (if using XML: add <from/>"));
+        ActionExecutionException exception =
+                assertThrows(ActionExecutionException.class, () -> action1.execute(state));
+        assertTrue(
+                exception
+                        .getMessage()
+                        .startsWith(
+                                "Can't execute ForwardMessagesAction with empty receive alias (if using XML: add <from/>"));
 
         final ForwardMessagesAction action2 = new ForwardMessagesAction(ctx1Alias, "", alert);
         exception = assertThrows(ActionExecutionException.class, () -> action2.execute(state));
-        assertTrue(exception.getMessage()
-            .startsWith("Can't execute ForwardMessagesAction with empty forward alias (if using XML: add <to/>"));
+        assertTrue(
+                exception
+                        .getMessage()
+                        .startsWith(
+                                "Can't execute ForwardMessagesAction with empty forward alias (if using XML: add <to/>"));
     }
 
     @Test
@@ -157,8 +169,12 @@ public class ForwardMessagesActionTest extends AbstractActionTest<ForwardMessage
         msg.setCompleteResultingMessage(receivedData.getBytes());
         List<ProtocolMessage> receivedMsgs = new ArrayList<>();
         receivedMsgs.add(msg);
-        setFetchableData(ArrayConverter.concatenate(
-            new byte[] { (byte) 0x17, (byte) 0x03, (byte) 0x03, (byte) 0x00, (byte) 0x20 }, receivedData.getBytes()));
+        setFetchableData(
+                ArrayConverter.concatenate(
+                        new byte[] {
+                            (byte) 0x17, (byte) 0x03, (byte) 0x03, (byte) 0x00, (byte) 0x20
+                        },
+                        receivedData.getBytes()));
         initContexts();
 
         ForwardMessagesAction action = new ForwardMessagesAction(ctx1Alias, ctx2Alias);

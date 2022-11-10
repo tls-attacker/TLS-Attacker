@@ -1,16 +1,12 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.state;
-
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
@@ -21,32 +17,31 @@ import de.rub.nds.tlsattacker.core.layer.LayerStack;
 import de.rub.nds.tlsattacker.core.layer.LayerStackFactory;
 import de.rub.nds.tlsattacker.core.layer.constant.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.context.TcpContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Contains runtime information about a connection. With the introduction of the layer system all layer-specific
- * variables have been moved to the respective layer-context (e.g. {@link HttpContext}.
+ * Contains runtime information about a connection. With the introduction of the layer system all
+ * layer-specific variables have been moved to the respective layer-context (e.g. {@link
+ * HttpContext}.
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Context {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /**
-     * TODO: Replace with standard values in layer contexts
-     */
+    /** TODO: Replace with standard values in layer contexts */
     private Chooser chooser;
 
-    /**
-     * TODO: Replace with configs split by layer
-     */
+    /** TODO: Replace with configs split by layer */
     private Config config;
 
     private TransportHandler transportHandler;
@@ -61,9 +56,7 @@ public class Context {
 
     private ConnectionEndType talkingConnectionEndType = ConnectionEndType.CLIENT;
 
-    /**
-     * The end point of the connection that this context represents.
-     */
+    /** The end point of the connection that this context represents. */
     private AliasedConnection connection;
 
     public Context(Config config) {
@@ -82,7 +75,10 @@ public class Context {
                     break;
                 default:
                     throw new ConfigurationException(
-                        "Cannot create connection for unknown running mode " + "'" + mode + "'");
+                            "Cannot create connection for unknown running mode "
+                                    + "'"
+                                    + mode
+                                    + "'");
             }
         }
         prepareWithLayers(config.getDefaultLayerConfiguration());
@@ -177,8 +173,10 @@ public class Context {
             if (connection.getLocalConnectionEndType() == ConnectionEndType.SERVER) {
                 info.append(", listening on port ").append(connection.getPort());
             } else {
-                info.append(", connected to ").append(connection.getHostname()).append(":")
-                    .append(connection.getPort());
+                info.append(", connected to ")
+                        .append(connection.getHostname())
+                        .append(":")
+                        .append(connection.getPort());
             }
             info.append("}");
         }

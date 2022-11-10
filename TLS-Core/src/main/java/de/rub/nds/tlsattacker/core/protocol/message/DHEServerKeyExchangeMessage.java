@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
@@ -15,43 +14,36 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.DHEServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.DHEServerComputations;
 import de.rub.nds.tlsattacker.core.protocol.parser.DHEServerKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.DHEServerKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.DHEServerKeyExchangeSerializer;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.List;
-import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "DHEClientKeyExchange")
 public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
-    /**
-     * DH modulus
-     */
+    /** DH modulus */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
     protected ModifiableByteArray modulus;
 
-    /**
-     * DH modulus Length
-     */
+    /** DH modulus Length */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     protected ModifiableInteger modulusLength;
 
-    /**
-     * DH generator
-     */
+    /** DH generator */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
     protected ModifiableByteArray generator;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     protected ModifiableInteger generatorLength;
 
-    @HoldsModifiableVariable
-    protected DHEServerComputations computations;
+    @HoldsModifiableVariable protected DHEServerComputations computations;
 
     public DHEServerKeyExchangeMessage() {
         super();
@@ -90,7 +82,8 @@ public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     }
 
     public void setModulusLength(int modulusLength) {
-        this.modulusLength = ModifiableVariableFactory.safelySetValue(this.modulusLength, modulusLength);
+        this.modulusLength =
+                ModifiableVariableFactory.safelySetValue(this.modulusLength, modulusLength);
     }
 
     public ModifiableInteger getGeneratorLength() {
@@ -102,7 +95,8 @@ public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     }
 
     public void setGeneratorLength(int generatorLength) {
-        this.generatorLength = ModifiableVariableFactory.safelySetValue(this.generatorLength, generatorLength);
+        this.generatorLength =
+                ModifiableVariableFactory.safelySetValue(this.generatorLength, generatorLength);
     }
 
     @Override
@@ -135,7 +129,8 @@ public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
         sb.append("\n  Signature and Hash Algorithm: ");
         // signature and hash algorithms are provided only while working with
         // (D)TLS 1.2
-        if (this.getSignatureAndHashAlgorithm() != null && this.getSignatureAndHashAlgorithm().getValue() != null) {
+        if (this.getSignatureAndHashAlgorithm() != null
+                && this.getSignatureAndHashAlgorithm().getValue() != null) {
             sb.append(ArrayConverter.bytesToHexString(getSignatureAndHashAlgorithm().getValue()));
         } else {
             sb.append("null");
@@ -150,7 +145,8 @@ public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     }
 
     @Override
-    public DHEServerKeyExchangeHandler<? extends DHEServerKeyExchangeMessage> getHandler(TlsContext tlsContext) {
+    public DHEServerKeyExchangeHandler<? extends DHEServerKeyExchangeMessage> getHandler(
+            TlsContext tlsContext) {
         return new DHEServerKeyExchangeHandler<>(tlsContext);
     }
 
@@ -166,7 +162,8 @@ public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
     @Override
     public DHEServerKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
-        return new DHEServerKeyExchangeSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new DHEServerKeyExchangeSerializer(
+                this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

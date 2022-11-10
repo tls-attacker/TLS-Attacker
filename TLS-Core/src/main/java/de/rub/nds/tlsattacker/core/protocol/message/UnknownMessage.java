@@ -1,26 +1,25 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.handler.UnknownMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.UnknownMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.UnknownMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.UnknownMessageSerializer;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Objects;
-import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "UnknownMessage")
 public class UnknownMessage extends ProtocolMessage {
@@ -87,7 +86,8 @@ public class UnknownMessage extends ProtocolMessage {
         StringBuilder sb = new StringBuilder();
         sb.append("UnknownMessage:");
         sb.append("\n  Data: ");
-        if (getCompleteResultingMessage() != null && getCompleteResultingMessage().getValue() != null) {
+        if (getCompleteResultingMessage() != null
+                && getCompleteResultingMessage().getValue() != null) {
             sb.append(ArrayConverter.bytesToHexString(getCompleteResultingMessage().getValue()));
         } else {
             sb.append("null");
@@ -125,5 +125,4 @@ public class UnknownMessage extends ProtocolMessage {
         }
         return this.recordContentMessageType == other.recordContentMessageType;
     }
-
 }

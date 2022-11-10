@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.layer.context;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -16,7 +15,6 @@ import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.crypto.MessageDigestCollector;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.core.layer.LayerStack;
 import de.rub.nds.tlsattacker.core.layer.impl.DtlsFragmentLayer;
 import de.rub.nds.tlsattacker.core.layer.impl.RecordLayer;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
@@ -26,7 +24,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareE
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PskSet;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.SNIEntry;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.RequestItemV2;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
 import de.rub.nds.tlsattacker.core.record.Record;
@@ -39,19 +36,15 @@ import de.rub.nds.tlsattacker.core.state.session.TicketSession;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-
-import java.math.BigInteger;
-import java.util.*;
-import de.rub.nds.tlsattacker.transport.socket.SocketState;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
+import java.math.BigInteger;
+import java.util.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.tls.Certificate;
 
-/**
- * Holds all runtime variables of the TLSLayer.
- */
+/** Holds all runtime variables of the TLSLayer. */
 @XmlAccessorType(XmlAccessType.FIELD)
 public class TlsContext extends LayerContext {
 
@@ -61,116 +54,72 @@ public class TlsContext extends LayerContext {
 
     private Keylogfile keylogfile;
 
-    /**
-     * Shared key established during the handshake.
-     */
+    /** Shared key established during the handshake. */
     private byte[] handshakeSecret;
 
     private byte[] clientHandshakeTrafficSecret;
 
     private byte[] serverHandshakeTrafficSecret;
-    /**
-     * shared key established during the handshake
-     */
+    /** shared key established during the handshake */
     private byte[] clientApplicationTrafficSecret;
-    /**
-     * shared key established during the handshake
-     */
+    /** shared key established during the handshake */
     private byte[] serverApplicationTrafficSecret;
 
-    /**
-     * Early traffic secret used to encrypt early data.
-     */
+    /** Early traffic secret used to encrypt early data. */
     private byte[] clientEarlyTrafficSecret;
 
-    /**
-     * CipherSuite used for early data.
-     */
+    /** CipherSuite used for early data. */
     private CipherSuite earlyDataCipherSuite;
 
-    /**
-     * EarlySecret used to derive EarlyTrafficSecret and more.
-     */
+    /** EarlySecret used to derive EarlyTrafficSecret and more. */
     private byte[] earlySecret;
 
-    /**
-     * The known TLS 1.3 PSK-Sets.
-     */
+    /** The known TLS 1.3 PSK-Sets. */
     private List<PskSet> pskSets;
 
-    /**
-     * The selected Pre Shared key.
-     */
+    /** The selected Pre Shared key. */
     private byte[] psk;
 
-    /**
-     * The selected earlyData PSK.
-     */
+    /** The selected earlyData PSK. */
     private byte[] earlyDataPsk;
 
-    /**
-     * Identity of the PSK used for earlyData.
-     */
+    /** Identity of the PSK used for earlyData. */
     private byte[] earlyDataPSKIdentity;
 
-    /**
-     * Identity of the PSK used for earlyData.
-     */
+    /** Identity of the PSK used for earlyData. */
     private int selectedIdentityIndex;
 
-    /**
-     * The Client's chosen Kex-Modes.
-     */
+    /** The Client's chosen Kex-Modes. */
     private List<PskKeyExchangeMode> clientPskKeyExchangeModes;
 
-    /**
-     * Maximum number of bytes to transmit as early-data.
-     */
+    /** Maximum number of bytes to transmit as early-data. */
     private Integer maxEarlyDataSize;
 
-    /**
-     * Master secret established during the handshake.
-     */
+    /** Master secret established during the handshake. */
     private byte[] masterSecret;
 
-    /**
-     * Cleartext portion of the master secret for SSLv2 export ciphers.
-     */
+    /** Cleartext portion of the master secret for SSLv2 export ciphers. */
     private byte[] clearKey;
 
-    /**
-     * Premaster secret established during the handshake.
-     */
+    /** Premaster secret established during the handshake. */
     private byte[] preMasterSecret;
 
-    /**
-     * Master secret established during the handshake.
-     */
+    /** Master secret established during the handshake. */
     private byte[] resumptionMasterSecret;
 
-    /**
-     * Client Extended Random used in Extended Random Extension
-     */
+    /** Client Extended Random used in Extended Random Extension */
     private byte[] clientExtendedRandom;
 
-    /**
-     * Server Extended Random used in Extended Random Extension
-     */
+    /** Server Extended Random used in Extended Random Extension */
     private byte[] serverExtendedRandom;
 
-    /**
-     * Client random, including unix time.
-     */
+    /** Client random, including unix time. */
     private byte[] clientRandom;
 
-    /**
-     * Server random, including unix time.
-     */
+    /** Server random, including unix time. */
     private byte[] serverRandom;
 
-    /**
-     * Selected cipher suite.
-     */
+    /** Selected cipher suite. */
     private CipherSuite selectedCipherSuite = null;
 
     /*
@@ -178,40 +127,28 @@ public class TlsContext extends LayerContext {
      */
     private SSL2CipherSuite ssl2CipherSuite = null;
 
-    /**
-     * Selected compression algorithm.
-     */
+    /** Selected compression algorithm. */
     private CompressionMethod selectedCompressionMethod;
 
-    /**
-     * Server session ID.
-     */
+    /** Server session ID. */
     private byte[] serverSessionId;
 
-    /**
-     * Client session ID.
-     */
+    /** Client session ID. */
     private byte[] clientSessionId;
 
     /**
-     * Initialization vector for SSLv2 with block ciphers. Unlike for SSLv3 and TLS, this is explicitly transmitted in
-     * the handshake and cannot be derived from other data.
+     * Initialization vector for SSLv2 with block ciphers. Unlike for SSLv3 and TLS, this is
+     * explicitly transmitted in the handshake and cannot be derived from other data.
      */
     private byte[] ssl2Iv;
 
-    /**
-     * Server certificate parsed from the server certificate message.
-     */
+    /** Server certificate parsed from the server certificate message. */
     private Certificate serverCertificate;
 
-    /**
-     * Client certificate parsed from the client certificate message.
-     */
+    /** Client certificate parsed from the client certificate message. */
     private Certificate clientCertificate;
 
-    /**
-     * Collects messages for computation of the Finished and CertificateVerify hashes
-     */
+    /** Collects messages for computation of the Finished and CertificateVerify hashes */
     private MessageDigestCollector digest;
 
     private byte[] dtlsCookie;
@@ -248,67 +185,41 @@ public class TlsContext extends LayerContext {
 
     private CertificateType selectedServerCertificateType;
 
-    /**
-     * These are the padding bytes as used in the padding extension.
-     */
+    /** These are the padding bytes as used in the padding extension. */
     private byte[] paddingExtensionBytes;
 
-    /**
-     * The renegotiation info of the RenegotiationInfo extension.
-     */
+    /** The renegotiation info of the RenegotiationInfo extension. */
     private byte[] renegotiationInfo;
-    /**
-     * The requestContext from the CertificateRequest message in TLS 1.3.
-     */
+    /** The requestContext from the CertificateRequest message in TLS 1.3. */
     private byte[] certificateRequestContext;
-    /**
-     * Timestamp of the SignedCertificateTimestamp extension.
-     */
+    /** Timestamp of the SignedCertificateTimestamp extension. */
     private byte[] signedCertificateTimestamp;
 
-    /**
-     * This is the request type of the CertificateStatusRequest extension
-     */
+    /** This is the request type of the CertificateStatusRequest extension */
     private CertificateStatusRequestType certificateStatusRequestExtensionRequestType;
 
-    /**
-     * This is the responder ID list of the CertificateStatusRequest extension
-     */
+    /** This is the responder ID list of the CertificateStatusRequest extension */
     private byte[] certificateStatusRequestExtensionResponderIDList;
 
-    /**
-     * This is the request extension of the CertificateStatusRequest extension
-     */
+    /** This is the request extension of the CertificateStatusRequest extension */
     private byte[] certificateStatusRequestExtensionRequestExtension;
 
-    /**
-     * This is the user identifier of the SRP extension
-     */
+    /** This is the user identifier of the SRP extension */
     private byte[] secureRemotePasswordExtensionIdentifier;
 
-    /**
-     * These are the protection profiles of the SRTP extension
-     */
+    /** These are the protection profiles of the SRTP extension */
     private List<SrtpProtectionProfiles> secureRealTimeTransportProtocolProtectionProfiles;
 
-    /**
-     * This is the master key identifier of the SRTP extension
-     */
+    /** This is the master key identifier of the SRTP extension */
     private byte[] secureRealTimeProtocolMasterKeyIdentifier;
 
-    /**
-     * User mapping extension hint type
-     */
+    /** User mapping extension hint type */
     private UserMappingExtensionHintType userMappingExtensionHintType;
 
-    /**
-     * Client authz extension data format list
-     */
+    /** Client authz extension data format list */
     private List<AuthzDataFormat> clientAuthzDataFormatList;
 
-    /**
-     * Server authz extension data format list
-     */
+    /** Server authz extension data format list */
     private List<AuthzDataFormat> serverAuthzDataFormatList;
 
     private BigInteger serverDhGenerator;
@@ -431,32 +342,24 @@ public class TlsContext extends LayerContext {
 
     private GOSTCurve selectedGostCurve;
 
-    /**
-     * the currently used type of keySet by the client
-     */
+    /** the currently used type of keySet by the client */
     private Tls13KeySetType activeClientKeySetType = Tls13KeySetType.NONE;
 
-    /**
-     * the currently used type of keySet by the server
-     */
+    /** the currently used type of keySet by the server */
     private Tls13KeySetType activeServerKeySetType = Tls13KeySetType.NONE;
 
     private Set<Integer> dtlsReceivedHandshakeMessageSequences;
 
     private Set<Integer> dtlsReceivedChangeCipherSpecEpochs;
 
-    /**
-     * supported protocol versions
-     */
+    /** supported protocol versions */
     private List<ProtocolVersion> clientSupportedProtocolVersions;
 
     private TokenBindingVersion tokenBindingVersion;
 
     private List<TokenBindingKeyParameters> tokenBindingKeyParameters;
 
-    /**
-     * Whether Token Binding negotiation completed successful or not.
-     */
+    /** Whether Token Binding negotiation completed successful or not. */
     private boolean tokenBindingNegotiatedSuccessfully = false;
 
     private List<String> proposedAlpnProtocols;
@@ -483,9 +386,7 @@ public class TlsContext extends LayerContext {
 
     private byte[] serverPWDSalt;
 
-    /**
-     * Password Element for TLS_ECCPWD
-     */
+    /** Password Element for TLS_ECCPWD */
     private Point pwdpe;
 
     private BigInteger clientPWDPrivate;
@@ -497,8 +398,8 @@ public class TlsContext extends LayerContext {
     private Point serverPWDElement;
 
     /**
-     * Last application message data received/send by this context. This is especially useful for forwarding application
-     * messages via ForwardAction.
+     * Last application message data received/send by this context. This is especially useful for
+     * forwarding application messages via ForwardAction.
      */
     private byte[] lastHandledApplicationMessageData;
 
@@ -518,51 +419,42 @@ public class TlsContext extends LayerContext {
 
     private Chooser chooser;
 
-    /**
-     * Contains the TLS extensions proposed by the client.
-     */
+    /** Contains the TLS extensions proposed by the client. */
     private final EnumSet<ExtensionType> proposedExtensionSet = EnumSet.noneOf(ExtensionType.class);
 
-    /**
-     * Contains the TLS extensions proposed by the server.
-     */
-    private final EnumSet<ExtensionType> negotiatedExtensionSet = EnumSet.noneOf(ExtensionType.class);
+    /** Contains the TLS extensions proposed by the server. */
+    private final EnumSet<ExtensionType> negotiatedExtensionSet =
+            EnumSet.noneOf(ExtensionType.class);
 
     /**
-     * The "secure_renegotiation" flag of the Renegotiation Indication Extension as defined in RFC5746. Indicates
-     * whether secure renegotiation is in use for the connection. Note that this flag reflects a connection "state" and
-     * differs from isProposedTlsExtensions*(ExtensionType.RENEGOTIATION_INFO). The latter merely says that the
+     * The "secure_renegotiation" flag of the Renegotiation Indication Extension as defined in
+     * RFC5746. Indicates whether secure renegotiation is in use for the connection. Note that this
+     * flag reflects a connection "state" and differs from
+     * isProposedTlsExtensions*(ExtensionType.RENEGOTIATION_INFO). The latter merely says that the
      * extension was send by client or server.
      */
     private boolean secureRenegotiation = false;
 
     /**
-     * Whether to use the extended master secret or not. This flag is set if the EMS extension was send by both peers.
-     * Note that this flag reflects a connection "state" and differs from isProposedTlsExtensions*(ExtensionType.
-     * EXTENDED_MASTER_SECRET). The latter merely says that the extension was sent by client or server.
+     * Whether to use the extended master secret or not. This flag is set if the EMS extension was
+     * send by both peers. Note that this flag reflects a connection "state" and differs from
+     * isProposedTlsExtensions*(ExtensionType. EXTENDED_MASTER_SECRET). The latter merely says that
+     * the extension was sent by client or server.
      */
     private boolean useExtendedMasterSecret;
 
     private boolean receivedTransportHandlerException = false;
 
-    /**
-     * Experimental flag for forensics and reparsing
-     */
+    /** Experimental flag for forensics and reparsing */
     private boolean reversePrepareAfterParse = false;
 
-    /**
-     * Nonce sent by the Client in the EncryptedServerNameIndication extension
-     */
+    /** Nonce sent by the Client in the EncryptedServerNameIndication extension */
     private byte[] esniClientNonce;
 
-    /**
-     * Nonce sent by the Server in the EncryptedServerNameIndication extension
-     */
+    /** Nonce sent by the Server in the EncryptedServerNameIndication extension */
     private byte[] esniServerNonce;
 
-    /**
-     * Contains the keyRecord for the EncryptedServerNameIndication extension
-     */
+    /** Contains the keyRecord for the EncryptedServerNameIndication extension */
     private byte[] esniRecordBytes;
 
     private EsniDnsKeyRecordVersion esniRecordVersion;
@@ -582,8 +474,8 @@ public class TlsContext extends LayerContext {
     private List<ExtensionType> esniExtensions;
 
     /**
-     * Both methods of limiting record size as defined in RFC 3546 (MaximumFragmentLength extension) and RFC 8449
-     * (RecordSizeLimit extension)
+     * Both methods of limiting record size as defined in RFC 3546 (MaximumFragmentLength extension)
+     * and RFC 8449 (RecordSizeLimit extension)
      */
     private MaxFragmentLength maxFragmentLength;
 
@@ -598,11 +490,10 @@ public class TlsContext extends LayerContext {
     }
 
     /**
-     * This constructor assumes that the config holds exactly one connection end. This is usually used when working with
-     * the default connection end in single context scenarios.
+     * This constructor assumes that the config holds exactly one connection end. This is usually
+     * used when working with the default connection end in single context scenarios.
      *
-     * @param context
-     *                The outer context that contains this layer specific context
+     * @param context The outer context that contains this layer specific context
      */
     public TlsContext(Context context) {
         super(context);
@@ -633,7 +524,9 @@ public class TlsContext extends LayerContext {
 
     public Chooser getChooser() {
         if (chooser == null) {
-            chooser = ChooserFactory.getChooser(getConfig().getChooserType(), this.getContext(), getConfig());
+            chooser =
+                    ChooserFactory.getChooser(
+                            getConfig().getChooserType(), this.getContext(), getConfig());
         }
         return chooser;
     }
@@ -741,7 +634,8 @@ public class TlsContext extends LayerContext {
         return certificateTypeClientDesiredTypes;
     }
 
-    public void setCertificateTypeClientDesiredTypes(List<CertificateType> certificateTypeClientDesiredTypes) {
+    public void setCertificateTypeClientDesiredTypes(
+            List<CertificateType> certificateTypeClientDesiredTypes) {
         this.certificateTypeClientDesiredTypes = certificateTypeClientDesiredTypes;
     }
 
@@ -757,12 +651,15 @@ public class TlsContext extends LayerContext {
         return clientSupportedProtocolVersions;
     }
 
-    public void setClientSupportedProtocolVersions(List<ProtocolVersion> clientSupportedProtocolVersions) {
+    public void setClientSupportedProtocolVersions(
+            List<ProtocolVersion> clientSupportedProtocolVersions) {
         this.clientSupportedProtocolVersions = clientSupportedProtocolVersions;
     }
 
-    public void setClientSupportedProtocolVersions(ProtocolVersion... clientSupportedProtocolVersions) {
-        this.clientSupportedProtocolVersions = new ArrayList(Arrays.asList(clientSupportedProtocolVersions));
+    public void setClientSupportedProtocolVersions(
+            ProtocolVersion... clientSupportedProtocolVersions) {
+        this.clientSupportedProtocolVersions =
+                new ArrayList(Arrays.asList(clientSupportedProtocolVersions));
     }
 
     public BigInteger getClientRsaModulus() {
@@ -1025,7 +922,8 @@ public class TlsContext extends LayerContext {
         return selectedSignatureAndHashAlgorithm;
     }
 
-    public void setSelectedSignatureAndHashAlgorithm(SignatureAndHashAlgorithm selectedSignatureAndHashAlgorithm) {
+    public void setSelectedSignatureAndHashAlgorithm(
+            SignatureAndHashAlgorithm selectedSignatureAndHashAlgorithm) {
         this.selectedSignatureAndHashAlgorithm = selectedSignatureAndHashAlgorithm;
     }
 
@@ -1070,14 +968,14 @@ public class TlsContext extends LayerContext {
     }
 
     public void setClientSupportedSignatureAndHashAlgorithms(
-        List<SignatureAndHashAlgorithm> clientSupportedSignatureAndHashAlgorithms) {
+            List<SignatureAndHashAlgorithm> clientSupportedSignatureAndHashAlgorithms) {
         this.clientSupportedSignatureAndHashAlgorithms = clientSupportedSignatureAndHashAlgorithms;
     }
 
     public void setClientSupportedSignatureAndHashAlgorithms(
-        SignatureAndHashAlgorithm... clientSupportedSignatureAndHashAlgorithms) {
+            SignatureAndHashAlgorithm... clientSupportedSignatureAndHashAlgorithms) {
         this.clientSupportedSignatureAndHashAlgorithms =
-            new ArrayList(Arrays.asList(clientSupportedSignatureAndHashAlgorithms));
+                new ArrayList(Arrays.asList(clientSupportedSignatureAndHashAlgorithms));
     }
 
     public List<SignatureAndHashAlgorithm> getClientSupportedCertificateSignAlgorithms() {
@@ -1085,14 +983,14 @@ public class TlsContext extends LayerContext {
     }
 
     public void setClientSupportedCertificateSignAlgorithms(
-        List<SignatureAndHashAlgorithm> clientSupportedCertificateSignAlgorithms) {
+            List<SignatureAndHashAlgorithm> clientSupportedCertificateSignAlgorithms) {
         this.clientSupportedCertificateSignAlgorithms = clientSupportedCertificateSignAlgorithms;
     }
 
     public void setClientSupportedCertificateSignAlgorithms(
-        SignatureAndHashAlgorithm... clientSupportedCertificateSignAlgorithms) {
+            SignatureAndHashAlgorithm... clientSupportedCertificateSignAlgorithms) {
         this.clientSupportedCertificateSignAlgorithms =
-            new ArrayList(Arrays.asList(clientSupportedCertificateSignAlgorithms));
+                new ArrayList(Arrays.asList(clientSupportedCertificateSignAlgorithms));
     }
 
     public List<SNIEntry> getClientSNIEntryList() {
@@ -1183,12 +1081,14 @@ public class TlsContext extends LayerContext {
         return clientSupportedCompressions;
     }
 
-    public void setClientSupportedCompressions(List<CompressionMethod> clientSupportedCompressions) {
+    public void setClientSupportedCompressions(
+            List<CompressionMethod> clientSupportedCompressions) {
         this.clientSupportedCompressions = clientSupportedCompressions;
     }
 
     public void setClientSupportedCompressions(CompressionMethod... clientSupportedCompressions) {
-        this.clientSupportedCompressions = new ArrayList(Arrays.asList(clientSupportedCompressions));
+        this.clientSupportedCompressions =
+                new ArrayList(Arrays.asList(clientSupportedCompressions));
     }
 
     public void addDtlsReceivedHandshakeMessageSequences(int sequence) {
@@ -1216,7 +1116,8 @@ public class TlsContext extends LayerContext {
     }
 
     public void setClientSupportedCipherSuites(CipherSuite... clientSupportedCipherSuites) {
-        this.clientSupportedCipherSuites = new ArrayList(Arrays.asList(clientSupportedCipherSuites));
+        this.clientSupportedCipherSuites =
+                new ArrayList(Arrays.asList(clientSupportedCipherSuites));
     }
 
     public List<SignatureAndHashAlgorithm> getServerSupportedSignatureAndHashAlgorithms() {
@@ -1224,14 +1125,14 @@ public class TlsContext extends LayerContext {
     }
 
     public void setServerSupportedSignatureAndHashAlgorithms(
-        List<SignatureAndHashAlgorithm> serverSupportedSignatureAndHashAlgorithms) {
+            List<SignatureAndHashAlgorithm> serverSupportedSignatureAndHashAlgorithms) {
         this.serverSupportedSignatureAndHashAlgorithms = serverSupportedSignatureAndHashAlgorithms;
     }
 
     public void setServerSupportedSignatureAndHashAlgorithms(
-        SignatureAndHashAlgorithm... serverSupportedSignatureAndHashAlgorithms) {
+            SignatureAndHashAlgorithm... serverSupportedSignatureAndHashAlgorithms) {
         this.serverSupportedSignatureAndHashAlgorithms =
-            new ArrayList(Arrays.asList(serverSupportedSignatureAndHashAlgorithms));
+                new ArrayList(Arrays.asList(serverSupportedSignatureAndHashAlgorithms));
     }
 
     public List<SignatureAndHashAlgorithm> getServerSupportedCertificateSignAlgorithms() {
@@ -1239,14 +1140,14 @@ public class TlsContext extends LayerContext {
     }
 
     public void setServerSupportedSignatureAlgorithmsCert(
-        List<SignatureAndHashAlgorithm> serverSupportedCertificateSignAlgorithms) {
+            List<SignatureAndHashAlgorithm> serverSupportedCertificateSignAlgorithms) {
         this.serverSupportedCertificateSignAlgorithms = serverSupportedCertificateSignAlgorithms;
     }
 
     public void setServerSupportedSignatureAlgorithmsCert(
-        SignatureAndHashAlgorithm... serverSupportedCertificateSignAlgorithms) {
+            SignatureAndHashAlgorithm... serverSupportedCertificateSignAlgorithms) {
         this.serverSupportedCertificateSignAlgorithms =
-            new ArrayList(Arrays.asList(serverSupportedCertificateSignAlgorithms));
+                new ArrayList(Arrays.asList(serverSupportedCertificateSignAlgorithms));
     }
 
     public ProtocolVersion getSelectedProtocolVersion() {
@@ -1475,7 +1376,8 @@ public class TlsContext extends LayerContext {
         return clientKeyShareStoreEntryList;
     }
 
-    public void setClientKeyShareStoreEntryList(List<KeyShareStoreEntry> clientKeyShareStoreEntryList) {
+    public void setClientKeyShareStoreEntryList(
+            List<KeyShareStoreEntry> clientKeyShareStoreEntryList) {
         this.clientKeyShareStoreEntryList = clientKeyShareStoreEntryList;
     }
 
@@ -1515,11 +1417,13 @@ public class TlsContext extends LayerContext {
         this.tokenBindingVersion = tokenBindingVersion;
     }
 
-    public void setTokenBindingKeyParameters(TokenBindingKeyParameters... tokenBindingKeyParameters) {
+    public void setTokenBindingKeyParameters(
+            TokenBindingKeyParameters... tokenBindingKeyParameters) {
         this.tokenBindingKeyParameters = new ArrayList(Arrays.asList(tokenBindingKeyParameters));
     }
 
-    public void setTokenBindingKeyParameters(List<TokenBindingKeyParameters> tokenBindingKeyParameters) {
+    public void setTokenBindingKeyParameters(
+            List<TokenBindingKeyParameters> tokenBindingKeyParameters) {
         this.tokenBindingKeyParameters = tokenBindingKeyParameters;
     }
 
@@ -1540,26 +1444,29 @@ public class TlsContext extends LayerContext {
     }
 
     public void setCertificateStatusRequestExtensionRequestType(
-        CertificateStatusRequestType certificateStatusRequestExtensionRequestType) {
-        this.certificateStatusRequestExtensionRequestType = certificateStatusRequestExtensionRequestType;
+            CertificateStatusRequestType certificateStatusRequestExtensionRequestType) {
+        this.certificateStatusRequestExtensionRequestType =
+                certificateStatusRequestExtensionRequestType;
     }
 
     public byte[] getCertificateStatusRequestExtensionResponderIDList() {
         return certificateStatusRequestExtensionResponderIDList;
     }
 
-    public void
-        setCertificateStatusRequestExtensionResponderIDList(byte[] certificateStatusRequestExtensionResponderIDList) {
-        this.certificateStatusRequestExtensionResponderIDList = certificateStatusRequestExtensionResponderIDList;
+    public void setCertificateStatusRequestExtensionResponderIDList(
+            byte[] certificateStatusRequestExtensionResponderIDList) {
+        this.certificateStatusRequestExtensionResponderIDList =
+                certificateStatusRequestExtensionResponderIDList;
     }
 
     public byte[] getCertificateStatusRequestExtensionRequestExtension() {
         return certificateStatusRequestExtensionRequestExtension;
     }
 
-    public void
-        setCertificateStatusRequestExtensionRequestExtension(byte[] certificateStatusRequestExtensionRequestExtension) {
-        this.certificateStatusRequestExtensionRequestExtension = certificateStatusRequestExtensionRequestExtension;
+    public void setCertificateStatusRequestExtensionRequestExtension(
+            byte[] certificateStatusRequestExtensionRequestExtension) {
+        this.certificateStatusRequestExtensionRequestExtension =
+                certificateStatusRequestExtensionRequestExtension;
     }
 
     public String getSelectedAlpnProtocol() {
@@ -1582,7 +1489,8 @@ public class TlsContext extends LayerContext {
         return secureRemotePasswordExtensionIdentifier;
     }
 
-    public void setSecureRemotePasswordExtensionIdentifier(byte[] secureRemotePasswordExtensionIdentifier) {
+    public void setSecureRemotePasswordExtensionIdentifier(
+            byte[] secureRemotePasswordExtensionIdentifier) {
         this.secureRemotePasswordExtensionIdentifier = secureRemotePasswordExtensionIdentifier;
     }
 
@@ -1591,15 +1499,17 @@ public class TlsContext extends LayerContext {
     }
 
     public void setSecureRealTimeTransportProtocolProtectionProfiles(
-        List<SrtpProtectionProfiles> secureRealTimeTransportProtocolProtectionProfiles) {
-        this.secureRealTimeTransportProtocolProtectionProfiles = secureRealTimeTransportProtocolProtectionProfiles;
+            List<SrtpProtectionProfiles> secureRealTimeTransportProtocolProtectionProfiles) {
+        this.secureRealTimeTransportProtocolProtectionProfiles =
+                secureRealTimeTransportProtocolProtectionProfiles;
     }
 
     public byte[] getSecureRealTimeProtocolMasterKeyIdentifier() {
         return secureRealTimeProtocolMasterKeyIdentifier;
     }
 
-    public void setSecureRealTimeProtocolMasterKeyIdentifier(byte[] secureRealTimeProtocolMasterKeyIdentifier) {
+    public void setSecureRealTimeProtocolMasterKeyIdentifier(
+            byte[] secureRealTimeProtocolMasterKeyIdentifier) {
         this.secureRealTimeProtocolMasterKeyIdentifier = secureRealTimeProtocolMasterKeyIdentifier;
     }
 
@@ -1607,7 +1517,8 @@ public class TlsContext extends LayerContext {
         return userMappingExtensionHintType;
     }
 
-    public void setUserMappingExtensionHintType(UserMappingExtensionHintType userMappingExtensionHintType) {
+    public void setUserMappingExtensionHintType(
+            UserMappingExtensionHintType userMappingExtensionHintType) {
         this.userMappingExtensionHintType = userMappingExtensionHintType;
     }
 
@@ -1647,7 +1558,8 @@ public class TlsContext extends LayerContext {
         return clientCertificateTypeDesiredTypes;
     }
 
-    public void setClientCertificateTypeDesiredTypes(List<CertificateType> clientCertificateTypeDesiredTypes) {
+    public void setClientCertificateTypeDesiredTypes(
+            List<CertificateType> clientCertificateTypeDesiredTypes) {
         this.clientCertificateTypeDesiredTypes = clientCertificateTypeDesiredTypes;
     }
 
@@ -1655,7 +1567,8 @@ public class TlsContext extends LayerContext {
         return serverCertificateTypeDesiredTypes;
     }
 
-    public void setServerCertificateTypeDesiredTypes(List<CertificateType> serverCertificateTypeDesiredTypes) {
+    public void setServerCertificateTypeDesiredTypes(
+            List<CertificateType> serverCertificateTypeDesiredTypes) {
         this.serverCertificateTypeDesiredTypes = serverCertificateTypeDesiredTypes;
     }
 
@@ -1679,7 +1592,8 @@ public class TlsContext extends LayerContext {
         return trustedCaIndicationExtensionCas;
     }
 
-    public void setTrustedCaIndicationExtensionCas(List<TrustedAuthority> trustedCaIndicationExtensionCas) {
+    public void setTrustedCaIndicationExtensionCas(
+            List<TrustedAuthority> trustedCaIndicationExtensionCas) {
         this.trustedCaIndicationExtensionCas = trustedCaIndicationExtensionCas;
     }
 
@@ -1750,9 +1664,8 @@ public class TlsContext extends LayerContext {
     /**
      * Check if the given TLS extension type was proposed by the client.
      *
-     * @param  ext
-     *             The ExtensionType to check for
-     * @return     true if extension was proposed by client, false otherwise
+     * @param ext The ExtensionType to check for
+     * @return true if extension was proposed by client, false otherwise
      */
     public boolean isExtensionProposed(ExtensionType ext) {
         return proposedExtensionSet.contains(ext);
@@ -1770,8 +1683,7 @@ public class TlsContext extends LayerContext {
     /**
      * Mark the given TLS extension type as client proposed extension.
      *
-     * @param ext
-     *            The ExtensionType that is proposed
+     * @param ext The ExtensionType that is proposed
      */
     public void addProposedExtension(ExtensionType ext) {
         proposedExtensionSet.add(ext);
@@ -1780,9 +1692,8 @@ public class TlsContext extends LayerContext {
     /**
      * Check if the given TLS extension type was sent by the server.
      *
-     * @param  ext
-     *             The ExtensionType to check for
-     * @return     true if extension was proposed by server, false otherwise
+     * @param ext The ExtensionType to check for
+     * @return true if extension was proposed by server, false otherwise
      */
     public boolean isExtensionNegotiated(ExtensionType ext) {
         return negotiatedExtensionSet.contains(ext);
@@ -1791,8 +1702,7 @@ public class TlsContext extends LayerContext {
     /**
      * Mark the given TLS extension type as server negotiated extension.
      *
-     * @param ext
-     *            The ExtensionType to add
+     * @param ext The ExtensionType to add
      */
     public void addNegotiatedExtension(ExtensionType ext) {
         negotiatedExtensionSet.add(ext);
@@ -1818,8 +1728,7 @@ public class TlsContext extends LayerContext {
     }
 
     /**
-     * @param clientEarlyTrafficSecret
-     *                                 the clientEarlyTrafficSecret to set
+     * @param clientEarlyTrafficSecret the clientEarlyTrafficSecret to set
      */
     public void setClientEarlyTrafficSecret(byte[] clientEarlyTrafficSecret) {
         keylogfile.writeKey("CLIENT_EARLY_TRAFFIC_SECRET", clientEarlyTrafficSecret);
@@ -1834,8 +1743,7 @@ public class TlsContext extends LayerContext {
     }
 
     /**
-     * @param maxEarlyDataSize
-     *                         the maxEarlyDataSize to set
+     * @param maxEarlyDataSize the maxEarlyDataSize to set
      */
     public void setMaxEarlyDataSize(Integer maxEarlyDataSize) {
         this.maxEarlyDataSize = maxEarlyDataSize;
@@ -1849,8 +1757,7 @@ public class TlsContext extends LayerContext {
     }
 
     /**
-     * @param psk
-     *            the psk to set
+     * @param psk the psk to set
      */
     public void setPsk(byte[] psk) {
         this.psk = psk;
@@ -1864,8 +1771,7 @@ public class TlsContext extends LayerContext {
     }
 
     /**
-     * @param earlySecret
-     *                    the earlySecret to set
+     * @param earlySecret the earlySecret to set
      */
     public void setEarlySecret(byte[] earlySecret) {
         this.earlySecret = earlySecret;
@@ -1879,8 +1785,7 @@ public class TlsContext extends LayerContext {
     }
 
     /**
-     * @param earlyDataCipherSuite
-     *                             the earlyDataCipherSuite to set
+     * @param earlyDataCipherSuite the earlyDataCipherSuite to set
      */
     public void setEarlyDataCipherSuite(CipherSuite earlyDataCipherSuite) {
         this.earlyDataCipherSuite = earlyDataCipherSuite;
@@ -1894,8 +1799,7 @@ public class TlsContext extends LayerContext {
     }
 
     /**
-     * @param earlyDataPSKIdentity
-     *                             the earlyDataPSKIdentity to set
+     * @param earlyDataPSKIdentity the earlyDataPSKIdentity to set
      */
     public void setEarlyDataPSKIdentity(byte[] earlyDataPSKIdentity) {
         this.earlyDataPSKIdentity = earlyDataPSKIdentity;
@@ -1909,8 +1813,7 @@ public class TlsContext extends LayerContext {
     }
 
     /**
-     * @param selectedIdentityIndex
-     *                              the selectedIdentityIndex to set
+     * @param selectedIdentityIndex the selectedIdentityIndex to set
      */
     public void setSelectedIdentityIndex(int selectedIdentityIndex) {
         this.selectedIdentityIndex = selectedIdentityIndex;
@@ -1924,8 +1827,7 @@ public class TlsContext extends LayerContext {
     }
 
     /**
-     * @param clientPskKeyExchangeModes
-     *                                  the clientPskKeyExchangeModes to set
+     * @param clientPskKeyExchangeModes the clientPskKeyExchangeModes to set
      */
     public void setClientPskKeyExchangeModes(List<PskKeyExchangeMode> clientPskKeyExchangeModes) {
         this.clientPskKeyExchangeModes = clientPskKeyExchangeModes;
@@ -1939,8 +1841,7 @@ public class TlsContext extends LayerContext {
     }
 
     /**
-     * @param pskSets
-     *                the pskSets to set
+     * @param pskSets the pskSets to set
      */
     public void setPskSets(List<PskSet> pskSets) {
         this.pskSets = pskSets;
@@ -1954,8 +1855,7 @@ public class TlsContext extends LayerContext {
     }
 
     /**
-     * @param activeClientKeySetType
-     *                               the activeClientKeySetType to set
+     * @param activeClientKeySetType the activeClientKeySetType to set
      */
     public void setActiveClientKeySetType(Tls13KeySetType activeClientKeySetType) {
         this.activeClientKeySetType = activeClientKeySetType;
@@ -1969,8 +1869,7 @@ public class TlsContext extends LayerContext {
     }
 
     /**
-     * @param activeServerKeySetType
-     *                               the activeServerKeySetType to set
+     * @param activeServerKeySetType the activeServerKeySetType to set
      */
     public void setActiveServerKeySetType(Tls13KeySetType activeServerKeySetType) {
         this.activeServerKeySetType = activeServerKeySetType;
@@ -2000,8 +1899,7 @@ public class TlsContext extends LayerContext {
     }
 
     /**
-     * @param earlyDataPsk
-     *                     the earlyDataPsk to set
+     * @param earlyDataPsk the earlyDataPsk to set
      */
     public void setEarlyDataPsk(byte[] earlyDataPsk) {
         this.earlyDataPsk = earlyDataPsk;
@@ -2189,7 +2087,6 @@ public class TlsContext extends LayerContext {
 
     public void setEsniClientNonce(byte[] esniClientNonce) {
         this.esniClientNonce = esniClientNonce;
-
     }
 
     public byte[] getEsniServerNonce() {
@@ -2198,7 +2095,6 @@ public class TlsContext extends LayerContext {
 
     public void setEsniServerNonce(byte[] esniServerNonce) {
         this.esniServerNonce = esniServerNonce;
-
     }
 
     public byte[] getEsniRecordBytes() {
@@ -2293,7 +2189,8 @@ public class TlsContext extends LayerContext {
         return receivedMessageWithWrongTls13KeyType;
     }
 
-    public void setReceivedMessageWithWrongTls13KeyType(boolean receivedMessageWithWrongTls13KeyType) {
+    public void setReceivedMessageWithWrongTls13KeyType(
+            boolean receivedMessageWithWrongTls13KeyType) {
         this.receivedMessageWithWrongTls13KeyType = receivedMessageWithWrongTls13KeyType;
     }
 
@@ -2334,20 +2231,21 @@ public class TlsContext extends LayerContext {
     }
 
     /**
-     * Calculates the record data size limit for the current connection direction with respect to extensions and the
-     * current encryption status.
+     * Calculates the record data size limit for the current connection direction with respect to
+     * extensions and the current encryption status.
      *
-     * Disclaimer: this is not 100% accurate for TLS 1.3 since the actual padding length can be slightly different
-     * (compared to configured additional padding length) depending on the ciphers block size. I don't think it is
-     * necessary to introduce this additional complexity. Revisit if we run into problems with an implementation.
+     * <p>Disclaimer: this is not 100% accurate for TLS 1.3 since the actual padding length can be
+     * slightly different (compared to configured additional padding length) depending on the
+     * ciphers block size. I don't think it is necessary to introduce this additional complexity.
+     * Revisit if we run into problems with an implementation.
      *
-     * @param  recordSizeLimit
-     *                         the record_size_limit extension value for the current connection direction
-     *
-     * @return                 the record data size limit for the target connection end type
+     * @param recordSizeLimit the record_size_limit extension value for the current connection
+     *     direction
+     * @return the record data size limit for the target connection end type
      */
     private Integer getMaxRecordDataSize(Integer recordSizeLimit) {
-        // max_fragment_length extension applies to all records if record_size_limit extension is not active
+        // max_fragment_length extension applies to all records if record_size_limit extension is
+        // not active
         if (!isRecordSizeLimitExtensionActive() && maxFragmentLength != null) {
             return MaxFragmentLength.getIntegerRepresentation(maxFragmentLength);
         }
@@ -2364,9 +2262,13 @@ public class TlsContext extends LayerContext {
             maxRecordDataSize -= 1;
             maxRecordDataSize -= getConfig().getDefaultAdditionalPadding();
         }
-        // poorly configured combination of record_size_limit extension and TLS 1.3 additional padding
+        // poorly configured combination of record_size_limit extension and TLS 1.3 additional
+        // padding
         if (maxRecordDataSize < 0) {
-            LOGGER.warn("Calculated record data size limit is too low (" + maxRecordDataSize + "), setting to zero");
+            LOGGER.warn(
+                    "Calculated record data size limit is too low ("
+                            + maxRecordDataSize
+                            + "), setting to zero");
             return 0;
         }
 
@@ -2390,18 +2292,34 @@ public class TlsContext extends LayerContext {
     }
 
     public long getWriteSequenceNumber(int epoch) {
-        return getRecordLayer().getEncryptor().getRecordCipher(epoch).getState().getWriteSequenceNumber();
+        return getRecordLayer()
+                .getEncryptor()
+                .getRecordCipher(epoch)
+                .getState()
+                .getWriteSequenceNumber();
     }
 
     public long getReadSequenceNumber(int epoch) {
-        return getRecordLayer().getDecryptor().getRecordCipher(epoch).getState().getReadSequenceNumber();
+        return getRecordLayer()
+                .getDecryptor()
+                .getRecordCipher(epoch)
+                .getState()
+                .getReadSequenceNumber();
     }
 
     public void setWriteSequenceNumber(int epoch, long sqn) {
-        getRecordLayer().getEncryptor().getRecordCipher(epoch).getState().setWriteSequenceNumber(sqn);
+        getRecordLayer()
+                .getEncryptor()
+                .getRecordCipher(epoch)
+                .getState()
+                .setWriteSequenceNumber(sqn);
     }
 
     public void setReadSequenceNumber(int epoch, long sqn) {
-        getRecordLayer().getDecryptor().getRecordCipher(epoch).getState().setReadSequenceNumber(sqn);
+        getRecordLayer()
+                .getDecryptor()
+                .getRecordCipher(epoch)
+                .getState()
+                .setReadSequenceNumber(sqn);
     }
 }

@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.workflow.action.executor;
 
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
@@ -24,16 +23,16 @@ public class MessageActionResult {
 
     private List<DtlsHandshakeMessageFragment> messageFragmentList;
 
-    public MessageActionResult(List<Record> recordList, List<ProtocolMessage> messageList,
-        List<DtlsHandshakeMessageFragment> messageFragmentList) {
+    public MessageActionResult(
+            List<Record> recordList,
+            List<ProtocolMessage> messageList,
+            List<DtlsHandshakeMessageFragment> messageFragmentList) {
         this.recordList = recordList;
         this.messageList = messageList;
         this.messageFragmentList = messageFragmentList;
     }
 
-    /**
-     * Generates an empty MessageActionResult, that is, a result whose list fields are empty.
-     */
+    /** Generates an empty MessageActionResult, that is, a result whose list fields are empty. */
     public MessageActionResult() {
         this(new LinkedList<>(), new LinkedList<>(), new LinkedList<>());
     }
@@ -56,7 +55,8 @@ public class MessageActionResult {
      * @param other
      */
     public MessageActionResult merge(MessageActionResult... other) {
-        LinkedList<MessageActionResult> results = new LinkedList<MessageActionResult>(Arrays.asList(other));
+        LinkedList<MessageActionResult> results =
+                new LinkedList<MessageActionResult>(Arrays.asList(other));
         results.add(0, this);
         List<Record> recordList = new LinkedList<>();
         List<DtlsHandshakeMessageFragment> messageFragmentList = null;

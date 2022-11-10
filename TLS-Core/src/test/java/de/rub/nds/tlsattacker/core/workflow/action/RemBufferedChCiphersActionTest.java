@@ -1,27 +1,25 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ClientHelloPreparator;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.util.tests.TestCategories;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
-
 import java.util.ArrayList;
 import java.util.List;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 public class RemBufferedChCiphersActionTest extends AbstractActionTest<RemBufferedChCiphersAction> {
 
@@ -111,7 +109,8 @@ public class RemBufferedChCiphersActionTest extends AbstractActionTest<RemBuffer
     @Tag(TestCategories.SLOW_TEST)
     @Override
     public void testMarshalingAndUnmarshalingFilledObjectYieldsEqualObject() {
-        action.setRemoveCiphers(CipherSuite.TLS_AES_128_CCM_SHA256, CipherSuite.TLS_DH_anon_WITH_SEED_CBC_SHA);
+        action.setRemoveCiphers(
+                CipherSuite.TLS_AES_128_CCM_SHA256, CipherSuite.TLS_DH_anon_WITH_SEED_CBC_SHA);
         super.testMarshalingAndUnmarshalingFilledObjectYieldsEqualObject();
     }
 }

@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -17,14 +16,14 @@ import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.PWDServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.PWDComputations;
 import de.rub.nds.tlsattacker.core.protocol.parser.PWDServerKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.PWDServerKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.PWDServerKeyExchangeSerializer;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import java.io.InputStream;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import java.io.InputStream;
 
 @XmlRootElement(name = "PWDServerKeyExchange")
 public class PWDServerKeyExchangeMessage extends ServerKeyExchangeMessage {
@@ -32,8 +31,7 @@ public class PWDServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger saltLength;
 
-    @ModifiableVariableProperty
-    private ModifiableByteArray salt;
+    @ModifiableVariableProperty private ModifiableByteArray salt;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     protected ModifiableByte curveType;
@@ -44,14 +42,12 @@ public class PWDServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger elementLength;
 
-    @ModifiableVariableProperty
-    private ModifiableByteArray element;
+    @ModifiableVariableProperty private ModifiableByteArray element;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger scalarLength;
 
-    @ModifiableVariableProperty
-    private ModifiableByteArray scalar;
+    @ModifiableVariableProperty private ModifiableByteArray scalar;
 
     protected PWDComputations computations;
 
@@ -88,7 +84,8 @@ public class PWDServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
     @Override
     public PWDServerKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
-        return new PWDServerKeyExchangeSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new PWDServerKeyExchangeSerializer(
+                this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     public ModifiableInteger getSaltLength() {
@@ -148,7 +145,8 @@ public class PWDServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     }
 
     public void setElementLength(int elementLength) {
-        this.elementLength = ModifiableVariableFactory.safelySetValue(this.elementLength, elementLength);
+        this.elementLength =
+                ModifiableVariableFactory.safelySetValue(this.elementLength, elementLength);
     }
 
     public ModifiableByteArray getElement() {
@@ -172,7 +170,8 @@ public class PWDServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     }
 
     public void setScalarLength(int scalarLength) {
-        this.scalarLength = ModifiableVariableFactory.safelySetValue(this.scalarLength, scalarLength);
+        this.scalarLength =
+                ModifiableVariableFactory.safelySetValue(this.scalarLength, scalarLength);
     }
 
     public ModifiableByteArray getScalar() {

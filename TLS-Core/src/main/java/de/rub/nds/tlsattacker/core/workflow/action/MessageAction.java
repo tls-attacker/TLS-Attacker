@@ -1,54 +1,48 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.workflow.action;
 
+import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.core.layer.*;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
-
+import de.rub.nds.tlsattacker.core.record.Record;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElementRef;
+import jakarta.xml.bind.annotation.XmlElementWrapper;
+import jakarta.xml.bind.annotation.XmlElements;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlElementWrapper;
-import jakarta.xml.bind.annotation.XmlElements;
-
-import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.record.Record;
-import jakarta.xml.bind.annotation.XmlElementRef;
-
 public abstract class MessageAction extends ConnectionBoundAction {
 
-    @XmlElementWrapper
-    @HoldsModifiableVariable
-    @XmlElementRef
+    @XmlElementWrapper @HoldsModifiableVariable @XmlElementRef
     protected List<ProtocolMessage> messages = new ArrayList<>();
 
     @HoldsModifiableVariable
     @XmlElementWrapper
-    @XmlElements(value = { @XmlElement(type = Record.class, name = "Record") })
+    @XmlElements(value = {@XmlElement(type = Record.class, name = "Record")})
     protected List<Record> records = new ArrayList<>();
 
     @HoldsModifiableVariable
     @XmlElementWrapper
-    @XmlElements(value = { @XmlElement(type = DtlsHandshakeMessageFragment.class, name = "DtlsFragment") })
+    @XmlElements(
+            value = {@XmlElement(type = DtlsHandshakeMessageFragment.class, name = "DtlsFragment")})
     protected List<DtlsHandshakeMessageFragment> fragments = new ArrayList<>();
 
     private LayerStackProcessingResult layerStackProcessingResult;
 
-    public MessageAction() {
-    }
+    public MessageAction() {}
 
     public MessageAction(List<ProtocolMessage> messages) {
         this.messages = new ArrayList<>(messages);
@@ -194,36 +188,62 @@ public abstract class MessageAction extends ConnectionBoundAction {
         return this instanceof ReceivingAction;
     }
 
-    protected void send(TlsContext tlsContext, List<ProtocolMessage> protocolMessagesToSend,
-        List<DtlsHandshakeMessageFragment> fragmentsToSend, List<Record> recordsToSend) throws IOException {
+    protected void send(
+            TlsContext tlsContext,
+            List<ProtocolMessage> protocolMessagesToSend,
+            List<DtlsHandshakeMessageFragment> fragmentsToSend,
+            List<Record> recordsToSend)
+            throws IOException {
         LayerStack layerStack = tlsContext.getLayerStack();
 
         LayerConfiguration dtlsConfiguration =
-            new SpecificSendLayerConfiguration<>(ImplementedLayers.DTLS_FRAGMENT, fragmentsToSend);
+                new SpecificSendLayerConfiguration<>(
+                        ImplementedLayers.DTLS_FRAGMENT, fragmentsToSend);
         LayerConfiguration messageConfiguration =
-            new SpecificSendLayerConfiguration<>(ImplementedLayers.MESSAGE, protocolMessagesToSend);
+                new SpecificSendLayerConfiguration<>(
+                        ImplementedLayers.MESSAGE, protocolMessagesToSend);
+        LayerConfiguration ssl2Configuration =
+                new SpecificSendLayerConfiguration(ImplementedLayers.SSL2, protocolMessagesToSend);
         LayerConfiguration recordConfiguration =
-            new SpecificSendLayerConfiguration<>(ImplementedLayers.RECORD, recordsToSend);
+                new SpecificSendLayerConfiguration<>(ImplementedLayers.RECORD, recordsToSend);
 
         List<LayerConfiguration> layerConfigurationList =
-            sortLayerConfigurations(layerStack, dtlsConfiguration, messageConfiguration, recordConfiguration);
+                sortLayerConfigurations(
+                        layerStack,
+                        dtlsConfiguration,
+                        messageConfiguration,
+                        recordConfiguration,
+                        ssl2Configuration);
         LayerStackProcessingResult processingResult = layerStack.sendData(layerConfigurationList);
         setContainers(processingResult);
     }
 
-    protected void receive(TlsContext tlsContext, List<ProtocolMessage> protocolMessagesToReceive,
-        List<DtlsHandshakeMessageFragment> fragmentsToReceive, List<Record> recordsToReceive) {
+    protected void receive(
+            TlsContext tlsContext,
+            List<ProtocolMessage> protocolMessagesToReceive,
+            List<DtlsHandshakeMessageFragment> fragmentsToReceive,
+            List<Record> recordsToReceive) {
         LayerStack layerStack = tlsContext.getLayerStack();
 
         LayerConfiguration dtlsConfiguration =
-            new SpecificReceiveLayerConfiguration(ImplementedLayers.DTLS_FRAGMENT, fragmentsToReceive);
+                new SpecificReceiveLayerConfiguration(
+                        ImplementedLayers.DTLS_FRAGMENT, fragmentsToReceive);
         LayerConfiguration messageConfiguration =
-            new SpecificReceiveLayerConfiguration<>(ImplementedLayers.MESSAGE, protocolMessagesToReceive);
+                new SpecificReceiveLayerConfiguration<>(
+                        ImplementedLayers.MESSAGE, protocolMessagesToReceive);
+        LayerConfiguration ssl2Configuration =
+                new SpecificReceiveLayerConfiguration<>(
+                        ImplementedLayers.SSL2, protocolMessagesToReceive);
         LayerConfiguration recordConfiguration =
-            new SpecificReceiveLayerConfiguration<>(ImplementedLayers.RECORD, recordsToReceive);
+                new SpecificReceiveLayerConfiguration<>(ImplementedLayers.RECORD, recordsToReceive);
 
         List<LayerConfiguration> layerConfigurationList =
-            sortLayerConfigurations(layerStack, dtlsConfiguration, messageConfiguration, recordConfiguration);
+                sortLayerConfigurations(
+                        layerStack,
+                        dtlsConfiguration,
+                        messageConfiguration,
+                        recordConfiguration,
+                        ssl2Configuration);
         getReceiveResult(layerStack, layerConfigurationList);
     }
 
@@ -231,23 +251,29 @@ public abstract class MessageAction extends ConnectionBoundAction {
         LayerStack layerStack = tlsContext.getLayerStack();
 
         LayerConfiguration messageConfiguration =
-            new ReceiveTillLayerConfiguration(ImplementedLayers.MESSAGE, protocolMessageToReceive);
+                new ReceiveTillLayerConfiguration(
+                        ImplementedLayers.MESSAGE, protocolMessageToReceive);
 
-        List<LayerConfiguration> layerConfigurationList = sortLayerConfigurations(layerStack, messageConfiguration);
+        List<LayerConfiguration> layerConfigurationList =
+                sortLayerConfigurations(layerStack, messageConfiguration);
         getReceiveResult(layerStack, layerConfigurationList);
     }
 
-    protected void tightReceive(TlsContext tlsContext, List<ProtocolMessage> protocolMessagesToReceive) {
+    protected void tightReceive(
+            TlsContext tlsContext, List<ProtocolMessage> protocolMessagesToReceive) {
         LayerStack layerStack = tlsContext.getLayerStack();
 
         LayerConfiguration messageConfiguration =
-            new TightReceiveLayerConfiguration(ImplementedLayers.MESSAGE, protocolMessagesToReceive);
+                new TightReceiveLayerConfiguration(
+                        ImplementedLayers.MESSAGE, protocolMessagesToReceive);
 
-        List<LayerConfiguration> layerConfigurationList = sortLayerConfigurations(layerStack, messageConfiguration);
+        List<LayerConfiguration> layerConfigurationList =
+                sortLayerConfigurations(layerStack, messageConfiguration);
         getReceiveResult(layerStack, layerConfigurationList);
     }
 
-    private void getReceiveResult(LayerStack layerStack, List<LayerConfiguration> layerConfigurationList) {
+    private void getReceiveResult(
+            LayerStack layerStack, List<LayerConfiguration> layerConfigurationList) {
         LayerStackProcessingResult processingResult;
         processingResult = layerStack.receiveData(layerConfigurationList);
         setContainers(processingResult);
@@ -257,15 +283,31 @@ public abstract class MessageAction extends ConnectionBoundAction {
     private void setContainers(LayerStackProcessingResult processingResults) {
         if (processingResults.getResultForLayer(ImplementedLayers.MESSAGE) != null) {
             messages =
-                new ArrayList<>(processingResults.getResultForLayer(ImplementedLayers.MESSAGE).getUsedContainers());
+                    new ArrayList<>(
+                            processingResults
+                                    .getResultForLayer(ImplementedLayers.MESSAGE)
+                                    .getUsedContainers());
+        }
+        if (processingResults.getResultForLayer(ImplementedLayers.SSL2) != null) {
+            messages =
+                    new ArrayList<>(
+                            processingResults
+                                    .getResultForLayer(ImplementedLayers.SSL2)
+                                    .getUsedContainers());
         }
         if (processingResults.getResultForLayer(ImplementedLayers.DTLS_FRAGMENT) != null) {
-            fragments = new ArrayList<>(
-                processingResults.getResultForLayer(ImplementedLayers.DTLS_FRAGMENT).getUsedContainers());
+            fragments =
+                    new ArrayList<>(
+                            processingResults
+                                    .getResultForLayer(ImplementedLayers.DTLS_FRAGMENT)
+                                    .getUsedContainers());
         }
         if (processingResults.getResultForLayer(ImplementedLayers.RECORD) != null) {
             records =
-                new ArrayList<>(processingResults.getResultForLayer(ImplementedLayers.RECORD).getUsedContainers());
+                    new ArrayList<>(
+                            processingResults
+                                    .getResultForLayer(ImplementedLayers.RECORD)
+                                    .getUsedContainers());
         }
     }
 
@@ -273,8 +315,8 @@ public abstract class MessageAction extends ConnectionBoundAction {
         return layerStackProcessingResult;
     }
 
-    public void setLayerStackProcessingResult(LayerStackProcessingResult layerStackProcessingResult) {
+    public void setLayerStackProcessingResult(
+            LayerStackProcessingResult layerStackProcessingResult) {
         this.layerStackProcessingResult = layerStackProcessingResult;
     }
-
 }

@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.record.cipher;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -25,32 +24,30 @@ public class RecordAEADCipher extends RecordCipher {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /**
-     * AEAD tag length in bytes for regular ciphers
-     */
+    /** AEAD tag length in bytes for regular ciphers */
     private static final int AEAD_TAG_LENGTH = 16;
 
-    /**
-     * AEAD tag length in bytes for CCM_8 ciphers
-     */
+    /** AEAD tag length in bytes for CCM_8 ciphers */
     private static final int AEAD_CCM_8_TAG_LENGTH = 8;
 
-    /**
-     * Stores the computed tag length
-     */
+    /** Stores the computed tag length */
     private final int aeadTagLength;
 
-    /**
-     * Stores the computed tag length
-     */
+    /** Stores the computed tag length */
     private final int aeadExplicitLength;
 
     public RecordAEADCipher(TlsContext tlsContext, CipherState state) {
         super(tlsContext, state);
-        encryptCipher = CipherWrapper.getEncryptionCipher(getState().getCipherSuite(), getLocalConnectionEndType(),
-            getState().getKeySet());
-        decryptCipher = CipherWrapper.getDecryptionCipher(getState().getCipherSuite(), getLocalConnectionEndType(),
-            getState().getKeySet());
+        encryptCipher =
+                CipherWrapper.getEncryptionCipher(
+                        getState().getCipherSuite(),
+                        getLocalConnectionEndType(),
+                        getState().getKeySet());
+        decryptCipher =
+                CipherWrapper.getDecryptionCipher(
+                        getState().getCipherSuite(),
+                        getLocalConnectionEndType(),
+                        getState().getKeySet());
 
         if (getState().getCipherSuite().isCCM_8()) {
             aeadTagLength = AEAD_CCM_8_TAG_LENGTH;
@@ -60,7 +57,9 @@ public class RecordAEADCipher extends RecordCipher {
         if (getState().getVersion().isTLS13()) {
             aeadExplicitLength = 0;
         } else {
-            aeadExplicitLength = AlgorithmResolver.getCipher(getState().getCipherSuite()).getNonceBytesFromRecord();
+            aeadExplicitLength =
+                    AlgorithmResolver.getCipher(getState().getCipherSuite())
+                            .getNonceBytesFromRecord();
         }
     }
 
@@ -80,18 +79,27 @@ public class RecordAEADCipher extends RecordCipher {
             gcmNonce = preprocessIv(record.getSequenceNumber().getValue().longValue(), gcmNonce);
         } else if (getState().getCipherAlg() == CipherAlgorithm.CHACHA20_POLY1305) {
             if (getState().getVersion().isDTLS()) {
-                gcmNonce = preprocessIvforDtls(record.getEpoch().getValue(),
-                    record.getSequenceNumber().getValue().longValue(), gcmNonce);
+                gcmNonce =
+                        preprocessIvforDtls(
+                                record.getEpoch().getValue(),
+                                record.getSequenceNumber().getValue().longValue(),
+                                gcmNonce);
             } else {
-                gcmNonce = preprocessIv(record.getSequenceNumber().getValue().longValue(), gcmNonce);
+                gcmNonce =
+                        preprocessIv(record.getSequenceNumber().getValue().longValue(), gcmNonce);
             }
         } else if (getState().getCipherAlg() == CipherAlgorithm.UNOFFICIAL_CHACHA20_POLY1305) {
             if (getState().getVersion().isDTLS()) {
-                gcmNonce = ArrayConverter.concatenate(
-                    ArrayConverter.intToBytes(record.getEpoch().getValue(), RecordByteLength.DTLS_EPOCH),
-                    ArrayConverter.longToUint48Bytes(record.getSequenceNumber().getValue().longValue()));
+                gcmNonce =
+                        ArrayConverter.concatenate(
+                                ArrayConverter.intToBytes(
+                                        record.getEpoch().getValue(), RecordByteLength.DTLS_EPOCH),
+                                ArrayConverter.longToUint48Bytes(
+                                        record.getSequenceNumber().getValue().longValue()));
             } else {
-                gcmNonce = ArrayConverter.longToUint64Bytes(record.getSequenceNumber().getValue().longValue());
+                gcmNonce =
+                        ArrayConverter.longToUint64Bytes(
+                                record.getSequenceNumber().getValue().longValue());
             }
         }
         record.getComputations().setGcmNonce(gcmNonce);
@@ -107,7 +115,8 @@ public class RecordAEADCipher extends RecordCipher {
     }
 
     private byte[] prepareEncryptionExplicitNonce(Record record) {
-        byte[] explicitNonce = createExplicitNonce(record.getSequenceNumber().getValue().longValue());
+        byte[] explicitNonce =
+                createExplicitNonce(record.getSequenceNumber().getValue().longValue());
         record.getComputations().setExplicitNonce(explicitNonce);
         explicitNonce = record.getComputations().getExplicitNonce().getValue();
         return explicitNonce;
@@ -126,7 +135,8 @@ public class RecordAEADCipher extends RecordCipher {
     @Override
     public void encrypt(Record record) throws CryptoException {
         LOGGER.debug("Encrypting Record");
-        record.getComputations().setCipherKey(getState().getKeySet().getWriteKey(getConnectionEndType()));
+        record.getComputations()
+                .setCipherKey(getState().getKeySet().getWriteKey(getConnectionEndType()));
         if (getState().getVersion().isTLS13()) {
             int additionalPadding = getDefaultAdditionalPadding();
             if (additionalPadding > 65536) {
@@ -138,41 +148,60 @@ public class RecordAEADCipher extends RecordCipher {
             }
             record.getComputations().setPadding(new byte[additionalPadding]);
             record.getComputations()
-                .setPlainRecordBytes(ArrayConverter.concatenate(record.getCleanProtocolMessageBytes().getValue(),
-                    new byte[] { record.getContentType().getValue() },
-                    record.getComputations().getPadding().getValue()));
+                    .setPlainRecordBytes(
+                            ArrayConverter.concatenate(
+                                    record.getCleanProtocolMessageBytes().getValue(),
+                                    new byte[] {record.getContentType().getValue()},
+                                    record.getComputations().getPadding().getValue()));
             // For TLS1.3 we need the length beforehand to compute the
             // authenticatedMetaData
-            record.setLength(record.getComputations().getPlainRecordBytes().getValue().length + aeadTagLength);
+            record.setLength(
+                    record.getComputations().getPlainRecordBytes().getValue().length
+                            + aeadTagLength);
             record.setContentType(ProtocolMessageType.APPLICATION_DATA.getValue());
         } else {
-            record.getComputations().setPlainRecordBytes(record.getCleanProtocolMessageBytes().getValue());
+            record.getComputations()
+                    .setPlainRecordBytes(record.getCleanProtocolMessageBytes().getValue());
         }
 
         byte[] explicitNonce = prepareEncryptionExplicitNonce(record);
         byte[] aeadSalt = prepareEncryptionAeadSalt(record);
         byte[] gcmNonce = prepareEncryptionGcmNonce(aeadSalt, explicitNonce, record);
 
-        LOGGER.debug("Encrypting AEAD with the following IV: {}", ArrayConverter.bytesToHexString(gcmNonce));
-        byte[] additionalAuthenticatedData = collectAdditionalAuthenticatedData(record, getState().getVersion());
+        LOGGER.debug(
+                "Encrypting AEAD with the following IV: {}",
+                ArrayConverter.bytesToHexString(gcmNonce));
+        byte[] additionalAuthenticatedData =
+                collectAdditionalAuthenticatedData(record, getState().getVersion());
         record.getComputations().setAuthenticatedMetaData(additionalAuthenticatedData);
-        additionalAuthenticatedData = record.getComputations().getAuthenticatedMetaData().getValue();
+        additionalAuthenticatedData =
+                record.getComputations().getAuthenticatedMetaData().getValue();
 
-        LOGGER.debug("Encrypting AEAD with the following AAD: {}",
-            ArrayConverter.bytesToHexString(additionalAuthenticatedData));
+        LOGGER.debug(
+                "Encrypting AEAD with the following AAD: {}",
+                ArrayConverter.bytesToHexString(additionalAuthenticatedData));
 
         byte[] plainBytes = record.getComputations().getPlainRecordBytes().getValue();
         byte[] wholeCipherText =
-            encryptCipher.encrypt(gcmNonce, aeadTagLength * Bits.IN_A_BYTE, additionalAuthenticatedData, plainBytes);
+                encryptCipher.encrypt(
+                        gcmNonce,
+                        aeadTagLength * Bits.IN_A_BYTE,
+                        additionalAuthenticatedData,
+                        plainBytes);
         if (aeadTagLength > wholeCipherText.length) {
-            throw new CryptoException("Could not encrypt data. Supposed Tag is longer than the ciphertext");
+            throw new CryptoException(
+                    "Could not encrypt data. Supposed Tag is longer than the ciphertext");
         }
-        byte[] onlyCiphertext = Arrays.copyOfRange(wholeCipherText, 0, wholeCipherText.length - aeadTagLength);
+        byte[] onlyCiphertext =
+                Arrays.copyOfRange(wholeCipherText, 0, wholeCipherText.length - aeadTagLength);
 
         record.getComputations().setAuthenticatedNonMetaData(onlyCiphertext);
 
         byte[] authenticationTag =
-            Arrays.copyOfRange(wholeCipherText, wholeCipherText.length - aeadTagLength, wholeCipherText.length);
+                Arrays.copyOfRange(
+                        wholeCipherText,
+                        wholeCipherText.length - aeadTagLength,
+                        wholeCipherText.length);
 
         record.getComputations().setAuthenticationTag(authenticationTag);
         authenticationTag = record.getComputations().getAuthenticationTag().getValue();
@@ -180,16 +209,17 @@ public class RecordAEADCipher extends RecordCipher {
         record.getComputations().setCiphertext(onlyCiphertext);
         onlyCiphertext = record.getComputations().getCiphertext().getValue();
 
-        record.setProtocolMessageBytes(ArrayConverter.concatenate(explicitNonce, onlyCiphertext, authenticationTag));
+        record.setProtocolMessageBytes(
+                ArrayConverter.concatenate(explicitNonce, onlyCiphertext, authenticationTag));
         // TODO our own authentication tags are always valid
         record.getComputations().setAuthenticationTagValid(true);
-
     }
 
     @Override
     public void decrypt(Record record) throws CryptoException {
         LOGGER.debug("Decrypting Record");
-        record.getComputations().setCipherKey(getState().getKeySet().getReadKey(getConnectionEndType()));
+        record.getComputations()
+                .setCipherKey(getState().getKeySet().getReadKey(getConnectionEndType()));
 
         byte[] protocolBytes = record.getProtocolMessageBytes().getValue();
         PlaintextParser parser = new PlaintextParser(protocolBytes);
@@ -204,14 +234,18 @@ public class RecordAEADCipher extends RecordCipher {
 
         byte[] cipherTextOnly = parser.parseByteArrayField(parser.getBytesLeft() - aeadTagLength);
         record.getComputations().setCiphertext(cipherTextOnly);
-        record.getComputations().setAuthenticatedNonMetaData(record.getComputations().getCiphertext().getValue());
+        record.getComputations()
+                .setAuthenticatedNonMetaData(record.getComputations().getCiphertext().getValue());
 
-        byte[] additionalAuthenticatedData = collectAdditionalAuthenticatedData(record, getState().getVersion());
+        byte[] additionalAuthenticatedData =
+                collectAdditionalAuthenticatedData(record, getState().getVersion());
         record.getComputations().setAuthenticatedMetaData(additionalAuthenticatedData);
-        additionalAuthenticatedData = record.getComputations().getAuthenticatedMetaData().getValue();
+        additionalAuthenticatedData =
+                record.getComputations().getAuthenticatedMetaData().getValue();
 
-        LOGGER.debug("Decrypting AEAD with the following AAD: {}",
-            ArrayConverter.bytesToHexString(additionalAuthenticatedData));
+        LOGGER.debug(
+                "Decrypting AEAD with the following AAD: {}",
+                ArrayConverter.bytesToHexString(additionalAuthenticatedData));
 
         byte[] gcmNonce = ArrayConverter.concatenate(salt, explicitNonce);
 
@@ -220,24 +254,35 @@ public class RecordAEADCipher extends RecordCipher {
             gcmNonce = preprocessIv(record.getSequenceNumber().getValue().longValue(), gcmNonce);
         } else if (getState().getCipherAlg() == CipherAlgorithm.CHACHA20_POLY1305) {
             if (getState().getVersion().isDTLS()) {
-                gcmNonce = preprocessIvforDtls(record.getEpoch().getValue(),
-                    record.getSequenceNumber().getValue().longValue(), gcmNonce);
+                gcmNonce =
+                        preprocessIvforDtls(
+                                record.getEpoch().getValue(),
+                                record.getSequenceNumber().getValue().longValue(),
+                                gcmNonce);
             } else {
-                gcmNonce = preprocessIv(record.getSequenceNumber().getValue().longValue(), gcmNonce);
+                gcmNonce =
+                        preprocessIv(record.getSequenceNumber().getValue().longValue(), gcmNonce);
             }
         } else if (getState().getCipherAlg() == CipherAlgorithm.UNOFFICIAL_CHACHA20_POLY1305) {
             if (getState().getVersion().isDTLS()) {
-                gcmNonce = ArrayConverter.concatenate(
-                    ArrayConverter.intToBytes(record.getEpoch().getValue(), RecordByteLength.DTLS_EPOCH),
-                    ArrayConverter.longToUint48Bytes(record.getSequenceNumber().getValue().longValue()));
+                gcmNonce =
+                        ArrayConverter.concatenate(
+                                ArrayConverter.intToBytes(
+                                        record.getEpoch().getValue(), RecordByteLength.DTLS_EPOCH),
+                                ArrayConverter.longToUint48Bytes(
+                                        record.getSequenceNumber().getValue().longValue()));
             } else {
-                gcmNonce = ArrayConverter.longToUint64Bytes(record.getSequenceNumber().getValue().longValue());
+                gcmNonce =
+                        ArrayConverter.longToUint64Bytes(
+                                record.getSequenceNumber().getValue().longValue());
             }
         }
         record.getComputations().setGcmNonce(gcmNonce);
         gcmNonce = record.getComputations().getGcmNonce().getValue();
 
-        LOGGER.debug("Decrypting AEAD with the following IV: {}", ArrayConverter.bytesToHexString(gcmNonce));
+        LOGGER.debug(
+                "Decrypting AEAD with the following IV: {}",
+                ArrayConverter.bytesToHexString(gcmNonce));
 
         byte[] authenticationTag = parser.parseByteArrayField(parser.getBytesLeft());
 
@@ -247,8 +292,12 @@ public class RecordAEADCipher extends RecordCipher {
         // the decryption
 
         try {
-            byte[] plainRecordBytes = decryptCipher.decrypt(gcmNonce, aeadTagLength * Bits.IN_A_BYTE,
-                additionalAuthenticatedData, ArrayConverter.concatenate(cipherTextOnly, authenticationTag));
+            byte[] plainRecordBytes =
+                    decryptCipher.decrypt(
+                            gcmNonce,
+                            aeadTagLength * Bits.IN_A_BYTE,
+                            additionalAuthenticatedData,
+                            ArrayConverter.concatenate(cipherTextOnly, authenticationTag));
 
             record.getComputations().setAuthenticationTagValid(true);
             record.getComputations().setPlainRecordBytes(plainRecordBytes);
@@ -259,12 +308,15 @@ public class RecordAEADCipher extends RecordCipher {
                 // ContentType | 0x00000... (Padding)
                 int numberOfPaddingBytes = countTrailingZeroBytes(plainRecordBytes);
                 if (numberOfPaddingBytes == plainRecordBytes.length) {
-                    LOGGER.warn("Record contains ONLY padding and no content type. Setting clean bytes == plainbytes");
+                    LOGGER.warn(
+                            "Record contains ONLY padding and no content type. Setting clean bytes == plainbytes");
                     record.setCleanProtocolMessageBytes(plainRecordBytes);
                     return;
                 }
                 parser = new PlaintextParser(plainRecordBytes);
-                byte[] cleanBytes = parser.parseByteArrayField(plainRecordBytes.length - numberOfPaddingBytes - 1);
+                byte[] cleanBytes =
+                        parser.parseByteArrayField(
+                                plainRecordBytes.length - numberOfPaddingBytes - 1);
                 byte[] contentType = parser.parseByteArrayField(1);
                 byte[] padding = parser.parseByteArrayField(numberOfPaddingBytes);
                 record.getComputations().setPadding(padding);
@@ -294,8 +346,10 @@ public class RecordAEADCipher extends RecordCipher {
     }
 
     public byte[] preprocessIv(long sequenceNumber, byte[] iv) {
-        byte[] padding = new byte[] { 0x00, 0x00, 0x00, 0x00 };
-        byte[] temp = ArrayConverter.concatenate(padding, ArrayConverter.longToUint64Bytes(sequenceNumber));
+        byte[] padding = new byte[] {0x00, 0x00, 0x00, 0x00};
+        byte[] temp =
+                ArrayConverter.concatenate(
+                        padding, ArrayConverter.longToUint64Bytes(sequenceNumber));
         for (int i = 0; i < iv.length; ++i) {
             temp[i] ^= iv[i];
         }
@@ -303,9 +357,12 @@ public class RecordAEADCipher extends RecordCipher {
     }
 
     public byte[] preprocessIvforDtls(int epoch, long sequenceNumber, byte[] iv) {
-        byte[] padding = new byte[] { 0x00, 0x00, 0x00, 0x00 };
-        byte[] temp = ArrayConverter.concatenate(padding, ArrayConverter.intToBytes(epoch, RecordByteLength.DTLS_EPOCH),
-            ArrayConverter.longToUint48Bytes(sequenceNumber));
+        byte[] padding = new byte[] {0x00, 0x00, 0x00, 0x00};
+        byte[] temp =
+                ArrayConverter.concatenate(
+                        padding,
+                        ArrayConverter.intToBytes(epoch, RecordByteLength.DTLS_EPOCH),
+                        ArrayConverter.longToUint48Bytes(sequenceNumber));
         for (int i = 0; i < iv.length; ++i) {
             temp[i] ^= iv[i];
         }
@@ -320,7 +377,8 @@ public class RecordAEADCipher extends RecordCipher {
 
         @Override
         public void parse(Object t) {
-            throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods,
+            throw new UnsupportedOperationException(
+                    "Not supported yet."); // To change body of generated methods,
             // choose Tools | Templates.
         }
 

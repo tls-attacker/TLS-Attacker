@@ -1,15 +1,12 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.mitm.main;
-
-import static org.junit.jupiter.api.Assertions.fail;
 
 import de.rub.nds.modifiablevariable.util.BadRandom;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
@@ -19,7 +16,7 @@ import de.rub.nds.tlsattacker.core.util.BasicTlsServer;
 import de.rub.nds.tlsattacker.core.util.KeyStoreGenerator;
 import de.rub.nds.tlsattacker.util.FixedTimeProvider;
 import de.rub.nds.tlsattacker.util.TimeHelper;
-
+import de.rub.nds.tlsattacker.util.tests.TestCategories;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.KeyManagementException;
@@ -32,8 +29,6 @@ import java.security.SignatureException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.util.Random;
-
-import de.rub.nds.tlsattacker.util.tests.TestCategories;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.operator.OperatorCreationException;
@@ -52,9 +47,10 @@ public class TlsMitmIT {
     private BasicTlsServer tlsServer;
 
     @BeforeEach
-    public void setUp() throws UnrecoverableKeyException, CertificateException, KeyStoreException, IOException,
-        NoSuchAlgorithmException, SignatureException, InvalidKeyException, NoSuchProviderException,
-        OperatorCreationException, KeyManagementException {
+    public void setUp()
+            throws UnrecoverableKeyException, CertificateException, KeyStoreException, IOException,
+                    NoSuchAlgorithmException, SignatureException, InvalidKeyException,
+                    NoSuchProviderException, OperatorCreationException, KeyManagementException {
         startBasicTlsServer();
     }
 
@@ -65,13 +61,15 @@ public class TlsMitmIT {
     }
 
     /**
-     * TODO This test currently just executes the workflow. For validation, write the trace to xml and compare it with a
-     * reference trace.
+     * TODO This test currently just executes the workflow. For validation, write the trace to xml
+     * and compare it with a reference trace.
      */
     @Test
     @Tag(TestCategories.INTEGRATION_TEST)
-    public void testSimpleMitmProxyWorkflow() throws InterruptedException, UnrecoverableKeyException,
-        CertificateException, KeyStoreException, IOException, NoSuchAlgorithmException, KeyManagementException {
+    public void testSimpleMitmProxyWorkflow()
+            throws InterruptedException, UnrecoverableKeyException, CertificateException,
+                    KeyStoreException, IOException, NoSuchAlgorithmException,
+                    KeyManagementException {
         CipherSuite cipherSuite = CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA;
 
         LOGGER.info("Starting test server");
@@ -95,9 +93,10 @@ public class TlsMitmIT {
         mitmThread.join();
     }
 
-    public void startBasicTlsServer() throws UnrecoverableKeyException, CertificateException, KeyStoreException,
-        IOException, NoSuchAlgorithmException, KeyManagementException, SignatureException, InvalidKeyException,
-        NoSuchProviderException, OperatorCreationException {
+    public void startBasicTlsServer()
+            throws UnrecoverableKeyException, CertificateException, KeyStoreException, IOException,
+                    NoSuchAlgorithmException, KeyManagementException, SignatureException,
+                    InvalidKeyException, NoSuchProviderException, OperatorCreationException {
         TimeHelper.setProvider(new FixedTimeProvider(0));
         KeyPair k = KeyStoreGenerator.createRSAKeyPair(1024, random);
         KeyStore ks = KeyStoreGenerator.createKeyStore(k, random);

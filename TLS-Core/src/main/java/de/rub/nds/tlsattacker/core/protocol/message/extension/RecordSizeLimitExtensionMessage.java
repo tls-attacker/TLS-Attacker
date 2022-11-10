@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -14,22 +13,20 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.RecordSizeLimitExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.RecordSizeLimitExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.RecordSizeLimitExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.RecordSizeLimitExtensionSerializer;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import java.io.InputStream;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import java.io.InputStream;
 
-/**
- * Record Size Limit Extension described in RFC 8449
- */
+/** Record Size Limit Extension described in RFC 8449 */
 @XmlRootElement(name = "RecordSizeLimitExtension")
-public class RecordSizeLimitExtensionMessage extends ExtensionMessage<RecordSizeLimitExtensionMessage> {
+public class RecordSizeLimitExtensionMessage
+        extends ExtensionMessage<RecordSizeLimitExtensionMessage> {
 
-    @ModifiableVariableProperty
-    private ModifiableByteArray recordSizeLimit;
+    @ModifiableVariableProperty private ModifiableByteArray recordSizeLimit;
 
     public RecordSizeLimitExtensionMessage(Config config) {
         super(ExtensionType.RECORD_SIZE_LIMIT);
@@ -48,7 +45,8 @@ public class RecordSizeLimitExtensionMessage extends ExtensionMessage<RecordSize
     }
 
     public void setRecordSizeLimit(byte[] recordSizeLimit) {
-        this.recordSizeLimit = ModifiableVariableFactory.safelySetValue(this.recordSizeLimit, recordSizeLimit);
+        this.recordSizeLimit =
+                ModifiableVariableFactory.safelySetValue(this.recordSizeLimit, recordSizeLimit);
     }
 
     @Override
@@ -70,5 +68,4 @@ public class RecordSizeLimitExtensionMessage extends ExtensionMessage<RecordSize
     public RecordSizeLimitExtensionHandler getHandler(TlsContext tlsContext) {
         return new RecordSizeLimitExtensionHandler(tlsContext);
     }
-
 }

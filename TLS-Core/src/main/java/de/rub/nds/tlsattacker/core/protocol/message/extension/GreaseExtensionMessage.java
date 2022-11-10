@@ -1,18 +1,12 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
-
-import java.io.InputStream;
-import java.util.Random;
-
-import jakarta.xml.bind.annotation.XmlRootElement;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
@@ -23,6 +17,9 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.GreaseExtensionHan
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.GreaseExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.GreaseExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.GreaseExtensionSerializer;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import java.io.InputStream;
+import java.util.Random;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -31,8 +28,7 @@ public class GreaseExtensionMessage extends ExtensionMessage<GreaseExtensionMess
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    @ModifiableVariableProperty
-    private ModifiableByteArray randomData;
+    @ModifiableVariableProperty private ModifiableByteArray randomData;
 
     private byte[] data;
     private ExtensionType type;

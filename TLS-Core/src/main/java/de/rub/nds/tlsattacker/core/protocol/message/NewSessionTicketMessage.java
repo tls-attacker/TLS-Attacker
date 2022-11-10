@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
@@ -15,6 +14,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.mlong.ModifiableLong;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.NewSessionTicketHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EarlyDataExtensionMessage;
@@ -22,20 +22,17 @@ import de.rub.nds.tlsattacker.core.protocol.parser.NewSessionTicketParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.NewSessionTicketPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.NewSessionTicketSerializer;
 import de.rub.nds.tlsattacker.core.state.SessionTicket;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Objects;
-import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "NewSessionTicket")
 public class NewSessionTicketMessage extends HandshakeMessage {
 
-    @ModifiableVariableProperty()
-    private ModifiableLong ticketLifetimeHint;
+    @ModifiableVariableProperty() private ModifiableLong ticketLifetimeHint;
 
-    @HoldsModifiableVariable
-    private final SessionTicket ticket;
+    @HoldsModifiableVariable private final SessionTicket ticket;
 
     public NewSessionTicketMessage() {
         super(HandshakeMessageType.NEW_SESSION_TICKET);
@@ -60,7 +57,9 @@ public class NewSessionTicketMessage extends HandshakeMessage {
     }
 
     public void setTicketLifetimeHint(long ticketLifetimeHint) {
-        this.ticketLifetimeHint = ModifiableVariableFactory.safelySetValue(this.ticketLifetimeHint, ticketLifetimeHint);
+        this.ticketLifetimeHint =
+                ModifiableVariableFactory.safelySetValue(
+                        this.ticketLifetimeHint, ticketLifetimeHint);
     }
 
     public SessionTicket getTicket() {
@@ -78,7 +77,8 @@ public class NewSessionTicketMessage extends HandshakeMessage {
             sb.append("null");
         }
         sb.append("\n  TicketLength: ");
-        if (getTicket().getIdentityLength() != null && getTicket().getIdentityLength().getValue() != null) {
+        if (getTicket().getIdentityLength() != null
+                && getTicket().getIdentityLength().getValue() != null) {
             sb.append(getTicket().getIdentityLength().getValue());
         } else {
             sb.append("null");
@@ -123,7 +123,8 @@ public class NewSessionTicketMessage extends HandshakeMessage {
 
     @Override
     public NewSessionTicketSerializer getSerializer(TlsContext tlsContext) {
-        return new NewSessionTicketSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new NewSessionTicketSerializer(
+                this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override
@@ -156,5 +157,4 @@ public class NewSessionTicketMessage extends HandshakeMessage {
         }
         return Objects.equals(this.ticket, other.ticket);
     }
-
 }

@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -15,27 +14,25 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.constants.SSL2MessageType;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.SSL2ServerHelloHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.SSL2ServerHelloParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.SSL2ServerHelloPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.SSL2ServerHelloSerializer;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.Objects;
-import jakarta.xml.bind.annotation.XmlRootElement;
 
 @SuppressWarnings("serial")
 @XmlRootElement(name = "SSL2ServerHello")
-public class SSL2ServerHelloMessage extends SSL2HandshakeMessage {
+public class SSL2ServerHelloMessage extends SSL2Message {
 
-    @ModifiableVariableProperty
-    private ModifiableByte sessionIdHit;
+    @ModifiableVariableProperty private ModifiableByte sessionIdHit;
 
-    @ModifiableVariableProperty
-    private ModifiableByte certificateType;
+    @ModifiableVariableProperty private ModifiableByte certificateType;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByteArray protocolVersion;
@@ -55,11 +52,10 @@ public class SSL2ServerHelloMessage extends SSL2HandshakeMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByteArray cipherSuites;
 
-    @ModifiableVariableProperty
-    private ModifiableByteArray sessionId;
+    @ModifiableVariableProperty private ModifiableByteArray sessionId;
 
     public SSL2ServerHelloMessage() {
-        super(HandshakeMessageType.SSL2_SERVER_HELLO);
+        super(SSL2MessageType.SSL_SERVER_HELLO);
         this.protocolMessageType = ProtocolMessageType.HANDSHAKE;
     }
 
@@ -97,7 +93,8 @@ public class SSL2ServerHelloMessage extends SSL2HandshakeMessage {
     }
 
     public void setSessionIdHit(byte sessionIdHit) {
-        this.sessionIdHit = ModifiableVariableFactory.safelySetValue(this.sessionIdHit, sessionIdHit);
+        this.sessionIdHit =
+                ModifiableVariableFactory.safelySetValue(this.sessionIdHit, sessionIdHit);
     }
 
     public ModifiableByte getCertificateType() {
@@ -109,7 +106,8 @@ public class SSL2ServerHelloMessage extends SSL2HandshakeMessage {
     }
 
     public void setCertificateType(byte certificateType) {
-        this.certificateType = ModifiableVariableFactory.safelySetValue(this.certificateType, certificateType);
+        this.certificateType =
+                ModifiableVariableFactory.safelySetValue(this.certificateType, certificateType);
     }
 
     public ModifiableByteArray getProtocolVersion() {
@@ -121,7 +119,8 @@ public class SSL2ServerHelloMessage extends SSL2HandshakeMessage {
     }
 
     public void setProtocolVersion(byte[] protocolVersion) {
-        this.protocolVersion = ModifiableVariableFactory.safelySetValue(this.protocolVersion, protocolVersion);
+        this.protocolVersion =
+                ModifiableVariableFactory.safelySetValue(this.protocolVersion, protocolVersion);
     }
 
     public ModifiableInteger getCertificateLength() {
@@ -129,7 +128,8 @@ public class SSL2ServerHelloMessage extends SSL2HandshakeMessage {
     }
 
     public void setCertificateLength(int certificateLength) {
-        this.certificateLength = ModifiableVariableFactory.safelySetValue(this.certificateLength, certificateLength);
+        this.certificateLength =
+                ModifiableVariableFactory.safelySetValue(this.certificateLength, certificateLength);
     }
 
     public void setCertificateLength(ModifiableInteger certificateLength) {
@@ -145,7 +145,9 @@ public class SSL2ServerHelloMessage extends SSL2HandshakeMessage {
     }
 
     public void setCipherSuitesLength(int cipherSuitesLength) {
-        this.cipherSuitesLength = ModifiableVariableFactory.safelySetValue(this.cipherSuitesLength, cipherSuitesLength);
+        this.cipherSuitesLength =
+                ModifiableVariableFactory.safelySetValue(
+                        this.cipherSuitesLength, cipherSuitesLength);
     }
 
     public ModifiableInteger getSessionIdLength() {
@@ -157,7 +159,8 @@ public class SSL2ServerHelloMessage extends SSL2HandshakeMessage {
     }
 
     public void setSessionIDLength(int connectionIDLength) {
-        this.sessionIdLength = ModifiableVariableFactory.safelySetValue(this.sessionIdLength, connectionIDLength);
+        this.sessionIdLength =
+                ModifiableVariableFactory.safelySetValue(this.sessionIdLength, connectionIDLength);
     }
 
     public ModifiableByteArray getCertificate() {
@@ -181,7 +184,8 @@ public class SSL2ServerHelloMessage extends SSL2HandshakeMessage {
     }
 
     public void setCipherSuites(byte[] cipherSuites) {
-        this.cipherSuites = ModifiableVariableFactory.safelySetValue(this.cipherSuites, cipherSuites);
+        this.cipherSuites =
+                ModifiableVariableFactory.safelySetValue(this.cipherSuites, cipherSuites);
     }
 
     public ModifiableByteArray getSessionId() {
@@ -297,5 +301,4 @@ public class SSL2ServerHelloMessage extends SSL2HandshakeMessage {
         }
         return Objects.equals(this.sessionId, other.sessionId);
     }
-
 }

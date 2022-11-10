@@ -1,22 +1,22 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.impl.RecordLayer;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 
 /**
- * This action removes the most recent ciphers from the encryptor and decryptor. The most-recent cipher used to encrypt
- * and decrypt records will thus be an older one with its state (if applicable) kept in place
+ * This action removes the most recent ciphers from the encryptor and decryptor. The most-recent
+ * cipher used to encrypt and decrypt records will thus be an older one with its state (if
+ * applicable) kept in place
  */
 public class ResetRecordCipherListsAction extends ConnectionBoundAction {
 
@@ -52,8 +52,7 @@ public class ResetRecordCipherListsAction extends ConnectionBoundAction {
     }
 
     @Override
-    public void reset() {
-    }
+    public void reset() {}
 
     @Override
     public boolean executedAsPlanned() {

@@ -1,24 +1,23 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.crypto.keys;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
 import java.math.BigInteger;
 import java.security.interfaces.DSAParams;
 import java.security.interfaces.DSAPrivateKey;
 import java.security.spec.DSAParameterSpec;
 import java.util.Objects;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -33,7 +32,8 @@ public class CustomDSAPrivateKey extends CustomPrivateKey implements DSAPrivateK
     private final BigInteger primeQ;
     private final BigInteger generator;
 
-    public CustomDSAPrivateKey(BigInteger privateKey, BigInteger primeP, BigInteger primeQ, BigInteger generator) {
+    public CustomDSAPrivateKey(
+            BigInteger privateKey, BigInteger primeP, BigInteger primeQ, BigInteger generator) {
         this.privateKey = privateKey;
         this.primeP = primeP;
         this.primeQ = primeQ;
@@ -92,7 +92,8 @@ public class CustomDSAPrivateKey extends CustomPrivateKey implements DSAPrivateK
                     tlsContext.setServerDsaPrimeQ(primeQ);
                     break;
                 default:
-                    throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
+                    throw new IllegalArgumentException(
+                            "Owner of Key " + ownerOfKey + " is not supported");
             }
         }
     }
@@ -116,7 +117,8 @@ public class CustomDSAPrivateKey extends CustomPrivateKey implements DSAPrivateK
                     config.setDefaultServerDsaGenerator(generator);
                     break;
                 default:
-                    throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
+                    throw new IllegalArgumentException(
+                            "Owner of Key " + ownerOfKey + " is not supported");
             }
         }
     }

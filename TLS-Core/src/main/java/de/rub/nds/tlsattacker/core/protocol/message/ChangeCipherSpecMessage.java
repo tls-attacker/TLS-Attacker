@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -14,21 +13,20 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.handler.ChangeCipherSpecHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.ChangeCipherSpecParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ChangeCipherSpecPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ChangeCipherSpecSerializer;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.Objects;
-import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "ChangeCipherSpec")
 public class ChangeCipherSpecMessage extends ProtocolMessage<ChangeCipherSpecMessage> {
 
-    @ModifiableVariableProperty
-    private ModifiableByteArray ccsProtocolType;
+    @ModifiableVariableProperty private ModifiableByteArray ccsProtocolType;
 
     public ChangeCipherSpecMessage() {
         super();
@@ -111,5 +109,4 @@ public class ChangeCipherSpecMessage extends ProtocolMessage<ChangeCipherSpecMes
         final ChangeCipherSpecMessage other = (ChangeCipherSpecMessage) obj;
         return Objects.equals(this.ccsProtocolType, other.ccsProtocolType);
     }
-
 }

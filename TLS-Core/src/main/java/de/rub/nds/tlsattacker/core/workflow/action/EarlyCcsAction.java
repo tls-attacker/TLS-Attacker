@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.util.Modifiable;
@@ -23,9 +22,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * This Action is used by the EarlyCcs Attack. It sends a ClientKeyExchange message and adjusts the cryptographic
- * material accordingly.
- *
+ * This Action is used by the EarlyCcs Attack. It sends a ClientKeyExchange message and adjusts the
+ * cryptographic material accordingly.
  */
 public class EarlyCcsAction extends TlsAction {
 
@@ -36,27 +34,28 @@ public class EarlyCcsAction extends TlsAction {
     private boolean executedAsPlanned = false;
 
     /**
-     * Constructor for the Action. If the target is Openssl 1.0.0 the boolean value should be set to true
+     * Constructor for the Action. If the target is Openssl 1.0.0 the boolean value should be set to
+     * true
      *
-     * @param targetsOpenssl100
-     *                          If the target is an openssl 1.0.0 server
+     * @param targetsOpenssl100 If the target is an openssl 1.0.0 server
      */
     public EarlyCcsAction(Boolean targetsOpenssl100) {
         this.targetOpenssl100 = targetsOpenssl100;
     }
 
     /**
-     * Sends a ClientKeyExchange message depending on the currently selected cipher suite. Depending on the target
-     * version cryptographic material is adjusted.
+     * Sends a ClientKeyExchange message depending on the currently selected cipher suite. Depending
+     * on the target version cryptographic material is adjusted.
      *
-     * @param state
-     *              the State in which the action should be executed in
+     * @param state the State in which the action should be executed in
      */
     @Override
     public void execute(State state) {
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(state.getConfig());
-        ClientKeyExchangeMessage message = factory.createClientKeyExchangeMessage(
-            AlgorithmResolver.getKeyExchangeAlgorithm(state.getTlsContext().getChooser().getSelectedCipherSuite()));
+        ClientKeyExchangeMessage message =
+                factory.createClientKeyExchangeMessage(
+                        AlgorithmResolver.getKeyExchangeAlgorithm(
+                                state.getTlsContext().getChooser().getSelectedCipherSuite()));
         if (message == null) {
             // the factory will fail to provide a CKE message in some cases
             // e.g for TLS_CECPQ1 cipher suites
@@ -66,7 +65,8 @@ public class EarlyCcsAction extends TlsAction {
             message.setIncludeInDigest(Modifiable.explicit(false));
         }
         message.setAdjustContext(Modifiable.explicit(false));
-        ClientKeyExchangeHandler handler = (ClientKeyExchangeHandler) message.getHandler(state.getTlsContext());
+        ClientKeyExchangeHandler handler =
+                (ClientKeyExchangeHandler) message.getHandler(state.getTlsContext());
         message.getPreparator(state.getTlsContext()).prepare();
         if (targetOpenssl100) {
             handler.adjustPremasterSecret(message);
@@ -74,20 +74,20 @@ public class EarlyCcsAction extends TlsAction {
         }
         handler.adjustContextAfterSerialize(message);
         try {
-            state.getTlsContext().getRecordLayer().sendData(new RecordLayerHint(ProtocolMessageType.HANDSHAKE),
-                message.getCompleteResultingMessage().getValue());
+            state.getTlsContext()
+                    .getRecordLayer()
+                    .sendData(
+                            new RecordLayerHint(ProtocolMessageType.HANDSHAKE),
+                            message.getCompleteResultingMessage().getValue());
             executedAsPlanned = true;
         } catch (IOException e) {
             LOGGER.debug("Could not write Data to stream", e);
             executedAsPlanned = false;
         }
         setExecuted(true);
-
     }
 
-    /**
-     * Rests the executed state of the action
-     */
+    /** Rests the executed state of the action */
     @Override
     public void reset() {
         setExecuted(false);
@@ -98,5 +98,4 @@ public class EarlyCcsAction extends TlsAction {
     public boolean executedAsPlanned() {
         return executedAsPlanned;
     }
-
 }

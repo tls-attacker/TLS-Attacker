@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.layer.stream;
 
 import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
@@ -17,8 +16,8 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * The HintedLayerInputStream is assigned to a layer. When reading data from it, the stream tries to receive more data
- * using the layer it is assigned to.
+ * The HintedLayerInputStream is assigned to a layer. When reading data from it, the stream tries to
+ * receive more data using the layer it is assigned to.
  */
 public class HintedLayerInputStream extends HintedInputStream {
 
@@ -32,7 +31,8 @@ public class HintedLayerInputStream extends HintedInputStream {
     }
 
     /**
-     * Return data from the underlaying stream. If none is present, write more data into the stream using the layer.
+     * Return data from the underlaying stream. If none is present, write more data into the stream
+     * using the layer.
      */
     @Override
     public int read() throws IOException {
@@ -56,9 +56,7 @@ public class HintedLayerInputStream extends HintedInputStream {
         return stream;
     }
 
-    /**
-     * Extends the current data in the stream with the given data.
-     */
+    /** Extends the current data in the stream with the given data. */
     @Override
     public void extendStream(byte[] bytes) {
         try {

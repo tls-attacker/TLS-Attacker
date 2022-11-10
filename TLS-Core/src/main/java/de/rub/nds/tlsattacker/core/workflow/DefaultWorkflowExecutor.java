@@ -1,24 +1,19 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.workflow;
 
-import de.rub.nds.tlsattacker.core.config.ConfigIO;
-import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
-import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.exceptions.SkipActionException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceivingAction;
 import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -39,8 +34,8 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
             try {
                 initAllLayer();
             } catch (IOException ex) {
-                throw new WorkflowExecutionException("Workflow not executed, could not initialize transport handler: ",
-                    ex);
+                throw new WorkflowExecutionException(
+                        "Workflow not executed, could not initialize transport handler: ", ex);
             }
         }
 
@@ -49,20 +44,25 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
         List<TlsAction> tlsActions = state.getWorkflowTrace().getTlsActions();
         for (TlsAction action : tlsActions) {
             if ((config.isStopActionsAfterFatal() && isReceivedFatalAlert())) {
-                LOGGER.debug("Skipping all Actions, received FatalAlert, StopActionsAfterFatal active");
+                LOGGER.debug(
+                        "Skipping all Actions, received FatalAlert, StopActionsAfterFatal active");
                 break;
             }
-            if ((config.getStopReceivingAfterFatal() && isReceivedFatalAlert()
-                && tlsActions instanceof ReceivingAction)) {
-                LOGGER.debug("Skipping all ReceiveActions, received FatalAlert, StopActionsAfterFatal active");
+            if ((config.getStopReceivingAfterFatal()
+                    && isReceivedFatalAlert()
+                    && tlsActions instanceof ReceivingAction)) {
+                LOGGER.debug(
+                        "Skipping all ReceiveActions, received FatalAlert, StopActionsAfterFatal active");
                 break;
             }
             if ((config.getStopActionsAfterWarning() && isReceivedWarningAlert())) {
-                LOGGER.debug("Skipping all Actions, received Warning Alert, StopActionsAfterWarning active");
+                LOGGER.debug(
+                        "Skipping all Actions, received Warning Alert, StopActionsAfterWarning active");
                 break;
             }
             if ((config.getStopActionsAfterIOException() && isIoException())) {
-                LOGGER.debug("Skipping all Actions, received IO Exception, StopActionsAfterIOException active");
+                LOGGER.debug(
+                        "Skipping all Actions, received IO Exception, StopActionsAfterIOException active");
                 break;
             }
 
@@ -76,7 +76,6 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
                 LOGGER.debug("Skipping all Actions, action did not execute as planned.");
                 break;
             }
-
         }
 
         if (config.isFinishWithCloseNotify()) {

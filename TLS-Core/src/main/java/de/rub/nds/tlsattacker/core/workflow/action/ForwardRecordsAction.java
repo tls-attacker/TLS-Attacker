@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
@@ -19,23 +18,23 @@ import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
 import de.rub.nds.tlsattacker.core.layer.ReceiveTillLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.SpecificSendLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
-import de.rub.nds.tlsattacker.core.record.Record;
-import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.impl.RecordLayer;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
+import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.state.State;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElementWrapper;
+import jakarta.xml.bind.annotation.XmlElements;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.IOException;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlElementWrapper;
-import jakarta.xml.bind.annotation.XmlElements;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlTransient;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -46,11 +45,11 @@ public class ForwardRecordsAction extends TlsAction implements ReceivingAction, 
 
     @XmlElement(name = "from")
     protected String receiveFromAlias = null;
+
     @XmlElement(name = "to")
     protected String forwardToAlias = null;
 
-    @XmlTransient
-    private Boolean executedAsPlanned = null;
+    @XmlTransient private Boolean executedAsPlanned = null;
 
     @HoldsModifiableVariable
     @XmlElementWrapper
@@ -62,8 +61,7 @@ public class ForwardRecordsAction extends TlsAction implements ReceivingAction, 
     @XmlElements(@XmlElement(type = Record.class, name = "Record"))
     protected List<Record> sendRecords;
 
-    public ForwardRecordsAction() {
-    }
+    public ForwardRecordsAction() {}
 
     public ForwardRecordsAction(String receiveFromAlias, String forwardToAlias) {
         this.receiveFromAlias = receiveFromAlias;
@@ -97,27 +95,35 @@ public class ForwardRecordsAction extends TlsAction implements ReceivingAction, 
         LayerStack receivingLayerStack = receiveFromCtx.getLayerStack();
         LOGGER.debug("Receiving records...");
         LayerStackProcessingResult receiveResult =
-            receivingLayerStack.receiveData(buildLayerConfiguration(receivingLayerStack, false));
-        receivedRecords = receiveResult.getResultForLayer(ImplementedLayers.RECORD).getUsedContainers();
+                receivingLayerStack.receiveData(
+                        buildLayerConfiguration(receivingLayerStack, false));
+        receivedRecords =
+                receiveResult.getResultForLayer(ImplementedLayers.RECORD).getUsedContainers();
         LOGGER.info("Records received (" + receiveFromAlias + "): " + receivedRecords.size());
         executedAsPlanned = true;
     }
 
-    private List<LayerConfiguration> buildLayerConfiguration(LayerStack layerStack, boolean sending) {
+    private List<LayerConfiguration> buildLayerConfiguration(
+            LayerStack layerStack, boolean sending) {
         RecordLayer recordLayer = (RecordLayer) layerStack.getLayer(RecordLayer.class);
         List<ProtocolLayer> layerList = layerStack.getLayerList();
         List<LayerConfiguration> configList = new LinkedList<>();
-        layerList.forEach(layer -> {
-            if (layer != recordLayer) {
-                configList.add(null);
-            } else {
-                if (sending) {
-                    configList.add(new SpecificSendLayerConfiguration(ImplementedLayers.RECORD, receivedRecords));
-                } else {
-                    configList.add(new ReceiveTillLayerConfiguration(ImplementedLayers.RECORD, new Record()));
-                }
-            }
-        });
+        layerList.forEach(
+                layer -> {
+                    if (layer != recordLayer) {
+                        configList.add(null);
+                    } else {
+                        if (sending) {
+                            configList.add(
+                                    new SpecificSendLayerConfiguration(
+                                            ImplementedLayers.RECORD, receivedRecords));
+                        } else {
+                            configList.add(
+                                    new ReceiveTillLayerConfiguration(
+                                            ImplementedLayers.RECORD, new Record()));
+                        }
+                    }
+                });
         return configList;
     }
 
@@ -214,12 +220,16 @@ public class ForwardRecordsAction extends TlsAction implements ReceivingAction, 
     @Override
     public void assertAliasesSetProperly() throws ConfigurationException {
         if ((receiveFromAlias == null) || (receiveFromAlias.isEmpty())) {
-            throw new WorkflowExecutionException("Can't execute " + this.getClass().getSimpleName()
-                + " with empty receive alias (if using XML: add <from/>)");
+            throw new WorkflowExecutionException(
+                    "Can't execute "
+                            + this.getClass().getSimpleName()
+                            + " with empty receive alias (if using XML: add <from/>)");
         }
         if ((forwardToAlias == null) || (forwardToAlias.isEmpty())) {
-            throw new WorkflowExecutionException("Can't execute " + this.getClass().getSimpleName()
-                + " with empty forward alis (if using XML: add <to/>)");
+            throw new WorkflowExecutionException(
+                    "Can't execute "
+                            + this.getClass().getSimpleName()
+                            + " with empty forward alis (if using XML: add <to/>)");
         }
     }
 
@@ -242,5 +252,4 @@ public class ForwardRecordsAction extends TlsAction implements ReceivingAction, 
     public List<ProtocolMessage> getReceivedMessages() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-
 }

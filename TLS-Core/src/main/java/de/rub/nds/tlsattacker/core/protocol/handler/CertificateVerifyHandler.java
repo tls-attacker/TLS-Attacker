@@ -1,28 +1,29 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
 
 /**
- * Handling of the CertificateVerify protocol message: <a href="http://tools.ietf.org/html/rfc5246#section-7.4.8">RFC
- * 5246 Section 7.4.8</a>
+ * Handling of the CertificateVerify protocol message: <a
+ * href="http://tools.ietf.org/html/rfc5246#section-7.4.8">RFC 5246 Section 7.4.8</a>
  *
- * The TLS spec as well as wireshark bring some nice confusions: - The TLS spec says the message consists of only
- * signature bytes - Wireshark says the message consists of the signature length and signature bytes
+ * <p>The TLS spec as well as wireshark bring some nice confusions: - The TLS spec says the message
+ * consists of only signature bytes - Wireshark says the message consists of the signature length
+ * and signature bytes
  *
- * In fact, the certificate message consists of the following fields: - signature algorithm (2 bytes) - signature length
- * (2 bytes) - signature
+ * <p>In fact, the certificate message consists of the following fields: - signature algorithm (2
+ * bytes) - signature length (2 bytes) - signature
  *
- * This structure is of course prepended with the handshake message length, as obvious for every handshake message.
+ * <p>This structure is of course prepended with the handshake message length, as obvious for every
+ * handshake message.
  */
 public class CertificateVerifyHandler extends HandshakeMessageHandler<CertificateVerifyMessage> {
 

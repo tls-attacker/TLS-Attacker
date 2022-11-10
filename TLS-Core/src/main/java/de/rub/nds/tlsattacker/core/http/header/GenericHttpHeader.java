@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.http.header;
 
 import de.rub.nds.modifiablevariable.util.IllegalStringAdapter;
@@ -25,8 +24,7 @@ public class GenericHttpHeader extends HttpHeader {
     @XmlJavaTypeAdapter(IllegalStringAdapter.class)
     private String headerValueConfig;
 
-    public GenericHttpHeader() {
-    }
+    public GenericHttpHeader() {}
 
     public GenericHttpHeader(String headerNameConfig, String headerValueConfig) {
         this.headerNameConfig = headerNameConfig;

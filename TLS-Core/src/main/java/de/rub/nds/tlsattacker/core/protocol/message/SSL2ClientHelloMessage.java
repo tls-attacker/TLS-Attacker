@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -14,20 +13,20 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.constants.SSL2MessageType;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.SSL2ClientHelloHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.SSL2ClientHelloParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.SSL2ClientHelloPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.SSL2ClientHelloSerializer;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.Objects;
-import jakarta.xml.bind.annotation.XmlRootElement;
 
 @SuppressWarnings("serial")
 @XmlRootElement(name = "SSL2ClientHello")
-public class SSL2ClientHelloMessage extends SSL2HandshakeMessage {
+public class SSL2ClientHelloMessage extends SSL2Message {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByteArray protocolVersion;
@@ -50,7 +49,7 @@ public class SSL2ClientHelloMessage extends SSL2HandshakeMessage {
     private ModifiableByteArray challenge;
 
     public SSL2ClientHelloMessage() {
-        super(HandshakeMessageType.SSL2_CLIENT_HELLO);
+        super(SSL2MessageType.SSL_CLIENT_HELLO);
     }
 
     @Override
@@ -67,7 +66,8 @@ public class SSL2ClientHelloMessage extends SSL2HandshakeMessage {
     }
 
     public void setProtocolVersion(byte[] protocolVersion) {
-        this.protocolVersion = ModifiableVariableFactory.safelySetValue(this.protocolVersion, protocolVersion);
+        this.protocolVersion =
+                ModifiableVariableFactory.safelySetValue(this.protocolVersion, protocolVersion);
     }
 
     public ModifiableInteger getCipherSuiteLength() {
@@ -79,7 +79,8 @@ public class SSL2ClientHelloMessage extends SSL2HandshakeMessage {
     }
 
     public void setCipherSuiteLength(int cipherSuiteLength) {
-        this.cipherSuiteLength = ModifiableVariableFactory.safelySetValue(this.cipherSuiteLength, cipherSuiteLength);
+        this.cipherSuiteLength =
+                ModifiableVariableFactory.safelySetValue(this.cipherSuiteLength, cipherSuiteLength);
     }
 
     public ModifiableByteArray getCipherSuites() {
@@ -91,7 +92,8 @@ public class SSL2ClientHelloMessage extends SSL2HandshakeMessage {
     }
 
     public void setCipherSuites(byte[] cipherSuites) {
-        this.cipherSuites = ModifiableVariableFactory.safelySetValue(this.cipherSuites, cipherSuites);
+        this.cipherSuites =
+                ModifiableVariableFactory.safelySetValue(this.cipherSuites, cipherSuites);
     }
 
     public ModifiableByteArray getChallenge() {
@@ -115,7 +117,8 @@ public class SSL2ClientHelloMessage extends SSL2HandshakeMessage {
     }
 
     public void setSessionIDLength(int sessionIDLength) {
-        this.sessionIdLength = ModifiableVariableFactory.safelySetValue(this.sessionIdLength, sessionIDLength);
+        this.sessionIdLength =
+                ModifiableVariableFactory.safelySetValue(this.sessionIdLength, sessionIDLength);
     }
 
     public ModifiableInteger getChallengeLength() {
@@ -123,7 +126,8 @@ public class SSL2ClientHelloMessage extends SSL2HandshakeMessage {
     }
 
     public void setChallengeLength(int challengeLength) {
-        this.challengeLength = ModifiableVariableFactory.safelySetValue(this.challengeLength, challengeLength);
+        this.challengeLength =
+                ModifiableVariableFactory.safelySetValue(this.challengeLength, challengeLength);
     }
 
     public void setChallengeLength(ModifiableInteger challengeLength) {
@@ -249,5 +253,4 @@ public class SSL2ClientHelloMessage extends SSL2HandshakeMessage {
         }
         return Objects.equals(this.challenge, other.challenge);
     }
-
 }

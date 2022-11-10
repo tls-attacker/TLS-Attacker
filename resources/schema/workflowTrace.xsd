@@ -175,6 +175,8 @@
 
   <xs:element name="UnknownMessage" type="unknownMessage"/>
 
+  <xs:element name="UnknownSSL2Message" type="unknownSSL2Message"/>
+
   <xs:element name="accessModificationFilter" type="accessModificationFilter"/>
 
   <xs:element name="activateDecryptionAction" type="activateDecryptionAction"/>
@@ -619,6 +621,7 @@
                   <xs:element ref="SSL2ClientMasterKey"/>
                   <xs:element ref="SSL2ServerHello"/>
                   <xs:element ref="SSL2ServerVerify"/>
+                  <xs:element ref="UnknownSSL2Message"/>
                   <xs:element ref="UnknownMessage"/>
                   <xs:element ref="UnknownHandshakeMessage"/>
                   <xs:element ref="HelloRequest"/>
@@ -2388,7 +2391,7 @@
 
   <xs:complexType name="ssl2ClientHelloMessage">
     <xs:complexContent>
-      <xs:extension base="ssl2HandshakeMessage">
+      <xs:extension base="ssl2Message">
         <xs:sequence>
           <xs:element name="protocolVersion" type="modifiableByteArray" minOccurs="0"/>
           <xs:element name="cipherSuiteLength" type="modifiableInteger" minOccurs="0"/>
@@ -2402,12 +2405,13 @@
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="ssl2HandshakeMessage" abstract="true">
+  <xs:complexType name="ssl2Message" abstract="true">
     <xs:complexContent>
-      <xs:extension base="handshakeMessage">
+      <xs:extension base="protocolMessage">
         <xs:sequence>
           <xs:element name="messageLength" type="modifiableInteger" minOccurs="0"/>
           <xs:element name="paddingLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="type" type="modifiableByte" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -2415,7 +2419,7 @@
 
   <xs:complexType name="ssl2ClientMasterKeyMessage">
     <xs:complexContent>
-      <xs:extension base="ssl2HandshakeMessage">
+      <xs:extension base="ssl2Message">
         <xs:sequence>
           <xs:element name="cipherKind" type="modifiableByteArray" minOccurs="0"/>
           <xs:element name="clearKeyLength" type="modifiableInteger" minOccurs="0"/>
@@ -2432,7 +2436,7 @@
 
   <xs:complexType name="ssl2ServerHelloMessage">
     <xs:complexContent>
-      <xs:extension base="ssl2HandshakeMessage">
+      <xs:extension base="ssl2Message">
         <xs:sequence>
           <xs:element name="sessionIdHit" type="modifiableByte" minOccurs="0"/>
           <xs:element name="certificateType" type="modifiableByte" minOccurs="0"/>
@@ -2450,10 +2454,18 @@
 
   <xs:complexType name="ssl2ServerVerifyMessage">
     <xs:complexContent>
-      <xs:extension base="ssl2HandshakeMessage">
+      <xs:extension base="ssl2Message">
         <xs:sequence>
           <xs:element name="encryptedPart" type="modifiableByteArray" minOccurs="0"/>
         </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="unknownSSL2Message">
+    <xs:complexContent>
+      <xs:extension base="ssl2Message">
+        <xs:sequence/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
@@ -3223,6 +3235,13 @@
         <xs:complexType>
           <xs:sequence>
             <xs:element name="defaultServerSupportedCipherSuite" type="cipherSuite" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="defaultServerSupportedSSL2CipherSuites" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="defaultServerSupportedSSL2CipherSuite" type="ssl2CipherSuite" minOccurs="0" maxOccurs="unbounded"/>
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -4190,6 +4209,7 @@
                   <xs:element ref="SSL2ClientMasterKey"/>
                   <xs:element ref="SSL2ServerHello"/>
                   <xs:element ref="SSL2ServerVerify"/>
+                  <xs:element ref="UnknownSSL2Message"/>
                   <xs:element ref="UnknownMessage"/>
                   <xs:element ref="UnknownHandshakeMessage"/>
                   <xs:element ref="HelloRequest"/>
@@ -4257,6 +4277,7 @@
                   <xs:element ref="SSL2ClientMasterKey"/>
                   <xs:element ref="SSL2ServerHello"/>
                   <xs:element ref="SSL2ServerVerify"/>
+                  <xs:element ref="UnknownSSL2Message"/>
                   <xs:element ref="UnknownMessage"/>
                   <xs:element ref="UnknownHandshakeMessage"/>
                   <xs:element ref="HelloRequest"/>
@@ -4324,6 +4345,7 @@
                   <xs:element ref="SSL2ClientMasterKey"/>
                   <xs:element ref="SSL2ServerHello"/>
                   <xs:element ref="SSL2ServerVerify"/>
+                  <xs:element ref="UnknownSSL2Message"/>
                   <xs:element ref="UnknownMessage"/>
                   <xs:element ref="UnknownHandshakeMessage"/>
                   <xs:element ref="HelloRequest"/>
@@ -4415,6 +4437,7 @@
           <xs:element ref="SSL2ClientMasterKey"/>
           <xs:element ref="SSL2ServerHello"/>
           <xs:element ref="SSL2ServerVerify"/>
+          <xs:element ref="UnknownSSL2Message"/>
           <xs:element ref="UnknownMessage"/>
           <xs:element ref="UnknownHandshakeMessage"/>
           <xs:element ref="HelloRequest"/>
@@ -4489,6 +4512,7 @@
                   <xs:element ref="SSL2ClientMasterKey"/>
                   <xs:element ref="SSL2ServerHello"/>
                   <xs:element ref="SSL2ServerVerify"/>
+                  <xs:element ref="UnknownSSL2Message"/>
                   <xs:element ref="UnknownMessage"/>
                   <xs:element ref="UnknownHandshakeMessage"/>
                   <xs:element ref="HelloRequest"/>
@@ -5299,14 +5323,10 @@
       <xs:enumeration value="UNKNOWN"/>
       <xs:enumeration value="HELLO_REQUEST"/>
       <xs:enumeration value="CLIENT_HELLO"/>
-      <xs:enumeration value="SSL2_CLIENT_HELLO"/>
       <xs:enumeration value="SERVER_HELLO"/>
-      <xs:enumeration value="SSL2_CLIENT_MASTER_KEY"/>
       <xs:enumeration value="HELLO_VERIFY_REQUEST"/>
       <xs:enumeration value="NEW_SESSION_TICKET"/>
-      <xs:enumeration value="SSL2_SERVER_HELLO"/>
       <xs:enumeration value="END_OF_EARLY_DATA"/>
-      <xs:enumeration value="SSL2_SERVER_VERIFY"/>
       <xs:enumeration value="ENCRYPTED_EXTENSIONS"/>
       <xs:enumeration value="CERTIFICATE"/>
       <xs:enumeration value="SERVER_KEY_EXCHANGE"/>
@@ -5695,8 +5715,8 @@
       <xs:enumeration value="QUIC"/>
       <xs:enumeration value="OPEN_VPN"/>
       <xs:enumeration value="STARTTLS"/>
-      <xs:enumeration value="SSL2"/>
       <xs:enumeration value="HTTPS"/>
+      <xs:enumeration value="SSL2"/>
     </xs:restriction>
   </xs:simpleType>
 

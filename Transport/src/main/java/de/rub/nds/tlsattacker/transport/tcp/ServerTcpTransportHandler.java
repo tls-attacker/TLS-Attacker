@@ -1,23 +1,21 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.transport.tcp;
 
 import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.io.IOException;
 import java.io.PushbackInputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ServerTcpTransportHandler extends TcpTransportHandler {
 
@@ -36,7 +34,8 @@ public class ServerTcpTransportHandler extends TcpTransportHandler {
         this.srcPort = port;
     }
 
-    public ServerTcpTransportHandler(long firstTimeout, long timeout, ServerSocket serverSocket) throws IOException {
+    public ServerTcpTransportHandler(long firstTimeout, long timeout, ServerSocket serverSocket)
+            throws IOException {
         super(firstTimeout, timeout, ConnectionEndType.SERVER);
         this.srcPort = serverSocket.getLocalPort();
         this.serverSocket = serverSocket;
@@ -139,7 +138,8 @@ public class ServerTcpTransportHandler extends TcpTransportHandler {
     @Override
     public void setSrcPort(int port) {
         if (isInitialized()) {
-            throw new RuntimeException("Cannot change server port of uninitialized TransportHandler");
+            throw new RuntimeException(
+                    "Cannot change server port of uninitialized TransportHandler");
         } else {
             this.srcPort = port;
         }
@@ -148,7 +148,8 @@ public class ServerTcpTransportHandler extends TcpTransportHandler {
     @Override
     public Integer getDstPort() {
         if (!isInitialized()) {
-            throw new RuntimeException("Cannot access client port of uninitialized TransportHandler");
+            throw new RuntimeException(
+                    "Cannot access client port of uninitialized TransportHandler");
         } else {
             return socket.getPort();
         }
@@ -160,9 +161,10 @@ public class ServerTcpTransportHandler extends TcpTransportHandler {
     }
 
     /**
-     * Defines to which extent the TransportHandler manages the socket(s) DEFAULT - manage connection sockets and the
-     * ServerSocket EXTERNAL_SERVER_SOCKET - create connection sockets individually but do not manage ServerSocket
-     * EXTERNAL_SOCKET - only manage a specific given connection socket
+     * Defines to which extent the TransportHandler manages the socket(s) DEFAULT - manage
+     * connection sockets and the ServerSocket EXTERNAL_SERVER_SOCKET - create connection sockets
+     * individually but do not manage ServerSocket EXTERNAL_SOCKET - only manage a specific given
+     * connection socket
      */
     private enum SocketManagement {
         DEFAULT,

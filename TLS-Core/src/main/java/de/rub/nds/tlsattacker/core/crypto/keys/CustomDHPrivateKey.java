@@ -1,24 +1,22 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.crypto.keys;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.math.BigInteger;
-import java.util.Objects;
-
-import javax.crypto.interfaces.DHPrivateKey;
-import javax.crypto.spec.DHParameterSpec;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
+import java.math.BigInteger;
+import java.util.Objects;
+import javax.crypto.interfaces.DHPrivateKey;
+import javax.crypto.spec.DHParameterSpec;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -82,7 +80,8 @@ public class CustomDHPrivateKey extends CustomPrivateKey implements DHPrivateKey
                     tlsContext.setServerDhPrivateKey(privateKey);
                     break;
                 default:
-                    throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
+                    throw new IllegalArgumentException(
+                            "Owner of Key " + ownerOfKey + " is not supported");
             }
         }
     }
@@ -100,7 +99,8 @@ public class CustomDHPrivateKey extends CustomPrivateKey implements DHPrivateKey
                     config.setDefaultServerDhPrivateKey(privateKey);
                     break;
                 default:
-                    throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
+                    throw new IllegalArgumentException(
+                            "Owner of Key " + ownerOfKey + " is not supported");
             }
         }
     }

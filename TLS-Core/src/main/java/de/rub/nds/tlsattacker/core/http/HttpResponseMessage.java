@@ -1,28 +1,26 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.http;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.http.header.*;
 import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
-import java.io.InputStream;
-import java.util.LinkedList;
-import java.util.List;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlElements;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import java.io.InputStream;
+import java.util.LinkedList;
+import java.util.List;
 
 @XmlRootElement
 public class HttpResponseMessage extends HttpMessage<HttpResponseMessage> {
@@ -32,14 +30,18 @@ public class HttpResponseMessage extends HttpMessage<HttpResponseMessage> {
     private ModifiableString responseStatusCode;
 
     private ModifiableString responseContent;
+
     @XmlElementWrapper
-    @XmlElements(value = { @XmlElement(type = GenericHttpHeader.class, name = "HttpHeader"),
-        @XmlElement(type = ContentLengthHeader.class, name = "ContentLengthHeader"),
-        @XmlElement(type = DateHeader.class, name = "DateHeader"),
-        @XmlElement(type = ExpiresHeader.class, name = "ExpiresHeader"),
-        @XmlElement(type = LocationHeader.class, name = "LocationHeader"),
-        @XmlElement(type = HostHeader.class, name = "HostHeader"),
-        @XmlElement(type = TokenBindingHeader.class, name = "TokenBindingHeader") })
+    @XmlElements(
+            value = {
+                @XmlElement(type = GenericHttpHeader.class, name = "HttpHeader"),
+                @XmlElement(type = ContentLengthHeader.class, name = "ContentLengthHeader"),
+                @XmlElement(type = DateHeader.class, name = "DateHeader"),
+                @XmlElement(type = ExpiresHeader.class, name = "ExpiresHeader"),
+                @XmlElement(type = LocationHeader.class, name = "LocationHeader"),
+                @XmlElement(type = HostHeader.class, name = "HostHeader"),
+                @XmlElement(type = TokenBindingHeader.class, name = "TokenBindingHeader")
+            })
     @HoldsModifiableVariable
     private List<HttpHeader> header;
 
@@ -67,7 +69,8 @@ public class HttpResponseMessage extends HttpMessage<HttpResponseMessage> {
     }
 
     public void setResponseProtocol(String responseProtocol) {
-        this.responseProtocol = ModifiableVariableFactory.safelySetValue(this.responseProtocol, responseProtocol);
+        this.responseProtocol =
+                ModifiableVariableFactory.safelySetValue(this.responseProtocol, responseProtocol);
     }
 
     public ModifiableString getResponseStatusCode() {
@@ -79,7 +82,9 @@ public class HttpResponseMessage extends HttpMessage<HttpResponseMessage> {
     }
 
     public void setResponseStatusCode(String responseStatusCode) {
-        this.responseStatusCode = ModifiableVariableFactory.safelySetValue(this.responseStatusCode, responseStatusCode);
+        this.responseStatusCode =
+                ModifiableVariableFactory.safelySetValue(
+                        this.responseStatusCode, responseStatusCode);
     }
 
     public ModifiableString getResponseContent() {
@@ -91,7 +96,8 @@ public class HttpResponseMessage extends HttpMessage<HttpResponseMessage> {
     }
 
     public void setResponseContent(String responseContent) {
-        this.responseContent = ModifiableVariableFactory.safelySetValue(this.responseContent, responseContent);
+        this.responseContent =
+                ModifiableVariableFactory.safelySetValue(this.responseContent, responseContent);
     }
 
     public List<HttpHeader> getHeader() {

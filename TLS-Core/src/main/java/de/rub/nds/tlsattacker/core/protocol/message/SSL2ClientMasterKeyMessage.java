@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
@@ -15,25 +14,23 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.core.constants.SSL2MessageType;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.handler.SSL2ClientMasterKeyHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.RSAClientComputations;
-import de.rub.nds.tlsattacker.core.protocol.parser.HandshakeMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.SSL2ClientMasterKeyPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.SSL2ClientMasterKeySerializer;
-import de.rub.nds.tlsattacker.core.state.Context;
-
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Objects;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlRootElement;
 
 @SuppressWarnings("serial")
 @XmlRootElement(name = "SSL2ClientMasterKey")
-public class SSL2ClientMasterKeyMessage extends SSL2HandshakeMessage {
+public class SSL2ClientMasterKeyMessage extends SSL2Message {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByteArray cipherKind;
@@ -56,12 +53,10 @@ public class SSL2ClientMasterKeyMessage extends SSL2HandshakeMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.KEY_MATERIAL)
     private ModifiableByteArray keyArgData;
 
-    @HoldsModifiableVariable
-    @XmlElement
-    private RSAClientComputations computations;
+    @HoldsModifiableVariable @XmlElement private RSAClientComputations computations;
 
     public SSL2ClientMasterKeyMessage() {
-        super(HandshakeMessageType.SSL2_CLIENT_MASTER_KEY);
+        super(SSL2MessageType.SSL_CLIENT_MASTER_KEY);
     }
 
     @Override
@@ -75,7 +70,8 @@ public class SSL2ClientMasterKeyMessage extends SSL2HandshakeMessage {
     }
 
     @Override
-    public HandshakeMessageParser<SSL2ClientMasterKeyMessage> getParser(TlsContext tlsContext, InputStream stream) {
+    public ProtocolMessageParser<SSL2ClientMasterKeyMessage> getParser(
+            TlsContext tlsContext, InputStream stream) {
         // We currently don't receive ClientMasterKey messages, only send them.
         throw new UnsupportedOperationException("Not implemented");
     }
@@ -107,7 +103,8 @@ public class SSL2ClientMasterKeyMessage extends SSL2HandshakeMessage {
     }
 
     public void setClearKeyLength(int clearKeyLength) {
-        this.clearKeyLength = ModifiableVariableFactory.safelySetValue(this.clearKeyLength, clearKeyLength);
+        this.clearKeyLength =
+                ModifiableVariableFactory.safelySetValue(this.clearKeyLength, clearKeyLength);
     }
 
     public void setClearKeyLength(ModifiableInteger clearKeyLength) {
@@ -119,7 +116,9 @@ public class SSL2ClientMasterKeyMessage extends SSL2HandshakeMessage {
     }
 
     public void setEncryptedKeyLength(int encryptedKeyLength) {
-        this.encryptedKeyLength = ModifiableVariableFactory.safelySetValue(this.encryptedKeyLength, encryptedKeyLength);
+        this.encryptedKeyLength =
+                ModifiableVariableFactory.safelySetValue(
+                        this.encryptedKeyLength, encryptedKeyLength);
     }
 
     public void setEncryptedKeyLength(ModifiableInteger encryptedKeyLength) {
@@ -131,7 +130,8 @@ public class SSL2ClientMasterKeyMessage extends SSL2HandshakeMessage {
     }
 
     public void setKeyArgLength(int keyArgLength) {
-        this.keyArgLength = ModifiableVariableFactory.safelySetValue(this.keyArgLength, keyArgLength);
+        this.keyArgLength =
+                ModifiableVariableFactory.safelySetValue(this.keyArgLength, keyArgLength);
     }
 
     public void setKeyArgLength(ModifiableInteger keyArgLength) {
@@ -147,7 +147,8 @@ public class SSL2ClientMasterKeyMessage extends SSL2HandshakeMessage {
     }
 
     public void setClearKeyData(byte[] clearKeyData) {
-        this.clearKeyData = ModifiableVariableFactory.safelySetValue(this.clearKeyData, clearKeyData);
+        this.clearKeyData =
+                ModifiableVariableFactory.safelySetValue(this.clearKeyData, clearKeyData);
     }
 
     public ModifiableByteArray getEncryptedKeyData() {
@@ -159,7 +160,8 @@ public class SSL2ClientMasterKeyMessage extends SSL2HandshakeMessage {
     }
 
     public void setEncryptedKeyData(byte[] encryptedKeyData) {
-        this.encryptedKeyData = ModifiableVariableFactory.safelySetValue(this.encryptedKeyData, encryptedKeyData);
+        this.encryptedKeyData =
+                ModifiableVariableFactory.safelySetValue(this.encryptedKeyData, encryptedKeyData);
     }
 
     public ModifiableByteArray getKeyArgData() {
@@ -192,14 +194,16 @@ public class SSL2ClientMasterKeyMessage extends SSL2HandshakeMessage {
             sb.append("\n Cipher Kind: ").append(getCipherKind().getValue());
         }
         if (getClearKeyData() != null && getClearKeyData().getValue() != null) {
-            sb.append("\n Clear Key Data: ").append(ArrayConverter.bytesToHexString(getClearKeyData().getValue()));
+            sb.append("\n Clear Key Data: ")
+                    .append(ArrayConverter.bytesToHexString(getClearKeyData().getValue()));
         }
         if (getEncryptedKeyData() != null && getEncryptedKeyData().getValue() != null) {
             sb.append("\n Encrypted Key Data: ")
-                .append(ArrayConverter.bytesToHexString(getEncryptedKeyData().getValue()));
+                    .append(ArrayConverter.bytesToHexString(getEncryptedKeyData().getValue()));
         }
         if (getKeyArgData() != null && getKeyArgData().getValue() != null) {
-            sb.append("\n Key Arg Data: ").append(ArrayConverter.bytesToHexString(getKeyArgData().getValue()));
+            sb.append("\n Key Arg Data: ")
+                    .append(ArrayConverter.bytesToHexString(getKeyArgData().getValue()));
         }
         return sb.toString();
     }
@@ -211,7 +215,8 @@ public class SSL2ClientMasterKeyMessage extends SSL2HandshakeMessage {
 
     @Override
     public List<ModifiableVariableHolder> getAllModifiableVariableHolders() {
-        List<ModifiableVariableHolder> allModifiableVariableHolders = super.getAllModifiableVariableHolders();
+        List<ModifiableVariableHolder> allModifiableVariableHolders =
+                super.getAllModifiableVariableHolders();
         if (computations != null) {
             allModifiableVariableHolders.add(computations);
         }
@@ -267,5 +272,4 @@ public class SSL2ClientMasterKeyMessage extends SSL2HandshakeMessage {
         }
         return Objects.equals(this.computations, other.computations);
     }
-
 }

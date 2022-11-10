@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -19,12 +18,10 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.ECPointFormatExten
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ECPointFormatExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ECPointFormatExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ECPointFormatExtensionSerializer;
-import java.io.InputStream;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import java.io.InputStream;
 
-/**
- * This extension is defined in RFC-ietf-tls-rfc-4492bis-17
- */
+/** This extension is defined in RFC-ietf-tls-rfc-4492bis-17 */
 @XmlRootElement(name = "ECPointFormat")
 public class ECPointFormatExtensionMessage extends ExtensionMessage<ECPointFormatExtensionMessage> {
 
@@ -55,7 +52,8 @@ public class ECPointFormatExtensionMessage extends ExtensionMessage<ECPointForma
     }
 
     public void setPointFormatsLength(int length) {
-        this.pointFormatsLength = ModifiableVariableFactory.safelySetValue(pointFormatsLength, length);
+        this.pointFormatsLength =
+                ModifiableVariableFactory.safelySetValue(pointFormatsLength, length);
     }
 
     public void setPointFormatsLength(ModifiableInteger pointFormatsLength) {

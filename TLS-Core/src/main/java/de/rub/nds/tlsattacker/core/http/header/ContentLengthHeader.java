@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.http.header;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -19,11 +18,9 @@ public class ContentLengthHeader extends HttpHeader {
 
     private ModifiableInteger length;
 
-    @XmlTransient
-    private int configLength;
+    @XmlTransient private int configLength;
 
-    public ContentLengthHeader() {
-    }
+    public ContentLengthHeader() {}
 
     @Override
     public ContentLengthHeaderPreparator getPreparator(HttpContext httpContext) {
@@ -49,5 +46,4 @@ public class ContentLengthHeader extends HttpHeader {
     public void setConfigLength(int configLength) {
         this.configLength = configLength;
     }
-
 }

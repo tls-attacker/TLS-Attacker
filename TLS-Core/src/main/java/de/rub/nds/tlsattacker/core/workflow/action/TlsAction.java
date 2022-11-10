@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.connection.Aliasable;
@@ -19,29 +18,28 @@ import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.Set;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlElements;
 import jakarta.xml.bind.annotation.XmlTransient;
+import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * TlsAction that can be executed in a WorkflowTrace. The TlsAction is the basic building block for WorkflowTraces. A
- * WorkflowTrace is a list of TLSActions. Executing a WorkflowTrace means iterating through this list and calling
- * execute() on each TlsAction.
- *
+ * TlsAction that can be executed in a WorkflowTrace. The TlsAction is the basic building block for
+ * WorkflowTraces. A WorkflowTrace is a list of TLSActions. Executing a WorkflowTrace means
+ * iterating through this list and calling execute() on each TlsAction.
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class TlsAction implements Serializable, Aliasable {
@@ -53,19 +51,16 @@ public abstract class TlsAction implements Serializable, Aliasable {
     private Boolean executed = null;
 
     @XmlElementWrapper
-    @XmlElements(value = { @XmlElement(type = ActionOption.class, name = "ActionOption") })
+    @XmlElements(value = {@XmlElement(type = ActionOption.class, name = "ActionOption")})
     private Set<ActionOption> actionOptions = new HashSet<>();
 
     // Whether the action is executed in a workflow with a single connection
     // or not. Useful to decide which information can be stripped in filter().
-    @XmlTransient
-    private Boolean singleConnectionWorkflow = true;
+    @XmlTransient private Boolean singleConnectionWorkflow = true;
 
-    @XmlTransient
-    private final Set<String> aliases = new LinkedHashSet<>();
+    @XmlTransient private final Set<String> aliases = new LinkedHashSet<>();
 
-    public TlsAction() {
-    }
+    public TlsAction() {}
 
     public boolean isExecuted() {
         if (executed == null) {
@@ -90,9 +85,7 @@ public abstract class TlsAction implements Serializable, Aliasable {
 
     public abstract void reset();
 
-    /**
-     * Add default values and initialize empty fields.
-     */
+    /** Add default values and initialize empty fields. */
     public void normalize() {
         // We don't need any defaults
     }
@@ -100,27 +93,21 @@ public abstract class TlsAction implements Serializable, Aliasable {
     /**
      * Add default values from given defaultAction and initialize empty fields.
      *
-     * @param defaultAction
-     *                      Not needed / not evaluated
+     * @param defaultAction Not needed / not evaluated
      */
     public void normalize(TlsAction defaultAction) {
         // We don't need any defaults
     }
 
-    /**
-     * Filter empty fields and default values.
-     */
-    public void filter() {
-    }
+    /** Filter empty fields and default values. */
+    public void filter() {}
 
     /**
      * Filter empty fields and default values given in defaultAction.
      *
-     * @param defaultAction
-     *                      Not needed / not evaluated
+     * @param defaultAction Not needed / not evaluated
      */
-    public void filter(TlsAction defaultAction) {
-    }
+    public void filter(TlsAction defaultAction) {}
 
     @Override
     public String getFirstAlias() {
@@ -138,8 +125,7 @@ public abstract class TlsAction implements Serializable, Aliasable {
     }
 
     @Override
-    public void assertAliasesSetProperly() throws ConfigurationException {
-    }
+    public void assertAliasesSetProperly() throws ConfigurationException {}
 
     @Override
     public Set<String> getAllAliases() {
@@ -188,13 +174,14 @@ public abstract class TlsAction implements Serializable, Aliasable {
         this.actionOptions.add(option);
     }
 
-    public List<LayerConfiguration> sortLayerConfigurations(LayerStack layerStack,
-        LayerConfiguration... unsortedLayerConfigurations) {
-        return sortLayerConfigurations(layerStack, new LinkedList<>(Arrays.asList(unsortedLayerConfigurations)));
+    public List<LayerConfiguration> sortLayerConfigurations(
+            LayerStack layerStack, LayerConfiguration... unsortedLayerConfigurations) {
+        return sortLayerConfigurations(
+                layerStack, new LinkedList<>(Arrays.asList(unsortedLayerConfigurations)));
     }
 
-    public List<LayerConfiguration> sortLayerConfigurations(LayerStack layerStack,
-        List<LayerConfiguration> unsortedLayerConfigurations) {
+    public List<LayerConfiguration> sortLayerConfigurations(
+            LayerStack layerStack, List<LayerConfiguration> unsortedLayerConfigurations) {
         List<LayerConfiguration> sortedLayerConfigurations = new LinkedList<>();
         // iterate over all layers in the stack and assign the correct configuration
         // reset configurations to only assign a configuration to the upper most layer
@@ -203,21 +190,29 @@ public abstract class TlsAction implements Serializable, Aliasable {
             try {
                 layer = (ImplementedLayers) layerType;
             } catch (ClassCastException e) {
-                LOGGER.warn("Cannot assign layer " + layerType.getName()
-                    + "to current LayerStack. LayerType not implemented for TLSAction.");
+                LOGGER.warn(
+                        "Cannot assign layer "
+                                + layerType.getName()
+                                + "to current LayerStack. LayerType not implemented for TLSAction.");
                 continue;
             }
             Optional<LayerConfiguration> layerConfiguration = Optional.empty();
-            if (layer == ImplementedLayers.MESSAGE || layer == ImplementedLayers.RECORD
-                || layer == ImplementedLayers.DTLS_FRAGMENT || layer == ImplementedLayers.HTTP) {
-                layerConfiguration = unsortedLayerConfigurations.stream()
-                    .filter(layerConfig -> layerConfig.getLayerType().equals(layer)).findFirst();
+            if (layer == ImplementedLayers.MESSAGE
+                    || layer == ImplementedLayers.RECORD
+                    || layer == ImplementedLayers.DTLS_FRAGMENT
+                    || layer == ImplementedLayers.HTTP
+                    || layer == ImplementedLayers.SSL2) {
+                layerConfiguration =
+                        unsortedLayerConfigurations.stream()
+                                .filter(layerConfig -> layerConfig.getLayerType().equals(layer))
+                                .findFirst();
             }
             if (layerConfiguration.isPresent()) {
                 sortedLayerConfigurations.add(layerConfiguration.get());
                 unsortedLayerConfigurations.remove(layerConfiguration.get());
             } else {
-                sortedLayerConfigurations.add(new SpecificReceiveLayerConfiguration(layerType, new LinkedList<>()));
+                sortedLayerConfigurations.add(
+                        new SpecificReceiveLayerConfiguration(layerType, new LinkedList<>()));
             }
         }
         return sortedLayerConfigurations;

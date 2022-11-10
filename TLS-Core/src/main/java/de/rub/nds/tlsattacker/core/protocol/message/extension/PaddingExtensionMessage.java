@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -18,18 +17,14 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.PaddingExtensionHa
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.PaddingExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PaddingExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PaddingExtensionSerializer;
-import java.io.InputStream;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import java.io.InputStream;
 
-/**
- * This extension is defined in RFC7685
- */
+/** This extension is defined in RFC7685 */
 @XmlRootElement(name = "PaddingExtension")
 public class PaddingExtensionMessage extends ExtensionMessage<PaddingExtensionMessage> {
 
-    /**
-     * Contains the padding bytes of the padding extension. The bytes shall be empty.
-     */
+    /** Contains the padding bytes of the padding extension. The bytes shall be empty. */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.NONE)
     private ModifiableByteArray paddingBytes;
 

@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -14,28 +13,22 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.SrtpExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.SrtpExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SrtpExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SrtpExtensionSerializer;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import java.io.InputStream;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import java.io.InputStream;
 
-/**
- * This extension is defined in RFC5764
- */
+/** This extension is defined in RFC5764 */
 @XmlRootElement(name = "SrtpExtension")
 public class SrtpExtensionMessage extends ExtensionMessage<SrtpExtensionMessage> {
 
-    @ModifiableVariableProperty
-    private ModifiableByteArray srtpProtectionProfiles;
-    @ModifiableVariableProperty
-    private ModifiableInteger srtpProtectionProfilesLength; // 2 Byte
-    @ModifiableVariableProperty
-    private ModifiableByteArray srtpMki; // SRTP Master Key Identifier
-    @ModifiableVariableProperty
-    private ModifiableInteger srtpMkiLength; // 1 Byte
+    @ModifiableVariableProperty private ModifiableByteArray srtpProtectionProfiles;
+    @ModifiableVariableProperty private ModifiableInteger srtpProtectionProfilesLength; // 2 Byte
+    @ModifiableVariableProperty private ModifiableByteArray srtpMki; // SRTP Master Key Identifier
+    @ModifiableVariableProperty private ModifiableInteger srtpMkiLength; // 1 Byte
 
     public SrtpExtensionMessage() {
         super(ExtensionType.USE_SRTP);
@@ -51,7 +44,8 @@ public class SrtpExtensionMessage extends ExtensionMessage<SrtpExtensionMessage>
 
     public void setSrtpProtectionProfiles(byte[] srtpProtectionProfiles) {
         this.srtpProtectionProfiles =
-            ModifiableVariableFactory.safelySetValue(this.srtpProtectionProfiles, srtpProtectionProfiles);
+                ModifiableVariableFactory.safelySetValue(
+                        this.srtpProtectionProfiles, srtpProtectionProfiles);
     }
 
     public ModifiableInteger getSrtpProtectionProfilesLength() {
@@ -64,7 +58,8 @@ public class SrtpExtensionMessage extends ExtensionMessage<SrtpExtensionMessage>
 
     public void setSrtpProtectionProfilesLength(int srtpProtectionProfilesLength) {
         this.srtpProtectionProfilesLength =
-            ModifiableVariableFactory.safelySetValue(this.srtpProtectionProfilesLength, srtpProtectionProfilesLength);
+                ModifiableVariableFactory.safelySetValue(
+                        this.srtpProtectionProfilesLength, srtpProtectionProfilesLength);
     }
 
     public ModifiableByteArray getSrtpMki() {
@@ -88,7 +83,8 @@ public class SrtpExtensionMessage extends ExtensionMessage<SrtpExtensionMessage>
     }
 
     public void setSrtpMkiLength(int srtpMkiLength) {
-        this.srtpMkiLength = ModifiableVariableFactory.safelySetValue(this.srtpMkiLength, srtpMkiLength);
+        this.srtpMkiLength =
+                ModifiableVariableFactory.safelySetValue(this.srtpMkiLength, srtpMkiLength);
     }
 
     @Override
@@ -110,5 +106,4 @@ public class SrtpExtensionMessage extends ExtensionMessage<SrtpExtensionMessage>
     public SrtpExtensionHandler getHandler(TlsContext tlsContext) {
         return new SrtpExtensionHandler(tlsContext);
     }
-
 }

@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -22,16 +21,15 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
-import org.apache.commons.lang3.function.TriFunction;
+import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 import org.junit.jupiter.api.Named;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.util.List;
-import java.util.function.BiFunction;
-import java.util.function.Function;
-
-abstract class AbstractExtensionParserTest<MT extends ExtensionMessage, PT extends ExtensionParser<MT>> {
+abstract class AbstractExtensionParserTest<
+        MT extends ExtensionMessage, PT extends ExtensionParser<MT>> {
 
     private final BiFunction<InputStream, TlsContext, PT> parserConstructor;
     protected PT parser;
@@ -43,12 +41,15 @@ abstract class AbstractExtensionParserTest<MT extends ExtensionMessage, PT exten
     protected final Config config;
     protected final TlsContext tlsContext;
 
-    AbstractExtensionParserTest(Class<MT> messageClass, BiFunction<InputStream, TlsContext, PT> parserConstructor) {
+    AbstractExtensionParserTest(
+            Class<MT> messageClass, BiFunction<InputStream, TlsContext, PT> parserConstructor) {
         this(messageClass, parserConstructor, List.of());
     }
 
-    AbstractExtensionParserTest(Class<MT> messageClass, BiFunction<InputStream, TlsContext, PT> parserConstructor,
-        List<Named<Function<MT, Object>>> messageGetters) {
+    AbstractExtensionParserTest(
+            Class<MT> messageClass,
+            BiFunction<InputStream, TlsContext, PT> parserConstructor,
+            List<Named<Function<MT, Object>>> messageGetters) {
         this.parserConstructor = parserConstructor;
         this.messageGetters = messageGetters;
         this.config = new Config();
@@ -58,9 +59,12 @@ abstract class AbstractExtensionParserTest<MT extends ExtensionMessage, PT exten
 
     @ParameterizedTest
     @MethodSource("provideTestVectors")
-    public final void testParseExtensionMessageContent(byte[] providedExtensionBytes,
-        List<Object> providedAdditionalValues, Object expectedExtensionType, int expectedExtensionLength,
-        List<Object> expectedMessageSpecificValues) {
+    public final void testParseExtensionMessageContent(
+            byte[] providedExtensionBytes,
+            List<Object> providedAdditionalValues,
+            Object expectedExtensionType,
+            int expectedExtensionLength,
+            List<Object> expectedMessageSpecificValues) {
         byte[] expectedExtensionTypeBytes = null;
         if (expectedExtensionType instanceof byte[]) {
             expectedExtensionTypeBytes = (byte[]) expectedExtensionType;
@@ -69,8 +73,11 @@ abstract class AbstractExtensionParserTest<MT extends ExtensionMessage, PT exten
         } else {
             fail("expectedExtensionType is neither of type byte[] nor ExtensionType");
         }
-        providedExtensionBytes = Arrays.copyOfRange(providedExtensionBytes,
-            ExtensionByteLength.TYPE + ExtensionByteLength.EXTENSIONS_LENGTH, providedExtensionBytes.length);
+        providedExtensionBytes =
+                Arrays.copyOfRange(
+                        providedExtensionBytes,
+                        ExtensionByteLength.TYPE + ExtensionByteLength.EXTENSIONS_LENGTH,
+                        providedExtensionBytes.length);
 
         if (providedAdditionalValues.contains(ConnectionEndType.SERVER)) {
             tlsContext.setTalkingConnectionEndType(ConnectionEndType.SERVER);
@@ -83,20 +90,26 @@ abstract class AbstractExtensionParserTest<MT extends ExtensionMessage, PT exten
     }
 
     private void parseExtensionMessage(byte[] providedExtensionBytes) {
-        parser = parserConstructor.apply(new ByteArrayInputStream(providedExtensionBytes), tlsContext);
+        parser =
+                parserConstructor.apply(
+                        new ByteArrayInputStream(providedExtensionBytes), tlsContext);
         if (message == null) {
             try {
                 message = messageClass.getConstructor().newInstance();
-            } catch (InvocationTargetException | IllegalArgumentException | IllegalAccessException
-                | InstantiationException | NoSuchMethodException | SecurityException ex) {
+            } catch (InvocationTargetException
+                    | IllegalArgumentException
+                    | IllegalAccessException
+                    | InstantiationException
+                    | NoSuchMethodException
+                    | SecurityException ex) {
                 fail("Failed to create message instance for " + messageClass.getName());
             }
         }
         parser.parse(message);
     }
 
-    protected void assertExtensionMessageSpecific(List<Object> providedAdditionalValues,
-        List<Object> expectedMessageSpecificValues) {
+    protected void assertExtensionMessageSpecific(
+            List<Object> providedAdditionalValues, List<Object> expectedMessageSpecificValues) {
         Named<Function<MT, Object>> getter;
         Object expected;
         Object actual;
@@ -109,7 +122,8 @@ abstract class AbstractExtensionParserTest<MT extends ExtensionMessage, PT exten
                 actual = ((ModifiableVariable<?>) actual).getValue();
             }
             // Perform assertion
-            String assertionMessage = this.getClass().getSimpleName() + " failed: " + getter.getName();
+            String assertionMessage =
+                    this.getClass().getSimpleName() + " failed: " + getter.getName();
             if (expected instanceof byte[]) {
                 assertArrayEquals((byte[]) expected, (byte[]) actual, assertionMessage);
             } else if (expected == null) {

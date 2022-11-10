@@ -1,37 +1,34 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.state.State;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlType;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlType;
 
-/**
- * Copy the value of a given field from one context to another.
- */
-@XmlType(propOrder = { "srcConnectionAlias", "dstConnectionAlias" })
+/** Copy the value of a given field from one context to another. */
+@XmlType(propOrder = {"srcConnectionAlias", "dstConnectionAlias"})
 public abstract class CopyContextFieldAction extends TlsAction {
 
     @XmlElement(name = "from")
     private String srcConnectionAlias;
+
     @XmlElement(name = "to")
     private String dstConnectionAlias;
 
-    public CopyContextFieldAction() {
-    }
+    public CopyContextFieldAction() {}
 
     public CopyContextFieldAction(String srcConnectionAlias, String dstConnectionAlias) {
         this.srcConnectionAlias = srcConnectionAlias;
@@ -41,10 +38,8 @@ public abstract class CopyContextFieldAction extends TlsAction {
     /**
      * Invoked on action execution to perform the actual copy operation.
      *
-     * @param srcContext
-     *                   source context
-     * @param dstContext
-     *                   destination context
+     * @param srcContext source context
+     * @param dstContext destination context
      */
     protected abstract void copyField(TlsContext srcContext, TlsContext dstContext);
 
@@ -55,7 +50,8 @@ public abstract class CopyContextFieldAction extends TlsAction {
         }
 
         if ((srcConnectionAlias == null) || (dstConnectionAlias == null)) {
-            throw new ActionExecutionException("Cannot execute, at least one context alias is null!");
+            throw new ActionExecutionException(
+                    "Cannot execute, at least one context alias is null!");
         }
 
         TlsContext src = state.getContext(srcConnectionAlias).getTlsContext();
@@ -115,12 +111,16 @@ public abstract class CopyContextFieldAction extends TlsAction {
     @Override
     public void assertAliasesSetProperly() throws ConfigurationException {
         if ((srcConnectionAlias == null) || (srcConnectionAlias.isEmpty())) {
-            throw new ActionExecutionException("Can't execute " + this.getClass().getSimpleName()
-                + " with empty src alias (if using XML: add <from/>)");
+            throw new ActionExecutionException(
+                    "Can't execute "
+                            + this.getClass().getSimpleName()
+                            + " with empty src alias (if using XML: add <from/>)");
         }
         if ((dstConnectionAlias == null) || (dstConnectionAlias.isEmpty())) {
             throw new ActionExecutionException(
-                "Can't execute " + this.getClass().getSimpleName() + " with empty dst alias (if using XML: add <to/>)");
+                    "Can't execute "
+                            + this.getClass().getSimpleName()
+                            + " with empty dst alias (if using XML: add <to/>)");
         }
     }
 }

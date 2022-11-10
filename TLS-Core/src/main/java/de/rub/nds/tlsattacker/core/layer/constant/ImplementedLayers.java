@@ -1,17 +1,14 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.layer.constant;
 
-/**
- * Holds all implemented layers of the TLS-Core, not limited to any layer of the ISO stack
- */
+/** Holds all implemented layers of the TLS-Core, not limited to any layer of the ISO stack */
 public enum ImplementedLayers implements LayerType {
     TCP,
     UDP,
@@ -19,7 +16,8 @@ public enum ImplementedLayers implements LayerType {
     RECORD,
     MESSAGE,
     DTLS_FRAGMENT,
-    HTTP;
+    HTTP,
+    SSL2;
 
     @Override
     public String getName() {

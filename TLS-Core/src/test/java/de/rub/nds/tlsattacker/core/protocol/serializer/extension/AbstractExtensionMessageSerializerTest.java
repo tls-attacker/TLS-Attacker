@@ -1,27 +1,26 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
-
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
-abstract class AbstractExtensionMessageSerializerTest<MT extends ExtensionMessage, ST extends ExtensionSerializer<MT>> {
+abstract class AbstractExtensionMessageSerializerTest<
+        MT extends ExtensionMessage, ST extends ExtensionSerializer<MT>> {
 
     protected final MT message;
 
@@ -30,12 +29,15 @@ abstract class AbstractExtensionMessageSerializerTest<MT extends ExtensionMessag
 
     private final List<BiConsumer<MT, Object>> messageSetters;
 
-    AbstractExtensionMessageSerializerTest(Supplier<MT> messageConstructor, Function<MT, ST> serializerConstructor) {
+    AbstractExtensionMessageSerializerTest(
+            Supplier<MT> messageConstructor, Function<MT, ST> serializerConstructor) {
         this(messageConstructor, serializerConstructor, List.of());
     }
 
-    AbstractExtensionMessageSerializerTest(Supplier<MT> messageConstructor, Function<MT, ST> serializerConstructor,
-        List<BiConsumer<MT, Object>> messageSetters) {
+    AbstractExtensionMessageSerializerTest(
+            Supplier<MT> messageConstructor,
+            Function<MT, ST> serializerConstructor,
+            List<BiConsumer<MT, Object>> messageSetters) {
         this.message = messageConstructor.get();
         this.serializerConstructor = serializerConstructor;
         this.messageSetters = messageSetters;
@@ -43,9 +45,12 @@ abstract class AbstractExtensionMessageSerializerTest<MT extends ExtensionMessag
 
     @ParameterizedTest
     @MethodSource("provideTestVectors")
-    public final void testSerializeExtensionMessageContent(byte[] expectedExtensionBytes,
-        List<Object> providedAdditionalValues, Object providedExtensionType, int providedExtensionLength,
-        List<Object> providedMessageSpecificValues) {
+    public final void testSerializeExtensionMessageContent(
+            byte[] expectedExtensionBytes,
+            List<Object> providedAdditionalValues,
+            Object providedExtensionType,
+            int providedExtensionLength,
+            List<Object> providedMessageSpecificValues) {
         setExtensionMessageBase(providedExtensionType, providedExtensionLength);
         setExtensionMessageSpecific(providedAdditionalValues, providedMessageSpecificValues);
         serializer = serializerConstructor.apply(message);
@@ -53,7 +58,8 @@ abstract class AbstractExtensionMessageSerializerTest<MT extends ExtensionMessag
         assertArrayEquals(expectedExtensionBytes, serializer.serialize());
     }
 
-    private void setExtensionMessageBase(Object providedExtensionType, int providedExtensionLength) {
+    private void setExtensionMessageBase(
+            Object providedExtensionType, int providedExtensionLength) {
         // Unpack ExtensionType to byte[] value
         if (providedExtensionType instanceof ExtensionType) {
             providedExtensionType = ((ExtensionType) providedExtensionType).getValue();
@@ -62,8 +68,8 @@ abstract class AbstractExtensionMessageSerializerTest<MT extends ExtensionMessag
         message.setExtensionLength(providedExtensionLength);
     }
 
-    protected void setExtensionMessageSpecific(List<Object> providedAdditionalValues,
-        List<Object> providedMessageSpecificValues) {
+    protected void setExtensionMessageSpecific(
+            List<Object> providedAdditionalValues, List<Object> providedMessageSpecificValues) {
         for (int i = 0; i < messageSetters.size(); i++) {
             messageSetters.get(i).accept(message, providedMessageSpecificValues.get(i));
         }

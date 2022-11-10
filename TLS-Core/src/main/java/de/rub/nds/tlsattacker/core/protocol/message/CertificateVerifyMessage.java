@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -15,31 +14,25 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.CertificateVerifyHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.CertificateVerifyParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.CertificateVerifyPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateVerifySerializer;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.Objects;
-import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "CertificateVerify")
 public class CertificateVerifyMessage extends HandshakeMessage {
 
-    /**
-     * selected Signature and Hashalgorithm
-     */
+    /** selected Signature and Hashalgorithm */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByteArray signatureHashAlgorithm;
-    /**
-     * signature length
-     */
+    /** signature length */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger signatureLength;
-    /**
-     * signature
-     */
+    /** signature */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.SIGNATURE)
     private ModifiableByteArray signature;
 
@@ -57,7 +50,8 @@ public class CertificateVerifyMessage extends HandshakeMessage {
 
     public void setSignatureHashAlgorithm(byte[] signatureHashAlgorithm) {
         this.signatureHashAlgorithm =
-            ModifiableVariableFactory.safelySetValue(this.signatureHashAlgorithm, signatureHashAlgorithm);
+                ModifiableVariableFactory.safelySetValue(
+                        this.signatureHashAlgorithm, signatureHashAlgorithm);
     }
 
     public ModifiableInteger getSignatureLength() {
@@ -69,7 +63,8 @@ public class CertificateVerifyMessage extends HandshakeMessage {
     }
 
     public void setSignatureLength(int length) {
-        this.signatureLength = ModifiableVariableFactory.safelySetValue(this.signatureLength, length);
+        this.signatureLength =
+                ModifiableVariableFactory.safelySetValue(this.signatureLength, length);
     }
 
     public ModifiableByteArray getSignature() {
@@ -131,7 +126,8 @@ public class CertificateVerifyMessage extends HandshakeMessage {
 
     @Override
     public CertificateVerifySerializer getSerializer(TlsContext tlsContext) {
-        return new CertificateVerifySerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new CertificateVerifySerializer(
+                this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override
@@ -163,5 +159,4 @@ public class CertificateVerifyMessage extends HandshakeMessage {
         }
         return Objects.equals(this.signature, other.signature);
     }
-
 }

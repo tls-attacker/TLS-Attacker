@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -17,11 +16,17 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.PWDClearExtensionM
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PWDClearExtensionSerializer;
 import org.junit.jupiter.api.Test;
 
-public class PWDClearExtensionPreparatorTest extends AbstractExtensionMessagePreparatorTest<PWDClearExtensionMessage,
-    PWDClearExtensionSerializer, PWDClearExtensionPreparator> {
+public class PWDClearExtensionPreparatorTest
+        extends AbstractExtensionMessagePreparatorTest<
+                PWDClearExtensionMessage,
+                PWDClearExtensionSerializer,
+                PWDClearExtensionPreparator> {
 
     public PWDClearExtensionPreparatorTest() {
-        super(PWDClearExtensionMessage::new, PWDClearExtensionSerializer::new, PWDClearExtensionPreparator::new);
+        super(
+                PWDClearExtensionMessage::new,
+                PWDClearExtensionSerializer::new,
+                PWDClearExtensionPreparator::new);
     }
 
     @Test
@@ -30,7 +35,8 @@ public class PWDClearExtensionPreparatorTest extends AbstractExtensionMessagePre
         context.setClientPWDUsername("Bob");
         preparator.prepare();
 
-        assertArrayEquals(ExtensionType.PWD_CLEAR.getValue(), message.getExtensionType().getValue());
+        assertArrayEquals(
+                ExtensionType.PWD_CLEAR.getValue(), message.getExtensionType().getValue());
         assertEquals(3 + 1, (long) message.getExtensionLength().getValue());
     }
 }

@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
@@ -17,44 +16,37 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.certificate.CertificateKeyPair;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.CertificateMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificateEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificatePair;
 import de.rub.nds.tlsattacker.core.protocol.parser.CertificateMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.CertificateMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateMessageSerializer;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import java.io.InputStream;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlTransient;
+import java.io.InputStream;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
 
 @XmlRootElement(name = "Certificate")
 public class CertificateMessage extends HandshakeMessage {
 
-    /**
-     * request context length
-     */
+    /** request context length */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger requestContextLength;
-    /**
-     * request context
-     */
+    /** request context */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.NONE)
     private ModifiableByteArray requestContext;
 
-    /**
-     * certificates length
-     */
+    /** certificates length */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger certificatesListLength;
 
-    @ModifiableVariableProperty
-    private ModifiableByteArray certificatesListBytes;
+    @ModifiableVariableProperty private ModifiableByteArray certificatesListBytes;
 
     @HoldsModifiableVariable
     // this allows users to also send empty certificates
@@ -65,8 +57,7 @@ public class CertificateMessage extends HandshakeMessage {
     @XmlElement(name = "certificatesListConfig")
     private List<CertificatePair> certificateListConfig;
 
-    @HoldsModifiableVariable
-    private List<CertificateEntry> certificatesListAsEntry;
+    @HoldsModifiableVariable private List<CertificateEntry> certificatesListAsEntry;
 
     @XmlTransient
     // TODO should this be transient?
@@ -85,7 +76,8 @@ public class CertificateMessage extends HandshakeMessage {
     }
 
     public void setCertificatesListLength(int length) {
-        this.certificatesListLength = ModifiableVariableFactory.safelySetValue(certificatesListLength, length);
+        this.certificatesListLength =
+                ModifiableVariableFactory.safelySetValue(certificatesListLength, length);
     }
 
     public ModifiableByteArray getCertificatesListBytes() {
@@ -97,7 +89,8 @@ public class CertificateMessage extends HandshakeMessage {
     }
 
     public void setCertificatesListBytes(byte[] array) {
-        this.certificatesListBytes = ModifiableVariableFactory.safelySetValue(certificatesListBytes, array);
+        this.certificatesListBytes =
+                ModifiableVariableFactory.safelySetValue(certificatesListBytes, array);
     }
 
     public List<CertificatePair> getCertificatesList() {
@@ -139,7 +132,8 @@ public class CertificateMessage extends HandshakeMessage {
     }
 
     public void setRequestContextLength(int length) {
-        this.requestContextLength = ModifiableVariableFactory.safelySetValue(requestContextLength, length);
+        this.requestContextLength =
+                ModifiableVariableFactory.safelySetValue(requestContextLength, length);
     }
 
     public ModifiableByteArray getRequestContext() {
@@ -202,7 +196,8 @@ public class CertificateMessage extends HandshakeMessage {
 
     @Override
     public CertificateMessageSerializer getSerializer(TlsContext tlsContext) {
-        return new CertificateMessageSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new CertificateMessageSerializer(
+                this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override
@@ -267,5 +262,4 @@ public class CertificateMessage extends HandshakeMessage {
         }
         return Objects.equals(this.certificateKeyPair, other.certificateKeyPair);
     }
-
 }

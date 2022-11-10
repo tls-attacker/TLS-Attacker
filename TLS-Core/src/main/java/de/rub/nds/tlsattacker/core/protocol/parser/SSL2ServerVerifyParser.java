@@ -1,22 +1,21 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerVerifyMessage;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerVerifyMessage;
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class SSL2ServerVerifyParser extends SSL2HandshakeMessageParser<SSL2ServerVerifyMessage> {
+public class SSL2ServerVerifyParser extends SSL2MessageParser<SSL2ServerVerifyMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -27,13 +26,13 @@ public class SSL2ServerVerifyParser extends SSL2HandshakeMessageParser<SSL2Serve
     @Override
     public void parse(SSL2ServerVerifyMessage msg) {
         LOGGER.debug("Parsing SSL2ServerVerify");
-        parseMessageLength(msg);
         parseEncryptedPart(msg);
     }
 
     private void parseEncryptedPart(SSL2ServerVerifyMessage message) {
         message.setEncryptedPart(parseByteArrayField(message.getMessageLength().getValue()));
-        LOGGER.debug("Encrypted Part: " + ArrayConverter.bytesToHexString(message.getEncryptedPart().getValue()));
+        LOGGER.debug(
+                "Encrypted Part: "
+                        + ArrayConverter.bytesToHexString(message.getEncryptedPart().getValue()));
     }
-
 }

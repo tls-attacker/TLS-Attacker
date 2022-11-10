@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -16,9 +15,9 @@ import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PskSet;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.state.session.TicketSession;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
@@ -44,7 +43,8 @@ public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionT
         } else {
             byte[] ticket = message.getTicket().getIdentity().getValue();
             LOGGER.debug("Adding Session for Ticket resumption using dummy SessionID");
-            TicketSession session = new TicketSession(tlsContext.getChooser().getMasterSecret(), ticket);
+            TicketSession session =
+                    new TicketSession(tlsContext.getChooser().getMasterSecret(), ticket);
             tlsContext.addNewSession(session);
         }
     }
@@ -75,7 +75,8 @@ public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionT
             LOGGER.warn("No nonce in ticket. Using new byte[0] instead");
             pskSet.setTicketNonce(new byte[0]);
         }
-        // only derive PSK if client finished was already sent, because full handshake transcript is required
+        // only derive PSK if client finished was already sent, because full handshake transcript is
+        // required
         if (tlsContext.getActiveClientKeySetType() == Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS) {
             pskSet.setPreSharedKey(derivePsk(pskSet));
         }
@@ -83,11 +84,11 @@ public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionT
         LOGGER.debug("Adding PSK Set");
         pskSets.add(pskSet);
         tlsContext.setPskSets(pskSets);
-
     }
 
     private String getTicketAge() {
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+        DateTimeFormatter dateTimeFormatter =
+                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
         LocalDateTime ticketDate = LocalDateTime.now();
 
         return ticketDate.format(dateTimeFormatter);
@@ -98,19 +99,36 @@ public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionT
         try {
             LOGGER.debug("Deriving PSK from current session");
             HKDFAlgorithm hkdfAlgorithm =
-                AlgorithmResolver.getHKDFAlgorithm(tlsContext.getChooser().getSelectedCipherSuite());
-            DigestAlgorithm digestAlgo = AlgorithmResolver.getDigestAlgorithm(
-                tlsContext.getChooser().getSelectedProtocolVersion(), tlsContext.getChooser().getSelectedCipherSuite());
-            int macLength = Mac.getInstance(hkdfAlgorithm.getMacAlgorithm().getJavaName()).getMacLength();
-            byte[] resumptionMasterSecret = HKDFunction.deriveSecret(hkdfAlgorithm, digestAlgo.getJavaName(),
-                tlsContext.getChooser().getMasterSecret(), HKDFunction.RESUMPTION_MASTER_SECRET,
-                tlsContext.getDigest().getRawBytes());
+                    AlgorithmResolver.getHKDFAlgorithm(
+                            tlsContext.getChooser().getSelectedCipherSuite());
+            DigestAlgorithm digestAlgo =
+                    AlgorithmResolver.getDigestAlgorithm(
+                            tlsContext.getChooser().getSelectedProtocolVersion(),
+                            tlsContext.getChooser().getSelectedCipherSuite());
+            int macLength =
+                    Mac.getInstance(hkdfAlgorithm.getMacAlgorithm().getJavaName()).getMacLength();
+            byte[] resumptionMasterSecret =
+                    HKDFunction.deriveSecret(
+                            hkdfAlgorithm,
+                            digestAlgo.getJavaName(),
+                            tlsContext.getChooser().getMasterSecret(),
+                            HKDFunction.RESUMPTION_MASTER_SECRET,
+                            tlsContext.getDigest().getRawBytes());
             tlsContext.setResumptionMasterSecret(resumptionMasterSecret);
-            LOGGER.debug("Derived ResumptionMasterSecret: " + ArrayConverter.bytesToHexString(resumptionMasterSecret));
-            LOGGER.debug("Handshake Transcript Raw Bytes: "
-                + ArrayConverter.bytesToHexString(tlsContext.getDigest().getRawBytes()));
-            byte[] psk = HKDFunction.expandLabel(hkdfAlgorithm, resumptionMasterSecret, HKDFunction.RESUMPTION,
-                pskSet.getTicketNonce(), macLength);
+            LOGGER.debug(
+                    "Derived ResumptionMasterSecret: "
+                            + ArrayConverter.bytesToHexString(resumptionMasterSecret));
+            LOGGER.debug(
+                    "Handshake Transcript Raw Bytes: "
+                            + ArrayConverter.bytesToHexString(
+                                    tlsContext.getDigest().getRawBytes()));
+            byte[] psk =
+                    HKDFunction.expandLabel(
+                            hkdfAlgorithm,
+                            resumptionMasterSecret,
+                            HKDFunction.RESUMPTION,
+                            pskSet.getTicketNonce(),
+                            macLength);
             LOGGER.debug("New derived pre-shared-key: " + ArrayConverter.bytesToHexString(psk));
             return psk;
 

@@ -1,20 +1,19 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message.cert;
 
 import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
-import java.util.List;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import java.util.List;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class CertificateEntry {
@@ -29,8 +28,7 @@ public class CertificateEntry {
         this.extensions = extensions;
     }
 
-    public CertificateEntry() {
-    }
+    public CertificateEntry() {}
 
     public byte[] getCertificate() {
         return certificate;
@@ -47,5 +45,4 @@ public class CertificateEntry {
     public void setExtensions(List<ExtensionMessage> extensions) {
         this.extensions = extensions;
     }
-
 }

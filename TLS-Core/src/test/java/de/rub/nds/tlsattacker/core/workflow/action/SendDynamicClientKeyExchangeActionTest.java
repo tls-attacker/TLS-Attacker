@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -16,16 +15,14 @@ import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.record.Record;
-import de.rub.nds.tlsattacker.core.state.Context;
-import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import org.junit.jupiter.api.Test;
-
 import java.util.ArrayList;
 import java.util.List;
+import org.junit.jupiter.api.Test;
 
-public class SendDynamicClientKeyExchangeActionTest extends AbstractActionTest<SendDynamicClientKeyExchangeAction> {
+public class SendDynamicClientKeyExchangeActionTest
+        extends AbstractActionTest<SendDynamicClientKeyExchangeAction> {
 
     public SendDynamicClientKeyExchangeActionTest() {
         super(new SendDynamicClientKeyExchangeAction(), SendDynamicClientKeyExchangeAction.class);
@@ -37,17 +34,24 @@ public class SendDynamicClientKeyExchangeActionTest extends AbstractActionTest<S
 
     @Test
     public void testGetSendMessages() {
-        assertTrue(action.getSendMessages() instanceof ArrayList && action.getSendMessages().isEmpty());
+        assertTrue(
+                action.getSendMessages() instanceof ArrayList
+                        && action.getSendMessages().isEmpty());
         action.execute(state);
-        assertTrue(action.getSendMessages() instanceof ArrayList && action.getSendMessages().size() == 1
-            && action.getSendMessages().get(0) instanceof DHClientKeyExchangeMessage);
+        assertTrue(
+                action.getSendMessages() instanceof ArrayList
+                        && action.getSendMessages().size() == 1
+                        && action.getSendMessages().get(0) instanceof DHClientKeyExchangeMessage);
     }
 
     @Test
     public void testGetSendRecords() {
-        assertTrue(action.getSendRecords() instanceof ArrayList && action.getSendRecords().isEmpty());
+        assertTrue(
+                action.getSendRecords() instanceof ArrayList && action.getSendRecords().isEmpty());
         action.execute(state);
-        assertTrue(action.getSendRecords() instanceof ArrayList && action.getSendRecords().size() == 1);
+        assertTrue(
+                action.getSendRecords() instanceof ArrayList
+                        && action.getSendRecords().size() == 1);
     }
 
     @Test
@@ -67,11 +71,15 @@ public class SendDynamicClientKeyExchangeActionTest extends AbstractActionTest<S
 
     @Test
     public void testToString() {
-        assertEquals("Send Dynamic Client Key Exchange Action: (not executed)\n\tMessages:\n", action.toString());
+        assertEquals(
+                "Send Dynamic Client Key Exchange Action: (not executed)\n\tMessages:\n",
+                action.toString());
     }
 
     @Test
     public void testToCompactString() {
-        assertEquals("SendDynamicClientKeyExchangeAction [client] (no messages set)", action.toCompactString());
+        assertEquals(
+                "SendDynamicClientKeyExchangeAction [client] (no messages set)",
+                action.toCompactString());
     }
 }

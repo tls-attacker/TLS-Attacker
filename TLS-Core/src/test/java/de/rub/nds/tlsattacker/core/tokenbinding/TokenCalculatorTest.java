@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.tokenbinding;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -19,9 +18,7 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-/**
- * s_client -keymatexport “label” -keymatexportlen 20
- */
+/** s_client -keymatexport “label” -keymatexportlen 20 */
 public class TokenCalculatorTest {
 
     private TlsContext context;
@@ -38,16 +35,20 @@ public class TokenCalculatorTest {
      */
     @Test
     public void testCalculateEKM() throws CryptoException {
-        context.setMasterSecret(ArrayConverter.hexStringToByteArray(
-            "6D7B3B37807AFB5BAFEB46A3BA1AD1BCE0CF31DA68D635EC9A8130CB9A0241C437DF4D988ED2D00D3AC5FECEB056C3C7"));
+        context.setMasterSecret(
+                ArrayConverter.hexStringToByteArray(
+                        "6D7B3B37807AFB5BAFEB46A3BA1AD1BCE0CF31DA68D635EC9A8130CB9A0241C437DF4D988ED2D00D3AC5FECEB056C3C7"));
         context.setClientRandom(
-            ArrayConverter.hexStringToByteArray("bb34871e6271841dc8fddb4e2ec5fdf92fec4b144434096b98d5a091511f89f0"));
+                ArrayConverter.hexStringToByteArray(
+                        "bb34871e6271841dc8fddb4e2ec5fdf92fec4b144434096b98d5a091511f89f0"));
         context.setServerRandom(
-            ArrayConverter.hexStringToByteArray("15c9f5b1c30fb1e0b87cebf5756200555dba15241c890652d3306e8194858735"));
+                ArrayConverter.hexStringToByteArray(
+                        "15c9f5b1c30fb1e0b87cebf5756200555dba15241c890652d3306e8194858735"));
         context.setSelectedCipherSuite(CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
-        assertArrayEquals(ArrayConverter.hexStringToByteArray("C2199B4A1CD5404F03DBAAB9B69ECBA607687555"),
-            TokenCalculator.calculateEKM(context.getChooser(), 20));
+        assertArrayEquals(
+                ArrayConverter.hexStringToByteArray("C2199B4A1CD5404F03DBAAB9B69ECBA607687555"),
+                TokenCalculator.calculateEKM(context.getChooser(), 20));
     }
 
     /**
@@ -57,16 +58,19 @@ public class TokenCalculatorTest {
      */
     @Test
     public void testCalculateSSLEKM() throws CryptoException {
-        context.setMasterSecret(ArrayConverter.hexStringToByteArray(
-            "6D7B3B37807AFB5BAFEB46A3BA1AD1BCE0CF31DA68D635EC9A8130CB9A0241C437DF4D988ED2D00D3AC5FECEB056C3C7"));
+        context.setMasterSecret(
+                ArrayConverter.hexStringToByteArray(
+                        "6D7B3B37807AFB5BAFEB46A3BA1AD1BCE0CF31DA68D635EC9A8130CB9A0241C437DF4D988ED2D00D3AC5FECEB056C3C7"));
         context.setClientRandom(
-            ArrayConverter.hexStringToByteArray("bb34871e6271841dc8fddb4e2ec5fdf92fec4b144434096b98d5a091511f89f0"));
+                ArrayConverter.hexStringToByteArray(
+                        "bb34871e6271841dc8fddb4e2ec5fdf92fec4b144434096b98d5a091511f89f0"));
         context.setServerRandom(
-            ArrayConverter.hexStringToByteArray("15c9f5b1c30fb1e0b87cebf5756200555dba15241c890652d3306e8194858735"));
+                ArrayConverter.hexStringToByteArray(
+                        "15c9f5b1c30fb1e0b87cebf5756200555dba15241c890652d3306e8194858735"));
         context.setSelectedCipherSuite(CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
-        assertArrayEquals(ArrayConverter.hexStringToByteArray("C2199B4A1CD5404F03DBAAB9B69ECBA607687555"),
-            TokenCalculator.calculateEKM(context.getChooser(), 20));
+        assertArrayEquals(
+                ArrayConverter.hexStringToByteArray("C2199B4A1CD5404F03DBAAB9B69ECBA607687555"),
+                TokenCalculator.calculateEKM(context.getChooser(), 20));
     }
-
 }

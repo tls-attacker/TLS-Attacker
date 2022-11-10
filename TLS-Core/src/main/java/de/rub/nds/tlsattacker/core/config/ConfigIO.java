@@ -1,21 +1,16 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.config;
 
 import de.rub.nds.tlsattacker.core.config.filter.ConfigDisplayFilter;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceSerializer;
 import jakarta.xml.bind.*;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.xml.sax.SAXException;
-
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import javax.xml.XMLConstants;
@@ -25,14 +20,15 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.xml.sax.SAXException;
 
 public class ConfigIO {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /**
-     * context initialization is expensive, we need to do that only once
-     */
+    /** context initialization is expensive, we need to do that only once */
     private static JAXBContext context;
 
     static synchronized JAXBContext getJAXBContext() throws JAXBException {
@@ -55,7 +51,10 @@ public class ConfigIO {
         JAXB.marshal(config, tempStream);
         try {
             os.write(
-                tempStream.toString().replaceAll("\r?\n", System.lineSeparator()).getBytes(StandardCharsets.UTF_8));
+                    tempStream
+                            .toString()
+                            .replaceAll("\r?\n", System.lineSeparator())
+                            .getBytes(StandardCharsets.UTF_8));
         } catch (IOException ex) {
             throw new RuntimeException("Could not format XML");
         }
@@ -77,13 +76,14 @@ public class ConfigIO {
         try {
             Unmarshaller unmarshaller = getJAXBContext().createUnmarshaller();
             // output any anomalies in the given config file
-            unmarshaller.setEventHandler(new ValidationEventHandler() {
-                @Override
-                public boolean handleEvent(ValidationEvent event) {
-                    // Raise an exception also on warnings
-                    return false;
-                }
-            });
+            unmarshaller.setEventHandler(
+                    new ValidationEventHandler() {
+                        @Override
+                        public boolean handleEvent(ValidationEvent event) {
+                            // Raise an exception also on warnings
+                            return false;
+                        }
+                    });
             try (FileInputStream fis = new FileInputStream(f)) {
                 return read(fis, unmarshaller);
             }
@@ -98,10 +98,11 @@ public class ConfigIO {
         try {
             Unmarshaller unmarshaller = getJAXBContext().createUnmarshaller();
             // output any anomalies in the given config file
-            unmarshaller.setEventHandler(event -> {
-                // Raise an exception also on warnings
-                return false;
-            });
+            unmarshaller.setEventHandler(
+                    event -> {
+                        // Raise an exception also on warnings
+                        return false;
+                    });
             return read(stream, unmarshaller);
         } catch (JAXBException e) {
             throw new RuntimeException(e);
@@ -111,24 +112,24 @@ public class ConfigIO {
     /**
      * Reads the XML from the given inputStream with the provided unmarshaller into a new Config
      *
-     * @param  stream
-     *                      The stream that provides the XML structure
-     * @param  unmarshaller
-     *                      The unmarshaller that will be used during the parsing
-     * @return              Config a new Config that contains the parsed values from the inputStream
+     * @param stream The stream that provides the XML structure
+     * @param unmarshaller The unmarshaller that will be used during the parsing
+     * @return Config a new Config that contains the parsed values from the inputStream
      */
     private static Config read(InputStream stream, Unmarshaller unmarshaller) {
         if (stream == null) {
             throw new IllegalArgumentException("Stream cannot be null");
         }
         try {
-            String xsd_source = ConfigSchemaGenerator.AccumulatingSchemaOutputResolver.mapSystemIds();
+            String xsd_source =
+                    ConfigSchemaGenerator.AccumulatingSchemaOutputResolver.mapSystemIds();
             XMLInputFactory xif = XMLInputFactory.newFactory();
             xif.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
             xif.setProperty(XMLInputFactory.SUPPORT_DTD, false);
             XMLStreamReader xsr = xif.createXMLStreamReader(stream);
             SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-            try (InputStream schemaInputStream = WorkflowTraceSerializer.class.getResourceAsStream("/" + xsd_source)) {
+            try (InputStream schemaInputStream =
+                    WorkflowTraceSerializer.class.getResourceAsStream("/" + xsd_source)) {
                 Schema configSchema = sf.newSchema(new StreamSource(schemaInputStream));
                 configSchema.newValidator();
                 unmarshaller.setSchema(configSchema);
@@ -145,6 +146,5 @@ public class ConfigIO {
         return ConfigIO.read(new ByteArrayInputStream(byteArrayOutputStream.toByteArray()));
     }
 
-    private ConfigIO() {
-    }
+    private ConfigIO() {}
 }

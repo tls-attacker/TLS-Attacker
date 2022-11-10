@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
@@ -22,24 +21,19 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedO
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.CachedInfoExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.CachedInfoExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.CachedInfoExtensionSerializer;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
-import jakarta.xml.bind.annotation.XmlRootElement;
 
-/**
- * RFC7924
- */
+/** RFC7924 */
 @XmlRootElement(name = "CachedInfoExtension")
 public class CachedInfoExtensionMessage extends ExtensionMessage<CachedInfoExtensionMessage> {
 
-    @ModifiableVariableProperty
-    private ModifiableInteger cachedInfoLength;
-    @HoldsModifiableVariable
-    private List<CachedObject> cachedInfo;
+    @ModifiableVariableProperty private ModifiableInteger cachedInfoLength;
+    @HoldsModifiableVariable private List<CachedObject> cachedInfo;
 
-    @ModifiableVariableProperty
-    private ModifiableByteArray cachedInfoBytes;
+    @ModifiableVariableProperty private ModifiableByteArray cachedInfoBytes;
 
     public CachedInfoExtensionMessage() {
         super(ExtensionType.CACHED_INFO);
@@ -61,7 +55,8 @@ public class CachedInfoExtensionMessage extends ExtensionMessage<CachedInfoExten
     }
 
     public void setCachedInfoLength(int cachedInfoLength) {
-        this.cachedInfoLength = ModifiableVariableFactory.safelySetValue(this.cachedInfoLength, cachedInfoLength);
+        this.cachedInfoLength =
+                ModifiableVariableFactory.safelySetValue(this.cachedInfoLength, cachedInfoLength);
     }
 
     public List<CachedObject> getCachedInfo() {
@@ -81,7 +76,8 @@ public class CachedInfoExtensionMessage extends ExtensionMessage<CachedInfoExten
     }
 
     public void setCachedInfoBytes(byte[] cachedInfoBytes) {
-        this.cachedInfoBytes = ModifiableVariableFactory.safelySetValue(this.cachedInfoBytes, cachedInfoBytes);
+        this.cachedInfoBytes =
+                ModifiableVariableFactory.safelySetValue(this.cachedInfoBytes, cachedInfoBytes);
     }
 
     @Override
@@ -103,5 +99,4 @@ public class CachedInfoExtensionMessage extends ExtensionMessage<CachedInfoExten
     public CachedInfoExtensionHandler getHandler(TlsContext tlsContext) {
         return new CachedInfoExtensionHandler(tlsContext);
     }
-
 }

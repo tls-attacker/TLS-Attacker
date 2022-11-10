@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -17,18 +16,18 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.ClientHelloHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.*;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
 import de.rub.nds.tlsattacker.core.protocol.parser.ClientHelloParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ClientHelloPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ClientHelloSerializer;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.Date;
 import java.util.Objects;
-import jakarta.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -36,24 +35,16 @@ import org.apache.logging.log4j.Logger;
 public class ClientHelloMessage extends HelloMessage {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    /**
-     * compression length
-     */
+    /** compression length */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger compressionLength;
-    /**
-     * cipher suite byte length
-     */
+    /** cipher suite byte length */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger cipherSuiteLength;
-    /**
-     * array of supported CipherSuites
-     */
+    /** array of supported CipherSuites */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByteArray cipherSuites;
-    /**
-     * array of supported compressions
-     */
+    /** array of supported compressions */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByteArray compressions;
 
@@ -70,7 +61,8 @@ public class ClientHelloMessage extends HelloMessage {
     public ClientHelloMessage(Config tlsConfig) {
         super(HandshakeMessageType.CLIENT_HELLO);
         if (!tlsConfig.getHighestProtocolVersion().isSSL()
-            || (tlsConfig.getHighestProtocolVersion().isSSL() && tlsConfig.isAddExtensionsInSSL())) {
+                || (tlsConfig.getHighestProtocolVersion().isSSL()
+                        && tlsConfig.isAddExtensionsInSSL())) {
             if (tlsConfig.isAddHeartbeatExtension()) {
                 addExtension(new HeartbeatExtensionMessage());
             }
@@ -87,21 +79,26 @@ public class ClientHelloMessage extends HelloMessage {
                 addExtension(new RecordSizeLimitExtensionMessage());
             }
             if (tlsConfig.isAddServerNameIndicationExtension()) {
-                ServerNameIndicationExtensionMessage extension = new ServerNameIndicationExtensionMessage();
+                ServerNameIndicationExtensionMessage extension =
+                        new ServerNameIndicationExtensionMessage();
                 addExtension(extension);
             }
             if (tlsConfig.isAddEncryptedServerNameIndicationExtension()) {
                 EncryptedServerNameIndicationExtensionMessage extensionMessage =
-                    new EncryptedServerNameIndicationExtensionMessage();
+                        new EncryptedServerNameIndicationExtensionMessage();
                 byte[] serverName;
                 if (tlsConfig.getDefaultClientConnection().getHostname() != null) {
                     serverName =
-                        tlsConfig.getDefaultClientConnection().getHostname().getBytes(Charset.forName("ASCII"));
+                            tlsConfig
+                                    .getDefaultClientConnection()
+                                    .getHostname()
+                                    .getBytes(Charset.forName("ASCII"));
                 } else {
                     LOGGER.warn("SNI not correctly configured!");
                     serverName = new byte[0];
                 }
-                ServerNamePair pair = new ServerNamePair(tlsConfig.getSniType().getValue(), serverName);
+                ServerNamePair pair =
+                        new ServerNamePair(tlsConfig.getSniType().getValue(), serverName);
                 extensionMessage.getClientEsniInner().getServerNameList().add(pair);
                 addExtension(extensionMessage);
             }
@@ -229,7 +226,8 @@ public class ClientHelloMessage extends HelloMessage {
     }
 
     public void setCompressionLength(int compressionLength) {
-        this.compressionLength = ModifiableVariableFactory.safelySetValue(this.compressionLength, compressionLength);
+        this.compressionLength =
+                ModifiableVariableFactory.safelySetValue(this.compressionLength, compressionLength);
     }
 
     public void setCipherSuiteLength(ModifiableInteger cipherSuiteLength) {
@@ -237,7 +235,8 @@ public class ClientHelloMessage extends HelloMessage {
     }
 
     public void setCipherSuiteLength(int cipherSuiteLength) {
-        this.cipherSuiteLength = ModifiableVariableFactory.safelySetValue(this.cipherSuiteLength, cipherSuiteLength);
+        this.cipherSuiteLength =
+                ModifiableVariableFactory.safelySetValue(this.cipherSuiteLength, cipherSuiteLength);
     }
 
     public void setCipherSuites(ModifiableByteArray cipherSuites) {
@@ -273,7 +272,8 @@ public class ClientHelloMessage extends HelloMessage {
     }
 
     public void setCookieLength(int cookieLength) {
-        this.cookieLength = ModifiableVariableFactory.safelySetValue(this.cookieLength, cookieLength);
+        this.cookieLength =
+                ModifiableVariableFactory.safelySetValue(this.cookieLength, cookieLength);
     }
 
     public void setCookieLength(ModifiableInteger cookieLength) {
@@ -353,7 +353,8 @@ public class ClientHelloMessage extends HelloMessage {
 
     @Override
     public ClientHelloSerializer getSerializer(TlsContext tlsContext) {
-        return new ClientHelloSerializer(this, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new ClientHelloSerializer(
+                this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override
@@ -397,5 +398,4 @@ public class ClientHelloMessage extends HelloMessage {
         }
         return Objects.equals(this.cookieLength, other.cookieLength);
     }
-
 }

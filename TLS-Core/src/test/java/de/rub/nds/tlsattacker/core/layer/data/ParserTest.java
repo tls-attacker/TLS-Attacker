@@ -1,24 +1,22 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.layer.data;
 
-import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
 import static org.junit.jupiter.api.Assertions.*;
 
+import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import java.io.ByteArrayInputStream;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import java.math.BigInteger;
 import java.nio.charset.Charset;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ParserTest {
 
@@ -27,8 +25,8 @@ public class ParserTest {
 
     @BeforeEach
     public void setUp() {
-        byte[] bytesToParse = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
-        byte[] bytesToParseMiddle = new byte[] { 3, 4, 5, 6, 7, 8 };
+        byte[] bytesToParse = new byte[] {0, 1, 2, 3, 4, 5, 6, 7, 8};
+        byte[] bytesToParseMiddle = new byte[] {3, 4, 5, 6, 7, 8};
         parser = new ParserImpl(bytesToParse);
         middleParser = new ParserImpl(bytesToParseMiddle);
     }
@@ -39,29 +37,23 @@ public class ParserTest {
         assertThrows(EndOfStreamException.class, () -> parser.parseByteField(1));
     }
 
-    /**
-     * Test of parseByteArrayField method, of class Parser.
-     */
+    /** Test of parseByteArrayField method, of class Parser. */
     @Test
     public void testParseByteField() {
         byte[] result = parser.parseByteArrayField(1);
-        assertArrayEquals(result, new byte[] { 0 });
+        assertArrayEquals(result, new byte[] {0});
         result = parser.parseByteArrayField(2);
-        assertArrayEquals(result, new byte[] { 1, 2 });
+        assertArrayEquals(result, new byte[] {1, 2});
     }
 
-    /**
-     * Test of parseSingleByteField method, of class Parser.
-     */
+    /** Test of parseSingleByteField method, of class Parser. */
     @Test
     public void testParseSingleByteField() {
         byte result = parser.parseByteField(1);
         assertEquals(result, 0);
     }
 
-    /**
-     * Test of parseIntField method, of class Parser.
-     */
+    /** Test of parseIntField method, of class Parser. */
     @Test
     public void testParseIntField() {
         int result = parser.parseIntField(1);
@@ -74,9 +66,7 @@ public class ParserTest {
         assertEquals(0x0405, result);
     }
 
-    /**
-     * Test of parseIntField method, of class Parser.
-     */
+    /** Test of parseIntField method, of class Parser. */
     @Test
     public void testParseBigIntField() {
         BigInteger result = parser.parseBigIntField(1);
@@ -123,18 +113,18 @@ public class ParserTest {
     public void testAlreadyParsed() {
         assertArrayEquals(parser.getAlreadyParsed(), new byte[0]);
         parser.parseIntField(1);
-        assertArrayEquals(parser.getAlreadyParsed(), new byte[] { 0 });
+        assertArrayEquals(parser.getAlreadyParsed(), new byte[] {0});
         parser.parseIntField(3);
-        assertArrayEquals(parser.getAlreadyParsed(), new byte[] { 0, 1, 2, 3 });
+        assertArrayEquals(parser.getAlreadyParsed(), new byte[] {0, 1, 2, 3});
     }
 
     @Test
     public void testAlreadyParsedMiddle() {
         assertArrayEquals(middleParser.getAlreadyParsed(), new byte[0]);
         middleParser.parseIntField(1);
-        assertArrayEquals(middleParser.getAlreadyParsed(), new byte[] { 3 });
+        assertArrayEquals(middleParser.getAlreadyParsed(), new byte[] {3});
         middleParser.parseIntField(3);
-        assertArrayEquals(middleParser.getAlreadyParsed(), new byte[] { 3, 4, 5, 6 });
+        assertArrayEquals(middleParser.getAlreadyParsed(), new byte[] {3, 4, 5, 6});
     }
 
     @Test
@@ -146,7 +136,6 @@ public class ParserTest {
         assertFalse(parser.enoughBytesLeft(9));
         assertTrue(parser.enoughBytesLeft(2));
         assertTrue(parser.enoughBytesLeft(1));
-
     }
 
     @Test
@@ -172,7 +161,6 @@ public class ParserTest {
         }
 
         @Override
-        public void parse(Object o) {
-        }
+        public void parse(Object o) {}
     }
 }

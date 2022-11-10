@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -19,28 +18,58 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.ServerHelloHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.*;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
 import de.rub.nds.tlsattacker.core.protocol.parser.ServerHelloParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ServerHelloPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ServerHelloSerializer;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Objects;
-import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "ServerHello")
 public class ServerHelloMessage extends HelloMessage {
 
-    private static final byte[] HELLO_RETRY_REQUEST_RANDOM = new byte[] { (byte) 0xCF, (byte) 0x21, (byte) 0xAD,
-        (byte) 0x74, (byte) 0xE5, (byte) 0x9A, (byte) 0x61, (byte) 0x11, (byte) 0xBE, (byte) 0x1D, (byte) 0x8C,
-        (byte) 0x02, (byte) 0x1E, (byte) 0x65, (byte) 0xB8, (byte) 0x91, (byte) 0xC2, (byte) 0xA2, (byte) 0x11,
-        (byte) 0x16, (byte) 0x7A, (byte) 0xBB, (byte) 0x8C, (byte) 0x5E, (byte) 0x07, (byte) 0x9E, (byte) 0x09,
-        (byte) 0xE2, (byte) 0xC8, (byte) 0xA8, (byte) 0x33, (byte) 0x9C };
+    private static final byte[] HELLO_RETRY_REQUEST_RANDOM =
+            new byte[] {
+                (byte) 0xCF,
+                (byte) 0x21,
+                (byte) 0xAD,
+                (byte) 0x74,
+                (byte) 0xE5,
+                (byte) 0x9A,
+                (byte) 0x61,
+                (byte) 0x11,
+                (byte) 0xBE,
+                (byte) 0x1D,
+                (byte) 0x8C,
+                (byte) 0x02,
+                (byte) 0x1E,
+                (byte) 0x65,
+                (byte) 0xB8,
+                (byte) 0x91,
+                (byte) 0xC2,
+                (byte) 0xA2,
+                (byte) 0x11,
+                (byte) 0x16,
+                (byte) 0x7A,
+                (byte) 0xBB,
+                (byte) 0x8C,
+                (byte) 0x5E,
+                (byte) 0x07,
+                (byte) 0x9E,
+                (byte) 0x09,
+                (byte) 0xE2,
+                (byte) 0xC8,
+                (byte) 0xA8,
+                (byte) 0x33,
+                (byte) 0x9C
+            };
 
     public static byte[] getHelloRetryRequestRandom() {
         return HELLO_RETRY_REQUEST_RANDOM;
@@ -57,23 +86,32 @@ public class ServerHelloMessage extends HelloMessage {
     public ServerHelloMessage(Config tlsConfig) {
         super(HandshakeMessageType.SERVER_HELLO);
         if (!tlsConfig.getHighestProtocolVersion().isSSL()
-            || (tlsConfig.getHighestProtocolVersion().isSSL() && tlsConfig.isAddExtensionsInSSL())) {
+                || (tlsConfig.getHighestProtocolVersion().isSSL()
+                        && tlsConfig.isAddExtensionsInSSL())) {
             if (tlsConfig.isAddHeartbeatExtension()) {
                 addExtension(new HeartbeatExtensionMessage());
             }
-            if (tlsConfig.isAddECPointFormatExtension() && !tlsConfig.getHighestProtocolVersion().isTLS13()) {
+            if (tlsConfig.isAddECPointFormatExtension()
+                    && !tlsConfig.getHighestProtocolVersion().isTLS13()) {
                 addExtension(new ECPointFormatExtensionMessage());
             }
             if (tlsConfig.isAddMaxFragmentLengthExtension()) {
                 addExtension(new MaxFragmentLengthExtensionMessage());
             }
-            if (tlsConfig.isAddRecordSizeLimitExtension() && !tlsConfig.getHighestProtocolVersion().isTLS13()) {
+            if (tlsConfig.isAddRecordSizeLimitExtension()
+                    && !tlsConfig.getHighestProtocolVersion().isTLS13()) {
                 addExtension(new RecordSizeLimitExtensionMessage());
             }
             if (tlsConfig.isAddServerNameIndicationExtension()) {
-                ServerNameIndicationExtensionMessage extension = new ServerNameIndicationExtensionMessage();
-                ServerNamePair pair = new ServerNamePair(tlsConfig.getSniType().getValue(),
-                    tlsConfig.getDefaultServerConnection().getHostname().getBytes(Charset.forName("US-ASCII")));
+                ServerNameIndicationExtensionMessage extension =
+                        new ServerNameIndicationExtensionMessage();
+                ServerNamePair pair =
+                        new ServerNamePair(
+                                tlsConfig.getSniType().getValue(),
+                                tlsConfig
+                                        .getDefaultServerConnection()
+                                        .getHostname()
+                                        .getBytes(Charset.forName("US-ASCII")));
                 extension.getServerNameList().add(pair);
                 addExtension(extension);
             }
@@ -167,7 +205,6 @@ public class ServerHelloMessage extends HelloMessage {
 
     public ServerHelloMessage() {
         super(HandshakeMessageType.SERVER_HELLO);
-
     }
 
     public ModifiableByteArray getSelectedCipherSuite() {
@@ -179,7 +216,8 @@ public class ServerHelloMessage extends HelloMessage {
     }
 
     public void setSelectedCipherSuite(byte[] value) {
-        this.selectedCipherSuite = ModifiableVariableFactory.safelySetValue(this.selectedCipherSuite, value);
+        this.selectedCipherSuite =
+                ModifiableVariableFactory.safelySetValue(this.selectedCipherSuite, value);
     }
 
     public ModifiableByte getSelectedCompressionMethod() {
@@ -192,7 +230,7 @@ public class ServerHelloMessage extends HelloMessage {
 
     public void setSelectedCompressionMethod(byte value) {
         this.selectedCompressionMethod =
-            ModifiableVariableFactory.safelySetValue(this.selectedCompressionMethod, value);
+                ModifiableVariableFactory.safelySetValue(this.selectedCompressionMethod, value);
     }
 
     public Boolean isTls13HelloRetryRequest() {
@@ -212,10 +250,11 @@ public class ServerHelloMessage extends HelloMessage {
         } else {
             sb.append("null");
         }
-        if (getProtocolVersion() != null && getProtocolVersion().getValue() != null
-            && !ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()).isTLS13()) {
+        if (getProtocolVersion() != null
+                && getProtocolVersion().getValue() != null
+                && !ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()).isTLS13()) {
             sb.append("\n  Server Unix Time: ")
-                .append(new Date(ArrayConverter.bytesToLong(getUnixTime().getValue()) * 1000));
+                    .append(new Date(ArrayConverter.bytesToLong(getUnixTime().getValue()) * 1000));
         }
         sb.append("\n  Server Unix Time: ");
         if (getProtocolVersion() != null) {
@@ -252,7 +291,9 @@ public class ServerHelloMessage extends HelloMessage {
         sb.append("\n  Selected Compression Method: ");
         if (getProtocolVersion() != null && getProtocolVersion().getValue() != null) {
             if (!ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()).isTLS13()) {
-                sb.append(CompressionMethod.getCompressionMethod(selectedCompressionMethod.getValue()));
+                sb.append(
+                        CompressionMethod.getCompressionMethod(
+                                selectedCompressionMethod.getValue()));
             } else {
                 sb.append("null");
             }
@@ -350,7 +391,7 @@ public class ServerHelloMessage extends HelloMessage {
         if (!Objects.equals(this.selectedCompressionMethod, other.selectedCompressionMethod)) {
             return false;
         }
-        return Objects.equals(this.autoSetHelloRetryModeInKeyShare, other.autoSetHelloRetryModeInKeyShare);
+        return Objects.equals(
+                this.autoSetHelloRetryModeInKeyShare, other.autoSetHelloRetryModeInKeyShare);
     }
-
 }

@@ -1,15 +1,15 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.data.Handler;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
@@ -17,14 +17,12 @@ import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.EncryptedServerNameIndicationExtensionPreparator;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 
 /**
- * @param <HandshakeMessageT>
- *                            The ProtocolMessage that should be handled
+ * @param <HandshakeMessageT> The ProtocolMessage that should be handled
  */
 public abstract class HandshakeMessageHandler<HandshakeMessageT extends HandshakeMessage>
-    extends ProtocolMessageHandler<HandshakeMessageT> {
+        extends ProtocolMessageHandler<HandshakeMessageT> {
 
     public HandshakeMessageHandler(TlsContext tlsContext) {
         super(tlsContext);
@@ -52,8 +50,10 @@ public abstract class HandshakeMessageHandler<HandshakeMessageT extends Handshak
 
                 if (extensionMessage instanceof EncryptedServerNameIndicationExtensionMessage) {
                     EncryptedServerNameIndicationExtensionPreparator preparator =
-                        (EncryptedServerNameIndicationExtensionPreparator) ((EncryptedServerNameIndicationExtensionMessage) extensionMessage)
-                            .getPreparator(tlsContext);
+                            (EncryptedServerNameIndicationExtensionPreparator)
+                                    ((EncryptedServerNameIndicationExtensionMessage)
+                                                    extensionMessage)
+                                            .getPreparator(tlsContext);
                     if (message instanceof ClientHelloMessage) {
                         preparator.setClientHelloMessage((ClientHelloMessage) message);
                     }

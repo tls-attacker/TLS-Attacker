@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.tokenbinding;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -49,9 +48,12 @@ public class TokenBindingMessagePreparator extends ProtocolMessagePreparator<Tok
 
     @Override
     protected void prepareProtocolMessageContents() {
-        message.setTokenbindingType(chooser.getConfig().getDefaultTokenBindingType().getTokenBindingTypeValue());
-        message.setKeyParameter(chooser.getConfig().getDefaultTokenBindingKeyParameters().get(0).getValue());
-        if (chooser.getConfig().getDefaultTokenBindingKeyParameters().get(0) == TokenBindingKeyParameters.ECDSAP256) {
+        message.setTokenbindingType(
+                chooser.getConfig().getDefaultTokenBindingType().getTokenBindingTypeValue());
+        message.setKeyParameter(
+                chooser.getConfig().getDefaultTokenBindingKeyParameters().get(0).getValue());
+        if (chooser.getConfig().getDefaultTokenBindingKeyParameters().get(0)
+                == TokenBindingKeyParameters.ECDSAP256) {
             EllipticCurve curve = CurveFactory.getCurve(NamedGroup.SECP256R1);
             BigInteger privateKey = chooser.getConfig().getDefaultTokenBindingEcPrivateKey();
             LOGGER.debug("Using private Key:" + privateKey);
@@ -60,8 +62,9 @@ public class TokenBindingMessagePreparator extends ProtocolMessagePreparator<Tok
             message.setPoint(PointFormatter.toRawFormat(publicKey));
             message.setPointLength(message.getPoint().getValue().length);
             ParametersWithRandom params =
-                new ParametersWithRandom(new ECPrivateKeyParameters(privateKey, generateEcParameters()),
-                    new BadRandom(new Random(0), new byte[0]));
+                    new ParametersWithRandom(
+                            new ECPrivateKeyParameters(privateKey, generateEcParameters()),
+                            new BadRandom(new Random(0), new byte[0]));
             ECDSASigner signer = new ECDSASigner();
             signer.init(true, params);
             MessageDigest dig;
@@ -73,12 +76,16 @@ public class TokenBindingMessagePreparator extends ProtocolMessagePreparator<Tok
             dig.update(generateToBeSigned());
             BigInteger[] signature = signer.generateSignature(dig.digest());
 
-            message.setSignature(ArrayConverter.concatenate(ArrayConverter.bigIntegerToByteArray(signature[0]),
-                ArrayConverter.bigIntegerToByteArray(signature[1])));
+            message.setSignature(
+                    ArrayConverter.concatenate(
+                            ArrayConverter.bigIntegerToByteArray(signature[0]),
+                            ArrayConverter.bigIntegerToByteArray(signature[1])));
         } else {
-            message.setModulus(chooser.getConfig().getDefaultTokenBindingRsaModulus().toByteArray());
+            message.setModulus(
+                    chooser.getConfig().getDefaultTokenBindingRsaModulus().toByteArray());
             message.setModulusLength(message.getModulus().getValue().length);
-            message.setPublicExponent(chooser.getConfig().getDefaultTokenBindingRsaPublicKey().toByteArray());
+            message.setPublicExponent(
+                    chooser.getConfig().getDefaultTokenBindingRsaPublicKey().toByteArray());
             message.setPublicExponentLength(message.getPublicExponent().getValue().length);
             message.setSignature(new byte[0]);
         }
@@ -92,10 +99,13 @@ public class TokenBindingMessagePreparator extends ProtocolMessagePreparator<Tok
     }
 
     private ECDomainParameters generateEcParameters() {
-        NamedGroup[] groups = new NamedGroup[] { NamedGroup.SECP256R1 };
-        ECPointFormat[] formats = new ECPointFormat[] { ECPointFormat.UNCOMPRESSED };
-        InputStream is = new ByteArrayInputStream(ArrayConverter
-            .concatenate(new byte[] { EllipticCurveType.NAMED_CURVE.getValue() }, NamedGroup.SECP256R1.getValue()));
+        NamedGroup[] groups = new NamedGroup[] {NamedGroup.SECP256R1};
+        ECPointFormat[] formats = new ECPointFormat[] {ECPointFormat.UNCOMPRESSED};
+        InputStream is =
+                new ByteArrayInputStream(
+                        ArrayConverter.concatenate(
+                                new byte[] {EllipticCurveType.NAMED_CURVE.getValue()},
+                                NamedGroup.SECP256R1.getValue()));
         ECDomainParameters ecParams;
         try {
             ecParams = ECCUtilsBCWrapper.readECParameters(groups, formats, is);
@@ -109,8 +119,8 @@ public class TokenBindingMessagePreparator extends ProtocolMessagePreparator<Tok
     private byte[] generateToBeSigned() {
         try {
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            stream.write(new byte[] { message.getTokenbindingType().getValue() });
-            stream.write(new byte[] { message.getKeyParameter().getValue() });
+            stream.write(new byte[] {message.getTokenbindingType().getValue()});
+            stream.write(new byte[] {message.getKeyParameter().getValue()});
             stream.write(TokenCalculator.calculateEKM(chooser, 32));
             return stream.toByteArray();
         } catch (IOException | CryptoException ex) {

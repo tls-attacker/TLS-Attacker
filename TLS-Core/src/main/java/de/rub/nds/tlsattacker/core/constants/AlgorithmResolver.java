@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.constants;
 
 import java.util.HashSet;
@@ -14,25 +13,23 @@ import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- * Resolves crypto algorithms and their properties from a given cipher suite (and TLS version).
- */
+/** Resolves crypto algorithms and their properties from a given cipher suite (and TLS version). */
 public class AlgorithmResolver {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     /**
-     * Returns a PRF algorithm based on the protocol version and the cipher suite. TLS 1.0 and 1.1 used a legacy PRF
-     * based on MD5 and SHA-1. TLS 1.2 uses per default SHA256 PRF, but allows for definition of further PRFs in
-     * specific cipher suites (the last part of a cipher suite string identifies the PRF).
+     * Returns a PRF algorithm based on the protocol version and the cipher suite. TLS 1.0 and 1.1
+     * used a legacy PRF based on MD5 and SHA-1. TLS 1.2 uses per default SHA256 PRF, but allows for
+     * definition of further PRFs in specific cipher suites (the last part of a cipher suite string
+     * identifies the PRF).
      *
-     * @param  protocolVersion
-     *                         The ProtocolVersion for which the PRFAlgorithm should be returned
-     * @param  cipherSuite
-     *                         The Cipher suite for which the PRFAlgorithm should be returned
-     * @return                 The selected PRFAlgorithm
+     * @param protocolVersion The ProtocolVersion for which the PRFAlgorithm should be returned
+     * @param cipherSuite The Cipher suite for which the PRFAlgorithm should be returned
+     * @return The selected PRFAlgorithm
      */
-    public static PRFAlgorithm getPRFAlgorithm(ProtocolVersion protocolVersion, CipherSuite cipherSuite) {
+    public static PRFAlgorithm getPRFAlgorithm(
+            ProtocolVersion protocolVersion, CipherSuite cipherSuite) {
         PRFAlgorithm result;
         if (protocolVersion == ProtocolVersion.SSL3 || protocolVersion == ProtocolVersion.SSL2) {
             return null;
@@ -41,8 +38,9 @@ public class AlgorithmResolver {
             result = PRFAlgorithm.TLS_PRF_GOSTR3411;
         } else if (cipherSuite.usesGOSTR34112012()) {
             result = PRFAlgorithm.TLS_PRF_GOSTR3411_2012_256;
-        } else if (protocolVersion == ProtocolVersion.TLS10 || protocolVersion == ProtocolVersion.TLS11
-            || protocolVersion == ProtocolVersion.DTLS10) {
+        } else if (protocolVersion == ProtocolVersion.TLS10
+                || protocolVersion == ProtocolVersion.TLS11
+                || protocolVersion == ProtocolVersion.DTLS10) {
             result = PRFAlgorithm.TLS_PRF_LEGACY;
         } else if (cipherSuite.usesSHA384()) {
             result = PRFAlgorithm.TLS_PRF_SHA384;
@@ -54,19 +52,19 @@ public class AlgorithmResolver {
     }
 
     /**
-     * Returns a digest algorithm based on the protocol version and the cipher suite. The digest algorithm is used to
-     * compute a message digest over the handshake messages and to compute valid finished messages. TLS 1.0 and 1.1 used
-     * a legacy digest based on MD5 and SHA-1. TLS 1.2 uses per default SHA256 digest algorithm, but allows for
-     * definition of further digest algorithms in specific cipher suites (the last part of a cipher suite string
-     * identifies the digest).
+     * Returns a digest algorithm based on the protocol version and the cipher suite. The digest
+     * algorithm is used to compute a message digest over the handshake messages and to compute
+     * valid finished messages. TLS 1.0 and 1.1 used a legacy digest based on MD5 and SHA-1. TLS 1.2
+     * uses per default SHA256 digest algorithm, but allows for definition of further digest
+     * algorithms in specific cipher suites (the last part of a cipher suite string identifies the
+     * digest).
      *
-     * @param  protocolVersion
-     *                         The ProtocolVersion for which the DigestAlgorithm should be returned
-     * @param  cipherSuite
-     *                         The Cipher suite for which the DigestAlgorithm should be returned
-     * @return                 The selected DigestAlgorithm
+     * @param protocolVersion The ProtocolVersion for which the DigestAlgorithm should be returned
+     * @param cipherSuite The Cipher suite for which the DigestAlgorithm should be returned
+     * @return The selected DigestAlgorithm
      */
-    public static DigestAlgorithm getDigestAlgorithm(ProtocolVersion protocolVersion, CipherSuite cipherSuite) {
+    public static DigestAlgorithm getDigestAlgorithm(
+            ProtocolVersion protocolVersion, CipherSuite cipherSuite) {
         DigestAlgorithm result;
         if (protocolVersion == ProtocolVersion.SSL3 || protocolVersion == ProtocolVersion.SSL2) {
             throw new UnsupportedOperationException("SSL3 and SSL2 PRF currently not supported");
@@ -75,8 +73,9 @@ public class AlgorithmResolver {
             result = DigestAlgorithm.GOSTR3411;
         } else if (cipherSuite.usesGOSTR34112012()) {
             result = DigestAlgorithm.GOSTR34112012_256;
-        } else if (protocolVersion == ProtocolVersion.TLS10 || protocolVersion == ProtocolVersion.TLS11
-            || protocolVersion == ProtocolVersion.DTLS10) {
+        } else if (protocolVersion == ProtocolVersion.TLS10
+                || protocolVersion == ProtocolVersion.TLS11
+                || protocolVersion == ProtocolVersion.DTLS10) {
             result = DigestAlgorithm.LEGACY;
         } else if (cipherSuite.usesSHA384()) {
             result = DigestAlgorithm.SHA384;
@@ -152,18 +151,23 @@ public class AlgorithmResolver {
             return KeyExchangeAlgorithm.VKO_GOST01;
         }
         if (cipherSuite == CipherSuite.TLS_FALLBACK_SCSV
-            || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV) {
+                || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV) {
             throw new UnsupportedOperationException(
-                "The CipherSuite:" + cipherSuite.name() + " does not specify a KeyExchangeAlgorithm");
+                    "The CipherSuite:"
+                            + cipherSuite.name()
+                            + " does not specify a KeyExchangeAlgorithm");
         }
-        LOGGER.warn("The key exchange algorithm in " + cipherSuite.toString() + " is not supported yet.");
+        LOGGER.warn(
+                "The key exchange algorithm in "
+                        + cipherSuite.toString()
+                        + " is not supported yet.");
         return KeyExchangeAlgorithm.RSA;
     }
 
     /**
      * Returns the certificate type required for the cipher suite
      *
-     * @param  suite
+     * @param suite
      * @return
      */
     public static CertificateKeyType getCertificateKeyType(CipherSuite suite) {
@@ -208,19 +212,20 @@ public class AlgorithmResolver {
             case FORTEZZA_KEA:
                 return CertificateKeyType.FORTEZZA;
             default:
-                throw new UnsupportedOperationException("Unsupported KeyExchange Algorithm: " + keyExchangeAlgorithm);
+                throw new UnsupportedOperationException(
+                        "Unsupported KeyExchange Algorithm: " + keyExchangeAlgorithm);
         }
     }
 
     /**
-     * Depending on the provided cipher suite, the server needs to be initialized with proper public key(s). Depending
-     * on the cipher suite, there are possibly more than one cipher suites needed.
+     * Depending on the provided cipher suite, the server needs to be initialized with proper public
+     * key(s). Depending on the cipher suite, there are possibly more than one cipher suites needed.
      *
-     * This function returns a list of public key algorithms needed when running a server with a cipher suite.
+     * <p>This function returns a list of public key algorithms needed when running a server with a
+     * cipher suite.
      *
-     * @param  cipherSuite
-     *                     The selected CipherSuite
-     * @return             The Set of publicKeyAlgorithms
+     * @param cipherSuite The selected CipherSuite
+     * @return The Set of publicKeyAlgorithms
      */
     public static Set<PublicKeyAlgorithm> getRequiredKeystoreAlgorithms(CipherSuite cipherSuite) {
         String cipher = cipherSuite.toString().toUpperCase();
@@ -303,48 +308,62 @@ public class AlgorithmResolver {
             }
         }
         if (cipherSuite == CipherSuite.TLS_FALLBACK_SCSV
-            || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV) {
+                || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV) {
             throw new UnsupportedOperationException(
-                "The CipherSuite:" + cipherSuite.name() + " does not specify a CipherAlgorithm");
+                    "The CipherSuite:"
+                            + cipherSuite.name()
+                            + " does not specify a CipherAlgorithm");
         }
 
-        LOGGER.warn("The cipher algorithm in " + cipherSuite + " is not supported yet. Falling back to NULL.");
+        LOGGER.warn(
+                "The cipher algorithm in "
+                        + cipherSuite
+                        + " is not supported yet. Falling back to NULL.");
         return CipherAlgorithm.NULL;
     }
 
     /**
-     * @param  cipherSuite
-     *                     The Cipher suite for which the BulkCipherAlgorithm should be returned
-     * @return             The BulkCipherAlgorithm of the Cipher
+     * @param cipherSuite The Cipher suite for which the BulkCipherAlgorithm should be returned
+     * @return The BulkCipherAlgorithm of the Cipher
      */
     public static BulkCipherAlgorithm getBulkCipherAlgorithm(CipherSuite cipherSuite) {
         return BulkCipherAlgorithm.getBulkCipherAlgorithm(cipherSuite);
     }
 
     /**
-     * @param  cipherSuite
-     *                     The Cipher suite for which the CipherType should be selected
-     * @return             The CipherType of the Cipher suite
+     * @param cipherSuite The Cipher suite for which the CipherType should be selected
+     * @return The CipherType of the Cipher suite
      */
     public static CipherType getCipherType(CipherSuite cipherSuite) {
         String cs = cipherSuite.toString().toUpperCase();
-        if (cipherSuite.isGCM() || cipherSuite.isCCM() || cipherSuite.isOCB() || cipherSuite.usesStrictExplicitIv()) {
+        if (cipherSuite.isGCM()
+                || cipherSuite.isCCM()
+                || cipherSuite.isOCB()
+                || cipherSuite.usesStrictExplicitIv()) {
             return CipherType.AEAD;
-        } else if (cs.contains("AES") || cs.contains("DES") || cs.contains("IDEA") || cs.contains("WITH_FORTEZZA")
-            || cs.contains("CAMELLIA") || cs.contains("WITH_SEED") || cs.contains("WITH_ARIA") || cs.contains("RC2")) {
+        } else if (cs.contains("AES")
+                || cs.contains("DES")
+                || cs.contains("IDEA")
+                || cs.contains("WITH_FORTEZZA")
+                || cs.contains("CAMELLIA")
+                || cs.contains("WITH_SEED")
+                || cs.contains("WITH_ARIA")
+                || cs.contains("RC2")) {
             return CipherType.BLOCK;
         } else if (cs.contains("RC4") || cs.contains("WITH_NULL") || cs.contains("28147_CNT")) {
             return CipherType.STREAM;
         }
         if (cipherSuite == CipherSuite.TLS_FALLBACK_SCSV
-            || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV) {
+                || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV) {
             throw new UnsupportedOperationException(
-                "The CipherSuite:" + cipherSuite.name() + " does not specify a CipherType");
+                    "The CipherSuite:" + cipherSuite.name() + " does not specify a CipherType");
         }
-        throw new UnsupportedOperationException("Cipher suite " + cipherSuite + " is not supported yet.");
+        throw new UnsupportedOperationException(
+                "Cipher suite " + cipherSuite + " is not supported yet.");
     }
 
-    public static MacAlgorithm getMacAlgorithm(ProtocolVersion protocolVersion, CipherSuite cipherSuite) {
+    public static MacAlgorithm getMacAlgorithm(
+            ProtocolVersion protocolVersion, CipherSuite cipherSuite) {
         MacAlgorithm result = null;
         if (getCipherType(cipherSuite) == CipherType.AEAD) {
             result = MacAlgorithm.AEAD;
@@ -379,16 +398,16 @@ public class AlgorithmResolver {
             }
         }
         if (cipherSuite == CipherSuite.TLS_FALLBACK_SCSV
-            || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV) {
+                || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV) {
             throw new UnsupportedOperationException(
-                "The CipherSuite:" + cipherSuite.name() + " does not specify a MAC-Algorithm");
+                    "The CipherSuite:" + cipherSuite.name() + " does not specify a MAC-Algorithm");
         }
         if (result != null) {
             LOGGER.debug("Using the following Mac Algorithm: {}", result);
             return result;
         } else {
             throw new UnsupportedOperationException(
-                "The Mac algorithm for cipher " + cipherSuite + " is not supported yet");
+                    "The Mac algorithm for cipher " + cipherSuite + " is not supported yet");
         }
     }
 
@@ -404,18 +423,20 @@ public class AlgorithmResolver {
             LOGGER.debug("Using the following HKDF Algorithm: {}", result);
             return result;
         } else {
-            LOGGER.warn("The HKDF algorithm for cipher suite " + cipherSuite
-                + " is not supported yet or is undefined. Using \"TLS_HKDF_SHA256\"");
+            LOGGER.warn(
+                    "The HKDF algorithm for cipher suite "
+                            + cipherSuite
+                            + " is not supported yet or is undefined. Using \"TLS_HKDF_SHA256\"");
             return HKDFAlgorithm.TLS_HKDF_SHA256;
         }
     }
 
     /**
-     * Returns the signature algorithm required for the authentication type specified by cipher suite.
+     * Returns the signature algorithm required for the authentication type specified by cipher
+     * suite.
      *
-     * @param  cipherSuite
-     *                     The Cipher suite for which the signature algorithm should be returned
-     * @return             The required signature algorithm.
+     * @param cipherSuite The Cipher suite for which the signature algorithm should be returned
+     * @return The required signature algorithm.
      */
     public static SignatureAlgorithm getRequiredSignatureAlgorithm(CipherSuite cipherSuite) {
         KeyExchangeAlgorithm keyExchangeAlgorithm = getKeyExchangeAlgorithm(cipherSuite);
@@ -449,6 +470,5 @@ public class AlgorithmResolver {
         }
     }
 
-    private AlgorithmResolver() {
-    }
+    private AlgorithmResolver() {}
 }

@@ -736,6 +736,16 @@
         <defaultServerSupportedCipherSuite>UNOFFICIAL_TLS_RSA_PSK_WITH_CHACHA20_POLY1305_OLD</defaultServerSupportedCipherSuite>
         <defaultServerSupportedCipherSuite>TLS_NULL_WITH_NULL_NULL</defaultServerSupportedCipherSuite>
     </defaultServerSupportedCipherSuites>
+    <defaultServerSupportedSSL2CipherSuites>
+        <defaultServerSupportedSSL2CipherSuite>SSL_CK_RC4_128_WITH_MD5</defaultServerSupportedSSL2CipherSuite>
+        <defaultServerSupportedSSL2CipherSuite>SSL_CK_RC4_128_EXPORT40_WITH_MD5</defaultServerSupportedSSL2CipherSuite>
+        <defaultServerSupportedSSL2CipherSuite>SSL_CK_RC2_128_CBC_WITH_MD5</defaultServerSupportedSSL2CipherSuite>
+        <defaultServerSupportedSSL2CipherSuite>SSL_CK_RC2_128_CBC_EXPORT40_WITH_MD5</defaultServerSupportedSSL2CipherSuite>
+        <defaultServerSupportedSSL2CipherSuite>SSL_CK_IDEA_128_CBC_WITH_MD5</defaultServerSupportedSSL2CipherSuite>
+        <defaultServerSupportedSSL2CipherSuite>SSL_CK_DES_64_CBC_WITH_MD5</defaultServerSupportedSSL2CipherSuite>
+        <defaultServerSupportedSSL2CipherSuite>SSL_CK_DES_192_EDE3_CBC_WITH_MD5</defaultServerSupportedSSL2CipherSuite>
+        <defaultServerSupportedSSL2CipherSuite>SSL_UNKNOWN_CIPHER</defaultServerSupportedSSL2CipherSuite>
+    </defaultServerSupportedSSL2CipherSuites>
     <defaultClientNamedGroups>
         <defaultClientNamedGroup>SECP160K1</defaultClientNamedGroup>
         <defaultClientNamedGroup>SECP160R1</defaultClientNamedGroup>

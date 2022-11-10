@@ -1,18 +1,16 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.tracetool.main;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.config.ConfigIO;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ListDelegate;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
@@ -20,21 +18,21 @@ import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceSerializer;
 import de.rub.nds.tlsattacker.tracetool.config.TraceToolCommandConfig;
-import java.io.File;
-import java.io.IOException;
 import jakarta.xml.bind.JAXBException;
+import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
  * TraceTool allows inspection and modification of TLS-Attacker workflow traces.
  *
- * The tools works on TLS-Attackers XML formatted workflow traces and can
+ * <p>The tools works on TLS-Attackers XML formatted workflow traces and can
+ *
  * <ul>
- * <li>Generate trace templates for common workflows (in XML)</li>
- * <li>Apply filters to workflow trace inputs</li>
- * <li>Verify if a workflow trace is normalized, i.e. well defined for standalone execution without the need of an
- * additional Configuration</li>
+ *   <li>Generate trace templates for common workflows (in XML)
+ *   <li>Apply filters to workflow trace inputs
+ *   <li>Verify if a workflow trace is normalized, i.e. well defined for standalone execution
+ *       without the need of an additional Configuration
  * </ul>
  */
 public class TraceTool {
@@ -47,7 +45,8 @@ public class TraceTool {
         this.args = args;
     }
 
-    public void run() throws ParameterException, ConfigurationException, JAXBException, IOException {
+    public void run()
+            throws ParameterException, ConfigurationException, JAXBException, IOException {
 
         TraceToolCommandConfig cmdConfig = new TraceToolCommandConfig(new GeneralDelegate());
         JCommander commander = new JCommander(cmdConfig);
@@ -77,8 +76,10 @@ public class TraceTool {
             String xml = WorkflowTraceSerializer.write(filtered);
             System.out.println(xml);
         } catch (ConfigurationException ce) {
-            LOGGER.error("Encountered a ConfigurationException aborting. " + ce.getLocalizedMessage()
-                + " - See debug messages for more details.");
+            LOGGER.error(
+                    "Encountered a ConfigurationException aborting. "
+                            + ce.getLocalizedMessage()
+                            + " - See debug messages for more details.");
             LOGGER.debug(ce.getLocalizedMessage(), ce);
             throw ce;
         } catch (ParameterException pe) {
@@ -87,5 +88,4 @@ public class TraceTool {
             throw pe;
         }
     }
-
 }

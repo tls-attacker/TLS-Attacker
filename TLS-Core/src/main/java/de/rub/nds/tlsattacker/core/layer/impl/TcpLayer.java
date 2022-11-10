@@ -1,21 +1,19 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.layer.impl;
 
-import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
-import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
-import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
+import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.context.TcpContext;
+import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStreamAdapterStream;
@@ -25,8 +23,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * The TCP layer is a wrapper around an underlying TCP socket. It forwards the sockets InputStream for reading and sends
- * any data over the TCP socket without modifications.
+ * The TCP layer is a wrapper around an underlying TCP socket. It forwards the sockets InputStream
+ * for reading and sends any data over the TCP socket without modifications.
  */
 public class TcpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer> {
 
@@ -50,14 +48,13 @@ public class TcpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer> 
         return getLayerResult();
     }
 
-    /**
-     * Sends data over the TCP socket.
-     */
+    /** Sends data over the TCP socket. */
     @Override
-    public LayerProcessingResult sendData(LayerProcessingHint hint, byte[] data) throws IOException {
+    public LayerProcessingResult sendData(LayerProcessingHint hint, byte[] data)
+            throws IOException {
         TcpTransportHandler handler = getTransportHandler();
         handler.sendData(data);
-        return new LayerProcessingResult(null, getLayerType(), true);// Not implemented
+        return new LayerProcessingResult(null, getLayerType(), true); // Not implemented
     }
 
     @Override
@@ -66,12 +63,11 @@ public class TcpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer> 
         // or not
     }
 
-    /**
-     * Returns the inputStream associated with the TCP socket.
-     */
+    /** Returns the inputStream associated with the TCP socket. */
     @Override
     public HintedInputStream getDataStream() {
-        currentInputStream = new HintedInputStreamAdapterStream(null, getTransportHandler().getInputStream());
+        currentInputStream =
+                new HintedInputStreamAdapterStream(null, getTransportHandler().getInputStream());
         return currentInputStream;
     }
 

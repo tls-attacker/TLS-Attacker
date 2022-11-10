@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
@@ -21,46 +20,36 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareE
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.EncryptedServerNameIndicationExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.EncryptedServerNameIndicationExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.EncryptedServerNameIndicationExtensionSerializer;
-import java.io.InputStream;
 import jakarta.xml.bind.annotation.XmlRootElement;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.io.InputStream;
 
 @XmlRootElement(name = "EncryptedServerNameIndicationExtension")
 public class EncryptedServerNameIndicationExtensionMessage
-    extends ExtensionMessage<EncryptedServerNameIndicationExtensionMessage> {
+        extends ExtensionMessage<EncryptedServerNameIndicationExtensionMessage> {
 
     private EsniMessageType esniMessageTypeConfig;
 
-    @ModifiableVariableProperty
-    private ModifiableByteArray cipherSuite;
+    @ModifiableVariableProperty private ModifiableByteArray cipherSuite;
 
-    @HoldsModifiableVariable
-    private KeyShareEntry keyShareEntry;
+    @HoldsModifiableVariable private KeyShareEntry keyShareEntry;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger recordDigestLength;
 
-    @ModifiableVariableProperty
-    private ModifiableByteArray recordDigest;
+    @ModifiableVariableProperty private ModifiableByteArray recordDigest;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger encryptedSniLength;
 
-    @ModifiableVariableProperty
-    private ModifiableByteArray encryptedSni;
+    @ModifiableVariableProperty private ModifiableByteArray encryptedSni;
 
-    @HoldsModifiableVariable
-    private ClientEsniInner clientEsniInner;
+    @HoldsModifiableVariable private ClientEsniInner clientEsniInner;
 
-    @ModifiableVariableProperty
-    private ModifiableByteArray clientEsniInnerBytes;
+    @ModifiableVariableProperty private ModifiableByteArray clientEsniInnerBytes;
 
-    @HoldsModifiableVariable
-    private EncryptedSniComputation encryptedSniComputation;
+    @HoldsModifiableVariable private EncryptedSniComputation encryptedSniComputation;
 
-    @ModifiableVariableProperty
-    private ModifiableByteArray serverNonce;
+    @ModifiableVariableProperty private ModifiableByteArray serverNonce;
 
     public EncryptedServerNameIndicationExtensionMessage() {
         super(ExtensionType.ENCRYPTED_SERVER_NAME_INDICATION);
@@ -98,7 +87,9 @@ public class EncryptedServerNameIndicationExtensionMessage
     }
 
     public void setRecordDigestLength(int recordDigestLength) {
-        this.recordDigestLength = ModifiableVariableFactory.safelySetValue(this.recordDigestLength, recordDigestLength);
+        this.recordDigestLength =
+                ModifiableVariableFactory.safelySetValue(
+                        this.recordDigestLength, recordDigestLength);
     }
 
     public ModifiableByteArray getRecordDigest() {
@@ -110,7 +101,8 @@ public class EncryptedServerNameIndicationExtensionMessage
     }
 
     public void setRecordDigest(byte[] recordDigest) {
-        this.recordDigest = ModifiableVariableFactory.safelySetValue(this.recordDigest, recordDigest);
+        this.recordDigest =
+                ModifiableVariableFactory.safelySetValue(this.recordDigest, recordDigest);
     }
 
     public ModifiableInteger getEncryptedSniLength() {
@@ -122,7 +114,9 @@ public class EncryptedServerNameIndicationExtensionMessage
     }
 
     public void setEncryptedSniLength(int encryptedSniLength) {
-        this.encryptedSniLength = ModifiableVariableFactory.safelySetValue(this.encryptedSniLength, encryptedSniLength);
+        this.encryptedSniLength =
+                ModifiableVariableFactory.safelySetValue(
+                        this.encryptedSniLength, encryptedSniLength);
     }
 
     public ModifiableByteArray getEncryptedSni() {
@@ -134,7 +128,8 @@ public class EncryptedServerNameIndicationExtensionMessage
     }
 
     public void setEncryptedSni(byte[] encryptedSni) {
-        this.encryptedSni = ModifiableVariableFactory.safelySetValue(this.encryptedSni, encryptedSni);
+        this.encryptedSni =
+                ModifiableVariableFactory.safelySetValue(this.encryptedSni, encryptedSni);
     }
 
     public ClientEsniInner getClientEsniInner() {
@@ -155,7 +150,8 @@ public class EncryptedServerNameIndicationExtensionMessage
 
     public void setClientEsniInnerBytes(byte[] clientEsniInnerBytes) {
         this.clientEsniInnerBytes =
-            ModifiableVariableFactory.safelySetValue(this.clientEsniInnerBytes, clientEsniInnerBytes);
+                ModifiableVariableFactory.safelySetValue(
+                        this.clientEsniInnerBytes, clientEsniInnerBytes);
     }
 
     public EncryptedSniComputation getEncryptedSniComputation() {
@@ -187,7 +183,8 @@ public class EncryptedServerNameIndicationExtensionMessage
     }
 
     @Override
-    public EncryptedServerNameIndicationExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
+    public EncryptedServerNameIndicationExtensionParser getParser(
+            TlsContext tlsContext, InputStream stream) {
         return new EncryptedServerNameIndicationExtensionParser(stream, tlsContext);
     }
 

@@ -1,18 +1,17 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.TokenBindingExtensionMessage;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.TokenBindingExtensionMessage;
 import java.util.ArrayList;
 
 public class TokenBindingExtensionHandler extends ExtensionHandler<TokenBindingExtensionMessage> {
@@ -23,14 +22,16 @@ public class TokenBindingExtensionHandler extends ExtensionHandler<TokenBindingE
 
     @Override
     public void adjustTLSExtensionContext(TokenBindingExtensionMessage message) {
-        tlsContext
-            .setTokenBindingVersion(TokenBindingVersion.getExtensionType(message.getTokenBindingVersion().getValue()));
+        tlsContext.setTokenBindingVersion(
+                TokenBindingVersion.getExtensionType(message.getTokenBindingVersion().getValue()));
         ArrayList<TokenBindingKeyParameters> tokenbindingKeyParameters = new ArrayList<>();
         for (byte kp : message.getTokenBindingKeyParameters().getValue()) {
-            tokenbindingKeyParameters.add(TokenBindingKeyParameters.getTokenBindingKeyParameter(kp));
+            tokenbindingKeyParameters.add(
+                    TokenBindingKeyParameters.getTokenBindingKeyParameter(kp));
         }
         tlsContext.setTokenBindingKeyParameters(tokenbindingKeyParameters);
-        if (tlsContext.getTalkingConnectionEndType() == tlsContext.getChooser().getMyConnectionPeer()) {
+        if (tlsContext.getTalkingConnectionEndType()
+                == tlsContext.getChooser().getMyConnectionPeer()) {
             tlsContext.setTokenBindingNegotiatedSuccessfully(true);
         }
     }

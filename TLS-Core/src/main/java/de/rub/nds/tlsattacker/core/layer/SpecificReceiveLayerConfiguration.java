@@ -1,26 +1,24 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.layer;
-
-import java.util.Arrays;
-import java.util.List;
 
 import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
+import java.util.Arrays;
+import java.util.List;
 
 /**
- * ReceiveConfiguration that receives a specific list of DataContainers. Any additional received containers are marked
- * as such.
+ * ReceiveConfiguration that receives a specific list of DataContainers. Any additional received
+ * containers are marked as such.
  */
 public class SpecificReceiveLayerConfiguration<Container extends DataContainer>
-    extends ReceiveLayerConfiguration<Container> {
+        extends ReceiveLayerConfiguration<Container> {
 
     private List<DataContainerFilter> containerFilterList;
 
@@ -40,18 +38,17 @@ public class SpecificReceiveLayerConfiguration<Container extends DataContainer>
     }
 
     /**
-     * Compares the received DataContainers to the list of expected DataContainers. An expected DataContainer may be
-     * skipped if it is not marked as required. An unexpected DataContainer may be ignored if a DataContainerFilter
-     * applies.
+     * Compares the received DataContainers to the list of expected DataContainers. An expected
+     * DataContainer may be skipped if it is not marked as required. An unexpected DataContainer may
+     * be ignored if a DataContainerFilter applies.
      *
-     * @param list
-     *                                 The list of DataContainers
-     * @param mayReceiveMoreContainers
-     *                                 Determines if an incomplete result is acceptable. This is the case if no
-     *                                 contradictory DataContainer has been received yet and the LayerConfiguration can
-     *                                 be satisfied if additional DataContainers get provided
+     * @param list The list of DataContainers
+     * @param mayReceiveMoreContainers Determines if an incomplete result is acceptable. This is the
+     *     case if no contradictory DataContainer has been received yet and the LayerConfiguration
+     *     can be satisfied if additional DataContainers get provided
      */
-    private boolean evaluateReceivedContainers(List<Container> list, boolean mayReceiveMoreContainers) {
+    private boolean evaluateReceivedContainers(
+            List<Container> list, boolean mayReceiveMoreContainers) {
         if (list == null) {
             return false;
         }
@@ -63,7 +60,7 @@ public class SpecificReceiveLayerConfiguration<Container extends DataContainer>
                     return mayReceiveMoreContainers;
                 } else if (j < list.size()) {
                     if (!expectedContainers.get(i).getClass().equals(list.get(j).getClass())
-                        && expectedContainers.get(i).isRequired()) {
+                            && expectedContainers.get(i).isRequired()) {
                         if (containerCanBeFiltered(list.get(j))) {
                             j++;
                             i--;
@@ -71,7 +68,10 @@ public class SpecificReceiveLayerConfiguration<Container extends DataContainer>
                             return false;
                         }
 
-                    } else if (expectedContainers.get(i).getClass().equals(list.get(j).getClass())) {
+                    } else if (expectedContainers
+                            .get(i)
+                            .getClass()
+                            .equals(list.get(j).getClass())) {
                         j++;
                     }
                 }

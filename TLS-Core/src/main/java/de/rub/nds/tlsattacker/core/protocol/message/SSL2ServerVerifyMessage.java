@@ -1,38 +1,36 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.constants.SSL2MessageType;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageSerializer;
 import de.rub.nds.tlsattacker.core.protocol.handler.SSL2ServerVerifyHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.SSL2ServerVerifyParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.SSL2ServerVerifyPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.HandshakeMessageSerializer;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.Objects;
-import jakarta.xml.bind.annotation.XmlRootElement;
 
 @SuppressWarnings("serial")
 @XmlRootElement(name = "SSL2ServerVerify")
-public class SSL2ServerVerifyMessage extends SSL2HandshakeMessage {
+public class SSL2ServerVerifyMessage extends SSL2Message {
 
     // TODO, nit: The type byte is encrypted for ServerVerify messages.
-    @ModifiableVariableProperty
-    private ModifiableByteArray encryptedPart;
+    @ModifiableVariableProperty private ModifiableByteArray encryptedPart;
 
     public SSL2ServerVerifyMessage() {
-        super(HandshakeMessageType.SSL2_SERVER_VERIFY);
+        super(SSL2MessageType.SSL_SERVER_VERIFY);
         this.protocolMessageType = ProtocolMessageType.HANDSHAKE;
     }
 
@@ -62,7 +60,7 @@ public class SSL2ServerVerifyMessage extends SSL2HandshakeMessage {
     }
 
     @Override
-    public HandshakeMessageSerializer<SSL2ServerVerifyMessage> getSerializer(TlsContext tlsContext) {
+    public ProtocolMessageSerializer<SSL2ServerVerifyMessage> getSerializer(TlsContext tlsContext) {
         // We currently don't send ServerVerify messages, only receive them.
         return null;
     }
@@ -76,7 +74,8 @@ public class SSL2ServerVerifyMessage extends SSL2HandshakeMessage {
     }
 
     public void setEncryptedPart(byte[] encryptedPart) {
-        this.encryptedPart = ModifiableVariableFactory.safelySetValue(this.encryptedPart, encryptedPart);
+        this.encryptedPart =
+                ModifiableVariableFactory.safelySetValue(this.encryptedPart, encryptedPart);
     }
 
     @Override
@@ -100,5 +99,4 @@ public class SSL2ServerVerifyMessage extends SSL2HandshakeMessage {
         final SSL2ServerVerifyMessage other = (SSL2ServerVerifyMessage) obj;
         return Objects.equals(this.encryptedPart, other.encryptedPart);
     }
-
 }

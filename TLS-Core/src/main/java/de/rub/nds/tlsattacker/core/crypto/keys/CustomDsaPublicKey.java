@@ -1,24 +1,23 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.crypto.keys;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
 import java.math.BigInteger;
 import java.security.interfaces.DSAParams;
 import java.security.interfaces.DSAPublicKey;
 import java.security.spec.DSAParameterSpec;
 import java.util.Objects;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -33,7 +32,8 @@ public class CustomDsaPublicKey extends CustomPublicKey implements DSAPublicKey 
 
     private BigInteger publicKey;
 
-    public CustomDsaPublicKey(BigInteger dsaP, BigInteger dsaQ, BigInteger dsaG, BigInteger publicKey) {
+    public CustomDsaPublicKey(
+            BigInteger dsaP, BigInteger dsaQ, BigInteger dsaG, BigInteger publicKey) {
         this.dsaP = dsaP;
         this.dsaQ = dsaQ;
         this.dsaG = dsaG;
@@ -67,7 +67,8 @@ public class CustomDsaPublicKey extends CustomPublicKey implements DSAPublicKey 
                     tlsContext.setServerDsaPublicKey(publicKey);
                     break;
                 default:
-                    throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
+                    throw new IllegalArgumentException(
+                            "Owner of Key " + ownerOfKey + " is not supported");
             }
         }
     }
@@ -128,7 +129,8 @@ public class CustomDsaPublicKey extends CustomPublicKey implements DSAPublicKey 
                     config.setDefaultServerDsaPublicKey(publicKey);
                     break;
                 default:
-                    throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
+                    throw new IllegalArgumentException(
+                            "Owner of Key " + ownerOfKey + " is not supported");
             }
         }
     }

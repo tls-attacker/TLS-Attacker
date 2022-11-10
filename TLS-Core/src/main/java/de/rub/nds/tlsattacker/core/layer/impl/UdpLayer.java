@@ -1,19 +1,17 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.layer.impl;
 
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
-import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
@@ -25,10 +23,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * The UDP layer is a wrapper around an underlying UDP socket. It forwards the sockets InputStream for reading and sends
- * any data over the UDP layer without modifications.
+ * The UDP layer is a wrapper around an underlying UDP socket. It forwards the sockets InputStream
+ * for reading and sends any data over the UDP layer without modifications.
  */
-public class UdpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer> {// TODO change types
+public class UdpLayer
+        extends ProtocolLayer<LayerProcessingHint, DataContainer> { // TODO change types
 
     private static Logger LOGGER = LogManager.getLogger();
 
@@ -50,14 +49,13 @@ public class UdpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer> 
         return getLayerResult();
     }
 
-    /**
-     * Sends data over the UDP socket.
-     */
+    /** Sends data over the UDP socket. */
     @Override
-    public LayerProcessingResult sendData(LayerProcessingHint hint, byte[] data) throws IOException {
+    public LayerProcessingResult sendData(LayerProcessingHint hint, byte[] data)
+            throws IOException {
         UdpTransportHandler handler = getTransportHandler();
         handler.sendData(data);
-        return new LayerProcessingResult(null, getLayerType(), true);// Not implemented
+        return new LayerProcessingResult(null, getLayerType(), true); // Not implemented
     }
 
     @Override
@@ -71,9 +69,7 @@ public class UdpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer> 
         return new HintedInputStreamAdapterStream(null, getTransportHandler().getInputStream());
     }
 
-    /**
-     * Returns the InputStream associated with the UDP socket.
-     */
+    /** Returns the InputStream associated with the UDP socket. */
     @Override
     public LayerProcessingResult receiveData() {
         return new LayerProcessingResult(null, getLayerType(), true);

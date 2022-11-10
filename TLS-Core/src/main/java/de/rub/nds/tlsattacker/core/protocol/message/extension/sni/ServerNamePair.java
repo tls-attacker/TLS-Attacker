@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message.extension.sni;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -30,11 +29,9 @@ public class ServerNamePair extends ModifiableVariableHolder implements Serializ
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger serverNameLength;
 
-    @ModifiableVariableProperty
-    private ModifiableByteArray serverName;
+    @ModifiableVariableProperty private ModifiableByteArray serverName;
 
-    public ServerNamePair() {
-    }
+    public ServerNamePair() {}
 
     public ServerNamePair(Byte typeConfig, byte[] serverNameConfig) {
         this.serverNameTypeConfig = typeConfig;
@@ -50,7 +47,8 @@ public class ServerNamePair extends ModifiableVariableHolder implements Serializ
     }
 
     public void setServerNameType(byte serverNameType) {
-        this.serverNameType = ModifiableVariableFactory.safelySetValue(this.serverNameType, serverNameType);
+        this.serverNameType =
+                ModifiableVariableFactory.safelySetValue(this.serverNameType, serverNameType);
     }
 
     public ModifiableInteger getServerNameLength() {
@@ -62,7 +60,8 @@ public class ServerNamePair extends ModifiableVariableHolder implements Serializ
     }
 
     public void setServerNameLength(int serverNameLength) {
-        this.serverNameLength = ModifiableVariableFactory.safelySetValue(this.serverNameLength, serverNameLength);
+        this.serverNameLength =
+                ModifiableVariableFactory.safelySetValue(this.serverNameLength, serverNameLength);
     }
 
     public ModifiableByteArray getServerName() {
@@ -130,5 +129,4 @@ public class ServerNamePair extends ModifiableVariableHolder implements Serializ
         }
         return Objects.equals(this.serverName, other.serverName);
     }
-
 }

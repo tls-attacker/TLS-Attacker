@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -19,20 +18,17 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.MaxFragmentLengthE
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.MaxFragmentLengthExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.MaxFragmentLengthExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.MaxFragmentLengthExtensionSerializer;
-import java.io.InputStream;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import java.io.InputStream;
 
-/**
- * Maximum Fragment Length Extension described in rfc3546
- */
+/** Maximum Fragment Length Extension described in rfc3546 */
 @XmlRootElement(name = "MaxFragmentLengthExtension")
-public class MaxFragmentLengthExtensionMessage extends ExtensionMessage<MaxFragmentLengthExtensionMessage> {
+public class MaxFragmentLengthExtensionMessage
+        extends ExtensionMessage<MaxFragmentLengthExtensionMessage> {
 
     private MaxFragmentLength maxFragmentLengthConfig;
 
-    /**
-     * Maximum fragment length value described in rfc3546
-     */
+    /** Maximum fragment length value described in rfc3546 */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByteArray maxFragmentLength;
 
@@ -49,7 +45,8 @@ public class MaxFragmentLengthExtensionMessage extends ExtensionMessage<MaxFragm
     }
 
     public void setMaxFragmentLength(byte[] maxFragmentLength) {
-        this.maxFragmentLength = ModifiableVariableFactory.safelySetValue(this.maxFragmentLength, maxFragmentLength);
+        this.maxFragmentLength =
+                ModifiableVariableFactory.safelySetValue(this.maxFragmentLength, maxFragmentLength);
     }
 
     @Override

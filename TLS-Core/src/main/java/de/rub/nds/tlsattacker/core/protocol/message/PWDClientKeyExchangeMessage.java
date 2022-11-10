@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -14,16 +13,16 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.PWDClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.PWDComputations;
 import de.rub.nds.tlsattacker.core.protocol.parser.PWDClientKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.PWDClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.PWDClientKeyExchangeSerializer;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.List;
-import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "PWDClientKeyExchange")
 public class PWDClientKeyExchangeMessage extends ClientKeyExchangeMessage {
@@ -31,14 +30,12 @@ public class PWDClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger elementLength;
 
-    @ModifiableVariableProperty
-    private ModifiableByteArray element;
+    @ModifiableVariableProperty private ModifiableByteArray element;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger scalarLength;
 
-    @ModifiableVariableProperty
-    private ModifiableByteArray scalar;
+    @ModifiableVariableProperty private ModifiableByteArray scalar;
 
     protected PWDComputations computations;
 
@@ -87,7 +84,8 @@ public class PWDClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     }
 
     public void setElementLength(int elementLength) {
-        this.elementLength = ModifiableVariableFactory.safelySetValue(this.elementLength, elementLength);
+        this.elementLength =
+                ModifiableVariableFactory.safelySetValue(this.elementLength, elementLength);
     }
 
     public ModifiableByteArray getElement() {
@@ -111,7 +109,8 @@ public class PWDClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     }
 
     public void setScalarLength(int scalarLength) {
-        this.scalarLength = ModifiableVariableFactory.safelySetValue(this.scalarLength, scalarLength);
+        this.scalarLength =
+                ModifiableVariableFactory.safelySetValue(this.scalarLength, scalarLength);
     }
 
     public ModifiableByteArray getScalar() {
@@ -153,7 +152,8 @@ public class PWDClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     @Override
     public List<ModifiableVariableHolder> getAllModifiableVariableHolders() {
-        List<ModifiableVariableHolder> allModifiableVariableHolders = super.getAllModifiableVariableHolders();
+        List<ModifiableVariableHolder> allModifiableVariableHolders =
+                super.getAllModifiableVariableHolders();
         if (computations != null) {
             allModifiableVariableHolders.add(computations);
         }
@@ -164,5 +164,4 @@ public class PWDClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     public String toShortString() {
         return "PWD_CKE";
     }
-
 }

@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -19,12 +18,10 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.CookieExtensionHan
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.CookieExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.CookieExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.CookieExtensionSerializer;
-import java.io.InputStream;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import java.io.InputStream;
 
-/**
- * The cookie extension used in TLS 1.3
- */
+/** The cookie extension used in TLS 1.3 */
 @XmlRootElement(name = "CookieExtension")
 public class CookieExtensionMessage extends ExtensionMessage<CookieExtensionMessage> {
 
@@ -81,5 +78,4 @@ public class CookieExtensionMessage extends ExtensionMessage<CookieExtensionMess
     public CookieExtensionHandler getHandler(TlsContext tlsContext) {
         return new CookieExtensionHandler(tlsContext);
     }
-
 }

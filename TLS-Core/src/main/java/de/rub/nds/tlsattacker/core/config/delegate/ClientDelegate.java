@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
@@ -24,7 +23,10 @@ public class ClientDelegate extends Delegate {
 
     private static final int DEFAULT_HTTPS_PORT = 443;
 
-    @Parameter(names = "-connect", required = true, description = "Who to connect to. Syntax: localhost:4433")
+    @Parameter(
+            names = "-connect",
+            required = true,
+            description = "Who to connect to. Syntax: localhost:4433")
     private String host = null;
 
     @Parameter(names = "-server_name", description = "Server name for the SNI extension.")
@@ -34,8 +36,7 @@ public class ClientDelegate extends Delegate {
 
     private int extractedPort = -1;
 
-    public ClientDelegate() {
-    }
+    public ClientDelegate() {}
 
     public String getHost() {
         return host;
@@ -75,8 +76,11 @@ public class ClientDelegate extends Delegate {
 
     public void setHostname(Config config, String hostname, OutboundConnection connection) {
         connection.setHostname(hostname);
-        config.setDefaultSniHostnames(Arrays
-            .asList(new ServerNamePair(config.getSniType().getValue(), hostname.getBytes(Charset.forName("ASCII")))));
+        config.setDefaultSniHostnames(
+                Arrays.asList(
+                        new ServerNamePair(
+                                config.getSniType().getValue(),
+                                hostname.getBytes(Charset.forName("ASCII")))));
     }
 
     private void extractParameters() {

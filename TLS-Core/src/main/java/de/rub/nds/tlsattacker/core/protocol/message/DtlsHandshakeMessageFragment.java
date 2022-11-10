@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -14,21 +13,20 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.DtlsHandshakeMessageFragmentHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.DtlsHandshakeMessageFragmentParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.DtlsHandshakeMessageFragmentPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.DtlsHandshakeMessageFragmentSerializer;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Objects;
-import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "DtlsHandshakeMessageFragment")
 public class DtlsHandshakeMessageFragment extends HandshakeMessage {
 
-    @ModifiableVariableProperty
-    private ModifiableInteger fragmentOffset = null;
+    @ModifiableVariableProperty private ModifiableInteger fragmentOffset = null;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger fragmentLength = null;
@@ -48,8 +46,12 @@ public class DtlsHandshakeMessageFragment extends HandshakeMessage {
         adjustContextDefault = false;
     }
 
-    public DtlsHandshakeMessageFragment(HandshakeMessageType handshakeMessageType, byte[] fragmentContentConfig,
-        int messageSequenceConfig, int offsetConfig, int handshakeMessageLengthConfig) {
+    public DtlsHandshakeMessageFragment(
+            HandshakeMessageType handshakeMessageType,
+            byte[] fragmentContentConfig,
+            int messageSequenceConfig,
+            int offsetConfig,
+            int handshakeMessageLengthConfig) {
         super(handshakeMessageType);
         isIncludeInDigestDefault = false;
         adjustContextDefault = false;
@@ -157,7 +159,8 @@ public class DtlsHandshakeMessageFragment extends HandshakeMessage {
     }
 
     public void setFragmentOffset(int fragmentOffset) {
-        this.fragmentOffset = ModifiableVariableFactory.safelySetValue(this.fragmentOffset, fragmentOffset);
+        this.fragmentOffset =
+                ModifiableVariableFactory.safelySetValue(this.fragmentOffset, fragmentOffset);
     }
 
     public void setFragmentOffset(ModifiableInteger fragmentOffset) {
@@ -165,7 +168,8 @@ public class DtlsHandshakeMessageFragment extends HandshakeMessage {
     }
 
     public void setFragmentLength(int fragmentLength) {
-        this.fragmentLength = ModifiableVariableFactory.safelySetValue(this.fragmentLength, fragmentLength);
+        this.fragmentLength =
+                ModifiableVariableFactory.safelySetValue(this.fragmentLength, fragmentLength);
     }
 
     public void setFragmentLength(ModifiableInteger fragmentLength) {
@@ -247,5 +251,4 @@ public class DtlsHandshakeMessageFragment extends HandshakeMessage {
         }
         return this.handshakeMessageTypeConfig == other.handshakeMessageTypeConfig;
     }
-
 }

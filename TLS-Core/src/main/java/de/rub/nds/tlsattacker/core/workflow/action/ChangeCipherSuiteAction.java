@@ -1,25 +1,24 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import java.security.NoSuchAlgorithmException;
 import java.util.Objects;
-import jakarta.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -42,8 +41,7 @@ public class ChangeCipherSuiteAction extends ConnectionBoundAction {
         this.newValue = newValue;
     }
 
-    public ChangeCipherSuiteAction() {
-    }
+    public ChangeCipherSuiteAction() {}
 
     public CipherSuite getNewValue() {
         return newValue;
@@ -72,10 +70,17 @@ public class ChangeCipherSuiteAction extends ConnectionBoundAction {
         } catch (NoSuchAlgorithmException | CryptoException ex) {
             throw new UnsupportedOperationException("The specified Algorithm is not supported", ex);
         }
-        tlsContext.getRecordLayer().updateDecryptionCipher(RecordCipherFactory.getRecordCipher(tlsContext, keySet));
-        tlsContext.getRecordLayer().updateEncryptionCipher(RecordCipherFactory.getRecordCipher(tlsContext, keySet));
-        LOGGER
-            .info("Changed CipherSuite from " + (oldValue == null ? null : oldValue.name()) + " to " + newValue.name());
+        tlsContext
+                .getRecordLayer()
+                .updateDecryptionCipher(RecordCipherFactory.getRecordCipher(tlsContext, keySet));
+        tlsContext
+                .getRecordLayer()
+                .updateEncryptionCipher(RecordCipherFactory.getRecordCipher(tlsContext, keySet));
+        LOGGER.info(
+                "Changed CipherSuite from "
+                        + (oldValue == null ? null : oldValue.name())
+                        + " to "
+                        + newValue.name());
         setExecuted(true);
     }
 
@@ -115,5 +120,4 @@ public class ChangeCipherSuiteAction extends ConnectionBoundAction {
     public boolean executedAsPlanned() {
         return isExecuted();
     }
-
 }

@@ -1,19 +1,18 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.SSL2CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ssl.SSL2ByteLength;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
@@ -21,7 +20,7 @@ import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class SSL2ClientHelloPreparator extends HandshakeMessagePreparator<SSL2ClientHelloMessage> {
+public class SSL2ClientHelloPreparator extends ProtocolMessagePreparator<SSL2ClientHelloMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -34,11 +33,6 @@ public class SSL2ClientHelloPreparator extends HandshakeMessagePreparator<SSL2Cl
 
     @Override
     protected void prepareProtocolMessageContents() {
-        prepareHandshakeMessageContents();
-    }
-
-    @Override
-    protected void prepareHandshakeMessageContents() {
         LOGGER.debug("Prepare SSL2ClientHello");
         preparePaddingLength(message);
         prepareType(message);
@@ -52,8 +46,11 @@ public class SSL2ClientHelloPreparator extends HandshakeMessagePreparator<SSL2Cl
         prepareSessionIDLength(message);
         prepareChallengeLength(message);
         prepareCipherSuiteLength(message);
-        int length = SSL2ByteLength.CHALLENGE_LENGTH + SSL2ByteLength.CIPHERSUITE_LENGTH + SSL2ByteLength.MESSAGE_TYPE
-            + SSL2ByteLength.SESSIONID_LENGTH;
+        int length =
+                SSL2ByteLength.CHALLENGE_LENGTH
+                        + SSL2ByteLength.CIPHERSUITE_LENGTH
+                        + SSL2ByteLength.MESSAGE_TYPE
+                        + SSL2ByteLength.SESSIONID_LENGTH;
         length += message.getChallenge().getValue().length;
         length += message.getCipherSuites().getValue().length;
         length += message.getSessionId().getValue().length;
@@ -67,13 +64,15 @@ public class SSL2ClientHelloPreparator extends HandshakeMessagePreparator<SSL2Cl
     }
 
     private void prepareType(SSL2ClientHelloMessage message) {
-        message.setType(HandshakeMessageType.CLIENT_HELLO.getValue());
+        message.setType(message.getSsl2MessageType().getType());
         LOGGER.debug("Type: " + message.getType().getValue());
     }
 
     private void prepareProtocolVersion(SSL2ClientHelloMessage message) {
         message.setProtocolVersion(chooser.getConfig().getHighestProtocolVersion().getValue());
-        LOGGER.debug("ProtocolVersion: " + ArrayConverter.bytesToHexString(message.getProtocolVersion().getValue()));
+        LOGGER.debug(
+                "ProtocolVersion: "
+                        + ArrayConverter.bytesToHexString(message.getProtocolVersion().getValue()));
     }
 
     private void prepareCipherSuites(SSL2ClientHelloMessage message) {
@@ -85,21 +84,26 @@ public class SSL2ClientHelloPreparator extends HandshakeMessagePreparator<SSL2Cl
                 }
             } catch (IOException ex) {
                 throw new PreparationException(
-                    "Could not prepare SSL2ClientHello. Failed to write Cipher suites into message", ex);
+                        "Could not prepare SSL2ClientHello. Failed to write Cipher suites into message",
+                        ex);
             }
         }
         message.setCipherSuites(cipherStream.toByteArray());
-        LOGGER.debug("CipherSuites: " + ArrayConverter.bytesToHexString(message.getCipherSuites().getValue()));
+        LOGGER.debug(
+                "CipherSuites: "
+                        + ArrayConverter.bytesToHexString(message.getCipherSuites().getValue()));
     }
 
     private void prepareChallenge(SSL2ClientHelloMessage message, byte[] challenge) {
         message.setChallenge(challenge);
-        LOGGER.debug("Challenge: " + ArrayConverter.bytesToHexString(message.getChallenge().getValue()));
+        LOGGER.debug(
+                "Challenge: " + ArrayConverter.bytesToHexString(message.getChallenge().getValue()));
     }
 
     private void prepareSessionID(SSL2ClientHelloMessage message) {
         message.setSessionID(chooser.getClientSessionId());
-        LOGGER.debug("SessionID: " + ArrayConverter.bytesToHexString(message.getSessionId().getValue()));
+        LOGGER.debug(
+                "SessionID: " + ArrayConverter.bytesToHexString(message.getSessionId().getValue()));
     }
 
     private void prepareSessionIDLength(SSL2ClientHelloMessage message) {
@@ -121,5 +125,4 @@ public class SSL2ClientHelloPreparator extends HandshakeMessagePreparator<SSL2Cl
         message.setMessageLength(length);
         LOGGER.debug("MessageLength: " + message.getMessageLength().getValue());
     }
-
 }

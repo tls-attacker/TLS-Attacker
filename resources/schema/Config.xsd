@@ -135,6 +135,13 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
+      <xs:element name="defaultServerSupportedSSL2CipherSuites" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="defaultServerSupportedSSL2CipherSuite" type="ssl2CipherSuite" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
       <xs:element name="defaultClientNamedGroups" minOccurs="0">
         <xs:complexType>
           <xs:sequence>
@@ -1290,8 +1297,8 @@
       <xs:enumeration value="QUIC"/>
       <xs:enumeration value="OPEN_VPN"/>
       <xs:enumeration value="STARTTLS"/>
-      <xs:enumeration value="SSL2"/>
       <xs:enumeration value="HTTPS"/>
+      <xs:enumeration value="SSL2"/>
     </xs:restriction>
   </xs:simpleType>
 
@@ -1939,6 +1946,19 @@
     </xs:restriction>
   </xs:simpleType>
 
+  <xs:simpleType name="ssl2CipherSuite">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="SSL_CK_RC4_128_WITH_MD5"/>
+      <xs:enumeration value="SSL_CK_RC4_128_EXPORT40_WITH_MD5"/>
+      <xs:enumeration value="SSL_CK_RC2_128_CBC_WITH_MD5"/>
+      <xs:enumeration value="SSL_CK_RC2_128_CBC_EXPORT40_WITH_MD5"/>
+      <xs:enumeration value="SSL_CK_IDEA_128_CBC_WITH_MD5"/>
+      <xs:enumeration value="SSL_CK_DES_64_CBC_WITH_MD5"/>
+      <xs:enumeration value="SSL_CK_DES_192_EDE3_CBC_WITH_MD5"/>
+      <xs:enumeration value="SSL_UNKNOWN_CIPHER"/>
+    </xs:restriction>
+  </xs:simpleType>
+
   <xs:simpleType name="heartbeatMode">
     <xs:restriction base="xs:string">
       <xs:enumeration value="PEER_ALLOWED_TO_SEND"/>
@@ -2102,19 +2122,6 @@
       <xs:enumeration value="DEFAULT"/>
       <xs:enumeration value="THREADED_SERVER"/>
       <xs:enumeration value="DTLS"/>
-    </xs:restriction>
-  </xs:simpleType>
-
-  <xs:simpleType name="ssl2CipherSuite">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="SSL_CK_RC4_128_WITH_MD5"/>
-      <xs:enumeration value="SSL_CK_RC4_128_EXPORT40_WITH_MD5"/>
-      <xs:enumeration value="SSL_CK_RC2_128_CBC_WITH_MD5"/>
-      <xs:enumeration value="SSL_CK_RC2_128_CBC_EXPORT40_WITH_MD5"/>
-      <xs:enumeration value="SSL_CK_IDEA_128_CBC_WITH_MD5"/>
-      <xs:enumeration value="SSL_CK_DES_64_CBC_WITH_MD5"/>
-      <xs:enumeration value="SSL_CK_DES_192_EDE3_CBC_WITH_MD5"/>
-      <xs:enumeration value="SSL_UNKNOWN_CIPHER"/>
     </xs:restriction>
   </xs:simpleType>
 

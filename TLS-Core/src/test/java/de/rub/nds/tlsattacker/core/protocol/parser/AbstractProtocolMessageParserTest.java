@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -20,15 +19,15 @@ import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageParser;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 import org.junit.jupiter.api.Named;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.util.List;
-import java.util.function.BiFunction;
-import java.util.function.Function;
-
-abstract class AbstractTlsMessageParserTest<MT extends ProtocolMessage, PT extends ProtocolMessageParser<MT>> {
+abstract class AbstractProtocolMessageParserTest<
+        MT extends ProtocolMessage, PT extends ProtocolMessageParser<MT>> {
     private final Function<InputStream, PT> parserConstructor;
     private final BiFunction<InputStream, TlsContext, PT> parserConstructorWithContext;
     protected PT parser;
@@ -41,13 +40,15 @@ abstract class AbstractTlsMessageParserTest<MT extends ProtocolMessage, PT exten
     protected final Config config;
     protected final TlsContext tlsContext;
 
-    AbstractTlsMessageParserTest(Class<MT> messageClass, BiFunction<InputStream, TlsContext, PT> parserConstructor) {
+    AbstractProtocolMessageParserTest(
+            Class<MT> messageClass, BiFunction<InputStream, TlsContext, PT> parserConstructor) {
         this(messageClass, parserConstructor, List.of());
     }
 
-    AbstractTlsMessageParserTest(Class<MT> messageClass,
-        BiFunction<InputStream, TlsContext, PT> parserConstructorWithContext,
-        List<Named<Function<MT, Object>>> messageGetters) {
+    AbstractProtocolMessageParserTest(
+            Class<MT> messageClass,
+            BiFunction<InputStream, TlsContext, PT> parserConstructorWithContext,
+            List<Named<Function<MT, Object>>> messageGetters) {
         this.parserConstructorWithContext = parserConstructorWithContext;
         this.parserConstructor = null;
         this.messageGetters = messageGetters;
@@ -56,8 +57,10 @@ abstract class AbstractTlsMessageParserTest<MT extends ProtocolMessage, PT exten
         this.messageClass = messageClass;
     }
 
-    AbstractTlsMessageParserTest(Class<MT> messageClass, Function<InputStream, PT> parserConstructor,
-        List<Named<Function<MT, Object>>> messageGetters) {
+    AbstractProtocolMessageParserTest(
+            Class<MT> messageClass,
+            Function<InputStream, PT> parserConstructor,
+            List<Named<Function<MT, Object>>> messageGetters) {
         this.parserConstructor = parserConstructor;
         this.parserConstructorWithContext = null;
         this.messageGetters = messageGetters;
@@ -68,26 +71,34 @@ abstract class AbstractTlsMessageParserTest<MT extends ProtocolMessage, PT exten
 
     @ParameterizedTest
     @MethodSource("provideTestVectors")
-    public final void testParseTlsMessageContent(ProtocolVersion providedProtocolVersion, byte[] providedMessageBytes,
-        List<Object> expectedMessageSpecificValues) {
+    public final void testParseTlsMessageContent(
+            ProtocolVersion providedProtocolVersion,
+            byte[] providedMessageBytes,
+            List<Object> expectedMessageSpecificValues) {
         parseTlsMessage(providedProtocolVersion, providedMessageBytes);
         assertMessageSpecific(expectedMessageSpecificValues);
     }
 
-    protected void parseTlsMessage(ProtocolVersion providedProtocolVersion, byte[] providedMessageBytes) {
+    protected void parseTlsMessage(
+            ProtocolVersion providedProtocolVersion, byte[] providedMessageBytes) {
         prepareParsing(providedProtocolVersion, providedMessageBytes);
         parser.parse(message);
     }
 
-    protected void prepareParsing(ProtocolVersion providedProtocolVersion, byte[] providedMessageBytes) {
+    protected void prepareParsing(
+            ProtocolVersion providedProtocolVersion, byte[] providedMessageBytes) {
         tlsContext.setLastRecordVersion(providedProtocolVersion);
         tlsContext.setSelectedProtocolVersion(providedProtocolVersion);
         getParser(providedProtocolVersion, providedMessageBytes);
         if (message == null) {
             try {
                 message = messageClass.getConstructor().newInstance();
-            } catch (InvocationTargetException | IllegalArgumentException | IllegalAccessException
-                | InstantiationException | NoSuchMethodException | SecurityException ex) {
+            } catch (InvocationTargetException
+                    | IllegalArgumentException
+                    | IllegalAccessException
+                    | InstantiationException
+                    | NoSuchMethodException
+                    | SecurityException ex) {
                 fail("Failed to create message instance for " + messageClass.getName());
             }
         }
@@ -95,7 +106,9 @@ abstract class AbstractTlsMessageParserTest<MT extends ProtocolMessage, PT exten
 
     protected void getParser(ProtocolVersion providedProtocolVersion, byte[] providedMessageBytes) {
         if (parserConstructorWithContext != null) {
-            parser = parserConstructorWithContext.apply(getMessageInputStream(providedMessageBytes), tlsContext);
+            parser =
+                    parserConstructorWithContext.apply(
+                            getMessageInputStream(providedMessageBytes), tlsContext);
         } else {
             parser = parserConstructor.apply(getMessageInputStream(providedMessageBytes));
         }
@@ -118,7 +131,8 @@ abstract class AbstractTlsMessageParserTest<MT extends ProtocolMessage, PT exten
                 actual = ((ModifiableVariable<?>) actual).getValue();
             }
             // Perform assertion
-            String assertionMessage = this.getClass().getSimpleName() + " failed: " + getter.getName();
+            String assertionMessage =
+                    this.getClass().getSimpleName() + " failed: " + getter.getName();
             if (expected instanceof byte[]) {
                 assertArrayEquals((byte[]) expected, (byte[]) actual, assertionMessage);
             } else if (expected == null) {

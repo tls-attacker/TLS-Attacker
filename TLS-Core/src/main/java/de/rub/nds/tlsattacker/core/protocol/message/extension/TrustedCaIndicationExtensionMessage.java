@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
@@ -15,25 +14,23 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.TrustedCaIndicationExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.TrustedCaIndicationExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.TrustedCaIndicationExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.TrustedCaIndicationExtensionSerializer;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.List;
-import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "TrustedCaIndicationExtension")
-public class TrustedCaIndicationExtensionMessage extends ExtensionMessage<TrustedCaIndicationExtensionMessage> {
+public class TrustedCaIndicationExtensionMessage
+        extends ExtensionMessage<TrustedCaIndicationExtensionMessage> {
 
-    @ModifiableVariableProperty
-    private ModifiableInteger trustedAuthoritiesLength;
-    @HoldsModifiableVariable
-    private List<TrustedAuthority> trustedAuthorities;
-    @ModifiableVariableProperty
-    private ModifiableByteArray trustedAuthoritiesBytes;
+    @ModifiableVariableProperty private ModifiableInteger trustedAuthoritiesLength;
+    @HoldsModifiableVariable private List<TrustedAuthority> trustedAuthorities;
+    @ModifiableVariableProperty private ModifiableByteArray trustedAuthoritiesBytes;
 
     public TrustedCaIndicationExtensionMessage() {
         super(ExtensionType.TRUSTED_CA_KEYS);
@@ -49,7 +46,8 @@ public class TrustedCaIndicationExtensionMessage extends ExtensionMessage<Truste
 
     public void setTrustedAuthoritiesLength(int trustedAuthoritiesLength) {
         this.trustedAuthoritiesLength =
-            ModifiableVariableFactory.safelySetValue(this.trustedAuthoritiesLength, trustedAuthoritiesLength);
+                ModifiableVariableFactory.safelySetValue(
+                        this.trustedAuthoritiesLength, trustedAuthoritiesLength);
     }
 
     public List<TrustedAuthority> getTrustedAuthorities() {
@@ -70,7 +68,8 @@ public class TrustedCaIndicationExtensionMessage extends ExtensionMessage<Truste
 
     public void setTrustedAuthoritiesBytes(byte[] trustedAuthoritiesBytes) {
         this.trustedAuthoritiesBytes =
-            ModifiableVariableFactory.safelySetValue(this.trustedAuthoritiesBytes, trustedAuthoritiesBytes);
+                ModifiableVariableFactory.safelySetValue(
+                        this.trustedAuthoritiesBytes, trustedAuthoritiesBytes);
     }
 
     @Override

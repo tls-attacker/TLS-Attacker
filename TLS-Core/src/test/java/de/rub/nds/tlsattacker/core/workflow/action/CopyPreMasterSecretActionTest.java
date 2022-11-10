@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -14,12 +13,13 @@ import static org.junit.jupiter.api.Assertions.*;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import org.junit.jupiter.api.Test;
 
-public class CopyPreMasterSecretActionTest extends AbstractCopyActionTest<CopyPreMasterSecretAction> {
+public class CopyPreMasterSecretActionTest
+        extends AbstractCopyActionTest<CopyPreMasterSecretAction> {
 
     public CopyPreMasterSecretActionTest() {
         super(new CopyPreMasterSecretAction("src", "dst"), CopyPreMasterSecretAction.class);
-        src.setPreMasterSecret(new byte[] { 1, 2 });
-        dst.setPreMasterSecret(new byte[] { 3, 4 });
+        src.setPreMasterSecret(new byte[] {1, 2});
+        dst.setPreMasterSecret(new byte[] {3, 4});
     }
 
     @Test
@@ -36,20 +36,16 @@ public class CopyPreMasterSecretActionTest extends AbstractCopyActionTest<CopyPr
         assertThrows(ActionExecutionException.class, action::assertAliasesSetProperly);
     }
 
-    /**
-     * Test of execute method, of class CopyPreMasterSecretActionTest.
-     */
+    /** Test of execute method, of class CopyPreMasterSecretActionTest. */
     @Test
     @Override
     public void testExecute() throws Exception {
         super.testExecute();
         assertArrayEquals(src.getPreMasterSecret(), dst.getPreMasterSecret());
-        assertArrayEquals(new byte[] { 1, 2 }, src.getPreMasterSecret());
+        assertArrayEquals(new byte[] {1, 2}, src.getPreMasterSecret());
     }
 
-    /**
-     * Test of equals method, of class CopyPreMasterSecretAction.
-     */
+    /** Test of equals method, of class CopyPreMasterSecretAction. */
     @Test
     public void testEquals() {
         assertEquals(action, action);

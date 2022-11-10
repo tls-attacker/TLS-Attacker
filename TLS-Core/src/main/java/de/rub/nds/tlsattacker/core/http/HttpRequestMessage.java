@@ -1,21 +1,12 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.http;
-
-import java.io.InputStream;
-import java.util.LinkedList;
-import java.util.List;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlElementWrapper;
-import jakarta.xml.bind.annotation.XmlElements;
-import jakarta.xml.bind.annotation.XmlRootElement;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -23,19 +14,29 @@ import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.http.header.*;
 import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElementWrapper;
+import jakarta.xml.bind.annotation.XmlElements;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import java.io.InputStream;
+import java.util.LinkedList;
+import java.util.List;
 
 @XmlRootElement
 public class HttpRequestMessage extends HttpMessage<HttpRequestMessage> {
 
     @XmlElementWrapper
-    @XmlElements(value = { @XmlElement(type = GenericHttpHeader.class, name = "HttpHeader"),
-        @XmlElement(type = ContentLengthHeader.class, name = "ContentLengthHeader"),
-        @XmlElement(type = DateHeader.class, name = "DateHeader"),
-        @XmlElement(type = ExpiresHeader.class, name = "ExpiresHeader"),
-        @XmlElement(type = LocationHeader.class, name = "LocationHeader"),
-        @XmlElement(type = HostHeader.class, name = "HostHeader"),
-        @XmlElement(type = TokenBindingHeader.class, name = "TokenBindingHeader"),
-        @XmlElement(type = TokenBindingHeader.class, name = "CookieHeader") })
+    @XmlElements(
+            value = {
+                @XmlElement(type = GenericHttpHeader.class, name = "HttpHeader"),
+                @XmlElement(type = ContentLengthHeader.class, name = "ContentLengthHeader"),
+                @XmlElement(type = DateHeader.class, name = "DateHeader"),
+                @XmlElement(type = ExpiresHeader.class, name = "ExpiresHeader"),
+                @XmlElement(type = LocationHeader.class, name = "LocationHeader"),
+                @XmlElement(type = HostHeader.class, name = "HostHeader"),
+                @XmlElement(type = TokenBindingHeader.class, name = "TokenBindingHeader"),
+                @XmlElement(type = TokenBindingHeader.class, name = "CookieHeader")
+            })
     @HoldsModifiableVariable
     private List<HttpHeader> header;
 
@@ -55,8 +56,10 @@ public class HttpRequestMessage extends HttpMessage<HttpRequestMessage> {
         header = new LinkedList<>();
         header.add(new HostHeader());
         header.add(new GenericHttpHeader("Connection", "keep-alive"));
-        header.add(new GenericHttpHeader("Accept",
-            "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8"));
+        header.add(
+                new GenericHttpHeader(
+                        "Accept",
+                        "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8"));
         header.add(new GenericHttpHeader("Accept-Encoding", "identity"));
         header.add(new GenericHttpHeader("Accept-Language", "de-DE,de;q=0.8,en-US;q=0.6,en;q=0.4"));
         if (config.isAddTokenBindingExtension()) {
@@ -66,8 +69,10 @@ public class HttpRequestMessage extends HttpMessage<HttpRequestMessage> {
             header.add(new CookieHeader());
         }
         header.add(new GenericHttpHeader("Upgrade-Insecure-Requests", "1"));
-        header.add(new GenericHttpHeader("User-Agent",
-            "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/59.0.3071.109 Chrome/59.0.3071.109 Safari/537.36"));
+        header.add(
+                new GenericHttpHeader(
+                        "User-Agent",
+                        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/59.0.3071.109 Chrome/59.0.3071.109 Safari/537.36"));
     }
 
     public List<HttpHeader> getHeader() {
@@ -111,7 +116,8 @@ public class HttpRequestMessage extends HttpMessage<HttpRequestMessage> {
     }
 
     public void setRequestProtocol(String requestProtocol) {
-        this.requestProtocol = ModifiableVariableFactory.safelySetValue(this.requestProtocol, requestProtocol);
+        this.requestProtocol =
+                ModifiableVariableFactory.safelySetValue(this.requestProtocol, requestProtocol);
     }
 
     public String toCompactString() {

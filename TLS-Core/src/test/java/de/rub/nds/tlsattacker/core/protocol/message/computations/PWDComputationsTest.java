@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message.computations;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -20,9 +19,8 @@ import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import org.junit.jupiter.api.Test;
-
 import java.math.BigInteger;
+import org.junit.jupiter.api.Test;
 
 public class PWDComputationsTest {
 
@@ -32,22 +30,29 @@ public class PWDComputationsTest {
         context.setSelectedCipherSuite(CipherSuite.TLS_ECCPWD_WITH_AES_128_GCM_SHA256);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         context.setClientRandom(
-            ArrayConverter.hexStringToByteArray("528fbf52175de2c869845fdbfa8344f7d732712ebfa679d8643cd31a880e043d"));
+                ArrayConverter.hexStringToByteArray(
+                        "528fbf52175de2c869845fdbfa8344f7d732712ebfa679d8643cd31a880e043d"));
         context.setServerRandom(
-            ArrayConverter.hexStringToByteArray("528fbf524378a1b13b8d2cbd247090721369f8bfa3ceeb3cfcd85cbfcdd58eaa"));
+                ArrayConverter.hexStringToByteArray(
+                        "528fbf524378a1b13b8d2cbd247090721369f8bfa3ceeb3cfcd85cbfcdd58eaa"));
         context.setClientPWDUsername("fred");
         context.getConfig().setDefaultPWDPassword("barney");
         EllipticCurve curve = CurveFactory.getCurve(NamedGroup.BRAINPOOLP256R1);
         Point passwordElement = PWDComputations.computePasswordElement(context.getChooser(), curve);
-        BigInteger expectedX = new BigInteger("686B0D3FC49894DD621EC04F925E029B2B1528EDEDCA46007254281E9A6EDC", 16);
-        assertArrayEquals(ArrayConverter.bigIntegerToByteArray(expectedX),
-            ArrayConverter.bigIntegerToByteArray(passwordElement.getFieldX().getData()));
+        BigInteger expectedX =
+                new BigInteger(
+                        "686B0D3FC49894DD621EC04F925E029B2B1528EDEDCA46007254281E9A6EDC", 16);
+        assertArrayEquals(
+                ArrayConverter.bigIntegerToByteArray(expectedX),
+                ArrayConverter.bigIntegerToByteArray(passwordElement.getFieldX().getData()));
 
         context.setSelectedProtocolVersion(ProtocolVersion.TLS13);
         passwordElement = PWDComputations.computePasswordElement(context.getChooser(), curve);
-        expectedX = new BigInteger("0BA387CE8123BEA05A4327520F5A2A66B038F2024F239F330038DA0A2744F79B", 16);
-        assertArrayEquals(ArrayConverter.bigIntegerToByteArray(expectedX),
-            ArrayConverter.bigIntegerToByteArray(passwordElement.getFieldX().getData()));
+        expectedX =
+                new BigInteger(
+                        "0BA387CE8123BEA05A4327520F5A2A66B038F2024F239F330038DA0A2744F79B", 16);
+        assertArrayEquals(
+                ArrayConverter.bigIntegerToByteArray(expectedX),
+                ArrayConverter.bigIntegerToByteArray(passwordElement.getFieldX().getData()));
     }
-
 }

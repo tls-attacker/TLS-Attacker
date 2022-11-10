@@ -1,16 +1,14 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.unittest.helper;
 
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.tcp.TcpTransportHandler;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -20,10 +18,9 @@ import java.io.OutputStream;
 
 public class FakeTransportHandler extends TcpTransportHandler {
 
-    /**
-     * Data that will be returned on a fetchData() call
-     */
+    /** Data that will be returned on a fetchData() call */
     private ByteArrayOutputStream outputStream;
+
     private ByteArrayInputStream inputStream;
 
     private Boolean opened = false;
@@ -82,30 +79,33 @@ public class FakeTransportHandler extends TcpTransportHandler {
     }
 
     @Override
-    public void preInitialize() {
-    }
+    public void preInitialize() {}
 
     @Override
     public Integer getSrcPort() {
-        throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
+        throw new UnsupportedOperationException(
+                "Not supported yet."); // To change body of generated methods, choose
         // Tools | Templates.
     }
 
     @Override
     public void setSrcPort(int port) {
-        throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
+        throw new UnsupportedOperationException(
+                "Not supported yet."); // To change body of generated methods, choose
         // Tools | Templates.
     }
 
     @Override
     public Integer getDstPort() {
-        throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
+        throw new UnsupportedOperationException(
+                "Not supported yet."); // To change body of generated methods, choose
         // Tools | Templates.
     }
 
     @Override
     public void setDstPort(int port) {
-        throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
+        throw new UnsupportedOperationException(
+                "Not supported yet."); // To change body of generated methods, choose
         // Tools | Templates.
     }
 
@@ -118,5 +118,4 @@ public class FakeTransportHandler extends TcpTransportHandler {
     public InputStream getInputStream() {
         return inputStream;
     }
-
 }

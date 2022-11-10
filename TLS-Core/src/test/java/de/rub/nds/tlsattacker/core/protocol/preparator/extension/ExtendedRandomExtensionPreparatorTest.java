@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -18,19 +17,26 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedRandomExte
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtendedRandomExtensionSerializer;
 import org.junit.jupiter.api.Test;
 
-public class ExtendedRandomExtensionPreparatorTest extends AbstractExtensionMessagePreparatorTest<
-    ExtendedRandomExtensionMessage, ExtendedRandomExtensionSerializer, ExtendedRandomExtensionPreparator> {
+public class ExtendedRandomExtensionPreparatorTest
+        extends AbstractExtensionMessagePreparatorTest<
+                ExtendedRandomExtensionMessage,
+                ExtendedRandomExtensionSerializer,
+                ExtendedRandomExtensionPreparator> {
 
     private static final byte[] extendedRandomShort = new byte[0];
     private static final byte[] extendedRandom =
-        ArrayConverter.hexStringToByteArray("AABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABB");
+            ArrayConverter.hexStringToByteArray(
+                    "AABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABB");
     private static final byte[] extendedRandomLong =
-        ArrayConverter.hexStringToByteArray("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-            + "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+            ArrayConverter.hexStringToByteArray(
+                    "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                            + "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 
     public ExtendedRandomExtensionPreparatorTest() {
-        super(ExtendedRandomExtensionMessage::new, ExtendedRandomExtensionSerializer::new,
-            ExtendedRandomExtensionPreparator::new);
+        super(
+                ExtendedRandomExtensionMessage::new,
+                ExtendedRandomExtensionSerializer::new,
+                ExtendedRandomExtensionPreparator::new);
     }
 
     @Test
@@ -41,8 +47,10 @@ public class ExtendedRandomExtensionPreparatorTest extends AbstractExtensionMess
         context.getConfig().setDefaultServerExtendedRandom(extendedRandom);
         preparator.prepare();
 
-        assertArrayEquals(ExtensionType.EXTENDED_RANDOM.getValue(), message.getExtensionType().getValue());
-        assertEquals(message.getExtendedRandomLength().getValue().intValue(), extendedRandom.length);
+        assertArrayEquals(
+                ExtensionType.EXTENDED_RANDOM.getValue(), message.getExtensionType().getValue());
+        assertEquals(
+                message.getExtendedRandomLength().getValue().intValue(), extendedRandom.length);
         assertArrayEquals(extendedRandom, message.getExtendedRandom().getValue());
     }
 
@@ -53,8 +61,11 @@ public class ExtendedRandomExtensionPreparatorTest extends AbstractExtensionMess
         context.getConfig().setDefaultServerExtendedRandom(extendedRandomShort);
         preparator.prepare();
 
-        assertArrayEquals(ExtensionType.EXTENDED_RANDOM.getValue(), message.getExtensionType().getValue());
-        assertEquals(message.getExtendedRandomLength().getValue().intValue(), extendedRandomShort.length);
+        assertArrayEquals(
+                ExtensionType.EXTENDED_RANDOM.getValue(), message.getExtensionType().getValue());
+        assertEquals(
+                message.getExtendedRandomLength().getValue().intValue(),
+                extendedRandomShort.length);
         assertArrayEquals(extendedRandomShort, message.getExtendedRandom().getValue());
     }
 
@@ -65,8 +76,10 @@ public class ExtendedRandomExtensionPreparatorTest extends AbstractExtensionMess
         context.getConfig().setDefaultServerExtendedRandom(extendedRandomLong);
         preparator.prepare();
 
-        assertArrayEquals(ExtensionType.EXTENDED_RANDOM.getValue(), message.getExtensionType().getValue());
-        assertEquals(message.getExtendedRandomLength().getValue().intValue(), extendedRandomLong.length);
+        assertArrayEquals(
+                ExtensionType.EXTENDED_RANDOM.getValue(), message.getExtensionType().getValue());
+        assertEquals(
+                message.getExtendedRandomLength().getValue().intValue(), extendedRandomLong.length);
         assertArrayEquals(extendedRandomLong, message.getExtendedRandom().getValue());
     }
 
@@ -75,11 +88,14 @@ public class ExtendedRandomExtensionPreparatorTest extends AbstractExtensionMess
         context.getConfig().setAddExtendedRandomExtension(true);
         preparator.prepare();
 
-        assertArrayEquals(ExtensionType.EXTENDED_RANDOM.getValue(), message.getExtensionType().getValue());
-        assertEquals(message.getExtendedRandomLength().getValue().intValue(),
-            context.getConfig().getDefaultClientExtendedRandom().length);
-        assertArrayEquals(context.getConfig().getDefaultClientExtendedRandom(), message.getExtendedRandom().getValue());
-
+        assertArrayEquals(
+                ExtensionType.EXTENDED_RANDOM.getValue(), message.getExtensionType().getValue());
+        assertEquals(
+                message.getExtendedRandomLength().getValue().intValue(),
+                context.getConfig().getDefaultClientExtendedRandom().length);
+        assertArrayEquals(
+                context.getConfig().getDefaultClientExtendedRandom(),
+                message.getExtendedRandom().getValue());
     }
 
     @Test
@@ -88,8 +104,10 @@ public class ExtendedRandomExtensionPreparatorTest extends AbstractExtensionMess
         context.getConfig().setDefaultClientExtendedRandom(extendedRandomLong);
         preparator.prepare();
 
-        assertArrayEquals(ExtensionType.EXTENDED_RANDOM.getValue(), message.getExtensionType().getValue());
-        assertEquals(message.getExtendedRandomLength().getValue().intValue(),
-            context.getConfig().getDefaultClientExtendedRandom().length);
+        assertArrayEquals(
+                ExtensionType.EXTENDED_RANDOM.getValue(), message.getExtensionType().getValue());
+        assertEquals(
+                message.getExtendedRandomLength().getValue().intValue(),
+                context.getConfig().getDefaultClientExtendedRandom().length);
     }
 }

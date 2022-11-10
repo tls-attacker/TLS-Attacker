@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
@@ -15,8 +14,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class ChangeReadSequenceNumberAction extends ChangeSequenceNumberAction {
 
-    public ChangeReadSequenceNumberAction() {
-    }
+    public ChangeReadSequenceNumberAction() {}
 
     public ChangeReadSequenceNumberAction(long sequenceNumber) {
         super(sequenceNumber);
@@ -27,9 +25,12 @@ public class ChangeReadSequenceNumberAction extends ChangeSequenceNumberAction {
         LOGGER.info("Changed read sequence number of current cipher");
         if (tlsContext.getRecordLayer() != null) {
             int epoch = tlsContext.getRecordLayer().getReadEpoch();
-            tlsContext.getRecordLayer().getEncryptor().getRecordCipher(epoch).getState()
-                .setReadSequenceNumber(sequenceNumber);
+            tlsContext
+                    .getRecordLayer()
+                    .getEncryptor()
+                    .getRecordCipher(epoch)
+                    .getState()
+                    .setReadSequenceNumber(sequenceNumber);
         }
     }
-
 }

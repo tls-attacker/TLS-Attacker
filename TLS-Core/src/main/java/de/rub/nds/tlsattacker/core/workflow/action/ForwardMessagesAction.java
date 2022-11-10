@@ -1,18 +1,16 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.layer.*;
@@ -24,7 +22,12 @@ import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElementRef;
+import jakarta.xml.bind.annotation.XmlElementWrapper;
+import jakarta.xml.bind.annotation.XmlElements;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,16 +35,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlElementRef;
-import jakarta.xml.bind.annotation.XmlElementWrapper;
-import jakarta.xml.bind.annotation.XmlElements;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlTransient;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.io.IOException;
 
 @XmlRootElement
 public class ForwardMessagesAction extends TlsAction implements ReceivingAction, SendingAction {
@@ -50,73 +45,68 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
 
     @XmlElement(name = "from")
     protected String receiveFromAlias = null;
+
     @XmlElement(name = "to")
     protected String forwardToAlias = null;
 
-    @XmlTransient
-    protected Boolean executedAsPlanned = null;
+    @XmlTransient protected Boolean executedAsPlanned = null;
 
-    /**
-     * If you want true here, use the more verbose ForwardMessagesWithPrepareAction.
-     */
-    @XmlTransient
-    protected Boolean withPrepare = false;
+    /** If you want true here, use the more verbose ForwardMessagesWithPrepareAction. */
+    @XmlTransient protected Boolean withPrepare = false;
 
-    @HoldsModifiableVariable
-    @XmlElementWrapper
-    @XmlElementRef
+    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
     protected List<ProtocolMessage> receivedMessages;
 
     @HoldsModifiableVariable
     @XmlElementWrapper
-    @XmlElements(value = { @XmlElement(type = Record.class, name = "Record") })
+    @XmlElements(value = {@XmlElement(type = Record.class, name = "Record")})
     protected List<Record> receivedRecords;
 
     @HoldsModifiableVariable
     @XmlElementWrapper
-    @XmlElements(value = { @XmlElement(type = DtlsHandshakeMessageFragment.class, name = "DtlsFragment") })
+    @XmlElements(
+            value = {@XmlElement(type = DtlsHandshakeMessageFragment.class, name = "DtlsFragment")})
     protected List<DtlsHandshakeMessageFragment> receivedFragments;
 
-    @XmlElementWrapper
-    @HoldsModifiableVariable
-    @XmlElementRef
+    @XmlElementWrapper @HoldsModifiableVariable @XmlElementRef
     protected List<ProtocolMessage> messages;
 
     @HoldsModifiableVariable
     @XmlElementWrapper
-    @XmlElements(value = { @XmlElement(type = Record.class, name = "Record") })
+    @XmlElements(value = {@XmlElement(type = Record.class, name = "Record")})
     protected List<Record> records;
 
     @HoldsModifiableVariable
     @XmlElementWrapper
-    @XmlElements(value = { @XmlElement(type = DtlsHandshakeMessageFragment.class, name = "DtlsFragment") })
+    @XmlElements(
+            value = {@XmlElement(type = DtlsHandshakeMessageFragment.class, name = "DtlsFragment")})
     protected List<DtlsHandshakeMessageFragment> fragments;
 
-    @HoldsModifiableVariable
-    @XmlElementWrapper
-    @XmlElementRef
+    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
     protected List<ProtocolMessage> sendMessages;
 
     @HoldsModifiableVariable
     @XmlElementWrapper
-    @XmlElements(value = { @XmlElement(type = Record.class, name = "Record") })
+    @XmlElements(value = {@XmlElement(type = Record.class, name = "Record")})
     protected List<Record> sendRecords;
 
     @HoldsModifiableVariable
     @XmlElementWrapper
-    @XmlElements(value = { @XmlElement(type = DtlsHandshakeMessageFragment.class, name = "DtlsFragment") })
+    @XmlElements(
+            value = {@XmlElement(type = DtlsHandshakeMessageFragment.class, name = "DtlsFragment")})
     protected List<DtlsHandshakeMessageFragment> sendFragments;
 
-    public ForwardMessagesAction() {
-    }
+    public ForwardMessagesAction() {}
 
-    public ForwardMessagesAction(String receiveFromAlias, String forwardToAlias, List<ProtocolMessage> messages) {
+    public ForwardMessagesAction(
+            String receiveFromAlias, String forwardToAlias, List<ProtocolMessage> messages) {
         this.messages = messages;
         this.receiveFromAlias = receiveFromAlias;
         this.forwardToAlias = forwardToAlias;
     }
 
-    public ForwardMessagesAction(String receiveFromAlias, String forwardToAlias, ProtocolMessage... messages) {
+    public ForwardMessagesAction(
+            String receiveFromAlias, String forwardToAlias, ProtocolMessage... messages) {
         this(receiveFromAlias, forwardToAlias, new ArrayList<>(Arrays.asList(messages)));
     }
 
@@ -150,19 +140,29 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
         LayerStack layerStack = receiveFromContext.getLayerStack();
 
         LayerConfiguration messageConfiguration =
-            new SpecificReceiveLayerConfiguration(ImplementedLayers.MESSAGE, messages);
+                new SpecificReceiveLayerConfiguration(ImplementedLayers.MESSAGE, messages);
 
-        List<LayerConfiguration> layerConfigurationList = sortLayerConfigurations(layerStack, messageConfiguration);
+        List<LayerConfiguration> layerConfigurationList =
+                sortLayerConfigurations(layerStack, messageConfiguration);
         LayerStackProcessingResult processingResult;
         processingResult = layerStack.receiveData(layerConfigurationList);
         receivedMessages =
-            new ArrayList<>(processingResult.getResultForLayer(ImplementedLayers.MESSAGE).getUsedContainers());
+                new ArrayList<>(
+                        processingResult
+                                .getResultForLayer(ImplementedLayers.MESSAGE)
+                                .getUsedContainers());
         if (receiveFromContext.getChooser().getSelectedProtocolVersion().isDTLS()) {
-            receivedFragments = new ArrayList<>(
-                processingResult.getResultForLayer(ImplementedLayers.DTLS_FRAGMENT).getUsedContainers());
+            receivedFragments =
+                    new ArrayList<>(
+                            processingResult
+                                    .getResultForLayer(ImplementedLayers.DTLS_FRAGMENT)
+                                    .getUsedContainers());
         }
         receivedRecords =
-            new ArrayList<>(processingResult.getResultForLayer(ImplementedLayers.RECORD).getUsedContainers());
+                new ArrayList<>(
+                        processingResult
+                                .getResultForLayer(ImplementedLayers.RECORD)
+                                .getUsedContainers());
         String expected = getReadableString(receivedMessages);
         LOGGER.debug("Receive Expected (" + receiveFromAlias + "): " + expected);
         String received = getReadableString(receivedMessages);
@@ -190,24 +190,40 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
             LayerStack layerStack = forwardToCtx.getLayerStack();
 
             LayerConfiguration dtlsConfiguration =
-                new SpecificSendLayerConfiguration<>(ImplementedLayers.DTLS_FRAGMENT, receivedFragments);
+                    new SpecificSendLayerConfiguration<>(
+                            ImplementedLayers.DTLS_FRAGMENT, receivedFragments);
             LayerConfiguration messageConfiguration =
-                new SpecificSendLayerConfiguration<>(ImplementedLayers.MESSAGE, receivedMessages);
+                    new SpecificSendLayerConfiguration<>(
+                            ImplementedLayers.MESSAGE, receivedMessages);
             LayerConfiguration recordConfiguration =
-                new SpecificSendLayerConfiguration<>(ImplementedLayers.RECORD, receivedRecords);
+                    new SpecificSendLayerConfiguration<>(ImplementedLayers.RECORD, receivedRecords);
 
             List<LayerConfiguration> layerConfigurationList =
-                sortLayerConfigurations(layerStack, dtlsConfiguration, messageConfiguration, recordConfiguration);
-            LayerStackProcessingResult processingResult = layerStack.sendData(layerConfigurationList);
+                    sortLayerConfigurations(
+                            layerStack,
+                            dtlsConfiguration,
+                            messageConfiguration,
+                            recordConfiguration);
+            LayerStackProcessingResult processingResult =
+                    layerStack.sendData(layerConfigurationList);
 
             sendMessages =
-                new ArrayList<>(processingResult.getResultForLayer(ImplementedLayers.MESSAGE).getUsedContainers());
+                    new ArrayList<>(
+                            processingResult
+                                    .getResultForLayer(ImplementedLayers.MESSAGE)
+                                    .getUsedContainers());
             if (forwardToCtx.getChooser().getSelectedProtocolVersion().isDTLS()) {
-                sendFragments = new ArrayList<>(
-                    processingResult.getResultForLayer(ImplementedLayers.DTLS_FRAGMENT).getUsedContainers());
+                sendFragments =
+                        new ArrayList<>(
+                                processingResult
+                                        .getResultForLayer(ImplementedLayers.DTLS_FRAGMENT)
+                                        .getUsedContainers());
             }
             sendRecords =
-                new ArrayList<>(processingResult.getResultForLayer(ImplementedLayers.RECORD).getUsedContainers());
+                    new ArrayList<>(
+                            processingResult
+                                    .getResultForLayer(ImplementedLayers.RECORD)
+                                    .getUsedContainers());
 
             executedAsPlanned = checkMessageListsEquals(sendMessages, receivedMessages);
 
@@ -229,8 +245,8 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
 
     // TODO: yes, the correct way would be implement equals() for all
     // ProtocolMessages...
-    private boolean checkMessageListsEquals(List<ProtocolMessage> expectedMessages,
-        List<ProtocolMessage> actualMessages) {
+    private boolean checkMessageListsEquals(
+            List<ProtocolMessage> expectedMessages, List<ProtocolMessage> actualMessages) {
         boolean actualEmpty = true;
         boolean expectedEmpty = true;
         if (actualMessages != null && !actualMessages.isEmpty()) {
@@ -334,8 +350,9 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
     }
 
     /**
-     * TODO: the equals methods for message/record actions and similar classes would require that messages and records
-     * implement equals for a proper implementation. The present approach is not satisfying.
+     * TODO: the equals methods for message/record actions and similar classes would require that
+     * messages and records implement equals for a proper implementation. The present approach is
+     * not satisfying.
      */
     @Override
     public boolean equals(Object obj) {
@@ -393,12 +410,16 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
     @Override
     public void assertAliasesSetProperly() throws ConfigurationException {
         if ((receiveFromAlias == null) || (receiveFromAlias.isEmpty())) {
-            throw new ActionExecutionException("Can't execute " + this.getClass().getSimpleName()
-                + " with empty receive alias (if using XML: add <from/>)");
+            throw new ActionExecutionException(
+                    "Can't execute "
+                            + this.getClass().getSimpleName()
+                            + " with empty receive alias (if using XML: add <from/>)");
         }
         if ((forwardToAlias == null) || (forwardToAlias.isEmpty())) {
-            throw new ActionExecutionException("Can't execute " + this.getClass().getSimpleName()
-                + " with empty forward alias (if using XML: add <to/>)");
+            throw new ActionExecutionException(
+                    "Can't execute "
+                            + this.getClass().getSimpleName()
+                            + " with empty forward alias (if using XML: add <to/>)");
         }
     }
 

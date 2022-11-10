@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -19,19 +18,15 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.ClientAuthzExtensi
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ClientAuthzExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ClientAuthzExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ClientAuthzExtensionSerializer;
-import java.io.InputStream;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import java.io.InputStream;
 
-/**
- * This extension is defined in RFC5878
- */
+/** This extension is defined in RFC5878 */
 @XmlRootElement(name = "ClientAuthorizationExtension")
 public class ClientAuthzExtensionMessage extends ExtensionMessage<ClientAuthzExtensionMessage> {
 
-    @ModifiableVariableProperty
-    ModifiableInteger authzFormatListLength;
-    @ModifiableVariableProperty
-    ModifiableByteArray authzFormatList;
+    @ModifiableVariableProperty ModifiableInteger authzFormatListLength;
+    @ModifiableVariableProperty ModifiableByteArray authzFormatList;
 
     public ClientAuthzExtensionMessage() {
         super(ExtensionType.CLIENT_AUTHZ);
@@ -47,7 +42,8 @@ public class ClientAuthzExtensionMessage extends ExtensionMessage<ClientAuthzExt
 
     public void setAuthzFormatListLength(int authzFormatListLength) {
         this.authzFormatListLength =
-            ModifiableVariableFactory.safelySetValue(this.authzFormatListLength, authzFormatListLength);
+                ModifiableVariableFactory.safelySetValue(
+                        this.authzFormatListLength, authzFormatListLength);
     }
 
     public ModifiableByteArray getAuthzFormatList() {
@@ -59,7 +55,8 @@ public class ClientAuthzExtensionMessage extends ExtensionMessage<ClientAuthzExt
     }
 
     public void setAuthzFormatList(byte[] authzFormatList) {
-        this.authzFormatList = ModifiableVariableFactory.safelySetValue(this.authzFormatList, authzFormatList);
+        this.authzFormatList =
+                ModifiableVariableFactory.safelySetValue(this.authzFormatList, authzFormatList);
     }
 
     @Override
@@ -81,5 +78,4 @@ public class ClientAuthzExtensionMessage extends ExtensionMessage<ClientAuthzExt
     public ClientAuthzExtensionHandler getHandler(TlsContext tlsContext) {
         return new ClientAuthzExtensionHandler(tlsContext);
     }
-
 }

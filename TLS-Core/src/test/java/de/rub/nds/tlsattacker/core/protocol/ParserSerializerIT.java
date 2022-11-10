@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -20,12 +19,11 @@ import de.rub.nds.tlsattacker.core.protocol.message.*;
 import de.rub.nds.tlsattacker.util.tests.TestCategories;
 import java.io.ByteArrayInputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Random;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-
-import java.util.Random;
 
 public class ParserSerializerIT extends GenericParserSerializerTest {
 
@@ -34,8 +32,10 @@ public class ParserSerializerIT extends GenericParserSerializerTest {
 
     @Test
     @Tag(TestCategories.INTEGRATION_TEST)
-    public void testParser() throws NoSuchMethodException, InstantiationException, IllegalAccessException,
-        IllegalAccessException, IllegalArgumentException, IllegalArgumentException, InvocationTargetException {
+    public void testParser()
+            throws NoSuchMethodException, InstantiationException, IllegalAccessException,
+                    IllegalAccessException, IllegalArgumentException, IllegalArgumentException,
+                    InvocationTargetException {
         Random r = new Random(42);
         for (int i = 0; i < 10000; i++) {
             int random = r.nextInt(20);
@@ -48,28 +48,31 @@ public class ParserSerializerIT extends GenericParserSerializerTest {
                 r.nextBytes(bytesToParse);
                 int start = r.nextInt(100);
                 message = getRandomMessage(r);
-                ProtocolMessageParser parser = message.getParser(tlsContext, new ByteArrayInputStream(bytesToParse));
+                ProtocolMessageParser parser =
+                        message.getParser(tlsContext, new ByteArrayInputStream(bytesToParse));
                 parser.parse(message);
             } catch (ParserException | EndOfStreamException E) {
                 continue;
             }
 
-            if (message instanceof HandshakeMessage && !(message instanceof SSL2HandshakeMessage)) {
+            if (message instanceof HandshakeMessage && !(message instanceof SSL2Message)) {
                 // TODO: review if this test can be applied to HandshakeMessage's
                 continue;
             }
             message.getPreparator(tlsContext);
-            ProtocolMessageSerializer<? extends ProtocolMessage> serializer = message.getSerializer(tlsContext);
+            ProtocolMessageSerializer<? extends ProtocolMessage> serializer =
+                    message.getSerializer(tlsContext);
             byte[] result = serializer.serialize();
             LOGGER.debug(message.toString());
-            LOGGER.debug("Bytes to parse:\t" + ArrayConverter.bytesToHexString(bytesToParse, false));
+            LOGGER.debug(
+                    "Bytes to parse:\t" + ArrayConverter.bytesToHexString(bytesToParse, false));
             LOGGER.debug("Result:\t" + ArrayConverter.bytesToHexString(result, false));
-            ProtocolMessageParser parser2 = message.getParser(tlsContext, new ByteArrayInputStream(result));
+            ProtocolMessageParser parser2 =
+                    message.getParser(tlsContext, new ByteArrayInputStream(result));
             ProtocolMessage serialized = message.getClass().getConstructor().newInstance();
             parser2.parse(serialized);
             LOGGER.debug(serialized.toString());
             assertArrayEquals(serialized.getCompleteResultingMessage().getValue(), result);
         }
     }
-
 }

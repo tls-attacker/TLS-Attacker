@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.layer.impl;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -32,14 +31,14 @@ import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageSerializer;
 import de.rub.nds.tlsattacker.core.protocol.message.*;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-
 /**
- * The MessageLayer handles TLS Handshake messages. The encapsulation into records happens in the {@link RecordLayer}.
+ * The MessageLayer handles TLS Handshake messages. The encapsulation into records happens in the
+ * {@link RecordLayer}.
  */
 public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMessage> {
 
@@ -55,9 +54,8 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
     /**
      * Sends the given handshake messages using the lower layer.
      *
-     * @return             LayerProcessingResult A result object containing information about the sent data.
-     * @throws IOException
-     *                     When the data cannot be sent.
+     * @return LayerProcessingResult A result object containing information about the sent data.
+     * @throws IOException When the data cannot be sent.
      */
     @Override
     public LayerProcessingResult sendConfiguration() throws IOException {
@@ -69,8 +67,11 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
                     preparator.prepare();
                     preparator.afterPrepare();
                 } catch (PreparationException ex) {
-                    LOGGER.error("Could not prepare message " + message.toCompactString() + ". Therefore, we skip it: ",
-                        ex);
+                    LOGGER.error(
+                            "Could not prepare message "
+                                    + message.toCompactString()
+                                    + ". Therefore, we skip it: ",
+                            ex);
                     continue;
                 }
                 ProtocolMessageSerializer serializer = message.getSerializer(context);
@@ -78,7 +79,10 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
                 message.setCompleteResultingMessage(serializedMessage);
                 message.getHandler(context).updateDigest(message, true);
                 message.getHandler(context).adjustContext(message);
-                getLowerLayer().sendData(new RecordLayerHint(message.getProtocolMessageType()), serializedMessage);
+                getLowerLayer()
+                        .sendData(
+                                new RecordLayerHint(message.getProtocolMessageType()),
+                                serializedMessage);
                 message.getHandler(context).adjustContextAfterSerialize(message);
                 addProducedContainer(message);
             }
@@ -87,14 +91,17 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
     }
 
     @Override
-    public LayerProcessingResult sendData(LayerProcessingHint hint, byte[] additionalData) throws IOException {
-        throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
+    public LayerProcessingResult sendData(LayerProcessingHint hint, byte[] additionalData)
+            throws IOException {
+        throw new UnsupportedOperationException(
+                "Not supported yet."); // To change body of generated methods, choose
         // Tools | Templates.
     }
 
     @Override
     public HintedLayerInputStream getDataStream() {
-        throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
+        throw new UnsupportedOperationException(
+                "Not supported yet."); // To change body of generated methods, choose
         // Tools | Templates.
     }
 
@@ -118,12 +125,12 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
                 LayerProcessingHint tempHint = dataStream.getHint();
                 if (tempHint == null) {
                     LOGGER.warn(
-                        "The TLS message layer requires a processing hint. E.g. a record type. Parsing as an unknown message");
+                            "The TLS message layer requires a processing hint. E.g. a record type. Parsing as an unknown message");
                     readUnknownProtocolData();
                 } else if (tempHint instanceof RecordLayerHint) {
                     RecordLayerHint hint = (RecordLayerHint) dataStream.getHint();
                     switch (hint.getType()) {
-                        // use correct parser for the message
+                            // use correct parser for the message
                         case ALERT:
                             readAlertProtocolData();
                             break;
@@ -175,8 +182,8 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
     }
 
     /**
-     * Parses the handshake layer header from the given message and parses the encapsulated message using the correct
-     * parser.
+     * Parses the handshake layer header from the given message and parses the encapsulated message
+     * using the correct parser.
      *
      * @throws IOException
      */
@@ -190,11 +197,13 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
         try {
             handshakeStream = getLowerLayer().getDataStream();
             type = handshakeStream.readByte();
-            readBytes = ArrayConverter.concatenate(readBytes, new byte[] { type });
+            readBytes = ArrayConverter.concatenate(readBytes, new byte[] {type});
             handshakeMessage =
-                MessageFactory.generateHandshakeMessage(HandshakeMessageType.getMessageType(type), context);
+                    MessageFactory.generateHandshakeMessage(
+                            HandshakeMessageType.getMessageType(type), context);
             handshakeMessage.setType(type);
-            byte[] lengthBytes = handshakeStream.readChunk(HandshakeByteLength.MESSAGE_LENGTH_FIELD);
+            byte[] lengthBytes =
+                    handshakeStream.readChunk(HandshakeByteLength.MESSAGE_LENGTH_FIELD);
             length = ArrayConverter.bytesToInt(lengthBytes);
             readBytes = ArrayConverter.concatenate(readBytes, lengthBytes);
             handshakeMessage.setLength(length);
@@ -212,14 +221,19 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
         handshakeMessage.setMessageContent(payload);
 
         try {
-            handshakeMessage.setCompleteResultingMessage(ArrayConverter.concatenate(new byte[] { type },
-                ArrayConverter.intToBytes(length, HandshakeByteLength.MESSAGE_LENGTH_FIELD), payload));
+            handshakeMessage.setCompleteResultingMessage(
+                    ArrayConverter.concatenate(
+                            new byte[] {type},
+                            ArrayConverter.intToBytes(
+                                    length, HandshakeByteLength.MESSAGE_LENGTH_FIELD),
+                            payload));
             Parser parser = handshakeMessage.getParser(context, new ByteArrayInputStream(payload));
             parser.parse(handshakeMessage);
             Preparator preparator = handshakeMessage.getPreparator(context);
-            preparator.prepareAfterParse(false);// TODO REMOVE THIS CLIENTMODE FLAG
+            preparator.prepareAfterParse(false); // TODO REMOVE THIS CLIENTMODE FLAG
             if (context.getChooser().getSelectedProtocolVersion().isDTLS()) {
-                handshakeMessage.setMessageSequence(((RecordLayerHint) handshakeStream.getHint()).getMessageSequence());
+                handshakeMessage.setMessageSequence(
+                        ((RecordLayerHint) handshakeStream.getHint()).getMessageSequence());
             }
             handshakeMessage.getHandler(context).updateDigest(handshakeMessage, false);
             handler.adjustContext(handshakeMessage);
@@ -245,7 +259,8 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
 
     @Override
     public void receiveMoreDataForHint(LayerProcessingHint hint) {
-        throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
+        throw new UnsupportedOperationException(
+                "Not supported yet."); // To change body of generated methods, choose
         // Tools | Templates.
     }
 }

@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
@@ -28,7 +27,7 @@ import org.apache.logging.log4j.Logger;
 /**
  * Execute a workflow trace for each new connection/socket that connects to the server.
  *
- * Highly experimental. Just a starting point.
+ * <p>Highly experimental. Just a starting point.
  */
 public class ThreadedServerWorkflowExecutor extends WorkflowExecutor {
 
@@ -54,7 +53,10 @@ public class ThreadedServerWorkflowExecutor extends WorkflowExecutor {
             try {
                 tempBindAddr = InetAddress.getByName(hostname);
             } catch (UnknownHostException e) {
-                LOGGER.warn("Failed to resolve bind address {} - Falling back to loopback: {}", hostname, e);
+                LOGGER.warn(
+                        "Failed to resolve bind address {} - Falling back to loopback: {}",
+                        hostname,
+                        e);
                 // we could also fallback to null, which would be any address
                 // but I think in the case of an error we might just want to
                 // either exit or fallback to a rather closed
@@ -78,29 +80,31 @@ public class ThreadedServerWorkflowExecutor extends WorkflowExecutor {
     }
 
     private void addHook() {
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            @Override
-            public void run() {
-                LOGGER.info("Received shutdown signal, shutting down server.");
-                kill();
-                LOGGER.info("Waiting for connections to be closed...");
-                int watchDog = 3;
-                while ((!shutdown) && (watchDog > 0)) {
-                    try {
-                        TimeUnit.SECONDS.sleep(1);
-                    } catch (InterruptedException ex) {
-                        LOGGER.warn("Problem while waiting, could not sleep");
-                    }
-                    watchDog--;
-                }
-                if (!shutdown) {
-                    LOGGER.debug("Forcing sockets to close");
-                    closeSockets();
-                    shutdownAndAwaitTermination();
-                }
-                LOGGER.debug("Server shutdown complete.");
-            }
-        });
+        Runtime.getRuntime()
+                .addShutdownHook(
+                        new Thread() {
+                            @Override
+                            public void run() {
+                                LOGGER.info("Received shutdown signal, shutting down server.");
+                                kill();
+                                LOGGER.info("Waiting for connections to be closed...");
+                                int watchDog = 3;
+                                while ((!shutdown) && (watchDog > 0)) {
+                                    try {
+                                        TimeUnit.SECONDS.sleep(1);
+                                    } catch (InterruptedException ex) {
+                                        LOGGER.warn("Problem while waiting, could not sleep");
+                                    }
+                                    watchDog--;
+                                }
+                                if (!shutdown) {
+                                    LOGGER.debug("Forcing sockets to close");
+                                    closeSockets();
+                                    shutdownAndAwaitTermination();
+                                }
+                                LOGGER.debug("Server shutdown complete.");
+                            }
+                        });
     }
 
     @Override

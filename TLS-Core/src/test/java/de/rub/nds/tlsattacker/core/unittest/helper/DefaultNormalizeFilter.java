@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.unittest.helper;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -18,18 +17,17 @@ import de.rub.nds.tlsattacker.core.workflow.filter.FilterType;
 
 /**
  * Normalize and apply default filter to workflow trace.
- * <p>
- * Emulate the normalize and filter procedure a trace goes through during normal program execution.
+ *
+ * <p>Emulate the normalize and filter procedure a trace goes through during normal program
+ * execution.
  */
 public class DefaultNormalizeFilter {
 
     /**
      * Normalized and filtered the given workflow trace.
      *
-     * @param trace
-     *               the workflow trace that should be normalized and filtered
-     * @param config
-     *               the Config used for normalization/filtering
+     * @param trace the workflow trace that should be normalized and filtered
+     * @param config the Config used for normalization/filtering
      */
     public static void normalizeAndFilter(WorkflowTrace trace, Config config) {
 
@@ -52,14 +50,12 @@ public class DefaultNormalizeFilter {
 
     /**
      * Return a normalized and filtered copy of the given workflow trace.
-     * <p>
-     * This method does not modify the input trace.
      *
-     * @param  trace
-     *                the workflow trace that should be normalized and filtered
-     * @param  config
-     *                the Config used for normalization/filtering
-     * @return        a normalized and filtered copy of the input workflow trace
+     * <p>This method does not modify the input trace.
+     *
+     * @param trace the workflow trace that should be normalized and filtered
+     * @param config the Config used for normalization/filtering
+     * @return a normalized and filtered copy of the input workflow trace
      */
     public static WorkflowTrace getNormalizedAndFilteredCopy(WorkflowTrace trace, Config config) {
         WorkflowTrace filteredTrace = WorkflowTrace.copy(trace);
@@ -67,6 +63,5 @@ public class DefaultNormalizeFilter {
         return filteredTrace;
     }
 
-    private DefaultNormalizeFilter() {
-    }
+    private DefaultNormalizeFilter() {}
 }

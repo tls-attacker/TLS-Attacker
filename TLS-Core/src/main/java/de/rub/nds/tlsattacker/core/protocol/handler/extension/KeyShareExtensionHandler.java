@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -22,8 +21,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * This handler processes the KeyShare extensions in ClientHello and ServerHello messages, as defined in
- * <a href="https://tools.ietf.org/html/draft-ietf-tls-tls13-21#section-4.2.7">draft-ietf-tls-tls13-21 Section 4.2.7</a>
+ * This handler processes the KeyShare extensions in ClientHello and ServerHello messages, as
+ * defined in <a
+ * href="https://tools.ietf.org/html/draft-ietf-tls-tls13-21#section-4.2.7">draft-ietf-tls-tls13-21
+ * Section 4.2.7</a>
  */
 public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtensionMessage> {
 
@@ -55,12 +56,15 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
                 if (pair.getPublicKey() != null && pair.getPublicKey().getValue() != null) {
                     ksEntryList.add(new KeyShareStoreEntry(type, pair.getPublicKey().getValue()));
                 } else {
-                    LOGGER.warn("Empty KeyShare - Setting only selected KeyShareType: to "
-                        + ArrayConverter.bytesToHexString(pair.getGroup()));
+                    LOGGER.warn(
+                            "Empty KeyShare - Setting only selected KeyShareType: to "
+                                    + ArrayConverter.bytesToHexString(pair.getGroup()));
                     tlsContext.setSelectedGroup(type);
                 }
             } else {
-                LOGGER.warn("Unknown KS Type:" + ArrayConverter.bytesToHexString(pair.getPublicKey().getValue()));
+                LOGGER.warn(
+                        "Unknown KS Type:"
+                                + ArrayConverter.bytesToHexString(pair.getPublicKey().getValue()));
             }
         }
         return ksEntryList;
@@ -70,7 +74,8 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
         // The server has only one key
         if (!ksEntryList.isEmpty()) {
             tlsContext.setServerKeyShareStoreEntry(
-                new KeyShareStoreEntry(ksEntryList.get(0).getGroup(), ksEntryList.get(0).getPublicKey()));
+                    new KeyShareStoreEntry(
+                            ksEntryList.get(0).getGroup(), ksEntryList.get(0).getPublicKey()));
             NamedGroup selectedGroup = tlsContext.getServerKeyShareStoreEntry().getGroup();
             LOGGER.debug("Setting selected NamedGroup in context to " + selectedGroup);
             tlsContext.setSelectedGroup(selectedGroup);
@@ -80,7 +85,9 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
     private void adjustRetryRequestKeyShare(KeyShareExtensionMessage message) {
         if (!message.getKeyShareList().isEmpty()) {
             NamedGroup selectedGroup = message.getKeyShareList().get(0).getGroupConfig();
-            LOGGER.debug("Setting selected NamedGroup from HelloRetryRequest in context to " + selectedGroup);
+            LOGGER.debug(
+                    "Setting selected NamedGroup from HelloRetryRequest in context to "
+                            + selectedGroup);
             tlsContext.setSelectedGroup(selectedGroup);
         }
     }

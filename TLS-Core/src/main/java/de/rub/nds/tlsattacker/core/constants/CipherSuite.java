@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.constants;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -14,7 +13,6 @@ import de.rub.nds.tlsattacker.core.exceptions.UnknownCipherSuiteException;
 import java.util.*;
 
 public enum CipherSuite {
-
     TLS_NULL_WITH_NULL_NULL(0x00),
     TLS_RSA_WITH_NULL_MD5(0x01),
     TLS_RSA_WITH_NULL_SHA(0x02),
@@ -503,7 +501,8 @@ public enum CipherSuite {
     }
 
     /**
-     * Returns true in case the cipher suite enforces ephemeral keys. This is the case for ECDHE and DHE cipher suites.
+     * Returns true in case the cipher suite enforces ephemeral keys. This is the case for ECDHE and
+     * DHE cipher suites.
      *
      * @return True if the cipher suite is Ephemeral
      */
@@ -525,7 +524,6 @@ public enum CipherSuite {
 
     public boolean isSrpSha() {
         return this.name().contains("SRP_SHA");
-
     }
 
     public boolean isSrp() {
@@ -541,8 +539,10 @@ public enum CipherSuite {
     }
 
     public boolean isExportSymmetricCipher() {
-        return this.name().contains("DES40") || this.name().contains("RC4_40") || this.name().contains("RC2_CBC_40")
-            || this.name().contains("DES_CBC_40");
+        return this.name().contains("DES40")
+                || this.name().contains("RC4_40")
+                || this.name().contains("RC2_CBC_40")
+                || this.name().contains("DES_CBC_40");
     }
 
     /**
@@ -577,7 +577,9 @@ public enum CipherSuite {
             if (cipher.endsWith("NULL")) {
                 return false;
             }
-            String[] hashFunctionNames = { "MD5", "SHA", "SHA256", "SHA384", "SHA512", "IMIT", "GOSTR3411" };
+            String[] hashFunctionNames = {
+                "MD5", "SHA", "SHA256", "SHA384", "SHA512", "IMIT", "GOSTR3411"
+            };
             for (String hashFunction : hashFunctionNames) {
                 if (cipher.endsWith(hashFunction)) {
                     return true;
@@ -585,7 +587,9 @@ public enum CipherSuite {
             }
             return false;
         }
-        return (this.name().contains("_CBC") || this.name().contains("RC4") || this.name().contains("CNT"));
+        return (this.name().contains("_CBC")
+                || this.name().contains("RC4")
+                || this.name().contains("CNT"));
     }
 
     public boolean isSCSV() {
@@ -637,12 +641,11 @@ public enum CipherSuite {
     }
 
     /**
-     * Returns true if the cipher suite is supported by the specified protocol version. TODO: this is still very
-     * imprecise and must be improved with new ciphers.
+     * Returns true if the cipher suite is supported by the specified protocol version. TODO: this
+     * is still very imprecise and must be improved with new ciphers.
      *
-     * @param  version
-     *                 The ProtocolVersion to check
-     * @return         True if the cipher suite is supported in the ProtocolVersion
+     * @param version The ProtocolVersion to check
+     * @return True if the cipher suite is supported in the ProtocolVersion
      */
     public boolean isSupportedInProtocol(ProtocolVersion version) {
         if (version == ProtocolVersion.SSL3) {
@@ -653,10 +656,15 @@ public enum CipherSuite {
             return version == ProtocolVersion.TLS13;
         }
 
-        if (this.name().endsWith("256") || this.name().endsWith("384") || this.isCCM() || this.isCCM_8()) {
+        if (this.name().endsWith("256")
+                || this.name().endsWith("384")
+                || this.isCCM()
+                || this.isCCM_8()) {
             return ((version == ProtocolVersion.TLS12) || (version == ProtocolVersion.DTLS12));
         }
-        if (this.name().contains("IDEA") || this.name().contains("_DES") || this.isExportSymmetricCipher()) {
+        if (this.name().contains("IDEA")
+                || this.name().contains("_DES")
+                || this.isExportSymmetricCipher()) {
             return !((version == ProtocolVersion.TLS12) || (version == ProtocolVersion.DTLS12));
         }
 
@@ -665,17 +673,41 @@ public enum CipherSuite {
 
     @SuppressWarnings("SpellCheckingInspection")
     public static final Set<CipherSuite> SSL3_SUPPORTED_CIPHERSUITES =
-        Collections.unmodifiableSet(new HashSet<>(Arrays.asList(TLS_NULL_WITH_NULL_NULL, TLS_RSA_WITH_NULL_MD5,
-            TLS_RSA_WITH_NULL_SHA, TLS_RSA_EXPORT_WITH_RC4_40_MD5, TLS_RSA_WITH_RC4_128_MD5, TLS_RSA_WITH_RC4_128_SHA,
-            TLS_RSA_EXPORT_WITH_RC2_CBC_40_MD5, TLS_RSA_WITH_IDEA_CBC_SHA, TLS_RSA_EXPORT_WITH_DES40_CBC_SHA,
-            TLS_RSA_WITH_DES_CBC_SHA, TLS_RSA_WITH_3DES_EDE_CBC_SHA, TLS_DH_DSS_EXPORT_WITH_DES40_CBC_SHA,
-            TLS_DH_DSS_WITH_DES_CBC_SHA, TLS_DH_DSS_WITH_3DES_EDE_CBC_SHA, TLS_DH_RSA_EXPORT_WITH_DES40_CBC_SHA,
-            TLS_DH_RSA_WITH_DES_CBC_SHA, TLS_DH_RSA_WITH_3DES_EDE_CBC_SHA, TLS_DHE_DSS_EXPORT_WITH_DES40_CBC_SHA,
-            TLS_DHE_DSS_WITH_DES_CBC_SHA, TLS_DHE_DSS_WITH_3DES_EDE_CBC_SHA, TLS_DHE_RSA_EXPORT_WITH_DES40_CBC_SHA,
-            TLS_DHE_RSA_WITH_DES_CBC_SHA, TLS_DHE_RSA_WITH_3DES_EDE_CBC_SHA, TLS_DH_anon_EXPORT_WITH_RC4_40_MD5,
-            TLS_DH_anon_WITH_RC4_128_MD5, TLS_DH_anon_EXPORT_WITH_DES40_CBC_SHA, TLS_DH_anon_WITH_DES_CBC_SHA,
-            TLS_DH_anon_WITH_3DES_EDE_CBC_SHA, TLS_ECCPWD_WITH_AES_128_CCM_SHA256, TLS_ECCPWD_WITH_AES_128_GCM_SHA256,
-            TLS_ECCPWD_WITH_AES_256_CCM_SHA384, TLS_ECCPWD_WITH_AES_256_GCM_SHA384)));
+            Collections.unmodifiableSet(
+                    new HashSet<>(
+                            Arrays.asList(
+                                    TLS_NULL_WITH_NULL_NULL,
+                                    TLS_RSA_WITH_NULL_MD5,
+                                    TLS_RSA_WITH_NULL_SHA,
+                                    TLS_RSA_EXPORT_WITH_RC4_40_MD5,
+                                    TLS_RSA_WITH_RC4_128_MD5,
+                                    TLS_RSA_WITH_RC4_128_SHA,
+                                    TLS_RSA_EXPORT_WITH_RC2_CBC_40_MD5,
+                                    TLS_RSA_WITH_IDEA_CBC_SHA,
+                                    TLS_RSA_EXPORT_WITH_DES40_CBC_SHA,
+                                    TLS_RSA_WITH_DES_CBC_SHA,
+                                    TLS_RSA_WITH_3DES_EDE_CBC_SHA,
+                                    TLS_DH_DSS_EXPORT_WITH_DES40_CBC_SHA,
+                                    TLS_DH_DSS_WITH_DES_CBC_SHA,
+                                    TLS_DH_DSS_WITH_3DES_EDE_CBC_SHA,
+                                    TLS_DH_RSA_EXPORT_WITH_DES40_CBC_SHA,
+                                    TLS_DH_RSA_WITH_DES_CBC_SHA,
+                                    TLS_DH_RSA_WITH_3DES_EDE_CBC_SHA,
+                                    TLS_DHE_DSS_EXPORT_WITH_DES40_CBC_SHA,
+                                    TLS_DHE_DSS_WITH_DES_CBC_SHA,
+                                    TLS_DHE_DSS_WITH_3DES_EDE_CBC_SHA,
+                                    TLS_DHE_RSA_EXPORT_WITH_DES40_CBC_SHA,
+                                    TLS_DHE_RSA_WITH_DES_CBC_SHA,
+                                    TLS_DHE_RSA_WITH_3DES_EDE_CBC_SHA,
+                                    TLS_DH_anon_EXPORT_WITH_RC4_40_MD5,
+                                    TLS_DH_anon_WITH_RC4_128_MD5,
+                                    TLS_DH_anon_EXPORT_WITH_DES40_CBC_SHA,
+                                    TLS_DH_anon_WITH_DES_CBC_SHA,
+                                    TLS_DH_anon_WITH_3DES_EDE_CBC_SHA,
+                                    TLS_ECCPWD_WITH_AES_128_CCM_SHA256,
+                                    TLS_ECCPWD_WITH_AES_128_GCM_SHA256,
+                                    TLS_ECCPWD_WITH_AES_256_CCM_SHA384,
+                                    TLS_ECCPWD_WITH_AES_256_GCM_SHA384)));
 
     public static List<CipherSuite> getImplemented() {
         List<CipherSuite> list = new LinkedList<>();

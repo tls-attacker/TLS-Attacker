@@ -1,22 +1,21 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.crypto.keys;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
 import java.math.BigInteger;
 import java.security.interfaces.RSAPrivateKey;
 import java.util.Objects;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -79,7 +78,8 @@ public class CustomRSAPrivateKey extends CustomPrivateKey implements RSAPrivateK
                     tlsContext.setServerRSAModulus(modulus);
                     break;
                 default:
-                    throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
+                    throw new IllegalArgumentException(
+                            "Owner of Key " + ownerOfKey + " is not supported");
             }
         }
     }
@@ -99,7 +99,8 @@ public class CustomRSAPrivateKey extends CustomPrivateKey implements RSAPrivateK
                     config.setDefaultServerRSAModulus(modulus);
                     break;
                 default:
-                    throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
+                    throw new IllegalArgumentException(
+                            "Owner of Key " + ownerOfKey + " is not supported");
             }
         }
     }
@@ -132,7 +133,11 @@ public class CustomRSAPrivateKey extends CustomPrivateKey implements RSAPrivateK
 
     @Override
     public String toString() {
-        return "CustomRSAPrivateKey{" + "modulus=" + modulus + ", privateExponent=" + privateExponent + '}';
+        return "CustomRSAPrivateKey{"
+                + "modulus="
+                + modulus
+                + ", privateExponent="
+                + privateExponent
+                + '}';
     }
-
 }

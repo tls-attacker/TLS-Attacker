@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
@@ -25,12 +24,12 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareE
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.KeyShareExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.KeyShareExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.KeyShareExtensionSerializer;
-import java.io.InputStream;
-import java.util.LinkedList;
-import java.util.List;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import java.io.InputStream;
+import java.util.LinkedList;
+import java.util.List;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "KeyShareExtension")
@@ -39,11 +38,9 @@ public class KeyShareExtensionMessage extends ExtensionMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger keyShareListLength;
 
-    @ModifiableVariableProperty
-    private ModifiableByteArray keyShareListBytes;
+    @ModifiableVariableProperty private ModifiableByteArray keyShareListBytes;
 
-    @HoldsModifiableVariable
-    private List<KeyShareEntry> keyShareList;
+    @HoldsModifiableVariable private List<KeyShareEntry> keyShareList;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.BEHAVIOR_SWITCH)
     private ModifiableBoolean retryRequestMode;
@@ -58,7 +55,8 @@ public class KeyShareExtensionMessage extends ExtensionMessage {
         keyShareList = new LinkedList<>();
         for (NamedGroup group : tlsConfig.getDefaultClientKeyShareNamedGroups()) {
             if (NamedGroup.getImplemented().contains(group)) {
-                KeyShareEntry keyShareEntry = new KeyShareEntry(group, tlsConfig.getKeySharePrivate());
+                KeyShareEntry keyShareEntry =
+                        new KeyShareEntry(group, tlsConfig.getKeySharePrivate());
                 keyShareList.add(keyShareEntry);
             }
         }
@@ -73,7 +71,8 @@ public class KeyShareExtensionMessage extends ExtensionMessage {
     }
 
     public void setKeyShareListLength(int length) {
-        this.keyShareListLength = ModifiableVariableFactory.safelySetValue(keyShareListLength, length);
+        this.keyShareListLength =
+                ModifiableVariableFactory.safelySetValue(keyShareListLength, length);
     }
 
     public ModifiableByteArray getKeyShareListBytes() {
@@ -104,7 +103,8 @@ public class KeyShareExtensionMessage extends ExtensionMessage {
     }
 
     public void setRetryRequestMode(boolean retryRequestMode) {
-        this.retryRequestMode = ModifiableVariableFactory.safelySetValue(this.retryRequestMode, retryRequestMode);
+        this.retryRequestMode =
+                ModifiableVariableFactory.safelySetValue(this.retryRequestMode, retryRequestMode);
     }
 
     public void setRetryRequestMode(ModifiableBoolean retryRequestMode) {
@@ -113,7 +113,8 @@ public class KeyShareExtensionMessage extends ExtensionMessage {
 
     @Override
     public List<ModifiableVariableHolder> getAllModifiableVariableHolders() {
-        List<ModifiableVariableHolder> allModifiableVariableHolders = super.getAllModifiableVariableHolders();
+        List<ModifiableVariableHolder> allModifiableVariableHolders =
+                super.getAllModifiableVariableHolders();
         allModifiableVariableHolders.addAll(keyShareList);
         return allModifiableVariableHolders;
     }
@@ -125,12 +126,14 @@ public class KeyShareExtensionMessage extends ExtensionMessage {
 
     @Override
     public KeyShareExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new KeyShareExtensionPreparator(tlsContext.getChooser(), this, getSerializer(tlsContext));
+        return new KeyShareExtensionPreparator(
+                tlsContext.getChooser(), this, getSerializer(tlsContext));
     }
 
     @Override
     public KeyShareExtensionSerializer getSerializer(TlsContext tlsContext) {
-        return new KeyShareExtensionSerializer(this, tlsContext.getChooser().getConnectionEndType());
+        return new KeyShareExtensionSerializer(
+                this, tlsContext.getChooser().getConnectionEndType());
     }
 
     @Override

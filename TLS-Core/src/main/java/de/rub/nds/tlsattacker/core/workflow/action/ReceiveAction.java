@@ -1,36 +1,31 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
-import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.*;
 import de.rub.nds.tlsattacker.core.record.Record;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
-import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
+import jakarta.xml.bind.annotation.XmlElementRef;
+import jakarta.xml.bind.annotation.XmlElementWrapper;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlElementRef;
-import jakarta.xml.bind.annotation.XmlElementWrapper;
-import jakarta.xml.bind.annotation.XmlElements;
-import jakarta.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -39,9 +34,7 @@ public class ReceiveAction extends CommonReceiveAction implements ReceivingActio
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    @HoldsModifiableVariable
-    @XmlElementWrapper
-    @XmlElementRef
+    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
     protected List<ProtocolMessage> expectedMessages = new ArrayList<>();
 
     public ReceiveAction() {
@@ -135,10 +128,19 @@ public class ReceiveAction extends CommonReceiveAction implements ReceivingActio
 
     @Override
     public boolean executedAsPlanned() {
-        if (getLayerStackProcessingResult().getResultForLayer(ImplementedLayers.MESSAGE) == null) {
+        if (getLayerStackProcessingResult().getResultForLayer(ImplementedLayers.MESSAGE) != null) {
+            return getLayerStackProcessingResult()
+                    .getResultForLayer(ImplementedLayers.MESSAGE)
+                    .isExecutedAsPlanned();
+        } else if (getLayerStackProcessingResult().getResultForLayer(ImplementedLayers.SSL2)
+                != null) {
+            return getLayerStackProcessingResult()
+                    .getResultForLayer(ImplementedLayers.SSL2)
+                    .isExecutedAsPlanned();
+        } else {
+            // TODO check other configurations
             return false;
         }
-        return getLayerStackProcessingResult().getResultForLayer(ImplementedLayers.MESSAGE).isExecutedAsPlanned();
     }
 
     @Override
@@ -259,7 +261,6 @@ public class ReceiveAction extends CommonReceiveAction implements ReceivingActio
     private void initEmptyLists() {
         if (expectedMessages == null) {
             expectedMessages = new ArrayList<>();
-
         }
     }
 

@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
@@ -14,13 +13,13 @@ import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.layer.LayerStack;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.IOException;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlTransient;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -31,14 +30,13 @@ public class ForwardDataAction extends TlsAction {
 
     @XmlElement(name = "from")
     protected String receiveFromAlias = null;
+
     @XmlElement(name = "to")
     protected String forwardToAlias = null;
 
-    @XmlTransient
-    protected boolean executedAsPlanned = false;
+    @XmlTransient protected boolean executedAsPlanned = false;
 
-    public ForwardDataAction() {
-    }
+    public ForwardDataAction() {}
 
     public ForwardDataAction(String receiveFromAlias, String forwardToAlias) {
         this.receiveFromAlias = receiveFromAlias;
@@ -75,8 +73,10 @@ public class ForwardDataAction extends TlsAction {
         LayerStack layerStack = receiveFromContext.getLayerStack();
         try {
             layerStack.getLowestLayer().receiveData();
-            return layerStack.getLowestLayer().getDataStream()
-                .readChunk(layerStack.getLowestLayer().getDataStream().available());
+            return layerStack
+                    .getLowestLayer()
+                    .getDataStream()
+                    .readChunk(layerStack.getLowestLayer().getDataStream().available());
         } catch (IOException ex) {
             LOGGER.warn(ex);
             return new byte[0];
@@ -121,8 +121,9 @@ public class ForwardDataAction extends TlsAction {
     }
 
     /**
-     * TODO: the equals methods for message/record actions and similar classes would require that messages and records
-     * implement equals for a proper implementation. The present approach is not satisfying.
+     * TODO: the equals methods for message/record actions and similar classes would require that
+     * messages and records implement equals for a proper implementation. The present approach is
+     * not satisfying.
      */
     @Override
     public boolean equals(Object obj) {
@@ -159,12 +160,16 @@ public class ForwardDataAction extends TlsAction {
     @Override
     public void assertAliasesSetProperly() throws ConfigurationException {
         if ((receiveFromAlias == null) || (receiveFromAlias.isEmpty())) {
-            throw new ActionExecutionException("Can't execute " + this.getClass().getSimpleName()
-                + " with empty receive alias (if using XML: add <from/>)");
+            throw new ActionExecutionException(
+                    "Can't execute "
+                            + this.getClass().getSimpleName()
+                            + " with empty receive alias (if using XML: add <from/>)");
         }
         if ((forwardToAlias == null) || (forwardToAlias.isEmpty())) {
-            throw new ActionExecutionException("Can't execute " + this.getClass().getSimpleName()
-                + " with empty forward alis (if using XML: add <to/>)");
+            throw new ActionExecutionException(
+                    "Can't execute "
+                            + this.getClass().getSimpleName()
+                            + " with empty forward alis (if using XML: add <to/>)");
         }
     }
 

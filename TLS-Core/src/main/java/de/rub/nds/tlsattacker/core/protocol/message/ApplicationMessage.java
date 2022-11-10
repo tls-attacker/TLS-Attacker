@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
@@ -14,16 +13,16 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.handler.ApplicationMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.ApplicationMessageParser;
-import de.rub.nds.tlsattacker.core.protocol.serializer.ApplicationMessageSerializer;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ApplicationMessagePreparator;
-import java.io.InputStream;
-import java.util.Arrays;
+import de.rub.nds.tlsattacker.core.protocol.serializer.ApplicationMessageSerializer;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import java.io.InputStream;
+import java.util.Arrays;
 
 @XmlRootElement(name = "Application")
 public class ApplicationMessage extends ProtocolMessage<ApplicationMessage> {
@@ -31,8 +30,7 @@ public class ApplicationMessage extends ProtocolMessage<ApplicationMessage> {
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] dataConfig = null;
 
-    @ModifiableVariableProperty
-    private ModifiableByteArray data;
+    @ModifiableVariableProperty private ModifiableByteArray data;
 
     public ApplicationMessage(byte[] dataConfig) {
         super();
@@ -132,5 +130,4 @@ public class ApplicationMessage extends ProtocolMessage<ApplicationMessage> {
         final ApplicationMessage other = (ApplicationMessage) obj;
         return Arrays.equals(this.dataConfig, other.dataConfig);
     }
-
 }

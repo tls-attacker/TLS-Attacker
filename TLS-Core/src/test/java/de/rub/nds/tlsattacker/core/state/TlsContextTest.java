@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.state;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -25,13 +24,12 @@ import de.rub.nds.tlsattacker.core.record.cipher.CipherState;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordAEADCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.security.Security;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.test.TestRandomData;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.security.Security;
 
 public class TlsContextTest {
 
@@ -52,10 +50,12 @@ public class TlsContextTest {
         tlsContext.getChooser();
 
         testKeySet = new KeySet();
-        testKeySet
-            .setClientWriteKey(ArrayConverter.hexStringToByteArray("65B7DA726864D4184D75A549BF5C06AB20867846AF4434CC"));
+        testKeySet.setClientWriteKey(
+                ArrayConverter.hexStringToByteArray(
+                        "65B7DA726864D4184D75A549BF5C06AB20867846AF4434CC"));
         testKeySet.setClientWriteMacSecret(new byte[0]);
-        testKeySet.setClientWriteIv(ArrayConverter.hexStringToByteArray("11223344556677889900AABB"));
+        testKeySet.setClientWriteIv(
+                ArrayConverter.hexStringToByteArray("11223344556677889900AABB"));
         testKeySet.setServerWriteIv(new byte[12]);
         testKeySet.setServerWriteKey(new byte[16]);
         testKeySet.setServerWriteMacSecret(new byte[0]);
@@ -67,18 +67,25 @@ public class TlsContextTest {
         tlsContext.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_GCM_SHA256);
         tlsContext.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         tlsContext.setRandom(new TestRandomData(ArrayConverter.hexStringToByteArray("FFEEDDCC")));
-        tlsContext.getContext().setLayerStack(new LayerStack(tlsContext.getContext(), new RecordLayer(tlsContext)));
+        tlsContext
+                .getContext()
+                .setLayerStack(
+                        new LayerStack(tlsContext.getContext(), new RecordLayer(tlsContext)));
 
-        tlsContext.getRecordLayer()
-            .updateEncryptionCipher(new RecordAEADCipher(tlsContext,
-                new CipherState(tlsContext.getChooser().getSelectedProtocolVersion(),
-                    tlsContext.getChooser().getSelectedCipherSuite(), testKeySet,
-                    tlsContext.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC))));
+        tlsContext
+                .getRecordLayer()
+                .updateEncryptionCipher(
+                        new RecordAEADCipher(
+                                tlsContext,
+                                new CipherState(
+                                        tlsContext.getChooser().getSelectedProtocolVersion(),
+                                        tlsContext.getChooser().getSelectedCipherSuite(),
+                                        testKeySet,
+                                        tlsContext.isExtensionNegotiated(
+                                                ExtensionType.ENCRYPT_THEN_MAC))));
     }
 
-    /**
-     * Test of getOutboundMaxRecordDataSize method, of class TlsContext.
-     */
+    /** Test of getOutboundMaxRecordDataSize method, of class TlsContext. */
     @Test
     public void testGetOutboundMaxRecordDataSizeEncryptionInactiveNoExtensions() {
         final Integer result = tlsContext.getOutboundMaxRecordDataSize();
@@ -158,9 +165,7 @@ public class TlsContextTest {
         assertFalse(config.isAddRecordSizeLimitExtension());
     }
 
-    /**
-     * Test of getOutboundMaxRecordDataSize method, of class TlsContext.
-     */
+    /** Test of getOutboundMaxRecordDataSize method, of class TlsContext. */
     @Test
     public void testGetInboundMaxRecordDataSizeEncryptionInactiveNoExtensions() {
         final Integer result = tlsContext.getInboundMaxRecordDataSize();

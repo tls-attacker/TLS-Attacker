@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -19,14 +18,16 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.EllipticCurvesExte
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.EllipticCurvesExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.EllipticCurvesExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.EllipticCurvesExtensionSerializer;
-import java.io.InputStream;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import java.io.InputStream;
 
 /**
- * This extension is defined in RFC-ietf-tls-rfc4492bis-17 Also known as "supported_groups" extension
+ * This extension is defined in RFC-ietf-tls-rfc4492bis-17 Also known as "supported_groups"
+ * extension
  */
 @XmlRootElement(name = "EllipticCurves")
-public class EllipticCurvesExtensionMessage extends ExtensionMessage<EllipticCurvesExtensionMessage> {
+public class EllipticCurvesExtensionMessage
+        extends ExtensionMessage<EllipticCurvesExtensionMessage> {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger supportedGroupsLength;
@@ -43,7 +44,8 @@ public class EllipticCurvesExtensionMessage extends ExtensionMessage<EllipticCur
     }
 
     public void setSupportedGroupsLength(int length) {
-        this.supportedGroupsLength = ModifiableVariableFactory.safelySetValue(supportedGroupsLength, length);
+        this.supportedGroupsLength =
+                ModifiableVariableFactory.safelySetValue(supportedGroupsLength, length);
     }
 
     public void setSupportedGroupsLength(ModifiableInteger supportedGroupsLength) {
@@ -81,5 +83,4 @@ public class EllipticCurvesExtensionMessage extends ExtensionMessage<EllipticCur
     public EllipticCurvesExtensionHandler getHandler(TlsContext tlsContext) {
         return new EllipticCurvesExtensionHandler(tlsContext);
     }
-
 }

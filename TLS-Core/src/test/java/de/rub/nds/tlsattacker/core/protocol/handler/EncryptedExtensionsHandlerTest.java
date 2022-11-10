@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -18,16 +17,15 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import org.junit.jupiter.api.Test;
 
 public class EncryptedExtensionsHandlerTest
-    extends AbstractTlsMessageHandlerTest<EncryptedExtensionsMessage, EncryptedExtensionsHandler> {
+        extends AbstractProtocolMessageHandlerTest<
+                EncryptedExtensionsMessage, EncryptedExtensionsHandler> {
 
     public EncryptedExtensionsHandlerTest() {
         super(EncryptedExtensionsMessage::new, EncryptedExtensionsHandler::new);
         context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
     }
 
-    /**
-     * Test of adjustContext method, of class EncryptedExtensionsHandler.
-     */
+    /** Test of adjustContext method, of class EncryptedExtensionsHandler. */
     @Test
     @Override
     public void testadjustContext() {
@@ -38,9 +36,7 @@ public class EncryptedExtensionsHandlerTest
         assertTrue(context.getNegotiatedExtensionSet().isEmpty());
     }
 
-    /**
-     * Test of adjustContext method, of class EncryptedExtensionsHandler.
-     */
+    /** Test of adjustContext method, of class EncryptedExtensionsHandler. */
     @Test
     public void testadjustContextWithSNI() {
         EncryptedExtensionsMessage message = new EncryptedExtensionsMessage();
@@ -52,5 +48,4 @@ public class EncryptedExtensionsHandlerTest
 
         assertTrue(context.isExtensionNegotiated(ExtensionType.SERVER_NAME_INDICATION));
     }
-
 }

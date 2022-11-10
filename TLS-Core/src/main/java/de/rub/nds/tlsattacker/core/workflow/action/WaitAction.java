@@ -1,20 +1,18 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
-import java.util.Objects;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -23,15 +21,12 @@ public class WaitAction extends TlsAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /**
-     * Default waiting time in milliseconds
-     */
+    /** Default waiting time in milliseconds */
     public static final long DEFAULT_WAITING_TIME = 10;
+
     private Boolean asPlanned;
 
-    /**
-     * Time to waiting in milliseconds.
-     */
+    /** Time to waiting in milliseconds. */
     private Long time = (long) -1;
 
     public WaitAction(long time) {
@@ -39,8 +34,7 @@ public class WaitAction extends TlsAction {
         this.time = time;
     }
 
-    public WaitAction() {
-    }
+    public WaitAction() {}
 
     @Override
     public void execute(State state) throws ActionExecutionException {
@@ -92,9 +86,7 @@ public class WaitAction extends TlsAction {
         super.normalize();
     }
 
-    /**
-     * Add default values from given defaultAction and initialize empty fields.
-     */
+    /** Add default values from given defaultAction and initialize empty fields. */
     @Override
     public void normalize(TlsAction defaultAction) {
         super.normalize(defaultAction);
@@ -108,9 +100,7 @@ public class WaitAction extends TlsAction {
         }
     }
 
-    /**
-     * Filter empty fields and default values.
-     */
+    /** Filter empty fields and default values. */
     @Override
     public void filter() {
         if (time == DEFAULT_WAITING_TIME) {
@@ -118,9 +108,7 @@ public class WaitAction extends TlsAction {
         }
     }
 
-    /**
-     * Filter empty fields and default values given in defaultAction.
-     */
+    /** Filter empty fields and default values given in defaultAction. */
     @Override
     public void filter(TlsAction defaultAction) {
         long defaultTime = DEFAULT_WAITING_TIME;
@@ -156,5 +144,4 @@ public class WaitAction extends TlsAction {
         final WaitAction other = (WaitAction) obj;
         return Objects.equals(this.time, other.time);
     }
-
 }

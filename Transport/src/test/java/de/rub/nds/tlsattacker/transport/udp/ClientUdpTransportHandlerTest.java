@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.transport.udp;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -14,11 +13,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
-import org.junit.jupiter.api.Test;
-
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import org.junit.jupiter.api.Test;
 
 public class ClientUdpTransportHandlerTest {
 
@@ -28,14 +26,16 @@ public class ClientUdpTransportHandlerTest {
     public void testSendData() throws Exception {
         try (DatagramSocket testSocket = new DatagramSocket()) {
             ClientUdpTransportHandler udpTH =
-                new ClientUdpTransportHandler(1, 1, localhost.getHostName(), testSocket.getLocalPort());
+                    new ClientUdpTransportHandler(
+                            1, 1, localhost.getHostName(), testSocket.getLocalPort());
 
             udpTH.initialize();
 
             byte[] txData = new byte[8192];
             RandomHelper.getRandom().nextBytes(txData);
             byte[] rxData = new byte[8192];
-            DatagramPacket rxPacket = new DatagramPacket(rxData, rxData.length, localhost, testSocket.getLocalPort());
+            DatagramPacket rxPacket =
+                    new DatagramPacket(rxData, rxData.length, localhost, testSocket.getLocalPort());
 
             udpTH.sendData(txData);
             testSocket.receive(rxPacket);
@@ -51,7 +51,8 @@ public class ClientUdpTransportHandlerTest {
     public void testFetchData() throws Exception {
         try (DatagramSocket testSocket = new DatagramSocket()) {
             ClientUdpTransportHandler udpTH =
-                new ClientUdpTransportHandler(1, 1, localhost.getHostName(), testSocket.getLocalPort());
+                    new ClientUdpTransportHandler(
+                            1, 1, localhost.getHostName(), testSocket.getLocalPort());
 
             udpTH.initialize();
             testSocket.connect(localhost, udpTH.getSrcPort());
@@ -73,8 +74,12 @@ public class ClientUdpTransportHandlerTest {
                 rxData = udpTH.fetchData();
                 allReceivedData = ArrayConverter.concatenate(allReceivedData, rxData);
             }
-            assertEquals(allSentData.length, allReceivedData.length, "Confirm size of the received data");
-            assertArrayEquals(allSentData, allReceivedData, "Confirm received data equals sent data");
+            assertEquals(
+                    allSentData.length,
+                    allReceivedData.length,
+                    "Confirm size of the received data");
+            assertArrayEquals(
+                    allSentData, allReceivedData, "Confirm received data equals sent data");
 
             udpTH.closeConnection();
         }
@@ -82,7 +87,8 @@ public class ClientUdpTransportHandlerTest {
 
     @Test
     public void testFetchTimeout() throws Exception {
-        ClientUdpTransportHandler udpTH = new ClientUdpTransportHandler(1, 1, localhost.getHostName(), 12345);
+        ClientUdpTransportHandler udpTH =
+                new ClientUdpTransportHandler(1, 1, localhost.getHostName(), 12345);
         udpTH.initialize();
 
         byte[] rxData;
@@ -91,6 +97,5 @@ public class ClientUdpTransportHandlerTest {
         rxData = udpTH.fetchData();
         assertEquals(0, rxData.length);
         udpTH.closeConnection();
-
     }
 }

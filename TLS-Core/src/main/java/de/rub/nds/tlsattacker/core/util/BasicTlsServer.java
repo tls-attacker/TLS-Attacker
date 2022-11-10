@@ -1,20 +1,17 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.util;
 
 import de.rub.nds.modifiablevariable.util.BadRandom;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import java.io.IOException;
-import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketException;
 import java.security.*;
 import java.security.cert.CertificateException;
 import java.util.Arrays;
@@ -36,13 +33,12 @@ public class BasicTlsServer extends Thread {
     private boolean shutdown;
     boolean closed = true;
 
-    /**
-     * Very dirty but ok for testing purposes
-     */
+    /** Very dirty but ok for testing purposes */
     private volatile boolean initialized;
 
-    public BasicTlsServer(KeyStore keyStore, String password, String protocol, int port) throws KeyStoreException,
-        IOException, NoSuchAlgorithmException, CertificateException, UnrecoverableKeyException, KeyManagementException {
+    public BasicTlsServer(KeyStore keyStore, String password, String protocol, int port)
+            throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException,
+                    UnrecoverableKeyException, KeyManagementException {
 
         this.port = port;
 
@@ -60,8 +56,10 @@ public class BasicTlsServer extends Thread {
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Provider: " + sslContext.getProvider());
-            LOGGER.debug("Supported cipher suites ("
-                + sslContext.getServerSocketFactory().getSupportedCipherSuites().length + ")");
+            LOGGER.debug(
+                    "Supported cipher suites ("
+                            + sslContext.getServerSocketFactory().getSupportedCipherSuites().length
+                            + ")");
             for (String c : sslContext.getServerSocketFactory().getSupportedCipherSuites()) {
                 LOGGER.debug(" " + c);
             }
@@ -131,24 +129,28 @@ public class BasicTlsServer extends Thread {
     }
 
     public Set<ProtocolVersion> getEnabledProtocolVersions() {
-        return Arrays.stream(serverSocket.getEnabledProtocols()).map(versionString -> {
-            switch (versionString) {
-                case "SSLv2":
-                    return ProtocolVersion.SSL2;
-                case "SSLv3":
-                    return ProtocolVersion.SSL3;
-                case "TLSv1":
-                    return ProtocolVersion.TLS10;
-                case "TLSv1.1":
-                    return ProtocolVersion.TLS11;
-                case "TLSv1.2":
-                    return ProtocolVersion.TLS12;
-                case "TLSv1.3":
-                    return ProtocolVersion.TLS13;
-                default:
-                    return null;
-            }
-        }).filter(Objects::nonNull).collect(Collectors.toSet());
+        return Arrays.stream(serverSocket.getEnabledProtocols())
+                .map(
+                        versionString -> {
+                            switch (versionString) {
+                                case "SSLv2":
+                                    return ProtocolVersion.SSL2;
+                                case "SSLv3":
+                                    return ProtocolVersion.SSL3;
+                                case "TLSv1":
+                                    return ProtocolVersion.TLS10;
+                                case "TLSv1.1":
+                                    return ProtocolVersion.TLS11;
+                                case "TLSv1.2":
+                                    return ProtocolVersion.TLS12;
+                                case "TLSv1.3":
+                                    return ProtocolVersion.TLS13;
+                                default:
+                                    return null;
+                            }
+                        })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
     }
 
     public boolean isInitialized() {

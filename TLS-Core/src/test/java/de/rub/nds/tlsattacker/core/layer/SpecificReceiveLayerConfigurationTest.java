@@ -1,13 +1,14 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.layer;
+
+import static org.junit.Assert.*;
 
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
@@ -23,19 +24,23 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 public class SpecificReceiveLayerConfigurationTest {
 
-    public SpecificReceiveLayerConfigurationTest() {
-    }
+    public SpecificReceiveLayerConfigurationTest() {}
 
     @Test
     public void testExecutedAsPlanned() {
-        List<ProtocolMessage> expectedMessages = Arrays.asList(new ProtocolMessage[] { new ServerHelloMessage(),
-            new CertificateMessage(), new ECDHEServerKeyExchangeMessage(), new ServerHelloDoneMessage() });
+        List<ProtocolMessage> expectedMessages =
+                Arrays.asList(
+                        new ProtocolMessage[] {
+                            new ServerHelloMessage(),
+                            new CertificateMessage(),
+                            new ECDHEServerKeyExchangeMessage(),
+                            new ServerHelloDoneMessage()
+                        });
         LayerConfiguration receiveConfig =
-            new SpecificReceiveLayerConfiguration(ImplementedLayers.MESSAGE, expectedMessages);
+                new SpecificReceiveLayerConfiguration(ImplementedLayers.MESSAGE, expectedMessages);
         assertTrue(receiveConfig.executedAsPlanned(expectedMessages));
 
         List<ProtocolMessage> missingLastMessage = new ArrayList(expectedMessages);
@@ -64,10 +69,16 @@ public class SpecificReceiveLayerConfigurationTest {
         ChangeCipherSpecMessage optionalChangeCipherSpec = new ChangeCipherSpecMessage();
         optionalChangeCipherSpec.setRequired(false);
         List<ProtocolMessage> expectedMessages =
-            Arrays.asList(new ProtocolMessage[] { new ServerHelloMessage(), optionalChangeCipherSpec,
-                new CertificateMessage(), new CertificateVerifyMessage(), new FinishedMessage() });
+                Arrays.asList(
+                        new ProtocolMessage[] {
+                            new ServerHelloMessage(),
+                            optionalChangeCipherSpec,
+                            new CertificateMessage(),
+                            new CertificateVerifyMessage(),
+                            new FinishedMessage()
+                        });
         LayerConfiguration receiveConfig =
-            new SpecificReceiveLayerConfiguration(ImplementedLayers.MESSAGE, expectedMessages);
+                new SpecificReceiveLayerConfiguration(ImplementedLayers.MESSAGE, expectedMessages);
         assertTrue(receiveConfig.executedAsPlanned(expectedMessages));
 
         List<ProtocolMessage> missingOptional = new ArrayList(expectedMessages);
@@ -97,10 +108,16 @@ public class SpecificReceiveLayerConfigurationTest {
 
     @Test
     public void testFailedEarly() {
-        List<ProtocolMessage> expectedMessages = Arrays.asList(new ProtocolMessage[] { new ServerHelloMessage(),
-            new CertificateMessage(), new ECDHEServerKeyExchangeMessage(), new ServerHelloDoneMessage() });
+        List<ProtocolMessage> expectedMessages =
+                Arrays.asList(
+                        new ProtocolMessage[] {
+                            new ServerHelloMessage(),
+                            new CertificateMessage(),
+                            new ECDHEServerKeyExchangeMessage(),
+                            new ServerHelloDoneMessage()
+                        });
         LayerConfiguration receiveConfig =
-            new SpecificReceiveLayerConfiguration(ImplementedLayers.MESSAGE, expectedMessages);
+                new SpecificReceiveLayerConfiguration(ImplementedLayers.MESSAGE, expectedMessages);
 
         List<ProtocolMessage> buildingReceived = new LinkedList<>();
         for (ProtocolMessage message : expectedMessages) {
@@ -108,9 +125,13 @@ public class SpecificReceiveLayerConfigurationTest {
             assertFalse(receiveConfig.failedEarly(buildingReceived));
         }
 
-        List<ProtocolMessage> thirdInvalid = Arrays.asList(new ProtocolMessage[] { new ServerHelloMessage(),
-            new CertificateMessage(), new CertificateVerifyMessage() });
+        List<ProtocolMessage> thirdInvalid =
+                Arrays.asList(
+                        new ProtocolMessage[] {
+                            new ServerHelloMessage(),
+                            new CertificateMessage(),
+                            new CertificateVerifyMessage()
+                        });
         assertTrue(receiveConfig.failedEarly(thirdInvalid));
     }
-
 }

@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.util;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -46,7 +45,8 @@ public class CertificateFetcher {
 
     public static Certificate fetchServerCertificate(Config config) {
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
-        WorkflowTrace trace = factory.createTlsEntryWorkflowTrace(config.getDefaultClientConnection());
+        WorkflowTrace trace =
+                factory.createTlsEntryWorkflowTrace(config.getDefaultClientConnection());
         trace.addTlsAction(new SendAction(new ClientHelloMessage(config)));
         if (config.getHighestProtocolVersion().isDTLS()) {
             trace.addTlsAction(new ReceiveAction(new HelloVerifyRequestMessage()));
@@ -56,7 +56,8 @@ public class CertificateFetcher {
         State state = new State(config, trace);
 
         WorkflowExecutor workflowExecutor =
-            WorkflowExecutorFactory.createWorkflowExecutor(config.getWorkflowExecutorType(), state);
+                WorkflowExecutorFactory.createWorkflowExecutor(
+                        config.getWorkflowExecutorType(), state);
         try {
             workflowExecutor.executeWorkflow();
 
@@ -70,7 +71,5 @@ public class CertificateFetcher {
         return state.getTlsContext().getServerCertificate();
     }
 
-    private CertificateFetcher() {
-
-    }
+    private CertificateFetcher() {}
 }

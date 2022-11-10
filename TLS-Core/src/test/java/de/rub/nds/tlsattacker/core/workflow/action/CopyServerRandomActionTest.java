@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -18,8 +17,8 @@ public class CopyServerRandomActionTest extends AbstractCopyActionTest<CopyServe
 
     public CopyServerRandomActionTest() {
         super(new CopyServerRandomAction("src", "dst"), CopyServerRandomAction.class);
-        src.setServerRandom(new byte[] { 1, 2 });
-        dst.setServerRandom(new byte[] { 0, 0 });
+        src.setServerRandom(new byte[] {1, 2});
+        dst.setServerRandom(new byte[] {0, 0});
     }
 
     @Test
@@ -36,20 +35,16 @@ public class CopyServerRandomActionTest extends AbstractCopyActionTest<CopyServe
         assertThrows(ActionExecutionException.class, a::assertAliasesSetProperly);
     }
 
-    /**
-     * Test of execute method, of class ChangeServerRandomAction.
-     */
+    /** Test of execute method, of class ChangeServerRandomAction. */
     @Test
     @Override
     public void testExecute() throws Exception {
         super.testExecute();
         assertArrayEquals(src.getServerRandom(), dst.getServerRandom());
-        assertArrayEquals(new byte[] { 1, 2 }, src.getServerRandom());
+        assertArrayEquals(new byte[] {1, 2}, src.getServerRandom());
     }
 
-    /**
-     * Test of equals method, of class ChangeServerRandomAction.
-     */
+    /** Test of equals method, of class ChangeServerRandomAction. */
     @Test
     public void testEquals() {
         assertEquals(action, action);

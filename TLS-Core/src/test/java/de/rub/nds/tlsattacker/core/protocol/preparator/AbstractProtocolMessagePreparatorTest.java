@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -16,13 +15,13 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessagePreparator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import org.junit.jupiter.api.Test;
-
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import org.junit.jupiter.api.Test;
 
-abstract class AbstractTlsMessagePreparatorTest<MT extends ProtocolMessage, PT extends ProtocolMessagePreparator<MT>> {
+abstract class AbstractProtocolMessagePreparatorTest<
+        MT extends ProtocolMessage, PT extends ProtocolMessagePreparator<MT>> {
 
     protected TlsContext context;
 
@@ -33,8 +32,10 @@ abstract class AbstractTlsMessagePreparatorTest<MT extends ProtocolMessage, PT e
     private final BiFunction<Chooser, MT, PT> preparatorConstructor;
     protected PT preparator;
 
-    AbstractTlsMessagePreparatorTest(Supplier<MT> messageConstructor, Function<Config, MT> messageConstructorWithConfig,
-        BiFunction<Chooser, MT, PT> preparatorConstructor) {
+    AbstractProtocolMessagePreparatorTest(
+            Supplier<MT> messageConstructor,
+            Function<Config, MT> messageConstructorWithConfig,
+            BiFunction<Chooser, MT, PT> preparatorConstructor) {
         this.context = new TlsContext();
         this.messageConstructor = messageConstructor;
         this.messageConstructorWithConfig = messageConstructorWithConfig;
@@ -42,8 +43,8 @@ abstract class AbstractTlsMessagePreparatorTest<MT extends ProtocolMessage, PT e
         createNewMessageAndPreparator();
     }
 
-    AbstractTlsMessagePreparatorTest(Supplier<MT> messageConstructor,
-        BiFunction<Chooser, MT, PT> preparatorConstructor) {
+    AbstractProtocolMessagePreparatorTest(
+            Supplier<MT> messageConstructor, BiFunction<Chooser, MT, PT> preparatorConstructor) {
         this.context = new TlsContext();
         this.messageConstructor = messageConstructor;
         this.messageConstructorWithConfig = null;

@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.crypto.cipher;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -46,7 +45,8 @@ public class NullCipherTest {
     }
 
     @Test
-    public void testEncryptionWithIvWithTagLengthWithAdditionAuthenticatedData() throws CryptoException {
+    public void testEncryptionWithIvWithTagLengthWithAdditionAuthenticatedData()
+            throws CryptoException {
         NullCipher cipher = new NullCipher();
         byte[] bEncrypted = cipher.encrypt(bIV, iTag, bAuth, bMessage);
         assertArrayEquals(bMessage, bEncrypted);
@@ -76,7 +76,8 @@ public class NullCipherTest {
     }
 
     @Test
-    public void testDecryptionWithIvWithTagLengthWithAdditionAuthenticatedData() throws CryptoException {
+    public void testDecryptionWithIvWithTagLengthWithAdditionAuthenticatedData()
+            throws CryptoException {
         NullCipher cipher = new NullCipher();
         byte[] bDecrypted = cipher.decrypt(bIV, iTag, bAuth, bMessage);
         assertArrayEquals(bMessage, bDecrypted);
