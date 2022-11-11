@@ -333,6 +333,8 @@
       <xs:element name="addTrustedCaIndicationExtension" type="xs:boolean" minOccurs="0"/>
       <xs:element name="addCertificateStatusRequestV2Extension" type="xs:boolean" minOccurs="0"/>
       <xs:element name="addCookieExtension" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="defaultConnectionId" type="xs:string" minOccurs="0"/>
+      <xs:element name="addConnectionIdExtension" type="xs:boolean" minOccurs="0"/>
       <xs:element name="pskKeyExchangeModes" minOccurs="0">
         <xs:complexType>
           <xs:sequence>
@@ -2342,6 +2344,7 @@
       <xs:enumeration value="POST_HANDSHAKE_AUTH"/>
       <xs:enumeration value="SIGNATURE_ALGORITHMS_CERT"/>
       <xs:enumeration value="KEY_SHARE"/>
+      <xs:enumeration value="CONNECTION_ID"/>
       <xs:enumeration value="RENEGOTIATION_INFO"/>
       <xs:enumeration value="ENCRYPTED_SERVER_NAME_INDICATION"/>
       <xs:enumeration value="GREASE_00"/>

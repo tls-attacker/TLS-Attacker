@@ -35,7 +35,6 @@ import de.rub.nds.tlsattacker.core.record.crypto.RecordEncryptor;
 import de.rub.nds.tlsattacker.core.record.parser.RecordParser;
 import de.rub.nds.tlsattacker.core.record.preparator.RecordPreparator;
 import de.rub.nds.tlsattacker.core.record.serializer.RecordSerializer;
-import java.awt.*;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -213,9 +212,8 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
     public void receiveMoreDataForHint(LayerProcessingHint desiredHint) throws IOException {
         InputStream dataStream = getLowerLayer().getDataStream();
         RecordParser parser =
-                new RecordParser(dataStream, getDecryptorCipher().getState().getVersion());
+                new RecordParser(dataStream, getDecryptorCipher().getState().getVersion(), context);
         try {
-            // parse a record from the lower layer
             Record record = new Record();
             parser.parse(record);
             // TODO it would be good to have a record handler here
@@ -376,8 +374,6 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
 
     @Override
     public LayerProcessingResult receiveData() {
-        throw new UnsupportedOperationException(
-                "Not supported yet."); // To change body of generated methods, choose
-        // Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

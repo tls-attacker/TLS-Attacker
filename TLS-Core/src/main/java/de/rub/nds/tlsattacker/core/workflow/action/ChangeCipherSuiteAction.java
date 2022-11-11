@@ -72,10 +72,12 @@ public class ChangeCipherSuiteAction extends ConnectionBoundAction {
         }
         tlsContext
                 .getRecordLayer()
-                .updateDecryptionCipher(RecordCipherFactory.getRecordCipher(tlsContext, keySet));
+                .updateDecryptionCipher(
+                        RecordCipherFactory.getRecordCipher(tlsContext, keySet, false));
         tlsContext
                 .getRecordLayer()
-                .updateEncryptionCipher(RecordCipherFactory.getRecordCipher(tlsContext, keySet));
+                .updateEncryptionCipher(
+                        RecordCipherFactory.getRecordCipher(tlsContext, keySet, true));
         LOGGER.info(
                 "Changed CipherSuite from "
                         + (oldValue == null ? null : oldValue.name())

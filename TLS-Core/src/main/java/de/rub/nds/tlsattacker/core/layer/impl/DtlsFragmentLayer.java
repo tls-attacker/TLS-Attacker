@@ -104,7 +104,8 @@ public class DtlsFragmentLayer
         if (hint.getType() == ProtocolMessageType.HANDSHAKE) {
             // produce enough fragments from the given data
             List<DtlsHandshakeMessageFragment> fragments = new LinkedList<>();
-            if (getLayerConfiguration().getContainerList() == null) {
+            if (getLayerConfiguration().getContainerList() == null
+                    || getLayerConfiguration().getContainerList().size() == 0) {
                 fragments = getEnoughFragments(context, data.length);
             } else {
                 // use the provided fragments
@@ -222,9 +223,6 @@ public class DtlsFragmentLayer
                         receiveMoreDataForHint(desiredHint);
                     }
                 } else {
-                    if (tempHint.getType() == ProtocolMessageType.CHANGE_CIPHER_SPEC) {
-                        context.addDtlsReceivedChangeCipherSpecEpochs(tempHint.getEpoch());
-                    }
                     currentInputStream = new HintedLayerInputStream(tempHint, this);
                     currentInputStream.extendStream(dataStream.readChunk(dataStream.available()));
                 }

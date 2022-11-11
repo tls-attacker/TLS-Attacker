@@ -481,6 +481,10 @@ public class TlsContext extends LayerContext {
 
     private Integer outboundRecordSizeLimit;
 
+    private byte[] writeConnectionId;
+
+    private byte[] readConnectionID;
+
     public TlsContext() {
         this(new Context(new Config()));
     }
@@ -2321,5 +2325,21 @@ public class TlsContext extends LayerContext {
                 .getRecordCipher(epoch)
                 .getState()
                 .setReadSequenceNumber(sqn);
+    }
+
+    public byte[] getWriteConnectionId() {
+        return writeConnectionId;
+    }
+
+    public void setWriteConnectionId(byte[] writeConnectionId) {
+        this.writeConnectionId = writeConnectionId;
+    }
+
+    public byte[] getReadConnectionId() {
+        return readConnectionID;
+    }
+
+    public void setReadConnectionId(byte[] readConnectionID) {
+        this.readConnectionID = readConnectionID;
     }
 }

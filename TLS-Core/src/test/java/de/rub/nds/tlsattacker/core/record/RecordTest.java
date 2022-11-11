@@ -59,19 +59,31 @@ public class RecordTest {
     @Test
     public void testGetRecordParser() {
         assertEquals(
-                record.getRecordParser(new ByteArrayInputStream(new byte[0]), ProtocolVersion.TLS10)
+                record.getRecordParser(
+                                new ByteArrayInputStream(new byte[0]),
+                                ProtocolVersion.TLS10,
+                                context.getTlsContext())
                         .getClass(),
                 RecordParser.class);
         assertEquals(
-                record.getRecordParser(new ByteArrayInputStream(new byte[0]), ProtocolVersion.TLS11)
+                record.getRecordParser(
+                                new ByteArrayInputStream(new byte[0]),
+                                ProtocolVersion.TLS11,
+                                context.getTlsContext())
                         .getClass(),
                 RecordParser.class);
         assertEquals(
-                record.getRecordParser(new ByteArrayInputStream(new byte[0]), ProtocolVersion.TLS12)
+                record.getRecordParser(
+                                new ByteArrayInputStream(new byte[0]),
+                                ProtocolVersion.TLS12,
+                                context.getTlsContext())
                         .getClass(),
                 RecordParser.class);
         assertEquals(
-                record.getRecordParser(new ByteArrayInputStream(new byte[0]), ProtocolVersion.TLS13)
+                record.getRecordParser(
+                                new ByteArrayInputStream(new byte[0]),
+                                ProtocolVersion.TLS13,
+                                context.getTlsContext())
                         .getClass(),
                 RecordParser.class);
     }

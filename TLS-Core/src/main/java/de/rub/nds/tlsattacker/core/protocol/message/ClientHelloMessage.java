@@ -198,6 +198,9 @@ public class ClientHelloMessage extends HelloMessage {
             if (tlsConfig.isAddCookieExtension()) {
                 addExtension(new CookieExtensionMessage());
             }
+            if (tlsConfig.isAddConnectionIdExtension()) {
+                addExtension(new ConnectionIdExtensionMessage());
+            }
             if (tlsConfig.isAddPreSharedKeyExtension()) {
                 addExtension(new PreSharedKeyExtensionMessage(tlsConfig));
             }

@@ -32,17 +32,12 @@ public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipher
 
     @Override
     public void adjustContext(ChangeCipherSpecMessage message) {
-        if (tlsContext.getConfig().isIgnoreRetransmittedCcsInDtls()
-                && tlsContext.getDtlsReceivedChangeCipherSpecEpochs().size() > 0) {
-            // ignore retransmitted CCS
-            return;
-        }
         if (tlsContext.getTalkingConnectionEndType()
                         != tlsContext.getChooser().getConnectionEndType()
                 && tlsContext.getChooser().getSelectedProtocolVersion() != ProtocolVersion.TLS13) {
             LOGGER.debug(
                     "Adjusting decrypting cipher for " + tlsContext.getTalkingConnectionEndType());
-            tlsContext.getRecordLayer().updateDecryptionCipher(getRecordCipher());
+            tlsContext.getRecordLayer().updateDecryptionCipher(getRecordCipher(false));
             tlsContext.getRecordLayer().updateDecompressor();
         }
     }
@@ -52,19 +47,19 @@ public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipher
         if (!tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
             LOGGER.debug(
                     "Adjusting encrypting cipher for " + tlsContext.getTalkingConnectionEndType());
-            tlsContext.getRecordLayer().updateEncryptionCipher(getRecordCipher());
+            tlsContext.getRecordLayer().updateEncryptionCipher(getRecordCipher(true));
             tlsContext.getRecordLayer().updateCompressor();
         }
     }
 
-    private RecordCipher getRecordCipher() {
+    private RecordCipher getRecordCipher(boolean isForEncryption) {
         try {
             KeySet keySet =
                     KeySetGenerator.generateKeySet(
                             tlsContext,
                             tlsContext.getChooser().getSelectedProtocolVersion(),
                             Tls13KeySetType.NONE);
-            return RecordCipherFactory.getRecordCipher(tlsContext, keySet);
+            return RecordCipherFactory.getRecordCipher(tlsContext, keySet, isForEncryption);
         } catch (NoSuchAlgorithmException | CryptoException ex) {
             throw new UnsupportedOperationException("The specified Algorithm is not supported", ex);
         }

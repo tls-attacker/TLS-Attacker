@@ -355,7 +355,7 @@ public class RecordAEADCipherTest {
                         ArrayConverter.hexStringToByteArray(
                                 "E3B201A9F5B71A7A9B1CEAECCD97E70B6176AAD9A4428AA57A60E12062EC2E1A6D828D8048ECBFD0E7")),
 
-                // Ciphersuite TLS_AES_128_CCM_SHA256
+                // Ciphersuite TLS_AES_128_CCM_8_SHA256
 
                 Arguments.of(
                         Mode.ENCRYPT_SERVER,

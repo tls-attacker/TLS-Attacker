@@ -200,6 +200,9 @@ public class ServerHelloMessage extends HelloMessage {
             if (tlsConfig.isAddCookieExtension()) {
                 addExtension(new CookieExtensionMessage());
             }
+            if (tlsConfig.isAddConnectionIdExtension()) {
+                addExtension(new ConnectionIdExtensionMessage());
+            }
         }
     }
 

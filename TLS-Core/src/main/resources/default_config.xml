@@ -956,6 +956,8 @@
     <addTrustedCaIndicationExtension>false</addTrustedCaIndicationExtension>
     <addCertificateStatusRequestV2Extension>false</addCertificateStatusRequestV2Extension>
     <addCookieExtension>false</addCookieExtension>
+    <defaultConnectionId>01 02 03</defaultConnectionId>
+    <addConnectionIdExtension>false</addConnectionIdExtension>
     <pskKeyExchangeModes>
         <pskKeyExchangeMode>PSK_KE</pskKeyExchangeMode>
         <pskKeyExchangeMode>PSK_DHE_KE</pskKeyExchangeMode>

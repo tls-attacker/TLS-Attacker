@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.record.cipher;
 
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
@@ -22,16 +21,25 @@ public class RecordCipherFactory {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public static RecordCipher getRecordCipher(TlsContext tlsContext, KeySet keySet, CipherSuite cipherSuite) {
+    public static RecordCipher getRecordCipher(
+            TlsContext tlsContext, KeySet keySet, CipherSuite cipherSuite, byte[] connectionId) {
         try {
-            if (tlsContext.getChooser().getSelectedCipherSuite() == null || !cipherSuite.isImplemented()) {
-                LOGGER.warn("Cipher " + cipherSuite.name() + " not implemented. Using Null Cipher instead");
+            if (tlsContext.getChooser().getSelectedCipherSuite() == null
+                    || !cipherSuite.isImplemented()) {
+                LOGGER.warn(
+                        "Cipher "
+                                + cipherSuite.name()
+                                + " not implemented. Using Null Cipher instead");
                 return getNullCipher(tlsContext);
             } else {
                 CipherType type = AlgorithmResolver.getCipherType(cipherSuite);
-                CipherState state = new CipherState(tlsContext.getChooser().getSelectedProtocolVersion(),
-                    tlsContext.getChooser().getSelectedCipherSuite(), keySet,
-                    tlsContext.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC));
+                CipherState state =
+                        new CipherState(
+                                tlsContext.getChooser().getSelectedProtocolVersion(),
+                                cipherSuite,
+                                keySet,
+                                tlsContext.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC),
+                                connectionId);
                 switch (type) {
                     case AEAD:
                         return new RecordAEADCipher(tlsContext, state);
@@ -45,20 +53,34 @@ public class RecordCipherFactory {
                 }
             }
         } catch (Exception e) {
-            LOGGER.debug("Could not create RecordCipher from the current Context! Creating null Cipher", e);
+            LOGGER.debug(
+                    "Could not create RecordCipher from the current Context! Creating null Cipher",
+                    e);
             return getNullCipher(tlsContext);
         }
     }
 
-    public static RecordCipher getRecordCipher(TlsContext tlsContext, KeySet keySet) {
-        return getRecordCipher(tlsContext, keySet, tlsContext.getChooser().getSelectedCipherSuite());
+    public static RecordCipher getRecordCipher(
+            TlsContext tlsContext, KeySet keySet, boolean isForEncryption) {
+        return getRecordCipher(
+                tlsContext,
+                keySet,
+                tlsContext.getChooser().getSelectedCipherSuite(),
+                isForEncryption
+                        ? tlsContext.getWriteConnectionId()
+                        : tlsContext.getReadConnectionId());
     }
 
     public static RecordNullCipher getNullCipher(TlsContext tlsContext) {
-        return new RecordNullCipher(tlsContext, new CipherState(tlsContext.getChooser().getSelectedProtocolVersion(),
-            tlsContext.getChooser().getSelectedCipherSuite(), null, null));
+        return new RecordNullCipher(
+                tlsContext,
+                new CipherState(
+                        tlsContext.getChooser().getSelectedProtocolVersion(),
+                        tlsContext.getChooser().getSelectedCipherSuite(),
+                        null,
+                        null,
+                        null));
     }
 
-    private RecordCipherFactory() {
-    }
+    private RecordCipherFactory() {}
 }

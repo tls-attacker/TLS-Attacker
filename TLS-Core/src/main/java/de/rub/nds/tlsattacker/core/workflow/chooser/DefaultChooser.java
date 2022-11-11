@@ -1080,7 +1080,6 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public List<CipherSuite> getEsniServerCipherSuites() {
-
         if (context.getTlsContext().getEsniServerCipherSuites() != null) {
             return context.getTlsContext().getEsniServerCipherSuites();
         } else {
@@ -1090,7 +1089,6 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public Integer getEsniPaddedLength() {
-
         if (context.getTlsContext().getEsniPaddedLength() != null) {
             return context.getTlsContext().getEsniPaddedLength();
         } else {

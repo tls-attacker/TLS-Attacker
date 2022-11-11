@@ -58,6 +58,7 @@ public enum ExtensionType {
     POST_HANDSHAKE_AUTH(new byte[] {(byte) 0, (byte) 49}),
     SIGNATURE_ALGORITHMS_CERT(new byte[] {(byte) 0, (byte) 50}),
     KEY_SHARE(new byte[] {(byte) 0, (byte) 51}),
+    CONNECTION_ID(new byte[] {(byte) 0, (byte) 54}),
     RENEGOTIATION_INFO(new byte[] {(byte) 0xFF, (byte) 0x01}),
     ENCRYPTED_SERVER_NAME_INDICATION(new byte[] {(byte) 0xFF, (byte) 0xCE}),
 
@@ -166,6 +167,7 @@ public enum ExtensionType {
         list.add(USE_SRTP);
         list.add(COOKIE);
         list.add(RECORD_SIZE_LIMIT);
+        list.add(CONNECTION_ID);
 
         return list;
     }
@@ -208,6 +210,7 @@ public enum ExtensionType {
         list.add(USE_SRTP);
         list.add(COOKIE);
         list.add(RECORD_SIZE_LIMIT);
+        list.add(CONNECTION_ID);
 
         return list;
     }
@@ -233,6 +236,7 @@ public enum ExtensionType {
         list.add(EXTENDED_RANDOM);
         list.add(COOKIE);
         list.add(RECORD_SIZE_LIMIT);
+        list.add(CONNECTION_ID);
 
         return list;
     }

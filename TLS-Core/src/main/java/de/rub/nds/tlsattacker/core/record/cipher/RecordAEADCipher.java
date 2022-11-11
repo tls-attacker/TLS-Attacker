@@ -13,9 +13,7 @@ import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.crypto.cipher.CipherWrapper;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.record.Record;
-import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -147,18 +145,18 @@ public class RecordAEADCipher extends RecordCipher {
                 additionalPadding = 0;
             }
             record.getComputations().setPadding(new byte[additionalPadding]);
-            record.getComputations()
-                    .setPlainRecordBytes(
-                            ArrayConverter.concatenate(
-                                    record.getCleanProtocolMessageBytes().getValue(),
-                                    new byte[] {record.getContentType().getValue()},
-                                    record.getComputations().getPadding().getValue()));
+            record.getComputations().setPlainRecordBytes(encapsulateRecordBytes(record));
+            record.setContentType(ProtocolMessageType.APPLICATION_DATA.getValue());
             // For TLS1.3 we need the length beforehand to compute the
             // authenticatedMetaData
             record.setLength(
                     record.getComputations().getPlainRecordBytes().getValue().length
                             + aeadTagLength);
-            record.setContentType(ProtocolMessageType.APPLICATION_DATA.getValue());
+        } else if (getState().getVersion().isDTLS()
+                && getState().getConnectionId() != null
+                && getState().getConnectionId().length > 0) {
+            record.getComputations().setPlainRecordBytes(encapsulateRecordBytes(record));
+            record.setContentType(ProtocolMessageType.TLS12_CID.getValue());
         } else {
             record.getComputations()
                     .setPlainRecordBytes(record.getCleanProtocolMessageBytes().getValue());
@@ -302,27 +300,10 @@ public class RecordAEADCipher extends RecordCipher {
             record.getComputations().setAuthenticationTagValid(true);
             record.getComputations().setPlainRecordBytes(plainRecordBytes);
             plainRecordBytes = record.getComputations().getPlainRecordBytes().getValue();
-
-            if (getState().getVersion().isTLS13()) {
-                // TLS 1.3 plain record bytes are constructed as: Clean |
-                // ContentType | 0x00000... (Padding)
-                int numberOfPaddingBytes = countTrailingZeroBytes(plainRecordBytes);
-                if (numberOfPaddingBytes == plainRecordBytes.length) {
-                    LOGGER.warn(
-                            "Record contains ONLY padding and no content type. Setting clean bytes == plainbytes");
-                    record.setCleanProtocolMessageBytes(plainRecordBytes);
-                    return;
-                }
-                parser = new PlaintextParser(plainRecordBytes);
-                byte[] cleanBytes =
-                        parser.parseByteArrayField(
-                                plainRecordBytes.length - numberOfPaddingBytes - 1);
-                byte[] contentType = parser.parseByteArrayField(1);
-                byte[] padding = parser.parseByteArrayField(numberOfPaddingBytes);
-                record.getComputations().setPadding(padding);
-                record.setCleanProtocolMessageBytes(cleanBytes);
-                record.setContentType(contentType[0]);
-                record.setContentMessageType(ProtocolMessageType.getContentType(contentType[0]));
+            if (getState().getVersion().isTLS13()
+                    || (getState().getVersion().isDTLS()
+                            && record.getContentMessageType() == ProtocolMessageType.TLS12_CID)) {
+                parseEncapsulatedRecordBytes(plainRecordBytes, record);
             } else {
                 record.setCleanProtocolMessageBytes(plainRecordBytes);
             }
@@ -331,18 +312,6 @@ public class RecordAEADCipher extends RecordCipher {
             record.getComputations().setAuthenticationTagValid(false);
             throw new CryptoException(e);
         }
-    }
-
-    private int countTrailingZeroBytes(byte[] plainRecordBytes) {
-        int counter = 0;
-        for (int i = plainRecordBytes.length - 1; i < plainRecordBytes.length; i--) {
-            if (plainRecordBytes[i] == 0) {
-                counter++;
-            } else {
-                return counter;
-            }
-        }
-        return counter;
     }
 
     public byte[] preprocessIv(long sequenceNumber, byte[] iv) {
@@ -367,29 +336,5 @@ public class RecordAEADCipher extends RecordCipher {
             temp[i] ^= iv[i];
         }
         return temp;
-    }
-
-    class PlaintextParser extends Parser<Object> {
-
-        public PlaintextParser(byte[] array) {
-            super(new ByteArrayInputStream(array));
-        }
-
-        @Override
-        public void parse(Object t) {
-            throw new UnsupportedOperationException(
-                    "Not supported yet."); // To change body of generated methods,
-            // choose Tools | Templates.
-        }
-
-        @Override
-        public byte[] parseByteArrayField(int length) {
-            return super.parseByteArrayField(length);
-        }
-
-        @Override
-        public int getBytesLeft() {
-            return super.getBytesLeft();
-        }
     }
 }

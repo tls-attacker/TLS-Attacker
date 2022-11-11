@@ -46,14 +46,14 @@ public abstract class ActivateCryptoAction extends ConnectionBoundAction {
         } catch (NoSuchAlgorithmException | CryptoException ex) {
             throw new UnsupportedOperationException("The specified Algorithm is not supported", ex);
         }
-        RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(tlsContext, keySet);
+        RecordCipher recordCipher =
+                RecordCipherFactory.getRecordCipher(tlsContext, keySet, equals(this));
         activateCrypto(tlsContext, recordCipher);
         setExecuted(true);
     }
 
     @Override
     public void reset() {
-        setExecuted(false);
         setExecuted(null);
     }
 

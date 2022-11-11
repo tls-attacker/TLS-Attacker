@@ -72,7 +72,8 @@ import java.io.Serializable;
     DtlsHandshakeMessageFragment.class,
     UserMappingExtensionMessage.class,
     SRPExtensionMessage.class,
-    CachedInfoExtensionMessage.class
+    CachedInfoExtensionMessage.class,
+    ConnectionIdExtensionMessage.class
 })
 public abstract class ExtensionMessage<Self extends ExtensionMessage>
         extends ModifiableVariableHolder implements Serializable, DataContainer<Self, TlsContext> {

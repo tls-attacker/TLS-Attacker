@@ -9,16 +9,15 @@
 package de.rub.nds.tlsattacker.core.record.cipher;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.crypto.cipher.CipherWrapper;
 import de.rub.nds.tlsattacker.core.crypto.mac.MacWrapper;
 import de.rub.nds.tlsattacker.core.crypto.mac.WrappedMac;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.RecordCryptoComputations;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.io.ByteArrayInputStream;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
@@ -120,7 +119,16 @@ public final class RecordBlockCipher extends RecordCipher {
         record.getComputations().setCbcInitialisationVector(iv);
         iv = record.getComputations().getCbcInitialisationVector().getValue();
 
-        byte[] cleanBytes = record.getCleanProtocolMessageBytes().getValue();
+        byte[] cleanBytes;
+        if (getState().getVersion().isDTLS()
+                && getState().getConnectionId() != null
+                && getState().getConnectionId().length > 0) {
+            cleanBytes = encapsulateRecordBytes(record);
+            record.setContentType(ProtocolMessageType.TLS12_CID.getValue());
+        } else {
+            cleanBytes = record.getCleanProtocolMessageBytes().getValue();
+        }
+
         if (getState().isEncryptThenMac()) {
 
             computations.setPadding(
@@ -207,6 +215,7 @@ public final class RecordBlockCipher extends RecordCipher {
                 record.setProtocolMessageBytes(computations.getCiphertext());
             }
         }
+
         // TODO - our own macs and paddings are "always" valid - this does not
         // respect modifications made on the variables
         computations.setPaddingValid(true);
@@ -330,7 +339,12 @@ public final class RecordBlockCipher extends RecordCipher {
             byte[] cleanProtocolBytes =
                     parser.parseByteArrayField(
                             plainData.length - (plainData[plainData.length - 1] + 1));
-            record.setCleanProtocolMessageBytes(cleanProtocolBytes);
+            if (getState().getVersion().isDTLS()
+                    && record.getContentMessageType() == ProtocolMessageType.TLS12_CID) {
+                parseEncapsulatedRecordBytes(cleanProtocolBytes, record);
+            } else {
+                record.setCleanProtocolMessageBytes(cleanProtocolBytes);
+            }
             if (useExplicitIv) {
                 computations.setAuthenticatedNonMetaData(
                         ArrayConverter.concatenate(
@@ -367,27 +381,22 @@ public final class RecordBlockCipher extends RecordCipher {
 
             parser = new PlaintextParser(plainData);
 
-            int paddingLength =
-                    ArrayConverter.bytesToInt(new byte[] {plainData[plainData.length - 1]}) + 1;
-            int cleanBytesLength = plainData.length - readMac.getMacLength() - paddingLength;
-
-            byte[] cleanProtocolBytes;
-            byte[] padding;
-            byte[] hmac;
-            if (cleanBytesLength < 0) {
-                LOGGER.warn(
-                        "Plain Data cannot fit Mac and Padding (due to length; invalid lengths detected)");
-                padding = new byte[0];
-                hmac = new byte[0];
-                cleanProtocolBytes = parser.parseByteArrayField(plainData.length);
+            byte[] cleanProtocolBytes =
+                    parser.parseByteArrayField(
+                            plainData.length
+                                    - readMac.getMacLength()
+                                    - (plainData[plainData.length - 1] + 1));
+            if (getState().getVersion().isDTLS()
+                    && record.getContentMessageType() == ProtocolMessageType.TLS12_CID) {
+                parseEncapsulatedRecordBytes(cleanProtocolBytes, record);
             } else {
-                cleanProtocolBytes = parser.parseByteArrayField(cleanBytesLength);
-                hmac = parser.parseByteArrayField(readMac.getMacLength());
-                padding = parser.parseByteArrayField(paddingLength);
+                record.setCleanProtocolMessageBytes(cleanProtocolBytes);
             }
 
-            record.setCleanProtocolMessageBytes(cleanProtocolBytes);
-            computations.setMac(hmac);
+            byte[] hmac = parser.parseByteArrayField(readMac.getMacLength());
+            record.getComputations().setMac(hmac);
+
+            byte[] padding = parser.parseByteArrayField(plainData[plainData.length - 1] + 1);
             computations.setPadding(padding);
 
             computations.setAuthenticatedNonMetaData(cleanProtocolBytes);
@@ -422,29 +431,5 @@ public final class RecordBlockCipher extends RecordCipher {
         }
         LOGGER.debug("Padding is valid");
         return true;
-    }
-
-    class PlaintextParser extends Parser<Object> {
-
-        public PlaintextParser(byte[] array) {
-            super(new ByteArrayInputStream(array));
-        }
-
-        @Override
-        public void parse(Object t) {
-            throw new UnsupportedOperationException(
-                    "Not supported yet."); // To change body of generated methods,
-            // choose Tools | Templates.
-        }
-
-        @Override
-        public byte[] parseByteArrayField(int length) {
-            return super.parseByteArrayField(length);
-        }
-
-        @Override
-        public int getBytesLeft() {
-            return super.getBytesLeft();
-        }
     }
 }

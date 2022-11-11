@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
@@ -94,6 +93,8 @@ public class ExtensionFactory {
                 return new PWDProtectExtensionMessage();
             case PWD_CLEAR:
                 return new PWDClearExtensionMessage();
+            case CONNECTION_ID:
+                return new ConnectionIdExtensionMessage();
             case GREASE_00:
             case GREASE_01:
             case GREASE_02:
@@ -118,6 +119,5 @@ public class ExtensionFactory {
         }
     }
 
-    private ExtensionFactory() {
-    }
+    private ExtensionFactory() {}
 }

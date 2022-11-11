@@ -192,6 +192,9 @@ public class ExtensionByteLength {
     /** RecordSizeLimit length in the RecordSizeLimitExtension */
     public static final int RECORD_SIZE_LIMIT_LENGTH = 2;
 
+    /** connectionIdLength in ConnectionIdExtension */
+    public static final int CONNECTION_ID_LENGTH = 1;
+
     /** SignatureAlgorithmsCert Extension Fields */
     public static final int SIGNATURE_ALGORITHMS_CERT_LENGTH = 2;
 

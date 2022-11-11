@@ -58,15 +58,6 @@ import org.bouncycastle.crypto.tls.Certificate;
 @XmlType(propOrder = {})
 public class Config implements Serializable {
 
-    public List<SSL2CipherSuite> getDefaultServerSupportedSSL2CipherSuites() {
-        return defaultServerSupportedSSL2CipherSuites;
-    }
-
-    public void setDefaultServerSupportedSSL2CipherSuites(
-            List<SSL2CipherSuite> defaultServerSupportedSSL2CipherSuites) {
-        this.defaultServerSupportedSSL2CipherSuites = defaultServerSupportedSSL2CipherSuites;
-    }
-
     private static final Logger LOGGER = LogManager.getLogger();
 
     @Deprecated
@@ -520,6 +511,14 @@ public class Config implements Serializable {
 
     /** If we generate ClientHello with TLS 1.3 cookie extension */
     private Boolean addCookieExtension = false;
+
+    /** Default ConnectionID to use, if addConnectionIdExtension is true */
+    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
+    @XmlElement(name = "defaultConnectionId")
+    private byte[] defaultConnectionId = {0x01, 0x02, 0x03};
+
+    /** If we generate a ClientHello / ServerHello with DTLS 1.2 ConnectionID extension */
+    private Boolean addConnectionIdExtension = false;
 
     /** PSKKeyExchangeModes to be used in 0-RTT (or TLS 1.3 resumption) */
     @XmlElement(name = "pskKeyExchangeMode")
@@ -3976,11 +3975,36 @@ public class Config implements Serializable {
         this.defaultLayerConfiguration = defaultLayerConfiguration;
     }
 
+    public byte[] getDefaultConnectionId() {
+        return Arrays.copyOf(defaultConnectionId, defaultConnectionId.length);
+    }
+
+    public void setDefaultConnectionId(byte[] defaultConnectionId) {
+        this.defaultConnectionId = defaultConnectionId;
+    }
+
+    public Boolean isAddConnectionIdExtension() {
+        return addConnectionIdExtension;
+    }
+
+    public void setAddConnectionIdExtension(Boolean addConnectionIdExtension) {
+        this.addConnectionIdExtension = addConnectionIdExtension;
+    }
+
     public Integer getEnforcedMaxRecordData() {
         return enforcedMaxRecordData;
     }
 
     public void setEnforcedMaxRecordData(Integer enforcedMaxRecordData) {
         this.enforcedMaxRecordData = enforcedMaxRecordData;
+    }
+
+    public List<SSL2CipherSuite> getDefaultServerSupportedSSL2CipherSuites() {
+        return defaultServerSupportedSSL2CipherSuites;
+    }
+
+    public void setDefaultServerSupportedSSL2CipherSuites(
+            List<SSL2CipherSuite> defaultServerSupportedSSL2CipherSuites) {
+        this.defaultServerSupportedSSL2CipherSuites = defaultServerSupportedSSL2CipherSuites;
     }
 }

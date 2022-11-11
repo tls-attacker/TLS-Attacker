@@ -33,6 +33,8 @@
 
   <xs:element name="ClientHello" type="clientHelloMessage"/>
 
+  <xs:element name="ConnectionIdExtension" type="connectionIdExtensionMessage"/>
+
   <xs:element name="CookieExtension" type="cookieExtensionMessage"/>
 
   <xs:element name="DHClientKeyExchange" type="dhClientKeyExchangeMessage"/>
@@ -1103,6 +1105,7 @@
                   <xs:element ref="CookieExtension"/>
                   <xs:element ref="userMappingExtensionMessage"/>
                   <xs:element ref="SRPExtension"/>
+                  <xs:element ref="ConnectionIdExtension"/>
                 </xs:choice>
               </xs:sequence>
             </xs:complexType>
@@ -1944,6 +1947,17 @@
         <xs:sequence>
           <xs:element name="srpIdentifier" type="modifiableByteArray" minOccurs="0"/>
           <xs:element name="srpIdentifierLength" type="modifiableInteger" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="connectionIdExtensionMessage">
+    <xs:complexContent>
+      <xs:extension base="extensionMessage">
+        <xs:sequence>
+          <xs:element name="connectionId" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="connectionIdLength" type="modifiableInteger" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -2814,6 +2828,7 @@
           <xs:element name="cleanProtocolMessageBytes" type="modifiableByteArray" minOccurs="0"/>
           <xs:element name="completeRecordBytes" type="modifiableByteArray" minOccurs="0"/>
           <xs:element name="computations" type="recordCryptoComputations" minOccurs="0"/>
+          <xs:element name="connectionId" type="modifiableByteArray" minOccurs="0"/>
           <xs:element name="contentMessageType" type="protocolMessageType" minOccurs="0"/>
           <xs:element name="contentType" type="modifiableByte" minOccurs="0"/>
           <xs:element name="epoch" type="modifiableInteger" minOccurs="0"/>
@@ -3101,6 +3116,8 @@
           <xs:element name="esniExtensions" type="extensionType" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
           <xs:element name="maxFragmentLength" type="maxFragmentLength" minOccurs="0"/>
           <xs:element name="outboundRecordSizeLimit" type="xs:int" minOccurs="0"/>
+          <xs:element name="writeConnectionId" type="xs:base64Binary" minOccurs="0"/>
+          <xs:element name="readConnectionID" type="xs:base64Binary" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -3436,6 +3453,8 @@
       <xs:element name="addTrustedCaIndicationExtension" type="xs:boolean" minOccurs="0"/>
       <xs:element name="addCertificateStatusRequestV2Extension" type="xs:boolean" minOccurs="0"/>
       <xs:element name="addCookieExtension" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="defaultConnectionId" type="xs:string" minOccurs="0"/>
+      <xs:element name="addConnectionIdExtension" type="xs:boolean" minOccurs="0"/>
       <xs:element name="pskKeyExchangeModes" minOccurs="0">
         <xs:complexType>
           <xs:sequence>
@@ -5350,6 +5369,7 @@
       <xs:enumeration value="HANDSHAKE"/>
       <xs:enumeration value="APPLICATION_DATA"/>
       <xs:enumeration value="HEARTBEAT"/>
+      <xs:enumeration value="TLS12_CID"/>
     </xs:restriction>
   </xs:simpleType>
 
@@ -5668,6 +5688,7 @@
       <xs:enumeration value="POST_HANDSHAKE_AUTH"/>
       <xs:enumeration value="SIGNATURE_ALGORITHMS_CERT"/>
       <xs:enumeration value="KEY_SHARE"/>
+      <xs:enumeration value="CONNECTION_ID"/>
       <xs:enumeration value="RENEGOTIATION_INFO"/>
       <xs:enumeration value="ENCRYPTED_SERVER_NAME_INDICATION"/>
       <xs:enumeration value="GREASE_00"/>
