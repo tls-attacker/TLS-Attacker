@@ -924,6 +924,7 @@ public class WorkflowConfigurationFactory {
         if (algorithm != null) {
             switch (algorithm) {
                 case RSA:
+                case RSA_EXPORT:
                     return new RSAClientKeyExchangeMessage();
                 case ECDHE_ECDSA:
                 case ECDH_ECDSA:
@@ -996,6 +997,14 @@ public class WorkflowConfigurationFactory {
                     return new SrpServerKeyExchangeMessage();
                 case ECCPWD:
                     return new PWDServerKeyExchangeMessage();
+                case RSA_EXPORT:
+                    // only send rsa server key exchange message if public key size is bigger than
+                    // 512 bits
+                    if (config.getDefaultExplicitCertificateKeyPair().getPublicKey().keySize()
+                            <= 512) {
+                        return null;
+                    }
+                    return new RSAServerKeyExchangeMessage();
                 default:
                     LOGGER.warn(
                             "Unsupported key exchange algorithm: "

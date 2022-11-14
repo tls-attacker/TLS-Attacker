@@ -91,8 +91,10 @@ public class AlgorithmResolver {
             return null;
         }
         String cipher = cipherSuite.toString().toUpperCase();
-        if (cipher.contains("TLS_RSA_WITH") || cipher.contains("TLS_RSA_EXPORT")) {
+        if (cipher.contains("TLS_RSA_WITH")) {
             return KeyExchangeAlgorithm.RSA;
+        } else if (cipher.contains("TLS_RSA_EXPORT")) {
+            return KeyExchangeAlgorithm.RSA_EXPORT;
         } else if (cipher.contains("TLS_RSA_PSK_")) {
             return KeyExchangeAlgorithm.PSK_RSA;
         } else if (cipher.startsWith("TLS_DH_DSS_")) {
@@ -176,6 +178,7 @@ public class AlgorithmResolver {
             case DHE_RSA:
             case ECDHE_RSA:
             case RSA:
+            case RSA_EXPORT:
             case SRP_SHA_RSA:
             case PSK_RSA:
                 return CertificateKeyType.RSA;
@@ -449,6 +452,7 @@ public class AlgorithmResolver {
             case ECDH_RSA:
             case ECDHE_RSA:
             case RSA:
+            case RSA_EXPORT:
             case SRP_SHA_RSA:
             case PSK_RSA:
                 return SignatureAlgorithm.RSA;
