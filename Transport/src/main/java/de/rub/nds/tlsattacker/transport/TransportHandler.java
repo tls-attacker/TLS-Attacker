@@ -1,25 +1,24 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.transport;
 
 import de.rub.nds.tlsattacker.transport.socket.SocketState;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.io.ByteArrayOutputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PushbackInputStream;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public abstract class TransportHandler {
 
@@ -64,19 +63,32 @@ public abstract class TransportHandler {
     /**
      * Reads the specified amount of data from the stream
      *
-     * @param  amountOfData
+     * @param amountOfData
      * @return
      */
     public byte[] fetchData(int amountOfData) throws IOException {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         for (int i = 0; i < amountOfData; i++) {
-            stream.write(inStream.read());
+            try {
+                final int byteRead = inStream.read();
+                if (byteRead == -1) {
+                    throw new EOFException(
+                            String.format(
+                                    "Encountered EOF after %d bytes while reading %d bytes of data",
+                                    i, amountOfData));
+                }
+                outputStream.write(byteRead);
+            } catch (IOException e) {
+                if (outputStream.size() > 0) {
+                    inStream.unread(outputStream.toByteArray());
+                }
+                throw e;
+            }
         }
-        return stream.toByteArray();
+        return outputStream.toByteArray();
     }
 
-    @SuppressWarnings({ "checkstyle:EmptyCatchBlock", "CheckStyle" })
+    @SuppressWarnings({"checkstyle:EmptyCatchBlock", "CheckStyle"})
     public byte[] fetchData() throws IOException {
         if (firstReceived) {
             setTimeout(firstTimeout);
@@ -104,7 +116,6 @@ public abstract class TransportHandler {
                     cachedSocketState = SocketState.CLOSED;
                     return new byte[0];
                 }
-
             }
         } catch (SocketException E) {
             cachedSocketState = SocketState.SOCKET_EXCEPTION;

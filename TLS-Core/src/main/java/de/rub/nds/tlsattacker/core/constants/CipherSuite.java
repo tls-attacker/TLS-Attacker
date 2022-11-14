@@ -1037,6 +1037,11 @@ public enum CipherSuite {
         list.add(UNOFFICIAL_TLS_PSK_WITH_CHACHA20_POLY1305_OLD);
         list.add(UNOFFICIAL_TLS_ECDHE_PSK_WITH_CHACHA20_POLY1305_OLD);
         list.add(UNOFFICIAL_TLS_RSA_PSK_WITH_CHACHA20_POLY1305_OLD);
+        list.add(TLS_RSA_EXPORT_WITH_RC4_40_MD5);
+        list.add(TLS_RSA_EXPORT_WITH_DES40_CBC_SHA);
+        list.add(TLS_RSA_EXPORT_WITH_RC2_CBC_40_MD5);
+        list.add(TLS_DHE_RSA_EXPORT_WITH_DES40_CBC_SHA);
+        list.add(TLS_DHE_DSS_EXPORT_WITH_DES40_CBC_SHA);
         list.add(TLS_NULL_WITH_NULL_NULL);
         return list;
     }

@@ -968,6 +968,35 @@ public class Config implements Serializable {
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultServerApplicationTrafficSecret = new byte[32];
 
+    private BigInteger defaultServerRSAExportModulus =
+            new BigInteger(
+                    "00e208ff3431b8d1f6c48d9bb93c76a9c7f5693ada3eb45fa12581d2203a97246a5ceed7cf8d8fc1d6136225545855dd41581543cecba0b4a5776f90d05a0059ff",
+                    16);
+
+    private BigInteger defaultServerRSAExportPublicKey = new BigInteger("65537");
+
+    private BigInteger defaultServerRSAExportPrivateKey =
+            new BigInteger(
+                    "30e1db37116db3d2970d3cd9216f54264f3773a7d119b6f8a5a0dead639e5e1c4e6cf0a4006a0e26ea2b8e8461f7e937bd51c9ba3f8c0b4cb20b03dc9054f401",
+                    16);
+
+    private BigInteger defaultServerDhExportGenerator = new BigInteger("2");
+
+    private BigInteger defaultServerDhExportModulus =
+            new BigInteger(
+                    "0090e6a3f16f2c9325a8a036d9bd96d69ae2b6caa59fd7d4cce729b225f8849a14d0fb5939102ba44ed54f26c186e1ad243d58a1a4542ce1adffd482e8f85ef663",
+                    16);
+
+    private BigInteger defaultServerDhExportPublicKey =
+            new BigInteger(
+                    "2530802253db34a8106584c96a066050310bd3b2eb11c71dd7095638eef4b7961892b13b2c983cc31635c49982b485fe837be0ba9d7f75ff72e2cae0f4c1b090",
+                    16);
+
+    private BigInteger defaultServerDhExportPrivateKey =
+            new BigInteger(
+                    "4ba017c0142c0df8fe5f8da8f4046c0933486730b155f1b09bd611c09863b72ad9aec3782d9379883c4a291c748c530f433207f740e0db5f67748c2c2dde2866",
+                    16);
+
     private TokenBindingType defaultTokenBindingType = TokenBindingType.PROVIDED_TOKEN_BINDING;
 
     private Point defaultTokenBindingECPublicKey = null;
@@ -1518,6 +1547,68 @@ public class Config implements Serializable {
 
     public void setStealthMode(Boolean stealthMode) {
         this.stealthMode = stealthMode;
+    }
+
+    public BigInteger getDefaultServerRSAExportModulus() {
+        return defaultServerRSAExportModulus;
+    }
+
+    public void setDefaultServerRSAExportModulus(BigInteger defaultServerRSAExportModulus) {
+        this.defaultServerRSAExportModulus = defaultServerRSAExportModulus;
+    }
+
+    public BigInteger getDefaultServerRSAExportPublicKey() {
+        return defaultServerRSAExportPublicKey;
+    }
+
+    public void setDefaultServerRSAExportPublicKey(BigInteger defaultServerRSAExportPublicKey) {
+        this.defaultServerRSAExportPublicKey = defaultServerRSAExportPublicKey;
+    }
+
+    public BigInteger getDefaultServerRSAExportPrivateKey() {
+        return defaultServerRSAExportPrivateKey;
+    }
+
+    public void setDefaultServerRSAExportPrivateKey(BigInteger defaultServerRSAExportPrivateKey) {
+        this.defaultServerRSAExportPrivateKey = defaultServerRSAExportPrivateKey;
+    }
+
+    public BigInteger getDefaultServerDhExportGenerator() {
+        return defaultServerDhExportGenerator;
+    }
+
+    public void setDefaultServerDhExportGenerator(BigInteger defaultServerDhExportGenerator) {
+        this.defaultServerDhExportGenerator = defaultServerDhExportGenerator;
+    }
+
+    public BigInteger getDefaultServerDhExportModulus() {
+        return defaultServerDhExportModulus;
+    }
+
+    public void setDefaultServerDhExportModulus(BigInteger defaultServerDhExportModulus) {
+        if (defaultServerDhExportModulus.signum() == 1) {
+            this.defaultServerDhExportModulus = defaultServerDhExportModulus;
+        } else {
+            throw new IllegalArgumentException(
+                    "Modulus cannot be negative or zero:"
+                            + defaultServerDhExportModulus.toString());
+        }
+    }
+
+    public BigInteger getDefaultServerDhExportPublicKey() {
+        return defaultServerDhExportPublicKey;
+    }
+
+    public void setDefaultServerDhExportPublicKey(BigInteger defaultServerDhExportPublicKey) {
+        this.defaultServerDhExportPublicKey = defaultServerDhExportPublicKey;
+    }
+
+    public BigInteger getDefaultServerDhExportPrivateKey() {
+        return defaultServerDhExportPrivateKey;
+    }
+
+    public void setDefaultServerDhExportPrivateKey(BigInteger defaultServerDhExportPrivateKey) {
+        this.defaultServerDhExportPrivateKey = defaultServerDhExportPrivateKey;
     }
 
     public Point getDefaultTokenBindingECPublicKey() {
