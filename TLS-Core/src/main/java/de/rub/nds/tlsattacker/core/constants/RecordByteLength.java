@@ -36,6 +36,8 @@ public class RecordByteLength {
      * sequence number for DTLS
      */
     public static final int DTLS_SEQUENCE_NUMBER = 6;
+    public static final int DTLS13_SEQUENCE_NUMBER_HEADER_SHORT = 1;
+    public static final int DTLS13_SEQUENCE_NUMBER_HEADER_LONG = 2;
 
     private RecordByteLength() {
     }
