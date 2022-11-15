@@ -76,7 +76,7 @@ public class TlsClientIT {
         tlsServer.shutdown();
     }
 
-    @ParameterizedTest
+    /*@ParameterizedTest
     @EnumSource(
             value = ProtocolVersion.class,
             names = {"SSL3", "TLS10", "TLS11", "TLS12"})
@@ -106,7 +106,7 @@ public class TlsClientIT {
                 testableCipherSuites.stream()
                         .map(cs -> () -> executeHandshakeWorkflowWithCipherSuite(config, cs)));
         executeCustomRsaWorkflow(tlsServer.getPort());
-    }
+    }*/
 
     @ParameterizedTest
     @EnumSource(

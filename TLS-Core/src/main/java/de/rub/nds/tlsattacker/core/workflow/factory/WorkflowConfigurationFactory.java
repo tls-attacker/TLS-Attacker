@@ -167,12 +167,22 @@ public class WorkflowConfigurationFactory {
                         new ClientHelloMessage(config)));
 
         if (config.getHighestProtocolVersion().isDTLS() && config.isDtlsCookieExchange()) {
-            workflowTrace.addTlsAction(
-                    MessageActionFactory.createTLSAction(
-                            config,
-                            connection,
-                            ConnectionEndType.SERVER,
-                            new HelloVerifyRequestMessage()));
+            // DTLS 1.3 => HelloRetryRequest, DTLS 1.0-1.2 => HelloVerifyRequest
+            if (config.getHighestProtocolVersion() == ProtocolVersion.DTLS13) {
+                workflowTrace.addTlsAction(
+                        MessageActionFactory.createTLSAction(
+                                config,
+                                connection,
+                                ConnectionEndType.SERVER,
+                                new ServerHelloMessage(config)));
+            } else {
+                workflowTrace.addTlsAction(
+                        MessageActionFactory.createTLSAction(
+                                config,
+                                connection,
+                                ConnectionEndType.SERVER,
+                                new HelloVerifyRequestMessage()));
+            }
             workflowTrace.addTlsAction(
                     MessageActionFactory.createTLSAction(
                             config,
@@ -213,7 +223,8 @@ public class WorkflowConfigurationFactory {
         CipherSuite selectedCipherSuite = config.getDefaultSelectedCipherSuite();
         List<ProtocolMessage> messages = new LinkedList<>();
         messages.add(new ServerHelloMessage(config));
-        if (config.getHighestProtocolVersion().isTLS13()) {
+        if (config.getHighestProtocolVersion().isTLS13()
+                || config.getHighestProtocolVersion() == ProtocolVersion.DTLS13) {
             if (Objects.equals(config.getTls13BackwardsCompatibilityMode(), Boolean.TRUE)
                     || connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
                 ChangeCipherSpecMessage ccs = new ChangeCipherSpecMessage();
@@ -265,7 +276,8 @@ public class WorkflowConfigurationFactory {
         WorkflowTrace workflowTrace = createHelloWorkflow(connection);
 
         List<ProtocolMessage> messages = new LinkedList<>();
-        if (config.getHighestProtocolVersion().isTLS13()) {
+        if (config.getHighestProtocolVersion().isTLS13()
+                || config.getHighestProtocolVersion() == ProtocolVersion.DTLS13) {
             if (Objects.equals(config.getTls13BackwardsCompatibilityMode(), Boolean.TRUE)
                     || connection.getLocalConnectionEndType() == ConnectionEndType.SERVER) {
                 ChangeCipherSpecMessage ccs = new ChangeCipherSpecMessage();
@@ -298,6 +310,11 @@ public class WorkflowConfigurationFactory {
                             ConnectionEndType.SERVER,
                             new ChangeCipherSpecMessage(),
                             new FinishedMessage()));
+        }
+        if (config.getHighestProtocolVersion() == ProtocolVersion.DTLS13) {
+            // workflowTrace.addTlsAction(
+            //        MessageActionFactory.createTLSAction(
+            //                config, connection, ConnectionEndType.SERVER, new AckMessage()));
         }
 
         return workflowTrace;

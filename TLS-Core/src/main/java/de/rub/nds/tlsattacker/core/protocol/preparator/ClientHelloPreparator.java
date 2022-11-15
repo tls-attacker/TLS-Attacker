@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -69,7 +68,7 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
         boolean isResumptionWithSessionTicket = false;
         if (msg.containsExtension(ExtensionType.SESSION_TICKET)) {
             SessionTicketTLSExtensionMessage extensionMessage =
-                msg.getExtension(SessionTicketTLSExtensionMessage.class);
+                    msg.getExtension(SessionTicketTLSExtensionMessage.class);
             if (extensionMessage != null) {
                 if (extensionMessage.getSessionTicket().getIdentityLength().getValue() > 0) {
                     isResumptionWithSessionTicket = true;
@@ -83,7 +82,8 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
         } else {
             msg.setSessionId(chooser.getServerSessionId());
         }
-        LOGGER.debug("SessionId: " + ArrayConverter.bytesToHexString(msg.getSessionId().getValue()));
+        LOGGER.debug(
+                "SessionId: " + ArrayConverter.bytesToHexString(msg.getSessionId().getValue()));
     }
 
     private boolean isDTLS() {
@@ -97,7 +97,8 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
                 stream.write(compression.getArrayValue());
             } catch (IOException ex) {
                 throw new PreparationException(
-                    "Could not prepare ClientHelloMessage. Failed to write cipher suites into message", ex);
+                        "Could not prepare ClientHelloMessage. Failed to write cipher suites into message",
+                        ex);
             }
         }
         return stream.toByteArray();
@@ -110,7 +111,8 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
                 stream.write(suite.getByteValue());
             } catch (IOException ex) {
                 throw new PreparationException(
-                    "Could not prepare ClientHelloMessage. Failed to write cipher suites into message", ex);
+                        "Could not prepare ClientHelloMessage. Failed to write cipher suites into message",
+                        ex);
             }
         }
         return stream.toByteArray();
@@ -119,19 +121,27 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
     private void prepareProtocolVersion(ClientHelloMessage msg) {
         if (chooser.getConfig().getHighestProtocolVersion().isTLS13()) {
             msg.setProtocolVersion(ProtocolVersion.TLS12.getValue());
+        } else if (chooser.getConfig().getHighestProtocolVersion() == ProtocolVersion.DTLS13) {
+            msg.setProtocolVersion(ProtocolVersion.DTLS12.getValue());
         } else {
             msg.setProtocolVersion(chooser.getConfig().getHighestProtocolVersion().getValue());
         }
-        LOGGER.debug("ProtocolVersion: " + ArrayConverter.bytesToHexString(msg.getProtocolVersion().getValue()));
+        LOGGER.debug(
+                "ProtocolVersion: "
+                        + ArrayConverter.bytesToHexString(msg.getProtocolVersion().getValue()));
     }
 
     private void prepareCompressions(ClientHelloMessage msg) {
         if (chooser.getConfig().getHighestProtocolVersion().isTLS13()) {
             msg.setCompressions(CompressionMethod.NULL.getArrayValue());
         } else {
-            msg.setCompressions(convertCompressions(chooser.getConfig().getDefaultClientSupportedCompressionMethods()));
+            msg.setCompressions(
+                    convertCompressions(
+                            chooser.getConfig().getDefaultClientSupportedCompressionMethods()));
         }
-        LOGGER.debug("Compressions: " + ArrayConverter.bytesToHexString(msg.getCompressions().getValue()));
+        LOGGER.debug(
+                "Compressions: "
+                        + ArrayConverter.bytesToHexString(msg.getCompressions().getValue()));
     }
 
     private void prepareCompressionLength(ClientHelloMessage msg) {
@@ -140,8 +150,11 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
     }
 
     private void prepareCipherSuites(ClientHelloMessage msg) {
-        msg.setCipherSuites(convertCipherSuites(chooser.getConfig().getDefaultClientSupportedCipherSuites()));
-        LOGGER.debug("CipherSuites: " + ArrayConverter.bytesToHexString(msg.getCipherSuites().getValue()));
+        msg.setCipherSuites(
+                convertCipherSuites(chooser.getConfig().getDefaultClientSupportedCipherSuites()));
+        LOGGER.debug(
+                "CipherSuites: "
+                        + ArrayConverter.bytesToHexString(msg.getCipherSuites().getValue()));
     }
 
     private void prepareCipherSuitesLength(ClientHelloMessage msg) {

@@ -37,6 +37,7 @@ public enum ProtocolVersion {
     DTLS10_DRAFT(new byte[] {(byte) 0x01, (byte) 0x00}),
     DTLS10(new byte[] {(byte) 0xFE, (byte) 0xFF}),
     DTLS12(new byte[] {(byte) 0xFE, (byte) 0xFD}),
+    DTLS13(new byte[] {(byte) 0xFE, (byte) 0xFC}),
 
     // GREASE constants
     GREASE_00(new byte[] {(byte) 0x0A, (byte) 0x0A}),
@@ -80,7 +81,7 @@ public enum ProtocolVersion {
     }
 
     public boolean isDTLS() {
-        return this == DTLS10 || this == DTLS12 || this == DTLS10_DRAFT;
+        return this == DTLS10 || this == DTLS12 || this == DTLS10_DRAFT || this == DTLS13;
     }
 
     public static ProtocolVersion getProtocolVersion(byte[] value) {

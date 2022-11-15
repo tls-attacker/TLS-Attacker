@@ -18,7 +18,8 @@ public enum ProtocolMessageType {
     HANDSHAKE((byte) 22),
     APPLICATION_DATA((byte) 23),
     HEARTBEAT((byte) 24),
-    TLS12_CID((byte) 25);
+    TLS12_CID((byte) 25),
+    ACK((byte) 26);
 
     private byte value;
 

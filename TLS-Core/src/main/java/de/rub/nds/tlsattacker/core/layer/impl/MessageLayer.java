@@ -146,6 +146,9 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
                         case HEARTBEAT:
                             readHeartbeatProtocolData();
                             break;
+                        case ACK:
+                            readAckProtocolData();
+                            break;
                         case UNKNOWN:
                             readUnknownProtocolData();
                             break;
@@ -248,6 +251,11 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
 
     private void readHeartbeatProtocolData() {
         HeartbeatMessage message = new HeartbeatMessage();
+        readDataContainer(message, context);
+    }
+
+    private void readAckProtocolData() {
+        AckMessage message = new AckMessage();
         readDataContainer(message, context);
     }
 

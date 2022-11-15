@@ -16,12 +16,16 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.layer.constant.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
+import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
+import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.LinkedList;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.BeforeEach;
@@ -309,6 +313,27 @@ public class ConfigTest {
         setUpBasicTls13Config(config);
 
         ConfigIO.write(config, new File(RESOURCE_CONFIG_DIR, "tls13.config"));
+    }
+
+    @Test
+    public void generateDtls13Config() {
+        setUpBasicTls13Config(config);
+        config.setHighestProtocolVersion(ProtocolVersion.DTLS13);
+        config.setSupportedVersions(ProtocolVersion.DTLS13);
+        TransportHandlerType th = TransportHandlerType.UDP;
+        config.setDefaultLayerConfiguration(LayerConfiguration.DTLS);
+        config.setWorkflowExecutorType(WorkflowExecutorType.DTLS);
+        config.setFinishWithCloseNotify(true);
+        config.setIgnoreRetransmittedCssInDtls(true);
+        config.setDtlsCookieExchange(false);
+        config.setDefaultClientKeyShareNamedGroups(new LinkedList<>());
+        config.getDefaultClientKeyShareNamedGroups().add(NamedGroup.SECP256R1);
+        config.setDefaultClientNamedGroups(new LinkedList<>());
+        config.getDefaultClientNamedGroups().add(NamedGroup.SECP256R1);
+        // config.getDefaultClientConnection().setTransportHandlerType(th);
+        // config.getDefaultServerConnection().setTransportHandlerType(th);
+
+        ConfigIO.write(config, new File(RESOURCE_CONFIG_DIR, "dtls13.config"));
     }
 
     @Test

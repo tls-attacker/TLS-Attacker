@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -40,8 +39,8 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
         prepareCipherSuite();
         prepareCompressionMethod();
         if (!chooser.getConfig().getHighestProtocolVersion().isSSL()
-            || (chooser.getConfig().getHighestProtocolVersion().isSSL()
-                && chooser.getConfig().isAddExtensionsInSSL())) {
+                || (chooser.getConfig().getHighestProtocolVersion().isSSL()
+                        && chooser.getConfig().isAddExtensionsInSSL())) {
             prepareExtensions();
             prepareExtensionLength();
         }
@@ -49,7 +48,8 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
 
     private void prepareCipherSuite() {
         if (chooser.getConfig().isEnforceSettings()) {
-            msg.setSelectedCipherSuite(chooser.getConfig().getDefaultSelectedCipherSuite().getByteValue());
+            msg.setSelectedCipherSuite(
+                    chooser.getConfig().getDefaultSelectedCipherSuite().getByteValue());
         } else {
             CipherSuite selectedSuite = null;
             for (CipherSuite suite : chooser.getConfig().getDefaultServerSupportedCipherSuites()) {
@@ -60,28 +60,34 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
             }
             if (selectedSuite == null) {
                 selectedSuite = chooser.getConfig().getDefaultSelectedCipherSuite();
-                LOGGER.warn("No CipherSuites in common, falling back to defaultSelectedCipherSuite");
+                LOGGER.warn(
+                        "No CipherSuites in common, falling back to defaultSelectedCipherSuite");
             }
             msg.setSelectedCipherSuite(selectedSuite.getByteValue());
         }
-        LOGGER
-            .debug("SelectedCipherSuite: " + ArrayConverter.bytesToHexString(msg.getSelectedCipherSuite().getValue()));
+        LOGGER.debug(
+                "SelectedCipherSuite: "
+                        + ArrayConverter.bytesToHexString(msg.getSelectedCipherSuite().getValue()));
     }
 
     private void prepareCompressionMethod() {
         if (chooser.getConfig().isEnforceSettings()) {
-            msg.setSelectedCompressionMethod(chooser.getConfig().getDefaultSelectedCompressionMethod().getValue());
+            msg.setSelectedCompressionMethod(
+                    chooser.getConfig().getDefaultSelectedCompressionMethod().getValue());
         } else {
             CompressionMethod selectedCompressionMethod = null;
-            for (CompressionMethod method : chooser.getConfig().getDefaultServerSupportedCompressionMethods()) {
+            for (CompressionMethod method :
+                    chooser.getConfig().getDefaultServerSupportedCompressionMethods()) {
                 if (chooser.getClientSupportedCompressions().contains(method)) {
                     selectedCompressionMethod = method;
                     break;
                 }
             }
             if (selectedCompressionMethod == null) {
-                selectedCompressionMethod = chooser.getConfig().getDefaultSelectedCompressionMethod();
-                LOGGER.warn("No CompressionMethod in common, falling back to defaultSelectedCompressionMethod");
+                selectedCompressionMethod =
+                        chooser.getConfig().getDefaultSelectedCompressionMethod();
+                LOGGER.warn(
+                        "No CompressionMethod in common, falling back to defaultSelectedCompressionMethod");
             }
             msg.setSelectedCompressionMethod(selectedCompressionMethod.getValue());
         }
@@ -94,23 +100,28 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
         } else {
             msg.setSessionId(chooser.getServerSessionId());
         }
-        LOGGER.debug("SessionID: " + ArrayConverter.bytesToHexString(msg.getSessionId().getValue()));
+        LOGGER.debug(
+                "SessionID: " + ArrayConverter.bytesToHexString(msg.getSessionId().getValue()));
     }
 
     private void prepareProtocolVersion() {
         ProtocolVersion ourVersion = chooser.getConfig().getHighestProtocolVersion();
         if (chooser.getConfig().getHighestProtocolVersion().isTLS13()) {
             ourVersion = ProtocolVersion.TLS12;
+        } else if (chooser.getConfig().getHighestProtocolVersion() == ProtocolVersion.DTLS13) {
+            ourVersion = ProtocolVersion.DTLS13;
         }
 
         ProtocolVersion clientVersion = chooser.getHighestClientProtocolVersion();
-        int intRepresentationOurVersion = ourVersion.getValue()[0] * 0x100 + ourVersion.getValue()[1];
-        int intRepresentationClientVersion = clientVersion.getValue()[0] * 0x100 + clientVersion.getValue()[1];
+        int intRepresentationOurVersion =
+                ourVersion.getValue()[0] * 0x100 + ourVersion.getValue()[1];
+        int intRepresentationClientVersion =
+                clientVersion.getValue()[0] * 0x100 + clientVersion.getValue()[1];
         if (chooser.getConfig().isEnforceSettings()) {
             msg.setProtocolVersion(ourVersion.getValue());
         } else {
             if (chooser.getHighestClientProtocolVersion().isDTLS()
-                && chooser.getConfig().getHighestProtocolVersion().isDTLS()) {
+                    && chooser.getConfig().getHighestProtocolVersion().isDTLS()) {
                 // We both want dtls
                 if (intRepresentationClientVersion <= intRepresentationOurVersion) {
                     msg.setProtocolVersion(ourVersion.getValue());
@@ -119,7 +130,7 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
                 }
             }
             if (!chooser.getHighestClientProtocolVersion().isDTLS()
-                && !chooser.getConfig().getHighestProtocolVersion().isDTLS()) {
+                    && !chooser.getConfig().getHighestProtocolVersion().isDTLS()) {
                 // We both want tls
                 if (intRepresentationClientVersion >= intRepresentationOurVersion) {
                     msg.setProtocolVersion(ourVersion.getValue());
@@ -130,6 +141,8 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
                 msg.setProtocolVersion(chooser.getSelectedProtocolVersion().getValue());
             }
         }
-        LOGGER.debug("ProtocolVersion: " + ArrayConverter.bytesToHexString(msg.getProtocolVersion().getValue()));
+        LOGGER.debug(
+                "ProtocolVersion: "
+                        + ArrayConverter.bytesToHexString(msg.getProtocolVersion().getValue()));
     }
 }

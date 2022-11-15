@@ -1499,6 +1499,7 @@
       <xs:enumeration value="DTLS10_DRAFT"/>
       <xs:enumeration value="DTLS10"/>
       <xs:enumeration value="DTLS12"/>
+      <xs:enumeration value="DTLS13"/>
       <xs:enumeration value="GREASE_00"/>
       <xs:enumeration value="GREASE_01"/>
       <xs:enumeration value="GREASE_02"/>
