@@ -64,6 +64,8 @@ public abstract class RecordCipher {
 
     public abstract void decrypt(Record record) throws CryptoException;
 
+    public abstract void decryptSequenceNumber(Record record) throws CryptoException;
+
     /**
      * This function collects data needed for computing MACs and other authentication tags in
      * CBC/CCM/GCM cipher suites.
@@ -99,6 +101,47 @@ public abstract class RecordCipher {
                             ArrayConverter.intToBytes(
                                     record.getCleanProtocolMessageBytes().getValue().length,
                                     RecordByteLength.RECORD_LENGTH));
+                }
+                return stream.toByteArray();
+            } else if (protocolVersion == ProtocolVersion.DTLS13) {
+                byte firstByte = record.getUnifiedHeader().getValue();
+                stream.write(firstByte);
+                // parse first byte
+                boolean isConnectionIdPresent = (firstByte & 0x10) == 0x10;
+                boolean sequenceNumberLength = (firstByte & 0x08) == 0x08;
+                boolean isLengthPresent = (firstByte & 0x04) == 0x04;
+
+                if (isConnectionIdPresent) {
+                    stream.write(record.getConnectionId().getValue());
+                }
+                byte[] sequenceNumberBytes =
+                        ArrayConverter.longToUint48Bytes(
+                                record.getSequenceNumber().getValue().longValue());
+                if (sequenceNumberLength == false) { // 8 bit sequence number
+                    stream.write(
+                            sequenceNumberBytes,
+                            sequenceNumberBytes.length
+                                    - RecordByteLength.DTLS13_SEQUENCE_NUMBER_HEADER_SHORT,
+                            RecordByteLength.DTLS13_SEQUENCE_NUMBER_HEADER_SHORT);
+                } else { // 16 bit sequence number
+                    stream.write(
+                            sequenceNumberBytes,
+                            sequenceNumberBytes.length
+                                    - RecordByteLength.DTLS13_SEQUENCE_NUMBER_HEADER_LONG,
+                            RecordByteLength.DTLS13_SEQUENCE_NUMBER_HEADER_LONG);
+                }
+                if (isLengthPresent) {
+                    if (record.getLength() != null && record.getLength().getValue() != null) {
+                        stream.write(
+                                ArrayConverter.intToBytes(
+                                        record.getLength().getValue(),
+                                        RecordByteLength.RECORD_LENGTH));
+                    } else {
+                        stream.write(
+                                ArrayConverter.intToBytes(
+                                        record.getCleanProtocolMessageBytes().getValue().length,
+                                        RecordByteLength.RECORD_LENGTH));
+                    }
                 }
                 return stream.toByteArray();
             } else {

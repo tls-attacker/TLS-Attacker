@@ -14,6 +14,8 @@ import de.rub.nds.tlsattacker.core.crypto.cipher.CipherWrapper;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.record.Record;
+
+import java.math.BigInteger;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -52,7 +54,8 @@ public class RecordAEADCipher extends RecordCipher {
         } else {
             aeadTagLength = AEAD_TAG_LENGTH;
         }
-        if (getState().getVersion().isTLS13()) {
+        if (getState().getVersion().isTLS13()
+                || getState().getVersion() == ProtocolVersion.DTLS13) {
             aeadExplicitLength = 0;
         } else {
             aeadExplicitLength =
@@ -75,6 +78,12 @@ public class RecordAEADCipher extends RecordCipher {
         // Nonce construction is different for chacha & tls1.3
         if (getState().getVersion().isTLS13()) {
             gcmNonce = preprocessIv(record.getSequenceNumber().getValue().longValue(), gcmNonce);
+        } else if (getState().getVersion() == ProtocolVersion.DTLS13) {
+            gcmNonce =
+                    preprocessIvforDtls13(
+                            record.getEpoch().getValue(),
+                            record.getSequenceNumber().getValue().longValue(),
+                            gcmNonce);
         } else if (getState().getCipherAlg() == CipherAlgorithm.CHACHA20_POLY1305) {
             if (getState().getVersion().isDTLS()) {
                 gcmNonce =
@@ -250,6 +259,12 @@ public class RecordAEADCipher extends RecordCipher {
         // Nonce construction is different for chacha & tls1.3
         if (getState().getVersion().isTLS13()) {
             gcmNonce = preprocessIv(record.getSequenceNumber().getValue().longValue(), gcmNonce);
+        } else if (getState().getVersion() == ProtocolVersion.DTLS13) {
+            gcmNonce =
+                    preprocessIvforDtls13(
+                            record.getEpoch().getValue(),
+                            record.getSequenceNumber().getValue().longValue(),
+                            gcmNonce);
         } else if (getState().getCipherAlg() == CipherAlgorithm.CHACHA20_POLY1305) {
             if (getState().getVersion().isDTLS()) {
                 gcmNonce =
@@ -314,6 +329,13 @@ public class RecordAEADCipher extends RecordCipher {
         }
     }
 
+    @Override
+    public void decryptSequenceNumber(Record record) throws CryptoException {
+        // byte[] mask = encryptCipher.encrypt();
+        // TODO
+        record.setSequenceNumber(BigInteger.ZERO);
+    }
+
     public byte[] preprocessIv(long sequenceNumber, byte[] iv) {
         byte[] padding = new byte[] {0x00, 0x00, 0x00, 0x00};
         byte[] temp =
@@ -332,6 +354,18 @@ public class RecordAEADCipher extends RecordCipher {
                         padding,
                         ArrayConverter.intToBytes(epoch, RecordByteLength.DTLS_EPOCH),
                         ArrayConverter.longToUint48Bytes(sequenceNumber));
+        for (int i = 0; i < iv.length; ++i) {
+            temp[i] ^= iv[i];
+        }
+        return temp;
+    }
+
+    public byte[] preprocessIvforDtls13(int epoch, long sequenceNumber, byte[] iv) {
+        byte[] temp =
+                ArrayConverter.concatenate(
+                        ArrayConverter.longToUint64Bytes(epoch),
+                        ArrayConverter.longToUint64Bytes(sequenceNumber));
+        LOGGER.debug("BJDASHDSA: " + ArrayConverter.bytesToHexString(temp));
         for (int i = 0; i < iv.length; ++i) {
             temp[i] ^= iv[i];
         }

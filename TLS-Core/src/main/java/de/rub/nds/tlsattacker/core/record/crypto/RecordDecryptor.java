@@ -42,7 +42,21 @@ public class RecordDecryptor extends Decryptor {
         if (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS()
                 && record.getEpoch() != null
                 && record.getEpoch().getValue() != null) {
-            recordCipher = getRecordCipher(record.getEpoch().getValue());
+            if (tlsContext.getChooser().getSelectedProtocolVersion() == ProtocolVersion.DTLS13
+                    && tlsContext.getReadEpoch() > 3) {
+                // after handshake dtls 1.3 epochs must be guessed based on the last 2 bits
+                recordCipher = getRecordCipherForEpochBits(record.getEpoch().getValue());
+            } else {
+                recordCipher = getRecordCipher(record.getEpoch().getValue());
+            }
+            // reconstruct sequence number for dtls 1.3 records
+            if (record.getEncryptedSequenceNumber() != null) {
+                try {
+                    recordCipher.decryptSequenceNumber(record);
+                } catch (CryptoException ex) {
+                    throw new ParserException(ex);
+                }
+            }
         } else {
             recordCipher = getRecordMostRecentCipher();
         }

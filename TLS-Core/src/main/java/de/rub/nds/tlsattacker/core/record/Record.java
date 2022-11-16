@@ -28,7 +28,6 @@ import de.rub.nds.tlsattacker.core.record.serializer.RecordSerializer;
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.util.List;
-import java.util.Objects;
 
 public class Record extends ModifiableVariableHolder implements DataContainer<Record, TlsContext> {
 
@@ -74,8 +73,14 @@ public class Record extends ModifiableVariableHolder implements DataContainer<Re
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COUNT)
     private ModifiableBigInteger sequenceNumber;
 
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COUNT)
+    private ModifiableByteArray encryptedSequenceNumber;
+
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.NONE)
     private ModifiableByteArray connectionId;
+
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.KEY_MATERIAL)
+    private ModifiableByte unifiedHeader;
 
     private RecordCryptoComputations computations;
 
@@ -149,6 +154,20 @@ public class Record extends ModifiableVariableHolder implements DataContainer<Re
     public void setSequenceNumber(BigInteger sequenceNumber) {
         this.sequenceNumber =
                 ModifiableVariableFactory.safelySetValue(this.sequenceNumber, sequenceNumber);
+    }
+
+    public ModifiableByteArray getEncryptedSequenceNumber() {
+        return encryptedSequenceNumber;
+    }
+
+    public void setEncryptedSequenceNumber(ModifiableByteArray encryptedSequenceNumber) {
+        this.encryptedSequenceNumber = encryptedSequenceNumber;
+    }
+
+    public void setEncryptedSequenceNumber(byte[] encryptedSequenceNumber) {
+        this.encryptedSequenceNumber =
+                ModifiableVariableFactory.safelySetValue(
+                        this.encryptedSequenceNumber, encryptedSequenceNumber);
     }
 
     public ModifiableByteArray getConnectionId() {
@@ -230,6 +249,15 @@ public class Record extends ModifiableVariableHolder implements DataContainer<Re
         this.maxRecordLengthConfig = maxRecordLengthConfig;
     }
 
+    public ModifiableByte getUnifiedHeader() {
+        return unifiedHeader;
+    }
+
+    public void setUnifiedHeader(byte unifiedHeader) {
+        this.unifiedHeader =
+                ModifiableVariableFactory.safelySetValue(this.unifiedHeader, unifiedHeader);
+    }
+
     public ModifiableByteArray getCompleteRecordBytes() {
         return completeRecordBytes;
     }
@@ -268,55 +296,6 @@ public class Record extends ModifiableVariableHolder implements DataContainer<Re
                 + ", length="
                 + length
                 + '}';
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 29 * hash + Objects.hashCode(this.contentType);
-        hash = 29 * hash + Objects.hashCode(this.protocolVersion);
-        hash = 29 * hash + Objects.hashCode(this.length);
-        hash = 29 * hash + Objects.hashCode(this.epoch);
-        hash = 29 * hash + Objects.hashCode(this.sequenceNumber);
-        hash = 29 * hash + Objects.hashCode(this.connectionId);
-        hash = 29 * hash + Objects.hashCode(this.computations);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Record other = (Record) obj;
-        if (!Objects.equals(this.contentType, other.contentType)) {
-            return false;
-        }
-        if (!Objects.equals(this.protocolVersion, other.protocolVersion)) {
-            return false;
-        }
-        if (!Objects.equals(this.length, other.length)) {
-            return false;
-        }
-        if (!Objects.equals(this.epoch, other.epoch)) {
-            return false;
-        }
-        if (!Objects.equals(this.sequenceNumber, other.sequenceNumber)) {
-            return false;
-        }
-        if (!Objects.equals(this.connectionId, other.connectionId)) {
-            return false;
-        }
-        if (!Objects.equals(this.computations, other.computations)) {
-            return false;
-        }
-        return true;
     }
 
     @Override

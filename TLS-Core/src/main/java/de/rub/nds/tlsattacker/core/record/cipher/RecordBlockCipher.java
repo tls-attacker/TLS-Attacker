@@ -415,6 +415,11 @@ public final class RecordBlockCipher extends RecordCipher {
         }
     }
 
+    @Override
+    public void decryptSequenceNumber(Record record) throws CryptoException {
+        throw new CryptoException("Sequence Number decryption not possible in BlockCipher.");
+    }
+
     private boolean isPaddingValid(byte[] padding) {
         if (padding.length == 0) {
             LOGGER.debug("Zero Byte Padding is invalid");

@@ -296,6 +296,13 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
         readEpoch++;
     }
 
+    public void skipEarlyDataEpoch() {
+        decryptor.addNewRecordCipher(null);
+        encryptor.addNewRecordCipher(null);
+        readEpoch++;
+        writeEpoch++;
+    }
+
     /**
      * Re-encrypts already send record bytes in DTLS retransmission.
      *

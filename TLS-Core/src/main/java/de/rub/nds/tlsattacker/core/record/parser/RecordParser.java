@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.record.Record;
 import java.io.InputStream;
+import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -37,7 +38,8 @@ public class RecordParser extends Parser<Record> {
         LOGGER.debug("Parsing Record");
         boolean isDtls13Header = parseContentType(record);
         if (isDtls13Header) {
-            parseDtls13Header(record, getAlreadyParsed()[0]);
+            record.setProtocolVersion(ProtocolVersion.DTLS13.getValue());
+            parseDtls13Header(record, record.getUnifiedHeader().getValue());
         } else {
             ProtocolMessageType protocolMessageType =
                     ProtocolMessageType.getContentType(record.getContentType().getValue());
@@ -48,7 +50,7 @@ public class RecordParser extends Parser<Record> {
             parseVersion(record);
             if (version.isDTLS()) {
                 parseEpoch(record);
-                parseSequenceNumber(record, RecordByteLength.DTLS_SEQUENCE_NUMBER);
+                parseSequenceNumber(record);
                 if (protocolMessageType == ProtocolMessageType.TLS12_CID) {
                     parseConnectionId(record);
                 }
@@ -64,8 +66,8 @@ public class RecordParser extends Parser<Record> {
         LOGGER.debug("Epoch: " + record.getEpoch().getValue());
     }
 
-    private void parseSequenceNumber(Record record, int length) {
-        record.setSequenceNumber(parseBigIntField(length));
+    private void parseSequenceNumber(Record record) {
+        record.setSequenceNumber(parseBigIntField(RecordByteLength.DTLS_SEQUENCE_NUMBER));
         LOGGER.debug("SequenceNumber: " + record.getSequenceNumber().getValue());
     }
 
@@ -85,18 +87,21 @@ public class RecordParser extends Parser<Record> {
     }
 
     private boolean parseContentType(Record record) {
-        byte contentType = parseByteField(RecordByteLength.CONTENT_TYPE);
+        byte firstByte = parseByteField(RecordByteLength.CONTENT_TYPE);
         // if contentType starts with 001 it is a DTLS 1.3 unified header
-        if ((contentType & 0xE0) == 0x20) {
+        if ((firstByte & 0xE0) == 0x20) {
+            record.setUnifiedHeader(firstByte);
+            LOGGER.debug("UnifiedHeader: 00" + Integer.toBinaryString(firstByte));
             return true;
         } else {
+            record.setContentType(firstByte);
             LOGGER.debug("ContentType: " + record.getContentType().getValue());
             return false;
         }
     }
 
     private void parseDtls13Header(Record record, byte firstByte) {
-        //parse first byte
+        // parse first byte
         boolean isConnectionIdPresent = (firstByte & 0x10) == 0x10;
         boolean sequenceNumberLength = (firstByte & 0x08) == 0x08;
         boolean isLengthPresent = (firstByte & 0x04) == 0x04;
@@ -107,15 +112,24 @@ public class RecordParser extends Parser<Record> {
         if (isConnectionIdPresent) {
             parseConnectionId(record);
         }
-        if (sequenceNumberLength == false) {// 8 bit sequence number
-            parseSequenceNumber(record, RecordByteLength.DTLS13_SEQUENCE_NUMBER_HEADER_SHORT);
+        if (sequenceNumberLength == false) { // 8 bit sequence number
+            record.setEncryptedSequenceNumber(
+                    parseByteArrayField(RecordByteLength.DTLS13_SEQUENCE_NUMBER_HEADER_SHORT));
+            LOGGER.debug(
+                    "SequenceNumber (lower 8 bits, encrypted): "
+                            + ArrayConverter.bytesToHexString(
+                                    record.getEncryptedSequenceNumber().getValue()));
         } else { // 16 bit sequence number
-            parseSequenceNumber(record, RecordByteLength.DTLS13_SEQUENCE_NUMBER_HEADER_LONG);
+            record.setEncryptedSequenceNumber(
+                    parseByteArrayField(RecordByteLength.DTLS13_SEQUENCE_NUMBER_HEADER_LONG));
+            LOGGER.debug(
+                    "SequenceNumber (lower 16 bits, encrypted): "
+                            + ArrayConverter.bytesToHexString(
+                                    record.getEncryptedSequenceNumber().getValue()));
         }
         if (isLengthPresent) {
             parseLength(record);
         }
-
     }
 
     private void parseVersion(Record record) {

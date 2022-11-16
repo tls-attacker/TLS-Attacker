@@ -57,7 +57,9 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         adjustExtensions(message);
         warnOnConflictingExtensions();
         if (!message.isTls13HelloRetryRequest()) {
-            if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
+            if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()
+                    || tlsContext.getChooser().getSelectedProtocolVersion()
+                            == ProtocolVersion.DTLS13) {
                 KeyShareStoreEntry keyShareStoreEntry = adjustKeyShareStoreEntry();
                 adjustHandshakeTrafficSecrets(keyShareStoreEntry);
                 if (tlsContext.getTalkingConnectionEndType()
@@ -157,6 +159,9 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         KeySet serverKeySet = getTls13KeySet(tlsContext, tlsContext.getActiveServerKeySetType());
 
         if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
+            if (tlsContext.getRecordLayer().getDecryptor().isFirstEpoch()) {
+                tlsContext.getRecordLayer().skipEarlyDataEpoch();
+            }
             tlsContext
                     .getRecordLayer()
                     .updateDecryptionCipher(

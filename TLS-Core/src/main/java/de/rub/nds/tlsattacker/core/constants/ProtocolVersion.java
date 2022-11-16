@@ -214,6 +214,7 @@ public enum ProtocolVersion {
                 || this == ProtocolVersion.TLS12
                 || this == ProtocolVersion.DTLS10
                 || this == ProtocolVersion.DTLS12
+                || this == ProtocolVersion.DTLS13
                 || this == DTLS10_DRAFT;
     }
 
@@ -308,6 +309,8 @@ public enum ProtocolVersion {
                 return "DTLS 1.0";
             case DTLS12:
                 return "DTLS 1.2";
+            case DTLS13:
+                return "DTLS 1.3";
             case SSL2:
                 return "SSL 2.0";
             case SSL3:
