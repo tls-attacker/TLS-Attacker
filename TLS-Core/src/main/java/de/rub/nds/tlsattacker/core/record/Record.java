@@ -28,6 +28,7 @@ import de.rub.nds.tlsattacker.core.record.serializer.RecordSerializer;
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.util.List;
+import java.util.Objects;
 
 public class Record extends ModifiableVariableHolder implements DataContainer<Record, TlsContext> {
 
@@ -296,6 +297,63 @@ public class Record extends ModifiableVariableHolder implements DataContainer<Re
                 + ", length="
                 + length
                 + '}';
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 29 * hash + Objects.hashCode(this.contentType);
+        hash = 29 * hash + Objects.hashCode(this.protocolVersion);
+        hash = 29 * hash + Objects.hashCode(this.length);
+        hash = 29 * hash + Objects.hashCode(this.epoch);
+        hash = 29 * hash + Objects.hashCode(this.sequenceNumber);
+        hash = 29 * hash + Objects.hashCode(this.encryptedSequenceNumber);
+        hash = 29 * hash + Objects.hashCode(this.connectionId);
+        hash = 29 * hash + Objects.hashCode(this.computations);
+        hash = 29 * hash + Objects.hashCode(this.unifiedHeader);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Record other = (Record) obj;
+        if (!Objects.equals(this.contentType, other.contentType)) {
+            return false;
+        }
+        if (!Objects.equals(this.protocolVersion, other.protocolVersion)) {
+            return false;
+        }
+        if (!Objects.equals(this.length, other.length)) {
+            return false;
+        }
+        if (!Objects.equals(this.epoch, other.epoch)) {
+            return false;
+        }
+        if (!Objects.equals(this.sequenceNumber, other.sequenceNumber)) {
+            return false;
+        }
+        if (!Objects.equals(this.encryptedSequenceNumber, other.encryptedSequenceNumber)) {
+            return false;
+        }
+        if (!Objects.equals(this.connectionId, other.connectionId)) {
+            return false;
+        }
+        if (!Objects.equals(this.computations, other.computations)) {
+            return false;
+        }
+        if (!Objects.equals(this.unifiedHeader, other.unifiedHeader)) {
+            return false;
+        }
+        return true;
     }
 
     @Override

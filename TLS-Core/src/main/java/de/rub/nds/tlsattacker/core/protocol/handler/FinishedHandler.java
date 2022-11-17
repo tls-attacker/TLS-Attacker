@@ -87,7 +87,8 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
                             digestAlgo.getJavaName(),
                             tlsContext.getChooser().getHandshakeSecret(),
                             HKDFunction.DERIVED,
-                            ArrayConverter.hexStringToByteArray(""));
+                            ArrayConverter.hexStringToByteArray(""),
+                            tlsContext.getChooser().getSelectedProtocolVersion());
             byte[] masterSecret =
                     HKDFunction.extract(hkdfAlgorithm, saltMasterSecret, new byte[macLength]);
             byte[] clientApplicationTrafficSecret =
@@ -96,7 +97,8 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
                             digestAlgo.getJavaName(),
                             masterSecret,
                             HKDFunction.CLIENT_APPLICATION_TRAFFIC_SECRET,
-                            tlsContext.getDigest().getRawBytes());
+                            tlsContext.getDigest().getRawBytes(),
+                            tlsContext.getChooser().getSelectedProtocolVersion());
             tlsContext.setClientApplicationTrafficSecret(clientApplicationTrafficSecret);
             LOGGER.debug(
                     "Set clientApplicationTrafficSecret in Context to "
@@ -107,7 +109,8 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
                             digestAlgo.getJavaName(),
                             masterSecret,
                             HKDFunction.SERVER_APPLICATION_TRAFFIC_SECRET,
-                            tlsContext.getDigest().getRawBytes());
+                            tlsContext.getDigest().getRawBytes(),
+                            tlsContext.getChooser().getSelectedProtocolVersion());
             tlsContext.setServerApplicationTrafficSecret(serverApplicationTrafficSecret);
             LOGGER.debug(
                     "Set serverApplicationTrafficSecret in Context to "

@@ -13,6 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import org.junit.jupiter.api.Test;
 
@@ -138,7 +139,8 @@ public class HKDFunctionTest {
         String labelIn = HKDFunction.DERIVED;
 
         byte[] result =
-                HKDFunction.deriveSecret(hkdfAlgorithm, hashAlgorithm, prk, labelIn, toHash);
+                HKDFunction.deriveSecret(
+                        hkdfAlgorithm, hashAlgorithm, prk, labelIn, toHash, ProtocolVersion.TLS13);
         byte[] resultCorrect =
                 ArrayConverter.hexStringToByteArray(
                         "6F2615A108C702C5678F54FC9DBAB69716C076189C48250CEBEAC3576C3611BA");
@@ -160,7 +162,9 @@ public class HKDFunctionTest {
         String labelIn = HKDFunction.KEY;
         int outLen = 16;
 
-        byte[] result = HKDFunction.expandLabel(hkdfAlgorithm, prk, labelIn, hashValue, outLen);
+        byte[] result =
+                HKDFunction.expandLabel(
+                        hkdfAlgorithm, prk, labelIn, hashValue, outLen, ProtocolVersion.TLS13);
         byte[] resultCorrect =
                 ArrayConverter.hexStringToByteArray("04C5DA6EC39FC1653E085FA83E51C6AF");
         assertArrayEquals(result, resultCorrect);

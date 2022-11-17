@@ -23,7 +23,8 @@ import org.bouncycastle.util.Arrays;
  * TLS-AEAD-Cipher "Chacha20Poly1305", based on BouncyCastle's class "BcChaCha20Poly1305". See
  * RFC7905 for further information.
  */
-public abstract class ChaCha20Poly1305Cipher extends BaseCipher {
+public abstract class ChaCha20Poly1305Cipher extends BaseCipher
+        implements RecordNumberMaskingCipher {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -255,5 +256,10 @@ public abstract class ChaCha20Poly1305Cipher extends BaseCipher {
 
     public void setDraftStructure(boolean draftStructure) {
         this.draftStructure = draftStructure;
+    }
+
+    @Override
+    public byte[] getRecordNumberMask(byte[] key, byte[] ciphertext) throws CryptoException {
+        return new byte[0];
     }
 }

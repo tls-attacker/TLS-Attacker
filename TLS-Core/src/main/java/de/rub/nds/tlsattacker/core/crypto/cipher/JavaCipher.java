@@ -24,7 +24,7 @@ import javax.crypto.spec.SecretKeySpec;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-class JavaCipher extends BaseCipher {
+class JavaCipher extends BaseCipher implements RecordNumberMaskingCipher {
 
     private Logger LOGGER = LogManager.getLogger();
 
@@ -264,6 +264,37 @@ class JavaCipher extends BaseCipher {
                 | NoSuchPaddingException
                 | IllegalArgumentException ex) {
             throw new CryptoException("Could not decrypt data", ex);
+        }
+    }
+
+    @Override
+    public byte[] getRecordNumberMask(byte[] snKey, byte[] ciphertext) throws CryptoException {
+        if (!algorithm.getJavaName().startsWith("AES")) {
+            throw new CryptoException("Selected cipher does not support Record number encryption");
+        }
+        try {
+            Cipher recordNumberCipher;
+            recordNumberCipher = Cipher.getInstance("AES/ECB/NoPadding");
+            recordNumberCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(snKey, "AES"));
+
+            if (ciphertext.length < 16) {
+                throw new CryptoException("Ciphertext is too short. Can not be processed.");
+            }
+            byte[] toEncrypt = new byte[16];
+            for (int i = 0; i < toEncrypt.length; i++) {
+                toEncrypt[i] = ciphertext[i];
+            }
+
+            return recordNumberCipher.doFinal(toEncrypt);
+        } catch (IllegalStateException
+                | IllegalBlockSizeException
+                | BadPaddingException
+                | NoSuchAlgorithmException
+                | InvalidKeyException
+                | NoSuchPaddingException
+                | IllegalArgumentException ex) {
+            throw new CryptoException(
+                    "Could not encrypt data with: " + algorithm.getJavaName(), ex);
         }
     }
 }

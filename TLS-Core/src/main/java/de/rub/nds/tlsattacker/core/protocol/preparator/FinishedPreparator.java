@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -55,29 +54,48 @@ public class FinishedPreparator extends HandshakeMessagePreparator<FinishedMessa
     private byte[] computeVerifyData() throws CryptoException {
         if (chooser.getSelectedProtocolVersion().isTLS13()) {
             try {
-                HKDFAlgorithm hkdfAlgorithm = AlgorithmResolver.getHKDFAlgorithm(chooser.getSelectedCipherSuite());
+                HKDFAlgorithm hkdfAlgorithm =
+                        AlgorithmResolver.getHKDFAlgorithm(chooser.getSelectedCipherSuite());
                 Mac mac = Mac.getInstance(hkdfAlgorithm.getMacAlgorithm().getJavaName());
                 byte[] finishedKey;
                 LOGGER.debug("Connection End: " + chooser.getConnectionEndType());
                 if (chooser.getConnectionEndType() == ConnectionEndType.SERVER) {
-                    finishedKey = HKDFunction.expandLabel(hkdfAlgorithm, chooser.getServerHandshakeTrafficSecret(),
-                        HKDFunction.FINISHED, new byte[0], mac.getMacLength());
+                    finishedKey =
+                            HKDFunction.expandLabel(
+                                    hkdfAlgorithm,
+                                    chooser.getServerHandshakeTrafficSecret(),
+                                    HKDFunction.FINISHED,
+                                    new byte[0],
+                                    mac.getMacLength(),
+                                    chooser.getSelectedProtocolVersion());
                 } else {
-                    finishedKey = HKDFunction.expandLabel(hkdfAlgorithm, chooser.getClientHandshakeTrafficSecret(),
-                        HKDFunction.FINISHED, new byte[0], mac.getMacLength());
+                    finishedKey =
+                            HKDFunction.expandLabel(
+                                    hkdfAlgorithm,
+                                    chooser.getClientHandshakeTrafficSecret(),
+                                    HKDFunction.FINISHED,
+                                    new byte[0],
+                                    mac.getMacLength(),
+                                    chooser.getSelectedProtocolVersion());
                 }
                 LOGGER.debug("Finished key: " + ArrayConverter.bytesToHexString(finishedKey));
                 SecretKeySpec keySpec = new SecretKeySpec(finishedKey, mac.getAlgorithm());
                 mac.init(keySpec);
-                mac.update(chooser.getContext().getTlsContext().getDigest().digest(chooser.getSelectedProtocolVersion(),
-                    chooser.getSelectedCipherSuite()));
+                mac.update(
+                        chooser.getContext()
+                                .getTlsContext()
+                                .getDigest()
+                                .digest(
+                                        chooser.getSelectedProtocolVersion(),
+                                        chooser.getSelectedCipherSuite()));
                 return mac.doFinal();
             } catch (NoSuchAlgorithmException | InvalidKeyException ex) {
                 throw new CryptoException(ex);
             }
         } else if (chooser.getSelectedProtocolVersion().isSSL()) {
             LOGGER.trace("Calculating VerifyData:");
-            final byte[] handshakeMessageContent = chooser.getContext().getTlsContext().getDigest().getRawBytes();
+            final byte[] handshakeMessageContent =
+                    chooser.getContext().getTlsContext().getDigest().getRawBytes();
             final byte[] masterSecret = chooser.getMasterSecret();
             LOGGER.debug("Using MasterSecret:" + ArrayConverter.bytesToHexString(masterSecret));
             final ConnectionEndType endType = chooser.getConnectionEndType();
@@ -88,9 +106,16 @@ public class FinishedPreparator extends HandshakeMessagePreparator<FinishedMessa
             LOGGER.debug("Using PRF:" + prfAlgorithm.name());
             byte[] masterSecret = chooser.getMasterSecret();
             LOGGER.debug("Using MasterSecret:" + ArrayConverter.bytesToHexString(masterSecret));
-            byte[] handshakeMessageHash = chooser.getContext().getTlsContext().getDigest()
-                .digest(chooser.getSelectedProtocolVersion(), chooser.getSelectedCipherSuite());
-            LOGGER.debug("Using HandshakeMessage Hash:" + ArrayConverter.bytesToHexString(handshakeMessageHash));
+            byte[] handshakeMessageHash =
+                    chooser.getContext()
+                            .getTlsContext()
+                            .getDigest()
+                            .digest(
+                                    chooser.getSelectedProtocolVersion(),
+                                    chooser.getSelectedCipherSuite());
+            LOGGER.debug(
+                    "Using HandshakeMessage Hash:"
+                            + ArrayConverter.bytesToHexString(handshakeMessageHash));
 
             String label;
             if (chooser.getConnectionEndType() == ConnectionEndType.SERVER) {
@@ -99,15 +124,20 @@ public class FinishedPreparator extends HandshakeMessagePreparator<FinishedMessa
             } else {
                 label = PseudoRandomFunction.CLIENT_FINISHED_LABEL;
             }
-            byte[] res = PseudoRandomFunction.compute(prfAlgorithm, masterSecret, label, handshakeMessageHash,
-                HandshakeByteLength.VERIFY_DATA);
+            byte[] res =
+                    PseudoRandomFunction.compute(
+                            prfAlgorithm,
+                            masterSecret,
+                            label,
+                            handshakeMessageHash,
+                            HandshakeByteLength.VERIFY_DATA);
             return res;
         }
     }
 
     private void prepareVerifyData(FinishedMessage msg) {
         msg.setVerifyData(verifyData);
-        LOGGER.debug("VerifyData: " + ArrayConverter.bytesToHexString(msg.getVerifyData().getValue()));
+        LOGGER.debug(
+                "VerifyData: " + ArrayConverter.bytesToHexString(msg.getVerifyData().getValue()));
     }
-
 }

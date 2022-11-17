@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.crypto;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -19,6 +20,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import org.apache.commons.lang3.NotImplementedException;
 
 /** HKDF functions computation for TLS 1.3 */
 public class HKDFunction {
@@ -133,8 +135,17 @@ public class HKDFunction {
     }
 
     /** Computes the HKDF-Label as defined in TLS 1.3 */
-    private static byte[] labelEncoder(byte[] hashValue, String labelIn, int outLen) {
-        String label = "tls13 " + labelIn;
+    private static byte[] labelEncoder(
+            byte[] hashValue, String labelIn, int outLen, ProtocolVersion protocolVersion) {
+        String label;
+        if (protocolVersion.isTLS13()) {
+            label = "tls13 " + labelIn;
+        } else if (protocolVersion == ProtocolVersion.DTLS13) {
+            label = "dtls13" + labelIn;
+        } else {
+            throw new NotImplementedException(
+                    "The given protocolversion does not have a label for expansion implemented.");
+        }
         int labelLength = label.getBytes().length;
         int hashValueLength = hashValue.length;
         byte[] result =
@@ -163,7 +174,8 @@ public class HKDFunction {
             String hashAlgorithm,
             byte[] prk,
             String labelIn,
-            byte[] toHash)
+            byte[] toHash,
+            ProtocolVersion protocolVersion)
             throws CryptoException {
         try {
             MessageDigest hashFunction = MessageDigest.getInstance(hashAlgorithm);
@@ -171,7 +183,7 @@ public class HKDFunction {
             byte[] hashValue = hashFunction.digest();
             int outLen =
                     Mac.getInstance(hkdfAlgorithm.getMacAlgorithm().getJavaName()).getMacLength();
-            return expandLabel(hkdfAlgorithm, prk, labelIn, hashValue, outLen);
+            return expandLabel(hkdfAlgorithm, prk, labelIn, hashValue, outLen, protocolVersion);
         } catch (NoSuchAlgorithmException ex) {
             throw new CryptoException("Could not initialize HKDF", ex);
         }
@@ -206,9 +218,14 @@ public class HKDFunction {
      * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     public static byte[] expandLabel(
-            HKDFAlgorithm hkdfAlgorithm, byte[] prk, String labelIn, byte[] hashValue, int outLen)
+            HKDFAlgorithm hkdfAlgorithm,
+            byte[] prk,
+            String labelIn,
+            byte[] hashValue,
+            int outLen,
+            ProtocolVersion protocolVersion)
             throws CryptoException {
-        byte[] info = labelEncoder(hashValue, labelIn, outLen);
+        byte[] info = labelEncoder(hashValue, labelIn, outLen, protocolVersion);
         return expand(hkdfAlgorithm, prk, info, outLen);
     }
 

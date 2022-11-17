@@ -159,7 +159,9 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         KeySet serverKeySet = getTls13KeySet(tlsContext, tlsContext.getActiveServerKeySetType());
 
         if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
-            if (tlsContext.getRecordLayer().getDecryptor().isFirstEpoch()) {
+            // DTLS 1.3: skip epoch 1 if no early data was sent
+            if (tlsContext.getChooser().getSelectedProtocolVersion() == ProtocolVersion.DTLS13
+                    && tlsContext.getRecordLayer().getDecryptor().isFirstEpoch()) {
                 tlsContext.getRecordLayer().skipEarlyDataEpoch();
             }
             tlsContext
@@ -217,7 +219,8 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                             digestAlgo.getJavaName(),
                             earlySecret,
                             HKDFunction.DERIVED,
-                            new byte[0]);
+                            new byte[0],
+                            tlsContext.getChooser().getSelectedProtocolVersion());
             byte[] sharedSecret;
             BigInteger privateKey = tlsContext.getConfig().getKeySharePrivate();
             if (tlsContext.getChooser().getSelectedCipherSuite().isPWD()) {
@@ -246,7 +249,8 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                             digestAlgo.getJavaName(),
                             handshakeSecret,
                             HKDFunction.CLIENT_HANDSHAKE_TRAFFIC_SECRET,
-                            tlsContext.getDigest().getRawBytes());
+                            tlsContext.getDigest().getRawBytes(),
+                            tlsContext.getChooser().getSelectedProtocolVersion());
             tlsContext.setClientHandshakeTrafficSecret(clientHandshakeTrafficSecret);
             LOGGER.debug(
                     "Set clientHandshakeTrafficSecret in Context to "
@@ -257,7 +261,8 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                             digestAlgo.getJavaName(),
                             handshakeSecret,
                             HKDFunction.SERVER_HANDSHAKE_TRAFFIC_SECRET,
-                            tlsContext.getDigest().getRawBytes());
+                            tlsContext.getDigest().getRawBytes(),
+                            tlsContext.getChooser().getSelectedProtocolVersion());
             tlsContext.setServerHandshakeTrafficSecret(serverHandshakeTrafficSecret);
             LOGGER.debug(
                     "Set serverHandshakeTrafficSecret in Context to "

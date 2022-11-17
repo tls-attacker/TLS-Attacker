@@ -84,7 +84,8 @@ public class KeySetGenerator {
                         clientSecret,
                         HKDFunction.KEY,
                         new byte[] {},
-                        cipherAlg.getKeySize()));
+                        cipherAlg.getKeySize(),
+                        tlsContext.getChooser().getSelectedProtocolVersion()));
         LOGGER.debug(
                 "Client write key: {}",
                 ArrayConverter.bytesToHexString(keySet.getClientWriteKey()));
@@ -94,7 +95,8 @@ public class KeySetGenerator {
                         serverSecret,
                         HKDFunction.KEY,
                         new byte[] {},
-                        cipherAlg.getKeySize()));
+                        cipherAlg.getKeySize(),
+                        tlsContext.getChooser().getSelectedProtocolVersion()));
         LOGGER.debug(
                 "Server write key: {}",
                 ArrayConverter.bytesToHexString(keySet.getServerWriteKey()));
@@ -104,7 +106,8 @@ public class KeySetGenerator {
                         clientSecret,
                         HKDFunction.IV,
                         new byte[] {},
-                        AEAD_IV_LENGTH));
+                        AEAD_IV_LENGTH,
+                        tlsContext.getChooser().getSelectedProtocolVersion()));
         LOGGER.debug(
                 "Client write IV: {}", ArrayConverter.bytesToHexString(keySet.getClientWriteIv()));
         keySet.setServerWriteIv(
@@ -113,7 +116,8 @@ public class KeySetGenerator {
                         serverSecret,
                         HKDFunction.IV,
                         new byte[] {},
-                        AEAD_IV_LENGTH));
+                        AEAD_IV_LENGTH,
+                        tlsContext.getChooser().getSelectedProtocolVersion()));
         LOGGER.debug(
                 "Server write IV: {}", ArrayConverter.bytesToHexString(keySet.getServerWriteIv()));
         keySet.setClientSnKey(
@@ -122,7 +126,8 @@ public class KeySetGenerator {
                         clientSecret,
                         HKDFunction.SN_KEY,
                         new byte[] {},
-                        cipherAlg.getKeySize()));
+                        cipherAlg.getKeySize(),
+                        tlsContext.getChooser().getSelectedProtocolVersion()));
         LOGGER.debug("Client sn key: {}", ArrayConverter.bytesToHexString(keySet.getClientSnKey()));
         keySet.setServerSnKey(
                 HKDFunction.expandLabel(
@@ -130,7 +135,8 @@ public class KeySetGenerator {
                         serverSecret,
                         HKDFunction.SN_KEY,
                         new byte[] {},
-                        cipherAlg.getKeySize()));
+                        cipherAlg.getKeySize(),
+                        tlsContext.getChooser().getSelectedProtocolVersion()));
         LOGGER.debug("Server sn key: {}", ArrayConverter.bytesToHexString(keySet.getServerSnKey()));
         keySet.setServerWriteMacSecret(new byte[0]);
         keySet.setClientWriteMacSecret(new byte[0]);

@@ -113,7 +113,8 @@ public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionT
                             digestAlgo.getJavaName(),
                             tlsContext.getChooser().getMasterSecret(),
                             HKDFunction.RESUMPTION_MASTER_SECRET,
-                            tlsContext.getDigest().getRawBytes());
+                            tlsContext.getDigest().getRawBytes(),
+                            tlsContext.getChooser().getSelectedProtocolVersion());
             tlsContext.setResumptionMasterSecret(resumptionMasterSecret);
             LOGGER.debug(
                     "Derived ResumptionMasterSecret: "
@@ -128,7 +129,8 @@ public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionT
                             resumptionMasterSecret,
                             HKDFunction.RESUMPTION,
                             pskSet.getTicketNonce(),
-                            macLength);
+                            macLength,
+                            tlsContext.getChooser().getSelectedProtocolVersion());
             LOGGER.debug("New derived pre-shared-key: " + ArrayConverter.bytesToHexString(psk));
             return psk;
 
