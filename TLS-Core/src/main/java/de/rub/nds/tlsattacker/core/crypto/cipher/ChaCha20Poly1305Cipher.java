@@ -11,6 +11,16 @@ package de.rub.nds.tlsattacker.core.crypto.cipher;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.Bits;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
+import java.math.BigInteger;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.ChaCha20ParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.engines.Salsa20Engine;
@@ -260,6 +270,31 @@ public abstract class ChaCha20Poly1305Cipher extends BaseCipher
 
     @Override
     public byte[] getRecordNumberMask(byte[] key, byte[] ciphertext) throws CryptoException {
-        return new byte[0];
+        try {
+            Cipher chachaCipher = Cipher.getInstance("ChaCha20");
+
+            if (ciphertext.length < 16) {
+                throw new CryptoException("Ciphertext is too short. Can not be processed.");
+            }
+            byte[] block_counter = new byte[4];
+            System.arraycopy(ciphertext, 0, block_counter, 0, block_counter.length);
+            byte[] nonce = new byte[12];
+            System.arraycopy(ciphertext, block_counter.length, nonce, 0, nonce.length);
+
+            ChaCha20ParameterSpec parameterSpec =
+                    new ChaCha20ParameterSpec(nonce, new BigInteger(block_counter).intValue());
+            SecretKeySpec keySpec = new SecretKeySpec(key, "ChaCha20");
+            chachaCipher.init(Cipher.ENCRYPT_MODE, keySpec, parameterSpec);
+
+            byte[] plaintext = new byte[64];
+            return chachaCipher.doFinal(plaintext);
+        } catch (NoSuchAlgorithmException
+                | NoSuchPaddingException
+                | InvalidAlgorithmParameterException
+                | InvalidKeyException
+                | IllegalBlockSizeException
+                | BadPaddingException ex) {
+            throw new CryptoException("Error getting record number mask using ChaCha20: ", ex);
+        }
     }
 }

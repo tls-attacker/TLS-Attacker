@@ -105,7 +105,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
                         record.getRecordPreparator(context, encryptor, compressor, contentType);
                 preparator.prepare();
                 preparator.afterPrepare();
-                RecordSerializer serializer = record.getRecordSerializer();
+                RecordSerializer serializer = record.getRecordSerializer(context);
                 byte[] serializedMessage = serializer.serialize();
                 record.setCompleteRecordBytes(serializedMessage);
                 getLowerLayer().sendData(null, serializedMessage);
@@ -189,7 +189,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
             preparator.prepare();
             preparator.afterPrepare();
             try {
-                byte[] recordBytes = record.getRecordSerializer().serialize();
+                byte[] recordBytes = record.getRecordSerializer(context).serialize();
                 record.setCompleteRecordBytes(recordBytes);
                 stream.write(record.getCompleteRecordBytes().getValue());
             } catch (IOException ex) {
@@ -296,11 +296,14 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
         readEpoch++;
     }
 
-    public void skipEarlyDataEpoch() {
-        decryptor.addNewRecordCipher(null);
+    public void skipEarlyDataEncryptionEpoch() {
         encryptor.addNewRecordCipher(null);
-        readEpoch++;
         writeEpoch++;
+    }
+
+    public void skipEarlyDataDecryptionEpoch() {
+        decryptor.addNewRecordCipher(null);
+        readEpoch++;
     }
 
     /**
@@ -320,7 +323,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
                             record.getContentMessageType());
             preparator.encrypt();
             try {
-                byte[] recordBytes = record.getRecordSerializer().serialize();
+                byte[] recordBytes = record.getRecordSerializer(context).serialize();
                 record.setCompleteRecordBytes(recordBytes);
                 stream.write(record.getCompleteRecordBytes().getValue());
             } catch (IOException ex) {

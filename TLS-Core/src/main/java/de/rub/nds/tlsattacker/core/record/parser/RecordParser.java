@@ -114,18 +114,14 @@ public class RecordParser extends Parser<Record> {
         if (sequenceNumberLength == false) { // 8 bit sequence number
             record.setEncryptedSequenceNumber(
                     parseByteArrayField(RecordByteLength.DTLS13_SEQUENCE_NUMBER_HEADER_SHORT));
-            LOGGER.debug(
-                    "SequenceNumber (lower 8 bits, encrypted): "
-                            + ArrayConverter.bytesToHexString(
-                                    record.getEncryptedSequenceNumber().getValue()));
         } else { // 16 bit sequence number
             record.setEncryptedSequenceNumber(
                     parseByteArrayField(RecordByteLength.DTLS13_SEQUENCE_NUMBER_HEADER_LONG));
-            LOGGER.debug(
-                    "SequenceNumber (lower 16 bits, encrypted): "
-                            + ArrayConverter.bytesToHexString(
-                                    record.getEncryptedSequenceNumber().getValue()));
         }
+        LOGGER.debug(
+                "Encrypted SequenceNumber: "
+                        + ArrayConverter.bytesToHexString(
+                                record.getEncryptedSequenceNumber().getValue()));
         if (isLengthPresent) {
             parseLength(record);
         }

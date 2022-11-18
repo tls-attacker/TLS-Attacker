@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.core.certificate.CertificateKeyPair;
 import de.rub.nds.tlsattacker.core.constants.CertificateType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
@@ -96,7 +97,9 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
             case X509:
                 LOGGER.debug("Adjusting context for x509 certificate message");
                 Certificate cert;
-                if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
+                if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()
+                        || tlsContext.getChooser().getSelectedProtocolVersion()
+                                == ProtocolVersion.DTLS13) {
                     ByteArrayOutputStream stream = new ByteArrayOutputStream();
                     int certificatesLength = 0;
                     try {
@@ -149,7 +152,9 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
                     LOGGER.debug("Certificate not parsable - no adjustments");
                 }
 
-                if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
+                if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()
+                        || tlsContext.getChooser().getSelectedProtocolVersion()
+                                == ProtocolVersion.DTLS13) {
                     adjustCertExtensions(message);
                 }
                 break;

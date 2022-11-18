@@ -73,7 +73,8 @@ public class PWDComputations extends KeyExchangeComputations {
         int counter = 0;
         int n = (curve.getModulus().bitLength() + 64) / Bits.IN_A_BYTE;
         byte[] context;
-        if (chooser.getSelectedProtocolVersion().isTLS13()) {
+        if (chooser.getSelectedProtocolVersion().isTLS13()
+                || chooser.getSelectedProtocolVersion() == ProtocolVersion.DTLS13) {
             context = chooser.getClientRandom();
         } else {
             context =
@@ -151,7 +152,8 @@ public class PWDComputations extends KeyExchangeComputations {
      */
     protected static byte[] prf(Chooser chooser, byte[] seed, byte[] context, int outlen)
             throws CryptoException {
-        if (chooser.getSelectedProtocolVersion().isTLS13()) {
+        if (chooser.getSelectedProtocolVersion().isTLS13()
+                || chooser.getSelectedProtocolVersion() == ProtocolVersion.DTLS13) {
             HKDFAlgorithm hkdfAlgorithm =
                     AlgorithmResolver.getHKDFAlgorithm(chooser.getSelectedCipherSuite());
             DigestAlgorithm digestAlgo =

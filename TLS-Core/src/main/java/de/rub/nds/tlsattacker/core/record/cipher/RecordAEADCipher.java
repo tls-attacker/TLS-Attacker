@@ -65,7 +65,8 @@ public class RecordAEADCipher extends RecordCipher {
     }
 
     public int getAeadSizeIncrease() {
-        if (getState().getVersion().isTLS13()) {
+        if (getState().getVersion().isTLS13()
+                || getState().getVersion() == ProtocolVersion.DTLS13) {
             return aeadTagLength;
         } else {
             return aeadExplicitLength + aeadTagLength;
@@ -139,7 +140,8 @@ public class RecordAEADCipher extends RecordCipher {
         LOGGER.debug("Encrypting Record");
         record.getComputations()
                 .setCipherKey(getState().getKeySet().getWriteKey(getConnectionEndType()));
-        if (getState().getVersion().isTLS13()) {
+        if (getState().getVersion().isTLS13()
+                || getState().getVersion() == ProtocolVersion.DTLS13) {
             int additionalPadding = getDefaultAdditionalPadding();
             if (additionalPadding > 65536) {
                 LOGGER.warn("Additional padding is too big. setting it to max possible value");
@@ -150,7 +152,9 @@ public class RecordAEADCipher extends RecordCipher {
             }
             record.getComputations().setPadding(new byte[additionalPadding]);
             record.getComputations().setPlainRecordBytes(encapsulateRecordBytes(record));
-            record.setContentType(ProtocolMessageType.APPLICATION_DATA.getValue());
+            if (getState().getVersion().isTLS13()) {
+                record.setContentType(ProtocolMessageType.APPLICATION_DATA.getValue());
+            }
             // For TLS1.3 we need the length beforehand to compute the
             // authenticatedMetaData
             record.setLength(
@@ -341,6 +345,35 @@ public class RecordAEADCipher extends RecordCipher {
         }
         record.setSequenceNumber(new BigInteger(sequenceNumber));
         LOGGER.debug("Decrypted Sequence Number: " + record.getSequenceNumber().getValue());
+    }
+
+    @Override
+    public void encryptSequenceNumber(Record record) throws CryptoException {
+        if (!(encryptCipher instanceof RecordNumberMaskingCipher)) {
+            throw new CryptoException("EncryptCipher does not support record number masking");
+        }
+        byte[] mask =
+                ((RecordNumberMaskingCipher) encryptCipher)
+                        .getRecordNumberMask(
+                                getState().getKeySet().getReadSnKey(getLocalConnectionEndType()),
+                                record.getProtocolMessageBytes().getValue());
+        byte[] sequenceNumber = record.getSequenceNumber().getValue().toByteArray();
+        if (sequenceNumber.length < 2) {
+            sequenceNumber = new byte[] {0, sequenceNumber[0]};
+        }
+        int length =
+                tlsContext.getConfig().getDtls13HeaderSeqNumSizeLong()
+                        ? RecordByteLength.DTLS13_SEQUENCE_NUMBER_HEADER_LONG
+                        : RecordByteLength.DTLS13_SEQUENCE_NUMBER_HEADER_SHORT;
+        byte[] encSequenceNumber = new byte[length];
+        for (int i = 0; i < length; i++) {
+            encSequenceNumber[i] = (byte) (sequenceNumber[i] ^ mask[i]);
+        }
+        record.setEncryptedSequenceNumber(encSequenceNumber);
+        LOGGER.debug(
+                "Encrypted Sequence Number: "
+                        + ArrayConverter.bytesToHexString(
+                                record.getEncryptedSequenceNumber().getValue()));
     }
 
     public byte[] preprocessIv(long sequenceNumber, byte[] iv) {

@@ -162,13 +162,21 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
             // DTLS 1.3: skip epoch 1 if no early data was sent
             if (tlsContext.getChooser().getSelectedProtocolVersion() == ProtocolVersion.DTLS13
                     && tlsContext.getRecordLayer().getDecryptor().isFirstEpoch()) {
-                tlsContext.getRecordLayer().skipEarlyDataEpoch();
+                tlsContext.getRecordLayer().skipEarlyDataDecryptionEpoch();
             }
             tlsContext
                     .getRecordLayer()
                     .updateDecryptionCipher(
                             RecordCipherFactory.getRecordCipher(tlsContext, serverKeySet, false));
-        } else {
+        }
+
+        if (tlsContext.getChooser().getConnectionEndType() != ConnectionEndType.CLIENT
+                || tlsContext.getChooser().getSelectedProtocolVersion() == ProtocolVersion.DTLS13) {
+            // DTLS 1.3: skip epoch 1 if no early data was sent
+            if (tlsContext.getChooser().getSelectedProtocolVersion() == ProtocolVersion.DTLS13
+                    && tlsContext.getRecordLayer().getDecryptor().isFirstEpoch()) {
+                tlsContext.getRecordLayer().skipEarlyDataDecryptionEpoch();
+            }
             tlsContext
                     .getRecordLayer()
                     .updateEncryptionCipher(

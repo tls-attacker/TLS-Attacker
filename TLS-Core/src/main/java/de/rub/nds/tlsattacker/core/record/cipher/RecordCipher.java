@@ -19,6 +19,7 @@ import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.record.serializer.RecordSerializer;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -66,6 +67,8 @@ public abstract class RecordCipher {
 
     public abstract void decryptSequenceNumber(Record record) throws CryptoException;
 
+    public abstract void encryptSequenceNumber(Record record) throws CryptoException;
+
     /**
      * This function collects data needed for computing MACs and other authentication tags in
      * CBC/CCM/GCM cipher suites.
@@ -104,7 +107,13 @@ public abstract class RecordCipher {
                 }
                 return stream.toByteArray();
             } else if (protocolVersion == ProtocolVersion.DTLS13) {
-                byte firstByte = record.getUnifiedHeader().getValue();
+                byte firstByte;
+                if (record.getUnifiedHeader() != null
+                        && record.getUnifiedHeader().getValue() != null) {
+                    firstByte = record.getUnifiedHeader().getValue();
+                } else {
+                    firstByte = RecordSerializer.createUnifiedHeader(record, tlsContext);
+                }
                 stream.write(firstByte);
                 // parse first byte
                 boolean isConnectionIdPresent = (firstByte & 0x10) == 0x10;

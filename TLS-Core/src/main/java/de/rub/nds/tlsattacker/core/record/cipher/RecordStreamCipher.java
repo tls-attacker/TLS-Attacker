@@ -167,6 +167,11 @@ public class RecordStreamCipher extends RecordCipher {
         throw new CryptoException("Sequence Number decryption not possible in StreamCipher.");
     }
 
+    @Override
+    public void encryptSequenceNumber(Record record) throws CryptoException {
+        throw new CryptoException("Sequence Number encryption not possible in StreamCipher.");
+    }
+
     class PlaintextParser extends Parser<Object> {
 
         public PlaintextParser(byte[] array) {

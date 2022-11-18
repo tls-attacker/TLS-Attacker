@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.record.compressor;
 
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
@@ -22,7 +21,7 @@ public class RecordDecompressor extends Decompressor<Record> {
 
     public RecordDecompressor(TlsContext tlsContext) {
         version = tlsContext.getChooser().getSelectedProtocolVersion();
-        if (version.isTLS13()) {
+        if (version.isTLS13() || version == ProtocolVersion.DTLS13) {
             setMethod(CompressionMethod.NULL);
         } else {
             setMethod(tlsContext.getChooser().getSelectedCompressionMethod());
@@ -40,5 +39,4 @@ public class RecordDecompressor extends Decompressor<Record> {
         AlgorithmFactory factory = new AlgorithmFactory();
         algorithm = factory.getAlgorithm(version, method);
     }
-
 }

@@ -132,7 +132,8 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
     }
 
     private void prepareCompressions(ClientHelloMessage msg) {
-        if (chooser.getConfig().getHighestProtocolVersion().isTLS13()) {
+        if (chooser.getConfig().getHighestProtocolVersion().isTLS13()
+                || chooser.getHighestProtocolVersion() == ProtocolVersion.DTLS13) {
             msg.setCompressions(CompressionMethod.NULL.getArrayValue());
         } else {
             msg.setCompressions(

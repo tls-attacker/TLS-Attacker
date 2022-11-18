@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.record.compressor;
 
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
@@ -18,7 +17,7 @@ import de.rub.nds.tlsattacker.core.record.compressor.compression.NullCompression
 public class AlgorithmFactory {
     public CompressionAlgorithm getAlgorithm(ProtocolVersion version, CompressionMethod method) {
         CompressionAlgorithm algorithm;
-        if (version.isTLS13()) {
+        if (version.isTLS13() || version == ProtocolVersion.DTLS13) {
             algorithm = new NullCompression();
         } else {
             if (method == CompressionMethod.DEFLATE) {

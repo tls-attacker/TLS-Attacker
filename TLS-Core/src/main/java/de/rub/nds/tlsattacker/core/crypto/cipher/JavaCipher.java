@@ -281,9 +281,7 @@ class JavaCipher extends BaseCipher implements RecordNumberMaskingCipher {
                 throw new CryptoException("Ciphertext is too short. Can not be processed.");
             }
             byte[] toEncrypt = new byte[16];
-            for (int i = 0; i < toEncrypt.length; i++) {
-                toEncrypt[i] = ciphertext[i];
-            }
+            System.arraycopy(ciphertext, 0, toEncrypt, 0, toEncrypt.length);
 
             return recordNumberCipher.doFinal(toEncrypt);
         } catch (IllegalStateException
@@ -293,8 +291,7 @@ class JavaCipher extends BaseCipher implements RecordNumberMaskingCipher {
                 | InvalidKeyException
                 | NoSuchPaddingException
                 | IllegalArgumentException ex) {
-            throw new CryptoException(
-                    "Could not encrypt data with: " + algorithm.getJavaName(), ex);
+            throw new CryptoException("Error getting record number mask using AES: ", ex);
         }
     }
 }

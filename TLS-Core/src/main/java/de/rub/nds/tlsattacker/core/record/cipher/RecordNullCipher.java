@@ -43,4 +43,9 @@ public class RecordNullCipher extends RecordCipher {
     public void decryptSequenceNumber(Record record) throws CryptoException {
         throw new CryptoException("Sequence Number decryption not possible in NullCipher.");
     }
+
+    @Override
+    public void encryptSequenceNumber(Record record) throws CryptoException {
+        throw new CryptoException("Sequence Number encryption not possible in NullCipher.");
+    }
 }

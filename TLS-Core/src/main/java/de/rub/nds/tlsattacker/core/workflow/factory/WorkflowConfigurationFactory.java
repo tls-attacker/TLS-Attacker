@@ -225,8 +225,10 @@ public class WorkflowConfigurationFactory {
         messages.add(new ServerHelloMessage(config));
         if (config.getHighestProtocolVersion().isTLS13()
                 || config.getHighestProtocolVersion() == ProtocolVersion.DTLS13) {
-            if (Objects.equals(config.getTls13BackwardsCompatibilityMode(), Boolean.TRUE)
-                    || connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
+            if (config.getHighestProtocolVersion() != ProtocolVersion.DTLS13
+                    && (Objects.equals(config.getTls13BackwardsCompatibilityMode(), Boolean.TRUE)
+                            || connection.getLocalConnectionEndType()
+                                    == ConnectionEndType.CLIENT)) {
                 ChangeCipherSpecMessage ccs = new ChangeCipherSpecMessage();
                 ccs.setRequired(false);
                 messages.add(ccs);
@@ -278,8 +280,10 @@ public class WorkflowConfigurationFactory {
         List<ProtocolMessage> messages = new LinkedList<>();
         if (config.getHighestProtocolVersion().isTLS13()
                 || config.getHighestProtocolVersion() == ProtocolVersion.DTLS13) {
-            if (Objects.equals(config.getTls13BackwardsCompatibilityMode(), Boolean.TRUE)
-                    || connection.getLocalConnectionEndType() == ConnectionEndType.SERVER) {
+            if (config.getHighestProtocolVersion() != ProtocolVersion.DTLS13
+                    && (Objects.equals(config.getTls13BackwardsCompatibilityMode(), Boolean.TRUE)
+                            || connection.getLocalConnectionEndType()
+                                    == ConnectionEndType.SERVER)) {
                 ChangeCipherSpecMessage ccs = new ChangeCipherSpecMessage();
                 ccs.setRequired(false);
                 messages.add(ccs);
@@ -302,7 +306,8 @@ public class WorkflowConfigurationFactory {
         workflowTrace.addTlsAction(
                 MessageActionFactory.createTLSAction(
                         config, connection, ConnectionEndType.CLIENT, messages));
-        if (!config.getHighestProtocolVersion().isTLS13()) {
+        if (!(config.getHighestProtocolVersion().isTLS13()
+                || config.getHighestProtocolVersion() == ProtocolVersion.DTLS13)) {
             workflowTrace.addTlsAction(
                     MessageActionFactory.createTLSAction(
                             config,
@@ -312,6 +317,7 @@ public class WorkflowConfigurationFactory {
                             new FinishedMessage()));
         }
         if (config.getHighestProtocolVersion() == ProtocolVersion.DTLS13) {
+            // TODO ACK
             // workflowTrace.addTlsAction(
             //        MessageActionFactory.createTLSAction(
             //                config, connection, ConnectionEndType.SERVER, new AckMessage()));
@@ -1132,10 +1138,13 @@ public class WorkflowConfigurationFactory {
             }
             return trace;
         } else {
-            if (config.getHighestProtocolVersion().isTLS13()) {
+            if (config.getHighestProtocolVersion().isTLS13()
+                    || config.getHighestProtocolVersion() == ProtocolVersion.DTLS13) {
                 List<ProtocolMessage> tls13Messages = new LinkedList<>();
                 tls13Messages.add(new ServerHelloMessage(config));
-                if (Objects.equals(config.getTls13BackwardsCompatibilityMode(), Boolean.TRUE)) {
+                if (config.getHighestProtocolVersion() != ProtocolVersion.DTLS13
+                        && Objects.equals(
+                                config.getTls13BackwardsCompatibilityMode(), Boolean.TRUE)) {
                     ChangeCipherSpecMessage ccs = new ChangeCipherSpecMessage();
                     ccs.setRequired(false);
                     tls13Messages.add(ccs);
@@ -1181,11 +1190,14 @@ public class WorkflowConfigurationFactory {
     public WorkflowTrace createDynamicHandshakeWorkflow(AliasedConnection connection) {
         WorkflowTrace trace = createDynamicHelloWorkflow(connection);
         if (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
-            if (config.getHighestProtocolVersion().isTLS13()) {
+            if (config.getHighestProtocolVersion().isTLS13()
+                    || config.getHighestProtocolVersion() == ProtocolVersion.DTLS13) {
                 List<ProtocolMessage> tls13Messages = new LinkedList<>();
-                ChangeCipherSpecMessage ccs = new ChangeCipherSpecMessage();
-                ccs.setRequired(false);
-                tls13Messages.add(ccs);
+                if (config.getHighestProtocolVersion() != ProtocolVersion.DTLS13) {
+                    ChangeCipherSpecMessage ccs = new ChangeCipherSpecMessage();
+                    ccs.setRequired(false);
+                    tls13Messages.add(ccs);
+                }
                 if (Objects.equals(config.isClientAuthentication(), Boolean.TRUE)) {
                     tls13Messages.add(new CertificateMessage());
                     tls13Messages.add(new CertificateVerifyMessage());
@@ -1202,14 +1214,17 @@ public class WorkflowConfigurationFactory {
                 } else {
                     trace.addTlsAction(new SendDynamicClientKeyExchangeAction());
                 }
-                trace.addTlsAction(
-                        new SendAction(new ChangeCipherSpecMessage(), new FinishedMessage()));
+                if (config.getHighestProtocolVersion() != ProtocolVersion.DTLS13) {
+                    trace.addTlsAction(
+                            new SendAction(new ChangeCipherSpecMessage(), new FinishedMessage()));
+                }
                 trace.addTlsAction(new ReceiveTillAction(new FinishedMessage()));
             }
             return trace;
         } else {
             trace.addTlsAction(new ReceiveTillAction(new FinishedMessage()));
-            if (!config.getHighestProtocolVersion().isTLS13()) {
+            if (!(config.getHighestProtocolVersion().isTLS13()
+                    || config.getHighestProtocolVersion() == ProtocolVersion.DTLS13)) {
                 trace.addTlsAction(
                         new SendAction(new ChangeCipherSpecMessage(), new FinishedMessage()));
             }

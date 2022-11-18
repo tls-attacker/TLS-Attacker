@@ -197,8 +197,8 @@ public class Record extends ModifiableVariableHolder implements DataContainer<Re
         return new RecordParser(stream, version, tlsContext);
     }
 
-    public RecordSerializer getRecordSerializer() {
-        return new RecordSerializer(this);
+    public RecordSerializer getRecordSerializer(TlsContext tlsContext) {
+        return new RecordSerializer(this, tlsContext);
     }
 
     public void adjustContext(TlsContext tlsContext) {
@@ -384,7 +384,7 @@ public class Record extends ModifiableVariableHolder implements DataContainer<Re
 
     @Override
     public RecordSerializer getSerializer(TlsContext context) {
-        return new RecordSerializer(this);
+        return new RecordSerializer(this, context);
     }
 
     @Override

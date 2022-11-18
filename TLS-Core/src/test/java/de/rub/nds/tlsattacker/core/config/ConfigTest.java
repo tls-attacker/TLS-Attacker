@@ -329,6 +329,7 @@ public class ConfigTest {
         config.getDefaultClientKeyShareNamedGroups().add(NamedGroup.SECP256R1);
         config.setDefaultClientNamedGroups(new LinkedList<>());
         config.getDefaultClientNamedGroups().add(NamedGroup.SECP256R1);
+        // config.setClientAuthentication(true);
         // config.getDefaultClientConnection().setTransportHandlerType(th);
         // config.getDefaultServerConnection().setTransportHandlerType(th);
 

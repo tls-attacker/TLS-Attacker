@@ -9,10 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
-import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.crypto.PseudoRandomFunction;
 import de.rub.nds.tlsattacker.core.crypto.SSLUtils;
@@ -52,7 +49,8 @@ public class FinishedPreparator extends HandshakeMessagePreparator<FinishedMessa
     }
 
     private byte[] computeVerifyData() throws CryptoException {
-        if (chooser.getSelectedProtocolVersion().isTLS13()) {
+        if (chooser.getSelectedProtocolVersion().isTLS13()
+                || chooser.getSelectedProtocolVersion() == ProtocolVersion.DTLS13) {
             try {
                 HKDFAlgorithm hkdfAlgorithm =
                         AlgorithmResolver.getHKDFAlgorithm(chooser.getSelectedCipherSuite());

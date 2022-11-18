@@ -35,7 +35,7 @@ public class CertificateRequestParser extends HandshakeMessageParser<Certificate
     @Override
     public void parse(CertificateRequestMessage msg) {
         LOGGER.debug("Parsing CertificateRequestMessage");
-        if (getVersion().isTLS13()) {
+        if (getVersion().isTLS13() || getVersion() == ProtocolVersion.DTLS13) {
             parseCertificateRequestContextLength(msg);
             parseCertificateRequestContext(msg);
             parseExtensionLength(msg);

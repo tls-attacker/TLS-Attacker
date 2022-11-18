@@ -1175,6 +1175,8 @@ public class Config implements Serializable {
 
     private String keylogFilePath = null;
 
+    private Boolean dtls13HeaderSeqNumSizeLong = true;
+
     public Config() {
         defaultLayerConfiguration = LayerConfiguration.TLS;
         defaultClientConnection = new OutboundConnection("client", 443, "localhost");
@@ -4006,5 +4008,13 @@ public class Config implements Serializable {
     public void setDefaultServerSupportedSSL2CipherSuites(
             List<SSL2CipherSuite> defaultServerSupportedSSL2CipherSuites) {
         this.defaultServerSupportedSSL2CipherSuites = defaultServerSupportedSSL2CipherSuites;
+    }
+
+    public Boolean getDtls13HeaderSeqNumSizeLong() {
+        return dtls13HeaderSeqNumSizeLong;
+    }
+
+    public void setDtls13HeaderSeqNumSizeLong(Boolean dtls13HeaderSeqNumSizeLong) {
+        this.dtls13HeaderSeqNumSizeLong = dtls13HeaderSeqNumSizeLong;
     }
 }
