@@ -3709,6 +3709,13 @@
       <xs:element name="defaultServerHandshakeTrafficSecret" type="xs:string" minOccurs="0"/>
       <xs:element name="defaultClientApplicationTrafficSecret" type="xs:string" minOccurs="0"/>
       <xs:element name="defaultServerApplicationTrafficSecret" type="xs:string" minOccurs="0"/>
+      <xs:element name="defaultServerRSAExportModulus" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultServerRSAExportPublicKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultServerRSAExportPrivateKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultServerDhExportGenerator" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultServerDhExportModulus" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultServerDhExportPublicKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultServerDhExportPrivateKey" type="xs:integer" minOccurs="0"/>
       <xs:element name="defaultTokenBindingType" type="tokenBindingType" minOccurs="0"/>
       <xs:element name="defaultTokenBindingECPublicKey" type="point" minOccurs="0"/>
       <xs:element name="defaultTokenBindingRsaPublicKey" type="xs:integer" minOccurs="0"/>
