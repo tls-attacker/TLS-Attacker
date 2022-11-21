@@ -355,7 +355,7 @@ public class RecordAEADCipher extends RecordCipher {
         byte[] mask =
                 ((RecordNumberMaskingCipher) encryptCipher)
                         .getRecordNumberMask(
-                                getState().getKeySet().getReadSnKey(getLocalConnectionEndType()),
+                                getState().getKeySet().getWriteSnKey(getLocalConnectionEndType()),
                                 record.getProtocolMessageBytes().getValue());
         byte[] sequenceNumber = record.getSequenceNumber().getValue().toByteArray();
         if (sequenceNumber.length < 2) {

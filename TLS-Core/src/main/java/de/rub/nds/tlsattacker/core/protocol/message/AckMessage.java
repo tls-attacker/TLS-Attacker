@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.tlsattacker.core.constants.AckByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.*;
@@ -19,8 +20,11 @@ import de.rub.nds.tlsattacker.core.protocol.handler.AckHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.AckParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.AckPreperator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.AckSerializer;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
+import java.math.BigInteger;
 
+@XmlRootElement(name = "ACK")
 public class AckMessage extends ProtocolMessage<AckMessage> {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COUNT)
@@ -67,7 +71,20 @@ public class AckMessage extends ProtocolMessage<AckMessage> {
         StringBuilder sb = new StringBuilder();
         sb.append("ACK Message");
         sb.append("\t acknowledged record numbers:");
-        // TODO
+        byte[] recordNumberBytes = recordNumbers.getValue();
+        for (int cursor = 0;
+                cursor < recordNumberBytes.length;
+                cursor += AckByteLength.RECORD_NUMBER_LENGTH) {
+            BigInteger epoch =
+                    new BigInteger(
+                            recordNumberBytes, cursor, AckByteLength.RECORD_NUMBER_EPOCH_LENGTH);
+            BigInteger seqNum =
+                    new BigInteger(
+                            recordNumberBytes,
+                            cursor + AckByteLength.RECORD_NUMBER_EPOCH_LENGTH,
+                            AckByteLength.RECORD_NUMBER_SEQUENCE_NUMBER_LENGTH);
+            sb.append(" - Epoch ").append(epoch).append(" | SQN ").append(seqNum);
+        }
         return sb.toString();
     }
 
@@ -83,7 +100,7 @@ public class AckMessage extends ProtocolMessage<AckMessage> {
 
     @Override
     public ProtocolMessagePreparator<AckMessage> getPreparator(TlsContext tlsContext) {
-        return new AckPreperator(tlsContext.getChooser(), this);
+        return new AckPreperator(tlsContext.getChooser(), this, tlsContext);
     }
 
     @Override

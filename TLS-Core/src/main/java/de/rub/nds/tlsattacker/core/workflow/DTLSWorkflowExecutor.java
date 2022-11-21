@@ -107,7 +107,10 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
                 state.getTlsContext().getRecordLayer().setWriteEpoch(epoch);
                 if (state.getTlsContext().getRecordLayer().getEncryptor().getRecordCipher(epoch)
                         == null) {
-                    LOGGER.debug("Not sending a close notify for epoch " + epoch + ". No cipher available.");
+                    LOGGER.debug(
+                            "Not sending a close notify for epoch "
+                                    + epoch
+                                    + ". No cipher available.");
                     continue;
                 }
                 sendCloseNotify();

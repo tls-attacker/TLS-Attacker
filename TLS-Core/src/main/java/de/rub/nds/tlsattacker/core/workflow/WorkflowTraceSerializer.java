@@ -109,8 +109,8 @@ public class WorkflowTraceSerializer {
                             .toString()
                             .replaceAll("\r?\n", System.lineSeparator())
                             .getBytes(StandardCharsets.UTF_8));
-        } catch (TransformerException E) {
-            LOGGER.debug(E.getStackTrace());
+        } catch (TransformerException e) {
+            LOGGER.warn("Could not create XML for workflow trace: ", e);
         }
     }
 

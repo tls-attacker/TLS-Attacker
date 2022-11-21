@@ -44,6 +44,7 @@ import java.util.Random;
     ServerHelloDoneMessage.class,
     ServerHelloMessage.class,
     AlertMessage.class,
+    AckMessage.class,
     NewSessionTicketMessage.class,
     KeyUpdateMessage.class,
     ApplicationMessage.class,

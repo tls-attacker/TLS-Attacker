@@ -317,10 +317,9 @@ public class WorkflowConfigurationFactory {
                             new FinishedMessage()));
         }
         if (config.getHighestProtocolVersion() == ProtocolVersion.DTLS13) {
-            // TODO ACK
-            // workflowTrace.addTlsAction(
-            //        MessageActionFactory.createTLSAction(
-            //                config, connection, ConnectionEndType.SERVER, new AckMessage()));
+            workflowTrace.addTlsAction(
+                    MessageActionFactory.createTLSAction(
+                            config, connection, ConnectionEndType.SERVER, new AckMessage()));
         }
 
         return workflowTrace;

@@ -35,7 +35,8 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
 
     @Override
     public void adjustContext(FinishedMessage message) {
-        if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
+        if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()
+                || tlsContext.getChooser().getSelectedProtocolVersion() == ProtocolVersion.DTLS13) {
             if (tlsContext.getTalkingConnectionEndType()
                     != tlsContext.getChooser().getConnectionEndType()) {
                 if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.SERVER) {

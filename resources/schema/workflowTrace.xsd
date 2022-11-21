@@ -1,6 +1,8 @@
 <?xml version="1.0" standalone="yes"?>
 <xs:schema version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
+  <xs:element name="ACK" type="ackMessage"/>
+
   <xs:element name="Alert" type="alertMessage"/>
 
   <xs:element name="AlpnExtension" type="alpnExtensionMessage"/>
@@ -615,6 +617,7 @@
                   <xs:element ref="ServerHelloDone"/>
                   <xs:element ref="ServerHello"/>
                   <xs:element ref="Alert"/>
+                  <xs:element ref="ACK"/>
                   <xs:element ref="NewSessionTicket"/>
                   <xs:element ref="KeyUpdate"/>
                   <xs:element ref="Application"/>
@@ -2319,6 +2322,17 @@
     </xs:complexContent>
   </xs:complexType>
 
+  <xs:complexType name="ackMessage">
+    <xs:complexContent>
+      <xs:extension base="protocolMessage">
+        <xs:sequence>
+          <xs:element name="recordNumbers" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="recordNumberLength" type="modifiableInteger" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
   <xs:complexType name="newSessionTicketMessage">
     <xs:complexContent>
       <xs:extension base="handshakeMessage">
@@ -2831,6 +2845,7 @@
           <xs:element name="connectionId" type="modifiableByteArray" minOccurs="0"/>
           <xs:element name="contentMessageType" type="protocolMessageType" minOccurs="0"/>
           <xs:element name="contentType" type="modifiableByte" minOccurs="0"/>
+          <xs:element name="encryptedSequenceNumber" type="modifiableByteArray" minOccurs="0"/>
           <xs:element name="epoch" type="modifiableInteger" minOccurs="0"/>
           <xs:element name="length" type="modifiableInteger" minOccurs="0"/>
           <xs:element name="maxRecordLengthConfig" type="xs:int" minOccurs="0"/>
@@ -3118,6 +3133,7 @@
           <xs:element name="outboundRecordSizeLimit" type="xs:int" minOccurs="0"/>
           <xs:element name="writeConnectionId" type="xs:base64Binary" minOccurs="0"/>
           <xs:element name="readConnectionID" type="xs:base64Binary" minOccurs="0"/>
+          <xs:element name="acknowledgedRecords" type="byteArray" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -3182,6 +3198,10 @@
   </xs:complexType>
 
   <xs:complexType name="chooser" abstract="true">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="byteArray">
     <xs:sequence/>
   </xs:complexType>
 
@@ -3736,6 +3756,7 @@
       <xs:element name="acceptContentRewritingDtlsFragments" type="xs:boolean" minOccurs="0"/>
       <xs:element name="writeKeylogFile" type="xs:boolean" minOccurs="0"/>
       <xs:element name="keylogFilePath" type="xs:string" minOccurs="0"/>
+      <xs:element name="dtls13HeaderSeqNumSizeLong" type="xs:boolean" minOccurs="0"/>
     </xs:all>
   </xs:complexType>
 
@@ -4220,6 +4241,7 @@
                   <xs:element ref="ServerHelloDone"/>
                   <xs:element ref="ServerHello"/>
                   <xs:element ref="Alert"/>
+                  <xs:element ref="ACK"/>
                   <xs:element ref="NewSessionTicket"/>
                   <xs:element ref="KeyUpdate"/>
                   <xs:element ref="Application"/>
@@ -4288,6 +4310,7 @@
                   <xs:element ref="ServerHelloDone"/>
                   <xs:element ref="ServerHello"/>
                   <xs:element ref="Alert"/>
+                  <xs:element ref="ACK"/>
                   <xs:element ref="NewSessionTicket"/>
                   <xs:element ref="KeyUpdate"/>
                   <xs:element ref="Application"/>
@@ -4356,6 +4379,7 @@
                   <xs:element ref="ServerHelloDone"/>
                   <xs:element ref="ServerHello"/>
                   <xs:element ref="Alert"/>
+                  <xs:element ref="ACK"/>
                   <xs:element ref="NewSessionTicket"/>
                   <xs:element ref="KeyUpdate"/>
                   <xs:element ref="Application"/>
@@ -4448,6 +4472,7 @@
           <xs:element ref="ServerHelloDone"/>
           <xs:element ref="ServerHello"/>
           <xs:element ref="Alert"/>
+          <xs:element ref="ACK"/>
           <xs:element ref="NewSessionTicket"/>
           <xs:element ref="KeyUpdate"/>
           <xs:element ref="Application"/>
@@ -4523,6 +4548,7 @@
                   <xs:element ref="ServerHelloDone"/>
                   <xs:element ref="ServerHello"/>
                   <xs:element ref="Alert"/>
+                  <xs:element ref="ACK"/>
                   <xs:element ref="NewSessionTicket"/>
                   <xs:element ref="KeyUpdate"/>
                   <xs:element ref="Application"/>

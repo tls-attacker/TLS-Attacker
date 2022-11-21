@@ -40,6 +40,7 @@ import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import java.math.BigInteger;
 import java.util.*;
+import javassist.bytecode.ByteArray;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.tls.Certificate;
@@ -484,6 +485,8 @@ public class TlsContext extends LayerContext {
     private byte[] writeConnectionId;
 
     private byte[] readConnectionID;
+
+    private List<ByteArray> acknowledgedRecords;
 
     public TlsContext() {
         this(new Context(new Config()));
@@ -2341,5 +2344,13 @@ public class TlsContext extends LayerContext {
 
     public void setReadConnectionId(byte[] readConnectionID) {
         this.readConnectionID = readConnectionID;
+    }
+
+    public List<ByteArray> getAcknowledgedRecords() {
+        return acknowledgedRecords;
+    }
+
+    public void setAcknowledgedRecords(List<ByteArray> acknowledgedRecords) {
+        this.acknowledgedRecords = acknowledgedRecords;
     }
 }

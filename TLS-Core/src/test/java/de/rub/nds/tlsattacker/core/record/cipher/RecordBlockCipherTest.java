@@ -65,7 +65,9 @@ public class RecordBlockCipherTest {
                 for (AliasedConnection con : mixedConnections) {
                     context.setConnection(con);
                     for (ProtocolVersion version : ProtocolVersion.values()) {
-                        if (version == ProtocolVersion.SSL2 || version.isTLS13()) {
+                        if (version == ProtocolVersion.SSL2
+                                || version.isTLS13()
+                                || version == ProtocolVersion.DTLS13) {
                             continue;
                         }
                         if (!suite.isSupportedInProtocol(version)) {
