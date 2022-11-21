@@ -81,8 +81,8 @@
 
   <xs:complexType name="config">
     <xs:all>
-      <xs:element name="defaultLayerConfiguration" type="layerConfiguration" minOccurs="0"/>
       <xs:element name="defaultHandshakeSecret" type="xs:string" minOccurs="0"/>
+      <xs:element name="throwExceptionOnParserContextViolation" type="xs:boolean" minOccurs="0"/>
       <xs:element name="preferredCertificateSignatureType" type="certificateKeyType" minOccurs="0"/>
       <xs:element name="preferredCertificateSignatureGroup" type="namedGroup" minOccurs="0"/>
       <xs:element name="autoSelectCertificate" type="xs:boolean" minOccurs="0"/>
@@ -132,13 +132,6 @@
         <xs:complexType>
           <xs:sequence>
             <xs:element name="defaultServerSupportedCipherSuite" type="cipherSuite" minOccurs="0" maxOccurs="unbounded"/>
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
-      <xs:element name="defaultServerSupportedSSL2CipherSuites" minOccurs="0">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element name="defaultServerSupportedSSL2CipherSuite" type="ssl2CipherSuite" minOccurs="0" maxOccurs="unbounded"/>
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -313,9 +306,9 @@
       <xs:element name="addSignedCertificateTimestampExtension" type="xs:boolean" minOccurs="0"/>
       <xs:element name="addRenegotiationInfoExtension" type="xs:boolean" minOccurs="0"/>
       <xs:element name="addTokenBindingExtension" type="xs:boolean" minOccurs="0"/>
-      <xs:element name="addHttpCookie" type="xs:boolean" minOccurs="0"/>
-      <xs:element name="defaultHttpCookieName" type="xs:string" minOccurs="0"/>
-      <xs:element name="defaultHttpCookieValue" type="xs:string" minOccurs="0"/>
+      <xs:element name="addHttpsCookie" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="defaultHttpsCookieName" type="xs:string" minOccurs="0"/>
+      <xs:element name="defaultHttpsCookieValue" type="xs:string" minOccurs="0"/>
       <xs:element name="addCertificateStatusRequestExtension" type="xs:boolean" minOccurs="0"/>
       <xs:element name="addAlpnExtension" type="xs:boolean" minOccurs="0"/>
       <xs:element name="addSRPExtension" type="xs:boolean" minOccurs="0"/>
@@ -333,8 +326,7 @@
       <xs:element name="addTrustedCaIndicationExtension" type="xs:boolean" minOccurs="0"/>
       <xs:element name="addCertificateStatusRequestV2Extension" type="xs:boolean" minOccurs="0"/>
       <xs:element name="addCookieExtension" type="xs:boolean" minOccurs="0"/>
-      <xs:element name="defaultConnectionId" type="xs:string" minOccurs="0"/>
-      <xs:element name="addConnectionIdExtension" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="updateTimestamps" type="xs:boolean" minOccurs="0"/>
       <xs:element name="pskKeyExchangeModes" minOccurs="0">
         <xs:complexType>
           <xs:sequence>
@@ -360,6 +352,7 @@
       <xs:element name="earlyData" type="xs:string" minOccurs="0"/>
       <xs:element name="distinguishedNames" type="xs:string" minOccurs="0"/>
       <xs:element name="enforceSettings" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="earlyStop" type="xs:boolean" minOccurs="0"/>
       <xs:element name="receiveMaximumBytes" type="xs:int" minOccurs="0"/>
       <xs:element name="stealthMode" type="xs:boolean" minOccurs="0"/>
       <xs:element name="stopActionsAfterIOException" type="xs:boolean" minOccurs="0"/>
@@ -407,17 +400,21 @@
       <xs:element name="flushOnMessageTypeChange" type="xs:boolean" minOccurs="0"/>
       <xs:element name="createFragmentsDynamically" type="xs:boolean" minOccurs="0"/>
       <xs:element name="createRecordsDynamically" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="createIndividualRecords" type="xs:boolean" minOccurs="0"/>
       <xs:element name="createIndividualTransportPackets" type="xs:boolean" minOccurs="0"/>
       <xs:element name="individualTransportPacketCooldown" type="xs:int" minOccurs="0"/>
+      <xs:element name="recordLayerType" type="recordLayerType" minOccurs="0"/>
       <xs:element name="resetWorkflowTracesBeforeSaving" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="quickReceive" type="xs:boolean" minOccurs="0"/>
       <xs:element name="workflowExecutorShouldOpen" type="xs:boolean" minOccurs="0"/>
-      <xs:element name="stopReceivingAfterFatal" type="xs:boolean" minOccurs="0"/>
       <xs:element name="workflowExecutorShouldClose" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="stopReceivingAfterFatal" type="xs:boolean" minOccurs="0"/>
       <xs:element name="stopActionsAfterFatal" type="xs:boolean" minOccurs="0"/>
       <xs:element name="finishWithCloseNotify" type="xs:boolean" minOccurs="0"/>
       <xs:element name="ignoreRetransmittedCcsInDtls" type="xs:boolean" minOccurs="0"/>
       <xs:element name="addRetransmissionsToWorkflowTraceInDtls" type="xs:boolean" minOccurs="0"/>
       <xs:element name="maxDtlsRetransmissions" type="xs:int" minOccurs="0"/>
+      <xs:element name="stopReceivingAfterWarning" type="xs:boolean" minOccurs="0"/>
       <xs:element name="stopActionsAfterWarning" type="xs:boolean" minOccurs="0"/>
       <xs:element name="defaultSelectedCipherSuite" type="cipherSuite" minOccurs="0"/>
       <xs:element name="defaultSelectedServerCertificateType" type="certificateType" minOccurs="0"/>
@@ -539,6 +536,7 @@
       <xs:element name="chooserType" type="chooserType" minOccurs="0"/>
       <xs:element name="useAllProvidedDtlsFragments" type="xs:boolean" minOccurs="0"/>
       <xs:element name="useAllProvidedRecords" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="httpsParsingEnabled" type="xs:boolean" minOccurs="0"/>
       <xs:element name="defaultHttpsLocationPath" type="xs:string" minOccurs="0"/>
       <xs:element name="defaultHttpsRequestPath" type="xs:string" minOccurs="0"/>
       <xs:element name="starttlsType" type="starttlsType" minOccurs="0"/>
@@ -567,6 +565,7 @@
       <xs:element name="defaultClientPWDPrivate" type="xs:string" minOccurs="0"/>
       <xs:element name="defaultClientPWDMask" type="xs:string" minOccurs="0"/>
       <xs:element name="defaultServerPWDSalt" type="xs:string" minOccurs="0"/>
+      <xs:element name="parseInvalidRecordsUnencrypted" type="xs:boolean" minOccurs="0"/>
       <xs:element name="defaultSelectedPointFormat" type="ecPointFormat" minOccurs="0"/>
       <xs:element name="defaultEsniClientPrivateKey" type="xs:integer" minOccurs="0"/>
       <xs:element name="clientSupportedEsniCipherSuites" minOccurs="0">
@@ -1299,18 +1298,6 @@
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:simpleType name="layerConfiguration">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="TLS"/>
-      <xs:enumeration value="DTLS"/>
-      <xs:enumeration value="QUIC"/>
-      <xs:enumeration value="OPEN_VPN"/>
-      <xs:enumeration value="STARTTLS"/>
-      <xs:enumeration value="HTTPS"/>
-      <xs:enumeration value="SSL2"/>
-    </xs:restriction>
-  </xs:simpleType>
-
   <xs:simpleType name="certificateKeyType">
     <xs:restriction base="xs:string">
       <xs:enumeration value="DH"/>
@@ -1955,19 +1942,6 @@
     </xs:restriction>
   </xs:simpleType>
 
-  <xs:simpleType name="ssl2CipherSuite">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="SSL_CK_RC4_128_WITH_MD5"/>
-      <xs:enumeration value="SSL_CK_RC4_128_EXPORT40_WITH_MD5"/>
-      <xs:enumeration value="SSL_CK_RC2_128_CBC_WITH_MD5"/>
-      <xs:enumeration value="SSL_CK_RC2_128_CBC_EXPORT40_WITH_MD5"/>
-      <xs:enumeration value="SSL_CK_IDEA_128_CBC_WITH_MD5"/>
-      <xs:enumeration value="SSL_CK_DES_64_CBC_WITH_MD5"/>
-      <xs:enumeration value="SSL_CK_DES_192_EDE3_CBC_WITH_MD5"/>
-      <xs:enumeration value="SSL_UNKNOWN_CIPHER"/>
-    </xs:restriction>
-  </xs:simpleType>
-
   <xs:simpleType name="heartbeatMode">
     <xs:restriction base="xs:string">
       <xs:enumeration value="PEER_ALLOWED_TO_SEND"/>
@@ -2131,6 +2105,26 @@
       <xs:enumeration value="DEFAULT"/>
       <xs:enumeration value="THREADED_SERVER"/>
       <xs:enumeration value="DTLS"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="recordLayerType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="RECORD"/>
+      <xs:enumeration value="BLOB"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="ssl2CipherSuite">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="SSL_CK_RC4_128_WITH_MD5"/>
+      <xs:enumeration value="SSL_CK_RC4_128_EXPORT40_WITH_MD5"/>
+      <xs:enumeration value="SSL_CK_RC2_128_CBC_WITH_MD5"/>
+      <xs:enumeration value="SSL_CK_RC2_128_CBC_EXPORT40_WITH_MD5"/>
+      <xs:enumeration value="SSL_CK_IDEA_128_CBC_WITH_MD5"/>
+      <xs:enumeration value="SSL_CK_DES_64_CBC_WITH_MD5"/>
+      <xs:enumeration value="SSL_CK_DES_192_EDE3_CBC_WITH_MD5"/>
+      <xs:enumeration value="SSL_UNKNOWN_CIPHER"/>
     </xs:restriction>
   </xs:simpleType>
 
@@ -2341,6 +2335,7 @@
       <xs:enumeration value="PASSWORD_SALT"/>
       <xs:enumeration value="SESSION_TICKET"/>
       <xs:enumeration value="EXTENDED_RANDOM"/>
+      <xs:enumeration value="KEY_SHARE_OLD"/>
       <xs:enumeration value="PRE_SHARED_KEY"/>
       <xs:enumeration value="EARLY_DATA"/>
       <xs:enumeration value="SUPPORTED_VERSIONS"/>
@@ -2351,7 +2346,6 @@
       <xs:enumeration value="POST_HANDSHAKE_AUTH"/>
       <xs:enumeration value="SIGNATURE_ALGORITHMS_CERT"/>
       <xs:enumeration value="KEY_SHARE"/>
-      <xs:enumeration value="CONNECTION_ID"/>
       <xs:enumeration value="RENEGOTIATION_INFO"/>
       <xs:enumeration value="ENCRYPTED_SERVER_NAME_INDICATION"/>
       <xs:enumeration value="GREASE_00"/>

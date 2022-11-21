@@ -10,12 +10,14 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TruncatedHmacExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.TruncatedHmacExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 public class TruncatedHmacExtensionPreparator extends ExtensionPreparator<TruncatedHmacExtensionMessage> {
 
-    public TruncatedHmacExtensionPreparator(Chooser chooser, TruncatedHmacExtensionMessage message) {
-        super(chooser, message);
+    public TruncatedHmacExtensionPreparator(Chooser chooser, TruncatedHmacExtensionMessage message,
+        TruncatedHmacExtensionSerializer serializer) {
+        super(chooser, message, serializer);
     }
 
     @Override

@@ -1,11 +1,12 @@
-/*
+/**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.socket;
 
 import de.rub.nds.modifiablevariable.util.Modifiable;
@@ -37,7 +38,6 @@ import de.rub.nds.tlsattacker.core.workflow.action.SendDynamicClientKeyExchangeA
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.stream.StreamTransportHandler;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -63,20 +63,19 @@ public class TlsAttackerSslSocket extends SSLSocket {
     private byte[] clientHelloBytes = null;
 
     /**
-     * Creates a TlsAttackerSslSocket which loads a byte array of a client hello and tries to adapt
-     * it.
+     * Creates a TlsAttackerSslSocket which loads a byte array of a client hello and tries to adapt it.
      *
-     * @param config
-     * @param hostname
-     * @param port
-     * @param timeout
-     * @param clientHelloBytes the client hello without the record header that should be used
+     * @param  config
+     * @param  hostname
+     * @param  port
+     * @param  timeout
+     * @param  clientHelloBytes
+     *                              the client hello without the record header that should be used
      * @throws IOException
      * @throws UnknownHostException
      */
-    public TlsAttackerSslSocket(
-            Config config, String hostname, int port, long timeout, byte[] clientHelloBytes)
-            throws IOException, UnknownHostException {
+    public TlsAttackerSslSocket(Config config, String hostname, int port, long timeout, byte[] clientHelloBytes)
+        throws IOException, UnknownHostException {
         super(hostname, port);
         this.timeout = timeout;
         this.config = config;
@@ -84,30 +83,27 @@ public class TlsAttackerSslSocket extends SSLSocket {
     }
 
     public TlsAttackerSslSocket(Config config, String hostname, int port, long timeout)
-            throws IOException, UnknownHostException {
+        throws IOException, UnknownHostException {
         super(hostname, port);
         this.timeout = timeout;
         this.config = config;
     }
 
-    public TlsAttackerSslSocket(Config config, InetAddress ia, int port, long timeout)
-            throws IOException {
+    public TlsAttackerSslSocket(Config config, InetAddress ia, int port, long timeout) throws IOException {
         super(ia, port);
         this.timeout = timeout;
         this.config = config;
     }
 
-    public TlsAttackerSslSocket(
-            Config config, String hostname, int port, InetAddress ia, int i1, long timeout)
-            throws IOException, UnknownHostException {
+    public TlsAttackerSslSocket(Config config, String hostname, int port, InetAddress ia, int i1, long timeout)
+        throws IOException, UnknownHostException {
         super(hostname, port, ia, i1);
         this.timeout = timeout;
         this.config = config;
     }
 
-    public TlsAttackerSslSocket(
-            Config config, InetAddress ia, int port, InetAddress ia1, int i1, long timeout)
-            throws IOException {
+    public TlsAttackerSslSocket(Config config, InetAddress ia, int port, InetAddress ia1, int i1, long timeout)
+        throws IOException {
         super(ia, port, ia1, i1);
         this.timeout = timeout;
         this.config = config;
@@ -124,7 +120,7 @@ public class TlsAttackerSslSocket extends SSLSocket {
 
     @Override
     public String[] getEnabledCipherSuites() {
-        return new String[] {"SSL3", "TLS10", "TLS11", "TLS12", "TLS13"};
+        return new String[] { "SSL3", "TLS10", "TLS11", "TLS12", "TLS13" };
     }
 
     @Override
@@ -170,8 +166,7 @@ public class TlsAttackerSslSocket extends SSLSocket {
         config.setWorkflowExecutorShouldClose(false);
         config.setWorkflowExecutorShouldOpen(false);
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
-        WorkflowTrace trace =
-                factory.createTlsEntryWorkflowTrace(config.getDefaultClientConnection());
+        WorkflowTrace trace = factory.createTlsEntryWorkflowTrace(config.getDefaultClientConnection());
 
         ClientHelloMessage message;
         if (clientHelloBytes == null) {
@@ -188,35 +183,23 @@ public class TlsAttackerSslSocket extends SSLSocket {
                 state.getTlsContext().addProposedExtension(type);
             }
         }
-        StreamTransportHandler streamTransportHandler =
-                new StreamTransportHandler(
-                        timeout,
-                        timeout,
-                        ConnectionEndType.CLIENT,
-                        super.getInputStream(),
-                        super.getOutputStream());
+        StreamTransportHandler streamTransportHandler = new StreamTransportHandler(timeout, timeout,
+            ConnectionEndType.CLIENT, super.getInputStream(), super.getOutputStream());
         streamTransportHandler.initialize();
         state.getTlsContext().setTransportHandler(streamTransportHandler);
         WorkflowExecutor executor = new DefaultWorkflowExecutor(state);
         executor.executeWorkflow();
 
         if (trace.executedAsPlanned()) {
-            ServerHelloMessage msg =
-                    (ServerHelloMessage)
-                            WorkflowTraceUtil.getFirstReceivedMessage(
-                                    HandshakeMessageType.SERVER_HELLO, trace);
+            ServerHelloMessage msg = (ServerHelloMessage) WorkflowTraceUtil
+                .getFirstReceivedMessage(HandshakeMessageType.SERVER_HELLO, trace);
             if (msg.isTls13HelloRetryRequest()) {
 
                 config.setDefaultClientNamedGroups(state.getTlsContext().getSelectedGroup());
-                new SendAction(
-                                "client",
-                                new ChangeCipherSpecMessage(),
-                                new ClientHelloMessage(config))
-                        .execute(state);
+                new SendAction("client", new ChangeCipherSpecMessage(), new ClientHelloMessage(config)).execute(state);
 
                 finishHandshakeTls13(trace);
-            } else if (state.getTlsContext().getSelectedProtocolVersion()
-                    == ProtocolVersion.TLS13) {
+            } else if (state.getTlsContext().getSelectedProtocolVersion() == ProtocolVersion.TLS13) {
                 finishHandshakeTls13(trace);
             } else {
                 finishHandshake(trace);
@@ -228,21 +211,17 @@ public class TlsAttackerSslSocket extends SSLSocket {
         outputStream = new EncapsulatingOutputStream(state);
     }
 
-    private void finishHandshake(WorkflowTrace trace)
-            throws RuntimeException, WorkflowExecutionException {
+    private void finishHandshake(WorkflowTrace trace) throws RuntimeException, WorkflowExecutionException {
         if (!WorkflowTraceUtil.didReceiveMessage(HandshakeMessageType.SERVER_HELLO_DONE, trace)) {
-            ReceiveTillAction receiveTillAction =
-                    new ReceiveTillAction("client", new ServerHelloDoneMessage());
+            ReceiveTillAction receiveTillAction = new ReceiveTillAction("client", new ServerHelloDoneMessage());
             receiveTillAction.execute(state);
             if (!receiveTillAction.executedAsPlanned()) {
                 throw new RuntimeException("Did not receive ServerHelloDone");
             }
         }
         new SendDynamicClientKeyExchangeAction("client").execute(state);
-        new SendAction("client", new ChangeCipherSpecMessage(), new FinishedMessage())
-                .execute(state);
-        ReceiveTillAction receiveTillAction =
-                new ReceiveTillAction("client", new FinishedMessage());
+        new SendAction("client", new ChangeCipherSpecMessage(), new FinishedMessage()).execute(state);
+        ReceiveTillAction receiveTillAction = new ReceiveTillAction("client", new FinishedMessage());
         receiveTillAction.execute(state);
         if (!receiveTillAction.executedAsPlanned()) {
             throw new RuntimeException("Did not receive FinishedMessage");
@@ -251,8 +230,7 @@ public class TlsAttackerSslSocket extends SSLSocket {
 
     private void finishHandshakeTls13(WorkflowTrace trace) throws RuntimeException {
         if (!WorkflowTraceUtil.didReceiveMessage(HandshakeMessageType.FINISHED, trace)) {
-            ReceiveTillAction receiveTillAction =
-                    new ReceiveTillAction("client", new FinishedMessage());
+            ReceiveTillAction receiveTillAction = new ReceiveTillAction("client", new FinishedMessage());
             receiveTillAction.execute(state);
             if (!receiveTillAction.executedAsPlanned()) {
                 throw new RuntimeException("Did not receive Finished (TLS 1.3)");
@@ -314,26 +292,18 @@ public class TlsAttackerSslSocket extends SSLSocket {
     private ClientHelloMessage createClientHelloFromBytes(byte[] clientHelloBytes) {
         ClientHelloMessage message = new ClientHelloMessage();
 
-        ClientHelloParser parser =
-                new ClientHelloParser(
-                        new ByteArrayInputStream(clientHelloBytes), state.getTlsContext());
-        ClientHelloMessage parsedClientHelloMessage = new ClientHelloMessage();
-        parser.parse(parsedClientHelloMessage);
-        message.setCipherSuites(
-                Modifiable.explicit(parsedClientHelloMessage.getCipherSuites().getValue()));
-        message.setCompressions(
-                Modifiable.explicit(parsedClientHelloMessage.getCompressions().getValue()));
-        message.setSessionId(
-                Modifiable.explicit(parsedClientHelloMessage.getSessionId().getValue()));
-        message.setProtocolVersion(
-                Modifiable.explicit(parsedClientHelloMessage.getProtocolVersion().getValue()));
+        ClientHelloParser parser = new ClientHelloParser(0, clientHelloBytes, ProtocolVersion.TLS12, config);
+        ClientHelloMessage parsedClientHelloMessage = parser.parse();
+        message.setCipherSuites(Modifiable.explicit(parsedClientHelloMessage.getCipherSuites().getValue()));
+        message.setCompressions(Modifiable.explicit(parsedClientHelloMessage.getCompressions().getValue()));
+        message.setSessionId(Modifiable.explicit(parsedClientHelloMessage.getSessionId().getValue()));
+        message.setProtocolVersion(Modifiable.explicit(parsedClientHelloMessage.getProtocolVersion().getValue()));
         for (ExtensionMessage parsedExtension : parsedClientHelloMessage.getExtensions()) {
             if (parsedExtension instanceof KeyShareExtensionMessage) {
                 // Since we do not know the private key we have to overwrite the
                 // keyshare extension - currently only x25519 supported...
                 List<KeyShareStoreEntry> storeEntryList = new LinkedList();
-                for (KeyShareEntry entry :
-                        ((KeyShareExtensionMessage) parsedExtension).getKeyShareList()) {
+                for (KeyShareEntry entry : ((KeyShareExtensionMessage) parsedExtension).getKeyShareList()) {
                     NamedGroup group = NamedGroup.getNamedGroup(entry.getGroup().getValue());
                     if (group.isCurve()) {
                         if (group == NamedGroup.ECDH_X25519) {
@@ -342,24 +312,24 @@ public class TlsAttackerSslSocket extends SSLSocket {
 
                         } else {
                             throw new UnsupportedOperationException(
-                                    "Keyshares are weired in the current master branch - we will fix this in the next release. Sorry - needs to be added here");
+                                "Keyshares are weired in the current master branch - we will fix this in the next release. Sorry - needs to be added here");
                         }
                     } else {
                         storeEntryList.add(new KeyShareStoreEntry(group, new byte[1]));
                     }
                 }
                 config.setDefaultClientKeyStoreEntries(storeEntryList);
-                KeyShareExtensionMessage recreatedKeyShareExtensionMessage =
-                        new KeyShareExtensionMessage(config);
+                KeyShareExtensionMessage recreatedKeyShareExtensionMessage = new KeyShareExtensionMessage(config);
                 message.addExtension(recreatedKeyShareExtensionMessage);
 
             } else {
                 UnknownExtensionMessage craftedExtensionMessage = new UnknownExtensionMessage();
-                craftedExtensionMessage.setExtensionBytes(
-                        Modifiable.explicit(parsedExtension.getExtensionBytes().getValue()));
+                craftedExtensionMessage
+                    .setExtensionBytes(Modifiable.explicit(parsedExtension.getExtensionBytes().getValue()));
                 message.addExtension(craftedExtensionMessage);
             }
         }
         return message;
     }
+
 }

@@ -9,14 +9,18 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedMasterSecretExtensionMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import java.io.InputStream;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ExtendedMasterSecretExtensionParser extends ExtensionParser<ExtendedMasterSecretExtensionMessage> {
 
-    public ExtendedMasterSecretExtensionParser(InputStream stream, TlsContext tlsContext) {
-        super(stream, tlsContext);
+    private static final Logger LOGGER = LogManager.getLogger();
+
+    public ExtendedMasterSecretExtensionParser(int startposition, byte[] array, Config config) {
+        super(startposition, array, config);
     }
 
     /**
@@ -26,7 +30,17 @@ public class ExtendedMasterSecretExtensionParser extends ExtensionParser<Extende
      *            The Message that should be parsed
      */
     @Override
-    public void parse(ExtendedMasterSecretExtensionMessage msg) {
+    public void parseExtensionMessageContent(ExtendedMasterSecretExtensionMessage msg) {
+        byte[] auxData = parseByteArrayField(msg.getExtensionLength().getValue());
+        if (auxData.length > 0) {
+            LOGGER.warn("There shouldn't be any data in the body of" + " the extended master secret extension."
+                + "Data send by server: " + ArrayConverter.bytesToHexString(auxData));
+        }
+    }
+
+    @Override
+    protected ExtendedMasterSecretExtensionMessage createExtensionMessage() {
+        return new ExtendedMasterSecretExtensionMessage();
     }
 
 }

@@ -10,8 +10,8 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.Preparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
@@ -35,18 +35,11 @@ public abstract class ExtensionPreparator<T extends ExtensionMessage> extends Pr
         this.serializer = serializer;
     }
 
-    public ExtensionPreparator(Chooser chooser, T message) {
-        super(chooser, message);
-        this.msg = message;
-        this.serializer = message.getSerializer(chooser.getContext().getTlsContext());
-    }
-
     @Override
     public final void prepare() {
         prepareExtensionType(msg);
         prepareExtensionContent();
         content = serializer.serializeExtensionContent();
-        prepareExtensionContentBytes(msg);
         prepareExtensionLength(msg);
         prepareExtensionBytes(msg);
     }
@@ -56,7 +49,6 @@ public abstract class ExtensionPreparator<T extends ExtensionMessage> extends Pr
         prepareExtensionType(msg);
         afterPrepareExtensionContent();
         content = serializer.serializeExtensionContent();
-        prepareExtensionContentBytes(msg);
         prepareExtensionLength(msg);
         prepareExtensionBytes(msg);
     }
@@ -80,11 +72,6 @@ public abstract class ExtensionPreparator<T extends ExtensionMessage> extends Pr
     private void prepareExtensionBytes(ExtensionMessage msg) {
         msg.setExtensionBytes(serializer.serialize());
         LOGGER.debug("ExtensionBytes: " + ArrayConverter.bytesToHexString(msg.getExtensionBytes().getValue()));
-    }
-
-    private void prepareExtensionContentBytes(ExtensionMessage msg) {
-        msg.setExtensionContent(content);
-        LOGGER.debug("ExtensionContent: " + ArrayConverter.bytesToHexString(msg.getExtensionContent().getValue()));
     }
 
 }

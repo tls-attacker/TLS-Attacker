@@ -10,12 +10,16 @@
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.Bits;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PWDProtectExtensionMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.PWDProtectExtensionParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PWDProtectExtensionPreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PWDProtectExtensionSerializer;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -32,20 +36,35 @@ public class PWDProtectExtensionHandler extends ExtensionHandler<PWDProtectExten
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public PWDProtectExtensionHandler(TlsContext tlsContext) {
-        super(tlsContext);
+    public PWDProtectExtensionHandler(TlsContext context) {
+        super(context);
+    }
+
+    @Override
+    public PWDProtectExtensionParser getParser(byte[] message, int pointer, Config config) {
+        return new PWDProtectExtensionParser(pointer, message, config);
+    }
+
+    @Override
+    public PWDProtectExtensionPreparator getPreparator(PWDProtectExtensionMessage message) {
+        return new PWDProtectExtensionPreparator(context.getChooser(), message, getSerializer(message));
+    }
+
+    @Override
+    public PWDProtectExtensionSerializer getSerializer(PWDProtectExtensionMessage message) {
+        return new PWDProtectExtensionSerializer(message);
     }
 
     @Override
     public void adjustTLSExtensionContext(PWDProtectExtensionMessage message) {
-        if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
-            tlsContext.setClientPWDUsername(tlsContext.getConfig().getDefaultClientPWDUsername());
+        if (context.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
+            context.setClientPWDUsername(context.getConfig().getDefaultClientPWDUsername());
             return;
         }
 
         // decrypt protected username
         ECCurve curve = ECNamedCurveTable
-            .getParameterSpec(tlsContext.getConfig().getDefaultPWDProtectGroup().getJavaName()).getCurve();
+            .getParameterSpec(context.getConfig().getDefaultPWDProtectGroup().getJavaName()).getCurve();
         BigInteger prime = curve.getField().getCharacteristic();
         HKDFAlgorithm hkdfAlgorithm;
         if (curve.getFieldSize() <= 256) {
@@ -67,9 +86,8 @@ public class PWDProtectExtensionHandler extends ExtensionHandler<PWDProtectExten
         // y = y^((p+1)/4) mod p = sqrt(y)
         BigInteger clientPublicKeyY = clientPublicKeyYSquared.modPow(prime.add(BigInteger.ONE).shiftRight(2), prime);
         ECPoint clientPublicKey = curve.createPoint(clientPublicKeyX, clientPublicKeyY);
-        BigInteger sharedSecret =
-            clientPublicKey.multiply(tlsContext.getConfig().getDefaultServerPWDProtectPrivateKey()).normalize()
-                .getXCoord().toBigInteger();
+        BigInteger sharedSecret = clientPublicKey.multiply(context.getConfig().getDefaultServerPWDProtectPrivateKey())
+            .normalize().getXCoord().toBigInteger();
         try {
             byte[] key = HKDFunction.expand(hkdfAlgorithm,
                 HKDFunction.extract(hkdfAlgorithm, null, ArrayConverter.bigIntegerToByteArray(sharedSecret)),
@@ -81,8 +99,8 @@ public class PWDProtectExtensionHandler extends ExtensionHandler<PWDProtectExten
                 Arrays.copyOfRange(protectedUsername, curve.getFieldSize() / Bits.IN_A_BYTE, protectedUsername.length);
             SivMode aesSIV = new SivMode();
             String username = new String(aesSIV.decrypt(ctrKey, macKey, encryptedUsername));
-            tlsContext.setClientPWDUsername(username);
-            LOGGER.debug("Username: " + tlsContext.getClientPWDUsername());
+            context.setClientPWDUsername(username);
+            LOGGER.debug("Username: " + context.getClientPWDUsername());
         } catch (IllegalBlockSizeException | UnauthenticCiphertextException | CryptoException e) {
             LOGGER.warn("Failed to decrypt username: " + e.getMessage());
         }

@@ -9,9 +9,9 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
+import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.GOSTClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -19,13 +19,19 @@ public class GOSTClientKeyExchangeParser extends ClientKeyExchangeParser<GOSTCli
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public GOSTClientKeyExchangeParser(InputStream stream, TlsContext tlsContext) {
-        super(stream, tlsContext);
+    public GOSTClientKeyExchangeParser(int startposition, byte[] array, ProtocolVersion version, Config config) {
+        super(startposition, array, version, config);
     }
 
     @Override
-    public void parse(GOSTClientKeyExchangeMessage msg) {
+    protected void parseHandshakeMessageContent(GOSTClientKeyExchangeMessage msg) {
         LOGGER.debug("Parsing GOSTClientKeyExchangeMessage");
-        msg.setKeyTransportBlob(parseByteArrayField(getBytesLeft()));
+        msg.setKeyTransportBlob(parseByteArrayField(msg.getLength().getValue()));
     }
+
+    @Override
+    protected GOSTClientKeyExchangeMessage createHandshakeMessage() {
+        return new GOSTClientKeyExchangeMessage();
+    }
+
 }

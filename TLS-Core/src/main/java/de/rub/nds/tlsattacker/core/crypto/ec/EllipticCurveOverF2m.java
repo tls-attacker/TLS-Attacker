@@ -1,11 +1,12 @@
-/*
+/**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.crypto.ec;
 
 import java.math.BigInteger;
@@ -28,10 +29,13 @@ public class EllipticCurveOverF2m extends EllipticCurve {
     /**
      * Instantiates the curve y^2 + xy = x^3 + ax^2 + b over F_{2^m}.<br>
      *
-     * @param a A BigInteger representing the binary polynomial a in the equation of the curve.
-     * @param b A BigInteger representing the binary polynomial b in the equation of the curve.
-     * @param polynomial A BigInteger representing the binary reduction polynomial that defines the
-     *     field over which the curve is defined.
+     * @param a
+     *                   A BigInteger representing the binary polynomial a in the equation of the curve.
+     * @param b
+     *                   A BigInteger representing the binary polynomial b in the equation of the curve.
+     * @param polynomial
+     *                   A BigInteger representing the binary reduction polynomial that defines the field over which the
+     *                   curve is defined.
      */
     public EllipticCurveOverF2m(BigInteger a, BigInteger b, BigInteger polynomial) {
         super(polynomial);
@@ -44,23 +48,24 @@ public class EllipticCurveOverF2m extends EllipticCurve {
      * polynomial is the reduction polynomial of the field.<br>
      * With base point (x, y) and base point order q.
      *
-     * @param a A BigInteger representing the binary polynomial a in the equation of the curve.
-     * @param b A BigInteger representing the binary polynomial b in the equation of the curve.
-     * @param polynomial A BigInteger representing the binary reduction polynomial that defines the
-     *     field over which the curve is defined.
-     * @param x A BigInteger representing the binary polynomial that represents the x-coordinate of
-     *     the base point.
-     * @param y A BigInteger representing the binary polynomial that represents the y-coordinate of
-     *     the base point.
-     * @param q The order of the base point.
+     * @param a
+     *                   A BigInteger representing the binary polynomial a in the equation of the curve.
+     * @param b
+     *                   A BigInteger representing the binary polynomial b in the equation of the curve.
+     * @param polynomial
+     *                   A BigInteger representing the binary reduction polynomial that defines the field over which the
+     *                   curve is defined.
+     * @param x
+     *                   A BigInteger representing the binary polynomial that represents the x-coordinate of the base
+     *                   point.
+     * @param y
+     *                   A BigInteger representing the binary polynomial that represents the y-coordinate of the base
+     *                   point.
+     * @param q
+     *                   The order of the base point.
      */
-    public EllipticCurveOverF2m(
-            BigInteger a,
-            BigInteger b,
-            BigInteger polynomial,
-            BigInteger x,
-            BigInteger y,
-            BigInteger q) {
+    public EllipticCurveOverF2m(BigInteger a, BigInteger b, BigInteger polynomial, BigInteger x, BigInteger y,
+        BigInteger q) {
         super(polynomial, x, y, q);
         this.curveA = new FieldElementF2m(a, this.getModulus());
         this.curveB = new FieldElementF2m(b, this.getModulus());
@@ -85,8 +90,7 @@ public class EllipticCurveOverF2m extends EllipticCurve {
          * If the point's components are not elements of the field over which the curve is defined, the point cannot be
          * on the curve.
          */
-        if (p.getFieldX().getClass() != FieldElementF2m.class
-                || p.getFieldY().getClass() != FieldElementF2m.class) {
+        if (p.getFieldX().getClass() != FieldElementF2m.class || p.getFieldY().getClass() != FieldElementF2m.class) {
             return false;
         }
         FieldElementF2m x = (FieldElementF2m) p.getFieldX();
@@ -98,16 +102,14 @@ public class EllipticCurveOverF2m extends EllipticCurve {
         // Check if y^2 + xy == x^3 + ax^2 + b
         FieldElementF2m leftPart = (FieldElementF2m) y.mult(y).add(x.mult(y));
         FieldElementF2m rightPart =
-                (FieldElementF2m)
-                        x.mult(x.mult(x)).add(x.mult(x).mult(this.curveA)).add(this.curveB);
+            (FieldElementF2m) x.mult(x.mult(x)).add(x.mult(x).mult(this.curveA)).add(this.curveB);
 
         return leftPart.equals(rightPart);
     }
 
     @Override
     protected Point inverseAffine(Point p) {
-        if (!(p.getFieldX() instanceof FieldElementF2m
-                && p.getFieldY() instanceof FieldElementF2m)) {
+        if (!(p.getFieldX() instanceof FieldElementF2m && p.getFieldY() instanceof FieldElementF2m)) {
             LOGGER.warn("Trying to invert non F2m point with F2m curve. Returning point at (0,0)");
             return this.getPoint(BigInteger.ZERO, BigInteger.ZERO);
         }
@@ -121,10 +123,8 @@ public class EllipticCurveOverF2m extends EllipticCurve {
 
     @Override
     protected Point additionFormular(Point p, Point q) {
-        if (!(p.getFieldX() instanceof FieldElementF2m
-                && p.getFieldY() instanceof FieldElementF2m
-                && q.getFieldX() instanceof FieldElementF2m
-                && q.getFieldY() instanceof FieldElementF2m)) {
+        if (!(p.getFieldX() instanceof FieldElementF2m && p.getFieldY() instanceof FieldElementF2m
+            && q.getFieldX() instanceof FieldElementF2m && q.getFieldY() instanceof FieldElementF2m)) {
             LOGGER.warn("Trying to add non F2m points with F2m curve. Returning point at (0,0)");
             return this.getPoint(BigInteger.ZERO, BigInteger.ZERO);
         }
@@ -142,9 +142,7 @@ public class EllipticCurveOverF2m extends EllipticCurve {
                 // lambda := (y1+y2)/(x1+x2)
                 lambda = (FieldElementF2m) y1.add(y2).divide(x1.add(x2));
                 // x3 := lambda^2+lambda+x1+x2+a
-                x3 =
-                        (FieldElementF2m)
-                                lambda.mult(lambda).add(lambda).add(x1).add(x2).add(this.curveA);
+                x3 = (FieldElementF2m) lambda.mult(lambda).add(lambda).add(x1).add(x2).add(this.curveA);
                 // y3 := lambda(x1+x3)+x3+y1
                 y3 = (FieldElementF2m) lambda.mult(x1.add(x3)).add(x3).add(y1);
             } else {
@@ -160,8 +158,7 @@ public class EllipticCurveOverF2m extends EllipticCurve {
 
             return new Point(x3, y3);
         } catch (ArithmeticException e) {
-            LOGGER.warn(
-                    "Encountered an arithmetic exception during addition. Returning point at 0,0");
+            LOGGER.warn("Encountered an arithmetic exception during addition. Returning point at 0,0");
             return this.getPoint(BigInteger.ZERO, BigInteger.ZERO);
         }
     }
@@ -172,11 +169,11 @@ public class EllipticCurveOverF2m extends EllipticCurve {
     }
 
     /**
-     * Returns a point on the curve for the given x coordinate - or the basepoint if such a point
-     * does not exist. Of the two possible points, the function always returns the point whose value
-     * of z is odd.
+     * Returns a point on the curve for the given x coordinate - or the basepoint if such a point does not exist. Of the
+     * two possible points, the function always returns the point whose value of z is odd.
      *
-     * @param x The x coordinate of the point
+     * @param x
+     *          The x coordinate of the point
      */
     @Override
     public Point createAPointOnCurve(BigInteger x) {
@@ -186,8 +183,7 @@ public class EllipticCurveOverF2m extends EllipticCurve {
             return getPoint(x, y.getData());
         } else {
             FieldElementF2m fieldXInverse = (FieldElementF2m) fieldX.multInv();
-            FieldElementF2m fieldXInverseSquare =
-                    (FieldElementF2m) fieldXInverse.mult(fieldXInverse);
+            FieldElementF2m fieldXInverseSquare = (FieldElementF2m) fieldXInverse.mult(fieldXInverse);
             FieldElementF2m product = (FieldElementF2m) curveB.mult(fieldXInverseSquare);
             FieldElementF2m beta = (FieldElementF2m) fieldX.add(curveA).add(product);
             FieldElementF2m z = (FieldElementF2m) solveQuadraticEquation(beta);
@@ -208,8 +204,9 @@ public class EllipticCurveOverF2m extends EllipticCurve {
     /**
      * Solves z^2 + z = beta using the algorithm D.1.6 of ANSI X9.62
      *
-     * @param beta An element of F2m
-     * @return The result z for the quadratic equation or null if non-existent
+     * @param  beta
+     *              An element of F2m
+     * @return      The result z for the quadratic equation or null if non-existent
      */
     public FieldElementF2m solveQuadraticEquation(FieldElement beta) {
         if (beta.getData().equals(BigInteger.ZERO)) {

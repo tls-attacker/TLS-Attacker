@@ -10,12 +10,12 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -23,12 +23,12 @@ public class NewSessionTicketParser extends HandshakeMessageParser<NewSessionTic
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public NewSessionTicketParser(InputStream stream, TlsContext tlsContext) {
-        super(stream, tlsContext);
+    public NewSessionTicketParser(int pointer, byte[] array, ProtocolVersion version, Config config) {
+        super(pointer, array, HandshakeMessageType.NEW_SESSION_TICKET, version, config);
     }
 
     @Override
-    public void parse(NewSessionTicketMessage msg) {
+    protected void parseHandshakeMessageContent(NewSessionTicketMessage msg) {
         LOGGER.debug("Parsing NewSessionTicket");
         if (getVersion().isTLS13()) {
             parseLifetime(msg);
@@ -37,10 +37,10 @@ public class NewSessionTicketParser extends HandshakeMessageParser<NewSessionTic
             parseNonce(msg);
             parseIdentityLength(msg);
             parseIdentity(msg);
-            if (hasExtensionLengthField()) {
+            if (hasExtensionLengthField(msg)) {
                 parseExtensionLength(msg);
                 if (hasExtensions(msg)) {
-                    parseExtensionBytes(msg, false);
+                    parseExtensionBytes(msg);
                 }
             }
         } else {
@@ -48,6 +48,11 @@ public class NewSessionTicketParser extends HandshakeMessageParser<NewSessionTic
             parseIdentityLength(msg);
             parseIdentity(msg);
         }
+    }
+
+    @Override
+    protected NewSessionTicketMessage createHandshakeMessage() {
+        return new NewSessionTicketMessage(!getVersion().isTLS13());
     }
 
     private void parseLifetime(NewSessionTicketMessage msg) {

@@ -1,11 +1,12 @@
-/*
+/**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -14,18 +15,18 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ClientHelloPreparator;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.util.tests.TestCategories;
-import java.util.ArrayList;
-import java.util.List;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-public class RemBufferedChExtensionsActionTest
-        extends AbstractActionTest<RemBufferedChExtensionsAction> {
+import java.util.ArrayList;
+import java.util.List;
+
+public class RemBufferedChExtensionsActionTest extends AbstractActionTest<RemBufferedChExtensionsAction> {
 
     private final ClientHelloMessage ch;
     private final List<ExtensionType> remove;
@@ -43,9 +44,7 @@ public class RemBufferedChExtensionsActionTest
         expected.add(ExtensionType.ELLIPTIC_CURVES);
         expected.add(ExtensionType.EXTENDED_MASTER_SECRET);
         expected.add(ExtensionType.ENCRYPT_THEN_MAC);
-        expectedBytes =
-                ArrayConverter.hexStringToByteArray(
-                        "000B00020100000A000A000800130017001800190017000000160000");
+        expectedBytes = ArrayConverter.hexStringToByteArray("000B00020100000A000A000800130017001800190017000000160000");
         expectedLength = 28;
 
         Config config = state.getConfig();
@@ -57,16 +56,10 @@ public class RemBufferedChExtensionsActionTest
         config.setAddRenegotiationInfoExtension(false);
         config.setAddSignatureAndHashAlgorithmsExtension(false);
         config.setAddSignatureAlgorithmsCertExtension(false);
-        config.setDefaultClientNamedGroups(
-                NamedGroup.SECP192R1,
-                NamedGroup.SECP256R1,
-                NamedGroup.SECP384R1,
-                NamedGroup.SECP521R1);
-        config.setDefaultServerNamedGroups(
-                NamedGroup.SECP192R1,
-                NamedGroup.SECP256R1,
-                NamedGroup.SECP384R1,
-                NamedGroup.SECP521R1);
+        config.setDefaultClientNamedGroups(NamedGroup.SECP192R1, NamedGroup.SECP256R1, NamedGroup.SECP384R1,
+            NamedGroup.SECP521R1);
+        config.setDefaultServerNamedGroups(NamedGroup.SECP192R1, NamedGroup.SECP256R1, NamedGroup.SECP384R1,
+            NamedGroup.SECP521R1);
 
         ch = new ClientHelloMessage(config);
         ClientHelloPreparator preparator = new ClientHelloPreparator(context.getChooser(), ch);

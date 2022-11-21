@@ -10,13 +10,12 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.SrpClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.io.InputStream;
 
 public class SrpClientKeyExchangeParser extends ClientKeyExchangeParser<SrpClientKeyExchangeMessage> {
 
@@ -25,19 +24,29 @@ public class SrpClientKeyExchangeParser extends ClientKeyExchangeParser<SrpClien
     /**
      * Constructor for the Parser class
      *
-     * @param stream
-     * @param tlsContext
-     *
+     * @param startposition
+     *                      Position in the array where the ClientKeyExchangeParser is supposed to start parsing
+     * @param array
+     *                      The byte[] which the ClientKeyExchangeParser is supposed to parse
+     * @param version
+     *                      Version of the Protocol
+     * @param config
+     *                      A Config used in the current context
      */
-    public SrpClientKeyExchangeParser(InputStream stream, TlsContext tlsContext) {
-        super(stream, tlsContext);
+    public SrpClientKeyExchangeParser(int startposition, byte[] array, ProtocolVersion version, Config config) {
+        super(startposition, array, version, config);
     }
 
     @Override
-    public void parse(SrpClientKeyExchangeMessage msg) {
+    protected void parseHandshakeMessageContent(SrpClientKeyExchangeMessage msg) {
         LOGGER.debug("Parsing SRPClientKeyExchangeMessage");
         parsePublicKeyLength(msg);
         parsePublicKey(msg);
+    }
+
+    @Override
+    protected SrpClientKeyExchangeMessage createHandshakeMessage() {
+        return new SrpClientKeyExchangeMessage();
     }
 
     /**

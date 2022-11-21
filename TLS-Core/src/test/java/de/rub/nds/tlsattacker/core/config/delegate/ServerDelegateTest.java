@@ -1,11 +1,12 @@
-/*
+/**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -24,7 +25,9 @@ public class ServerDelegateTest extends AbstractDelegateTest<ServerDelegate> {
         super.setUp(new ServerDelegate());
     }
 
-    /** Test of getPort method, of class ServerDelegate. */
+    /**
+     * Test of getPort method, of class ServerDelegate.
+     */
     @Test
     public void testGetPort() {
         args = new String[2];
@@ -35,7 +38,9 @@ public class ServerDelegateTest extends AbstractDelegateTest<ServerDelegate> {
         assertEquals(1234, (int) delegate.getPort());
     }
 
-    /** Test of setPort method, of class ServerDelegate. */
+    /**
+     * Test of setPort method, of class ServerDelegate.
+     */
     @Test
     public void testSetPort() {
         assertNull(delegate.getPort());
@@ -43,7 +48,9 @@ public class ServerDelegateTest extends AbstractDelegateTest<ServerDelegate> {
         assertEquals(1234, (int) delegate.getPort());
     }
 
-    /** Test of applyDelegate method, of class ServerDelegate. */
+    /**
+     * Test of applyDelegate method, of class ServerDelegate.
+     */
     @Test
     public void testApplyDelegate() {
         Config config = Config.createConfig();
@@ -59,14 +66,16 @@ public class ServerDelegateTest extends AbstractDelegateTest<ServerDelegate> {
         assertEquals(1234, actual.getPort().intValue());
         assertSame(ConnectionEndType.SERVER, actual.getLocalConnectionEndType());
         assertEquals(expectedDefaultTimeout, actual.getTimeout().intValue());
+
     }
 
-    /** Make sure that applying with port = null fails properly. */
+    /**
+     * Make sure that applying with port = null fails properly.
+     */
     @Test
     public void applyingEmptyDelegateThrowsException() {
         Config config = Config.createConfig();
-        ParameterException exception =
-                assertThrows(ParameterException.class, () -> delegate.applyDelegate(config));
+        ParameterException exception = assertThrows(ParameterException.class, () -> delegate.applyDelegate(config));
         assertTrue(exception.getMessage().startsWith("Port must be set, but was not specified"));
     }
 

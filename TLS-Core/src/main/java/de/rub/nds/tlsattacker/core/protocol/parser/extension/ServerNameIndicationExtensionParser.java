@@ -10,12 +10,11 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
+import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -27,27 +26,35 @@ public class ServerNameIndicationExtensionParser extends ExtensionParser<ServerN
 
     private List<ServerNamePair> pairList;
 
-    public ServerNameIndicationExtensionParser(InputStream stream, TlsContext tlsContext) {
-        super(stream, tlsContext);
+    public ServerNameIndicationExtensionParser(int startposition, byte[] array, Config config) {
+        super(startposition, array, config);
     }
 
     @Override
-    public void parse(ServerNameIndicationExtensionMessage msg) {
-        if (getBytesLeft() > 0) {
+    public void parseExtensionMessageContent(ServerNameIndicationExtensionMessage msg) {
+        if (msg.getExtensionLength().getValue() > 0) {
             parseServerNameListLength(msg);
             parseServerNameListBytes(msg);
+            int position = 0;
             pairList = new LinkedList<>();
-            ByteArrayInputStream innerStream = new ByteArrayInputStream(msg.getServerNameListBytes().getValue());
-            while (innerStream.available() > 0) {
-                ServerNamePairParser parser = new ServerNamePairParser(innerStream);
-                ServerNamePair pair = new ServerNamePair();
-                parser.parse(pair);
-                pairList.add(pair);
+            while (position < msg.getServerNameListLength().getValue()) {
+                ServerNamePairParser parser =
+                    new ServerNamePairParser(position, msg.getServerNameListBytes().getValue());
+                pairList.add(parser.parse());
+                if (position == parser.getPointer()) {
+                    throw new ParserException("Ran into infinite Loop while parsing ServerNamePair");
+                }
+                position = parser.getPointer();
             }
             parseServerNameList(msg);
         } else {
             LOGGER.debug("Received empty SNI Extension");
         }
+    }
+
+    @Override
+    protected ServerNameIndicationExtensionMessage createExtensionMessage() {
+        return new ServerNameIndicationExtensionMessage();
     }
 
     /**

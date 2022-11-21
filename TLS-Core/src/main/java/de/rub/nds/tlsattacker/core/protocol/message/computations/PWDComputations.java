@@ -10,7 +10,15 @@
 package de.rub.nds.tlsattacker.core.protocol.message.computations;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.*;
+import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.core.constants.Bits;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.crypto.PseudoRandomFunction;
 import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
@@ -50,7 +58,7 @@ public class PWDComputations extends KeyExchangeComputations {
         BigInteger prime = curve.getModulus();
 
         byte[] base;
-        byte[] salt = chooser.getContext().getTlsContext().getServerPWDSalt();
+        byte[] salt = chooser.getContext().getServerPWDSalt();
         if (salt == null && chooser.getSelectedProtocolVersion() != ProtocolVersion.TLS13) {
             salt = chooser.getConfig().getDefaultServerPWDSalt();
         }
@@ -93,7 +101,7 @@ public class PWDComputations extends KeyExchangeComputations {
                 createdPoint = tempPoint;
                 savedSeed = seed.clone();
                 found = true;
-                chooser.getContext().getTlsContext().getBadSecureRandom().nextBytes(base);
+                chooser.getContext().getBadSecureRandom().nextBytes(base);
             }
             if (counter > 1000) {
                 savedSeed = seed.clone();

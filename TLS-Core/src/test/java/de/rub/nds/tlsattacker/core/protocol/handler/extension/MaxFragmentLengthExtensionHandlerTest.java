@@ -1,11 +1,12 @@
-/*
+/**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -17,29 +18,30 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import org.junit.jupiter.api.Test;
 
 public class MaxFragmentLengthExtensionHandlerTest
-        extends AbstractExtensionMessageHandlerTest<
-                MaxFragmentLengthExtensionMessage, MaxFragmentLengthExtensionHandler> {
+    extends AbstractExtensionMessageHandlerTest<MaxFragmentLengthExtensionMessage, MaxFragmentLengthExtensionHandler> {
 
     public MaxFragmentLengthExtensionHandlerTest() {
         super(MaxFragmentLengthExtensionMessage::new, MaxFragmentLengthExtensionHandler::new);
         context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
     }
 
-    /** Test of adjustContext method, of class MaxFragmentLengthExtensionHandler. */
+    /**
+     * Test of adjustTLSContext method, of class MaxFragmentLengthExtensionHandler.
+     */
     @Test
     @Override
-    public void testadjustTLSExtensionContext() {
+    public void testAdjustTLSContext() {
         MaxFragmentLengthExtensionMessage msg = new MaxFragmentLengthExtensionMessage();
-        msg.setMaxFragmentLength(new byte[] {1});
-        handler.adjustTLSExtensionContext(msg);
+        msg.setMaxFragmentLength(new byte[] { 1 });
+        handler.adjustTLSContext(msg);
         assertSame(context.getMaxFragmentLength(), MaxFragmentLength.TWO_9);
     }
 
     @Test
     public void testUndefinedAdjustment() {
         MaxFragmentLengthExtensionMessage msg = new MaxFragmentLengthExtensionMessage();
-        msg.setMaxFragmentLength(new byte[] {77});
-        handler.adjustContext(msg);
+        msg.setMaxFragmentLength(new byte[] { 77 });
+        handler.adjustTLSContext(msg);
         assertNull(context.getMaxFragmentLength());
     }
 }

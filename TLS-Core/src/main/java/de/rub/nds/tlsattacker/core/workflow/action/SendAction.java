@@ -1,35 +1,44 @@
-/*
+/**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
+import de.rub.nds.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.TlsMessage;
+import de.rub.nds.tlsattacker.core.record.AbstractRecord;
+import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
-import jakarta.xml.bind.annotation.XmlRootElement;
+import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/** todo print configured records */
+/**
+ * todo print configured records
+ */
 @XmlRootElement
 public class SendAction extends MessageAction implements SendingAction {
 
@@ -72,11 +81,11 @@ public class SendAction extends MessageAction implements SendingAction {
     }
 
     @Override
-    public void execute(State state) throws ActionExecutionException {
-        TlsContext tlsContext = state.getContext(connectionAlias).getTlsContext();
+    public void execute(State state) throws WorkflowExecutionException {
+        TlsContext tlsContext = state.getTlsContext(connectionAlias);
 
         if (isExecuted()) {
-            throw new ActionExecutionException("Action already executed!");
+            throw new WorkflowExecutionException("Action already executed!");
         }
 
         String sending = getReadableString(messages);
@@ -87,7 +96,12 @@ public class SendAction extends MessageAction implements SendingAction {
         }
 
         try {
-            send(tlsContext, messages, fragments, records);
+            MessageActionResult result = sendMessageHelper.sendMessages(messages, fragments, records, tlsContext);
+            messages = new ArrayList<>(result.getMessageList());
+            records = new ArrayList<>(result.getRecordList());
+            if (result.getMessageFragmentList() != null) {
+                fragments = new ArrayList<>(result.getMessageFragmentList());
+            }
             setExecuted(true);
         } catch (IOException e) {
             if (!getActionOptions().contains(ActionOption.MAY_FAIL)) {
@@ -141,7 +155,7 @@ public class SendAction extends MessageAction implements SendingAction {
     }
 
     @Override
-    public void setRecords(List<Record> records) {
+    public void setRecords(List<AbstractRecord> records) {
         this.records = records;
     }
 
@@ -159,7 +173,7 @@ public class SendAction extends MessageAction implements SendingAction {
             }
         }
         if (getRecords() != null) {
-            for (Record record : getRecords()) {
+            for (AbstractRecord record : getRecords()) {
                 holders.addAll(record.getAllModifiableVariableHolders());
             }
         }
@@ -180,13 +194,18 @@ public class SendAction extends MessageAction implements SendingAction {
     }
 
     @Override
-    public List<Record> getSendRecords() {
+    public List<AbstractRecord> getSendRecords() {
         return records;
     }
 
     @Override
     public List<DtlsHandshakeMessageFragment> getSendFragments() {
         return fragments;
+    }
+
+    @Override
+    public MessageActionDirection getMessageDirection() {
+        return MessageActionDirection.SENDING;
     }
 
     @Override
@@ -226,7 +245,9 @@ public class SendAction extends MessageAction implements SendingAction {
     public List<ProtocolMessageType> getGoingToSendProtocolMessageTypes() {
         List<ProtocolMessageType> protocolMessageTypes = new ArrayList<>();
         for (ProtocolMessage msg : messages) {
-            protocolMessageTypes.add(msg.getProtocolMessageType());
+            if (msg instanceof TlsMessage) {
+                protocolMessageTypes.add(((TlsMessage) msg).getProtocolMessageType());
+            }
         }
         return protocolMessageTypes;
     }
@@ -241,4 +262,5 @@ public class SendAction extends MessageAction implements SendingAction {
         }
         return handshakeMessageTypes;
     }
+
 }

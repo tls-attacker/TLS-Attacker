@@ -1,15 +1,16 @@
-/*
+/**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.state.State;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
@@ -17,7 +18,9 @@ public class DeepCopyBuffersAction extends CopyContextFieldAction {
 
     private State state;
 
-    public DeepCopyBuffersAction() {}
+    public DeepCopyBuffersAction() {
+
+    }
 
     public DeepCopyBuffersAction(String srcConnectionAlias, String dstConnectionAlias) {
         super(srcConnectionAlias, dstConnectionAlias);
@@ -42,14 +45,13 @@ public class DeepCopyBuffersAction extends CopyContextFieldAction {
     @Override
     protected void copyField(TlsContext srcContext, TlsContext dstContext) {
         DeepCopyBufferedRecordsAction copyRecords =
-                new DeepCopyBufferedRecordsAction(
-                        super.getSrcContextAlias(), super.getDstContextAlias());
+            new DeepCopyBufferedRecordsAction(super.getSrcContextAlias(), super.getDstContextAlias());
         DeepCopyBufferedMessagesAction copyMessages =
-                new DeepCopyBufferedMessagesAction(
-                        super.getSrcContextAlias(), super.getDstContextAlias());
+            new DeepCopyBufferedMessagesAction(super.getSrcContextAlias(), super.getDstContextAlias());
 
         copyRecords.execute(state);
         copyMessages.execute(state);
         setExecuted(true);
     }
+
 }

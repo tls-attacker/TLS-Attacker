@@ -1,11 +1,12 @@
-/*
+/**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.server;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -30,15 +31,14 @@ public class TlsServer {
         }
 
         WorkflowExecutor workflowExecutor =
-                WorkflowExecutorFactory.createWorkflowExecutor(
-                        config.getWorkflowExecutorType(), state);
+            WorkflowExecutorFactory.createWorkflowExecutor(config.getWorkflowExecutorType(), state);
 
         try {
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException ex) {
             LOGGER.info(
-                    "The TLS protocol flow was not executed completely, follow the debug messages for more information.",
-                    ex);
+                "The TLS protocol flow was not executed completely, follow the debug messages for more information.",
+                ex);
         }
         return state;
     }

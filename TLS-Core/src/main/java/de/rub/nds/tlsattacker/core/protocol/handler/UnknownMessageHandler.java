@@ -9,18 +9,40 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.protocol.parser.UnknownMessageParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.UnknownMessagePreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.UnknownMessageSerializer;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-public class UnknownMessageHandler extends ProtocolMessageHandler<UnknownMessage> {
+public class UnknownMessageHandler extends TlsMessageHandler<UnknownMessage> {
 
-    public UnknownMessageHandler(TlsContext tlsContext) {
+    private final ProtocolMessageType recordContentMessageType;
+
+    public UnknownMessageHandler(TlsContext tlsContext, ProtocolMessageType recordContentMessageType) {
         super(tlsContext);
+        this.recordContentMessageType = recordContentMessageType;
     }
 
     @Override
-    public void adjustContext(UnknownMessage message) {
+    public UnknownMessageParser getParser(byte[] message, int pointer) {
+        return new UnknownMessageParser(pointer, message, tlsContext.getChooser().getSelectedProtocolVersion(),
+            recordContentMessageType, tlsContext.getConfig());
+    }
+
+    @Override
+    public UnknownMessagePreparator getPreparator(UnknownMessage message) {
+        return new UnknownMessagePreparator(tlsContext.getChooser(), message);
+    }
+
+    @Override
+    public UnknownMessageSerializer getSerializer(UnknownMessage message) {
+        return new UnknownMessageSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
+    }
+
+    @Override
+    public void adjustTLSContext(UnknownMessage message) {
         // Nothing to do
     }
 

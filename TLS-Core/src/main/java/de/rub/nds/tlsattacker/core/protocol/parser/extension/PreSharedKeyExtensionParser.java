@@ -10,14 +10,11 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PreSharedKeyExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PSKBinder;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PSKIdentity;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -29,18 +26,16 @@ import org.apache.logging.log4j.Logger;
 public class PreSharedKeyExtensionParser extends ExtensionParser<PreSharedKeyExtensionMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    private final ConnectionEndType talkingConnectionEndType;
 
-    public PreSharedKeyExtensionParser(InputStream stream, TlsContext tlsContext) {
-        super(stream, tlsContext);
-        this.talkingConnectionEndType = tlsContext.getTalkingConnectionEndType();
+    public PreSharedKeyExtensionParser(int startposition, byte[] array, Config config) {
+        super(startposition, array, config);
     }
 
     @Override
-    public void parse(PreSharedKeyExtensionMessage msg) {
+    public void parseExtensionMessageContent(PreSharedKeyExtensionMessage msg) {
         LOGGER.debug("Parsing PreSharedKeyExtensionMessage");
         // Client -> Server
-        if (talkingConnectionEndType == ConnectionEndType.CLIENT) {
+        if (msg.getExtensionLength().getValue() > 2) {
             parsePreSharedKeyIdentityListLength(msg);
             parsePreSharedKeyIdentityListBytes(msg);
             parsePreSharedKeyBinderListLength(msg);
@@ -49,6 +44,11 @@ public class PreSharedKeyExtensionParser extends ExtensionParser<PreSharedKeyExt
             // Server -> Client
             parseSelectedIdentity(msg);
         }
+    }
+
+    @Override
+    protected PreSharedKeyExtensionMessage createExtensionMessage() {
+        return new PreSharedKeyExtensionMessage();
     }
 
     private void parsePreSharedKeyIdentityListLength(PreSharedKeyExtensionMessage msg) {
@@ -61,12 +61,11 @@ public class PreSharedKeyExtensionParser extends ExtensionParser<PreSharedKeyExt
         LOGGER.debug("Identity list bytes: " + ArrayConverter.bytesToHexString(msg.getIdentityListBytes().getValue()));
 
         List<PSKIdentity> identities = new LinkedList<>();
-        ByteArrayInputStream innerStream = new ByteArrayInputStream(msg.getIdentityListBytes().getValue());
-        while (innerStream.available() > 0) {
-            PSKIdentityParser parser = new PSKIdentityParser(innerStream);
-            PSKIdentity identity = new PSKIdentity();
-            parser.parse(identity);
-            identities.add(identity);
+        int parsed = 0;
+        while (parsed < msg.getIdentityListLength().getValue()) {
+            PSKIdentityParser parser = new PSKIdentityParser(parsed, msg.getIdentityListBytes().getValue());
+            identities.add(parser.parse());
+            parsed = parser.getPointer();
         }
         msg.setIdentities(identities);
     }
@@ -81,13 +80,11 @@ public class PreSharedKeyExtensionParser extends ExtensionParser<PreSharedKeyExt
         LOGGER.debug("Binder list bytes: " + ArrayConverter.bytesToHexString(msg.getBinderListBytes().getValue()));
 
         List<PSKBinder> binders = new LinkedList<>();
-        ByteArrayInputStream innerStream = new ByteArrayInputStream(msg.getBinderListBytes().getValue());
-
-        while (innerStream.available() > 0) {
-            PSKBinderParser parser = new PSKBinderParser(innerStream);
-            PSKBinder binder = new PSKBinder();
-            parser.parse(binder);
-            binders.add(binder);
+        int parsed = 0;
+        while (parsed < msg.getBinderListLength().getValue()) {
+            PSKBinderParser parser = new PSKBinderParser(parsed, msg.getBinderListBytes().getValue());
+            binders.add(parser.parse());
+            parsed = parser.getPointer();
         }
         msg.setBinders(binders);
     }

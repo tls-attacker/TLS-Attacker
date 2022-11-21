@@ -12,16 +12,15 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
-import de.rub.nds.tlsattacker.core.layer.data.Preparator;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessagePreparator;
-import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
-import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedServerNameIndicationExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.*;
+import de.rub.nds.tlsattacker.core.protocol.handler.HandshakeMessageHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.EncryptedServerNameIndicationExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.PreSharedKeyExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.factory.HandlerFactory;
+import de.rub.nds.tlsattacker.core.protocol.message.*;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.PreSharedKeyExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.EncryptedServerNameIndicationExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PreSharedKeyExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.HandshakeMessageSerializer;
@@ -36,7 +35,7 @@ import org.apache.logging.log4j.Logger;
  * @param <T>
  *            The HandshakeMessage that should be prepared
  */
-public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> extends ProtocolMessagePreparator<T> {
+public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> extends TlsMessagePreparator<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -54,24 +53,17 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
         LOGGER.debug("Type: " + message.getType().getValue());
     }
 
-    private void prepareMessageContent(byte[] content) {
-        message.setMessageContent(content);
-        LOGGER.debug(
-            "Handshake message content: " + ArrayConverter.bytesToHexString(message.getMessageContent().getValue()));
-    }
-
     @Override
     protected void prepareProtocolMessageContents() {
+        if (chooser.getSelectedProtocolVersion().isDTLS()) {
+            message.setMessageSequence(chooser.getContext().getDtlsWriteHandshakeMessageSequence());
+        }
         prepareHandshakeMessageContents();
-        prepareEncapsulatingFields();
-    }
 
-    public void prepareEncapsulatingFields() {
-        HandshakeMessageSerializer<T> serializer = message.getSerializer(chooser.getContext().getTlsContext());
-        byte[] content = serializer.serializeHandshakeMessageContent();
-        prepareMessageContent(content);
         if (!(message instanceof DtlsHandshakeMessageFragment)) {
-            prepareMessageLength(content.length);
+            HandshakeMessageHandler<T> handler = message.getHandler(chooser.getContext());
+            HandshakeMessageSerializer<T> serializer = handler.getSerializer(message);
+            prepareMessageLength(serializer.serializeHandshakeMessageContent().length);
             prepareMessageType(message.getHandshakeMessageType());
         }
     }
@@ -90,7 +82,9 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
                         ksExt.setRetryRequestMode(true);
                     }
                 }
-                extensionMessage.getPreparator(chooser.getContext().getTlsContext()).prepare();
+                ExtensionHandler handler = HandlerFactory.getExtensionHandler(chooser.getContext(),
+                    extensionMessage.getExtensionTypeConstant());
+                handler.getPreparator(extensionMessage).prepare();
                 try {
                     stream.write(extensionMessage.getExtensionBytes().getValue());
                 } catch (IOException ex) {
@@ -106,12 +100,15 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         if (message.getExtensions() != null) {
             for (ExtensionMessage extensionMessage : message.getExtensions()) {
-                Preparator preparator = extensionMessage.getPreparator(chooser.getContext().getTlsContext());
-                if (extensionMessage instanceof PreSharedKeyExtensionMessage && message instanceof ClientHelloMessage
+                HandshakeMessageType handshakeMessageType = message.getHandshakeMessageType();
+                ExtensionHandler handler = HandlerFactory.getExtensionHandler(chooser.getContext(),
+                    extensionMessage.getExtensionTypeConstant());
+                Preparator preparator = handler.getPreparator(extensionMessage);
+                if (handler instanceof PreSharedKeyExtensionHandler && message instanceof ClientHelloMessage
                     && chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
                     ((PreSharedKeyExtensionPreparator) preparator).setClientHello((ClientHelloMessage) message);
                     preparator.afterPrepare();
-                } else if (extensionMessage instanceof EncryptedServerNameIndicationExtensionMessage
+                } else if (handler instanceof EncryptedServerNameIndicationExtensionHandler
                     && message instanceof ClientHelloMessage
                     && chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
                     ClientHelloMessage clientHelloMessage = (ClientHelloMessage) message;
@@ -129,12 +126,11 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
                 } else {
                     LOGGER.debug(
                         "If we are in a SSLv2 or SSLv3 Connection we do not add extensions, as SSL did not contain extensions");
-                    LOGGER.debug("If however, the extensions are prepared, we will add them");
+                    LOGGER.debug("If however, the extensions are prepared, we will ad themm");
                 }
             }
         }
         message.setExtensionBytes(stream.toByteArray());
-        prepareEncapsulatingFields();
         LOGGER.debug("ExtensionBytes: " + ArrayConverter.bytesToHexString(message.getExtensionBytes().getValue()));
     }
 

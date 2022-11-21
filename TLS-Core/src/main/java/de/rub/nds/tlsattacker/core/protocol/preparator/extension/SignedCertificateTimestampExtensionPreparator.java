@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignedCertificateTimestampExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SignedCertificateTimestampExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,8 +23,8 @@ public class SignedCertificateTimestampExtensionPreparator
     private final SignedCertificateTimestampExtensionMessage message;
 
     public SignedCertificateTimestampExtensionPreparator(Chooser chooser,
-        SignedCertificateTimestampExtensionMessage message) {
-        super(chooser, message);
+        SignedCertificateTimestampExtensionMessage message, SignedCertificateTimestampExtensionSerializer serializer) {
+        super(chooser, message, serializer);
         this.message = message;
     }
 

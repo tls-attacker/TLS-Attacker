@@ -1,11 +1,12 @@
-/*
+/**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.server.config;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -18,12 +19,17 @@ import org.junit.jupiter.api.Test;
 
 public class ServerCommandConfigTest {
 
-    /** Test config command line parsing */
+    /**
+     * Test config command line parsing
+     */
     @Test
     @Disabled("Not implemented")
-    public void testCommandLineParsing() {}
+    public void testCommandLineParsing() {
+    }
 
-    /** Test invalid config with invalid cipher suite */
+    /**
+     * Test invalid config with invalid cipher suite
+     */
     @Test()
     public void testInvalidCommandLineParsing() {
         JCommander jc = new JCommander();
@@ -31,14 +37,8 @@ public class ServerCommandConfigTest {
         ServerCommandConfig server = new ServerCommandConfig(new GeneralDelegate());
         jc.addCommand(ServerCommandConfig.COMMAND, server);
 
-        assertThrows(
-                ParameterException.class,
-                () ->
-                        jc.parse(
-                                "server",
-                                "-cipher",
-                                "invalid,TLS_RSA_WITH_AES_256_CBC_SHA",
-                                "-version",
-                                "TLSv1.2"));
+        assertThrows(ParameterException.class,
+            () -> jc.parse("server", "-cipher", "invalid,TLS_RSA_WITH_AES_256_CBC_SHA", "-version", "TLSv1.2"));
     }
+
 }

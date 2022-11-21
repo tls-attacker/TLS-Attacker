@@ -23,8 +23,6 @@ public class RSAClientKeyExchangeSerializer<T extends RSAClientKeyExchangeMessag
 
     private final T msg;
 
-    private final ProtocolVersion version;
-
     /**
      * Constructor for the RSAClientKeyExchangeSerializer
      *
@@ -34,9 +32,8 @@ public class RSAClientKeyExchangeSerializer<T extends RSAClientKeyExchangeMessag
      *                Version of the Protocol
      */
     public RSAClientKeyExchangeSerializer(T message, ProtocolVersion version) {
-        super(message);
+        super(message, version);
         this.msg = message;
-        this.version = version;
     }
 
     @Override

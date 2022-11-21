@@ -1,11 +1,12 @@
-/*
+/**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -17,24 +18,20 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.AlpnExtensionMessa
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.AlpnExtensionSerializer;
 import org.junit.jupiter.api.Test;
 
-public class AlpnExtensionPreparatorTest
-        extends AbstractExtensionMessagePreparatorTest<
-                AlpnExtensionMessage, AlpnExtensionSerializer, AlpnExtensionPreparator> {
+public class AlpnExtensionPreparatorTest extends
+    AbstractExtensionMessagePreparatorTest<AlpnExtensionMessage, AlpnExtensionSerializer, AlpnExtensionPreparator> {
 
     public AlpnExtensionPreparatorTest() {
-        super(
-                AlpnExtensionMessage::new,
-                AlpnExtensionSerializer::new,
-                AlpnExtensionPreparator::new);
-        createNewMessageAndPreparator(false);
+        super(AlpnExtensionMessage::new, AlpnExtensionMessage::new, AlpnExtensionSerializer::new,
+            AlpnExtensionPreparator::new);
+        createNewMessageAndPreparator(true);
     }
 
     @Test
     @Override
     public void testPrepare() {
         String announcedProtocols = "h2";
-        byte[] protocolsWithLength =
-                ArrayConverter.concatenate(new byte[] {0x02}, announcedProtocols.getBytes());
+        byte[] protocolsWithLength = ArrayConverter.concatenate(new byte[] { 0x02 }, announcedProtocols.getBytes());
 
         context.getConfig().setDefaultProposedAlpnProtocols(announcedProtocols);
         preparator.prepare();

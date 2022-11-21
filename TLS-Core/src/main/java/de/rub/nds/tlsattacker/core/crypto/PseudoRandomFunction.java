@@ -13,8 +13,6 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -22,6 +20,9 @@ import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Pseudo random function computation for SSL3, TLS 1.0 - 1.2
@@ -250,7 +251,6 @@ public class PseudoRandomFunction {
      *
      * The PseudoRandomFunction class takes use of the p_hash function.
      */
-
     /**
      * p_hash is a data expansion function as described in RFC 5246 5. HMAC and the Pseudorandom Function
      *

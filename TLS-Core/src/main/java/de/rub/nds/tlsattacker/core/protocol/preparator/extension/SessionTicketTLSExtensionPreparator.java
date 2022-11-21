@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SessionTicketTLSExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,8 +22,9 @@ public class SessionTicketTLSExtensionPreparator extends ExtensionPreparator<Ses
 
     private final SessionTicketTLSExtensionMessage message;
 
-    public SessionTicketTLSExtensionPreparator(Chooser chooser, SessionTicketTLSExtensionMessage message) {
-        super(chooser, message);
+    public SessionTicketTLSExtensionPreparator(Chooser chooser, SessionTicketTLSExtensionMessage message,
+        SessionTicketTLSExtensionSerializer serializer) {
+        super(chooser, message, serializer);
         this.message = message;
     }
 

@@ -1,11 +1,12 @@
-/*
+/**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -17,17 +18,12 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.PasswordSaltExtens
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PasswordSaltExtensionSerializer;
 import org.junit.jupiter.api.Test;
 
-public class PasswordSaltExtensionPreparatorTest
-        extends AbstractExtensionMessagePreparatorTest<
-                PasswordSaltExtensionMessage,
-                PasswordSaltExtensionSerializer,
-                PasswordSaltExtensionPreparator> {
+public class PasswordSaltExtensionPreparatorTest extends AbstractExtensionMessagePreparatorTest<
+    PasswordSaltExtensionMessage, PasswordSaltExtensionSerializer, PasswordSaltExtensionPreparator> {
 
     public PasswordSaltExtensionPreparatorTest() {
-        super(
-                PasswordSaltExtensionMessage::new,
-                PasswordSaltExtensionSerializer::new,
-                PasswordSaltExtensionPreparator::new);
+        super(PasswordSaltExtensionMessage::new, PasswordSaltExtensionMessage::new,
+            PasswordSaltExtensionSerializer::new, PasswordSaltExtensionPreparator::new);
     }
 
     @Test
@@ -37,9 +33,10 @@ public class PasswordSaltExtensionPreparatorTest
         context.getConfig().setDefaultServerPWDSalt(salt);
         preparator.prepare();
 
-        assertArrayEquals(
-                ExtensionType.PASSWORD_SALT.getValue(), message.getExtensionType().getValue());
+        assertArrayEquals(ExtensionType.PASSWORD_SALT.getValue(), message.getExtensionType().getValue());
         assertEquals(5, message.getExtensionLength().getValue());
         assertArrayEquals(salt, message.getSalt().getValue());
+
     }
+
 }

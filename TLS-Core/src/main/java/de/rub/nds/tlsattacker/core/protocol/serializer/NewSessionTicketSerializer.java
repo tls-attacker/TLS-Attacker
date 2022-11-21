@@ -23,8 +23,6 @@ public class NewSessionTicketSerializer extends HandshakeMessageSerializer<NewSe
 
     private final NewSessionTicketMessage msg;
 
-    private ProtocolVersion version;
-
     /**
      * Constructor for the NewSessionTicketMessageSerializer
      *
@@ -34,9 +32,8 @@ public class NewSessionTicketSerializer extends HandshakeMessageSerializer<NewSe
      *                Version of the Protocol
      */
     public NewSessionTicketSerializer(NewSessionTicketMessage message, ProtocolVersion version) {
-        super(message);
+        super(message, version);
         this.msg = message;
-        this.version = version;
     }
 
     @Override

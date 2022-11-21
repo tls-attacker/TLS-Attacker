@@ -1,17 +1,29 @@
-/*
+/**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.certificate.ocsp;
 
 import de.rub.nds.asn1.Asn1Encodable;
-import de.rub.nds.asn1.model.*;
+import de.rub.nds.asn1.model.Asn1EncapsulatingBitString;
+import de.rub.nds.asn1.model.Asn1EncapsulatingOctetString;
+import de.rub.nds.asn1.model.Asn1EndOfContent;
+import de.rub.nds.asn1.model.Asn1Enumerated;
+import de.rub.nds.asn1.model.Asn1Explicit;
+import de.rub.nds.asn1.model.Asn1Integer;
+import de.rub.nds.asn1.model.Asn1Null;
+import de.rub.nds.asn1.model.Asn1ObjectIdentifier;
+import de.rub.nds.asn1.model.Asn1PrimitiveGeneralizedTime;
+import de.rub.nds.asn1.model.Asn1PrimitiveOctetString;
+import de.rub.nds.asn1.model.Asn1Sequence;
 import de.rub.nds.tlsattacker.core.util.Asn1ToolInitializer;
 import java.math.BigInteger;
+import java.security.cert.CertificateParsingException;
 import java.util.List;
 
 public class CertificateStatusParser {
@@ -41,8 +53,7 @@ public class CertificateStatusParser {
          */
 
         Asn1Sequence hashAlgorithmSequence = (Asn1Sequence) requestInformation.getChildren().get(0);
-        hashAlgorithmIdentifier =
-                (((Asn1ObjectIdentifier) hashAlgorithmSequence.getChildren().get(0)).getValue());
+        hashAlgorithmIdentifier = (((Asn1ObjectIdentifier) hashAlgorithmSequence.getChildren().get(0)).getValue());
 
         // Workaround for ASN.1 Tool messing up the correct type occasionally,
         // switching between Primitive and Encapsulated
@@ -51,14 +62,12 @@ public class CertificateStatusParser {
         if (issuerNameHashObject instanceof Asn1PrimitiveOctetString) {
             issuerNameHash = ((Asn1PrimitiveOctetString) issuerNameHashObject).getValue();
         } else if (issuerNameHashObject instanceof Asn1EncapsulatingOctetString) {
-            issuerNameHash =
-                    ((Asn1EncapsulatingOctetString) issuerNameHashObject).getContent().getValue();
+            issuerNameHash = ((Asn1EncapsulatingOctetString) issuerNameHashObject).getContent().getValue();
         }
         if (issuerKeyHashObject instanceof Asn1PrimitiveOctetString) {
             issuerKeyHash = ((Asn1PrimitiveOctetString) issuerKeyHashObject).getValue();
         } else if (issuerKeyHashObject instanceof Asn1EncapsulatingOctetString) {
-            issuerKeyHash =
-                    ((Asn1EncapsulatingOctetString) issuerKeyHashObject).getContent().getValue();
+            issuerKeyHash = ((Asn1EncapsulatingOctetString) issuerKeyHashObject).getContent().getValue();
         }
 
         // Another ASN.1 Tool bug workaround: Sometimes the serial number is
@@ -67,8 +76,7 @@ public class CertificateStatusParser {
         if (serialNumberObject instanceof Asn1Integer) {
             serialNumber = ((Asn1Integer) serialNumberObject).getValue();
         } else if (serialNumberObject instanceof Asn1EncapsulatingBitString) {
-            Asn1EncapsulatingBitString serialNumberBitStringObject =
-                    (Asn1EncapsulatingBitString) serialNumberObject;
+            Asn1EncapsulatingBitString serialNumberBitStringObject = (Asn1EncapsulatingBitString) serialNumberObject;
             serialNumber = new BigInteger(1, serialNumberBitStringObject.getContent().getValue());
         }
 
@@ -90,16 +98,12 @@ public class CertificateStatusParser {
                 case 1:
                     certificateStatusValue = 1; // revoked
                     List<Asn1Encodable> revocationObjects = certStatusExplicitObject.getChildren();
-                    revocationTime =
-                            ((Asn1PrimitiveGeneralizedTime) revocationObjects.get(0)).getValue();
+                    revocationTime = ((Asn1PrimitiveGeneralizedTime) revocationObjects.get(0)).getValue();
 
                     // Optional revocation reason
                     if (revocationObjects.size() > 1) {
                         if (revocationObjects.get(1) instanceof Asn1Enumerated) {
-                            revocationReason =
-                                    ((Asn1Enumerated) revocationObjects.get(1))
-                                            .getValue()
-                                            .intValue();
+                            revocationReason = ((Asn1Enumerated) revocationObjects.get(1)).getValue().intValue();
                         }
                     }
                     break;
@@ -114,7 +118,7 @@ public class CertificateStatusParser {
 
         // After the status comes the mandatory timeOfLastUpdate
         Asn1PrimitiveGeneralizedTime timeOfLastUpdateObject =
-                (Asn1PrimitiveGeneralizedTime) certStatusSeq.getChildren().get(2);
+            (Asn1PrimitiveGeneralizedTime) certStatusSeq.getChildren().get(2);
         timeOfLastUpdate = timeOfLastUpdateObject.getValue();
 
         // And at last, optional tags for lastUpdate and extensions
@@ -126,9 +130,7 @@ public class CertificateStatusParser {
                 switch (nextExplicitObject.getOffset()) {
                     case 0:
                         timeOfNextUpdate =
-                                ((Asn1PrimitiveGeneralizedTime)
-                                                nextExplicitObject.getChildren().get(0))
-                                        .getValue();
+                            ((Asn1PrimitiveGeneralizedTime) nextExplicitObject.getChildren().get(0)).getValue();
                         break;
                     case 1:
                         // TODO: Add support for singleExtensions here.

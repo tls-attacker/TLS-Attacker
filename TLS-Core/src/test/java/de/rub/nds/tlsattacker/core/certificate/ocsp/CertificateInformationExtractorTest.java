@@ -1,22 +1,24 @@
-/*
+/**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.certificate.ocsp;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import de.rub.nds.asn1.parser.ParserException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.math.BigInteger;
 import org.bouncycastle.asn1.x509.Certificate;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.math.BigInteger;
 
 public class CertificateInformationExtractorTest {
 
@@ -33,10 +35,8 @@ public class CertificateInformationExtractorTest {
     @BeforeAll
     public static void setUpClass() throws IOException {
         org.bouncycastle.crypto.tls.Certificate tlsCertificate;
-        try (InputStream stream =
-                CertificateInformationExtractorTest.class
-                        .getClassLoader()
-                        .getResourceAsStream("ocsp/muststaple-tlscertchain.bin")) {
+        try (InputStream stream = CertificateInformationExtractorTest.class.getClassLoader()
+            .getResourceAsStream("ocsp/muststaple-tlscertchain.bin")) {
             assertNotNull(stream);
             tlsCertificate = org.bouncycastle.crypto.tls.Certificate.parse(stream);
         }
@@ -44,8 +44,7 @@ public class CertificateInformationExtractorTest {
         certificate = tlsCertificate.getCertificateAt(0);
         issuerCertificate = tlsCertificate.getCertificateAt(1);
         certificateInformationExtractor = new CertificateInformationExtractor(certificate);
-        issuerCertificateInformationExtractor =
-                new CertificateInformationExtractor(issuerCertificate);
+        issuerCertificateInformationExtractor = new CertificateInformationExtractor(issuerCertificate);
     }
 
     @Test
@@ -79,27 +78,21 @@ public class CertificateInformationExtractorTest {
 
     @Test
     public void testGetIssuerNameHash() {
-        byte[] expectedNameHash = {
-            126, -26, 106, -25, 114, -102, -77, -4, -8, -94, 32, 100, 108, 22, -95, 45, 96, 113, 8,
-            93
-        };
+        byte[] expectedNameHash =
+            { 126, -26, 106, -25, 114, -102, -77, -4, -8, -94, 32, 100, 108, 22, -95, 45, 96, 113, 8, 93 };
         assertArrayEquals(expectedNameHash, certificateInformationExtractor.getIssuerNameHash());
     }
 
     @Test
     public void testGetIssuerKeyHash() {
-        byte[] expectedKeyHash = {
-            -88, 74, 106, 99, 4, 125, -35, -70, -26, -47, 57, -73, -90, 69, 101, -17, -13, -88, -20,
-            -95
-        };
-        assertArrayEquals(
-                expectedKeyHash, issuerCertificateInformationExtractor.getIssuerKeyHash());
+        byte[] expectedKeyHash =
+            { -88, 74, 106, 99, 4, 125, -35, -70, -26, -47, 57, -73, -90, 69, 101, -17, -13, -88, -20, -95 };
+        assertArrayEquals(expectedKeyHash, issuerCertificateInformationExtractor.getIssuerKeyHash());
     }
 
     @Test
     public void testGetSerialNumber() {
-        BigInteger expectedSerialNumber =
-                new BigInteger("403767931667699214058966529413005128395827");
+        BigInteger expectedSerialNumber = new BigInteger("403767931667699214058966529413005128395827");
         assertEquals(expectedSerialNumber, certificateInformationExtractor.getSerialNumber());
     }
 }

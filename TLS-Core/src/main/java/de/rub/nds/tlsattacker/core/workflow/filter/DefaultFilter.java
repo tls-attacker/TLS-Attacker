@@ -1,11 +1,12 @@
-/*
+/**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow.filter;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -26,8 +27,8 @@ import org.apache.logging.log4j.Logger;
 /**
  * Internal default filter that strips unnecessary default values.
  *
- * <p>This filter works on a normalized workflow trace only. It is the default filter that is
- * normally used before workflow trace serialization.
+ * This filter works on a normalized workflow trace only. It is the default filter that is normally used before workflow
+ * trace serialization.
  */
 public class DefaultFilter extends Filter {
 
@@ -40,7 +41,8 @@ public class DefaultFilter extends Filter {
     /**
      * Apply filter to trace.
      *
-     * @param trace The workflow trace that should be filtered.
+     * @param trace
+     *              The workflow trace that should be filtered.
      */
     @Override
     public void applyFilter(WorkflowTrace trace) {
@@ -57,9 +59,8 @@ public class DefaultFilter extends Filter {
         for (AliasedConnection traceCon : traceConnections) {
             ConnectionEndType localConEndType = traceCon.getLocalConnectionEndType();
             if (null == localConEndType) {
-                throw new ConfigurationException(
-                        "WorkflowTrace defines a connection with an"
-                                + "empty localConnectionEndType. Don't know how to handle this!");
+                throw new ConfigurationException("WorkflowTrace defines a connection with an"
+                    + "empty localConnectionEndType. Don't know how to handle this!");
             } else {
                 lastProcessedCon = traceCon.getCopy();
                 switch (traceCon.getLocalConnectionEndType()) {
@@ -71,12 +72,10 @@ public class DefaultFilter extends Filter {
                         break;
                     default:
                         throw new ConfigurationException(
-                                "WorkflowTrace defines a connection with an"
-                                        + "unknown localConnectionEndType ("
-                                        + localConEndType
-                                        + "). Don't know "
-                                        + "how to handle this!");
+                            "WorkflowTrace defines a connection with an" + "unknown localConnectionEndType ("
+                                + localConEndType + "). Don't know " + "how to handle this!");
                 }
+
             }
         }
 
@@ -93,11 +92,14 @@ public class DefaultFilter extends Filter {
 
     /**
      * Restore workflow trace values that were explicitly set by the user.
+     * <p>
+     * Currently restores only workflow trace connections set by the user.
      *
-     * <p>Currently restores only workflow trace connections set by the user.
+     * @param trace
+     *                  the trace to which the postFilter should be applied
+     * @param reference
+     *                  the reference trace holding the original user defined values
      *
-     * @param trace the trace to which the postFilter should be applied
-     * @param reference the reference trace holding the original user defined values
      */
     @Override
     public void postFilter(WorkflowTrace trace, WorkflowTrace reference) {
@@ -108,4 +110,5 @@ public class DefaultFilter extends Filter {
     public FilterType getFilterType() {
         return FilterType.DEFAULT;
     }
+
 }

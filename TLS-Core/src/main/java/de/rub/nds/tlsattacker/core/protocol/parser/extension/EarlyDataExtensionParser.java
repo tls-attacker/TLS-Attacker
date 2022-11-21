@@ -9,11 +9,9 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EarlyDataExtensionMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,16 +22,21 @@ public class EarlyDataExtensionParser extends ExtensionParser<EarlyDataExtension
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public EarlyDataExtensionParser(InputStream stream, TlsContext tlsContext) {
-        super(stream, tlsContext);
+    public EarlyDataExtensionParser(int startposition, byte[] array, Config config) {
+        super(startposition, array, config);
     }
 
     @Override
-    public void parse(EarlyDataExtensionMessage msg) {
+    public void parseExtensionMessageContent(EarlyDataExtensionMessage msg) {
         LOGGER.debug("Parsing EarlyDataExtensionMessage");
-        if (getTlsContext().getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
+        if (msg.getExtensionLength().getValue() > 0) {
             parseMaxEarlyDataSize(msg);
         }
+    }
+
+    @Override
+    protected EarlyDataExtensionMessage createExtensionMessage() {
+        return new EarlyDataExtensionMessage();
     }
 
     private void parseMaxEarlyDataSize(EarlyDataExtensionMessage msg) {

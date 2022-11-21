@@ -10,7 +10,10 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.PskClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.protocol.parser.PskClientKeyExchangeParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.PskClientKeyExchangePreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.PskClientKeyExchangeSerializer;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 public class PskClientKeyExchangeHandler extends ClientKeyExchangeHandler<PskClientKeyExchangeMessage> {
 
@@ -19,7 +22,23 @@ public class PskClientKeyExchangeHandler extends ClientKeyExchangeHandler<PskCli
     }
 
     @Override
-    public void adjustContext(PskClientKeyExchangeMessage message) {
+    public PskClientKeyExchangeParser getParser(byte[] message, int pointer) {
+        return new PskClientKeyExchangeParser(pointer, message, tlsContext.getChooser().getSelectedProtocolVersion(),
+            tlsContext.getConfig());
+    }
+
+    @Override
+    public PskClientKeyExchangePreparator getPreparator(PskClientKeyExchangeMessage message) {
+        return new PskClientKeyExchangePreparator(tlsContext.getChooser(), message);
+    }
+
+    @Override
+    public PskClientKeyExchangeSerializer getSerializer(PskClientKeyExchangeMessage message) {
+        return new PskClientKeyExchangeSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
+    }
+
+    @Override
+    public void adjustTLSContext(PskClientKeyExchangeMessage message) {
         adjustPremasterSecret(message);
         adjustMasterSecret(message);
         spawnNewSession();

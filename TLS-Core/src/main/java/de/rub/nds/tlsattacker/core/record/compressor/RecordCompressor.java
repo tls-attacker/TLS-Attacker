@@ -11,26 +11,26 @@ package de.rub.nds.tlsattacker.core.record.compressor;
 
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.compressor.compression.CompressionAlgorithm;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-public class RecordCompressor extends Compressor<Record> {
+public class RecordCompressor extends Compressor<AbstractRecord> {
 
     private CompressionAlgorithm algorithm;
-    private final ProtocolVersion version;
+    private ProtocolVersion version;
 
-    public RecordCompressor(TlsContext tlsContext) {
-        version = tlsContext.getChooser().getSelectedProtocolVersion();
+    public RecordCompressor(TlsContext context) {
+        version = context.getChooser().getSelectedProtocolVersion();
         if (version.isTLS13()) {
             setMethod(CompressionMethod.NULL);
         } else {
-            setMethod(tlsContext.getChooser().getSelectedCompressionMethod());
+            setMethod(context.getChooser().getSelectedCompressionMethod());
         }
     }
 
     @Override
-    public void compress(Record record) {
+    public void compress(AbstractRecord record) {
         byte[] cleanBytes = record.getCleanProtocolMessageBytes().getValue();
         byte[] compressedBytes = algorithm.compress(cleanBytes);
         record.setCleanProtocolMessageBytes(compressedBytes);

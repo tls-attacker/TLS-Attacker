@@ -10,34 +10,47 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.PskEcDheServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.io.InputStream;
 
 public class PskEcDheServerKeyExchangeParser extends ECDHEServerKeyExchangeParser<PskEcDheServerKeyExchangeMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    private final ProtocolVersion version;
+
     /**
      * Constructor for the Parser class
      *
-     * @param stream
-     * @param tlsContext
+     * @param pointer
+     *                Position in the array where the ServerKeyExchangeParser is supposed to start parsing
+     * @param array
+     *                The byte[] which the ServerKeyExchangeParser is supposed to parse
+     * @param version
+     *                Version of the Protocol
+     * @param config
+     *                A Config used in the current context
      */
-    public PskEcDheServerKeyExchangeParser(InputStream stream, TlsContext tlsContext) {
-        super(stream, tlsContext);
+    public PskEcDheServerKeyExchangeParser(int pointer, byte[] array, ProtocolVersion version, Config config) {
+        super(pointer, array, version, config);
+        this.version = version;
     }
 
     @Override
-    public void parse(PskEcDheServerKeyExchangeMessage msg) {
+    protected void parseHandshakeMessageContent(PskEcDheServerKeyExchangeMessage msg) {
         LOGGER.debug("Parsing PSKECDHEServerKeyExchangeMessage");
         parsePskIdentityHintLength(msg);
         parsePskIdentityHint(msg);
         super.parseEcDheParams(msg);
+    }
+
+    @Override
+    protected PskEcDheServerKeyExchangeMessage createHandshakeMessage() {
+        return new PskEcDheServerKeyExchangeMessage();
     }
 
     private void parsePskIdentityHintLength(PskEcDheServerKeyExchangeMessage msg) {

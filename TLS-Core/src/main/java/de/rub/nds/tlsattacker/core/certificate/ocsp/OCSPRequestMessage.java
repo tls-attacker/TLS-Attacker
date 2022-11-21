@@ -9,11 +9,20 @@
 
 package de.rub.nds.tlsattacker.core.certificate.ocsp;
 
+import static de.rub.nds.tlsattacker.core.certificate.ocsp.OCSPResponseTypes.ACCEPTABLE_RESPONSES;
+import static de.rub.nds.tlsattacker.core.certificate.ocsp.OCSPResponseTypes.BASIC;
+import static de.rub.nds.tlsattacker.core.certificate.ocsp.OCSPResponseTypes.NONCE;
+
 import de.rub.nds.asn1.Asn1Encodable;
 import de.rub.nds.asn1.encoder.Asn1Encoder;
-import de.rub.nds.asn1.model.*;
+import de.rub.nds.asn1.model.Asn1EncapsulatingOctetString;
+import de.rub.nds.asn1.model.Asn1Explicit;
+import de.rub.nds.asn1.model.Asn1Integer;
+import de.rub.nds.asn1.model.Asn1Null;
+import de.rub.nds.asn1.model.Asn1ObjectIdentifier;
+import de.rub.nds.asn1.model.Asn1PrimitiveOctetString;
+import de.rub.nds.asn1.model.Asn1Sequence;
 import de.rub.nds.tlsattacker.core.certificate.ObjectIdentifierTranslator;
-import static de.rub.nds.tlsattacker.core.certificate.ocsp.OCSPResponseTypes.*;
 import java.math.BigInteger;
 import java.util.LinkedList;
 import java.util.List;
@@ -21,10 +30,6 @@ import java.util.Random;
 import org.apache.commons.lang3.NotImplementedException;
 
 public class OCSPRequestMessage {
-    // see RFC 6960: TBSRequest -> [2] requestExtensions
-    private static final int EXTENSION_ASN1_EXPLICIT_OFFSET = 2;
-    private static final int NONCE_RANDOM_SEED = 42;
-    private static final int NONCE_LENGTH_BIT = 128;
 
     Asn1Sequence tbsRequestWrapper = new Asn1Sequence();
     Asn1Sequence tbsRequest = new Asn1Sequence();
@@ -32,6 +37,11 @@ public class OCSPRequestMessage {
     Asn1Sequence extensionSequence = new Asn1Sequence();
     Asn1Explicit extensionExplicitSequence = new Asn1Explicit();
     BigInteger nonce;
+
+    // see RFC 6960: TBSRequest -> [2] requestExtensions
+    private static final int EXTENSION_ASN1_EXPLICIT_OFFSET = 2;
+    private static final int NONCE_RANDOM_SEED = 42;
+    private static final int NONCE_LENGTH_BIT = 128;
 
     boolean extensionsSet = false;
 

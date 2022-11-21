@@ -1,46 +1,55 @@
-/*
+/**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.AlertDescription;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.handler.AlertHandler;
-import de.rub.nds.tlsattacker.core.protocol.parser.AlertParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.AlertPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.AlertSerializer;
+import de.rub.nds.tlsattacker.core.protocol.handler.TlsMessageHandler;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.util.Objects;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import java.io.InputStream;
-import java.util.Objects;
 
 @XmlRootElement(name = "Alert")
-public class AlertMessage extends ProtocolMessage<AlertMessage> {
+public class AlertMessage extends TlsMessage {
 
-    /** config array used to configure alert message */
+    /**
+     * config array used to configure alert message
+     */
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] config;
-    /** alert level */
+    /**
+     * alert level
+     */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     ModifiableByte level;
 
-    /** alert description */
+    /**
+     * alert description
+     */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     ModifiableByte description;
 
     public AlertMessage() {
+        super();
+        this.protocolMessageType = ProtocolMessageType.ALERT;
+    }
+
+    public AlertMessage(Config tlsConfig) {
         super();
         this.protocolMessageType = ProtocolMessageType.ALERT;
     }
@@ -136,8 +145,7 @@ public class AlertMessage extends ProtocolMessage<AlertMessage> {
 
     @Override
     public String toShortString() {
-        AlertDescription alertDescription =
-                AlertDescription.getAlertDescription(description.getValue());
+        AlertDescription alertDescription = AlertDescription.getAlertDescription(description.getValue());
         if (alertDescription == null) {
             return "UKNOWN ALERT";
         }
@@ -154,8 +162,8 @@ public class AlertMessage extends ProtocolMessage<AlertMessage> {
         }
         AlertMessage alert = (AlertMessage) obj;
         return (Objects.equals(alert.getLevel().getValue(), this.getLevel().getValue()))
-                && (Objects.equals(
-                        alert.getDescription().getValue(), this.getDescription().getValue()));
+            && (Objects.equals(alert.getDescription().getValue(), this.getDescription().getValue()));
+
     }
 
     @Override
@@ -167,22 +175,7 @@ public class AlertMessage extends ProtocolMessage<AlertMessage> {
     }
 
     @Override
-    public AlertHandler getHandler(TlsContext tlsContext) {
-        return new AlertHandler(tlsContext);
-    }
-
-    @Override
-    public AlertParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new AlertParser(stream);
-    }
-
-    @Override
-    public AlertPreparator getPreparator(TlsContext tlsContext) {
-        return new AlertPreparator(tlsContext.getChooser(), this);
-    }
-
-    @Override
-    public AlertSerializer getSerializer(TlsContext tlsContext) {
-        return new AlertSerializer(this);
+    public TlsMessageHandler getHandler(TlsContext context) {
+        return new AlertHandler(context);
     }
 }

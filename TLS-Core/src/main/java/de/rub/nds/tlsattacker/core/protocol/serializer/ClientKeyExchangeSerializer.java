@@ -9,6 +9,7 @@
 
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientKeyExchangeMessage;
 
 /**
@@ -23,9 +24,11 @@ public abstract class ClientKeyExchangeSerializer<T extends ClientKeyExchangeMes
      *
      * @param message
      *                Message that should be serialized
+     * @param version
+     *                Version of the Protocol
      */
-    public ClientKeyExchangeSerializer(T message) {
-        super(message);
+    public ClientKeyExchangeSerializer(T message, ProtocolVersion version) {
+        super(message, version);
     }
 
 }

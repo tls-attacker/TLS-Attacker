@@ -9,19 +9,23 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptThenMacExtensionMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-
-import java.io.InputStream;
 
 public class EncryptThenMacExtensionParser extends ExtensionParser<EncryptThenMacExtensionMessage> {
 
-    public EncryptThenMacExtensionParser(InputStream stream, TlsContext tlsContext) {
-        super(stream, tlsContext);
+    public EncryptThenMacExtensionParser(int startposition, byte[] array, Config config) {
+        super(startposition, array, config);
     }
 
     @Override
-    public void parse(EncryptThenMacExtensionMessage msg) {
+    public void parseExtensionMessageContent(EncryptThenMacExtensionMessage msg) {
         // nothing to parse here, it's a opt-in extension
     }
+
+    @Override
+    protected EncryptThenMacExtensionMessage createExtensionMessage() {
+        return new EncryptThenMacExtensionMessage();
+    }
+
 }

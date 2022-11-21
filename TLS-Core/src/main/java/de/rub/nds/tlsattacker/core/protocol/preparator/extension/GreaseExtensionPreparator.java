@@ -10,13 +10,15 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.GreaseExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 public class GreaseExtensionPreparator extends ExtensionPreparator<GreaseExtensionMessage> {
     GreaseExtensionMessage msg;
 
-    public GreaseExtensionPreparator(Chooser chooser, GreaseExtensionMessage message) {
-        super(chooser, message);
+    public GreaseExtensionPreparator(Chooser chooser, GreaseExtensionMessage message,
+        ExtensionSerializer<GreaseExtensionMessage> serializer) {
+        super(chooser, message, serializer);
         this.msg = message;
     }
 

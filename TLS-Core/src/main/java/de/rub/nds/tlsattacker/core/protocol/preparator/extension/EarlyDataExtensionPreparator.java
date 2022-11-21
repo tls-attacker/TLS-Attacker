@@ -10,6 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EarlyDataExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,8 +24,9 @@ public class EarlyDataExtensionPreparator extends ExtensionPreparator<EarlyDataE
 
     private final EarlyDataExtensionMessage msg;
 
-    public EarlyDataExtensionPreparator(Chooser chooser, EarlyDataExtensionMessage message) {
-        super(chooser, message);
+    public EarlyDataExtensionPreparator(Chooser chooser, EarlyDataExtensionMessage message,
+        ExtensionSerializer<EarlyDataExtensionMessage> serializer) {
+        super(chooser, message, serializer);
         this.msg = message;
     }
 

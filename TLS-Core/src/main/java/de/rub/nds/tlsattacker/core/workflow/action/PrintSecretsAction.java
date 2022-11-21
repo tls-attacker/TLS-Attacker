@@ -1,17 +1,20 @@
-/*
+/**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
+import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,15 +24,16 @@ public class PrintSecretsAction extends ConnectionBoundAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public PrintSecretsAction() {}
+    public PrintSecretsAction() {
+    }
 
     public PrintSecretsAction(String connectionAlias) {
         super(connectionAlias);
     }
 
     @Override
-    public void execute(State state) throws ActionExecutionException {
-        TlsContext ctx = state.getContext(connectionAlias).getTlsContext();
+    public void execute(State state) throws WorkflowExecutionException {
+        TlsContext ctx = state.getTlsContext(connectionAlias);
         StringBuilder sb = new StringBuilder("\n\nContext: " + ctx);
         sb.append("\n  (Record Layer) ");
         if (ctx.getSelectedCipherSuite() == null) {
@@ -49,10 +53,7 @@ public class PrintSecretsAction extends ConnectionBoundAction {
             sb.append("\n  ServerRsaModulus(chooser): null");
         } else {
             sb.append("\n  ServerRsaModulus (chooser): ");
-            sb.append(
-                    toIndentedString(
-                            ArrayConverter.bigIntegerToByteArray(
-                                    ctx.getChooser().getServerRsaModulus())));
+            sb.append(toIndentedString(ArrayConverter.bigIntegerToByteArray(ctx.getChooser().getServerRsaModulus())));
         }
 
         sb.append("\n\n  (Handshake) ");
@@ -64,17 +65,16 @@ public class PrintSecretsAction extends ConnectionBoundAction {
         if (ctx.getLastClientVerifyData() == null) {
             sb.append("\n  LastClientVerifyData: null");
         } else {
-            sb.append("\n  LastClientVerifyData: ")
-                    .append(toIndentedString(ctx.getLastClientVerifyData()));
+            sb.append("\n  LastClientVerifyData: ").append(toIndentedString(ctx.getLastClientVerifyData()));
         }
         if (ctx.getLastServerVerifyData() == null) {
             sb.append("\n  LastServerVerifyData: null");
         } else {
-            sb.append("\n  LastServerVerifyData: ")
-                    .append(toIndentedString(ctx.getLastServerVerifyData()));
+            sb.append("\n  LastServerVerifyData: ").append(toIndentedString(ctx.getLastServerVerifyData()));
         }
 
-        LOGGER.info(sb.append("\n").toString());
+        CONSOLE.info(sb.append("\n").toString());
+
     }
 
     private String toIndentedString(byte[] bytes) {
@@ -87,5 +87,7 @@ public class PrintSecretsAction extends ConnectionBoundAction {
     }
 
     @Override
-    public void reset() {}
+    public void reset() {
+    }
+
 }

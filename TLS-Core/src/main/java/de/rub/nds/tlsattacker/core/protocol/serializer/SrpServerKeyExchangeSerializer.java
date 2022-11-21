@@ -127,6 +127,14 @@ public class SrpServerKeyExchangeSerializer extends ServerKeyExchangeSerializer<
             + ArrayConverter.bytesToHexString(msg.getSignatureAndHashAlgorithm().getValue()));
     }
 
+    private boolean isTLS12() {
+        return version == ProtocolVersion.TLS12;
+    }
+
+    private boolean isDTLS12() {
+        return version == ProtocolVersion.DTLS12;
+    }
+
     /**
      * Writes the SignatureLength of the SrpServerKeyExchangeMessage into the final byte[]
      */

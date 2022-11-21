@@ -10,10 +10,10 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.PskRsaClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,19 +24,30 @@ public class PskRsaClientKeyExchangeParser extends RSAClientKeyExchangeParser<Ps
     /**
      * Constructor for the Parser class
      *
-     * @param stream
-     * @param tlsContext
+     * @param startposition
+     *                      Position in the array where the ClientKeyExchangeParser is supposed to start parsing
+     * @param array
+     *                      The byte[] which the ClientKeyExchangeParser is supposed to parse
+     * @param version
+     *                      Version of the Protocol
+     * @param config
+     *                      A Config used in the current context
      */
-    public PskRsaClientKeyExchangeParser(InputStream stream, TlsContext tlsContext) {
-        super(stream, tlsContext);
+    public PskRsaClientKeyExchangeParser(int startposition, byte[] array, ProtocolVersion version, Config config) {
+        super(startposition, array, version, config);
     }
 
     @Override
-    public void parse(PskRsaClientKeyExchangeMessage msg) {
+    protected void parseHandshakeMessageContent(PskRsaClientKeyExchangeMessage msg) {
         LOGGER.debug("Parsing PSKRSAClientKeyExchangeMessage");
         parsePskIdentityLength(msg);
         parsePskIdentity(msg);
         super.parseRsaParams(msg);
+    }
+
+    @Override
+    protected PskRsaClientKeyExchangeMessage createHandshakeMessage() {
+        return new PskRsaClientKeyExchangeMessage();
     }
 
     /**

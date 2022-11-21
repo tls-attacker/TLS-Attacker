@@ -1,11 +1,12 @@
-/*
+/**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
@@ -13,48 +14,61 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.SrpClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.SRPClientComputations;
-import de.rub.nds.tlsattacker.core.protocol.parser.SrpClientKeyExchangeParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.SrpClientKeyExchangePreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.SrpClientKeyExchangeSerializer;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import java.io.InputStream;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.List;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "SrpClientKeyExchange")
 public class SrpClientKeyExchangeMessage extends ClientKeyExchangeMessage {
-
-    /** SRP modulus */
+    /**
+     * SRP modulus
+     */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
     private ModifiableByteArray modulus;
 
-    /** SRP modulus Length */
+    /**
+     * SRP modulus Length
+     */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger modulusLength;
 
-    /** SRP generator */
+    /**
+     * SRP generator
+     */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
     private ModifiableByteArray generator;
 
-    /** SRP generator Length */
+    /**
+     * SRP generator Length
+     */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger generatorLength;
 
-    @HoldsModifiableVariable protected SRPClientComputations computations;
+    @HoldsModifiableVariable
+    protected SRPClientComputations computations;
 
-    /** SRP salt */
+    /**
+     * SRP salt
+     */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
     private ModifiableByteArray salt;
 
-    /** SRP salt Length */
+    /**
+     * SRP salt Length
+     */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger saltLength;
 
     public SrpClientKeyExchangeMessage() {
         super();
+    }
+
+    public SrpClientKeyExchangeMessage(Config tlsConfig) {
+        super(tlsConfig);
     }
 
     @Override
@@ -97,8 +111,7 @@ public class SrpClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     }
 
     public void setModulusLength(int modulusLength) {
-        this.modulusLength =
-                ModifiableVariableFactory.safelySetValue(this.modulusLength, modulusLength);
+        this.modulusLength = ModifiableVariableFactory.safelySetValue(this.modulusLength, modulusLength);
     }
 
     public ModifiableInteger getGeneratorLength() {
@@ -110,8 +123,7 @@ public class SrpClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     }
 
     public void setGeneratorLength(int generatorLength) {
-        this.generatorLength =
-                ModifiableVariableFactory.safelySetValue(this.generatorLength, generatorLength);
+        this.generatorLength = ModifiableVariableFactory.safelySetValue(this.generatorLength, generatorLength);
     }
 
     @Override
@@ -120,23 +132,8 @@ public class SrpClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     }
 
     @Override
-    public SrpClientKeyExchangeHandler getHandler(TlsContext tlsContext) {
-        return new SrpClientKeyExchangeHandler(tlsContext);
-    }
-
-    @Override
-    public SrpClientKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new SrpClientKeyExchangeParser(stream, tlsContext);
-    }
-
-    @Override
-    public SrpClientKeyExchangePreparator getPreparator(TlsContext tlsContext) {
-        return new SrpClientKeyExchangePreparator(tlsContext.getChooser(), this);
-    }
-
-    @Override
-    public SrpClientKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
-        return new SrpClientKeyExchangeSerializer(this);
+    public SrpClientKeyExchangeHandler getHandler(TlsContext context) {
+        return new SrpClientKeyExchangeHandler(context);
     }
 
     @Override

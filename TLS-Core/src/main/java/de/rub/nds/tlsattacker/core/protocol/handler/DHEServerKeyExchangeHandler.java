@@ -9,15 +9,18 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
+import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.crypto.ffdh.FFDHEGroup;
 import de.rub.nds.tlsattacker.core.crypto.ffdh.GroupFactory;
 import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.protocol.parser.DHEServerKeyExchangeParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.DHEServerKeyExchangePreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.DHEServerKeyExchangeSerializer;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.math.BigInteger;
 
 public class DHEServerKeyExchangeHandler<T extends DHEServerKeyExchangeMessage> extends ServerKeyExchangeHandler<T> {
 
@@ -28,7 +31,24 @@ public class DHEServerKeyExchangeHandler<T extends DHEServerKeyExchangeMessage> 
     }
 
     @Override
-    public void adjustContext(T message) {
+    public DHEServerKeyExchangeParser<T> getParser(byte[] message, int pointer) {
+        return new DHEServerKeyExchangeParser<T>(pointer, message, tlsContext.getChooser().getSelectedProtocolVersion(),
+            AlgorithmResolver.getKeyExchangeAlgorithm(tlsContext.getChooser().getSelectedCipherSuite()),
+            tlsContext.getConfig());
+    }
+
+    @Override
+    public DHEServerKeyExchangePreparator<T> getPreparator(T message) {
+        return new DHEServerKeyExchangePreparator<T>(tlsContext.getChooser(), message);
+    }
+
+    @Override
+    public DHEServerKeyExchangeSerializer<T> getSerializer(T message) {
+        return new DHEServerKeyExchangeSerializer<T>(message, tlsContext.getChooser().getSelectedProtocolVersion());
+    }
+
+    @Override
+    public void adjustTLSContext(T message) {
         adjustDhGenerator(message);
         adjustDhModulus(message);
         adjustServerPublicKey(message);

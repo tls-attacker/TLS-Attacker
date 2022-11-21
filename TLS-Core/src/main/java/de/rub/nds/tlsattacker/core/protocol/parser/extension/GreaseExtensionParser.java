@@ -9,19 +9,24 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
+import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.GreaseExtensionMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import java.io.InputStream;
 
 public class GreaseExtensionParser extends ExtensionParser<GreaseExtensionMessage> {
-
-    public GreaseExtensionParser(InputStream stream, TlsContext tlsContext) {
-        super(stream, tlsContext);
+    public GreaseExtensionParser(int startposition, byte[] array, Config config) {
+        super(startposition, array, config);
     }
 
     @Override
-    public void parse(GreaseExtensionMessage msg) {
-        msg.setRandomData(parseByteArrayField(getBytesLeft()));
+    public void parseExtensionMessageContent(GreaseExtensionMessage msg) {
+        msg.setRandomData(parseByteArrayField(msg.getExtensionLength().getValue()));
         msg.setData(msg.getRandomData().getValue());
+        msg.setType(ExtensionType.getExtensionType(msg.getExtensionType().getValue()));
+    }
+
+    @Override
+    protected GreaseExtensionMessage createExtensionMessage() {
+        return new GreaseExtensionMessage();
     }
 }

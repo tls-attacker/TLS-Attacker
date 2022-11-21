@@ -25,9 +25,6 @@ public class DragonFlyKeyShareEntry {
         this.scalar = scalar;
     }
 
-    public DragonFlyKeyShareEntry() {
-    }
-
     public byte[] getRawPublicKey() {
         return rawPublicKey;
     }

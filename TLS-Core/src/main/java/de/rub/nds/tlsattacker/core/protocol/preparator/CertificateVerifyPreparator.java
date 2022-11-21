@@ -50,25 +50,25 @@ public class CertificateVerifyPreparator extends HandshakeMessagePreparator<Cert
     }
 
     private byte[] createSignature() throws CryptoException {
-        byte[] toBeSigned = chooser.getContext().getTlsContext().getDigest().getRawBytes();
+        byte[] toBeSigned = chooser.getContext().getDigest().getRawBytes();
         if (chooser.getSelectedProtocolVersion().isTLS13()) {
             if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
                 toBeSigned = ArrayConverter.concatenate(
                     ArrayConverter.hexStringToByteArray("2020202020202020202020202020202020202020202020202020"
                         + "2020202020202020202020202020202020202020202020202020202020202020202020202020"),
                     CertificateVerifyConstants.CLIENT_CERTIFICATE_VERIFY.getBytes(), new byte[] { (byte) 0x00 },
-                    chooser.getContext().getTlsContext().getDigest().digest(chooser.getSelectedProtocolVersion(),
+                    chooser.getContext().getDigest().digest(chooser.getSelectedProtocolVersion(),
                         chooser.getSelectedCipherSuite()));
             } else {
                 toBeSigned = ArrayConverter.concatenate(
                     ArrayConverter.hexStringToByteArray("2020202020202020202020202020202020202020202020202020"
                         + "2020202020202020202020202020202020202020202020202020202020202020202020202020"),
                     CertificateVerifyConstants.SERVER_CERTIFICATE_VERIFY.getBytes(), new byte[] { (byte) 0x00 },
-                    chooser.getContext().getTlsContext().getDigest().digest(chooser.getSelectedProtocolVersion(),
+                    chooser.getContext().getDigest().digest(chooser.getSelectedProtocolVersion(),
                         chooser.getSelectedCipherSuite()));
             }
         } else if (chooser.getSelectedProtocolVersion().isSSL()) {
-            final byte[] handshakeMessageContent = chooser.getContext().getTlsContext().getDigest().getRawBytes();
+            final byte[] handshakeMessageContent = chooser.getContext().getDigest().getRawBytes();
             final byte[] masterSecret = chooser.getMasterSecret();
             return SSLUtils.calculateSSLCertificateVerifySignature(handshakeMessageContent, masterSecret);
         }

@@ -9,6 +9,7 @@
 
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.EndOfEarlyDataMessage;
 
 /**
@@ -16,8 +17,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.EndOfEarlyDataMessage;
  */
 public class EndOfEarlyDataSerializer extends HandshakeMessageSerializer<EndOfEarlyDataMessage> {
 
-    public EndOfEarlyDataSerializer(EndOfEarlyDataMessage message) {
-        super(message);
+    public EndOfEarlyDataSerializer(EndOfEarlyDataMessage message, ProtocolVersion version) {
+        super(message, version);
     }
 
     @Override

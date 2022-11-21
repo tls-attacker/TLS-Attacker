@@ -10,13 +10,11 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,20 +22,21 @@ public class EncryptedServerNameIndicationExtensionParser
     extends ExtensionParser<EncryptedServerNameIndicationExtensionMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    private final ConnectionEndType talkingConnectionEnd;
+    private final byte[] array;
 
-    public EncryptedServerNameIndicationExtensionParser(InputStream stream, TlsContext tlsContext) {
-        super(stream, tlsContext);
-        this.talkingConnectionEnd = tlsContext.getTalkingConnectionEndType();
+    public EncryptedServerNameIndicationExtensionParser(int startposition, byte[] array, Config config) {
+        super(startposition, array, config);
+        this.array = array;
     }
 
     @Override
-    public void parse(EncryptedServerNameIndicationExtensionMessage msg) {
-        if (getBytesLeft() == 0) {
+    public void parseExtensionMessageContent(EncryptedServerNameIndicationExtensionMessage msg) {
+        if (msg.getExtensionLength().getValue() == 0) {
             LOGGER.debug("Received empty ESNI Extension");
             return;
         }
-        if (talkingConnectionEnd == ConnectionEndType.CLIENT) {
+        boolean isParserClientMode = (msg.getExtensionLength().getValue() == ExtensionByteLength.NONCE);
+        if (isParserClientMode) {
             parseNonce(msg);
         } else {
             parseCipherSuite(msg);
@@ -47,6 +46,11 @@ public class EncryptedServerNameIndicationExtensionParser
             parseEncryptedSniLength(msg);
             parseEncryptedSni(msg);
         }
+    }
+
+    @Override
+    protected EncryptedServerNameIndicationExtensionMessage createExtensionMessage() {
+        return new EncryptedServerNameIndicationExtensionMessage();
     }
 
     private void parseNonce(EncryptedServerNameIndicationExtensionMessage msg) {
@@ -62,9 +66,9 @@ public class EncryptedServerNameIndicationExtensionParser
     }
 
     private void parseKeyShareEntry(EncryptedServerNameIndicationExtensionMessage msg) {
-        KeyShareEntryParser parser = new KeyShareEntryParser(getStream(), false);
-        KeyShareEntry keyShareEntry = new KeyShareEntry();
-        parser.parse(keyShareEntry);
+        KeyShareEntryParser parser = new KeyShareEntryParser(this.getPointer(), this.array);
+        KeyShareEntry keyShareEntry = parser.parse();
+        this.setPointer(parser.getPointer());
         msg.setKeyShareEntry(keyShareEntry);
     }
 

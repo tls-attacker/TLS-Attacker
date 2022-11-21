@@ -1,24 +1,25 @@
-/*
+/**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.state.State;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
-import java.util.Set;
 import org.junit.jupiter.api.Test;
 
-abstract class AbstractCopyActionTest<T extends CopyContextFieldAction>
-        extends AbstractActionTest<T> {
+import java.util.Set;
+
+abstract class AbstractCopyActionTest<T extends CopyContextFieldAction> extends AbstractActionTest<T> {
 
     protected final TlsContext src;
 
@@ -40,7 +41,8 @@ abstract class AbstractCopyActionTest<T extends CopyContextFieldAction>
     }
 
     @Override
-    public void testMarshalingEmptyActionYieldsMinimalOutput() {}
+    public void testMarshalingEmptyActionYieldsMinimalOutput() {
+    }
 
     @Test
     public void testGetSrcContextAlias() {

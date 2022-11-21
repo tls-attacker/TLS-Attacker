@@ -1,18 +1,21 @@
-/*
+/**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.crypto.ec;
 
 import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/** An elliptic curve over a galois field F_p, where p is a prime number. */
+/**
+ * An elliptic curve over a galois field F_p, where p is a prime number.
+ */
 public class EllipticCurveOverFp extends EllipticCurve {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -23,9 +26,12 @@ public class EllipticCurveOverFp extends EllipticCurve {
     /**
      * Instantiates the curve y^2 = x^3 + ax + b over F_p. p must be prime.<br>
      *
-     * @param a The coefficient a in the equation of the curve.
-     * @param b The coefficient b in the equation of the curve.
-     * @param p The prime order of the field over which the curve shall be defined.
+     * @param a
+     *          The coefficient a in the equation of the curve.
+     * @param b
+     *          The coefficient b in the equation of the curve.
+     * @param p
+     *          The prime order of the field over which the curve shall be defined.
      */
     public EllipticCurveOverFp(BigInteger a, BigInteger b, BigInteger p) {
         super(p);
@@ -37,15 +43,20 @@ public class EllipticCurveOverFp extends EllipticCurve {
      * Instantiates the curve y^2 = x^3 + ax + b over F_p.<br>
      * With base point (x,y) and base point order q. p must be prime.
      *
-     * @param a The coefficient a in the equation of the curve.
-     * @param b The coefficient b in the equation of the curve.
-     * @param p The prime order of the field over which the curve shall be defined.
-     * @param x The x-coordinate of the base point.
-     * @param y The y-coordinate of the base point.
-     * @param q The order of the base point.
+     * @param a
+     *          The coefficient a in the equation of the curve.
+     * @param b
+     *          The coefficient b in the equation of the curve.
+     * @param p
+     *          The prime order of the field over which the curve shall be defined.
+     * @param x
+     *          The x-coordinate of the base point.
+     * @param y
+     *          The y-coordinate of the base point.
+     * @param q
+     *          The order of the base point.
      */
-    public EllipticCurveOverFp(
-            BigInteger a, BigInteger b, BigInteger p, BigInteger x, BigInteger y, BigInteger q) {
+    public EllipticCurveOverFp(BigInteger a, BigInteger b, BigInteger p, BigInteger x, BigInteger y, BigInteger q) {
         super(p, x, y, q);
         this.fieldA = new FieldElementFp(a, this.getModulus());
         this.fieldB = new FieldElementFp(b, this.getModulus());
@@ -70,8 +81,7 @@ public class EllipticCurveOverFp extends EllipticCurve {
          * If the point's components are not elements of F_p, the point cannot be on the curve. With p being
          * this.getModulus().
          */
-        if (p.getFieldX().getClass() != FieldElementFp.class
-                || p.getFieldY().getClass() != FieldElementFp.class) {
+        if (p.getFieldX().getClass() != FieldElementFp.class || p.getFieldY().getClass() != FieldElementFp.class) {
             return false;
         }
         FieldElementFp x = (FieldElementFp) p.getFieldX();
@@ -83,8 +93,7 @@ public class EllipticCurveOverFp extends EllipticCurve {
         // Check if y^2 == x^3 + ax + b
         FieldElementFp leftPart = (FieldElementFp) y.mult(y);
         FieldElementFp rightPart =
-                (FieldElementFp)
-                        x.mult(x.mult(x)).add(x.mult(this.getFieldA())).add(this.getFieldB());
+            (FieldElementFp) x.mult(x.mult(x)).add(x.mult(this.getFieldA())).add(this.getFieldB());
 
         return leftPart.equals(rightPart);
     }
@@ -103,10 +112,8 @@ public class EllipticCurveOverFp extends EllipticCurve {
 
     @Override
     protected Point additionFormular(Point p, Point q) {
-        if (!(p.getFieldX() instanceof FieldElementFp
-                && p.getFieldY() instanceof FieldElementFp
-                && q.getFieldX() instanceof FieldElementFp
-                && q.getFieldY() instanceof FieldElementFp)) {
+        if (!(p.getFieldX() instanceof FieldElementFp && p.getFieldY() instanceof FieldElementFp
+            && q.getFieldX() instanceof FieldElementFp && q.getFieldY() instanceof FieldElementFp)) {
             LOGGER.warn("Trying to add non Fp points with Fp curve. Returning point at (0,0)");
             return this.getPoint(BigInteger.ZERO, BigInteger.ZERO);
         }
@@ -118,15 +125,11 @@ public class EllipticCurveOverFp extends EllipticCurve {
 
             FieldElementFp lambda;
             if (p.equals(q)) {
-                final FieldElementFp two =
-                        new FieldElementFp(new BigInteger("2"), this.getModulus());
-                final FieldElementFp three =
-                        new FieldElementFp(new BigInteger("3"), this.getModulus());
+                final FieldElementFp two = new FieldElementFp(new BigInteger("2"), this.getModulus());
+                final FieldElementFp three = new FieldElementFp(new BigInteger("3"), this.getModulus());
 
                 // lambda := (3*(x1^2) + a) / (2*y1)
-                lambda =
-                        (FieldElementFp)
-                                x1.mult(x1).mult(three).add(this.getFieldA()).divide(y1.mult(two));
+                lambda = (FieldElementFp) x1.mult(x1).mult(three).add(this.getFieldA()).divide(y1.mult(two));
             } else {
                 // lambda := (y2 - y1) / (x2 - x1)
                 lambda = (FieldElementFp) y2.subtract(y1).divide(x2.subtract(x1));
@@ -141,8 +144,7 @@ public class EllipticCurveOverFp extends EllipticCurve {
 
             return new Point(x3, y3);
         } catch (ArithmeticException e) {
-            LOGGER.warn(
-                    "Encountered an arithmetic exception during addition. Returning point at 0,0");
+            LOGGER.warn("Encountered an arithmetic exception during addition. Returning point at 0,0");
             return this.getPoint(BigInteger.ZERO, BigInteger.ZERO);
         }
     }
@@ -153,17 +155,12 @@ public class EllipticCurveOverFp extends EllipticCurve {
     }
 
     /**
-     * Returns a point on the curve for the given x coordinate - or the basepoint if such a point
-     * does not exist. Of the two possible points, the function always returns the point whose y
-     * coordinate is odd.
+     * Returns a point on the curve for the given x coordinate - or the basepoint if such a point does not exist. Of the
+     * two possible points, the function always returns the point whose y coordinate is odd.
      */
     @Override
     public Point createAPointOnCurve(BigInteger x) {
-        BigInteger y =
-                x.pow(3)
-                        .add(x.multiply(getFieldA().getData()))
-                        .add(getFieldB().getData())
-                        .mod(getModulus());
+        BigInteger y = x.pow(3).add(x.multiply(getFieldA().getData())).add(getFieldB().getData()).mod(getModulus());
         y = modSqrt(y, getModulus());
         if (y == null) {
             LOGGER.warn("Was unable to create point on curve - using basepoint instead");
@@ -201,9 +198,7 @@ public class EllipticCurveOverFp extends EllipticCurve {
     }
 
     public BigInteger modSqrt(BigInteger a, BigInteger p) {
-        if (legendreSymbol(a, p) != 1
-                || a.compareTo(BigInteger.ZERO) == 0
-                || a.compareTo(new BigInteger("2")) == 0) {
+        if (legendreSymbol(a, p) != 1 || a.compareTo(BigInteger.ZERO) == 0 || a.compareTo(new BigInteger("2")) == 0) {
             // no solution exists
             return null;
         } else {
@@ -235,19 +230,17 @@ public class EllipticCurveOverFp extends EllipticCurve {
                 x = a.multiply(x).mod(p);
                 while (b.mod(p).compareTo(BigInteger.ONE) != 0) {
                     BigInteger m = BigInteger.ONE;
-                    while (b.modPow(new BigInteger("2").pow(m.intValue()), p)
-                                    .compareTo(BigInteger.ONE)
-                            != 0) {
+                    while (b.modPow(new BigInteger("2").pow(m.intValue()), p).compareTo(BigInteger.ONE) != 0) {
                         m = m.add(BigInteger.ONE);
                     }
 
-                    BigInteger t =
-                            y.modPow(new BigInteger("2").pow(s.intValue() - m.intValue() - 1), p);
+                    BigInteger t = y.modPow(new BigInteger("2").pow(s.intValue() - m.intValue() - 1), p);
                     y = t.pow(2).mod(p);
                     s = m;
 
                     x = t.multiply(x).mod(p);
                     b = y.multiply(b).mod(p);
+
                 }
 
                 return x;

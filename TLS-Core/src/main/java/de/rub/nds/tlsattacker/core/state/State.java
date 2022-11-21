@@ -1,11 +1,12 @@
-/*
+/**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.state;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
@@ -13,11 +14,6 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.core.layer.LayerStack;
-import de.rub.nds.tlsattacker.core.layer.LayerStackFactory;
-import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
-import de.rub.nds.tlsattacker.core.layer.context.TcpContext;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceNormalizer;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
@@ -31,20 +27,26 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * The central object passed around during program execution. The state initializes and holds the
- * workflow trace, the default configuration and the corresponding Contexts.
+ * The central object passed around during program execution. The state initializes and holds the workflow trace, the
+ * default configuration and the corresponding TLS contexts.
  *
- * <p>The concept behind this class is as follows: the state is initialized with the user configured
- * values, that is, via default configuration and a given workflow trace (type). On initialization,
- * the state will create the necessary Contexts for workflow execution. These Contexts should be
- * considered as dynamic objects, representing TLS connections, calculations and other data
- * exchanged during the TLS actual workflow execution.
+ * <p>
+ * The concept behind this class is as follows: the state is initialized with the user configured values, that is, via
+ * default configuration and a given workflow trace (type). On initialization, the state will create the necessary TLS
+ * contexts for workflow execution. These contexts should be considered as dynamic objects, representing TLS
+ * connections, calculations and other data exchanged during the TLS actual workflow execution.
+ * </p>
  *
- * <p>Therefore, there is no public interface for setting Contexts manually. They are always
- * automatically created based on the connections defined in the workflow trace.
+ * <p>
+ * Therefore, there is no public interface for setting TLS contexts manually. They are always automatically created
+ * based on the connections defined in the workflow trace.
+ * </p>
  *
- * <p>Please also have a look at the tests supplied with this class for some initialization examples
- * with expected behavior.
+ * <p>
+ * Please also have a look at the tests supplied with this class for some initialization examples with expected
+ * behavior.
+ * </p>
+ *
  */
 public class State {
 
@@ -54,7 +56,8 @@ public class State {
     private Config config = null;
     private RunningModeType runningMode = null;
 
-    @HoldsModifiableVariable private final WorkflowTrace workflowTrace;
+    @HoldsModifiableVariable
+    private final WorkflowTrace workflowTrace;
     private WorkflowTrace originalWorkflowTrace;
 
     private long startTimestamp;
@@ -64,11 +67,11 @@ public class State {
     private LinkedList<Process> spawnedSubprocesses;
 
     public State() {
-        this(new Config());
+        this(Config.createConfig());
     }
 
     public State(WorkflowTrace trace) {
-        this(new Config(), trace);
+        this(Config.createConfig(), trace);
     }
 
     public State(Config config) {
@@ -88,7 +91,7 @@ public class State {
     }
 
     public void reset() {
-        List<Context> previousContexts = contextContainer.getAllContexts();
+        List<TlsContext> previousContexts = contextContainer.getAllContexts();
         contextContainer.clear();
         workflowTrace.reset();
         killAllSpawnedSubprocesses();
@@ -96,24 +99,19 @@ public class State {
         retainServerTcpTransportHandlers(previousContexts);
     }
 
-    private void retainServerTcpTransportHandlers(List<Context> previousContexts) {
-        previousContexts.forEach(
-                oldContext -> {
-                    if (oldContext.getTransportHandler() != null
-                            && oldContext.getTransportHandler()
-                                    instanceof ServerTcpTransportHandler) {
-                        for (Context context : contextContainer.getAllContexts()) {
-                            if (context.getConnection()
-                                    .getAlias()
-                                    .equals(oldContext.getConnection().getAlias())) {
-                                context.setTransportHandler(oldContext.getTransportHandler());
-                            }
-                        }
-                    }
-                });
+    private void retainServerTcpTransportHandlers(List<TlsContext> previousContexts) {
+        previousContexts.forEach(oldContext -> {
+            if (oldContext.getTransportHandler() != null
+                && oldContext.getTransportHandler() instanceof ServerTcpTransportHandler) {
+                contextContainer.getTlsContext(oldContext.getConnection().getAlias())
+                    .setTransportHandler(oldContext.getTransportHandler());
+            }
+        });
     }
 
-    /** Normalize trace and initialize contexts. */
+    /**
+     * Normalize trace and initialize TLS contexts.
+     */
     public final void initState() {
         // Keep a snapshot to restore user defined trace values after filtering.
         if (config.isFiltersKeepUserSettings()) {
@@ -125,11 +123,8 @@ public class State {
         workflowTrace.setDirty(false);
 
         for (AliasedConnection con : workflowTrace.getConnections()) {
-            Context ctx = new Context(config, con);
-            LayerStack layerStack =
-                    LayerStackFactory.createLayerStack(config.getDefaultLayerConfiguration(), ctx);
-            ctx.setLayerStack(layerStack);
-            addContext(ctx);
+            TlsContext ctx = new TlsContext(config, con);
+            addTlsContext(ctx);
         }
     }
 
@@ -162,81 +157,57 @@ public class State {
     }
 
     /**
-     * Replace existing Context with new Context. This can only be done if
-     * existingContext.connection equals newContext.connection.
+     * Replace existing TlsContext with new TlsContext. This can only be done if existingTlsContext.connection equals
+     * newTlsContext.connection.
      *
-     * @param newContext The new Context to replace the old with
+     * @param newTlsContext
+     *                      The new TlsContext to replace the old with
      */
-    public void replaceContext(Context newContext) {
-        contextContainer.replaceContext(newContext);
+    public void replaceTlsContext(TlsContext newTlsContext) {
+        contextContainer.replaceTlsContext(newTlsContext);
     }
 
     /**
-     * Use this convenience method when working with a single context only. It should be used only
-     * if there is exactly one context defined in the state. This would typically be the default
-     * context as defined in the config.
+     * Use this convenience method when working with a single context only. It should be used only if there is exactly
+     * one context defined in the state. This would typically be the default context as defined in the config.
      *
-     * <p>Note: Be careful when changing the context. I.e. if you change it's connection, the state
-     * can get out of sync.
+     * Note: Be careful when changing the context. I.e. if you change it's connection, the state can get out of sync.
      *
-     * <p>TODO: Ideally, this would return a deep copy to prevent State invalidation.
+     * TODO: Ideally, this would return a deep copy to prevent State invalidation.
      *
      * @return the only context known to the state
      */
-    public Context getContext() {
-        return contextContainer.getContext();
+    public TlsContext getTlsContext() {
+        return contextContainer.getTlsContext();
     }
 
     /**
-     * Get Context with given alias. Aliases are the ones assigned to the corresponding connection
-     * ends.
+     * Get TLS context with given alias. Aliases are the ones assigned to the corresponding connection ends.
      *
-     * <p>Note: Be careful when changing the context. I.e. if you change it's connection, the state
-     * can get out of sync.
+     * Note: Be careful when changing the context. I.e. if you change it's connection, the state can get out of sync.
      *
-     * <p>TODO: Ideally, this would return a deep copy to prevent State invalidation.
+     * TODO: Ideally, this would return a deep copy to prevent State invalidation.
      *
-     * @param alias The Alias for which the Context should be returned
-     * @return the context with the given connection end alias
+     *
+     * @param  alias
+     *               The Alias for which the TLSContext should be returned
+     *
+     * @return       the context with the given connection end alias
      */
-    public Context getContext(String alias) {
-        return contextContainer.getContext(alias);
-    }
-
     public TlsContext getTlsContext(String alias) {
-        return getContext(alias).getTlsContext();
+        return contextContainer.getTlsContext(alias);
     }
 
-    public TlsContext getTlsContext() {
-        return getContext().getTlsContext();
-    }
-
-    public HttpContext getHttpContext(String alias) {
-        return getContext(alias).getHttpContext();
-    }
-
-    public HttpContext getHttpContext() {
-        return getContext().getHttpContext();
-    }
-
-    public TcpContext getTcpContext(String alias) {
-        return getContext(alias).getTcpContext();
-    }
-
-    public TcpContext getTcpContext() {
-        return getContext().getTcpContext();
-    }
-
-    public List<Context> getAllContexts() {
+    public List<TlsContext> getAllTlsContexts() {
         return contextContainer.getAllContexts();
     }
 
-    public List<Context> getInboundContexts() {
-        return contextContainer.getInboundContexts();
+    public List<TlsContext> getInboundTlsContexts() {
+        return contextContainer.getInboundTlsContexts();
     }
 
-    public List<Context> getOutboundContexts() {
-        return contextContainer.getOutboundContexts();
+    public List<TlsContext> getOutboundTlsContexts() {
+        return contextContainer.getOutboundTlsContexts();
     }
 
     public RunningModeType getRunningMode() {
@@ -247,8 +218,8 @@ public class State {
         this.runningMode = runningMode;
     }
 
-    private void addContext(Context context) {
-        contextContainer.addContext(context);
+    private void addTlsContext(TlsContext context) {
+        contextContainer.addTlsContext(context);
     }
 
     /**
@@ -270,11 +241,11 @@ public class State {
     }
 
     /**
-     * Return a filtered copy of the given workflow trace. This method does not modify the input
-     * trace.
+     * Return a filtered copy of the given workflow trace. This method does not modify the input trace.
      *
-     * @param trace The workflow trace that should be filtered
-     * @return A filtered copy of the input workflow trace
+     * @param  trace
+     *               The workflow trace that should be filtered
+     * @return       A filtered copy of the input workflow trace
      */
     private WorkflowTrace getFilteredTraceCopy(WorkflowTrace trace) {
         WorkflowTrace filtered = WorkflowTrace.copy(trace);
@@ -285,7 +256,8 @@ public class State {
     /**
      * Apply filters to trace in place.
      *
-     * @param trace The workflow trace that should be filtered
+     * @param trace
+     *              The workflow trace that should be filtered
      */
     private void filterTrace(WorkflowTrace trace) {
         List<FilterType> filters = config.getOutputFilters();
@@ -347,7 +319,8 @@ public class State {
     /**
      * Records a process that was spawned during this state execution.
      *
-     * @param process The process to record
+     * @param process
+     *                The process to record
      */
     public void addSpawnedSubprocess(Process process) {
         if (process != null) {
@@ -355,7 +328,9 @@ public class State {
         }
     }
 
-    /** Kills all recorded processes that have been spawned during this state execution. */
+    /**
+     * Kills all recorded processes that have been spawned during this state execution.
+     */
     public void killAllSpawnedSubprocesses() {
         for (Process process : spawnedSubprocesses) {
             process.destroy();

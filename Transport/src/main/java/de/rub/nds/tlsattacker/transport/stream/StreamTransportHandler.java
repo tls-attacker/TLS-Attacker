@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.transport.stream;
 
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;

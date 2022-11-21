@@ -11,11 +11,10 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
-import de.rub.nds.tlsattacker.core.layer.data.Parser;
+import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientEsniInner;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
+import de.rub.nds.tlsattacker.core.protocol.Parser;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -26,18 +25,19 @@ public class ClientEsniInnerParser extends Parser<ClientEsniInner> {
     private static final Logger LOGGER = LogManager.getLogger();
     private final ClientEsniInner clientEsniInner;
 
-    public ClientEsniInnerParser(InputStream stream) {
-        super(stream);
+    public ClientEsniInnerParser(int startposition, byte[] array) {
+        super(startposition, array);
         clientEsniInner = new ClientEsniInner();
     }
 
     @Override
-    public void parse(ClientEsniInner esniInner) {
+    public ClientEsniInner parse() {
         parseClientNonce(clientEsniInner);
         parseServerNameListLength(clientEsniInner);
         parseServerNameListByte(clientEsniInner);
         parsePadding(clientEsniInner);
         parseServerNameList(clientEsniInner);
+        return clientEsniInner;
     }
 
     private void parseClientNonce(ClientEsniInner clientEsniInner) {
@@ -67,14 +67,16 @@ public class ClientEsniInnerParser extends Parser<ClientEsniInner> {
     }
 
     private void parseServerNameList(ClientEsniInner clientEsniInner) {
+        int position = 0;
         List<ServerNamePair> serverNamePairList = new LinkedList<>();
-        ByteArrayInputStream innerStream =
-            new ByteArrayInputStream(clientEsniInner.getServerNameListBytes().getValue());
-        while (innerStream.available() > 0) {
-            ServerNamePairParser parser = new ServerNamePairParser(innerStream);
-            ServerNamePair pair = new ServerNamePair();
-            parser.parse(pair);
-            serverNamePairList.add(pair);
+        while (position < clientEsniInner.getServerNameListLength().getValue()) {
+            ServerNamePairParser parser =
+                new ServerNamePairParser(position, clientEsniInner.getServerNameListBytes().getValue());
+            serverNamePairList.add(parser.parse());
+            if (position == parser.getPointer()) {
+                throw new ParserException("Ran into infinite Loop while parsing ServerNamePair");
+            }
+            position = parser.getPointer();
         }
         clientEsniInner.setServerNameList(serverNamePairList);
     }

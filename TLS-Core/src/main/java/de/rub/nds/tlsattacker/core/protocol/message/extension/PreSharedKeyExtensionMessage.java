@@ -1,11 +1,12 @@
-/*
+/**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
@@ -14,27 +15,20 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
-import de.rub.nds.tlsattacker.core.protocol.handler.extension.PreSharedKeyExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PSKBinder;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PSKIdentity;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PskSet;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.PreSharedKeyExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtensionPreparator;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PreSharedKeyExtensionPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PreSharedKeyExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
-/** RFC draft-ietf-tls-tls13-21 */
+/**
+ * RFC draft-ietf-tls-tls13-21
+ */
 @XmlRootElement(name = "PreSharedKeyExtension")
-public class PreSharedKeyExtensionMessage extends ExtensionMessage<PreSharedKeyExtensionMessage> {
+public class PreSharedKeyExtensionMessage extends ExtensionMessage {
 
     private ModifiableInteger identityListLength;
     private ModifiableInteger binderListLength;
@@ -42,8 +36,10 @@ public class PreSharedKeyExtensionMessage extends ExtensionMessage<PreSharedKeyE
     private ModifiableByteArray identityListBytes;
     private ModifiableByteArray binderListBytes;
 
-    @HoldsModifiableVariable private List<PSKIdentity> identities;
-    @HoldsModifiableVariable private List<PSKBinder> binders;
+    @HoldsModifiableVariable
+    private List<PSKIdentity> identities;
+    @HoldsModifiableVariable
+    private List<PSKBinder> binders;
 
     private ModifiableInteger selectedIdentity;
 
@@ -55,6 +51,8 @@ public class PreSharedKeyExtensionMessage extends ExtensionMessage<PreSharedKeyE
 
     public PreSharedKeyExtensionMessage(Config config) {
         super(ExtensionType.PRE_SHARED_KEY);
+        identities = new LinkedList<>();
+        binders = new LinkedList<>();
         if (config.getDefaultPskSets().size() > 0) {
             copyPskSets(config.getDefaultPskSets(), config.isLimitPsksToOne());
         }
@@ -81,9 +79,7 @@ public class PreSharedKeyExtensionMessage extends ExtensionMessage<PreSharedKeyE
     }
 
     public void setIdentityListLength(int identityListLength) {
-        this.identityListLength =
-                ModifiableVariableFactory.safelySetValue(
-                        this.identityListLength, identityListLength);
+        this.identityListLength = ModifiableVariableFactory.safelySetValue(this.identityListLength, identityListLength);
     }
 
     public void setIdentityListLength(ModifiableInteger identityListLength) {
@@ -95,8 +91,7 @@ public class PreSharedKeyExtensionMessage extends ExtensionMessage<PreSharedKeyE
     }
 
     public void setBinderListLength(int binderListLength) {
-        this.binderListLength =
-                ModifiableVariableFactory.safelySetValue(this.binderListLength, binderListLength);
+        this.binderListLength = ModifiableVariableFactory.safelySetValue(this.binderListLength, binderListLength);
     }
 
     public void setBinderListLength(ModifiableInteger binderListLength) {
@@ -111,15 +106,15 @@ public class PreSharedKeyExtensionMessage extends ExtensionMessage<PreSharedKeyE
     }
 
     /**
-     * @param selectedIdentity the selectedIdentity to set
+     * @param selectedIdentity
+     *                         the selectedIdentity to set
      */
     public void setSelectedIdentity(ModifiableInteger selectedIdentity) {
         this.selectedIdentity = selectedIdentity;
     }
 
     public void setSelectedIdentity(int selectedIdentity) {
-        this.selectedIdentity =
-                ModifiableVariableFactory.safelySetValue(this.selectedIdentity, selectedIdentity);
+        this.selectedIdentity = ModifiableVariableFactory.safelySetValue(this.selectedIdentity, selectedIdentity);
     }
 
     /**
@@ -130,15 +125,15 @@ public class PreSharedKeyExtensionMessage extends ExtensionMessage<PreSharedKeyE
     }
 
     /**
-     * @param identityListBytes the identityListBytes to set
+     * @param identityListBytes
+     *                          the identityListBytes to set
      */
     public void setIdentityListBytes(ModifiableByteArray identityListBytes) {
         this.identityListBytes = identityListBytes;
     }
 
     public void setIdentityListBytes(byte[] identityListBytes) {
-        this.identityListBytes =
-                ModifiableVariableFactory.safelySetValue(this.identityListBytes, identityListBytes);
+        this.identityListBytes = ModifiableVariableFactory.safelySetValue(this.identityListBytes, identityListBytes);
     }
 
     /**
@@ -149,15 +144,15 @@ public class PreSharedKeyExtensionMessage extends ExtensionMessage<PreSharedKeyE
     }
 
     /**
-     * @param binderListBytes the binderListBytes to set
+     * @param binderListBytes
+     *                        the binderListBytes to set
      */
     public void setBinderListBytes(ModifiableByteArray binderListBytes) {
         this.binderListBytes = binderListBytes;
     }
 
     public void setBinderListBytes(byte[] binderListBytes) {
-        this.binderListBytes =
-                ModifiableVariableFactory.safelySetValue(this.binderListBytes, binderListBytes);
+        this.binderListBytes = ModifiableVariableFactory.safelySetValue(this.binderListBytes, binderListBytes);
     }
 
     private void copyPskSets(List<PskSet> pskSets, boolean limitPsksToOne) {
@@ -192,8 +187,7 @@ public class PreSharedKeyExtensionMessage extends ExtensionMessage<PreSharedKeyE
 
     @Override
     public List<ModifiableVariableHolder> getAllModifiableVariableHolders() {
-        List<ModifiableVariableHolder> allModifiableVariableHolders =
-                super.getAllModifiableVariableHolders();
+        List<ModifiableVariableHolder> allModifiableVariableHolders = super.getAllModifiableVariableHolders();
         if (binders != null) {
             allModifiableVariableHolders.addAll(binders);
         }
@@ -203,24 +197,4 @@ public class PreSharedKeyExtensionMessage extends ExtensionMessage<PreSharedKeyE
         return allModifiableVariableHolders;
     }
 
-    @Override
-    public ExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new PreSharedKeyExtensionParser(stream, tlsContext);
-    }
-
-    @Override
-    public ExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new PreSharedKeyExtensionPreparator(tlsContext.getChooser(), this);
-    }
-
-    @Override
-    public ExtensionSerializer getSerializer(TlsContext tlsContext) {
-        return new PreSharedKeyExtensionSerializer(
-                this, tlsContext.getChooser().getConnectionEndType());
-    }
-
-    @Override
-    public PreSharedKeyExtensionHandler getHandler(TlsContext tlsContext) {
-        return new PreSharedKeyExtensionHandler(tlsContext);
-    }
 }

@@ -1,20 +1,23 @@
-/*
+/**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class CopyBuffersAction extends CopyContextFieldAction {
 
-    public CopyBuffersAction() {}
+    public CopyBuffersAction() {
+
+    }
 
     public CopyBuffersAction(String srcConnectionAlias, String dstConnectionAlias) {
         super(srcConnectionAlias, dstConnectionAlias);
@@ -36,4 +39,5 @@ public class CopyBuffersAction extends CopyContextFieldAction {
     public void reset() {
         setExecuted(false);
     }
+
 }

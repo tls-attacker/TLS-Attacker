@@ -23,12 +23,11 @@ import de.rub.nds.tlsattacker.core.protocol.message.PWDClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.PWDComputations;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class PWDClientKeyExchangePreparator extends ClientKeyExchangePreparator<PWDClientKeyExchangeMessage> {
 
@@ -65,8 +64,8 @@ public class PWDClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         if (!clientMode) {
             msg.prepareComputations();
             EllipticCurve curve = CurveFactory.getCurve(chooser.getSelectedNamedGroup());
-            byte[] premasterSecret = generatePremasterSecret(chooser.getContext().getTlsContext().getPWDPE(),
-                chooser.getContext().getTlsContext().getServerPWDPrivate(), curve);
+            byte[] premasterSecret = generatePremasterSecret(chooser.getContext().getPWDPE(),
+                chooser.getContext().getServerPWDPrivate(), curve);
             preparePremasterSecret(msg, premasterSecret);
             prepareClientServerRandom(msg);
         }
@@ -162,8 +161,8 @@ public class PWDClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         Point peerElement;
         BigInteger peerScalar;
         if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
-            peerElement = chooser.getContext().getTlsContext().getServerPWDElement();
-            peerScalar = chooser.getContext().getTlsContext().getServerPWDScalar();
+            peerElement = chooser.getContext().getServerPWDElement();
+            peerScalar = chooser.getContext().getServerPWDScalar();
         } else {
             // TODO: wrong group
             peerElement =

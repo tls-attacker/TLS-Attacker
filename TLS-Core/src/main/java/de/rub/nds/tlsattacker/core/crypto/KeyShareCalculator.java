@@ -1,18 +1,23 @@
-/*
+/**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.crypto;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.Bits;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.crypto.ec.*;
+import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
+import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
+import de.rub.nds.tlsattacker.core.crypto.ec.Point;
+import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
+import de.rub.nds.tlsattacker.core.crypto.ec.RFC7748Curve;
 import de.rub.nds.tlsattacker.core.crypto.ffdh.FFDHEGroup;
 import de.rub.nds.tlsattacker.core.crypto.ffdh.GroupFactory;
 import java.math.BigInteger;
@@ -23,8 +28,7 @@ public class KeyShareCalculator {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public static byte[] createPublicKey(
-            NamedGroup group, BigInteger privateKey, ECPointFormat pointFormat) {
+    public static byte[] createPublicKey(NamedGroup group, BigInteger privateKey, ECPointFormat pointFormat) {
         if (group.isCurve() || group.isGrease()) {
             EllipticCurve curve = CurveFactory.getCurve(group);
             if (group.isStandardCurve() || group.isGrease()) {
@@ -36,23 +40,19 @@ public class KeyShareCalculator {
             }
         } else if (group != NamedGroup.EXPLICIT_CHAR2 && group != NamedGroup.EXPLICIT_PRIME) {
             FFDHEGroup ffdheGroup = GroupFactory.getGroup(group);
-            BigInteger publicKey =
-                    ffdheGroup.getG().modPow(privateKey.abs(), ffdheGroup.getP().abs());
-            return ArrayConverter.bigIntegerToNullPaddedByteArray(
-                    publicKey, ffdheGroup.getP().bitLength() / Bits.IN_A_BYTE);
+            BigInteger publicKey = ffdheGroup.getG().modPow(privateKey.abs(), ffdheGroup.getP().abs());
+            return ArrayConverter.bigIntegerToNullPaddedByteArray(publicKey,
+                ffdheGroup.getP().bitLength() / Bits.IN_A_BYTE);
         } else {
-            throw new IllegalArgumentException(
-                    "Cannot create Public Key for group " + group.name());
+            throw new IllegalArgumentException("Cannot create Public Key for group " + group.name());
         }
     }
 
-    public static byte[] computeSharedSecret(
-            NamedGroup group, byte[] privateKey, byte[] publicKey) {
+    public static byte[] computeSharedSecret(NamedGroup group, byte[] privateKey, byte[] publicKey) {
         return KeyShareCalculator.computeSharedSecret(group, new BigInteger(privateKey), publicKey);
     }
 
-    public static byte[] computeSharedSecret(
-            NamedGroup group, BigInteger privateKey, byte[] publicKey) {
+    public static byte[] computeSharedSecret(NamedGroup group, BigInteger privateKey, byte[] publicKey) {
         if (group.isCurve()) {
             EllipticCurve curve = CurveFactory.getCurve(group);
             Point publicPoint = PointFormatter.formatFromByteArray(group, publicKey);
@@ -88,21 +88,17 @@ public class KeyShareCalculator {
                 case SECT571R1:
                     Point sharedPoint = curve.mult(privateKey, publicPoint);
                     int elementLength =
-                            ArrayConverter.bigIntegerToByteArray(
-                                            sharedPoint.getFieldX().getModulus())
-                                    .length;
-                    return ArrayConverter.bigIntegerToNullPaddedByteArray(
-                            sharedPoint.getFieldX().getData(), elementLength);
+                        ArrayConverter.bigIntegerToByteArray(sharedPoint.getFieldX().getModulus()).length;
+                    return ArrayConverter.bigIntegerToNullPaddedByteArray(sharedPoint.getFieldX().getData(),
+                        elementLength);
                 default:
-                    throw new UnsupportedOperationException(
-                            "KeyShare type " + group + " is unsupported");
+                    throw new UnsupportedOperationException("KeyShare type " + group + " is unsupported");
             }
         } else {
             FFDHEGroup ffdheGroup = GroupFactory.getGroup(group);
-            BigInteger sharedElement =
-                    new BigInteger(1, publicKey).modPow(privateKey.abs(), ffdheGroup.getP().abs());
-            return ArrayConverter.bigIntegerToNullPaddedByteArray(
-                    sharedElement, ffdheGroup.getP().bitLength() / Bits.IN_A_BYTE);
+            BigInteger sharedElement = new BigInteger(1, publicKey).modPow(privateKey.abs(), ffdheGroup.getP().abs());
+            return ArrayConverter.bigIntegerToNullPaddedByteArray(sharedElement,
+                ffdheGroup.getP().bitLength() / Bits.IN_A_BYTE);
         }
     }
 }

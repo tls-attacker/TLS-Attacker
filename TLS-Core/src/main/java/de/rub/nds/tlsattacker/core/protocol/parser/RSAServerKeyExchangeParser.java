@@ -9,23 +9,33 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.core.protocol.message.RSAServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.protocol.message.RSAServerKeyExchangeMessage;
 
 public class RSAServerKeyExchangeParser<T extends RSAServerKeyExchangeMessage> extends ServerKeyExchangeParser<T> {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public RSAServerKeyExchangeParser(InputStream stream, TlsContext tlsContext) {
-        super(stream, tlsContext);
+    private final ProtocolVersion version;
+
+    public RSAServerKeyExchangeParser(int pointer, byte[] array, ProtocolVersion version, Config config) {
+        super(pointer, array, HandshakeMessageType.SERVER_KEY_EXCHANGE, version, config);
+        this.version = version;
     }
 
     @Override
-    public void parse(RSAServerKeyExchangeMessage msg) {
+    protected T createHandshakeMessage() {
+        return (T) new RSAServerKeyExchangeMessage();
+    }
+
+    @Override
+    protected void parseHandshakeMessageContent(RSAServerKeyExchangeMessage msg) {
         LOGGER.debug("Parsing RSAServerKeyExchangeMessage");
         parseModulusLength(msg);
         parseModulus(msg);
@@ -56,6 +66,24 @@ public class RSAServerKeyExchangeParser<T extends RSAServerKeyExchangeMessage> e
     private void parsePublicExponent(RSAServerKeyExchangeMessage msg) {
         msg.setPublicKey(parseByteArrayField(msg.getPublicKeyLength().getValue()));
         LOGGER.debug("Public Exponent: {}", msg.getPublicKey().getValue());
+    }
+
+    /**
+     * Checks if the version is TLS12
+     *
+     * @return True if the used version is TLS12
+     */
+    private boolean isTLS12() {
+        return version == ProtocolVersion.TLS12;
+    }
+
+    /**
+     * Checks if the version is DTLS12
+     *
+     * @return True if the used version is DTLS12
+     */
+    private boolean isDTLS12() {
+        return version == ProtocolVersion.DTLS12;
     }
 
     /**

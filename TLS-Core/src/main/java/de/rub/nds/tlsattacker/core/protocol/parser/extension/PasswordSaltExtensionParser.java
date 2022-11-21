@@ -10,27 +10,29 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PasswordSaltExtensionMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.InputStream;
-
 public class PasswordSaltExtensionParser extends ExtensionParser<PasswordSaltExtensionMessage> {
-
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public PasswordSaltExtensionParser(InputStream stream, TlsContext tlsContext) {
-        super(stream, tlsContext);
+    public PasswordSaltExtensionParser(int startposition, byte[] array, Config config) {
+        super(startposition, array, config);
     }
 
     @Override
-    public void parse(PasswordSaltExtensionMessage msg) {
+    public void parseExtensionMessageContent(PasswordSaltExtensionMessage msg) {
         LOGGER.debug("Parsing PasswordSaltExtensionMessage");
         parseSaltLength(msg);
         parseSalt(msg);
+    }
+
+    @Override
+    protected PasswordSaltExtensionMessage createExtensionMessage() {
+        return new PasswordSaltExtensionMessage();
     }
 
     private void parseSaltLength(PasswordSaltExtensionMessage msg) {

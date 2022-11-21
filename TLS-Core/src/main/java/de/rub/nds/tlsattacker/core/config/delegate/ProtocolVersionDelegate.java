@@ -14,7 +14,6 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.layer.constant.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 
@@ -49,7 +48,6 @@ public class ProtocolVersionDelegate extends Delegate {
         TransportHandlerType th = TransportHandlerType.TCP;
         if (config.getHighestProtocolVersion().isDTLS()) {
             th = TransportHandlerType.UDP;
-            config.setDefaultLayerConfiguration(LayerConfiguration.DTLS);
             config.setWorkflowExecutorType(WorkflowExecutorType.DTLS);
             config.setFinishWithCloseNotify(true);
             config.setIgnoreRetransmittedCssInDtls(true);

@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class AlertPreparator extends ProtocolMessagePreparator<AlertMessage> {
+public class AlertPreparator extends TlsMessagePreparator<AlertMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 

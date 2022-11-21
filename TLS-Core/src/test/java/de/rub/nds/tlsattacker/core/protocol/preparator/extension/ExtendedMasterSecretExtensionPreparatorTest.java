@@ -1,11 +1,12 @@
-/*
+/**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -17,16 +18,12 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtendedMasterS
 import org.junit.jupiter.api.Test;
 
 public class ExtendedMasterSecretExtensionPreparatorTest
-        extends AbstractExtensionMessagePreparatorTest<
-                ExtendedMasterSecretExtensionMessage,
-                ExtendedMasterSecretExtensionSerializer,
-                ExtendedMasterSecretExtensionPreparator> {
+    extends AbstractExtensionMessagePreparatorTest<ExtendedMasterSecretExtensionMessage,
+        ExtendedMasterSecretExtensionSerializer, ExtendedMasterSecretExtensionPreparator> {
 
     public ExtendedMasterSecretExtensionPreparatorTest() {
-        super(
-                ExtendedMasterSecretExtensionMessage::new,
-                ExtendedMasterSecretExtensionSerializer::new,
-                ExtendedMasterSecretExtensionPreparator::new);
+        super(ExtendedMasterSecretExtensionMessage::new, ExtendedMasterSecretExtensionMessage::new,
+            ExtendedMasterSecretExtensionSerializer::new, ExtendedMasterSecretExtensionPreparator::new);
     }
 
     @Test
@@ -35,9 +32,7 @@ public class ExtendedMasterSecretExtensionPreparatorTest
         context.getConfig().setAddExtendedMasterSecretExtension(true);
         preparator.prepare();
 
-        assertArrayEquals(
-                ExtensionType.EXTENDED_MASTER_SECRET.getValue(),
-                message.getExtensionType().getValue());
+        assertArrayEquals(ExtensionType.EXTENDED_MASTER_SECRET.getValue(), message.getExtensionType().getValue());
         assertEquals(0, (long) message.getExtensionLength().getValue());
     }
 }

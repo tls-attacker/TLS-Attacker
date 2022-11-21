@@ -1,11 +1,12 @@
-/*
+/**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -16,27 +17,27 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.PaddingExtensionMe
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PaddingExtensionSerializer;
 import org.junit.jupiter.api.Test;
 
-public class PaddingExtensionPreparatorTest
-        extends AbstractExtensionMessagePreparatorTest<
-                PaddingExtensionMessage, PaddingExtensionSerializer, PaddingExtensionPreparator> {
+public class PaddingExtensionPreparatorTest extends AbstractExtensionMessagePreparatorTest<PaddingExtensionMessage,
+    PaddingExtensionSerializer, PaddingExtensionPreparator> {
 
     public PaddingExtensionPreparatorTest() {
-        super(
-                PaddingExtensionMessage::new,
-                PaddingExtensionSerializer::new,
-                PaddingExtensionPreparator::new);
+        super(PaddingExtensionMessage::new, PaddingExtensionMessage::new, PaddingExtensionSerializer::new,
+            PaddingExtensionPreparator::new);
     }
 
-    /** Tests the preparator of the padding extension message. */
+    /**
+     * Tests the preparator of the padding extension message.
+     */
     @Test
     @Override
     public void testPrepare() {
-        byte[] extensionPayload = new byte[] {0, 0, 0, 0, 0, 0};
+        byte[] extensionPayload = new byte[] { 0, 0, 0, 0, 0, 0 };
         context.getConfig().setDefaultPaddingExtensionBytes(extensionPayload);
         preparator.prepare();
 
         assertArrayEquals(ExtensionType.PADDING.getValue(), message.getExtensionType().getValue());
         assertEquals(6, message.getExtensionLength().getValue());
         assertArrayEquals(extensionPayload, message.getPaddingBytes().getValue());
+
     }
 }

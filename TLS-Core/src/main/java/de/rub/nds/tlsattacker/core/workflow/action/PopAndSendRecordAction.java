@@ -1,26 +1,26 @@
-/*
+/**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
-import de.rub.nds.tlsattacker.core.layer.context.TcpContext;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
-import de.rub.nds.tlsattacker.core.record.Record;
-import de.rub.nds.tlsattacker.core.record.serializer.RecordSerializer;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.record.AbstractRecord;
+import de.rub.nds.tlsattacker.core.record.serializer.AbstractRecordSerializer;
 import de.rub.nds.tlsattacker.core.state.State;
-import jakarta.xml.bind.annotation.XmlRootElement;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -39,24 +39,23 @@ public class PopAndSendRecordAction extends MessageAction implements SendingActi
     }
 
     @Override
-    public void execute(State state) throws ActionExecutionException {
-        TlsContext tlsContext = state.getContext(connectionAlias).getTlsContext();
-        TcpContext tcpContext = state.getContext(connectionAlias).getTcpContext();
+    public void execute(State state) throws WorkflowExecutionException {
+        TlsContext tlsContext = state.getTlsContext(connectionAlias);
 
         if (isExecuted()) {
-            throw new ActionExecutionException("Action already executed!");
+            throw new WorkflowExecutionException("Action already executed!");
         }
 
-        Record record = tlsContext.getRecordBuffer().pop();
+        AbstractRecord record = tlsContext.getRecordBuffer().pop();
         String sending = record.getContentMessageType().name();
         if (connectionAlias == null) {
             LOGGER.info("Sending record: " + sending);
         } else {
             LOGGER.info("Sending record(" + connectionAlias + "): " + sending);
         }
-        RecordSerializer s = record.getRecordSerializer();
+        AbstractRecordSerializer s = record.getRecordSerializer();
         try {
-            tcpContext.getTransportHandler().sendData(s.serialize());
+            tlsContext.getTransportHandler().sendData(s.serialize());
             asPlanned = true;
         } catch (IOException ex) {
             LOGGER.debug(ex);
@@ -77,7 +76,7 @@ public class PopAndSendRecordAction extends MessageAction implements SendingActi
     }
 
     @Override
-    public void setRecords(List<Record> records) {
+    public void setRecords(List<AbstractRecord> records) {
         this.records = records;
     }
 
@@ -96,12 +95,17 @@ public class PopAndSendRecordAction extends MessageAction implements SendingActi
     }
 
     @Override
-    public List<Record> getSendRecords() {
+    public List<AbstractRecord> getSendRecords() {
         return records;
     }
 
     @Override
     public List<DtlsHandshakeMessageFragment> getSendFragments() {
         return fragments;
+    }
+
+    @Override
+    public MessageActionDirection getMessageDirection() {
+        return MessageActionDirection.SENDING;
     }
 }

@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.HeartbeatExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.HeartbeatExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,8 +22,9 @@ public class HeartbeatExtensionPreparator extends ExtensionPreparator<HeartbeatE
 
     private final HeartbeatExtensionMessage msg;
 
-    public HeartbeatExtensionPreparator(Chooser chooser, HeartbeatExtensionMessage message) {
-        super(chooser, message);
+    public HeartbeatExtensionPreparator(Chooser chooser, HeartbeatExtensionMessage message,
+        HeartbeatExtensionSerializer serializer) {
+        super(chooser, message, serializer);
         this.msg = message;
     }
 

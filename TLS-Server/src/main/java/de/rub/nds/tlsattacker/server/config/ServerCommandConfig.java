@@ -1,11 +1,12 @@
-/*
+/**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.server.config;
 
 import com.beust.jcommander.Parameter;
@@ -19,30 +20,41 @@ public class ServerCommandConfig extends TLSDelegateConfig {
 
     public static final String COMMAND = "server";
 
-    @ParametersDelegate private CipherSuiteDelegate ciphersuiteDelegate;
-    @ParametersDelegate private ProtocolVersionDelegate protocolVersionDelegate;
-    @ParametersDelegate private NamedGroupsDelegate ellipticCurveDelegate;
-    @ParametersDelegate private ServerDelegate serverDelegate;
-    @ParametersDelegate private SignatureAndHashAlgorithmDelegate signatureAndHashAlgorithmDelegate;
-    @ParametersDelegate private SignatureAlgorithmCertDelegate signatureAlgorithmCertDelegate;
-    @ParametersDelegate private WorkflowTypeDelegate workflowTypeDelegate;
-    @ParametersDelegate private TransportHandlerDelegate transportHandlerDelegate;
-    @ParametersDelegate private HeartbeatDelegate heartbeatDelegate;
-    @ParametersDelegate private MaxFragmentLengthDelegate maxFragmentLengthDelegate;
-    @ParametersDelegate private CertificateDelegate certificateDelegate;
-    @ParametersDelegate private FilterDelegate filterDelegate;
-    @ParametersDelegate private ListDelegate listDelegate;
-    @ParametersDelegate private ExecutorTypeDelegate executorTypeDelegate;
-    @ParametersDelegate private StarttlsDelegate starttlsDelegate;
+    @ParametersDelegate
+    private CipherSuiteDelegate ciphersuiteDelegate;
+    @ParametersDelegate
+    private ProtocolVersionDelegate protocolVersionDelegate;
+    @ParametersDelegate
+    private NamedGroupsDelegate ellipticCurveDelegate;
+    @ParametersDelegate
+    private ServerDelegate serverDelegate;
+    @ParametersDelegate
+    private SignatureAndHashAlgorithmDelegate signatureAndHashAlgorithmDelegate;
+    @ParametersDelegate
+    private SignatureAlgorithmCertDelegate signatureAlgorithmCertDelegate;
+    @ParametersDelegate
+    private WorkflowTypeDelegate workflowTypeDelegate;
+    @ParametersDelegate
+    private TransportHandlerDelegate transportHandlerDelegate;
+    @ParametersDelegate
+    private HeartbeatDelegate heartbeatDelegate;
+    @ParametersDelegate
+    private MaxFragmentLengthDelegate maxFragmentLengthDelegate;
+    @ParametersDelegate
+    private CertificateDelegate certificateDelegate;
+    @ParametersDelegate
+    private FilterDelegate filterDelegate;
+    @ParametersDelegate
+    private ListDelegate listDelegate;
+    @ParametersDelegate
+    private ExecutorTypeDelegate executorTypeDelegate;
+    @ParametersDelegate
+    private StarttlsDelegate starttlsDelegate;
 
-    @Parameter(
-            names = "-workflow_input",
-            description = "A path to a workflow trace that should be exeucted")
+    @Parameter(names = "-workflow_input", description = "A path to a workflow trace that should be exeucted")
     private String workflowInput = null;
-
-    @Parameter(
-            names = "-workflow_output",
-            description = "A path in which the executed workflow trace should be stored in")
+    @Parameter(names = "-workflow_output",
+        description = "A path in which the executed workflow trace should be stored in")
     private String workflowOutput = null;
 
     public ServerCommandConfig(GeneralDelegate delegate) {

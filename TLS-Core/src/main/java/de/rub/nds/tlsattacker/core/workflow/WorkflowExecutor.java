@@ -1,27 +1,32 @@
-/*
+/**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.constants.AlertDescription;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.exceptions.*;
-import de.rub.nds.tlsattacker.core.layer.LayerStackFactory;
+import de.rub.nds.tlsattacker.core.exceptions.BouncyCastleNotLoadedException;
+import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.core.exceptions.TransportHandlerConnectException;
+import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
-import de.rub.nds.tlsattacker.core.state.Context;
+import de.rub.nds.tlsattacker.core.record.layer.RecordLayerFactory;
 import de.rub.nds.tlsattacker.core.state.State;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
-import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.TransportHandlerFactory;
 import de.rub.nds.tlsattacker.transport.socket.SocketState;
@@ -37,12 +42,6 @@ public abstract class WorkflowExecutor {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    static {
-        if (!BouncyCastleProviderChecker.isLoaded()) {
-            throw new BouncyCastleNotLoadedException("BouncyCastleProvider not loaded");
-        }
-    }
-
     private Function<State, Integer> beforeTransportPreInitCallback = null;
 
     private Function<State, Integer> beforeTransportInitCallback = null;
@@ -51,19 +50,27 @@ public abstract class WorkflowExecutor {
 
     private Function<State, Integer> afterExecutionCallback = null;
 
+    static {
+        if (!BouncyCastleProviderChecker.isLoaded()) {
+            throw new BouncyCastleNotLoadedException("BouncyCastleProvider not loaded");
+        }
+    }
+
     protected final WorkflowExecutorType type;
 
     protected final State state;
     protected final Config config;
 
     /**
-     * Prepare a workflow trace for execution according to the given state and executor type. Try
-     * various ways to initialize a workflow trace and add it to the state. For workflow creation,
-     * use the first method which does not return null, in the following order:
-     * state.getWorkflowTrace(), state.config.getWorkflowInput(), config.getWorkflowTraceType().
+     * Prepare a workflow trace for execution according to the given state and executor type. Try various ways to
+     * initialize a workflow trace and add it to the state. For workflow creation, use the first method which does not
+     * return null, in the following order: state.getWorkflowTrace(), state.config.getWorkflowInput(),
+     * config.getWorkflowTraceType().
      *
-     * @param type of the workflow executor (currently only DEFAULT)
-     * @param state to work on
+     * @param type
+     *              of the workflow executor (currently only DEFAULT)
+     * @param state
+     *              to work on
      */
     public WorkflowExecutor(WorkflowExecutorType type, State state) {
         this.type = type;
@@ -71,31 +78,24 @@ public abstract class WorkflowExecutor {
         this.config = state.getConfig();
     }
 
-    public abstract void executeWorkflow();
-
-    public void initProtocolStack(Context context) throws IOException {
-        context.setLayerStack(
-                LayerStackFactory.createLayerStack(config.getDefaultLayerConfiguration(), context));
-    }
+    public abstract void executeWorkflow() throws WorkflowExecutionException;
 
     /**
-     * Initialize the context's transport handler.Start listening or connect to a server, depending
-     * on our connection end type.
+     * Initialize the context's transport handler.Start listening or connect to a server, depending on our connection
+     * end type.
      *
      * @param context
      */
-    public void initTransportHandler(Context context) {
+    public void initTransportHandler(TlsContext context) {
 
         if (context.getTransportHandler() == null) {
             if (context.getConnection() == null) {
                 throw new ConfigurationException("Connection end not set");
             }
-            context.setTransportHandler(
-                    TransportHandlerFactory.createTransportHandler(context.getConnection()));
+            context.setTransportHandler(TransportHandlerFactory.createTransportHandler(context.getConnection()));
             if (context.getTransportHandler() instanceof ClientTcpTransportHandler) {
                 ((ClientTcpTransportHandler) context.getTransportHandler())
-                        .setRetryFailedSocketInitialization(
-                                config.isRetryFailedClientTcpSocketInitialization());
+                    .setRetryFailedSocketInitialization(config.isRetryFailedClientTcpSocketInitialization());
             }
         }
 
@@ -112,49 +112,30 @@ public abstract class WorkflowExecutor {
                 getAfterTransportInitCallback().apply(state);
             }
         } catch (NullPointerException | NumberFormatException ex) {
-            throw new ConfigurationException(
-                    "Invalid values in " + context.getConnection().toString(), ex);
+            throw new ConfigurationException("Invalid values in " + context.getConnection().toString(), ex);
         } catch (Exception ex) {
             throw new TransportHandlerConnectException(
-                    "Unable to initialize the transport handler with: "
-                            + context.getConnection().toString(),
-                    ex);
+                "Unable to initialize the transport handler with: " + context.getConnection().toString(), ex);
         }
     }
 
     /**
-     * Executes the given action with the given state. Catches and handles exceptions. Throws:
-     * SkipActionException If the action should be skipped
+     * Initialize the context's record layer.
+     *
+     * @param context
      */
-    protected void executeAction(TlsAction action, State state) throws SkipActionException {
-        try {
-            action.execute(state);
-        } catch (WorkflowExecutionException ex) {
-            LOGGER.error("Fatal error during action execution, stopping execution: ", ex);
-            state.setExecutionException(ex);
-            throw ex;
-        } catch (UnsupportedOperationException
-                | PreparationException
-                | ActionExecutionException ex) {
-            state.setExecutionException(ex);
-            LOGGER.warn("Not fatal error during action execution, skipping action: " + action, ex);
-            throw new SkipActionException(ex);
-        } catch (Exception ex) {
-            LOGGER.error(
-                    "Unexpected fatal error during action execution, stopping execution: ", ex);
-            state.setExecutionException(ex);
-            throw new WorkflowExecutionException(ex);
-        } finally {
-            state.setEndTimestamp(System.currentTimeMillis());
+    public void initRecordLayer(TlsContext context) {
+        if (context.getRecordLayerType() == null) {
+            throw new ConfigurationException("No record layer type defined");
         }
+        context.setRecordLayer(RecordLayerFactory.getRecordLayer(context.getRecordLayerType(), context));
     }
 
     public Function<State, Integer> getBeforeTransportPreInitCallback() {
         return beforeTransportPreInitCallback;
     }
 
-    public void setBeforeTransportPreInitCallback(
-            Function<State, Integer> beforeTransportPreInitCallback) {
+    public void setBeforeTransportPreInitCallback(Function<State, Integer> beforeTransportPreInitCallback) {
         this.beforeTransportPreInitCallback = beforeTransportPreInitCallback;
     }
 
@@ -162,8 +143,7 @@ public abstract class WorkflowExecutor {
         return beforeTransportInitCallback;
     }
 
-    public void setBeforeTransportInitCallback(
-            Function<State, Integer> beforeTransportInitCallback) {
+    public void setBeforeTransportInitCallback(Function<State, Integer> beforeTransportInitCallback) {
         this.beforeTransportInitCallback = beforeTransportInitCallback;
     }
 
@@ -183,21 +163,33 @@ public abstract class WorkflowExecutor {
         this.afterExecutionCallback = afterExecutionCallback;
     }
 
+    public void initAllTransportHandler() {
+        for (TlsContext ctx : state.getAllTlsContexts()) {
+            AliasedConnection con = ctx.getConnection();
+            if (con.getLocalConnectionEndType() == ConnectionEndType.SERVER) {
+                LOGGER.info("Waiting for incoming connection on " + con.getHostname() + ":" + con.getPort());
+            } else {
+                LOGGER.info("Connecting to " + con.getHostname() + ":" + con.getPort());
+            }
+            initTransportHandler(ctx);
+            LOGGER.debug("Connection for " + ctx + " initialized");
+        }
+    }
+
     public void closeConnection() {
-        for (Context context : state.getAllContexts()) {
+        for (TlsContext ctx : state.getAllTlsContexts()) {
             try {
-                context.getTransportHandler().closeConnection();
+                ctx.getTransportHandler().closeConnection();
             } catch (IOException ex) {
-                LOGGER.warn("Could not close connection for context " + context);
+                LOGGER.warn("Could not close connection for context " + ctx);
                 LOGGER.debug(ex);
             }
         }
     }
 
-    public void initAllLayer() throws IOException {
-        for (Context ctx : state.getAllContexts()) {
-            initTransportHandler(ctx);
-            initProtocolStack(ctx);
+    public void initAllRecordLayer() {
+        for (TlsContext ctx : state.getAllTlsContexts()) {
+            initRecordLayer(ctx);
         }
     }
 
@@ -205,41 +197,42 @@ public abstract class WorkflowExecutor {
         AlertMessage alertMessage = new AlertMessage();
         alertMessage.setConfig(AlertLevel.FATAL, AlertDescription.CLOSE_NOTIFY);
         SendAction sendAction =
-                new SendAction(
-                        state.getWorkflowTrace().getConnections().get(0).getAlias(), alertMessage);
+            new SendAction(state.getWorkflowTrace().getConnections().get(0).getAlias(), alertMessage);
         sendAction.getActionOptions().add(ActionOption.MAY_FAIL);
         sendAction.execute(state);
     }
 
     public void setFinalSocketState() {
-        for (Context ctx : state.getAllContexts()) {
+        for (TlsContext ctx : state.getAllTlsContexts()) {
             TransportHandler handler = ctx.getTransportHandler();
             if (handler instanceof TcpTransportHandler) {
                 SocketState socketSt =
-                        ((TcpTransportHandler) handler)
-                                .getSocketState(config.isReceiveFinalTcpSocketStateWithTimeout());
-                ctx.getTcpContext().setFinalSocketState(socketSt);
+                    ((TcpTransportHandler) handler).getSocketState(config.isReceiveFinalTcpSocketStateWithTimeout());
+                ctx.setFinalSocketState(socketSt);
             } else {
-                ctx.getTcpContext().setFinalSocketState(SocketState.UNAVAILABLE);
+                ctx.setFinalSocketState(SocketState.UNAVAILABLE);
             }
         }
     }
 
-    /** Check if a at least one TLS context received a fatal alert. */
+    /**
+     * Check if a at least one TLS context received a fatal alert.
+     */
     public boolean isReceivedFatalAlert() {
-        for (Context ctx : state.getAllContexts()) {
-            if (ctx.getTlsContext().isReceivedFatalAlert()) {
+        for (TlsContext ctx : state.getAllTlsContexts()) {
+            if (ctx.isReceivedFatalAlert()) {
                 return true;
             }
         }
         return false;
     }
 
-    /** Check if a at least one TLS context received a warning alert. */
+    /**
+     * Check if a at least one TLS context received a warning alert.
+     */
     public boolean isReceivedWarningAlert() {
         List<ProtocolMessage> allReceivedMessages =
-                WorkflowTraceUtil.getAllReceivedMessages(
-                        state.getWorkflowTrace(), ProtocolMessageType.ALERT);
+            WorkflowTraceUtil.getAllReceivedMessages(state.getWorkflowTrace(), ProtocolMessageType.ALERT);
         for (ProtocolMessage message : allReceivedMessages) {
             AlertMessage alert = (AlertMessage) message;
             if (alert.getLevel().getValue() == AlertLevel.WARNING.getValue()) {
@@ -250,8 +243,8 @@ public abstract class WorkflowExecutor {
     }
 
     public boolean isIoException() {
-        for (Context context : state.getAllContexts()) {
-            if (context.getTlsContext().isReceivedTransportHandlerException()) {
+        for (TlsContext ctx : state.getAllTlsContexts()) {
+            if (ctx.isReceivedTransportHandlerException()) {
                 return true;
             }
         }

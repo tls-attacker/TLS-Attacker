@@ -1,48 +1,56 @@
-/*
+/**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatByteLength;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageParser;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
-import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class HeartbeatMessageParser extends ProtocolMessageParser<HeartbeatMessage> {
+public class HeartbeatMessageParser extends TlsMessageParser<HeartbeatMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     /**
      * Constructor for the Parser class
      *
-     * @param stream
+     * @param startposition
+     *                      Position in the array where the ProtocolMessageParser is supposed to start parsing
+     * @param array
+     *                      The byte[] which the ProtocolMessageParser is supposed to parse
+     * @param version
+     *                      Version of the Protocol
      */
-    public HeartbeatMessageParser(InputStream stream) {
-        super(stream);
+    public HeartbeatMessageParser(int startposition, byte[] array, ProtocolVersion version, Config config) {
+        super(startposition, array, version, config);
     }
 
     @Override
-    public void parse(HeartbeatMessage message) {
+    protected HeartbeatMessage parseMessageContent() {
         LOGGER.debug("Parsing HeartbeatMessage");
-        parseHeartbeatMessageType(message);
-        parsePayloadLength(message);
-        parsePayload(message);
-        parsePadding(message);
-        message.setCompleteResultingMessage(getAlreadyParsed());
+        HeartbeatMessage msg = new HeartbeatMessage();
+        parseHeartbeatMessageType(msg);
+        parsePayloadLength(msg);
+        parsePayload(msg);
+        parsePadding(msg);
+        return msg;
     }
 
     /**
      * Reads the next bytes as the HeartbeatMessageType and writes them in the message
      *
-     * @param msg Message to write in
+     * @param msg
+     *            Message to write in
      */
     private void parseHeartbeatMessageType(HeartbeatMessage msg) {
         msg.setHeartbeatMessageType(parseByteField(HeartbeatByteLength.TYPE));
@@ -52,7 +60,8 @@ public class HeartbeatMessageParser extends ProtocolMessageParser<HeartbeatMessa
     /**
      * Reads the next bytes as the PayloadLength and writes them in the message
      *
-     * @param msg Message to write in
+     * @param msg
+     *            Message to write in
      */
     private void parsePayloadLength(HeartbeatMessage msg) {
         msg.setPayloadLength(parseIntField(HeartbeatByteLength.PAYLOAD_LENGTH));
@@ -62,7 +71,8 @@ public class HeartbeatMessageParser extends ProtocolMessageParser<HeartbeatMessa
     /**
      * Reads the next bytes as the Payload and writes them in the message
      *
-     * @param msg Message to write in
+     * @param msg
+     *            Message to write in
      */
     private void parsePayload(HeartbeatMessage msg) {
         msg.setPayload(parseByteArrayField(msg.getPayloadLength().getValue()));
@@ -72,10 +82,12 @@ public class HeartbeatMessageParser extends ProtocolMessageParser<HeartbeatMessa
     /**
      * Reads the next bytes as the Padding and writes them in the message
      *
-     * @param msg Message to write in
+     * @param msg
+     *            Message to write in
      */
     private void parsePadding(HeartbeatMessage msg) {
         msg.setPadding(parseByteArrayField(getBytesLeft()));
         LOGGER.debug("Padding: " + ArrayConverter.bytesToHexString(msg.getPadding().getValue()));
     }
+
 }

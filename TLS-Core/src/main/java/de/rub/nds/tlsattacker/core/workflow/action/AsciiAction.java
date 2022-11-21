@@ -1,16 +1,18 @@
-/*
+/**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.util.IllegalStringAdapter;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
 import java.util.Objects;
 
 @XmlRootElement
@@ -44,7 +46,8 @@ public abstract class AsciiAction extends TlsAction {
     }
 
     /**
-     * @param asciiText the asciiText to set
+     * @param asciiText
+     *                  the asciiText to set
      */
     public void setAsciiText(String asciiText) {
         this.asciiText = asciiText;
@@ -56,8 +59,10 @@ public abstract class AsciiAction extends TlsAction {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         AsciiAction that = (AsciiAction) o;
         return Objects.equals(asciiText, that.asciiText) && Objects.equals(encoding, that.encoding);
     }

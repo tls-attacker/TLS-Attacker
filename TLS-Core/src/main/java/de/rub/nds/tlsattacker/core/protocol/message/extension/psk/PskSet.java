@@ -1,58 +1,67 @@
-/*
+/**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message.extension.psk;
 
 import de.rub.nds.modifiablevariable.util.IllegalStringAdapter;
 import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Objects;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-/** Contains (TLS 1.3) PSK-related values */
+/**
+ * Contains (TLS 1.3) PSK-related values
+ */
 @XmlAccessorType(XmlAccessType.FIELD)
 public class PskSet implements Serializable {
 
-    /** PreSharedKeyIdentity to be used as PSK Identifier */
+    /**
+     * PreSharedKeyIdentity to be used as PSK Identifier
+     */
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] preSharedKeyIdentity;
 
-    /** PreSharedKeys for PSK-Extension */
+    /**
+     * PreSharedKeys for PSK-Extension
+     */
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] preSharedKey;
 
-    /** TicketAge value to be used to generate the obfuscated ticket age for the given PSKs */
+    /**
+     * TicketAge value to be used to generate the obfuscated ticket age for the given PSKs
+     */
     @XmlJavaTypeAdapter(IllegalStringAdapter.class)
     private String ticketAge;
 
-    /** TicketAgeAdd value to be used to obfuscate the ticket age for the given PSKs */
+    /**
+     * TicketAgeAdd value to be used to obfuscate the ticket age for the given PSKs
+     */
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] ticketAgeAdd;
 
-    /** ticket nonce used to derive PSK */
+    /**
+     * ticket nonce used to derive PSK
+     */
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] ticketNonce;
 
     private CipherSuite cipherSuite;
 
-    public PskSet() {}
+    public PskSet() {
+    }
 
-    public PskSet(
-            byte[] preSharedKeyIdentity,
-            byte[] preSharedKey,
-            String ticketAge,
-            byte[] ticketAgeAdd,
-            byte[] ticketNonce,
-            CipherSuite cipherSuite) {
+    public PskSet(byte[] preSharedKeyIdentity, byte[] preSharedKey, String ticketAge, byte[] ticketAgeAdd,
+        byte[] ticketNonce, CipherSuite cipherSuite) {
         this.preSharedKeyIdentity = preSharedKeyIdentity;
         this.preSharedKey = preSharedKey;
         this.ticketAge = ticketAge;
@@ -69,7 +78,8 @@ public class PskSet implements Serializable {
     }
 
     /**
-     * @param preSharedKeyIdentity the preSharedKeyIdentity to set
+     * @param preSharedKeyIdentity
+     *                             the preSharedKeyIdentity to set
      */
     public void setPreSharedKeyIdentity(byte[] preSharedKeyIdentity) {
         this.preSharedKeyIdentity = preSharedKeyIdentity;
@@ -83,7 +93,8 @@ public class PskSet implements Serializable {
     }
 
     /**
-     * @param preSharedKey the preSharedKey to set
+     * @param preSharedKey
+     *                     the preSharedKey to set
      */
     public void setPreSharedKey(byte[] preSharedKey) {
         this.preSharedKey = preSharedKey;
@@ -97,7 +108,8 @@ public class PskSet implements Serializable {
     }
 
     /**
-     * @param ticketAge the ticketAge to set
+     * @param ticketAge
+     *                  the ticketAge to set
      */
     public void setTicketAge(String ticketAge) {
         this.ticketAge = ticketAge;
@@ -111,7 +123,8 @@ public class PskSet implements Serializable {
     }
 
     /**
-     * @param ticketAgeAdd the ticketAgeAdd to set
+     * @param ticketAgeAdd
+     *                     the ticketAgeAdd to set
      */
     public void setTicketAgeAdd(byte[] ticketAgeAdd) {
         this.ticketAgeAdd = ticketAgeAdd;
@@ -133,7 +146,8 @@ public class PskSet implements Serializable {
     }
 
     /**
-     * @param cipherSuite the cipherSuite to set
+     * @param cipherSuite
+     *                    the cipherSuite to set
      */
     public void setCipherSuite(CipherSuite cipherSuite) {
         this.cipherSuite = cipherSuite;
@@ -180,4 +194,5 @@ public class PskSet implements Serializable {
         }
         return this.cipherSuite == other.cipherSuite;
     }
+
 }

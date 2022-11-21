@@ -9,36 +9,42 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
+import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestV2ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.RequestItemV2;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 
 public class CertificateStatusRequestV2ExtensionParser
     extends ExtensionParser<CertificateStatusRequestV2ExtensionMessage> {
 
-    public CertificateStatusRequestV2ExtensionParser(InputStream stream, TlsContext tlsContext) {
-        super(stream, tlsContext);
+    public CertificateStatusRequestV2ExtensionParser(int startposition, byte[] array, Config config) {
+        super(startposition, array, config);
     }
 
     @Override
-    public void parse(CertificateStatusRequestV2ExtensionMessage msg) {
+    public void parseExtensionMessageContent(CertificateStatusRequestV2ExtensionMessage msg) {
         msg.setStatusRequestListLength(parseIntField(ExtensionByteLength.CERTIFICATE_STATUS_REQUEST_V2_LIST));
-
         msg.setStatusRequestBytes(parseByteArrayField(msg.getStatusRequestListLength().getValue()));
-        ByteArrayInputStream innerStream = new ByteArrayInputStream(msg.getStatusRequestBytes().getValue());
 
+        int pointer = 0;
         List<RequestItemV2> itemList = new LinkedList<>();
-        while (innerStream.available() > 0) {
-            RequestItemV2Parser parser = new RequestItemV2Parser(innerStream);
-            RequestItemV2 item = new RequestItemV2();
-            parser.parse(item);
-            itemList.add(item);
+        while (pointer < msg.getStatusRequestBytes().getValue().length) {
+            RequestItemV2Parser parser = new RequestItemV2Parser(pointer, msg.getStatusRequestBytes().getValue());
+            itemList.add(parser.parse());
+            if (pointer == parser.getPointer()) {
+                throw new ParserException("Ran into infinite Loop while parsing RequestItemV2");
+            }
+            pointer = parser.getPointer();
         }
         msg.setStatusRequestList(itemList);
     }
+
+    @Override
+    protected CertificateStatusRequestV2ExtensionMessage createExtensionMessage() {
+        return new CertificateStatusRequestV2ExtensionMessage();
+    }
+
 }

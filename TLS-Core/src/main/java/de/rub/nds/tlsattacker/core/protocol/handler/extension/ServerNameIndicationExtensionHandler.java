@@ -9,11 +9,15 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.NameType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.SNIEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.ServerNameIndicationExtensionParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ServerNameIndicationExtensionPreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ServerNameIndicationExtensionSerializer;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -23,8 +27,8 @@ public class ServerNameIndicationExtensionHandler extends ExtensionHandler<Serve
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ServerNameIndicationExtensionHandler(TlsContext tlsContext) {
-        super(tlsContext);
+    public ServerNameIndicationExtensionHandler(TlsContext context) {
+        super(context);
     }
 
     @Override
@@ -38,6 +42,21 @@ public class ServerNameIndicationExtensionHandler extends ExtensionHandler<Serve
                 LOGGER.warn("Unknown SNI Type:" + pair.getServerNameType().getValue());
             }
         }
-        tlsContext.setClientSNIEntryList(sniEntryList);
+        context.setClientSNIEntryList(sniEntryList);
+    }
+
+    @Override
+    public ServerNameIndicationExtensionParser getParser(byte[] message, int pointer, Config config) {
+        return new ServerNameIndicationExtensionParser(pointer, message, config);
+    }
+
+    @Override
+    public ServerNameIndicationExtensionPreparator getPreparator(ServerNameIndicationExtensionMessage message) {
+        return new ServerNameIndicationExtensionPreparator(context.getChooser(), message, getSerializer(message));
+    }
+
+    @Override
+    public ServerNameIndicationExtensionSerializer getSerializer(ServerNameIndicationExtensionMessage message) {
+        return new ServerNameIndicationExtensionSerializer(message);
     }
 }

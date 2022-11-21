@@ -1,37 +1,38 @@
-/*
+/**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlElementWrapper;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlSeeAlso;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElementWrapper;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * This action allows to change a value of the {@link TlsContext}. The field that should be changed
- * is referenced by a string.
+ * This action allows to change a value of the {@link TlsContext}. The field that should be changed is referenced by a
+ * string.
  *
- * <p>WARNING: This might not work for every field inside the context, especially when the
- * WorkflowTrace is copied. There might be serialization/deserialization issues with the types used
- * in the {@link TlsContext}.
+ * WARNING: This might not work for every field inside the context, especially when the WorkflowTrace is copied. There
+ * might be serialization/deserialization issues with the types used in the {@link TlsContext}.
  *
- * @param <T> Object type of the field inside the {@link TlsContext}
+ * @param <T>
+ *            Object type of the field inside the {@link TlsContext}
  */
 @XmlSeeAlso(TlsContext.class)
 @XmlRootElement
@@ -40,7 +41,6 @@ public class ChangeContextValueAction<T> extends ConnectionBoundAction {
     private static final Logger LOGGER = LogManager.getLogger();
 
     private T newValue;
-
     @XmlElementWrapper(name = "newValueList")
     @XmlElement(name = "newValue")
     private List<T> newValueList;
@@ -50,7 +50,8 @@ public class ChangeContextValueAction<T> extends ConnectionBoundAction {
 
     private String fieldName;
 
-    @XmlElement private Boolean usesList = null;
+    @XmlElement
+    private Boolean usesList = null;
 
     public ChangeContextValueAction(String fieldName, T newValue) {
         super();
@@ -69,14 +70,15 @@ public class ChangeContextValueAction<T> extends ConnectionBoundAction {
         this(fieldName, Arrays.asList(newValueList));
     }
 
-    public ChangeContextValueAction() {}
+    public ChangeContextValueAction() {
+    }
 
     @Override
-    public void execute(State state) throws ActionExecutionException {
-        TlsContext tlsContext = state.getContext(getConnectionAlias()).getTlsContext();
+    public void execute(State state) throws WorkflowExecutionException {
+        TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
 
         if (isExecuted()) {
-            throw new ActionExecutionException("Action already executed!");
+            throw new WorkflowExecutionException("Action already executed!");
         }
 
         try {
@@ -86,27 +88,19 @@ public class ChangeContextValueAction<T> extends ConnectionBoundAction {
             if (!isUsesList()) {
                 oldValue = (T) field.get(tlsContext);
                 field.set(tlsContext, this.newValue);
-                LOGGER.info(
-                        String.format(
-                                "Changed %s from %s to %s",
-                                this.fieldName,
-                                oldValue == null ? "null" : oldValue.toString(),
-                                newValue.toString()));
+                LOGGER.info(String.format("Changed %s from %s to %s", this.fieldName,
+                    oldValue == null ? "null" : oldValue.toString(), newValue.toString()));
             } else {
                 oldValueList = (List<T>) field.get(tlsContext);
                 field.set(tlsContext, this.newValueList);
-                LOGGER.info(
-                        String.format(
-                                "Changed %s from %s to %s",
-                                this.fieldName,
-                                oldValueList == null ? "null" : oldValueList.toString(),
-                                newValueList.toString()));
+                LOGGER.info(String.format("Changed %s from %s to %s", this.fieldName,
+                    oldValueList == null ? "null" : oldValueList.toString(), newValueList.toString()));
             }
 
             setExecuted(true);
         } catch (Exception e) {
             LOGGER.error(e);
-            throw new ActionExecutionException("Action could not be executed");
+            throw new WorkflowExecutionException("Action could not be executed");
         }
     }
 
@@ -140,9 +134,7 @@ public class ChangeContextValueAction<T> extends ConnectionBoundAction {
             return false;
         }
 
-        if (!isUsesList()
-                && this.getNewValue() != null
-                && this.getNewValue().getClass().isArray()) {
+        if (!isUsesList() && this.getNewValue() != null && this.getNewValue().getClass().isArray()) {
             // If T is an array (e.g. byte[]), we need to use reflection to
             // check equality
             if (this.newValue != null && other.newValue != null) {
@@ -181,12 +173,10 @@ public class ChangeContextValueAction<T> extends ConnectionBoundAction {
         }
 
         if (!isUsesList()) {
-            return Objects.equals(this.oldValue, other.oldValue)
-                    && Objects.equals(this.newValue, other.newValue);
+            return Objects.equals(this.oldValue, other.oldValue) && Objects.equals(this.newValue, other.newValue);
         } else {
             return this.newValueList.equals(other.newValueList)
-                    && (this.oldValueList == other.oldValueList
-                            || this.oldValueList.equals(other.oldValueList));
+                && (this.oldValueList == other.oldValueList || this.oldValueList.equals(other.oldValueList));
         }
     }
 

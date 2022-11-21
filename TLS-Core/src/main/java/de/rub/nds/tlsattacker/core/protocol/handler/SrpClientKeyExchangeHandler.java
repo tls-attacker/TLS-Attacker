@@ -10,7 +10,10 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.SrpClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.protocol.parser.SrpClientKeyExchangeParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.SrpClientKeyExchangePreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.SrpClientKeyExchangeSerializer;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  * Handler for SRP ClientKeyExchange messages
@@ -23,7 +26,23 @@ public class SrpClientKeyExchangeHandler extends ClientKeyExchangeHandler<SrpCli
     }
 
     @Override
-    public void adjustContext(SrpClientKeyExchangeMessage message) {
+    public SrpClientKeyExchangeParser getParser(byte[] message, int pointer) {
+        return new SrpClientKeyExchangeParser(pointer, message, tlsContext.getChooser().getSelectedProtocolVersion(),
+            tlsContext.getConfig());
+    }
+
+    @Override
+    public SrpClientKeyExchangePreparator getPreparator(SrpClientKeyExchangeMessage message) {
+        return new SrpClientKeyExchangePreparator(tlsContext.getChooser(), message);
+    }
+
+    @Override
+    public SrpClientKeyExchangeSerializer getSerializer(SrpClientKeyExchangeMessage message) {
+        return new SrpClientKeyExchangeSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
+    }
+
+    @Override
+    public void adjustTLSContext(SrpClientKeyExchangeMessage message) {
         adjustPremasterSecret(message);
         adjustMasterSecret(message);
         spawnNewSession();

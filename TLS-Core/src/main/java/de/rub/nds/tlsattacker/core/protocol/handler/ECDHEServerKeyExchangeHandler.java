@@ -9,11 +9,15 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
+import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.protocol.parser.ECDHEServerKeyExchangeParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.ECDHEServerKeyExchangePreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.ECDHEServerKeyExchangeSerializer;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -27,7 +31,25 @@ public class ECDHEServerKeyExchangeHandler<T extends ECDHEServerKeyExchangeMessa
     }
 
     @Override
-    public void adjustContext(T message) {
+    public ECDHEServerKeyExchangeParser<T> getParser(byte[] message, int pointer) {
+        return new ECDHEServerKeyExchangeParser<>(pointer, message,
+            tlsContext.getChooser().getSelectedProtocolVersion(),
+            AlgorithmResolver.getKeyExchangeAlgorithm(tlsContext.getChooser().getSelectedCipherSuite()),
+            tlsContext.getConfig());
+    }
+
+    @Override
+    public ECDHEServerKeyExchangePreparator<T> getPreparator(T message) {
+        return new ECDHEServerKeyExchangePreparator<T>(tlsContext.getChooser(), message);
+    }
+
+    @Override
+    public ECDHEServerKeyExchangeSerializer<T> getSerializer(T message) {
+        return new ECDHEServerKeyExchangeSerializer<T>(message, tlsContext.getChooser().getSelectedProtocolVersion());
+    }
+
+    @Override
+    public void adjustTLSContext(T message) {
         adjustECParameter(message);
         if (message.getComputations() != null) {
             tlsContext.setServerEcPrivateKey(message.getComputations().getPrivateKey().getValue());

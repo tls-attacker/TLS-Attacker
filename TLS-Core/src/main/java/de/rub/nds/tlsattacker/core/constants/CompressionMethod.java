@@ -9,7 +9,11 @@
 
 package de.rub.nds.tlsattacker.core.constants;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 public enum CompressionMethod {
 

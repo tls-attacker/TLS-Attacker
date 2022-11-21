@@ -1,20 +1,21 @@
-/*
+/**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
-import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.state.State;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -49,11 +50,11 @@ public class SendRecordsFromLastFlightAction extends MessageAction implements Se
     }
 
     @Override
-    public void execute(State state) throws ActionExecutionException {
-        TlsContext tlsContext = state.getContext(connectionAlias).getTlsContext();
+    public void execute(State state) throws WorkflowExecutionException {
+        TlsContext tlsContext = state.getTlsContext(connectionAlias);
 
         if (isExecuted()) {
-            throw new ActionExecutionException("Action already executed!");
+            throw new WorkflowExecutionException("Action already executed!");
         }
 
         List<SendingAction> sendActions = state.getWorkflowTrace().getSendingActions();
@@ -71,7 +72,7 @@ public class SendRecordsFromLastFlightAction extends MessageAction implements Se
 
         try {
             tlsContext.getRecordLayer().reencrypt(records);
-            send(tlsContext, new ArrayList<>(), new ArrayList<>(), records);
+            sendMessageHelper.sendRecords(records, tlsContext);
             setExecuted(true);
         } catch (IOException e) {
             tlsContext.setReceivedTransportHandlerException(true);
@@ -89,7 +90,7 @@ public class SendRecordsFromLastFlightAction extends MessageAction implements Se
             }
         }
         if (getRecords() != null) {
-            for (Record record : getRecords()) {
+            for (AbstractRecord record : getRecords()) {
                 holders.addAll(record.getAllModifiableVariableHolders());
             }
         }
@@ -148,7 +149,7 @@ public class SendRecordsFromLastFlightAction extends MessageAction implements Se
     }
 
     @Override
-    public List<Record> getSendRecords() {
+    public List<AbstractRecord> getSendRecords() {
         return records;
     }
 
@@ -156,4 +157,10 @@ public class SendRecordsFromLastFlightAction extends MessageAction implements Se
     public List<DtlsHandshakeMessageFragment> getSendFragments() {
         throw new UnsupportedOperationException("Not supported.");
     }
+
+    @Override
+    public MessageActionDirection getMessageDirection() {
+        return MessageActionDirection.SENDING;
+    }
+
 }

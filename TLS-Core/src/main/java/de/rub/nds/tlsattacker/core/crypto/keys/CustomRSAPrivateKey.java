@@ -1,21 +1,22 @@
-/*
+/**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.crypto.keys;
 
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
 import java.math.BigInteger;
 import java.security.interfaces.RSAPrivateKey;
 import java.util.Objects;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -63,23 +64,22 @@ public class CustomRSAPrivateKey extends CustomPrivateKey implements RSAPrivateK
     }
 
     @Override
-    public void adjustInContext(TlsContext tlsContext, ConnectionEndType ownerOfKey) {
+    public void adjustInContext(TlsContext context, ConnectionEndType ownerOfKey) {
         LOGGER.debug("Adjusting RSA private key in context");
         if (null == ownerOfKey) {
             throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
         } else {
             switch (ownerOfKey) {
                 case CLIENT:
-                    tlsContext.setClientRSAPrivateKey(privateExponent);
-                    tlsContext.setClientRsaModulus(modulus);
+                    context.setClientRSAPrivateKey(privateExponent);
+                    context.setClientRsaModulus(modulus);
                     break;
                 case SERVER:
-                    tlsContext.setServerRSAPrivateKey(privateExponent);
-                    tlsContext.setServerRSAModulus(modulus);
+                    context.setServerRSAPrivateKey(privateExponent);
+                    context.setServerRSAModulus(modulus);
                     break;
                 default:
-                    throw new IllegalArgumentException(
-                            "Owner of Key " + ownerOfKey + " is not supported");
+                    throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
             }
         }
     }
@@ -99,8 +99,7 @@ public class CustomRSAPrivateKey extends CustomPrivateKey implements RSAPrivateK
                     config.setDefaultServerRSAModulus(modulus);
                     break;
                 default:
-                    throw new IllegalArgumentException(
-                            "Owner of Key " + ownerOfKey + " is not supported");
+                    throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
             }
         }
     }
@@ -133,11 +132,7 @@ public class CustomRSAPrivateKey extends CustomPrivateKey implements RSAPrivateK
 
     @Override
     public String toString() {
-        return "CustomRSAPrivateKey{"
-                + "modulus="
-                + modulus
-                + ", privateExponent="
-                + privateExponent
-                + '}';
+        return "CustomRSAPrivateKey{" + "modulus=" + modulus + ", privateExponent=" + privateExponent + '}';
     }
+
 }

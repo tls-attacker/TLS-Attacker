@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <config>
-    <defaultLayerConfiguration>TLS</defaultLayerConfiguration>
     <defaultHandshakeSecret>00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00</defaultHandshakeSecret>
+    <throwExceptionOnParserContextViolation>false</throwExceptionOnParserContextViolation>
     <preferredCertificateSignatureType>RSA</preferredCertificateSignatureType>
     <preferredCertificateSignatureGroup>SECP256R1</preferredCertificateSignatureGroup>
     <autoSelectCertificate>true</autoSelectCertificate>
@@ -746,16 +746,6 @@
         <defaultServerSupportedCipherSuite>TLS_DHE_DSS_EXPORT_WITH_DES40_CBC_SHA</defaultServerSupportedCipherSuite>
         <defaultServerSupportedCipherSuite>TLS_NULL_WITH_NULL_NULL</defaultServerSupportedCipherSuite>
     </defaultServerSupportedCipherSuites>
-    <defaultServerSupportedSSL2CipherSuites>
-        <defaultServerSupportedSSL2CipherSuite>SSL_CK_RC4_128_WITH_MD5</defaultServerSupportedSSL2CipherSuite>
-        <defaultServerSupportedSSL2CipherSuite>SSL_CK_RC4_128_EXPORT40_WITH_MD5</defaultServerSupportedSSL2CipherSuite>
-        <defaultServerSupportedSSL2CipherSuite>SSL_CK_RC2_128_CBC_WITH_MD5</defaultServerSupportedSSL2CipherSuite>
-        <defaultServerSupportedSSL2CipherSuite>SSL_CK_RC2_128_CBC_EXPORT40_WITH_MD5</defaultServerSupportedSSL2CipherSuite>
-        <defaultServerSupportedSSL2CipherSuite>SSL_CK_IDEA_128_CBC_WITH_MD5</defaultServerSupportedSSL2CipherSuite>
-        <defaultServerSupportedSSL2CipherSuite>SSL_CK_DES_64_CBC_WITH_MD5</defaultServerSupportedSSL2CipherSuite>
-        <defaultServerSupportedSSL2CipherSuite>SSL_CK_DES_192_EDE3_CBC_WITH_MD5</defaultServerSupportedSSL2CipherSuite>
-        <defaultServerSupportedSSL2CipherSuite>SSL_UNKNOWN_CIPHER</defaultServerSupportedSSL2CipherSuite>
-    </defaultServerSupportedSSL2CipherSuites>
     <defaultClientNamedGroups>
         <defaultClientNamedGroup>SECP160K1</defaultClientNamedGroup>
         <defaultClientNamedGroup>SECP160R1</defaultClientNamedGroup>
@@ -946,9 +936,9 @@
     <addSignedCertificateTimestampExtension>false</addSignedCertificateTimestampExtension>
     <addRenegotiationInfoExtension>true</addRenegotiationInfoExtension>
     <addTokenBindingExtension>false</addTokenBindingExtension>
-    <addHttpCookie>false</addHttpCookie>
-    <defaultHttpCookieName>tls-attacker</defaultHttpCookieName>
-    <defaultHttpCookieValue>42130912812</defaultHttpCookieValue>
+    <addHttpsCookie>false</addHttpsCookie>
+    <defaultHttpsCookieName>tls-attacker</defaultHttpsCookieName>
+    <defaultHttpsCookieValue>42130912812</defaultHttpsCookieValue>
     <addCertificateStatusRequestExtension>false</addCertificateStatusRequestExtension>
     <addAlpnExtension>false</addAlpnExtension>
     <addSRPExtension>false</addSRPExtension>
@@ -966,8 +956,7 @@
     <addTrustedCaIndicationExtension>false</addTrustedCaIndicationExtension>
     <addCertificateStatusRequestV2Extension>false</addCertificateStatusRequestV2Extension>
     <addCookieExtension>false</addCookieExtension>
-    <defaultConnectionId>01 02 03</defaultConnectionId>
-    <addConnectionIdExtension>false</addConnectionIdExtension>
+    <updateTimestamps>true</updateTimestamps>
     <pskKeyExchangeModes>
         <pskKeyExchangeMode>PSK_KE</pskKeyExchangeMode>
         <pskKeyExchangeMode>PSK_DHE_KE</pskKeyExchangeMode>
@@ -984,6 +973,7 @@
     <earlyData>54 4C 53 2D 41 74 74 61 63 6B 65 72 0A</earlyData>
     <distinguishedNames></distinguishedNames>
     <enforceSettings>false</enforceSettings>
+    <earlyStop>false</earlyStop>
     <receiveMaximumBytes>16777216</receiveMaximumBytes>
     <stealthMode>false</stealthMode>
     <stopActionsAfterIOException>false</stopActionsAfterIOException>
@@ -1021,17 +1011,21 @@
     <flushOnMessageTypeChange>true</flushOnMessageTypeChange>
     <createFragmentsDynamically>true</createFragmentsDynamically>
     <createRecordsDynamically>true</createRecordsDynamically>
+    <createIndividualRecords>true</createIndividualRecords>
     <createIndividualTransportPackets>false</createIndividualTransportPackets>
     <individualTransportPacketCooldown>0</individualTransportPacketCooldown>
+    <recordLayerType>RECORD</recordLayerType>
     <resetWorkflowTracesBeforeSaving>false</resetWorkflowTracesBeforeSaving>
+    <quickReceive>true</quickReceive>
     <workflowExecutorShouldOpen>true</workflowExecutorShouldOpen>
-    <stopReceivingAfterFatal>false</stopReceivingAfterFatal>
     <workflowExecutorShouldClose>true</workflowExecutorShouldClose>
+    <stopReceivingAfterFatal>false</stopReceivingAfterFatal>
     <stopActionsAfterFatal>false</stopActionsAfterFatal>
     <finishWithCloseNotify>false</finishWithCloseNotify>
     <ignoreRetransmittedCcsInDtls>false</ignoreRetransmittedCcsInDtls>
     <addRetransmissionsToWorkflowTraceInDtls>false</addRetransmissionsToWorkflowTraceInDtls>
     <maxDtlsRetransmissions>3</maxDtlsRetransmissions>
+    <stopReceivingAfterWarning>false</stopReceivingAfterWarning>
     <stopActionsAfterWarning>false</stopActionsAfterWarning>
     <defaultSelectedCipherSuite>TLS_RSA_WITH_AES_128_CBC_SHA</defaultSelectedCipherSuite>
     <defaultSelectedServerCertificateType>X509</defaultSelectedServerCertificateType>
@@ -1187,6 +1181,7 @@
     <chooserType>DEFAULT</chooserType>
     <useAllProvidedDtlsFragments>false</useAllProvidedDtlsFragments>
     <useAllProvidedRecords>false</useAllProvidedRecords>
+    <httpsParsingEnabled>false</httpsParsingEnabled>
     <defaultHttpsLocationPath>/</defaultHttpsLocationPath>
     <defaultHttpsRequestPath>/robots.txt</defaultHttpsRequestPath>
     <starttlsType>NONE</starttlsType>
@@ -1225,6 +1220,7 @@
     <defaultClientPWDPrivate>17 1D E8 CA A5 35 2D 36 EE 96 A3 99 79 B5 B7 2F A1 89 AE 7A 6A 09 C7 7F 7B 43 8A F1 6D F4 A8 8B</defaultClientPWDPrivate>
     <defaultClientPWDMask>4F 74 5B DF C2 95 D3 B3 84 29 F7 EB 30 25 A4 88 83 72 8B 07 D8 86 05 C0 EE 20 23 16 A0 72 D1 BD</defaultClientPWDMask>
     <defaultServerPWDSalt>96 3C 77 CD C1 3A 2A 8D 75 CD DD D1 E0 44 99 29 84 37 11 C2 1D 47 CE 6E 63 83 CD DA 37 E4 7D A3</defaultServerPWDSalt>
+    <parseInvalidRecordsUnencrypted>false</parseInvalidRecordsUnencrypted>
     <defaultSelectedPointFormat>UNCOMPRESSED</defaultSelectedPointFormat>
     <defaultEsniClientPrivateKey>191991257030464195512760799659436374116556484140110877679395918219072292938297573720808302564562486757422301181089761</defaultEsniClientPrivateKey>
     <clientSupportedEsniCipherSuites/>

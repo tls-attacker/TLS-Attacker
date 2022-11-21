@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.transport.udp.stream;
 
 import de.rub.nds.tlsattacker.transport.udp.ServerUdpTransportHandler;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.DatagramPacket;
@@ -87,7 +86,6 @@ public class UdpInputStream extends InputStream {
     private DatagramPacket receive() throws IOException {
         DatagramPacket packet = new DatagramPacket(dataBuffer, BUFFER_SIZE);
         socket.receive(packet);
-
         index = 0;
         packetSize = packet.getLength();
 

@@ -10,11 +10,13 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.protocol.parser.DHClientKeyExchangeParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.DHClientKeyExchangePreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.DHClientKeyExchangeSerializer;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.math.BigInteger;
 
 /**
  * Handler for DH and DHE ClientKeyExchange messages
@@ -28,7 +30,23 @@ public class DHClientKeyExchangeHandler<T extends DHClientKeyExchangeMessage> ex
     }
 
     @Override
-    public void adjustContext(T message) {
+    public DHClientKeyExchangeParser<T> getParser(byte[] message, int pointer) {
+        return new DHClientKeyExchangeParser<T>(pointer, message, tlsContext.getChooser().getLastRecordVersion(),
+            tlsContext.getConfig());
+    }
+
+    @Override
+    public DHClientKeyExchangePreparator<T> getPreparator(T message) {
+        return new DHClientKeyExchangePreparator<T>(tlsContext.getChooser(), message);
+    }
+
+    @Override
+    public DHClientKeyExchangeSerializer<T> getSerializer(T message) {
+        return new DHClientKeyExchangeSerializer<T>(message, tlsContext.getChooser().getSelectedProtocolVersion());
+    }
+
+    @Override
+    public void adjustTLSContext(T message) {
         adjustPremasterSecret(message);
         adjustMasterSecret(message);
         adjustClientPublicKey(message);

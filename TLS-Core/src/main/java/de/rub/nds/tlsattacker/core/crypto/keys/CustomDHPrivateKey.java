@@ -1,22 +1,23 @@
-/*
+/**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.crypto.keys;
 
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
 import java.math.BigInteger;
 import java.util.Objects;
 import javax.crypto.interfaces.DHPrivateKey;
 import javax.crypto.spec.DHParameterSpec;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -67,21 +68,20 @@ public class CustomDHPrivateKey extends CustomPrivateKey implements DHPrivateKey
     }
 
     @Override
-    public void adjustInContext(TlsContext tlsContext, ConnectionEndType ownerOfKey) {
-        LOGGER.debug("Adjusting DH private key in tlsContext");
+    public void adjustInContext(TlsContext context, ConnectionEndType ownerOfKey) {
+        LOGGER.debug("Adjusting DH private key in context");
         if (null == ownerOfKey) {
             throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
         } else {
             switch (ownerOfKey) {
                 case CLIENT:
-                    tlsContext.setClientDhPrivateKey(privateKey);
+                    context.setClientDhPrivateKey(privateKey);
                     break;
                 case SERVER:
-                    tlsContext.setServerDhPrivateKey(privateKey);
+                    context.setServerDhPrivateKey(privateKey);
                     break;
                 default:
-                    throw new IllegalArgumentException(
-                            "Owner of Key " + ownerOfKey + " is not supported");
+                    throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
             }
         }
     }
@@ -99,8 +99,7 @@ public class CustomDHPrivateKey extends CustomPrivateKey implements DHPrivateKey
                     config.setDefaultServerDhPrivateKey(privateKey);
                     break;
                 default:
-                    throw new IllegalArgumentException(
-                            "Owner of Key " + ownerOfKey + " is not supported");
+                    throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
             }
         }
     }

@@ -10,10 +10,9 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.HeartbeatExtensionMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,14 +20,19 @@ public class HeartbeatExtensionParser extends ExtensionParser<HeartbeatExtension
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public HeartbeatExtensionParser(InputStream stream, TlsContext tlsContext) {
-        super(stream, tlsContext);
+    public HeartbeatExtensionParser(int startposition, byte[] array, Config config) {
+        super(startposition, array, config);
     }
 
     @Override
-    public void parse(HeartbeatExtensionMessage msg) {
+    public void parseExtensionMessageContent(HeartbeatExtensionMessage msg) {
         LOGGER.debug("Parsing HeartbeatExtensionMessage");
         parseHeartbeatMode(msg);
+    }
+
+    @Override
+    protected HeartbeatExtensionMessage createExtensionMessage() {
+        return new HeartbeatExtensionMessage();
     }
 
     /**

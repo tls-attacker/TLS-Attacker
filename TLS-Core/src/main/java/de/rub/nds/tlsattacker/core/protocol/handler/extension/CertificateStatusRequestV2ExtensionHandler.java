@@ -9,19 +9,40 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestV2ExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.CertificateStatusRequestV2ExtensionParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.extension.CertificateStatusRequestV2ExtensionPreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.CertificateStatusRequestV2ExtensionSerializer;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 public class CertificateStatusRequestV2ExtensionHandler
     extends ExtensionHandler<CertificateStatusRequestV2ExtensionMessage> {
 
-    public CertificateStatusRequestV2ExtensionHandler(TlsContext tlsContext) {
-        super(tlsContext);
+    public CertificateStatusRequestV2ExtensionHandler(TlsContext context) {
+        super(context);
+    }
+
+    @Override
+    public CertificateStatusRequestV2ExtensionParser getParser(byte[] message, int pointer, Config config) {
+        return new CertificateStatusRequestV2ExtensionParser(pointer, message, config);
+    }
+
+    @Override
+    public CertificateStatusRequestV2ExtensionPreparator
+        getPreparator(CertificateStatusRequestV2ExtensionMessage message) {
+        return new CertificateStatusRequestV2ExtensionPreparator(context.getChooser(), message, getSerializer(message));
+    }
+
+    @Override
+    public CertificateStatusRequestV2ExtensionSerializer
+        getSerializer(CertificateStatusRequestV2ExtensionMessage message) {
+        return new CertificateStatusRequestV2ExtensionSerializer(message);
     }
 
     @Override
     public void adjustTLSExtensionContext(CertificateStatusRequestV2ExtensionMessage message) {
-        tlsContext.setStatusRequestV2RequestList(message.getStatusRequestList());
+        context.setStatusRequestV2RequestList(message.getStatusRequestList());
     }
 
 }

@@ -9,18 +9,23 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientCertificateUrlExtensionMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import java.io.InputStream;
 
 public class ClientCertificateUrlExtensionParser extends ExtensionParser<ClientCertificateUrlExtensionMessage> {
 
-    public ClientCertificateUrlExtensionParser(InputStream stream, TlsContext tlsContext) {
-        super(stream, tlsContext);
+    public ClientCertificateUrlExtensionParser(int startposition, byte[] array, Config config) {
+        super(startposition, array, config);
     }
 
     @Override
-    public void parse(ClientCertificateUrlExtensionMessage msg) {
+    public void parseExtensionMessageContent(ClientCertificateUrlExtensionMessage msg) {
         // nothing to parse here, it's an opt-in extension.
     }
+
+    @Override
+    protected ClientCertificateUrlExtensionMessage createExtensionMessage() {
+        return new ClientCertificateUrlExtensionMessage();
+    }
+
 }

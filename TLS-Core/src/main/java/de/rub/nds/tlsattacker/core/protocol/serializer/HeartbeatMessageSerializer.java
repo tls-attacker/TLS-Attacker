@@ -11,12 +11,12 @@ package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatByteLength;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageSerializer;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class HeartbeatMessageSerializer extends ProtocolMessageSerializer<HeartbeatMessage> {
+public class HeartbeatMessageSerializer extends TlsMessageSerializer<HeartbeatMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -25,13 +25,15 @@ public class HeartbeatMessageSerializer extends ProtocolMessageSerializer<Heartb
      *
      * @param message
      *                Message that should be serialized
+     * @param version
+     *                Version of the Protocol
      */
-    public HeartbeatMessageSerializer(HeartbeatMessage message) {
-        super(message);
+    public HeartbeatMessageSerializer(HeartbeatMessage message, ProtocolVersion version) {
+        super(message, version);
     }
 
     @Override
-    protected byte[] serializeBytes() {
+    public byte[] serializeProtocolMessageContent() {
         LOGGER.debug("Serializing HeartbeatMessage");
         writeHeartbeatMessageType();
         writePayloadLength();

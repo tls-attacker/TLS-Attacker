@@ -1,11 +1,12 @@
-/*
+/**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.socket;
 
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
@@ -20,7 +21,10 @@ import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/** An input stream that is reading from a tls attacker state */
+/**
+ * An input stream that is reading from a tls attacker state
+ *
+ */
 public class EncapsulatingOutputStream extends OutputStream {
 
     private Logger LOGGER = LogManager.getLogger();

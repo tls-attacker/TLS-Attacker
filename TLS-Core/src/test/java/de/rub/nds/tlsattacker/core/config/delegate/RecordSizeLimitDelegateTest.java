@@ -1,11 +1,12 @@
-/*
+/**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,7 +24,9 @@ public class RecordSizeLimitDelegateTest extends AbstractDelegateTest<RecordSize
         super.setUp(new RecordSizeLimitDelegate());
     }
 
-    /** Test of getRecordSizeLimit method, of class RecordSizeLimitDelegate. */
+    /**
+     * Test of getRecordSizeLimit method, of class RecordSizeLimitDelegate.
+     */
     @Test
     public void testGetRecordSizeLimit() {
         args = new String[2];
@@ -42,7 +45,9 @@ public class RecordSizeLimitDelegateTest extends AbstractDelegateTest<RecordSize
         assertThrows(ParameterException.class, () -> jcommander.parse(args));
     }
 
-    /** Test of setRecordSizeLimit method, of class RecordSizeLimitDelegate. */
+    /**
+     * Test of setRecordSizeLimit method, of class RecordSizeLimitDelegate.
+     */
     @Test
     public void testSetRecordSizeLimit() {
         assertNull(delegate.getRecordSizeLimit());
@@ -50,7 +55,9 @@ public class RecordSizeLimitDelegateTest extends AbstractDelegateTest<RecordSize
         assertEquals(1337, (int) delegate.getRecordSizeLimit());
     }
 
-    /** Test of applyDelegate method, of class RecordSizeLimitDelegate. */
+    /**
+     * Test of applyDelegate method, of class RecordSizeLimitDelegate.
+     */
     @Test
     public void testApplyDelegate() {
         Config config = Config.createConfig();

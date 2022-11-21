@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.crypto.ec;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import java.math.BigInteger;
+import java.util.Arrays;
 import org.apache.commons.lang3.ArrayUtils;
 
 /**

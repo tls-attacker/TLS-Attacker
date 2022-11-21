@@ -9,9 +9,16 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.tlsattacker.core.protocol.message.RSAServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.math.BigInteger;
+
+import de.rub.nds.tlsattacker.core.protocol.message.RSAServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.parser.HandshakeMessageParser;
+import de.rub.nds.tlsattacker.core.protocol.parser.RSAServerKeyExchangeParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.HandshakeMessagePreparator;
+import de.rub.nds.tlsattacker.core.protocol.preparator.RSAServerKeyExchangePreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.HandshakeMessageSerializer;
+import de.rub.nds.tlsattacker.core.protocol.serializer.RSAServerKeyExchangeSerializer;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 public class RSAServerKeyExchangeHandler extends ServerKeyExchangeHandler<RSAServerKeyExchangeMessage> {
 
@@ -20,7 +27,24 @@ public class RSAServerKeyExchangeHandler extends ServerKeyExchangeHandler<RSASer
     }
 
     @Override
-    public void adjustContext(RSAServerKeyExchangeMessage message) {
+    public HandshakeMessageParser<RSAServerKeyExchangeMessage> getParser(byte[] message, int pointer) {
+        return new RSAServerKeyExchangeParser<>(pointer, message, tlsContext.getChooser().getSelectedProtocolVersion(),
+            tlsContext.getConfig());
+    }
+
+    @Override
+    public HandshakeMessagePreparator<RSAServerKeyExchangeMessage> getPreparator(RSAServerKeyExchangeMessage message) {
+        return new RSAServerKeyExchangePreparator<RSAServerKeyExchangeMessage>(tlsContext.getChooser(), message);
+    }
+
+    @Override
+    public HandshakeMessageSerializer<RSAServerKeyExchangeMessage> getSerializer(RSAServerKeyExchangeMessage message) {
+        return new RSAServerKeyExchangeSerializer<RSAServerKeyExchangeMessage>(message,
+            tlsContext.getChooser().getSelectedProtocolVersion());
+    }
+
+    @Override
+    public void adjustTLSContext(RSAServerKeyExchangeMessage message) {
         tlsContext.setServerRSAModulus(new BigInteger(1, message.getModulus().getValue()));
         tlsContext.setServerRSAPublicKey(new BigInteger(1, message.getPublicKey().getValue()));
         if (message.getComputations() != null && message.getComputations().getPrivateKey() != null) {

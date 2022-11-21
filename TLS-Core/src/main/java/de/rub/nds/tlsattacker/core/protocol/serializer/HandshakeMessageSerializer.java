@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageSerializer;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,7 +22,7 @@ import org.apache.logging.log4j.Logger;
  * @param <T>
  *            Type of the HandshakeMessages to serialize
  */
-public abstract class HandshakeMessageSerializer<T extends HandshakeMessage> extends ProtocolMessageSerializer<T> {
+public abstract class HandshakeMessageSerializer<T extends HandshakeMessage> extends TlsMessageSerializer<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -31,15 +31,17 @@ public abstract class HandshakeMessageSerializer<T extends HandshakeMessage> ext
      *
      * @param message
      *                Message that should be serialized
+     * @param version
+     *                Version of the Protocol
      */
-    public HandshakeMessageSerializer(T message) {
-        super(message);
+    public HandshakeMessageSerializer(T message, ProtocolVersion version) {
+        super(message, version);
     }
 
     /**
      * Writes the Type of the HandshakeMessage into the final byte[]
      */
-    protected void writeType() {
+    private void writeType() {
         appendByte(message.getType().getValue());
         LOGGER.debug("Type: " + message.getType().getValue());
     }
@@ -47,22 +49,16 @@ public abstract class HandshakeMessageSerializer<T extends HandshakeMessage> ext
     /**
      * Writes the message length of the HandshakeMessage into the final byte[]
      */
-    protected void writeLength() {
+    private void writeLength() {
         appendInt(message.getLength().getValue(), HandshakeByteLength.MESSAGE_LENGTH_FIELD);
         LOGGER.debug("Length: " + message.getLength().getValue());
     }
 
-    private void writeContent() {
-        appendBytes(message.getMessageContent().getValue());
-        LOGGER.debug(
-            "HandshakeMessage content: " + ArrayConverter.bytesToHexString(message.getMessageContent().getValue()));
-    }
-
     @Override
-    protected byte[] serializeBytes() {
+    public byte[] serializeProtocolMessageContent() {
         writeType();
         writeLength();
-        writeContent();
+        serializeHandshakeMessageContent();
         return getAlreadySerialized();
     }
 

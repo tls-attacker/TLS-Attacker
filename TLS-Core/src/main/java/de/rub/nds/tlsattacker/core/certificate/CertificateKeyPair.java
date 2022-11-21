@@ -13,7 +13,7 @@ import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.crypto.keys.*;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.util.CertificateUtils;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -487,35 +487,35 @@ public class CertificateKeyPair implements Serializable {
         }
     }
 
-    public void adjustInContext(TlsContext tlsContext, ConnectionEndType connectionEnd) {
-        if (tlsContext.getSelectedProtocolVersion() != ProtocolVersion.TLS13) {
-            publicKey.adjustInContext(tlsContext, connectionEnd);
+    public void adjustInContext(TlsContext context, ConnectionEndType connectionEnd) {
+        if (context.getSelectedProtocolVersion() != ProtocolVersion.TLS13) {
+            publicKey.adjustInContext(context, connectionEnd);
         }
         if (privateKey != null) {
-            privateKey.adjustInContext(tlsContext, connectionEnd);
+            privateKey.adjustInContext(context, connectionEnd);
         }
-        if (!tlsContext.getChooser().getSelectedCipherSuite().isTLS13()
+        if (!context.getChooser().getSelectedCipherSuite().isTLS13()
                 && AlgorithmResolver.getCertificateKeyType(
-                                tlsContext.getChooser().getSelectedCipherSuite())
+                                context.getChooser().getSelectedCipherSuite())
                         == CertificateKeyType.ECDH) {
-            tlsContext.setSelectedGroup(publicKeyGroup);
+            context.setSelectedGroup(publicKeyGroup);
         } else {
-            tlsContext.setEcCertificateCurve(publicKeyGroup);
+            context.setEcCertificateCurve(publicKeyGroup);
         }
-        tlsContext.setEcCertificateSignatureCurve(signatureGroup);
-        if (tlsContext.getConfig().getAutoAdjustSignatureAndHashAlgorithm()) {
+        context.setEcCertificateSignatureCurve(signatureGroup);
+        if (context.getConfig().getAutoAdjustSignatureAndHashAlgorithm()) {
             SignatureAndHashAlgorithm sigHashAlgo =
-                    SignatureAndHashAlgorithm.forCertificateKeyPair(this, tlsContext.getChooser());
+                    SignatureAndHashAlgorithm.forCertificateKeyPair(this, context.getChooser());
 
             if (sigHashAlgo == SignatureAndHashAlgorithm.GOSTR34102012_512_GOSTR34112012_512
                     || sigHashAlgo == SignatureAndHashAlgorithm.GOSTR34102012_256_GOSTR34112012_256
                     || sigHashAlgo == SignatureAndHashAlgorithm.GOSTR34102001_GOSTR3411) {
-                tlsContext.setSelectedGostCurve(gostCurve);
+                context.setSelectedGostCurve(gostCurve);
                 LOGGER.debug("Adjusting selected GOST curve:" + gostCurve);
             }
 
             LOGGER.debug("Setting selected SignatureAndHash algorithm to:" + sigHashAlgo);
-            tlsContext.setSelectedSignatureAndHashAlgorithm(sigHashAlgo);
+            context.setSelectedSignatureAndHashAlgorithm(sigHashAlgo);
         }
     }
 

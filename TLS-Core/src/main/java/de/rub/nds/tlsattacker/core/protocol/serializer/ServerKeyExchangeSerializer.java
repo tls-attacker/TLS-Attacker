@@ -19,8 +19,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.ServerKeyExchangeMessage;
 public abstract class ServerKeyExchangeSerializer<T extends ServerKeyExchangeMessage>
     extends HandshakeMessageSerializer<T> {
 
-    protected ProtocolVersion version;
-
     /**
      * Constructor for the ServerKeyExchangeSerializer
      *
@@ -30,15 +28,7 @@ public abstract class ServerKeyExchangeSerializer<T extends ServerKeyExchangeMes
      *                Version of the Protocol
      */
     public ServerKeyExchangeSerializer(T message, ProtocolVersion version) {
-        super(message);
-        this.version = version;
+        super(message, version);
     }
 
-    protected boolean isTLS12() {
-        return version == ProtocolVersion.TLS12;
-    }
-
-    protected boolean isDTLS12() {
-        return version == ProtocolVersion.DTLS12;
-    }
 }

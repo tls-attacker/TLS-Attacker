@@ -1,22 +1,24 @@
-/*
+/**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.proxy;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.ConfigIO;
 import de.rub.nds.tlsattacker.core.socket.TlsAttackerSslSocket;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class ProxyConnection implements Runnable {
 
@@ -62,7 +64,7 @@ public class ProxyConnection implements Runnable {
                             inputStream.read();
                         }
                         System.out.println("Sending answer");
-                        incomingSocket.getOutputStream().write(new byte[] {0x05, 0x00});
+                        incomingSocket.getOutputStream().write(new byte[] { 0x05, 0x00 });
                         incomingSocket.getOutputStream().flush();
                         String line = "";
                         LOGGER.info("Received: " + line);
@@ -75,16 +77,13 @@ public class ProxyConnection implements Runnable {
                             if (method.equals("CONNECT")) {
                                 String hostname = destinationhostport.split(":")[0];
                                 int port = Integer.parseInt(destinationhostport.split(":")[1]);
-                                socket =
-                                        new TlsAttackerSslSocket(
-                                                config,
-                                                hostname,
-                                                port,
-                                                config.getDefaultClientConnection().getTimeout());
+                                socket = new TlsAttackerSslSocket(config, hostname, port,
+                                    config.getDefaultClientConnection().getTimeout());
                             } else {
                                 // ???
                             }
                         }
+
                     }
                 } else {
                     Thread.currentThread().sleep(50);
@@ -97,4 +96,5 @@ public class ProxyConnection implements Runnable {
     public void setSocket(TlsAttackerSslSocket socket) {
         this.socket = socket;
     }
+
 }

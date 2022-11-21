@@ -69,7 +69,7 @@ public class FinishedPreparator extends HandshakeMessagePreparator<FinishedMessa
                 LOGGER.debug("Finished key: " + ArrayConverter.bytesToHexString(finishedKey));
                 SecretKeySpec keySpec = new SecretKeySpec(finishedKey, mac.getAlgorithm());
                 mac.init(keySpec);
-                mac.update(chooser.getContext().getTlsContext().getDigest().digest(chooser.getSelectedProtocolVersion(),
+                mac.update(chooser.getContext().getDigest().digest(chooser.getSelectedProtocolVersion(),
                     chooser.getSelectedCipherSuite()));
                 return mac.doFinal();
             } catch (NoSuchAlgorithmException | InvalidKeyException ex) {
@@ -77,7 +77,7 @@ public class FinishedPreparator extends HandshakeMessagePreparator<FinishedMessa
             }
         } else if (chooser.getSelectedProtocolVersion().isSSL()) {
             LOGGER.trace("Calculating VerifyData:");
-            final byte[] handshakeMessageContent = chooser.getContext().getTlsContext().getDigest().getRawBytes();
+            final byte[] handshakeMessageContent = chooser.getContext().getDigest().getRawBytes();
             final byte[] masterSecret = chooser.getMasterSecret();
             LOGGER.debug("Using MasterSecret:" + ArrayConverter.bytesToHexString(masterSecret));
             final ConnectionEndType endType = chooser.getConnectionEndType();
@@ -88,8 +88,8 @@ public class FinishedPreparator extends HandshakeMessagePreparator<FinishedMessa
             LOGGER.debug("Using PRF:" + prfAlgorithm.name());
             byte[] masterSecret = chooser.getMasterSecret();
             LOGGER.debug("Using MasterSecret:" + ArrayConverter.bytesToHexString(masterSecret));
-            byte[] handshakeMessageHash = chooser.getContext().getTlsContext().getDigest()
-                .digest(chooser.getSelectedProtocolVersion(), chooser.getSelectedCipherSuite());
+            byte[] handshakeMessageHash = chooser.getContext().getDigest().digest(chooser.getSelectedProtocolVersion(),
+                chooser.getSelectedCipherSuite());
             LOGGER.debug("Using HandshakeMessage Hash:" + ArrayConverter.bytesToHexString(handshakeMessageHash));
 
             String label;

@@ -1,18 +1,21 @@
-/*
+/**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
-import java.io.InputStream;
+import de.rub.nds.tlsattacker.core.protocol.parser.context.MessageParserBoundaryVerificationContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -23,15 +26,21 @@ public class ClientHelloParser extends HelloMessageParser<ClientHelloMessage> {
     /**
      * Constructor for the Parser class
      *
-     * @param stream
-     * @param tlsContext
+     * @param pointer
+     *                Position in the array where the HelloMessageParser is supposed to start parsing
+     * @param array
+     *                The byte[] which the HelloMessageParser is supposed to parse
+     * @param version
+     *                Version of the Protocol
+     * @param config
+     *                A Config used in the current context
      */
-    public ClientHelloParser(InputStream stream, TlsContext tlsContext) {
-        super(stream, tlsContext);
+    public ClientHelloParser(int pointer, byte[] array, ProtocolVersion version, Config config) {
+        super(pointer, array, HandshakeMessageType.CLIENT_HELLO, version, config);
     }
 
     @Override
-    public void parse(ClientHelloMessage msg) {
+    protected void parseHandshakeMessageContent(ClientHelloMessage msg) {
         LOGGER.debug("Parsing ClientHelloMessage");
         parseProtocolVersion(msg);
         parseRandom(msg);
@@ -45,18 +54,28 @@ public class ClientHelloParser extends HelloMessageParser<ClientHelloMessage> {
         parseCipherSuites(msg);
         parseCompressionLength(msg);
         parseCompressions(msg);
-        if (hasExtensionLengthField()) {
+        if (hasExtensionLengthField(msg)) {
             parseExtensionLength(msg);
             if (hasExtensions(msg)) {
-                parseExtensionBytes(msg, false);
+                pushContext(new MessageParserBoundaryVerificationContext(msg.getExtensionsLength().getValue(),
+                    "Extension Length", getPointer(), getConfig().isThrowExceptionOnParserContextViolation()));
+                parseExtensionBytes(msg);
+                popContext();
+
             }
         }
+    }
+
+    @Override
+    protected ClientHelloMessage createHandshakeMessage() {
+        return new ClientHelloMessage();
     }
 
     /**
      * Reads the next bytes as the CypherSuiteLength and writes them in the message
      *
-     * @param msg Message to write in
+     * @param msg
+     *            Message to write in
      */
     private void parseCipherSuiteLength(ClientHelloMessage msg) {
         msg.setCipherSuiteLength(parseIntField(HandshakeByteLength.CIPHER_SUITES_LENGTH));
@@ -66,19 +85,19 @@ public class ClientHelloParser extends HelloMessageParser<ClientHelloMessage> {
     /**
      * Reads the next bytes as the CypherSuites and writes them in the message
      *
-     * @param msg Message to write in
+     * @param msg
+     *            Message to write in
      */
     private void parseCipherSuites(ClientHelloMessage msg) {
         msg.setCipherSuites(parseByteArrayField(msg.getCipherSuiteLength().getValue()));
-        LOGGER.debug(
-                "CipherSuites: "
-                        + ArrayConverter.bytesToHexString(msg.getCipherSuites().getValue()));
+        LOGGER.debug("CipherSuites: " + ArrayConverter.bytesToHexString(msg.getCipherSuites().getValue()));
     }
 
     /**
      * Reads the next bytes as the CompressionLength and writes them in the message
      *
-     * @param msg Message to write in
+     * @param msg
+     *            Message to write in
      */
     private void parseCompressionLength(ClientHelloMessage msg) {
         msg.setCompressionLength(parseIntField(HandshakeByteLength.COMPRESSION_LENGTH));
@@ -88,12 +107,11 @@ public class ClientHelloParser extends HelloMessageParser<ClientHelloMessage> {
     /**
      * Reads the next bytes as the Compression and writes them in the message
      *
-     * @param msg Message to write in
+     * @param msg
+     *            Message to write in
      */
     private void parseCompressions(ClientHelloMessage msg) {
         msg.setCompressions(parseByteArrayField(msg.getCompressionLength().getValue()));
-        LOGGER.debug(
-                "Compressions: "
-                        + ArrayConverter.bytesToHexString(msg.getCompressions().getValue()));
+        LOGGER.debug("Compressions: " + ArrayConverter.bytesToHexString(msg.getCompressions().getValue()));
     }
 }

@@ -1,21 +1,23 @@
-/*
+/**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.KeySharePairParserTest;
-import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.stream.Stream;
 
 public class KeySharePairSerializerTest {
 
@@ -23,14 +25,13 @@ public class KeySharePairSerializerTest {
         return KeySharePairParserTest.provideTestVectors();
     }
 
-    /** Test of serializeBytes method, of class KeyShareEntrySerializer. */
+    /**
+     * Test of serializeBytes method, of class KeyShareEntrySerializer.
+     */
     @ParameterizedTest
     @MethodSource("provideTestVectors")
-    public void testSerialize(
-            byte[] expectedKeySharePairBytes,
-            int providedKeyShareLength,
-            byte[] providedKeyShare,
-            byte[] providedKeyShareType) {
+    public void testSerialize(byte[] expectedKeySharePairBytes, int providedKeyShareLength, byte[] providedKeyShare,
+        byte[] providedKeyShareType) {
         KeyShareEntry entry = new KeyShareEntry();
         entry.setGroup(providedKeyShareType);
         entry.setPublicKeyLength(providedKeyShareLength);

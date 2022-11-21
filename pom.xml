@@ -233,11 +233,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>de.rub.nds.tls.dockerlib</groupId>
-            <artifactId>tls-docker-library</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
             <scope>test</scope>
@@ -436,7 +431,7 @@
                     <java>
                         <!-- Introduce spotless using ratchetFrom to format files gradually on change.
                              Also avoid merge conflicts when merging into master due to one large format commit. -->
-                        <ratchetFrom>origin/layerPrototype</ratchetFrom>
+                        <ratchetFrom>origin/master</ratchetFrom>
                         <lineEndings>GIT_ATTRIBUTES</lineEndings>
                         <trimTrailingWhitespace />
                         <endWithNewline />

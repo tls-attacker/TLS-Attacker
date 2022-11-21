@@ -1,32 +1,36 @@
-/*
+/**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.EmptyClientKeyExchangeHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.TlsMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.EmptyClientComputations;
-import de.rub.nds.tlsattacker.core.protocol.parser.EmptyClientKeyExchangeParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.EmptyClientKeyExchangePreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.EmptyClientKeyExchangeSerializer;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import java.io.InputStream;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.List;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "EmptyClientKeyExchange")
 public class EmptyClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
-    @HoldsModifiableVariable protected EmptyClientComputations computations;
+    @HoldsModifiableVariable
+    protected EmptyClientComputations computations;
 
     public EmptyClientKeyExchangeMessage() {
         super();
+    }
+
+    public EmptyClientKeyExchangeMessage(Config tlsConfig) {
+        super(tlsConfig);
     }
 
     @Override
@@ -42,23 +46,8 @@ public class EmptyClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     }
 
     @Override
-    public EmptyClientKeyExchangeHandler getHandler(TlsContext tlsContext) {
-        return new EmptyClientKeyExchangeHandler(tlsContext);
-    }
-
-    @Override
-    public EmptyClientKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new EmptyClientKeyExchangeParser(stream, tlsContext);
-    }
-
-    @Override
-    public EmptyClientKeyExchangePreparator getPreparator(TlsContext tlsContext) {
-        return new EmptyClientKeyExchangePreparator(tlsContext.getChooser(), this);
-    }
-
-    @Override
-    public EmptyClientKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
-        return new EmptyClientKeyExchangeSerializer(this);
+    public EmptyClientKeyExchangeHandler getHandler(TlsContext context) {
+        return new EmptyClientKeyExchangeHandler(context);
     }
 
     @Override

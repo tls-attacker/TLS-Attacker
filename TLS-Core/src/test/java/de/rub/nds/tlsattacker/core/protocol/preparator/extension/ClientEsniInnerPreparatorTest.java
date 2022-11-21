@@ -1,23 +1,25 @@
-/*
+/**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientEsniInner;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
-import java.nio.charset.StandardCharsets;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.nio.charset.StandardCharsets;
 
 public class ClientEsniInnerPreparatorTest {
 
@@ -35,9 +37,8 @@ public class ClientEsniInnerPreparatorTest {
 
         ClientEsniInner clientEsniInner = new ClientEsniInner();
         ClientEsniInnerPreparator clientEsniInnerPreparator =
-                new ClientEsniInnerPreparator(context.getChooser(), clientEsniInner);
-        ServerNamePair pair =
-                new ServerNamePair(nameType, hostName.getBytes(StandardCharsets.UTF_8));
+            new ClientEsniInnerPreparator(context.getChooser(), clientEsniInner);
+        ServerNamePair pair = new ServerNamePair(nameType, hostName.getBytes(StandardCharsets.UTF_8));
         clientEsniInner.getServerNameList().add(pair);
         context.setEsniPaddedLength(260);
 
@@ -48,7 +49,7 @@ public class ClientEsniInnerPreparatorTest {
         int expectedServerNameListLength = 18;
         byte[] resultServerNameListBytes = clientEsniInner.getServerNameListBytes().getValue();
         byte[] expectedServerNameListBytes =
-                ArrayConverter.hexStringToByteArray("00000f62617a2e6578616d706c652e636f6d");
+            ArrayConverter.hexStringToByteArray("00000f62617a2e6578616d706c652e636f6d");
         byte[] resultPadding = clientEsniInner.getPadding().getValue();
         byte[] expectedPadding = new byte[240];
 

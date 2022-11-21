@@ -10,10 +10,11 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import java.io.InputStream;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,11 +32,20 @@ public abstract class HelloMessageParser<T extends HelloMessage> extends Handsha
     /**
      * Constructor for the Parser class
      *
-     * @param stream
-     * @param tlsContext
+     * @param pointer
+     *                Position in the array where the HelloMessageParser is supposed to start parsing
+     * @param array
+     *                The byte[] which the HelloMessageParser is supposed to parse
+     * @param type
+     *                Expected Type value for the Message
+     * @param version
+     *                Version of the Protocol
+     * @param config
+     *                A Config used in the current context
      */
-    public HelloMessageParser(InputStream stream, TlsContext tlsContext) {
-        super(stream, tlsContext);
+    public HelloMessageParser(int pointer, byte[] array, HandshakeMessageType type, ProtocolVersion version,
+        Config config) {
+        super(pointer, array, type, version, config);
     }
 
     protected boolean hasSessionID(HelloMessage message) {

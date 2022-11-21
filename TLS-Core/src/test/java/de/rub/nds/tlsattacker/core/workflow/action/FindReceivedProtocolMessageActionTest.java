@@ -1,11 +1,12 @@
-/*
+/**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -26,10 +27,6 @@ import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.util.FixedTimeProvider;
 import de.rub.nds.tlsattacker.util.TimeHelper;
 import de.rub.nds.tlsattacker.util.tests.TestCategories;
-import java.io.IOException;
-import java.security.*;
-import java.security.cert.CertificateException;
-import java.util.Random;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -37,6 +34,11 @@ import org.bouncycastle.operator.OperatorCreationException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+import java.security.*;
+import java.security.cert.CertificateException;
+import java.util.Random;
 
 public class FindReceivedProtocolMessageActionTest {
 
@@ -51,23 +53,23 @@ public class FindReceivedProtocolMessageActionTest {
         Security.addProvider(new BouncyCastleProvider());
     }
 
-    /** Test of execute method, of class FindReceivedProtocolMessageAction. */
+    /**
+     * Test of execute method, of class FindReceivedProtocolMessageAction.
+     */
     @Test
     @Tag(TestCategories.INTEGRATION_TEST)
-    public void testExecute()
-            throws NoSuchAlgorithmException, CertificateException, IOException, KeyStoreException,
-                    SignatureException, InvalidKeyException, NoSuchProviderException,
-                    OperatorCreationException, UnrecoverableKeyException, KeyManagementException {
+    public void testExecute() throws NoSuchAlgorithmException, CertificateException, IOException, KeyStoreException,
+        SignatureException, InvalidKeyException, NoSuchProviderException, OperatorCreationException,
+        UnrecoverableKeyException, KeyManagementException {
         Config config = Config.createConfig();
         config.getDefaultClientConnection().setPort(SERVER_PORT);
 
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
-        WorkflowTrace trace =
-                factory.createWorkflowTrace(WorkflowTraceType.HELLO, RunningModeType.CLIENT);
+        WorkflowTrace trace = factory.createWorkflowTrace(WorkflowTraceType.HELLO, RunningModeType.CLIENT);
         FindReceivedProtocolMessageAction action_find_handshake =
-                new FindReceivedProtocolMessageAction(ProtocolMessageType.HANDSHAKE);
+            new FindReceivedProtocolMessageAction(ProtocolMessageType.HANDSHAKE);
         FindReceivedProtocolMessageAction action_find_app_data =
-                new FindReceivedProtocolMessageAction(ProtocolMessageType.APPLICATION_DATA);
+            new FindReceivedProtocolMessageAction(ProtocolMessageType.APPLICATION_DATA);
         trace.addTlsAction(action_find_handshake);
         trace.addTlsAction(action_find_app_data);
 
@@ -76,8 +78,7 @@ public class FindReceivedProtocolMessageActionTest {
         TimeHelper.setProvider(new FixedTimeProvider(0));
         KeyPair k = KeyStoreGenerator.createRSAKeyPair(1024, random);
         KeyStore ks = KeyStoreGenerator.createKeyStore(k, random);
-        BasicTlsServer tlsServer =
-                new BasicTlsServer(ks, KeyStoreGenerator.PASSWORD, "TLS", SERVER_PORT);
+        BasicTlsServer tlsServer = new BasicTlsServer(ks, KeyStoreGenerator.PASSWORD, "TLS", SERVER_PORT);
 
         LOGGER.info("Starting test server");
         new Thread(tlsServer).start();

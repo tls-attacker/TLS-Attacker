@@ -1,11 +1,12 @@
-/*
+/**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.tokenbinding;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -36,12 +37,14 @@ public class TokenBindingMessageSerializerTest {
         message.setPointLength(0);
         ProtocolVersion version = ProtocolVersion.TLS12;
 
-        serializer = new TokenBindingMessageSerializer(message);
+        serializer = new TokenBindingMessageSerializer(message, version);
     }
 
-    /** Test of serializeBytes method, of class TokenBindingMessageSerializer. */
+    /**
+     * Test of serializeProtocolMessageContent method, of class TokenBindingMessageSerializer.
+     */
     @Test
-    public void testSerializeBytes() {
+    public void testSerializeProtocolMessageContent() {
         serializer.serialize();
     }
 }

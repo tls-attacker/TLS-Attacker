@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SupportedVersionsExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SupportedVersionsExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayOutputStream;
@@ -26,8 +27,9 @@ public class SupportedVersionsExtensionPreparator extends ExtensionPreparator<Su
 
     private final SupportedVersionsExtensionMessage msg;
 
-    public SupportedVersionsExtensionPreparator(Chooser chooser, SupportedVersionsExtensionMessage message) {
-        super(chooser, message);
+    public SupportedVersionsExtensionPreparator(Chooser chooser, SupportedVersionsExtensionMessage message,
+        SupportedVersionsExtensionSerializer serializer) {
+        super(chooser, message, serializer);
         this.msg = message;
     }
 

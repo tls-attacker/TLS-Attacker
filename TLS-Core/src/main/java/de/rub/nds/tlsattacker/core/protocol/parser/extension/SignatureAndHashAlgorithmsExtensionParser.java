@@ -10,10 +10,9 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAndHashAlgorithmsExtensionMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,14 +21,19 @@ public class SignatureAndHashAlgorithmsExtensionParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SignatureAndHashAlgorithmsExtensionParser(InputStream stream, TlsContext tlsContext) {
-        super(stream, tlsContext);
+    public SignatureAndHashAlgorithmsExtensionParser(int startposition, byte[] array, Config config) {
+        super(startposition, array, config);
     }
 
     @Override
-    public void parse(SignatureAndHashAlgorithmsExtensionMessage msg) {
+    public void parseExtensionMessageContent(SignatureAndHashAlgorithmsExtensionMessage msg) {
         parseSignatureAndHashAlgorithmsLength(msg);
         parseSignatureAndHashAlgorithms(msg);
+    }
+
+    @Override
+    protected SignatureAndHashAlgorithmsExtensionMessage createExtensionMessage() {
+        return new SignatureAndHashAlgorithmsExtensionMessage();
     }
 
     /**

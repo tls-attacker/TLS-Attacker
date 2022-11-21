@@ -1,11 +1,12 @@
-/*
+/**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.client.config;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -18,12 +19,17 @@ import org.junit.jupiter.api.Test;
 
 public class ClientCommandConfigTest {
 
-    /** Test config command line parsing */
+    /**
+     * Test config command line parsing
+     */
     @Test
     @Disabled("Not implemented")
-    public void testCommandLineParsing() {}
+    public void testCommandLineParsing() {
+    }
 
-    /** Test invalid config without connect parameter */
+    /**
+     * Test invalid config without connect parameter
+     */
     @Test
     public void testInvalidCommandLineParsing() {
         JCommander jc = new JCommander();

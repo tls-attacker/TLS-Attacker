@@ -1,11 +1,12 @@
-/*
+/**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.record.cipher;
 
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
@@ -22,39 +23,24 @@ public class CipherState {
 
     private KeySet keySet;
 
-    /** sequence number used for the encryption */
+    /**
+     * sequence number used for the encryption
+     */
     private long writeSequenceNumber = 0;
 
-    /** sequence number used for the decryption */
+    /**
+     * sequence number used for the decryption
+     */
     private long readSequenceNumber = 0;
-
-    private byte[] connectionId = null;
 
     private Boolean encryptThenMac;
 
-    public CipherState(
-            ProtocolVersion protocolVersion,
-            CipherSuite cipherSuite,
-            KeySet keySet,
-            Boolean encryptThenMac) {
+    public CipherState(ProtocolVersion protocolVersion, CipherSuite cipherSuite, KeySet keySet,
+        Boolean encryptThenMac) {
         this.protocolVersion = protocolVersion;
         this.cipherSuite = cipherSuite;
         this.keySet = keySet;
         this.encryptThenMac = encryptThenMac;
-        this.connectionId = null;
-    }
-
-    public CipherState(
-            ProtocolVersion protocolVersion,
-            CipherSuite cipherSuite,
-            KeySet keySet,
-            Boolean encryptThenMac,
-            byte[] connectionId) {
-        this.protocolVersion = protocolVersion;
-        this.cipherSuite = cipherSuite;
-        this.keySet = keySet;
-        this.encryptThenMac = encryptThenMac;
-        this.connectionId = connectionId;
     }
 
     public Boolean isEncryptThenMac() {
@@ -111,14 +97,6 @@ public class CipherState {
 
     public void increaseReadSequenceNumber() {
         readSequenceNumber += 1;
-    }
-
-    public byte[] getConnectionId() {
-        return connectionId;
-    }
-
-    public void setConnectionId(byte[] connectionId) {
-        this.connectionId = connectionId;
     }
 
     public CipherAlgorithm getCipherAlg() {

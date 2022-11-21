@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,9 +28,11 @@ public class DHClientKeyExchangeSerializer<T extends DHClientKeyExchangeMessage>
      *
      * @param message
      *                Message that should be serialized
+     * @param version
+     *                Version of the Protocol
      */
-    public DHClientKeyExchangeSerializer(T message) {
-        super(message);
+    public DHClientKeyExchangeSerializer(T message, ProtocolVersion version) {
+        super(message, version);
         this.msg = message;
     }
 

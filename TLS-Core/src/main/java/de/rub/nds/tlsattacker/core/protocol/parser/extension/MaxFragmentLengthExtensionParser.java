@@ -10,26 +10,29 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.MaxFragmentLengthExtensionMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.io.InputStream;
 
 public class MaxFragmentLengthExtensionParser extends ExtensionParser<MaxFragmentLengthExtensionMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public MaxFragmentLengthExtensionParser(InputStream stream, TlsContext tlsContext) {
-        super(stream, tlsContext);
+    public MaxFragmentLengthExtensionParser(int startposition, byte[] array, Config config) {
+        super(startposition, array, config);
     }
 
     @Override
-    public void parse(MaxFragmentLengthExtensionMessage msg) {
+    public void parseExtensionMessageContent(MaxFragmentLengthExtensionMessage msg) {
         LOGGER.debug("Parsing MaxFragmentLengthExtensionMessage");
         parseMaxFragmentLength(msg);
+    }
+
+    @Override
+    protected MaxFragmentLengthExtensionMessage createExtensionMessage() {
+        return new MaxFragmentLengthExtensionMessage();
     }
 
     /**

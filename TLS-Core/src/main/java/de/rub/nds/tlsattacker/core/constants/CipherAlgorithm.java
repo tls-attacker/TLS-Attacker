@@ -1,15 +1,19 @@
-/*
+/**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.constants;
 
-/** Symmetric cipher algorithm and its mapping to Java names */
+/**
+ * Symmetric cipher algorithm and its mapping to Java names
+ */
 public enum CipherAlgorithm {
+
     NULL(0, 0, 0, 0),
     RC2_128(16, 8, 0, 8, "RC2/CBC/NoPadding"),
     RC4_128(16, 0, 0, 0, "RC4"),
@@ -39,12 +43,8 @@ public enum CipherAlgorithm {
     AES_128_CTR(16, 16, 0, 0, "AES/CTR/NoPadding"),
     AES_256_CTR(32, 16, 0, 0, "AES/CTR/NoPadding");
 
-    CipherAlgorithm(
-            int keySize,
-            int nonceBytesFromHandshake,
-            int nonceBytesFromRecord,
-            int blocksize,
-            String javaName) {
+    CipherAlgorithm(int keySize, int nonceBytesFromHandshake, int nonceBytesFromRecord, int blocksize,
+        String javaName) {
         this.keySize = keySize;
         this.javaName = javaName;
         this.nonceBytesFromHandshake = nonceBytesFromHandshake;
@@ -52,8 +52,7 @@ public enum CipherAlgorithm {
         this.blocksize = blocksize;
     }
 
-    CipherAlgorithm(
-            int keySize, int nonceBytesFromHandshake, int nonceBytesFromRecord, int blocksize) {
+    CipherAlgorithm(int keySize, int nonceBytesFromHandshake, int nonceBytesFromRecord, int blocksize) {
         this.keySize = keySize;
         this.javaName = null;
         this.nonceBytesFromHandshake = nonceBytesFromHandshake;
@@ -61,21 +60,27 @@ public enum CipherAlgorithm {
         this.blocksize = blocksize;
     }
 
-    /** Key size for the underlying cipher */
+    /**
+     * Key size for the underlying cipher
+     */
     private final int keySize;
 
     /**
-     * Number of bytes taken from the handshake and used as an initialization vector / nonce input
-     * into the cipher (i.e., number of bytes in server_write_IV / client_write_IV)
+     * Number of bytes taken from the handshake and used as an initialization vector / nonce input into the cipher
+     * (i.e., number of bytes in server_write_IV / client_write_IV)
      */
     private final int nonceBytesFromHandshake;
 
-    /** Number of bytes generated with each new record. */
+    /**
+     * Number of bytes generated with each new record.
+     */
     private final int nonceBytesFromRecord;
 
     private final int blocksize;
 
-    /** java name mapping */
+    /**
+     * java name mapping
+     */
     private final String javaName;
 
     public int getKeySize() {

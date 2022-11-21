@@ -11,14 +11,16 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.constants.AuthzDataFormat;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerAuthzExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 public class ServerAuthzExtensionPreparator extends ExtensionPreparator<ServerAuthzExtensionMessage> {
 
     private final ServerAuthzExtensionMessage msg;
 
-    public ServerAuthzExtensionPreparator(Chooser chooser, ServerAuthzExtensionMessage message) {
-        super(chooser, message);
+    public ServerAuthzExtensionPreparator(Chooser chooser, ServerAuthzExtensionMessage message,
+        ExtensionSerializer<ServerAuthzExtensionMessage> serializer) {
+        super(chooser, message, serializer);
         msg = message;
     }
 

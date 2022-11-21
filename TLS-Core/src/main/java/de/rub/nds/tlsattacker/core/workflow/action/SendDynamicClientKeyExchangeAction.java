@@ -1,32 +1,36 @@
-/*
+/**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
+import de.rub.nds.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
+import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
-import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.state.State;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
+import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
-import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -44,19 +48,17 @@ public class SendDynamicClientKeyExchangeAction extends MessageAction implements
     }
 
     @Override
-    public void execute(State state) throws ActionExecutionException {
-        TlsContext tlsContext = state.getContext(connectionAlias).getTlsContext();
+    public void execute(State state) throws WorkflowExecutionException {
+        TlsContext tlsContext = state.getTlsContext(connectionAlias);
 
         if (isExecuted()) {
-            throw new ActionExecutionException("Action already executed!");
+            throw new WorkflowExecutionException("Action already executed!");
         }
 
         messages = new LinkedList<>();
         ClientKeyExchangeMessage clientKeyExchangeMessage =
-                new WorkflowConfigurationFactory(state.getConfig())
-                        .createClientKeyExchangeMessage(
-                                AlgorithmResolver.getKeyExchangeAlgorithm(
-                                        tlsContext.getChooser().getSelectedCipherSuite()));
+            new WorkflowConfigurationFactory(state.getConfig()).createClientKeyExchangeMessage(
+                AlgorithmResolver.getKeyExchangeAlgorithm(tlsContext.getChooser().getSelectedCipherSuite()));
         if (clientKeyExchangeMessage != null) {
             messages.add(clientKeyExchangeMessage);
 
@@ -68,7 +70,12 @@ public class SendDynamicClientKeyExchangeAction extends MessageAction implements
             }
 
             try {
-                send(tlsContext, messages, fragments, records);
+                MessageActionResult result = sendMessageHelper.sendMessages(messages, fragments, records, tlsContext);
+                messages = new ArrayList<>(result.getMessageList());
+                records = new ArrayList<>(result.getRecordList());
+                if (result.getMessageFragmentList() != null) {
+                    fragments = new ArrayList<>(result.getMessageFragmentList());
+                }
                 setExecuted(true);
             } catch (IOException e) {
                 tlsContext.setReceivedTransportHandlerException(true);
@@ -132,7 +139,7 @@ public class SendDynamicClientKeyExchangeAction extends MessageAction implements
             }
         }
         if (getRecords() != null) {
-            for (Record record : getRecords()) {
+            for (AbstractRecord record : getRecords()) {
                 holders.addAll(record.getAllModifiableVariableHolders());
             }
         }
@@ -142,7 +149,29 @@ public class SendDynamicClientKeyExchangeAction extends MessageAction implements
             }
         }
         for (ModifiableVariableHolder holder : holders) {
-            holder.reset();
+            List<Field> fields = holder.getAllModifiableVariableFields();
+            for (Field f : fields) {
+                f.setAccessible(true);
+
+                ModifiableVariable mv = null;
+                try {
+                    mv = (ModifiableVariable) f.get(holder);
+                } catch (IllegalArgumentException | IllegalAccessException ex) {
+                    LOGGER.warn("Could not retrieve ModifiableVariables");
+                    LOGGER.debug(ex);
+                }
+                if (mv != null) {
+                    if (mv.getModification() != null || mv.isCreateRandomModification()) {
+                        mv.setOriginalValue(null);
+                    } else {
+                        try {
+                            f.set(holder, null);
+                        } catch (IllegalArgumentException | IllegalAccessException ex) {
+                            LOGGER.warn("Could not strip ModifiableVariable without Modification");
+                        }
+                    }
+                }
+            }
         }
         setExecuted(null);
     }
@@ -153,13 +182,18 @@ public class SendDynamicClientKeyExchangeAction extends MessageAction implements
     }
 
     @Override
-    public List<Record> getSendRecords() {
+    public List<AbstractRecord> getSendRecords() {
         return records;
     }
 
     @Override
     public List<DtlsHandshakeMessageFragment> getSendFragments() {
         return fragments;
+    }
+
+    @Override
+    public MessageActionDirection getMessageDirection() {
+        return MessageActionDirection.SENDING;
     }
 
     @Override

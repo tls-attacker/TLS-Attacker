@@ -9,12 +9,12 @@
 
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageSerializer;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class AlertSerializer extends ProtocolMessageSerializer<AlertMessage> {
+public class AlertSerializer extends TlsMessageSerializer<AlertMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -23,13 +23,15 @@ public class AlertSerializer extends ProtocolMessageSerializer<AlertMessage> {
      *
      * @param message
      *                Message that should be serialized
+     * @param version
+     *                Version of the Protocol
      */
-    public AlertSerializer(AlertMessage message) {
-        super(message);
+    public AlertSerializer(AlertMessage message, ProtocolVersion version) {
+        super(message, version);
     }
 
     @Override
-    protected byte[] serializeBytes() {
+    public byte[] serializeProtocolMessageContent() {
         LOGGER.debug("Serializing AlertMessage");
         writeLevel();
         writeDescription();
@@ -51,4 +53,5 @@ public class AlertSerializer extends ProtocolMessageSerializer<AlertMessage> {
         appendByte(message.getDescription().getValue());
         LOGGER.debug("Description: " + message.getDescription().getValue());
     }
+
 }

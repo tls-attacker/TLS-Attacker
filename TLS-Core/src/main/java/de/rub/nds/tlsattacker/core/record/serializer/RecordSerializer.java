@@ -1,21 +1,21 @@
-/*
+/**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.record.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.RecordByteLength;
-import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import de.rub.nds.tlsattacker.core.record.Record;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class RecordSerializer extends Serializer<Record> {
+public class RecordSerializer extends AbstractRecordSerializer<Record> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -31,11 +31,8 @@ public class RecordSerializer extends Serializer<Record> {
         writeContentType(record);
         writeProtocolVersion(record);
         if (record.getEpoch() != null) {
-            writeEpoch(record);
-            writeSequenceNumber(record);
-        }
-        if (record.getConnectionId() != null) {
-            writeConnectionId(record);
+            appendInt(record.getEpoch().getValue(), RecordByteLength.DTLS_EPOCH);
+            appendBigInteger(record.getSequenceNumber().getValue(), RecordByteLength.DTLS_SEQUENCE_NUMBER);
         }
         writeLength(record);
         writeProtocolMessageBytes(record);
@@ -49,9 +46,7 @@ public class RecordSerializer extends Serializer<Record> {
 
     private void writeProtocolVersion(Record record) {
         appendBytes(record.getProtocolVersion().getValue());
-        LOGGER.debug(
-                "ProtocolVersion: "
-                        + ArrayConverter.bytesToHexString(record.getProtocolVersion().getValue()));
+        LOGGER.debug("ProtocolVersion: " + ArrayConverter.bytesToHexString(record.getProtocolVersion().getValue()));
     }
 
     private void writeLength(Record record) {
@@ -59,29 +54,10 @@ public class RecordSerializer extends Serializer<Record> {
         LOGGER.debug("Length: " + record.getLength().getValue());
     }
 
-    private void writeConnectionId(Record record) {
-        appendBytes(record.getConnectionId().getValue());
-        LOGGER.debug(
-                "ConnectionID: "
-                        + ArrayConverter.bytesToHexString(record.getConnectionId().getValue()));
-    }
-
-    private void writeEpoch(Record record) {
-        appendInt(record.getEpoch().getValue(), RecordByteLength.DTLS_EPOCH);
-        LOGGER.debug("Epoch: " + record.getEpoch().getValue());
-    }
-
-    private void writeSequenceNumber(Record record) {
-        appendBigInteger(
-                record.getSequenceNumber().getValue(), RecordByteLength.DTLS_SEQUENCE_NUMBER);
-        LOGGER.debug("SequenceNumber: " + record.getSequenceNumber().getValue());
-    }
-
     private void writeProtocolMessageBytes(Record record) {
         appendBytes(record.getProtocolMessageBytes().getValue());
         LOGGER.debug(
-                "ProtocolMessageBytes: "
-                        + ArrayConverter.bytesToHexString(
-                                record.getProtocolMessageBytes().getValue()));
+            "ProtocolMessageBytes: " + ArrayConverter.bytesToHexString(record.getProtocolMessageBytes().getValue()));
     }
+
 }

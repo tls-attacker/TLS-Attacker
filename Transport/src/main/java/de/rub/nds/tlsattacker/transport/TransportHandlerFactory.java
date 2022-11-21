@@ -1,11 +1,12 @@
-/*
+/**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.transport;
 
 import de.rub.nds.tlsattacker.transport.tcp.ClientTcpNoDelayTransportHandler;
@@ -43,8 +44,7 @@ public class TransportHandlerFactory {
                     return new ServerUdpTransportHandler(con);
                 }
             case STREAM:
-                throw new UnsupportedOperationException(
-                        "STREAM TransportHandler can only be created manually");
+                throw new UnsupportedOperationException("STREAM TransportHandler can only be created manually");
             case TCP_TIMING:
                 if (localConEndType == ConnectionEndType.CLIENT) {
                     return new TimingClientTcpTransportHandler(con);
@@ -61,22 +61,21 @@ public class TransportHandlerFactory {
                 if (localConEndType == ConnectionEndType.CLIENT) {
                     return new ProxyClientUdpTransportHandler(con);
                 } else {
-                    throw new UnsupportedOperationException(
-                            "UDP_PROXY for server sockets is currently not supported");
+                    throw new UnsupportedOperationException("UDP_PROXY for server sockets is currently not supported");
                 }
             case TCP_PROXY_TIMING:
                 if (localConEndType == ConnectionEndType.CLIENT) {
                     return new TimingProxyClientTcpTransportHandler(con);
                 } else {
                     throw new UnsupportedOperationException(
-                            "TCP_PROXY_TIMING for server sockets is currently not supported");
+                        "TCP_PROXY_TIMING for server sockets is currently not supported");
                 }
             case TCP_NO_DELAY:
                 if (localConEndType == ConnectionEndType.CLIENT) {
                     return new ClientTcpNoDelayTransportHandler(con);
                 } else {
                     throw new UnsupportedOperationException(
-                            "This Transporthandler type is only supported in client mode");
+                        "This Transporthandler type is only supported in client mode");
                 }
             case TCP_FRAGMENTATION:
                 if (localConEndType == ConnectionEndType.CLIENT) {
@@ -86,9 +85,11 @@ public class TransportHandlerFactory {
                 }
             default:
                 throw new UnsupportedOperationException(
-                        "Transport handler " + con.getTransportHandlerType() + " is not supported");
+                    "Transport handler " + con.getTransportHandlerType() + " is not supported");
         }
     }
 
-    private TransportHandlerFactory() {}
+    private TransportHandlerFactory() {
+
+    }
 }

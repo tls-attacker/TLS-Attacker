@@ -42,7 +42,7 @@ public class HelloVerifyRequestPreparator extends HandshakeMessagePreparator<Hel
             cookieLength = cookieLength % 256;
         }
         byte[] cookie = new byte[cookieLength];
-        chooser.getContext().getTlsContext().getRandom().nextBytes(cookie);
+        chooser.getContext().getRandom().nextBytes(cookie);
         return cookie;
     }
 

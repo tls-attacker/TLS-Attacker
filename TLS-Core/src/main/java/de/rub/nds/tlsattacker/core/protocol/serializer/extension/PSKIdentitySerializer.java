@@ -10,8 +10,8 @@
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
-import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PSKIdentity;
+import de.rub.nds.tlsattacker.core.protocol.Serializer;
 
 public class PSKIdentitySerializer extends Serializer<PSKIdentity> {
 

@@ -1,20 +1,22 @@
-/*
+/**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class ChangeWriteEpochAction extends ChangeEpochAction {
 
-    public ChangeWriteEpochAction() {}
+    public ChangeWriteEpochAction() {
+    }
 
     public ChangeWriteEpochAction(int epoch) {
         super(epoch);
@@ -23,8 +25,7 @@ public class ChangeWriteEpochAction extends ChangeEpochAction {
     @Override
     protected void changeEpoch(TlsContext tlsContext) {
         LOGGER.info("Changed write epoch");
-        if (tlsContext.getRecordLayer() != null) {
-            tlsContext.getRecordLayer().setWriteEpoch(epoch);
-        }
+        tlsContext.setWriteEpoch(epoch);
     }
+
 }

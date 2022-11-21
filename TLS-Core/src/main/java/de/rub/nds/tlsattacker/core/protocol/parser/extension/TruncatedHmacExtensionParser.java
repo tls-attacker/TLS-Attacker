@@ -9,18 +9,23 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TruncatedHmacExtensionMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import java.io.InputStream;
 
 public class TruncatedHmacExtensionParser extends ExtensionParser<TruncatedHmacExtensionMessage> {
 
-    public TruncatedHmacExtensionParser(InputStream stream, TlsContext tlsContext) {
-        super(stream, tlsContext);
+    public TruncatedHmacExtensionParser(int startposition, byte[] array, Config config) {
+        super(startposition, array, config);
     }
 
     @Override
-    public void parse(TruncatedHmacExtensionMessage msg) {
+    public void parseExtensionMessageContent(TruncatedHmacExtensionMessage msg) {
         // nothing to parse here, it's a opt-in extension
     }
+
+    @Override
+    protected TruncatedHmacExtensionMessage createExtensionMessage() {
+        return new TruncatedHmacExtensionMessage();
+    }
+
 }

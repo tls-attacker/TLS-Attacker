@@ -9,6 +9,8 @@
 
 package de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2;
 
+import static de.rub.nds.modifiablevariable.ModifiableVariableFactory.safelySetValue;
+
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
@@ -133,7 +135,7 @@ public class RequestItemV2 implements Serializable {
     }
 
     public void setRequestLength(int requestLength) {
-        this.requestLength = ModifiableVariableFactory.safelySetValue(this.requestLength, requestLength);
+        this.requestLength = safelySetValue(this.requestLength, requestLength);
     }
 
     public Integer getRequestTypeConfig() {

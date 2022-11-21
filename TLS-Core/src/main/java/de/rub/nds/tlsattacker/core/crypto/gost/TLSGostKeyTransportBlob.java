@@ -9,7 +9,11 @@
 
 package de.rub.nds.tlsattacker.core.crypto.gost;
 
-import org.bouncycastle.asn1.*;
+import org.bouncycastle.asn1.ASN1EncodableVector;
+import org.bouncycastle.asn1.ASN1Object;
+import org.bouncycastle.asn1.ASN1Primitive;
+import org.bouncycastle.asn1.ASN1Sequence;
+import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.asn1.cryptopro.GostR3410KeyTransport;
 
 public class TLSGostKeyTransportBlob extends ASN1Object {

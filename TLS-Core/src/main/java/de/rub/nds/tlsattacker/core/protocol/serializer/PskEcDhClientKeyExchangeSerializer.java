@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.PskEcDhClientKeyExchangeMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,9 +28,11 @@ public class PskEcDhClientKeyExchangeSerializer
      *
      * @param message
      *                Message that should be serialized
+     * @param version
+     *                Version of the Protocol
      */
-    public PskEcDhClientKeyExchangeSerializer(PskEcDhClientKeyExchangeMessage message) {
-        super(message);
+    public PskEcDhClientKeyExchangeSerializer(PskEcDhClientKeyExchangeMessage message, ProtocolVersion version) {
+        super(message, version);
         this.msg = message;
     }
 

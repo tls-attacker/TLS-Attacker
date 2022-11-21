@@ -9,6 +9,7 @@
 
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloRequestMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,9 +23,11 @@ public class HelloRequestSerializer extends HandshakeMessageSerializer<HelloRequ
      *
      * @param message
      *                Message that should be serialized
+     * @param version
+     *                Version of the Protocol
      */
-    public HelloRequestSerializer(HelloRequestMessage message) {
-        super(message);
+    public HelloRequestSerializer(HelloRequestMessage message, ProtocolVersion version) {
+        super(message, version);
     }
 
     @Override

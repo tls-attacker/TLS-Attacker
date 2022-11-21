@@ -10,7 +10,15 @@ package de.rub.nds.tlsattacker.core.constants;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.exceptions.UnknownCipherSuiteException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
 
 public enum CipherSuite {
     TLS_NULL_WITH_NULL_NULL(0x00),
@@ -654,12 +662,6 @@ public enum CipherSuite {
 
         if (this.isTLS13()) {
             return version == ProtocolVersion.TLS13;
-        }
-
-        if (this.isGCM()) {
-            return version == ProtocolVersion.TLS12
-                    || version == ProtocolVersion.DTLS12
-                    || version == ProtocolVersion.TLS13;
         }
 
         if (this.name().endsWith("256")

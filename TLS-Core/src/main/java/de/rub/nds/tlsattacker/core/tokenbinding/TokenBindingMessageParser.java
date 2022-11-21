@@ -10,22 +10,24 @@
 package de.rub.nds.tlsattacker.core.tokenbinding;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageParser;
-import java.io.InputStream;
+import de.rub.nds.tlsattacker.core.protocol.parser.TlsMessageParser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class TokenBindingMessageParser extends ProtocolMessageParser<TokenBindingMessage> {
+public class TokenBindingMessageParser extends TlsMessageParser<TokenBindingMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public TokenBindingMessageParser(InputStream stream) {
-        super(stream);
+    public TokenBindingMessageParser(int pointer, byte[] array, ProtocolVersion version, Config config) {
+        super(pointer, array, version, config);
     }
 
     @Override
-    public void parse(TokenBindingMessage message) {
+    protected TokenBindingMessage parseMessageContent() {
+        TokenBindingMessage message = new TokenBindingMessage();
         message.setTokenbindingsLength(parseIntField(TokenBindingLength.TOKENBINDINGS));
         LOGGER.debug("TokenbindingLength:" + message.getTokenbindingsLength().getValue());
         message.setTokenbindingType(parseByteField(TokenBindingLength.BINDING_TYPE));
@@ -63,6 +65,8 @@ public class TokenBindingMessageParser extends ProtocolMessageParser<TokenBindin
 
         message.setExtensionBytes(parseByteArrayField(message.getExtensionLength().getValue()));
         LOGGER.debug("Extensions:" + ArrayConverter.bytesToHexString(message.getExtensionBytes().getValue()));
+
+        return message;
     }
 
 }

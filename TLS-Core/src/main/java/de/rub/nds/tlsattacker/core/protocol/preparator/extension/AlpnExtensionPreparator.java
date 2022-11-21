@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.AlpnExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.alpn.AlpnEntry;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.alpn.AlpnEntryPreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.alpn.AlpnEntrySerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -29,8 +30,9 @@ public class AlpnExtensionPreparator extends ExtensionPreparator<AlpnExtensionMe
 
     private final AlpnExtensionMessage msg;
 
-    public AlpnExtensionPreparator(Chooser chooser, AlpnExtensionMessage message) {
-        super(chooser, message);
+    public AlpnExtensionPreparator(Chooser chooser, AlpnExtensionMessage message,
+        ExtensionSerializer<AlpnExtensionMessage> serializer) {
+        super(chooser, message, serializer);
         msg = message;
     }
 

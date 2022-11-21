@@ -14,21 +14,21 @@ import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class MessageActionFactory {
 
-    /**
-     * Java cannot automatically parse ProtocolMessage lists to Message lists when calling createAction, so we have
-     * these two wrapper methods.
-     */
-    public static MessageAction createTLSAction(Config tlsConfig, AliasedConnection connection,
+    public static MessageAction createAction(Config tlsConfig, AliasedConnection connection,
         ConnectionEndType sendingConnectionEndType, ProtocolMessage... protocolMessages) {
-        return createTLSAction(tlsConfig, connection, sendingConnectionEndType,
+        return createAction(tlsConfig, connection, sendingConnectionEndType,
             new ArrayList<>(Arrays.asList(protocolMessages)));
     }
 
-    public static MessageAction createTLSAction(Config tlsConfig, AliasedConnection connection,
+    public static MessageAction createAction(Config tlsConfig, AliasedConnection connection,
         ConnectionEndType sendingConnectionEnd, List<ProtocolMessage> protocolMessages) {
         MessageAction action;
         if (connection.getLocalConnectionEndType() == sendingConnectionEnd) {
@@ -38,6 +38,20 @@ public class MessageActionFactory {
         }
         action.setConnectionAlias(connection.getAlias());
         return action;
+    }
+
+    public static AsciiAction createAsciiAction(AliasedConnection connection, ConnectionEndType sendingConnectionEnd,
+        String message, String encoding) {
+        AsciiAction action;
+        if (connection.getLocalConnectionEndType() == sendingConnectionEnd) {
+            action = new SendAsciiAction(message, encoding);
+        } else {
+            action = new GenericReceiveAsciiAction(encoding);
+        }
+        return action;
+    }
+
+    private MessageActionFactory() {
     }
 
     private static Set<ActionOption> getFactoryReceiveActionOptions(Config tlsConfig) {
@@ -50,8 +64,5 @@ public class MessageActionFactory {
         }
 
         return globalOptions;
-    }
-
-    private MessageActionFactory() {
     }
 }

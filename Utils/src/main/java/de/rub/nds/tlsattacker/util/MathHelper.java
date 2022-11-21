@@ -1,11 +1,12 @@
-/*
+/**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.util;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -39,9 +40,11 @@ public class MathHelper {
     }
 
     /**
-     * @param u The u parameter
-     * @param v The v parameter
-     * @return (c,r,s) such that c = r u + s v
+     * @param  u
+     *           The u parameter
+     * @param  v
+     *           The v parameter
+     * @return   (c,r,s) such that c = r u + s v
      */
     public static BigIntegerTriple extendedEuclid(BigInteger u, BigInteger v) {
         BigInteger r = BigInteger.ONE;
@@ -85,9 +88,11 @@ public class MathHelper {
     /**
      * Computes Chinese Reminder Theorem: x == congs[i] mod moduli[i]
      *
-     * @param congs A BigInteger[] of congestions
-     * @param moduli A BigInteger[] of moduli
-     * @return Chinese Reminder Theorem: x == congs[i] mod moduli[i]
+     * @param  congs
+     *                A BigInteger[] of congestions
+     * @param  moduli
+     *                A BigInteger[] of moduli
+     * @return        Chinese Reminder Theorem: x == congs[i] mod moduli[i]
      */
     public static BigInteger crt(BigInteger[] congs, BigInteger[] moduli) {
 
@@ -113,9 +118,11 @@ public class MathHelper {
     /**
      * Computes Chinese Reminder Theorem: x == congs[i] mod moduli[i]
      *
-     * @param congs A BigInteger[] of congestions
-     * @param moduli A BigInteger[] of moduli
-     * @return Chinese Reminder Theorem: x == congs[i] mod moduli[i]
+     * @param  congs
+     *                A BigInteger[] of congestions
+     * @param  moduli
+     *                A BigInteger[] of moduli
+     * @return        Chinese Reminder Theorem: x == congs[i] mod moduli[i]
      */
     public static BigInteger crt(List<BigInteger> congs, List<BigInteger> moduli) {
         BigInteger[] cs = ArrayConverter.convertListToArray(congs);
@@ -124,14 +131,15 @@ public class MathHelper {
     }
 
     /**
-     * Computes BigInteger sqrt root of a number (floor value). From: <a
-     * href="http://stackoverflow.com/questions/4407839/how-can-i-find-the-square-root-of-a-java-biginteger">
-     * http://stackoverflow.com/questions/4407839/how-can-i-find-the-square-root-of-a-java-biginteger
-     * </a>
+     * Computes BigInteger sqrt root of a number (floor value). From:
+     * <a href="http://stackoverflow.com/questions/4407839/how-can-i-find-the-square-root-of-a-java-biginteger">
+     * http://stackoverflow.com/questions/4407839/how-can-i-find-the-square-root-of-a-java-biginteger </a>
      *
-     * @param x The x Value
-     * @return BigInteger sqrt root of a number
-     * @throws IllegalArgumentException If x is negative
+     * @param  x
+     *                                  The x Value
+     * @return                          BigInteger sqrt root of a number
+     * @throws IllegalArgumentException
+     *                                  If x is negative
      */
     public static BigInteger bigIntSqRootFloor(BigInteger x) throws IllegalArgumentException {
         if (x.compareTo(BigInteger.ZERO) < 0) {
@@ -153,13 +161,15 @@ public class MathHelper {
     } // end bigIntSqRootFloor
 
     /**
-     * Computes BigInteger sqrt root of a number (ceil value). From: <a
-     * href="http://stackoverflow.com/questions/4407839/how-can-i-find-the-square-root-of-a-java-biginteger">
+     * Computes BigInteger sqrt root of a number (ceil value). From:
+     * <a href="http://stackoverflow.com/questions/4407839/how-can-i-find-the-square-root-of-a-java-biginteger">
      * http://stackoverflow.com/questions/4407839/how-can-i-find-the-square-root-of-a-java-biginteger</a>
      *
-     * @param x The x Value
-     * @return BigInteger sqrt root of a number (ceil value)
-     * @throws IllegalArgumentException If x is negative
+     * @param  x
+     *                                  The x Value
+     * @return                          BigInteger sqrt root of a number (ceil value)
+     * @throws IllegalArgumentException
+     *                                  If x is negative
      */
     public static BigInteger bigIntSqRootCeil(BigInteger x) throws IllegalArgumentException {
         if (x.compareTo(BigInteger.ZERO) < 0) {
@@ -184,7 +194,9 @@ public class MathHelper {
         }
     }
 
-    private MathHelper() {}
+    private MathHelper() {
+
+    }
 
     public static class BigIntegerTriple {
 

@@ -9,6 +9,8 @@
 
 package de.rub.nds.tlsattacker.core.record.crypto;
 
+import de.rub.nds.tlsattacker.core.record.AbstractRecord;
+import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import org.apache.logging.log4j.LogManager;
@@ -23,5 +25,17 @@ public abstract class Decryptor extends RecordCryptoUnit {
 
     }
 
+    public void decrypt(AbstractRecord object) {
+        if (object instanceof BlobRecord) {
+            decrypt((BlobRecord) object);
+        } else if (object instanceof Record) {
+            decrypt((Record) object);
+        } else {
+            throw new UnsupportedOperationException("Record type unknown.");
+        }
+    }
+
     public abstract void decrypt(Record object);
+
+    public abstract void decrypt(BlobRecord object);
 }

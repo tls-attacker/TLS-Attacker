@@ -12,23 +12,24 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
-import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
+import de.rub.nds.tlsattacker.core.protocol.Parser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-
-import java.io.InputStream;
 
 public class CachedObjectParser extends Parser<CachedObject> {
 
+    private final CachedObject cachedObject;
     private final ConnectionEndType connectionEndType;
 
-    public CachedObjectParser(InputStream stream, ConnectionEndType connectionEndType) {
-        super(stream);
+    public CachedObjectParser(int startposition, byte[] array, ConnectionEndType connectionEndType) {
+        super(startposition, array);
+        cachedObject = new CachedObject();
         this.connectionEndType = connectionEndType;
     }
 
     @Override
-    public void parse(CachedObject cachedObject) {
+    public CachedObject parse() {
+
         if (connectionEndType == ConnectionEndType.CLIENT) {
             cachedObject.setCachedInformationType(parseByteField(ExtensionByteLength.CACHED_INFO_TYPE));
             cachedObject.setHashValueLength(parseIntField(ExtensionByteLength.CACHED_INFO_HASH_LENGTH));
@@ -38,6 +39,8 @@ public class CachedObjectParser extends Parser<CachedObject> {
             cachedObject.setHashValue((ModifiableByteArray) null);
             cachedObject.setHashValueLength((ModifiableInteger) null);
         }
+
+        return cachedObject;
     }
 
 }

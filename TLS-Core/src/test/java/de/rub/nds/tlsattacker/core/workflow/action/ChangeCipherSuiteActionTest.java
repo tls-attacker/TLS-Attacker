@@ -1,11 +1,12 @@
-/*
+/**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -17,19 +18,22 @@ import org.junit.jupiter.api.Test;
 public class ChangeCipherSuiteActionTest extends AbstractChangeActionTest<ChangeCipherSuiteAction> {
 
     public ChangeCipherSuiteActionTest() {
-        super(
-                new ChangeCipherSuiteAction(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA256),
-                ChangeCipherSuiteAction.class);
+        super(new ChangeCipherSuiteAction(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA256),
+            ChangeCipherSuiteAction.class);
     }
 
-    /** Test of getNewValue method, of class ChangeCipherSuiteAction. */
+    /**
+     * Test of getNewValue method, of class ChangeCipherSuiteAction.
+     */
     @Test
     @Override
     public void testGetNewValue() {
         assertEquals(action.getNewValue(), CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA256);
     }
 
-    /** Test of setNewValue method, of class ChangeCipherSuiteAction. */
+    /**
+     * Test of setNewValue method, of class ChangeCipherSuiteAction.
+     */
     @Test
     @Override
     public void testSetNewValue() {
@@ -44,7 +48,9 @@ public class ChangeCipherSuiteActionTest extends AbstractChangeActionTest<Change
         assertDoesNotThrow(() -> action.execute(state));
     }
 
-    /** Test of getOldValue method, of class ChangeCipherSuiteAction. */
+    /**
+     * Test of getOldValue method, of class ChangeCipherSuiteAction.
+     */
     @Test
     @Override
     public void testGetOldValue() {
@@ -52,7 +58,9 @@ public class ChangeCipherSuiteActionTest extends AbstractChangeActionTest<Change
         assertEquals(action.getOldValue(), CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
     }
 
-    /** Test of execute method, of class ChangeCipherSuiteAction. */
+    /**
+     * Test of execute method, of class ChangeCipherSuiteAction.
+     */
     @Test
     @Override
     public void testExecute() throws Exception {

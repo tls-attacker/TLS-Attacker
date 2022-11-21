@@ -9,20 +9,40 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
+import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.protocol.message.PWDServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.protocol.parser.PWDServerKeyExchangeParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.PWDServerKeyExchangePreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.PWDServerKeyExchangeSerializer;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.math.BigInteger;
 
 public class PWDServerKeyExchangeHandler extends ServerKeyExchangeHandler<PWDServerKeyExchangeMessage> {
-
     public PWDServerKeyExchangeHandler(TlsContext tlsContext) {
         super(tlsContext);
     }
 
     @Override
-    public void adjustContext(PWDServerKeyExchangeMessage message) {
+    public PWDServerKeyExchangeParser getParser(byte[] message, int pointer) {
+        return new PWDServerKeyExchangeParser(pointer, message, tlsContext.getChooser().getSelectedProtocolVersion(),
+            AlgorithmResolver.getKeyExchangeAlgorithm(tlsContext.getChooser().getSelectedCipherSuite()),
+            tlsContext.getConfig());
+    }
+
+    @Override
+    public PWDServerKeyExchangePreparator getPreparator(PWDServerKeyExchangeMessage message) {
+        return new PWDServerKeyExchangePreparator(tlsContext.getChooser(), message);
+    }
+
+    @Override
+    public PWDServerKeyExchangeSerializer getSerializer(PWDServerKeyExchangeMessage message) {
+        return new PWDServerKeyExchangeSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
+    }
+
+    @Override
+    public void adjustTLSContext(PWDServerKeyExchangeMessage message) {
         tlsContext.setSelectedGroup(NamedGroup.getNamedGroup(message.getNamedGroup().getValue()));
         tlsContext.setServerPWDSalt(message.getSalt().getValue());
         tlsContext.setServerPWDElement(PointFormatter

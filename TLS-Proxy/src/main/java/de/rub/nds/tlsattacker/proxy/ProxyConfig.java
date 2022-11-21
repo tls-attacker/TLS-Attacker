@@ -1,49 +1,39 @@
-/*
+/**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.proxy;
 
 import com.beust.jcommander.Parameter;
 
 public class ProxyConfig {
 
-    @Parameter(
-            names = "-port",
-            required = true,
-            description = "The Port the proxy should listen to (Default 9090)")
+    @Parameter(names = "-port", required = true, description = "The Port the proxy should listen to (Default 9090)")
     private int listeningPort = 1080;
 
-    @Parameter(
-            names = "-config",
-            description = "This parameter allows you to specify a default TlsConfig")
+    @Parameter(names = "-config", description = "This parameter allows you to specify a default TlsConfig")
     private String defaultConfig = null;
 
-    @Parameter(
-            names = "-clientHello",
-            description = "This parameter allows you to specify a default ClientHello")
+    @Parameter(names = "-clientHello", description = "This parameter allows you to specify a default ClientHello")
     private String clientHello = null;
 
-    @Parameter(
-            names = "-proxyServerCertificate",
-            required = true,
-            description = "The certificate the proxy faces to incoming clients (JKS)")
+    @Parameter(names = "-proxyServerCertificate", required = true,
+        description = "The certificate the proxy faces to incoming clients (JKS)")
     private String serverCertificate = null;
 
     @Parameter(names = "-alias", required = true, description = "The alias of the certificate")
     private String alias = null;
 
-    @Parameter(
-            names = "-password",
-            required = true,
-            description = "The password of the certificate")
+    @Parameter(names = "-password", required = true, description = "The password of the certificate")
     private String password = null;
 
-    public ProxyConfig() {}
+    public ProxyConfig() {
+    }
 
     public int getListeningPort() {
         return listeningPort;

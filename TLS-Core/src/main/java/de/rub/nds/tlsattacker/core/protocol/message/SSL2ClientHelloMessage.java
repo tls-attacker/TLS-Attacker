@@ -1,11 +1,12 @@
-/*
+/**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -13,20 +14,16 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.constants.SSL2MessageType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.SSL2ClientHelloHandler;
-import de.rub.nds.tlsattacker.core.protocol.parser.SSL2ClientHelloParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.SSL2ClientHelloPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.SSL2ClientHelloSerializer;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import jakarta.xml.bind.annotation.XmlRootElement;
-import java.io.InputStream;
-import java.util.Objects;
 
 @SuppressWarnings("serial")
 @XmlRootElement(name = "SSL2ClientHello")
-public class SSL2ClientHelloMessage extends SSL2Message {
+public class SSL2ClientHelloMessage extends SSL2HandshakeMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByteArray protocolVersion;
@@ -49,7 +46,11 @@ public class SSL2ClientHelloMessage extends SSL2Message {
     private ModifiableByteArray challenge;
 
     public SSL2ClientHelloMessage() {
-        super(SSL2MessageType.SSL_CLIENT_HELLO);
+        super(HandshakeMessageType.SSL2_CLIENT_HELLO);
+    }
+
+    public SSL2ClientHelloMessage(Config config) {
+        this();
     }
 
     @Override
@@ -66,8 +67,7 @@ public class SSL2ClientHelloMessage extends SSL2Message {
     }
 
     public void setProtocolVersion(byte[] protocolVersion) {
-        this.protocolVersion =
-                ModifiableVariableFactory.safelySetValue(this.protocolVersion, protocolVersion);
+        this.protocolVersion = ModifiableVariableFactory.safelySetValue(this.protocolVersion, protocolVersion);
     }
 
     public ModifiableInteger getCipherSuiteLength() {
@@ -79,8 +79,7 @@ public class SSL2ClientHelloMessage extends SSL2Message {
     }
 
     public void setCipherSuiteLength(int cipherSuiteLength) {
-        this.cipherSuiteLength =
-                ModifiableVariableFactory.safelySetValue(this.cipherSuiteLength, cipherSuiteLength);
+        this.cipherSuiteLength = ModifiableVariableFactory.safelySetValue(this.cipherSuiteLength, cipherSuiteLength);
     }
 
     public ModifiableByteArray getCipherSuites() {
@@ -92,8 +91,7 @@ public class SSL2ClientHelloMessage extends SSL2Message {
     }
 
     public void setCipherSuites(byte[] cipherSuites) {
-        this.cipherSuites =
-                ModifiableVariableFactory.safelySetValue(this.cipherSuites, cipherSuites);
+        this.cipherSuites = ModifiableVariableFactory.safelySetValue(this.cipherSuites, cipherSuites);
     }
 
     public ModifiableByteArray getChallenge() {
@@ -117,8 +115,7 @@ public class SSL2ClientHelloMessage extends SSL2Message {
     }
 
     public void setSessionIDLength(int sessionIDLength) {
-        this.sessionIdLength =
-                ModifiableVariableFactory.safelySetValue(this.sessionIdLength, sessionIDLength);
+        this.sessionIdLength = ModifiableVariableFactory.safelySetValue(this.sessionIdLength, sessionIDLength);
     }
 
     public ModifiableInteger getChallengeLength() {
@@ -126,8 +123,7 @@ public class SSL2ClientHelloMessage extends SSL2Message {
     }
 
     public void setChallengeLength(int challengeLength) {
-        this.challengeLength =
-                ModifiableVariableFactory.safelySetValue(this.challengeLength, challengeLength);
+        this.challengeLength = ModifiableVariableFactory.safelySetValue(this.challengeLength, challengeLength);
     }
 
     public void setChallengeLength(ModifiableInteger challengeLength) {
@@ -189,68 +185,7 @@ public class SSL2ClientHelloMessage extends SSL2Message {
     }
 
     @Override
-    public SSL2ClientHelloHandler getHandler(TlsContext tlsContext) {
-        return new SSL2ClientHelloHandler(tlsContext);
-    }
-
-    @Override
-    public SSL2ClientHelloParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new SSL2ClientHelloParser(stream, tlsContext);
-    }
-
-    @Override
-    public SSL2ClientHelloPreparator getPreparator(TlsContext tlsContext) {
-        return new SSL2ClientHelloPreparator(tlsContext.getChooser(), this);
-    }
-
-    @Override
-    public SSL2ClientHelloSerializer getSerializer(TlsContext tlsContext) {
-        return new SSL2ClientHelloSerializer(this);
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 5;
-        hash = 89 * hash + Objects.hashCode(this.protocolVersion);
-        hash = 89 * hash + Objects.hashCode(this.cipherSuiteLength);
-        hash = 89 * hash + Objects.hashCode(this.sessionIdLength);
-        hash = 89 * hash + Objects.hashCode(this.challengeLength);
-        hash = 89 * hash + Objects.hashCode(this.cipherSuites);
-        hash = 89 * hash + Objects.hashCode(this.sessionId);
-        hash = 89 * hash + Objects.hashCode(this.challenge);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final SSL2ClientHelloMessage other = (SSL2ClientHelloMessage) obj;
-        if (!Objects.equals(this.protocolVersion, other.protocolVersion)) {
-            return false;
-        }
-        if (!Objects.equals(this.cipherSuiteLength, other.cipherSuiteLength)) {
-            return false;
-        }
-        if (!Objects.equals(this.sessionIdLength, other.sessionIdLength)) {
-            return false;
-        }
-        if (!Objects.equals(this.challengeLength, other.challengeLength)) {
-            return false;
-        }
-        if (!Objects.equals(this.cipherSuites, other.cipherSuites)) {
-            return false;
-        }
-        if (!Objects.equals(this.sessionId, other.sessionId)) {
-            return false;
-        }
-        return Objects.equals(this.challenge, other.challenge);
+    public SSL2ClientHelloHandler getHandler(TlsContext context) {
+        return new SSL2ClientHelloHandler(context);
     }
 }

@@ -1,11 +1,12 @@
-/*
+/**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.client.config;
 
 import com.beust.jcommander.Parameter;
@@ -19,31 +20,43 @@ public class ClientCommandConfig extends TLSDelegateConfig {
 
     public static final String COMMAND = "client";
 
-    @ParametersDelegate private CipherSuiteDelegate ciphersuiteDelegate;
-    @ParametersDelegate private CompressionDelegate compressionDelegate;
-    @ParametersDelegate private MaxFragmentLengthDelegate maxFragmentLengthDelegate;
-    @ParametersDelegate private ProtocolVersionDelegate protocolVersionDelegate;
-    @ParametersDelegate private NamedGroupsDelegate ellipticCurveDelegate;
-    @ParametersDelegate private ClientDelegate clientDelegate;
-    @ParametersDelegate private SignatureAndHashAlgorithmDelegate signatureAndHashAlgorithmDelegate;
-    @ParametersDelegate private SignatureAlgorithmCertDelegate signatureAlgorithmCertDelegate;
-    @ParametersDelegate private TransportHandlerDelegate transportHandlerDelegate;
-    @ParametersDelegate private TimeoutDelegate timeoutDelegate;
-    @ParametersDelegate private WorkflowTypeDelegate workflowTypeDelegate;
-    @ParametersDelegate private HeartbeatDelegate heartbeatDelegate;
-    @ParametersDelegate private CertificateDelegate certificateDelegate;
-    @ParametersDelegate private FilterDelegate filterDelegate;
-    @ParametersDelegate private ListDelegate listDelegate;
-    @ParametersDelegate private StarttlsDelegate starttlsDelegate;
+    @ParametersDelegate
+    private CipherSuiteDelegate ciphersuiteDelegate;
+    @ParametersDelegate
+    private CompressionDelegate compressionDelegate;
+    @ParametersDelegate
+    private MaxFragmentLengthDelegate maxFragmentLengthDelegate;
+    @ParametersDelegate
+    private ProtocolVersionDelegate protocolVersionDelegate;
+    @ParametersDelegate
+    private NamedGroupsDelegate ellipticCurveDelegate;
+    @ParametersDelegate
+    private ClientDelegate clientDelegate;
+    @ParametersDelegate
+    private SignatureAndHashAlgorithmDelegate signatureAndHashAlgorithmDelegate;
+    @ParametersDelegate
+    private SignatureAlgorithmCertDelegate signatureAlgorithmCertDelegate;
+    @ParametersDelegate
+    private TransportHandlerDelegate transportHandlerDelegate;
+    @ParametersDelegate
+    private TimeoutDelegate timeoutDelegate;
+    @ParametersDelegate
+    private WorkflowTypeDelegate workflowTypeDelegate;
+    @ParametersDelegate
+    private HeartbeatDelegate heartbeatDelegate;
+    @ParametersDelegate
+    private CertificateDelegate certificateDelegate;
+    @ParametersDelegate
+    private FilterDelegate filterDelegate;
+    @ParametersDelegate
+    private ListDelegate listDelegate;
+    @ParametersDelegate
+    private StarttlsDelegate starttlsDelegate;
 
-    @Parameter(
-            names = "-workflow_input",
-            description = "A path to a workflow trace that should be exeucted")
+    @Parameter(names = "-workflow_input", description = "A path to a workflow trace that should be exeucted")
     private String workflowInput = null;
-
-    @Parameter(
-            names = "-workflow_output",
-            description = "A path in which the executed workflow trace should be stored in")
+    @Parameter(names = "-workflow_output",
+        description = "A path in which the executed workflow trace should be stored in")
     private String workflowOutput = null;
 
     public ClientCommandConfig(GeneralDelegate delegate) {
@@ -99,4 +112,5 @@ public class ClientCommandConfig extends TLSDelegateConfig {
     public String getWorkflowOutput() {
         return workflowOutput;
     }
+
 }

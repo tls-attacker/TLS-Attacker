@@ -1,16 +1,17 @@
-/*
+/**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
+import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import org.junit.jupiter.api.Test;
 
 public class CopyBuffersActionTest extends AbstractCopyActionTest<CopyBuffersAction> {
@@ -22,15 +23,15 @@ public class CopyBuffersActionTest extends AbstractCopyActionTest<CopyBuffersAct
     @Test
     @Override
     public void testAliasesSetProperlyErrorSrc() {
-        CopyBuffersAction action = new CopyBuffersAction(null, "dst");
-        assertThrows(ActionExecutionException.class, action::assertAliasesSetProperly);
+        CopyBuffersAction a = new CopyBuffersAction(null, "dst");
+        assertThrows(WorkflowExecutionException.class, a::assertAliasesSetProperly);
     }
 
     @Test
     @Override
     public void testAliasesSetProperlyErrorDst() {
-        CopyBuffersAction action = new CopyBuffersAction("src", null);
-        assertThrows(ActionExecutionException.class, action::assertAliasesSetProperly);
+        CopyBuffersAction a = new CopyBuffersAction("src", null);
+        assertThrows(WorkflowExecutionException.class, a::assertAliasesSetProperly);
     }
 
     @Test

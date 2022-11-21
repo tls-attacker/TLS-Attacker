@@ -1,11 +1,12 @@
-/*
+/**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -16,26 +17,24 @@ import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.util.tests.TestCategories;
-import java.util.List;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-public class ChangeContextValueActionTest
-        extends AbstractChangeActionTest<ChangeContextValueAction<ProtocolVersion>> {
+import java.util.List;
+
+public class ChangeContextValueActionTest extends AbstractChangeActionTest<ChangeContextValueAction<ProtocolVersion>> {
 
     @SuppressWarnings("unchecked")
     public ChangeContextValueActionTest() {
-        super(
-                new ChangeContextValueAction<>("selectedProtocolVersion", ProtocolVersion.SSL2),
-                (Class<ChangeContextValueAction<ProtocolVersion>>)
-                        (Class<?>) ChangeContextValueAction.class);
+        super(new ChangeContextValueAction<>("selectedProtocolVersion", ProtocolVersion.SSL2),
+            (Class<ChangeContextValueAction<ProtocolVersion>>) (Class<?>) ChangeContextValueAction.class);
     }
 
     @SuppressWarnings("unchecked")
     @Test
     public void testException1() {
         ChangeContextValueAction<ProtocolVersion> b =
-                (ChangeContextValueAction<ProtocolVersion>) trace.getTlsActions().get(0);
+            (ChangeContextValueAction<ProtocolVersion>) trace.getTlsActions().get(0);
         assertThrows(UnsupportedOperationException.class, b::getNewValueList);
     }
 
@@ -43,14 +42,14 @@ public class ChangeContextValueActionTest
     @Test
     public void testException2() {
         trace.addTlsAction(
-                new ChangeContextValueAction<>(
-                        "", CipherSuite.GREASE_00, CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA256));
-        ChangeContextValueAction<CipherSuite> b =
-                (ChangeContextValueAction<CipherSuite>) trace.getTlsActions().get(1);
+            new ChangeContextValueAction<>("", CipherSuite.GREASE_00, CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA256));
+        ChangeContextValueAction<CipherSuite> b = (ChangeContextValueAction<CipherSuite>) trace.getTlsActions().get(1);
         assertThrows(UnsupportedOperationException.class, b::getNewValue);
     }
 
-    /** Test of setNewValue method, of class ChangeCompressionAction. */
+    /**
+     * Test of setNewValue method, of class ChangeCompressionAction.
+     */
     @Test
     @Override
     public void testSetNewValue() {
@@ -59,14 +58,18 @@ public class ChangeContextValueActionTest
         assertEquals(action.getNewValue(), ProtocolVersion.TLS11);
     }
 
-    /** Test of getNewValue method, of class ChangeCompressionAction. */
+    /**
+     * Test of getNewValue method, of class ChangeCompressionAction.
+     */
     @Test
     @Override
     public void testGetNewValue() {
         assertEquals(action.getNewValue(), ProtocolVersion.SSL2);
     }
 
-    /** Test of getOldValue method, of class ChangeCompressionAction. */
+    /**
+     * Test of getOldValue method, of class ChangeCompressionAction.
+     */
     @Test
     @Override
     public void testGetOldValue() {
@@ -75,7 +78,9 @@ public class ChangeContextValueActionTest
         assertEquals(action.getOldValue(), ProtocolVersion.TLS12);
     }
 
-    /** Test of execute method, of class ChangeCompressionAction. */
+    /**
+     * Test of execute method, of class ChangeCompressionAction.
+     */
     @Test
     public void testExecute() throws Exception {
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
@@ -90,16 +95,14 @@ public class ChangeContextValueActionTest
     @Override
     public void testMarshalingAndUnmarshalingFilledObjectYieldsEqualObject() {
         List<CipherSuite> ls =
-                List.of(
-                        CipherSuite.SSL_FORTEZZA_KEA_WITH_FORTEZZA_CBC_SHA,
-                        CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA);
+            List.of(CipherSuite.SSL_FORTEZZA_KEA_WITH_FORTEZZA_CBC_SHA, CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA);
 
         ChangeContextValueAction<byte[]> action2 =
-                new ChangeContextValueAction<>("handshakeSecret", new byte[] {0x01, 0x02, 0x03});
+            new ChangeContextValueAction<>("handshakeSecret", new byte[] { 0x01, 0x02, 0x03 });
         ChangeContextValueAction<CipherSuite> action3 =
-                new ChangeContextValueAction<>("clientSupportedCipherSuites", ls);
+            new ChangeContextValueAction<>("clientSupportedCipherSuites", ls);
         ChangeContextValueAction<PRFAlgorithm> action4 =
-                new ChangeContextValueAction<>("prfAlgorithm", PRFAlgorithm.TLS_PRF_SHA256);
+            new ChangeContextValueAction<>("prfAlgorithm", PRFAlgorithm.TLS_PRF_SHA256);
 
         trace.addTlsActions(action2);
         trace.addTlsActions(action3);

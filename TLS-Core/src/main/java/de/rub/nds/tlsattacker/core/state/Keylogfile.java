@@ -1,19 +1,19 @@
-/*
+/**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.state;
 
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import jakarta.xml.bind.DatatypeConverter;
 import java.io.File;
 import java.io.FileWriter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import jakarta.xml.bind.DatatypeConverter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,11 +21,11 @@ public class Keylogfile {
     private static final Logger LOGGER = LogManager.getLogger();
     private String path;
     private boolean writeKeylog;
-    private TlsContext tlsContext;
+    private TlsContext context;
 
-    public Keylogfile(TlsContext tlsContext) {
-        this.tlsContext = tlsContext;
-        path = tlsContext.getConfig().getKeylogFilePath();
+    Keylogfile(TlsContext context) {
+        this.context = context;
+        path = context.getConfig().getKeylogFilePath();
         Path outputPath;
         if (path == null) {
             outputPath = Paths.get(System.getProperty("user.dir"), "keyfile.log");
@@ -39,7 +39,7 @@ public class Keylogfile {
         outputPath = outputPath.toAbsolutePath();
         this.path = outputPath.toString();
 
-        this.writeKeylog = tlsContext.getConfig().isWriteKeylogFile();
+        this.writeKeylog = context.getConfig().isWriteKeylogFile();
     }
 
     public void writeKey(String identifier, byte[] key) {
@@ -53,27 +53,13 @@ public class Keylogfile {
                 assert f.getParentFile().exists() || f.getParentFile().mkdirs();
                 assert f.exists() || f.createNewFile();
                 try (FileWriter fw = new FileWriter(this.path, true)) {
-                    fw.write(
-                            identifier
-                                    + " "
-                                    + DatatypeConverter.printHexBinary(tlsContext.getClientRandom())
-                                    + " "
-                                    + DatatypeConverter.printHexBinary(key)
-                                    + "\n");
+                    fw.write(identifier + " " + DatatypeConverter.printHexBinary(context.getClientRandom()) + " "
+                        + DatatypeConverter.printHexBinary(key) + "\n");
                 }
-
-                FileWriter fw = new FileWriter(this.path, true);
-                fw.write(
-                        identifier
-                                + " "
-                                + DatatypeConverter.printHexBinary(tlsContext.getClientRandom())
-                                + " "
-                                + DatatypeConverter.printHexBinary(key)
-                                + "\n");
-                fw.close();
             } catch (Exception e) {
                 LOGGER.error(e);
             }
         }
     }
+
 }

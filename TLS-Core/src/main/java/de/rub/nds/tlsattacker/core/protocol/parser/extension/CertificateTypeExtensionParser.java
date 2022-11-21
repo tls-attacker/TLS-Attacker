@@ -9,25 +9,29 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateTypeExtensionMessage;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.io.InputStream;
 
 public class CertificateTypeExtensionParser extends ExtensionParser<CertificateTypeExtensionMessage> {
 
-    public CertificateTypeExtensionParser(InputStream stream, TlsContext tlsContext) {
-        super(stream, tlsContext);
+    public CertificateTypeExtensionParser(int startposition, byte[] array, Config config) {
+        super(startposition, array, config);
     }
 
     @Override
-    public void parse(CertificateTypeExtensionMessage msg) {
-        if (getTlsContext().getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
+    public void parseExtensionMessageContent(CertificateTypeExtensionMessage msg) {
+        if (msg.getExtensionLength().getValue() != 1) {
             msg.setCertificateTypesLength(parseIntField(ExtensionByteLength.CERTIFICATE_TYPE_TYPE_LENGTH));
             msg.setCertificateTypes(parseByteArrayField(msg.getCertificateTypesLength().getValue()));
         } else {
             msg.setCertificateTypes(parseByteArrayField(ExtensionByteLength.CERTIFICATE_TYPE_TYPE_LENGTH));
         }
     }
+
+    @Override
+    protected CertificateTypeExtensionMessage createExtensionMessage() {
+        return new CertificateTypeExtensionMessage();
+    }
+
 }

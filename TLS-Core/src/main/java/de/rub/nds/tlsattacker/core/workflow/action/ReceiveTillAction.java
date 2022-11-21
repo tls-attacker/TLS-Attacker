@@ -1,49 +1,84 @@
-/*
+/**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.https.HttpsRequestMessage;
+import de.rub.nds.tlsattacker.core.https.HttpsResponseMessage;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
-import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
-import de.rub.nds.tlsattacker.core.record.Record;
-import jakarta.xml.bind.annotation.XmlElementRef;
-import jakarta.xml.bind.annotation.XmlRootElement;
+import de.rub.nds.tlsattacker.core.protocol.message.*;
+import de.rub.nds.tlsattacker.core.record.AbstractRecord;
+import de.rub.nds.tlsattacker.core.state.State;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElementRef;
+import jakarta.xml.bind.annotation.XmlElements;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @XmlRootElement
-public class ReceiveTillAction extends CommonReceiveAction implements ReceivingAction {
+public class ReceiveTillAction extends MessageAction implements ReceivingAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    @HoldsModifiableVariable @XmlElementRef protected ProtocolMessage waitTillMessage;
+    @HoldsModifiableVariable
+    @XmlElementRef
+    protected TlsMessage waitTillMessage;
 
     public ReceiveTillAction() {
         super();
     }
 
-    public ReceiveTillAction(ProtocolMessage waitTillMessage) {
+    public ReceiveTillAction(TlsMessage waitTillMessage) {
         super();
         this.waitTillMessage = waitTillMessage;
     }
 
-    public ReceiveTillAction(String connectionAliasAlias, ProtocolMessage waitTillMessage) {
+    public ReceiveTillAction(String connectionAliasAlias, TlsMessage waitTillMessage) {
         super(connectionAliasAlias);
         this.waitTillMessage = waitTillMessage;
+    }
+
+    @Override
+    public void execute(State state) throws WorkflowExecutionException {
+        TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
+
+        if (isExecuted()) {
+            throw new WorkflowExecutionException("Action already executed!");
+        }
+
+        LOGGER.debug("Receiving Messages...");
+        MessageActionResult result = receiveMessageHelper.receiveMessagesTill(waitTillMessage, tlsContext);
+        records = new ArrayList<>(result.getRecordList());
+        messages = new ArrayList<>(result.getMessageList());
+        if (result.getMessageFragmentList() != null) {
+            fragments = new ArrayList<>(result.getMessageFragmentList());
+        }
+        setExecuted(true);
+
+        String expected = getReadableString(waitTillMessage);
+        LOGGER.debug("Receive message we waited for:" + expected);
+        String received = getReadableString(messages);
+        if (hasDefaultAlias()) {
+            LOGGER.info("Received Messages: " + received);
+        } else {
+            LOGGER.info("Received Messages (" + getConnectionAlias() + "): " + received);
+        }
     }
 
     @Override
@@ -101,7 +136,7 @@ public class ReceiveTillAction extends CommonReceiveAction implements ReceivingA
         return false;
     }
 
-    public ProtocolMessage getWaitTillMessage() {
+    public TlsMessage getWaitTillMessage() {
         return waitTillMessage;
     }
 
@@ -109,7 +144,7 @@ public class ReceiveTillAction extends CommonReceiveAction implements ReceivingA
         this.messages = receivedMessages;
     }
 
-    void setReceivedRecords(List<Record> receivedRecords) {
+    void setReceivedRecords(List<AbstractRecord> receivedRecords) {
         this.records = receivedRecords;
     }
 
@@ -117,7 +152,7 @@ public class ReceiveTillAction extends CommonReceiveAction implements ReceivingA
         this.fragments = fragments;
     }
 
-    public void setWaitTillMessage(ProtocolMessage waitTillMessage) {
+    public void setWaitTillMessage(TlsMessage waitTillMessage) {
         this.waitTillMessage = waitTillMessage;
     }
 
@@ -135,7 +170,7 @@ public class ReceiveTillAction extends CommonReceiveAction implements ReceivingA
     }
 
     @Override
-    public List<Record> getReceivedRecords() {
+    public List<AbstractRecord> getReceivedRecords() {
         return records;
     }
 
@@ -190,6 +225,11 @@ public class ReceiveTillAction extends CommonReceiveAction implements ReceivingA
     }
 
     @Override
+    public MessageActionDirection getMessageDirection() {
+        return MessageActionDirection.RECEIVING;
+    }
+
+    @Override
     public List<ProtocolMessageType> getGoingToReceiveProtocolMessageTypes() {
         return new ArrayList<ProtocolMessageType>() {
             {
@@ -208,15 +248,5 @@ public class ReceiveTillAction extends CommonReceiveAction implements ReceivingA
                 add(((HandshakeMessage) waitTillMessage).getHandshakeMessageType());
             }
         };
-    }
-
-    @Override
-    protected void distinctReceive(TlsContext tlsContext) {
-        receiveTill(tlsContext, waitTillMessage);
-    }
-
-    @Override
-    public List<ProtocolMessage> getExpectedMessages() {
-        return Arrays.asList(waitTillMessage);
     }
 }

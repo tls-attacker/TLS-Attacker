@@ -1,11 +1,12 @@
-/*
+/**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -14,20 +15,21 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.layer.impl.RecordLayer;
 import de.rub.nds.tlsattacker.core.record.cipher.CipherState;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordBlockCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
+import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import jakarta.xml.bind.JAXBException;
-import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 
 public class ResetConnectionActionTest extends AbstractActionTest<ResetConnectionAction> {
 
@@ -38,14 +40,11 @@ public class ResetConnectionActionTest extends AbstractActionTest<ResetConnectio
         context = state.getTlsContext();
         context.setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
         context.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
-        RecordCipher recordCipher =
-                new RecordBlockCipher(
-                        context,
-                        new CipherState(
-                                context.getChooser().getSelectedProtocolVersion(),
-                                context.getChooser().getSelectedCipherSuite(),
-                                KeySetGenerator.generateKeySet(context),
-                                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
+        context.setRecordLayer(new TlsRecordLayer(context));
+        RecordCipher recordCipher = new RecordBlockCipher(context,
+            new CipherState(context.getChooser().getSelectedProtocolVersion(),
+                context.getChooser().getSelectedCipherSuite(), KeySetGenerator.generateKeySet(context),
+                context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
         context.getRecordLayer().updateEncryptionCipher(recordCipher);
         context.getRecordLayer().updateDecryptionCipher(recordCipher);
         context.setActiveClientKeySetType(Tls13KeySetType.EARLY_TRAFFIC_SECRETS);
@@ -55,7 +54,7 @@ public class ResetConnectionActionTest extends AbstractActionTest<ResetConnectio
     @Test
     public void testExecute() throws Exception {
         super.testExecute();
-        RecordLayer layer = (RecordLayer) context.getRecordLayer();
+        TlsRecordLayer layer = (TlsRecordLayer) context.getRecordLayer();
         assertTrue(layer.getEncryptorCipher() instanceof RecordNullCipher);
         assertTrue(layer.getDecryptorCipher() instanceof RecordNullCipher);
         assertTrue(layer.getEncryptorCipher() instanceof RecordNullCipher);

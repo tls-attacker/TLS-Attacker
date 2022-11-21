@@ -10,13 +10,20 @@
 package de.rub.nds.tlsattacker.core.record.cipher.cryptohelper;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.*;
+import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.crypto.MD5Utils;
 import de.rub.nds.tlsattacker.core.crypto.PseudoRandomFunction;
 import de.rub.nds.tlsattacker.core.crypto.SSLUtils;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
@@ -28,23 +35,23 @@ public class KeySetGenerator {
 
     private static final int AEAD_IV_LENGTH = 12;
 
-    public static KeySet generateKeySet(TlsContext tlsContext, ProtocolVersion protocolVersion,
-        Tls13KeySetType keySetType) throws NoSuchAlgorithmException, CryptoException {
+    public static KeySet generateKeySet(TlsContext context, ProtocolVersion protocolVersion, Tls13KeySetType keySetType)
+        throws NoSuchAlgorithmException, CryptoException {
         if (protocolVersion.isTLS13()) {
-            return getTls13KeySet(tlsContext, keySetType);
+            return getTls13KeySet(context, keySetType);
         } else {
-            return getTlsKeySet(tlsContext);
+            return getTlsKeySet(context);
         }
 
     }
 
-    public static KeySet generateKeySet(TlsContext tlsContext) throws NoSuchAlgorithmException, CryptoException {
-        return generateKeySet(tlsContext, tlsContext.getChooser().getSelectedProtocolVersion(),
-            tlsContext.getActiveKeySetTypeWrite());
+    public static KeySet generateKeySet(TlsContext context) throws NoSuchAlgorithmException, CryptoException {
+        return generateKeySet(context, context.getChooser().getSelectedProtocolVersion(),
+            context.getActiveKeySetTypeWrite());
     }
 
-    private static KeySet getTls13KeySet(TlsContext tlsContext, Tls13KeySetType keySetType) throws CryptoException {
-        CipherSuite cipherSuite = tlsContext.getChooser().getSelectedCipherSuite();
+    private static KeySet getTls13KeySet(TlsContext context, Tls13KeySetType keySetType) throws CryptoException {
+        CipherSuite cipherSuite = context.getChooser().getSelectedCipherSuite();
         byte[] clientSecret = new byte[0];
         byte[] serverSecret = new byte[0];
         if (null == keySetType) {
@@ -52,17 +59,17 @@ public class KeySetGenerator {
         } else {
             switch (keySetType) {
                 case HANDSHAKE_TRAFFIC_SECRETS:
-                    clientSecret = tlsContext.getChooser().getClientHandshakeTrafficSecret();
-                    serverSecret = tlsContext.getChooser().getServerHandshakeTrafficSecret();
+                    clientSecret = context.getChooser().getClientHandshakeTrafficSecret();
+                    serverSecret = context.getChooser().getServerHandshakeTrafficSecret();
                     break;
                 case APPLICATION_TRAFFIC_SECRETS:
-                    clientSecret = tlsContext.getChooser().getClientApplicationTrafficSecret();
-                    serverSecret = tlsContext.getChooser().getServerApplicationTrafficSecret();
+                    clientSecret = context.getChooser().getClientApplicationTrafficSecret();
+                    serverSecret = context.getChooser().getServerApplicationTrafficSecret();
                     break;
                 case EARLY_TRAFFIC_SECRETS:
-                    cipherSuite = tlsContext.getChooser().getEarlyDataCipherSuite();
-                    clientSecret = tlsContext.getChooser().getClientEarlyTrafficSecret();
-                    serverSecret = tlsContext.getChooser().getClientEarlyTrafficSecret();
+                    cipherSuite = context.getChooser().getEarlyDataCipherSuite();
+                    clientSecret = context.getChooser().getClientEarlyTrafficSecret();
+                    serverSecret = context.getChooser().getClientEarlyTrafficSecret();
                     break;
                 case NONE:
                     LOGGER.warn("KeySet is NONE! , returning empty KeySet");
@@ -92,12 +99,12 @@ public class KeySetGenerator {
         return keySet;
     }
 
-    private static KeySet getTlsKeySet(TlsContext tlsContext) throws CryptoException {
-        ProtocolVersion protocolVersion = tlsContext.getChooser().getSelectedProtocolVersion();
-        CipherSuite cipherSuite = tlsContext.getChooser().getSelectedCipherSuite();
-        byte[] masterSecret = tlsContext.getChooser().getMasterSecret();
-        byte[] seed = ArrayConverter.concatenate(tlsContext.getChooser().getServerRandom(),
-            tlsContext.getChooser().getClientRandom());
+    private static KeySet getTlsKeySet(TlsContext context) throws CryptoException {
+        ProtocolVersion protocolVersion = context.getChooser().getSelectedProtocolVersion();
+        CipherSuite cipherSuite = context.getChooser().getSelectedCipherSuite();
+        byte[] masterSecret = context.getChooser().getMasterSecret();
+        byte[] seed =
+            ArrayConverter.concatenate(context.getChooser().getServerRandom(), context.getChooser().getClientRandom());
 
         byte[] keyBlock;
         if (protocolVersion.isSSL()) {
@@ -110,19 +117,18 @@ public class KeySetGenerator {
         }
         LOGGER.debug("A new key block was generated: {}", ArrayConverter.bytesToHexString(keyBlock));
         KeyBlockParser parser = new KeyBlockParser(keyBlock, cipherSuite, protocolVersion);
-        KeySet keySet = new KeySet();
-        parser.parse(keySet);
+        KeySet keySet = parser.parse();
         if (cipherSuite.isExportSymmetricCipher()) {
-            deriveExportKeys(keySet, tlsContext);
+            deriveExportKeys(keySet, context);
         }
         return keySet;
     }
 
-    private static void deriveExportKeys(KeySet keySet, TlsContext tlsContext) throws CryptoException {
-        ProtocolVersion protocolVersion = tlsContext.getChooser().getSelectedProtocolVersion();
-        CipherSuite cipherSuite = tlsContext.getChooser().getSelectedCipherSuite();
-        byte[] clientRandom = tlsContext.getChooser().getClientRandom();
-        byte[] serverRandom = tlsContext.getChooser().getServerRandom();
+    private static void deriveExportKeys(KeySet keySet, TlsContext context) throws CryptoException {
+        ProtocolVersion protocolVersion = context.getChooser().getSelectedProtocolVersion();
+        CipherSuite cipherSuite = context.getChooser().getSelectedCipherSuite();
+        byte[] clientRandom = context.getChooser().getClientRandom();
+        byte[] serverRandom = context.getChooser().getServerRandom();
 
         if (protocolVersion == ProtocolVersion.SSL3) {
             deriveSSL3ExportKeys(cipherSuite, keySet, clientRandom, serverRandom);

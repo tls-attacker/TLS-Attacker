@@ -1,11 +1,12 @@
-/*
+/**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,7 +24,9 @@ public class GeneralDelegateTest extends AbstractDelegateTest<GeneralDelegate> {
         super.setUp(new GeneralDelegate());
     }
 
-    /** Test of isHelp method, of class GeneralDelegate. */
+    /**
+     * Test of isHelp method, of class GeneralDelegate.
+     */
     @Test
     public void testIsHelp() {
         args = new String[1];
@@ -36,9 +39,12 @@ public class GeneralDelegateTest extends AbstractDelegateTest<GeneralDelegate> {
         jcommander = new JCommander(delegate);
         jcommander.parse(args);
         assertTrue(delegate.isHelp());
+
     }
 
-    /** Test of setHelp method, of class GeneralDelegate. */
+    /**
+     * Test of setHelp method, of class GeneralDelegate.
+     */
     @Test
     public void testSetHelp() {
         assertFalse(delegate.isHelp());
@@ -46,7 +52,9 @@ public class GeneralDelegateTest extends AbstractDelegateTest<GeneralDelegate> {
         assertTrue(delegate.isHelp());
     }
 
-    /** Test of isDebug method, of class GeneralDelegate. */
+    /**
+     * Test of isDebug method, of class GeneralDelegate.
+     */
     @Test
     public void testIsDebug() {
         args = new String[1];
@@ -56,7 +64,9 @@ public class GeneralDelegateTest extends AbstractDelegateTest<GeneralDelegate> {
         assertTrue(delegate.isDebug());
     }
 
-    /** Test of setDebug method, of class GeneralDelegate. */
+    /**
+     * Test of setDebug method, of class GeneralDelegate.
+     */
     @Test
     public void testSetDebug() {
         assertFalse(delegate.isDebug());
@@ -64,7 +74,9 @@ public class GeneralDelegateTest extends AbstractDelegateTest<GeneralDelegate> {
         assertTrue(delegate.isDebug());
     }
 
-    /** Test of isQuiet method, of class GeneralDelegate. */
+    /**
+     * Test of isQuiet method, of class GeneralDelegate.
+     */
     @Test
     public void testIsQuiet() {
         args = new String[1];
@@ -74,7 +86,9 @@ public class GeneralDelegateTest extends AbstractDelegateTest<GeneralDelegate> {
         assertTrue(delegate.isQuiet());
     }
 
-    /** Test of setQuiet method, of class GeneralDelegate. */
+    /**
+     * Test of setQuiet method, of class GeneralDelegate.
+     */
     @Test
     public void testSetQuiet() {
         assertFalse(delegate.isQuiet());
@@ -82,7 +96,9 @@ public class GeneralDelegateTest extends AbstractDelegateTest<GeneralDelegate> {
         assertTrue(delegate.isQuiet());
     }
 
-    /** Test of getKeylogfile method, of class GeneralDelegate. */
+    /**
+     * Test of getKeylogfile method, of class GeneralDelegate.
+     */
     @Test
     public void testIsKeylogfile() {
         args = new String[2];
@@ -93,7 +109,9 @@ public class GeneralDelegateTest extends AbstractDelegateTest<GeneralDelegate> {
         assertEquals("abc", delegate.getKeylogfile());
     }
 
-    /** Test of setKeylogfile method, of class GeneralDelegate. */
+    /**
+     * Test of setKeylogfile method, of class GeneralDelegate.
+     */
     @Test
     public void testSetKeylogfile() {
         assertNull(delegate.getKeylogfile());
@@ -101,7 +119,9 @@ public class GeneralDelegateTest extends AbstractDelegateTest<GeneralDelegate> {
         assertEquals("abc", delegate.getKeylogfile());
     }
 
-    /** Test of applyDelegate method, of class GeneralDelegate. */
+    /**
+     * Test of applyDelegate method, of class GeneralDelegate.
+     */
     @Test
     public void testApplyDelegate() {
         // Just check that applyDelegate does not throw an Exception

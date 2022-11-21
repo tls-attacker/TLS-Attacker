@@ -1,11 +1,12 @@
-/*
+/**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -24,7 +25,9 @@ public class DynamicWorkflowDelegateTest extends AbstractDelegateTest<DynamicWor
         super.setUp(new DynamicWorkflowDelegate());
     }
 
-    /** Test of isDynamicWorkflow method, of class DynamicWorkflowDelegate. */
+    /**
+     * Test of isDynamicWorkflow method, of class DynamicWorkflowDelegate.
+     */
     @Test
     @Disabled("Dynamic workflow not implemented")
     public void testIsDynamicWorkflow() {
@@ -35,7 +38,9 @@ public class DynamicWorkflowDelegateTest extends AbstractDelegateTest<DynamicWor
         assertTrue(delegate.isDynamicWorkflow());
     }
 
-    /** Test of setDynamicWorkflow method, of class DynamicWorkflowDelegate. */
+    /**
+     * Test of setDynamicWorkflow method, of class DynamicWorkflowDelegate.
+     */
     @Test
     @Disabled("Dynamic workflow not implemented")
     public void testSetDynamicWorkflow() {
@@ -44,7 +49,9 @@ public class DynamicWorkflowDelegateTest extends AbstractDelegateTest<DynamicWor
         assertTrue(delegate.isDynamicWorkflow());
     }
 
-    /** Test of applyDelegate method, of class DynamicWorkflowDelegate. */
+    /**
+     * Test of applyDelegate method, of class DynamicWorkflowDelegate.
+     */
     @Test
     @Disabled("Dynamic workflow not implemented")
     public void testApplyDelegate() {

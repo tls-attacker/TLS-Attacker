@@ -120,6 +120,14 @@ public class DHEServerKeyExchangeSerializer<T extends DHEServerKeyExchangeMessag
             + ArrayConverter.bytesToHexString(msg.getSignatureAndHashAlgorithm().getValue()));
     }
 
+    private boolean isTLS12() {
+        return version == ProtocolVersion.TLS12;
+    }
+
+    private boolean isDTLS12() {
+        return version == ProtocolVersion.DTLS12;
+    }
+
     /**
      * Writes the SignatureLength of the DHEServerKeyExchangeMessage into the final byte[]
      */

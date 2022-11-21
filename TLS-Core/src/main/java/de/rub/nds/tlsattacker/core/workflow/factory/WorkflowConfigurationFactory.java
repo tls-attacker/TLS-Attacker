@@ -10,15 +10,54 @@ package de.rub.nds.tlsattacker.core.workflow.factory;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
-import de.rub.nds.tlsattacker.core.constants.*;
+import de.rub.nds.tlsattacker.core.constants.AlertDescription;
+import de.rub.nds.tlsattacker.core.constants.AlertLevel;
+import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.RunningModeType;
+import de.rub.nds.tlsattacker.core.constants.StarttlsMessage;
+import de.rub.nds.tlsattacker.core.constants.StarttlsType;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.core.https.HttpsRequestMessage;
+import de.rub.nds.tlsattacker.core.https.HttpsResponseMessage;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.*;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EarlyDataExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PreSharedKeyExtensionMessage;
+import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceUtil;
-import de.rub.nds.tlsattacker.core.workflow.action.*;
+import de.rub.nds.tlsattacker.core.workflow.action.BufferedGenericReceiveAction;
+import de.rub.nds.tlsattacker.core.workflow.action.BufferedSendAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ClearBuffersAction;
+import de.rub.nds.tlsattacker.core.workflow.action.CopyBuffersAction;
+import de.rub.nds.tlsattacker.core.workflow.action.CopyPreMasterSecretAction;
+import de.rub.nds.tlsattacker.core.workflow.action.EsniKeyDnsRequestAction;
+import de.rub.nds.tlsattacker.core.workflow.action.FlushSessionCacheAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ForwardMessagesAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ForwardRecordsAction;
+import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
+import de.rub.nds.tlsattacker.core.workflow.action.MessageActionFactory;
+import de.rub.nds.tlsattacker.core.workflow.action.PopAndSendAction;
+import de.rub.nds.tlsattacker.core.workflow.action.PopBufferedMessageAction;
+import de.rub.nds.tlsattacker.core.workflow.action.PopBufferedRecordAction;
+import de.rub.nds.tlsattacker.core.workflow.action.PopBuffersAction;
+import de.rub.nds.tlsattacker.core.workflow.action.PrintLastHandledApplicationDataAction;
+import de.rub.nds.tlsattacker.core.workflow.action.PrintSecretsAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ReceiveTillAction;
+import de.rub.nds.tlsattacker.core.workflow.action.RemBufferedChCiphersAction;
+import de.rub.nds.tlsattacker.core.workflow.action.RemBufferedChExtensionsAction;
+import de.rub.nds.tlsattacker.core.workflow.action.RenegotiationAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ResetConnectionAction;
+import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
+import de.rub.nds.tlsattacker.core.workflow.action.SendDynamicClientKeyExchangeAction;
+import de.rub.nds.tlsattacker.core.workflow.action.SendDynamicServerCertificateAction;
+import de.rub.nds.tlsattacker.core.workflow.action.SendDynamicServerKeyExchangeAction;
+import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.ArrayList;
@@ -152,43 +191,43 @@ public class WorkflowConfigurationFactory {
      * @return A short hello workflow
      */
     public WorkflowTrace createShortHelloWorkflow(AliasedConnection connection) {
-        WorkflowTrace workflowTrace = createTlsEntryWorkflowTrace(connection);
+        WorkflowTrace trace = createTlsEntryWorkflowTrace(connection);
 
         if (config.isAddEncryptedServerNameIndicationExtension()
                 && connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
-            workflowTrace.addTlsAction(new EsniKeyDnsRequestAction());
+            trace.addTlsAction(new EsniKeyDnsRequestAction());
         }
 
-        workflowTrace.addTlsAction(
-                MessageActionFactory.createTLSAction(
+        trace.addTlsAction(
+                MessageActionFactory.createAction(
                         config,
                         connection,
                         ConnectionEndType.CLIENT,
                         new ClientHelloMessage(config)));
 
         if (config.getHighestProtocolVersion().isDTLS() && config.isDtlsCookieExchange()) {
-            workflowTrace.addTlsAction(
-                    MessageActionFactory.createTLSAction(
+            trace.addTlsAction(
+                    MessageActionFactory.createAction(
                             config,
                             connection,
                             ConnectionEndType.SERVER,
-                            new HelloVerifyRequestMessage()));
-            workflowTrace.addTlsAction(
-                    MessageActionFactory.createTLSAction(
+                            new HelloVerifyRequestMessage(config)));
+            trace.addTlsAction(
+                    MessageActionFactory.createAction(
                             config,
                             connection,
                             ConnectionEndType.CLIENT,
                             new ClientHelloMessage(config)));
         }
 
-        workflowTrace.addTlsAction(
-                MessageActionFactory.createTLSAction(
+        trace.addTlsAction(
+                MessageActionFactory.createAction(
                         config,
                         connection,
                         ConnectionEndType.SERVER,
                         new ServerHelloMessage(config)));
 
-        return workflowTrace;
+        return trace;
     }
 
     /**
@@ -225,22 +264,22 @@ public class WorkflowConfigurationFactory {
                 messages.add(new CertificateRequestMessage(config));
             }
             if (!selectedCipherSuite.isPWD()) {
-                messages.add(new CertificateMessage());
-                messages.add(new CertificateVerifyMessage());
+                messages.add(new CertificateMessage(config));
+                messages.add(new CertificateVerifyMessage(config));
             }
-            messages.add(new FinishedMessage());
+            messages.add(new FinishedMessage(config));
         } else {
             if (selectedCipherSuite.requiresServerCertificateMessage()) {
-                messages.add(new CertificateMessage());
+                messages.add(new CertificateMessage(config));
             }
             addServerKeyExchangeMessage(messages);
             if (Objects.equals(config.isClientAuthentication(), Boolean.TRUE)) {
                 messages.add(new CertificateRequestMessage(config));
             }
-            messages.add(new ServerHelloDoneMessage());
+            messages.add(new ServerHelloDoneMessage(config));
         }
         trace.addTlsAction(
-                MessageActionFactory.createTLSAction(
+                MessageActionFactory.createAction(
                         config, connection, ConnectionEndType.SERVER, messages));
 
         return trace;
@@ -262,7 +301,7 @@ public class WorkflowConfigurationFactory {
      * @return A handshake workflow
      */
     public WorkflowTrace createHandshakeWorkflow(AliasedConnection connection) {
-        WorkflowTrace workflowTrace = createHelloWorkflow(connection);
+        WorkflowTrace trace = createHelloWorkflow(connection);
 
         List<ProtocolMessage> messages = new LinkedList<>();
         if (config.getHighestProtocolVersion().isTLS13()) {
@@ -272,35 +311,36 @@ public class WorkflowConfigurationFactory {
                 ccs.setRequired(false);
                 messages.add(ccs);
             }
-            if (config.isClientAuthentication()) {
-                messages.add(new CertificateMessage());
-                messages.add(new CertificateVerifyMessage());
+            if (Objects.equals(config.isClientAuthentication(), Boolean.TRUE)) {
+                messages.add(new CertificateMessage(config));
+                messages.add(new CertificateVerifyMessage(config));
             }
         } else {
-            if (config.isClientAuthentication()) {
-                messages.add(new CertificateMessage());
+            if (Objects.equals(config.isClientAuthentication(), Boolean.TRUE)) {
+                messages.add(new CertificateMessage(config));
                 addClientKeyExchangeMessage(messages);
-                messages.add(new CertificateVerifyMessage());
+                messages.add(new CertificateVerifyMessage(config));
             } else {
                 addClientKeyExchangeMessage(messages);
             }
-            messages.add(new ChangeCipherSpecMessage());
+            messages.add(new ChangeCipherSpecMessage(config));
         }
-        messages.add(new FinishedMessage());
-        workflowTrace.addTlsAction(
-                MessageActionFactory.createTLSAction(
+        messages.add(new FinishedMessage(config));
+        trace.addTlsAction(
+                MessageActionFactory.createAction(
                         config, connection, ConnectionEndType.CLIENT, messages));
+
         if (!config.getHighestProtocolVersion().isTLS13()) {
-            workflowTrace.addTlsAction(
-                    MessageActionFactory.createTLSAction(
+            trace.addTlsAction(
+                    MessageActionFactory.createAction(
                             config,
                             connection,
                             ConnectionEndType.SERVER,
-                            new ChangeCipherSpecMessage(),
-                            new FinishedMessage()));
+                            new ChangeCipherSpecMessage(config),
+                            new FinishedMessage(config)));
         }
 
-        return workflowTrace;
+        return trace;
     }
 
     /**
@@ -323,31 +363,34 @@ public class WorkflowConfigurationFactory {
 
         if (config.isServerSendsApplicationData()) {
             trace.addTlsAction(
-                    MessageActionFactory.createTLSAction(
+                    MessageActionFactory.createAction(
                             config,
                             connection,
                             ConnectionEndType.SERVER,
-                            new ApplicationMessage()));
+                            new ApplicationMessage(config)));
         }
 
         if (config.isAddHeartbeatExtension()) {
             trace.addTlsAction(
-                    MessageActionFactory.createTLSAction(
+                    MessageActionFactory.createAction(
                             config,
                             connection,
                             ConnectionEndType.CLIENT,
-                            new ApplicationMessage(),
-                            new HeartbeatMessage()));
+                            new ApplicationMessage(config),
+                            new HeartbeatMessage(config)));
             trace.addTlsAction(
-                    MessageActionFactory.createTLSAction(
-                            config, connection, ConnectionEndType.SERVER, new HeartbeatMessage()));
+                    MessageActionFactory.createAction(
+                            config,
+                            connection,
+                            ConnectionEndType.SERVER,
+                            new HeartbeatMessage(config)));
         } else {
             trace.addTlsAction(
-                    MessageActionFactory.createTLSAction(
+                    MessageActionFactory.createAction(
                             config,
                             connection,
                             ConnectionEndType.CLIENT,
-                            new ApplicationMessage()));
+                            new ApplicationMessage(config)));
         }
 
         return trace;
@@ -368,8 +411,11 @@ public class WorkflowConfigurationFactory {
 
         WorkflowTrace workflowTrace = this.createHandshakeWorkflow(connection);
         MessageAction appData =
-                MessageActionFactory.createTLSAction(
-                        config, connection, ConnectionEndType.CLIENT, new ApplicationMessage());
+                MessageActionFactory.createAction(
+                        config,
+                        connection,
+                        ConnectionEndType.CLIENT,
+                        new ApplicationMessage(config));
 
         // Client CKE, CCS, Fin
         // TODO weired
@@ -392,12 +438,20 @@ public class WorkflowConfigurationFactory {
                 factory.createTlsEntryWorkflowTrace(config.getDefaultClientConnection());
 
         MessageAction action =
-                MessageActionFactory.createTLSAction(
-                        config, connection, ConnectionEndType.CLIENT, new SSL2ClientHelloMessage());
+                MessageActionFactory.createAction(
+                        config,
+                        connection,
+                        ConnectionEndType.CLIENT,
+                        new SSL2ClientHelloMessage(config));
+        action.setRecords(new BlobRecord());
         trace.addTlsAction(action);
         action =
-                MessageActionFactory.createTLSAction(
-                        config, connection, ConnectionEndType.SERVER, new SSL2ServerHelloMessage());
+                MessageActionFactory.createAction(
+                        config,
+                        connection,
+                        ConnectionEndType.SERVER,
+                        new SSL2ServerHelloMessage(config));
+        action.setRecords(new BlobRecord());
         trace.addTlsAction(action);
         return trace;
     }
@@ -439,7 +493,7 @@ public class WorkflowConfigurationFactory {
         WorkflowTrace trace = createTlsEntryWorkflowTrace(connection);
 
         trace.addTlsAction(
-                MessageActionFactory.createTLSAction(
+                MessageActionFactory.createAction(
                         config,
                         connection,
                         ConnectionEndType.CLIENT,
@@ -447,13 +501,13 @@ public class WorkflowConfigurationFactory {
 
         if (config.getHighestProtocolVersion().isDTLS() && config.isDtlsCookieExchange()) {
             trace.addTlsAction(
-                    MessageActionFactory.createTLSAction(
+                    MessageActionFactory.createAction(
                             config,
                             connection,
                             ConnectionEndType.SERVER,
-                            new HelloVerifyRequestMessage()));
+                            new HelloVerifyRequestMessage(config)));
             trace.addTlsAction(
-                    MessageActionFactory.createTLSAction(
+                    MessageActionFactory.createAction(
                             config,
                             connection,
                             ConnectionEndType.CLIENT,
@@ -461,20 +515,20 @@ public class WorkflowConfigurationFactory {
         }
 
         trace.addTlsAction(
-                MessageActionFactory.createTLSAction(
+                MessageActionFactory.createAction(
                         config,
                         connection,
                         ConnectionEndType.SERVER,
                         new ServerHelloMessage(config),
-                        new ChangeCipherSpecMessage(),
-                        new FinishedMessage()));
+                        new ChangeCipherSpecMessage(config),
+                        new FinishedMessage(config)));
         trace.addTlsAction(
-                MessageActionFactory.createTLSAction(
+                MessageActionFactory.createAction(
                         config,
                         connection,
                         ConnectionEndType.CLIENT,
-                        new ChangeCipherSpecMessage(),
-                        new FinishedMessage()));
+                        new ChangeCipherSpecMessage(config),
+                        new FinishedMessage(config)));
 
         return trace;
     }
@@ -512,8 +566,11 @@ public class WorkflowConfigurationFactory {
         WorkflowTrace renegotiationTrace = createHandshakeWorkflow(connection);
         trace.addTlsAction(new RenegotiationAction());
         MessageAction action =
-                MessageActionFactory.createTLSAction(
-                        config, connection, ConnectionEndType.SERVER, new HelloRequestMessage());
+                MessageActionFactory.createAction(
+                        config,
+                        connection,
+                        ConnectionEndType.SERVER,
+                        new HelloRequestMessage(config));
         trace.addTlsAction(action);
         for (TlsAction reneAction : renegotiationTrace.getTlsActions()) {
             if (reneAction.isMessageAction()) { // DO NOT ADD ASCII ACTIONS
@@ -524,28 +581,43 @@ public class WorkflowConfigurationFactory {
     }
 
     private WorkflowTrace createHttpsWorkflow() {
-        throw new UnsupportedOperationException(
-                "Currently, sending Http(s) messages is not supported");
-
-        /*
-         * AliasedConnection connection = getConnection(); WorkflowTrace trace = createHandshakeWorkflow(connection);
-         * MessageAction action = MessageActionFactory.createTLSAction(config, connection, ConnectionEndType.CLIENT, new
-         * HttpsRequestMessage(config)); trace.addTlsAction(action); action =
-         * MessageActionFactory.createTLSAction(config, connection, ConnectionEndType.SERVER, new
-         * HttpsResponseMessage(config)); trace.addTlsAction(action); return trace;
-         */
+        AliasedConnection connection = getConnection();
+        WorkflowTrace trace = createHandshakeWorkflow(connection);
+        MessageAction action =
+                MessageActionFactory.createAction(
+                        config,
+                        connection,
+                        ConnectionEndType.CLIENT,
+                        new HttpsRequestMessage(config));
+        trace.addTlsAction(action);
+        action =
+                MessageActionFactory.createAction(
+                        config,
+                        connection,
+                        ConnectionEndType.SERVER,
+                        new HttpsResponseMessage(config));
+        trace.addTlsAction(action);
+        return trace;
     }
 
     private WorkflowTrace createHttpsDynamicWorkflow() {
-        throw new UnsupportedOperationException(
-                "Currently, sending Http(s) messages is not supported");
-        /*
-         * AliasedConnection connection = getConnection(); WorkflowTrace trace = createDynamicHandshakeWorkflow();
-         * MessageAction action = MessageActionFactory.createTLSAction(config, connection, ConnectionEndType.CLIENT, new
-         * HttpsRequestMessage(config)); trace.addTlsAction(action); action =
-         * MessageActionFactory.createTLSAction(config, connection, ConnectionEndType.SERVER, new
-         * HttpsResponseMessage(config)); trace.addTlsAction(action); return trace;
-         */
+        AliasedConnection connection = getConnection();
+        WorkflowTrace trace = createDynamicHandshakeWorkflow();
+        MessageAction action =
+                MessageActionFactory.createAction(
+                        config,
+                        connection,
+                        ConnectionEndType.CLIENT,
+                        new HttpsRequestMessage(config));
+        trace.addTlsAction(action);
+        action =
+                MessageActionFactory.createAction(
+                        config,
+                        connection,
+                        ConnectionEndType.SERVER,
+                        new HttpsResponseMessage(config));
+        trace.addTlsAction(action);
+        return trace;
     }
 
     private WorkflowTrace createSimpleMitmProxyWorkflow() {
@@ -575,38 +647,38 @@ public class WorkflowConfigurationFactory {
         WorkflowTrace mitmToServerHandshake = createHandshakeWorkflow(outboundConnection);
 
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
-        WorkflowTrace worklfowTrace =
+        WorkflowTrace trace =
                 factory.createTlsEntryWorkflowTrace(config.getDefaultClientConnection());
 
-        worklfowTrace.addConnection(inboundConnection);
-        worklfowTrace.addConnection(outboundConnection);
-        worklfowTrace.addTlsActions(clientToMitmHandshake.getTlsActions());
-        worklfowTrace.addTlsActions(mitmToServerHandshake.getTlsActions());
+        trace.addConnection(inboundConnection);
+        trace.addConnection(outboundConnection);
+        trace.addTlsActions(clientToMitmHandshake.getTlsActions());
+        trace.addTlsActions(mitmToServerHandshake.getTlsActions());
 
         // Forward request client -> server
         ForwardMessagesAction f =
                 new ForwardMessagesAction(
-                        clientToMitmAlias, mitmToServerAlias, new ApplicationMessage());
-        worklfowTrace.addTlsAction(f);
+                        clientToMitmAlias, mitmToServerAlias, new ApplicationMessage(config));
+        trace.addTlsAction(f);
 
         // Print client's app data contents
         PrintLastHandledApplicationDataAction p =
                 new PrintLastHandledApplicationDataAction(clientToMitmAlias);
         p.setStringEncoding("US-ASCII");
-        worklfowTrace.addTlsAction(p);
+        trace.addTlsAction(p);
 
         // Forward response server -> client
         f =
                 new ForwardMessagesAction(
-                        mitmToServerAlias, clientToMitmAlias, new ApplicationMessage());
-        worklfowTrace.addTlsAction(f);
+                        mitmToServerAlias, clientToMitmAlias, new ApplicationMessage(config));
+        trace.addTlsAction(f);
 
         // Print server's app data contents
         p = new PrintLastHandledApplicationDataAction(mitmToServerAlias);
         p.setStringEncoding("US-ASCII");
-        worklfowTrace.addTlsAction(p);
+        trace.addTlsAction(p);
 
-        return worklfowTrace;
+        return trace;
     }
 
     private WorkflowTrace createSimpleForwardingMitmProxyWorkflow() {
@@ -685,7 +757,7 @@ public class WorkflowConfigurationFactory {
 
         if (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
             clientHello = new ClientHelloMessage(config);
-            earlyDataMsg = new ApplicationMessage();
+            earlyDataMsg = new ApplicationMessage(config);
             earlyDataMsg.setDataConfig(config.getEarlyData());
         } else {
             clientHello = new ClientHelloMessage();
@@ -701,12 +773,12 @@ public class WorkflowConfigurationFactory {
         }
 
         trace.addTlsAction(
-                MessageActionFactory.createTLSAction(
+                MessageActionFactory.createAction(
                         config, connection, ConnectionEndType.CLIENT, clientHelloMessages));
 
         ServerHelloMessage serverHello;
         EncryptedExtensionsMessage encExtMsg;
-        FinishedMessage serverFin = new FinishedMessage();
+        FinishedMessage serverFin = new FinishedMessage(config);
 
         if (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
             serverHello = new ServerHelloMessage();
@@ -733,15 +805,15 @@ public class WorkflowConfigurationFactory {
         serverMessages.add(serverFin);
 
         trace.addTlsAction(
-                MessageActionFactory.createTLSAction(
+                MessageActionFactory.createAction(
                         config, connection, ConnectionEndType.SERVER, serverMessages));
 
         if (zeroRtt) {
             clientMessages.add(new EndOfEarlyDataMessage());
         }
-        clientMessages.add(new FinishedMessage());
+        clientMessages.add(new FinishedMessage(config));
         trace.addTlsAction(
-                MessageActionFactory.createTLSAction(
+                MessageActionFactory.createAction(
                         config, connection, ConnectionEndType.CLIENT, clientMessages));
         return trace;
     }
@@ -785,7 +857,7 @@ public class WorkflowConfigurationFactory {
         }
 
         MessageAction newSessionTicketAction =
-                MessageActionFactory.createTLSAction(
+                MessageActionFactory.createAction(
                         config,
                         ourConnection,
                         ConnectionEndType.SERVER,
@@ -880,7 +952,7 @@ public class WorkflowConfigurationFactory {
                 // But send our own certificate
                 new PopBufferedMessageAction(clientToMitmAlias), //
                 new PopBufferedRecordAction(clientToMitmAlias), //
-                new SendAction(clientToMitmAlias, new CertificateMessage()), //
+                new SendAction(clientToMitmAlias, new CertificateMessage(config)), //
                 // Send SHD
                 new PopAndSendAction(clientToMitmAlias), //
                 new ClearBuffersAction(mitmToServerAlias), //
@@ -914,8 +986,8 @@ public class WorkflowConfigurationFactory {
                         new FinishedMessage()), //
 
                 // Step out, enjoy :)
-                new ForwardDataAction(clientToMitmAlias, mitmToServerAlias), //
-                new ForwardDataAction(mitmToServerAlias, clientToMitmAlias)); //
+                new ForwardRecordsAction(clientToMitmAlias, mitmToServerAlias), //
+                new ForwardRecordsAction(mitmToServerAlias, clientToMitmAlias)); //
 
         return trace;
     }
@@ -925,36 +997,36 @@ public class WorkflowConfigurationFactory {
             switch (algorithm) {
                 case RSA:
                 case RSA_EXPORT:
-                    return new RSAClientKeyExchangeMessage();
+                    return new RSAClientKeyExchangeMessage(config);
                 case ECDHE_ECDSA:
                 case ECDH_ECDSA:
                 case ECDH_RSA:
                 case ECDHE_RSA:
                 case ECDH_ANON:
-                    return new ECDHClientKeyExchangeMessage();
+                    return new ECDHClientKeyExchangeMessage(config);
                 case DHE_DSS:
                 case DHE_RSA:
                 case DH_ANON:
                 case DH_DSS:
                 case DH_RSA:
-                    return new DHClientKeyExchangeMessage();
+                    return new DHClientKeyExchangeMessage(config);
                 case PSK:
-                    return new PskClientKeyExchangeMessage();
+                    return new PskClientKeyExchangeMessage(config);
                 case DHE_PSK:
-                    return new PskDhClientKeyExchangeMessage();
+                    return new PskDhClientKeyExchangeMessage(config);
                 case ECDHE_PSK:
-                    return new PskEcDhClientKeyExchangeMessage();
+                    return new PskEcDhClientKeyExchangeMessage(config);
                 case PSK_RSA:
-                    return new PskRsaClientKeyExchangeMessage();
+                    return new PskRsaClientKeyExchangeMessage(config);
                 case SRP_SHA_DSS:
                 case SRP_SHA_RSA:
                 case SRP_SHA:
-                    return new SrpClientKeyExchangeMessage();
+                    return new SrpClientKeyExchangeMessage(config);
                 case VKO_GOST01:
                 case VKO_GOST12:
-                    return new GOSTClientKeyExchangeMessage();
+                    return new GOSTClientKeyExchangeMessage(config);
                 case ECCPWD:
-                    return new PWDClientKeyExchangeMessage();
+                    return new PWDClientKeyExchangeMessage(config);
                 default:
                     LOGGER.warn(
                             "Unsupported key exchange algorithm: "
@@ -980,23 +1052,23 @@ public class WorkflowConfigurationFactory {
                 case ECDHE_ECDSA:
                 case ECDHE_RSA:
                 case ECDH_ANON:
-                    return new ECDHEServerKeyExchangeMessage();
+                    return new ECDHEServerKeyExchangeMessage(config);
                 case DHE_DSS:
                 case DHE_RSA:
                 case DH_ANON:
-                    return new DHEServerKeyExchangeMessage();
+                    return new DHEServerKeyExchangeMessage(config);
                 case PSK:
-                    return new PskServerKeyExchangeMessage();
+                    return new PskServerKeyExchangeMessage(config);
                 case DHE_PSK:
-                    return new PskDheServerKeyExchangeMessage();
+                    return new PskDheServerKeyExchangeMessage(config);
                 case ECDHE_PSK:
-                    return new PskEcDheServerKeyExchangeMessage();
+                    return new PskEcDheServerKeyExchangeMessage(config);
                 case SRP_SHA_DSS:
                 case SRP_SHA_RSA:
                 case SRP_SHA:
-                    return new SrpServerKeyExchangeMessage();
+                    return new SrpServerKeyExchangeMessage(config);
                 case ECCPWD:
-                    return new PWDServerKeyExchangeMessage();
+                    return new PWDServerKeyExchangeMessage(config);
                 case RSA_EXPORT:
                     // only send rsa server key exchange message if public key size is bigger than
                     // 512 bits
@@ -1004,7 +1076,7 @@ public class WorkflowConfigurationFactory {
                             <= 512) {
                         return null;
                     }
-                    return new RSAServerKeyExchangeMessage();
+                    return new RSAServerKeyExchangeMessage(config);
                 default:
                     LOGGER.warn(
                             "Unsupported key exchange algorithm: "
@@ -1040,40 +1112,110 @@ public class WorkflowConfigurationFactory {
 
     public WorkflowTrace addStartTlsActions(
             AliasedConnection connection, StarttlsType type, WorkflowTrace workflowTrace) {
-        // TODO: fix for the new layer system since we removed ascii actions, leaving the old code
-        // for when this is
-        /*
-         * switch (type) { case FTP: { workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection,
-         * ConnectionEndType.SERVER, StarttlsMessage.FTP_S_CONNECTED.getStarttlsMessage(), "US-ASCII"));
-         * workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.CLIENT,
-         * StarttlsMessage.FTP_TLS.getStarttlsMessage(), "US-ASCII"));
-         * workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
-         * StarttlsMessage.FTP_S_READY.getStarttlsMessage(), "US-ASCII")); return workflowTrace; } case IMAP: {
-         * workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
-         * StarttlsMessage.IMAP_S_CONNECTED.getStarttlsMessage(), "US-ASCII"));
-         * workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.CLIENT,
-         * StarttlsMessage.IMAP_TLS.getStarttlsMessage(), "US-ASCII"));
-         * workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
-         * StarttlsMessage.IMAP_S_READY.getStarttlsMessage(), "US-ASCII")); return workflowTrace; } case POP3: {
-         * workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
-         * StarttlsMessage.POP3_S_CONNECTED.getStarttlsMessage(), "US-ASCII"));
-         * workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.CLIENT,
-         * StarttlsMessage.POP3_TLS.getStarttlsMessage(), "US-ASCII"));
-         * workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
-         * StarttlsMessage.POP3_S_READY.getStarttlsMessage(), "US-ASCII")); return workflowTrace; } case SMTP: {
-         * workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
-         * StarttlsMessage.SMTP_S_CONNECTED.getStarttlsMessage(), "US-ASCII"));
-         * workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.CLIENT,
-         * StarttlsMessage.SMTP_C_CONNECTED.getStarttlsMessage(), "US-ASCII"));
-         * workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
-         * StarttlsMessage.SMTP_S_OK.getStarttlsMessage(), "US-ASCII"));
-         * workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.CLIENT,
-         * StarttlsMessage.SMTP_TLS.getStarttlsMessage(), "US-ASCII"));
-         * workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
-         * StarttlsMessage.SMTP_S_READY.getStarttlsMessage(), "US-ASCII")); return workflowTrace; } default: return
-         * workflowTrace;
-         */
-        return null;
+        switch (type) {
+            case FTP:
+                {
+                    workflowTrace.addTlsAction(
+                            MessageActionFactory.createAsciiAction(
+                                    connection,
+                                    ConnectionEndType.SERVER,
+                                    StarttlsMessage.FTP_S_CONNECTED.getStarttlsMessage(),
+                                    "US-ASCII"));
+                    workflowTrace.addTlsAction(
+                            MessageActionFactory.createAsciiAction(
+                                    connection,
+                                    ConnectionEndType.CLIENT,
+                                    StarttlsMessage.FTP_TLS.getStarttlsMessage(),
+                                    "US-ASCII"));
+                    workflowTrace.addTlsAction(
+                            MessageActionFactory.createAsciiAction(
+                                    connection,
+                                    ConnectionEndType.SERVER,
+                                    StarttlsMessage.FTP_S_READY.getStarttlsMessage(),
+                                    "US-ASCII"));
+                    return workflowTrace;
+                }
+            case IMAP:
+                {
+                    workflowTrace.addTlsAction(
+                            MessageActionFactory.createAsciiAction(
+                                    connection,
+                                    ConnectionEndType.SERVER,
+                                    StarttlsMessage.IMAP_S_CONNECTED.getStarttlsMessage(),
+                                    "US-ASCII"));
+                    workflowTrace.addTlsAction(
+                            MessageActionFactory.createAsciiAction(
+                                    connection,
+                                    ConnectionEndType.CLIENT,
+                                    StarttlsMessage.IMAP_TLS.getStarttlsMessage(),
+                                    "US-ASCII"));
+                    workflowTrace.addTlsAction(
+                            MessageActionFactory.createAsciiAction(
+                                    connection,
+                                    ConnectionEndType.SERVER,
+                                    StarttlsMessage.IMAP_S_READY.getStarttlsMessage(),
+                                    "US-ASCII"));
+                    return workflowTrace;
+                }
+            case POP3:
+                {
+                    workflowTrace.addTlsAction(
+                            MessageActionFactory.createAsciiAction(
+                                    connection,
+                                    ConnectionEndType.SERVER,
+                                    StarttlsMessage.POP3_S_CONNECTED.getStarttlsMessage(),
+                                    "US-ASCII"));
+                    workflowTrace.addTlsAction(
+                            MessageActionFactory.createAsciiAction(
+                                    connection,
+                                    ConnectionEndType.CLIENT,
+                                    StarttlsMessage.POP3_TLS.getStarttlsMessage(),
+                                    "US-ASCII"));
+                    workflowTrace.addTlsAction(
+                            MessageActionFactory.createAsciiAction(
+                                    connection,
+                                    ConnectionEndType.SERVER,
+                                    StarttlsMessage.POP3_S_READY.getStarttlsMessage(),
+                                    "US-ASCII"));
+                    return workflowTrace;
+                }
+            case SMTP:
+                {
+                    workflowTrace.addTlsAction(
+                            MessageActionFactory.createAsciiAction(
+                                    connection,
+                                    ConnectionEndType.SERVER,
+                                    StarttlsMessage.SMTP_S_CONNECTED.getStarttlsMessage(),
+                                    "US-ASCII"));
+                    workflowTrace.addTlsAction(
+                            MessageActionFactory.createAsciiAction(
+                                    connection,
+                                    ConnectionEndType.CLIENT,
+                                    StarttlsMessage.SMTP_C_CONNECTED.getStarttlsMessage(),
+                                    "US-ASCII"));
+                    workflowTrace.addTlsAction(
+                            MessageActionFactory.createAsciiAction(
+                                    connection,
+                                    ConnectionEndType.SERVER,
+                                    StarttlsMessage.SMTP_S_OK.getStarttlsMessage(),
+                                    "US-ASCII"));
+                    workflowTrace.addTlsAction(
+                            MessageActionFactory.createAsciiAction(
+                                    connection,
+                                    ConnectionEndType.CLIENT,
+                                    StarttlsMessage.SMTP_TLS.getStarttlsMessage(),
+                                    "US-ASCII"));
+                    workflowTrace.addTlsAction(
+                            MessageActionFactory.createAsciiAction(
+                                    connection,
+                                    ConnectionEndType.SERVER,
+                                    StarttlsMessage.SMTP_S_READY.getStarttlsMessage(),
+                                    "US-ASCII"));
+                    return workflowTrace;
+                }
+            default:
+                return workflowTrace;
+        }
     }
 
     /**
@@ -1095,7 +1237,7 @@ public class WorkflowConfigurationFactory {
         WorkflowTrace trace = createTlsEntryWorkflowTrace(connection);
 
         trace.addTlsAction(
-                MessageActionFactory.createTLSAction(
+                MessageActionFactory.createAction(
                         config,
                         connection,
                         ConnectionEndType.CLIENT,
@@ -1103,13 +1245,13 @@ public class WorkflowConfigurationFactory {
 
         if (config.getHighestProtocolVersion().isDTLS() && config.isDtlsCookieExchange()) {
             trace.addTlsAction(
-                    MessageActionFactory.createTLSAction(
+                    MessageActionFactory.createAction(
                             config,
                             connection,
                             ConnectionEndType.SERVER,
-                            new HelloVerifyRequestMessage()));
+                            new HelloVerifyRequestMessage(config)));
             trace.addTlsAction(
-                    MessageActionFactory.createTLSAction(
+                    MessageActionFactory.createAction(
                             config,
                             connection,
                             ConnectionEndType.CLIENT,
@@ -1136,11 +1278,11 @@ public class WorkflowConfigurationFactory {
                 if (Objects.equals(config.isClientAuthentication(), Boolean.TRUE)) {
                     tls13Messages.add(new CertificateRequestMessage(config));
                 }
-                tls13Messages.add(new CertificateMessage());
-                tls13Messages.add(new CertificateVerifyMessage());
-                tls13Messages.add(new FinishedMessage());
+                tls13Messages.add(new CertificateMessage(config));
+                tls13Messages.add(new CertificateVerifyMessage(config));
+                tls13Messages.add(new FinishedMessage(config));
                 trace.addTlsAction(
-                        MessageActionFactory.createTLSAction(
+                        MessageActionFactory.createAction(
                                 config, connection, ConnectionEndType.SERVER, tls13Messages));
             } else {
                 trace.addTlsAction(new SendAction(new ServerHelloMessage(config)));
@@ -1149,7 +1291,7 @@ public class WorkflowConfigurationFactory {
                 if (Objects.equals(config.isClientAuthentication(), Boolean.TRUE)) {
                     trace.addTlsAction(new SendAction(new CertificateRequestMessage(config)));
                 }
-                trace.addTlsAction(new SendAction(new ServerHelloDoneMessage()));
+                trace.addTlsAction(new SendAction(new ServerHelloDoneMessage(config)));
             }
             return trace;
         }
@@ -1179,31 +1321,33 @@ public class WorkflowConfigurationFactory {
                 ccs.setRequired(false);
                 tls13Messages.add(ccs);
                 if (Objects.equals(config.isClientAuthentication(), Boolean.TRUE)) {
-                    tls13Messages.add(new CertificateMessage());
-                    tls13Messages.add(new CertificateVerifyMessage());
+                    tls13Messages.add(new CertificateMessage(config));
+                    tls13Messages.add(new CertificateVerifyMessage(config));
                 }
-                tls13Messages.add(new FinishedMessage());
+                tls13Messages.add(new FinishedMessage(config));
                 trace.addTlsAction(
-                        MessageActionFactory.createTLSAction(
+                        MessageActionFactory.createAction(
                                 config, connection, ConnectionEndType.CLIENT, tls13Messages));
             } else {
                 if (Objects.equals(config.isClientAuthentication(), Boolean.TRUE)) {
-                    trace.addTlsAction(new SendAction(new CertificateMessage()));
+                    trace.addTlsAction(new SendAction(new CertificateMessage(config)));
                     trace.addTlsAction(new SendDynamicClientKeyExchangeAction());
-                    trace.addTlsAction(new SendAction(new CertificateVerifyMessage()));
+                    trace.addTlsAction(new SendAction(new CertificateVerifyMessage(config)));
                 } else {
                     trace.addTlsAction(new SendDynamicClientKeyExchangeAction());
                 }
                 trace.addTlsAction(
-                        new SendAction(new ChangeCipherSpecMessage(), new FinishedMessage()));
-                trace.addTlsAction(new ReceiveTillAction(new FinishedMessage()));
+                        new SendAction(
+                                new ChangeCipherSpecMessage(config), new FinishedMessage(config)));
+                trace.addTlsAction(new ReceiveTillAction(new FinishedMessage(config)));
             }
             return trace;
         } else {
-            trace.addTlsAction(new ReceiveTillAction(new FinishedMessage()));
+            trace.addTlsAction(new ReceiveTillAction(new FinishedMessage(config)));
             if (!config.getHighestProtocolVersion().isTLS13()) {
                 trace.addTlsAction(
-                        new SendAction(new ChangeCipherSpecMessage(), new FinishedMessage()));
+                        new SendAction(
+                                new ChangeCipherSpecMessage(config), new FinishedMessage(config)));
             }
             return trace;
         }

@@ -1,11 +1,12 @@
-/*
+/**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -18,8 +19,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.PWDProtectExtensio
 import org.junit.jupiter.api.Test;
 
 public class PWDProtectExtensionHandlerTest
-        extends AbstractExtensionMessageHandlerTest<
-                PWDProtectExtensionMessage, PWDProtectExtensionHandler> {
+    extends AbstractExtensionMessageHandlerTest<PWDProtectExtensionMessage, PWDProtectExtensionHandler> {
 
     public PWDProtectExtensionHandlerTest() {
         super(PWDProtectExtensionMessage::new, PWDProtectExtensionHandler::new);
@@ -28,12 +28,11 @@ public class PWDProtectExtensionHandlerTest
 
     @Test
     @Override
-    public void testadjustTLSExtensionContext() {
+    public void testAdjustTLSContext() {
         PWDProtectExtensionMessage message = new PWDProtectExtensionMessage();
-        message.setUsername(
-                ArrayConverter.hexStringToByteArray(
-                        "DA87739AC04C2A6D222FC15E31C471451DE3FE7E78B6E3485CA21E12BFE1CB4C4191D4CD9257145CBFA26DFCA1839C1588D0F1F6"));
-        handler.adjustContext(message);
+        message.setUsername(ArrayConverter.hexStringToByteArray(
+            "DA87739AC04C2A6D222FC15E31C471451DE3FE7E78B6E3485CA21E12BFE1CB4C4191D4CD9257145CBFA26DFCA1839C1588D0F1F6"));
+        handler.adjustTLSContext(message);
         assertTrue(context.isExtensionProposed(ExtensionType.PWD_PROTECT));
         assertEquals("jens", context.getClientPWDUsername());
     }

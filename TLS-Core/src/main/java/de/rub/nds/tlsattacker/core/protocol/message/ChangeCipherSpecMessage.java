@@ -1,32 +1,34 @@
-/*
+/**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.handler.ChangeCipherSpecHandler;
-import de.rub.nds.tlsattacker.core.protocol.parser.ChangeCipherSpecParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.ChangeCipherSpecPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.ChangeCipherSpecSerializer;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import jakarta.xml.bind.annotation.XmlRootElement;
-import java.io.InputStream;
-import java.util.Objects;
 
 @XmlRootElement(name = "ChangeCipherSpec")
-public class ChangeCipherSpecMessage extends ProtocolMessage<ChangeCipherSpecMessage> {
+public class ChangeCipherSpecMessage extends TlsMessage {
 
-    @ModifiableVariableProperty private ModifiableByteArray ccsProtocolType;
+    @ModifiableVariableProperty
+    private ModifiableByteArray ccsProtocolType;
+
+    public ChangeCipherSpecMessage(Config tlsConfig) {
+        super();
+        this.protocolMessageType = ProtocolMessageType.CHANGE_CIPHER_SPEC;
+    }
 
     public ChangeCipherSpecMessage() {
         super();
@@ -69,44 +71,7 @@ public class ChangeCipherSpecMessage extends ProtocolMessage<ChangeCipherSpecMes
     }
 
     @Override
-    public ChangeCipherSpecHandler getHandler(TlsContext tlsContext) {
-        return new ChangeCipherSpecHandler(tlsContext);
-    }
-
-    @Override
-    public ChangeCipherSpecParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new ChangeCipherSpecParser(stream);
-    }
-
-    @Override
-    public ChangeCipherSpecPreparator getPreparator(TlsContext tlsContext) {
-        return new ChangeCipherSpecPreparator(tlsContext.getChooser(), this);
-    }
-
-    @Override
-    public ChangeCipherSpecSerializer getSerializer(TlsContext tlsContext) {
-        return new ChangeCipherSpecSerializer(this);
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 71 * hash + Objects.hashCode(this.ccsProtocolType);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final ChangeCipherSpecMessage other = (ChangeCipherSpecMessage) obj;
-        return Objects.equals(this.ccsProtocolType, other.ccsProtocolType);
+    public ChangeCipherSpecHandler getHandler(TlsContext context) {
+        return new ChangeCipherSpecHandler(context);
     }
 }
