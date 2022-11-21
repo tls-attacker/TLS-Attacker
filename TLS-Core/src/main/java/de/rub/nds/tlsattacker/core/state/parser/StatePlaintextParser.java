@@ -1,3 +1,4 @@
+
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
@@ -12,8 +13,9 @@ package de.rub.nds.tlsattacker.core.state.parser;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ClientAuthenticationType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.core.protocol.Parser;
+import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.state.StatePlaintext;
+import java.io.ByteArrayInputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,12 +24,11 @@ public class StatePlaintextParser extends Parser<StatePlaintext> {
     private static final Logger LOGGER = LogManager.getLogger();
 
     public StatePlaintextParser(int startposition, byte[] array) {
-        super(startposition, array);
+        super(new ByteArrayInputStream(array, startposition, array.length - startposition));
     }
 
     @Override
-    public StatePlaintext parse() {
-        StatePlaintext statePlaintext = new StatePlaintext();
+    public void parse(StatePlaintext statePlaintext) {
         parseProtocolVersion(statePlaintext);
         parseCipherSuite(statePlaintext);
         parseCompressionMethod(statePlaintext);
@@ -37,7 +38,6 @@ public class StatePlaintextParser extends Parser<StatePlaintext> {
             throw new UnsupportedOperationException("Parsing for client authentication data is not implemented yet");
         }
         parseTimestamp(statePlaintext);
-        return statePlaintext;
     }
 
     private void parseProtocolVersion(StatePlaintext statePlaintext) {
@@ -73,5 +73,4 @@ public class StatePlaintextParser extends Parser<StatePlaintext> {
         statePlaintext.setTimestamp(parseIntField(HandshakeByteLength.UNIX_TIME));
         LOGGER.debug("Parsed time stamp from state " + statePlaintext.getTimestamp());
     }
-
 }

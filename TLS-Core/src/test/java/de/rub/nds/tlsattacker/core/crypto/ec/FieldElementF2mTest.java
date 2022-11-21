@@ -1,20 +1,18 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.crypto.ec;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.math.BigInteger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.math.BigInteger;
 
 public class FieldElementF2mTest {
 
@@ -129,5 +127,4 @@ public class FieldElementF2mTest {
         p1_ = new FieldElementF2m(p1Data.add(BigInteger.ONE), modulus.add(BigInteger.ONE));
         assertNotEquals(p1, p1_);
     }
-
 }

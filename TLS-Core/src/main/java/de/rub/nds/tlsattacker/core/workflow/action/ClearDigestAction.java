@@ -1,15 +1,14 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,15 +17,14 @@ public class ClearDigestAction extends ConnectionBoundAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ClearDigestAction() {
-    }
+    public ClearDigestAction() {}
 
     public ClearDigestAction(String connectionAlias) {
         super(connectionAlias);
     }
 
     @Override
-    public void execute(State state) throws WorkflowExecutionException {
+    public void execute(State state) throws ActionExecutionException {
         LOGGER.debug("Resetting digest...");
         state.getTlsContext().getDigest().reset();
         setExecuted(true);
@@ -41,5 +39,4 @@ public class ClearDigestAction extends ConnectionBoundAction {
     public boolean executedAsPlanned() {
         return isExecuted();
     }
-
 }

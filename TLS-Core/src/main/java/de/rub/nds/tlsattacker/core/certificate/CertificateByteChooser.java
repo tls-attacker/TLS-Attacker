@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.certificate;
 
 import de.rub.nds.tlsattacker.core.constants.*;
@@ -18,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.tls.Certificate;
@@ -150,11 +148,14 @@ public class CertificateByteChooser {
             for (String file : getResourceFiles()) {
                 if (file.endsWith("cert.pem")) {
                     String keyName = resolveKeyfileFromCert(file);
-                    try (
-                        InputStream certInputStream =
-                            this.getClass().getClassLoader().getResourceAsStream(RESOURCE_PATH + file);
-                        InputStream keyInputStream =
-                            this.getClass().getClassLoader().getResourceAsStream(RESOURCE_PATH + keyName)) {
+                    try (InputStream certInputStream =
+                                    this.getClass()
+                                            .getClassLoader()
+                                            .getResourceAsStream(RESOURCE_PATH + file);
+                            InputStream keyInputStream =
+                                    this.getClass()
+                                            .getClassLoader()
+                                            .getResourceAsStream(RESOURCE_PATH + keyName)) {
                         Certificate readCertificate = PemUtil.readCertificate(certInputStream);
                         PrivateKey privateKey = PemUtil.readPrivateKey(keyInputStream);
                         keyPairList.add(new CertificateKeyPair(readCertificate, privateKey));
@@ -193,36 +194,47 @@ public class CertificateByteChooser {
             }
         }
         if (bestKeyPair != null) {
-            LOGGER.debug("Choosing Certificate: {}(Group:{}),{}", bestKeyPair.getCertPublicKeyType(),
-                bestKeyPair.getPublicKeyGroup(), bestKeyPair.getSignatureAndHashAlgorithm());
+            LOGGER.debug(
+                    "Choosing Certificate: {}(Group:{}),{}",
+                    bestKeyPair.getCertPublicKeyType(),
+                    bestKeyPair.getPublicKeyGroup(),
+                    bestKeyPair.getSignatureAndHashAlgorithm());
             return bestKeyPair;
         }
 
-        LOGGER.warn("No appropriate Certificate Found. Using Default ({}; {}).",
-            chooser.getConfig().getDefaultExplicitCertificateKeyPair().getCertPublicKeyType(),
-            chooser.getConfig().getDefaultExplicitCertificateKeyPair().getSignatureAndHashAlgorithm());
+        LOGGER.warn(
+                "No appropriate Certificate Found. Using Default ({}; {}).",
+                chooser.getConfig().getDefaultExplicitCertificateKeyPair().getCertPublicKeyType(),
+                chooser.getConfig()
+                        .getDefaultExplicitCertificateKeyPair()
+                        .getSignatureAndHashAlgorithm());
         return chooser.getConfig().getDefaultExplicitCertificateKeyPair();
     }
 
     /**
-     * Determines a rating based on the position of offered algorithms in the respective ClientHello lists. A lower
-     * rating is better.
+     * Determines a rating based on the position of offered algorithms in the respective ClientHello
+     * lists. A lower rating is better.
      */
     private Integer rateKeyPair(CertificateKeyPair keyPair, Chooser chooser) {
         List<SignatureAndHashAlgorithm> clientSupportedAlgorithms =
-            chooser.getClientSupportedCertificateSignAlgorithms();
-        if (chooser.getContext().getClientSupportedCertificateSignAlgorithms() != null) {
+                chooser.getClientSupportedCertificateSignAlgorithms();
+        if (chooser.getContext().getTlsContext().getClientSupportedCertificateSignAlgorithms()
+                != null) {
             clientSupportedAlgorithms = chooser.getClientSupportedSignatureAndHashAlgorithms();
         }
 
         if (keyPair.isCompatibleWithCipherSuite(chooser)) {
             Integer sigAlgRating = 1;
             if (!clientSupportedAlgorithms.isEmpty()) {
-                sigAlgRating = clientSupportedAlgorithms.indexOf(keyPair.getSignatureAndHashAlgorithm()) + 1;
+                sigAlgRating =
+                        clientSupportedAlgorithms.indexOf(keyPair.getSignatureAndHashAlgorithm())
+                                + 1;
             }
             Integer groupRating;
             if (keyPair.getPublicKeyGroup() != null) {
-                groupRating = chooser.getClientSupportedNamedGroups().indexOf(keyPair.getPublicKeyGroup()) + 1;
+                groupRating =
+                        chooser.getClientSupportedNamedGroups().indexOf(keyPair.getPublicKeyGroup())
+                                + 1;
             } else {
                 if (isBadKeySize(keyPair, chooser)) {
                     groupRating = chooser.getClientSupportedNamedGroups().size() + 1;
@@ -237,10 +249,14 @@ public class CertificateByteChooser {
     }
 
     private Boolean isBadKeySize(CertificateKeyPair keyPair, Chooser chooser) {
-        Boolean badRsaKeySize = (keyPair.getCertPublicKeyType() == CertificateKeyType.RSA
-            && keyPair.getPublicKey().keySize() != chooser.getConfig().getPreferredCertRsaKeySize());
-        Boolean badDssKeySize = (keyPair.getCertPublicKeyType() == CertificateKeyType.DSS
-            && keyPair.getPublicKey().keySize() != chooser.getConfig().getPrefferedCertDssKeySize());
+        Boolean badRsaKeySize =
+                (keyPair.getCertPublicKeyType() == CertificateKeyType.RSA
+                        && keyPair.getPublicKey().keySize()
+                                != chooser.getConfig().getPreferredCertRsaKeySize());
+        Boolean badDssKeySize =
+                (keyPair.getCertPublicKeyType() == CertificateKeyType.DSS
+                        && keyPair.getPublicKey().keySize()
+                                != chooser.getConfig().getPrefferedCertDssKeySize());
         return badRsaKeySize || badDssKeySize;
     }
 
@@ -249,7 +265,9 @@ public class CertificateByteChooser {
         if (certName.startsWith("ec_")) {
             signatureTypeSuffixIndex = certName.indexOf("_", 4);
             return certName.substring(0, signatureTypeSuffixIndex) + "_key.pem";
-        } else if (certName.startsWith("rsa") || certName.startsWith("dh") || certName.startsWith("dsa")) {
+        } else if (certName.startsWith("rsa")
+                || certName.startsWith("dh")
+                || certName.startsWith("dsa")) {
             signatureTypeSuffixIndex = certName.indexOf("_");
             return certName.substring(0, signatureTypeSuffixIndex) + "_key.pem";
         } else {

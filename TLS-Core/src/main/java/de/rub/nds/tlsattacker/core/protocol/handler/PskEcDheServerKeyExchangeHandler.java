@@ -10,10 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.PskEcDheServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.PskEcDheServerKeyExchangeParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.PskEcDheServerKeyExchangePreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.PskEcDheServerKeyExchangeSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 
 public class PskEcDheServerKeyExchangeHandler extends ECDHEServerKeyExchangeHandler<PskEcDheServerKeyExchangeMessage> {
 
@@ -22,23 +19,7 @@ public class PskEcDheServerKeyExchangeHandler extends ECDHEServerKeyExchangeHand
     }
 
     @Override
-    public PskEcDheServerKeyExchangeParser getParser(byte[] message, int pointer) {
-        return new PskEcDheServerKeyExchangeParser(pointer, message,
-            tlsContext.getChooser().getSelectedProtocolVersion(), tlsContext.getConfig());
-    }
-
-    @Override
-    public PskEcDheServerKeyExchangePreparator getPreparator(PskEcDheServerKeyExchangeMessage message) {
-        return new PskEcDheServerKeyExchangePreparator(tlsContext.getChooser(), message);
-    }
-
-    @Override
-    public PskEcDheServerKeyExchangeSerializer getSerializer(PskEcDheServerKeyExchangeMessage message) {
-        return new PskEcDheServerKeyExchangeSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
-    }
-
-    @Override
-    public void adjustTLSContext(PskEcDheServerKeyExchangeMessage message) {
+    public void adjustContext(PskEcDheServerKeyExchangeMessage message) {
         super.adjustECParameter(message);
         if (message.getComputations() != null) {
             tlsContext.setServerEcPrivateKey(message.getComputations().getPrivateKey().getValue());

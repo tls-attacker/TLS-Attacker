@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -24,9 +23,7 @@ public class WorkflowTypeDelegateTest extends AbstractDelegateTest<WorkflowTypeD
         super.setUp(new WorkflowTypeDelegate());
     }
 
-    /**
-     * Test of getWorkflowTraceType method, of class WorkflowTypeDelegate.
-     */
+    /** Test of getWorkflowTraceType method, of class WorkflowTypeDelegate. */
     @Test
     public void testGetWorkflowTraceType() {
         args = new String[2];
@@ -37,9 +34,7 @@ public class WorkflowTypeDelegateTest extends AbstractDelegateTest<WorkflowTypeD
         assertEquals(WorkflowTraceType.HANDSHAKE, delegate.getWorkflowTraceType());
     }
 
-    /**
-     * Test of setWorkflowTraceType method, of class WorkflowTypeDelegate.
-     */
+    /** Test of setWorkflowTraceType method, of class WorkflowTypeDelegate. */
     @Test
     public void testSetWorkflowTraceType() {
         assertNotEquals(WorkflowTraceType.HANDSHAKE, delegate.getWorkflowTraceType());
@@ -47,9 +42,7 @@ public class WorkflowTypeDelegateTest extends AbstractDelegateTest<WorkflowTypeD
         assertEquals(WorkflowTraceType.HANDSHAKE, delegate.getWorkflowTraceType());
     }
 
-    /**
-     * Test of applyDelegate method, of class WorkflowTypeDelegate.
-     */
+    /** Test of applyDelegate method, of class WorkflowTypeDelegate. */
     @Test
     public void testApplyDelegate() {
         Config config = Config.createConfig();
@@ -67,7 +60,9 @@ public class WorkflowTypeDelegateTest extends AbstractDelegateTest<WorkflowTypeD
         Config config = Config.createConfig();
         Config config2 = Config.createConfig();
         delegate.applyDelegate(config);
-        assertTrue(EqualsBuilder.reflectionEquals(config, config2, "keyStore", "ourCertificate"));// little
+        assertTrue(
+                EqualsBuilder.reflectionEquals(
+                        config, config2, "keyStore", "ourCertificate")); // little
         // ugly
     }
 }

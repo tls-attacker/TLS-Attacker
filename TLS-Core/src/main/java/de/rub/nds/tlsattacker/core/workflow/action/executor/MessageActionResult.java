@@ -1,44 +1,43 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.workflow.action.executor;
 
-import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.record.AbstractRecord;
+import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
+import de.rub.nds.tlsattacker.core.record.Record;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
 public class MessageActionResult {
 
-    private final List<AbstractRecord> recordList;
+    private final List<Record> recordList;
 
     private final List<ProtocolMessage> messageList;
 
     private List<DtlsHandshakeMessageFragment> messageFragmentList;
 
-    public MessageActionResult(List<AbstractRecord> recordList, List<ProtocolMessage> messageList,
-        List<DtlsHandshakeMessageFragment> messageFragmentList) {
+    public MessageActionResult(
+            List<Record> recordList,
+            List<ProtocolMessage> messageList,
+            List<DtlsHandshakeMessageFragment> messageFragmentList) {
         this.recordList = recordList;
         this.messageList = messageList;
         this.messageFragmentList = messageFragmentList;
     }
 
-    /**
-     * Generates an empty MessageActionResult, that is, a result whose list fields are empty.
-     */
+    /** Generates an empty MessageActionResult, that is, a result whose list fields are empty. */
     public MessageActionResult() {
         this(new LinkedList<>(), new LinkedList<>(), new LinkedList<>());
     }
 
-    public List<AbstractRecord> getRecordList() {
+    public List<Record> getRecordList() {
         return recordList;
     }
 
@@ -55,7 +54,13 @@ public class MessageActionResult {
      *
      * @param other
      */
-    public void merge(MessageActionResult... other) {
+    public MessageActionResult merge(MessageActionResult... other) {
+        LinkedList<MessageActionResult> results =
+                new LinkedList<MessageActionResult>(Arrays.asList(other));
+        results.add(0, this);
+        List<Record> recordList = new LinkedList<>();
+        List<DtlsHandshakeMessageFragment> messageFragmentList = null;
+        List<ProtocolMessage> messageList = new LinkedList<>();
 
         for (MessageActionResult result : other) {
             recordList.addAll(result.getRecordList());
@@ -67,5 +72,6 @@ public class MessageActionResult {
             }
             messageList.addAll(result.getMessageList());
         }
+        return new MessageActionResult(recordList, messageList, messageFragmentList);
     }
 }

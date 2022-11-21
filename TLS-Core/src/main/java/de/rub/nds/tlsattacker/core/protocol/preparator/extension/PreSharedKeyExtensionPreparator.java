@@ -10,34 +10,31 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
-import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
-import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PreSharedKeyExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PSKBinder;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PSKIdentity;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PskSet;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ClientHelloSerializer;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PSKBinderSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PSKIdentitySerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * RFC draft-ietf-tls-tls13-21
@@ -49,9 +46,8 @@ public class PreSharedKeyExtensionPreparator extends ExtensionPreparator<PreShar
     private final PreSharedKeyExtensionMessage msg;
     private ClientHelloMessage clientHello;
 
-    public PreSharedKeyExtensionPreparator(Chooser chooser, PreSharedKeyExtensionMessage message,
-        ExtensionSerializer<PreSharedKeyExtensionMessage> serializer) {
-        super(chooser, message, serializer);
+    public PreSharedKeyExtensionPreparator(Chooser chooser, PreSharedKeyExtensionMessage message) {
+        super(chooser, message);
         msg = message;
     }
 
@@ -84,7 +80,7 @@ public class PreSharedKeyExtensionPreparator extends ExtensionPreparator<PreShar
 
     private void prepareSelectedIdentity() {
         LOGGER.debug("Preparing selected identity");
-        msg.setSelectedIdentity(chooser.getContext().getSelectedIdentityIndex());
+        msg.setSelectedIdentity(chooser.getContext().getTlsContext().getSelectedIdentityIndex());
     }
 
     private void prepareIdentityListBytes() {
@@ -154,6 +150,7 @@ public class PreSharedKeyExtensionPreparator extends ExtensionPreparator<PreShar
     }
 
     private void calculateBinders(byte[] relevantBytes, PreSharedKeyExtensionMessage msg) {
+        TlsContext tlsContext = chooser.getContext().getTlsContext();
         List<PskSet> pskSets = chooser.getPskSets();
         LOGGER.debug("Calculating Binders");
         for (int x = 0; x < msg.getBinders().size(); x++) {
@@ -171,13 +168,12 @@ public class PreSharedKeyExtensionPreparator extends ExtensionPreparator<PreShar
                     byte[] binderFinKey = HKDFunction.expandLabel(hkdfAlgorithm, binderKey, HKDFunction.FINISHED,
                         new byte[0], mac.getMacLength());
 
-                    chooser.getContext().getDigest().setRawBytes(relevantBytes);
+                    tlsContext.getDigest().setRawBytes(relevantBytes);
                     SecretKeySpec keySpec = new SecretKeySpec(binderFinKey, mac.getAlgorithm());
                     mac.init(keySpec);
-                    mac.update(chooser.getContext().getDigest().digest(ProtocolVersion.TLS13,
-                        pskSets.get(x).getCipherSuite()));
+                    mac.update(tlsContext.getDigest().digest(ProtocolVersion.TLS13, pskSets.get(x).getCipherSuite()));
                     byte[] binderVal = mac.doFinal();
-                    chooser.getContext().getDigest().setRawBytes(new byte[0]);
+                    tlsContext.getDigest().setRawBytes(new byte[0]);
 
                     LOGGER.debug("Using PSK:" + ArrayConverter.bytesToHexString(psk));
                     LOGGER.debug("Calculated Binder:" + ArrayConverter.bytesToHexString(binderVal));
@@ -185,7 +181,7 @@ public class PreSharedKeyExtensionPreparator extends ExtensionPreparator<PreShar
                     msg.getBinders().get(x).setBinderEntry(binderVal);
                     // First entry = PSK for early Data
                     if (x == 0) {
-                        chooser.getContext().setEarlyDataPsk(psk);
+                        tlsContext.setEarlyDataPsk(psk);
                     }
                 } else {
                     LOGGER.warn("Skipping BinderCalculation as Config has not enough PSK sets");

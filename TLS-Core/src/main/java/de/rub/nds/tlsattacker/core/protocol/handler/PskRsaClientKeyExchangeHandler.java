@@ -10,10 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.PskRsaClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.PskRsaClientKeyExchangeParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.PskRsaClientKeyExchangePreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.PskRsaClientKeyExchangeSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 
 public class PskRsaClientKeyExchangeHandler extends RSAClientKeyExchangeHandler<PskRsaClientKeyExchangeMessage> {
 
@@ -22,23 +19,7 @@ public class PskRsaClientKeyExchangeHandler extends RSAClientKeyExchangeHandler<
     }
 
     @Override
-    public PskRsaClientKeyExchangeParser getParser(byte[] message, int pointer) {
-        return new PskRsaClientKeyExchangeParser(pointer, message, tlsContext.getChooser().getSelectedProtocolVersion(),
-            tlsContext.getConfig());
-    }
-
-    @Override
-    public PskRsaClientKeyExchangePreparator getPreparator(PskRsaClientKeyExchangeMessage message) {
-        return new PskRsaClientKeyExchangePreparator(tlsContext.getChooser(), message);
-    }
-
-    @Override
-    public PskRsaClientKeyExchangeSerializer getSerializer(PskRsaClientKeyExchangeMessage message) {
-        return new PskRsaClientKeyExchangeSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
-    }
-
-    @Override
-    public void adjustTLSContext(PskRsaClientKeyExchangeMessage message) {
+    public void adjustContext(PskRsaClientKeyExchangeMessage message) {
         adjustPremasterSecret(message);
         adjustMasterSecret(message);
         spawnNewSession();

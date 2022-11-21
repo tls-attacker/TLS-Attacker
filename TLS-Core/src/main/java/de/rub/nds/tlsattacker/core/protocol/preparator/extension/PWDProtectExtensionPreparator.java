@@ -20,14 +20,14 @@ import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PWDProtectExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PWDProtectExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.cryptomator.siv.SivMode;
+
+import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 public class PWDProtectExtensionPreparator extends ExtensionPreparator<PWDProtectExtensionMessage> {
 
@@ -35,9 +35,8 @@ public class PWDProtectExtensionPreparator extends ExtensionPreparator<PWDProtec
 
     private final PWDProtectExtensionMessage msg;
 
-    public PWDProtectExtensionPreparator(Chooser chooser, PWDProtectExtensionMessage message,
-        PWDProtectExtensionSerializer serializer) {
-        super(chooser, message, serializer);
+    public PWDProtectExtensionPreparator(Chooser chooser, PWDProtectExtensionMessage message) {
+        super(chooser, message);
         this.msg = message;
     }
 

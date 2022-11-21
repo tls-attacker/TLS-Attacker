@@ -101,14 +101,6 @@ public class ECDHEServerKeyExchangeSerializer<T extends ECDHEServerKeyExchangeMe
         LOGGER.debug("SerializedPublicKey: " + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
     }
 
-    private boolean isTLS12() {
-        return version == ProtocolVersion.TLS12;
-    }
-
-    private boolean isDTLS12() {
-        return version == ProtocolVersion.DTLS12;
-    }
-
     /**
      * Writes the SignatureAndHashAlgorithm of the ECDHEServerKeyExchangeMessage into the final byte[]
      */

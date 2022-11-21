@@ -62,9 +62,6 @@ public class HKDFunction {
 
     public static final String TRAFFICUPD = "traffic upd";
 
-    private HKDFunction() {
-    }
-
     /**
      * Computes HKDF-Extract output as defined in RFC 5869
      *
@@ -213,5 +210,8 @@ public class HKDFunction {
         int outLen) throws CryptoException {
         byte[] info = labelEncoder(hashValue, labelIn, outLen);
         return expand(hkdfAlgorithm, prk, info, outLen);
+    }
+
+    private HKDFunction() {
     }
 }

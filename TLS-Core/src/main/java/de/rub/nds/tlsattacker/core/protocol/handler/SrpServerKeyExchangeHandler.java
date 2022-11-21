@@ -11,13 +11,11 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.SrpServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.SrpServerKeyExchangeParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.SrpServerKeyExchangePreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.SrpServerKeyExchangeSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.math.BigInteger;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.math.BigInteger;
 
 public class SrpServerKeyExchangeHandler extends ServerKeyExchangeHandler<SrpServerKeyExchangeMessage> {
 
@@ -28,23 +26,7 @@ public class SrpServerKeyExchangeHandler extends ServerKeyExchangeHandler<SrpSer
     }
 
     @Override
-    public SrpServerKeyExchangeParser getParser(byte[] message, int pointer) {
-        return new SrpServerKeyExchangeParser(pointer, message, tlsContext.getChooser().getSelectedProtocolVersion(),
-            tlsContext.getConfig());
-    }
-
-    @Override
-    public SrpServerKeyExchangePreparator getPreparator(SrpServerKeyExchangeMessage message) {
-        return new SrpServerKeyExchangePreparator(tlsContext.getChooser(), message);
-    }
-
-    @Override
-    public SrpServerKeyExchangeSerializer getSerializer(SrpServerKeyExchangeMessage message) {
-        return new SrpServerKeyExchangeSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
-    }
-
-    @Override
-    public void adjustTLSContext(SrpServerKeyExchangeMessage message) {
+    public void adjustContext(SrpServerKeyExchangeMessage message) {
         adjustSRPGenerator(message);
         adjustSRPModulus(message);
         adjustSalt(message);

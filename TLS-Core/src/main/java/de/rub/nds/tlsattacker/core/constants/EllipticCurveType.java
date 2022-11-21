@@ -1,23 +1,21 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.constants;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * EllipticCurveType defined in rfc4492: <a href="https://tools.ietf.org/html/rfc4492#section-5.4">RFC 4492 Section
- * 5.4</a>
+ * EllipticCurveType defined in rfc4492: <a
+ * href="https://tools.ietf.org/html/rfc4492#section-5.4">RFC 4492 Section 5.4</a>
  */
 public enum EllipticCurveType {
-
     EXPLICIT_PRIME((byte) 1),
     EXPLICIT_CHAR2((byte) 2),
     NAMED_CURVE((byte) 3);

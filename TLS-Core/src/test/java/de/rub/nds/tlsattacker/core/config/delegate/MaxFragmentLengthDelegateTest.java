@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,12 +22,9 @@ public class MaxFragmentLengthDelegateTest extends AbstractDelegateTest<MaxFragm
     @BeforeEach
     public void setUp() {
         super.setUp(new MaxFragmentLengthDelegate());
-
     }
 
-    /**
-     * Test of getMaxFragmentLength method, of class MaxFragmentLengthDelegate.
-     */
+    /** Test of getMaxFragmentLength method, of class MaxFragmentLengthDelegate. */
     @Test
     public void testGetMaxFragmentLength() {
         args = new String[2];
@@ -47,9 +43,7 @@ public class MaxFragmentLengthDelegateTest extends AbstractDelegateTest<MaxFragm
         assertThrows(ParameterException.class, () -> jcommander.parse(args));
     }
 
-    /**
-     * Test of setMaxFragmentLength method, of class MaxFragmentLengthDelegate.
-     */
+    /** Test of setMaxFragmentLength method, of class MaxFragmentLengthDelegate. */
     @Test
     public void testSetMaxFragmentLength() {
         assertNull(delegate.getMaxFragmentLength());
@@ -57,9 +51,7 @@ public class MaxFragmentLengthDelegateTest extends AbstractDelegateTest<MaxFragm
         assertEquals(4, (int) delegate.getMaxFragmentLength());
     }
 
-    /**
-     * Test of applyDelegate method, of class MaxFragmentLengthDelegate.
-     */
+    /** Test of applyDelegate method, of class MaxFragmentLengthDelegate. */
     @Test
     public void testApplyDelegate() {
         Config config = Config.createConfig();

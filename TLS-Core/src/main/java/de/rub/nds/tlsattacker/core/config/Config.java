@@ -14,49 +14,13 @@ import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.certificate.CertificateKeyPair;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
-import de.rub.nds.tlsattacker.core.constants.AlertDescription;
-import de.rub.nds.tlsattacker.core.constants.AlertLevel;
-import de.rub.nds.tlsattacker.core.constants.AlpnProtocol;
-import de.rub.nds.tlsattacker.core.constants.AuthzDataFormat;
-import de.rub.nds.tlsattacker.core.constants.CertificateKeyType;
-import de.rub.nds.tlsattacker.core.constants.CertificateStatusRequestType;
-import de.rub.nds.tlsattacker.core.constants.CertificateType;
-import de.rub.nds.tlsattacker.core.constants.ChooserType;
-import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.CipherSuite;
-import de.rub.nds.tlsattacker.core.constants.ClientAuthenticationType;
-import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
-import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
-import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
-import de.rub.nds.tlsattacker.core.constants.EsniDnsKeyRecordVersion;
-import de.rub.nds.tlsattacker.core.constants.EsniVersion;
-import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
-import de.rub.nds.tlsattacker.core.constants.HashAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
-import de.rub.nds.tlsattacker.core.constants.KeyUpdateRequest;
-import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
-import de.rub.nds.tlsattacker.core.constants.NameType;
-import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.constants.PskKeyExchangeMode;
-import de.rub.nds.tlsattacker.core.constants.RecordSizeLimit;
-import de.rub.nds.tlsattacker.core.constants.RunningModeType;
-import de.rub.nds.tlsattacker.core.constants.SSL2CipherSuite;
-import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.SrtpProtectionProfiles;
-import de.rub.nds.tlsattacker.core.constants.StarttlsType;
-import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
-import de.rub.nds.tlsattacker.core.constants.TokenBindingType;
-import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
-import de.rub.nds.tlsattacker.core.constants.UserMappingExtensionHintType;
+import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
 import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.crypto.keys.CustomRSAPrivateKey;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.core.layer.constant.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
@@ -64,7 +28,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PskSet;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.RequestItemV2;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
-import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
@@ -76,12 +39,7 @@ import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Serializable;
+import java.io.*;
 import java.lang.reflect.Field;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
@@ -100,34 +58,11 @@ import org.bouncycastle.crypto.tls.Certificate;
 @XmlType(propOrder = {})
 public class Config implements Serializable {
 
-    public Integer getEnforcedMaxRecordData() {
-        return enforcedMaxRecordData;
-    }
-
-    public void setEnforcedMaxRecordData(Integer enforcedMaxRecordData) {
-        this.enforcedMaxRecordData = enforcedMaxRecordData;
-    }
-
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /** The default Config file to load. */
-    private static final String DEFAULT_CONFIG_FILE = "/default_config.xml";
-
-    private static final ConfigCache DEFAULT_CONFIG_CACHE;
-
-    static {
-        DEFAULT_CONFIG_CACHE = new ConfigCache(createConfig());
-    }
-
+    @Deprecated
     public static Config createConfig() {
-        if (DEFAULT_CONFIG_CACHE != null) {
-            return DEFAULT_CONFIG_CACHE.getCachedCopy();
-        }
-        try (InputStream stream = Config.class.getResourceAsStream(DEFAULT_CONFIG_FILE)) {
-            return ConfigIO.read(stream);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return new Config();
     }
 
     public static Config createConfig(File f) {
@@ -155,10 +90,10 @@ public class Config implements Serializable {
         return c;
     }
 
+    private LayerConfiguration defaultLayerConfiguration;
+
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultHandshakeSecret = new byte[32];
-
-    private Boolean throwExceptionOnParserContextViolation = false;
 
     private CertificateKeyType preferredCertificateSignatureType = CertificateKeyType.RSA;
 
@@ -245,6 +180,11 @@ public class Config implements Serializable {
     @XmlElement(name = "defaultServerSupportedCipherSuite")
     @XmlElementWrapper
     private List<CipherSuite> defaultServerSupportedCipherSuites;
+
+    /** Which CSSL 2 Cipher suites we support by default */
+    @XmlElement(name = "defaultServerSupportedSSL2CipherSuite")
+    @XmlElementWrapper
+    private List<SSL2CipherSuite> defaultServerSupportedSSL2CipherSuites;
 
     /** Default clientSupportedNamed groups */
     @XmlElement(name = "defaultClientNamedGroup")
@@ -510,16 +450,16 @@ public class Config implements Serializable {
     /** If we generate ClientHello with TokenBinding extension. */
     private Boolean addTokenBindingExtension = false;
 
-    /** Whether HTTPS request should contain a cookie header field or not. */
-    private Boolean addHttpsCookie = false;
+    /** Whether HTTP request should contain a cookie header field or not. */
+    private Boolean addHttpCookie = false;
 
-    /** Default cookie value to use if addHttpsCookie is true. */
+    /** Default cookie value to use if addHttpCookie is true. */
     @XmlJavaTypeAdapter(IllegalStringAdapter.class)
-    private String defaultHttpsCookieName = "tls-attacker";
+    private String defaultHttpCookieName = "tls-attacker";
 
-    /** Default cookie value to use if addHttpsCookie is true. */
+    /** Default cookie value to use if addHttpCookie is true. */
     @XmlJavaTypeAdapter(IllegalStringAdapter.class)
-    private String defaultHttpsCookieValue = "42130912812";
+    private String defaultHttpCookieValue = "42130912812";
 
     /** If we generate ClientHello with CertificateStatusRequest extension */
     private Boolean addCertificateStatusRequestExtension = false;
@@ -572,8 +512,13 @@ public class Config implements Serializable {
     /** If we generate ClientHello with TLS 1.3 cookie extension */
     private Boolean addCookieExtension = false;
 
-    /** If set to true, timestamps will be updated upon execution of a workflowTrace */
-    private Boolean updateTimestamps = true;
+    /** Default ConnectionID to use, if addConnectionIdExtension is true */
+    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
+    @XmlElement(name = "defaultConnectionId")
+    private byte[] defaultConnectionId = {0x01, 0x02, 0x03};
+
+    /** If we generate a ClientHello / ServerHello with DTLS 1.2 ConnectionID extension */
+    private Boolean addConnectionIdExtension = false;
 
     /** PSKKeyExchangeModes to be used in 0-RTT (or TLS 1.3 resumption) */
     @XmlElement(name = "pskKeyExchangeMode")
@@ -624,9 +569,6 @@ public class Config implements Serializable {
     private byte[] distinguishedNames = new byte[0];
 
     private Boolean enforceSettings = false;
-
-    /** Stop as soon as all expected messages are received and don't wait for more */
-    private Boolean earlyStop = false;
 
     /** The maximum number of bytes that can be received during a receive process. Default: 2^24. */
     private Integer receiveMaximumBytes = 16777216;
@@ -767,20 +709,11 @@ public class Config implements Serializable {
      */
     private Boolean createRecordsDynamically = true;
 
-    /**
-     * When "Null" records are defined to be send, every message will be sent in at least one
-     * individual record
-     */
-    private Boolean createIndividualRecords = true;
-
-    /** Every record will be sent in one individual transport packet */
+    /** Every record will be sent in one individual transport packet [ADD FOR LAYER!] */
     private Boolean createIndividualTransportPackets = false;
 
     /** If we should wait after sending one transport packet */
     private Integer individualTransportPacketCooldown = 0;
-
-    /** Which recordLayer should be used */
-    private RecordLayerType recordLayerType = RecordLayerType.RECORD;
 
     /**
      * If this value is set the default workflowExecutor will remove all runtime values from the
@@ -788,19 +721,13 @@ public class Config implements Serializable {
      */
     private Boolean resetWorkflowTracesBeforeSaving = false;
 
-    /**
-     * TLS-Attacker will not try to receive additional messages after the configured number of
-     * messages has been received
-     */
-    private Boolean quickReceive = true;
-
     /** If the WorkflowExecutor should take care of the connection opening */
     private Boolean workflowExecutorShouldOpen = true;
 
+    private Boolean stopReceivingAfterFatal = false;
+
     /** If the WorkflowExecutor should take care of the connection closing */
     private Boolean workflowExecutorShouldClose = true;
-
-    private Boolean stopReceivingAfterFatal = false;
 
     private Boolean stopActionsAfterFatal = false;
 
@@ -821,8 +748,6 @@ public class Config implements Serializable {
 
     /** How many retransmissions in DTLS should be executed during the handshake */
     private Integer maxDtlsRetransmissions = 3;
-
-    private Boolean stopReceivingAfterWarning = false;
 
     private Boolean stopActionsAfterWarning = false;
 
@@ -1096,11 +1021,9 @@ public class Config implements Serializable {
 
     private Boolean useAllProvidedRecords = false;
 
-    private Boolean httpsParsingEnabled = false;
-
     /**
      * requestPath to use in LocationHeader if none is saved during the connection, e.g. no received
-     * HttpsRequestMessage or httpsParsing is disabled
+     * HttpRequestMessage or httpParsing is disabled
      */
     @XmlJavaTypeAdapter(IllegalStringAdapter.class)
     private String defaultHttpsLocationPath = "/";
@@ -1213,12 +1136,6 @@ public class Config implements Serializable {
             ArrayConverter.hexStringToByteArray(
                     "963c77cdc13a2a8d75cdddd1e0449929843711c21d47ce6e6383cdda37e47da3");
 
-    /**
-     * TLS-Attacker will parse encrypted messages with invalid MAC or padding as unencrypted
-     * messages if this option is set.
-     */
-    private Boolean parseInvalidRecordsUnencrypted = false;
-
     private ECPointFormat defaultSelectedPointFormat = ECPointFormat.UNCOMPRESSED;
 
     /** Private Key of the Client for the EncryptedServerNameIndication extension. */
@@ -1287,7 +1204,8 @@ public class Config implements Serializable {
 
     private String keylogFilePath = null;
 
-    Config() {
+    public Config() {
+        defaultLayerConfiguration = LayerConfiguration.TLS;
         defaultClientConnection = new OutboundConnection("client", 443, "localhost");
         defaultServerConnection = new InboundConnection("server", 443, "localhost");
         workflowTraceType = WorkflowTraceType.HANDSHAKE;
@@ -1312,6 +1230,8 @@ public class Config implements Serializable {
         defaultClientSupportedCipherSuites.addAll(CipherSuite.getImplemented());
         defaultServerSupportedCipherSuites = new LinkedList<>();
         defaultServerSupportedCipherSuites.addAll(CipherSuite.getImplemented());
+        defaultServerSupportedSSL2CipherSuites = new LinkedList<>();
+        defaultServerSupportedSSL2CipherSuites.addAll(Arrays.asList(SSL2CipherSuite.values()));
         defaultClientNamedGroups = NamedGroup.getImplemented();
         defaultServerNamedGroups = NamedGroup.getImplemented();
         clientCertificateTypes = new LinkedList<>();
@@ -1428,21 +1348,12 @@ public class Config implements Serializable {
         this.defaultSelectedAlpnProtocol = defaultSelectedAlpnProtocol;
     }
 
-    public Boolean isThrowExceptionOnParserContextViolation() {
-        return throwExceptionOnParserContextViolation;
+    public Boolean getStopReceivingAfterFatal() {
+        return stopReceivingAfterFatal;
     }
 
-    public void setThrowExceptionOnParserContextViolation(
-            Boolean throwExceptionOnParserContextViolation) {
-        this.throwExceptionOnParserContextViolation = throwExceptionOnParserContextViolation;
-    }
-
-    public Boolean getStopReceivingAfterWarning() {
-        return stopReceivingAfterWarning;
-    }
-
-    public void setStopReceivingAfterWarning(Boolean stopReceivingAfterWarning) {
-        this.stopReceivingAfterWarning = stopReceivingAfterWarning;
+    public void setStopReceivingAfterFatal(Boolean stopReceivingAfterFatal) {
+        this.stopReceivingAfterFatal = stopReceivingAfterFatal;
     }
 
     public Boolean getStopActionsAfterWarning() {
@@ -1574,14 +1485,6 @@ public class Config implements Serializable {
         this.clientAuthenticationType = clientAuthenticationType;
     }
 
-    public Boolean isHttpsParsingEnabled() {
-        return httpsParsingEnabled;
-    }
-
-    public void setHttpsParsingEnabled(Boolean httpsParsingEnabled) {
-        this.httpsParsingEnabled = httpsParsingEnabled;
-    }
-
     public String getDefaultHttpsLocationPath() {
         return defaultHttpsLocationPath;
     }
@@ -1636,14 +1539,6 @@ public class Config implements Serializable {
 
     public void setChooserType(ChooserType chooserType) {
         this.chooserType = chooserType;
-    }
-
-    public Boolean isEarlyStop() {
-        return earlyStop;
-    }
-
-    public void setEarlyStop(Boolean earlyStop) {
-        this.earlyStop = earlyStop;
     }
 
     public Boolean isStealthMode() {
@@ -1805,14 +1700,6 @@ public class Config implements Serializable {
 
     public void setWorkflowExecutorShouldClose(Boolean workflowExecutorShouldClose) {
         this.workflowExecutorShouldClose = workflowExecutorShouldClose;
-    }
-
-    public Boolean isStopReceivingAfterFatal() {
-        return stopReceivingAfterFatal;
-    }
-
-    public void setStopReceivingAfterFatal(Boolean stopReceivingAfterFatal) {
-        this.stopReceivingAfterFatal = stopReceivingAfterFatal;
     }
 
     public byte[] getDefaultPSKKey() {
@@ -2389,14 +2276,6 @@ public class Config implements Serializable {
         this.defaultSSL2CipherSuite = defaultSSL2CipherSuite;
     }
 
-    public Boolean isQuickReceive() {
-        return quickReceive;
-    }
-
-    public void setQuickReceive(Boolean quickReceive) {
-        this.quickReceive = quickReceive;
-    }
-
     public Integer getReceiveMaximumBytes() {
         return receiveMaximumBytes;
     }
@@ -2411,14 +2290,6 @@ public class Config implements Serializable {
 
     public void setResetWorkflowTracesBeforeSaving(Boolean resetWorkflowTracesBeforeSaving) {
         this.resetWorkflowTracesBeforeSaving = resetWorkflowTracesBeforeSaving;
-    }
-
-    public RecordLayerType getRecordLayerType() {
-        return recordLayerType;
-    }
-
-    public void setRecordLayerType(RecordLayerType recordLayerType) {
-        this.recordLayerType = recordLayerType;
     }
 
     public Boolean isFlushOnMessageTypeChange() {
@@ -2459,14 +2330,6 @@ public class Config implements Serializable {
 
     public void setIndividualTransportPacketCooldown(Integer individualTransportPacketCooldown) {
         this.individualTransportPacketCooldown = individualTransportPacketCooldown;
-    }
-
-    public Boolean isCreateIndividualRecords() {
-        return createIndividualRecords;
-    }
-
-    public void setCreateIndividualRecords(Boolean createIndividualRecords) {
-        this.createIndividualRecords = createIndividualRecords;
     }
 
     public int getDefaultMaxRecordData() {
@@ -2615,14 +2478,6 @@ public class Config implements Serializable {
 
     public void setHighestProtocolVersion(ProtocolVersion highestProtocolVersion) {
         this.highestProtocolVersion = highestProtocolVersion;
-    }
-
-    public Boolean isUpdateTimestamps() {
-        return updateTimestamps;
-    }
-
-    public void setUpdateTimestamps(Boolean updateTimestamps) {
-        this.updateTimestamps = updateTimestamps;
     }
 
     public Boolean isServerSendsApplicationData() {
@@ -2968,28 +2823,28 @@ public class Config implements Serializable {
         this.addTokenBindingExtension = addTokenBindingExtension;
     }
 
-    public Boolean isAddHttpsCookie() {
-        return addHttpsCookie;
+    public Boolean isAddHttpCookie() {
+        return addHttpCookie;
     }
 
-    public void setAddHttpsCookie(Boolean addHttpsCookie) {
-        this.addHttpsCookie = addHttpsCookie;
+    public void setAddHttpCookie(Boolean addHttpCookie) {
+        this.addHttpCookie = addHttpCookie;
     }
 
-    public String getDefaultHttpsCookieName() {
-        return defaultHttpsCookieName;
+    public String getDefaultHttpCookieName() {
+        return defaultHttpCookieName;
     }
 
-    public void setDefaultHttpsCookieName(String defaultHttpsCookieName) {
-        this.defaultHttpsCookieName = defaultHttpsCookieName;
+    public void setDefaultHttpCookieName(String defaultHttpCookieName) {
+        this.defaultHttpCookieName = defaultHttpCookieName;
     }
 
-    public String getDefaultHttpsCookieValue() {
-        return defaultHttpsCookieValue;
+    public String getDefaultHttpCookieValue() {
+        return defaultHttpCookieValue;
     }
 
-    public void setDefaultHttpsCookieValue(String defaultHttpsCookieValue) {
-        this.defaultHttpsCookieValue = defaultHttpsCookieValue;
+    public void setDefaultHttpCookieValue(String defaultHttpCookieValue) {
+        this.defaultHttpCookieValue = defaultHttpCookieValue;
     }
 
     public CertificateStatusRequestType getCertificateStatusRequestExtensionRequestType() {
@@ -3783,14 +3638,6 @@ public class Config implements Serializable {
         this.defaultHandshakeSecret = defaultHandshakeSecret;
     }
 
-    public Boolean getParseInvalidRecordNormally() {
-        return parseInvalidRecordsUnencrypted;
-    }
-
-    public void setParseInvalidRecordNormally(Boolean parseInvalidRecordNormally) {
-        this.parseInvalidRecordsUnencrypted = parseInvalidRecordNormally;
-    }
-
     public String getDefaultClientPWDUsername() {
         return defaultClientPWDUsername;
     }
@@ -4106,7 +3953,7 @@ public class Config implements Serializable {
         this.limitPsksToOne = limitPsksToOne;
     }
 
-    public Boolean isPreserveMessageRecordRelation() {
+    public Boolean getPreserveMessageRecordRelation() {
         return preserveMessageRecordRelation;
     }
 
@@ -4209,5 +4056,46 @@ public class Config implements Serializable {
 
     public void setDefaultSniHostnames(List<ServerNamePair> defaultSniHostnames) {
         this.defaultSniHostnames = defaultSniHostnames;
+    }
+
+    public LayerConfiguration getDefaultLayerConfiguration() {
+        return defaultLayerConfiguration;
+    }
+
+    public void setDefaultLayerConfiguration(LayerConfiguration defaultLayerConfiguration) {
+        this.defaultLayerConfiguration = defaultLayerConfiguration;
+    }
+
+    public byte[] getDefaultConnectionId() {
+        return Arrays.copyOf(defaultConnectionId, defaultConnectionId.length);
+    }
+
+    public void setDefaultConnectionId(byte[] defaultConnectionId) {
+        this.defaultConnectionId = defaultConnectionId;
+    }
+
+    public Boolean isAddConnectionIdExtension() {
+        return addConnectionIdExtension;
+    }
+
+    public void setAddConnectionIdExtension(Boolean addConnectionIdExtension) {
+        this.addConnectionIdExtension = addConnectionIdExtension;
+    }
+
+    public Integer getEnforcedMaxRecordData() {
+        return enforcedMaxRecordData;
+    }
+
+    public void setEnforcedMaxRecordData(Integer enforcedMaxRecordData) {
+        this.enforcedMaxRecordData = enforcedMaxRecordData;
+    }
+
+    public List<SSL2CipherSuite> getDefaultServerSupportedSSL2CipherSuites() {
+        return defaultServerSupportedSSL2CipherSuites;
+    }
+
+    public void setDefaultServerSupportedSSL2CipherSuites(
+            List<SSL2CipherSuite> defaultServerSupportedSSL2CipherSuites) {
+        this.defaultServerSupportedSSL2CipherSuites = defaultServerSupportedSSL2CipherSuites;
     }
 }

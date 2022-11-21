@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.config;
 
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
@@ -15,19 +14,18 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
+import de.rub.nds.tlsattacker.core.layer.constant.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
-import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ConfigTest {
 
@@ -43,9 +41,7 @@ public class ConfigTest {
         stripConfig(config);
     }
 
-    /**
-     * Updates the default_config.xml
-     */
+    /** Updates the default_config.xml */
     @Test
     public void assertConfigInResourcesIsEqual() {
         ConfigIO.write(new Config(), new File("src/main/resources/default_config.xml"));
@@ -66,18 +62,13 @@ public class ConfigTest {
     }
 
     /**
-     * This and the following functions/tests generate all other configuration files in /resources/configs
+     * This and the following functions/tests generate all other configuration files in
+     * /resources/configs
      */
     @Test
     public void generateAppdataConfig() {
         config.setDefaultApplicationMessageData("ayy lmao");
         ConfigIO.write(config, new File(RESOURCE_CONFIG_DIR, "appdata.config"));
-    }
-
-    @Test
-    public void generateConfigBlobConfig() {
-        config.setRecordLayerType(RecordLayerType.BLOB);
-        ConfigIO.write(config, new File(RESOURCE_CONFIG_DIR, "config_blob.config"));
     }
 
     @Test
@@ -108,10 +99,12 @@ public class ConfigTest {
         config.setAddEncryptedServerNameIndicationExtension(true);
         KeyShareEntry keyShareEntry = new KeyShareEntry();
         keyShareEntry.setPrivateKey(
-            new BigInteger("-35862849564059803287082945144062507860160501396022878289617408550825798132134"));
+                new BigInteger(
+                        "-35862849564059803287082945144062507860160501396022878289617408550825798132134"));
         ModifiableByteArray publicKey = new ModifiableByteArray();
         publicKey.setOriginalValue(
-            ArrayConverter.hexStringToByteArray("2A981DB6CDD02A06C1763102C9E741365AC4E6F72B3176A6BD6A3523D3EC0F4C"));
+                ArrayConverter.hexStringToByteArray(
+                        "2A981DB6CDD02A06C1763102C9E741365AC4E6F72B3176A6BD6A3523D3EC0F4C"));
         ModifiableByteArray group = new ModifiableByteArray();
         group.setOriginalValue(ArrayConverter.hexStringToByteArray("001D"));
         keyShareEntry.setGroup(group);
@@ -143,7 +136,6 @@ public class ConfigTest {
 
     @Test
     public void generateHttpsConfig() {
-        config.setHttpsParsingEnabled(true);
         ConfigIO.write(config, new File(RESOURCE_CONFIG_DIR, "https.config"));
     }
 
@@ -182,22 +174,29 @@ public class ConfigTest {
         config.setAddKeyShareExtension(true);
         config.setUseFreshRandom(false);
         config.setDefaultClientRandom(
-            ArrayConverter.hexStringToByteArray("528FBF52175DE2C869845FDBFA8344F7D732712EBFA679D8643CD31A880E043D"));
+                ArrayConverter.hexStringToByteArray(
+                        "528FBF52175DE2C869845FDBFA8344F7D732712EBFA679D8643CD31A880E043D"));
         config.setDefaultServerRandom(
-            ArrayConverter.hexStringToByteArray("528FBF524378A1B13B8D2CBD247090721369F8BFA3CEEB3CFCD85CBFCDD58EAA"));
+                ArrayConverter.hexStringToByteArray(
+                        "528FBF524378A1B13B8D2CBD247090721369F8BFA3CEEB3CFCD85CBFCDD58EAA"));
         config.setDefaultClientPWDUsername("fred");
         config.setDefaultPWDPassword("barney");
         config.setDefaultPWDIterations(40);
         config.setDefaultServerPWDPrivate(
-            ArrayConverter.hexStringToByteArray("21D99D341C9797B3AE72DFD289971F1B74CE9DE68AD4B9ABF54888D8F6C5043C"));
+                ArrayConverter.hexStringToByteArray(
+                        "21D99D341C9797B3AE72DFD289971F1B74CE9DE68AD4B9ABF54888D8F6C5043C"));
         config.setDefaultServerPWDMask(
-            ArrayConverter.hexStringToByteArray("0D96AB624D082C71255BE3648DCD303F6AB0CA61A95034A553E3308D1D3744E5"));
+                ArrayConverter.hexStringToByteArray(
+                        "0D96AB624D082C71255BE3648DCD303F6AB0CA61A95034A553E3308D1D3744E5"));
         config.setDefaultClientPWDPrivate(
-            ArrayConverter.hexStringToByteArray("171DE8CAA5352D36EE96A39979B5B72FA189AE7A6A09C77F7B438AF16DF4A88B"));
+                ArrayConverter.hexStringToByteArray(
+                        "171DE8CAA5352D36EE96A39979B5B72FA189AE7A6A09C77F7B438AF16DF4A88B"));
         config.setDefaultClientPWDMask(
-            ArrayConverter.hexStringToByteArray("4F745BDFC295D3B38429F7EB3025A48883728B07D88605C0EE202316A072D1BD"));
+                ArrayConverter.hexStringToByteArray(
+                        "4F745BDFC295D3B38429F7EB3025A48883728B07D88605C0EE202316A072D1BD"));
         config.setDefaultServerPWDSalt(
-            ArrayConverter.hexStringToByteArray("963C77CDC13A2A8D75CDDDD1E0449929843711C21D47CE6E6383CDDA37E47DA3"));
+                ArrayConverter.hexStringToByteArray(
+                        "963C77CDC13A2A8D75CDDDD1E0449929843711C21D47CE6E6383CDDA37E47DA3"));
 
         ConfigIO.write(config, new File(RESOURCE_CONFIG_DIR, "pwd.config"));
     }
@@ -236,22 +235,29 @@ public class ConfigTest {
         config.setAddKeyShareExtension(true);
         config.setUseFreshRandom(false);
         config.setDefaultClientRandom(
-            ArrayConverter.hexStringToByteArray("528FBF52175DE2C869845FDBFA8344F7D732712EBFA679D8643CD31A880E043D"));
+                ArrayConverter.hexStringToByteArray(
+                        "528FBF52175DE2C869845FDBFA8344F7D732712EBFA679D8643CD31A880E043D"));
         config.setDefaultServerRandom(
-            ArrayConverter.hexStringToByteArray("528FBF524378A1B13B8D2CBD247090721369F8BFA3CEEB3CFCD85CBFCDD58EAA"));
+                ArrayConverter.hexStringToByteArray(
+                        "528FBF524378A1B13B8D2CBD247090721369F8BFA3CEEB3CFCD85CBFCDD58EAA"));
         config.setDefaultClientPWDUsername("fred");
         config.setDefaultPWDPassword("barney");
         config.setDefaultPWDIterations(40);
         config.setDefaultServerPWDPrivate(
-            ArrayConverter.hexStringToByteArray("21D99D341C9797B3AE72DFD289971F1B74CE9DE68AD4B9ABF54888D8F6C5043C"));
+                ArrayConverter.hexStringToByteArray(
+                        "21D99D341C9797B3AE72DFD289971F1B74CE9DE68AD4B9ABF54888D8F6C5043C"));
         config.setDefaultServerPWDMask(
-            ArrayConverter.hexStringToByteArray("0D96AB624D082C71255BE3648DCD303F6AB0CA61A95034A553E3308D1D3744E5"));
+                ArrayConverter.hexStringToByteArray(
+                        "0D96AB624D082C71255BE3648DCD303F6AB0CA61A95034A553E3308D1D3744E5"));
         config.setDefaultClientPWDPrivate(
-            ArrayConverter.hexStringToByteArray("171DE8CAA5352D36EE96A39979B5B72FA189AE7A6A09C77F7B438AF16DF4A88B"));
+                ArrayConverter.hexStringToByteArray(
+                        "171DE8CAA5352D36EE96A39979B5B72FA189AE7A6A09C77F7B438AF16DF4A88B"));
         config.setDefaultClientPWDMask(
-            ArrayConverter.hexStringToByteArray("4F745BDFC295D3B38429F7EB3025A48883728B07D88605C0EE202316A072D1BD"));
+                ArrayConverter.hexStringToByteArray(
+                        "4F745BDFC295D3B38429F7EB3025A48883728B07D88605C0EE202316A072D1BD"));
         config.setDefaultServerPWDSalt(
-            ArrayConverter.hexStringToByteArray("963C77CDC13A2A8D75CDDDD1E0449929843711C21D47CE6E6383CDDA37E47DA3"));
+                ArrayConverter.hexStringToByteArray(
+                        "963C77CDC13A2A8D75CDDDD1E0449929843711C21D47CE6E6383CDDA37E47DA3"));
 
         ConfigIO.write(config, new File(RESOURCE_CONFIG_DIR, "pwd13.config"));
     }
@@ -283,6 +289,7 @@ public class ConfigTest {
     @Test
     public void generateSSL2Config() {
         config.setHighestProtocolVersion(ProtocolVersion.SSL2);
+        config.setDefaultLayerConfiguration(LayerConfiguration.SSL2);
         ArrayList<ProtocolVersion> protocolVersions = new ArrayList<>();
         protocolVersions.add(ProtocolVersion.SSL2);
         config.setSupportedVersions(protocolVersions);
@@ -346,7 +353,8 @@ public class ConfigTest {
         clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_PSS_RSAE_SHA256);
         clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_PSS_RSAE_SHA384);
         clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_PSS_RSAE_SHA512);
-        config.setDefaultClientSupportedSignatureAndHashAlgorithms(clientSignatureAndHashAlgorithms);
+        config.setDefaultClientSupportedSignatureAndHashAlgorithms(
+                clientSignatureAndHashAlgorithms);
 
         ArrayList<SignatureAndHashAlgorithm> serverSignatureAndHashAlgorithms = new ArrayList<>();
         serverSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_SHA256);
@@ -358,7 +366,8 @@ public class ConfigTest {
         serverSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_PSS_RSAE_SHA256);
         serverSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_PSS_RSAE_SHA384);
         serverSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_PSS_RSAE_SHA512);
-        config.setDefaultServerSupportedSignatureAndHashAlgorithms(serverSignatureAndHashAlgorithms);
+        config.setDefaultServerSupportedSignatureAndHashAlgorithms(
+                serverSignatureAndHashAlgorithms);
 
         config.setDefaultSelectedNamedGroup(NamedGroup.ECDH_X25519);
         config.setDefaultSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
@@ -407,7 +416,8 @@ public class ConfigTest {
         clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_PSS_RSAE_SHA256);
         clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_PSS_RSAE_SHA384);
         clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_PSS_RSAE_SHA512);
-        config.setDefaultClientSupportedSignatureAndHashAlgorithms(clientSignatureAndHashAlgorithms);
+        config.setDefaultClientSupportedSignatureAndHashAlgorithms(
+                clientSignatureAndHashAlgorithms);
 
         ArrayList<SignatureAndHashAlgorithm> serverSignatureAndHashAlgorithms = new ArrayList<>();
         serverSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_SHA256);
@@ -416,7 +426,8 @@ public class ConfigTest {
         serverSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.ECDSA_SHA256);
         serverSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.ECDSA_SHA384);
         serverSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.ECDSA_SHA512);
-        config.setDefaultServerSupportedSignatureAndHashAlgorithms(serverSignatureAndHashAlgorithms);
+        config.setDefaultServerSupportedSignatureAndHashAlgorithms(
+                serverSignatureAndHashAlgorithms);
 
         config.setDefaultSelectedNamedGroup(NamedGroup.ECDH_X25519);
         config.setDefaultSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
@@ -465,7 +476,8 @@ public class ConfigTest {
         clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_PSS_RSAE_SHA256);
         clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_PSS_RSAE_SHA384);
         clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_PSS_RSAE_SHA512);
-        config.setDefaultClientSupportedSignatureAndHashAlgorithms(clientSignatureAndHashAlgorithms);
+        config.setDefaultClientSupportedSignatureAndHashAlgorithms(
+                clientSignatureAndHashAlgorithms);
 
         ArrayList<SignatureAndHashAlgorithm> serverSignatureAndHashAlgorithms = new ArrayList<>();
         serverSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_SHA256);
@@ -474,7 +486,8 @@ public class ConfigTest {
         serverSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.ECDSA_SHA256);
         serverSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.ECDSA_SHA384);
         serverSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.ECDSA_SHA512);
-        config.setDefaultServerSupportedSignatureAndHashAlgorithms(serverSignatureAndHashAlgorithms);
+        config.setDefaultServerSupportedSignatureAndHashAlgorithms(
+                serverSignatureAndHashAlgorithms);
 
         config.setDefaultSelectedNamedGroup(NamedGroup.ECDH_X25519);
         config.setDefaultSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
@@ -520,7 +533,8 @@ public class ConfigTest {
         clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_PSS_RSAE_SHA256);
         clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_PSS_RSAE_SHA384);
         clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_PSS_RSAE_SHA512);
-        config.setDefaultClientSupportedSignatureAndHashAlgorithms(clientSignatureAndHashAlgorithms);
+        config.setDefaultClientSupportedSignatureAndHashAlgorithms(
+                clientSignatureAndHashAlgorithms);
 
         ArrayList<SignatureAndHashAlgorithm> serverSignatureAndHashAlgorithms = new ArrayList<>();
         serverSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_SHA256);
@@ -529,7 +543,8 @@ public class ConfigTest {
         serverSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.ECDSA_SHA256);
         serverSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.ECDSA_SHA384);
         serverSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.ECDSA_SHA512);
-        config.setDefaultServerSupportedSignatureAndHashAlgorithms(serverSignatureAndHashAlgorithms);
+        config.setDefaultServerSupportedSignatureAndHashAlgorithms(
+                serverSignatureAndHashAlgorithms);
 
         config.setDefaultSelectedNamedGroup(NamedGroup.ECDH_X25519);
         config.setDefaultSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
@@ -575,7 +590,8 @@ public class ConfigTest {
         clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_PSS_RSAE_SHA256);
         clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_PSS_RSAE_SHA384);
         clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_PSS_RSAE_SHA512);
-        config.setDefaultClientSupportedSignatureAndHashAlgorithms(clientSignatureAndHashAlgorithms);
+        config.setDefaultClientSupportedSignatureAndHashAlgorithms(
+                clientSignatureAndHashAlgorithms);
 
         ArrayList<SignatureAndHashAlgorithm> serverSignatureAndHashAlgorithms = new ArrayList<>();
         serverSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_SHA256);
@@ -587,7 +603,8 @@ public class ConfigTest {
         serverSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_PSS_RSAE_SHA256);
         serverSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_PSS_RSAE_SHA384);
         serverSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_PSS_RSAE_SHA512);
-        config.setDefaultServerSupportedSignatureAndHashAlgorithms(serverSignatureAndHashAlgorithms);
+        config.setDefaultServerSupportedSignatureAndHashAlgorithms(
+                serverSignatureAndHashAlgorithms);
 
         config.setDefaultSelectedNamedGroup(NamedGroup.ECDH_X25519);
         config.setDefaultSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
@@ -611,7 +628,6 @@ public class ConfigTest {
         config.setAddTokenBindingExtension(true);
         config.setAddExtendedMasterSecretExtension(true);
         config.setAddRenegotiationInfoExtension(true);
-        config.setHttpsParsingEnabled(true);
 
         ConfigIO.write(config, new File(RESOURCE_CONFIG_DIR, "tokenbinding.config"));
     }

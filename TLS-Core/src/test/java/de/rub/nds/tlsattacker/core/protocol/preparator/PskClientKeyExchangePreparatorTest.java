@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -19,18 +18,18 @@ import de.rub.nds.tlsattacker.core.protocol.message.PskClientKeyExchangeMessage;
 import org.junit.jupiter.api.Test;
 
 public class PskClientKeyExchangePreparatorTest
-    extends AbstractTlsMessagePreparatorTest<PskClientKeyExchangeMessage, PskClientKeyExchangePreparator> {
+        extends AbstractProtocolMessagePreparatorTest<
+                PskClientKeyExchangeMessage, PskClientKeyExchangePreparator> {
 
-    private final static String RANDOM = "CAFEBABECAFE";
-    private final static byte[] PREMASTERSECRET = ArrayConverter.hexStringToByteArray("00040000000000041a2b3c4d");
+    private static final String RANDOM = "CAFEBABECAFE";
+    private static final byte[] PREMASTERSECRET =
+            ArrayConverter.hexStringToByteArray("00040000000000041a2b3c4d");
 
     public PskClientKeyExchangePreparatorTest() {
-        super(PskClientKeyExchangeMessage::new, PskClientKeyExchangeMessage::new, PskClientKeyExchangePreparator::new);
+        super(PskClientKeyExchangeMessage::new, PskClientKeyExchangePreparator::new);
     }
 
-    /**
-     * Test of prepareHandshakeMessageContents method, of class PskClientKeyExchangePreparator.
-     */
+    /** Test of prepareHandshakeMessageContents method, of class PskClientKeyExchangePreparator. */
     @Test
     @Override
     public void testPrepare() {
@@ -42,12 +41,13 @@ public class PskClientKeyExchangePreparatorTest
         preparator.prepareHandshakeMessageContents();
 
         // Tests
-        assertArrayEquals(PREMASTERSECRET, message.getComputations().getPremasterSecret().getValue());
+        assertArrayEquals(
+                PREMASTERSECRET, message.getComputations().getPremasterSecret().getValue());
         assertNotNull(message.getComputations().getClientServerRandom());
         assertArrayEquals(
-            ArrayConverter.concatenate(ArrayConverter.hexStringToByteArray(RANDOM),
-                ArrayConverter.hexStringToByteArray(RANDOM)),
-            message.getComputations().getClientServerRandom().getValue());
-
+                ArrayConverter.concatenate(
+                        ArrayConverter.hexStringToByteArray(RANDOM),
+                        ArrayConverter.hexStringToByteArray(RANDOM)),
+                message.getComputations().getClientServerRandom().getValue());
     }
 }

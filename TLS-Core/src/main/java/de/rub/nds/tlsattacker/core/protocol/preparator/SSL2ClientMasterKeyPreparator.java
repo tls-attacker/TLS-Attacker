@@ -1,25 +1,25 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.Bits;
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ssl.SSL2ByteLength;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientMasterKeyMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class SSL2ClientMasterKeyPreparator extends HandshakeMessagePreparator<SSL2ClientMasterKeyMessage> {
+public class SSL2ClientMasterKeyPreparator
+        extends ProtocolMessagePreparator<SSL2ClientMasterKeyMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -38,11 +38,6 @@ public class SSL2ClientMasterKeyPreparator extends HandshakeMessagePreparator<SS
 
     @Override
     protected void prepareProtocolMessageContents() {
-        prepareHandshakeMessageContents();
-    }
-
-    @Override
-    protected void prepareHandshakeMessageContents() {
         LOGGER.debug("Prepare SSL2ClientMasterKey");
         prepareMessagePaddingLength(message);
         prepareType(message);
@@ -60,14 +55,17 @@ public class SSL2ClientMasterKeyPreparator extends HandshakeMessagePreparator<SS
         int length = SSL2ByteLength.MESSAGE_TYPE;
         length += message.getCipherKind().getValue().length;
         length += message.getClearKeyData().getValue().length + SSL2ByteLength.CLEAR_KEY_LENGTH;
-        length += message.getEncryptedKeyData().getValue().length + SSL2ByteLength.ENCRYPTED_KEY_LENGTH;
+        length +=
+                message.getEncryptedKeyData().getValue().length
+                        + SSL2ByteLength.ENCRYPTED_KEY_LENGTH;
         length += message.getKeyArgData().getValue().length + SSL2ByteLength.KEY_ARG_LENGTH;
         prepareMessageLength(message, length);
     }
 
     /**
-     * Sets the padding length of the message (record). It is always 0, because the message is clear-text. This has
-     * nothing to do with PKCS#1 padding for the Premaster Secret as processed by preparePadding().
+     * Sets the padding length of the message (record). It is always 0, because the message is
+     * clear-text. This has nothing to do with PKCS#1 padding for the Premaster Secret as processed
+     * by preparePadding().
      */
     private void prepareMessagePaddingLength(SSL2ClientMasterKeyMessage message) {
         message.setPaddingLength(0);
@@ -75,19 +73,23 @@ public class SSL2ClientMasterKeyPreparator extends HandshakeMessagePreparator<SS
     }
 
     private void prepareType(SSL2ClientMasterKeyMessage message) {
-        message.setType(HandshakeMessageType.SSL2_CLIENT_MASTER_KEY.getValue());
+        message.setType(message.getSsl2MessageType().getType());
         LOGGER.debug("Type: " + message.getType().getValue());
     }
 
     private void prepareCipherKind(SSL2ClientMasterKeyMessage message) {
         message.setCipherKind(chooser.getSSL2CipherSuite().getByteValue());
-        LOGGER.debug("CipherKind: " + ArrayConverter.bytesToHexString(message.getCipherKind().getValue()));
+        LOGGER.debug(
+                "CipherKind: "
+                        + ArrayConverter.bytesToHexString(message.getCipherKind().getValue()));
     }
 
     private void prepareClearKey(SSL2ClientMasterKeyMessage message) {
         // by default we currently supply null bytes as the clear key portion
         message.setClearKeyData(new byte[chooser.getSSL2CipherSuite().getClearKeyByteNumber()]);
-        LOGGER.debug("ClearKey: " + ArrayConverter.bytesToHexString(message.getClearKeyData().getValue()));
+        LOGGER.debug(
+                "ClearKey: "
+                        + ArrayConverter.bytesToHexString(message.getClearKeyData().getValue()));
     }
 
     private void prepareClearKeyLength(SSL2ClientMasterKeyMessage message) {
@@ -98,7 +100,7 @@ public class SSL2ClientMasterKeyPreparator extends HandshakeMessagePreparator<SS
     private void prepareKeyArg(SSL2ClientMasterKeyMessage message) {
         // KEY-ARG-DATA contains the IV for block ciphers
         byte[] keyArgData = new byte[chooser.getSSL2CipherSuite().getBlockSize()];
-        chooser.getContext().getRandom().nextBytes(keyArgData);
+        chooser.getContext().getTlsContext().getRandom().nextBytes(keyArgData);
         message.setKeyArgData(keyArgData);
         LOGGER.debug("KeyArg: " + ArrayConverter.bytesToHexString(keyArgData));
     }
@@ -115,34 +117,50 @@ public class SSL2ClientMasterKeyPreparator extends HandshakeMessagePreparator<SS
 
     protected void preparePadding(SSL2ClientMasterKeyMessage msg) {
         msg.getComputations().setPadding(padding);
-        LOGGER.debug("Padding: " + ArrayConverter.bytesToHexString(msg.getComputations().getPadding().getValue()));
+        LOGGER.debug(
+                "Padding: "
+                        + ArrayConverter.bytesToHexString(
+                                msg.getComputations().getPadding().getValue()));
     }
 
     /**
-     * Generates as many random bytes as required for the secret portion of the master key in the chosen cipher suite.
+     * Generates as many random bytes as required for the secret portion of the master key in the
+     * chosen cipher suite.
      */
     private byte[] generatePremasterSecret() {
-        byte[] tempPremasterSecret = new byte[chooser.getSSL2CipherSuite().getSecretKeyByteNumber()];
-        chooser.getContext().getRandom().nextBytes(tempPremasterSecret);
+        byte[] tempPremasterSecret =
+                new byte[chooser.getSSL2CipherSuite().getSecretKeyByteNumber()];
+        chooser.getContext().getTlsContext().getRandom().nextBytes(tempPremasterSecret);
         return tempPremasterSecret;
     }
 
     protected void preparePremasterSecret(SSL2ClientMasterKeyMessage msg) {
         msg.getComputations().setPremasterSecret(premasterSecret);
-        LOGGER.debug("PremasterSecret: "
-            + ArrayConverter.bytesToHexString(msg.getComputations().getPremasterSecret().getValue()));
+        LOGGER.debug(
+                "PremasterSecret: "
+                        + ArrayConverter.bytesToHexString(
+                                msg.getComputations().getPremasterSecret().getValue()));
     }
 
     protected void preparePlainPaddedPremasterSecret(SSL2ClientMasterKeyMessage msg) {
-        msg.getComputations().setPlainPaddedPremasterSecret(ArrayConverter.concatenate(new byte[] { 0x00, 0x02 },
-            padding, new byte[] { 0x00 }, msg.getComputations().getPremasterSecret().getValue()));
-        LOGGER.debug("PlainPaddedPremasterSecret: "
-            + ArrayConverter.bytesToHexString(msg.getComputations().getPlainPaddedPremasterSecret().getValue()));
+        msg.getComputations()
+                .setPlainPaddedPremasterSecret(
+                        ArrayConverter.concatenate(
+                                new byte[] {0x00, 0x02},
+                                padding,
+                                new byte[] {0x00},
+                                msg.getComputations().getPremasterSecret().getValue()));
+        LOGGER.debug(
+                "PlainPaddedPremasterSecret: "
+                        + ArrayConverter.bytesToHexString(
+                                msg.getComputations().getPlainPaddedPremasterSecret().getValue()));
     }
 
     protected void prepareEncryptedKeyData(SSL2ClientMasterKeyMessage msg) {
         msg.setEncryptedKeyData(encryptedPremasterSecret);
-        LOGGER.debug("SerializedPublicKey: " + ArrayConverter.bytesToHexString(msg.getEncryptedKeyData().getValue()));
+        LOGGER.debug(
+                "SerializedPublicKey: "
+                        + ArrayConverter.bytesToHexString(msg.getEncryptedKeyData().getValue()));
     }
 
     protected void prepareEncryptedKeyDataLength(SSL2ClientMasterKeyMessage msg) {
@@ -170,20 +188,24 @@ public class SSL2ClientMasterKeyPreparator extends HandshakeMessagePreparator<SS
         } else {
             padding = new byte[0]; // randomByteLength could be negative
         }
-        chooser.getContext().getRandom().nextBytes(padding);
+        chooser.getContext().getTlsContext().getRandom().nextBytes(padding);
         ArrayConverter.makeArrayNonZero(padding);
         preparePadding(message);
 
         preparePlainPaddedPremasterSecret(message);
-        byte[] paddedPremasterSecret = message.getComputations().getPlainPaddedPremasterSecret().getValue();
+        byte[] paddedPremasterSecret =
+                message.getComputations().getPlainPaddedPremasterSecret().getValue();
 
         BigInteger biPaddedPremasterSecret = new BigInteger(1, paddedPremasterSecret);
         BigInteger biEncrypted =
-            biPaddedPremasterSecret.modPow(chooser.getServerRSAPublicKey(), chooser.getServerRsaModulus());
-        encryptedPremasterSecret = ArrayConverter.bigIntegerToByteArray(biEncrypted,
-            chooser.getServerRsaModulus().bitLength() / Bits.IN_A_BYTE, true);
+                biPaddedPremasterSecret.modPow(
+                        chooser.getServerRSAPublicKey(), chooser.getServerRsaModulus());
+        encryptedPremasterSecret =
+                ArrayConverter.bigIntegerToByteArray(
+                        biEncrypted,
+                        chooser.getServerRsaModulus().bitLength() / Bits.IN_A_BYTE,
+                        true);
         prepareEncryptedKeyData(message);
         prepareEncryptedKeyDataLength(message);
     }
-
 }

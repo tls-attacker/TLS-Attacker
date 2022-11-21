@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,9 +22,7 @@ public class TimeoutDelegateTest extends AbstractDelegateTest<TimeoutDelegate> {
         super.setUp(new TimeoutDelegate());
     }
 
-    /**
-     * Test of getTimeout method, of class TimeoutDelegate.
-     */
+    /** Test of getTimeout method, of class TimeoutDelegate. */
     @Test
     public void testGetTimeout() {
         args = new String[2];
@@ -36,9 +33,7 @@ public class TimeoutDelegateTest extends AbstractDelegateTest<TimeoutDelegate> {
         assertEquals(123, (int) delegate.getTimeout());
     }
 
-    /**
-     * Test of setTimeout method, of class TimeoutDelegate.
-     */
+    /** Test of setTimeout method, of class TimeoutDelegate. */
     @Test
     public void testSetTimeout() {
         assertNull(delegate.getTimeout());
@@ -46,9 +41,7 @@ public class TimeoutDelegateTest extends AbstractDelegateTest<TimeoutDelegate> {
         assertEquals(123, (int) delegate.getTimeout());
     }
 
-    /**
-     * Test of applyDelegate method, of class TimeoutDelegate.
-     */
+    /** Test of applyDelegate method, of class TimeoutDelegate. */
     @Test
     public void testApplyDelegate() {
         Config config = Config.createConfig();
@@ -71,7 +64,7 @@ public class TimeoutDelegateTest extends AbstractDelegateTest<TimeoutDelegate> {
         Config config = Config.createConfig();
         Config config2 = Config.createConfig();
         delegate.applyDelegate(config);
-        assertTrue(EqualsBuilder.reflectionEquals(config, config2));// little
+        assertTrue(EqualsBuilder.reflectionEquals(config, config2)); // little
         // ugly
     }
 }

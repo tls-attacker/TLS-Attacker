@@ -1,23 +1,22 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.crypto.keys;
 
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
 import java.math.BigInteger;
 import java.util.Objects;
 import javax.crypto.interfaces.DHPublicKey;
 import javax.crypto.spec.DHParameterSpec;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -53,24 +52,25 @@ public class CustomDhPublicKey extends CustomPublicKey implements DHPublicKey {
     }
 
     @Override
-    public void adjustInContext(TlsContext context, ConnectionEndType ownerOfKey) {
-        LOGGER.debug("Adjusting DH public key in context");
+    public void adjustInContext(TlsContext tlsContext, ConnectionEndType ownerOfKey) {
+        LOGGER.debug("Adjusting DH public key in tlsContext");
         if (null == ownerOfKey) {
             throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
         } else {
             switch (ownerOfKey) {
                 case CLIENT:
-                    context.setClientDhGenerator(generator);
-                    context.setClientDhModulus(modulus);
-                    context.setClientDhPublicKey(publicKey);
+                    tlsContext.setClientDhGenerator(generator);
+                    tlsContext.setClientDhModulus(modulus);
+                    tlsContext.setClientDhPublicKey(publicKey);
                     break;
                 case SERVER:
-                    context.setServerDhGenerator(generator);
-                    context.setServerDhModulus(modulus);
-                    context.setServerDhPublicKey(publicKey);
+                    tlsContext.setServerDhGenerator(generator);
+                    tlsContext.setServerDhModulus(modulus);
+                    tlsContext.setServerDhPublicKey(publicKey);
                     break;
                 default:
-                    throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
+                    throw new IllegalArgumentException(
+                            "Owner of Key " + ownerOfKey + " is not supported");
             }
         }
     }
@@ -117,7 +117,8 @@ public class CustomDhPublicKey extends CustomPublicKey implements DHPublicKey {
                     config.setDefaultServerDhPublicKey(publicKey);
                     break;
                 default:
-                    throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
+                    throw new IllegalArgumentException(
+                            "Owner of Key " + ownerOfKey + " is not supported");
             }
         }
     }

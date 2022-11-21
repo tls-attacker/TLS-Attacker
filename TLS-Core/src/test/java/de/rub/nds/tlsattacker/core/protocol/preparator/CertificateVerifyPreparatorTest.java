@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import static de.rub.nds.modifiablevariable.util.ArrayConverter.concatenate;
@@ -17,20 +16,20 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.Security;
+import java.util.LinkedList;
+import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.Security;
-import java.util.LinkedList;
-import java.util.List;
-
 public class CertificateVerifyPreparatorTest
-    extends AbstractTlsMessagePreparatorTest<CertificateVerifyMessage, CertificateVerifyPreparator> {
+        extends AbstractProtocolMessagePreparatorTest<
+                CertificateVerifyMessage, CertificateVerifyPreparator> {
 
     @BeforeAll
     public static void setUpClass() {
@@ -38,7 +37,7 @@ public class CertificateVerifyPreparatorTest
     }
 
     public CertificateVerifyPreparatorTest() {
-        super(CertificateVerifyMessage::new, CertificateVerifyMessage::new, CertificateVerifyPreparator::new);
+        super(CertificateVerifyMessage::new, CertificateVerifyPreparator::new);
     }
 
     private static byte[] repeatBytes(String hex, int count) {
@@ -46,33 +45,33 @@ public class CertificateVerifyPreparatorTest
     }
 
     /**
-     * Test for correct generation of CertificateVerify.signature for SSLv3 with empty secret and no handshake_messages.
-     * From RFC 6101:
+     * Test for correct generation of CertificateVerify.signature for SSLv3 with empty secret and no
+     * handshake_messages. From RFC 6101:
      *
-     * 5.6.8. Certificate Verify
+     * <p>5.6.8. Certificate Verify
      *
-     * This message is used to provide explicit verification of a client certificate. This message is only sent
-     * following any client certificate that has signing capability (i.e., all certificates except those containing
-     * fixed Diffie-Hellman parameters).
+     * <p>This message is used to provide explicit verification of a client certificate. This
+     * message is only sent following any client certificate that has signing capability (i.e., all
+     * certificates except those containing fixed Diffie-Hellman parameters).
      *
-     * struct { Signature signature; } CertificateVerify;
+     * <p>struct { Signature signature; } CertificateVerify;
      *
-     * CertificateVerify.signature.md5_hash MD5(master_secret + pad_2 + MD5(handshake_messages + master_secret +
-     * pad_1)); Certificate.signature.sha_hash SHA(master_secret + pad_2 + SHA(handshake_messages + master_secret +
-     * pad_1));
+     * <p>CertificateVerify.signature.md5_hash MD5(master_secret + pad_2 + MD5(handshake_messages +
+     * master_secret + pad_1)); Certificate.signature.sha_hash SHA(master_secret + pad_2 +
+     * SHA(handshake_messages + master_secret + pad_1));
      *
-     * pad_1: This is identical to the pad_1 defined in Section 5.2.3.1.
+     * <p>pad_1: This is identical to the pad_1 defined in Section 5.2.3.1.
      *
-     * pad_2: This is identical to the pad_2 defined in Section 5.2.3.1.
+     * <p>pad_2: This is identical to the pad_2 defined in Section 5.2.3.1.
      *
-     * Here, handshake_messages refers to all handshake messages starting at client hello up to but not including this
-     * message.
+     * <p>Here, handshake_messages refers to all handshake messages starting at client hello up to
+     * but not including this message.
      *
-     * .......
+     * <p>.......
      *
-     * pad_1: The character 0x36 repeated 48 times for MD5 or 40 times for SHA.
+     * <p>pad_1: The character 0x36 repeated 48 times for MD5 or 40 times for SHA.
      *
-     * pad_2: The character 0x5c repeated 48 times for MD5 or 40 times for SHA.
+     * <p>pad_2: The character 0x5c repeated 48 times for MD5 or 40 times for SHA.
      *
      * @throws NoSuchAlgorithmException
      */
@@ -110,12 +109,17 @@ public class CertificateVerifyPreparatorTest
         algoList.add(SignatureAndHashAlgorithm.RSA_SHA1);
         context.getConfig().setDefaultClientSupportedSignatureAndHashAlgorithms(algoList);
         preparator.prepare();
-        assertArrayEquals(new byte[] { 1, 1, }, message.getSignatureHashAlgorithm().getValue());
+        assertArrayEquals(
+                new byte[] {
+                    1, 1,
+                },
+                message.getSignatureHashAlgorithm().getValue());
         // TODO I don't check if the signature is correctly calculated or
         // calculated over the correct values
-        assertArrayEquals(ArrayConverter.hexStringToByteArray(
-            "479FB09700E855666B1D65C9C5B0D279088A0573A7FDA4F59E5816E7869CA7753F7648143F9A7DB86534D33EEA9ED40BB8FE052F5BAF1D9BE52502B57B6B5661F9A4DC077D4AC0714F5768D7319C6E3862BD6EFA2F85E464B54E8A89FC19FD2090E53DA05D5556E74A7EE31CD217A510620BD61F24F5CDFEF5ACDFE060B9F37E"),
-            message.getSignature().getValue());
+        assertArrayEquals(
+                ArrayConverter.hexStringToByteArray(
+                        "479FB09700E855666B1D65C9C5B0D279088A0573A7FDA4F59E5816E7869CA7753F7648143F9A7DB86534D33EEA9ED40BB8FE052F5BAF1D9BE52502B57B6B5661F9A4DC077D4AC0714F5768D7319C6E3862BD6EFA2F85E464B54E8A89FC19FD2090E53DA05D5556E74A7EE31CD217A510620BD61F24F5CDFEF5ACDFE060B9F37E"),
+                message.getSignature().getValue());
         assertEquals(128, (int) message.getSignatureLength().getValue());
     }
 
@@ -130,7 +134,7 @@ public class CertificateVerifyPreparatorTest
         context.getConfig().setDefaultClientSupportedSignatureAndHashAlgorithms(algoList);
         preparator.prepare();
 
-        assertArrayEquals(new byte[] { 2, 3 }, message.getSignatureHashAlgorithm().getValue());
+        assertArrayEquals(new byte[] {2, 3}, message.getSignatureHashAlgorithm().getValue());
         assertEquals(70, (int) message.getSignatureLength().getValue());
     }
 }

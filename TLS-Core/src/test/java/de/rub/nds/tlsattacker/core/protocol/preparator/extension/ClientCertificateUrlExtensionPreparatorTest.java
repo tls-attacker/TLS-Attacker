@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -18,12 +17,16 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ClientCertifica
 import org.junit.jupiter.api.Test;
 
 public class ClientCertificateUrlExtensionPreparatorTest
-    extends AbstractExtensionMessagePreparatorTest<ClientCertificateUrlExtensionMessage,
-        ClientCertificateUrlExtensionSerializer, ClientCertificateUrlExtensionPreparator> {
+        extends AbstractExtensionMessagePreparatorTest<
+                ClientCertificateUrlExtensionMessage,
+                ClientCertificateUrlExtensionSerializer,
+                ClientCertificateUrlExtensionPreparator> {
 
     public ClientCertificateUrlExtensionPreparatorTest() {
-        super(ClientCertificateUrlExtensionMessage::new, ClientCertificateUrlExtensionMessage::new,
-            ClientCertificateUrlExtensionSerializer::new, ClientCertificateUrlExtensionPreparator::new);
+        super(
+                ClientCertificateUrlExtensionMessage::new,
+                ClientCertificateUrlExtensionSerializer::new,
+                ClientCertificateUrlExtensionPreparator::new);
     }
 
     @Test
@@ -31,7 +34,9 @@ public class ClientCertificateUrlExtensionPreparatorTest
     public void testPrepare() {
         preparator.prepare();
 
-        assertArrayEquals(ExtensionType.CLIENT_CERTIFICATE_URL.getValue(), message.getExtensionType().getValue());
+        assertArrayEquals(
+                ExtensionType.CLIENT_CERTIFICATE_URL.getValue(),
+                message.getExtensionType().getValue());
         assertEquals(0, (long) message.getExtensionLength().getValue());
     }
 }

@@ -10,10 +10,9 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownHandshakeMessage;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,31 +23,20 @@ public class UnknownHandshakeParser extends HandshakeMessageParser<UnknownHandsh
     /**
      * Constructor for the Parser class
      *
-     * @param pointer
-     *                Position in the array where the HandshakeMessageParser is supposed to start parsing
-     * @param array
-     *                The byte[] which the HandshakeMessageParser is supposed to parse
-     * @param version
-     *                Version of the Protocol
-     * @param config
-     *                A Config used in the current context
+     * @param stream
+     * @param tlsContext
      */
-    public UnknownHandshakeParser(int pointer, byte[] array, ProtocolVersion version, Config config) {
-        super(pointer, array, HandshakeMessageType.UNKNOWN, version, config);
+    public UnknownHandshakeParser(InputStream stream, TlsContext tlsContext) {
+        super(stream, tlsContext);
     }
 
     @Override
-    protected void parseHandshakeMessageContent(UnknownHandshakeMessage msg) {
+    public void parse(UnknownHandshakeMessage msg) {
         LOGGER.debug("Parsing UnknownHandshakeMessage");
         parseData(msg);
         LOGGER.warn(
             "Parsed UnknownHandshake Message: " + ArrayConverter.bytesToHexString(msg.getData().getValue(), false));
 
-    }
-
-    @Override
-    protected UnknownHandshakeMessage createHandshakeMessage() {
-        return new UnknownHandshakeMessage();
     }
 
     /**
@@ -58,7 +46,7 @@ public class UnknownHandshakeParser extends HandshakeMessageParser<UnknownHandsh
      *            Message to write in
      */
     private void parseData(UnknownHandshakeMessage msg) {
-        msg.setData(parseByteArrayField(msg.getLength().getValue()));
+        msg.setData(parseByteArrayField(getBytesLeft()));
         LOGGER.debug("Data: " + ArrayConverter.bytesToHexString(msg.getData().getValue()));
     }
 }

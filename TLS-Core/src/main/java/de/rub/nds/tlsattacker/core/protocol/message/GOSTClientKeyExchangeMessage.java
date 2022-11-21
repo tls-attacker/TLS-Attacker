@@ -1,44 +1,46 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.GOSTClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.GOSTClientComputations;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.util.List;
+import de.rub.nds.tlsattacker.core.protocol.parser.GOSTClientKeyExchangeParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.GOST01ClientKeyExchangePreparator;
+import de.rub.nds.tlsattacker.core.protocol.preparator.GOST12ClientKeyExchangePreparator;
+import de.rub.nds.tlsattacker.core.protocol.preparator.GOSTClientKeyExchangePreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.GOSTClientKeyExchangeSerializer;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import java.io.InputStream;
+import java.util.List;
 
 @XmlRootElement(name = "GOSTClientKeyExchange")
 public class GOSTClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
-    @HoldsModifiableVariable
-    @XmlElement
-    protected GOSTClientComputations computations;
+    @HoldsModifiableVariable @XmlElement protected GOSTClientComputations computations;
 
-    @ModifiableVariableProperty(format = ModifiableVariableProperty.Format.ASN1,
-        type = ModifiableVariableProperty.Type.KEY_MATERIAL)
+    @ModifiableVariableProperty(
+            format = ModifiableVariableProperty.Format.ASN1,
+            type = ModifiableVariableProperty.Type.KEY_MATERIAL)
     private ModifiableByteArray keyTransportBlob;
 
     public GOSTClientKeyExchangeMessage() {
         super();
-    }
-
-    public GOSTClientKeyExchangeMessage(Config tlsConfig) {
-        super(tlsConfig);
     }
 
     public void setKeyTransportBlob(ModifiableByteArray keyTransportBlob) {
@@ -46,7 +48,8 @@ public class GOSTClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     }
 
     public void setKeyTransportBlob(byte[] keyTransportBlob) {
-        this.keyTransportBlob = ModifiableVariableFactory.safelySetValue(this.keyTransportBlob, keyTransportBlob);
+        this.keyTransportBlob =
+                ModifiableVariableFactory.safelySetValue(this.keyTransportBlob, keyTransportBlob);
     }
 
     public ModifiableByteArray getKeyTransportBlob() {
@@ -71,8 +74,29 @@ public class GOSTClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     }
 
     @Override
-    public GOSTClientKeyExchangeHandler getHandler(TlsContext context) {
-        return new GOSTClientKeyExchangeHandler(context);
+    public GOSTClientKeyExchangeHandler getHandler(TlsContext tlsContext) {
+        return new GOSTClientKeyExchangeHandler(tlsContext);
+    }
+
+    @Override
+    public GOSTClientKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new GOSTClientKeyExchangeParser(stream, tlsContext);
+    }
+
+    @Override
+    public GOSTClientKeyExchangePreparator getPreparator(TlsContext tlsContext) {
+        CipherSuite cipherSuite = tlsContext.getChooser().getSelectedCipherSuite();
+        KeyExchangeAlgorithm exchangeAlg = AlgorithmResolver.getKeyExchangeAlgorithm(cipherSuite);
+        if (exchangeAlg == KeyExchangeAlgorithm.VKO_GOST12) {
+            return new GOST12ClientKeyExchangePreparator(tlsContext.getChooser(), this);
+        } else {
+            return new GOST01ClientKeyExchangePreparator(tlsContext.getChooser(), this);
+        }
+    }
+
+    @Override
+    public GOSTClientKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
+        return new GOSTClientKeyExchangeSerializer(this);
     }
 
     @Override
@@ -88,5 +112,4 @@ public class GOSTClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     public String toShortString() {
         return "GOST_CKE";
     }
-
 }

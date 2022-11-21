@@ -9,10 +9,7 @@
 
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-
 import de.rub.nds.tlsattacker.core.protocol.message.KeyUpdateMessage;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -26,12 +23,10 @@ public class KeyUpdateSerializer extends HandshakeMessageSerializer<KeyUpdateMes
      *
      * @param message
      *                Message that should be serialized
-     * @param version
-     *                Version of the Protocol
      */
 
-    public KeyUpdateSerializer(KeyUpdateMessage message, ProtocolVersion version) {
-        super(message, version);
+    public KeyUpdateSerializer(KeyUpdateMessage message) {
+        super(message);
         this.msg = message;
     }
 

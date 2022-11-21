@@ -1,32 +1,27 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol;
 
-import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
-import de.rub.nds.tlsattacker.core.protocol.parser.*;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.util.tests.TestCategories;
+import java.io.ByteArrayInputStream;
+import java.util.Random;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import java.util.Random;
-
 /**
- * This test makes sure that the parsers don't throw other exceptions other than parser exceptions Not every message is
- * always parsable, but the parser should be able to deal with everything
+ * This test makes sure that the parsers don't throw other exceptions other than parser exceptions
+ * Not every message is always parsable, but the parser should be able to deal with everything
  */
-public class ParserStressIT {
-
-    private final Config config = Config.createConfig();
+public class ParserStressIT extends GenericParserSerializerTest {
 
     @Test
     @Tag(TestCategories.INTEGRATION_TEST)
@@ -41,59 +36,13 @@ public class ParserStressIT {
                 if (bytesToParse.length > start) {
                     bytesToParse[start] = 0x02;
                 }
-                ProtocolMessageParser<? extends ProtocolMessage> parser = getRandomParser(r, start, bytesToParse);
-                parser.parse();
-
-            } catch (ParserException ignored) {
+                ProtocolMessage randomMessage = getRandomMessage(r);
+                ProtocolMessageParser parser =
+                        randomMessage.getParser(
+                                new TlsContext(), new ByteArrayInputStream(bytesToParse));
+                parser.parse(randomMessage);
+            } catch (EndOfStreamException | ParserException ignored) {
             }
-        }
-    }
-
-    private ProtocolMessageParser<? extends ProtocolMessage> getRandomParser(Random r, int start, byte[] bytesToParse) {
-        switch (r.nextInt(20)) {
-            case 0:
-                return new AlertParser(start, bytesToParse, ProtocolVersion.TLS12, config);
-            case 1:
-                return new ApplicationMessageParser(start, bytesToParse, ProtocolVersion.TLS12, config);
-            case 2:
-                return new CertificateMessageParser(start, bytesToParse, ProtocolVersion.TLS12, config);
-            case 3:
-                return new CertificateRequestParser(start, bytesToParse, ProtocolVersion.TLS12, config);
-            case 4:
-                return new CertificateVerifyParser(start, bytesToParse, ProtocolVersion.TLS12, config);
-            case 5:
-                return new ChangeCipherSpecParser(start, bytesToParse, ProtocolVersion.TLS12, config);
-            case 6:
-                return new ClientHelloParser(start, bytesToParse, ProtocolVersion.TLS12, config);
-            case 7:
-                return new DHClientKeyExchangeParser<>(start, bytesToParse, ProtocolVersion.TLS12, config);
-            case 8:
-                return new DHEServerKeyExchangeParser<>(start, bytesToParse, ProtocolVersion.TLS12, config);
-            case 9:
-                return new ECDHClientKeyExchangeParser<>(start, bytesToParse, ProtocolVersion.TLS12, config);
-            case 10:
-                return new ECDHEServerKeyExchangeParser<>(start, bytesToParse, ProtocolVersion.TLS12, config);
-            case 11:
-                return new FinishedParser(start, bytesToParse, ProtocolVersion.TLS12, config);
-            case 12:
-                return new HeartbeatMessageParser(start, bytesToParse, ProtocolVersion.TLS12, config);
-            case 13:
-                return new HelloRequestParser(start, bytesToParse, ProtocolVersion.TLS12, config);
-            case 14:
-                return new HelloVerifyRequestParser(start, bytesToParse, ProtocolVersion.TLS12, config);
-            case 15:
-                return new RSAClientKeyExchangeParser<>(start, bytesToParse, ProtocolVersion.TLS12, config);
-            case 16:
-                return new ServerHelloDoneParser(start, bytesToParse, ProtocolVersion.TLS12, config);
-            case 17:
-                return new ServerHelloParser(start, bytesToParse, ProtocolVersion.TLS12, config);
-            case 18:
-                return new UnknownHandshakeParser(start, bytesToParse, ProtocolVersion.TLS12, config);
-            case 19:
-                return new UnknownMessageParser(start, bytesToParse, ProtocolVersion.TLS12, ProtocolMessageType.UNKNOWN,
-                    config);
-            default:
-                throw new UnsupportedOperationException("Unsupported");
         }
     }
 }

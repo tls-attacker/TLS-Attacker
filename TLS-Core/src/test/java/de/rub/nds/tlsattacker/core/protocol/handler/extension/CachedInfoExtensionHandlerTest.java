@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -15,18 +14,18 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CachedInfoExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.CachedInfoExtensionPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.CachedInfoExtensionSerializer;
-import org.junit.jupiter.api.Test;
-
 import java.util.Arrays;
 import java.util.List;
+import org.junit.jupiter.api.Test;
 
 public class CachedInfoExtensionHandlerTest
-    extends AbstractExtensionMessageHandlerTest<CachedInfoExtensionMessage, CachedInfoExtensionHandler> {
+        extends AbstractExtensionMessageHandlerTest<
+                CachedInfoExtensionMessage, CachedInfoExtensionHandler> {
 
     private final List<CachedObject> cachedObjects =
-        Arrays.asList(new CachedObject((byte) 1, 2, new byte[] { 0x01, 0x02 }),
-            new CachedObject((byte) 2, 3, new byte[] { 0x01, 0x02, 0x03 }));
+            Arrays.asList(
+                    new CachedObject((byte) 1, 2, new byte[] {0x01, 0x02}),
+                    new CachedObject((byte) 2, 3, new byte[] {0x01, 0x02, 0x03}));
 
     public CachedInfoExtensionHandlerTest() {
         super(CachedInfoExtensionMessage::new, CachedInfoExtensionHandler::new);
@@ -34,14 +33,14 @@ public class CachedInfoExtensionHandlerTest
 
     @Test
     @Override
-    public void testAdjustTLSContext() {
+    public void testadjustTLSExtensionContext() {
         CachedInfoExtensionMessage msg = new CachedInfoExtensionMessage();
         msg.setCachedInfo(cachedObjects);
         CachedInfoExtensionPreparator preparator =
-            new CachedInfoExtensionPreparator(context.getChooser(), msg, new CachedInfoExtensionSerializer(msg));
+                new CachedInfoExtensionPreparator(context.getChooser(), msg);
         preparator.prepare();
 
-        handler.adjustTLSContext(msg);
+        handler.adjustContext(msg);
 
         assertCachedObjectList(cachedObjects, context.getCachedInfoExtensionObjects());
     }
@@ -51,10 +50,15 @@ public class CachedInfoExtensionHandlerTest
             CachedObject expectedObject = expected.get(i);
             CachedObject actualObject = actual.get(i);
 
-            assertEquals(expectedObject.getCachedInformationType().getValue(),
-                actualObject.getCachedInformationType().getValue());
-            assertEquals(expectedObject.getHashValueLength().getValue(), actualObject.getHashValueLength().getValue());
-            assertArrayEquals(expectedObject.getHashValue().getValue(), actualObject.getHashValue().getValue());
+            assertEquals(
+                    expectedObject.getCachedInformationType().getValue(),
+                    actualObject.getCachedInformationType().getValue());
+            assertEquals(
+                    expectedObject.getHashValueLength().getValue(),
+                    actualObject.getHashValueLength().getValue());
+            assertArrayEquals(
+                    expectedObject.getHashValue().getValue(),
+                    actualObject.getHashValue().getValue());
         }
     }
 }

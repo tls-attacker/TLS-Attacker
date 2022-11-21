@@ -15,12 +15,12 @@ import de.rub.nds.tlsattacker.core.crypto.cipher.CipherWrapper;
 import de.rub.nds.tlsattacker.core.crypto.mac.MacWrapper;
 import de.rub.nds.tlsattacker.core.crypto.mac.WrappedMac;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import de.rub.nds.tlsattacker.core.protocol.Parser;
-import de.rub.nds.tlsattacker.core.record.BlobRecord;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.RecordCryptoComputations;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.io.ByteArrayInputStream;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
@@ -39,8 +39,8 @@ public class RecordStreamCipher extends RecordCipher {
      */
     private WrappedMac writeMac;
 
-    public RecordStreamCipher(TlsContext context, CipherState state) {
-        super(context, state);
+    public RecordStreamCipher(TlsContext tlsContext, CipherState state) {
+        super(tlsContext, state);
         initCipherAndMac();
     }
 
@@ -106,12 +106,6 @@ public class RecordStreamCipher extends RecordCipher {
     }
 
     @Override
-    public void encrypt(BlobRecord br) throws CryptoException {
-        LOGGER.debug("Encrypting BlobRecord");
-        br.setProtocolMessageBytes(encryptCipher.encrypt(br.getCleanProtocolMessageBytes().getValue()));
-    }
-
-    @Override
     public void decrypt(Record record) throws CryptoException {
         if (record.getComputations() == null) {
             LOGGER.warn("Record computations are not prepared.");
@@ -129,7 +123,7 @@ public class RecordStreamCipher extends RecordCipher {
         byte[] plainData = decryptCipher.decrypt(cipherText);
         computations.setPlainRecordBytes(plainData);
         plainData = computations.getPlainRecordBytes().getValue();
-        DecryptionParser parser = new DecryptionParser(0, plainData);
+        PlaintextParser parser = new PlaintextParser(plainData);
         byte[] cleanBytes = parser.parseByteArrayField(plainData.length - readMac.getMacLength());
         record.setCleanProtocolMessageBytes(cleanBytes);
         record.getComputations().setAuthenticatedNonMetaData(cleanBytes);
@@ -143,21 +137,10 @@ public class RecordStreamCipher extends RecordCipher {
         record.getComputations().setMacValid(Arrays.equals(hmac, calculatedHmac));
     }
 
-    @Override
-    public void decrypt(BlobRecord br) throws CryptoException {
-        LOGGER.debug("Decrypting BlobRecord");
-        br.setProtocolMessageBytes(decryptCipher.decrypt(br.getCleanProtocolMessageBytes().getValue()));
-    }
+    class PlaintextParser extends Parser<Object> {
 
-    class DecryptionParser extends Parser<Object> {
-
-        public DecryptionParser(int startposition, byte[] array) {
-            super(startposition, array);
-        }
-
-        @Override
-        public Object parse() {
-            throw new UnsupportedOperationException("Not supported yet.");
+        public PlaintextParser(byte[] array) {
+            super(new ByteArrayInputStream(array));
         }
 
         @Override
@@ -171,9 +154,9 @@ public class RecordStreamCipher extends RecordCipher {
         }
 
         @Override
-        public int getPointer() {
-            return super.getPointer();
+        public void parse(Object t) {
+            throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods,
+            // choose Tools | Templates.
         }
-
     }
 }

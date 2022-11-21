@@ -9,39 +9,33 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.EncryptedExtensionsMessage;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.io.InputStream;
+import java.util.ArrayList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.util.ArrayList;
 
 public class EncryptedExtensionsParser extends HandshakeMessageParser<EncryptedExtensionsMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public EncryptedExtensionsParser(int pointer, byte[] array, ProtocolVersion version, Config config) {
-        super(pointer, array, HandshakeMessageType.ENCRYPTED_EXTENSIONS, version, config);
+    public EncryptedExtensionsParser(InputStream stream, TlsContext tlsContext) {
+        super(stream, tlsContext);
     }
 
     @Override
-    protected void parseHandshakeMessageContent(EncryptedExtensionsMessage msg) {
+    public void parse(EncryptedExtensionsMessage msg) {
         LOGGER.debug("Parsing EncryptedExtensionsMessage");
-        if (hasExtensionLengthField(msg)) {
+        if (hasExtensionLengthField()) {
             parseExtensionLength(msg);
             if (hasExtensions(msg)) {
-                parseExtensionBytes(msg);
+                parseExtensionBytes(msg, false);
             } else {
                 msg.setExtensions(new ArrayList<>());
             }
         }
-    }
-
-    @Override
-    protected EncryptedExtensionsMessage createHandshakeMessage() {
-        return new EncryptedExtensionsMessage();
     }
 
 }

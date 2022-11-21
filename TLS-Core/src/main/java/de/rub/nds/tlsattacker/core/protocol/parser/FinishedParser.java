@@ -10,10 +10,9 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,26 +23,17 @@ public class FinishedParser extends HandshakeMessageParser<FinishedMessage> {
     /**
      * Constructor for the Parser class
      *
-     * @param pointer
-     *                Position in the array where the HandshakeMessageParser is supposed to start parsing
-     * @param array
-     *                The byte[] which the HandshakeMessageParser is supposed to parse
-     * @param version
-     *                Version of the Protocol
+     * @param stream
+     * @param tlsContext
      */
-    public FinishedParser(int pointer, byte[] array, ProtocolVersion version, Config config) {
-        super(pointer, array, HandshakeMessageType.FINISHED, version, config);
+    public FinishedParser(InputStream stream, TlsContext tlsContext) {
+        super(stream, tlsContext);
     }
 
     @Override
-    protected void parseHandshakeMessageContent(FinishedMessage msg) {
+    public void parse(FinishedMessage msg) {
         LOGGER.debug("Parsing FinishedMessage");
         parseVerifyData(msg);
-    }
-
-    @Override
-    protected FinishedMessage createHandshakeMessage() {
-        return new FinishedMessage();
     }
 
     /**
@@ -53,7 +43,7 @@ public class FinishedParser extends HandshakeMessageParser<FinishedMessage> {
      *            Message to write in
      */
     private void parseVerifyData(FinishedMessage msg) {
-        msg.setVerifyData(parseByteArrayField(msg.getLength().getValue()));
+        msg.setVerifyData(parseByteArrayField(getBytesLeft()));
         LOGGER.debug("VerifyData: " + ArrayConverter.bytesToHexString(msg.getVerifyData().getValue()));
     }
 

@@ -1,26 +1,26 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EsniKeyRecord;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.EsniKeyRecordParser;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import java.io.ByteArrayInputStream;
 import java.util.Base64;
 import java.util.LinkedList;
 import java.util.List;
-import jakarta.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.xbill.DNS.Lookup;
@@ -37,13 +37,13 @@ public class EsniKeyDnsRequestAction extends TlsAction {
     private List<ExtensionMessage> extensions;
 
     @Override
-    public void execute(State state) throws WorkflowExecutionException {
+    public void execute(State state) throws ActionExecutionException {
         TlsContext tlsContext;
         tlsContext = state.getTlsContext();
         Config tlsConfig = state.getConfig();
 
         if (isExecuted()) {
-            throw new WorkflowExecutionException("Action already executed!");
+            throw new ActionExecutionException("Action already executed!");
         }
         String hostname = "_esni." + tlsConfig.getDefaultClientConnection().getHostname();
         Lookup lookup;
@@ -77,15 +77,20 @@ public class EsniKeyDnsRequestAction extends TlsAction {
             esniKeyRecordBytes = Base64.getMimeDecoder().decode(esniKeyRecordStr);
         } catch (IllegalArgumentException e) {
             LOGGER.warn(
-                "Failed to base64 decode Resource Record for" + hostname + ". Resource Record: " + esniKeyRecordStr);
+                    "Failed to base64 decode Resource Record for"
+                            + hostname
+                            + ". Resource Record: "
+                            + esniKeyRecordStr);
             setExecuted(true);
             return;
         }
         LOGGER.debug("esniKeyRecordStr :" + esniKeyRecordStr);
         LOGGER.debug("esniKeyRecordBytes: " + ArrayConverter.bytesToHexString(esniKeyRecordBytes));
 
-        EsniKeyRecordParser esniKeyParser = new EsniKeyRecordParser(0, esniKeyRecordBytes, tlsContext.getConfig());
-        EsniKeyRecord esniKeyRecord = esniKeyParser.parse();
+        EsniKeyRecordParser esniKeyParser =
+                new EsniKeyRecordParser(new ByteArrayInputStream(esniKeyRecordBytes), tlsContext);
+        EsniKeyRecord esniKeyRecord = new EsniKeyRecord();
+        esniKeyParser.parse(esniKeyRecord);
         tlsContext.setEsniRecordBytes(esniKeyRecordBytes);
         tlsContext.setEsniRecordVersion(esniKeyRecord.getVersion());
         tlsContext.setEsniRecordChecksum(esniKeyRecord.getChecksum());
@@ -101,7 +106,6 @@ public class EsniKeyDnsRequestAction extends TlsAction {
     @Override
     public void reset() {
         setExecuted(false);
-
     }
 
     @Override

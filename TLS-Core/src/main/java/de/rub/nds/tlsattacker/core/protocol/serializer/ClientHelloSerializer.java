@@ -22,6 +22,8 @@ public class ClientHelloSerializer extends HelloMessageSerializer<ClientHelloMes
 
     private final ClientHelloMessage msg;
 
+    private final ProtocolVersion version;
+
     /**
      * Constructor for the ClientHelloSerializer
      *
@@ -31,8 +33,9 @@ public class ClientHelloSerializer extends HelloMessageSerializer<ClientHelloMes
      *                Version of the Protocol
      */
     public ClientHelloSerializer(ClientHelloMessage message, ProtocolVersion version) {
-        super(message, version);
+        super(message);
         this.msg = message;
+        this.version = version;
     }
 
     @Override

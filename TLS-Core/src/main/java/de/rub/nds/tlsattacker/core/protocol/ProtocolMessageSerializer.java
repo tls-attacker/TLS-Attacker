@@ -9,6 +9,8 @@
 
 package de.rub.nds.tlsattacker.core.protocol;
 
+import de.rub.nds.tlsattacker.core.layer.data.Serializer;
+
 public abstract class ProtocolMessageSerializer<T extends ProtocolMessage> extends Serializer<T> {
 
     protected final T message;
@@ -16,11 +18,4 @@ public abstract class ProtocolMessageSerializer<T extends ProtocolMessage> exten
     public ProtocolMessageSerializer(T message) {
         this.message = message;
     }
-
-    @Override
-    protected final byte[] serializeBytes() {
-        return serializeProtocolMessageContent();
-    }
-
-    public abstract byte[] serializeProtocolMessageContent();
 }

@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.util;
 
 import de.rub.nds.modifiablevariable.util.BadRandom;
@@ -20,17 +19,14 @@ import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.util.concurrent.TimeUnit;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSocket;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
+import javax.net.ssl.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * BasicTlsClient for integration tests. A TLS Client thread that establishes a default TLS session with the given TLS
- * server. If no server is specified, try to connect to 127.0.0.1:4433 using TLS1.2 and TLS_RSA_WITH_AES_128_CBC_SHA.
+ * BasicTlsClient for integration tests. A TLS Client thread that establishes a default TLS session
+ * with the given TLS server. If no server is specified, try to connect to 127.0.0.1:4433 using
+ * TLS1.2 and TLS_RSA_WITH_AES_128_CBC_SHA.
  */
 public class BasicTlsClient extends Thread {
 
@@ -47,9 +43,10 @@ public class BasicTlsClient extends Thread {
 
     private volatile boolean finished = false;
 
-    public BasicTlsClient(String serverHost, int serverPort, ProtocolVersion version, CipherSuite cipherSuite)
-        throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException,
-        UnrecoverableKeyException, KeyManagementException {
+    public BasicTlsClient(
+            String serverHost, int serverPort, ProtocolVersion version, CipherSuite cipherSuite)
+            throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException,
+                    UnrecoverableKeyException, KeyManagementException {
         this.cipherSuite = cipherSuite;
         this.serverHost = serverHost;
         this.serverPort = serverPort;
@@ -58,8 +55,9 @@ public class BasicTlsClient extends Thread {
         this.retryConnect = true;
     }
 
-    public BasicTlsClient() throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException,
-        UnrecoverableKeyException, KeyManagementException {
+    public BasicTlsClient()
+            throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException,
+                    UnrecoverableKeyException, KeyManagementException {
         this("127.0.0.1", 4433, ProtocolVersion.TLS12, CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
     }
 
@@ -110,7 +108,7 @@ public class BasicTlsClient extends Thread {
         SSLContext allowAllContext = getAllowAllContext();
         SSLSocketFactory sslFact = allowAllContext.getSocketFactory();
         SSLSocket socket = (SSLSocket) sslFact.createSocket(serverHost, serverPort);
-        socket.setEnabledCipherSuites(new String[] { cipherSuite.name() });
+        socket.setEnabledCipherSuites(new String[] {cipherSuite.name()});
 
         String[] versions = new String[1];
         switch (version) {
@@ -141,22 +139,27 @@ public class BasicTlsClient extends Thread {
             allowAllContext.getClientSessionContext().setSessionCacheSize(1);
 
             // Trust everything
-            allowAllContext.init(null, new TrustManager[] { new X509TrustManager() {
-                @Override
-                public void checkClientTrusted(java.security.cert.X509Certificate[] arg0, String arg1)
-                    throws CertificateException {
-                }
+            allowAllContext.init(
+                    null,
+                    new TrustManager[] {
+                        new X509TrustManager() {
+                            @Override
+                            public void checkClientTrusted(
+                                    java.security.cert.X509Certificate[] arg0, String arg1)
+                                    throws CertificateException {}
 
-                @Override
-                public void checkServerTrusted(java.security.cert.X509Certificate[] arg0, String arg1)
-                    throws CertificateException {
-                }
+                            @Override
+                            public void checkServerTrusted(
+                                    java.security.cert.X509Certificate[] arg0, String arg1)
+                                    throws CertificateException {}
 
-                @Override
-                public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-                    return null;
-                }
-            } }, new BadRandom());
+                            @Override
+                            public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                                return null;
+                            }
+                        }
+                    },
+                    new BadRandom());
         } catch (NoSuchAlgorithmException | KeyManagementException e) {
             LOGGER.warn(e);
         }

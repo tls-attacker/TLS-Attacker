@@ -22,6 +22,8 @@ public class CertificateVerifySerializer extends HandshakeMessageSerializer<Cert
 
     private final CertificateVerifyMessage msg;
 
+    private ProtocolVersion version;
+
     /**
      * Constructor for the CertificateVerifyMessageSerializer
      *
@@ -31,7 +33,8 @@ public class CertificateVerifySerializer extends HandshakeMessageSerializer<Cert
      *                Version of the Protocol
      */
     public CertificateVerifySerializer(CertificateVerifyMessage message, ProtocolVersion version) {
-        super(message, version);
+        super(message);
+        this.version = version;
         this.msg = message;
     }
 

@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.workflow;
 
 import static de.rub.nds.tlsattacker.util.FileHelper.inputStreamToString;
@@ -17,12 +16,6 @@ import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.workflow.filter.DefaultFilter;
 import de.rub.nds.tlsattacker.util.tests.TestCategories;
 import jakarta.xml.bind.JAXBException;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
-
-import javax.xml.stream.XMLStreamException;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -33,6 +26,11 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.stream.Stream;
+import javax.xml.stream.XMLStreamException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Special tests for WorkflowTraceNormalizer. Tests are currently only defined in
@@ -40,9 +38,11 @@ import java.util.stream.Stream;
  */
 public class WorkflowTraceNormalizerTest {
 
-    private static final String BAD_INPUT_TEST_VECTOR_DIR = "/workflow_trace_serialization_tests-negative";
+    private static final String BAD_INPUT_TEST_VECTOR_DIR =
+            "/workflow_trace_serialization_tests-negative";
 
-    private static final String GOOD_INPUT_TEST_VECTOR_DIR = "/workflow_trace_serialization_tests-positive";
+    private static final String GOOD_INPUT_TEST_VECTOR_DIR =
+            "/workflow_trace_serialization_tests-positive";
 
     private Config config;
 
@@ -68,7 +68,10 @@ public class WorkflowTraceNormalizerTest {
         File testVectorDir = null;
         try {
             testVectorDir =
-                new File(URLDecoder.decode(WorkflowTraceNormalizerTest.class.getResource(path).getFile(), "UTF-8"));
+                    new File(
+                            URLDecoder.decode(
+                                    WorkflowTraceNormalizerTest.class.getResource(path).getFile(),
+                                    "UTF-8"));
         } catch (UnsupportedEncodingException ex) {
             fail("Failed to decode test vector path");
         }
@@ -79,7 +82,7 @@ public class WorkflowTraceNormalizerTest {
     @MethodSource("provideGoodInputTestVectors")
     @Tag(TestCategories.SLOW_TEST)
     public void testNormalizingGoodInputsSucceeds(File testVector)
-        throws IOException, JAXBException, XMLStreamException {
+            throws IOException, JAXBException, XMLStreamException {
         loadTestVector(testVector);
         WorkflowTrace origTrace = WorkflowTrace.copy(trace);
 
@@ -105,11 +108,13 @@ public class WorkflowTraceNormalizerTest {
     @ParameterizedTest
     @MethodSource("provideBadInputTestVectors")
     @Tag(TestCategories.SLOW_TEST)
-    public void testNormalizingBadInputFails(File testVector) throws XMLStreamException, JAXBException, IOException {
+    public void testNormalizingBadInputFails(File testVector)
+            throws XMLStreamException, JAXBException, IOException {
         loadTestVector(testVector);
         WorkflowTraceNormalizer normalizer = new WorkflowTraceNormalizer();
         ConfigurationException exception =
-            assertThrows(ConfigurationException.class, () -> normalizer.normalize(trace, config));
+                assertThrows(
+                        ConfigurationException.class, () -> normalizer.normalize(trace, config));
         assertTrue(exception.getMessage().startsWith("Workflow trace not well defined."));
     }
 
@@ -118,7 +123,8 @@ public class WorkflowTraceNormalizerTest {
      *
      * @param testVector
      */
-    private void loadTestVector(File testVector) throws IOException, XMLStreamException, JAXBException {
+    private void loadTestVector(File testVector)
+            throws IOException, XMLStreamException, JAXBException {
         String testData;
         try (FileInputStream fis = new FileInputStream(testVector)) {
             testData = inputStreamToString(fis);
@@ -130,8 +136,11 @@ public class WorkflowTraceNormalizerTest {
             expectedNormalizedXml = testDataSplit[3].trim();
             expectedFilteredXml = testDataSplit[4].trim();
         }
-        config = Config.createConfig(new ByteArrayInputStream(configXml.getBytes(StandardCharsets.UTF_8)));
-        trace = WorkflowTraceSerializer
-            .secureRead(new ByteArrayInputStream(traceInputXml.getBytes(StandardCharsets.UTF_8)));
+        config =
+                Config.createConfig(
+                        new ByteArrayInputStream(configXml.getBytes(StandardCharsets.UTF_8)));
+        trace =
+                WorkflowTraceSerializer.secureRead(
+                        new ByteArrayInputStream(traceInputXml.getBytes(StandardCharsets.UTF_8)));
     }
 }

@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -25,9 +24,7 @@ public class TransportHandlerDelegateTest extends AbstractDelegateTest<Transport
         super.setUp(new TransportHandlerDelegate());
     }
 
-    /**
-     * Test of getTransportHandlerType method, of class TransportHandlerDelegate.
-     */
+    /** Test of getTransportHandlerType method, of class TransportHandlerDelegate. */
     @Test
     public void testGetTransportHandlerType() {
         args = new String[2];
@@ -46,9 +43,7 @@ public class TransportHandlerDelegateTest extends AbstractDelegateTest<Transport
         assertThrows(ParameterException.class, () -> jcommander.parse(args));
     }
 
-    /**
-     * Test of setTransportHandlerType method, of class TransportHandlerDelegate.
-     */
+    /** Test of setTransportHandlerType method, of class TransportHandlerDelegate. */
     @Test
     public void testSetTransportHandlerType() {
         assertNotSame(TransportHandlerType.UDP, delegate.getTransportHandlerType());
@@ -56,9 +51,7 @@ public class TransportHandlerDelegateTest extends AbstractDelegateTest<Transport
         assertSame(TransportHandlerType.UDP, delegate.getTransportHandlerType());
     }
 
-    /**
-     * Test of applyDelegate method, of class TransportHandlerDelegate.
-     */
+    /** Test of applyDelegate method, of class TransportHandlerDelegate. */
     @Test
     public void testApplyDelegate() {
         Config config = Config.createConfig();
@@ -71,8 +64,12 @@ public class TransportHandlerDelegateTest extends AbstractDelegateTest<Transport
         jcommander.parse(args);
         delegate.applyDelegate(config);
 
-        assertSame(TransportHandlerType.UDP, config.getDefaultClientConnection().getTransportHandlerType());
-        assertSame(TransportHandlerType.UDP, config.getDefaultServerConnection().getTransportHandlerType());
+        assertSame(
+                TransportHandlerType.UDP,
+                config.getDefaultClientConnection().getTransportHandlerType());
+        assertSame(
+                TransportHandlerType.UDP,
+                config.getDefaultServerConnection().getTransportHandlerType());
     }
 
     @Test
@@ -80,8 +77,9 @@ public class TransportHandlerDelegateTest extends AbstractDelegateTest<Transport
         Config config = Config.createConfig();
         Config config2 = Config.createConfig();
         delegate.applyDelegate(config);
-        assertTrue(EqualsBuilder.reflectionEquals(config, config2, "keyStore", "ourCertificate"));// little
+        assertTrue(
+                EqualsBuilder.reflectionEquals(
+                        config, config2, "keyStore", "ourCertificate")); // little
         // ugly
     }
-
 }
