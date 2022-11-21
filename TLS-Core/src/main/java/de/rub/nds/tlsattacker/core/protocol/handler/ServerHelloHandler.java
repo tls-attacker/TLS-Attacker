@@ -174,8 +174,8 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                 || tlsContext.getChooser().getSelectedProtocolVersion() == ProtocolVersion.DTLS13) {
             // DTLS 1.3: skip epoch 1 if no early data was sent
             if (tlsContext.getChooser().getSelectedProtocolVersion() == ProtocolVersion.DTLS13
-                    && tlsContext.getRecordLayer().getDecryptor().isFirstEpoch()) {
-                tlsContext.getRecordLayer().skipEarlyDataDecryptionEpoch();
+                    && tlsContext.getRecordLayer().getEncryptor().isFirstEpoch()) {
+                tlsContext.getRecordLayer().skipEarlyDataEncryptionEpoch();
             }
             tlsContext
                     .getRecordLayer()

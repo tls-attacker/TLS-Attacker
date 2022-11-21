@@ -299,11 +299,13 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
     public void skipEarlyDataEncryptionEpoch() {
         encryptor.addNewRecordCipher(null);
         writeEpoch++;
+        LOGGER.debug("Skipped writeEpoch " + writeEpoch);
     }
 
     public void skipEarlyDataDecryptionEpoch() {
         decryptor.addNewRecordCipher(null);
         readEpoch++;
+        LOGGER.debug("Skipped readEpoch " + readEpoch);
     }
 
     /**

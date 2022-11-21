@@ -54,7 +54,9 @@ public class RecordEncryptor extends Encryptor {
                 LOGGER.error("Could not encrypt with NullCipher", ex1);
             }
         }
-        if (tlsContext.getChooser().getSelectedProtocolVersion() == ProtocolVersion.DTLS13) {
+        // in DTLS 1.3 record numbers are also encrypted
+        if (tlsContext.getChooser().getSelectedProtocolVersion() == ProtocolVersion.DTLS13
+                && tlsContext.getWriteEpoch() > 0) {
             try {
                 recordCipher.encryptSequenceNumber(record);
             } catch (CryptoException ex) {

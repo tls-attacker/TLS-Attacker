@@ -84,7 +84,10 @@ public class RecordSerializer extends Serializer<Record> {
 
     private void writeEncryptedSequenceNumber(Record record) {
         appendBytes(record.getEncryptedSequenceNumber().getValue());
-        LOGGER.debug("Encrypted SequenceNumber: " + ArrayConverter.bytesToHexString(record.getEncryptedSequenceNumber().getValue()));
+        LOGGER.debug(
+                "Encrypted SequenceNumber: "
+                        + ArrayConverter.bytesToHexString(
+                                record.getEncryptedSequenceNumber().getValue()));
     }
 
     private void writeContentType(Record record) {
