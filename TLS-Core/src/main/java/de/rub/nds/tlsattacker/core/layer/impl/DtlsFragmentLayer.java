@@ -109,15 +109,12 @@ public class DtlsFragmentLayer
                 fragments = getEnoughFragments(context, data.length);
             } else {
                 // use the provided fragments
-                if (getLayerConfiguration().getContainerList().size() > 0) {
-                    fragments.add(getLayerConfiguration().getContainerList().remove(0));
-                    if (context.getConfig().isCreateFragmentsDynamically()) {
-                        fragments.addAll(
-                                getEnoughFragments(
-                                        context,
-                                        data.length
-                                                - fragments.get(0).getMaxFragmentLengthConfig()));
-                    }
+                fragments.add(getLayerConfiguration().getContainerList().remove(0));
+                if (context.getConfig().isCreateFragmentsDynamically()) {
+                    fragments.addAll(
+                            getEnoughFragments(
+                                    context,
+                                    data.length - fragments.get(0).getMaxFragmentLengthConfig()));
                 }
             }
             fragments =

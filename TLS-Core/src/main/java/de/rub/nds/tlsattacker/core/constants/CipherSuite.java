@@ -656,6 +656,12 @@ public enum CipherSuite {
             return version == ProtocolVersion.TLS13;
         }
 
+        if (this.isGCM()) {
+            return version == ProtocolVersion.TLS12
+                    || version == ProtocolVersion.DTLS12
+                    || version == ProtocolVersion.TLS13;
+        }
+
         if (this.name().endsWith("256")
                 || this.name().endsWith("384")
                 || this.isCCM()

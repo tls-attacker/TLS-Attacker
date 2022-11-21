@@ -233,6 +233,11 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>de.rub.nds.tls.dockerlib</groupId>
+            <artifactId>tls-docker-library</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
             <scope>test</scope>

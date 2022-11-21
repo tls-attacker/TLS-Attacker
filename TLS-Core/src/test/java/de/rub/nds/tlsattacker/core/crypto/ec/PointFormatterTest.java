@@ -29,14 +29,14 @@ public class PointFormatterTest {
     @Test
     @Tag(TestCategories.INTEGRATION_TEST)
     public void cyclicTest() {
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 25; i++) {
             for (NamedGroup group : NamedGroup.getImplemented()) {
                 if (group.isStandardCurve()) {
                     EllipticCurve curve = CurveFactory.getCurve(group);
                     Point point =
                             curve.getPoint(
-                                    new BigInteger(i % 257, new Random(i)),
-                                    new BigInteger(i % 257, new Random(i)));
+                                    new BigInteger(i, new Random(i)),
+                                    new BigInteger(i, new Random(i)));
                     byte[] byteArray1 =
                             PointFormatter.formatToByteArray(
                                     group, point, ECPointFormat.UNCOMPRESSED);
@@ -53,11 +53,11 @@ public class PointFormatterTest {
     @Test
     @Tag(TestCategories.INTEGRATION_TEST)
     public void compressionFormatCyclicTest() {
-        for (int i = 1; i < 50; i++) {
+        for (int i = 1; i < 25; i++) {
             for (NamedGroup group : NamedGroup.getImplemented()) {
                 if (group.isStandardCurve()) {
                     EllipticCurve curve = CurveFactory.getCurve(group);
-                    BigInteger scalar = new BigInteger(i % 257, new Random(i));
+                    BigInteger scalar = new BigInteger(i, new Random(i));
                     Point point = curve.mult(scalar, curve.getBasePoint());
                     ECPointFormat format;
                     if (curve instanceof EllipticCurveOverFp) {
