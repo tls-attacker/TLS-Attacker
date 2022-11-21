@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -16,10 +15,11 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import org.junit.jupiter.api.Test;
 
 public class RenegotiationInfoExtensionHandlerTest
-    extends AbstractExtensionMessageHandlerTest<RenegotiationInfoExtensionMessage, RenegotiationInfoExtensionHandler> {
+        extends AbstractExtensionMessageHandlerTest<
+                RenegotiationInfoExtensionMessage, RenegotiationInfoExtensionHandler> {
 
     private static final int EXTENSION_LENGTH = 1;
-    private static final byte[] EXTENSION_INFO = new byte[] { 0 };
+    private static final byte[] EXTENSION_INFO = new byte[] {0};
 
     public RenegotiationInfoExtensionHandlerTest() {
         super(RenegotiationInfoExtensionMessage::new, RenegotiationInfoExtensionHandler::new);
@@ -28,11 +28,11 @@ public class RenegotiationInfoExtensionHandlerTest
 
     @Test
     @Override
-    public void testAdjustTLSContext() {
+    public void testadjustTLSExtensionContext() {
         RenegotiationInfoExtensionMessage message = new RenegotiationInfoExtensionMessage();
         message.setRenegotiationInfo(EXTENSION_INFO);
         message.setExtensionLength(EXTENSION_LENGTH);
-        handler.adjustTLSContext(message);
+        handler.adjustTLSExtensionContext(message);
         assertArrayEquals(EXTENSION_INFO, context.getRenegotiationInfo());
     }
 }

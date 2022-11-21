@@ -10,21 +10,20 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
+import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.ResponderId;
-import de.rub.nds.tlsattacker.core.protocol.Parser;
+import java.io.InputStream;
 
 public class ResponderIdParser extends Parser<ResponderId> {
 
-    public ResponderIdParser(int startposition, byte[] array) {
-        super(startposition, array);
+    public ResponderIdParser(InputStream stream) {
+        super(stream);
     }
 
     @Override
-    public ResponderId parse() {
-        ResponderId id = new ResponderId();
+    public void parse(ResponderId id) {
         id.setIdLength(parseIntField(ExtensionByteLength.CERTIFICATE_STATUS_REQUEST_V2_RESPONDER_ID));
         id.setId(parseByteArrayField(id.getIdLength().getValue()));
-        return id;
     }
 
 }

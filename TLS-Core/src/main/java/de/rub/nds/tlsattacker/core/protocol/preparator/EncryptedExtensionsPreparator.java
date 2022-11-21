@@ -18,11 +18,8 @@ public class EncryptedExtensionsPreparator extends HandshakeMessagePreparator<En
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final EncryptedExtensionsMessage msg;
-
     public EncryptedExtensionsPreparator(Chooser chooser, EncryptedExtensionsMessage message) {
         super(chooser, message);
-        this.msg = message;
     }
 
     @Override

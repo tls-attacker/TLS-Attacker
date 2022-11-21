@@ -10,13 +10,10 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,41 +21,25 @@ public class ECDHEServerKeyExchangeParser<T extends ECDHEServerKeyExchangeMessag
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final ProtocolVersion version;
-
-    private final KeyExchangeAlgorithm keyExchangeAlgorithm;
-
     /**
      * Constructor for the Parser class
      *
-     * @param pointer
-     *                Position in the array where the ServerKeyExchangeParser is supposed to start parsing
-     * @param array
-     *                The byte[] which the ServerKeyExchangeParser is supposed to parse
-     * @param version
-     *                Version of the Protocol
-     * @param config
-     *                A Config used in the current context
+     * @param stream
+     * @param tlsContext
      */
-    public ECDHEServerKeyExchangeParser(int pointer, byte[] array, ProtocolVersion version, Config config) {
-        this(pointer, array, version, null, config);
-    }
 
-    public ECDHEServerKeyExchangeParser(int pointer, byte[] array, ProtocolVersion version,
-        KeyExchangeAlgorithm keyExchangeAlgorithm, Config config) {
-        super(pointer, array, HandshakeMessageType.SERVER_KEY_EXCHANGE, version, config);
-        this.version = version;
-        this.keyExchangeAlgorithm = keyExchangeAlgorithm;
+    public ECDHEServerKeyExchangeParser(InputStream stream, TlsContext tlsContext) {
+        super(stream, tlsContext);
     }
 
     @Override
-    protected void parseHandshakeMessageContent(ECDHEServerKeyExchangeMessage msg) {
+    public void parse(ECDHEServerKeyExchangeMessage msg) {
         LOGGER.debug("Parsing ECDHEServerKeyExchangeMessage");
         parseCurveType(msg);
         parseNamedGroup(msg);
         parseSerializedPublicKeyLength(msg);
         parseSerializedPublicKey(msg);
-        if (this.keyExchangeAlgorithm == null || !this.keyExchangeAlgorithm.isAnon()) {
+        if (getKeyExchangeAlgorithm() == null || !getKeyExchangeAlgorithm().isAnon()) {
             if (isTLS12() || isDTLS12()) {
                 parseSignatureAndHashAlgorithm(msg);
             }
@@ -72,11 +53,6 @@ public class ECDHEServerKeyExchangeParser<T extends ECDHEServerKeyExchangeMessag
         parseNamedGroup(msg);
         parseSerializedPublicKeyLength(msg);
         parseSerializedPublicKey(msg);
-    }
-
-    @Override
-    protected T createHandshakeMessage() {
-        return (T) new ECDHEServerKeyExchangeMessage();
     }
 
     /**
@@ -121,24 +97,6 @@ public class ECDHEServerKeyExchangeParser<T extends ECDHEServerKeyExchangeMessag
     private void parseSerializedPublicKey(ECDHEServerKeyExchangeMessage msg) {
         msg.setPublicKey(parseByteArrayField(msg.getPublicKeyLength().getValue()));
         LOGGER.debug("SerializedPublicKey: " + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
-    }
-
-    /**
-     * Checks if the version is TLS12
-     *
-     * @return True if the used version is TLS12
-     */
-    private boolean isTLS12() {
-        return version == ProtocolVersion.TLS12;
-    }
-
-    /**
-     * Checks if the version is DTLS12
-     *
-     * @return True if the used version is DTLS12
-     */
-    private boolean isDTLS12() {
-        return version == ProtocolVersion.DTLS12;
     }
 
     /**

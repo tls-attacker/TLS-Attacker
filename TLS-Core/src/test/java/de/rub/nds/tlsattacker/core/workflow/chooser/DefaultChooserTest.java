@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.workflow.chooser;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -15,18 +14,17 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.state.session.Session;
 import de.rub.nds.tlsattacker.core.state.session.TicketSession;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.tcp.ClientTcpTransportHandler;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import java.math.BigInteger;
 import java.util.LinkedList;
 import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class DefaultChooserTest {
 
@@ -41,9 +39,7 @@ public class DefaultChooserTest {
         config = chooser.getConfig();
     }
 
-    /**
-     * Test of getClientSupportedPointFormats method, of class DefaultChooser.
-     */
+    /** Test of getClientSupportedPointFormats method, of class DefaultChooser. */
     @Test
     public void testGetClientSupportedPointFormats() {
         List<ECPointFormat> formatList = new LinkedList<>();
@@ -62,22 +58,22 @@ public class DefaultChooserTest {
         assertTrue(chooser.getClientSupportedPointFormats().isEmpty());
     }
 
-    /**
-     * Test of getSelectedSigHashAlgorithm method, of class DefaultChooser.
-     */
+    /** Test of getSelectedSigHashAlgorithm method, of class DefaultChooser. */
     @Test
     public void testGetSelectedSigHashAlgorithm() {
-        config.setDefaultSelectedSignatureAndHashAlgorithm(SignatureAndHashAlgorithm.RSA_PSS_PSS_SHA256);
-        assertEquals(config.getDefaultSelectedSignatureAndHashAlgorithm(),
-            SignatureAndHashAlgorithm.RSA_PSS_PSS_SHA256);
-        assertEquals(chooser.getSelectedSigHashAlgorithm(), SignatureAndHashAlgorithm.RSA_PSS_PSS_SHA256);
+        config.setDefaultSelectedSignatureAndHashAlgorithm(
+                SignatureAndHashAlgorithm.RSA_PSS_PSS_SHA256);
+        assertEquals(
+                config.getDefaultSelectedSignatureAndHashAlgorithm(),
+                SignatureAndHashAlgorithm.RSA_PSS_PSS_SHA256);
+        assertEquals(
+                chooser.getSelectedSigHashAlgorithm(),
+                SignatureAndHashAlgorithm.RSA_PSS_PSS_SHA256);
         context.setSelectedSignatureAndHashAlgorithm(SignatureAndHashAlgorithm.DSA_SHA1);
         assertEquals(chooser.getSelectedSigHashAlgorithm(), SignatureAndHashAlgorithm.DSA_SHA1);
     }
 
-    /**
-     * Test of getClientSupportedNamedGroups method, of class DefaultChooser.
-     */
+    /** Test of getClientSupportedNamedGroups method, of class DefaultChooser. */
     @Test
     public void testGetClientSupportedNamedCurves() {
         List<NamedGroup> curveList = new LinkedList<>();
@@ -89,12 +85,9 @@ public class DefaultChooserTest {
         assertEquals(3, chooser.getClientSupportedNamedGroups().size());
         context.setClientNamedGroupsList(new LinkedList<NamedGroup>());
         assertTrue(chooser.getClientSupportedNamedGroups().isEmpty());
-
     }
 
-    /**
-     * Test of getServerSupportedPointFormats method, of class DefaultChooser.
-     */
+    /** Test of getServerSupportedPointFormats method, of class DefaultChooser. */
     @Test
     public void testGetServerSupportedPointFormats() {
         List<ECPointFormat> formatList = new LinkedList<>();
@@ -113,9 +106,7 @@ public class DefaultChooserTest {
         assertTrue(chooser.getServerSupportedPointFormats().isEmpty());
     }
 
-    /**
-     * Test of getClientSupportedSignatureAndHashAlgorithms method, of class DefaultChooser.
-     */
+    /** Test of getClientSupportedSignatureAndHashAlgorithms method, of class DefaultChooser. */
     @Test
     public void testGetClientSupportedSignatureAndHashAlgorithms() {
         List<SignatureAndHashAlgorithm> algoList = new LinkedList<>();
@@ -123,13 +114,12 @@ public class DefaultChooserTest {
         config.setDefaultClientSupportedSignatureAndHashAlgorithms(algoList);
         assertEquals(1, config.getDefaultClientSupportedSignatureAndHashAlgorithms().size());
         assertEquals(1, chooser.getClientSupportedSignatureAndHashAlgorithms().size());
-        context.setClientSupportedSignatureAndHashAlgorithms(new LinkedList<SignatureAndHashAlgorithm>());
+        context.setClientSupportedSignatureAndHashAlgorithms(
+                new LinkedList<SignatureAndHashAlgorithm>());
         assertTrue(chooser.getClientSupportedSignatureAndHashAlgorithms().isEmpty());
     }
 
-    /**
-     * Test of getLastRecordVersion method, of class DefaultChooser.
-     */
+    /** Test of getLastRecordVersion method, of class DefaultChooser. */
     @Test
     public void testGetLastRecordVersion() {
         config.setDefaultLastRecordProtocolVersion(ProtocolVersion.TLS13_DRAFT20);
@@ -139,23 +129,19 @@ public class DefaultChooserTest {
         assertEquals(ProtocolVersion.SSL2, context.getLastRecordVersion());
     }
 
-    /**
-     * Test of getDistinguishedNames method, of class DefaultChooser.
-     */
+    /** Test of getDistinguishedNames method, of class DefaultChooser. */
     @Test
     public void testGetDistinguishedNames() {
-        byte[] namelist = { (byte) 0, (byte) 1 };
+        byte[] namelist = {(byte) 0, (byte) 1};
         config.setDistinguishedNames(namelist);
         assertEquals(2, config.getDistinguishedNames().length);
         assertEquals(2, chooser.getDistinguishedNames().length);
-        byte[] namelist2 = { (byte) 0, (byte) 1, (byte) 3 };
+        byte[] namelist2 = {(byte) 0, (byte) 1, (byte) 3};
         context.setDistinguishedNames(namelist2);
         assertEquals(3, chooser.getDistinguishedNames().length);
     }
 
-    /**
-     * Test of getClientCertificateTypes method, of class DefaultChooser.
-     */
+    /** Test of getClientCertificateTypes method, of class DefaultChooser. */
     @Test
     public void testGetClientCertificateTypes() {
         List<ClientCertificateType> typeList = new LinkedList<>();
@@ -171,12 +157,9 @@ public class DefaultChooserTest {
         assertEquals(7, chooser.getClientCertificateTypes().size());
         context.setClientCertificateTypes(new LinkedList<ClientCertificateType>());
         assertTrue(chooser.getClientCertificateTypes().isEmpty());
-
     }
 
-    /**
-     * Test of getMaxFragmentLength method, of class DefaultChooser.
-     */
+    /** Test of getMaxFragmentLength method, of class DefaultChooser. */
     @Test
     public void testGetMaxFragmentLength() {
         config.setDefaultMaxFragmentLength(MaxFragmentLength.TWO_9);
@@ -186,9 +169,7 @@ public class DefaultChooserTest {
         assertEquals(MaxFragmentLength.TWO_11, chooser.getMaxFragmentLength());
     }
 
-    /**
-     * Test of getHeartbeatMode method, of class DefaultChooser.
-     */
+    /** Test of getHeartbeatMode method, of class DefaultChooser. */
     @Test
     public void testGetHeartbeatMode() {
         config.setHeartbeatMode(HeartbeatMode.PEER_ALLOWED_TO_SEND);
@@ -198,9 +179,7 @@ public class DefaultChooserTest {
         assertEquals(HeartbeatMode.PEER_NOT_ALLOWED_TO_SEND, chooser.getHeartbeatMode());
     }
 
-    /**
-     * Test of isExtendedMasterSecretExtension method, of class DefaultChooser.
-     */
+    /** Test of isExtendedMasterSecretExtension method, of class DefaultChooser. */
     @Test
     public void testIsUseExtendedMasterSecret() {
         assertFalse(chooser.isUseExtendedMasterSecret());
@@ -208,9 +187,7 @@ public class DefaultChooserTest {
         assertTrue(chooser.isUseExtendedMasterSecret());
     }
 
-    /**
-     * Test of getClientSupportedCompressions method, of class DefaultChooser.
-     */
+    /** Test of getClientSupportedCompressions method, of class DefaultChooser. */
     @Test
     public void testGetClientSupportedCompressions() {
         LinkedList<CompressionMethod> clientSupportedCompressionMethods = new LinkedList<>();
@@ -219,15 +196,15 @@ public class DefaultChooserTest {
         clientSupportedCompressionMethods.add(CompressionMethod.NULL);
         clientSupportedCompressionMethods.add(CompressionMethod.DEFLATE);
         config.setDefaultClientSupportedCompressionMethods(clientSupportedCompressionMethods);
-        assertEquals(clientSupportedCompressionMethods, config.getDefaultClientSupportedCompressionMethods());
+        assertEquals(
+                clientSupportedCompressionMethods,
+                config.getDefaultClientSupportedCompressionMethods());
         assertEquals(clientSupportedCompressionMethods, chooser.getClientSupportedCompressions());
         context.setClientSupportedCompressions(clientSupportedCompressionMethods2);
         assertEquals(clientSupportedCompressionMethods2, chooser.getClientSupportedCompressions());
     }
 
-    /**
-     * Test of getClientSupportedCiphersuites method, of class DefaultChooser.
-     */
+    /** Test of getClientSupportedCiphersuites method, of class DefaultChooser. */
     @Test
     public void testGetClientSupportedCiphersuites() {
         LinkedList<CipherSuite> clientSupportedCiphersuites = new LinkedList<>();
@@ -245,29 +222,33 @@ public class DefaultChooserTest {
         assertEquals(clientSupportedCiphersuites2, chooser.getClientSupportedCipherSuites());
     }
 
-    /**
-     * Test of getServerSupportedSignatureAndHashAlgorithms method, of class DefaultChooser.
-     */
+    /** Test of getServerSupportedSignatureAndHashAlgorithms method, of class DefaultChooser. */
     @Test
     public void testGetServerSupportedSignatureAndHashAlgorithms() {
-        LinkedList<SignatureAndHashAlgorithm> serverSupportedSignatureAndHashAlgorithms = new LinkedList<>();
-        LinkedList<SignatureAndHashAlgorithm> serverSupportedSignatureAndHashAlgorithms2 = new LinkedList<>();
+        LinkedList<SignatureAndHashAlgorithm> serverSupportedSignatureAndHashAlgorithms =
+                new LinkedList<>();
+        LinkedList<SignatureAndHashAlgorithm> serverSupportedSignatureAndHashAlgorithms2 =
+                new LinkedList<>();
         serverSupportedSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.DSA_MD5);
         serverSupportedSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.DSA_SHA1);
         serverSupportedSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.DSA_SHA256);
         serverSupportedSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.DSA_SHA384);
-        config.setDefaultServerSupportedSignatureAndHashAlgorithms(serverSupportedSignatureAndHashAlgorithms);
-        assertEquals(serverSupportedSignatureAndHashAlgorithms,
-            config.getDefaultServerSupportedSignatureAndHashAlgorithms());
-        assertEquals(serverSupportedSignatureAndHashAlgorithms, chooser.getServerSupportedSignatureAndHashAlgorithms());
-        context.setServerSupportedSignatureAndHashAlgorithms(serverSupportedSignatureAndHashAlgorithms2);
-        assertEquals(serverSupportedSignatureAndHashAlgorithms2,
-            chooser.getServerSupportedSignatureAndHashAlgorithms());
+        config.setDefaultServerSupportedSignatureAndHashAlgorithms(
+                serverSupportedSignatureAndHashAlgorithms);
+        assertEquals(
+                serverSupportedSignatureAndHashAlgorithms,
+                config.getDefaultServerSupportedSignatureAndHashAlgorithms());
+        assertEquals(
+                serverSupportedSignatureAndHashAlgorithms,
+                chooser.getServerSupportedSignatureAndHashAlgorithms());
+        context.setServerSupportedSignatureAndHashAlgorithms(
+                serverSupportedSignatureAndHashAlgorithms2);
+        assertEquals(
+                serverSupportedSignatureAndHashAlgorithms2,
+                chooser.getServerSupportedSignatureAndHashAlgorithms());
     }
 
-    /**
-     * Test of getSelectedProtocolVersion method, of class DefaultChooser.
-     */
+    /** Test of getSelectedProtocolVersion method, of class DefaultChooser. */
     @Test
     public void testGetSelectedProtocolVersion() {
         context.setSelectedProtocolVersion(null);
@@ -278,9 +259,7 @@ public class DefaultChooserTest {
         assertEquals(ProtocolVersion.TLS12, chooser.getSelectedProtocolVersion());
     }
 
-    /**
-     * Test of getHighestClientProtocolVersion method, of class DefaultChooser.
-     */
+    /** Test of getHighestClientProtocolVersion method, of class DefaultChooser. */
     @Test
     public void testGetHighestClientProtocolVersion() {
         context.setHighestClientProtocolVersion(null);
@@ -291,9 +270,7 @@ public class DefaultChooserTest {
         assertEquals(ProtocolVersion.TLS11, chooser.getHighestClientProtocolVersion());
     }
 
-    /**
-     * Test of getTalkingConnectionEnd method, of class DefaultChooser.
-     */
+    /** Test of getTalkingConnectionEnd method, of class DefaultChooser. */
     @Test
     public void testGetTalkingConnectionEnd() {
         context.setTalkingConnectionEndType(ConnectionEndType.CLIENT);
@@ -304,12 +281,11 @@ public class DefaultChooserTest {
         assertNull(chooser.getTalkingConnectionEnd());
     }
 
-    /**
-     * Test of getMasterSecret method, of class DefaultChooser.
-     */
+    /** Test of getMasterSecret method, of class DefaultChooser. */
     @Test
     public void testGetMasterSecret() {
-        byte[] masterSecret = ArrayConverter.hexStringToByteArray("ab18712378669892893619236899692136");
+        byte[] masterSecret =
+                ArrayConverter.hexStringToByteArray("ab18712378669892893619236899692136");
         config.setDefaultMasterSecret(masterSecret);
         assertArrayEquals(masterSecret, config.getDefaultMasterSecret());
         assertArrayEquals(masterSecret, chooser.getMasterSecret());
@@ -317,9 +293,7 @@ public class DefaultChooserTest {
         assertArrayEquals(masterSecret, chooser.getMasterSecret());
     }
 
-    /**
-     * Test of getSelectedCipherSuite method, of class DefaultChooser.
-     */
+    /** Test of getSelectedCipherSuite method, of class DefaultChooser. */
     @Test
     public void testGetSelectedCipherSuite() {
         context.setSelectedCipherSuite(null);
@@ -327,15 +301,16 @@ public class DefaultChooserTest {
         assertEquals(CipherSuite.TLS_AES_128_CCM_SHA256, config.getDefaultSelectedCipherSuite());
         assertEquals(CipherSuite.TLS_AES_128_CCM_SHA256, chooser.getSelectedCipherSuite());
         context.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_CAMELLIA_128_CBC_SHA);
-        assertEquals(CipherSuite.TLS_DHE_DSS_WITH_CAMELLIA_128_CBC_SHA, chooser.getSelectedCipherSuite());
+        assertEquals(
+                CipherSuite.TLS_DHE_DSS_WITH_CAMELLIA_128_CBC_SHA,
+                chooser.getSelectedCipherSuite());
     }
 
-    /**
-     * Test of getPreMasterSecret method, of class DefaultChooser.
-     */
+    /** Test of getPreMasterSecret method, of class DefaultChooser. */
     @Test
     public void testGetPreMasterSecret() {
-        byte[] preMasterSecret = ArrayConverter.hexStringToByteArray("ab18712378669892893619236899692136");
+        byte[] preMasterSecret =
+                ArrayConverter.hexStringToByteArray("ab18712378669892893619236899692136");
         config.setDefaultPreMasterSecret(preMasterSecret);
         assertArrayEquals(preMasterSecret, config.getDefaultPreMasterSecret());
         assertArrayEquals(preMasterSecret, chooser.getPreMasterSecret());
@@ -343,12 +318,11 @@ public class DefaultChooserTest {
         assertArrayEquals(preMasterSecret, chooser.getPreMasterSecret());
     }
 
-    /**
-     * Test of getClientRandom method, of class DefaultChooser.
-     */
+    /** Test of getClientRandom method, of class DefaultChooser. */
     @Test
     public void testGetClientRandom() {
-        byte[] clientRandom = ArrayConverter.hexStringToByteArray("ab18712378669892893619236899692136");
+        byte[] clientRandom =
+                ArrayConverter.hexStringToByteArray("ab18712378669892893619236899692136");
         config.setDefaultClientRandom(clientRandom);
         assertArrayEquals(clientRandom, config.getDefaultClientRandom());
         assertArrayEquals(clientRandom, chooser.getClientRandom());
@@ -356,12 +330,11 @@ public class DefaultChooserTest {
         assertArrayEquals(clientRandom, chooser.getClientRandom());
     }
 
-    /**
-     * Test of getServerRandom method, of class DefaultChooser.
-     */
+    /** Test of getServerRandom method, of class DefaultChooser. */
     @Test
     public void testGetServerRandom() {
-        byte[] serverRandom = ArrayConverter.hexStringToByteArray("ab18712378669892893619236899692136");
+        byte[] serverRandom =
+                ArrayConverter.hexStringToByteArray("ab18712378669892893619236899692136");
         config.setDefaultServerRandom(serverRandom);
         assertArrayEquals(serverRandom, config.getDefaultServerRandom());
         assertArrayEquals(serverRandom, chooser.getServerRandom());
@@ -369,9 +342,7 @@ public class DefaultChooserTest {
         assertArrayEquals(serverRandom, chooser.getServerRandom());
     }
 
-    /**
-     * Test of getClientExtendedRandom method of class DefaultChooser.
-     */
+    /** Test of getClientExtendedRandom method of class DefaultChooser. */
     @Test
     public void testGetClientExtendedRandom() {
         byte[] clientExtendedRandom = ArrayConverter.hexStringToByteArray("abcd");
@@ -382,9 +353,7 @@ public class DefaultChooserTest {
         assertArrayEquals(clientExtendedRandom, chooser.getClientExtendedRandom());
     }
 
-    /**
-     * Test of getServerExtendedRandom of class DefaultChooser.
-     */
+    /** Test of getServerExtendedRandom of class DefaultChooser. */
     @Test
     public void testGetServerExtendedRandom() {
         byte[] serverExtendedRandom = ArrayConverter.hexStringToByteArray("abcd");
@@ -395,9 +364,7 @@ public class DefaultChooserTest {
         assertArrayEquals(serverExtendedRandom, chooser.getServerExtendedRandom());
     }
 
-    /**
-     * Test of getSelectedCompressionMethod method, of class DefaultChooser.
-     */
+    /** Test of getSelectedCompressionMethod method, of class DefaultChooser. */
     @Test
     public void testGetSelectedCompressionMethod() {
         context.setSelectedCompressionMethod(null);
@@ -408,9 +375,7 @@ public class DefaultChooserTest {
         assertEquals(CompressionMethod.LZS, chooser.getSelectedCompressionMethod());
     }
 
-    /**
-     * Test of getClientSessionId method, of class DefaultChooser.
-     */
+    /** Test of getClientSessionId method, of class DefaultChooser. */
     @Test
     public void testGetClientSessionId() {
         byte[] sessionID = new byte[0];
@@ -421,9 +386,7 @@ public class DefaultChooserTest {
         assertArrayEquals(sessionID, chooser.getClientSessionId());
     }
 
-    /**
-     * Test of getServerSessionId method, of class DefaultChooser.
-     */
+    /** Test of getServerSessionId method, of class DefaultChooser. */
     @Test
     public void testGetServerSessionId() {
         byte[] sessionID = new byte[0];
@@ -434,9 +397,7 @@ public class DefaultChooserTest {
         assertArrayEquals(sessionID, chooser.getServerSessionId());
     }
 
-    /**
-     * Test of getDtlsCookie method, of class DefaultChooser.
-     */
+    /** Test of getDtlsCookie method, of class DefaultChooser. */
     @Test
     public void testGetDtlsCookie() {
         byte[] cookie = ArrayConverter.hexStringToByteArray("ab18712378669892893619236899692136");
@@ -447,19 +408,15 @@ public class DefaultChooserTest {
         assertArrayEquals(cookie, chooser.getDtlsCookie());
     }
 
-    /**
-     * Test of getTransportHandler method, of class DefaultChooser.
-     */
+    /** Test of getTransportHandler method, of class DefaultChooser. */
     @Test
     public void testGetTransportHandler() {
         TransportHandler transportHandler = new ClientTcpTransportHandler(0, 0, "abc", 0);
-        context.setTransportHandler(transportHandler);
+        context.getContext().getTcpContext().setTransportHandler(transportHandler);
         assertEquals(transportHandler, chooser.getTransportHandler());
     }
 
-    /**
-     * Test of getPRFAlgorithm method, of class DefaultChooser.
-     */
+    /** Test of getPRFAlgorithm method, of class DefaultChooser. */
     @Test
     public void testGetPRFAlgorithm() {
         context.setPrfAlgorithm(null);
@@ -470,26 +427,24 @@ public class DefaultChooserTest {
         assertEquals(PRFAlgorithm.TLS_PRF_SHA256, chooser.getPRFAlgorithm());
     }
 
-    /**
-     * Test of getLatestSessionTicket method, of class DefaultChooser.
-     */
+    /** Test of getLatestSessionTicket method, of class DefaultChooser. */
     @Test
     public void testGetLatestSessionTicket() {
         List<Session> sessionList = new LinkedList<>();
         context.setSessionList(sessionList);
         byte[] sessionTicketTLS = ArrayConverter.hexStringToByteArray("122131123987891238098123");
-        byte[] sessionTicketTLS2 = ArrayConverter.hexStringToByteArray("1221311239878912380981281294");
+        byte[] sessionTicketTLS2 =
+                ArrayConverter.hexStringToByteArray("1221311239878912380981281294");
         config.setTlsSessionTicket(sessionTicketTLS);
         assertArrayEquals(sessionTicketTLS, config.getTlsSessionTicket());
         assertArrayEquals(sessionTicketTLS, chooser.getLatestSessionTicket());
-        TicketSession session = new TicketSession(config.getDefaultMasterSecret(), sessionTicketTLS2);
+        TicketSession session =
+                new TicketSession(config.getDefaultMasterSecret(), sessionTicketTLS2);
         context.addNewSession(session);
         assertArrayEquals(sessionTicketTLS2, chooser.getLatestSessionTicket());
     }
 
-    /**
-     * Test of getSignedCertificateTimestamp method, of class DefaultChooser.
-     */
+    /** Test of getSignedCertificateTimestamp method, of class DefaultChooser. */
     @Test
     public void testGetSignedCertificateTimestamp() {
         context.setSignedCertificateTimestamp(null);
@@ -502,9 +457,7 @@ public class DefaultChooserTest {
         assertArrayEquals(timestamp2, chooser.getSignedCertificateTimestamp());
     }
 
-    /**
-     * Test of getTokenBindingVersion method, of class DefaultChooser.
-     */
+    /** Test of getTokenBindingVersion method, of class DefaultChooser. */
     @Test
     public void testGetTokenBindingVersion() {
         context.setTokenBindingVersion(null);
@@ -515,9 +468,7 @@ public class DefaultChooserTest {
         assertEquals(TokenBindingVersion.DRAFT_1, chooser.getTokenBindingVersion());
     }
 
-    /**
-     * Test of getTokenBindingKeyParameters method, of class DefaultChooser.
-     */
+    /** Test of getTokenBindingKeyParameters method, of class DefaultChooser. */
     @Test
     public void testGetTokenBindingKeyParameters() {
         List<TokenBindingKeyParameters> paramList = new LinkedList<>();
@@ -532,9 +483,7 @@ public class DefaultChooserTest {
         assertEquals(paramList2, chooser.getTokenBindingKeyParameters());
     }
 
-    /**
-     * Test of getServerDhModulus method, of class DefaultChooser.
-     */
+    /** Test of getServerDhModulus method, of class DefaultChooser. */
     @Test
     public void testGetDhModulus() {
         context.setServerDhModulus(null);
@@ -545,9 +494,7 @@ public class DefaultChooserTest {
         assertEquals(BigInteger.TEN, chooser.getServerDhModulus());
     }
 
-    /**
-     * Test of getServerDhGenerator method, of class DefaultChooser.
-     */
+    /** Test of getServerDhGenerator method, of class DefaultChooser. */
     @Test
     public void testGetDhGenerator() {
         context.setServerDhGenerator(null);
@@ -558,9 +505,7 @@ public class DefaultChooserTest {
         assertEquals(BigInteger.TEN, chooser.getServerDhGenerator());
     }
 
-    /**
-     * Test of getDhServerPrivateKey method, of class DefaultChooser.
-     */
+    /** Test of getDhServerPrivateKey method, of class DefaultChooser. */
     @Test
     public void testGetDhServerPrivateKey() {
         context.setServerDhPrivateKey(null);
@@ -571,9 +516,7 @@ public class DefaultChooserTest {
         assertEquals(BigInteger.TEN, chooser.getServerDhPrivateKey());
     }
 
-    /**
-     * Test of getDhClientPrivateKey method, of class DefaultChooser.
-     */
+    /** Test of getDhClientPrivateKey method, of class DefaultChooser. */
     @Test
     public void testGetDhClientPrivateKey() {
         context.setClientDhPrivateKey(null);
@@ -584,9 +527,7 @@ public class DefaultChooserTest {
         assertEquals(BigInteger.TEN, chooser.getClientDhPrivateKey());
     }
 
-    /**
-     * Test of getDhServerPublicKey method, of class DefaultChooser.
-     */
+    /** Test of getDhServerPublicKey method, of class DefaultChooser. */
     @Test
     public void testGetDhServerPublicKey() {
         context.setServerDhPublicKey(null);
@@ -597,9 +538,7 @@ public class DefaultChooserTest {
         assertEquals(BigInteger.TEN, chooser.getServerDhPublicKey());
     }
 
-    /**
-     * Test of getDhClientPublicKey method, of class DefaultChooser.
-     */
+    /** Test of getDhClientPublicKey method, of class DefaultChooser. */
     @Test
     public void testGetDhClientPublicKey() {
         context.setClientDhPublicKey(null);
@@ -610,9 +549,7 @@ public class DefaultChooserTest {
         assertEquals(BigInteger.TEN, chooser.getClientDhPublicKey());
     }
 
-    /**
-     * Test of getServerEcPrivateKey method, of class DefaultChooser.
-     */
+    /** Test of getServerEcPrivateKey method, of class DefaultChooser. */
     @Test
     public void testGetServerEcPrivateKey() {
         context.setServerEcPrivateKey(null);
@@ -623,9 +560,7 @@ public class DefaultChooserTest {
         assertEquals(BigInteger.TEN, chooser.getServerEcPrivateKey());
     }
 
-    /**
-     * Test of getClientEcPrivateKey method, of class DefaultChooser.
-     */
+    /** Test of getClientEcPrivateKey method, of class DefaultChooser. */
     @Test
     public void testGetClientEcPrivateKey() {
         context.setClientEcPrivateKey(null);
@@ -636,9 +571,7 @@ public class DefaultChooserTest {
         assertEquals(BigInteger.TEN, chooser.getClientEcPrivateKey());
     }
 
-    /**
-     * Test of getSelectedNamedGroup method, of class DefaultChooser.
-     */
+    /** Test of getSelectedNamedGroup method, of class DefaultChooser. */
     @Test
     public void testGetSelectedCurve() {
         context.setSelectedGroup(null);
@@ -649,49 +582,51 @@ public class DefaultChooserTest {
         assertEquals(NamedGroup.SECT163R1, chooser.getSelectedNamedGroup());
     }
 
-    /**
-     * Test of getClientEcPublicKey method, of class DefaultChooser.
-     */
+    /** Test of getClientEcPublicKey method, of class DefaultChooser. */
     @Test
     public void testGetClientEcPublicKey() {
         context.setClientEcPublicKey(null);
-        config.setDefaultClientEcPublicKey(Point.createPoint(BigInteger.ONE, BigInteger.TEN, NamedGroup.SECP256R1));
-        assertEquals(Point.createPoint(BigInteger.ONE, BigInteger.TEN, NamedGroup.SECP256R1),
-            config.getDefaultClientEcPublicKey());
-        assertEquals(Point.createPoint(BigInteger.ONE, BigInteger.TEN, NamedGroup.SECP256R1),
-            chooser.getClientEcPublicKey());
-        context.setClientEcPublicKey(Point.createPoint(BigInteger.ZERO, BigInteger.TEN, NamedGroup.SECP256R1));
-        assertEquals(Point.createPoint(BigInteger.ZERO, BigInteger.TEN, NamedGroup.SECP256R1),
-            chooser.getClientEcPublicKey());
+        config.setDefaultClientEcPublicKey(
+                Point.createPoint(BigInteger.ONE, BigInteger.TEN, NamedGroup.SECP256R1));
+        assertEquals(
+                Point.createPoint(BigInteger.ONE, BigInteger.TEN, NamedGroup.SECP256R1),
+                config.getDefaultClientEcPublicKey());
+        assertEquals(
+                Point.createPoint(BigInteger.ONE, BigInteger.TEN, NamedGroup.SECP256R1),
+                chooser.getClientEcPublicKey());
+        context.setClientEcPublicKey(
+                Point.createPoint(BigInteger.ZERO, BigInteger.TEN, NamedGroup.SECP256R1));
+        assertEquals(
+                Point.createPoint(BigInteger.ZERO, BigInteger.TEN, NamedGroup.SECP256R1),
+                chooser.getClientEcPublicKey());
     }
 
-    /**
-     * Test of getServerEcPublicKey method, of class DefaultChooser.
-     */
+    /** Test of getServerEcPublicKey method, of class DefaultChooser. */
     @Test
     public void testGetServerEcPublicKey() {
         context.setServerEcPublicKey(null);
-        config.setDefaultServerEcPublicKey(Point.createPoint(BigInteger.ONE, BigInteger.TEN, NamedGroup.SECP256R1));
-        assertEquals(Point.createPoint(BigInteger.ONE, BigInteger.TEN, NamedGroup.SECP256R1),
-            config.getDefaultServerEcPublicKey());
-        assertEquals(Point.createPoint(BigInteger.ONE, BigInteger.TEN, NamedGroup.SECP256R1),
-            chooser.getServerEcPublicKey());
-        context.setServerEcPublicKey(Point.createPoint(BigInteger.ZERO, BigInteger.TEN, NamedGroup.SECP256R1));
-        assertEquals(Point.createPoint(BigInteger.ZERO, BigInteger.TEN, NamedGroup.SECP256R1),
-            chooser.getServerEcPublicKey());
+        config.setDefaultServerEcPublicKey(
+                Point.createPoint(BigInteger.ONE, BigInteger.TEN, NamedGroup.SECP256R1));
+        assertEquals(
+                Point.createPoint(BigInteger.ONE, BigInteger.TEN, NamedGroup.SECP256R1),
+                config.getDefaultServerEcPublicKey());
+        assertEquals(
+                Point.createPoint(BigInteger.ONE, BigInteger.TEN, NamedGroup.SECP256R1),
+                chooser.getServerEcPublicKey());
+        context.setServerEcPublicKey(
+                Point.createPoint(BigInteger.ZERO, BigInteger.TEN, NamedGroup.SECP256R1));
+        assertEquals(
+                Point.createPoint(BigInteger.ZERO, BigInteger.TEN, NamedGroup.SECP256R1),
+                chooser.getServerEcPublicKey());
     }
 
-    /**
-     * Test of getEcCurveType method, of class DefaultChooser.
-     */
+    /** Test of getEcCurveType method, of class DefaultChooser. */
     @Test
     public void testGetEcCurveType() {
         assertEquals(EllipticCurveType.NAMED_CURVE, chooser.getEcCurveType());
     }
 
-    /**
-     * Test of getRsaModulus method, of class DefaultChooser.
-     */
+    /** Test of getRsaModulus method, of class DefaultChooser. */
     @Test
     public void testGetRsaModulus() {
         context.setServerRSAModulus(null);
@@ -702,9 +637,7 @@ public class DefaultChooserTest {
         assertEquals(BigInteger.TEN, chooser.getServerRsaModulus());
     }
 
-    /**
-     * Test of getServerRSAPublicKey method, of class DefaultChooser.
-     */
+    /** Test of getServerRSAPublicKey method, of class DefaultChooser. */
     @Test
     public void testGetServerRSAPublicKey() {
         context.setServerRSAPublicKey(null);
@@ -715,9 +648,7 @@ public class DefaultChooserTest {
         assertEquals(BigInteger.TEN, chooser.getServerRSAPublicKey());
     }
 
-    /**
-     * Test of getClientRSAPublicKey method, of class DefaultChooser.
-     */
+    /** Test of getClientRSAPublicKey method, of class DefaultChooser. */
     @Test
     public void testGetClientRSAPublicKey() {
         context.setClientRSAPublicKey(null);
@@ -728,14 +659,13 @@ public class DefaultChooserTest {
         assertEquals(BigInteger.TEN, chooser.getClientRSAPublicKey());
     }
 
-    /**
-     * Test of getCertificateRequestContext method, of class DefaultChooser.
-     */
+    /** Test of getCertificateRequestContext method, of class DefaultChooser. */
     @Test
     public void testGetCertificateRequestContext() {
         context.setCertificateRequestContext(null);
         byte[] requestContext = ArrayConverter.hexStringToByteArray("122131123987891238098123");
-        byte[] requestContext2 = ArrayConverter.hexStringToByteArray("1221311239878912380981281294");
+        byte[] requestContext2 =
+                ArrayConverter.hexStringToByteArray("1221311239878912380981281294");
         config.setDefaultCertificateRequestContext(requestContext);
         assertArrayEquals(requestContext, config.getDefaultCertificateRequestContext());
         assertArrayEquals(requestContext, chooser.getCertificateRequestContext());
@@ -743,9 +673,7 @@ public class DefaultChooserTest {
         assertArrayEquals(requestContext2, chooser.getCertificateRequestContext());
     }
 
-    /**
-     * Test of getServerHandshakeTrafficSecret method, of class DefaultChooser.
-     */
+    /** Test of getServerHandshakeTrafficSecret method, of class DefaultChooser. */
     @Test
     public void testGetServerHandshakeTrafficSecret() {
         context.setServerHandshakeTrafficSecret(null);
@@ -758,9 +686,7 @@ public class DefaultChooserTest {
         assertArrayEquals(secret2, chooser.getServerHandshakeTrafficSecret());
     }
 
-    /**
-     * Test of getClientHandshakeTrafficSecret method, of class DefaultChooser.
-     */
+    /** Test of getClientHandshakeTrafficSecret method, of class DefaultChooser. */
     @Test
     public void testGetClientHandshakeTrafficSecret() {
         context.setClientHandshakeTrafficSecret(null);
@@ -773,9 +699,7 @@ public class DefaultChooserTest {
         assertArrayEquals(secret2, chooser.getClientHandshakeTrafficSecret());
     }
 
-    /**
-     * Test of getPWDClientUsername method, of class DefaultChooser.
-     */
+    /** Test of getPWDClientUsername method, of class DefaultChooser. */
     @Test
     public void testGetPWDClientUsername() {
         context.setClientPWDUsername(null);
@@ -786,9 +710,7 @@ public class DefaultChooserTest {
         assertEquals("Brian", chooser.getClientPWDUsername());
     }
 
-    /**
-     * Test of getServerPWDSalt method, of class DefaultChooser.
-     */
+    /** Test of getServerPWDSalt method, of class DefaultChooser. */
     @Test
     public void testGetServerPWDSalt() {
         byte[] salt = ArrayConverter.hexStringToByteArray("12");
@@ -801,18 +723,14 @@ public class DefaultChooserTest {
         assertArrayEquals(salt2, chooser.getServerPWDSalt());
     }
 
-    /**
-     * Test of getPWDPassword method, of class DefaultChooser.
-     */
+    /** Test of getPWDPassword method, of class DefaultChooser. */
     @Test
     public void testGetPWDPassword() {
         config.setDefaultPWDPassword("Jake");
         assertEquals("Jake", chooser.getPWDPassword());
     }
 
-    /**
-     * Test of getInboundRecordSizeLimit method, of class DefaultChooser.
-     */
+    /** Test of getInboundRecordSizeLimit method, of class DefaultChooser. */
     @Test
     public void testGetInboundRecordSizeLimit() {
         config.setDefaultMaxRecordData(1337);
@@ -824,9 +742,7 @@ public class DefaultChooserTest {
         assertEquals(42, (int) chooser.getInboundRecordSizeLimit());
     }
 
-    /**
-     * Test of getOutboundRecordSizeLimit method, of class DefaultChooser.
-     */
+    /** Test of getOutboundRecordSizeLimit method, of class DefaultChooser. */
     @Test
     public void testGetOutboundRecordSizeLimit() {
         config.setDefaultMaxRecordData(1337);

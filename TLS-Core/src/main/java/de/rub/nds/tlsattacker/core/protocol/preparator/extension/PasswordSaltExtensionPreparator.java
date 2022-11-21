@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PasswordSaltExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PasswordSaltExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,9 +21,8 @@ public class PasswordSaltExtensionPreparator extends ExtensionPreparator<Passwor
 
     private final PasswordSaltExtensionMessage msg;
 
-    public PasswordSaltExtensionPreparator(Chooser chooser, PasswordSaltExtensionMessage message,
-        PasswordSaltExtensionSerializer serializer) {
-        super(chooser, message, serializer);
+    public PasswordSaltExtensionPreparator(Chooser chooser, PasswordSaltExtensionMessage message) {
+        super(chooser, message);
         this.msg = message;
     }
 

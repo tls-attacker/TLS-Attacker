@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
@@ -15,30 +14,30 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.PskClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.PSKPremasterComputations;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.util.List;
+import de.rub.nds.tlsattacker.core.protocol.parser.PskClientKeyExchangeParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.PskClientKeyExchangePreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.PskClientKeyExchangeSerializer;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import java.io.InputStream;
+import java.util.List;
 
 @XmlRootElement(name = "PskClientKeyExchange")
 public class PskClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
-    @HoldsModifiableVariable
-    @XmlElement
-    protected PSKPremasterComputations computations;
-    @ModifiableVariableProperty(format = ModifiableVariableProperty.Format.PKCS1,
-        type = ModifiableVariableProperty.Type.PUBLIC_KEY)
+    @HoldsModifiableVariable @XmlElement protected PSKPremasterComputations computations;
+
+    @ModifiableVariableProperty(
+            format = ModifiableVariableProperty.Format.PKCS1,
+            type = ModifiableVariableProperty.Type.PUBLIC_KEY)
     private ModifiableByteArray identity;
+
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger identityLength;
-
-    public PskClientKeyExchangeMessage(Config tlsConfig) {
-        super(tlsConfig);
-    }
 
     public PskClientKeyExchangeMessage() {
         super();
@@ -89,12 +88,28 @@ public class PskClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     }
 
     public void setIdentityLength(int identityLength) {
-        this.identityLength = ModifiableVariableFactory.safelySetValue(this.identityLength, identityLength);
+        this.identityLength =
+                ModifiableVariableFactory.safelySetValue(this.identityLength, identityLength);
     }
 
     @Override
-    public PskClientKeyExchangeHandler getHandler(TlsContext context) {
-        return new PskClientKeyExchangeHandler(context);
+    public PskClientKeyExchangeHandler getHandler(TlsContext tlsContext) {
+        return new PskClientKeyExchangeHandler(tlsContext);
+    }
+
+    @Override
+    public PskClientKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new PskClientKeyExchangeParser(stream, tlsContext);
+    }
+
+    @Override
+    public PskClientKeyExchangePreparator getPreparator(TlsContext tlsContext) {
+        return new PskClientKeyExchangePreparator(tlsContext.getChooser(), this);
+    }
+
+    @Override
+    public PskClientKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
+        return new PskClientKeyExchangeSerializer(this);
     }
 
     @Override
@@ -122,5 +137,4 @@ public class PskClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     public String toShortString() {
         return "PSK_CKE";
     }
-
 }

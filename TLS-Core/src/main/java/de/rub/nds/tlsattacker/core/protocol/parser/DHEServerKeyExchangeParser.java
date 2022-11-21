@@ -10,53 +10,31 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
-import java.util.Arrays;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.io.InputStream;
+import java.util.Arrays;
 
 public class DHEServerKeyExchangeParser<T extends DHEServerKeyExchangeMessage> extends ServerKeyExchangeParser<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final ProtocolVersion version;
-
-    private final KeyExchangeAlgorithm keyExchangeAlgorithm;
-
     /**
      * Constructor for the Parser class
      *
-     * @param pointer
-     *                             Position in the array where the ServerKeyExchangeParser is supposed to start parsing
-     * @param array
-     *                             The byte[] which the ServerKeyExchangeParser is supposed to parse
-     * @param version
-     *                             Version of the Protocol
-     * @param keyExchangeAlgorithm
-     *                             The selected key exchange algorithm (affects which fields are present).
-     * @param config
-     *                             A Config used in the current context
+     * @param stream
+     * @param tlsContext
      */
-    public DHEServerKeyExchangeParser(int pointer, byte[] array, ProtocolVersion version,
-        KeyExchangeAlgorithm keyExchangeAlgorithm, Config config) {
-        super(pointer, array, HandshakeMessageType.SERVER_KEY_EXCHANGE, version, config);
-        this.version = version;
-        this.keyExchangeAlgorithm = keyExchangeAlgorithm;
-
-    }
-
-    public DHEServerKeyExchangeParser(int pointer, byte[] array, ProtocolVersion version, Config config) {
-        // TODO: Delete when done
-        this(pointer, array, version, null, config);
+    public DHEServerKeyExchangeParser(InputStream stream, TlsContext tlsContext) {
+        super(stream, tlsContext);
     }
 
     @Override
-    protected void parseHandshakeMessageContent(DHEServerKeyExchangeMessage msg) {
+    public void parse(DHEServerKeyExchangeMessage msg) {
         LOGGER.debug("Parsing DHEServerKeyExchangeMessage");
         parsePLength(msg);
         parseP(msg);
@@ -66,7 +44,7 @@ public class DHEServerKeyExchangeParser<T extends DHEServerKeyExchangeMessage> e
         parseSerializedPublicKey(msg);
         // TODO: this.keyExchangeAlgorithm can currently be null, only for test
         // code that needs to be reworked.
-        if (this.keyExchangeAlgorithm == null || !this.keyExchangeAlgorithm.isAnon()) {
+        if (getKeyExchangeAlgorithm() == null || !getKeyExchangeAlgorithm().isAnon()) {
             if (isTLS12() || isDTLS12()) {
                 parseSignatureAndHashAlgorithm(msg);
             }
@@ -82,11 +60,6 @@ public class DHEServerKeyExchangeParser<T extends DHEServerKeyExchangeMessage> e
         parseG(msg);
         parseSerializedPublicKeyLength(msg);
         parseSerializedPublicKey(msg);
-    }
-
-    @Override
-    protected T createHandshakeMessage() {
-        return (T) new DHEServerKeyExchangeMessage();
     }
 
     /**
@@ -153,24 +126,6 @@ public class DHEServerKeyExchangeParser<T extends DHEServerKeyExchangeMessage> e
     private void parseSerializedPublicKey(DHEServerKeyExchangeMessage msg) {
         msg.setPublicKey(parseByteArrayField(msg.getPublicKeyLength().getValue()));
         LOGGER.debug("SerializedPublicKey: " + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
-    }
-
-    /**
-     * Checks if the version is TLS12
-     *
-     * @return True if the used version is TLS12
-     */
-    private boolean isTLS12() {
-        return version == ProtocolVersion.TLS12;
-    }
-
-    /**
-     * Checks if the version is DTLS12
-     *
-     * @return True if the used version is DTLS12
-     */
-    private boolean isDTLS12() {
-        return version == ProtocolVersion.DTLS12;
     }
 
     /**

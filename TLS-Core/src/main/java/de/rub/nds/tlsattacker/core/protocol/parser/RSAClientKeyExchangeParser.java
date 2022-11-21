@@ -10,10 +10,10 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,21 +24,15 @@ public class RSAClientKeyExchangeParser<T extends RSAClientKeyExchangeMessage> e
     /**
      * Constructor for the Parser class
      *
-     * @param startposition
-     *                      Position in the array where the ClientKeyExchangeParser is supposed to start parsing
-     * @param array
-     *                      The byte[] which the ClientKeyExchangeParser is supposed to parse
-     * @param version
-     *                      Version of the Protocol
-     * @param config
-     *                      A Config used in the current context
+     * @param stream
+     * @param tlsContext
      */
-    public RSAClientKeyExchangeParser(int startposition, byte[] array, ProtocolVersion version, Config config) {
-        super(startposition, array, version, config);
+    public RSAClientKeyExchangeParser(InputStream stream, TlsContext tlsContext) {
+        super(stream, tlsContext);
     }
 
     @Override
-    protected void parseHandshakeMessageContent(T msg) {
+    public void parse(T msg) {
         LOGGER.debug("Parsing RSAClientKeyExchangeMessage");
         parseSerializedPublicKeyLength(msg);
         parseSerializedPublicKey(msg);
@@ -47,11 +41,6 @@ public class RSAClientKeyExchangeParser<T extends RSAClientKeyExchangeMessage> e
     protected void parseRsaParams(T msg) {
         parseSerializedPublicKeyLength(msg);
         parseSerializedPublicKey(msg);
-    }
-
-    @Override
-    protected T createHandshakeMessage() {
-        return (T) new RSAClientKeyExchangeMessage();
     }
 
     /**

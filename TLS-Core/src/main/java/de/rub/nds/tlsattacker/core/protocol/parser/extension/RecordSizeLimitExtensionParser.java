@@ -10,9 +10,10 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.RecordSizeLimitExtensionMessage;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,19 +21,14 @@ public class RecordSizeLimitExtensionParser extends ExtensionParser<RecordSizeLi
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public RecordSizeLimitExtensionParser(int startposition, byte[] array, Config config) {
-        super(startposition, array, config);
+    public RecordSizeLimitExtensionParser(InputStream stream, TlsContext tlsContext) {
+        super(stream, tlsContext);
     }
 
     @Override
-    public void parseExtensionMessageContent(RecordSizeLimitExtensionMessage message) {
+    public void parse(RecordSizeLimitExtensionMessage message) {
         LOGGER.debug("Parsing RecordSizeLimitExtensionMessage");
         parseRecordSizeLimit(message);
-    }
-
-    @Override
-    protected RecordSizeLimitExtensionMessage createExtensionMessage() {
-        return new RecordSizeLimitExtensionMessage();
     }
 
     private void parseRecordSizeLimit(RecordSizeLimitExtensionMessage message) {

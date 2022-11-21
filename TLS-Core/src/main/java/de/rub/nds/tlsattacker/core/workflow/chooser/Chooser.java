@@ -1,55 +1,32 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.workflow.chooser;
 
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.CertificateType;
-import de.rub.nds.tlsattacker.core.constants.CipherSuite;
-import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
-import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
-import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
-import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
-import de.rub.nds.tlsattacker.core.constants.EsniDnsKeyRecordVersion;
-import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
-import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
-import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
-import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.constants.SSL2CipherSuite;
-import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
-import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
+import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PskSet;
-import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.math.BigInteger;
-import java.util.Collection;
 import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public abstract class Chooser {
 
-    private static final Logger LOGGER = LogManager.getLogger();
-
-    protected final TlsContext context;
+    protected final Context context;
 
     protected final Config config;
 
-    public Chooser(TlsContext context, Config config) {
+    public Chooser(Context context, Config config) {
         this.config = config;
         this.context = context;
     }
@@ -58,7 +35,7 @@ public abstract class Chooser {
         return config;
     }
 
-    public TlsContext getContext() {
+    public Context getContext() {
         return context;
     }
 
@@ -222,8 +199,6 @@ public abstract class Chooser {
 
     public abstract byte[] getServerApplicationTrafficSecret();
 
-    public abstract RecordLayerType getRecordLayerType();
-
     public abstract BigInteger getClientRSAPrivateKey();
 
     public abstract BigInteger getServerRSAPrivateKey();
@@ -244,9 +219,9 @@ public abstract class Chooser {
 
     public abstract CertificateType getSelectedServerCertificateType();
 
-    public abstract String getHttpsCookieName();
+    public abstract String getHttpCookieName();
 
-    public abstract String getHttpsCookieValue();
+    public abstract String getHttpCookieValue();
 
     public abstract byte[] getPsk();
 

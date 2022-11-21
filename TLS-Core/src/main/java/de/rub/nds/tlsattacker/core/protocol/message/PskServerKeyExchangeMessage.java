@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
@@ -15,20 +14,21 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.PskServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.PSKPremasterComputations;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.util.List;
+import de.rub.nds.tlsattacker.core.protocol.parser.PskServerKeyExchangeParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.PskServerKeyExchangePreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.PskServerKeyExchangeSerializer;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import java.io.InputStream;
+import java.util.List;
 
 @XmlRootElement(name = "PskServerKeyExchange")
 public class PskServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
-    @HoldsModifiableVariable
-    protected PSKPremasterComputations computations;
+    @HoldsModifiableVariable protected PSKPremasterComputations computations;
 
     private ModifiableByteArray identityHint;
 
@@ -37,10 +37,6 @@ public class PskServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
     public PskServerKeyExchangeMessage() {
         super();
-    }
-
-    public PskServerKeyExchangeMessage(Config tlsConfig) {
-        super(tlsConfig, HandshakeMessageType.SERVER_KEY_EXCHANGE);
     }
 
     public ModifiableByteArray getIdentityHint() {
@@ -64,7 +60,9 @@ public class PskServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     }
 
     public void setIdentityHintLength(int identityHintLength) {
-        this.identityHintLength = ModifiableVariableFactory.safelySetValue(this.identityHintLength, identityHintLength);
+        this.identityHintLength =
+                ModifiableVariableFactory.safelySetValue(
+                        this.identityHintLength, identityHintLength);
     }
 
     @Override
@@ -92,8 +90,24 @@ public class PskServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     }
 
     @Override
-    public PskServerKeyExchangeHandler getHandler(TlsContext context) {
-        return new PskServerKeyExchangeHandler(context);
+    public PskServerKeyExchangeHandler getHandler(TlsContext tlsContext) {
+        return new PskServerKeyExchangeHandler(tlsContext);
+    }
+
+    @Override
+    public PskServerKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new PskServerKeyExchangeParser(stream, tlsContext);
+    }
+
+    @Override
+    public PskServerKeyExchangePreparator getPreparator(TlsContext tlsContext) {
+        return new PskServerKeyExchangePreparator(tlsContext.getChooser(), this);
+    }
+
+    @Override
+    public PskServerKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
+        return new PskServerKeyExchangeSerializer(
+                this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

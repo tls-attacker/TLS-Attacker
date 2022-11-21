@@ -9,20 +9,19 @@
 
 package de.rub.nds.tlsattacker.core.tokenbinding;
 
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.protocol.serializer.TlsMessageSerializer;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageSerializer;
 
-public class TokenBindingMessageSerializer extends TlsMessageSerializer<TokenBindingMessage> {
+public class TokenBindingMessageSerializer extends ProtocolMessageSerializer<TokenBindingMessage> {
 
     private final TokenBindingMessage message;
 
-    public TokenBindingMessageSerializer(TokenBindingMessage message, ProtocolVersion version) {
-        super(message, version);
+    public TokenBindingMessageSerializer(TokenBindingMessage message) {
+        super(message);
         this.message = message;
     }
 
     @Override
-    public byte[] serializeProtocolMessageContent() {
+    public byte[] serializeBytes() {
         appendInt(message.getTokenbindingsLength().getValue(), TokenBindingLength.TOKENBINDINGS);
         serializeBinding();
         return getAlreadySerialized();

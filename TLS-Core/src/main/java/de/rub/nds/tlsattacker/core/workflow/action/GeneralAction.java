@@ -1,23 +1,22 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.workflow.action;
 
+import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlTransient;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlTransient;
 
 /**
  * An action that can be used for testing or to provide defaults for the filter/ normalize methods.
@@ -25,11 +24,9 @@ import jakarta.xml.bind.annotation.XmlTransient;
 @XmlRootElement
 public class GeneralAction extends TlsAction {
 
-    @XmlTransient
-    private final Set<String> aliases = new LinkedHashSet<>();
+    @XmlTransient private final Set<String> aliases = new LinkedHashSet<>();
 
-    public GeneralAction() {
-    }
+    public GeneralAction() {}
 
     public GeneralAction(String alias) {
         this.aliases.add(alias);
@@ -49,7 +46,7 @@ public class GeneralAction extends TlsAction {
     }
 
     @Override
-    public void execute(State state) throws WorkflowExecutionException {
+    public void execute(State state) throws ActionExecutionException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -87,5 +84,4 @@ public class GeneralAction extends TlsAction {
     public void assertAliasesSetProperly() throws ConfigurationException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-
 }

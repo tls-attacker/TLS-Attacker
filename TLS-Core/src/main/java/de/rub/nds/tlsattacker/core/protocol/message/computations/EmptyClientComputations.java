@@ -9,8 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.protocol.message.computations;
 
-import de.rub.nds.tlsattacker.core.config.Config;
-
 public class EmptyClientComputations extends KeyExchangeComputations {
 
     public EmptyClientComputations() {

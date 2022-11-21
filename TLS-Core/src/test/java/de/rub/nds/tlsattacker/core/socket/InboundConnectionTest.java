@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.socket;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -20,13 +19,12 @@ import jakarta.xml.bind.Unmarshaller;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import java.io.StringReader;
+import java.io.StringWriter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.io.StringReader;
-import java.io.StringWriter;
 
 public class InboundConnectionTest {
 
@@ -95,8 +93,12 @@ public class InboundConnectionTest {
         String xmlString = writer.toString();
         LOGGER.debug(xmlString);
 
-        String sb = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" + "<testXmlRoot>\n"
-            + "    <alias>TestMe</alias>\n" + "    <port>4444</port>\n" + "</testXmlRoot>\n";
+        String sb =
+                "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n"
+                        + "<testXmlRoot>\n"
+                        + "    <alias>TestMe</alias>\n"
+                        + "    <port>4444</port>\n"
+                        + "</testXmlRoot>\n";
         assertEquals(sb, xmlString);
 
         Unmarshaller um = context.createUnmarshaller();
@@ -212,6 +214,5 @@ public class InboundConnectionTest {
 
     @XmlRootElement
     @XmlAccessorType(XmlAccessType.FIELD)
-    private static class TestXmlRoot extends InboundConnection {
-    }
+    private static class TestXmlRoot extends InboundConnection {}
 }

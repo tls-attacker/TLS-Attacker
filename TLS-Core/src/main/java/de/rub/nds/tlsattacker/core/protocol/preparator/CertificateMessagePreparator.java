@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -31,11 +30,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bouncycastle.asn1.ASN1Encodable;
-import org.bouncycastle.asn1.ASN1ObjectIdentifier;
-import org.bouncycastle.asn1.ASN1OutputStream;
-import org.bouncycastle.asn1.DERBitString;
-import org.bouncycastle.asn1.DLSequence;
+import org.bouncycastle.asn1.*;
 import org.bouncycastle.crypto.tls.Certificate;
 
 public class CertificateMessagePreparator extends HandshakeMessagePreparator<CertificateMessage> {
@@ -85,11 +80,20 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
                         ecPointToEncode = chooser.getServerEcPublicKey();
                     }
                     // TODO this needs to be adjusted for different curves
-                    asn1OutputStream.writeObject(new DLSequence(new ASN1Encodable[] {
-                        new DLSequence(new ASN1Encodable[] { new ASN1ObjectIdentifier("1.2.840.10045.2.1"),
-                            new ASN1ObjectIdentifier("1.2.840.10045.3.1.7") }),
-                        new DERBitString(PointFormatter.formatToByteArray(NamedGroup.SECP256R1, ecPointToEncode,
-                            ECPointFormat.UNCOMPRESSED)) }));
+                    asn1OutputStream.writeObject(
+                            new DLSequence(
+                                    new ASN1Encodable[] {
+                                        new DLSequence(
+                                                new ASN1Encodable[] {
+                                                    new ASN1ObjectIdentifier("1.2.840.10045.2.1"),
+                                                    new ASN1ObjectIdentifier("1.2.840.10045.3.1.7")
+                                                }),
+                                        new DERBitString(
+                                                PointFormatter.formatToByteArray(
+                                                        NamedGroup.SECP256R1,
+                                                        ecPointToEncode,
+                                                        ECPointFormat.UNCOMPRESSED))
+                                    }));
                     asn1OutputStream.flush();
                     msg.setCertificatesListBytes(byteArrayOutputStream.toByteArray());
                     msg.setCertificatesListLength(msg.getCertificatesListBytes().getValue().length);
@@ -104,39 +108,45 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
                 List<CertificatePair> pairList = msg.getCertificateListConfig();
                 if (pairList == null) {
                     CertificateKeyPair selectedCertificateKeyPair =
-                        CertificateByteChooser.getInstance().chooseCertificateKeyPair(chooser);
+                            CertificateByteChooser.getInstance().chooseCertificateKeyPair(chooser);
                     msg.setCertificateKeyPair(selectedCertificateKeyPair);
                     byte[] certBytes = selectedCertificateKeyPair.getCertificateBytes();
-                    if (certBytes.length >= 3 && selectedCertificateKeyPair.isCertificateParsable()) {
+                    if (certBytes.length >= 3
+                            && selectedCertificateKeyPair.isCertificateParsable()) {
                         pairList = new LinkedList<>();
                         try {
-                            Certificate cert = Certificate.parse(new ByteArrayInputStream(certBytes));
-                            for (org.bouncycastle.asn1.x509.Certificate subCert : cert.getCertificateList()) {
+                            Certificate cert =
+                                    Certificate.parse(new ByteArrayInputStream(certBytes));
+                            for (org.bouncycastle.asn1.x509.Certificate subCert :
+                                    cert.getCertificateList()) {
                                 pairList.add(new CertificatePair(subCert.getEncoded()));
                             }
                             msg.setCertificatesList(pairList);
                             prepareFromPairList(msg);
                         } catch (IOException ex) {
                             throw new PreparationException(
-                                "Could not parse a parsable certificate, this should never happen", ex);
+                                    "Could not parse a parsable certificate, this should never happen",
+                                    ex);
                         }
 
                     } else {
                         msg.setCertificatesListBytes(certBytes);
-                        msg.setCertificatesListLength(msg.getCertificatesListBytes().getValue().length);
+                        msg.setCertificatesListLength(
+                                msg.getCertificatesListBytes().getValue().length);
                     }
                 } else {
                     msg.setCertificatesList(pairList);
                     prepareFromPairList(msg);
                 }
 
-                LOGGER.debug("CertificatesListBytes: "
-                    + ArrayConverter.bytesToHexString(msg.getCertificatesListBytes().getValue()));
+                LOGGER.debug(
+                        "CertificatesListBytes: "
+                                + ArrayConverter.bytesToHexString(
+                                        msg.getCertificatesListBytes().getValue()));
                 break;
             default:
                 throw new UnsupportedOperationException("Unsupported CertificateType");
         }
-
     }
 
     private void prepareFromPairList(CertificateMessage msg) {
@@ -145,7 +155,7 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
             CertificatePairPreparator preparator = new CertificatePairPreparator(chooser, pair);
             preparator.prepare();
             CertificatePairSerializer serializer =
-                new CertificatePairSerializer(pair, chooser.getSelectedProtocolVersion());
+                    new CertificatePairSerializer(pair, chooser.getSelectedProtocolVersion());
             try {
                 stream.write(serializer.serialize());
             } catch (IOException ex) {
@@ -162,14 +172,18 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
         } else {
             msg.setRequestContext(new byte[0]);
         }
-        LOGGER.debug("RequestContext: " + ArrayConverter.bytesToHexString(msg.getRequestContext().getValue()));
+        LOGGER.debug(
+                "RequestContext: "
+                        + ArrayConverter.bytesToHexString(msg.getRequestContext().getValue()));
     }
 
     private void prepareRequestContextLength(CertificateMessage msg) {
         msg.setRequestContextLength(msg.getRequestContext().getValue().length);
         LOGGER.debug("RequestContextLength: " + msg.getRequestContextLength().getValue());
         byte[] encodedCert =
-            CertificateByteChooser.getInstance().chooseCertificateKeyPair(chooser).getCertificateBytes();
+                CertificateByteChooser.getInstance()
+                        .chooseCertificateKeyPair(chooser)
+                        .getCertificateBytes();
         msg.setCertificatesListBytes(encodedCert);
         msg.setCertificatesListLength(msg.getCertificatesListBytes().getValue().length);
     }

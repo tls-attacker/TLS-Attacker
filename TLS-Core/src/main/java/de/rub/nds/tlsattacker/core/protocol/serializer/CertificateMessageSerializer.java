@@ -22,6 +22,8 @@ public class CertificateMessageSerializer extends HandshakeMessageSerializer<Cer
 
     private final CertificateMessage msg;
 
+    private final ProtocolVersion version;
+
     /**
      * Constructor for the CertificateMessageSerializer
      *
@@ -31,8 +33,9 @@ public class CertificateMessageSerializer extends HandshakeMessageSerializer<Cer
      *                Version of the Protocol
      */
     public CertificateMessageSerializer(CertificateMessage message, ProtocolVersion version) {
-        super(message, version);
+        super(message);
         this.msg = message;
+        this.version = version;
     }
 
     @Override

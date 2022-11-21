@@ -18,18 +18,9 @@ import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.crypto.gost.GOST28147WrapEngine;
 import de.rub.nds.tlsattacker.core.crypto.gost.TLSGostKeyTransportBlob;
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.GOSTClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.util.GOSTUtils;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import java.io.IOException;
-import java.math.BigInteger;
-import java.security.GeneralSecurityException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
@@ -46,6 +37,15 @@ import org.bouncycastle.crypto.engines.GOST28147Engine;
 import org.bouncycastle.crypto.params.KeyParameter;
 import org.bouncycastle.crypto.params.ParametersWithSBox;
 import org.bouncycastle.crypto.params.ParametersWithUKM;
+
+import java.io.IOException;
+import java.math.BigInteger;
+import java.security.GeneralSecurityException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public abstract class GOSTClientKeyExchangePreparator
     extends ClientKeyExchangePreparator<GOSTClientKeyExchangeMessage> {
@@ -116,7 +116,7 @@ public abstract class GOSTClientKeyExchangePreparator
                 msg.getComputations().setPremasterSecret(pms);
             }
         } catch (Exception e) {
-            throw new WorkflowExecutionException("Could not prepare the key agreement!", e);
+            throw new UnsupportedOperationException("Could not prepare the key agreement!", e);
         }
     }
 
@@ -156,13 +156,13 @@ public abstract class GOSTClientKeyExchangePreparator
     }
 
     private void preparePms() {
-        byte[] pms = chooser.getContext().getPreMasterSecret();
+        byte[] pms = chooser.getContext().getTlsContext().getPreMasterSecret();
         if (pms != null) {
             LOGGER.debug("Using preset PreMasterSecret from context.");
         } else {
             LOGGER.debug("Generating random PreMasterSecret.");
             pms = new byte[32];
-            chooser.getContext().getRandom().nextBytes(pms);
+            chooser.getContext().getTlsContext().getRandom().nextBytes(pms);
         }
 
         msg.getComputations().setPremasterSecret(pms);
@@ -205,6 +205,9 @@ public abstract class GOSTClientKeyExchangePreparator
             LOGGER.debug("Wrap result: " + ArrayConverter.bytesToHexString(result));
             return result;
         } catch (Exception E) {
+            if (E instanceof UnsupportedOperationException) {
+                throw E;
+            }
             LOGGER.warn("Could not wrap. Using byte[0]");
             return new byte[0];
         }

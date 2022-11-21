@@ -1,20 +1,19 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.util.Objects;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -31,8 +30,7 @@ public class ChangeCompressionAction extends ConnectionBoundAction {
         this.newValue = newValue;
     }
 
-    public ChangeCompressionAction() {
-    }
+    public ChangeCompressionAction() {}
 
     public void setNewValue(CompressionMethod newValue) {
         this.newValue = newValue;
@@ -47,18 +45,21 @@ public class ChangeCompressionAction extends ConnectionBoundAction {
     }
 
     @Override
-    public void execute(State state) throws WorkflowExecutionException {
-        TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
+    public void execute(State state) throws ActionExecutionException {
+        TlsContext tlsContext = state.getContext(getConnectionAlias()).getTlsContext();
 
         if (isExecuted()) {
-            throw new WorkflowExecutionException("Action already executed!");
+            throw new ActionExecutionException("Action already executed!");
         }
         oldValue = tlsContext.getSelectedCompressionMethod();
         tlsContext.setSelectedCompressionMethod(newValue);
         tlsContext.getRecordLayer().updateCompressor();
         tlsContext.getRecordLayer().updateDecompressor();
-        LOGGER.info("Changed selected CompressionMethod from " + (oldValue == null ? "null" : oldValue.name()) + " to "
-            + newValue.name());
+        LOGGER.info(
+                "Changed selected CompressionMethod from "
+                        + (oldValue == null ? "null" : oldValue.name())
+                        + " to "
+                        + newValue.name());
         setExecuted(true);
     }
 

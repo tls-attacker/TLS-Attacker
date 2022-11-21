@@ -11,8 +11,9 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.TrustedCaIndicationIdentifierType;
+import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
-import de.rub.nds.tlsattacker.core.protocol.Parser;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,15 +21,13 @@ public class TrustedAuthorityParser extends Parser<TrustedAuthority> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public TrustedAuthorityParser(int startposition, byte[] array) {
-        super(startposition, array);
+    public TrustedAuthorityParser(InputStream stream) {
+        super(stream);
     }
 
     @Override
-    public TrustedAuthority parse() {
-        TrustedAuthority authority = new TrustedAuthority();
+    public void parse(TrustedAuthority authority) {
         authority.setIdentifierType(parseByteField(ExtensionByteLength.TRUSTED_AUTHORITY_TYPE));
-
         switch (TrustedCaIndicationIdentifierType.getIdentifierByByte(authority.getIdentifierType().getValue())) {
             case PRE_AGREED:
                 // nothing to do here
@@ -46,8 +45,6 @@ public class TrustedAuthorityParser extends Parser<TrustedAuthority> {
                 LOGGER.warn("Couldn't set the trusted authority to reasonable values");
                 break;
         }
-
-        return authority;
     }
 
 }

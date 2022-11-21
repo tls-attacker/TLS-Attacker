@@ -9,10 +9,9 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.EndOfEarlyDataMessage;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,19 +19,13 @@ public class EndOfEarlyDataParser extends HandshakeMessageParser<EndOfEarlyDataM
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public EndOfEarlyDataParser(int pointer, byte[] array, ProtocolVersion version, Config config) {
-        super(pointer, array, HandshakeMessageType.END_OF_EARLY_DATA, version, config);
+    public EndOfEarlyDataParser(InputStream stream, TlsContext tlsContext) {
+        super(stream, tlsContext);
     }
 
     @Override
-    protected void parseHandshakeMessageContent(EndOfEarlyDataMessage msg) {
+    public void parse(EndOfEarlyDataMessage msg) {
         LOGGER.debug("Parsing EndOfEarlyDataMessage");
         // EndOfEarlyData is always empty
     }
-
-    @Override
-    protected EndOfEarlyDataMessage createHandshakeMessage() {
-        return new EndOfEarlyDataMessage();
-    }
-
 }

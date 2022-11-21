@@ -9,11 +9,12 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -27,17 +28,12 @@ public class ServerHelloParser extends HelloMessageParser<ServerHelloMessage> {
     /**
      * Constructor for the ServerHelloMessageParser
      *
-     * @param pointer
-     *                Position in the array where the ServerHelloParser is supposed to start parsing
-     * @param array
-     *                The byte[] which the ServerHelloParser is supposed to parse
-     * @param version
-     *                The Version for which this message should be parsed
-     * @param config
-     *                A Config used in the current context
+     * @param stream
+     * @param tlsContext
+     *                   The current context
      */
-    public ServerHelloParser(int pointer, byte[] array, ProtocolVersion version, Config config) {
-        super(pointer, array, HandshakeMessageType.SERVER_HELLO, version, config);
+    public ServerHelloParser(InputStream stream, TlsContext tlsContext) {
+        super(stream, tlsContext);
     }
 
     /**
@@ -61,7 +57,7 @@ public class ServerHelloParser extends HelloMessageParser<ServerHelloMessage> {
     }
 
     @Override
-    protected void parseHandshakeMessageContent(ServerHelloMessage msg) {
+    public void parse(ServerHelloMessage msg) {
         LOGGER.debug("Parsing ServerHelloMessage");
         parseProtocolVersion(msg);
         ProtocolVersion version = ProtocolVersion.getProtocolVersion(msg.getProtocolVersion().getValue());
@@ -75,15 +71,10 @@ public class ServerHelloParser extends HelloMessageParser<ServerHelloMessage> {
         parseSelectedCompressionMethod(msg);
 
         LOGGER.trace("Checking for ExtensionLength Field");
-        if (hasExtensionLengthField(msg)) {
+        if (hasExtensionLengthField()) {
             LOGGER.trace("Parsing ExtensionLength field");
             parseExtensionLength(msg);
-            parseExtensionBytes(msg);
+            parseExtensionBytes(msg, msg.isTls13HelloRetryRequest());
         }
-    }
-
-    @Override
-    protected ServerHelloMessage createHandshakeMessage() {
-        return new ServerHelloMessage();
     }
 }

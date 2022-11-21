@@ -1,33 +1,28 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.crypto.keys;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
 import java.math.BigInteger;
 import java.security.AlgorithmParameters;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.interfaces.ECPrivateKey;
-import java.security.spec.ECGenParameterSpec;
-import java.security.spec.ECParameterSpec;
-import java.security.spec.ECPrivateKeySpec;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.InvalidParameterSpecException;
+import java.security.spec.*;
 import java.util.Objects;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -90,22 +85,23 @@ public class CustomECPrivateKey extends CustomPrivateKey implements ECPrivateKey
     }
 
     @Override
-    public void adjustInContext(TlsContext context, ConnectionEndType ownerOfKey) {
+    public void adjustInContext(TlsContext tlsContext, ConnectionEndType ownerOfKey) {
         LOGGER.debug("Adjusting EC private key in context");
         if (null == ownerOfKey) {
             throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
         } else {
             switch (ownerOfKey) {
                 case CLIENT:
-                    context.setClientEcPrivateKey(privateKey);
-                    context.setEcCertificateCurve(group);
+                    tlsContext.setClientEcPrivateKey(privateKey);
+                    tlsContext.setEcCertificateCurve(group);
                     break;
                 case SERVER:
-                    context.setServerEcPrivateKey(privateKey);
-                    context.setEcCertificateCurve(group);
+                    tlsContext.setServerEcPrivateKey(privateKey);
+                    tlsContext.setEcCertificateCurve(group);
                     break;
                 default:
-                    throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
+                    throw new IllegalArgumentException(
+                            "Owner of Key " + ownerOfKey + " is not supported");
             }
         }
     }
@@ -125,7 +121,8 @@ public class CustomECPrivateKey extends CustomPrivateKey implements ECPrivateKey
                     config.setDefaultEcCertificateCurve(group);
                     break;
                 default:
-                    throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
+                    throw new IllegalArgumentException(
+                            "Owner of Key " + ownerOfKey + " is not supported");
             }
         }
     }

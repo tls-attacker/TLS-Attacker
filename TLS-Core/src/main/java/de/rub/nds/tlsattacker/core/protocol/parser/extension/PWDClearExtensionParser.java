@@ -9,29 +9,25 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PWDClearExtensionMessage;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class PWDClearExtensionParser extends ExtensionParser<PWDClearExtensionMessage> {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public PWDClearExtensionParser(int startposition, byte[] array, Config config) {
-        super(startposition, array, config);
+    public PWDClearExtensionParser(InputStream stream, TlsContext tlsContext) {
+        super(stream, tlsContext);
     }
 
     @Override
-    public void parseExtensionMessageContent(PWDClearExtensionMessage msg) {
+    public void parse(PWDClearExtensionMessage msg) {
         LOGGER.debug("Parsing PWDClearExtensionMessage");
         parseUsernameLength(msg);
         parseUsername(msg);
-    }
-
-    @Override
-    protected PWDClearExtensionMessage createExtensionMessage() {
-        return new PWDClearExtensionMessage();
     }
 
     /**

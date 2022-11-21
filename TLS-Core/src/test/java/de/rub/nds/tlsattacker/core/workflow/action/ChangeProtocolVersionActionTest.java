@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -14,15 +13,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import org.junit.jupiter.api.Test;
 
-public class ChangeProtocolVersionActionTest extends AbstractChangeActionTest<ChangeProtocolVersionAction> {
+public class ChangeProtocolVersionActionTest
+        extends AbstractChangeActionTest<ChangeProtocolVersionAction> {
 
     public ChangeProtocolVersionActionTest() {
-        super(new ChangeProtocolVersionAction(ProtocolVersion.SSL2), ChangeProtocolVersionAction.class);
+        super(
+                new ChangeProtocolVersionAction(ProtocolVersion.SSL2),
+                ChangeProtocolVersionAction.class);
     }
 
-    /**
-     * Test of setNewValue method, of class ChangeCompressionAction.
-     */
+    /** Test of setNewValue method, of class ChangeCompressionAction. */
     @Test
     @Override
     public void testSetNewValue() {
@@ -31,18 +31,14 @@ public class ChangeProtocolVersionActionTest extends AbstractChangeActionTest<Ch
         assertEquals(action.getNewValue(), ProtocolVersion.TLS11);
     }
 
-    /**
-     * Test of getNewValue method, of class ChangeCompressionAction.
-     */
+    /** Test of getNewValue method, of class ChangeCompressionAction. */
     @Test
     @Override
     public void testGetNewValue() {
         assertEquals(action.getNewValue(), ProtocolVersion.SSL2);
     }
 
-    /**
-     * Test of getOldValue method, of class ChangeCompressionAction.
-     */
+    /** Test of getOldValue method, of class ChangeCompressionAction. */
     @Test
     @Override
     public void testGetOldValue() {
@@ -51,9 +47,7 @@ public class ChangeProtocolVersionActionTest extends AbstractChangeActionTest<Ch
         assertEquals(action.getOldValue(), ProtocolVersion.TLS12);
     }
 
-    /**
-     * Test of execute method, of class ChangeCompressionAction.
-     */
+    /** Test of execute method, of class ChangeCompressionAction. */
     @Test
     @Override
     public void testExecute() throws Exception {

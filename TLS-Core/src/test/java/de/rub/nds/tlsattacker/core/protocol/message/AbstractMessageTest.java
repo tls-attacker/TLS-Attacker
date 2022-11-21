@@ -1,24 +1,23 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import java.util.function.BiConsumer;
+import java.util.function.Supplier;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.util.function.BiConsumer;
-import java.util.function.Supplier;
-
-abstract class AbstractMessageTest<T extends TlsMessage> {
+abstract class AbstractMessageTest<T extends ProtocolMessage> {
 
     protected T message;
 
@@ -36,7 +35,8 @@ abstract class AbstractMessageTest<T extends TlsMessage> {
         if (messagePreparator != null) {
             messagePreparator.accept(message, values);
         }
-        // Convert byte arrays to hex strings (if this isn't done the expected string only contains a reference id)
+        // Convert byte arrays to hex strings (if this isn't done the expected string only contains
+        // a reference id)
         for (int i = 0; i < values.length; i++) {
             if (values[i] instanceof byte[]) {
                 values[i] = ArrayConverter.bytesToHexString((byte[]) values[i]);

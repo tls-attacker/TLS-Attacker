@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.util;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -18,11 +17,6 @@ import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.util.FixedTimeProvider;
 import de.rub.nds.tlsattacker.util.TimeHelper;
 import de.rub.nds.tlsattacker.util.tests.TestCategories;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.junit.jupiter.api.*;
-
 import java.io.ByteArrayInputStream;
 import java.security.KeyPair;
 import java.security.KeyStore;
@@ -30,7 +24,12 @@ import java.security.PublicKey;
 import java.security.Security;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
+import java.security.cert.CertificateParsingException;
 import java.util.Random;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.junit.jupiter.api.*;
 
 public class CertificateFetcherIT {
 
@@ -46,8 +45,10 @@ public class CertificateFetcherIT {
     public static void setUpClass() throws Exception {
         Security.addProvider(new BouncyCastleProvider());
         TimeHelper.setProvider(new FixedTimeProvider(0));
-        KeyPair k = KeyStoreGenerator.createRSAKeyPair(1024, new BadRandom(new Random(0), new byte[0]));
-        KeyStore ks = KeyStoreGenerator.createKeyStore(k, new BadRandom(new Random(0), new byte[0]));
+        KeyPair k =
+                KeyStoreGenerator.createRSAKeyPair(1024, new BadRandom(new Random(0), new byte[0]));
+        KeyStore ks =
+                KeyStoreGenerator.createKeyStore(k, new BadRandom(new Random(0), new byte[0]));
 
         expectedCertificate = ks.getCertificate(KeyStoreGenerator.ALIAS);
         expectedPublicKey = expectedCertificate.getPublicKey();
@@ -80,7 +81,13 @@ public class CertificateFetcherIT {
     @Test
     @Tag(TestCategories.INTEGRATION_TEST)
     public void testFetchServerPublicKey() {
-        PublicKey actual = CertificateFetcher.fetchServerPublicKey(config);
+        PublicKey actual;
+        try {
+            actual = CertificateFetcher.fetchServerPublicKey(config);
+        } catch (CertificateParsingException ex) {
+            LOGGER.warn("Could not parse certificate: ", ex);
+            actual = null;
+        }
         assertNotNull(actual);
         assertEquals(expectedPublicKey, actual);
     }
@@ -88,11 +95,14 @@ public class CertificateFetcherIT {
     @Test
     @Tag(TestCategories.INTEGRATION_TEST)
     public void testFetchServerCertificate() throws Exception {
-        byte[] actualEncoded = CertificateFetcher.fetchServerCertificate(config).getCertificateList()[0].getEncoded();
+        byte[] actualEncoded =
+                CertificateFetcher.fetchServerCertificate(config)
+                        .getCertificateList()[0]
+                        .getEncoded();
         Certificate actual =
-            CertificateFactory.getInstance("X.509").generateCertificate(new ByteArrayInputStream(actualEncoded));
+                CertificateFactory.getInstance("X.509")
+                        .generateCertificate(new ByteArrayInputStream(actualEncoded));
         assertNotNull(actual);
         assertEquals(expectedCertificate, actual);
     }
-
 }

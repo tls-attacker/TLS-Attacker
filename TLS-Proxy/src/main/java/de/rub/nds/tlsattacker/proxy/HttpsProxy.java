@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.proxy;
 
 import java.io.FileInputStream;
@@ -72,8 +71,9 @@ public class HttpsProxy {
     }
 
     public SSLContext createContext()
-        throws KeyStoreException, NoSuchAlgorithmException, FileNotFoundException, IOException, CertificateException,
-        UnrecoverableKeyException, KeyManagementException, java.security.cert.CertificateException {
+            throws KeyStoreException, NoSuchAlgorithmException, FileNotFoundException, IOException,
+                    CertificateException, UnrecoverableKeyException, KeyManagementException,
+                    java.security.cert.CertificateException {
         SSLContext context = SSLContext.getInstance("TLS");
         KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance("SunX509");
         KeyStore keyStore = KeyStore.getInstance("JKS");
@@ -85,42 +85,45 @@ public class HttpsProxy {
         keyManagerFactory.init(keyStore, passphrase);
 
         // We trust all clients - do not copy this code if you find it on github
-        context.init(keyManagerFactory.getKeyManagers(), new TrustManager[] { new X509ExtendedTrustManager() {
-            @Override
-            public void checkClientTrusted(X509Certificate[] xcs, String string, Socket socket)
-                throws java.security.cert.CertificateException {
-            }
+        context.init(
+                keyManagerFactory.getKeyManagers(),
+                new TrustManager[] {
+                    new X509ExtendedTrustManager() {
+                        @Override
+                        public void checkClientTrusted(
+                                X509Certificate[] xcs, String string, Socket socket)
+                                throws java.security.cert.CertificateException {}
 
-            @Override
-            public void checkServerTrusted(X509Certificate[] xcs, String string, Socket socket)
-                throws java.security.cert.CertificateException {
-            }
+                        @Override
+                        public void checkServerTrusted(
+                                X509Certificate[] xcs, String string, Socket socket)
+                                throws java.security.cert.CertificateException {}
 
-            @Override
-            public void checkClientTrusted(X509Certificate[] xcs, String string, SSLEngine ssle)
-                throws java.security.cert.CertificateException {
-            }
+                        @Override
+                        public void checkClientTrusted(
+                                X509Certificate[] xcs, String string, SSLEngine ssle)
+                                throws java.security.cert.CertificateException {}
 
-            @Override
-            public void checkServerTrusted(X509Certificate[] xcs, String string, SSLEngine ssle)
-                throws java.security.cert.CertificateException {
-            }
+                        @Override
+                        public void checkServerTrusted(
+                                X509Certificate[] xcs, String string, SSLEngine ssle)
+                                throws java.security.cert.CertificateException {}
 
-            @Override
-            public void checkClientTrusted(X509Certificate[] xcs, String string)
-                throws java.security.cert.CertificateException {
-            }
+                        @Override
+                        public void checkClientTrusted(X509Certificate[] xcs, String string)
+                                throws java.security.cert.CertificateException {}
 
-            @Override
-            public void checkServerTrusted(X509Certificate[] xcs, String string)
-                throws java.security.cert.CertificateException {
-            }
+                        @Override
+                        public void checkServerTrusted(X509Certificate[] xcs, String string)
+                                throws java.security.cert.CertificateException {}
 
-            @Override
-            public X509Certificate[] getAcceptedIssuers() {
-                return new X509Certificate[0];
-            }
-        } }, null);
+                        @Override
+                        public X509Certificate[] getAcceptedIssuers() {
+                            return new X509Certificate[0];
+                        }
+                    }
+                },
+                null);
         return context;
     }
 }

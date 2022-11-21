@@ -11,9 +11,9 @@ package de.rub.nds.tlsattacker.core.socket;
 
 import de.rub.nds.tlsattacker.core.constants.AlertDescription;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
@@ -46,7 +46,7 @@ public class TlsAttackerSocket {
      *                             If something goes wrong during Transmission
      */
     public void sendRawBytes(byte[] bytes) throws IOException {
-        state.getTlsContext().getTransportHandler().sendData(bytes);
+        state.getContext().getTransportHandler().sendData(bytes);
     }
 
     /**
@@ -57,7 +57,7 @@ public class TlsAttackerSocket {
      *                             If something goes wrong during the receive
      */
     public byte[] receiveRawBytes() throws IOException {
-        return state.getTlsContext().getTransportHandler().fetchData();
+        return state.getContext().getTransportHandler().fetchData();
     }
 
     /**
@@ -96,8 +96,7 @@ public class TlsAttackerSocket {
     }
 
     public void send(ProtocolMessage message) {
-        SendAction action = new SendAction(message);
-        action.setConnectionAlias(state.getTlsContext().getConnection().getAlias());
+        SendAction action = new SendAction(state.getContext().getConnection().getAlias(), message);
         action.execute(state);
     }
 
@@ -109,8 +108,8 @@ public class TlsAttackerSocket {
      *                             If something goes wrong during the receive
      */
     public byte[] receiveBytes() throws IOException {
-        ReceiveAction action = new ReceiveAction(new ApplicationMessage());
-        action.setConnectionAlias(state.getTlsContext().getConnection().getAlias());
+        ReceiveAction action =
+            new ReceiveAction(state.getContext().getConnection().getAlias(), new ApplicationMessage());
         action.execute(state);
         List<ProtocolMessage> receivedMessages = action.getReceivedMessages();
 
@@ -142,7 +141,7 @@ public class TlsAttackerSocket {
         AlertMessage closeNotify = new AlertMessage();
         closeNotify.setConfig(AlertLevel.WARNING, AlertDescription.CLOSE_NOTIFY);
         send(closeNotify);
-        state.getTlsContext().getTransportHandler().closeConnection();
+        state.getContext().getTransportHandler().closeConnection();
     }
 
 }

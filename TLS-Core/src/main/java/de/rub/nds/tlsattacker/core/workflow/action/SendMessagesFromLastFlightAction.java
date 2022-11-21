@@ -1,24 +1,22 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
-import de.rub.nds.tlsattacker.core.record.AbstractRecord;
+import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
-import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -52,11 +50,11 @@ public class SendMessagesFromLastFlightAction extends MessageAction implements S
     }
 
     @Override
-    public void execute(State state) throws WorkflowExecutionException {
-        TlsContext tlsContext = state.getTlsContext(connectionAlias);
+    public void execute(State state) throws ActionExecutionException {
+        TlsContext tlsContext = state.getContext(connectionAlias).getTlsContext();
 
         if (isExecuted()) {
-            throw new WorkflowExecutionException("Action already executed!");
+            throw new ActionExecutionException("Action already executed!");
         }
 
         List<SendingAction> sendActions = state.getWorkflowTrace().getSendingActions();
@@ -78,13 +76,7 @@ public class SendMessagesFromLastFlightAction extends MessageAction implements S
         }
 
         try {
-            MessageActionResult result =
-                sendMessageHelper.sendMessages(messages, fragments, records, tlsContext, false);
-            messages = new ArrayList<>(result.getMessageList());
-            records = new ArrayList<>(result.getRecordList());
-            if (result.getMessageFragmentList() != null) {
-                fragments = new ArrayList<>(result.getMessageFragmentList());
-            }
+            send(tlsContext, messages, fragments, records);
             setExecuted(true);
         } catch (IOException e) {
             tlsContext.setReceivedTransportHandlerException(true);
@@ -102,7 +94,7 @@ public class SendMessagesFromLastFlightAction extends MessageAction implements S
             }
         }
         if (getRecords() != null) {
-            for (AbstractRecord record : getRecords()) {
+            for (Record record : getRecords()) {
                 holders.addAll(record.getAllModifiableVariableHolders());
             }
         }
@@ -161,7 +153,7 @@ public class SendMessagesFromLastFlightAction extends MessageAction implements S
     }
 
     @Override
-    public List<AbstractRecord> getSendRecords() {
+    public List<Record> getSendRecords() {
         return records;
     }
 
@@ -169,10 +161,4 @@ public class SendMessagesFromLastFlightAction extends MessageAction implements S
     public List<DtlsHandshakeMessageFragment> getSendFragments() {
         return fragments;
     }
-
-    @Override
-    public MessageAction.MessageActionDirection getMessageDirection() {
-        return MessageAction.MessageActionDirection.SENDING;
-    }
-
 }

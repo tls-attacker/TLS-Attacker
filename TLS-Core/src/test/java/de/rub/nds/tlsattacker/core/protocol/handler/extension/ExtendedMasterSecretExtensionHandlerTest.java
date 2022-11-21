@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -17,8 +16,9 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedMasterSecr
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import org.junit.jupiter.api.Test;
 
-public class ExtendedMasterSecretExtensionHandlerTest extends
-    AbstractExtensionMessageHandlerTest<ExtendedMasterSecretExtensionMessage, ExtendedMasterSecretExtensionHandler> {
+public class ExtendedMasterSecretExtensionHandlerTest
+        extends AbstractExtensionMessageHandlerTest<
+                ExtendedMasterSecretExtensionMessage, ExtendedMasterSecretExtensionHandler> {
 
     public ExtendedMasterSecretExtensionHandlerTest() {
         super(ExtendedMasterSecretExtensionMessage::new, ExtendedMasterSecretExtensionHandler::new);
@@ -26,16 +26,16 @@ public class ExtendedMasterSecretExtensionHandlerTest extends
 
     @Test
     @Override
-    public void testAdjustTLSContext() {
+    public void testadjustTLSExtensionContext() {
         ExtendedMasterSecretExtensionMessage msg = new ExtendedMasterSecretExtensionMessage();
         context.setTalkingConnectionEndType(ConnectionEndType.CLIENT);
-        handler.adjustTLSContext(msg);
+        handler.adjustContext(msg);
 
         assertTrue(context.isExtensionProposed(ExtensionType.EXTENDED_MASTER_SECRET));
         assertFalse(context.isExtensionNegotiated(ExtensionType.EXTENDED_MASTER_SECRET));
         assertFalse(context.isUseExtendedMasterSecret());
         context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
-        handler.adjustTLSContext(msg);
+        handler.adjustContext(msg);
         assertTrue(context.isExtensionProposed(ExtensionType.EXTENDED_MASTER_SECRET));
         assertTrue(context.isExtensionNegotiated(ExtensionType.EXTENDED_MASTER_SECRET));
         assertTrue(context.isUseExtendedMasterSecret());

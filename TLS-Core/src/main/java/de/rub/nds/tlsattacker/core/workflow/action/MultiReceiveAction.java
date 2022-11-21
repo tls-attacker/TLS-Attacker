@@ -1,34 +1,31 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlTransient;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlTransient;
 
 /**
- * This action allows the declaration of multiple actions, the right one will selected at runtime. The usage of two
- * actions with the same Messages is forbidden.
+ * This action allows the declaration of multiple actions, the right one will selected at runtime.
+ * The usage of two actions with the same Messages is forbidden.
  */
 @XmlRootElement
 public class MultiReceiveAction extends GenericReceiveAction {
 
     private List<ReceiveAction> expectedActionCandidates;
-    @XmlTransient
-    private ReceiveAction selectedAction;
+    @XmlTransient private ReceiveAction selectedAction;
 
     public MultiReceiveAction() {
         super.messages = null;
@@ -80,7 +77,8 @@ public class MultiReceiveAction extends GenericReceiveAction {
             if (expectedMessageCandidate.getClass().equals(receivedMessage.getClass())) {
                 return false;
                 // could contain different AlertMessages
-            } else if (expectedMessageCandidate instanceof AlertMessage && receivedMessage instanceof AlertMessage) {
+            } else if (expectedMessageCandidate instanceof AlertMessage
+                    && receivedMessage instanceof AlertMessage) {
                 return Objects.equals(expectedMessageCandidate, receivedMessage);
             }
         }

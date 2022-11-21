@@ -17,10 +17,11 @@ import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.protocol.message.EmptyClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.util.BigIntegers;
+
+import java.math.BigInteger;
 
 public class EmptyClientKeyExchangePreparator<T extends EmptyClientKeyExchangeMessage>
     extends ClientKeyExchangePreparator<T> {
@@ -76,11 +77,11 @@ public class EmptyClientKeyExchangePreparator<T extends EmptyClientKeyExchangeMe
         msg.prepareComputations();
         prepareClientServerRandom(msg);
 
-        if (chooser.getContext().getClientCertificate() != null
-            && !chooser.getContext().getClientCertificate().isEmpty()) {
+        if (chooser.getContext().getTlsContext().getClientCertificate() != null
+            && !chooser.getContext().getTlsContext().getClientCertificate().isEmpty()) {
 
-            String algorithm = chooser.getContext().getClientCertificate().getCertificateAt(0).getSubjectPublicKeyInfo()
-                .getAlgorithm().getAlgorithm().toString();
+            String algorithm = chooser.getContext().getTlsContext().getClientCertificate().getCertificateAt(0)
+                .getSubjectPublicKeyInfo().getAlgorithm().getAlgorithm().toString();
             if (PublicKeyType.fromOid(algorithm) == PublicKeyType.DH) {
                 BigInteger modulus = chooser.getClientDhModulus();
                 BigInteger publicKey = chooser.getServerDhPublicKey();

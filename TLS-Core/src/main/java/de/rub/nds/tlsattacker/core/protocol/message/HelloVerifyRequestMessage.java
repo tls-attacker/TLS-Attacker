@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -14,11 +13,15 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.HelloVerifyRequestHandler;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.protocol.parser.HelloVerifyRequestParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.HelloVerifyRequestPreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.HelloVerifyRequestSerializer;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import java.io.InputStream;
+import java.util.Objects;
 
 @XmlRootElement(name = "HelloVerifyRequest")
 public class HelloVerifyRequestMessage extends HandshakeMessage {
@@ -37,11 +40,6 @@ public class HelloVerifyRequestMessage extends HandshakeMessage {
         isIncludeInDigestDefault = false;
     }
 
-    public HelloVerifyRequestMessage(Config tlsConfig) {
-        super(tlsConfig, HandshakeMessageType.HELLO_VERIFY_REQUEST);
-        isIncludeInDigestDefault = false;
-    }
-
     public ModifiableByteArray getProtocolVersion() {
         return protocolVersion;
     }
@@ -55,7 +53,8 @@ public class HelloVerifyRequestMessage extends HandshakeMessage {
     }
 
     public void setProtocolVersion(byte[] protocolVersion) {
-        this.protocolVersion = ModifiableVariableFactory.safelySetValue(this.protocolVersion, protocolVersion);
+        this.protocolVersion =
+                ModifiableVariableFactory.safelySetValue(this.protocolVersion, protocolVersion);
     }
 
     public void setProtocolVersion(ModifiableByteArray protocolVersion) {
@@ -71,7 +70,8 @@ public class HelloVerifyRequestMessage extends HandshakeMessage {
     }
 
     public void setCookieLength(byte cookieLength) {
-        this.cookieLength = ModifiableVariableFactory.safelySetValue(this.cookieLength, cookieLength);
+        this.cookieLength =
+                ModifiableVariableFactory.safelySetValue(this.cookieLength, cookieLength);
     }
 
     public void setCookieLength(ModifiableByte cookieLength) {
@@ -79,8 +79,23 @@ public class HelloVerifyRequestMessage extends HandshakeMessage {
     }
 
     @Override
-    public HelloVerifyRequestHandler getHandler(TlsContext context) {
-        return new HelloVerifyRequestHandler(context);
+    public HelloVerifyRequestHandler getHandler(TlsContext tlsContext) {
+        return new HelloVerifyRequestHandler(tlsContext);
+    }
+
+    @Override
+    public HelloVerifyRequestParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new HelloVerifyRequestParser(stream, tlsContext);
+    }
+
+    @Override
+    public HelloVerifyRequestPreparator getPreparator(TlsContext tlsContext) {
+        return new HelloVerifyRequestPreparator(tlsContext.getChooser(), this);
+    }
+
+    @Override
+    public HelloVerifyRequestSerializer getSerializer(TlsContext tlsContext) {
+        return new HelloVerifyRequestSerializer(this);
     }
 
     @Override
@@ -113,4 +128,33 @@ public class HelloVerifyRequestMessage extends HandshakeMessage {
         return "HVR";
     }
 
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 31 * hash + Objects.hashCode(this.protocolVersion);
+        hash = 31 * hash + Objects.hashCode(this.cookieLength);
+        hash = 31 * hash + Objects.hashCode(this.cookie);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final HelloVerifyRequestMessage other = (HelloVerifyRequestMessage) obj;
+        if (!Objects.equals(this.protocolVersion, other.protocolVersion)) {
+            return false;
+        }
+        if (!Objects.equals(this.cookieLength, other.cookieLength)) {
+            return false;
+        }
+        return Objects.equals(this.cookie, other.cookie);
+    }
 }

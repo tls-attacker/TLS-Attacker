@@ -10,13 +10,10 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.protocol.message.PWDServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,28 +21,12 @@ public class PWDServerKeyExchangeParser extends ServerKeyExchangeParser<PWDServe
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final ProtocolVersion version;
-
-    private final KeyExchangeAlgorithm keyExchangeAlgorithm;
-
-    public PWDServerKeyExchangeParser(int pointer, byte[] array, ProtocolVersion version, Config config) {
-        this(pointer, array, version, null, config);
-    }
-
-    public PWDServerKeyExchangeParser(int pointer, byte[] array, ProtocolVersion version,
-        KeyExchangeAlgorithm keyExchangeAlgorithm, Config config) {
-        super(pointer, array, HandshakeMessageType.SERVER_KEY_EXCHANGE, version, config);
-        this.version = version;
-        this.keyExchangeAlgorithm = keyExchangeAlgorithm;
+    public PWDServerKeyExchangeParser(InputStream stream, TlsContext tlsContext) {
+        super(stream, tlsContext);
     }
 
     @Override
-    protected PWDServerKeyExchangeMessage createHandshakeMessage() {
-        return new PWDServerKeyExchangeMessage();
-    }
-
-    @Override
-    protected void parseHandshakeMessageContent(PWDServerKeyExchangeMessage msg) {
+    public void parse(PWDServerKeyExchangeMessage msg) {
         LOGGER.debug("Parsing PWDServerKeyExchangeMessage");
         parseSaltLength(msg);
         parseSalt(msg);

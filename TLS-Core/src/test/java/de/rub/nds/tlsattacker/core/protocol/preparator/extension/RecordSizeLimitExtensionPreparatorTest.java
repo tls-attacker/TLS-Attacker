@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -16,17 +15,20 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.RecordSizeLimitExt
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.RecordSizeLimitExtensionSerializer;
 import org.junit.jupiter.api.Test;
 
-public class RecordSizeLimitExtensionPreparatorTest extends AbstractExtensionMessagePreparatorTest<
-    RecordSizeLimitExtensionMessage, RecordSizeLimitExtensionSerializer, RecordSizeLimitExtensionPreparator> {
+public class RecordSizeLimitExtensionPreparatorTest
+        extends AbstractExtensionMessagePreparatorTest<
+                RecordSizeLimitExtensionMessage,
+                RecordSizeLimitExtensionSerializer,
+                RecordSizeLimitExtensionPreparator> {
 
     public RecordSizeLimitExtensionPreparatorTest() {
-        super(RecordSizeLimitExtensionMessage::new, RecordSizeLimitExtensionMessage::new,
-            RecordSizeLimitExtensionSerializer::new, RecordSizeLimitExtensionPreparator::new);
+        super(
+                RecordSizeLimitExtensionMessage::new,
+                RecordSizeLimitExtensionSerializer::new,
+                RecordSizeLimitExtensionPreparator::new);
     }
 
-    /**
-     * Test of prepare method, of class RecordSizeLimitExtensionPreparator.
-     */
+    /** Test of prepare method, of class RecordSizeLimitExtensionPreparator. */
     @Test
     @Override
     public void testPrepare() {
@@ -34,8 +36,10 @@ public class RecordSizeLimitExtensionPreparatorTest extends AbstractExtensionMes
 
         preparator.prepare();
 
-        assertArrayEquals(new byte[] { (byte) 0x05, (byte) 0x39 }, message.getRecordSizeLimit().getValue());
-        assertArrayEquals(ArrayConverter.intToBytes(context.getConfig().getInboundRecordSizeLimit(), 2),
-            message.getRecordSizeLimit().getValue());
+        assertArrayEquals(
+                new byte[] {(byte) 0x05, (byte) 0x39}, message.getRecordSizeLimit().getValue());
+        assertArrayEquals(
+                ArrayConverter.intToBytes(context.getConfig().getInboundRecordSizeLimit(), 2),
+                message.getRecordSizeLimit().getValue());
     }
 }

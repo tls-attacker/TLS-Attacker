@@ -9,14 +9,9 @@
 
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.AlpnExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.alpn.AlpnEntry;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.AlpnExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.AlpnExtensionPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.AlpnExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.LinkedList;
 import java.util.List;
@@ -28,23 +23,8 @@ public class AlpnExtensionHandler extends ExtensionHandler<AlpnExtensionMessage>
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public AlpnExtensionHandler(TlsContext context) {
-        super(context);
-    }
-
-    @Override
-    public AlpnExtensionParser getParser(byte[] message, int pointer, Config config) {
-        return new AlpnExtensionParser(pointer, message, config);
-    }
-
-    @Override
-    public AlpnExtensionPreparator getPreparator(AlpnExtensionMessage message) {
-        return new AlpnExtensionPreparator(context.getChooser(), message, getSerializer(message));
-    }
-
-    @Override
-    public AlpnExtensionSerializer getSerializer(AlpnExtensionMessage message) {
-        return new AlpnExtensionSerializer(message);
+    public AlpnExtensionHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     @Override
@@ -54,9 +34,9 @@ public class AlpnExtensionHandler extends ExtensionHandler<AlpnExtensionMessage>
         for (AlpnEntry entry : alpnEntryList) {
             alpnStringList.add(entry.getAlpnEntry().getValue());
         }
-        if (context.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
+        if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
 
-            context.setProposedAlpnProtocols(alpnStringList);
+            tlsContext.setProposedAlpnProtocols(alpnStringList);
             LOGGER.debug("Adjustet the TLS context proposed ALPN protocols:");
             if (LOGGER.isEnabled(Level.DEBUG)) {
                 for (String stringEntry : alpnStringList) {
@@ -70,7 +50,7 @@ public class AlpnExtensionHandler extends ExtensionHandler<AlpnExtensionMessage>
             if (alpnStringList.isEmpty()) {
                 LOGGER.warn("Server did not select an ALPN protocol.");
             } else {
-                context.setSelectedAlpnProtocol(alpnStringList.get(0));
+                tlsContext.setSelectedAlpnProtocol(alpnStringList.get(0));
             }
         }
     }

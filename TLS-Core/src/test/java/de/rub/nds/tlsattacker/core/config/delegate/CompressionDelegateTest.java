@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -14,11 +13,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
+import java.util.LinkedList;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.util.LinkedList;
 
 public class CompressionDelegateTest extends AbstractDelegateTest<CompressionDelegate> {
 
@@ -27,19 +25,19 @@ public class CompressionDelegateTest extends AbstractDelegateTest<CompressionDel
         super.setUp(new CompressionDelegate());
     }
 
-    /**
-     * Test of getCompressionMethods method, of class CompressionDelegate.
-     */
+    /** Test of getCompressionMethods method, of class CompressionDelegate. */
     @Test
     public void testGetCompressionMethods() {
         args = new String[2];
         args[0] = "-compression";
         args[1] = "NULL,DEFLATE";
         jcommander.parse(args);
-        assertTrue(delegate.getCompressionMethods().contains(CompressionMethod.NULL),
-            "NULL should get parsed correctly");
-        assertTrue(delegate.getCompressionMethods().contains(CompressionMethod.DEFLATE),
-            "DEFLATE should get parsed correctly");
+        assertTrue(
+                delegate.getCompressionMethods().contains(CompressionMethod.NULL),
+                "NULL should get parsed correctly");
+        assertTrue(
+                delegate.getCompressionMethods().contains(CompressionMethod.DEFLATE),
+                "DEFLATE should get parsed correctly");
     }
 
     @Test
@@ -50,21 +48,19 @@ public class CompressionDelegateTest extends AbstractDelegateTest<CompressionDel
         assertThrows(ParameterException.class, () -> jcommander.parse(args));
     }
 
-    /**
-     * Test of setCompressionMethods method, of class CompressionDelegate.
-     */
+    /** Test of setCompressionMethods method, of class CompressionDelegate. */
     @Test
     public void testSetCompressionMethods() {
         LinkedList<CompressionMethod> supportedCompressions = new LinkedList<>();
         supportedCompressions.add(CompressionMethod.LZS);
         delegate.setCompressionMethods(supportedCompressions);
-        assertEquals(supportedCompressions, delegate.getCompressionMethods(),
-            "CompressionMethods setter is not working correctly");
+        assertEquals(
+                supportedCompressions,
+                delegate.getCompressionMethods(),
+                "CompressionMethods setter is not working correctly");
     }
 
-    /**
-     * Test of applyDelegate method, of class CompressionDelegate.
-     */
+    /** Test of applyDelegate method, of class CompressionDelegate. */
     @Test
     public void testApplyDelegate() {
         args = new String[2];
@@ -75,15 +71,22 @@ public class CompressionDelegateTest extends AbstractDelegateTest<CompressionDel
         config.setDefaultClientSupportedCompressionMethods();
         config.setDefaultServerSupportedCompressionMethods();
         delegate.applyDelegate(config);
-        assertTrue(config.getDefaultClientSupportedCompressionMethods().contains(CompressionMethod.NULL),
-            "NULL should get parsed correctly");
-        assertTrue(config.getDefaultClientSupportedCompressionMethods().contains(CompressionMethod.DEFLATE),
-            "DEFLATE should get parsed correctly");
-        assertTrue(config.getDefaultServerSupportedCompressionMethods().contains(CompressionMethod.NULL),
-            "NULL should get parsed correctly");
-        assertTrue(config.getDefaultServerSupportedCompressionMethods().contains(CompressionMethod.DEFLATE),
-            "DEFLATE should get parsed correctly");
-
+        assertTrue(
+                config.getDefaultClientSupportedCompressionMethods()
+                        .contains(CompressionMethod.NULL),
+                "NULL should get parsed correctly");
+        assertTrue(
+                config.getDefaultClientSupportedCompressionMethods()
+                        .contains(CompressionMethod.DEFLATE),
+                "DEFLATE should get parsed correctly");
+        assertTrue(
+                config.getDefaultServerSupportedCompressionMethods()
+                        .contains(CompressionMethod.NULL),
+                "NULL should get parsed correctly");
+        assertTrue(
+                config.getDefaultServerSupportedCompressionMethods()
+                        .contains(CompressionMethod.DEFLATE),
+                "DEFLATE should get parsed correctly");
     }
 
     @Test

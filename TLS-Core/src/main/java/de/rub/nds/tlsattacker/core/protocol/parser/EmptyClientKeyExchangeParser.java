@@ -9,9 +9,9 @@
 
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.EmptyClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,26 +22,15 @@ public class EmptyClientKeyExchangeParser<T extends EmptyClientKeyExchangeMessag
     /**
      * Constructor for the Parser class
      *
-     * @param startposition
-     *                      Position in the array where the ClientKeyExchangeParser is supposed to start parsing
-     * @param array
-     *                      The byte[] which the ClientKeyExchangeParser is supposed to parse
-     * @param version
-     *                      Version of the Protocol
-     * @param config
+     * @param stream
+     * @param tlsContext
      */
-    public EmptyClientKeyExchangeParser(int startposition, byte[] array, ProtocolVersion version, Config config) {
-        super(startposition, array, version, config);
+    public EmptyClientKeyExchangeParser(InputStream stream, TlsContext tlsContext) {
+        super(stream, tlsContext);
     }
 
     @Override
-    protected void parseHandshakeMessageContent(T msg) {
+    public void parse(T msg) {
         LOGGER.debug("Parsing EmptyClientKeyExchangeMessage");
     }
-
-    @Override
-    protected T createHandshakeMessage() {
-        return (T) new EmptyClientKeyExchangeMessage();
-    }
-
 }

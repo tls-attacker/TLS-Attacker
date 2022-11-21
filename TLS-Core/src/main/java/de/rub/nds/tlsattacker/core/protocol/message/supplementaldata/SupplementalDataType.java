@@ -26,6 +26,7 @@ public enum SupplementalDataType {
     }
 
     private static final Map<Integer, SupplementalDataType> MAP;
+
     static {
         MAP = new HashMap<>();
         for (SupplementalDataType s : SupplementalDataType.values()) {

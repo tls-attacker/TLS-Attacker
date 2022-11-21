@@ -11,8 +11,9 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
+import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PSKIdentity;
-import de.rub.nds.tlsattacker.core.protocol.Parser;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,18 +21,16 @@ public class PSKIdentityParser extends Parser<PSKIdentity> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public PSKIdentityParser(int startposition, byte[] array) {
-        super(startposition, array);
+    public PSKIdentityParser(InputStream stream) {
+        super(stream);
     }
 
     @Override
-    public PSKIdentity parse() {
+    public void parse(PSKIdentity pskIdentity) {
         LOGGER.debug("Parsing PSKIdentity");
-        PSKIdentity pskIdentity = new PSKIdentity();
         parseIdentityLength(pskIdentity);
         parseIdentity(pskIdentity);
         parseObfuscatedTicketAge(pskIdentity);
-        return pskIdentity;
     }
 
     private void parseIdentityLength(PSKIdentity pskIdentity) {

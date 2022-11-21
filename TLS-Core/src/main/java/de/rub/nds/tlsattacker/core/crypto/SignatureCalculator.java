@@ -17,12 +17,7 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.Signature;
-import java.security.SignatureException;
+import java.security.*;
 import java.security.interfaces.DSAPrivateKey;
 import java.security.interfaces.ECPrivateKey;
 import java.security.interfaces.RSAPrivateKey;
@@ -103,19 +98,22 @@ public class SignatureCalculator {
     public static byte[] generateRSASignature(Chooser chooser, byte[] toBeSigned, SignatureAndHashAlgorithm algorithm)
         throws CryptoException {
         RSAPrivateKey key = KeyGenerator.getRSAPrivateKey(chooser);
-        return generateSignature(key, toBeSigned, algorithm, chooser.getContext().getBadSecureRandom(), chooser);
+        return generateSignature(key, toBeSigned, algorithm, chooser.getContext().getTlsContext().getBadSecureRandom(),
+            chooser);
     }
 
     public static byte[] generateDSASignature(Chooser chooser, byte[] toBeSigned, SignatureAndHashAlgorithm algorithm)
         throws CryptoException {
         DSAPrivateKey key = KeyGenerator.getDSAPrivateKey(chooser);
-        return generateSignature(key, toBeSigned, algorithm, chooser.getContext().getBadSecureRandom(), chooser);
+        return generateSignature(key, toBeSigned, algorithm, chooser.getContext().getTlsContext().getBadSecureRandom(),
+            chooser);
     }
 
     public static byte[] generateECDSASignature(Chooser chooser, byte[] toBeSigned, SignatureAndHashAlgorithm algorithm)
         throws CryptoException {
         ECPrivateKey key = KeyGenerator.getECPrivateKey(chooser);
-        return generateSignature(key, toBeSigned, algorithm, chooser.getContext().getBadSecureRandom(), chooser);
+        return generateSignature(key, toBeSigned, algorithm, chooser.getContext().getTlsContext().getBadSecureRandom(),
+            chooser);
     }
 
     public static byte[] generateAnonymousSignature(Chooser chooser, byte[] toBeSigned,
@@ -126,13 +124,15 @@ public class SignatureCalculator {
     private static byte[] generateGost01Signature(Chooser chooser, byte[] toBeSigned,
         SignatureAndHashAlgorithm algorithm) throws CryptoException {
         BCECGOST3410PrivateKey privateKey = KeyGenerator.getGost01PrivateKey(chooser);
-        return generateSignature(privateKey, toBeSigned, algorithm, chooser.getContext().getBadSecureRandom(), chooser);
+        return generateSignature(privateKey, toBeSigned, algorithm,
+            chooser.getContext().getTlsContext().getBadSecureRandom(), chooser);
     }
 
     private static byte[] generateGost12Signature(Chooser chooser, byte[] toBeSigned,
         SignatureAndHashAlgorithm algorithm) throws CryptoException {
         BCECGOST3410_2012PrivateKey privateKey = KeyGenerator.getGost12PrivateKey(chooser);
-        return generateSignature(privateKey, toBeSigned, algorithm, chooser.getContext().getBadSecureRandom(), chooser);
+        return generateSignature(privateKey, toBeSigned, algorithm,
+            chooser.getContext().getTlsContext().getBadSecureRandom(), chooser);
     }
 
     private SignatureCalculator() {

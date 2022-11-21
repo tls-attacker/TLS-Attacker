@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -15,11 +14,7 @@ import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.SignatureCalculator;
-import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
-import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
-import de.rub.nds.tlsattacker.core.crypto.ec.Point;
-import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
-import de.rub.nds.tlsattacker.core.crypto.ec.RFC7748Curve;
+import de.rub.nds.tlsattacker.core.crypto.ec.*;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
@@ -32,7 +27,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMessage>
-    extends ServerKeyExchangePreparator<T> {
+        extends ServerKeyExchangePreparator<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -71,15 +66,18 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
         // Rereading NamedGroup
         namedGroup = NamedGroup.getNamedGroup(msg.getComputations().getNamedGroup().getValue());
         if (namedGroup == null) {
-            LOGGER.warn("Could not deserialize group from computations. Using default group instead");
+            LOGGER.warn(
+                    "Could not deserialize group from computations. Using default group instead");
             namedGroup = chooser.getConfig().getDefaultSelectedNamedGroup();
         }
         ECPointFormat pointFormat = selectPointFormat(msg);
         msg.getComputations().setEcPointFormat(pointFormat.getValue());
         // Rereading EcPointFormat
-        pointFormat = ECPointFormat.getECPointFormat(msg.getComputations().getEcPointFormat().getValue());
+        pointFormat =
+                ECPointFormat.getECPointFormat(msg.getComputations().getEcPointFormat().getValue());
         if (pointFormat == null) {
-            LOGGER.warn("Could not deserialize group from computations. Using default point format instead");
+            LOGGER.warn(
+                    "Could not deserialize group from computations. Using default point format instead");
             pointFormat = chooser.getConfig().getDefaultSelectedPointFormat();
         }
 
@@ -88,13 +86,16 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
         byte[] publicKeyBytes = null;
         if (namedGroup == NamedGroup.ECDH_X25519 || namedGroup == NamedGroup.ECDH_X448) {
             RFC7748Curve rfcCurve = (RFC7748Curve) curve;
-            publicKeyBytes = rfcCurve.computePublicKey(msg.getComputations().getPrivateKey().getValue());
+            publicKeyBytes =
+                    rfcCurve.computePublicKey(msg.getComputations().getPrivateKey().getValue());
         } else if (namedGroup.isCurve()) {
-            Point publicKey = curve.mult(msg.getComputations().getPrivateKey().getValue(), curve.getBasePoint());
+            Point publicKey =
+                    curve.mult(
+                            msg.getComputations().getPrivateKey().getValue(), curve.getBasePoint());
             publicKeyBytes = PointFormatter.formatToByteArray(namedGroup, publicKey, pointFormat);
         } else {
             LOGGER.warn(
-                "Could not set public key. The selected curve is probably not a real curve. Using empty public key instead");
+                    "Could not set public key. The selected curve is probably not a real curve. Using empty public key instead");
             publicKeyBytes = new byte[0];
         }
         msg.setPublicKey(publicKeyBytes);
@@ -107,7 +108,8 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
         if (chooser.getConfig().isEnforceSettings()) {
             selectedFormat = chooser.getConfig().getDefaultSelectedPointFormat();
         } else {
-            Set<ECPointFormat> serverSet = new HashSet<>(chooser.getConfig().getDefaultServerSupportedPointFormats());
+            Set<ECPointFormat> serverSet =
+                    new HashSet<>(chooser.getConfig().getDefaultServerSupportedPointFormats());
             Set<ECPointFormat> clientSet = new HashSet<>(chooser.getClientSupportedPointFormats());
             serverSet.retainAll(clientSet);
             if (serverSet.isEmpty()) {
@@ -129,7 +131,8 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
         if (chooser.getConfig().isEnforceSettings()) {
             namedGroup = chooser.getConfig().getDefaultSelectedNamedGroup();
         } else {
-            Set<NamedGroup> serverSet = new HashSet<>(chooser.getConfig().getDefaultServerNamedGroups());
+            Set<NamedGroup> serverSet =
+                    new HashSet<>(chooser.getConfig().getDefaultServerNamedGroups());
             Set<NamedGroup> clientSet = new HashSet<>(chooser.getClientSupportedNamedGroups());
             serverSet.retainAll(clientSet);
             if (serverSet.isEmpty()) {
@@ -146,8 +149,10 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
         if (!namedGroup.isCurve() || namedGroup.isGost()) {
             NamedGroup previousNamedGroup = namedGroup;
             namedGroup = NamedGroup.SECP256R1;
-            LOGGER.warn("NamedGroup {} is not suitable for ECDHEServerKeyExchange message. Using {} instead.",
-                previousNamedGroup, namedGroup);
+            LOGGER.warn(
+                    "NamedGroup {} is not suitable for ECDHEServerKeyExchange message. Using {} instead.",
+                    previousNamedGroup,
+                    namedGroup);
         }
         return namedGroup;
     }
@@ -158,14 +163,15 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
         switch (curveType) {
             case EXPLICIT_PRIME:
             case EXPLICIT_CHAR2:
-                throw new UnsupportedOperationException("Signing of explicit curves not implemented yet.");
+                throw new UnsupportedOperationException(
+                        "Signing of explicit curves not implemented yet.");
             case NAMED_CURVE:
                 ecParams.write(curveType.getValue());
                 try {
                     ecParams.write(msg.getNamedGroup().getValue());
                 } catch (IOException ex) {
-                    throw new PreparationException("Failed to add named group to ECDHEServerKeyExchange signature.",
-                        ex);
+                    throw new PreparationException(
+                            "Failed to add named group to ECDHEServerKeyExchange signature.", ex);
                 }
                 break;
             default:
@@ -176,35 +182,43 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
         try {
             ecParams.write(msg.getPublicKey().getValue());
         } catch (IOException ex) {
-            throw new PreparationException("Failed to add serializedPublicKey to ECDHEServerKeyExchange signature.",
-                ex);
+            throw new PreparationException(
+                    "Failed to add serializedPublicKey to ECDHEServerKeyExchange signature.", ex);
         }
 
-        return ArrayConverter.concatenate(msg.getComputations().getClientServerRandom().getValue(),
-            ecParams.toByteArray());
-
+        return ArrayConverter.concatenate(
+                msg.getComputations().getClientServerRandom().getValue(), ecParams.toByteArray());
     }
 
-    protected byte[] generateSignature(T msg, SignatureAndHashAlgorithm algorithm) throws CryptoException {
-        return SignatureCalculator.generateSignature(algorithm, chooser, generateSignatureContents(msg));
+    protected byte[] generateSignature(T msg, SignatureAndHashAlgorithm algorithm)
+            throws CryptoException {
+        return SignatureCalculator.generateSignature(
+                algorithm, chooser, generateSignatureContents(msg));
     }
 
     protected void prepareSignatureAndHashAlgorithm(T msg, SignatureAndHashAlgorithm signHashAlgo) {
         msg.setSignatureAndHashAlgorithm(signHashAlgo.getByteValue());
-        LOGGER.debug("SignatureAndHashAlgorithm: "
-            + ArrayConverter.bytesToHexString(msg.getSignatureAndHashAlgorithm().getValue()));
+        LOGGER.debug(
+                "SignatureAndHashAlgorithm: "
+                        + ArrayConverter.bytesToHexString(
+                                msg.getSignatureAndHashAlgorithm().getValue()));
     }
 
     protected void prepareClientServerRandom(T msg) {
         msg.getComputations()
-            .setClientServerRandom(ArrayConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom()));
-        LOGGER.debug("ClientServerRandom: "
-            + ArrayConverter.bytesToHexString(msg.getComputations().getClientServerRandom().getValue()));
+                .setClientServerRandom(
+                        ArrayConverter.concatenate(
+                                chooser.getClientRandom(), chooser.getServerRandom()));
+        LOGGER.debug(
+                "ClientServerRandom: "
+                        + ArrayConverter.bytesToHexString(
+                                msg.getComputations().getClientServerRandom().getValue()));
     }
 
     protected void prepareSignature(T msg, byte[] signature) {
         msg.setSignature(signature);
-        LOGGER.debug("Signature: " + ArrayConverter.bytesToHexString(msg.getSignature().getValue()));
+        LOGGER.debug(
+                "Signature: " + ArrayConverter.bytesToHexString(msg.getSignature().getValue()));
     }
 
     protected void prepareSignatureLength(T msg) {
@@ -225,7 +239,8 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
         NamedGroup group;
         group = NamedGroup.getNamedGroup(msg.getComputations().getNamedGroup().getValue());
         if (group == null) {
-            LOGGER.warn("Could not deserialize group from computations. Using default group instead");
+            LOGGER.warn(
+                    "Could not deserialize group from computations. Using default group instead");
             group = chooser.getConfig().getDefaultSelectedNamedGroup();
         }
         msg.setNamedGroup(group.getValue());

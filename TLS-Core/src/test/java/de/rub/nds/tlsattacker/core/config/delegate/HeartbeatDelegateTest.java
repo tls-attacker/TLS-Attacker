@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -25,9 +24,7 @@ public class HeartbeatDelegateTest extends AbstractDelegateTest<HeartbeatDelegat
         super.setUp(new HeartbeatDelegate());
     }
 
-    /**
-     * Test of getHeartbeatMode method, of class HeartbeatDelegate.
-     */
+    /** Test of getHeartbeatMode method, of class HeartbeatDelegate. */
     @Test
     public void testGetHeartbeatMode() {
         args = new String[2];
@@ -46,18 +43,14 @@ public class HeartbeatDelegateTest extends AbstractDelegateTest<HeartbeatDelegat
         assertThrows(ParameterException.class, () -> jcommander.parse(args));
     }
 
-    /**
-     * Test of setHeartbeatMode method, of class HeartbeatDelegate.
-     */
+    /** Test of setHeartbeatMode method, of class HeartbeatDelegate. */
     @Test
     public void testSetHeartbeatMode() {
         delegate.setHeartbeatMode(HeartbeatMode.PEER_NOT_ALLOWED_TO_SEND);
         assertSame(HeartbeatMode.PEER_NOT_ALLOWED_TO_SEND, delegate.getHeartbeatMode());
     }
 
-    /**
-     * Test of applyDelegate method, of class HeartbeatDelegate.
-     */
+    /** Test of applyDelegate method, of class HeartbeatDelegate. */
     @Test
     public void testApplyDelegate() {
         Config config = Config.createConfig();

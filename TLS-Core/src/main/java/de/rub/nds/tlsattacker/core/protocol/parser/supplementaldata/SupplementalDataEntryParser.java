@@ -11,8 +11,9 @@ package de.rub.nds.tlsattacker.core.protocol.parser.supplementaldata;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.protocol.message.supplementaldata.SupplementalDataEntry;
-import de.rub.nds.tlsattacker.core.protocol.Parser;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,18 +21,16 @@ public class SupplementalDataEntryParser extends Parser<SupplementalDataEntry> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SupplementalDataEntryParser(int startposition, byte[] array) {
-        super(startposition, array);
+    public SupplementalDataEntryParser(InputStream stream) {
+        super(stream);
     }
 
     @Override
-    public SupplementalDataEntry parse() {
+    public void parse(SupplementalDataEntry entry) {
         LOGGER.debug("Parsing SupplementalDataEntry");
-        SupplementalDataEntry entry = new SupplementalDataEntry();
         parseSupplementalDataEntryType(entry);
         parseSupplementalDataEntryLength(entry);
         parseSupplementalDataEntry(entry);
-        return entry;
     }
 
     private void parseSupplementalDataEntryType(SupplementalDataEntry entry) {

@@ -10,11 +10,10 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.SrpServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import java.io.InputStream;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,27 +22,19 @@ public class SrpServerKeyExchangeParser extends ServerKeyExchangeParser<SrpServe
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final ProtocolVersion version;
-
     /**
      * Constructor for the Parser class
      *
-     * @param pointer
-     *                Position in the array where the ServerKeyExchangeParser is supposed to start parsing
-     * @param array
-     *                The byte[] which the ServerKeyExchangeParser is supposed to parse
-     * @param version
-     *                Version of the Protocol
-     * @param config
-     *                A Config used in the current context
+     * @param stream
+     * @param tlsContext
+     *
      */
-    public SrpServerKeyExchangeParser(int pointer, byte[] array, ProtocolVersion version, Config config) {
-        super(pointer, array, HandshakeMessageType.SERVER_KEY_EXCHANGE, version, config);
-        this.version = version;
+    public SrpServerKeyExchangeParser(InputStream stream, TlsContext tlsContext) {
+        super(stream, tlsContext);
     }
 
     @Override
-    protected void parseHandshakeMessageContent(SrpServerKeyExchangeMessage msg) {
+    public void parse(SrpServerKeyExchangeMessage msg) {
         LOGGER.debug("Parsing SRPServerKeyExchangeMessage");
         parseModulusLength(msg);
         parseModulus(msg);
@@ -58,11 +49,6 @@ public class SrpServerKeyExchangeParser extends ServerKeyExchangeParser<SrpServe
         }
         parseSignatureLength(msg);
         parseSignature(msg);
-    }
-
-    @Override
-    protected SrpServerKeyExchangeMessage createHandshakeMessage() {
-        return new SrpServerKeyExchangeMessage();
     }
 
     /**
@@ -151,24 +137,6 @@ public class SrpServerKeyExchangeParser extends ServerKeyExchangeParser<SrpServe
     private void parseSerializedPublicKey(SrpServerKeyExchangeMessage msg) {
         msg.setPublicKey(parseByteArrayField(msg.getPublicKeyLength().getValue()));
         LOGGER.debug("SerializedPublicKey: " + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
-    }
-
-    /**
-     * Checks if the version is TLS12
-     *
-     * @return True if the used version is TLS12
-     */
-    private boolean isTLS12() {
-        return version == ProtocolVersion.TLS12;
-    }
-
-    /**
-     * Checks if the version is DTLS12
-     *
-     * @return True if the used version is DTLS12
-     */
-    private boolean isDTLS12() {
-        return version == ProtocolVersion.DTLS12;
     }
 
     /**

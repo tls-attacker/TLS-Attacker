@@ -11,19 +11,16 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
+import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PSKIdentity;
-import de.rub.nds.tlsattacker.core.protocol.Preparator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import java.math.BigInteger;
-import java.time.Duration;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-
-import de.rub.nds.tlsattacker.util.TimeHelper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.math.BigInteger;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class PSKIdentityPreparator extends Preparator<PSKIdentity> {
 

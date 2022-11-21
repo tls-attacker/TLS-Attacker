@@ -1,23 +1,21 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.transport.stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class StreamTransportHandlerTest {
 
@@ -30,21 +28,19 @@ public class StreamTransportHandlerTest {
     @BeforeEach
     public void setUp() {
         outputStream = new ByteArrayOutputStream();
-        inputStream = new ByteArrayInputStream(new byte[] { 4, 3, 2, 1 });
-        handler = new StreamTransportHandler(100, 100, ConnectionEndType.CLIENT, inputStream, outputStream);
+        inputStream = new ByteArrayInputStream(new byte[] {4, 3, 2, 1});
+        handler =
+                new StreamTransportHandler(
+                        100, 100, ConnectionEndType.CLIENT, inputStream, outputStream);
     }
 
-    /**
-     * Test of closeConnection method, of class StreamTransportHandler.
-     */
+    /** Test of closeConnection method, of class StreamTransportHandler. */
     @Test()
     public void testCloseConnection() {
         assertThrows(IOException.class, handler::closeConnection);
     }
 
-    /**
-     * Test of initialize method, of class StreamTransportHandler.
-     */
+    /** Test of initialize method, of class StreamTransportHandler. */
     @Test
     public void testInitialize() throws IOException {
         assertFalse(handler.isInitialized());
@@ -52,17 +48,13 @@ public class StreamTransportHandlerTest {
         assertTrue(handler.isInitialized());
     }
 
-    /**
-     * Test of getInputStream method, of class StreamTransportHandler.
-     */
+    /** Test of getInputStream method, of class StreamTransportHandler. */
     @Test
     public void testGetInputStream() {
         assertNotNull(handler.getInputStream());
     }
 
-    /**
-     * Test of getOutputStream method, of class StreamTransportHandler.
-     */
+    /** Test of getOutputStream method, of class StreamTransportHandler. */
     @Test
     public void testGetOutputStream() {
         assertNotNull(handler.getOutputStream());
@@ -71,10 +63,10 @@ public class StreamTransportHandlerTest {
     @Test
     public void fullTest() throws IOException {
         handler.initialize();
-        handler.sendData(new byte[] { 0, 1, 2, 3 });
-        assertArrayEquals(new byte[] { 0, 1, 2, 3 }, outputStream.toByteArray());
+        handler.sendData(new byte[] {0, 1, 2, 3});
+        assertArrayEquals(new byte[] {0, 1, 2, 3}, outputStream.toByteArray());
         byte[] fetchData = handler.fetchData();
-        assertArrayEquals(new byte[] { 4, 3, 2, 1 }, fetchData);
+        assertArrayEquals(new byte[] {4, 3, 2, 1}, fetchData);
     }
 
     @Test

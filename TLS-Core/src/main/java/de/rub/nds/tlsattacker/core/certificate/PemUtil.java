@@ -1,25 +1,14 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.certificate;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.cert.CertificateException;
@@ -81,7 +70,7 @@ public class PemUtil {
     private static void writeKey(String keyType, byte[] encodedKey, OutputStream outputStream) {
         PemObject pemObject = new PemObject(keyType, encodedKey);
         try (OutputStreamWriter writer = new OutputStreamWriter(outputStream);
-            PemWriter pemWriter = new PemWriter(writer)) {
+                PemWriter pemWriter = new PemWriter(writer)) {
             pemWriter.writeObject(pemObject);
         } catch (IOException ex) {
             LOGGER.warn(ex);
@@ -89,7 +78,8 @@ public class PemUtil {
     }
 
     public static void writeCertificate(Certificate cert, File file) {
-        try (FileWriter writer = new FileWriter(file); PemWriter pemWriter = new PemWriter(writer)) {
+        try (FileWriter writer = new FileWriter(file);
+                PemWriter pemWriter = new PemWriter(writer)) {
             for (org.bouncycastle.asn1.x509.Certificate tempCert : cert.getCertificateList()) {
                 PemObject pemObject = new PemObject("CERTIFICATE", tempCert.getEncoded());
                 pemWriter.writeObject(pemObject);
@@ -99,16 +89,22 @@ public class PemUtil {
         }
     }
 
-    public static Certificate readCertificate(InputStream stream) throws CertificateException, IOException {
+    public static Certificate readCertificate(InputStream stream)
+            throws CertificateException, IOException {
         CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
-        Collection<? extends java.security.cert.Certificate> certs = certFactory.generateCertificates(stream);
-        java.security.cert.Certificate sunCert = (java.security.cert.Certificate) certs.toArray()[0];
+        Collection<? extends java.security.cert.Certificate> certs =
+                certFactory.generateCertificates(stream);
+        java.security.cert.Certificate sunCert =
+                (java.security.cert.Certificate) certs.toArray()[0];
         byte[] certBytes = sunCert.getEncoded();
         ASN1Primitive asn1Cert = TlsUtils.readASN1Object(certBytes);
-        org.bouncycastle.asn1.x509.Certificate cert = org.bouncycastle.asn1.x509.Certificate.getInstance(asn1Cert);
-        org.bouncycastle.asn1.x509.Certificate[] certs2 = new org.bouncycastle.asn1.x509.Certificate[1];
+        org.bouncycastle.asn1.x509.Certificate cert =
+                org.bouncycastle.asn1.x509.Certificate.getInstance(asn1Cert);
+        org.bouncycastle.asn1.x509.Certificate[] certs2 =
+                new org.bouncycastle.asn1.x509.Certificate[1];
         certs2[0] = cert;
-        org.bouncycastle.crypto.tls.Certificate tlsCerts = new org.bouncycastle.crypto.tls.Certificate(certs2);
+        org.bouncycastle.crypto.tls.Certificate tlsCerts =
+                new org.bouncycastle.crypto.tls.Certificate(certs2);
         return tlsCerts;
     }
 
@@ -119,7 +115,8 @@ public class PemUtil {
     }
 
     public static PrivateKey readPrivateKey(InputStream stream) throws IOException {
-        try (InputStreamReader reader = new InputStreamReader(stream); PEMParser parser = new PEMParser(reader)) {
+        try (InputStreamReader reader = new InputStreamReader(stream);
+                PEMParser parser = new PEMParser(reader)) {
             Object obj = parser.readObject();
             if (obj instanceof PEMKeyPair) {
                 PEMKeyPair pair = (PEMKeyPair) obj;
@@ -144,7 +141,8 @@ public class PemUtil {
     }
 
     public static PublicKey readPublicKey(InputStream stream) throws IOException {
-        try (InputStreamReader reader = new InputStreamReader(stream); PEMParser parser = new PEMParser(reader)) {
+        try (InputStreamReader reader = new InputStreamReader(stream);
+                PEMParser parser = new PEMParser(reader)) {
             Object obj = parser.readObject();
             if (obj instanceof PEMKeyPair) {
                 PEMKeyPair pair = (PEMKeyPair) obj;
@@ -170,6 +168,5 @@ public class PemUtil {
         return stream.toByteArray();
     }
 
-    private PemUtil() {
-    }
+    private PemUtil() {}
 }

@@ -10,11 +10,10 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.PskServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,35 +21,21 @@ public class PskServerKeyExchangeParser extends ServerKeyExchangeParser<PskServe
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final ProtocolVersion version;
-
     /**
      * Constructor for the Parser class
      *
-     * @param pointer
-     *                Position in the array where the ServerKeyExchangeParser is supposed to start parsing
-     * @param array
-     *                The byte[] which the ServerKeyExchangeParser is supposed to parse
-     * @param version
-     *                Version of the Protocol
-     * @param config
-     *                A Config used in the current context
+     * @param stream
+     * @param tlsContext
      */
-    public PskServerKeyExchangeParser(int pointer, byte[] array, ProtocolVersion version, Config config) {
-        super(pointer, array, HandshakeMessageType.SERVER_KEY_EXCHANGE, version, config);
-        this.version = version;
+    public PskServerKeyExchangeParser(InputStream stream, TlsContext tlsContext) {
+        super(stream, tlsContext);
     }
 
     @Override
-    protected void parseHandshakeMessageContent(PskServerKeyExchangeMessage msg) {
+    public void parse(PskServerKeyExchangeMessage msg) {
         LOGGER.debug("Parsing PSKECDHEServerKeyExchangeMessage");
         parsePskIdentityHintLength(msg);
         parsePskIdentityHint(msg);
-    }
-
-    @Override
-    protected PskServerKeyExchangeMessage createHandshakeMessage() {
-        return new PskServerKeyExchangeMessage();
     }
 
     private void parsePskIdentityHintLength(PskServerKeyExchangeMessage msg) {

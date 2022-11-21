@@ -10,10 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateStatusMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.CertificateStatusParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.CertificateStatusPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateStatusSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 
 public class CertificateStatusHandler extends HandshakeMessageHandler<CertificateStatusMessage> {
     public CertificateStatusHandler(TlsContext tlsContext) {
@@ -21,23 +18,7 @@ public class CertificateStatusHandler extends HandshakeMessageHandler<Certificat
     }
 
     @Override
-    public CertificateStatusParser getParser(byte[] message, int pointer) {
-        return new CertificateStatusParser(pointer, message, tlsContext.getChooser().getSelectedProtocolVersion(),
-            tlsContext.getConfig());
-    }
-
-    @Override
-    public CertificateStatusPreparator getPreparator(CertificateStatusMessage message) {
-        return new CertificateStatusPreparator(tlsContext.getChooser(), message);
-    }
-
-    @Override
-    public CertificateStatusSerializer getSerializer(CertificateStatusMessage message) {
-        return new CertificateStatusSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
-    }
-
-    @Override
-    public void adjustTLSContext(CertificateStatusMessage message) {
+    public void adjustContext(CertificateStatusMessage message) {
 
     }
 }
