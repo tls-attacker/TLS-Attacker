@@ -35,6 +35,7 @@ if there is only one connection defined in the workflow trace.
         <messages>
             <ClientHello/>
         </messages>
+        <httpMessages/>
         <records/>
         <fragments/>
     </Send>

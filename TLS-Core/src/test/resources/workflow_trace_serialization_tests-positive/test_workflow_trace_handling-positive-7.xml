@@ -37,6 +37,7 @@ true for default and custom connections.
         <messages>
             <ClientHello/>
         </messages>
+        <httpMessages/>
         <records/>
         <fragments/>
     </Send>

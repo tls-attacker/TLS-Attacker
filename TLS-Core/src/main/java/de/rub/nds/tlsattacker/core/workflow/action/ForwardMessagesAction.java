@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.core.http.HttpMessage;
 import de.rub.nds.tlsattacker.core.layer.*;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
@@ -32,6 +33,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -567,5 +569,11 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
     @Override
     public List<HandshakeMessageType> getGoingToSendHandshakeMessageTypes() {
         return this.getGoingToReceiveHandshakeMessageTypes();
+    }
+
+    @Override
+    public List<HttpMessage> getReceivedHttpMessages() {
+        // ForwardMessages should not interfere with messages above TLS
+        return new LinkedList<>();
     }
 }

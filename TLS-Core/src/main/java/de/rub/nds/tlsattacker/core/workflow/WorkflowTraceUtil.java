@@ -11,8 +11,10 @@ package de.rub.nds.tlsattacker.core.workflow;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.constants.SSL2MessageType;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.SSL2Message;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
@@ -21,6 +23,7 @@ import de.rub.nds.tlsattacker.core.workflow.action.SendingAction;
 import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -49,6 +52,21 @@ public class WorkflowTraceUtil {
             return null;
         } else {
             return handshakeMessageList.get(0);
+        }
+    }
+
+    public static SSL2Message getFirstReceivedMessage(SSL2MessageType type, WorkflowTrace trace) {
+        List<ProtocolMessage> messageList = getAllReceivedMessages(trace);
+        List<SSL2Message> ssl2MessageList =
+                messageList.stream()
+                        .filter(SSL2Message.class::isInstance)
+                        .map(protocolMessage -> (SSL2Message) protocolMessage)
+                        .collect(Collectors.toList());
+        ssl2MessageList = filterMessageList(ssl2MessageList, type);
+        if (ssl2MessageList.isEmpty()) {
+            return null;
+        } else {
+            return ssl2MessageList.get(0);
         }
     }
 
@@ -185,10 +203,14 @@ public class WorkflowTraceUtil {
     }
 
     public static boolean didReceiveMessage(ProtocolMessageType type, WorkflowTrace trace) {
-        return getFirstReceivedMessage(type, trace) != null;
+        return WorkflowTraceUtil.getFirstReceivedMessage(type, trace) != null;
     }
 
     public static boolean didReceiveMessage(HandshakeMessageType type, WorkflowTrace trace) {
+        return WorkflowTraceUtil.getFirstReceivedMessage(type, trace) != null;
+    }
+
+    public static boolean didReceiveMessage(SSL2MessageType type, WorkflowTrace trace) {
         return getFirstReceivedMessage(type, trace) != null;
     }
 
@@ -217,6 +239,17 @@ public class WorkflowTraceUtil {
         for (HandshakeMessage handshakeMessage : messages) {
             if (handshakeMessage.getHandshakeMessageType() == type) {
                 returnedMessages.add(handshakeMessage);
+            }
+        }
+        return returnedMessages;
+    }
+
+    private static List<SSL2Message> filterMessageList(
+            List<SSL2Message> messages, SSL2MessageType type) {
+        List<SSL2Message> returnedMessages = new LinkedList<>();
+        for (SSL2Message ssl2Message : messages) {
+            if (ssl2Message.getSsl2MessageType() == type) {
+                returnedMessages.add(ssl2Message);
             }
         }
         return returnedMessages;

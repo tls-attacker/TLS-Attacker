@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
+import de.rub.nds.tlsattacker.core.http.HttpMessage;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
@@ -51,6 +52,10 @@ public class SendAction extends MessageAction implements SendingAction {
         this((ActionOption) null, messages);
     }
 
+    public SendAction(HttpMessage... httpMessage) {
+        this.setHttpMessages(new ArrayList<>(Arrays.asList(httpMessage)));
+    }
+
     public SendAction(ActionOption option, ProtocolMessage... messages) {
         this(option, new ArrayList<>(Arrays.asList(messages)));
     }
@@ -87,7 +92,7 @@ public class SendAction extends MessageAction implements SendingAction {
         }
 
         try {
-            send(tlsContext, messages, fragments, records);
+            send(tlsContext, messages, fragments, records, httpMessages);
             setExecuted(true);
         } catch (IOException e) {
             if (!getActionOptions().contains(ActionOption.MAY_FAIL)) {
@@ -166,6 +171,11 @@ public class SendAction extends MessageAction implements SendingAction {
         if (getFragments() != null) {
             for (DtlsHandshakeMessageFragment fragment : getFragments()) {
                 holders.addAll(fragment.getAllModifiableVariableHolders());
+            }
+        }
+        if (getHttpMessages() != null) {
+            for (HttpMessage msg : getHttpMessages()) {
+                holders.addAll(msg.getAllModifiableVariableHolders());
             }
         }
         for (ModifiableVariableHolder holder : holders) {

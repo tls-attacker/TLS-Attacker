@@ -107,11 +107,13 @@ Test a MITM workflow trace
         <actionOptions/>
         <connectionAlias>server</connectionAlias>
         <messages/>
+        <httpMessages/>
         <records/>
         <fragments/>
         <expectedMessages>
             <ClientHello/>
         </expectedMessages>
+        <expectedHttpMessages/>
     </Receive>
     <Send>
         <actionOptions/>
@@ -123,6 +125,7 @@ Test a MITM workflow trace
             <Certificate/>
             <ServerHelloDone/>
         </messages>
+        <httpMessages/>
         <records/>
         <fragments/>
     </Send>
@@ -130,6 +133,7 @@ Test a MITM workflow trace
         <actionOptions/>
         <connectionAlias>server</connectionAlias>
         <messages/>
+        <httpMessages/>
         <records/>
         <fragments/>
         <expectedMessages>
@@ -137,6 +141,7 @@ Test a MITM workflow trace
             <ChangeCipherSpec/>
             <Finished/>
         </expectedMessages>
+        <expectedHttpMessages/>
     </Receive>
     <Send>
         <actionOptions/>
@@ -145,6 +150,7 @@ Test a MITM workflow trace
             <ChangeCipherSpec/>
             <Finished/>
         </messages>
+        <httpMessages/>
         <records/>
         <fragments/>
     </Send>
@@ -154,6 +160,7 @@ Test a MITM workflow trace
         <messages>
             <ClientHello/>
         </messages>
+        <httpMessages/>
         <records/>
         <fragments/>
     </Send>
@@ -161,6 +168,7 @@ Test a MITM workflow trace
         <actionOptions/>
         <connectionAlias>client</connectionAlias>
         <messages/>
+        <httpMessages/>
         <records/>
         <fragments/>
         <expectedMessages>
@@ -170,6 +178,7 @@ Test a MITM workflow trace
             <Certificate/>
             <ServerHelloDone/>
         </expectedMessages>
+        <expectedHttpMessages/>
     </Receive>
     <Send>
         <actionOptions/>
@@ -179,6 +188,7 @@ Test a MITM workflow trace
             <ChangeCipherSpec/>
             <Finished/>
         </messages>
+        <httpMessages/>
         <records/>
         <fragments/>
     </Send>
@@ -186,12 +196,14 @@ Test a MITM workflow trace
         <actionOptions/>
         <connectionAlias>client</connectionAlias>
         <messages/>
+        <httpMessages/>
         <records/>
         <fragments/>
         <expectedMessages>
             <ChangeCipherSpec/>
             <Finished/>
         </expectedMessages>
+        <expectedHttpMessages/>
     </Receive>
     <PrintLastHandledApplicationData>
         <actionOptions/>

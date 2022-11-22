@@ -97,7 +97,7 @@ public class SendRaccoonCkeAction extends MessageAction implements SendingAction
         }
 
         try {
-            send(tlsContext, messages, fragments, records);
+            send(tlsContext, messages, fragments, records, httpMessages);
             setExecuted(true);
         } catch (IOException e) {
             tlsContext.setReceivedTransportHandlerException(true);

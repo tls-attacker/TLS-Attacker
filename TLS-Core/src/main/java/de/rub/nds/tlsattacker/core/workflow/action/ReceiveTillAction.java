@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.http.HttpMessage;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
@@ -218,5 +219,10 @@ public class ReceiveTillAction extends CommonReceiveAction implements ReceivingA
     @Override
     public List<ProtocolMessage> getExpectedMessages() {
         return Arrays.asList(waitTillMessage);
+    }
+
+    @Override
+    public List<HttpMessage> getReceivedHttpMessages() {
+        return httpMessages;
     }
 }

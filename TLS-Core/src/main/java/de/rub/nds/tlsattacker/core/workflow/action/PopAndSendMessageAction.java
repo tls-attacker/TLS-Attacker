@@ -52,7 +52,7 @@ public class PopAndSendMessageAction extends MessageAction implements SendingAct
         }
 
         try {
-            send(tlsContext, messages, fragments, records);
+            send(tlsContext, messages, fragments, records, httpMessages);
             setExecuted(true);
         } catch (IOException e) {
             LOGGER.debug(e);
