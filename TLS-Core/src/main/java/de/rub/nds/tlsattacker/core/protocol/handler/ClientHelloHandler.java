@@ -45,7 +45,9 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
         adjustExtensions(message);
         warnOnConflictingExtensions();
         adjustRandomContext(message);
-        if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()
+        if ((tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()
+                        || tlsContext.getChooser().getSelectedProtocolVersion()
+                                == ProtocolVersion.DTLS13)
                 && tlsContext.isExtensionNegotiated(ExtensionType.EARLY_DATA)) {
             try {
                 adjustEarlyTrafficSecret();
@@ -198,7 +200,7 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
             KeySet clientKeySet =
                     KeySetGenerator.generateKeySet(
                             tlsContext,
-                            ProtocolVersion.TLS13,
+                            tlsContext.getChooser().getSelectedProtocolVersion(),
                             tlsContext.getActiveClientKeySetType());
 
             if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.SERVER) {

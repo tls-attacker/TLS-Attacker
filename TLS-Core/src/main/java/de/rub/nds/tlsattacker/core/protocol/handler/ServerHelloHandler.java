@@ -168,10 +168,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                     .getRecordLayer()
                     .updateDecryptionCipher(
                             RecordCipherFactory.getRecordCipher(tlsContext, serverKeySet, false));
-        }
-
-        if (tlsContext.getChooser().getConnectionEndType() != ConnectionEndType.CLIENT
-                || tlsContext.getChooser().getSelectedProtocolVersion() == ProtocolVersion.DTLS13) {
+        } else {
             // DTLS 1.3: skip epoch 1 if no early data was sent
             if (tlsContext.getChooser().getSelectedProtocolVersion() == ProtocolVersion.DTLS13
                     && tlsContext.getRecordLayer().getEncryptor().isFirstEpoch()) {
@@ -198,7 +195,9 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 
     @Override
     public void adjustContextAfterSerialize(ServerHelloMessage message) {
-        if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()
+        if ((tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()
+                        || tlsContext.getChooser().getSelectedProtocolVersion()
+                                == ProtocolVersion.DTLS13)
                 && !message.isTls13HelloRetryRequest()) {
             setServerRecordCipher();
         }

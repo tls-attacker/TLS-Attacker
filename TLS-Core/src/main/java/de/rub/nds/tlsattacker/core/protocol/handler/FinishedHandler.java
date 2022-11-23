@@ -47,6 +47,11 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
                 }
             } else if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT
                     || !tlsContext.isExtensionNegotiated(ExtensionType.EARLY_DATA)) {
+
+                if (tlsContext.getChooser().getSelectedProtocolVersion() == ProtocolVersion.DTLS13
+                        && tlsContext.getRecordLayer().getEncryptor().isFirstEpoch()) {
+                    tlsContext.getRecordLayer().skipEarlyDataEncryptionEpoch();
+                }
                 setClientRecordCipher(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
 
                 if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
@@ -127,7 +132,8 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
 
     @Override
     public void adjustContextAfterSerialize(FinishedMessage message) {
-        if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
+        if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()
+                || tlsContext.getChooser().getSelectedProtocolVersion() == ProtocolVersion.DTLS13) {
             if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
                 setClientRecordCipher(Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS);
             } else {
