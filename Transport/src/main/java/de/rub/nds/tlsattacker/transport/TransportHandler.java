@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PushbackInputStream;
+import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import org.apache.logging.log4j.LogManager;
@@ -40,10 +41,28 @@ public abstract class TransportHandler {
 
     protected SocketState cachedSocketState = null;
 
+    /**
+     * The network interface the TransportHandler connects to. If null, the interface is chosen
+     * automatically.
+     */
+    protected NetworkInterface networkInterface;
+
     public TransportHandler(Connection con) {
         this.firstTimeout = con.getFirstTimeout();
         this.connectionEndType = con.getLocalConnectionEndType();
         this.timeout = con.getTimeout();
+        this.networkInterface = con.getNetworkInterface();
+    }
+
+    public TransportHandler(
+            long firstTimeout,
+            long timeout,
+            ConnectionEndType type,
+            NetworkInterface networkInterface) {
+        this.firstTimeout = firstTimeout;
+        this.timeout = timeout;
+        this.connectionEndType = type;
+        this.networkInterface = networkInterface;
     }
 
     public TransportHandler(long firstTimeout, long timeout, ConnectionEndType type) {

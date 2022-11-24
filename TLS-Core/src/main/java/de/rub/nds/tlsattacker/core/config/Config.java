@@ -44,10 +44,7 @@ import java.lang.reflect.Field;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.security.PrivateKey;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.tls.Certificate;
@@ -149,6 +146,9 @@ public class Config implements Serializable {
      * when a ClientTcpTransportHandler is used.
      */
     private Boolean retryFailedClientTcpSocketInitialization = false;
+
+    /** The interface TLS-Attacker should use for connecting to servers. */
+    private String networkInterface = "";
 
     /** The default connection parameters to use when running TLS-Server. */
     private InboundConnection defaultServerConnection;
@@ -1206,6 +1206,7 @@ public class Config implements Serializable {
 
     public Config() {
         defaultLayerConfiguration = LayerConfiguration.TLS;
+
         defaultClientConnection = new OutboundConnection("client", 443, "localhost");
         defaultServerConnection = new InboundConnection("server", 443, "localhost");
         workflowTraceType = WorkflowTraceType.HANDSHAKE;
@@ -3943,6 +3944,14 @@ public class Config implements Serializable {
     public void setRetryFailedClientTcpSocketInitialization(
             Boolean retryFailedClientTcpSocketInitialization) {
         this.retryFailedClientTcpSocketInitialization = retryFailedClientTcpSocketInitialization;
+    }
+
+    public String getNetworkInterface() {
+        return networkInterface;
+    }
+
+    public void setNetworkInterface(String networkInterface) {
+        this.networkInterface = networkInterface;
     }
 
     public Boolean isLimitPsksToOne() {

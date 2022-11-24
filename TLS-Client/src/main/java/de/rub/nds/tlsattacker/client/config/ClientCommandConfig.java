@@ -35,6 +35,7 @@ public class ClientCommandConfig extends TLSDelegateConfig {
     @ParametersDelegate private FilterDelegate filterDelegate;
     @ParametersDelegate private ListDelegate listDelegate;
     @ParametersDelegate private StarttlsDelegate starttlsDelegate;
+    @ParametersDelegate private InterfaceDelegate interfaceDelegate;
 
     @Parameter(
             names = "-workflow_input",
@@ -64,6 +65,7 @@ public class ClientCommandConfig extends TLSDelegateConfig {
         this.listDelegate = new ListDelegate();
         this.starttlsDelegate = new StarttlsDelegate();
         this.compressionDelegate = new CompressionDelegate();
+        this.interfaceDelegate = new InterfaceDelegate();
         addDelegate(listDelegate);
         addDelegate(heartbeatDelegate);
         addDelegate(ciphersuiteDelegate);
@@ -80,6 +82,7 @@ public class ClientCommandConfig extends TLSDelegateConfig {
         addDelegate(certificateDelegate);
         addDelegate(filterDelegate);
         addDelegate(starttlsDelegate);
+        addDelegate(interfaceDelegate);
     }
 
     @Override

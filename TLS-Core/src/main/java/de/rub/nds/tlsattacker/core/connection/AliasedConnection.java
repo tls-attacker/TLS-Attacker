@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import jakarta.xml.bind.annotation.XmlType;
+import java.net.NetworkInterface;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
@@ -32,7 +33,8 @@ import java.util.Set;
             "firstTimeout",
             "connectionTimeout",
             "transportHandlerType",
-            "sourcePort"
+            "sourcePort",
+            "networkInterface"
         })
 public abstract class AliasedConnection extends Connection implements Aliasable {
 
@@ -69,6 +71,12 @@ public abstract class AliasedConnection extends Connection implements Aliasable 
 
     public AliasedConnection(String alias, Integer port, String hostname) {
         super(port, hostname);
+        this.alias = alias;
+    }
+
+    public AliasedConnection(
+            String alias, Integer port, String hostname, NetworkInterface networkInterface) {
+        super(port, hostname, networkInterface);
         this.alias = alias;
     }
 

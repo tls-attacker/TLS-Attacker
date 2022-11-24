@@ -34,6 +34,7 @@ public class ServerCommandConfig extends TLSDelegateConfig {
     @ParametersDelegate private ListDelegate listDelegate;
     @ParametersDelegate private ExecutorTypeDelegate executorTypeDelegate;
     @ParametersDelegate private StarttlsDelegate starttlsDelegate;
+    @ParametersDelegate private InterfaceDelegate interfaceDelegate;
 
     @Parameter(
             names = "-workflow_input",
@@ -62,6 +63,7 @@ public class ServerCommandConfig extends TLSDelegateConfig {
         this.listDelegate = new ListDelegate();
         this.executorTypeDelegate = new ExecutorTypeDelegate();
         this.starttlsDelegate = new StarttlsDelegate();
+        this.interfaceDelegate = new InterfaceDelegate();
         addDelegate(maxFragmentLengthDelegate);
         addDelegate(ciphersuiteDelegate);
         addDelegate(ellipticCurveDelegate);
@@ -77,6 +79,7 @@ public class ServerCommandConfig extends TLSDelegateConfig {
         addDelegate(listDelegate);
         addDelegate(executorTypeDelegate);
         addDelegate(starttlsDelegate);
+        addDelegate(interfaceDelegate);
     }
 
     @Override

@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.transport.TimeableTransportHandler;
 import de.rub.nds.tlsattacker.transport.tcp.ClientTcpTransportHandler;
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.net.NetworkInterface;
 import java.net.Socket;
 import java.nio.ByteBuffer;
 import org.apache.logging.log4j.LogManager;
@@ -37,6 +38,15 @@ public class TimingProxyClientTcpTransportHandler extends ClientTcpTransportHand
         this.proxyDataPort = connection.getProxyDataPort();
         this.proxyControlHostName = connection.getProxyControlHostname();
         this.proxyControlPort = connection.getProxyControlPort();
+    }
+
+    public TimingProxyClientTcpTransportHandler(
+            long firstTimeout,
+            long timeout,
+            String hostname,
+            int port,
+            NetworkInterface networkInterface) {
+        super(firstTimeout, timeout, hostname, port, networkInterface);
     }
 
     public TimingProxyClientTcpTransportHandler(

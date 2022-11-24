@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.transport.udp.stream.UdpOutputStream;
 import java.io.IOException;
 import java.io.PushbackInputStream;
 import java.net.DatagramSocket;
+import java.net.NetworkInterface;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -31,6 +32,17 @@ public class ClientUdpTransportHandler extends UdpTransportHandler {
         this.hostname = connection.getHostname();
         this.port = connection.getPort();
         this.sourcePort = connection.getSourcePort();
+    }
+
+    public ClientUdpTransportHandler(
+            long firstTimeout,
+            long timeout,
+            String hostname,
+            int port,
+            NetworkInterface networkInterface) {
+        super(firstTimeout, timeout, ConnectionEndType.CLIENT, networkInterface);
+        this.hostname = hostname;
+        this.port = port;
     }
 
     public ClientUdpTransportHandler(long firstTimeout, long timeout, String hostname, int port) {

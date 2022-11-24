@@ -12,11 +12,18 @@ import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
+import java.net.NetworkInterface;
 import java.util.Objects;
 
 @XmlTransient
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class Connection implements Serializable {
+
+    /**
+     * Specifies the network interface to be used for this connection. If null, interface will be
+     * chosen automatically.
+     */
+    protected NetworkInterface networkInterface;
 
     protected Integer port = null;
     protected String ip = null;
@@ -37,12 +44,19 @@ public abstract class Connection implements Serializable {
         this.port = port;
     }
 
+    public Connection(Integer port, String hostname, NetworkInterface networkInterface) {
+        this.port = port;
+        this.hostname = hostname;
+        this.networkInterface = networkInterface;
+    }
+
     public Connection(Integer port, String hostname) {
         this.port = port;
         this.hostname = hostname;
     }
 
     public Connection(Connection other) {
+        networkInterface = other.networkInterface;
         port = other.port;
         ip = other.ip;
         hostname = other.hostname;
@@ -55,6 +69,14 @@ public abstract class Connection implements Serializable {
         firstTimeout = other.firstTimeout;
         connectionTimeout = other.connectionTimeout;
         sourcePort = other.sourcePort;
+    }
+
+    public NetworkInterface getNetworkInterface() {
+        return networkInterface;
+    }
+
+    public void setNetworkInterface(NetworkInterface networkInterface) {
+        this.networkInterface = networkInterface;
     }
 
     public String getIp() {

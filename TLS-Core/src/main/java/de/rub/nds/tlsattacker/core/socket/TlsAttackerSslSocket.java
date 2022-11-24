@@ -188,6 +188,9 @@ public class TlsAttackerSslSocket extends SSLSocket {
                 state.getTlsContext().addProposedExtension(type);
             }
         }
+
+        // TODO: resolve interface name here
+
         StreamTransportHandler streamTransportHandler =
                 new StreamTransportHandler(
                         timeout,

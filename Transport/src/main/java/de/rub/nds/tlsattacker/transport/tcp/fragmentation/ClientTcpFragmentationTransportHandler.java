@@ -1,18 +1,17 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.transport.tcp.fragmentation;
 
 import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.tcp.ClientTcpTransportHandler;
-
 import java.io.IOException;
+import java.net.NetworkInterface;
 import java.util.Arrays;
 
 public class ClientTcpFragmentationTransportHandler extends ClientTcpTransportHandler {
@@ -21,17 +20,41 @@ public class ClientTcpFragmentationTransportHandler extends ClientTcpTransportHa
     private int packetChunks = 3;
 
     public ClientTcpFragmentationTransportHandler(Connection connection) {
-        this(DEFAULT_CONNECTION_TIMEOUT_MILLISECONDS, connection.getFirstTimeout(), connection.getTimeout(),
-            connection.getIp(), connection.getPort());
+        this(
+                DEFAULT_CONNECTION_TIMEOUT_MILLISECONDS,
+                connection.getFirstTimeout(),
+                connection.getTimeout(),
+                connection.getIp(),
+                connection.getPort());
     }
 
-    public ClientTcpFragmentationTransportHandler(long firstTimeout, long timeout, String hostname, int port) {
+    public ClientTcpFragmentationTransportHandler(
+            long firstTimeout, long timeout, String hostname, int port) {
         this(timeout, firstTimeout, timeout, hostname, port);
     }
 
-    public ClientTcpFragmentationTransportHandler(long connectionTimeout, long firstTimeout, long timeout,
-        String hostname, int port) {
+    public ClientTcpFragmentationTransportHandler(
+            long connectionTimeout, long firstTimeout, long timeout, String hostname, int port) {
         super(connectionTimeout, firstTimeout, timeout, hostname, port);
+    }
+
+    public ClientTcpFragmentationTransportHandler(
+            long firstTimeout,
+            long timeout,
+            String hostname,
+            int port,
+            NetworkInterface networkInterface) {
+        this(timeout, firstTimeout, timeout, hostname, port, networkInterface);
+    }
+
+    public ClientTcpFragmentationTransportHandler(
+            long connectionTimeout,
+            long firstTimeout,
+            long timeout,
+            String hostname,
+            int port,
+            NetworkInterface networkInterface) {
+        super(connectionTimeout, firstTimeout, timeout, hostname, port, networkInterface);
     }
 
     @Override
@@ -55,7 +78,6 @@ public class ClientTcpFragmentationTransportHandler extends ClientTcpTransportHa
                 Thread.sleep(10);
             } catch (Exception e) {
             }
-
         }
     }
 

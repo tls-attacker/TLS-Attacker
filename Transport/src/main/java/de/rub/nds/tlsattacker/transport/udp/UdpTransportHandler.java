@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.io.IOException;
 import java.net.DatagramSocket;
+import java.net.NetworkInterface;
 import java.net.SocketException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,6 +28,14 @@ public abstract class UdpTransportHandler extends TransportHandler {
 
     public UdpTransportHandler(Connection con) {
         super(con);
+    }
+
+    public UdpTransportHandler(
+            long firstTimeout,
+            long timeout,
+            ConnectionEndType type,
+            NetworkInterface networkInterface) {
+        super(firstTimeout, timeout, type, networkInterface);
     }
 
     public UdpTransportHandler(long firstTimeout, long timeout, ConnectionEndType type) {

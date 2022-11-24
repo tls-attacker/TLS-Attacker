@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.socket.SocketState;
 import java.io.IOException;
+import java.net.NetworkInterface;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
@@ -31,6 +32,14 @@ public abstract class TcpTransportHandler extends TransportHandler {
 
     public TcpTransportHandler(Connection con) {
         super(con);
+    }
+
+    public TcpTransportHandler(
+            long firstTimeout,
+            long timeout,
+            ConnectionEndType type,
+            NetworkInterface networkInterface) {
+        super(firstTimeout, timeout, type, networkInterface);
     }
 
     public TcpTransportHandler(long firstTimeout, long timeout, ConnectionEndType type) {
