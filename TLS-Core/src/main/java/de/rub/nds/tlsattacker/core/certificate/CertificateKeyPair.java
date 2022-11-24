@@ -604,23 +604,29 @@ public class CertificateKeyPair implements Serializable {
         }
 
         CertificateKeyType neededKeyType = AlgorithmResolver.getCertificateKeyType(cipherSuite);
-        SignatureAlgorithm neededSignatureAlgorithm =
-                AlgorithmResolver.getRequiredSignatureAlgorithm(cipherSuite);
+        CertificateKeyType legacyNeededCertSignatureKeyType =
+                AlgorithmResolver.getRequiredSignatureAlgorithm(cipherSuite)
+                        .getRequiredCertificateKeyType();
 
         if (neededKeyType == this.getCertPublicKeyType()
                 || (neededKeyType == CertificateKeyType.ECDSA
                         && getCertPublicKeyType() == CertificateKeyType.ECDH)) {
-            ProtocolVersion selectedVersion = chooser.getSelectedProtocolVersion();
-            // ensure cert is signed with matching algorithm if version < TLS 1.2
-            if ((selectedVersion != ProtocolVersion.SSL3
-                            && selectedVersion != ProtocolVersion.TLS10
-                            && selectedVersion != ProtocolVersion.TLS11
-                            && selectedVersion != ProtocolVersion.DTLS10)
-                    || neededSignatureAlgorithm == getSignatureAlgorithm()) {
+
+            if (cipherSuite.isEphemeral()
+                    || mayUseArbitraryCertSignature(chooser)
+                    || legacyNeededCertSignatureKeyType == getCertSignatureType()) {
                 return true;
             }
         }
         return false;
+    }
+
+    private boolean mayUseArbitraryCertSignature(Chooser chooser) {
+        ProtocolVersion selectedVersion = chooser.getSelectedProtocolVersion();
+        return (selectedVersion != ProtocolVersion.SSL3
+                && selectedVersion != ProtocolVersion.TLS10
+                && selectedVersion != ProtocolVersion.TLS11
+                && selectedVersion != ProtocolVersion.DTLS10);
     }
 
     public boolean combinationUnsuitedForTls13(Chooser chooser) {

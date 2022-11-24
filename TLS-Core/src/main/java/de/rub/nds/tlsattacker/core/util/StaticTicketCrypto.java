@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.util;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -18,7 +17,13 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
-import javax.crypto.*;
+import java.util.EnumMap;
+import java.util.Map;
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.Mac;
+import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import org.apache.logging.log4j.LogManager;
@@ -28,62 +33,111 @@ public class StaticTicketCrypto {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public static byte[] encrypt(CipherAlgorithm cipherAlgorithm, byte[] plaintextUnpadded, byte[] key, byte[] iv)
-        throws CryptoException {
+    private static Map<MacAlgorithm, ThreadLocal<Mac>> algorithmCache =
+            new EnumMap<>(MacAlgorithm.class);
+
+    private static Mac getInstance(MacAlgorithm macAlgorithm) {
+        return algorithmCache
+                .computeIfAbsent(
+                        macAlgorithm,
+                        algo -> {
+                            return ThreadLocal.withInitial(
+                                    () -> {
+                                        try {
+                                            return Mac.getInstance(macAlgorithm.getJavaName());
+                                        } catch (NoSuchAlgorithmException e) {
+                                            LOGGER.debug(
+                                                    "Could not get Mac instance for {} (used java name: {})",
+                                                    macAlgorithm,
+                                                    macAlgorithm.getJavaName(),
+                                                    e);
+                                            return null;
+                                        }
+                                    });
+                        })
+                .get();
+    }
+
+    public static byte[] encrypt(
+            CipherAlgorithm cipherAlgorithm, byte[] plaintextUnpadded, byte[] key, byte[] iv)
+            throws CryptoException {
         byte[] result = new byte[0];
         try {
             byte[] plaintext = addPadding(plaintextUnpadded, cipherAlgorithm.getKeySize());
             Cipher cipher = Cipher.getInstance(cipherAlgorithm.getJavaName());
-            BulkCipherAlgorithm bulkCipher = BulkCipherAlgorithm.getBulkCipherAlgorithm(cipherAlgorithm);
+            BulkCipherAlgorithm bulkCipher =
+                    BulkCipherAlgorithm.getBulkCipherAlgorithm(cipherAlgorithm);
             SecretKeySpec secretKey = new SecretKeySpec(key, bulkCipher.getJavaName());
             IvParameterSpec ivSpec = new IvParameterSpec(iv);
             cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivSpec);
             result = cipher.doFinal(plaintext);
-        } catch (InvalidKeyException | InvalidAlgorithmParameterException | IllegalBlockSizeException
-            | BadPaddingException | NoSuchPaddingException | NoSuchAlgorithmException ex) {
-            throw new CryptoException("Error while StatePlaintext Encryption. See Debug-Log for more Information.", ex);
+        } catch (InvalidKeyException
+                | InvalidAlgorithmParameterException
+                | IllegalBlockSizeException
+                | BadPaddingException
+                | NoSuchPaddingException
+                | NoSuchAlgorithmException ex) {
+            throw new CryptoException(
+                    "Error while StatePlaintext Encryption. See Debug-Log for more Information.",
+                    ex);
         }
         return result;
     }
 
-    public static byte[] decrypt(CipherAlgorithm cipherAlgorithm, byte[] ciphertext, byte[] key, byte[] iv)
-        throws CryptoException {
+    public static byte[] decrypt(
+            CipherAlgorithm cipherAlgorithm, byte[] ciphertext, byte[] key, byte[] iv)
+            throws CryptoException {
         byte[] result = new byte[0];
         try {
             Cipher cipher = Cipher.getInstance(cipherAlgorithm.getJavaName());
-            BulkCipherAlgorithm bulkCipher = BulkCipherAlgorithm.getBulkCipherAlgorithm(cipherAlgorithm);
+            BulkCipherAlgorithm bulkCipher =
+                    BulkCipherAlgorithm.getBulkCipherAlgorithm(cipherAlgorithm);
             SecretKeySpec secretKey = new SecretKeySpec(key, bulkCipher.getJavaName());
             IvParameterSpec ivSpec = new IvParameterSpec(iv);
             cipher.init(Cipher.DECRYPT_MODE, secretKey, ivSpec);
             result = cipher.doFinal(ciphertext);
             result = removePadding(result);
-        } catch (InvalidKeyException | InvalidAlgorithmParameterException | IllegalBlockSizeException
-            | BadPaddingException | NoSuchPaddingException | NoSuchAlgorithmException ex) {
-            LOGGER.warn("Encountered exception while encrypting the StatePlaintext with " + cipherAlgorithm.name());
+        } catch (InvalidKeyException
+                | InvalidAlgorithmParameterException
+                | IllegalBlockSizeException
+                | BadPaddingException
+                | NoSuchPaddingException
+                | NoSuchAlgorithmException ex) {
+            LOGGER.warn(
+                    "Encountered exception while encrypting the StatePlaintext with "
+                            + cipherAlgorithm.name());
             LOGGER.debug(ex);
-            throw new CryptoException("Error while StatePlaintext Decryption. See Debug-Log for more Information.");
+            throw new CryptoException(
+                    "Error while StatePlaintext Decryption. See Debug-Log for more Information.");
         }
         return result;
     }
 
-    public static byte[] generateHMAC(MacAlgorithm macAlgorithm, byte[] plaintext, byte[] key) throws CryptoException {
+    public static byte[] generateHMAC(MacAlgorithm macAlgorithm, byte[] plaintext, byte[] key)
+            throws CryptoException {
         byte[] result = new byte[0];
         try {
-            Mac mac = Mac.getInstance(macAlgorithm.getJavaName());
+            Mac mac = getInstance(macAlgorithm);
+            if (mac == null) {
+                throw new NoSuchAlgorithmException();
+            }
             SecretKeySpec macKey = new SecretKeySpec(key, macAlgorithm.getJavaName());
             mac.init(macKey);
             result = mac.doFinal(plaintext);
         } catch (InvalidKeyException | NoSuchAlgorithmException ex) {
             LOGGER.warn(
-                "Encountered exception while generating the HMAC " + macAlgorithm.name() + " of an encryptedState.");
+                    "Encountered exception while generating the HMAC "
+                            + macAlgorithm.name()
+                            + " of an encryptedState.");
             LOGGER.debug(ex);
-            throw new CryptoException("Error while HMAC generation. See Debug-Log for more Information.");
+            throw new CryptoException(
+                    "Error while HMAC generation. See Debug-Log for more Information.");
         }
         return result;
     }
 
     public static boolean verifyHMAC(MacAlgorithm macAlgo, byte[] mac, byte[] plaintext, byte[] key)
-        throws CryptoException {
+            throws CryptoException {
         byte[] newMAC = generateHMAC(macAlgo, plaintext, key);
         boolean result = Arrays.equals(mac, newMAC);
         return result;
@@ -104,6 +158,5 @@ public class StaticTicketCrypto {
         return Arrays.copyOf(result, result.length - padLen);
     }
 
-    private StaticTicketCrypto() {
-    }
+    private StaticTicketCrypto() {}
 }

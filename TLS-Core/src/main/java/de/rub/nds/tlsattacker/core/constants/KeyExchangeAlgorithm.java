@@ -15,6 +15,7 @@ public enum KeyExchangeAlgorithm {
     DHE_PSK,
     DH_ANON,
     RSA,
+    RSA_EXPORT,
     PSK_RSA,
     DH_DSS,
     DH_RSA,
@@ -39,7 +40,13 @@ public enum KeyExchangeAlgorithm {
     ECCPWD;
 
     public boolean isKeyExchangeRsa() {
-        return this.equals(this.RSA);
+        switch (this) {
+            case RSA:
+            case RSA_EXPORT:
+                return true;
+            default:
+                return false;
+        }
     }
 
     public boolean isKeyExchangeDh() {
@@ -88,5 +95,9 @@ public enum KeyExchangeAlgorithm {
 
     public boolean isAnon() {
         return this.name().contains("ANON");
+    }
+
+    public boolean isExport() {
+        return this.name().contains("EXPORT");
     }
 }

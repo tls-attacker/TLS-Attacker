@@ -12,9 +12,15 @@ import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.core.layer.*;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.impl.DataContainerFilters.GenericDataContainerFilter;
+import de.rub.nds.tlsattacker.core.layer.impl.DataContainerFilters.Tls.WarningAlertFilter;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
+import de.rub.nds.tlsattacker.core.protocol.message.KeyUpdateMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
 import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElementRef;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
@@ -22,6 +28,7 @@ import jakarta.xml.bind.annotation.XmlElements;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 public abstract class MessageAction extends ConnectionBoundAction {
@@ -237,6 +244,7 @@ public abstract class MessageAction extends ConnectionBoundAction {
         LayerConfiguration recordConfiguration =
                 new SpecificReceiveLayerConfiguration<>(ImplementedLayers.RECORD, recordsToReceive);
 
+        applyActionOptionFilters(messageConfiguration);
         List<LayerConfiguration> layerConfigurationList =
                 sortLayerConfigurations(
                         layerStack,
@@ -318,5 +326,23 @@ public abstract class MessageAction extends ConnectionBoundAction {
     public void setLayerStackProcessingResult(
             LayerStackProcessingResult layerStackProcessingResult) {
         this.layerStackProcessingResult = layerStackProcessingResult;
+    }
+
+    private void applyActionOptionFilters(LayerConfiguration messageConfiguration) {
+        List<DataContainerFilter> containerFilters = new LinkedList<>();
+        if (getActionOptions().contains(ActionOption.IGNORE_UNEXPECTED_APP_DATA)) {
+            containerFilters.add(new GenericDataContainerFilter(ApplicationMessage.class));
+        }
+        if (getActionOptions().contains(ActionOption.IGNORE_UNEXPECTED_KEY_UPDATE_MESSAGES)) {
+            containerFilters.add(new GenericDataContainerFilter(KeyUpdateMessage.class));
+        }
+        if (getActionOptions().contains(ActionOption.IGNORE_UNEXPECTED_NEW_SESSION_TICKETS)) {
+            containerFilters.add(new GenericDataContainerFilter(NewSessionTicketMessage.class));
+        }
+        if (getActionOptions().contains(ActionOption.IGNORE_UNEXPECTED_WARNINGS)) {
+            containerFilters.add(new WarningAlertFilter());
+        }
+        ((SpecificReceiveLayerConfiguration) messageConfiguration)
+                .setContainerFilterList(containerFilters);
     }
 }

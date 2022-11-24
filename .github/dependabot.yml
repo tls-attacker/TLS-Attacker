@@ -1,0 +1,17 @@
+version: 2
+registries:
+  rub-nexus:
+    type: maven-repository
+    url: https://hydrogen.cloud.nds.rub.de/nexus/repository/maven-releases/
+    username: dependabot
+    password: ${{secrets.DEPENDABOT_NEXUS_PASSWORD}}
+updates:
+  - package-ecosystem: "maven"
+    directory: "/"
+    schedule:
+      # Check for dependency updates on a daily basis
+      interval: "daily"
+    open-pull-requests-limit: 20
+    registries: "*"
+    reviewers:
+      - "tls-attacker/tls-attacker-extended"

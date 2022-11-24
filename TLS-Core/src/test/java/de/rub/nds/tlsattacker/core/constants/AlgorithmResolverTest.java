@@ -277,7 +277,8 @@ public class AlgorithmResolverTest {
                         CipherSuite.TLS_PSK_DHE_WITH_AES_128_CCM_8, KeyExchangeAlgorithm.DHE_PSK),
                 Arguments.of(CipherSuite.TLS_PSK_WITH_AES_128_CCM, KeyExchangeAlgorithm.PSK),
                 Arguments.of(
-                        CipherSuite.TLS_RSA_EXPORT1024_WITH_RC4_56_MD5, KeyExchangeAlgorithm.RSA),
+                        CipherSuite.TLS_RSA_EXPORT1024_WITH_RC4_56_MD5,
+                        KeyExchangeAlgorithm.RSA_EXPORT),
                 Arguments.of(
                         CipherSuite.TLS_RSA_PSK_WITH_AES_256_CBC_SHA, KeyExchangeAlgorithm.PSK_RSA),
                 Arguments.of(CipherSuite.TLS_RSA_WITH_AES_128_GCM_SHA256, KeyExchangeAlgorithm.RSA),

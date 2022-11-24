@@ -138,7 +138,7 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
                             readAppDataProtocolData();
                             break;
                         case CHANGE_CIPHER_SPEC:
-                            readCcsProtocolData();
+                            readCcsProtocolData(hint.getEpoch());
                             break;
                         case HANDSHAKE:
                             readHandshakeProtocolData();
@@ -179,8 +179,16 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
         getLowerLayer().removeDrainedInputStream();
     }
 
-    private void readCcsProtocolData() {
+    private void readCcsProtocolData(Integer epoch) {
         ChangeCipherSpecMessage message = new ChangeCipherSpecMessage();
+        if (context.getSelectedProtocolVersion().isDTLS()) {
+            if (context.getDtlsReceivedChangeCipherSpecEpochs().contains(epoch)
+                    && context.getConfig().isIgnoreRetransmittedCcsInDtls()) {
+                message.setAdjustContext(false);
+            } else {
+                context.addDtlsReceivedChangeCipherSpecEpochs(epoch);
+            }
+        }
         readDataContainer(message, context);
     }
 
