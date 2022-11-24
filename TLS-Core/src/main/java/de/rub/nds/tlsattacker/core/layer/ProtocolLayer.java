@@ -192,6 +192,10 @@ public abstract class ProtocolLayer<
     }
 
     public boolean shouldContinueProcessing() {
+        LOGGER.debug(
+                "successRequiresMoreContainers: "
+                        + layerConfiguration.successRequiresMoreContainers(
+                                getLayerResult().getUsedContainers()));
         if (layerConfiguration != null) {
             return layerConfiguration.successRequiresMoreContainers(
                             getLayerResult().getUsedContainers())

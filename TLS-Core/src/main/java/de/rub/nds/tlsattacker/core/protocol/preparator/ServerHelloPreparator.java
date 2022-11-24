@@ -110,7 +110,7 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
         if (chooser.getConfig().getHighestProtocolVersion().isTLS13()) {
             ourVersion = ProtocolVersion.TLS12;
         } else if (chooser.getConfig().getHighestProtocolVersion() == ProtocolVersion.DTLS13) {
-            ourVersion = ProtocolVersion.DTLS13;
+            ourVersion = ProtocolVersion.DTLS12;
         }
 
         ProtocolVersion clientVersion = chooser.getHighestClientProtocolVersion();
@@ -129,8 +129,7 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
                 } else {
                     msg.setProtocolVersion(clientVersion.getValue());
                 }
-            }
-            if (!chooser.getHighestClientProtocolVersion().isDTLS()
+            } else if (!chooser.getHighestClientProtocolVersion().isDTLS()
                     && !chooser.getConfig().getHighestProtocolVersion().isDTLS()) {
                 // We both want tls
                 if (intRepresentationClientVersion >= intRepresentationOurVersion) {

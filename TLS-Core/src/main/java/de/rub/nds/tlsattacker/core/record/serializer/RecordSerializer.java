@@ -34,7 +34,7 @@ public class RecordSerializer extends Serializer<Record> {
     protected byte[] serializeBytes() {
         LOGGER.debug("Serializing Record");
         if (tlsContext.getChooser().getSelectedProtocolVersion() == ProtocolVersion.DTLS13
-                && tlsContext.getWriteEpoch() > 0) {
+                && record.getEpoch().getValue() > 0) {
             writeDtls13Header(record);
         } else {
             writeContentType(record);

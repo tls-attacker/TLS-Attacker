@@ -8,9 +8,28 @@
  */
 package de.rub.nds.tlsattacker.core.protocol;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceSerializer;
+import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
+import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
+import de.rub.nds.tlsattacker.util.tests.TestCategories;
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.List;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+
 public class XmlSerializationIT {
 
-    /* @Test
+    @Test
     @Tag(TestCategories.INTEGRATION_TEST)
     public void testProtocolMessages(@TempDir File tempDir) throws Exception {
         List<ProtocolMessage> messageList = MessageFactory.generateProtocolMessages();
@@ -106,5 +125,5 @@ public class XmlSerializationIT {
                     extension.getClass(),
                     "Extension failed: " + extension.getClass().getName());
         }
-    }*/
+    }
 }

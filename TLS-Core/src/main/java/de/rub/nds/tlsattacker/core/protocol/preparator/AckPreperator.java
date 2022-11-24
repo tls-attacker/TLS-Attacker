@@ -8,10 +8,15 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.message.AckMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -32,10 +37,19 @@ public class AckPreperator extends ProtocolMessagePreparator<AckMessage> {
     protected void prepareProtocolMessageContents() {
         LOGGER.debug("Preparing AckMessage");
         prepareRecordNumbers();
+        prepareRecordLength();
+    }
+
+    private void prepareRecordLength() {
+        message.setRecordNumberLength(message.getRecordNumbers().getValue().length);
+        LOGGER.debug("RecordNumber Length: " + message.getRecordNumberLength());
     }
 
     private void prepareRecordNumbers() {
         message.setRecordNumbers(createRecordNumberArray());
+        LOGGER.debug(
+                "RecordNumbers: "
+                        + ArrayConverter.bytesToHexString(message.getRecordNumbers().getValue()));
     }
 
     private byte[] createRecordNumberArray() {
@@ -57,6 +71,19 @@ public class AckPreperator extends ProtocolMessagePreparator<AckMessage> {
             LOGGER.warn("Could not write Record Number in ACK message: ", e);
         }
         return stream.toByteArray();*/
-        return null;
+
+        List<byte[]> recordNumbers = tlsContext.getAcknowledgedRecords();
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        try {
+            for (byte[] recordNumber : recordNumbers) {
+                stream.write(recordNumber);
+            }
+        } catch (IOException e) {
+            LOGGER.warn("Could not write Record Number in ACK message: ", e);
+        }
+
+        // clear acknowledged records
+        tlsContext.setAcknowledgedRecords(new LinkedList<>());
+        return stream.toByteArray();
     }
 }

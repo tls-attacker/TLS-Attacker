@@ -21,9 +21,11 @@ import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.security.NoSuchAlgorithmException;
+import java.util.LinkedList;
 import javax.crypto.Mac;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bouncycastle.util.Arrays;
 
 public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
 
@@ -44,14 +46,11 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
                     setServerRecordCipher(Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS);
                 } else {
                     setClientRecordCipher(Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS);
+                    acknowledgeFinished(message);
                 }
             } else if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT
                     || !tlsContext.isExtensionNegotiated(ExtensionType.EARLY_DATA)) {
 
-                if (tlsContext.getChooser().getSelectedProtocolVersion() == ProtocolVersion.DTLS13
-                        && tlsContext.getRecordLayer().getEncryptor().isFirstEpoch()) {
-                    tlsContext.getRecordLayer().skipEarlyDataEncryptionEpoch();
-                }
                 setClientRecordCipher(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
 
                 if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
@@ -74,6 +73,19 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
         } else {
             tlsContext.setLastServerVerifyData(message.getVerifyData().getValue());
         }
+    }
+
+    private void acknowledgeFinished(FinishedMessage message) {
+        byte[] epoch =
+                ArrayConverter.intToBytes(
+                        tlsContext.getReadEpoch(), AckByteLength.RECORD_NUMBER_EPOCH_LENGTH);
+        byte[] sqn =
+                ArrayConverter.longToBytes(
+                        tlsContext.getReadSequenceNumber(tlsContext.getReadEpoch()),
+                        AckByteLength.RECORD_NUMBER_SEQUENCE_NUMBER_LENGTH);
+
+        tlsContext.setAcknowledgedRecords(new LinkedList<>());
+        tlsContext.getAcknowledgedRecords().add(Arrays.concatenate(epoch, sqn));
     }
 
     private void adjustApplicationTrafficSecrets() {
@@ -181,11 +193,23 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
         KeySet clientKeySet = getKeySet(tlsContext, tlsContext.getActiveClientKeySetType());
 
         if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.SERVER) {
+            if (keySetType == Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS
+                    && tlsContext.getChooser().getSelectedProtocolVersion()
+                            == ProtocolVersion.DTLS13
+                    && tlsContext.getRecordLayer().getDecryptor().isFirstEpoch()) {
+                tlsContext.getRecordLayer().skipEarlyDataDecryptionEpoch();
+            }
             tlsContext
                     .getRecordLayer()
                     .updateDecryptionCipher(
                             RecordCipherFactory.getRecordCipher(tlsContext, clientKeySet, false));
         } else {
+            if (keySetType == Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS
+                    && tlsContext.getChooser().getSelectedProtocolVersion()
+                            == ProtocolVersion.DTLS13
+                    && tlsContext.getRecordLayer().getEncryptor().isFirstEpoch()) {
+                tlsContext.getRecordLayer().skipEarlyDataEncryptionEpoch();
+            }
             tlsContext
                     .getRecordLayer()
                     .updateEncryptionCipher(

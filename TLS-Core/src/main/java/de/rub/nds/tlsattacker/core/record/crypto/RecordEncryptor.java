@@ -55,8 +55,12 @@ public class RecordEncryptor extends Encryptor {
             }
         }
         // in DTLS 1.3 record numbers are also encrypted
+        int epoch =
+                (record.getEpoch() == null || record.getEpoch().getValue() == null)
+                        ? tlsContext.getWriteEpoch()
+                        : record.getEpoch().getValue();
         if (tlsContext.getChooser().getSelectedProtocolVersion() == ProtocolVersion.DTLS13
-                && tlsContext.getWriteEpoch() > 0) {
+                && epoch > 0) {
             try {
                 recordCipher.encryptSequenceNumber(record);
             } catch (CryptoException ex) {

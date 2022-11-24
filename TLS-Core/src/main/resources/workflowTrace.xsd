@@ -3133,7 +3133,7 @@
           <xs:element name="outboundRecordSizeLimit" type="xs:int" minOccurs="0"/>
           <xs:element name="writeConnectionId" type="xs:base64Binary" minOccurs="0"/>
           <xs:element name="readConnectionID" type="xs:base64Binary" minOccurs="0"/>
-          <xs:element name="acknowledgedRecords" type="byteArray" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="acknowledgedRecords" type="xs:base64Binary" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -3198,10 +3198,6 @@
   </xs:complexType>
 
   <xs:complexType name="chooser" abstract="true">
-    <xs:sequence/>
-  </xs:complexType>
-
-  <xs:complexType name="byteArray">
     <xs:sequence/>
   </xs:complexType>
 

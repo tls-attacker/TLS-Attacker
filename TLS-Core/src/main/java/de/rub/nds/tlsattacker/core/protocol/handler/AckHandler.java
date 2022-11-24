@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.AckMessage;
+import java.util.LinkedList;
 
 public class AckHandler extends ProtocolMessageHandler<AckMessage> {
     public AckHandler(TlsContext tlsContext) {
@@ -18,7 +19,9 @@ public class AckHandler extends ProtocolMessageHandler<AckMessage> {
     }
 
     @Override
-    public void adjustContext(AckMessage object) {
-        // TODO
+    public void adjustContext(AckMessage message) {
+        LOGGER.debug("Set received acknowledged records in context.");
+        tlsContext.setReceivedAcknowledgedRecords(new LinkedList<>());
+        tlsContext.getReceivedAcknowledgedRecords().add(message.getRecordNumbers().getValue());
     }
 }

@@ -25,7 +25,7 @@ public class AckSerializer extends ProtocolMessageSerializer<AckMessage> {
 
     @Override
     protected byte[] serializeBytes() {
-        LOGGER.debug("Serializing AlertMessage");
+        LOGGER.debug("Serializing AckMessage");
         writeRecordNumberLength();
         writeRecordNumbers();
         return getAlreadySerialized();
