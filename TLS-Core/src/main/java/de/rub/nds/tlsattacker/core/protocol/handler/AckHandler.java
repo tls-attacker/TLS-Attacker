@@ -8,9 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
+import de.rub.nds.tlsattacker.core.constants.AckByteLength;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.AckMessage;
+import java.util.Arrays;
 import java.util.LinkedList;
 
 public class AckHandler extends ProtocolMessageHandler<AckMessage> {
@@ -20,8 +22,20 @@ public class AckHandler extends ProtocolMessageHandler<AckMessage> {
 
     @Override
     public void adjustContext(AckMessage message) {
-        LOGGER.debug("Set received acknowledged records in context.");
-        tlsContext.setReceivedAcknowledgedRecords(new LinkedList<>());
-        tlsContext.getReceivedAcknowledgedRecords().add(message.getRecordNumbers().getValue());
+        if (tlsContext.getChooser().getConnectionEndType()
+                != tlsContext.getTalkingConnectionEndType()) {
+            LOGGER.debug("Add received acknowledged records in context.");
+            if (tlsContext.getReceivedAcknowledgedRecords() == null) {
+                tlsContext.setReceivedAcknowledgedRecords(new LinkedList<>());
+            }
+            byte[] recordNumbers = message.getRecordNumbers().getValue();
+            for (int i = 0; i < recordNumbers.length; i += AckByteLength.RECORD_NUMBER_LENGTH) {
+                tlsContext
+                        .getReceivedAcknowledgedRecords()
+                        .add(
+                                Arrays.copyOfRange(
+                                        recordNumbers, i, AckByteLength.RECORD_NUMBER_LENGTH));
+            }
+        }
     }
 }

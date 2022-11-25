@@ -8,16 +8,20 @@
  */
 package de.rub.nds.tlsattacker.core.workflow;
 
+import de.rub.nds.tlsattacker.core.constants.AckByteLength;
 import de.rub.nds.tlsattacker.core.exceptions.SkipActionException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.layer.SpecificSendLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
+import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceivingAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendingAction;
 import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import java.io.IOException;
+import java.math.BigInteger;
+import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -98,6 +102,13 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
                     i = retransmissionActionIndex - 1;
                     retransmissions++;
                 }
+            } else {
+                if (action instanceof ReceivingAction) {
+                    LOGGER.debug("Clearing received ACKs");
+                    if (state.getTlsContext().getReceivedAcknowledgedRecords() != null) {
+                        state.getTlsContext().getReceivedAcknowledgedRecords().clear();
+                    }
+                }
             }
         }
 
@@ -138,7 +149,8 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
 
     private void executeRetransmission(SendingAction action) {
         LOGGER.info("Executing retransmission of last sent flight");
-        state.getTlsContext().getRecordLayer().reencrypt(action.getSendRecords());
+        List<Record> recordsToRetransmit = filterRecordsBasedOnAcks(action.getSendRecords());
+        state.getTlsContext().getRecordLayer().reencrypt(recordsToRetransmit);
         state.getTlsContext()
                 .getRecordLayer()
                 .setLayerConfiguration(
@@ -149,5 +161,32 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
         } catch (IOException ex) {
             state.getTlsContext().setReceivedTransportHandlerException(true);
         }
+    }
+
+    private List<Record> filterRecordsBasedOnAcks(List<Record> sendRecords) {
+        List<byte[]> acks = state.getTlsContext().getAcknowledgedRecords();
+        List<Record> filteredRecords = new LinkedList<>();
+        for (Record record : sendRecords) {
+            if (!isRecordAcknowledged(record, acks)) {
+                filteredRecords.add(record);
+            }
+        }
+        return filteredRecords;
+    }
+
+    private boolean isRecordAcknowledged(Record record, List<byte[]> acknowledgedRecords) {
+        for (byte[] ack : acknowledgedRecords) {
+            BigInteger epoch = new BigInteger(ack, 0, AckByteLength.RECORD_NUMBER_EPOCH_LENGTH);
+            BigInteger seqNum =
+                    new BigInteger(
+                            ack,
+                            AckByteLength.RECORD_NUMBER_EPOCH_LENGTH,
+                            AckByteLength.RECORD_NUMBER_SEQUENCE_NUMBER_LENGTH);
+            if (record.getEpoch().getValue().equals(epoch.intValue())
+                    && record.getSequenceNumber().getValue().equals(seqNum)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

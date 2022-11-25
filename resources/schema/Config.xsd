@@ -2102,6 +2102,7 @@
       <xs:enumeration value="IGNORE_UNEXPECTED_KEY_UPDATE_MESSAGES"/>
       <xs:enumeration value="IGNORE_UNEXPECTED_APP_DATA"/>
       <xs:enumeration value="IGNORE_UNEXPECTED_HTTPS_MESSAGES"/>
+      <xs:enumeration value="IGNORE_ACK_MESSAGES"/>
       <xs:enumeration value="MAY_FAIL"/>
       <xs:enumeration value="CHECK_ONLY_EXPECTED"/>
     </xs:restriction>

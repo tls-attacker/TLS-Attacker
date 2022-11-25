@@ -163,7 +163,6 @@ public class DtlsFragmentLayer
      */
     @Override
     public void receiveMoreDataForHint(LayerProcessingHint desiredHint) throws IOException {
-        LOGGER.debug("receiveMoreDataForHint " + desiredHint);
         try {
             HintedInputStream dataStream = null;
             dataStream = getLowerLayer().getDataStream();

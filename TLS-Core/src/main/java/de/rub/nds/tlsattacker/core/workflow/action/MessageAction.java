@@ -15,10 +15,7 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.impl.DataContainerFilters.GenericDataContainerFilter;
 import de.rub.nds.tlsattacker.core.layer.impl.DataContainerFilters.Tls.WarningAlertFilter;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
-import de.rub.nds.tlsattacker.core.protocol.message.KeyUpdateMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.*;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import jakarta.xml.bind.annotation.XmlElement;
@@ -341,6 +338,9 @@ public abstract class MessageAction extends ConnectionBoundAction {
         }
         if (getActionOptions().contains(ActionOption.IGNORE_UNEXPECTED_WARNINGS)) {
             containerFilters.add(new WarningAlertFilter());
+        }
+        if (getActionOptions().contains(ActionOption.IGNORE_ACK_MESSAGES)) {
+            containerFilters.add(new GenericDataContainerFilter(AckMessage.class));
         }
         ((SpecificReceiveLayerConfiguration) messageConfiguration)
                 .setContainerFilterList(containerFilters);

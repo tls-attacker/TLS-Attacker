@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.layer.constant.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
+import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
@@ -331,7 +332,8 @@ public class ConfigTest {
         config.getDefaultClientNamedGroups().add(NamedGroup.SECP256R1);
         config.setDefaultServerNamedGroups(new LinkedList<>());
         config.getDefaultServerNamedGroups().add(NamedGroup.SECP256R1);
-
+        config.setMessageFactoryActionOptions(new LinkedList<>());
+        config.getMessageFactoryActionOptions().add(ActionOption.IGNORE_ACK_MESSAGES);
         // config.setClientAuthentication(true);
         // config.getDefaultClientConnection().setTransportHandlerType(th);
         // config.getDefaultServerConnection().setTransportHandlerType(th);
