@@ -174,7 +174,7 @@ public class WorkflowConfigurationFactory {
                                 config,
                                 connection,
                                 ConnectionEndType.SERVER,
-                                new ServerHelloMessage(config)));
+                                new ServerHelloMessage(config, true)));
             } else {
                 workflowTrace.addTlsAction(
                         MessageActionFactory.createTLSAction(
@@ -383,9 +383,10 @@ public class WorkflowConfigurationFactory {
     /** Create a false start workflow for the given connection end. */
     private WorkflowTrace createFalseStartWorkflow(AliasedConnection connection) {
 
-        if (config.getHighestProtocolVersion().isTLS13()) {
+        if (config.getHighestProtocolVersion().isTLS13()
+                || config.getHighestProtocolVersion() == ProtocolVersion.DTLS13) {
             throw new ConfigurationException(
-                    "The false start workflow is not implemented for TLS 1.3");
+                    "The false start workflow is not implemented for (D)TLS 1.3");
         }
 
         WorkflowTrace workflowTrace = this.createHandshakeWorkflow(connection);
@@ -468,12 +469,21 @@ public class WorkflowConfigurationFactory {
                         new ClientHelloMessage(config)));
 
         if (config.getHighestProtocolVersion().isDTLS() && config.isDtlsCookieExchange()) {
-            trace.addTlsAction(
-                    MessageActionFactory.createTLSAction(
-                            config,
-                            connection,
-                            ConnectionEndType.SERVER,
-                            new HelloVerifyRequestMessage()));
+            if (config.getHighestProtocolVersion() == ProtocolVersion.DTLS13) {
+                trace.addTlsAction(
+                        MessageActionFactory.createTLSAction(
+                                config,
+                                connection,
+                                ConnectionEndType.SERVER,
+                                new ServerHelloMessage(config, true)));
+            } else {
+                trace.addTlsAction(
+                        MessageActionFactory.createTLSAction(
+                                config,
+                                connection,
+                                ConnectionEndType.SERVER,
+                                new HelloVerifyRequestMessage()));
+            }
             trace.addTlsAction(
                     MessageActionFactory.createTLSAction(
                             config,
@@ -481,22 +491,22 @@ public class WorkflowConfigurationFactory {
                             ConnectionEndType.CLIENT,
                             new ClientHelloMessage(config)));
         }
-
+        List<ProtocolMessage> serverMessages = new LinkedList<>();
+        List<ProtocolMessage> clientMessages = new LinkedList<>();
+        serverMessages.add(new ServerHelloMessage(config));
+        if (!(config.getHighestProtocolVersion().isTLS13()
+                || config.getHighestProtocolVersion() == ProtocolVersion.DTLS13)) {
+            serverMessages.add(new ChangeCipherSpecMessage());
+            clientMessages.add(new ChangeCipherSpecMessage());
+        }
+        serverMessages.add(new FinishedMessage());
+        clientMessages.add(new FinishedMessage());
         trace.addTlsAction(
                 MessageActionFactory.createTLSAction(
-                        config,
-                        connection,
-                        ConnectionEndType.SERVER,
-                        new ServerHelloMessage(config),
-                        new ChangeCipherSpecMessage(),
-                        new FinishedMessage()));
+                        config, connection, ConnectionEndType.SERVER, serverMessages));
         trace.addTlsAction(
                 MessageActionFactory.createTLSAction(
-                        config,
-                        connection,
-                        ConnectionEndType.CLIENT,
-                        new ChangeCipherSpecMessage(),
-                        new FinishedMessage()));
+                        config, connection, ConnectionEndType.CLIENT, clientMessages));
 
         return trace;
     }
@@ -715,8 +725,9 @@ public class WorkflowConfigurationFactory {
         }
         clientHelloMessages.add(clientHello);
         if (zeroRtt) {
-            if (Objects.equals(config.getTls13BackwardsCompatibilityMode(), Boolean.TRUE)
-                    || connection.getLocalConnectionEndType() == ConnectionEndType.SERVER) {
+            if ((Objects.equals(config.getTls13BackwardsCompatibilityMode(), Boolean.TRUE)
+                            || connection.getLocalConnectionEndType() == ConnectionEndType.SERVER)
+                    && config.getHighestProtocolVersion() != ProtocolVersion.DTLS13) {
                 clientHelloMessages.add(ccsClient);
             }
             clientHelloMessages.add(earlyDataMsg);
@@ -742,13 +753,15 @@ public class WorkflowConfigurationFactory {
         }
 
         serverMessages.add(serverHello);
-        if (Objects.equals(config.getTls13BackwardsCompatibilityMode(), Boolean.TRUE)
-                || connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
+        if ((Objects.equals(config.getTls13BackwardsCompatibilityMode(), Boolean.TRUE)
+                        || connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT)
+                && config.getHighestProtocolVersion() != ProtocolVersion.DTLS13) {
             serverMessages.add(ccsServer);
         }
         if (!zeroRtt
                 && (Objects.equals(config.getTls13BackwardsCompatibilityMode(), Boolean.TRUE)
-                        || connection.getLocalConnectionEndType() == ConnectionEndType.SERVER)) {
+                        || connection.getLocalConnectionEndType() == ConnectionEndType.SERVER)
+                && config.getHighestProtocolVersion() != ProtocolVersion.DTLS13) {
             clientMessages.add(ccsClient);
         }
         serverMessages.add(encExtMsg);
@@ -1124,12 +1137,21 @@ public class WorkflowConfigurationFactory {
                         new ClientHelloMessage(config)));
 
         if (config.getHighestProtocolVersion().isDTLS() && config.isDtlsCookieExchange()) {
-            trace.addTlsAction(
-                    MessageActionFactory.createTLSAction(
-                            config,
-                            connection,
-                            ConnectionEndType.SERVER,
-                            new HelloVerifyRequestMessage()));
+            if (config.getHighestProtocolVersion() == ProtocolVersion.DTLS13) {
+                trace.addTlsAction(
+                        MessageActionFactory.createTLSAction(
+                                config,
+                                connection,
+                                ConnectionEndType.SERVER,
+                                new ServerHelloMessage(config, true)));
+            } else {
+                trace.addTlsAction(
+                        MessageActionFactory.createTLSAction(
+                                config,
+                                connection,
+                                ConnectionEndType.SERVER,
+                                new HelloVerifyRequestMessage()));
+            }
             trace.addTlsAction(
                     MessageActionFactory.createTLSAction(
                             config,

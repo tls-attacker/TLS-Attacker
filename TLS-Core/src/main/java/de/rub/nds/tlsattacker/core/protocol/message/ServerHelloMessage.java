@@ -85,9 +85,14 @@ public class ServerHelloMessage extends HelloMessage {
 
     public ServerHelloMessage(Config tlsConfig) {
         super(HandshakeMessageType.SERVER_HELLO);
+        addExtensionsBasedOnConfig(tlsConfig);
+    }
+
+    private void addExtensionsBasedOnConfig(Config tlsConfig) {
         if (!tlsConfig.getHighestProtocolVersion().isSSL()
                 || (tlsConfig.getHighestProtocolVersion().isSSL()
                         && tlsConfig.isAddExtensionsInSSL())) {
+
             if (tlsConfig.isAddHeartbeatExtension()) {
                 addExtension(new HeartbeatExtensionMessage());
             }
@@ -204,6 +209,19 @@ public class ServerHelloMessage extends HelloMessage {
             }
             if (tlsConfig.isAddConnectionIdExtension()) {
                 addExtension(new ConnectionIdExtensionMessage());
+            }
+        }
+    }
+
+    public ServerHelloMessage(Config tlsConfig, boolean isHelloRetryRequest) {
+        super(HandshakeMessageType.SERVER_HELLO);
+        if (!isHelloRetryRequest) {
+            addExtensionsBasedOnConfig(tlsConfig);
+        } else {
+            addExtensionsBasedOnConfig(tlsConfig);
+            setRandom(getHelloRetryRequestRandom());
+            if (!tlsConfig.isAddCookieExtension() && tlsConfig.isDtlsCookieExchange()) {
+                addExtension(new CookieExtensionMessage());
             }
         }
     }

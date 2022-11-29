@@ -5378,6 +5378,8 @@
       <xs:enumeration value="NEW_SESSION_TICKET"/>
       <xs:enumeration value="END_OF_EARLY_DATA"/>
       <xs:enumeration value="ENCRYPTED_EXTENSIONS"/>
+      <xs:enumeration value="REQUEST_CONNECTION_ID"/>
+      <xs:enumeration value="NEW_CONNECTION_ID"/>
       <xs:enumeration value="CERTIFICATE"/>
       <xs:enumeration value="SERVER_KEY_EXCHANGE"/>
       <xs:enumeration value="CERTIFICATE_REQUEST"/>
