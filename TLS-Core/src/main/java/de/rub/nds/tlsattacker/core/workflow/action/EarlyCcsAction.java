@@ -72,13 +72,12 @@ public class EarlyCcsAction extends TlsAction {
             handler.adjustPremasterSecret(message);
             handler.adjustMasterSecret(message);
         }
+        byte[] serialized = message.getSerializer(state.getTlsContext()).serialize();
         handler.adjustContextAfterSerialize(message);
         try {
             state.getTlsContext()
                     .getRecordLayer()
-                    .sendData(
-                            new RecordLayerHint(ProtocolMessageType.HANDSHAKE),
-                            message.getCompleteResultingMessage().getValue());
+                    .sendData(new RecordLayerHint(ProtocolMessageType.HANDSHAKE), serialized);
             executedAsPlanned = true;
         } catch (IOException e) {
             LOGGER.debug("Could not write Data to stream", e);

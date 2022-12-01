@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
  */
 public class WorkflowTraceSchemaGeneratorTest {
 
-    /** Test of main method, of class WorkflowTraceSchemaGenerator. */
+    /** Test of main method, of class WorkflowTraceSchemaGeneratorTest. */
     @Test
     public void generateResourceSchema() {
         WorkflowTraceSchemaGenerator.main(new String[] {"../resources/schema/"});

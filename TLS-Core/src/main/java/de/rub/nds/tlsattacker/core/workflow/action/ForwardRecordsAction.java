@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.http.HttpMessage;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerStack;
 import de.rub.nds.tlsattacker.core.layer.LayerStackProcessingResult;
@@ -251,5 +252,11 @@ public class ForwardRecordsAction extends TlsAction implements ReceivingAction, 
     @Override
     public List<ProtocolMessage> getReceivedMessages() {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public List<HttpMessage> getReceivedHttpMessages() {
+        // ForwardMessages should not interfere with messages above TLS
+        return new LinkedList<>();
     }
 }

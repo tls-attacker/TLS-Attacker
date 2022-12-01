@@ -16,7 +16,7 @@ pipeline {
             steps {
                 // This is necessary to make the origin/master refspec available to spotless (for ratcheting)
                 withCredentials([gitUsernamePassword(credentialsId: 'github-app-tls-attacker')]) {
-                    sh 'git fetch origin layerPrototype:refs/remotes/origin/layerPrototype'
+                    sh 'git fetch origin master:refs/remotes/origin/master'
                 }
                 withMaven(jdk: env.JDK_TOOL_NAME, maven: env.MAVEN_TOOL_NAME) {
                     sh 'mvn clean'

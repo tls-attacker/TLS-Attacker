@@ -1,16 +1,16 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.http.HttpMessage;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.record.Record;
@@ -25,6 +25,8 @@ public interface ReceivingAction {
 
     public abstract List<DtlsHandshakeMessageFragment> getReceivedFragments();
 
+    public abstract List<HttpMessage> getReceivedHttpMessages();
+
     public default List<ProtocolMessageType> getGoingToReceiveProtocolMessageTypes() {
         return new ArrayList<>();
     }
@@ -32,5 +34,4 @@ public interface ReceivingAction {
     public default List<HandshakeMessageType> getGoingToReceiveHandshakeMessageTypes() {
         return new ArrayList<>();
     }
-
 }

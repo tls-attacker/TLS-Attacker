@@ -81,30 +81,36 @@ public class PreSharedKeyExtensionPreparator
 
     private void prepareIdentityListBytes() {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        for (PSKIdentity pskIdentity : msg.getIdentities()) {
-            PSKIdentitySerializer serializer = new PSKIdentitySerializer(pskIdentity);
-            try {
-                outputStream.write(serializer.serialize());
-            } catch (IOException ex) {
-                throw new PreparationException("Could not write byte[] from PSKIdentity", ex);
+        if (msg.getIdentities() != null) {
+            for (PSKIdentity pskIdentity : msg.getIdentities()) {
+                PSKIdentitySerializer serializer = new PSKIdentitySerializer(pskIdentity);
+                try {
+                    outputStream.write(serializer.serialize());
+                } catch (IOException ex) {
+                    throw new PreparationException("Could not write byte[] from PSKIdentity", ex);
+                }
             }
+        } else {
+            LOGGER.debug("No PSK available, setting empty identity list");
         }
-
         msg.setIdentityListBytes(outputStream.toByteArray());
         msg.setIdentityListLength(msg.getIdentityListBytes().getValue().length);
     }
 
     private void prepareBinderListBytes() {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        for (PSKBinder pskBinder : msg.getBinders()) {
-            PSKBinderSerializer serializer = new PSKBinderSerializer(pskBinder);
-            try {
-                outputStream.write(serializer.serialize());
-            } catch (IOException ex) {
-                throw new PreparationException("Could not write byte[] from PSKIdentity", ex);
+        if (msg.getBinders() != null) {
+            for (PSKBinder pskBinder : msg.getBinders()) {
+                PSKBinderSerializer serializer = new PSKBinderSerializer(pskBinder);
+                try {
+                    outputStream.write(serializer.serialize());
+                } catch (IOException ex) {
+                    throw new PreparationException("Could not write byte[] from PSKIdentity", ex);
+                }
             }
+        } else {
+            LOGGER.debug("No PSK available, setting empty binder list");
         }
-
         msg.setBinderListBytes(outputStream.toByteArray());
         msg.setBinderListLength(msg.getBinderListBytes().getValue().length);
     }
@@ -128,11 +134,13 @@ public class PreSharedKeyExtensionPreparator
 
     private byte[] getRelevantBytes(byte[] clientHelloBytes) {
         int remainingBytes = clientHelloBytes.length - ExtensionByteLength.PSK_BINDER_LIST_LENGTH;
-        for (PSKBinder pskBinder : msg.getBinders()) {
-            remainingBytes =
-                    remainingBytes
-                            - ExtensionByteLength.PSK_BINDER_LENGTH
-                            - pskBinder.getBinderEntryLength().getValue();
+        if (msg.getBinders() != null) {
+            for (PSKBinder pskBinder : msg.getBinders()) {
+                remainingBytes =
+                        remainingBytes
+                                - ExtensionByteLength.PSK_BINDER_LENGTH
+                                - pskBinder.getBinderEntryLength().getValue();
+            }
         }
         if (remainingBytes > 0) {
             byte[] relevantBytes = new byte[remainingBytes];
@@ -155,62 +163,67 @@ public class PreSharedKeyExtensionPreparator
     private void calculateBinders(byte[] relevantBytes, PreSharedKeyExtensionMessage msg) {
         TlsContext tlsContext = chooser.getContext().getTlsContext();
         List<PskSet> pskSets = chooser.getPskSets();
-        LOGGER.debug("Calculating Binders");
-        for (int x = 0; x < msg.getBinders().size(); x++) {
-            try {
-                if (pskSets.size() > x) {
-                    HKDFAlgorithm hkdfAlgorithm =
-                            AlgorithmResolver.getHKDFAlgorithm(pskSets.get(x).getCipherSuite());
-                    Mac mac = Mac.getInstance(hkdfAlgorithm.getMacAlgorithm().getJavaName());
-                    DigestAlgorithm digestAlgo =
-                            AlgorithmResolver.getDigestAlgorithm(
-                                    ProtocolVersion.TLS13, pskSets.get(x).getCipherSuite());
+        if (msg.getBinders() != null) {
+            LOGGER.debug("Calculating Binders");
+            for (int x = 0; x < msg.getBinders().size(); x++) {
+                try {
+                    if (pskSets.size() > x) {
+                        HKDFAlgorithm hkdfAlgorithm =
+                                AlgorithmResolver.getHKDFAlgorithm(pskSets.get(x).getCipherSuite());
+                        Mac mac = Mac.getInstance(hkdfAlgorithm.getMacAlgorithm().getJavaName());
+                        DigestAlgorithm digestAlgo =
+                                AlgorithmResolver.getDigestAlgorithm(
+                                        ProtocolVersion.TLS13, pskSets.get(x).getCipherSuite());
 
-                    byte[] psk = pskSets.get(x).getPreSharedKey();
-                    byte[] earlySecret = HKDFunction.extract(hkdfAlgorithm, new byte[0], psk);
-                    byte[] binderKey =
-                            HKDFunction.deriveSecret(
-                                    hkdfAlgorithm,
-                                    digestAlgo.getJavaName(),
-                                    earlySecret,
-                                    HKDFunction.BINDER_KEY_RES,
-                                    ArrayConverter.hexStringToByteArray(""),
-                                    tlsContext.getSelectedProtocolVersion());
-                    byte[] binderFinKey =
-                            HKDFunction.expandLabel(
-                                    hkdfAlgorithm,
-                                    binderKey,
-                                    HKDFunction.FINISHED,
-                                    new byte[0],
-                                    mac.getMacLength(),
-                                    tlsContext.getChooser().getSelectedProtocolVersion());
+                        byte[] psk = pskSets.get(x).getPreSharedKey();
+                        byte[] earlySecret = HKDFunction.extract(hkdfAlgorithm, new byte[0], psk);
+                        byte[] binderKey =
+                                HKDFunction.deriveSecret(
+                                        hkdfAlgorithm,
+                                        digestAlgo.getJavaName(),
+                                        earlySecret,
+                                        HKDFunction.BINDER_KEY_RES,
+                                        ArrayConverter.hexStringToByteArray(""),
+                                        tlsContext.getChooser().getSelectedProtocolVersion());
+                        byte[] binderFinKey =
+                                HKDFunction.expandLabel(
+                                        hkdfAlgorithm,
+                                        binderKey,
+                                        HKDFunction.FINISHED,
+                                        new byte[0],
+                                        mac.getMacLength(),
+                                        tlsContext.getChooser().getSelectedProtocolVersion());
 
-                    tlsContext.getDigest().setRawBytes(relevantBytes);
-                    SecretKeySpec keySpec = new SecretKeySpec(binderFinKey, mac.getAlgorithm());
-                    mac.init(keySpec);
-                    mac.update(
-                            tlsContext
-                                    .getDigest()
-                                    .digest(
-                                            ProtocolVersion.TLS13,
-                                            pskSets.get(x).getCipherSuite()));
-                    byte[] binderVal = mac.doFinal();
-                    tlsContext.getDigest().setRawBytes(new byte[0]);
+                        tlsContext.getDigest().setRawBytes(relevantBytes);
+                        SecretKeySpec keySpec = new SecretKeySpec(binderFinKey, mac.getAlgorithm());
+                        mac.init(keySpec);
+                        mac.update(
+                                tlsContext
+                                        .getDigest()
+                                        .digest(
+                                                ProtocolVersion.TLS13,
+                                                pskSets.get(x).getCipherSuite()));
+                        byte[] binderVal = mac.doFinal();
+                        tlsContext.getDigest().setRawBytes(new byte[0]);
 
-                    LOGGER.debug("Using PSK:" + ArrayConverter.bytesToHexString(psk));
-                    LOGGER.debug("Calculated Binder:" + ArrayConverter.bytesToHexString(binderVal));
+                        LOGGER.debug("Using PSK:" + ArrayConverter.bytesToHexString(psk));
+                        LOGGER.debug(
+                                "Calculated Binder:" + ArrayConverter.bytesToHexString(binderVal));
 
-                    msg.getBinders().get(x).setBinderEntry(binderVal);
-                    // First entry = PSK for early Data
-                    if (x == 0) {
-                        tlsContext.setEarlyDataPsk(psk);
+                        msg.getBinders().get(x).setBinderEntry(binderVal);
+                        // First entry = PSK for early Data
+                        if (x == 0) {
+                            tlsContext.setEarlyDataPsk(psk);
+                        }
+                    } else {
+                        LOGGER.warn("Skipping BinderCalculation as Config has not enough PSK sets");
                     }
-                } else {
-                    LOGGER.warn("Skipping BinderCalculation as Config has not enough PSK sets");
+                } catch (NoSuchAlgorithmException | InvalidKeyException | CryptoException ex) {
+                    throw new PreparationException("Could not calculate Binders", ex);
                 }
-            } catch (NoSuchAlgorithmException | InvalidKeyException | CryptoException ex) {
-                throw new PreparationException("Could not calculate Binders", ex);
             }
+        } else {
+            LOGGER.debug("No PSK dummy binders set, skipping binder computation");
         }
     }
 

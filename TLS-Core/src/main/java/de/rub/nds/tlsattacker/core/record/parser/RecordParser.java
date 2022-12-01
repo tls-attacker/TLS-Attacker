@@ -58,6 +58,7 @@ public class RecordParser extends Parser<Record> {
         }
 
         parseProtocolMessageBytes(record);
+        record.setCompleteRecordBytes(getAlreadyParsed());
     }
 
     private void parseEpoch(Record record) {

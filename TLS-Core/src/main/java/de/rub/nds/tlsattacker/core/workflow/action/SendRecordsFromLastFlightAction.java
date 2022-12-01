@@ -71,7 +71,7 @@ public class SendRecordsFromLastFlightAction extends MessageAction implements Se
 
         try {
             tlsContext.getRecordLayer().reencrypt(records);
-            send(tlsContext, new ArrayList<>(), new ArrayList<>(), records);
+            send(tlsContext, new ArrayList<>(), new ArrayList<>(), records, httpMessages);
             setExecuted(true);
         } catch (IOException e) {
             tlsContext.setReceivedTransportHandlerException(true);

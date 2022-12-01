@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.http.HttpMessage;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
@@ -37,6 +38,9 @@ public class ReceiveAction extends CommonReceiveAction implements ReceivingActio
     @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
     protected List<ProtocolMessage> expectedMessages = new ArrayList<>();
 
+    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
+    protected List<HttpMessage> expectedHttpMessages = new ArrayList<>();
+
     public ReceiveAction() {
         super();
     }
@@ -49,6 +53,16 @@ public class ReceiveAction extends CommonReceiveAction implements ReceivingActio
     public ReceiveAction(ProtocolMessage... expectedMessages) {
         super();
         this.expectedMessages = new ArrayList(Arrays.asList(expectedMessages));
+    }
+
+    public ReceiveAction(
+            List<ProtocolMessage> expectedMessages, List<HttpMessage> expectedHttpMessages) {
+        this(expectedMessages);
+        this.expectedHttpMessages = new ArrayList(Arrays.asList(expectedHttpMessages));
+    }
+
+    public ReceiveAction(HttpMessage... expectedHttpMessages) {
+        this.expectedHttpMessages = new ArrayList(Arrays.asList(expectedHttpMessages));
     }
 
     public ReceiveAction(Set<ActionOption> myActionOptions, List<ProtocolMessage> messages) {
@@ -128,19 +142,21 @@ public class ReceiveAction extends CommonReceiveAction implements ReceivingActio
 
     @Override
     public boolean executedAsPlanned() {
-        if (getLayerStackProcessingResult().getResultForLayer(ImplementedLayers.MESSAGE) != null) {
-            return getLayerStackProcessingResult()
-                    .getResultForLayer(ImplementedLayers.MESSAGE)
-                    .isExecutedAsPlanned();
-        } else if (getLayerStackProcessingResult().getResultForLayer(ImplementedLayers.SSL2)
-                != null) {
-            return getLayerStackProcessingResult()
-                    .getResultForLayer(ImplementedLayers.SSL2)
-                    .isExecutedAsPlanned();
-        } else {
-            // TODO check other configurations
-            return false;
+        if (getLayerStackProcessingResult() != null) {
+            if (getLayerStackProcessingResult().getResultForLayer(ImplementedLayers.MESSAGE)
+                    != null) {
+                return getLayerStackProcessingResult()
+                        .getResultForLayer(ImplementedLayers.MESSAGE)
+                        .isExecutedAsPlanned();
+            } else if (getLayerStackProcessingResult().getResultForLayer(ImplementedLayers.SSL2)
+                    != null) {
+                return getLayerStackProcessingResult()
+                        .getResultForLayer(ImplementedLayers.SSL2)
+                        .isExecutedAsPlanned();
+            }
         }
+        // TODO check other configurations
+        return false;
     }
 
     @Override
@@ -256,11 +272,17 @@ public class ReceiveAction extends CommonReceiveAction implements ReceivingActio
         if (expectedMessages == null || expectedMessages.isEmpty()) {
             expectedMessages = null;
         }
+        if (expectedHttpMessages == null || expectedHttpMessages.isEmpty()) {
+            expectedHttpMessages = null;
+        }
     }
 
     private void initEmptyLists() {
         if (expectedMessages == null) {
             expectedMessages = new ArrayList<>();
+        }
+        if (expectedHttpMessages == null) {
+            expectedHttpMessages = new ArrayList<>();
         }
     }
 
@@ -286,6 +308,11 @@ public class ReceiveAction extends CommonReceiveAction implements ReceivingActio
 
     @Override
     protected void distinctReceive(TlsContext tlsContext) {
-        receive(tlsContext, expectedMessages, fragments, records);
+        receive(tlsContext, expectedMessages, fragments, records, httpMessages);
+    }
+
+    @Override
+    public List<HttpMessage> getReceivedHttpMessages() {
+        return httpMessages;
     }
 }

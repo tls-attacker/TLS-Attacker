@@ -32,6 +32,7 @@
         <messages>
             <ClientHello/>
         </messages>
+        <httpMessages/>
         <records/>
         <fragments/>
     </Send>
