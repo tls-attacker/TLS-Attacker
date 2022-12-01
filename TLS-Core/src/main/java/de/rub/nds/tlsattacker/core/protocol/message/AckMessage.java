@@ -41,6 +41,14 @@ public class AckMessage extends ProtocolMessage<AckMessage> {
                 ModifiableVariableFactory.safelySetValue(this.recordNumbers, recordNumbers);
     }
 
+    public void setRecordNumbers(ModifiableByteArray recordNumbers) {
+        this.recordNumbers = recordNumbers;
+    }
+
+    public void setRecordNumberLength(ModifiableInteger recordNumberLength) {
+        this.recordNumberLength = recordNumberLength;
+    }
+
     public ModifiableInteger getRecordNumberLength() {
         return recordNumberLength;
     }

@@ -18,6 +18,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.RequestConnectionIdPreper
 import de.rub.nds.tlsattacker.core.protocol.serializer.RequestConnectionIdSerializer;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
+import java.util.Objects;
 
 @XmlRootElement(name = "RequestConnectionId")
 public class RequestConnectionIdMessage extends HandshakeMessage {
@@ -32,15 +33,14 @@ public class RequestConnectionIdMessage extends HandshakeMessage {
         return numberOfConnectionIds;
     }
 
+    public void setNumberOfConnectionIds(ModifiableInteger numberOfConnectionIds) {
+        this.numberOfConnectionIds = numberOfConnectionIds;
+    }
+
     public void setNumberOfConnectionIds(Integer numberOfConnectionIds) {
         this.numberOfConnectionIds =
                 ModifiableVariableFactory.safelySetValue(
                         this.numberOfConnectionIds, numberOfConnectionIds);
-    }
-
-    @Override
-    public String toShortString() {
-        return null;
     }
 
     @Override
@@ -61,5 +61,45 @@ public class RequestConnectionIdMessage extends HandshakeMessage {
     @Override
     public RequestConnectionIdHandler getHandler(TlsContext tlsContext) {
         return new RequestConnectionIdHandler(tlsContext);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 67 * hash + Objects.hashCode(this.numberOfConnectionIds);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final RequestConnectionIdMessage other = (RequestConnectionIdMessage) obj;
+        return Objects.equals(this.numberOfConnectionIds, other.numberOfConnectionIds);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("RequestConnectionId:");
+        sb.append("\n  NumberOfConnectionIds: ");
+        if (numberOfConnectionIds != null && numberOfConnectionIds.getOriginalValue() != null) {
+            sb.append(numberOfConnectionIds.getValue());
+        } else {
+            sb.append("null");
+        }
+        return sb.toString();
+    }
+
+    @Override
+    public String toShortString() {
+        return "RCID";
     }
 }

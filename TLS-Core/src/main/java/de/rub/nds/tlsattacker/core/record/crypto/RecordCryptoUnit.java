@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.record.crypto;
 
+import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import java.util.ArrayList;
 import org.apache.logging.log4j.LogManager;
@@ -28,11 +29,26 @@ public abstract class RecordCryptoUnit {
         return recordCipherList.get(recordCipherList.size() - 1);
     }
 
-    public RecordCipher getRecordCipherForEpochBits(int epochBits) {
-        // TODO
-        return null;
+    /**
+     * Tries to guess the correct epoch based on the given epoch bits. Sets the full epoch value of
+     * the record, if found.
+     *
+     * @param epochBits least 2 significant epoch bits
+     * @return the RecordCipher of the guessed epoch
+     */
+    public RecordCipher getRecordCipherForEpochBits(int epochBits, Record record) {
+        for (int i = recordCipherList.size() - 1; i >= 0; i--) {
+            if (i % 4 == epochBits) {
+                record.setEpoch(i);
+                return recordCipherList.get(i);
+            }
+        }
+        LOGGER.warn(
+                "No RecordCipher found, for epoch bits: " + epochBits + ". Using epoch 0 cipher.");
+        return recordCipherList.get(0);
     }
 
+    /** Return true, if we are still in epoch 0 and no early data was sent yet. */
     public boolean isFirstEpoch() {
         return recordCipherList.size() == 1;
     }

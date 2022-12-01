@@ -17,22 +17,21 @@ public class RequestConnectionIdSerializer
         extends HandshakeMessageSerializer<RequestConnectionIdMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    private final RequestConnectionIdMessage msg;
 
     public RequestConnectionIdSerializer(RequestConnectionIdMessage message) {
         super(message);
-
-        this.msg = message;
     }
 
     @Override
     public byte[] serializeHandshakeMessageContent() {
         LOGGER.debug("Serializing RequestConnectionId");
-        writeNumCids(msg);
+        writeNumCids(message);
         return getAlreadySerialized();
     }
 
     private void writeNumCids(RequestConnectionIdMessage message) {
+        LOGGER.debug("Message: " + message);
+        LOGGER.debug("numcids: " + message.getNumberOfConnectionIds());
         appendInt(
                 message.getNumberOfConnectionIds().getValue(),
                 HandshakeByteLength.REQUESTCONNECTIONID_NUMCID_LENGTH);

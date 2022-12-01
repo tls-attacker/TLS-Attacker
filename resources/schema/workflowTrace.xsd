@@ -89,6 +89,8 @@
 
   <xs:element name="MaxFragmentLengthExtension" type="maxFragmentLengthExtensionMessage"/>
 
+  <xs:element name="NewConnectionId" type="newConnectionIdMessage"/>
+
   <xs:element name="NewSessionTicket" type="newSessionTicketMessage"/>
 
   <xs:element name="PSKKeyExchangeModesExtension" type="pskKeyExchangeModesExtensionMessage"/>
@@ -128,6 +130,8 @@
   <xs:element name="RecordSizeLimitExtension" type="recordSizeLimitExtensionMessage"/>
 
   <xs:element name="RenegotiationInfoExtension" type="renegotiationInfoExtensionMessage"/>
+
+  <xs:element name="RequestConnectionId" type="requestConnectionIdMessage"/>
 
   <xs:element name="SRPExtension" type="srpExtensionMessage"/>
 
@@ -647,6 +651,8 @@
                   <xs:element ref="PskServerKeyExchange"/>
                   <xs:element ref="CertificateStatus"/>
                   <xs:element ref="EmptyClientKeyExchange"/>
+                  <xs:element ref="NewConnectionId"/>
+                  <xs:element ref="RequestConnectionId"/>
                 </xs:choice>
               </xs:sequence>
             </xs:complexType>
@@ -2835,6 +2841,28 @@
     </xs:complexContent>
   </xs:complexType>
 
+  <xs:complexType name="newConnectionIdMessage">
+    <xs:complexContent>
+      <xs:extension base="handshakeMessage">
+        <xs:sequence>
+          <xs:element name="usage" type="connectionIdUsage" minOccurs="0"/>
+          <xs:element name="connectionIdsLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="connectionIds" type="modifiableByteArray" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="requestConnectionIdMessage">
+    <xs:complexContent>
+      <xs:extension base="handshakeMessage">
+        <xs:sequence>
+          <xs:element name="numberOfConnectionIds" type="modifiableInteger" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
   <xs:complexType name="record">
     <xs:complexContent>
       <xs:extension base="modifiableVariableHolder">
@@ -4275,6 +4303,8 @@
                   <xs:element ref="PskServerKeyExchange"/>
                   <xs:element ref="CertificateStatus"/>
                   <xs:element ref="EmptyClientKeyExchange"/>
+                  <xs:element ref="NewConnectionId"/>
+                  <xs:element ref="RequestConnectionId"/>
                 </xs:choice>
               </xs:sequence>
             </xs:complexType>
@@ -4344,6 +4374,8 @@
                   <xs:element ref="PskServerKeyExchange"/>
                   <xs:element ref="CertificateStatus"/>
                   <xs:element ref="EmptyClientKeyExchange"/>
+                  <xs:element ref="NewConnectionId"/>
+                  <xs:element ref="RequestConnectionId"/>
                 </xs:choice>
               </xs:sequence>
             </xs:complexType>
@@ -4413,6 +4445,8 @@
                   <xs:element ref="PskServerKeyExchange"/>
                   <xs:element ref="CertificateStatus"/>
                   <xs:element ref="EmptyClientKeyExchange"/>
+                  <xs:element ref="NewConnectionId"/>
+                  <xs:element ref="RequestConnectionId"/>
                 </xs:choice>
               </xs:sequence>
             </xs:complexType>
@@ -4506,6 +4540,8 @@
           <xs:element ref="PskServerKeyExchange"/>
           <xs:element ref="CertificateStatus"/>
           <xs:element ref="EmptyClientKeyExchange"/>
+          <xs:element ref="NewConnectionId"/>
+          <xs:element ref="RequestConnectionId"/>
         </xs:choice>
       </xs:extension>
     </xs:complexContent>
@@ -4582,6 +4618,8 @@
                   <xs:element ref="PskServerKeyExchange"/>
                   <xs:element ref="CertificateStatus"/>
                   <xs:element ref="EmptyClientKeyExchange"/>
+                  <xs:element ref="NewConnectionId"/>
+                  <xs:element ref="RequestConnectionId"/>
                 </xs:choice>
               </xs:sequence>
             </xs:complexType>
@@ -5404,6 +5442,13 @@
       <xs:enumeration value="HEARTBEAT"/>
       <xs:enumeration value="TLS12_CID"/>
       <xs:enumeration value="ACK"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="connectionIdUsage">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="CID_IMMEDIATE"/>
+      <xs:enumeration value="CID_SPARE"/>
     </xs:restriction>
   </xs:simpleType>
 

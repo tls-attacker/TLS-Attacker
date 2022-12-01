@@ -43,7 +43,9 @@ public class RecordSerializer extends Serializer<Record> {
                 writeEpoch(record);
                 writeSequenceNumber(record);
             }
-            if (record.getConnectionId() != null) {
+            if (record.getConnectionId() != null
+                    && record.getConnectionId().getValue() != null
+                    && record.getConnectionId().getValue().length > 0) {
                 writeConnectionId(record);
             }
             writeLength(record);
@@ -54,7 +56,9 @@ public class RecordSerializer extends Serializer<Record> {
 
     public static byte createUnifiedHeader(Record record, TlsContext context) {
         byte firstByte = 0x24; // 00100100 (length field is always present)
-        if (record.getConnectionId() != null) {
+        if (record.getConnectionId() != null
+                && record.getConnectionId().getValue() != null
+                && record.getConnectionId().getValue().length > 0) {
             firstByte = (byte) (firstByte ^ 0x10);
         }
         if (context.getConfig().getDtls13HeaderSeqNumSizeLong()) {
@@ -69,7 +73,9 @@ public class RecordSerializer extends Serializer<Record> {
     private void writeDtls13Header(Record record) {
         record.setUnifiedHeader(createUnifiedHeader(record, tlsContext));
         writeUnifiedHeader(record);
-        if (record.getConnectionId() != null) {
+        if (record.getConnectionId() != null
+                && record.getConnectionId().getValue() != null
+                && record.getConnectionId().getValue().length > 0) {
             writeConnectionId(record);
         }
         writeEncryptedSequenceNumber(record);

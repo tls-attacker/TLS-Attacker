@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ConnectionIdUsage;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
@@ -20,6 +21,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.NewConnectionIdPreparator
 import de.rub.nds.tlsattacker.core.protocol.serializer.NewConnectionIdSerializer;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
+import java.util.Objects;
 
 @XmlRootElement(name = "NewConnectionId")
 public class NewConnectionIdMessage extends HandshakeMessage {
@@ -30,11 +32,6 @@ public class NewConnectionIdMessage extends HandshakeMessage {
 
     public NewConnectionIdMessage() {
         super(HandshakeMessageType.NEW_CONNECTION_ID);
-    }
-
-    @Override
-    public String toShortString() {
-        return null;
     }
 
     @Override
@@ -82,5 +79,69 @@ public class NewConnectionIdMessage extends HandshakeMessage {
     public void setConnectionIds(byte[] connectionIds) {
         this.connectionIds =
                 ModifiableVariableFactory.safelySetValue(this.connectionIds, connectionIds);
+    }
+
+    public void setConnectionIdsLength(ModifiableInteger connectionIdsLength) {
+        this.connectionIdsLength = connectionIdsLength;
+    }
+
+    public void setConnectionIds(ModifiableByteArray connectionIds) {
+        this.connectionIds = connectionIds;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 67 * hash + Objects.hashCode(this.usage);
+        hash = 67 * hash + Objects.hashCode(this.connectionIdsLength);
+        hash = 67 * hash + Objects.hashCode(this.connectionIds);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final NewConnectionIdMessage other = (NewConnectionIdMessage) obj;
+        return Objects.equals(this.usage, other.usage)
+                && Objects.equals(this.connectionIdsLength, other.connectionIdsLength)
+                && Objects.equals(this.connectionIds, other.connectionIds);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("NewConnectionId:");
+        sb.append("\n  Usage: ");
+        if (usage != null) {
+            sb.append(usage);
+        } else {
+            sb.append("null");
+        }
+        sb.append("\n  ConnectionIdLength: ");
+        if (connectionIdsLength != null && connectionIdsLength.getOriginalValue() != null) {
+            sb.append(connectionIdsLength.getValue());
+        } else {
+            sb.append("null");
+        }
+        sb.append("\n  ConnectionIds: ");
+        if (connectionIds != null && connectionIds.getOriginalValue() != null) {
+            sb.append(ArrayConverter.bytesToHexString(connectionIds.getValue()));
+        } else {
+            sb.append("null");
+        }
+        return sb.toString();
+    }
+
+    @Override
+    public String toShortString() {
+        return "NCID";
     }
 }
