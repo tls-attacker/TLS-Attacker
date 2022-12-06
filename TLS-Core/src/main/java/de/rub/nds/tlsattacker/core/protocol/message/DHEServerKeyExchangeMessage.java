@@ -25,7 +25,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.List;
 
-@XmlRootElement(name = "DHEClientKeyExchange")
+@XmlRootElement(name = "DHEServerKeyExchange")
 public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
     /** DH modulus */
