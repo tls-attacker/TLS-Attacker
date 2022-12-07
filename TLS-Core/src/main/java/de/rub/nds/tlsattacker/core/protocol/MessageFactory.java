@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol;
 
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
@@ -28,7 +27,8 @@ public class MessageFactory {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public static HandshakeMessage generateHandshakeMessage(HandshakeMessageType type, TlsContext tlsContext) {
+    public static HandshakeMessage generateHandshakeMessage(
+            HandshakeMessageType type, TlsContext tlsContext) {
         switch (type) {
             case CERTIFICATE:
                 return new CertificateMessage();
@@ -56,7 +56,7 @@ public class MessageFactory {
                 return new KeyUpdateMessage();
             case MESSAGE_HASH:
                 LOGGER.warn(
-                    "Received MessageHash HandshakeMessageType - not implemented yet. Treating as UnknownHandshakeMessage");
+                        "Received MessageHash HandshakeMessageType - not implemented yet. Treating as UnknownHandshakeMessage");
                 return new UnknownHandshakeMessage();
             case NEW_SESSION_TICKET:
                 return new NewSessionTicketMessage();
@@ -68,10 +68,11 @@ public class MessageFactory {
                 return getServerKeyExchangeMessage(tlsContext);
             case UNKNOWN:
                 return new UnknownHandshakeMessage();
+            case SUPPLEMENTAL_DATA:
+                return new SupplementalDataMessage();
             default:
-                throw new RuntimeException("Unexpected HandshakeMessage Type");
+                throw new RuntimeException("Unexpected HandshakeMessage Type " + type);
         }
-
     }
 
     private static ServerKeyExchangeMessage getServerKeyExchangeMessage(TlsContext tlsContext) {
@@ -103,7 +104,8 @@ public class MessageFactory {
             case ECCPWD:
                 return new PWDServerKeyExchangeMessage();
             default:
-                throw new UnsupportedOperationException("Algorithm " + algorithm + " NOT supported yet.");
+                throw new UnsupportedOperationException(
+                        "Algorithm " + algorithm + " NOT supported yet.");
         }
     }
 
@@ -142,7 +144,8 @@ public class MessageFactory {
             case ECCPWD:
                 return new PWDClientKeyExchangeMessage();
             default:
-                throw new UnsupportedOperationException("Algorithm " + algorithm + " NOT supported yet.");
+                throw new UnsupportedOperationException(
+                        "Algorithm " + algorithm + " NOT supported yet.");
         }
     }
 
@@ -162,36 +165,45 @@ public class MessageFactory {
             extensionMessageList.add(createExtensionMessage(someClass));
         }
         return extensionMessageList;
-
     }
 
-    private static ExtensionMessage createExtensionMessage(Class<? extends ExtensionMessage> extensionClass) {
+    private static ExtensionMessage createExtensionMessage(
+            Class<? extends ExtensionMessage> extensionClass) {
         if (Modifier.isAbstract(extensionClass.getModifiers())) {
             throw new IllegalArgumentException("Provided class is abstract");
         }
         try {
             return extensionClass.getConstructor().newInstance();
-        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | IllegalArgumentException
-            | InvocationTargetException ex) {
+        } catch (NoSuchMethodException
+                | InstantiationException
+                | IllegalAccessException
+                | IllegalArgumentException
+                | InvocationTargetException ex) {
             throw new ObjectCreationException("Could not create Extension", ex);
         }
     }
 
-    private static ProtocolMessage createProtocolMessage(Class<? extends ProtocolMessage> protocolMessageClass) {
+    private static ProtocolMessage createProtocolMessage(
+            Class<? extends ProtocolMessage> protocolMessageClass) {
         if (Modifier.isAbstract(protocolMessageClass.getModifiers())) {
             throw new IllegalArgumentException("Provided class is abstract");
         }
         try {
             return protocolMessageClass.getConstructor().newInstance();
-        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | IllegalArgumentException
-            | InvocationTargetException ex) {
+        } catch (NoSuchMethodException
+                | InstantiationException
+                | IllegalAccessException
+                | IllegalArgumentException
+                | InvocationTargetException ex) {
             throw new ObjectCreationException("Could not create ProtocolMessage", ex);
         }
     }
 
     private static Set<Class<? extends ExtensionMessage>> getAllNonAbstractExtensionClasses() {
-        Reflections reflections = new Reflections("de.rub.nds.tlsattacker.core.protocol.message.extension");
-        Set<Class<? extends ExtensionMessage>> classes = reflections.getSubTypesOf(ExtensionMessage.class);
+        Reflections reflections =
+                new Reflections("de.rub.nds.tlsattacker.core.protocol.message.extension");
+        Set<Class<? extends ExtensionMessage>> classes =
+                reflections.getSubTypesOf(ExtensionMessage.class);
         Set<Class<? extends ExtensionMessage>> filteredClassSet = new HashSet<>();
         for (Class<? extends ExtensionMessage> someClass : classes) {
             if (!Modifier.isAbstract(someClass.getModifiers())) {
@@ -203,7 +215,8 @@ public class MessageFactory {
 
     private static Set<Class<? extends ProtocolMessage>> getAllNonAbstractProtocolMessageClasses() {
         Reflections reflections = new Reflections("de.rub.nds.tlsattacker.core.protocol.message");
-        Set<Class<? extends ProtocolMessage>> classes = reflections.getSubTypesOf(ProtocolMessage.class);
+        Set<Class<? extends ProtocolMessage>> classes =
+                reflections.getSubTypesOf(ProtocolMessage.class);
         Set<Class<? extends ProtocolMessage>> filteredClassSet = new HashSet<>();
         for (Class<? extends ProtocolMessage> someClass : classes) {
             if (!Modifier.isAbstract(someClass.getModifiers())) {
@@ -223,6 +236,5 @@ public class MessageFactory {
         return extensionMessages.get(r.nextInt(extensionMessages.size()));
     }
 
-    private MessageFactory() {
-    }
+    private MessageFactory() {}
 }
