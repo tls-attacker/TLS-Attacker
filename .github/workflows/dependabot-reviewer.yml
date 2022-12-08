@@ -1,0 +1,54 @@
+# Based on https://nicolasiensen.github.io/2022-07-23-automating-dependency-updates-with-dependabot-github-auto-merge-and-github-actions/
+name: dependabot Reviewer
+
+on: pull_request_target
+
+permissions:
+  pull-requests: write
+  contents: write
+  
+jobs:
+  review-dependabot-pr:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.pull_request.user.login == 'dependabot[bot]' }}
+    steps:
+      - name: Dependabot metadata
+        id: dependabot-metadata
+        uses: dependabot/fetch-metadata@v1.3.5
+      - name: Generate temporary access token for GitHub app
+        id: generate-token
+        uses: tibdex/github-app-token@v1.7.0
+        with:
+          app_id: ${{ secrets.DEPENDABOT_REVIEWER_APP_ID }}
+          private_key: ${{ secrets.DEPENDABOT_REVIEWER_PRIVATE_KEY }}
+      - name: Enable auto-merge for Dependabot PRs
+        run: gh pr merge --auto --merge "$PR_URL"
+        env:
+          PR_URL: ${{github.event.pull_request.html_url}}
+          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
+      - name: Approve any update of protocol-toolkit-bom
+        if: ${{ steps.dependabot-metadata.outputs.dependency-names == 'de.rub.nds:protocol-toolkit-bom' }}
+        run: gh pr review $PR_URL --approve -b "I'm **approving** this pull request because **it is a BOM update**"
+        env:
+          PR_URL: ${{github.event.pull_request.html_url}}
+          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
+      - name: Approve patch and minor updates of other dependencies
+        if: ${{ (steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch' || steps.dependabot-metadata.outputs.update-type == 'version-update:semver-minor') && steps.dependabot-metadata.outputs.dependency-names != 'de.rub.nds:protocol-toolkit-bom' }}
+        run: gh pr review $PR_URL --approve -b "I'm **approving** this pull request because **it includes a patch or minor update**"
+        env:
+          PR_URL: ${{github.event.pull_request.html_url}}
+          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
+      - name: Approve major updates of development dependencies
+        if: ${{ steps.dependabot-metadata.outputs.update-type == 'version-update:semver-major' && steps.dependabot-metadata.outputs.dependency-type == 'direct:development' }}
+        run: gh pr review $PR_URL --approve -b "I'm **approving** this pull request because **it includes a major update of a dependency used only in development**"
+        env:
+          PR_URL: ${{github.event.pull_request.html_url}}
+          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
+      - name: Comment on major updates of non-development dependencies and request review from tls-attacker-extended
+        if: ${{ steps.dependabot-metadata.outputs.update-type == 'version-update:semver-major' && steps.dependabot-metadata.outputs.dependency-type == 'direct:production' && steps.dependabot-metadata.outputs.dependency-names != 'de.rub.nds:protocol-toolkit-bom' }}
+        run: |
+          gh pr comment $PR_URL --body "I'm **not approving** this PR because **it includes a major update of a dependency used in production**"
+          gh pr edit $PR_URL --add-label "help wanted" --add-reviewer "tls-attacker/tls-attacker-extended"
+        env:
+          PR_URL: ${{github.event.pull_request.html_url}}
+          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
