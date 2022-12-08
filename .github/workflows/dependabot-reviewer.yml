@@ -4,8 +4,8 @@ name: dependabot Reviewer
 on: pull_request_target
 
 permissions:
-  pull-requests: write
-  contents: write
+  pull-requests: read
+  contents: read
   
 jobs:
   review-dependabot-pr:
@@ -14,10 +14,10 @@ jobs:
     steps:
       - name: Dependabot metadata
         id: dependabot-metadata
-        uses: dependabot/fetch-metadata@v1.3.5
+        uses: dependabot/fetch-metadata@v1
       - name: Generate temporary access token for GitHub app
         id: generate-token
-        uses: tibdex/github-app-token@v1.7.0
+        uses: tibdex/github-app-token@v1
         with:
           app_id: ${{ secrets.DEPENDABOT_REVIEWER_APP_ID }}
           private_key: ${{ secrets.DEPENDABOT_REVIEWER_PRIVATE_KEY }}
