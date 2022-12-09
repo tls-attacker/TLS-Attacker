@@ -12,7 +12,7 @@ import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.http.HttpMessage;
-import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
+import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.*;
@@ -143,19 +143,14 @@ public class ReceiveAction extends CommonReceiveAction implements ReceivingActio
     @Override
     public boolean executedAsPlanned() {
         if (getLayerStackProcessingResult() != null) {
-            if (getLayerStackProcessingResult().getResultForLayer(ImplementedLayers.MESSAGE)
-                    != null) {
-                return getLayerStackProcessingResult()
-                        .getResultForLayer(ImplementedLayers.MESSAGE)
-                        .isExecutedAsPlanned();
-            } else if (getLayerStackProcessingResult().getResultForLayer(ImplementedLayers.SSL2)
-                    != null) {
-                return getLayerStackProcessingResult()
-                        .getResultForLayer(ImplementedLayers.SSL2)
-                        .isExecutedAsPlanned();
+            for (LayerProcessingResult result :
+                    getLayerStackProcessingResult().getLayerProcessingResultList()) {
+                if (!result.isExecutedAsPlanned()) {
+                    return false;
+                }
             }
+            return true;
         }
-        // TODO check other configurations
         return false;
     }
 

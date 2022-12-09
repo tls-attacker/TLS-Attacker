@@ -1,20 +1,17 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.http;
-
-import java.io.InputStream;
-import java.nio.charset.Charset;
 
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.http.header.*;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageParser;
+import java.io.InputStream;
+import java.nio.charset.Charset;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -45,7 +42,11 @@ public class HttpResponseParser extends HttpMessageParser<HttpResponseMessage> {
             }
             HttpHeader header;
             String headerName = split[0];
-            String headerValue = line.replaceFirst(split[0] + ":", "").replaceAll("\n", "").replaceAll("\r", "").trim();
+            String headerValue =
+                    line.replaceFirst(split[0] + ":", "")
+                            .replaceAll("\n", "")
+                            .replaceAll("\r", "")
+                            .trim();
             switch (headerName) {
                 case "Host":
                     header = new HostHeader();
@@ -76,6 +77,6 @@ public class HttpResponseParser extends HttpMessageParser<HttpResponseMessage> {
         }
         byte[] content = parseArrayOrTillEnd(getBytesLeft());
         message.setResponseContent(new String(content, Charset.forName("ASCII")));
-        LOGGER.info(new String(getAlreadyParsed()));
+        LOGGER.debug(new String(getAlreadyParsed()));
     }
 }

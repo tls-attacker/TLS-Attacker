@@ -236,7 +236,8 @@ public abstract class MessageAction extends ConnectionBoundAction {
                         dtlsConfiguration,
                         messageConfiguration,
                         recordConfiguration,
-                        ssl2Configuration);
+                        ssl2Configuration,
+                        httpConfiguration);
         LayerStackProcessingResult processingResult = layerStack.sendData(layerConfigurationList);
         setContainers(processingResult);
     }
@@ -260,6 +261,13 @@ public abstract class MessageAction extends ConnectionBoundAction {
                         ImplementedLayers.SSL2, protocolMessagesToReceive);
         LayerConfiguration recordConfiguration =
                 new SpecificReceiveLayerConfiguration<>(ImplementedLayers.RECORD, recordsToReceive);
+        if (recordsToReceive == null || recordsToReceive.isEmpty()) {
+            // always allow (trailing) records when no records were set
+            // a ReceiveAction actually intended to expect no records is pointless
+            ((SpecificReceiveLayerConfiguration) recordConfiguration)
+                    .setAllowTrailingContainers(true);
+        }
+
         LayerConfiguration httpConfiguration =
                 new SpecificReceiveLayerConfiguration<>(
                         ImplementedLayers.HTTP, httpMessagesToReceive);

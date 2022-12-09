@@ -83,10 +83,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
         LayerConfiguration<Record> configuration = getLayerConfiguration();
         if (configuration != null && configuration.getContainerList() != null) {
             for (Record record : configuration.getContainerList()) {
-                if (!context.getConfig().isUseAllProvidedRecords()
-                        && record.getCompleteRecordBytes() != null
-                        && record.getCompleteRecordBytes().getValue().length == 0) {
-                    // skip empty records if specified in config
+                if (containerAlreadyUsedByHigherLayer(record) || skipEmptyRecords(record)) {
                     continue;
                 }
                 ProtocolMessageType contentType = record.getContentMessageType();
@@ -113,6 +110,12 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
             }
         }
         return getLayerResult();
+    }
+
+    private boolean skipEmptyRecords(Record record) {
+        return !context.getConfig().isUseAllProvidedRecords()
+                && record.getCompleteRecordBytes() != null
+                && record.getCompleteRecordBytes().getValue().length == 0;
     }
 
     /**

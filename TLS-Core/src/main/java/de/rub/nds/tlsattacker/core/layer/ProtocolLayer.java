@@ -9,8 +9,9 @@
 package de.rub.nds.tlsattacker.core.layer;
 
 import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
+import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.LayerContext;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.layer.data.Handler;
 import de.rub.nds.tlsattacker.core.layer.data.Parser;
@@ -88,12 +89,17 @@ public abstract class ProtocolLayer<
     }
 
     public LayerProcessingResult<Container> getLayerResult() {
+        boolean isExecutedAsPlanned = executedAsPlanned();
+        return new LayerProcessingResult(
+                producedDataContainers, getLayerType(), isExecutedAsPlanned, getUnreadBytes());
+    }
+
+    public boolean executedAsPlanned() {
         boolean isExecutedAsPlanned = true;
         if (getLayerConfiguration() != null) {
             isExecutedAsPlanned = getLayerConfiguration().executedAsPlanned(producedDataContainers);
         }
-        return new LayerProcessingResult(
-                producedDataContainers, getLayerType(), isExecutedAsPlanned, getUnreadBytes());
+        return isExecutedAsPlanned;
     }
 
     /** Sets input stream to null if empty. Throws an exception otherwise. */
@@ -119,6 +125,15 @@ public abstract class ProtocolLayer<
 
     protected void addProducedContainer(Container container) {
         producedDataContainers.add(container);
+    }
+
+    protected boolean containerAlreadyUsedByHigherLayer(Container container) {
+        if (producedDataContainers == null) {
+            return false;
+        }
+        // must check for identical references here
+        return producedDataContainers.stream()
+                .anyMatch(listedContainer -> listedContainer == container);
     }
 
     /**
@@ -213,7 +228,7 @@ public abstract class ProtocolLayer<
      * @param container The container to handle.
      * @param context The context of the connection. Keeps parsed and handled values.
      */
-    protected void readDataContainer(Container container, TlsContext context) {
+    protected void readDataContainer(Container container, LayerContext context) {
         HintedInputStream inputStream;
         try {
             inputStream = getLowerLayer().getDataStream();
@@ -242,5 +257,21 @@ public abstract class ProtocolLayer<
 
     public void setUnreadBytes(byte[] unreadBytes) {
         this.unreadBytes = unreadBytes;
+    }
+
+    public boolean prepareDataContainer(DataContainer dataContainer, LayerContext context) {
+        Preparator preparator = dataContainer.getPreparator(context);
+        try {
+            preparator.prepare();
+            preparator.afterPrepare();
+        } catch (PreparationException ex) {
+            LOGGER.error(
+                    "Could not prepare message "
+                            + dataContainer.toString()
+                            + ". Therefore, we skip it: ",
+                    ex);
+            return false;
+        }
+        return true;
     }
 }
