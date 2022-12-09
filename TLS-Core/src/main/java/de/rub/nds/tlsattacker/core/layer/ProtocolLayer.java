@@ -208,11 +208,15 @@ public abstract class ProtocolLayer<
 
     public boolean shouldContinueProcessing() {
         if (layerConfiguration != null) {
-            return layerConfiguration.successRequiresMoreContainers(
-                            getLayerResult().getUsedContainers())
-                    || (isDataBuffered()
-                            && ((ReceiveLayerConfiguration) layerConfiguration)
-                                    .isProcessTrailingContainers());
+            if (layerConfiguration instanceof GenericReceiveLayerConfiguration) {
+                return true;
+            } else {
+                return layerConfiguration.successRequiresMoreContainers(
+                                getLayerResult().getUsedContainers())
+                        || (isDataBuffered()
+                                && ((ReceiveLayerConfiguration) layerConfiguration)
+                                        .isProcessTrailingContainers());
+            }
         } else {
             return isDataBuffered();
         }

@@ -110,7 +110,7 @@ public class WorkflowTraceSerializer {
                             .replaceAll("\r?\n", System.lineSeparator())
                             .getBytes(StandardCharsets.UTF_8));
         } catch (TransformerException E) {
-            LOGGER.debug(E.getStackTrace());
+            LOGGER.error(E);
         }
     }
 

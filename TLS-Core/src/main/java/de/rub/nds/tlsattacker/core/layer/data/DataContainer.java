@@ -29,4 +29,12 @@ public interface DataContainer<Container extends DataContainer, Context extends 
     public default boolean isRequired() {
         return true;
     }
+
+    public default String toCompactString() {
+        return toString();
+    }
+
+    public default String toShortString() {
+        return toCompactString();
+    }
 }

@@ -58,7 +58,7 @@ public class ReceiveAction extends CommonReceiveAction implements ReceivingActio
     public ReceiveAction(
             List<ProtocolMessage> expectedMessages, List<HttpMessage> expectedHttpMessages) {
         this(expectedMessages);
-        this.expectedHttpMessages = new ArrayList(Arrays.asList(expectedHttpMessages));
+        this.expectedHttpMessages = expectedHttpMessages;
     }
 
     public ReceiveAction(HttpMessage... expectedHttpMessages) {

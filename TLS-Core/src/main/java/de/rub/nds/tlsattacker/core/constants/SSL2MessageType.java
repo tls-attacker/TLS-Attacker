@@ -35,6 +35,6 @@ public enum SSL2MessageType {
         return Arrays.stream(SSL2MessageType.values())
                 .filter(knownType -> knownType.getType() == value)
                 .findFirst()
-                .orElse(null);
+                .orElse(SSL2MessageType.SSL_UNKNOWN);
     }
 }
