@@ -226,8 +226,10 @@ public class DtlsFragmentLayer
             }
         } catch (TimeoutException ex) {
             LOGGER.debug(ex);
+            throw ex;
         } catch (EndOfStreamException ex) {
             LOGGER.debug("Reached end of stream, cannot parse more dtls fragments", ex);
+            throw ex;
         }
     }
 

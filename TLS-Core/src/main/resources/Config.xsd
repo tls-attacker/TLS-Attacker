@@ -191,7 +191,7 @@
       <xs:element name="defaultServerKeyShareEntry" type="keyShareStoreEntry" minOccurs="0"/>
       <xs:element name="sniType" type="nameType" minOccurs="0"/>
       <xs:element name="preferredCertRsaKeySize" type="xs:int" minOccurs="0"/>
-      <xs:element name="prefferedCertDssKeySize" type="xs:int" minOccurs="0"/>
+      <xs:element name="preferedCertDssKeySize" type="xs:int" minOccurs="0"/>
       <xs:element name="defaultKeyUpdateRequestMode" type="keyUpdateRequest" minOccurs="0"/>
       <xs:element name="encryptChangeCipherSpecTls13" type="xs:boolean" minOccurs="0"/>
       <xs:element name="tlsSessionTicket" type="xs:string" minOccurs="0"/>
