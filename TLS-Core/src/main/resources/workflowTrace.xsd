@@ -255,11 +255,15 @@
 
   <xs:element name="changeReadEpochAction" type="changeReadEpochAction"/>
 
+  <xs:element name="changeReadMessageSequenceAction" type="changeReadMessageSequenceAction"/>
+
   <xs:element name="changeReadSequenceNumberAction" type="changeReadSequenceNumberAction"/>
 
   <xs:element name="changeServerRandomAction" type="changeServerRandomAction"/>
 
   <xs:element name="changeWriteEpochAction" type="changeWriteEpochAction"/>
+
+  <xs:element name="changeWriteMessageSequenceAction" type="changeWriteMessageSequenceAction"/>
 
   <xs:element name="changeWriteSequenceNumberAction" type="changeWriteSequenceNumberAction"/>
 
@@ -429,8 +433,10 @@
         <xs:element name="ChangeConnectionTimeout" type="changeConnectionTimeoutAction"/>
         <xs:element name="ChangeReadEpoch" type="changeReadEpochAction"/>
         <xs:element name="ChangeReadSequenceNumber" type="changeReadSequenceNumberAction"/>
+        <xs:element name="ChangeReadMessageSequence" type="changeReadMessageSequenceAction"/>
         <xs:element name="ChangeWriteEpoch" type="changeWriteEpochAction"/>
         <xs:element name="ChangeWriteSequenceNumber" type="changeWriteSequenceNumberAction"/>
+        <xs:element name="ChangeWriteMessageSequence" type="changeWriteMessageSequenceAction"/>
         <xs:element name="ClearBuffers" type="clearBuffersAction"/>
         <xs:element name="ClearDigest" type="clearDigestAction"/>
         <xs:element name="ConnectionBound" type="connectionBoundAction"/>
@@ -3470,7 +3476,7 @@
       <xs:element name="defaultServerKeyShareEntry" type="keyShareStoreEntry" minOccurs="0"/>
       <xs:element name="sniType" type="nameType" minOccurs="0"/>
       <xs:element name="preferredCertRsaKeySize" type="xs:int" minOccurs="0"/>
-      <xs:element name="prefferedCertDssKeySize" type="xs:int" minOccurs="0"/>
+      <xs:element name="preferedCertDssKeySize" type="xs:int" minOccurs="0"/>
       <xs:element name="defaultKeyUpdateRequestMode" type="keyUpdateRequest" minOccurs="0"/>
       <xs:element name="encryptChangeCipherSpecTls13" type="xs:boolean" minOccurs="0"/>
       <xs:element name="tlsSessionTicket" type="xs:string" minOccurs="0"/>
@@ -4178,6 +4184,24 @@
     </xs:complexContent>
   </xs:complexType>
 
+  <xs:complexType name="changeReadMessageSequenceAction">
+    <xs:complexContent>
+      <xs:extension base="changeMessageSequenceAction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="changeMessageSequenceAction" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="connectionBoundAction">
+        <xs:sequence>
+          <xs:element name="messageSequence" type="xs:int" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
   <xs:complexType name="changeWriteEpochAction">
     <xs:complexContent>
       <xs:extension base="changeEpochAction">
@@ -4189,6 +4213,14 @@
   <xs:complexType name="changeWriteSequenceNumberAction">
     <xs:complexContent>
       <xs:extension base="changeSequenceNumberAction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="changeWriteMessageSequenceAction">
+    <xs:complexContent>
+      <xs:extension base="changeMessageSequenceAction">
         <xs:sequence/>
       </xs:extension>
     </xs:complexContent>

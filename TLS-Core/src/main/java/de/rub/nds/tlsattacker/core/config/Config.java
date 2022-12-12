@@ -235,7 +235,7 @@ public class Config implements Serializable {
 
     private Integer preferredCertRsaKeySize = 2048;
 
-    private Integer prefferedCertDssKeySize = 2048;
+    private Integer preferedCertDssKeySize = 2048;
 
     /** Determine if a KeyUpdate should be requested from peer */
     private KeyUpdateRequest defaultKeyUpdateRequestMode = KeyUpdateRequest.UPDATE_NOT_REQUESTED;
@@ -3986,11 +3986,11 @@ public class Config implements Serializable {
     }
 
     public int getPrefferedCertDssKeySize() {
-        return prefferedCertDssKeySize;
+        return preferedCertDssKeySize;
     }
 
-    public void setPrefferedCertDssKeySize(int prefferedCertDssKeySize) {
-        this.prefferedCertDssKeySize = prefferedCertDssKeySize;
+    public void setPrefferedCertDssKeySize(int preferedCertDssKeySize) {
+        this.preferedCertDssKeySize = preferedCertDssKeySize;
     }
 
     public byte[] getDefaultExtensionCookie() {

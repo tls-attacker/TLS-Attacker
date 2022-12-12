@@ -858,7 +858,7 @@
     </defaultServerKeyShareEntry>
     <sniType>HOST_NAME</sniType>
     <preferredCertRsaKeySize>2048</preferredCertRsaKeySize>
-    <prefferedCertDssKeySize>2048</prefferedCertDssKeySize>
+    <preferedCertDssKeySize>2048</preferedCertDssKeySize>
     <defaultKeyUpdateRequestMode>UPDATE_NOT_REQUESTED</defaultKeyUpdateRequestMode>
     <encryptChangeCipherSpecTls13>false</encryptChangeCipherSpecTls13>
     <tlsSessionTicket></tlsSessionTicket>
