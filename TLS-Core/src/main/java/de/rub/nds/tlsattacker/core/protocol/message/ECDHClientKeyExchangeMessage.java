@@ -63,7 +63,12 @@ public class ECDHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     @Override
     public String toCompactString() {
-        return "ECDH_CLIENT_KEY_EXCHANGE";
+        StringBuilder sb = new StringBuilder();
+        sb.append("ECDH_CLIENT_KEY_EXCHANGE");
+        if (isRetransmission()) {
+            sb.append(" (ret.)");
+        }
+        return sb.toString();
     }
 
     @Override

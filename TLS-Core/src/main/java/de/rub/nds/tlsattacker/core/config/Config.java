@@ -235,7 +235,7 @@ public class Config implements Serializable {
 
     private Integer preferredCertRsaKeySize = 2048;
 
-    private Integer preferedCertDssKeySize = 2048;
+    private Integer preferredCertDssKeySize = 2048;
 
     /** Determine if a KeyUpdate should be requested from peer */
     private KeyUpdateRequest defaultKeyUpdateRequestMode = KeyUpdateRequest.UPDATE_NOT_REQUESTED;
@@ -709,10 +709,10 @@ public class Config implements Serializable {
      */
     private Boolean createRecordsDynamically = true;
 
-    /** Every record will be sent in one individual transport packet [ADD FOR LAYER!] */
-    private Boolean createIndividualTransportPackets = false;
+    /** Every fragment will be sent in one individual transport packet */
+    private Boolean individualTransportPacketsForFragments = false;
 
-    /** If we should wait after sending one transport packet */
+    /** If we should wait after sending one transport packet [ADD FOR LAYER!] */
     private Integer individualTransportPacketCooldown = 0;
 
     /**
@@ -2316,12 +2316,13 @@ public class Config implements Serializable {
         this.createRecordsDynamically = createRecordsDynamically;
     }
 
-    public Boolean isCreateIndividualTransportPackets() {
-        return createIndividualTransportPackets;
+    public Boolean isIndividualTransportPacketsForFragments() {
+        return individualTransportPacketsForFragments;
     }
 
-    public void setCreateIndividualTransportPackets(Boolean createIndividualTransportPackets) {
-        this.createIndividualTransportPackets = createIndividualTransportPackets;
+    public void setIndividualTransportPacketsForFragments(
+            Boolean individualTransportPacketsForFragments) {
+        this.individualTransportPacketsForFragments = individualTransportPacketsForFragments;
     }
 
     public Integer getIndividualTransportPacketCooldown() {
@@ -3985,12 +3986,12 @@ public class Config implements Serializable {
         this.preferredCertRsaKeySize = preferredCertRsaKeySize;
     }
 
-    public int getPrefferedCertDssKeySize() {
-        return preferedCertDssKeySize;
+    public int getPreferredCertDssKeySize() {
+        return preferredCertDssKeySize;
     }
 
-    public void setPrefferedCertDssKeySize(int preferedCertDssKeySize) {
-        this.preferedCertDssKeySize = preferedCertDssKeySize;
+    public void setPreferredCertDssKeySize(int preferredCertDssKeySize) {
+        this.preferredCertDssKeySize = preferredCertDssKeySize;
     }
 
     public byte[] getDefaultExtensionCookie() {

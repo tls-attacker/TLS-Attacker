@@ -92,7 +92,8 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
                     LOGGER.warn(
                             "Sending record without a LayerProcessing hint. Using \"UNKNOWN\" as the type");
                 }
-                if (encryptor.getRecordCipher(writeEpoch).getState().getVersion().isDTLS()) {
+                if (encryptor.getRecordCipher(writeEpoch).getState().getVersion().isDTLS()
+                        && record.getEpoch() == null) {
                     record.setEpoch(writeEpoch);
                 }
                 if (record.getCleanProtocolMessageBytes() == null) {

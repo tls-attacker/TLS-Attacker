@@ -111,7 +111,12 @@ public class PskEcDheServerKeyExchangeMessage extends ECDHEServerKeyExchangeMess
 
     @Override
     public String toCompactString() {
-        return "ECDHE_PSK_SERVER_KEY_EXCHANGE";
+        StringBuilder sb = new StringBuilder();
+        sb.append("ECDHE_PSK_SERVER_KEY_EXCHANGE");
+        if (isRetransmission()) {
+            sb.append(" (ret.)");
+        }
+        return sb.toString();
     }
 
     @Override

@@ -130,7 +130,6 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
 
     private void executeRetransmission(SendingAction action) {
         LOGGER.info("Executing retransmission of last sent flight");
-        state.getTlsContext().getRecordLayer().reencrypt(action.getSendRecords());
         state.getTlsContext()
                 .getRecordLayer()
                 .setLayerConfiguration(
