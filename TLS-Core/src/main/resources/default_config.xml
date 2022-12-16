@@ -858,7 +858,7 @@
     </defaultServerKeyShareEntry>
     <sniType>HOST_NAME</sniType>
     <preferredCertRsaKeySize>2048</preferredCertRsaKeySize>
-    <prefferedCertDssKeySize>2048</prefferedCertDssKeySize>
+    <preferredCertDssKeySize>2048</preferredCertDssKeySize>
     <defaultKeyUpdateRequestMode>UPDATE_NOT_REQUESTED</defaultKeyUpdateRequestMode>
     <encryptChangeCipherSpecTls13>false</encryptChangeCipherSpecTls13>
     <tlsSessionTicket></tlsSessionTicket>
@@ -1021,7 +1021,7 @@
     <flushOnMessageTypeChange>true</flushOnMessageTypeChange>
     <createFragmentsDynamically>true</createFragmentsDynamically>
     <createRecordsDynamically>true</createRecordsDynamically>
-    <createIndividualTransportPackets>false</createIndividualTransportPackets>
+    <individualTransportPacketsForFragments>false</individualTransportPacketsForFragments>
     <individualTransportPacketCooldown>0</individualTransportPacketCooldown>
     <resetWorkflowTracesBeforeSaving>false</resetWorkflowTracesBeforeSaving>
     <workflowExecutorShouldOpen>true</workflowExecutorShouldOpen>

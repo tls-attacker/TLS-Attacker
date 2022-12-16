@@ -107,7 +107,12 @@ public class PskRsaClientKeyExchangeMessage extends RSAClientKeyExchangeMessage 
 
     @Override
     public String toCompactString() {
-        return "PSK_RSA_CLIENT_KEY_EXCHANGE";
+        StringBuilder sb = new StringBuilder();
+        sb.append("PSK_RSA_CLIENT_KEY_EXCHANGE");
+        if (isRetransmission()) {
+            sb.append(" (ret.)");
+        }
+        return sb.toString();
     }
 
     @Override

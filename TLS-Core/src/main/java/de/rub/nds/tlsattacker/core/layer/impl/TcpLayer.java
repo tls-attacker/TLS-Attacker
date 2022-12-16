@@ -66,6 +66,7 @@ public class TcpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer> 
     /** Returns the inputStream associated with the TCP socket. */
     @Override
     public HintedInputStream getDataStream() {
+        getTransportHandler().setTimeout(getTransportHandler().getTimeout());
         currentInputStream =
                 new HintedInputStreamAdapterStream(null, getTransportHandler().getInputStream());
         return currentInputStream;

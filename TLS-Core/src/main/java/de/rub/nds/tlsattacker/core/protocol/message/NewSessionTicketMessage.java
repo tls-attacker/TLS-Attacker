@@ -94,7 +94,12 @@ public class NewSessionTicketMessage extends HandshakeMessage {
 
     @Override
     public String toCompactString() {
-        return "NewSessionTicket";
+        StringBuilder sb = new StringBuilder();
+        sb.append("NEW_SESSION_TICKET");
+        if (isRetransmission()) {
+            sb.append(" (ret.)");
+        }
+        return sb.toString();
     }
 
     @Override

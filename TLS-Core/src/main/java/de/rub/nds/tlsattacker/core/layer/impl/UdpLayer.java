@@ -66,6 +66,7 @@ public class UdpLayer
 
     @Override
     public HintedInputStream getDataStream() {
+        getTransportHandler().setTimeout(getTransportHandler().getTimeout());
         return new HintedInputStreamAdapterStream(null, getTransportHandler().getInputStream());
     }
 

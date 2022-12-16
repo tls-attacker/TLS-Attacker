@@ -221,7 +221,7 @@ public abstract class AbstractHandshakeIT {
                 System.out.println(
                         "Encountered exception during handshake (" + ignored.getMessage() + ")");
             }
-            if (!state.getWorkflowTrace().executedAsPlanned()) {
+            if (!state.getWorkflowTrace().executedAsPlanned() && (i + 1) < MAX_ATTEMPTS) {
                 System.out.println("Failed to complete handshake, reexecuting...");
                 killContainer();
                 prepareContainer();

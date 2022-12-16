@@ -191,7 +191,7 @@
       <xs:element name="defaultServerKeyShareEntry" type="keyShareStoreEntry" minOccurs="0"/>
       <xs:element name="sniType" type="nameType" minOccurs="0"/>
       <xs:element name="preferredCertRsaKeySize" type="xs:int" minOccurs="0"/>
-      <xs:element name="prefferedCertDssKeySize" type="xs:int" minOccurs="0"/>
+      <xs:element name="preferredCertDssKeySize" type="xs:int" minOccurs="0"/>
       <xs:element name="defaultKeyUpdateRequestMode" type="keyUpdateRequest" minOccurs="0"/>
       <xs:element name="encryptChangeCipherSpecTls13" type="xs:boolean" minOccurs="0"/>
       <xs:element name="tlsSessionTicket" type="xs:string" minOccurs="0"/>
@@ -407,7 +407,7 @@
       <xs:element name="flushOnMessageTypeChange" type="xs:boolean" minOccurs="0"/>
       <xs:element name="createFragmentsDynamically" type="xs:boolean" minOccurs="0"/>
       <xs:element name="createRecordsDynamically" type="xs:boolean" minOccurs="0"/>
-      <xs:element name="createIndividualTransportPackets" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="individualTransportPacketsForFragments" type="xs:boolean" minOccurs="0"/>
       <xs:element name="individualTransportPacketCooldown" type="xs:int" minOccurs="0"/>
       <xs:element name="resetWorkflowTracesBeforeSaving" type="xs:boolean" minOccurs="0"/>
       <xs:element name="workflowExecutorShouldOpen" type="xs:boolean" minOccurs="0"/>

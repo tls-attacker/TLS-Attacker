@@ -102,7 +102,12 @@ public class PskDhClientKeyExchangeMessage extends DHClientKeyExchangeMessage {
 
     @Override
     public String toCompactString() {
-        return "PSK_DH_CLIENT_KEY_EXCHANGE";
+        StringBuilder sb = new StringBuilder();
+        sb.append("PSK_DH_CLIENT_KEY_EXCHANGE");
+        if (isRetransmission()) {
+            sb.append(" (ret.)");
+        }
+        return sb.toString();
     }
 
     @Override

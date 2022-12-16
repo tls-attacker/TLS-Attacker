@@ -254,7 +254,7 @@ public abstract class HandshakeMessage extends ProtocolMessage {
         StringBuilder sb = new StringBuilder();
         sb.append(handshakeMessageType.getName());
         if (isRetransmission()) {
-            sb.append(" (retransmission)");
+            sb.append(" (ret.)");
         }
         return sb.toString();
     }

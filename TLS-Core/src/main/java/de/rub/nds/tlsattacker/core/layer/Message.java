@@ -29,7 +29,5 @@ import jakarta.xml.bind.annotation.XmlSeeAlso;
 public abstract class Message<Self extends Message, Context extends LayerContext>
         extends ModifiableVariableHolder implements DataContainer<Self, Context> {
 
-    public abstract String toCompactString();
-
     public abstract String toShortString();
 }

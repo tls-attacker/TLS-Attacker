@@ -256,7 +256,7 @@ public class CertificateByteChooser {
         Boolean badDssKeySize =
                 (keyPair.getCertPublicKeyType() == CertificateKeyType.DSS
                         && keyPair.getPublicKey().keySize()
-                                != chooser.getConfig().getPrefferedCertDssKeySize());
+                                != chooser.getConfig().getPreferredCertDssKeySize());
         return badRsaKeySize || badDssKeySize;
     }
 

@@ -109,7 +109,12 @@ public class PskDheServerKeyExchangeMessage extends DHEServerKeyExchangeMessage 
 
     @Override
     public String toCompactString() {
-        return "DHE_PSK_SERVER_KEY_EXCHANGE";
+        StringBuilder sb = new StringBuilder();
+        sb.append("DHE_PSK_SERVER_KEY_EXCHANGE");
+        if (isRetransmission()) {
+            sb.append(" (ret.)");
+        }
+        return sb.toString();
     }
 
     @Override

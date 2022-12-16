@@ -11,8 +11,8 @@ package de.rub.nds.tlsattacker.core.layer.impl;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
-import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.exceptions.TimeoutException;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
@@ -28,7 +28,6 @@ import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerInputStream;
 import de.rub.nds.tlsattacker.core.protocol.MessageFactory;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageSerializer;
 import de.rub.nds.tlsattacker.core.protocol.message.*;
 import java.io.ByteArrayInputStream;
@@ -62,28 +61,24 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
         LayerConfiguration<ProtocolMessage> configuration = getLayerConfiguration();
         if (configuration != null && configuration.getContainerList() != null) {
             for (ProtocolMessage message : configuration.getContainerList()) {
-                ProtocolMessagePreparator preparator = message.getPreparator(context);
-                try {
-                    preparator.prepare();
-                    preparator.afterPrepare();
-                } catch (PreparationException ex) {
-                    LOGGER.error(
-                            "Could not prepare message "
-                                    + message.toCompactString()
-                                    + ". Therefore, we skip it: ",
-                            ex);
+                if (containerAlreadyUsedByHigherLayer(message)
+                        || !prepareDataContainer(message, context)) {
                     continue;
                 }
                 ProtocolMessageSerializer serializer = message.getSerializer(context);
                 byte[] serializedMessage = serializer.serialize();
                 message.setCompleteResultingMessage(serializedMessage);
                 message.getHandler(context).updateDigest(message, true);
-                message.getHandler(context).adjustContext(message);
+                if (message.getAdjustContext()) {
+                    message.getHandler(context).adjustContext(message);
+                }
                 getLowerLayer()
                         .sendData(
                                 new RecordLayerHint(message.getProtocolMessageType()),
                                 serializedMessage);
-                message.getHandler(context).adjustContextAfterSerialize(message);
+                if (message.getAdjustContext()) {
+                    message.getHandler(context).adjustContextAfterSerialize(message);
+                }
                 addProducedContainer(message);
             }
         }
@@ -93,16 +88,33 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
     @Override
     public LayerProcessingResult sendData(LayerProcessingHint hint, byte[] additionalData)
             throws IOException {
-        throw new UnsupportedOperationException(
-                "Not supported yet."); // To change body of generated methods, choose
-        // Tools | Templates.
+        LayerConfiguration<ProtocolMessage> configuration = getLayerConfiguration();
+        ApplicationMessage applicationMessage = getConfiguredApplicationMessage(configuration);
+        if (applicationMessage == null) {
+            applicationMessage = new ApplicationMessage();
+        } else if (applicationMessage.getDataConfig() != null) {
+            LOGGER.warn(
+                    "Found Application message with pre configured content while sending HTTP message. Configured content will be replaced.");
+        }
+        applicationMessage.setDataConfig(additionalData);
+        getLowerLayer()
+                .sendData(
+                        new RecordLayerHint(ProtocolMessageType.APPLICATION_DATA), additionalData);
+        addProducedContainer(applicationMessage);
+        return getLayerResult();
     }
 
-    @Override
-    public HintedLayerInputStream getDataStream() {
-        throw new UnsupportedOperationException(
-                "Not supported yet."); // To change body of generated methods, choose
-        // Tools | Templates.
+    public ApplicationMessage getConfiguredApplicationMessage(
+            LayerConfiguration<ProtocolMessage> configuration) {
+        if (configuration != null && configuration.getContainerList() != null) {
+            for (ProtocolMessage configuredMessage : configuration.getContainerList()) {
+                if (configuredMessage.getProtocolMessageType()
+                        == ProtocolMessageType.APPLICATION_DATA) {
+                    return (ApplicationMessage) configuredMessage;
+                }
+            }
+        }
+        return null;
     }
 
     /**
@@ -129,33 +141,7 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
                     readUnknownProtocolData();
                 } else if (tempHint instanceof RecordLayerHint) {
                     RecordLayerHint hint = (RecordLayerHint) dataStream.getHint();
-                    switch (hint.getType()) {
-                            // use correct parser for the message
-                        case ALERT:
-                            readAlertProtocolData();
-                            break;
-                        case APPLICATION_DATA:
-                            readAppDataProtocolData();
-                            break;
-                        case CHANGE_CIPHER_SPEC:
-                            readCcsProtocolData(hint.getEpoch());
-                            break;
-                        case HANDSHAKE:
-                            readHandshakeProtocolData();
-                            break;
-                        case HEARTBEAT:
-                            readHeartbeatProtocolData();
-                            break;
-                        case ACK:
-                            readAckProtocolData();
-                            break;
-                        case UNKNOWN:
-                            readUnknownProtocolData();
-                            break;
-                        default:
-                            LOGGER.error("Undefined record layer type");
-                            break;
-                    }
+                    readMessageForHint(hint);
                 }
                 // receive until the layer configuration is satisfied or no data is left
             } while (shouldContinueProcessing());
@@ -168,15 +154,46 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
         return getLayerResult();
     }
 
+    public void readMessageForHint(RecordLayerHint hint) {
+        switch (hint.getType()) {
+                // use correct parser for the message
+            case ALERT:
+                readAlertProtocolData();
+                break;
+            case APPLICATION_DATA:
+                readAppDataProtocolData();
+                break;
+            case CHANGE_CIPHER_SPEC:
+                readCcsProtocolData(hint.getEpoch());
+                break;
+            case HANDSHAKE:
+                readHandshakeProtocolData();
+                break;
+            case HEARTBEAT:
+                readHeartbeatProtocolData();
+                break;
+            case UNKNOWN:
+                readUnknownProtocolData();
+                break;
+            case ACK:
+                readAckProtocolData();
+                break;
+            default:
+                LOGGER.error("Undefined record layer type");
+                break;
+        }
+    }
+
     private void readAlertProtocolData() {
         AlertMessage message = new AlertMessage();
         readDataContainer(message, context);
     }
 
-    private void readAppDataProtocolData() {
+    private ApplicationMessage readAppDataProtocolData() {
         ApplicationMessage message = new ApplicationMessage();
         readDataContainer(message, context);
         getLowerLayer().removeDrainedInputStream();
+        return message;
     }
 
     private void readCcsProtocolData(Integer epoch) {
@@ -275,8 +292,45 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
 
     @Override
     public void receiveMoreDataForHint(LayerProcessingHint hint) {
-        throw new UnsupportedOperationException(
-                "Not supported yet."); // To change body of generated methods, choose
-        // Tools | Templates.
+        try {
+            HintedInputStream dataStream = null;
+            try {
+                dataStream = getLowerLayer().getDataStream();
+            } catch (IOException e) {
+                // the lower layer does not give us any data so we can simply return here
+                LOGGER.warn("The lower layer did not produce a data stream: ", e);
+                return;
+            }
+            // for now we ignore the hint as we only expect app data to be
+            // requested anyway
+            LayerProcessingHint inputStreamHint = dataStream.getHint();
+            if (inputStreamHint == null) {
+                // TODO: determine if this should be passed to upper layer
+                LOGGER.warn(
+                        "The TLS message layer requires a processing hint. E.g. a record type. Parsing as an unknown message");
+                readUnknownProtocolData();
+            } else if (inputStreamHint instanceof RecordLayerHint) {
+                RecordLayerHint recordLayerHint = (RecordLayerHint) inputStreamHint;
+                if (recordLayerHint.getType() == ProtocolMessageType.APPLICATION_DATA) {
+                    ApplicationMessage receivedAppData = readAppDataProtocolData();
+                    passToHigherLayer(receivedAppData, hint);
+                } else {
+                    readMessageForHint(recordLayerHint);
+                }
+            }
+            // receive until the layer configuration is satisfied or no data is left
+        } catch (TimeoutException ex) {
+            LOGGER.debug(ex);
+        } catch (EndOfStreamException ex) {
+            LOGGER.debug("Reached end of stream, cannot parse more messages", ex);
+        }
+    }
+
+    public void passToHigherLayer(ApplicationMessage receivedAppData, LayerProcessingHint hint) {
+        LOGGER.debug(
+                "Passing the following Application Data to higher layer: {}",
+                ArrayConverter.bytesToHexString(receivedAppData.getData().getValue()));
+        currentInputStream = new HintedLayerInputStream(hint, this);
+        currentInputStream.extendStream(receivedAppData.getData().getValue());
     }
 }

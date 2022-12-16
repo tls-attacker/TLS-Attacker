@@ -70,8 +70,7 @@ public class DtlsFragmentLayer
         LayerConfiguration<DtlsHandshakeMessageFragment> configuration = getLayerConfiguration();
         if (configuration != null && configuration.getContainerList() != null) {
             for (DtlsHandshakeMessageFragment fragment : configuration.getContainerList()) {
-                if (!context.getConfig().isUseAllProvidedDtlsFragments()
-                        && fragment.getFragmentContentConfig().length == 0) {
+                if (containerAlreadyUsedByHigherLayer(fragment) && skipEmptyFragments(fragment)) {
                     continue;
                 }
                 DtlsHandshakeMessageFragmentPreparator preparator = fragment.getPreparator(context);
@@ -87,6 +86,12 @@ public class DtlsFragmentLayer
             }
         }
         return getLayerResult();
+    }
+
+    private boolean skipEmptyFragments(DtlsHandshakeMessageFragment fragment) {
+        return !context.getConfig().isUseAllProvidedDtlsFragments()
+                && fragment.getFragmentContentConfig() != null
+                && fragment.getFragmentContentConfig().length == 0;
     }
 
     /**
@@ -139,8 +144,14 @@ public class DtlsFragmentLayer
                             "Could not write Record bytes to ByteArrayStream", ex);
                 }
                 addProducedContainer(fragment);
+                if (context.getConfig().isIndividualTransportPacketsForFragments()) {
+                    getLowerLayer().sendData(hint, stream.toByteArray());
+                    stream = new ByteArrayOutputStream();
+                }
             }
-            getLowerLayer().sendData(hint, stream.toByteArray());
+            if (!context.getConfig().isIndividualTransportPacketsForFragments()) {
+                getLowerLayer().sendData(hint, stream.toByteArray());
+            }
             return new LayerProcessingResult<>(fragments, getLayerType(), true);
         } else {
             getLowerLayer().sendData(hint, data);
@@ -226,8 +237,10 @@ public class DtlsFragmentLayer
             }
         } catch (TimeoutException ex) {
             LOGGER.debug(ex);
+            throw ex;
         } catch (EndOfStreamException ex) {
             LOGGER.debug("Reached end of stream, cannot parse more dtls fragments", ex);
+            throw ex;
         }
     }
 
@@ -277,11 +290,11 @@ public class DtlsFragmentLayer
             fragment.setHandshakeMessageTypeConfig(type);
             fragment.setFragmentContentConfig(fragmentBytes);
             fragment.setMessageSequenceConfig(writeHandshakeMessageSequence);
-            increaseWriteHandshakeMessageSequence();
             fragment.setOffsetConfig(currentOffset);
             fragment.setHandshakeMessageLengthConfig(handshakeBytes.length);
             currentOffset += fragmentBytes.length;
         }
+        increaseWriteHandshakeMessageSequence();
         if (currentOffset != handshakeBytes.length) {
             LOGGER.warn(
                     "Unsent bytes for message "

@@ -13,5 +13,3 @@ updates:
       interval: "daily"
     open-pull-requests-limit: 20
     registries: "*"
-    reviewers:
-      - "tls-attacker/tls-attacker-extended"

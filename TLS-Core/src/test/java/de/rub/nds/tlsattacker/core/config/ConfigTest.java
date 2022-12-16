@@ -140,6 +140,8 @@ public class ConfigTest {
 
     @Test
     public void generateHttpsConfig() {
+        config.setDefaultLayerConfiguration(LayerConfiguration.HTTPS);
+        config.setWorkflowTraceType(WorkflowTraceType.DYNAMIC_HTTPS);
         ConfigIO.write(config, new File(RESOURCE_CONFIG_DIR, "https.config"));
     }
 

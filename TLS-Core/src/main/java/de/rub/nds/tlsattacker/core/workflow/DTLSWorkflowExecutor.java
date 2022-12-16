@@ -150,12 +150,11 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
     private void executeRetransmission(SendingAction action) {
         LOGGER.info("Executing retransmission of last sent flight");
         List<Record> recordsToRetransmit = filterRecordsBasedOnAcks(action.getSendRecords());
-        state.getTlsContext().getRecordLayer().reencrypt(recordsToRetransmit);
         state.getTlsContext()
                 .getRecordLayer()
                 .setLayerConfiguration(
                         new SpecificSendLayerConfiguration(
-                                ImplementedLayers.RECORD, action.getSendRecords()));
+                                ImplementedLayers.RECORD, recordsToRetransmit));
         try {
             state.getTlsContext().getRecordLayer().sendConfiguration();
         } catch (IOException ex) {
