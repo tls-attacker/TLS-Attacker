@@ -204,7 +204,8 @@ public class ServerHelloMessage extends HelloMessage {
             if (tlsConfig.isAddExtendedRandomExtension()) {
                 addExtension(new ExtendedRandomExtensionMessage());
             }
-            if (tlsConfig.isAddCookieExtension()) {
+            if (tlsConfig.isAddCookieExtension()
+                    && (Boolean.TRUE.equals(isTls13HelloRetryRequest()))) {
                 addExtension(new CookieExtensionMessage());
             }
             if (tlsConfig.isAddConnectionIdExtension()) {
@@ -220,9 +221,6 @@ public class ServerHelloMessage extends HelloMessage {
         } else {
             addExtensionsBasedOnConfig(tlsConfig);
             setRandom(getHelloRetryRequestRandom());
-            if (!tlsConfig.isAddCookieExtension() && tlsConfig.isDtlsCookieExchange()) {
-                addExtension(new CookieExtensionMessage());
-            }
         }
     }
 
