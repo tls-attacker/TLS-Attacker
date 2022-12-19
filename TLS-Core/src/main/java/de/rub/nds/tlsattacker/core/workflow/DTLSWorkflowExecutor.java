@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.tlsattacker.core.constants.AckByteLength;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.SkipActionException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.layer.SpecificSendLayerConfiguration;
@@ -103,7 +104,9 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
                     retransmissions++;
                 }
             } else {
-                if (action instanceof ReceivingAction) {
+                if (action instanceof ReceivingAction
+                        && state.getTlsContext().getChooser().getSelectedProtocolVersion()
+                                == ProtocolVersion.DTLS13) {
                     LOGGER.debug("Clearing received ACKs");
                     if (state.getTlsContext().getReceivedAcknowledgedRecords() != null) {
                         state.getTlsContext().getReceivedAcknowledgedRecords().clear();
@@ -164,6 +167,9 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
 
     private List<Record> filterRecordsBasedOnAcks(List<Record> sendRecords) {
         List<byte[]> acks = state.getTlsContext().getAcknowledgedRecords();
+        if (acks == null || acks.isEmpty()) {
+            return sendRecords;
+        }
         List<Record> filteredRecords = new LinkedList<>();
         for (Record record : sendRecords) {
             if (!isRecordAcknowledged(record, acks)) {
