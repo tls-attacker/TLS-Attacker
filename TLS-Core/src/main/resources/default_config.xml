@@ -1249,6 +1249,7 @@
     <defaultEsniNotAfter>1585247135231</defaultEsniNotAfter>
     <defaultEsniExtensions/>
     <acceptOnlyFittingDtlsFragments>false</acceptOnlyFittingDtlsFragments>
+    <canSkipMessageSequenceNumber>false</canSkipMessageSequenceNumber>
     <acceptContentRewritingDtlsFragments>true</acceptContentRewritingDtlsFragments>
     <writeKeylogFile>false</writeKeylogFile>
     <dtls13HeaderSeqNumSizeLong>true</dtls13HeaderSeqNumSizeLong>

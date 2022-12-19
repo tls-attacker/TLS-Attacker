@@ -1198,6 +1198,8 @@ public class Config implements Serializable {
 
     private Boolean acceptOnlyFittingDtlsFragments = false;
 
+    private Boolean canSkipMessageSequenceNumber = false;
+
     private Boolean acceptContentRewritingDtlsFragments = true;
 
     private Boolean writeKeylogFile = false;
@@ -1372,6 +1374,14 @@ public class Config implements Serializable {
 
     public void setAcceptOnlyFittingDtlsFragments(Boolean acceptOnlyFittingDtlsFragments) {
         this.acceptOnlyFittingDtlsFragments = acceptOnlyFittingDtlsFragments;
+    }
+
+    public Boolean isCanSkipMessageSequenceNumber() {
+        return canSkipMessageSequenceNumber;
+    }
+
+    public void setCanSkipMessageSequenceNumber(Boolean canSkipMessageSequenceNumber) {
+        this.canSkipMessageSequenceNumber = canSkipMessageSequenceNumber;
     }
 
     public Boolean isAcceptContentRewritingDtlsFragments() {

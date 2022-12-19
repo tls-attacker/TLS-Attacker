@@ -3950,6 +3950,7 @@
         </xs:complexType>
       </xs:element>
       <xs:element name="acceptOnlyFittingDtlsFragments" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="canSkipMessageSequenceNumber" type="xs:boolean" minOccurs="0"/>
       <xs:element name="acceptContentRewritingDtlsFragments" type="xs:boolean" minOccurs="0"/>
       <xs:element name="writeKeylogFile" type="xs:boolean" minOccurs="0"/>
       <xs:element name="keylogFilePath" type="xs:string" minOccurs="0"/>

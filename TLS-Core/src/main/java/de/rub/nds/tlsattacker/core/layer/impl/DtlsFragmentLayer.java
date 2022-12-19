@@ -198,7 +198,7 @@ public class DtlsFragmentLayer
                     fragmentManager.addMessageFragment(fragment);
                     List<DtlsHandshakeMessageFragment> uninterpretedMessageFragments =
                             fragmentManager.getOrderedCombinedUninterpretedMessageFragments(
-                                    true, false);
+                                    true, context.getConfig().isCanSkipMessageSequenceNumber());
                     // run until we received a complete fragment
                     if (!uninterpretedMessageFragments.isEmpty()) {
                         DtlsHandshakeMessageFragment uninterpretedMessageFragment =
