@@ -221,10 +221,18 @@ public class DtlsFragmentLayer
                                                 HandshakeByteLength.MESSAGE_LENGTH_FIELD),
                                         content);
                         if (desiredHint == null || currentHint.equals(desiredHint)) {
-                            currentInputStream = new HintedLayerInputStream(currentHint, this);
+                            if (currentInputStream == null) {
+                                currentInputStream = new HintedLayerInputStream(currentHint, this);
+                            } else {
+                                currentInputStream.setHint(currentHint);
+                            }
                             currentInputStream.extendStream(message);
                         } else {
-                            nextInputStream = new HintedLayerInputStream(currentHint, this);
+                            if (nextInputStream == null) {
+                                nextInputStream = new HintedLayerInputStream(currentHint, this);
+                            } else {
+                                nextInputStream.setHint(currentHint);
+                            }
                             nextInputStream.extendStream(message);
                         }
                     } else {
