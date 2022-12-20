@@ -12,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import de.rub.nds.modifiablevariable.util.BadRandom;
+import de.rub.nds.tls.subject.TestCategories;
 import de.rub.nds.tlsattacker.client.config.ClientCommandConfig;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
@@ -22,15 +23,16 @@ import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.PublicKeyAlgorithm;
-import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.*;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.util.BasicTlsServer;
+
+import java.io.IOException;
+import java.security.*;
+import java.security.cert.CertificateException;
+import java.util.*;
+import java.util.stream.Collectors;
+
 import de.rub.nds.tlsattacker.core.util.KeyStoreGenerator;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
@@ -40,12 +42,6 @@ import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.util.FixedTimeProvider;
 import de.rub.nds.tlsattacker.util.TimeHelper;
-import de.rub.nds.tlsattacker.util.tests.TestCategories;
-import java.io.IOException;
-import java.security.*;
-import java.security.cert.CertificateException;
-import java.util.*;
-import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -76,7 +72,7 @@ public class TlsClientIT {
         tlsServer.shutdown();
     }
 
-    /*@ParameterizedTest
+    @ParameterizedTest
     @EnumSource(
             value = ProtocolVersion.class,
             names = {"SSL3", "TLS10", "TLS11", "TLS12"})
@@ -105,8 +101,7 @@ public class TlsClientIT {
         assertAll(
                 testableCipherSuites.stream()
                         .map(cs -> () -> executeHandshakeWorkflowWithCipherSuite(config, cs)));
-        executeCustomRsaWorkflow(tlsServer.getPort());
-    }*/
+    }
 
     @ParameterizedTest
     @EnumSource(
@@ -211,52 +206,5 @@ public class TlsClientIT {
         assertDoesNotThrow(workflowExecutor::executeWorkflow);
         assertTrue(
                 state.getWorkflowTrace().executedAsPlanned(), state.getWorkflowTrace().toString());
-    }
-
-    private void executeCustomRsaWorkflow(int port) {
-        LOGGER.info("Executing custom RSA workflow");
-        ClientCommandConfig clientCommandConfig = new ClientCommandConfig(new GeneralDelegate());
-        TimeoutDelegate timeoutDelegate = clientCommandConfig.getDelegate(TimeoutDelegate.class);
-        timeoutDelegate.setTimeout(TIMEOUT);
-        ClientDelegate clientDelegate = clientCommandConfig.getDelegate(ClientDelegate.class);
-        clientDelegate.setHost("localhost:" + port);
-        Config config = clientCommandConfig.createConfig();
-
-        AliasedConnection con = config.getDefaultClientConnection();
-        WorkflowTrace trace = new WorkflowTrace();
-        trace.addTlsAction(
-                MessageActionFactory.createTLSAction(
-                        config, con, ConnectionEndType.CLIENT, new ClientHelloMessage(config)));
-        trace.addTlsAction(
-                MessageActionFactory.createTLSAction(
-                        config,
-                        con,
-                        ConnectionEndType.SERVER,
-                        new ServerHelloMessage(),
-                        new CertificateMessage(),
-                        new ServerHelloDoneMessage()));
-
-        trace.addTlsAction(
-                MessageActionFactory.createTLSAction(
-                        config,
-                        con,
-                        ConnectionEndType.CLIENT,
-                        new RSAClientKeyExchangeMessage(),
-                        new ChangeCipherSpecMessage(),
-                        new FinishedMessage()));
-        trace.addTlsAction(
-                MessageActionFactory.createTLSAction(
-                        config,
-                        con,
-                        ConnectionEndType.SERVER,
-                        new ChangeCipherSpecMessage(),
-                        new FinishedMessage()));
-
-        State state = new State(config, trace);
-        WorkflowExecutor workflowExecutor =
-                WorkflowExecutorFactory.createWorkflowExecutor(
-                        config.getWorkflowExecutorType(), state);
-        assertDoesNotThrow(workflowExecutor::executeWorkflow);
-        assertTrue(trace.executedAsPlanned());
     }
 }
