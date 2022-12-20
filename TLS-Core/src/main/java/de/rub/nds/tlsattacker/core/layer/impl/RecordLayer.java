@@ -240,10 +240,20 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
             }
             // only set the currentInputStream when we received the expected message
             if (desiredHint == null || currentHint.equals(desiredHint)) {
-                currentInputStream = new HintedLayerInputStream(currentHint, this);
+                if (currentInputStream == null) {
+                    // only set new input stream if necessary, extend current stream otherwise
+                    currentInputStream = new HintedLayerInputStream(currentHint, this);
+                } else {
+                    currentInputStream.setHint(currentHint);
+                }
                 currentInputStream.extendStream(record.getCleanProtocolMessageBytes().getValue());
             } else {
-                nextInputStream = new HintedLayerInputStream(currentHint, this);
+                if (nextInputStream == null) {
+                    // only set new input stream if necessary, extend current stream otherwise
+                    nextInputStream = new HintedLayerInputStream(currentHint, this);
+                } else {
+                    nextInputStream.setHint(currentHint);
+                }
                 nextInputStream.extendStream(record.getCleanProtocolMessageBytes().getValue());
             }
         } catch (ParserException e) {
