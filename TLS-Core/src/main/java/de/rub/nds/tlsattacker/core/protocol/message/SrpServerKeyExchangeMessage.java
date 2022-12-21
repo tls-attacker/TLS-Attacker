@@ -26,7 +26,7 @@ import java.io.InputStream;
 import java.util.List;
 
 @XmlRootElement(name = "SrpServerKeyExchange")
-public class SrpServerKeyExchangeMessage extends ServerKeyExchangeMessage {
+public class SrpServerKeyExchangeMessage extends ServerKeyExchangeMessage<SrpServerKeyExchangeMessage> {
 
     /** SRP modulus */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)

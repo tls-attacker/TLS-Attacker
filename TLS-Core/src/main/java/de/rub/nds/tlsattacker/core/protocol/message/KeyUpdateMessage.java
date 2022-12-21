@@ -24,7 +24,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @XmlRootElement(name = "KeyUpdate")
-public class KeyUpdateMessage extends HandshakeMessage {
+public class KeyUpdateMessage extends HandshakeMessage<KeyUpdateMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 

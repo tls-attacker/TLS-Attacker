@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.layer.data.Handler;
 import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.handler.HandshakeMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.HandshakeMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.UnknownMessageParser;
@@ -24,7 +25,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
 @XmlRootElement(name = "UnknownSSL2Message")
-public class UnknownSSL2Message extends SSL2Message {
+public class UnknownSSL2Message extends SSL2Message<UnknownMessage> {
 
     public UnknownSSL2Message() {
         super(SSL2MessageType.SSL_UNKNOWN);
@@ -36,33 +37,13 @@ public class UnknownSSL2Message extends SSL2Message {
     }
 
     @Override
-    public Parser getParser(LayerContext context, InputStream stream) {
+    public UnknownMessageParser getParser(TlsContext tlsContext, InputStream stream) {
         return new UnknownMessageParser(stream);
     }
 
     @Override
-    public Preparator getPreparator(LayerContext context) {
-        throw new UnsupportedOperationException("No preparator available for Unknown SSL2 message");
-    }
-
-    @Override
-    public Serializer getSerializer(LayerContext context) {
-        return null;
-    }
-
-    @Override
-    public Handler getHandler(LayerContext context) {
-        return null;
-    }
-
-    @Override
-    public HandshakeMessageParser getParser(TlsContext tlsContext, InputStream stream) {
-        return null;
-    }
-
-    @Override
     public HandshakeMessagePreparator getPreparator(TlsContext tlsContext) {
-        return null;
+        throw new UnsupportedOperationException("No preparator available for Unknown SSL2 message");
     }
 
     @Override

@@ -22,7 +22,7 @@ import java.io.InputStream;
 import java.util.Objects;
 
 @XmlRootElement(name = "EncryptedExtensions")
-public class EncryptedExtensionsMessage extends HandshakeMessage {
+public class EncryptedExtensionsMessage extends HandshakeMessage<EncryptedExtensionsMessage> {
 
     public EncryptedExtensionsMessage() {
         super(HandshakeMessageType.ENCRYPTED_EXTENSIONS);

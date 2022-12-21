@@ -17,7 +17,7 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.KeyExchangeComputations;
 import java.util.Objects;
 
-public abstract class ServerKeyExchangeMessage extends HandshakeMessage {
+public abstract class ServerKeyExchangeMessage<Self extends ServerKeyExchangeMessage<?>> extends HandshakeMessage<Self> {
 
     /**
      * signature and hash algorithm

@@ -32,7 +32,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @XmlRootElement(name = "ClientHello")
-public class ClientHelloMessage extends HelloMessage {
+public class ClientHelloMessage extends HelloMessage<ClientHelloMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
     /** compression length */

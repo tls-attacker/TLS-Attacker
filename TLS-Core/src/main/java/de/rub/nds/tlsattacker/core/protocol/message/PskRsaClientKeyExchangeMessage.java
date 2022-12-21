@@ -25,7 +25,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
 @XmlRootElement(name = "PskRsaClientKeyExchange")
-public class PskRsaClientKeyExchangeMessage extends RSAClientKeyExchangeMessage {
+public class PskRsaClientKeyExchangeMessage extends RSAClientKeyExchangeMessage<PskRsaClientKeyExchangeMessage> {
 
     @HoldsModifiableVariable
     @XmlElement

@@ -23,7 +23,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
 @XmlRootElement(name = "PskDheServerKeyExchange")
-public class PskDheServerKeyExchangeMessage extends DHEServerKeyExchangeMessage {
+public class PskDheServerKeyExchangeMessage extends DHEServerKeyExchangeMessage<PskDheServerKeyExchangeMessage> {
 
     private ModifiableByteArray identityHint;
 

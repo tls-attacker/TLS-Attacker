@@ -36,7 +36,7 @@ import org.apache.logging.log4j.Logger;
  * @param <T>
  *            The HandshakeMessage that should be prepared
  */
-public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> extends ProtocolMessagePreparator<T> {
+public abstract class HandshakeMessagePreparator<T extends HandshakeMessage<?>> extends ProtocolMessagePreparator<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -67,7 +67,7 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
     }
 
     public void prepareEncapsulatingFields() {
-        HandshakeMessageSerializer<T> serializer = message.getSerializer(chooser.getContext().getTlsContext());
+        HandshakeMessageSerializer<?> serializer = message.getSerializer(chooser.getContext().getTlsContext());
         byte[] content = serializer.serializeHandshakeMessageContent();
         prepareMessageContent(content);
         if (!(message instanceof DtlsHandshakeMessageFragment)) {
