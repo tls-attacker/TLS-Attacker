@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -33,10 +32,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * @param <T>
- *            The HandshakeMessage that should be prepared
+ * @param <T> The HandshakeMessage that should be prepared
  */
-public abstract class HandshakeMessagePreparator<T extends HandshakeMessage<?>> extends ProtocolMessagePreparator<T> {
+public abstract class HandshakeMessagePreparator<T extends HandshakeMessage<?>>
+        extends ProtocolMessagePreparator<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -57,7 +56,8 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage<?>> 
     private void prepareMessageContent(byte[] content) {
         message.setMessageContent(content);
         LOGGER.debug(
-            "Handshake message content: " + ArrayConverter.bytesToHexString(message.getMessageContent().getValue()));
+                "Handshake message content: "
+                        + ArrayConverter.bytesToHexString(message.getMessageContent().getValue()));
     }
 
     @Override
@@ -67,7 +67,8 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage<?>> 
     }
 
     public void prepareEncapsulatingFields() {
-        HandshakeMessageSerializer<?> serializer = message.getSerializer(chooser.getContext().getTlsContext());
+        HandshakeMessageSerializer<?> serializer =
+                message.getSerializer(chooser.getContext().getTlsContext());
         byte[] content = serializer.serializeHandshakeMessageContent();
         prepareMessageContent(content);
         if (!(message instanceof DtlsHandshakeMessageFragment)) {
@@ -83,7 +84,8 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage<?>> 
         if (message.getExtensions() != null) {
             for (ExtensionMessage extensionMessage : message.getExtensions()) {
                 HandshakeMessageType handshakeMessageType = message.getHandshakeMessageType();
-                if (extensionMessage instanceof KeyShareExtensionMessage && message instanceof ServerHelloMessage) {
+                if (extensionMessage instanceof KeyShareExtensionMessage
+                        && message instanceof ServerHelloMessage) {
                     ServerHelloMessage serverHello = (ServerHelloMessage) message;
                     KeyShareExtensionMessage ksExt = (KeyShareExtensionMessage) extensionMessage;
                     if (serverHello.setRetryRequestModeInKeyShare()) {
@@ -99,43 +101,51 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage<?>> 
             }
         }
         message.setExtensionBytes(stream.toByteArray());
-        LOGGER.debug("ExtensionBytes: " + ArrayConverter.bytesToHexString(message.getExtensionBytes().getValue()));
+        LOGGER.debug(
+                "ExtensionBytes: "
+                        + ArrayConverter.bytesToHexString(message.getExtensionBytes().getValue()));
     }
 
     protected void afterPrepareExtensions() {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         if (message.getExtensions() != null) {
             for (ExtensionMessage extensionMessage : message.getExtensions()) {
-                Preparator preparator = extensionMessage.getPreparator(chooser.getContext().getTlsContext());
-                if (extensionMessage instanceof PreSharedKeyExtensionMessage && message instanceof ClientHelloMessage
-                    && chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
-                    ((PreSharedKeyExtensionPreparator) preparator).setClientHello((ClientHelloMessage) message);
+                Preparator preparator =
+                        extensionMessage.getPreparator(chooser.getContext().getTlsContext());
+                if (extensionMessage instanceof PreSharedKeyExtensionMessage
+                        && message instanceof ClientHelloMessage
+                        && chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
+                    ((PreSharedKeyExtensionPreparator) preparator)
+                            .setClientHello((ClientHelloMessage) message);
                     preparator.afterPrepare();
                 } else if (extensionMessage instanceof EncryptedServerNameIndicationExtensionMessage
-                    && message instanceof ClientHelloMessage
-                    && chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
+                        && message instanceof ClientHelloMessage
+                        && chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
                     ClientHelloMessage clientHelloMessage = (ClientHelloMessage) message;
                     ((EncryptedServerNameIndicationExtensionPreparator) preparator)
-                        .setClientHelloMessage(clientHelloMessage);
+                            .setClientHelloMessage(clientHelloMessage);
                     preparator.afterPrepare();
                 }
                 if (extensionMessage.getExtensionBytes() != null
-                    && extensionMessage.getExtensionBytes().getValue() != null) {
+                        && extensionMessage.getExtensionBytes().getValue() != null) {
                     try {
                         stream.write(extensionMessage.getExtensionBytes().getValue());
                     } catch (IOException ex) {
-                        throw new PreparationException("Could not write ExtensionBytes to byte[]", ex);
+                        throw new PreparationException(
+                                "Could not write ExtensionBytes to byte[]", ex);
                     }
                 } else {
                     LOGGER.debug(
-                        "If we are in a SSLv2 or SSLv3 Connection we do not add extensions, as SSL did not contain extensions");
+                            "If we are in a SSLv2 or SSLv3 Connection we do not add extensions, as SSL did not contain extensions");
                     LOGGER.debug("If however, the extensions are prepared, we will add them");
                 }
             }
         }
         message.setExtensionBytes(stream.toByteArray());
         prepareEncapsulatingFields();
-        LOGGER.debug("ExtensionBytes: " + ArrayConverter.bytesToHexString(message.getExtensionBytes().getValue()));
+        LOGGER.debug(
+                "ExtensionBytes: "
+                        + ArrayConverter.bytesToHexString(message.getExtensionBytes().getValue()));
     }
 
     protected void prepareExtensionLength() {

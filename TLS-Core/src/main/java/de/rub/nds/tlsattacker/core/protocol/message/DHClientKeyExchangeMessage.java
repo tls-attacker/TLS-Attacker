@@ -21,7 +21,8 @@ import java.io.InputStream;
 import java.util.List;
 
 @XmlRootElement(name = "DHClientKeyExchange")
-public class DHClientKeyExchangeMessage<Self extends DHClientKeyExchangeMessage<?>> extends ClientKeyExchangeMessage<Self> {
+public class DHClientKeyExchangeMessage<Self extends DHClientKeyExchangeMessage<?>>
+        extends ClientKeyExchangeMessage<Self> {
 
     @HoldsModifiableVariable protected DHClientComputations computations;
 
@@ -42,8 +43,7 @@ public class DHClientKeyExchangeMessage<Self extends DHClientKeyExchangeMessage<
     }
 
     @Override
-    public DHClientKeyExchangeHandler<Self> getHandler(
-            TlsContext tlsContext) {
+    public DHClientKeyExchangeHandler<Self> getHandler(TlsContext tlsContext) {
         return new DHClientKeyExchangeHandler<>(tlsContext);
     }
 

@@ -26,7 +26,8 @@ import java.io.InputStream;
 import java.util.List;
 
 @XmlRootElement(name = "DHEServerKeyExchange")
-public class DHEServerKeyExchangeMessage<Self extends DHEServerKeyExchangeMessage<?>> extends ServerKeyExchangeMessage<Self> {
+public class DHEServerKeyExchangeMessage<Self extends DHEServerKeyExchangeMessage<?>>
+        extends ServerKeyExchangeMessage<Self> {
 
     /** DH modulus */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
@@ -145,8 +146,7 @@ public class DHEServerKeyExchangeMessage<Self extends DHEServerKeyExchangeMessag
     }
 
     @Override
-    public DHEServerKeyExchangeHandler<Self> getHandler(
-            TlsContext tlsContext) {
+    public DHEServerKeyExchangeHandler<Self> getHandler(TlsContext tlsContext) {
         return new DHEServerKeyExchangeHandler<>(tlsContext);
     }
 

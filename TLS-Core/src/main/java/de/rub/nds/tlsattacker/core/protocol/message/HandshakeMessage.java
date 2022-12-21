@@ -37,7 +37,8 @@ import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public abstract class HandshakeMessage<Self extends HandshakeMessage<?>> extends ProtocolMessage<Self> {
+public abstract class HandshakeMessage<Self extends HandshakeMessage<?>>
+        extends ProtocolMessage<Self> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -273,7 +274,8 @@ public abstract class HandshakeMessage<Self extends HandshakeMessage<?>> extends
     }
 
     @Override
-    public abstract HandshakeMessageParser<Self> getParser(TlsContext tlsContext, InputStream stream);
+    public abstract HandshakeMessageParser<Self> getParser(
+            TlsContext tlsContext, InputStream stream);
 
     @Override
     public abstract HandshakeMessagePreparator<Self> getPreparator(TlsContext tlsContext);

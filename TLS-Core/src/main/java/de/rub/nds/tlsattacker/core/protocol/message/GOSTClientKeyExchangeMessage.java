@@ -30,7 +30,8 @@ import java.io.InputStream;
 import java.util.List;
 
 @XmlRootElement(name = "GOSTClientKeyExchange")
-public class GOSTClientKeyExchangeMessage extends ClientKeyExchangeMessage<GOSTClientKeyExchangeMessage> {
+public class GOSTClientKeyExchangeMessage
+        extends ClientKeyExchangeMessage<GOSTClientKeyExchangeMessage> {
 
     @HoldsModifiableVariable @XmlElement protected GOSTClientComputations computations;
 

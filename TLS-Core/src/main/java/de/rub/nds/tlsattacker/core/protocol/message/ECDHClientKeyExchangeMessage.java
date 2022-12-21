@@ -21,7 +21,8 @@ import java.io.InputStream;
 import java.util.List;
 
 @XmlRootElement(name = "ECDHClientKeyExchange")
-public class ECDHClientKeyExchangeMessage<Self extends ECDHClientKeyExchangeMessage<?>> extends ClientKeyExchangeMessage<Self> {
+public class ECDHClientKeyExchangeMessage<Self extends ECDHClientKeyExchangeMessage<?>>
+        extends ClientKeyExchangeMessage<Self> {
 
     @HoldsModifiableVariable protected ECDHClientComputations computations;
 

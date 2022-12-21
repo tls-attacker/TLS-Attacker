@@ -26,7 +26,8 @@ import java.io.InputStream;
 import java.util.List;
 
 @XmlRootElement(name = "RSAServerKeyExchange")
-public class RSAServerKeyExchangeMessage extends ServerKeyExchangeMessage<RSAServerKeyExchangeMessage> {
+public class RSAServerKeyExchangeMessage
+        extends ServerKeyExchangeMessage<RSAServerKeyExchangeMessage> {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
     protected ModifiableByteArray modulus;

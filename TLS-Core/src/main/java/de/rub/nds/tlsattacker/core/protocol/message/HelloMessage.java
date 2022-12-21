@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -17,31 +16,18 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 
 public abstract class HelloMessage<Self extends HelloMessage<?>> extends HandshakeMessage<Self> {
 
-    /**
-     * protocol version in the client and server hello
-     */
+    /** protocol version in the client and server hello */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByteArray protocolVersion;
-    /**
-     * unix time
-     */
-    @ModifiableVariableProperty
-    private ModifiableByteArray unixTime;
-    /**
-     * random
-     */
-    @ModifiableVariableProperty
-    private ModifiableByteArray random;
-    /**
-     * length of the session id length field indicating the session id length
-     */
+    /** unix time */
+    @ModifiableVariableProperty private ModifiableByteArray unixTime;
+    /** random */
+    @ModifiableVariableProperty private ModifiableByteArray random;
+    /** length of the session id length field indicating the session id length */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger sessionIdLength;
-    /**
-     * session id
-     */
-    @ModifiableVariableProperty
-    private ModifiableByteArray sessionId;
+    /** session id */
+    @ModifiableVariableProperty private ModifiableByteArray sessionId;
 
     public HelloMessage(HandshakeMessageType handshakeMessageType) {
         super(handshakeMessageType);
@@ -68,7 +54,8 @@ public abstract class HelloMessage<Self extends HelloMessage<?>> extends Handsha
     }
 
     public void setProtocolVersion(byte[] array) {
-        this.protocolVersion = ModifiableVariableFactory.safelySetValue(this.protocolVersion, array);
+        this.protocolVersion =
+                ModifiableVariableFactory.safelySetValue(this.protocolVersion, array);
     }
 
     public void setUnixTime(ModifiableByteArray unixTime) {
@@ -96,7 +83,8 @@ public abstract class HelloMessage<Self extends HelloMessage<?>> extends Handsha
     }
 
     public void setSessionIdLength(int sessionIdLength) {
-        this.sessionIdLength = ModifiableVariableFactory.safelySetValue(this.sessionIdLength, sessionIdLength);
+        this.sessionIdLength =
+                ModifiableVariableFactory.safelySetValue(this.sessionIdLength, sessionIdLength);
     }
 
     public void setSessionId(ModifiableByteArray sessionId) {

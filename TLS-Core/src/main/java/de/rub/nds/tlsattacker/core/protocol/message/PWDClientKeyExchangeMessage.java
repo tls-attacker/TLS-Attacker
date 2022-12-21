@@ -25,7 +25,8 @@ import java.io.InputStream;
 import java.util.List;
 
 @XmlRootElement(name = "PWDClientKeyExchange")
-public class PWDClientKeyExchangeMessage extends ClientKeyExchangeMessage<PWDClientKeyExchangeMessage> {
+public class PWDClientKeyExchangeMessage
+        extends ClientKeyExchangeMessage<PWDClientKeyExchangeMessage> {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger elementLength;
