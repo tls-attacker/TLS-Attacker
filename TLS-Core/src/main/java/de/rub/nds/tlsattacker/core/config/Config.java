@@ -3952,7 +3952,7 @@ public class Config implements Serializable {
         this.retryFailedClientTcpSocketInitialization = retryFailedClientTcpSocketInitialization;
     }
 
-    public Boolean getResetClientSourcePort() {
+    public Boolean isResetClientSourcePort() {
         return resetClientSourcePort;
     }
 
