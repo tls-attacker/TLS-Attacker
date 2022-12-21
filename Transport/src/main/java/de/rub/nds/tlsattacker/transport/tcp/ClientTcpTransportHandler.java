@@ -81,7 +81,7 @@ public class ClientTcpTransportHandler extends TcpTransportHandler {
             try {
                 socket = new Socket();
                 socket.setReuseAddress(true);
-                // reuse client port only when present and either retried socket inizalizations are
+                // reuse client port only when present and either retried socket initializations are
                 // enabled or
                 // client port has been manually set and the resetClientSourcePort setting is
                 // disabled
