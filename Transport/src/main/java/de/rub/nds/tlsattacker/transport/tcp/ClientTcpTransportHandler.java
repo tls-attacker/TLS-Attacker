@@ -27,12 +27,10 @@ public class ClientTcpTransportHandler extends TcpTransportHandler {
     private boolean retryFailedSocketInitialization = false;
 
     public ClientTcpTransportHandler(Connection connection) {
-        this(
-                connection.getConnectionTimeout(),
-                connection.getFirstTimeout(),
-                connection.getTimeout(),
-                connection.getIp(),
-                connection.getPort());
+        super(connection);
+        this.timeout = connection.getTimeout();
+        this.hostname = connection.getIp();
+        this.dstPort = connection.getPort();
     }
 
     public ClientTcpTransportHandler(long firstTimeout, long timeout, String hostname, int port) {
