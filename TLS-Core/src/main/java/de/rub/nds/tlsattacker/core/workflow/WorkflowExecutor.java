@@ -96,6 +96,8 @@ public abstract class WorkflowExecutor {
                 ((ClientTcpTransportHandler) context.getTransportHandler())
                         .setRetryFailedSocketInitialization(
                                 config.isRetryFailedClientTcpSocketInitialization());
+                ((ClientTcpTransportHandler) context.getTransportHandler())
+                        .setResetClientSourcePort(config.getResetClientSourcePort());
             }
         }
 

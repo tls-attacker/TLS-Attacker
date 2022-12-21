@@ -150,6 +150,12 @@ public class Config implements Serializable {
      */
     private Boolean retryFailedClientTcpSocketInitialization = false;
 
+    /**
+     * Setting this to true results in the Client transporthandlers trying to acquire a new port on
+     * each connection attempt. Default behavior true so that reused ports are not an issue.
+     */
+    private Boolean resetClientSourcePort = true;
+
     /** The default connection parameters to use when running TLS-Server. */
     private InboundConnection defaultServerConnection;
 
@@ -3944,6 +3950,14 @@ public class Config implements Serializable {
     public void setRetryFailedClientTcpSocketInitialization(
             Boolean retryFailedClientTcpSocketInitialization) {
         this.retryFailedClientTcpSocketInitialization = retryFailedClientTcpSocketInitialization;
+    }
+
+    public Boolean getResetClientSourcePort() {
+        return resetClientSourcePort;
+    }
+
+    public void setResetClientSourcePort(Boolean resetClientSourcePort) {
+        this.resetClientSourcePort = resetClientSourcePort;
     }
 
     public Boolean isLimitPsksToOne() {
