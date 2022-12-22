@@ -35,6 +35,7 @@
     </defaultClientConnection>
     <receiveFinalTcpSocketStateWithTimeout>false</receiveFinalTcpSocketStateWithTimeout>
     <retryFailedClientTcpSocketInitialization>false</retryFailedClientTcpSocketInitialization>
+    <resetClientSourcePort>true</resetClientSourcePort>
     <defaultServerConnection>
         <alias>server</alias>
         <port>443</port>
