@@ -77,7 +77,7 @@ import java.util.Random;
     CertificateStatusMessage.class,
     EmptyClientKeyExchangeMessage.class
 })
-public abstract class ProtocolMessage<Self extends ProtocolMessage>
+public abstract class ProtocolMessage<Self extends ProtocolMessage<?>>
         extends Message<Self, TlsContext> {
 
     @XmlTransient protected boolean goingToBeSentDefault = true;

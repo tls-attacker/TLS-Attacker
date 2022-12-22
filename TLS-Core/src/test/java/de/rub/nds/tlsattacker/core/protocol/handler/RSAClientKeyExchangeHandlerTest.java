@@ -18,8 +18,8 @@ import org.junit.jupiter.api.Test;
 
 public class RSAClientKeyExchangeHandlerTest
         extends AbstractProtocolMessageHandlerTest<
-                RSAClientKeyExchangeMessage,
-                RSAClientKeyExchangeHandler<RSAClientKeyExchangeMessage>> {
+                RSAClientKeyExchangeMessage<?>,
+                RSAClientKeyExchangeHandler<RSAClientKeyExchangeMessage<?>>> {
 
     public RSAClientKeyExchangeHandlerTest() {
         super(RSAClientKeyExchangeMessage::new, RSAClientKeyExchangeHandler::new);

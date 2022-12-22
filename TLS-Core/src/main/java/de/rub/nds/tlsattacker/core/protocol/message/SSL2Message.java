@@ -16,8 +16,10 @@ import de.rub.nds.tlsattacker.core.constants.SSL2MessageType;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import jakarta.xml.bind.annotation.XmlTransient;
 
+// TODO: this should be "Self extends SSL2Message". However, this would require a parser for the
+// UnknownSSL2Message.
 @SuppressWarnings("serial")
-public abstract class SSL2Message extends ProtocolMessage {
+public abstract class SSL2Message<Self extends ProtocolMessage<?>> extends ProtocolMessage<Self> {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger messageLength;

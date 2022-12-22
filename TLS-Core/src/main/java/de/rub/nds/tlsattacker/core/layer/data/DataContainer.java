@@ -16,7 +16,8 @@ import java.io.InputStream;
  * with data it only needs to know how to parse, prepare, serialize and handle the message. All
  * messages must therefore provide this functionality.
  */
-public interface DataContainer<Container extends DataContainer, Context extends LayerContext> {
+public interface DataContainer<
+        Container extends DataContainer<?, ?>, Context extends LayerContext> {
 
     public Parser<Container> getParser(Context context, InputStream stream);
 

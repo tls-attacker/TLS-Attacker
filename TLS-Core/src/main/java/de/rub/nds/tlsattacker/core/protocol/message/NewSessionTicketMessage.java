@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Objects;
 
 @XmlRootElement(name = "NewSessionTicket")
-public class NewSessionTicketMessage extends HandshakeMessage {
+public class NewSessionTicketMessage extends HandshakeMessage<NewSessionTicketMessage> {
 
     @ModifiableVariableProperty() private ModifiableLong ticketLifetimeHint;
 

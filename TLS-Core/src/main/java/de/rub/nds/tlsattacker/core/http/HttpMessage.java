@@ -17,7 +17,7 @@ import java.io.InputStream;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlSeeAlso({HttpRequestMessage.class, HttpResponseMessage.class})
-public abstract class HttpMessage<Self extends HttpMessage> extends Message<Self, HttpContext> {
+public abstract class HttpMessage<Self extends HttpMessage<?>> extends Message<Self, HttpContext> {
 
     @Override
     public abstract HttpMessageHandler<Self> getHandler(HttpContext context);

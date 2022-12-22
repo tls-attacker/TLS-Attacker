@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Objects;
 
 @XmlRootElement(name = "SupplementalData")
-public class SupplementalDataMessage extends HandshakeMessage {
+public class SupplementalDataMessage extends HandshakeMessage<SupplementalDataMessage> {
 
     @HoldsModifiableVariable private List<SupplementalDataEntry> entries;
 

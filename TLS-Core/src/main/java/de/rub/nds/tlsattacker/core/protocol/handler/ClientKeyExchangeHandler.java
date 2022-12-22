@@ -26,7 +26,7 @@ import org.apache.logging.log4j.Logger;
 /**
  * @param <MessageT> The ClientKeyExchangeMessage that should be Handled
  */
-public abstract class ClientKeyExchangeHandler<MessageT extends ClientKeyExchangeMessage>
+public abstract class ClientKeyExchangeHandler<MessageT extends ClientKeyExchangeMessage<?>>
         extends HandshakeMessageHandler<MessageT> {
 
     private static final Logger LOGGER = LogManager.getLogger();

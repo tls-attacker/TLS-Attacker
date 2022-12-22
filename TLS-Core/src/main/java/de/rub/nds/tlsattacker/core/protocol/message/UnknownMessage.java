@@ -22,7 +22,7 @@ import java.util.Arrays;
 import java.util.Objects;
 
 @XmlRootElement(name = "UnknownMessage")
-public class UnknownMessage extends ProtocolMessage {
+public class UnknownMessage extends ProtocolMessage<UnknownMessage> {
 
     private byte[] dataConfig;
 
