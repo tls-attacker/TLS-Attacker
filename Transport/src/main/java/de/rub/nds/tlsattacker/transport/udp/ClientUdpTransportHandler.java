@@ -47,7 +47,7 @@ public class ClientUdpTransportHandler extends UdpTransportHandler {
     @Override
     public void initialize() throws IOException {
         LOGGER.debug("Initializing ClientUdpTransportHandler host: {}, port: {}", hostname, port);
-        if (sourcePort == null) {
+        if (sourcePort == null || resetClientSourcePort) {
             socket = new DatagramSocket();
         } else {
             socket = new DatagramSocket(sourcePort);

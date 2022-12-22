@@ -40,6 +40,8 @@ public abstract class TransportHandler {
 
     protected SocketState cachedSocketState = null;
 
+    protected boolean resetClientSourcePort = true;
+
     public TransportHandler(Connection con) {
         this.firstTimeout = con.getFirstTimeout();
         this.connectionEndType = con.getLocalConnectionEndType();
@@ -162,5 +164,13 @@ public abstract class TransportHandler {
 
     public OutputStream getOutputStream() {
         return outStream;
+    }
+
+    public boolean isResetClientSourcePort() {
+        return resetClientSourcePort;
+    }
+
+    public void setResetClientSourcePort(boolean resetClientSourcePort) {
+        this.resetClientSourcePort = resetClientSourcePort;
     }
 }
