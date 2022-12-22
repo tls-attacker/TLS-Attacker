@@ -31,8 +31,8 @@ import org.junit.jupiter.api.Test;
 
 public class ECDHEServerKeyExchangePreparatorTest
         extends AbstractProtocolMessagePreparatorTest<
-                ECDHEServerKeyExchangeMessage,
-                ECDHEServerKeyExchangePreparator<ECDHEServerKeyExchangeMessage>> {
+                ECDHEServerKeyExchangeMessage<?>,
+                ECDHEServerKeyExchangePreparator<ECDHEServerKeyExchangeMessage<?>>> {
 
     public ECDHEServerKeyExchangePreparatorTest() {
         super(ECDHEServerKeyExchangeMessage::new, ECDHEServerKeyExchangePreparator::new);
