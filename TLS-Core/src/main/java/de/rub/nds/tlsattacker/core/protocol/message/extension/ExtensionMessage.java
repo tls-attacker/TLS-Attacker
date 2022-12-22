@@ -75,7 +75,7 @@ import java.io.Serializable;
     CachedInfoExtensionMessage.class,
     ConnectionIdExtensionMessage.class
 })
-public abstract class ExtensionMessage<Self extends ExtensionMessage>
+public abstract class ExtensionMessage<Self extends ExtensionMessage<?>>
         extends ModifiableVariableHolder implements Serializable, DataContainer<Self, TlsContext> {
 
     protected ExtensionType extensionTypeConstant;
