@@ -212,6 +212,7 @@ public class CertificateRequestMessage extends HandshakeMessage {
                     SignatureAndHashAlgorithm.getSignatureAndHashAlgorithms(signatureHashAlgorithms.getValue());
                 for (SignatureAndHashAlgorithm algo : signatureAndHashAlgorithms) {
                     sb.append(algo.name());
+                    sb.append(", ");
                 }
             } catch (Exception e) {
                 LOGGER.debug(e);
