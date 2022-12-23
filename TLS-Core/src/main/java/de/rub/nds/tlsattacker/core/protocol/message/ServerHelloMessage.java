@@ -102,7 +102,9 @@ public class ServerHelloMessage extends HelloMessage<ServerHelloMessage> {
                     && !tlsConfig.getHighestProtocolVersion().isTLS13()) {
                 addExtension(new RecordSizeLimitExtensionMessage());
             }
-            if (tlsConfig.isAddServerNameIndicationExtension()) {
+            if (tlsConfig.isAddServerNameIndicationExtension()
+                    && !tlsConfig.isAddEncryptedClientHelloExtension()
+                    && !tlsConfig.isAddEncryptedServerNameIndicationExtension()) {
                 ServerNameIndicationExtensionMessage extension =
                         new ServerNameIndicationExtensionMessage();
                 ServerNamePair pair =

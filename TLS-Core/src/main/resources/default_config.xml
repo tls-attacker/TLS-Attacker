@@ -1227,6 +1227,7 @@
     <defaultClientPWDMask>4F 74 5B DF C2 95 D3 B3 84 29 F7 EB 30 25 A4 88 83 72 8B 07 D8 86 05 C0 EE 20 23 16 A0 72 D1 BD</defaultClientPWDMask>
     <defaultServerPWDSalt>96 3C 77 CD C1 3A 2A 8D 75 CD DD D1 E0 44 99 29 84 37 11 C2 1D 47 CE 6E 63 83 CD DA 37 E4 7D A3</defaultServerPWDSalt>
     <defaultSelectedPointFormat>UNCOMPRESSED</defaultSelectedPointFormat>
+    <defaultDnsServer>8.8.8.8</defaultDnsServer>
     <defaultEsniClientPrivateKey>191991257030464195512760799659436374116556484140110877679395918219072292938297573720808302564562486757422301181089761</defaultEsniClientPrivateKey>
     <clientSupportedEsniCipherSuites/>
     <clientSupportedEsniNamedGroups/>
@@ -1234,7 +1235,7 @@
     <defaultEsniClientNonce>A7 28 4C 9A 52 F1 5C 13 64 4B 94 72 61 77 46 57</defaultEsniClientNonce>
     <defaultEsniServerNonce>00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00</defaultEsniServerNonce>
     <defaultEsniRecordBytes>FF 01 00 12 4B 2A 00 24 00 1D 00 20 FA 57 2D 03 E2 1E 15 F9 CA 1A A7 FB 85 F6 1B 9F C7 84 58 A7 80 50 AC 58 18 11 86 33 25 94 44 12 00 02 13 01 01 04 00 00 00 00 5D CC 3A 45 00 00 00 00 5D DA 12 05 00 00</defaultEsniRecordBytes>
-    <defaultEsniRecordVersion>VERSION_FF01</defaultEsniRecordVersion>
+    <defaultEsniRecordVersion>FF01</defaultEsniRecordVersion>
     <defaultEsniRecordChecksum>00 12 4B 2A</defaultEsniRecordChecksum>
     <defaultEsniServerKeyShareEntries>
         <defaultEsniServerKeyShareEntry>
@@ -1249,6 +1250,28 @@
     <defaultEsniNotBefore>1582655135231</defaultEsniNotBefore>
     <defaultEsniNotAfter>1585247135231</defaultEsniNotAfter>
     <defaultEsniExtensions/>
+    <defaultEchClientPrivateKey>191991257030464195512760799659436374116556484140110877679395918219072292938297573720808302564562486757422301181089761</defaultEchClientPrivateKey>
+    <defaultEchServerPrivateKey>-1673869334575128978734767576405071540980308529037586990006706167463937836529</defaultEchServerPrivateKey>
+    <defaultEchConfig>
+        <echConfigBytes>FE 0D 00 3A B8 00 20 00 20 56 11 F6 1F 4F 5F 5C 80 1C 60 00 9D A6 8D D0 EB 0D D5 DB A8 FF 33 C3 2D 50 25 D7 FF AD F5 DC 6F 00 04 00 01 00 01 00 0B 65 78 61 6D 70 6C 65 2E 63 6F 6D 00 00</echConfigBytes>
+        <configVersion>DRAFT_FF0D</configVersion>
+        <length>58</length>
+        <maximumNameLength>0</maximumNameLength>
+        <publicDomainName>65 78 61 6D 70 6C 65 2E 63 6F 6D</publicDomainName>
+        <extensions/>
+        <configId>184</configId>
+        <kem>DHKEM_X25519_HKDF_SHA256</kem>
+        <hpkePublicKey>56 11 F6 1F 4F 5F 5C 80 1C 60 00 9D A6 8D D0 EB 0D D5 DB A8 FF 33 C3 2D 50 25 D7 FF AD F5 DC 6F</hpkePublicKey>
+        <hpkeCipherSuites>
+            <hpkeCipherSuite>
+                <hpkeKeyDerivationFunction>HKDF_SHA256</hpkeKeyDerivationFunction>
+                <hpkeAeadFunction>AES_128_GCM</hpkeAeadFunction>
+            </hpkeCipherSuite>
+        </hpkeCipherSuites>
+        <cipherSuites/>
+    </defaultEchConfig>
+    <addEncryptedClientHelloExtension>false</addEncryptedClientHelloExtension>
+    <defaultMaxEchAlpnPadding>25</defaultMaxEchAlpnPadding>
     <acceptOnlyFittingDtlsFragments>false</acceptOnlyFittingDtlsFragments>
     <acceptContentRewritingDtlsFragments>true</acceptContentRewritingDtlsFragments>
     <writeKeylogFile>false</writeKeylogFile>

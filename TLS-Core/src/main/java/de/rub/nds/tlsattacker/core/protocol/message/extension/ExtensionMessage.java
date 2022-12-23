@@ -73,7 +73,8 @@ import java.io.Serializable;
     UserMappingExtensionMessage.class,
     SRPExtensionMessage.class,
     CachedInfoExtensionMessage.class,
-    ConnectionIdExtensionMessage.class
+    ConnectionIdExtensionMessage.class,
+    EncryptedClientHelloExtensionMessage.class
 })
 public abstract class ExtensionMessage<Self extends ExtensionMessage<?>>
         extends ModifiableVariableHolder implements Serializable, DataContainer<Self, TlsContext> {

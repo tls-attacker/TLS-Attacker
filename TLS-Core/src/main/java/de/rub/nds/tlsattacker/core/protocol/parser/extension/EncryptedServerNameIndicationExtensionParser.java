@@ -1,27 +1,26 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class EncryptedServerNameIndicationExtensionParser
-    extends ExtensionParser<EncryptedServerNameIndicationExtensionMessage> {
+        extends ExtensionParser<EncryptedServerNameIndicationExtensionMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
     private final ConnectionEndType talkingConnectionEnd;
@@ -37,7 +36,7 @@ public class EncryptedServerNameIndicationExtensionParser
             LOGGER.debug("Received empty ESNI Extension");
             return;
         }
-        if (talkingConnectionEnd == ConnectionEndType.CLIENT) {
+        if (talkingConnectionEnd == ConnectionEndType.SERVER) {
             parseNonce(msg);
         } else {
             parseCipherSuite(msg);
@@ -58,7 +57,8 @@ public class EncryptedServerNameIndicationExtensionParser
     private void parseCipherSuite(EncryptedServerNameIndicationExtensionMessage msg) {
         byte[] cipherSuite = parseByteArrayField(HandshakeByteLength.CIPHER_SUITE);
         msg.setCipherSuite(cipherSuite);
-        LOGGER.debug("cipherSuite: " + ArrayConverter.bytesToHexString(msg.getCipherSuite().getValue()));
+        LOGGER.debug(
+                "cipherSuite: " + ArrayConverter.bytesToHexString(msg.getCipherSuite().getValue()));
     }
 
     private void parseKeyShareEntry(EncryptedServerNameIndicationExtensionMessage msg) {
@@ -77,7 +77,9 @@ public class EncryptedServerNameIndicationExtensionParser
     private void parseRecordDigest(EncryptedServerNameIndicationExtensionMessage msg) {
         byte[] recordDigest = parseByteArrayField(msg.getRecordDigestLength().getValue());
         msg.setRecordDigest(recordDigest);
-        LOGGER.debug("recordDigest: " + ArrayConverter.bytesToHexString(msg.getRecordDigest().getValue()));
+        LOGGER.debug(
+                "recordDigest: "
+                        + ArrayConverter.bytesToHexString(msg.getRecordDigest().getValue()));
     }
 
     private void parseEncryptedSniLength(EncryptedServerNameIndicationExtensionMessage msg) {
@@ -89,7 +91,8 @@ public class EncryptedServerNameIndicationExtensionParser
     private void parseEncryptedSni(EncryptedServerNameIndicationExtensionMessage msg) {
         byte[] encryptedSni = parseByteArrayField(msg.getEncryptedSniLength().getOriginalValue());
         msg.setEncryptedSni(encryptedSni);
-        LOGGER.debug("encryptedSni: " + ArrayConverter.bytesToHexString(msg.getEncryptedSni().getValue()));
+        LOGGER.debug(
+                "encryptedSni: "
+                        + ArrayConverter.bytesToHexString(msg.getEncryptedSni().getValue()));
     }
-
 }

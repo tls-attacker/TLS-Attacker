@@ -75,7 +75,8 @@ import java.util.Random;
     PWDClientKeyExchangeMessage.class,
     PskServerKeyExchangeMessage.class,
     CertificateStatusMessage.class,
-    EmptyClientKeyExchangeMessage.class
+    EmptyClientKeyExchangeMessage.class,
+    EncryptedClientHelloMessage.class
 })
 public abstract class ProtocolMessage<Self extends ProtocolMessage<?>>
         extends Message<Self, TlsContext> {

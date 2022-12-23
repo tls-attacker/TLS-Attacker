@@ -12,15 +12,19 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.crypto.KeyShareCalculator;
+import de.rub.nds.tlsattacker.core.crypto.MessageDigestCollector;
 import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
 import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
+import de.rub.nds.tlsattacker.core.crypto.hpke.HpkeUtil;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.PWDComputations;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedClientHelloExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.DragonFlyKeyShareEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.keyshare.DragonFlyKeyShareEntryParser;
@@ -43,12 +47,26 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    private static final String echLabel = "ech accept confirmation";
+
+    private static final String echHrrLabel = "hrr accept confirmation";
+
     public ServerHelloHandler(TlsContext tlsContext) {
         super(tlsContext);
     }
 
     @Override
     public void adjustContext(ServerHelloMessage message) {
+        if (tlsContext.getConfig().isAddEncryptedClientHelloExtension()
+                && tlsContext.getTransportHandler().getConnectionEndType()
+                        == ConnectionEndType.CLIENT) {
+            determineEncryptedClientHelloSupport(message, message.isTls13HelloRetryRequest());
+        } else if (!tlsContext.getConfig().isAddEncryptedClientHelloExtension()) {
+            LOGGER.debug("Not determining Server ECH support because ECH disabled");
+        } else if (tlsContext.getTransportHandler().getConnectionEndType()
+                != ConnectionEndType.CLIENT) {
+            LOGGER.debug("Not determining Server ECH support because we are Server");
+        }
         adjustSelectedProtocolVersion(message);
         adjustSelectedCompression(message);
         adjustSelectedSessionID(message);
@@ -303,6 +321,158 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                         curve.add(curve.mult(scalar, passwordElement), keySharePoint));
         return ArrayConverter.bigIntegerToByteArray(
                 sharedSecret.getFieldX().getData(), curveSize / Bits.IN_A_BYTE, true);
+    }
+
+    /**
+     * compare draft-ietf-tls-esni-14 After the client sends its encryptedClientHelloMessage the
+     * server can choose whether to accept or reject it. It then proceeds the handshake with either
+     * the unencrypted OuterClientHello (rejection) or the encrypted InnerClientHello (acceptance).
+     * However, the server has to tell the client whether it accepted or rejected its
+     * EncryptedClientHello so that the client might also continue with the correct clienthello. To
+     * not leak EncryptedClientHello acceptance or rejection to eavesdroppers, the server "hides"
+     * its acceptance in its ServerRandom. When the server rejects the client's
+     * EncryptedClientHello, it selects the ServerRandom as usual. When the server accepts the
+     * client's EncryptedClientHello it sets the last 8 byte of the ServerRandom to the so-called
+     * "accept- confirmation". The accept-confirmation is a the result of the selected HKDF with the
+     * ClientRandom the static string "ech accept confirmation" and the transcript of the selected
+     * ECH config as input. The client has to check whether the last 8 bytes of the ServerRandom
+     * equal the HKDF's output to determine the server's acceptance or rejection of the client's
+     * EncryptedClientHello
+     *
+     * @param message
+     * @param isHelloRetryRequestMessage
+     */
+    private void determineEncryptedClientHelloSupport(
+            ServerHelloMessage message, boolean isHelloRetryRequestMessage) {
+        String label;
+        // in ServerHello.random for ServerHello and in encryptedClientHelloExtension for HRR
+        byte[] acceptConfirmationServer;
+
+        byte[] originalServerHello = message.getCompleteResultingMessage().getValue();
+        byte[] serverHello = originalServerHello.clone();
+
+        if (!isHelloRetryRequestMessage) {
+            label = echLabel;
+            acceptConfirmationServer =
+                    acceptConfirmationServer(message, originalServerHello, serverHello);
+
+        } else {
+            label = echHrrLabel;
+            acceptConfirmationServer = acceptConfirmationServerHrr(message, serverHello);
+        }
+        // also acquire the transcript of the last sent ClientHello
+        if (acceptConfirmationServer == null) {
+            return;
+        }
+
+        byte[] transcriptEchConf = computeEchDigest(serverHello);
+        computeAcceptConfirmation(label, transcriptEchConf, acceptConfirmationServer, message);
+    }
+
+    private byte[] acceptConfirmationServer(
+            ServerHelloMessage message, byte[] originalServerHello, byte[] serverHello) {
+        // The server accepted ECH if the last 8 bytes of the server random are deterministic
+        if (message.getRandom().getValue().length < 8) {
+            LOGGER.warn("Server returned short ClientHello");
+            return null;
+        }
+        // replace the last 8 bytes of the random with zero bytes
+        byte[] serverRandom = message.getRandom().getValue();
+        byte[] serverRandomTruncatedPart =
+                Arrays.copyOfRange(serverRandom, serverRandom.length - 8, serverRandom.length);
+
+        // replace the last 8 bytes of the server random with 0 in the transcript
+        int startIndex = HpkeUtil.indexOf(originalServerHello, serverRandomTruncatedPart);
+        System.arraycopy(new byte[] {0, 0, 0, 0, 0, 0, 0, 0}, 0, serverHello, startIndex, 8);
+        return serverRandomTruncatedPart;
+    }
+
+    private byte[] acceptConfirmationServerHrr(ServerHelloMessage message, byte[] serverHello) {
+        // TODO: this does not work with the only reference server (openssl) we have
+        // in an ECH HRR the server accepted ECH if the 8 bytes of the encryptedClientHelloExtension
+        // are
+        // deterministic
+        // TODO: trace with RFC updates because this seems completely bonkers. For some reason the
+        // extension is
+        // filled with 8 bytes contrary to its specification in the beginning of the document
+        // replace the 8 bytes of the encryptedClientHelloExtension with zeroes
+
+        // holds 8 byte comparison string
+        EncryptedClientHelloExtensionMessage extensionMessage =
+                message.getExtension(EncryptedClientHelloExtensionMessage.class);
+        if (extensionMessage == null) {
+            LOGGER.debug(
+                    "The server did not include an encryptedClientHello message in its HelloRetryRequest");
+            return null;
+        }
+
+        byte[] extensionContent = extensionMessage.getAcceptConfirmation().getValue();
+
+        // replace the last 8 bytes of payload with 0 in the transcript
+
+        int startIndex = HpkeUtil.indexOf(serverHello, extensionContent);
+        System.arraycopy(new byte[] {0, 0, 0, 0, 0, 0, 0, 0}, 0, serverHello, startIndex, 8);
+        return extensionContent;
+    }
+
+    private byte[] computeEchDigest(byte[] serverHello) {
+        byte[] lastClientHello = tlsContext.getChooser().getLastClientHello();
+        // digest clientHello and serverHello
+        MessageDigestCollector echDigest = new MessageDigestCollector();
+
+        LOGGER.debug("ClientHelloInner: " + ArrayConverter.bytesToHexString(lastClientHello));
+        LOGGER.debug("ServerHello: " + ArrayConverter.bytesToHexString(serverHello));
+        echDigest.append(lastClientHello);
+        echDigest.append(serverHello);
+        LOGGER.debug(
+                "Complete resulting digest: "
+                        + ArrayConverter.bytesToHexString(echDigest.getRawBytes()));
+
+        Chooser chooser = tlsContext.getChooser();
+        byte[] transcriptEchConf =
+                echDigest.digest(
+                        chooser.getSelectedProtocolVersion(), chooser.getSelectedCipherSuite());
+        LOGGER.debug(
+                "Transcript Ech Config: " + ArrayConverter.bytesToHexString(transcriptEchConf));
+        return transcriptEchConf;
+    }
+
+    private void computeAcceptConfirmation(
+            String label,
+            byte[] transcriptEchConf,
+            byte[] acceptConfirmationServer,
+            ServerHelloMessage message) {
+        Chooser chooser = tlsContext.getChooser();
+        HKDFAlgorithm hkdfAlgorithm =
+                chooser.getEchConfig().getHpkeKeyDerivationFunction().getHkdfAlgorithm();
+        try {
+            ClientHelloMessage innerClientHello = chooser.getInnerClientHello();
+            byte[] extract =
+                    HKDFunction.extract(
+                            hkdfAlgorithm, null, innerClientHello.getRandom().getValue());
+            LOGGER.debug("Extract: " + ArrayConverter.bytesToHexString(extract));
+            byte[] acceptConfirmationClient =
+                    HKDFunction.expandLabel(hkdfAlgorithm, extract, label, transcriptEchConf, 8);
+            LOGGER.debug(
+                    "Accept Confirmation Calculated: "
+                            + ArrayConverter.bytesToHexString(acceptConfirmationClient));
+            LOGGER.debug(
+                    "Accept Confirmation Received: "
+                            + ArrayConverter.bytesToHexString(acceptConfirmationServer));
+            if (Arrays.equals(acceptConfirmationClient, acceptConfirmationServer)) {
+                // mark ECH support in context
+                tlsContext.setSupportsECH(true);
+                // update tlscontext and digest to clientHelloInner
+                ClientHelloHandler clientHelloHandler = new ClientHelloHandler(tlsContext);
+                clientHelloHandler.adjustContext(innerClientHello);
+                chooser.getContext().getTlsContext().getDigest().reset();
+                updateDigest(innerClientHello, false);
+                updateDigest(message, false);
+                LOGGER.info("Server supports ECH");
+            }
+        } catch (CryptoException e) {
+            LOGGER.warn("Could not compute accept confirmation of Server Hello: ", e);
+        }
     }
 
     private void adjustHelloRetryDigest(ServerHelloMessage message) {

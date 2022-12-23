@@ -23,6 +23,8 @@ public class ExtensionFactory {
                 return new EllipticCurvesExtensionMessage();
             case ENCRYPTED_SERVER_NAME_INDICATION:
                 return new EncryptedServerNameIndicationExtensionMessage();
+            case ENCRYPTED_CLIENT_HELLO:
+                return new EncryptedClientHelloExtensionMessage();
             case HEARTBEAT:
                 return new HeartbeatExtensionMessage();
             case MAX_FRAGMENT_LENGTH:

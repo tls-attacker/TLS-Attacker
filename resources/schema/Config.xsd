@@ -1,6 +1,188 @@
 <?xml version="1.0" standalone="yes"?>
 <xs:schema version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
+  <xs:element name="Alert" type="alertMessage"/>
+
+  <xs:element name="AlpnExtension" type="alpnExtensionMessage"/>
+
+  <xs:element name="Application" type="applicationMessage"/>
+
+  <xs:element name="CachedInfoExtension" type="cachedInfoExtensionMessage"/>
+
+  <xs:element name="Certificate" type="certificateMessage"/>
+
+  <xs:element name="CertificateRequest" type="certificateRequestMessage"/>
+
+  <xs:element name="CertificateStatus" type="certificateStatusMessage"/>
+
+  <xs:element name="CertificateStatusRequestExtension" type="certificateStatusRequestExtensionMessage"/>
+
+  <xs:element name="CertificateStatusRequestV2Extension" type="certificateStatusRequestV2ExtensionMessage"/>
+
+  <xs:element name="CertificateTypeExtension" type="certificateTypeExtensionMessage"/>
+
+  <xs:element name="CertificateVerify" type="certificateVerifyMessage"/>
+
+  <xs:element name="ChangeCipherSpec" type="changeCipherSpecMessage"/>
+
+  <xs:element name="ClientAuthorizationExtension" type="clientAuthzExtensionMessage"/>
+
+  <xs:element name="ClientCertificateTypeExtension" type="clientCertificateTypeExtensionMessage"/>
+
+  <xs:element name="ClientCertificateUrlExtension" type="clientCertificateUrlExtensionMessage"/>
+
+  <xs:element name="ClientHello" type="clientHelloMessage"/>
+
+  <xs:element name="ConnectionIdExtension" type="connectionIdExtensionMessage"/>
+
+  <xs:element name="CookieExtension" type="cookieExtensionMessage"/>
+
+  <xs:element name="DHClientKeyExchange" type="dhClientKeyExchangeMessage"/>
+
+  <xs:element name="DHEServerKeyExchange" type="dheServerKeyExchangeMessage"/>
+
+  <xs:element name="DtlsHandshakeMessageFragment" type="dtlsHandshakeMessageFragment"/>
+
+  <xs:element name="ECDHClientKeyExchange" type="ecdhClientKeyExchangeMessage"/>
+
+  <xs:element name="ECDHEServerKeyExchange" type="ecdheServerKeyExchangeMessage"/>
+
+  <xs:element name="ECPointFormat" type="ecPointFormatExtensionMessage"/>
+
+  <xs:element name="EarlyDataExtension" type="earlyDataExtensionMessage"/>
+
+  <xs:element name="EllipticCurves" type="ellipticCurvesExtensionMessage"/>
+
+  <xs:element name="EmptyClientKeyExchange" type="emptyClientKeyExchangeMessage"/>
+
+  <xs:element name="EncryptThenMacExtension" type="encryptThenMacExtensionMessage"/>
+
+  <xs:element name="EncryptedClientHello" type="encryptedClientHelloMessage"/>
+
+  <xs:element name="EncryptedClientHelloExtension" type="encryptedClientHelloExtensionMessage"/>
+
+  <xs:element name="EncryptedExtensions" type="encryptedExtensionsMessage"/>
+
+  <xs:element name="EncryptedServerNameIndicationExtension" type="encryptedServerNameIndicationExtensionMessage"/>
+
+  <xs:element name="EndOfEarlyData" type="endOfEarlyDataMessage"/>
+
+  <xs:element name="ExtendedMasterSecretExtension" type="extendedMasterSecretExtensionMessage"/>
+
+  <xs:element name="ExtendedRandomExtension" type="extendedRandomExtensionMessage"/>
+
+  <xs:element name="Finished" type="finishedMessage"/>
+
+  <xs:element name="GOSTClientKeyExchange" type="gostClientKeyExchangeMessage"/>
+
+  <xs:element name="GreaseExtension" type="greaseExtensionMessage"/>
+
+  <xs:element name="Heartbeat" type="heartbeatMessage"/>
+
+  <xs:element name="HeartbeatExtension" type="heartbeatExtensionMessage"/>
+
+  <xs:element name="HelloRequest" type="helloRequestMessage"/>
+
+  <xs:element name="HelloVerifyRequest" type="helloVerifyRequestMessage"/>
+
+  <xs:element name="KeyShareExtension" type="keyShareExtensionMessage"/>
+
+  <xs:element name="KeyUpdate" type="keyUpdateMessage"/>
+
+  <xs:element name="MaxFragmentLengthExtension" type="maxFragmentLengthExtensionMessage"/>
+
+  <xs:element name="NewSessionTicket" type="newSessionTicketMessage"/>
+
+  <xs:element name="PSKKeyExchangeModesExtension" type="pskKeyExchangeModesExtensionMessage"/>
+
+  <xs:element name="PWDClearExtension" type="pwdClearExtensionMessage"/>
+
+  <xs:element name="PWDClientKeyExchange" type="pwdClientKeyExchangeMessage"/>
+
+  <xs:element name="PWDProtectExtension" type="pwdProtectExtensionMessage"/>
+
+  <xs:element name="PWDServerKeyExchange" type="pwdServerKeyExchangeMessage"/>
+
+  <xs:element name="PaddingExtension" type="paddingExtensionMessage"/>
+
+  <xs:element name="PasswordSaltExtension" type="passwordSaltExtensionMessage"/>
+
+  <xs:element name="PreSharedKeyExtension" type="preSharedKeyExtensionMessage"/>
+
+  <xs:element name="PskClientKeyExchange" type="pskClientKeyExchangeMessage"/>
+
+  <xs:element name="PskDhClientKeyExchange" type="pskDhClientKeyExchangeMessage"/>
+
+  <xs:element name="PskDheServerKeyExchange" type="pskDheServerKeyExchangeMessage"/>
+
+  <xs:element name="PskEcDhClientKeyExchange" type="pskEcDhClientKeyExchangeMessage"/>
+
+  <xs:element name="PskEcDheServerKeyExchange" type="pskEcDheServerKeyExchangeMessage"/>
+
+  <xs:element name="PskRsaClientKeyExchange" type="pskRsaClientKeyExchangeMessage"/>
+
+  <xs:element name="PskServerKeyExchange" type="pskServerKeyExchangeMessage"/>
+
+  <xs:element name="RSAClientKeyExchange" type="rsaClientKeyExchangeMessage"/>
+
+  <xs:element name="RSAServerKeyExchange" type="rsaServerKeyExchangeMessage"/>
+
+  <xs:element name="RecordSizeLimitExtension" type="recordSizeLimitExtensionMessage"/>
+
+  <xs:element name="RenegotiationInfoExtension" type="renegotiationInfoExtensionMessage"/>
+
+  <xs:element name="SRPExtension" type="srpExtensionMessage"/>
+
+  <xs:element name="SSL2ClientHello" type="ssl2ClientHelloMessage"/>
+
+  <xs:element name="SSL2ClientMasterKey" type="ssl2ClientMasterKeyMessage"/>
+
+  <xs:element name="SSL2ServerHello" type="ssl2ServerHelloMessage"/>
+
+  <xs:element name="SSL2ServerVerify" type="ssl2ServerVerifyMessage"/>
+
+  <xs:element name="ServerAuthorizationExtension" type="serverAuthzExtensionMessage"/>
+
+  <xs:element name="ServerCertificateTypeExtension" type="serverCertificateTypeExtensionMessage"/>
+
+  <xs:element name="ServerHello" type="serverHelloMessage"/>
+
+  <xs:element name="ServerHelloDone" type="serverHelloDoneMessage"/>
+
+  <xs:element name="ServerNameIndicationExtension" type="serverNameIndicationExtensionMessage"/>
+
+  <xs:element name="SessionTicketTLSExtension" type="sessionTicketTLSExtensionMessage"/>
+
+  <xs:element name="SignatureAlgorithmsCertExtension" type="signatureAlgorithmsCertExtensionMessage"/>
+
+  <xs:element name="SignatureAndHashAlgorithmsExtension" type="signatureAndHashAlgorithmsExtensionMessage"/>
+
+  <xs:element name="SignedCertificateTimestampExtension" type="signedCertificateTimestampExtensionMessage"/>
+
+  <xs:element name="SrpClientKeyExchange" type="srpClientKeyExchangeMessage"/>
+
+  <xs:element name="SrpServerKeyExchange" type="srpServerKeyExchangeMessage"/>
+
+  <xs:element name="SrtpExtension" type="srtpExtensionMessage"/>
+
+  <xs:element name="SupplementalData" type="supplementalDataMessage"/>
+
+  <xs:element name="SupportedVersions" type="supportedVersionsExtensionMessage"/>
+
+  <xs:element name="TokenBindingExtension" type="tokenBindingExtensionMessage"/>
+
+  <xs:element name="TruncatedHmacExtension" type="truncatedHmacExtensionMessage"/>
+
+  <xs:element name="TrustedCaIndicationExtension" type="trustedCaIndicationExtensionMessage"/>
+
+  <xs:element name="UnknownExtension" type="unknownExtensionMessage"/>
+
+  <xs:element name="UnknownHandshakeMessage" type="unknownHandshakeMessage"/>
+
+  <xs:element name="UnknownMessage" type="unknownMessage"/>
+
+  <xs:element name="UnknownSSL2Message" type="unknownSSL2Message"/>
+
   <xs:element name="accessModificationFilter" type="accessModificationFilter"/>
 
   <xs:element name="bigIntegerAddModification" type="bigIntegerAddModification"/>
@@ -47,6 +229,14 @@
 
   <xs:element name="config" type="config"/>
 
+  <xs:element name="echConfig" type="echConfig"/>
+
+  <xs:element name="hpkeCipherSuite" type="hpkeCipherSuite"/>
+
+  <xs:element name="httpRequestMessage" type="httpRequestMessage"/>
+
+  <xs:element name="httpResponseMessage" type="httpResponseMessage"/>
+
   <xs:element name="integerAddModification" type="integerAddModification"/>
 
   <xs:element name="integerExplicitValueModification" type="integerExplicitValueModification"/>
@@ -69,15 +259,25 @@
 
   <xs:element name="longXorModification" type="longXorModification"/>
 
+  <xs:element name="modifiableBigInteger" type="modifiableBigInteger"/>
+
+  <xs:element name="modifiableBoolean" type="modifiableBoolean"/>
+
   <xs:element name="modifiableByte" type="modifiableByte"/>
 
   <xs:element name="modifiableByteArray" type="modifiableByteArray"/>
 
   <xs:element name="modifiableInteger" type="modifiableInteger"/>
 
+  <xs:element name="modifiableLong" type="modifiableLong"/>
+
+  <xs:element name="modifiableString" type="modifiableString"/>
+
   <xs:element name="point" type="point"/>
 
   <xs:element name="stringExplicitValueModification" type="stringExplicitValueModification"/>
+
+  <xs:element name="userMappingExtensionMessage" type="userMappingExtensionMessage"/>
 
   <xs:complexType name="config">
     <xs:all>
@@ -569,6 +769,7 @@
       <xs:element name="defaultClientPWDMask" type="xs:string" minOccurs="0"/>
       <xs:element name="defaultServerPWDSalt" type="xs:string" minOccurs="0"/>
       <xs:element name="defaultSelectedPointFormat" type="ecPointFormat" minOccurs="0"/>
+      <xs:element name="defaultDnsServer" type="xs:string" minOccurs="0"/>
       <xs:element name="defaultEsniClientPrivateKey" type="xs:integer" minOccurs="0"/>
       <xs:element name="clientSupportedEsniCipherSuites" minOccurs="0">
         <xs:complexType>
@@ -620,6 +821,11 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
+      <xs:element name="defaultEchClientPrivateKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultEchServerPrivateKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultEchConfig" type="echConfig" minOccurs="0"/>
+      <xs:element name="addEncryptedClientHelloExtension" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="defaultMaxEchAlpnPadding" type="xs:int" minOccurs="0"/>
       <xs:element name="acceptOnlyFittingDtlsFragments" type="xs:boolean" minOccurs="0"/>
       <xs:element name="acceptContentRewritingDtlsFragments" type="xs:boolean" minOccurs="0"/>
       <xs:element name="writeKeylogFile" type="xs:boolean" minOccurs="0"/>
@@ -1298,6 +1504,1896 @@
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="echConfig">
+    <xs:sequence>
+      <xs:element name="echConfigBytes" type="xs:string" minOccurs="0"/>
+      <xs:element name="configVersion" type="echConfigVersion" minOccurs="0"/>
+      <xs:element name="length" type="xs:int"/>
+      <xs:element name="maximumNameLength" type="xs:int"/>
+      <xs:element name="publicDomainName" type="xs:string" minOccurs="0"/>
+      <xs:element name="extensions" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="extension" type="extensionMessage" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="configId" type="xs:int"/>
+      <xs:element name="kem" type="hpkeKeyEncapsulationMechanism" minOccurs="0"/>
+      <xs:element name="hpkePublicKey" type="xs:string" minOccurs="0"/>
+      <xs:element name="hpkeCipherSuites" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="hpkeCipherSuite" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="cipherSuites" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="cipherSuite" type="cipherSuite" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="extensionMessage" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="modifiableVariableHolder">
+        <xs:sequence>
+          <xs:element name="extensionBytes" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="extensionContent" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="extensionLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="extensionType" type="modifiableByteArray" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="encryptedServerNameIndicationExtensionMessage">
+    <xs:complexContent>
+      <xs:extension base="extensionMessage">
+        <xs:sequence>
+          <xs:element name="cipherSuite" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="clientEsniInner" type="clientEsniInner" minOccurs="0"/>
+          <xs:element name="clientEsniInnerBytes" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="encryptedSni" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="encryptedSniComputation" type="encryptedSniComputation" minOccurs="0"/>
+          <xs:element name="encryptedSniLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="esniMessageTypeConfig" type="esniMessageType" minOccurs="0"/>
+          <xs:element name="keyShareEntry" type="keyShareEntry" minOccurs="0"/>
+          <xs:element name="recordDigest" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="recordDigestLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="serverNonce" type="modifiableByteArray" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="clientEsniInner">
+    <xs:complexContent>
+      <xs:extension base="modifiableVariableHolder">
+        <xs:sequence>
+          <xs:element name="clientNonce" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="padding" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="serverNameList" type="serverNamePair" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="serverNameListBytes" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="serverNameListLength" type="modifiableInteger" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="encryptedSniComputation">
+    <xs:complexContent>
+      <xs:extension base="modifiableVariableHolder">
+        <xs:sequence>
+          <xs:element name="clientHelloKeyShare" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="clientHelloRandom" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="esniContents" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="esniContentsHash" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="esniIv" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="esniKey" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="esniMasterSecret" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="esniRecordBytes" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="esniServerPublicKey" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="esniSharedSecret" type="modifiableByteArray" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="ecPointFormatExtensionMessage">
+    <xs:complexContent>
+      <xs:extension base="extensionMessage">
+        <xs:sequence>
+          <xs:element name="pointFormats" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="pointFormatsLength" type="modifiableInteger" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="ellipticCurvesExtensionMessage">
+    <xs:complexContent>
+      <xs:extension base="extensionMessage">
+        <xs:sequence>
+          <xs:element name="supportedGroups" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="supportedGroupsLength" type="modifiableInteger" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="extendedMasterSecretExtensionMessage">
+    <xs:complexContent>
+      <xs:extension base="extensionMessage">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="greaseExtensionMessage">
+    <xs:complexContent>
+      <xs:extension base="extensionMessage">
+        <xs:sequence>
+          <xs:element name="data" type="xs:base64Binary" minOccurs="0"/>
+          <xs:element name="randomData" type="modifiableByteArray" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="heartbeatExtensionMessage">
+    <xs:complexContent>
+      <xs:extension base="extensionMessage">
+        <xs:sequence>
+          <xs:element name="heartbeatMode" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="heartbeatModeConfig" type="heartbeatMode" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="maxFragmentLengthExtensionMessage">
+    <xs:complexContent>
+      <xs:extension base="extensionMessage">
+        <xs:sequence>
+          <xs:element name="maxFragmentLength" type="modifiableByteArray" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="recordSizeLimitExtensionMessage">
+    <xs:complexContent>
+      <xs:extension base="extensionMessage">
+        <xs:sequence>
+          <xs:element name="recordSizeLimit" type="modifiableByteArray" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="paddingExtensionMessage">
+    <xs:complexContent>
+      <xs:extension base="extensionMessage">
+        <xs:sequence>
+          <xs:element name="paddingBytes" type="modifiableByteArray" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="renegotiationInfoExtensionMessage">
+    <xs:complexContent>
+      <xs:extension base="extensionMessage">
+        <xs:sequence>
+          <xs:element name="renegotiationInfo" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="renegotiationInfoLength" type="modifiableInteger" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="serverNameIndicationExtensionMessage">
+    <xs:complexContent>
+      <xs:extension base="extensionMessage">
+        <xs:sequence>
+          <xs:element name="serverNameList" type="serverNamePair" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="serverNameListBytes" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="serverNameListLength" type="modifiableInteger" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="sessionTicketTLSExtensionMessage">
+    <xs:complexContent>
+      <xs:extension base="extensionMessage">
+        <xs:sequence>
+          <xs:element name="sessionTicket" type="sessionTicket" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="sessionTicket">
+    <xs:complexContent>
+      <xs:extension base="modifiableVariableHolder">
+        <xs:sequence>
+          <xs:element name="encryptedState" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="encryptedStateLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="IV" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="identity" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="identityLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="keyName" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="MAC" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="ticketAgeAdd" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="ticketNonce" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="ticketNonceLength" type="modifiableInteger" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="signatureAndHashAlgorithmsExtensionMessage">
+    <xs:complexContent>
+      <xs:extension base="extensionMessage">
+        <xs:sequence>
+          <xs:element name="signatureAndHashAlgorithms" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="signatureAndHashAlgorithmsLength" type="modifiableInteger" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="signatureAlgorithmsCertExtensionMessage">
+    <xs:complexContent>
+      <xs:extension base="extensionMessage">
+        <xs:sequence>
+          <xs:element name="signatureAndHashAlgorithms" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="signatureAndHashAlgorithmsLength" type="modifiableInteger" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="signedCertificateTimestampExtensionMessage">
+    <xs:complexContent>
+      <xs:extension base="extensionMessage">
+        <xs:sequence>
+          <xs:element name="signedTimestamp" type="modifiableByteArray" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="extendedRandomExtensionMessage">
+    <xs:complexContent>
+      <xs:extension base="extensionMessage">
+        <xs:sequence>
+          <xs:element name="extendedRandom" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="extendedRandomLength" type="modifiableInteger" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="tokenBindingExtensionMessage">
+    <xs:complexContent>
+      <xs:extension base="extensionMessage">
+        <xs:sequence>
+          <xs:element name="parameterListLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="tokenBindingKeyParameters" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="tokenBindingVersion" type="modifiableByteArray" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="keyShareExtensionMessage">
+    <xs:complexContent>
+      <xs:extension base="extensionMessage">
+        <xs:sequence>
+          <xs:element name="keyShareListLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="keyShareListBytes" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="keyShareList" type="keyShareEntry" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="retryRequestMode" type="modifiableBoolean" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="modifiableBoolean">
+    <xs:sequence>
+      <xs:choice minOccurs="0">
+        <xs:element name="BigIntegerXorModification" type="bigIntegerXorModification"/>
+        <xs:element name="BigIntegerSubtractModification" type="bigIntegerSubtractModification"/>
+        <xs:element name="BigIntegerShiftRightModification" type="bigIntegerShiftRightModification"/>
+        <xs:element name="BigIntegerShiftLeftModification" type="bigIntegerShiftLeftModification"/>
+        <xs:element name="BigIntegerExplicitValueModification" type="bigIntegerExplicitValueModification"/>
+        <xs:element name="BigIntegerAddModification" type="bigIntegerAddModification"/>
+        <xs:element name="BigIntegerInteractiveModification" type="bigIntegerInteractiveModification"/>
+        <xs:element name="BigIntegerMultiplyModification" type="bigIntegerMultiplyModification"/>
+        <xs:element name="BooleanToggleModification" type="booleanToggleModification"/>
+        <xs:element name="BooleanExplicitValueModification" type="booleanExplicitValueModification"/>
+        <xs:element name="ByteArrayXorModification" type="byteArrayXorModification"/>
+        <xs:element name="ByteArrayShuffleModification" type="byteArrayShuffleModification"/>
+        <xs:element name="ByteArrayPayloadModification" type="byteArrayPayloadModification"/>
+        <xs:element name="ByteArrayInsertModification" type="byteArrayInsertModification"/>
+        <xs:element name="ByteArrayExplicitValueModification" type="byteArrayExplicitValueModification"/>
+        <xs:element name="ByteArrayDuplicateModification" type="byteArrayDuplicateModification"/>
+        <xs:element name="ByteArrayDeleteModification" type="byteArrayDeleteModification"/>
+        <xs:element name="IntegerXorModification" type="integerXorModification"/>
+        <xs:element name="IntegerSubtractModification" type="integerSubtractModification"/>
+        <xs:element name="IntegerShiftRightModification" type="integerShiftRightModification"/>
+        <xs:element name="IntegerShiftLeftModification" type="integerShiftLeftModification"/>
+        <xs:element name="IntegerExplicitValueModification" type="integerExplicitValueModification"/>
+        <xs:element name="IntegerAddModification" type="integerAddModification"/>
+        <xs:element name="LongXorModification" type="longXorModification"/>
+        <xs:element name="LongSubtractModification" type="longSubtractModification"/>
+        <xs:element name="LongExplicitValueModification" type="longExplicitValueModification"/>
+        <xs:element name="LongAddModification" type="longAddModification"/>
+        <xs:element name="ByteXorModification" type="byteXorModification"/>
+        <xs:element name="ByteSubtractModification" type="byteSubtractModification"/>
+        <xs:element name="ByteAddModification" type="byteAddModification"/>
+        <xs:element name="ByteExplicitValueModification" type="byteExplicitValueModification"/>
+        <xs:element name="StringExplicitValueModification" type="stringExplicitValueModification"/>
+      </xs:choice>
+      <xs:element name="createRandomModification" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="assertEquals" type="xs:anyType" minOccurs="0"/>
+      <xs:element name="originalValue" type="xs:boolean" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="supportedVersionsExtensionMessage">
+    <xs:complexContent>
+      <xs:extension base="extensionMessage">
+        <xs:sequence>
+          <xs:element name="supportedVersions" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="supportedVersionsLength" type="modifiableInteger" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="alpnExtensionMessage">
+    <xs:complexContent>
+      <xs:extension base="extensionMessage">
+        <xs:sequence>
+          <xs:element name="alpnEntryList" type="alpnEntry" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="proposedAlpnProtocols" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="proposedAlpnProtocolsLength" type="modifiableInteger" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="alpnEntry">
+    <xs:complexContent>
+      <xs:extension base="modifiableVariableHolder">
+        <xs:sequence>
+          <xs:element name="alpnEntryLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="alpnEntry" type="modifiableString" minOccurs="0"/>
+          <xs:element name="alpnEntryConfig" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="modifiableString">
+    <xs:sequence>
+      <xs:choice minOccurs="0">
+        <xs:element name="BigIntegerXorModification" type="bigIntegerXorModification"/>
+        <xs:element name="BigIntegerSubtractModification" type="bigIntegerSubtractModification"/>
+        <xs:element name="BigIntegerShiftRightModification" type="bigIntegerShiftRightModification"/>
+        <xs:element name="BigIntegerShiftLeftModification" type="bigIntegerShiftLeftModification"/>
+        <xs:element name="BigIntegerExplicitValueModification" type="bigIntegerExplicitValueModification"/>
+        <xs:element name="BigIntegerAddModification" type="bigIntegerAddModification"/>
+        <xs:element name="BigIntegerInteractiveModification" type="bigIntegerInteractiveModification"/>
+        <xs:element name="BigIntegerMultiplyModification" type="bigIntegerMultiplyModification"/>
+        <xs:element name="BooleanToggleModification" type="booleanToggleModification"/>
+        <xs:element name="BooleanExplicitValueModification" type="booleanExplicitValueModification"/>
+        <xs:element name="ByteArrayXorModification" type="byteArrayXorModification"/>
+        <xs:element name="ByteArrayShuffleModification" type="byteArrayShuffleModification"/>
+        <xs:element name="ByteArrayPayloadModification" type="byteArrayPayloadModification"/>
+        <xs:element name="ByteArrayInsertModification" type="byteArrayInsertModification"/>
+        <xs:element name="ByteArrayExplicitValueModification" type="byteArrayExplicitValueModification"/>
+        <xs:element name="ByteArrayDuplicateModification" type="byteArrayDuplicateModification"/>
+        <xs:element name="ByteArrayDeleteModification" type="byteArrayDeleteModification"/>
+        <xs:element name="IntegerXorModification" type="integerXorModification"/>
+        <xs:element name="IntegerSubtractModification" type="integerSubtractModification"/>
+        <xs:element name="IntegerShiftRightModification" type="integerShiftRightModification"/>
+        <xs:element name="IntegerShiftLeftModification" type="integerShiftLeftModification"/>
+        <xs:element name="IntegerExplicitValueModification" type="integerExplicitValueModification"/>
+        <xs:element name="IntegerAddModification" type="integerAddModification"/>
+        <xs:element name="LongXorModification" type="longXorModification"/>
+        <xs:element name="LongSubtractModification" type="longSubtractModification"/>
+        <xs:element name="LongExplicitValueModification" type="longExplicitValueModification"/>
+        <xs:element name="LongAddModification" type="longAddModification"/>
+        <xs:element name="ByteXorModification" type="byteXorModification"/>
+        <xs:element name="ByteSubtractModification" type="byteSubtractModification"/>
+        <xs:element name="ByteAddModification" type="byteAddModification"/>
+        <xs:element name="ByteExplicitValueModification" type="byteExplicitValueModification"/>
+        <xs:element name="StringExplicitValueModification" type="stringExplicitValueModification"/>
+      </xs:choice>
+      <xs:element name="createRandomModification" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="assertEquals" type="xs:anyType" minOccurs="0"/>
+      <xs:element name="originalValue" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="certificateStatusRequestExtensionMessage">
+    <xs:complexContent>
+      <xs:extension base="extensionMessage">
+        <xs:sequence>
+          <xs:element name="certificateStatusRequestType" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="certificateStatusType" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="ocspResponseBytes" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="ocspResponseLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="requestExtension" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="requestExtensionLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="responderIDList" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="responderIDListLength" type="modifiableInteger" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="certificateStatusRequestV2ExtensionMessage">
+    <xs:complexContent>
+      <xs:extension base="extensionMessage">
+        <xs:sequence>
+          <xs:element name="statusRequestBytes" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="statusRequestList" type="requestItemV2" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="statusRequestListLength" type="modifiableInteger" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="certificateTypeExtensionMessage">
+    <xs:complexContent>
+      <xs:extension base="extensionMessage">
+        <xs:sequence>
+          <xs:element name="certificateTypes" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="certificateTypesLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="isClientMessage" type="modifiableBoolean" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="clientCertificateUrlExtensionMessage">
+    <xs:complexContent>
+      <xs:extension base="extensionMessage">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="clientCertificateTypeExtensionMessage">
+    <xs:complexContent>
+      <xs:extension base="extensionMessage">
+        <xs:sequence>
+          <xs:element name="certificateTypes" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="certificateTypesLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="isClientMessage" type="modifiableBoolean" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="clientAuthzExtensionMessage">
+    <xs:complexContent>
+      <xs:extension base="extensionMessage">
+        <xs:sequence>
+          <xs:element name="authzFormatList" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="authzFormatListLength" type="modifiableInteger" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="encryptThenMacExtensionMessage">
+    <xs:complexContent>
+      <xs:extension base="extensionMessage">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="serverAuthzExtensionMessage">
+    <xs:complexContent>
+      <xs:extension base="extensionMessage">
+        <xs:sequence>
+          <xs:element name="authzFormatList" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="authzFormatListLength" type="modifiableInteger" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="serverCertificateTypeExtensionMessage">
+    <xs:complexContent>
+      <xs:extension base="extensionMessage">
+        <xs:sequence>
+          <xs:element name="certificateTypes" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="certificateTypesLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="isClientMessage" type="modifiableBoolean" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="srtpExtensionMessage">
+    <xs:complexContent>
+      <xs:extension base="extensionMessage">
+        <xs:sequence>
+          <xs:element name="srtpMki" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="srtpMkiLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="srtpProtectionProfiles" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="srtpProtectionProfilesLength" type="modifiableInteger" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="trustedCaIndicationExtensionMessage">
+    <xs:complexContent>
+      <xs:extension base="extensionMessage">
+        <xs:sequence>
+          <xs:element name="trustedAuthorities" type="trustedAuthority" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="trustedAuthoritiesBytes" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="trustedAuthoritiesLength" type="modifiableInteger" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="truncatedHmacExtensionMessage">
+    <xs:complexContent>
+      <xs:extension base="extensionMessage">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="earlyDataExtensionMessage">
+    <xs:complexContent>
+      <xs:extension base="extensionMessage">
+        <xs:sequence>
+          <xs:element name="maxEarlyDataSize" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="newSessionTicketExtension" type="xs:boolean"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="pskKeyExchangeModesExtensionMessage">
+    <xs:complexContent>
+      <xs:extension base="extensionMessage">
+        <xs:sequence>
+          <xs:element name="keyExchangeModesConfig" type="xs:string" minOccurs="0"/>
+          <xs:element name="keyExchangeModesListLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="keyExchangeModesListBytes" type="modifiableByteArray" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="preSharedKeyExtensionMessage">
+    <xs:complexContent>
+      <xs:extension base="extensionMessage">
+        <xs:sequence>
+          <xs:element name="binderListBytes" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="binderListLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="binders" type="pskBinder" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="identities" type="pskIdentity" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="identityListBytes" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="identityListLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="selectedIdentity" type="modifiableInteger" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="pskBinder">
+    <xs:complexContent>
+      <xs:extension base="modifiableVariableHolder">
+        <xs:sequence>
+          <xs:element name="binderCipherConfig" type="cipherSuite" minOccurs="0"/>
+          <xs:element name="binderEntry" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="binderEntryLength" type="modifiableInteger" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="pskIdentity">
+    <xs:sequence>
+      <xs:element name="identityConfig" type="xs:string" minOccurs="0"/>
+      <xs:element name="ticketAgeConfig" type="xs:string" minOccurs="0"/>
+      <xs:element name="ticketAgeAddConfig" type="xs:string" minOccurs="0"/>
+      <xs:element name="identityLength" type="modifiableInteger" minOccurs="0"/>
+      <xs:element name="identity" type="modifiableByteArray" minOccurs="0"/>
+      <xs:element name="obfuscatedTicketAge" type="modifiableByteArray" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="unknownExtensionMessage">
+    <xs:complexContent>
+      <xs:extension base="extensionMessage">
+        <xs:sequence>
+          <xs:element name="dataConfig" type="xs:string" minOccurs="0"/>
+          <xs:element name="extensionData" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="typeConfig" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="pwdClearExtensionMessage">
+    <xs:complexContent>
+      <xs:extension base="extensionMessage">
+        <xs:sequence>
+          <xs:element name="username" type="modifiableString" minOccurs="0"/>
+          <xs:element name="usernameLength" type="modifiableInteger" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="pwdProtectExtensionMessage">
+    <xs:complexContent>
+      <xs:extension base="extensionMessage">
+        <xs:sequence>
+          <xs:element name="username" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="usernameLength" type="modifiableInteger" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="passwordSaltExtensionMessage">
+    <xs:complexContent>
+      <xs:extension base="extensionMessage">
+        <xs:sequence>
+          <xs:element name="salt" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="saltLength" type="modifiableInteger" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="cachedInfoExtensionMessage">
+    <xs:complexContent>
+      <xs:extension base="extensionMessage">
+        <xs:sequence>
+          <xs:element name="cachedInfo" type="cachedObject" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="cachedInfoBytes" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="cachedInfoLength" type="modifiableInteger" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="cookieExtensionMessage">
+    <xs:complexContent>
+      <xs:extension base="extensionMessage">
+        <xs:sequence>
+          <xs:element name="cookie" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="cookieLength" type="modifiableInteger" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="dtlsHandshakeMessageFragment">
+    <xs:complexContent>
+      <xs:extension base="handshakeMessage">
+        <xs:sequence>
+          <xs:element name="fragmentOffset" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="fragmentLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="epoch" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="fragmentContentConfig" type="xs:base64Binary" minOccurs="0"/>
+          <xs:element name="messageSequenceConfig" type="xs:int"/>
+          <xs:element name="offsetConfig" type="xs:int"/>
+          <xs:element name="handshakeMessageLengthConfig" type="xs:int"/>
+          <xs:element name="handshakeMessageTypeConfig" type="handshakeMessageType" minOccurs="0"/>
+          <xs:element name="maxFragmentLengthConfig" type="xs:int"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="handshakeMessage" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="protocolMessage">
+        <xs:sequence>
+          <xs:element name="type" type="modifiableByte" minOccurs="0"/>
+          <xs:element name="length" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="includeInDigest" type="modifiableBoolean" minOccurs="0"/>
+          <xs:element name="retransmission" type="modifiableBoolean" minOccurs="0"/>
+          <xs:element name="messageContent" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="extensions" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:choice minOccurs="0" maxOccurs="unbounded">
+                  <xs:element ref="EncryptedServerNameIndicationExtension"/>
+                  <xs:element ref="ECPointFormat"/>
+                  <xs:element ref="EllipticCurves"/>
+                  <xs:element ref="ExtendedMasterSecretExtension"/>
+                  <xs:element ref="GreaseExtension"/>
+                  <xs:element ref="HeartbeatExtension"/>
+                  <xs:element ref="MaxFragmentLengthExtension"/>
+                  <xs:element ref="RecordSizeLimitExtension"/>
+                  <xs:element ref="PaddingExtension"/>
+                  <xs:element ref="RenegotiationInfoExtension"/>
+                  <xs:element ref="ServerNameIndicationExtension"/>
+                  <xs:element ref="SessionTicketTLSExtension"/>
+                  <xs:element ref="SignatureAndHashAlgorithmsExtension"/>
+                  <xs:element ref="SignatureAlgorithmsCertExtension"/>
+                  <xs:element ref="SignedCertificateTimestampExtension"/>
+                  <xs:element ref="ExtendedRandomExtension"/>
+                  <xs:element ref="TokenBindingExtension"/>
+                  <xs:element ref="KeyShareExtension"/>
+                  <xs:element ref="SupportedVersions"/>
+                  <xs:element ref="AlpnExtension"/>
+                  <xs:element ref="CertificateStatusRequestExtension"/>
+                  <xs:element ref="CertificateStatusRequestV2Extension"/>
+                  <xs:element ref="CertificateTypeExtension"/>
+                  <xs:element ref="ClientCertificateUrlExtension"/>
+                  <xs:element ref="ClientCertificateTypeExtension"/>
+                  <xs:element ref="ClientAuthorizationExtension"/>
+                  <xs:element ref="EncryptThenMacExtension"/>
+                  <xs:element ref="ServerAuthorizationExtension"/>
+                  <xs:element ref="ServerCertificateTypeExtension"/>
+                  <xs:element ref="SrtpExtension"/>
+                  <xs:element ref="TrustedCaIndicationExtension"/>
+                  <xs:element ref="TruncatedHmacExtension"/>
+                  <xs:element ref="EarlyDataExtension"/>
+                  <xs:element ref="PSKKeyExchangeModesExtension"/>
+                  <xs:element ref="PreSharedKeyExtension"/>
+                  <xs:element ref="UnknownExtension"/>
+                  <xs:element ref="PWDClearExtension"/>
+                  <xs:element ref="PWDProtectExtension"/>
+                  <xs:element ref="PasswordSaltExtension"/>
+                  <xs:element ref="CachedInfoExtension"/>
+                  <xs:element ref="CookieExtension"/>
+                  <xs:element ref="userMappingExtensionMessage"/>
+                  <xs:element ref="SRPExtension"/>
+                  <xs:element ref="ConnectionIdExtension"/>
+                  <xs:element ref="EncryptedClientHelloExtension"/>
+                </xs:choice>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="extensionBytes" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="extensionsLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="messageSequence" type="modifiableInteger" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="protocolMessage" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="message">
+        <xs:sequence>
+          <xs:element name="completeResultingMessage" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="required" type="modifiableBoolean" minOccurs="0"/>
+          <xs:element name="goingToBeSent" type="modifiableBoolean" minOccurs="0"/>
+          <xs:element name="adjustContext" type="modifiableBoolean" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="message" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="modifiableVariableHolder">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="httpMessage" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="message">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="httpRequestMessage">
+    <xs:complexContent>
+      <xs:extension base="httpMessage">
+        <xs:sequence>
+          <xs:element name="header" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:choice minOccurs="0" maxOccurs="unbounded">
+                  <xs:element name="HttpHeader" type="genericHttpHeader"/>
+                  <xs:element name="ContentLengthHeader" type="contentLengthHeader"/>
+                  <xs:element name="DateHeader" type="dateHeader"/>
+                  <xs:element name="ExpiresHeader" type="expiresHeader"/>
+                  <xs:element name="LocationHeader" type="locationHeader"/>
+                  <xs:element name="HostHeader" type="hostHeader"/>
+                  <xs:element name="TokenBindingHeader" type="tokenBindingHeader"/>
+                  <xs:element name="CookieHeader" type="tokenBindingHeader"/>
+                </xs:choice>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="requestType" type="modifiableString" minOccurs="0"/>
+          <xs:element name="requestPath" type="modifiableString" minOccurs="0"/>
+          <xs:element name="requestProtocol" type="modifiableString" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="genericHttpHeader">
+    <xs:complexContent>
+      <xs:extension base="httpHeader">
+        <xs:sequence>
+          <xs:element name="headerNameConfig" type="xs:string" minOccurs="0"/>
+          <xs:element name="headerValueConfig" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="httpHeader" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="modifiableVariableHolder">
+        <xs:sequence>
+          <xs:element name="headerName" type="modifiableString" minOccurs="0"/>
+          <xs:element name="headerValue" type="modifiableString" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="contentLengthHeader">
+    <xs:complexContent>
+      <xs:extension base="httpHeader">
+        <xs:sequence>
+          <xs:element name="configLength" type="xs:int"/>
+          <xs:element name="length" type="modifiableInteger" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="dateHeader">
+    <xs:complexContent>
+      <xs:extension base="httpHeader">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="expiresHeader">
+    <xs:complexContent>
+      <xs:extension base="httpHeader">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="locationHeader">
+    <xs:complexContent>
+      <xs:extension base="httpHeader">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="hostHeader">
+    <xs:complexContent>
+      <xs:extension base="httpHeader">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="tokenBindingHeader">
+    <xs:complexContent>
+      <xs:extension base="httpHeader">
+        <xs:sequence>
+          <xs:element name="message" type="tokenBindingMessage" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="tokenBindingMessage">
+    <xs:complexContent>
+      <xs:extension base="protocolMessage">
+        <xs:sequence>
+          <xs:element name="tokenbindingsLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="tokenbindingType" type="modifiableByte" minOccurs="0"/>
+          <xs:element name="keyParameter" type="modifiableByte" minOccurs="0"/>
+          <xs:element name="keyLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="modulusLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="modulus" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="publicExponentLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="publicExponent" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="pointLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="point" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="signatureLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="signature" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="extensionLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="extensionBytes" type="modifiableByteArray" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="httpResponseMessage">
+    <xs:complexContent>
+      <xs:extension base="httpMessage">
+        <xs:sequence>
+          <xs:element name="responseProtocol" type="modifiableString" minOccurs="0"/>
+          <xs:element name="responseStatusCode" type="modifiableString" minOccurs="0"/>
+          <xs:element name="responseContent" type="modifiableString" minOccurs="0"/>
+          <xs:element name="header" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:choice minOccurs="0" maxOccurs="unbounded">
+                  <xs:element name="HttpHeader" type="genericHttpHeader"/>
+                  <xs:element name="ContentLengthHeader" type="contentLengthHeader"/>
+                  <xs:element name="DateHeader" type="dateHeader"/>
+                  <xs:element name="ExpiresHeader" type="expiresHeader"/>
+                  <xs:element name="LocationHeader" type="locationHeader"/>
+                  <xs:element name="HostHeader" type="hostHeader"/>
+                  <xs:element name="TokenBindingHeader" type="tokenBindingHeader"/>
+                </xs:choice>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="certificateMessage">
+    <xs:complexContent>
+      <xs:extension base="handshakeMessage">
+        <xs:sequence>
+          <xs:element name="requestContextLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="requestContext" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="certificatesListLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="certificatesListBytes" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="certificatesList" type="certificatePair" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="certificateListConfig" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="certificatesListConfig" type="certificatePair" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="certificatesListAsEntry" type="certificateEntry" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="certificatePair">
+    <xs:complexContent>
+      <xs:extension base="modifiableVariableHolder">
+        <xs:sequence>
+          <xs:element name="certificateConfig" type="xs:string" minOccurs="0"/>
+          <xs:element name="extensionsConfig" type="extensionMessage" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="certificate" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="certificateLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="extensions" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="extensionsLength" type="modifiableInteger" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="certificateEntry">
+    <xs:sequence>
+      <xs:element name="certificate" type="xs:string" minOccurs="0"/>
+      <xs:element name="extensions" type="extensionMessage" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="certificateVerifyMessage">
+    <xs:complexContent>
+      <xs:extension base="handshakeMessage">
+        <xs:sequence>
+          <xs:element name="signatureHashAlgorithm" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="signatureLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="signature" type="modifiableByteArray" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="certificateRequestMessage">
+    <xs:complexContent>
+      <xs:extension base="handshakeMessage">
+        <xs:sequence>
+          <xs:element name="clientCertificateTypesCount" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="clientCertificateTypes" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="signatureHashAlgorithmsLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="signatureHashAlgorithms" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="distinguishedNamesLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="distinguishedNames" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="certificateRequestContextLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="certificateRequestContext" type="modifiableByteArray" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="clientHelloMessage">
+    <xs:complexContent>
+      <xs:extension base="coreClientHelloMessage">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="coreClientHelloMessage" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="helloMessage">
+        <xs:sequence>
+          <xs:element name="compressionLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="cipherSuiteLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="cipherSuites" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="compressions" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="cookie" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="cookieLength" type="modifiableInteger" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="helloMessage" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="handshakeMessage">
+        <xs:sequence>
+          <xs:element name="protocolVersion" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="unixTime" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="random" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="sessionIdLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="sessionId" type="modifiableByteArray" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="helloVerifyRequestMessage">
+    <xs:complexContent>
+      <xs:extension base="handshakeMessage">
+        <xs:sequence>
+          <xs:element name="protocolVersion" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="cookieLength" type="modifiableByte" minOccurs="0"/>
+          <xs:element name="cookie" type="modifiableByteArray" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="dhClientKeyExchangeMessage">
+    <xs:complexContent>
+      <xs:extension base="clientKeyExchangeMessage">
+        <xs:sequence>
+          <xs:element name="computations" type="dhClientComputations" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="clientKeyExchangeMessage" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="handshakeMessage">
+        <xs:sequence>
+          <xs:element name="publicKeyLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="publicKey" type="modifiableByteArray" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="dhClientComputations">
+    <xs:complexContent>
+      <xs:extension base="keyExchangeComputations">
+        <xs:sequence>
+          <xs:element name="generator" type="modifiableBigInteger" minOccurs="0"/>
+          <xs:element name="modulus" type="modifiableBigInteger" minOccurs="0"/>
+          <xs:element name="publicKey" type="modifiableBigInteger" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="keyExchangeComputations" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="modifiableVariableHolder">
+        <xs:sequence>
+          <xs:element name="clientServerRandom" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="premasterSecret" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="privateKey" type="modifiableBigInteger" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="modifiableBigInteger">
+    <xs:sequence>
+      <xs:choice minOccurs="0">
+        <xs:element name="BigIntegerXorModification" type="bigIntegerXorModification"/>
+        <xs:element name="BigIntegerSubtractModification" type="bigIntegerSubtractModification"/>
+        <xs:element name="BigIntegerShiftRightModification" type="bigIntegerShiftRightModification"/>
+        <xs:element name="BigIntegerShiftLeftModification" type="bigIntegerShiftLeftModification"/>
+        <xs:element name="BigIntegerExplicitValueModification" type="bigIntegerExplicitValueModification"/>
+        <xs:element name="BigIntegerAddModification" type="bigIntegerAddModification"/>
+        <xs:element name="BigIntegerInteractiveModification" type="bigIntegerInteractiveModification"/>
+        <xs:element name="BigIntegerMultiplyModification" type="bigIntegerMultiplyModification"/>
+        <xs:element name="BooleanToggleModification" type="booleanToggleModification"/>
+        <xs:element name="BooleanExplicitValueModification" type="booleanExplicitValueModification"/>
+        <xs:element name="ByteArrayXorModification" type="byteArrayXorModification"/>
+        <xs:element name="ByteArrayShuffleModification" type="byteArrayShuffleModification"/>
+        <xs:element name="ByteArrayPayloadModification" type="byteArrayPayloadModification"/>
+        <xs:element name="ByteArrayInsertModification" type="byteArrayInsertModification"/>
+        <xs:element name="ByteArrayExplicitValueModification" type="byteArrayExplicitValueModification"/>
+        <xs:element name="ByteArrayDuplicateModification" type="byteArrayDuplicateModification"/>
+        <xs:element name="ByteArrayDeleteModification" type="byteArrayDeleteModification"/>
+        <xs:element name="IntegerXorModification" type="integerXorModification"/>
+        <xs:element name="IntegerSubtractModification" type="integerSubtractModification"/>
+        <xs:element name="IntegerShiftRightModification" type="integerShiftRightModification"/>
+        <xs:element name="IntegerShiftLeftModification" type="integerShiftLeftModification"/>
+        <xs:element name="IntegerExplicitValueModification" type="integerExplicitValueModification"/>
+        <xs:element name="IntegerAddModification" type="integerAddModification"/>
+        <xs:element name="LongXorModification" type="longXorModification"/>
+        <xs:element name="LongSubtractModification" type="longSubtractModification"/>
+        <xs:element name="LongExplicitValueModification" type="longExplicitValueModification"/>
+        <xs:element name="LongAddModification" type="longAddModification"/>
+        <xs:element name="ByteXorModification" type="byteXorModification"/>
+        <xs:element name="ByteSubtractModification" type="byteSubtractModification"/>
+        <xs:element name="ByteAddModification" type="byteAddModification"/>
+        <xs:element name="ByteExplicitValueModification" type="byteExplicitValueModification"/>
+        <xs:element name="StringExplicitValueModification" type="stringExplicitValueModification"/>
+      </xs:choice>
+      <xs:element name="createRandomModification" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="assertEquals" type="xs:anyType" minOccurs="0"/>
+      <xs:element name="originalValue" type="xs:integer" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="dheServerKeyExchangeMessage">
+    <xs:complexContent>
+      <xs:extension base="serverKeyExchangeMessage">
+        <xs:sequence>
+          <xs:element name="modulus" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="modulusLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="generator" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="generatorLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="computations" type="dheServerComputations" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="serverKeyExchangeMessage" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="handshakeMessage">
+        <xs:sequence>
+          <xs:element name="signatureAndHashAlgorithm" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="signatureLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="signature" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="publicKeyLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="publicKey" type="modifiableByteArray" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="dheServerComputations">
+    <xs:complexContent>
+      <xs:extension base="keyExchangeComputations">
+        <xs:sequence>
+          <xs:element name="generator" type="modifiableBigInteger" minOccurs="0"/>
+          <xs:element name="modulus" type="modifiableBigInteger" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="ecdhClientKeyExchangeMessage">
+    <xs:complexContent>
+      <xs:extension base="clientKeyExchangeMessage">
+        <xs:sequence>
+          <xs:element name="computations" type="ecdhClientComputations" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="ecdhClientComputations">
+    <xs:complexContent>
+      <xs:extension base="keyExchangeComputations">
+        <xs:sequence>
+          <xs:element name="publicKeyX" type="modifiableBigInteger" minOccurs="0"/>
+          <xs:element name="publicKeyY" type="modifiableBigInteger" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="ecdheServerKeyExchangeMessage">
+    <xs:complexContent>
+      <xs:extension base="serverKeyExchangeMessage">
+        <xs:sequence>
+          <xs:element name="curveType" type="modifiableByte" minOccurs="0"/>
+          <xs:element name="namedGroup" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="computations" type="ecdheServerComputations" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="ecdheServerComputations">
+    <xs:complexContent>
+      <xs:extension base="keyExchangeComputations">
+        <xs:sequence>
+          <xs:element name="ecPointFormat" type="modifiableByte" minOccurs="0"/>
+          <xs:element name="namedGroup" type="modifiableByteArray" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="pskClientKeyExchangeMessage">
+    <xs:complexContent>
+      <xs:extension base="clientKeyExchangeMessage">
+        <xs:sequence>
+          <xs:element name="computations" type="pskPremasterComputations" minOccurs="0"/>
+          <xs:element name="identity" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="identityLength" type="modifiableInteger" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="pskPremasterComputations">
+    <xs:complexContent>
+      <xs:extension base="keyExchangeComputations">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="finishedMessage">
+    <xs:complexContent>
+      <xs:extension base="handshakeMessage">
+        <xs:sequence>
+          <xs:element name="verifyData" type="modifiableByteArray" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="rsaClientKeyExchangeMessage">
+    <xs:complexContent>
+      <xs:extension base="clientKeyExchangeMessage">
+        <xs:sequence>
+          <xs:element name="computations" type="rsaClientComputations" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="rsaClientComputations">
+    <xs:complexContent>
+      <xs:extension base="keyExchangeComputations">
+        <xs:sequence>
+          <xs:element name="padding" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="plainPaddedPremasterSecret" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="premasterSecretProtocolVersion" type="modifiableByteArray" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="gostClientKeyExchangeMessage">
+    <xs:complexContent>
+      <xs:extension base="clientKeyExchangeMessage">
+        <xs:sequence>
+          <xs:element name="computations" type="gostClientComputations" minOccurs="0"/>
+          <xs:element name="keyTransportBlob" type="modifiableByteArray" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="gostClientComputations">
+    <xs:complexContent>
+      <xs:extension base="keyExchangeComputations">
+        <xs:sequence>
+          <xs:element name="clientPublicKeyX" type="modifiableBigInteger" minOccurs="0"/>
+          <xs:element name="clientPublicKeyY" type="modifiableBigInteger" minOccurs="0"/>
+          <xs:element name="maskKey" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="proxyKeyBlobs" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="ukm" type="modifiableByteArray" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="serverHelloDoneMessage">
+    <xs:complexContent>
+      <xs:extension base="handshakeMessage">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="serverHelloMessage">
+    <xs:complexContent>
+      <xs:extension base="helloMessage">
+        <xs:sequence>
+          <xs:element name="selectedCipherSuite" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="selectedCompressionMethod" type="modifiableByte" minOccurs="0"/>
+          <xs:element name="autoSetHelloRetryModeInKeyShare" type="xs:boolean" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="alertMessage">
+    <xs:complexContent>
+      <xs:extension base="protocolMessage">
+        <xs:sequence>
+          <xs:element name="config" type="xs:string" minOccurs="0"/>
+          <xs:element name="level" type="modifiableByte" minOccurs="0"/>
+          <xs:element name="description" type="modifiableByte" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="newSessionTicketMessage">
+    <xs:complexContent>
+      <xs:extension base="handshakeMessage">
+        <xs:sequence>
+          <xs:element name="ticketLifetimeHint" type="modifiableLong" minOccurs="0"/>
+          <xs:element name="ticket" type="sessionTicket" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="modifiableLong">
+    <xs:sequence>
+      <xs:choice minOccurs="0">
+        <xs:element name="BigIntegerXorModification" type="bigIntegerXorModification"/>
+        <xs:element name="BigIntegerSubtractModification" type="bigIntegerSubtractModification"/>
+        <xs:element name="BigIntegerShiftRightModification" type="bigIntegerShiftRightModification"/>
+        <xs:element name="BigIntegerShiftLeftModification" type="bigIntegerShiftLeftModification"/>
+        <xs:element name="BigIntegerExplicitValueModification" type="bigIntegerExplicitValueModification"/>
+        <xs:element name="BigIntegerAddModification" type="bigIntegerAddModification"/>
+        <xs:element name="BigIntegerInteractiveModification" type="bigIntegerInteractiveModification"/>
+        <xs:element name="BigIntegerMultiplyModification" type="bigIntegerMultiplyModification"/>
+        <xs:element name="BooleanToggleModification" type="booleanToggleModification"/>
+        <xs:element name="BooleanExplicitValueModification" type="booleanExplicitValueModification"/>
+        <xs:element name="ByteArrayXorModification" type="byteArrayXorModification"/>
+        <xs:element name="ByteArrayShuffleModification" type="byteArrayShuffleModification"/>
+        <xs:element name="ByteArrayPayloadModification" type="byteArrayPayloadModification"/>
+        <xs:element name="ByteArrayInsertModification" type="byteArrayInsertModification"/>
+        <xs:element name="ByteArrayExplicitValueModification" type="byteArrayExplicitValueModification"/>
+        <xs:element name="ByteArrayDuplicateModification" type="byteArrayDuplicateModification"/>
+        <xs:element name="ByteArrayDeleteModification" type="byteArrayDeleteModification"/>
+        <xs:element name="IntegerXorModification" type="integerXorModification"/>
+        <xs:element name="IntegerSubtractModification" type="integerSubtractModification"/>
+        <xs:element name="IntegerShiftRightModification" type="integerShiftRightModification"/>
+        <xs:element name="IntegerShiftLeftModification" type="integerShiftLeftModification"/>
+        <xs:element name="IntegerExplicitValueModification" type="integerExplicitValueModification"/>
+        <xs:element name="IntegerAddModification" type="integerAddModification"/>
+        <xs:element name="LongXorModification" type="longXorModification"/>
+        <xs:element name="LongSubtractModification" type="longSubtractModification"/>
+        <xs:element name="LongExplicitValueModification" type="longExplicitValueModification"/>
+        <xs:element name="LongAddModification" type="longAddModification"/>
+        <xs:element name="ByteXorModification" type="byteXorModification"/>
+        <xs:element name="ByteSubtractModification" type="byteSubtractModification"/>
+        <xs:element name="ByteAddModification" type="byteAddModification"/>
+        <xs:element name="ByteExplicitValueModification" type="byteExplicitValueModification"/>
+        <xs:element name="StringExplicitValueModification" type="stringExplicitValueModification"/>
+      </xs:choice>
+      <xs:element name="createRandomModification" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="assertEquals" type="xs:anyType" minOccurs="0"/>
+      <xs:element name="originalValue" type="xs:long" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="keyUpdateMessage">
+    <xs:complexContent>
+      <xs:extension base="handshakeMessage">
+        <xs:sequence>
+          <xs:element name="requestMode" type="modifiableByte" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="applicationMessage">
+    <xs:complexContent>
+      <xs:extension base="protocolMessage">
+        <xs:sequence>
+          <xs:element name="dataConfig" type="xs:string" minOccurs="0"/>
+          <xs:element name="data" type="modifiableByteArray" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="changeCipherSpecMessage">
+    <xs:complexContent>
+      <xs:extension base="protocolMessage">
+        <xs:sequence>
+          <xs:element name="ccsProtocolType" type="modifiableByteArray" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="ssl2ClientHelloMessage">
+    <xs:complexContent>
+      <xs:extension base="ssl2Message">
+        <xs:sequence>
+          <xs:element name="protocolVersion" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="cipherSuiteLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="sessionIdLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="challengeLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="cipherSuites" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="sessionId" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="challenge" type="modifiableByteArray" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="ssl2Message" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="protocolMessage">
+        <xs:sequence>
+          <xs:element name="messageLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="paddingLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="type" type="modifiableByte" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="ssl2ClientMasterKeyMessage">
+    <xs:complexContent>
+      <xs:extension base="ssl2Message">
+        <xs:sequence>
+          <xs:element name="cipherKind" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="clearKeyLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="encryptedKeyLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="keyArgLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="clearKeyData" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="encryptedKeyData" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="keyArgData" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="computations" type="rsaClientComputations" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="ssl2ServerHelloMessage">
+    <xs:complexContent>
+      <xs:extension base="ssl2Message">
+        <xs:sequence>
+          <xs:element name="sessionIdHit" type="modifiableByte" minOccurs="0"/>
+          <xs:element name="certificateType" type="modifiableByte" minOccurs="0"/>
+          <xs:element name="protocolVersion" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="certificateLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="cipherSuitesLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="sessionIdLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="certificate" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="cipherSuites" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="sessionId" type="modifiableByteArray" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="ssl2ServerVerifyMessage">
+    <xs:complexContent>
+      <xs:extension base="ssl2Message">
+        <xs:sequence>
+          <xs:element name="encryptedPart" type="modifiableByteArray" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="unknownSSL2Message">
+    <xs:complexContent>
+      <xs:extension base="ssl2Message">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="unknownMessage">
+    <xs:complexContent>
+      <xs:extension base="protocolMessage">
+        <xs:sequence>
+          <xs:element name="dataConfig" type="xs:base64Binary" minOccurs="0"/>
+          <xs:element name="recordContentMessageType" type="protocolMessageType" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="unknownHandshakeMessage">
+    <xs:complexContent>
+      <xs:extension base="handshakeMessage">
+        <xs:sequence>
+          <xs:element name="dataConfig" type="xs:base64Binary" minOccurs="0"/>
+          <xs:element name="data" type="modifiableByteArray" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="helloRequestMessage">
+    <xs:complexContent>
+      <xs:extension base="handshakeMessage">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="heartbeatMessage">
+    <xs:complexContent>
+      <xs:extension base="protocolMessage">
+        <xs:sequence>
+          <xs:element name="heartbeatMessageType" type="modifiableByte" minOccurs="0"/>
+          <xs:element name="payloadLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="payload" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="padding" type="modifiableByteArray" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="supplementalDataMessage">
+    <xs:complexContent>
+      <xs:extension base="handshakeMessage">
+        <xs:sequence>
+          <xs:element name="entries" type="supplementalDataEntry" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="supplementalDataLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="supplementalDataBytes" type="modifiableByteArray" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="supplementalDataEntry">
+    <xs:sequence>
+      <xs:element name="supplementalDataEntry" type="modifiableByteArray" minOccurs="0"/>
+      <xs:element name="supplementalDataEntryLength" type="modifiableInteger" minOccurs="0"/>
+      <xs:element name="supplementalDataEntryType" type="modifiableInteger" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="encryptedExtensionsMessage">
+    <xs:complexContent>
+      <xs:extension base="handshakeMessage">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="pskDhClientKeyExchangeMessage">
+    <xs:complexContent>
+      <xs:extension base="dhClientKeyExchangeMessage">
+        <xs:sequence>
+          <xs:element name="identity" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="identityLength" type="modifiableInteger" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="pskDheServerKeyExchangeMessage">
+    <xs:complexContent>
+      <xs:extension base="dheServerKeyExchangeMessage">
+        <xs:sequence>
+          <xs:element name="identityHint" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="identityHintLength" type="modifiableInteger" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="pskEcDhClientKeyExchangeMessage">
+    <xs:complexContent>
+      <xs:extension base="ecdhClientKeyExchangeMessage">
+        <xs:sequence>
+          <xs:element name="identity" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="identityLength" type="modifiableInteger" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="pskEcDheServerKeyExchangeMessage">
+    <xs:complexContent>
+      <xs:extension base="ecdheServerKeyExchangeMessage">
+        <xs:sequence>
+          <xs:element name="identityHint" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="identityHintLength" type="modifiableInteger" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="pskRsaClientKeyExchangeMessage">
+    <xs:complexContent>
+      <xs:extension base="rsaClientKeyExchangeMessage">
+        <xs:sequence>
+          <xs:element name="identity" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="identityLength" type="modifiableInteger" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="srpClientKeyExchangeMessage">
+    <xs:complexContent>
+      <xs:extension base="clientKeyExchangeMessage">
+        <xs:sequence>
+          <xs:element name="modulus" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="modulusLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="generator" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="generatorLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="computations" type="srpClientComputations" minOccurs="0"/>
+          <xs:element name="salt" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="saltLength" type="modifiableInteger" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="srpClientComputations">
+    <xs:complexContent>
+      <xs:extension base="keyExchangeComputations">
+        <xs:sequence>
+          <xs:element name="generator" type="modifiableBigInteger" minOccurs="0"/>
+          <xs:element name="modulus" type="modifiableBigInteger" minOccurs="0"/>
+          <xs:element name="SRPIdentity" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="SRPPassword" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="salt" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="serverPublicKey" type="modifiableBigInteger" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="srpServerKeyExchangeMessage">
+    <xs:complexContent>
+      <xs:extension base="serverKeyExchangeMessage">
+        <xs:sequence>
+          <xs:element name="modulus" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="modulusLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="generator" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="generatorLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="salt" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="saltLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="computations" type="srpServerComputations" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="srpServerComputations">
+    <xs:complexContent>
+      <xs:extension base="keyExchangeComputations">
+        <xs:sequence>
+          <xs:element name="generator" type="modifiableBigInteger" minOccurs="0"/>
+          <xs:element name="modulus" type="modifiableBigInteger" minOccurs="0"/>
+          <xs:element name="SRPIdentity" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="SRPPassword" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="salt" type="modifiableByteArray" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="endOfEarlyDataMessage">
+    <xs:complexContent>
+      <xs:extension base="handshakeMessage">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="pwdServerKeyExchangeMessage">
+    <xs:complexContent>
+      <xs:extension base="serverKeyExchangeMessage">
+        <xs:sequence>
+          <xs:element name="saltLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="salt" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="curveType" type="modifiableByte" minOccurs="0"/>
+          <xs:element name="namedGroup" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="elementLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="element" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="scalarLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="scalar" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="computations" type="pwdComputations" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="pwdComputations">
+    <xs:complexContent>
+      <xs:extension base="keyExchangeComputations">
+        <xs:sequence>
+          <xs:element name="passwordElement" type="point" minOccurs="0"/>
+          <xs:element name="privateKeyScalar" type="xs:integer" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="rsaServerKeyExchangeMessage">
+    <xs:complexContent>
+      <xs:extension base="serverKeyExchangeMessage">
+        <xs:sequence>
+          <xs:element name="modulus" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="modulusLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="computations" type="rsaServerComputations" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="rsaServerComputations">
+    <xs:complexContent>
+      <xs:extension base="keyExchangeComputations">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="pwdClientKeyExchangeMessage">
+    <xs:complexContent>
+      <xs:extension base="clientKeyExchangeMessage">
+        <xs:sequence>
+          <xs:element name="elementLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="element" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="scalarLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="scalar" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="computations" type="pwdComputations" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="pskServerKeyExchangeMessage">
+    <xs:complexContent>
+      <xs:extension base="serverKeyExchangeMessage">
+        <xs:sequence>
+          <xs:element name="computations" type="pskPremasterComputations" minOccurs="0"/>
+          <xs:element name="identityHint" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="identityHintLength" type="modifiableInteger" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="certificateStatusMessage">
+    <xs:complexContent>
+      <xs:extension base="handshakeMessage">
+        <xs:sequence>
+          <xs:element name="certificateStatusType" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="ocspResponseLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="ocspResponseBytes" type="modifiableByteArray" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="emptyClientKeyExchangeMessage">
+    <xs:complexContent>
+      <xs:extension base="clientKeyExchangeMessage">
+        <xs:sequence>
+          <xs:element name="computations" type="emptyClientComputations" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="emptyClientComputations">
+    <xs:complexContent>
+      <xs:extension base="keyExchangeComputations">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="encryptedClientHelloMessage">
+    <xs:complexContent>
+      <xs:extension base="coreClientHelloMessage">
+        <xs:sequence>
+          <xs:element name="clientHelloInner" type="clientHelloMessage" minOccurs="0"/>
+          <xs:element name="encodedClientHelloInnerPadding" type="modifiableByteArray" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="userMappingExtensionMessage">
+    <xs:complexContent>
+      <xs:extension base="extensionMessage">
+        <xs:sequence>
+          <xs:element name="userMappingType" type="modifiableByte" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="srpExtensionMessage">
+    <xs:complexContent>
+      <xs:extension base="extensionMessage">
+        <xs:sequence>
+          <xs:element name="srpIdentifier" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="srpIdentifierLength" type="modifiableInteger" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="connectionIdExtensionMessage">
+    <xs:complexContent>
+      <xs:extension base="extensionMessage">
+        <xs:sequence>
+          <xs:element name="connectionId" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="connectionIdLength" type="modifiableInteger" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="encryptedClientHelloExtensionMessage">
+    <xs:complexContent>
+      <xs:extension base="extensionMessage">
+        <xs:sequence>
+          <xs:element name="acceptConfirmation" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="configId" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="echClientHelloType" type="echClientHelloType" minOccurs="0"/>
+          <xs:element name="enc" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="encLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element ref="hpkeCipherSuite" minOccurs="0"/>
+          <xs:element name="payload" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="payloadLength" type="modifiableInteger" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="hpkeCipherSuite">
+    <xs:sequence>
+      <xs:element name="hpkeKeyDerivationFunction" type="hpkeKeyDerivationFunction" minOccurs="0"/>
+      <xs:element name="hpkeAeadFunction" type="hpkeAeadFunction" minOccurs="0"/>
+    </xs:sequence>
   </xs:complexType>
 
   <xs:simpleType name="layerConfiguration">
@@ -2302,9 +4398,9 @@
   <xs:simpleType name="esniDnsKeyRecordVersion">
     <xs:restriction base="xs:string">
       <xs:enumeration value="NULL"/>
-      <xs:enumeration value="VERSION_FF01"/>
-      <xs:enumeration value="VERSION_FF02"/>
-      <xs:enumeration value="VERSION_FF03"/>
+      <xs:enumeration value="FF01"/>
+      <xs:enumeration value="FF02"/>
+      <xs:enumeration value="FF03"/>
     </xs:restriction>
   </xs:simpleType>
 
@@ -2355,6 +4451,13 @@
       <xs:enumeration value="CONNECTION_ID"/>
       <xs:enumeration value="RENEGOTIATION_INFO"/>
       <xs:enumeration value="ENCRYPTED_SERVER_NAME_INDICATION"/>
+      <xs:enumeration value="ENCRYPTED_CLIENT_HELLO_DRAFT_07"/>
+      <xs:enumeration value="ENCRYPTED_CLIENT_HELLO_DRAFT_08"/>
+      <xs:enumeration value="ENCRYPTED_CLIENT_HELLO_DRAFT_09"/>
+      <xs:enumeration value="ENCRYPTED_CLIENT_HELLO_DRAFT_10"/>
+      <xs:enumeration value="ENCRYPTED_CLIENT_HELLO_DRAFT_11"/>
+      <xs:enumeration value="ENCRYPTED_CLIENT_HELLO_DRAFT_12"/>
+      <xs:enumeration value="ENCRYPTED_CLIENT_HELLO"/>
       <xs:enumeration value="GREASE_00"/>
       <xs:enumeration value="GREASE_01"/>
       <xs:enumeration value="GREASE_02"/>
@@ -2372,6 +4475,99 @@
       <xs:enumeration value="GREASE_14"/>
       <xs:enumeration value="GREASE_15"/>
       <xs:enumeration value="UNKNOWN"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="echConfigVersion">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="DRAFT_FF03"/>
+      <xs:enumeration value="DRAFT_FF07"/>
+      <xs:enumeration value="DRAFT_FF08"/>
+      <xs:enumeration value="DRAFT_FF09"/>
+      <xs:enumeration value="DRAFT_FF0A"/>
+      <xs:enumeration value="DRAFT_FF0B"/>
+      <xs:enumeration value="DRAFT_FF0C"/>
+      <xs:enumeration value="DRAFT_FF0D"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="esniMessageType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="CLIENT"/>
+      <xs:enumeration value="SERVER"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="handshakeMessageType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="UNKNOWN"/>
+      <xs:enumeration value="HELLO_REQUEST"/>
+      <xs:enumeration value="CLIENT_HELLO"/>
+      <xs:enumeration value="SERVER_HELLO"/>
+      <xs:enumeration value="HELLO_VERIFY_REQUEST"/>
+      <xs:enumeration value="NEW_SESSION_TICKET"/>
+      <xs:enumeration value="END_OF_EARLY_DATA"/>
+      <xs:enumeration value="ENCRYPTED_EXTENSIONS"/>
+      <xs:enumeration value="CERTIFICATE"/>
+      <xs:enumeration value="SERVER_KEY_EXCHANGE"/>
+      <xs:enumeration value="CERTIFICATE_REQUEST"/>
+      <xs:enumeration value="SERVER_HELLO_DONE"/>
+      <xs:enumeration value="CERTIFICATE_VERIFY"/>
+      <xs:enumeration value="CLIENT_KEY_EXCHANGE"/>
+      <xs:enumeration value="FINISHED"/>
+      <xs:enumeration value="KEY_UPDATE"/>
+      <xs:enumeration value="CERTIFICATE_STATUS"/>
+      <xs:enumeration value="SUPPLEMENTAL_DATA"/>
+      <xs:enumeration value="MESSAGE_HASH"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="protocolMessageType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="UNKNOWN"/>
+      <xs:enumeration value="CHANGE_CIPHER_SPEC"/>
+      <xs:enumeration value="ALERT"/>
+      <xs:enumeration value="HANDSHAKE"/>
+      <xs:enumeration value="APPLICATION_DATA"/>
+      <xs:enumeration value="HEARTBEAT"/>
+      <xs:enumeration value="TLS12_CID"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="echClientHelloType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="OUTER"/>
+      <xs:enumeration value="INNER"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="hpkeKeyDerivationFunction">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="RESERVED"/>
+      <xs:enumeration value="HKDF_SHA256"/>
+      <xs:enumeration value="HKDF_SHA384"/>
+      <xs:enumeration value="HKDF_SHA512"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="hpkeAeadFunction">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="RESERVED"/>
+      <xs:enumeration value="AES_128_GCM"/>
+      <xs:enumeration value="AES_256_GCM"/>
+      <xs:enumeration value="CHACHA20_POLY1305"/>
+      <xs:enumeration value="EXPORT_ONLY"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="hpkeKeyEncapsulationMechanism">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="RESERVED"/>
+      <xs:enumeration value="DHKEM_P256_HKDF_SHA256"/>
+      <xs:enumeration value="DHKEM_P384_HKDF_SHA384"/>
+      <xs:enumeration value="DHKEM_P521_HKDF_SHA512"/>
+      <xs:enumeration value="DHKEM_X25519_HKDF_SHA256"/>
+      <xs:enumeration value="DHKEM_X448_HKDF_SHA521"/>
     </xs:restriction>
   </xs:simpleType>
 </xs:schema>

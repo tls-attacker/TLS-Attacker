@@ -160,13 +160,27 @@ public class WorkflowConfigurationFactory {
                 && connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
             workflowTrace.addTlsAction(new EsniKeyDnsRequestAction());
         }
+        if (config.isAddEncryptedClientHelloExtension()
+                && connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
+            workflowTrace.addTlsAction(new EchConfigDnsRequestAction());
+        }
 
-        workflowTrace.addTlsAction(
-                MessageActionFactory.createTLSAction(
-                        config,
-                        connection,
-                        ConnectionEndType.CLIENT,
-                        new ClientHelloMessage(config)));
+        if (config.isAddEncryptedClientHelloExtension()
+                && connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
+            workflowTrace.addTlsAction(
+                    MessageActionFactory.createTLSAction(
+                            config,
+                            connection,
+                            ConnectionEndType.CLIENT,
+                            new EncryptedClientHelloMessage(config)));
+        } else {
+            workflowTrace.addTlsAction(
+                    MessageActionFactory.createTLSAction(
+                            config,
+                            connection,
+                            ConnectionEndType.CLIENT,
+                            new ClientHelloMessage(config)));
+        }
 
         if (config.getHighestProtocolVersion().isDTLS() && config.isDtlsCookieExchange()) {
             workflowTrace.addTlsAction(

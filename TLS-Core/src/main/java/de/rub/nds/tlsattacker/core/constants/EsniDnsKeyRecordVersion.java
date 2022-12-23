@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.constants;
 
 import java.math.BigInteger;
@@ -14,12 +13,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum EsniDnsKeyRecordVersion {
+    // DRAFT 00
     NULL(null),
-    VERSION_FF01(new byte[] { (byte) 0xff, (byte) 0x01 }),
-    VERSION_FF02(new byte[] { (byte) 0xff, (byte) 0x02 }),
-    VERSION_FF03(new byte[] { (byte) 0xff, (byte) 0x03 });
+    // DRAFT 01 and 02
+    FF01(new byte[] {(byte) 0xff, (byte) 0x01}),
+    // DRAFT 02 and 03
+    FF02(new byte[] {(byte) 0xff, (byte) 0x02}),
+    // DRAFT 04, 05, and 06
+    FF03(new byte[] {(byte) 0xff, (byte) 0x03});
 
-    EsniDnsKeyRecordVersion(byte[] byteValue) {
+    private EsniDnsKeyRecordVersion(byte[] byteValue) {
         this.byteValue = byteValue;
     }
 
@@ -49,5 +52,4 @@ public enum EsniDnsKeyRecordVersion {
             return MAP.get(hashMapKey);
         }
     }
-
 }

@@ -8,6 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.config;
 
+import static java.nio.charset.StandardCharsets.US_ASCII;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.IllegalStringAdapter;
 import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
@@ -21,6 +23,7 @@ import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.crypto.keys.CustomRSAPrivateKey;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.layer.constant.LayerConfiguration;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.EchConfig;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
@@ -217,10 +220,10 @@ public class Config implements Serializable {
     @XmlElementWrapper
     private List<ServerNamePair> defaultSniHostnames =
             new LinkedList<>(
-                    Arrays.asList(
+                    List.of(
                             new ServerNamePair(
                                     NameType.HOST_NAME.getValue(),
-                                    "example.com".getBytes(Charset.forName("ASCII")))));
+                                    "example.com".getBytes(US_ASCII))));
 
     /** Key type for KeyShareExtension */
     private NamedGroup defaultSelectedNamedGroup = NamedGroup.SECP256R1;
@@ -1144,6 +1147,9 @@ public class Config implements Serializable {
 
     private ECPointFormat defaultSelectedPointFormat = ECPointFormat.UNCOMPRESSED;
 
+    /** The DNS server to use for DNS queries (e.g. ech keys) */
+    private String defaultDnsServer = "8.8.8.8";
+
     /** Private Key of the Client for the EncryptedServerNameIndication extension. */
     private BigInteger defaultEsniClientPrivateKey =
             new BigInteger(
@@ -1201,6 +1207,25 @@ public class Config implements Serializable {
     @XmlElement(name = "defaultEsniExtension")
     @XmlElementWrapper
     private List<ExtensionType> defaultEsniExtensions = new LinkedList();
+
+    /** Private Key of the Client for the EncryptedClientHello extension. */
+    private BigInteger defaultEchClientPrivateKey =
+            new BigInteger(
+                    "191991257030464195512760799659436374116556484140110877679395918219072292938297573720808302564562486757422301181089761");
+
+    /** Default value of a server's public key */
+    private BigInteger defaultEchServerPrivateKey =
+            new BigInteger(
+                    "-1673869334575128978734767576405071540980308529037586990006706167463937836529");
+
+    /** Default algorithm values for ECH */
+    private EchConfig defaultEchConfig;
+
+    /** If we generate ClientHello with the EncryptedClientHello extension */
+    private Boolean addEncryptedClientHelloExtension = false;
+
+    /** Padding for the list of alpn values */
+    private Integer defaultMaxEchAlpnPadding = 25;
 
     private Boolean acceptOnlyFittingDtlsFragments = false;
 
@@ -1316,6 +1341,7 @@ public class Config implements Serializable {
                         NamedGroup.ECDH_X25519,
                         ArrayConverter.hexStringToByteArray(
                                 "2A981DB6CDD02A06C1763102C9E741365AC4E6F72B3176A6BD6A3523D3EC0F4C"));
+        defaultEchConfig = EchConfig.createDefaultEchConfig();
         pskKeyExchangeModes = new LinkedList<>();
         pskKeyExchangeModes.add(PskKeyExchangeMode.PSK_KE);
         pskKeyExchangeModes.add(PskKeyExchangeMode.PSK_DHE_KE);
@@ -2709,6 +2735,14 @@ public class Config implements Serializable {
         this.addEncryptedServerNameIndicationExtension = addEncryptedServerNameIndicationExtension;
     }
 
+    public Boolean isAddEncryptedClientHelloExtension() {
+        return addEncryptedClientHelloExtension;
+    }
+
+    public void setAddEncryptedClientHelloExtension(Boolean addEncryptedClientHelloExtension) {
+        this.addEncryptedClientHelloExtension = addEncryptedClientHelloExtension;
+    }
+
     public void setAddPWDClearExtension(Boolean addPWDClearExtension) {
         this.addPWDClearExtension = addPWDClearExtension;
     }
@@ -3806,6 +3840,22 @@ public class Config implements Serializable {
         this.defaultEsniClientNonce = defaultEsniClientNonce;
     }
 
+    public BigInteger getDefaultEchClientPrivateKey() {
+        return defaultEchClientPrivateKey;
+    }
+
+    public void setDefaultEchClientPrivateKey(BigInteger defaultEchClientPrivateKey) {
+        this.defaultEchClientPrivateKey = defaultEchClientPrivateKey;
+    }
+
+    public BigInteger getDefaultEchServerPrivateKey() {
+        return defaultEchServerPrivateKey;
+    }
+
+    public void setDefaultEchServerPrivateKey(BigInteger defaultEchServerPrivateKey) {
+        this.defaultEchServerPrivateKey = defaultEchServerPrivateKey;
+    }
+
     public byte[] getDefaultEsniServerNonce() {
         return Arrays.copyOf(defaultEsniServerNonce, defaultEsniServerNonce.length);
     }
@@ -4071,6 +4121,30 @@ public class Config implements Serializable {
 
     public void setDefaultSniHostnames(List<ServerNamePair> defaultSniHostnames) {
         this.defaultSniHostnames = defaultSniHostnames;
+    }
+
+    public String getDefaultDnsServer() {
+        return defaultDnsServer;
+    }
+
+    public void setDefaultDnsServer(String defaultDnsServer) {
+        this.defaultDnsServer = defaultDnsServer;
+    }
+
+    public EchConfig getDefaultEchConfig() {
+        return defaultEchConfig;
+    }
+
+    public void setDefaultEchConfig(EchConfig defaultEchConfig) {
+        this.defaultEchConfig = defaultEchConfig;
+    }
+
+    public Integer getDefaultMaxEchAlpnPadding() {
+        return defaultMaxEchAlpnPadding;
+    }
+
+    public void setDefaultMaxEchAlpnPadding(Integer defaultMaxEchAlpnPadding) {
+        this.defaultMaxEchAlpnPadding = defaultMaxEchAlpnPadding;
     }
 
     public LayerConfiguration getDefaultLayerConfiguration() {

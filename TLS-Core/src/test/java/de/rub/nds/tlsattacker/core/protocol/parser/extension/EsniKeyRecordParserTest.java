@@ -21,6 +21,7 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EsniKeyRecord;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
 import java.util.List;
 import java.util.stream.Stream;
@@ -32,10 +33,13 @@ import org.junit.jupiter.params.provider.MethodSource;
 public class EsniKeyRecordParserTest {
 
     private Config config;
+    private TlsContext tlsContext;
 
     @BeforeEach
     public void setUp() {
         this.config = Config.createConfig();
+        this.tlsContext = new TlsContext(config);
+        this.tlsContext.setTalkingConnectionEndType(ConnectionEndType.SERVER);
     }
 
     public static Stream<Arguments> provideTestVectors() {
@@ -128,8 +132,7 @@ public class EsniKeyRecordParserTest {
             int expectedExtensionsLength,
             byte[] expectedExtensionNonce) {
         EsniKeyRecordParser parser =
-                new EsniKeyRecordParser(
-                        new ByteArrayInputStream(providedRecordBytes), new TlsContext());
+                new EsniKeyRecordParser(new ByteArrayInputStream(providedRecordBytes), tlsContext);
         EsniKeyRecord esniKeyRecord = new EsniKeyRecord();
         parser.parse(esniKeyRecord);
 
