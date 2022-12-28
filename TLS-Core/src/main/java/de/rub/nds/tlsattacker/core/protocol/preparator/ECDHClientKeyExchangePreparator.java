@@ -18,7 +18,7 @@ import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMessage>
+public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMessage<?>>
         extends ClientKeyExchangePreparator<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();

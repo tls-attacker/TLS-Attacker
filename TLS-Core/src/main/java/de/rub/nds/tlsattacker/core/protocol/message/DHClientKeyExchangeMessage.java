@@ -21,7 +21,8 @@ import java.io.InputStream;
 import java.util.List;
 
 @XmlRootElement(name = "DHClientKeyExchange")
-public class DHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
+public class DHClientKeyExchangeMessage<Self extends DHClientKeyExchangeMessage<?>>
+        extends ClientKeyExchangeMessage<Self> {
 
     @HoldsModifiableVariable protected DHClientComputations computations;
 
@@ -42,24 +43,23 @@ public class DHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     }
 
     @Override
-    public DHClientKeyExchangeHandler<? extends DHClientKeyExchangeMessage> getHandler(
-            TlsContext tlsContext) {
+    public DHClientKeyExchangeHandler<Self> getHandler(TlsContext tlsContext) {
         return new DHClientKeyExchangeHandler<>(tlsContext);
     }
 
     @Override
-    public DHClientKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new DHClientKeyExchangeParser(stream, tlsContext);
+    public DHClientKeyExchangeParser<Self> getParser(TlsContext tlsContext, InputStream stream) {
+        return new DHClientKeyExchangeParser<>(stream, tlsContext);
     }
 
     @Override
-    public DHClientKeyExchangePreparator getPreparator(TlsContext tlsContext) {
-        return new DHClientKeyExchangePreparator(tlsContext.getChooser(), this);
+    public DHClientKeyExchangePreparator<Self> getPreparator(TlsContext tlsContext) {
+        return new DHClientKeyExchangePreparator<Self>(tlsContext.getChooser(), (Self) this);
     }
 
     @Override
-    public DHClientKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
-        return new DHClientKeyExchangeSerializer(this);
+    public DHClientKeyExchangeSerializer<Self> getSerializer(TlsContext tlsContext) {
+        return new DHClientKeyExchangeSerializer<Self>((Self) this);
     }
 
     @Override

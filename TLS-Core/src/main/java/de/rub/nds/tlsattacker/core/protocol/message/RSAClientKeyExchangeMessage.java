@@ -22,7 +22,8 @@ import java.io.InputStream;
 import java.util.List;
 
 @XmlRootElement(name = "RSAClientKeyExchange")
-public class RSAClientKeyExchangeMessage extends ClientKeyExchangeMessage {
+public class RSAClientKeyExchangeMessage<Self extends RSAClientKeyExchangeMessage<?>>
+        extends ClientKeyExchangeMessage<Self> {
 
     @HoldsModifiableVariable @XmlElement protected RSAClientComputations computations;
 

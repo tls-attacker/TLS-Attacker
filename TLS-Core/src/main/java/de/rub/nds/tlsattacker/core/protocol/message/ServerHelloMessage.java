@@ -33,7 +33,7 @@ import java.util.Date;
 import java.util.Objects;
 
 @XmlRootElement(name = "ServerHello")
-public class ServerHelloMessage extends HelloMessage {
+public class ServerHelloMessage extends HelloMessage<ServerHelloMessage> {
 
     private static final byte[] HELLO_RETRY_REQUEST_RANDOM =
             new byte[] {
@@ -109,7 +109,9 @@ public class ServerHelloMessage extends HelloMessage {
                             || tlsConfig.getHighestProtocolVersion() == ProtocolVersion.DTLS13)) {
                 addExtension(new RecordSizeLimitExtensionMessage());
             }
-            if (tlsConfig.isAddServerNameIndicationExtension()) {
+            if (tlsConfig.isAddServerNameIndicationExtension()
+                    && !tlsConfig.isAddEncryptedClientHelloExtension()
+                    && !tlsConfig.isAddEncryptedServerNameIndicationExtension()) {
                 ServerNameIndicationExtensionMessage extension =
                         new ServerNameIndicationExtensionMessage();
                 ServerNamePair pair =

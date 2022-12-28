@@ -24,7 +24,7 @@ import java.util.Arrays;
 import java.util.Objects;
 
 @XmlRootElement(name = "DtlsHandshakeMessageFragment")
-public class DtlsHandshakeMessageFragment extends HandshakeMessage {
+public class DtlsHandshakeMessageFragment extends HandshakeMessage<DtlsHandshakeMessageFragment> {
 
     @ModifiableVariableProperty private ModifiableInteger fragmentOffset = null;
 

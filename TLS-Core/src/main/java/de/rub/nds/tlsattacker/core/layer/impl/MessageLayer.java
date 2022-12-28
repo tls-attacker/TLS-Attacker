@@ -330,7 +330,11 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
         LOGGER.debug(
                 "Passing the following Application Data to higher layer: {}",
                 ArrayConverter.bytesToHexString(receivedAppData.getData().getValue()));
-        currentInputStream = new HintedLayerInputStream(hint, this);
+        if (currentInputStream == null) {
+            currentInputStream = new HintedLayerInputStream(hint, this);
+        } else {
+            currentInputStream.setHint(hint);
+        }
         currentInputStream.extendStream(receivedAppData.getData().getValue());
     }
 }

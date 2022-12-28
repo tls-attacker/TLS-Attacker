@@ -6,20 +6,28 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
+
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.CipherSuite;
-import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.constants.*;
+import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
+import de.rub.nds.tlsattacker.core.crypto.MessageDigestCollector;
+import de.rub.nds.tlsattacker.core.crypto.hpke.HpkeUtil;
+import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
+
+    private static final String label = "ech accept confirmation";
 
     private final ServerHelloMessage msg;
 
@@ -43,6 +51,9 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
                         && chooser.getConfig().isAddExtensionsInSSL())) {
             prepareExtensions();
             prepareExtensionLength();
+        }
+        if (chooser.getContext().getTlsContext().isSupportsECH()) {
+            prepareEchRandom();
         }
     }
 
@@ -95,8 +106,7 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
     }
 
     private void prepareSessionID() {
-        if (chooser.getConfig().getHighestProtocolVersion().isTLS13()
-                || chooser.getHighestProtocolVersion() == ProtocolVersion.DTLS13) {
+        if (chooser.getConfig().getHighestProtocolVersion().isTLS13()) {
             msg.setSessionId(chooser.getClientSessionId());
         } else {
             msg.setSessionId(chooser.getServerSessionId());
@@ -109,8 +119,6 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
         ProtocolVersion ourVersion = chooser.getConfig().getHighestProtocolVersion();
         if (chooser.getConfig().getHighestProtocolVersion().isTLS13()) {
             ourVersion = ProtocolVersion.TLS12;
-        } else if (chooser.getConfig().getHighestProtocolVersion() == ProtocolVersion.DTLS13) {
-            ourVersion = ProtocolVersion.DTLS12;
         }
 
         ProtocolVersion clientVersion = chooser.getHighestClientProtocolVersion();
@@ -122,7 +130,7 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
             msg.setProtocolVersion(ourVersion.getValue());
         } else {
             if (chooser.getHighestClientProtocolVersion().isDTLS()
-                    && chooser.getConfig().getHighestProtocolVersion().isDTLS()) {
+                && chooser.getConfig().getHighestProtocolVersion().isDTLS()) {
                 // We both want dtls
                 if (intRepresentationClientVersion <= intRepresentationOurVersion) {
                     msg.setProtocolVersion(ourVersion.getValue());
@@ -144,5 +152,66 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
         LOGGER.debug(
                 "ProtocolVersion: "
                         + ArrayConverter.bytesToHexString(msg.getProtocolVersion().getValue()));
+    }
+
+    protected void prepareEchRandom() {
+        // ECH mandates to replace the last 8 bytes of the client random with deterministic values
+        // Section 7.2 esni_draft_14
+
+        TlsContext tlsContext = chooser.getContext().getTlsContext();
+        ClientHelloMessage innerClientHello = chooser.getInnerClientHello();
+        byte[] clientRandom = innerClientHello.getRandom().getValue();
+        byte[] serverRandom = chooser.getServerRandom();
+        byte[] serverRandomTruncatedPart =
+                Arrays.copyOfRange(serverRandom, serverRandom.length - 8, serverRandom.length);
+        byte[] clientHelloInner = chooser.getLastClientHello();
+        byte[] acceptConfirmation = new byte[] {0, 0, 0, 0, 0, 0, 0, 0};
+
+        // serialize server hello and replace last 8 bytes of server random with null bytes
+        byte[] serverHello = msg.getSerializer(tlsContext).serializeHandshakeMessageContent();
+        byte[] type = new byte[] {HandshakeMessageType.SERVER_HELLO.getValue()};
+        byte[] length = ArrayConverter.intToBytes(serverHello.length, 3);
+        serverHello = ArrayConverter.concatenate(type, length, serverHello);
+
+        // replace random
+
+        int startIndex = HpkeUtil.indexOf(serverHello, serverRandomTruncatedPart);
+        System.arraycopy(new byte[] {0, 0, 0, 0, 0, 0, 0, 0}, 0, serverHello, startIndex, 8);
+
+        // digest clientHello and serverHello
+        MessageDigestCollector echDigest = new MessageDigestCollector();
+        LOGGER.debug("ClientHelloInner: " + ArrayConverter.bytesToHexString(clientHelloInner));
+        LOGGER.debug("ServerHello: " + ArrayConverter.bytesToHexString(serverHello));
+        echDigest.append(clientHelloInner);
+        echDigest.append(serverHello);
+        LOGGER.debug(
+                "Complete resulting digest: "
+                        + ArrayConverter.bytesToHexString(echDigest.getRawBytes()));
+
+        byte[] transcriptEchConf =
+                echDigest.digest(
+                        chooser.getSelectedProtocolVersion(), chooser.getSelectedCipherSuite());
+        LOGGER.debug(
+                "Transcript Ech Config: " + ArrayConverter.bytesToHexString(transcriptEchConf));
+
+        // compute accept_confirmation
+        HKDFAlgorithm hkdfAlgorithm =
+                chooser.getEchConfig().getHpkeKeyDerivationFunction().getHkdfAlgorithm();
+        try {
+            byte[] extract = HKDFunction.extract(hkdfAlgorithm, null, clientRandom);
+            LOGGER.debug("Extract: " + ArrayConverter.bytesToHexString(extract));
+            acceptConfirmation =
+                    HKDFunction.expandLabel(hkdfAlgorithm, extract, label, transcriptEchConf, 8);
+            LOGGER.debug(
+                    "Accept Confirmation: " + ArrayConverter.bytesToHexString(acceptConfirmation));
+        } catch (CryptoException e) {
+            LOGGER.warn("Could not calculate accept confirmation");
+        }
+        // set serverRandom accordingly
+        byte[] newRandom =
+                ArrayConverter.concatenate(
+                        Arrays.copyOfRange(serverRandom, 0, serverRandom.length - 8),
+                        acceptConfirmation);
+        msg.setRandom(newRandom);
     }
 }

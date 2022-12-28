@@ -1,25 +1,23 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.util.BigIntegers;
 
-import java.math.BigInteger;
-
-public class DHClientKeyExchangePreparator<T extends DHClientKeyExchangeMessage>
-    extends ClientKeyExchangePreparator<T> {
+public class DHClientKeyExchangePreparator<T extends DHClientKeyExchangeMessage<?>>
+        extends ClientKeyExchangePreparator<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -53,7 +51,8 @@ public class DHClientKeyExchangePreparator<T extends DHClientKeyExchangeMessage>
         prepareClientServerRandom(msg);
     }
 
-    protected BigInteger calculatePublicKey(BigInteger generator, BigInteger modulus, BigInteger privateKey) {
+    protected BigInteger calculatePublicKey(
+            BigInteger generator, BigInteger modulus, BigInteger privateKey) {
         if (modulus.compareTo(BigInteger.ZERO) == 0) {
             LOGGER.warn("Modulus is ZERO. Returning 0 publicKey");
             return BigInteger.ZERO;
@@ -61,7 +60,8 @@ public class DHClientKeyExchangePreparator<T extends DHClientKeyExchangeMessage>
         return generator.modPow(privateKey.abs(), modulus.abs());
     }
 
-    protected byte[] calculatePremasterSecret(BigInteger modulus, BigInteger privateKey, BigInteger publicKey) {
+    protected byte[] calculatePremasterSecret(
+            BigInteger modulus, BigInteger privateKey, BigInteger publicKey) {
         if (modulus.compareTo(BigInteger.ZERO) == 0) {
             LOGGER.warn("Modulus is ZERO. Returning empty premaster Secret");
             return new byte[0];
@@ -82,13 +82,16 @@ public class DHClientKeyExchangePreparator<T extends DHClientKeyExchangeMessage>
     protected void preparePremasterSecret(T msg) {
         msg.getComputations().setPremasterSecret(premasterSecret);
         premasterSecret = msg.getComputations().getPremasterSecret().getValue();
-        LOGGER.debug("PremasterSecret: "
-            + ArrayConverter.bytesToHexString(msg.getComputations().getPremasterSecret().getValue()));
+        LOGGER.debug(
+                "PremasterSecret: "
+                        + ArrayConverter.bytesToHexString(
+                                msg.getComputations().getPremasterSecret().getValue()));
     }
 
     protected void preparePublicKey(T msg) {
         msg.setPublicKey(ArrayConverter.bigIntegerToByteArray(clientPublicKey));
-        LOGGER.debug("PublicKey: " + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
+        LOGGER.debug(
+                "PublicKey: " + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
     }
 
     protected void preparePublicKeyLength(T msg) {
@@ -100,8 +103,10 @@ public class DHClientKeyExchangePreparator<T extends DHClientKeyExchangeMessage>
         random = ArrayConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom());
         msg.getComputations().setClientServerRandom(random);
         random = msg.getComputations().getClientServerRandom().getValue();
-        LOGGER.debug("ClientServerRandom: "
-            + ArrayConverter.bytesToHexString(msg.getComputations().getClientServerRandom().getValue()));
+        LOGGER.debug(
+                "ClientServerRandom: "
+                        + ArrayConverter.bytesToHexString(
+                                msg.getComputations().getClientServerRandom().getValue()));
     }
 
     @Override
@@ -112,15 +117,20 @@ public class DHClientKeyExchangePreparator<T extends DHClientKeyExchangeMessage>
         setComputationModulus(msg);
         setComputationPrivateKey(msg, clientMode);
         if (clientMode) {
-            clientPublicKey = calculatePublicKey(msg.getComputations().getGenerator().getValue(),
-                msg.getComputations().getModulus().getValue(), msg.getComputations().getPrivateKey().getValue());
+            clientPublicKey =
+                    calculatePublicKey(
+                            msg.getComputations().getGenerator().getValue(),
+                            msg.getComputations().getModulus().getValue(),
+                            msg.getComputations().getPrivateKey().getValue());
             preparePublicKey(msg);
         }
         setComputationPublicKey(msg, clientMode);
-        premasterSecret = calculatePremasterSecret(msg.getComputations().getModulus().getValue(),
-            msg.getComputations().getPrivateKey().getValue(), msg.getComputations().getPublicKey().getValue());
+        premasterSecret =
+                calculatePremasterSecret(
+                        msg.getComputations().getModulus().getValue(),
+                        msg.getComputations().getPrivateKey().getValue(),
+                        msg.getComputations().getPublicKey().getValue());
         preparePremasterSecret(msg);
-
     }
 
     protected void setComputationPrivateKey(T msg, boolean clientMode) {
@@ -129,7 +139,9 @@ public class DHClientKeyExchangePreparator<T extends DHClientKeyExchangeMessage>
         } else {
             msg.getComputations().setPrivateKey(chooser.getServerDhPrivateKey());
         }
-        LOGGER.debug("Computation PrivateKey: " + msg.getComputations().getPrivateKey().getValue().toString());
+        LOGGER.debug(
+                "Computation PrivateKey: "
+                        + msg.getComputations().getPrivateKey().getValue().toString());
     }
 
     protected void setComputationPublicKey(T msg, boolean clientMode) {
@@ -138,6 +150,8 @@ public class DHClientKeyExchangePreparator<T extends DHClientKeyExchangeMessage>
         } else {
             msg.getComputations().setPublicKey(new BigInteger(1, msg.getPublicKey().getValue()));
         }
-        LOGGER.debug("Computation PublicKey: " + msg.getComputations().getPublicKey().getValue().toString());
+        LOGGER.debug(
+                "Computation PublicKey: "
+                        + msg.getComputations().getPublicKey().getValue().toString());
     }
 }

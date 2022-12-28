@@ -63,4 +63,8 @@ public abstract class HintedInputStream extends InputStream {
     protected abstract InputStream getDataSource();
 
     public abstract void extendStream(byte[] bytes);
+
+    public void setHint(LayerProcessingHint hint) {
+        this.hint = hint;
+    }
 }

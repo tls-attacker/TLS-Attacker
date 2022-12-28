@@ -19,7 +19,7 @@ import java.util.function.Supplier;
 import org.junit.jupiter.api.Test;
 
 abstract class AbstractProtocolMessageHandlerTest<
-        MT extends ProtocolMessage, HT extends ProtocolMessageHandler<MT>> {
+        MT extends ProtocolMessage<?>, HT extends ProtocolMessageHandler<MT>> {
 
     protected TlsContext context;
 

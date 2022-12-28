@@ -22,8 +22,8 @@ import org.junit.jupiter.api.Test;
 
 public class ECDHClientKeyExchangeHandlerTest
         extends AbstractProtocolMessageHandlerTest<
-                ECDHClientKeyExchangeMessage,
-                ClientKeyExchangeHandler<ECDHClientKeyExchangeMessage>> {
+                ECDHClientKeyExchangeMessage<?>,
+                ClientKeyExchangeHandler<ECDHClientKeyExchangeMessage<?>>> {
 
     public ECDHClientKeyExchangeHandlerTest() {
         super(ECDHClientKeyExchangeMessage::new, ECDHClientKeyExchangeHandler::new);
@@ -49,8 +49,8 @@ public class ECDHClientKeyExchangeHandlerTest
                         NamedGroup.SECP192R1));
         context.getConfig().setDefaultClientEcPrivateKey(new BigInteger("3"));
         context.getConfig().setDefaultServerEcPrivateKey(new BigInteger("3"));
-        ECDHClientKeyExchangeMessage message = new ECDHClientKeyExchangeMessage();
-        ECDHClientKeyExchangePreparator<ECDHClientKeyExchangeMessage> prep =
+        ECDHClientKeyExchangeMessage<?> message = new ECDHClientKeyExchangeMessage<>();
+        ECDHClientKeyExchangePreparator<ECDHClientKeyExchangeMessage<?>> prep =
                 new ECDHClientKeyExchangePreparator<>(context.getChooser(), message);
         prep.prepare();
         handler.adjustContext(message);

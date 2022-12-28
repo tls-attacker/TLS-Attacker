@@ -318,7 +318,7 @@ public class EncryptedServerNameIndicationExtensionPreparator
     }
 
     private void prepareClientRandom(EncryptedServerNameIndicationExtensionMessage msg) {
-        byte[] clientRandom = chooser.getClientRandom();
+        byte[] clientRandom;
         if (clientHelloMessage != null) {
             clientRandom = clientHelloMessage.getRandom().getValue();
         } else {
@@ -426,12 +426,7 @@ public class EncryptedServerNameIndicationExtensionPreparator
         try {
             key =
                     HKDFunction.expandLabel(
-                            hkdfAlgorithm,
-                            esniMasterSecret,
-                            HKDFunction.ESNI_KEY,
-                            hashIn,
-                            keyLen,
-                            chooser.getSelectedProtocolVersion());
+                            hkdfAlgorithm, esniMasterSecret, HKDFunction.ESNI_KEY, hashIn, keyLen, chooser.getSelectedProtocolVersion());
         } catch (CryptoException e) {
             throw new PreparationException("Could not prepare esniKey", e);
         }
@@ -523,7 +518,7 @@ public class EncryptedServerNameIndicationExtensionPreparator
     }
 
     private void prepareEncryptedSni(EncryptedServerNameIndicationExtensionMessage msg) {
-        byte[] encryptedSni = null;
+        byte[] encryptedSni;
 
         CipherSuite cipherSuite = CipherSuite.getCipherSuite(msg.getCipherSuite().getValue());
         byte[] plainText = msg.getClientEsniInnerBytes().getValue();

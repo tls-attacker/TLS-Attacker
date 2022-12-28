@@ -44,7 +44,6 @@ import java.util.Random;
     ServerHelloDoneMessage.class,
     ServerHelloMessage.class,
     AlertMessage.class,
-    AckMessage.class,
     NewSessionTicketMessage.class,
     KeyUpdateMessage.class,
     ApplicationMessage.class,
@@ -78,9 +77,10 @@ import java.util.Random;
     CertificateStatusMessage.class,
     EmptyClientKeyExchangeMessage.class,
     NewConnectionIdMessage.class,
-    RequestConnectionIdMessage.class
+    RequestConnectionIdMessage.class,
+    EncryptedClientHelloMessage.class
 })
-public abstract class ProtocolMessage<Self extends ProtocolMessage>
+public abstract class ProtocolMessage<Self extends ProtocolMessage<?>>
         extends Message<Self, TlsContext> {
 
     @XmlTransient protected boolean goingToBeSentDefault = true;

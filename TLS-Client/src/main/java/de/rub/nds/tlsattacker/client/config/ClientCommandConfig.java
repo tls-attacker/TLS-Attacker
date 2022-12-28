@@ -36,6 +36,8 @@ public class ClientCommandConfig extends TLSDelegateConfig {
     @ParametersDelegate private ListDelegate listDelegate;
     @ParametersDelegate private StarttlsDelegate starttlsDelegate;
 
+    @ParametersDelegate private EchDelegate echDelegate;
+
     @Parameter(
             names = "-workflow_input",
             description = "A path to a workflow trace that should be exeucted")
@@ -64,6 +66,7 @@ public class ClientCommandConfig extends TLSDelegateConfig {
         this.listDelegate = new ListDelegate();
         this.starttlsDelegate = new StarttlsDelegate();
         this.compressionDelegate = new CompressionDelegate();
+        this.echDelegate = new EchDelegate();
         addDelegate(listDelegate);
         addDelegate(heartbeatDelegate);
         addDelegate(ciphersuiteDelegate);
@@ -80,6 +83,7 @@ public class ClientCommandConfig extends TLSDelegateConfig {
         addDelegate(certificateDelegate);
         addDelegate(filterDelegate);
         addDelegate(starttlsDelegate);
+        addDelegate(echDelegate);
     }
 
     @Override

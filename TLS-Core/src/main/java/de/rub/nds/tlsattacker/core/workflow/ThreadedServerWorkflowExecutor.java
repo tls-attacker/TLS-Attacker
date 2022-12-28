@@ -163,7 +163,7 @@ public class ThreadedServerWorkflowExecutor extends WorkflowExecutor {
             return;
         }
         try {
-            serverSocket = new ServerSocket(bindPort, BACKLOG, bindAddr);
+            serverSocket = new ServerSocket(bindPort, BACKLOG);
             serverSocket.setReuseAddress(true);
         } catch (IOException ex) {
             throw new RuntimeException("Could not instantiate server socket", ex);

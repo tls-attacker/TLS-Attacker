@@ -24,7 +24,7 @@ import java.util.Arrays;
 import java.util.Objects;
 
 @XmlRootElement(name = "UnknownHandshakeMessage")
-public class UnknownHandshakeMessage extends HandshakeMessage {
+public class UnknownHandshakeMessage extends HandshakeMessage<UnknownHandshakeMessage> {
 
     private byte[] dataConfig;
 

@@ -151,6 +151,7 @@ public class WorkflowTrace implements Serializable {
                         name = "DeepCopyBufferedRecords"),
                 @XmlElement(type = DeepCopyBuffersAction.class, name = "DeepCopyBuffers"),
                 @XmlElement(type = EsniKeyDnsRequestAction.class, name = "EsniKeyDnsRequest"),
+                @XmlElement(type = EchConfigDnsRequestAction.class, name = "EchConfigDnsRequest"),
                 @XmlElement(
                         type = FindReceivedProtocolMessageAction.class,
                         name = "FindReceivedProtocolMessage"),
@@ -210,7 +211,7 @@ public class WorkflowTrace implements Serializable {
                 @XmlElement(type = FlushSessionCacheAction.class, name = "FlushSessionCache"),
                 @XmlElement(type = SendAsciiAction.class, name = "SendAscii"),
                 @XmlElement(type = ReceiveAsciiAction.class, name = "ReceiveAscii"),
-                @XmlElement(type = GenericReceiveAsciiAction.class, name = "GenericReceiveAscii")
+                @XmlElement(type = GenericReceiveAsciiAction.class, name = "GenericReceiveAscii"),
             })
     private List<TlsAction> tlsActions = new ArrayList<>();
 

@@ -165,12 +165,22 @@ public class WorkflowConfigurationFactory {
         boolean addCookieExtension = config.isAddCookieExtension();
         config.setAddCookieExtension(false);
 
-        workflowTrace.addTlsAction(
-                MessageActionFactory.createTLSAction(
-                        config,
-                        connection,
-                        ConnectionEndType.CLIENT,
-                        new ClientHelloMessage(config)));
+        if (config.isAddEncryptedClientHelloExtension()
+                && connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
+            workflowTrace.addTlsAction(
+                    MessageActionFactory.createTLSAction(
+                            config,
+                            connection,
+                            ConnectionEndType.CLIENT,
+                            new EncryptedClientHelloMessage(config)));
+        } else {
+            workflowTrace.addTlsAction(
+                    MessageActionFactory.createTLSAction(
+                            config,
+                            connection,
+                            ConnectionEndType.CLIENT,
+                            new ClientHelloMessage(config)));
+        }
 
         if ((config.getHighestProtocolVersion().isDTLS()
                 && config.getHighestProtocolVersion() != ProtocolVersion.DTLS13

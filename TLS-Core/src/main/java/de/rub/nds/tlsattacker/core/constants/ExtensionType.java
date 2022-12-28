@@ -61,6 +61,13 @@ public enum ExtensionType {
     CONNECTION_ID(new byte[] {(byte) 0, (byte) 54}),
     RENEGOTIATION_INFO(new byte[] {(byte) 0xFF, (byte) 0x01}),
     ENCRYPTED_SERVER_NAME_INDICATION(new byte[] {(byte) 0xFF, (byte) 0xCE}),
+    ENCRYPTED_CLIENT_HELLO_DRAFT_07(new byte[] {(byte) 0xFF, (byte) 0x02}),
+    ENCRYPTED_CLIENT_HELLO_DRAFT_08(new byte[] {(byte) 0xFF, (byte) 0x08}),
+    ENCRYPTED_CLIENT_HELLO_DRAFT_09(new byte[] {(byte) 0xFF, (byte) 0x09}),
+    ENCRYPTED_CLIENT_HELLO_DRAFT_10(new byte[] {(byte) 0xFF, (byte) 0x0a}),
+    ENCRYPTED_CLIENT_HELLO_DRAFT_11(new byte[] {(byte) 0xFF, (byte) 0x0b}),
+    ENCRYPTED_CLIENT_HELLO_DRAFT_12(new byte[] {(byte) 0xFF, (byte) 0x0c}),
+    ENCRYPTED_CLIENT_HELLO(new byte[] {(byte) 0xFE, (byte) 0x0D}),
 
     // GREASE constants
     GREASE_00(new byte[] {(byte) 0x0A, (byte) 0x0A}),
@@ -168,6 +175,7 @@ public enum ExtensionType {
         list.add(COOKIE);
         list.add(RECORD_SIZE_LIMIT);
         list.add(CONNECTION_ID);
+        list.add(ENCRYPTED_CLIENT_HELLO);
 
         return list;
     }
@@ -210,6 +218,7 @@ public enum ExtensionType {
         list.add(USE_SRTP);
         list.add(COOKIE);
         list.add(RECORD_SIZE_LIMIT);
+        list.add(ENCRYPTED_CLIENT_HELLO);
         list.add(CONNECTION_ID);
 
         return list;
@@ -237,6 +246,7 @@ public enum ExtensionType {
         list.add(COOKIE);
         list.add(RECORD_SIZE_LIMIT);
         list.add(CONNECTION_ID);
+        list.add(ENCRYPTED_CLIENT_HELLO);
 
         return list;
     }

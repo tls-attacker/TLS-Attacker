@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -17,32 +16,23 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.KeyExchangeComputations;
 import java.util.Objects;
 
-public abstract class ServerKeyExchangeMessage extends HandshakeMessage {
+public abstract class ServerKeyExchangeMessage<Self extends ServerKeyExchangeMessage<?>>
+        extends HandshakeMessage<Self> {
 
-    /**
-     * signature and hash algorithm
-     */
+    /** signature and hash algorithm */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByteArray signatureAndHashAlgorithm;
-    /**
-     * signature length
-     */
+    /** signature length */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger signatureLength;
-    /**
-     * signature
-     */
+    /** signature */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.SIGNATURE)
     private ModifiableByteArray signature;
 
-    /**
-     * Length of the serialized public key
-     */
+    /** Length of the serialized public key */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger publicKeyLength;
-    /**
-     * serialized public key
-     */
+    /** serialized public key */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
     private ModifiableByteArray publicKey;
 
@@ -64,7 +54,8 @@ public abstract class ServerKeyExchangeMessage extends HandshakeMessage {
 
     public void setSignatureAndHashAlgorithm(byte[] signatureAndHashAlgorithm) {
         this.signatureAndHashAlgorithm =
-            ModifiableVariableFactory.safelySetValue(this.signatureAndHashAlgorithm, signatureAndHashAlgorithm);
+                ModifiableVariableFactory.safelySetValue(
+                        this.signatureAndHashAlgorithm, signatureAndHashAlgorithm);
     }
 
     public ModifiableInteger getSignatureLength() {
@@ -76,7 +67,8 @@ public abstract class ServerKeyExchangeMessage extends HandshakeMessage {
     }
 
     public void setSignatureLength(int length) {
-        this.signatureLength = ModifiableVariableFactory.safelySetValue(this.signatureLength, length);
+        this.signatureLength =
+                ModifiableVariableFactory.safelySetValue(this.signatureLength, length);
     }
 
     public ModifiableByteArray getSignature() {
@@ -100,7 +92,8 @@ public abstract class ServerKeyExchangeMessage extends HandshakeMessage {
     }
 
     public void setPublicKeyLength(Integer publicKeyLength) {
-        this.publicKeyLength = ModifiableVariableFactory.safelySetValue(this.publicKeyLength, publicKeyLength);
+        this.publicKeyLength =
+                ModifiableVariableFactory.safelySetValue(this.publicKeyLength, publicKeyLength);
     }
 
     public ModifiableByteArray getPublicKey() {
@@ -157,5 +150,4 @@ public abstract class ServerKeyExchangeMessage extends HandshakeMessage {
         }
         return Objects.equals(this.publicKey, other.publicKey);
     }
-
 }
