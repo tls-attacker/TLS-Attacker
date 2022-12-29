@@ -46,7 +46,9 @@ public abstract class CoreClientHelloHandler<T extends CoreClientHelloMessage<?>
         adjustExtensions(message);
         warnOnConflictingExtensions();
         adjustRandomContext(message);
-        if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()
+        if ((tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()
+                        || tlsContext.getChooser().getSelectedProtocolVersion()
+                                == ProtocolVersion.DTLS13)
                 && tlsContext.isExtensionNegotiated(ExtensionType.EARLY_DATA)) {
             try {
                 adjustEarlyTrafficSecret();
@@ -184,7 +186,8 @@ public abstract class CoreClientHelloHandler<T extends CoreClientHelloMessage<?>
                         digestAlgo.getJavaName(),
                         tlsContext.getChooser().getEarlySecret(),
                         HKDFunction.CLIENT_EARLY_TRAFFIC_SECRET,
-                        tlsContext.getDigest().getRawBytes());
+                        tlsContext.getDigest().getRawBytes(),
+                        tlsContext.getChooser().getSelectedProtocolVersion());
         tlsContext.setClientEarlyTrafficSecret(earlyTrafficSecret);
         LOGGER.debug("EarlyTrafficSecret: " + ArrayConverter.bytesToHexString(earlyTrafficSecret));
     }

@@ -161,10 +161,6 @@ public class WorkflowConfigurationFactory {
             workflowTrace.addTlsAction(new EsniKeyDnsRequestAction());
         }
 
-        // cookie extension is only sent in second ClientHello
-        boolean addCookieExtension = config.isAddCookieExtension();
-        config.setAddCookieExtension(false);
-
         if (config.isAddEncryptedClientHelloExtension()
                 && connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
             workflowTrace.addTlsAction(
@@ -198,8 +194,7 @@ public class WorkflowConfigurationFactory {
                             connection,
                             ConnectionEndType.CLIENT,
                             new ClientHelloMessage(config)));
-        } else if (addCookieExtension) {
-            config.setAddCookieExtension(true);
+        } else if (config.isAddCookieExtension()) {
             workflowTrace.addTlsAction(
                     MessageActionFactory.createTLSAction(
                             config,
@@ -211,7 +206,7 @@ public class WorkflowConfigurationFactory {
                             config,
                             connection,
                             ConnectionEndType.CLIENT,
-                            new ClientHelloMessage(config)));
+                            new ClientHelloMessage(config, true)));
         }
 
         workflowTrace.addTlsAction(
@@ -484,10 +479,6 @@ public class WorkflowConfigurationFactory {
     public WorkflowTrace createResumptionWorkflow(AliasedConnection connection) {
         WorkflowTrace trace = createTlsEntryWorkflowTrace(connection);
 
-        // cookie extension is only sent in second ClientHello
-        boolean addCookieExtension = config.isAddCookieExtension();
-        config.setAddCookieExtension(false);
-
         trace.addTlsAction(
                 MessageActionFactory.createTLSAction(
                         config,
@@ -510,8 +501,7 @@ public class WorkflowConfigurationFactory {
                             connection,
                             ConnectionEndType.CLIENT,
                             new ClientHelloMessage(config)));
-        } else if (addCookieExtension) {
-            config.setAddCookieExtension(true);
+        } else if (config.isAddCookieExtension()) {
             trace.addTlsAction(
                     MessageActionFactory.createTLSAction(
                             config,
@@ -523,7 +513,7 @@ public class WorkflowConfigurationFactory {
                             config,
                             connection,
                             ConnectionEndType.CLIENT,
-                            new ClientHelloMessage(config)));
+                            new ClientHelloMessage(config, true)));
         }
         List<ProtocolMessage> serverMessages = new LinkedList<>();
         List<ProtocolMessage> clientMessages = new LinkedList<>();
@@ -828,7 +818,8 @@ public class WorkflowConfigurationFactory {
                             WorkflowTraceUtil.getFirstSendMessage(
                                     HandshakeMessageType.CLIENT_HELLO, trace);
             EarlyDataExtensionMessage earlyDataExtension =
-                    initialHello.getExtension(EarlyDataExtensionMessage.class);
+                    (EarlyDataExtensionMessage)
+                            initialHello.getExtension(EarlyDataExtensionMessage.class);
             if (initialHello.getExtensions() != null) {
                 initialHello.getExtensions().remove(earlyDataExtension);
             }
@@ -851,7 +842,8 @@ public class WorkflowConfigurationFactory {
 
         if (initialHello.getExtensions() != null) {
             PreSharedKeyExtensionMessage pskExtension =
-                    initialHello.getExtension(PreSharedKeyExtensionMessage.class);
+                    (PreSharedKeyExtensionMessage)
+                            initialHello.getExtension(PreSharedKeyExtensionMessage.class);
             initialHello.getExtensions().remove(pskExtension);
         }
 
@@ -1165,10 +1157,6 @@ public class WorkflowConfigurationFactory {
     public WorkflowTrace createDynamicHelloWorkflow(AliasedConnection connection) {
         WorkflowTrace trace = createTlsEntryWorkflowTrace(connection);
 
-        // cookie extension is only sent in second ClientHello
-        boolean addCookieExtension = config.isAddCookieExtension();
-        config.setAddCookieExtension(false);
-
         trace.addTlsAction(
                 MessageActionFactory.createTLSAction(
                         config,
@@ -1191,8 +1179,7 @@ public class WorkflowConfigurationFactory {
                             connection,
                             ConnectionEndType.CLIENT,
                             new ClientHelloMessage(config)));
-        } else if (addCookieExtension) {
-            config.setAddCookieExtension(true);
+        } else if (config.isAddCookieExtension()) {
             trace.addTlsAction(
                     MessageActionFactory.createTLSAction(
                             config,
@@ -1204,7 +1191,7 @@ public class WorkflowConfigurationFactory {
                             config,
                             connection,
                             ConnectionEndType.CLIENT,
-                            new ClientHelloMessage(config)));
+                            new ClientHelloMessage(config, true)));
         }
 
         if (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {

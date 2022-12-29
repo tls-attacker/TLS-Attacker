@@ -1,6 +1,8 @@
 <?xml version="1.0" standalone="yes"?>
 <xs:schema version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
+  <xs:element name="ACK" type="ackMessage"/>
+
   <xs:element name="Alert" type="alertMessage"/>
 
   <xs:element name="AlpnExtension" type="alpnExtensionMessage"/>
@@ -91,6 +93,8 @@
 
   <xs:element name="MaxFragmentLengthExtension" type="maxFragmentLengthExtensionMessage"/>
 
+  <xs:element name="NewConnectionId" type="newConnectionIdMessage"/>
+
   <xs:element name="NewSessionTicket" type="newSessionTicketMessage"/>
 
   <xs:element name="PSKKeyExchangeModesExtension" type="pskKeyExchangeModesExtensionMessage"/>
@@ -130,6 +134,8 @@
   <xs:element name="RecordSizeLimitExtension" type="recordSizeLimitExtensionMessage"/>
 
   <xs:element name="RenegotiationInfoExtension" type="renegotiationInfoExtensionMessage"/>
+
+  <xs:element name="RequestConnectionId" type="requestConnectionIdMessage"/>
 
   <xs:element name="SRPExtension" type="srpExtensionMessage"/>
 
@@ -2866,6 +2872,17 @@
     </xs:complexContent>
   </xs:complexType>
 
+  <xs:complexType name="ackMessage">
+    <xs:complexContent>
+      <xs:extension base="protocolMessage">
+        <xs:sequence>
+          <xs:element name="recordNumbers" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="recordNumberLength" type="modifiableInteger" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
   <xs:complexType name="newSessionTicketMessage">
     <xs:complexContent>
       <xs:extension base="handshakeMessage">
@@ -3327,6 +3344,28 @@
     <xs:complexContent>
       <xs:extension base="keyExchangeComputations">
         <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="newConnectionIdMessage">
+    <xs:complexContent>
+      <xs:extension base="handshakeMessage">
+        <xs:sequence>
+          <xs:element name="usage" type="connectionIdUsage" minOccurs="0"/>
+          <xs:element name="connectionIdsLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="connectionIds" type="modifiableByteArray" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="requestConnectionIdMessage">
+    <xs:complexContent>
+      <xs:extension base="handshakeMessage">
+        <xs:sequence>
+          <xs:element name="numberOfConnectionIds" type="modifiableInteger" minOccurs="0"/>
+        </xs:sequence>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
@@ -4512,6 +4551,8 @@
       <xs:enumeration value="NEW_SESSION_TICKET"/>
       <xs:enumeration value="END_OF_EARLY_DATA"/>
       <xs:enumeration value="ENCRYPTED_EXTENSIONS"/>
+      <xs:enumeration value="REQUEST_CONNECTION_ID"/>
+      <xs:enumeration value="NEW_CONNECTION_ID"/>
       <xs:enumeration value="CERTIFICATE"/>
       <xs:enumeration value="SERVER_KEY_EXCHANGE"/>
       <xs:enumeration value="CERTIFICATE_REQUEST"/>
@@ -4535,6 +4576,14 @@
       <xs:enumeration value="APPLICATION_DATA"/>
       <xs:enumeration value="HEARTBEAT"/>
       <xs:enumeration value="TLS12_CID"/>
+      <xs:enumeration value="ACK"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="connectionIdUsage">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="CID_IMMEDIATE"/>
+      <xs:enumeration value="CID_SPARE"/>
     </xs:restriction>
   </xs:simpleType>
 

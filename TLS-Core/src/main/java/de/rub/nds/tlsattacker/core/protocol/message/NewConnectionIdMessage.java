@@ -24,7 +24,7 @@ import java.io.InputStream;
 import java.util.Objects;
 
 @XmlRootElement(name = "NewConnectionId")
-public class NewConnectionIdMessage extends HandshakeMessage {
+public class NewConnectionIdMessage extends HandshakeMessage<NewConnectionIdMessage> {
 
     private ConnectionIdUsage usage;
     private ModifiableInteger connectionIdsLength;

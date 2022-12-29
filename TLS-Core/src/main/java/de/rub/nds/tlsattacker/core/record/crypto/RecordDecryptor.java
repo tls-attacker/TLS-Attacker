@@ -43,7 +43,8 @@ public class RecordDecryptor extends Decryptor {
                 && record.getEpoch() != null
                 && record.getEpoch().getValue() != null) {
             if (tlsContext.getChooser().getSelectedProtocolVersion() == ProtocolVersion.DTLS13
-                    && tlsContext.getReadEpoch() > 3) {
+                    && tlsContext.getReadEpoch() > 3
+                    && record.getUnifiedHeader() != null) {
                 // after handshake dtls 1.3 epochs must be guessed based on the last 2 bits
                 recordCipher = getRecordCipherForEpochBits(record.getEpoch().getValue(), record);
             } else {

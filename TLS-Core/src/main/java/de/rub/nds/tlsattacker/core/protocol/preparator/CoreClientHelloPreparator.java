@@ -122,6 +122,8 @@ public abstract class CoreClientHelloPreparator<T extends CoreClientHelloMessage
     private void prepareProtocolVersion(T msg) {
         if (chooser.getConfig().getHighestProtocolVersion().isTLS13()) {
             msg.setProtocolVersion(ProtocolVersion.TLS12.getValue());
+        } else if (chooser.getConfig().getHighestProtocolVersion() == ProtocolVersion.DTLS13) {
+            msg.setProtocolVersion(ProtocolVersion.DTLS12.getValue());
         } else {
             msg.setProtocolVersion(chooser.getConfig().getHighestProtocolVersion().getValue());
         }
@@ -131,7 +133,8 @@ public abstract class CoreClientHelloPreparator<T extends CoreClientHelloMessage
     }
 
     private void prepareCompressions(T msg) {
-        if (chooser.getConfig().getHighestProtocolVersion().isTLS13()) {
+        if (chooser.getConfig().getHighestProtocolVersion().isTLS13()
+                || chooser.getConfig().getHighestProtocolVersion() == ProtocolVersion.DTLS13) {
             msg.setCompressions(CompressionMethod.NULL.getArrayValue());
         } else {
             msg.setCompressions(

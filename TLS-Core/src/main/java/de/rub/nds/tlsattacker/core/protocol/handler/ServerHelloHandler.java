@@ -469,7 +469,13 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                             hkdfAlgorithm, null, innerClientHello.getRandom().getValue());
             LOGGER.debug("Extract: " + ArrayConverter.bytesToHexString(extract));
             byte[] acceptConfirmationClient =
-                    HKDFunction.expandLabel(hkdfAlgorithm, extract, label, transcriptEchConf, 8);
+                    HKDFunction.expandLabel(
+                            hkdfAlgorithm,
+                            extract,
+                            label,
+                            transcriptEchConf,
+                            8,
+                            chooser.getSelectedProtocolVersion());
             LOGGER.debug(
                     "Accept Confirmation Calculated: "
                             + ArrayConverter.bytesToHexString(acceptConfirmationClient));

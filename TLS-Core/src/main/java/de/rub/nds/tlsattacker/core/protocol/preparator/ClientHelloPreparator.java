@@ -1,4 +1,4 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
  * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH

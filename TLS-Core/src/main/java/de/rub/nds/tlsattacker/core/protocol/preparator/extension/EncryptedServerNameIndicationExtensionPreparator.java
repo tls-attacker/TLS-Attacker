@@ -426,7 +426,12 @@ public class EncryptedServerNameIndicationExtensionPreparator
         try {
             key =
                     HKDFunction.expandLabel(
-                            hkdfAlgorithm, esniMasterSecret, HKDFunction.ESNI_KEY, hashIn, keyLen, chooser.getSelectedProtocolVersion());
+                            hkdfAlgorithm,
+                            esniMasterSecret,
+                            HKDFunction.ESNI_KEY,
+                            hashIn,
+                            keyLen,
+                            chooser.getSelectedProtocolVersion());
         } catch (CryptoException e) {
             throw new PreparationException("Could not prepare esniKey", e);
         }

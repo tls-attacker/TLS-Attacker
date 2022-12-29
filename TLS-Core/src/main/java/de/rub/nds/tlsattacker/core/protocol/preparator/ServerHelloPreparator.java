@@ -6,7 +6,6 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -106,7 +105,8 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
     }
 
     private void prepareSessionID() {
-        if (chooser.getConfig().getHighestProtocolVersion().isTLS13()) {
+        if (chooser.getConfig().getHighestProtocolVersion().isTLS13()
+                || chooser.getConfig().getHighestProtocolVersion() == ProtocolVersion.DTLS13) {
             msg.setSessionId(chooser.getClientSessionId());
         } else {
             msg.setSessionId(chooser.getServerSessionId());
@@ -119,6 +119,8 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
         ProtocolVersion ourVersion = chooser.getConfig().getHighestProtocolVersion();
         if (chooser.getConfig().getHighestProtocolVersion().isTLS13()) {
             ourVersion = ProtocolVersion.TLS12;
+        } else if (chooser.getConfig().getHighestProtocolVersion() == ProtocolVersion.DTLS13) {
+            ourVersion = ProtocolVersion.DTLS12;
         }
 
         ProtocolVersion clientVersion = chooser.getHighestClientProtocolVersion();
@@ -130,7 +132,7 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
             msg.setProtocolVersion(ourVersion.getValue());
         } else {
             if (chooser.getHighestClientProtocolVersion().isDTLS()
-                && chooser.getConfig().getHighestProtocolVersion().isDTLS()) {
+                    && chooser.getConfig().getHighestProtocolVersion().isDTLS()) {
                 // We both want dtls
                 if (intRepresentationClientVersion <= intRepresentationOurVersion) {
                     msg.setProtocolVersion(ourVersion.getValue());
@@ -201,7 +203,13 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
             byte[] extract = HKDFunction.extract(hkdfAlgorithm, null, clientRandom);
             LOGGER.debug("Extract: " + ArrayConverter.bytesToHexString(extract));
             acceptConfirmation =
-                    HKDFunction.expandLabel(hkdfAlgorithm, extract, label, transcriptEchConf, 8);
+                    HKDFunction.expandLabel(
+                            hkdfAlgorithm,
+                            extract,
+                            label,
+                            transcriptEchConf,
+                            8,
+                            chooser.getSelectedProtocolVersion());
             LOGGER.debug(
                     "Accept Confirmation: " + ArrayConverter.bytesToHexString(acceptConfirmation));
         } catch (CryptoException e) {

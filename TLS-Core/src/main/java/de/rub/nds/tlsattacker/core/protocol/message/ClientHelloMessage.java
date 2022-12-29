@@ -27,7 +27,14 @@ public class ClientHelloMessage extends CoreClientHelloMessage<ClientHelloMessag
     }
 
     public ClientHelloMessage(Config tlsConfig) {
-        super(tlsConfig);
+        super(tlsConfig, false);
+        if (tlsConfig.isAddEncryptedClientHelloExtension()) {
+            addExtension(new EncryptedClientHelloExtensionMessage(EchClientHelloType.INNER));
+        }
+    }
+
+    public ClientHelloMessage(Config tlsConfig, boolean addCookieExtensionIfEnabled) {
+        super(tlsConfig, addCookieExtensionIfEnabled);
         if (tlsConfig.isAddEncryptedClientHelloExtension()) {
             addExtension(new EncryptedClientHelloExtensionMessage(EchClientHelloType.INNER));
         }

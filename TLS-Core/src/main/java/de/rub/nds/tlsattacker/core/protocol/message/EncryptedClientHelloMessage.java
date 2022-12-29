@@ -44,7 +44,14 @@ public class EncryptedClientHelloMessage
     }
 
     public EncryptedClientHelloMessage(Config tlsConfig) {
-        super(tlsConfig);
+        super(tlsConfig, false);
+        encryptedClientHelloExtensionMessage =
+                new EncryptedClientHelloExtensionMessage(EchClientHelloType.OUTER);
+        addExtension(encryptedClientHelloExtensionMessage);
+    }
+
+    public EncryptedClientHelloMessage(Config tlsConfig, boolean addCookieExtensionIfEnabled) {
+        super(tlsConfig, addCookieExtensionIfEnabled);
         encryptedClientHelloExtensionMessage =
                 new EncryptedClientHelloExtensionMessage(EchClientHelloType.OUTER);
         addExtension(encryptedClientHelloExtensionMessage);

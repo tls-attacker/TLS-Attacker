@@ -61,6 +61,11 @@ public class MessageActionFactory {
         if (tlsConfig.getMessageFactoryActionOptions().contains(ActionOption.IGNORE_ACK_MESSAGES)) {
             globalOptions.add(ActionOption.IGNORE_ACK_MESSAGES);
         }
+        if (tlsConfig
+                .getMessageFactoryActionOptions()
+                .contains(ActionOption.IGNORE_UNEXPECTED_NEW_SESSION_TICKETS)) {
+            globalOptions.add(ActionOption.IGNORE_UNEXPECTED_NEW_SESSION_TICKETS);
+        }
 
         return globalOptions;
     }
