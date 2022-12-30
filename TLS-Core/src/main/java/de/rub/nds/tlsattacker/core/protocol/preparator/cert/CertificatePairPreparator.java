@@ -47,12 +47,12 @@ public class CertificatePairPreparator extends Preparator<CertificatePair> {
     }
 
     private void prepareCertificate(CertificatePair pair) {
-        pair.setCertificate(pair.getCertificateConfig());
-        LOGGER.debug("Certificate: " + ArrayConverter.bytesToHexString(pair.getCertificate().getValue()));
+        pair.setCertificateBytes(pair.getCertificateConfig());
+        LOGGER.debug("Certificate: " + ArrayConverter.bytesToHexString(pair.getCertificateBytes().getValue()));
     }
 
     private void prepareCertificateLength(CertificatePair pair) {
-        pair.setCertificateLength(pair.getCertificate().getValue().length);
+        pair.setCertificateLength(pair.getCertificateBytes().getValue().length);
         LOGGER.debug("CertificateLength: " + pair.getCertificateLength().getValue());
     }
 

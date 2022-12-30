@@ -22,6 +22,8 @@ import de.rub.nds.tlsattacker.core.util.CertificateUtils;
 import de.rub.nds.tlsattacker.core.util.JKSLoader;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.util.KeystoreHandler;
+import de.rub.nds.x509attacker.filesystem.CertificateReader;
+import de.rub.nds.x509attacker.x509.base.X509CertificateChain;
 import java.io.File;
 import java.io.IOException;
 import java.security.KeyStore;
@@ -119,11 +121,11 @@ public class CertificateDelegate extends Delegate {
         if (certificate != null) {
             LOGGER.debug("Loading certificate");
             try {
-                Certificate cert = PemUtil.readCertificate(new File(certificate));
+                X509CertificateChain chain = CertificateReader.readPemChain(new File(certificate));
                 if (privateKey != null) {
-                    config.setDefaultExplicitCertificateKeyPair(new CertificateKeyPair(cert, privateKey));
+                    config.setDefaultExplicitCertificateKeyPair(new CertificateKeyPair(chain, (CustomPrivateKey) privateKey));
                 } else {
-                    config.setDefaultExplicitCertificateKeyPair(new CertificateKeyPair(cert));
+                    throw new RuntimeException("Certificate provided without private key");
                 }
                 config.setAutoSelectCertificate(false);
             } catch (Exception ex) {
@@ -157,7 +159,7 @@ public class CertificateDelegate extends Delegate {
                     throw new ConfigurationException("Unknown RunningMode");
             }
             KeyStore store = KeystoreHandler.loadKeyStore(keystore, password);
-            Certificate cert = JKSLoader.loadTLSCertificate(store, alias);
+            Certificate cert = JKSLoader.loadTLSCertificate(store, alias);//TODO Fix
             privateKey = (PrivateKey) store.getKey(alias, password.toCharArray());
             CertificateKeyPair pair = new CertificateKeyPair(cert, privateKey);
             pair.adjustInConfig(config, type);

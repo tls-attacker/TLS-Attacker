@@ -6,7 +6,6 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
@@ -15,11 +14,9 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.certificate.CertificateKeyPair;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.CertificateMessageHandler;
-import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificateEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificatePair;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.LinkedList;
@@ -27,7 +24,6 @@ import java.util.List;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlTransient;
 
 @XmlRootElement(name = "Certificate")
 public class CertificateMessage extends HandshakeMessage {
@@ -53,20 +49,9 @@ public class CertificateMessage extends HandshakeMessage {
     private ModifiableByteArray certificatesListBytes;
 
     @HoldsModifiableVariable
-    // this allows users to also send empty certificates
-    private List<CertificatePair> certificatesList;
-
-    @HoldsModifiableVariable
     @XmlElementWrapper
-    @XmlElement(name = "certificatesListConfig")
-    private List<CertificatePair> certificateListConfig;
-
-    @HoldsModifiableVariable
-    private List<CertificateEntry> certificatesListAsEntry;
-
-    @XmlTransient
-    // TODO should this be transient?
-    private CertificateKeyPair certificateKeyPair;
+    @XmlElement(name = "certificatesList")
+    private List<CertificatePair> certificatesList;
 
     public CertificateMessage() {
         super(HandshakeMessageType.CERTIFICATE);
@@ -115,21 +100,6 @@ public class CertificateMessage extends HandshakeMessage {
         this.certificatesList.add(certificatePair);
     }
 
-    public void addCertificateList(CertificateEntry certificateEntry) {
-        if (this.certificatesListAsEntry == null) {
-            certificatesListAsEntry = new LinkedList<>();
-        }
-        this.certificatesListAsEntry.add(certificateEntry);
-    }
-
-    public List<CertificateEntry> getCertificatesListAsEntry() {
-        return certificatesListAsEntry;
-    }
-
-    public void setCertificatesListAsEntry(List<CertificateEntry> certificatesListAsEntry) {
-        this.certificatesListAsEntry = certificatesListAsEntry;
-    }
-
     public ModifiableInteger getRequestContextLength() {
         return requestContextLength;
     }
@@ -156,14 +126,6 @@ public class CertificateMessage extends HandshakeMessage {
 
     public boolean hasRequestContext() {
         return requestContextLength.getValue() > 0;
-    }
-
-    public CertificateKeyPair getCertificateKeyPair() {
-        return certificateKeyPair;
-    }
-
-    public void setCertificateKeyPair(CertificateKeyPair certificateKeyPair) {
-        this.certificateKeyPair = certificateKeyPair;
     }
 
     @Override
@@ -193,13 +155,5 @@ public class CertificateMessage extends HandshakeMessage {
     @Override
     public CertificateMessageHandler getHandler(TlsContext context) {
         return new CertificateMessageHandler(context);
-    }
-
-    public List<CertificatePair> getCertificateListConfig() {
-        return certificateListConfig;
-    }
-
-    public void setCertificateListConfig(List<CertificatePair> certificateListConfig) {
-        this.certificateListConfig = certificateListConfig;
     }
 }

@@ -44,11 +44,11 @@ public enum SignatureAlgorithm {
             case RSA_PSS_RSAE:
                 return CertificateKeyType.RSA;
             case DSA:
-                return CertificateKeyType.DSS;
+                return CertificateKeyType.DSA;
             case ECDSA:
             case ED25519:
             case ED448:
-                return CertificateKeyType.ECDSA;
+                return CertificateKeyType.ECDH_ECDSA;
             case GOSTR34102001:
                 return CertificateKeyType.GOST01;
             case GOSTR34102012_256:

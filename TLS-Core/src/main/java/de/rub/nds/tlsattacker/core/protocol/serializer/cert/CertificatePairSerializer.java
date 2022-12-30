@@ -49,8 +49,8 @@ public class CertificatePairSerializer extends Serializer<CertificatePair> {
     }
 
     private void writeCertificate(CertificatePair pair) {
-        appendBytes(pair.getCertificate().getValue());
-        LOGGER.debug("Certificate: " + ArrayConverter.bytesToHexString(pair.getCertificate().getValue()));
+        appendBytes(pair.getCertificateBytes().getValue());
+        LOGGER.debug("Certificate: " + ArrayConverter.bytesToHexString(pair.getCertificateBytes().getValue()));
     }
 
     private void writeExtensionsLength(CertificatePair pair) {

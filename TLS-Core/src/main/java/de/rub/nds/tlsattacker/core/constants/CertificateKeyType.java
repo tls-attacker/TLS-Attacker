@@ -17,11 +17,15 @@ public enum CertificateKeyType {
     DH,
     ECDH,
     RSA,
-    DSS,
-    ECDSA,
+    DSA,
+    ECDH_ECDSA,
     GOST01,
     GOST12,
     FORTEZZA,
     ECNRA,
+    ED25519,
+    ED448,
+    X25519,
+    X448,
     NONE;
 }

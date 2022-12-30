@@ -343,11 +343,6 @@ public enum SignatureAndHashAlgorithm {
     }
 
     public static SignatureAndHashAlgorithm forCertificateKeyPair(
-            CertificateKeyPair keyPair, Chooser chooser) {
-        return forCertificateKeyPair(keyPair, chooser, false);
-    }
-
-    public static SignatureAndHashAlgorithm forCertificateKeyPair(
             CertificateKeyPair keyPair, Chooser chooser, boolean selectingCertificate) {
         Sets.SetView<SignatureAndHashAlgorithm> intersection =
                 Sets.intersection(
@@ -364,7 +359,7 @@ public enum SignatureAndHashAlgorithm {
         }
 
         SignatureAndHashAlgorithm sigHashAlgo = null;
-        CertificateKeyType certPublicKeyType = keyPair.getCertPublicKeyType();
+        CertificateKeyType certPublicKeyType = keyPair.getLeafCertificateKeyType();
 
         boolean found = false;
         for (SignatureAndHashAlgorithm i : algorithms) {
@@ -372,7 +367,7 @@ public enum SignatureAndHashAlgorithm {
 
             switch (certPublicKeyType) {
                 case ECDH:
-                case ECDSA:
+                case ECDH_ECDSA:
                     if (sig == SignatureAlgorithm.ECDSA) {
                         found = true;
                         sigHashAlgo = i;
@@ -384,7 +379,7 @@ public enum SignatureAndHashAlgorithm {
                         sigHashAlgo = i;
                     }
                     break;
-                case DSS:
+                case DSA:
                     if (sig == SignatureAlgorithm.DSA) {
                         found = true;
                         sigHashAlgo = i;
@@ -400,13 +395,14 @@ public enum SignatureAndHashAlgorithm {
                     if (sig == SignatureAlgorithm.GOSTR34102012_256
                             || sig == SignatureAlgorithm.GOSTR34102012_512) {
                         found = true;
-                        if (keyPair.getGostCurve().is512bit2012()) {
-                            sigHashAlgo =
-                                    SignatureAndHashAlgorithm.GOSTR34102012_512_GOSTR34112012_512;
-                        } else {
-                            sigHashAlgo =
-                                    SignatureAndHashAlgorithm.GOSTR34102012_256_GOSTR34112012_256;
-                        }
+                        //if (keyPair.getLeafPublicKeyNamedGroup().isis512bit2012()) {
+                        //    sigHashAlgo =
+                        //            SignatureAndHashAlgorithm.GOSTR34102012_512_GOSTR34112012_512;
+                        //} else {
+                        //    sigHashAlgo =
+                        //           SignatureAndHashAlgorithm.GOSTR34102012_256_GOSTR34112012_256;
+                        //}
+                        throw new UnsupportedOperationException("Currently not supported");
                     }
                     break;
                 default:

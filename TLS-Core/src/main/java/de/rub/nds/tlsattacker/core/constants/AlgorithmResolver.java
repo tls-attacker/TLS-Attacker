@@ -191,10 +191,10 @@ public class AlgorithmResolver {
             case ECDHE_ECDSA:
             case ECMQV_ECDSA:
             case CECPQ1_ECDSA:
-                return CertificateKeyType.ECDSA;
+                return CertificateKeyType.ECDH_ECDSA;
             case DHE_DSS:
             case SRP_SHA_DSS:
-                return CertificateKeyType.DSS;
+                return CertificateKeyType.DSA;
             case VKO_GOST01:
                 return CertificateKeyType.GOST01;
             case VKO_GOST12:

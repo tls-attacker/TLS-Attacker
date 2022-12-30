@@ -44,7 +44,7 @@ public class CertificatePairParserTest {
         CertificatePair pair = parser.parse();
         assertEquals(expectedCertificateLength, (int) pair.getCertificateLength().getValue());
         assertEquals(expectedExtensionLength, (int) pair.getExtensionsLength().getValue());
-        assertArrayEquals(expectedCertificate, pair.getCertificate().getValue());
+        assertArrayEquals(expectedCertificate, pair.getCertificateBytes().getValue());
         assertArrayEquals(expectedExtension, pair.getExtensions().getValue());
     }
 }

@@ -49,9 +49,9 @@ public class CertificateKeyPairTest {
                     continue;
             }
 
-            // ECDH can also be used for ECDSA
+            // ECDH can also be used for ECDH_ECDSA
             CertificateKeyType requiredKeyType = (certKeyPair.getCertPublicKeyType() == CertificateKeyType.ECDH)
-                ? CertificateKeyType.ECDSA : certKeyPair.getCertPublicKeyType();
+                ? CertificateKeyType.ECDH_ECDSA : certKeyPair.getCertPublicKeyType();
 
             if (requiredKeyType != certKeyPair.getCertSignatureType()) {
                 assertNotEquals(certKeyPair.getSignatureAndHashAlgorithm().getSignatureAlgorithm(),

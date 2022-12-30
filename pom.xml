@@ -4,7 +4,7 @@
     <parent>
         <groupId>de.rub.nds</groupId>
         <artifactId>protocol-toolkit-bom</artifactId>
-        <version>1.2.2</version>
+        <version>2.2.1-SNAPSHOT</version>
     </parent>
 
     <groupId>de.rub.nds.tls.attacker</groupId>
@@ -171,7 +171,7 @@
         </dependency>
         <dependency>
             <groupId>de.rub.nds</groupId>
-            <artifactId>asn1-tool</artifactId>
+            <artifactId>asn1-attacker</artifactId>
         </dependency>
         <dependency>
             <groupId>de.rub.nds</groupId>

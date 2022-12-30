@@ -6,7 +6,6 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.parser.cert;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -31,12 +30,14 @@ public class CertificatePairParser extends Parser<CertificatePair> {
         parseCertificateLength(pair);
         parseCertificate(pair);
         parseExtensionsLength(pair);
+        parseExtensionBytes(pair);
         parseExtensions(pair);
         return pair;
     }
 
     /**
-     * Reads the next bytes as the certificateLength of the CertificatePair and writes them in the message
+     * Reads the next bytes as the certificateLength of the CertificatePair and
+     * writes them in the message
      */
     private void parseCertificateLength(CertificatePair pair) {
         pair.setCertificateLength(parseIntField(HandshakeByteLength.CERTIFICATE_LENGTH));
@@ -44,27 +45,39 @@ public class CertificatePairParser extends Parser<CertificatePair> {
     }
 
     /**
-     * Reads the next bytes as the certificate of the CertificatePair and writes them in the message
+     * Reads the next bytes as the certificate of the CertificatePair and writes
+     * them in the message
      */
     private void parseCertificate(CertificatePair pair) {
-        pair.setCertificate(parseByteArrayField(pair.getCertificateLength().getValue()));
-        LOGGER.debug("Certificate: " + ArrayConverter.bytesToHexString(pair.getCertificate().getValue()));
+        pair.setCertificateBytes(parseByteArrayField(pair.getCertificateLength().getValue()));
+        LOGGER.debug("Certificate: " + ArrayConverter.bytesToHexString(pair.getCertificateBytes().getValue()));
     }
 
     /**
-     * Reads the next bytes as the extensionsLength of the CertificatePair and writes them in the message
+     * Reads the next bytes as the extensionsLength of the CertificatePair and
+     * writes them in the message
      */
     private void parseExtensionsLength(CertificatePair pair) {
         pair.setExtensionsLength(parseIntField(HandshakeByteLength.EXTENSION_LENGTH));
-        LOGGER.debug("ExtensionsLength: " + pair.getCertificateLength().getValue());
+        LOGGER.debug("ExtensionsLength: " + pair.getExtensionsLength().getValue());
     }
 
     /**
-     * Reads the next bytes as the extensions of the CertificatePair and writes them in the message
+     * Reads the next bytes as the extensions of the CertificatePair and writes
+     * them in the message
      */
-    private void parseExtensions(CertificatePair pair) {
+    private void parseExtensionBytes(CertificatePair pair) {
         pair.setExtensions(parseByteArrayField(pair.getExtensionsLength().getValue()));
-        LOGGER.debug("Extensions: " + ArrayConverter.bytesToHexString(pair.getCertificate().getValue()));
+        LOGGER.debug("Extensions: " + ArrayConverter.bytesToHexString(pair.getCertificateBytes().getValue()));
+    }
+    
+    /**
+     * Reads the next bytes as the extensions of the CertificatePair and writes
+     * them in the message
+     */
+    private void parseExtensionBytes(CertificatePair pair) {
+        pair.setExtensions(parseByteArrayField(pair.getExtensionsLength().getValue()));
+        LOGGER.debug("Extensions: " + ArrayConverter.bytesToHexString(pair.getCertificateBytes().getValue()));
     }
 
 }

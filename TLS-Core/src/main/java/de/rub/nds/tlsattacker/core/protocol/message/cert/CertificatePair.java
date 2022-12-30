@@ -6,32 +6,27 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message.cert;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
+import de.rub.nds.x509attacker.x509.base.X509Certificate;
 import java.util.LinkedList;
 import java.util.List;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class CertificatePair extends ModifiableVariableHolder {
 
-    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
-    private byte[] certificateConfig;
-
     private List<ExtensionMessage> extensionsConfig;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByteArray certificate;
+    private ModifiableByteArray certificateBytes;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger certificateLength;
@@ -42,23 +37,29 @@ public class CertificatePair extends ModifiableVariableHolder {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger extensionsLength;
 
+    private X509Certificate x509certificate;
+
     public CertificatePair() {
     }
 
-    public CertificatePair(byte[] certificateConfig) {
-        this.certificateConfig = certificateConfig;
+    public X509Certificate getX509certificate() {
+        return x509certificate;
     }
 
-    public ModifiableByteArray getCertificate() {
-        return certificate;
+    public void setX509certificate(X509Certificate x509certificate) {
+        this.x509certificate = x509certificate;
     }
 
-    public void setCertificate(ModifiableByteArray certificate) {
-        this.certificate = certificate;
+    public ModifiableByteArray getCertificateBytes() {
+        return certificateBytes;
     }
 
-    public void setCertificate(byte[] certificate) {
-        this.certificate = ModifiableVariableFactory.safelySetValue(this.certificate, certificate);
+    public void setCertificateBytes(ModifiableByteArray certificateBytes) {
+        this.certificateBytes = certificateBytes;
+    }
+
+    public void setCertificateBytes(byte[] certificateBytes) {
+        this.certificateBytes = ModifiableVariableFactory.safelySetValue(this.certificateBytes, certificateBytes);
     }
 
     public ModifiableInteger getCertificateLength() {
@@ -78,7 +79,7 @@ public class CertificatePair extends ModifiableVariableHolder {
     }
 
     public void setExtensions(ModifiableByteArray extensions) {
-        this.certificate = extensions;
+        this.certificateBytes = extensions;
     }
 
     public void setExtensions(byte[] extensions) {
@@ -95,14 +96,6 @@ public class CertificatePair extends ModifiableVariableHolder {
 
     public void setExtensionsLength(int extensionsLength) {
         this.extensionsLength = ModifiableVariableFactory.safelySetValue(this.extensionsLength, extensionsLength);
-    }
-
-    public byte[] getCertificateConfig() {
-        return certificateConfig;
-    }
-
-    public void setCertificateConfig(byte[] certificateConfig) {
-        this.certificateConfig = certificateConfig;
     }
 
     public List<ExtensionMessage> getExtensionsConfig() {
