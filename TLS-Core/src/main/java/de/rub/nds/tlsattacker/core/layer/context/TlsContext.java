@@ -2345,7 +2345,8 @@ public class TlsContext extends LayerContext {
         Integer maxRecordDataSize = recordSizeLimit;
         // for TLS 1.3, record_size_limit covers the whole TLSInnerPlaintext
         // -> we need to reserve space for the content type (1 byte) and possibly additional padding
-        if (chooser.getSelectedProtocolVersion().isTLS13() || chooser.getSelectedProtocolVersion() == ProtocolVersion.DTLS13) {
+        if (chooser.getSelectedProtocolVersion().isTLS13()
+                || chooser.getSelectedProtocolVersion() == ProtocolVersion.DTLS13) {
             maxRecordDataSize -= 1;
             maxRecordDataSize -= getConfig().getDefaultAdditionalPadding();
         }

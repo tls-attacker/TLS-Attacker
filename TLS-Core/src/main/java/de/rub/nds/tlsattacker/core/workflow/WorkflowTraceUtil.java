@@ -157,8 +157,19 @@ public class WorkflowTraceUtil {
         return filterHandshakeMessagesFromList(getAllSendMessages(trace));
     }
 
+    public static List<HandshakeMessage> getAllSendHandshakeMessages(
+            HandshakeMessageType type, WorkflowTrace trace) {
+        return filterMessageList(filterHandshakeMessagesFromList(getAllSendMessages(trace)), type);
+    }
+
     public static List<HandshakeMessage> getAllReceivedHandshakeMessages(WorkflowTrace trace) {
         return filterHandshakeMessagesFromList(getAllReceivedMessages(trace));
+    }
+
+    public static List<HandshakeMessage> getAllReceivedHandshakeMessages(
+            HandshakeMessageType type, WorkflowTrace trace) {
+        return filterMessageList(
+                filterHandshakeMessagesFromList(getAllReceivedMessages(trace)), type);
     }
 
     public static List<ExtensionMessage> getAllSendExtensions(WorkflowTrace trace) {

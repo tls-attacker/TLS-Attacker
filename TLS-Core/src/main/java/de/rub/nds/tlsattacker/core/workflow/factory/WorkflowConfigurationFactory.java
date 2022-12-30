@@ -811,23 +811,31 @@ public class WorkflowConfigurationFactory {
         AliasedConnection ourConnection = getConnection();
         WorkflowTrace trace = createHandshakeWorkflow();
         // Remove extensions that are only required in the second handshake
-        HelloMessage initialHello;
         if (ourConnection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
-            initialHello =
-                    (HelloMessage)
-                            WorkflowTraceUtil.getFirstSendMessage(
-                                    HandshakeMessageType.CLIENT_HELLO, trace);
-            EarlyDataExtensionMessage earlyDataExtension =
-                    (EarlyDataExtensionMessage)
-                            initialHello.getExtension(EarlyDataExtensionMessage.class);
-            if (initialHello.getExtensions() != null) {
-                initialHello.getExtensions().remove(earlyDataExtension);
+            List<HandshakeMessage> clientHellos =
+                    WorkflowTraceUtil.getAllSendHandshakeMessages(
+                            HandshakeMessageType.CLIENT_HELLO, trace);
+            for (HandshakeMessage handshakeMessage : clientHellos) {
+                ClientHelloMessage clientHello = (ClientHelloMessage) handshakeMessage;
+                if (clientHello.getExtensions() != null) {
+                    EarlyDataExtensionMessage earlyDataExtension =
+                            clientHello.getExtension(EarlyDataExtensionMessage.class);
+                    clientHello.getExtensions().remove(earlyDataExtension);
+                    PreSharedKeyExtensionMessage pskExtension =
+                            clientHello.getExtension(PreSharedKeyExtensionMessage.class);
+                    clientHello.getExtensions().remove(pskExtension);
+                }
             }
         } else {
-            initialHello =
-                    (HelloMessage)
+            ServerHelloMessage serverHello =
+                    (ServerHelloMessage)
                             WorkflowTraceUtil.getFirstSendMessage(
                                     HandshakeMessageType.SERVER_HELLO, trace);
+            if (serverHello.getExtensions() != null) {
+                PreSharedKeyExtensionMessage pskExtension =
+                        serverHello.getExtension(PreSharedKeyExtensionMessage.class);
+                serverHello.getExtensions().remove(pskExtension);
+            }
             EncryptedExtensionsMessage encryptedExtensionsMessage =
                     (EncryptedExtensionsMessage)
                             WorkflowTraceUtil.getFirstSendMessage(
@@ -838,13 +846,6 @@ public class WorkflowConfigurationFactory {
                         encryptedExtensionsMessage.getExtension(EarlyDataExtensionMessage.class);
                 encryptedExtensionsMessage.getExtensions().remove(earlyDataExtension);
             }
-        }
-
-        if (initialHello.getExtensions() != null) {
-            PreSharedKeyExtensionMessage pskExtension =
-                    (PreSharedKeyExtensionMessage)
-                            initialHello.getExtension(PreSharedKeyExtensionMessage.class);
-            initialHello.getExtensions().remove(pskExtension);
         }
 
         MessageAction newSessionTicketAction =
@@ -859,6 +860,13 @@ public class WorkflowConfigurationFactory {
                     .add(ActionOption.IGNORE_UNEXPECTED_NEW_SESSION_TICKETS);
         }
         trace.addTlsAction(newSessionTicketAction);
+        if (config.getHighestProtocolVersion().isDTLS() && config.isFinishWithCloseNotify()) {
+            AlertMessage alert = new AlertMessage();
+            alert.setConfig(AlertLevel.WARNING, AlertDescription.CLOSE_NOTIFY);
+            SendAction sendAction = new SendAction(alert);
+            sendAction.getActionOptions().add(ActionOption.MAY_FAIL);
+            trace.addTlsAction(sendAction);
+        }
         trace.addTlsAction(new ResetConnectionAction());
         WorkflowTrace zeroRttTrace = createTls13PskWorkflow(zeroRtt);
         for (TlsAction zeroRttAction : zeroRttTrace.getTlsActions()) {
