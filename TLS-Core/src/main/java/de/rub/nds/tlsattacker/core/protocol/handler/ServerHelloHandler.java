@@ -536,7 +536,9 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         if (tlsContext.getTalkingConnectionEndType()
                 == tlsContext.getChooser().getMyConnectionPeer()) {
             // for TLS 1.3, this is handled in encrypted extensions
-            if (!(tlsContext.getChooser().getSelectedProtocolVersion().isTLS13() || tlsContext.getChooser().getSelectedProtocolVersion() == ProtocolVersion.DTLS13)) {
+            if (!(tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()
+                    || tlsContext.getChooser().getSelectedProtocolVersion()
+                            == ProtocolVersion.DTLS13)) {
                 if (tlsContext.isExtensionNegotiated(ExtensionType.MAX_FRAGMENT_LENGTH)
                         && tlsContext.isExtensionNegotiated(ExtensionType.RECORD_SIZE_LIMIT)) {
                     // this is supposed to result in a fatal error, just warning for now

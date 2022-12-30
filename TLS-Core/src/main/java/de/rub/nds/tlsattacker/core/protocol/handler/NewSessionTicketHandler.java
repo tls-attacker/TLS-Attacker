@@ -35,7 +35,8 @@ public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionT
 
     @Override
     public void adjustContext(NewSessionTicketMessage message) {
-        if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13() || tlsContext.getChooser().getSelectedProtocolVersion() == ProtocolVersion.DTLS13) {
+        if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()
+                || tlsContext.getChooser().getSelectedProtocolVersion() == ProtocolVersion.DTLS13) {
             adjustPskSets(message);
         } else {
             byte[] ticket = message.getTicket().getIdentity().getValue();

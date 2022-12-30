@@ -36,7 +36,8 @@ public abstract class HelloMessagePreparator<T extends HelloMessage<?>>
     protected void prepareRandom() {
         byte[] random;
         if (chooser.getConfig().isUseFreshRandom()) {
-            if (chooser.getHighestProtocolVersion().isTLS13() || chooser.getHighestProtocolVersion() == ProtocolVersion.DTLS13) {
+            if (chooser.getHighestProtocolVersion().isTLS13()
+                    || chooser.getHighestProtocolVersion() == ProtocolVersion.DTLS13) {
                 random = new byte[HandshakeByteLength.RANDOM];
                 chooser.getContext().getTlsContext().getRandom().nextBytes(random);
                 chooser.getContext().getTlsContext().setServerRandom(random);
