@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.certificate.CertificateAnalyzer;
+import de.rub.nds.tlsattacker.core.constants.CertificateKeyType;
 import de.rub.nds.tlsattacker.core.constants.CertificateType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
@@ -60,8 +61,8 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
                 throw new UnsupportedOperationException("We do not support OpenPGP keys");
             case RAW_PUBLIC_KEY:
                 LOGGER.debug("Adjusting context for RAW PUBLIC KEY certificate message");
-                try (ASN1InputStream asn1Stream
-                        = new ASN1InputStream(message.getCertificatesListBytes().getValue())) {
+                try (ASN1InputStream asn1Stream =
+                        new ASN1InputStream(message.getCertificatesListBytes().getValue())) {
                     // TODO Temporary parsing, we need to redo this once
                     // x509/asn1 attacker is integrated
                     DLSequence dlSeq = (DLSequence) asn1Stream.readObject();
@@ -69,8 +70,8 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
                     NamedGroup group;
                     ASN1ObjectIdentifier keyType = (ASN1ObjectIdentifier) identifier.getObjectAt(0);
                     if (keyType.getId().equals("1.2.840.10045.2.1")) {
-                        ASN1ObjectIdentifier curveType
-                                = (ASN1ObjectIdentifier) identifier.getObjectAt(1);
+                        ASN1ObjectIdentifier curveType =
+                                (ASN1ObjectIdentifier) identifier.getObjectAt(1);
                         if (curveType.getId().equals("1.2.840.10045.3.1.7")) {
                             group = NamedGroup.SECP256R1;
                         } else {
@@ -79,8 +80,8 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
                         }
                         DERBitString publicKey = (DERBitString) dlSeq.getObjectAt(1);
                         byte[] pointBytes = publicKey.getBytes();
-                        Point publicKeyPoint
-                                = PointFormatter.formatFromByteArray(group, pointBytes);
+                        Point publicKeyPoint =
+                                PointFormatter.formatFromByteArray(group, pointBytes);
                         if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.SERVER) {
                             // TODO: this needs to be a new field in the context
                             tlsContext.setServerEcPublicKey(publicKeyPoint);
@@ -110,19 +111,19 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
                                             pair.getCertificateLength().getValue(),
                                             HandshakeByteLength.CERTIFICATE_LENGTH));
                             stream.write(pair.getCertificateBytes().getValue());
-                            certificatesLength
-                                    += pair.getCertificateLength().getValue()
-                                    + HandshakeByteLength.CERTIFICATE_LENGTH;
+                            certificatesLength +=
+                                    pair.getCertificateLength().getValue()
+                                            + HandshakeByteLength.CERTIFICATE_LENGTH;
                         }
                     } catch (IOException ex) {
                         throw new AdjustmentException(
                                 "Could not concatenate certificates bytes", ex);
                     }
-                    certificateChain
-                            = parseCertificateChain(certificatesLength, stream.toByteArray());
+                    certificateChain =
+                            parseCertificateChain(certificatesLength, stream.toByteArray());
                 } else {
-                    certificateChain
-                            = parseCertificateChain(
+                    certificateChain =
+                            parseCertificateChain(
                                     message.getCertificatesListLength().getValue(),
                                     message.getCertificatesListBytes().getValue());
                 }
@@ -147,9 +148,9 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
     public void adjustLeafPublicKey(X509Certificate leafCertificate) {
         X509PublicKey publicKey = CertificateAnalyzer.getPublicKey(leafCertificate);
         if (tlsContext.getSelectedProtocolVersion() != ProtocolVersion.TLS13) {
-            publicKey.adjustInContext(context, connectionEnd);
+            adjustPublicKey(tlsContext, ConnectionEndType.CLIENT, publicKey);
         }
-        
+
         if (CertificateAnalyzer.isEllipticCurveCertificate(leafCertificate)) {
             tlsContext.setEcCertificateCurve(
                     CertificateAnalyzer.getPublicNamedGroup(leafCertificate));
@@ -157,8 +158,11 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
         tlsContext.setEcCertificateSignatureCurve(
                 CertificateAnalyzer.getSignatureNamedGroup(leafCertificate));
         if (tlsContext.getConfig().getAutoAdjustSignatureAndHashAlgorithm()) {
-            SignatureAndHashAlgorithm sigHashAlgo
-                    = SignatureAndHashAlgorithm.forCertificateKeyPair(this, tlsContext.getChooser());
+            CertificateKeyType certificateKeyType =
+                    CertificateAnalyzer.getCertificateKeyType(leafCertificate);
+            SignatureAndHashAlgorithm sigHashAlgo =
+                    SignatureAndHashAlgorithm.forCertificateKeyPair(
+                            certificateKeyType, tlsContext.getChooser(), true);
 
             LOGGER.debug("Setting selected SignatureAndHash algorithm to:" + sigHashAlgo);
             tlsContext.setSelectedSignatureAndHashAlgorithm(sigHashAlgo);
@@ -167,8 +171,8 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
 
     private X509CertificateChain parseCertificateChain(int lengthBytes, byte[] bytesToParse) {
         try {
-            ByteArrayInputStream stream
-                    = new ByteArrayInputStream(
+            ByteArrayInputStream stream =
+                    new ByteArrayInputStream(
                             ArrayConverter.concatenate(
                                     ArrayConverter.intToBytes(
                                             lengthBytes, HandshakeByteLength.CERTIFICATES_LENGTH),
@@ -179,11 +183,16 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
             // Arrayindexoutofbounds
             LOGGER.warn(
                     "Could not parse Certificate bytes into CertificateChain object:"
-                    + ArrayConverter.bytesToHexString(bytesToParse, false),
+                            + ArrayConverter.bytesToHexString(bytesToParse, false),
                     e);
             LOGGER.debug(e);
             return null;
         }
+    }
+
+    private void adjustPublicKey(
+            TlsContext context, ConnectionEndType connectionEnd, X509PublicKey publicKey) {
+        throw new UnsupportedOperationException("not yet implemented");
     }
 
     private void adjustCertExtensions(CertificateMessage certificateMessage) {

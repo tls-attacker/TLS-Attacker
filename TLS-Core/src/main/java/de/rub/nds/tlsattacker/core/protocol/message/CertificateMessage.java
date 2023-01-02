@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -25,32 +25,24 @@ import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
 @XmlRootElement(name = "Certificate")
 public class CertificateMessage extends HandshakeMessage {
 
-    /**
-     * request context length
-     */
+    /** request context length */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger requestContextLength;
-    /**
-     * request context
-     */
+    /** request context */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.NONE)
     private ModifiableByteArray requestContext;
 
-    /**
-     * certificates length
-     */
+    /** certificates length */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger certificatesListLength;
 
-    @ModifiableVariableProperty
-    private ModifiableByteArray certificatesListBytes;
+    @ModifiableVariableProperty private ModifiableByteArray certificatesListBytes;
 
     @HoldsModifiableVariable
     @XmlElementWrapper
@@ -70,8 +62,8 @@ public class CertificateMessage extends HandshakeMessage {
     }
 
     public void setCertificatesListLength(int length) {
-        this.certificatesListLength
-                = ModifiableVariableFactory.safelySetValue(certificatesListLength, length);
+        this.certificatesListLength =
+                ModifiableVariableFactory.safelySetValue(certificatesListLength, length);
     }
 
     public ModifiableByteArray getCertificatesListBytes() {
@@ -83,8 +75,8 @@ public class CertificateMessage extends HandshakeMessage {
     }
 
     public void setCertificatesListBytes(byte[] array) {
-        this.certificatesListBytes
-                = ModifiableVariableFactory.safelySetValue(certificatesListBytes, array);
+        this.certificatesListBytes =
+                ModifiableVariableFactory.safelySetValue(certificatesListBytes, array);
     }
 
     public ModifiableInteger getRequestContextLength() {
@@ -96,8 +88,8 @@ public class CertificateMessage extends HandshakeMessage {
     }
 
     public void setRequestContextLength(int length) {
-        this.requestContextLength
-                = ModifiableVariableFactory.safelySetValue(requestContextLength, length);
+        this.requestContextLength =
+                ModifiableVariableFactory.safelySetValue(requestContextLength, length);
     }
 
     public ModifiableByteArray getRequestContext() {

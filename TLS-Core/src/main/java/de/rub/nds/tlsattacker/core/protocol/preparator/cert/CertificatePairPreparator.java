@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.preparator.cert;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -46,7 +45,9 @@ public class CertificatePairPreparator extends Preparator<CertificatePair> {
 
     private void prepareCertificate(CertificatePair pair) {
         pair.setCertificateBytes(pair.getX509certificate().getSerializer().serialize());
-        LOGGER.debug("Certificate: " + ArrayConverter.bytesToHexString(pair.getCertificateBytes().getValue()));
+        LOGGER.debug(
+                "Certificate: "
+                        + ArrayConverter.bytesToHexString(pair.getCertificateBytes().getValue()));
     }
 
     private void prepareCertificateLength(CertificatePair pair) {
@@ -67,12 +68,13 @@ public class CertificatePairPreparator extends Preparator<CertificatePair> {
             }
             pair.setExtensionBytes(stream.toByteArray());
         }
-        LOGGER.debug("ExtensionBytes: " + ArrayConverter.bytesToHexString(pair.getExtensionBytes().getValue()));
+        LOGGER.debug(
+                "ExtensionBytes: "
+                        + ArrayConverter.bytesToHexString(pair.getExtensionBytes().getValue()));
     }
 
     private void prepareExtensionLength(CertificatePair pair) {
         pair.setExtensionsLength(pair.getExtensionBytes().getValue().length);
         LOGGER.debug("ExtensionLength: " + pair.getExtensionsLength().getValue());
     }
-
 }

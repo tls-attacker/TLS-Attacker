@@ -1,13 +1,14 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.config.delegate;
+
+import static org.apache.commons.lang3.StringUtils.join;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
@@ -30,7 +31,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import static org.apache.commons.lang3.StringUtils.join;
 import org.bouncycastle.crypto.tls.Certificate;
 
 public class CertificateDelegate extends Delegate {
@@ -41,17 +41,20 @@ public class CertificateDelegate extends Delegate {
     @Parameter(names = "-key", description = "PEM encoded private key")
     private String key = null;
 
-    @Parameter(names = "-keystore", description = "Java Key Store (JKS) file to use as a certificate")
+    @Parameter(
+            names = "-keystore",
+            description = "Java Key Store (JKS) file to use as a certificate")
     private String keystore = null;
 
     @Parameter(names = "-password", description = "Java Key Store (JKS) file password")
     private String password = null;
 
-    @Parameter(names = "-alias", description = "Alias of the key to be used from Java Key Store (JKS)")
+    @Parameter(
+            names = "-alias",
+            description = "Alias of the key to be used from Java Key Store (JKS)")
     private String alias = null;
 
-    public CertificateDelegate() {
-    }
+    public CertificateDelegate() {}
 
     public String getKeystore() {
         return keystore;
@@ -105,7 +108,8 @@ public class CertificateDelegate extends Delegate {
             LOGGER.debug("Loading private key");
             try {
                 privateKey = PemUtil.readPrivateKey(new File(key));
-                CustomPrivateKey customPrivateKey = CertificateUtils.parseCustomPrivateKey(privateKey);
+                CustomPrivateKey customPrivateKey =
+                        CertificateUtils.parseCustomPrivateKey(privateKey);
                 customPrivateKey.adjustInConfig(config, ConnectionEndType.CLIENT);
                 customPrivateKey.adjustInConfig(config, ConnectionEndType.SERVER);
 
@@ -118,7 +122,8 @@ public class CertificateDelegate extends Delegate {
             try {
                 X509CertificateChain chain = CertificateIo.readPemChain(new File(certificate));
                 if (privateKey != null) {
-                    config.setDefaultExplicitCertificateKeyPair(new CertificateKeyPair(chain, (CustomPrivateKey) privateKey));
+                    config.setDefaultExplicitCertificateKeyPair(
+                            new CertificateKeyPair(chain, (CustomPrivateKey) privateKey));
                 } else {
                     throw new RuntimeException("Certificate provided without private key");
                 }
@@ -136,8 +141,10 @@ public class CertificateDelegate extends Delegate {
         if (missingParameters.size() == 3) {
             return;
         } else if (!missingParameters.isEmpty()) {
-            throw new ParameterException("The following parameters are required for loading a" + " keystore: "
-                + join(mandatoryParameters.keySet()));
+            throw new ParameterException(
+                    "The following parameters are required for loading a"
+                            + " keystore: "
+                            + join(mandatoryParameters.keySet()));
         }
         try {
             ConnectionEndType type;
@@ -146,7 +153,8 @@ public class CertificateDelegate extends Delegate {
                     type = ConnectionEndType.CLIENT;
                     break;
                 case MITM:
-                    throw new ConfigurationException("CertificateDelegate is not allowed for MitM running mode");
+                    throw new ConfigurationException(
+                            "CertificateDelegate is not allowed for MitM running mode");
                 case SERVER:
                     type = ConnectionEndType.SERVER;
                     break;
@@ -156,11 +164,16 @@ public class CertificateDelegate extends Delegate {
             KeyStore store = KeystoreHandler.loadKeyStore(keystore, password);
             Certificate cert = JKSLoader.loadTLSCertificate(store, alias);
             privateKey = (PrivateKey) store.getKey(alias, password.toCharArray());
-            CertificateKeyPair pair = new CertificateKeyPair(CertificateIo.convert(cert), (CustomPrivateKey) privateKey);
+            CertificateKeyPair pair =
+                    new CertificateKeyPair(
+                            CertificateIo.convert(cert), (CustomPrivateKey) privateKey);
             pair.adjustInConfig(config, type);
             config.setAutoSelectCertificate(false);
-        } catch (UnrecoverableKeyException | KeyStoreException | IOException | NoSuchAlgorithmException
-            | CertificateException ex) {
+        } catch (UnrecoverableKeyException
+                | KeyStoreException
+                | IOException
+                | NoSuchAlgorithmException
+                | CertificateException ex) {
             throw new ConfigurationException("Could not load private Key from Keystore", ex);
         }
     }

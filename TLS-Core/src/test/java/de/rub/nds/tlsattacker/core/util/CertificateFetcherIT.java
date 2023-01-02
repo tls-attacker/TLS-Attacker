@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -48,12 +48,14 @@ public class CertificateFetcherIT {
     public static void setUpClass() throws Exception {
         Security.addProvider(new BouncyCastleProvider());
         TimeHelper.setProvider(new FixedTimeProvider(0));
-        KeyPair keyPair
-                = KeyStoreGenerator.createRSAKeyPair(1024, new BadRandom(new Random(0), new byte[0]));
-        KeyStore keyStore
-                = KeyStoreGenerator.createKeyStore(keyPair, new BadRandom(new Random(0), new byte[0]));
+        KeyPair keyPair =
+                KeyStoreGenerator.createRSAKeyPair(1024, new BadRandom(new Random(0), new byte[0]));
+        KeyStore keyStore =
+                KeyStoreGenerator.createKeyStore(
+                        keyPair, new BadRandom(new Random(0), new byte[0]));
 
-        expectedCertificate = CertificateIo.convert(keyStore.getCertificate(KeyStoreGenerator.ALIAS));
+        expectedCertificate =
+                CertificateIo.convert(keyStore.getCertificate(KeyStoreGenerator.ALIAS));
         expectedPublicKey = CertificateAnalyzer.getPublicKey(expectedCertificate.getLeaf());
 
         tlsServer = new BasicTlsServer(keyStore, KeyStoreGenerator.PASSWORD, "TLS", SERVER_PORT);
@@ -98,10 +100,13 @@ public class CertificateFetcherIT {
     @Test
     @Tag(TestCategories.INTEGRATION_TEST)
     public void testFetchServerCertificate() throws Exception {
-        byte[] actualEncoded
-                = CertificateFetcher.fetchServerCertificateChain(config).getLeaf().getSerializer().serialize();
-        Certificate actual
-                = CertificateFactory.getInstance("X.509")
+        byte[] actualEncoded =
+                CertificateFetcher.fetchServerCertificateChain(config)
+                        .getLeaf()
+                        .getSerializer()
+                        .serialize();
+        Certificate actual =
+                CertificateFactory.getInstance("X.509")
                         .generateCertificate(new ByteArrayInputStream(actualEncoded));
         assertNotNull(actual);
         assertEquals(expectedCertificate, actual);

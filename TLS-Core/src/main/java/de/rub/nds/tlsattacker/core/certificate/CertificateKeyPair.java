@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -67,15 +67,15 @@ public class CertificateKeyPair implements Serializable {
     }
 
     public CertificateKeyPair(
-            X509CertificateChain x509CertificateChain,
-            CustomPrivateKey privateKey) {
+            X509CertificateChain x509CertificateChain, CustomPrivateKey privateKey) {
         this.x509CertificateChain = x509CertificateChain;
-        
+
         this.privateKey = privateKey;
         throw new UnsupportedOperationException("public key not set - implement");
     }
 
-    public CertificateKeyPair(X509CertificateChain x509CertificateChain, PrivateKey privateKey, PublicKey publicKey) {
+    public CertificateKeyPair(
+            X509CertificateChain x509CertificateChain, PrivateKey privateKey, PublicKey publicKey) {
         this.x509CertificateChain = x509CertificateChain;
         this.privateKey = CertificateUtils.parseCustomPrivateKey(privateKey);
         this.publicKey = CertificateUtils.parseCustomPublicKey(publicKey);
@@ -92,11 +92,11 @@ public class CertificateKeyPair implements Serializable {
     public CertificateKeyType getLeafCertificateKeyType() {
         return CertificateAnalyzer.getCertificateKeyType(x509CertificateChain.getLeaf());
     }
-    
+
     public NamedGroup getLeafPublicKeyNamedGroup() {
         return CertificateAnalyzer.getPublicNamedGroup(x509CertificateChain.getLeaf());
     }
-    
+
     public NamedGroup getLeafSignatureNamedGroup() {
         return CertificateAnalyzer.getSignatureNamedGroup(x509CertificateChain.getLeaf());
     }
@@ -112,7 +112,6 @@ public class CertificateKeyPair implements Serializable {
         }
         config.setDefaultExplicitCertificateKeyPair(this);
     }
-
 
     @Override
     public int hashCode() {
@@ -147,7 +146,14 @@ public class CertificateKeyPair implements Serializable {
 
     @Override
     public String toString() {
-        return "CertificateKeyPair{" + "x509CertificateChain=" + x509CertificateChain + ", publicKey=" + publicKey + ", privateKey=" + privateKey + '}';
+        return "CertificateKeyPair{"
+                + "x509CertificateChain="
+                + x509CertificateChain
+                + ", publicKey="
+                + publicKey
+                + ", privateKey="
+                + privateKey
+                + '}';
     }
 
     public boolean isCompatibleWithCipherSuite(Chooser chooser) {
@@ -160,16 +166,20 @@ public class CertificateKeyPair implements Serializable {
         }
 
         CertificateKeyType neededKeyType = AlgorithmResolver.getCertificateKeyType(cipherSuite);
-        CertificateKeyType legacyNeededCertSignatureKeyType
-                = AlgorithmResolver.getRequiredSignatureAlgorithm(cipherSuite)
+        CertificateKeyType legacyNeededCertSignatureKeyType =
+                AlgorithmResolver.getRequiredSignatureAlgorithm(cipherSuite)
                         .getRequiredCertificateKeyType();
 
-        if (neededKeyType == CertificateAnalyzer.getCertificateKeyType(x509CertificateChain.getLeaf())
+        if (neededKeyType
+                        == CertificateAnalyzer.getCertificateKeyType(x509CertificateChain.getLeaf())
                 || (neededKeyType == CertificateKeyType.ECDH_ECDSA
-                && CertificateAnalyzer.getCertificateKeyType(x509CertificateChain.getLeaf()) == CertificateKeyType.ECDH)) {
+                        && CertificateAnalyzer.getCertificateKeyType(x509CertificateChain.getLeaf())
+                                == CertificateKeyType.ECDH)) {
             if (cipherSuite.isEphemeral()
                     || mayUseArbitraryCertSignature(chooser)
-                    || legacyNeededCertSignatureKeyType == CertificateAnalyzer.getCertificateKeyType(x509CertificateChain.getLeaf())) {
+                    || legacyNeededCertSignatureKeyType
+                            == CertificateAnalyzer.getCertificateKeyType(
+                                    x509CertificateChain.getLeaf())) {
                 return true;
             }
         }
@@ -185,8 +195,11 @@ public class CertificateKeyPair implements Serializable {
     }
 
     public boolean combinationUnsuitedForTls13(Chooser chooser) {
-        return SignatureAndHashAlgorithm.forCertificateKeyPair(this, chooser, true) == null
-                || !SignatureAndHashAlgorithm.forCertificateKeyPair(this, chooser, true)
+        return SignatureAndHashAlgorithm.forCertificateKeyPair(
+                                this.getLeafCertificateKeyType(), chooser, true)
+                        == null
+                || !SignatureAndHashAlgorithm.forCertificateKeyPair(
+                                this.getLeafCertificateKeyType(), chooser, true)
                         .suitedForSigningTls13Messages();
     }
 

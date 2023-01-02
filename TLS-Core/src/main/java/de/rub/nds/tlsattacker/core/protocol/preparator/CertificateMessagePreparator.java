@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -81,9 +81,9 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
                     // TODO this needs to be adjusted for different curves
                     asn1OutputStream.writeObject(
                             new DLSequence(
-                                    new ASN1Encodable[]{
+                                    new ASN1Encodable[] {
                                         new DLSequence(
-                                                new ASN1Encodable[]{
+                                                new ASN1Encodable[] {
                                                     new ASN1ObjectIdentifier("1.2.840.10045.2.1"),
                                                     new ASN1ObjectIdentifier("1.2.840.10045.3.1.7")
                                                 }),
@@ -106,11 +106,15 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
             case X509:
                 List<CertificatePair> pairList = msg.getCertificateList();
                 if (pairList == null) {
-                    //There is no certificate list in the message, this means we need to auto create one
-                    CertificateKeyPair selectedCertificateKeyPair
-                            = CertificateByteChooser.getInstance().chooseCertificateKeyPair(chooser);
+                    // There is no certificate list in the message, this means we need to auto
+                    // create one
+                    CertificateKeyPair selectedCertificateKeyPair =
+                            CertificateByteChooser.getInstance().chooseCertificateKeyPair(chooser);
                     pairList = new LinkedList<>();
-                    for (X509Certificate certificate : selectedCertificateKeyPair.getX509CertificateChain().getCertificateList()) {
+                    for (X509Certificate certificate :
+                            selectedCertificateKeyPair
+                                    .getX509CertificateChain()
+                                    .getCertificateList()) {
                         pairList.add(new CertificatePair(certificate));
                     }
                     msg.setCertificateList(pairList);
@@ -118,8 +122,8 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
                 prepareFromPairList(msg);
                 LOGGER.debug(
                         "CertificatesListBytes: "
-                        + ArrayConverter.bytesToHexString(
-                                msg.getCertificatesListBytes().getValue()));
+                                + ArrayConverter.bytesToHexString(
+                                        msg.getCertificatesListBytes().getValue()));
                 break;
 
             default:
@@ -132,8 +136,8 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
         for (CertificatePair pair : msg.getCertificateList()) {
             CertificatePairPreparator preparator = new CertificatePairPreparator(chooser, pair);
             preparator.prepare();
-            CertificatePairSerializer serializer
-                    = new CertificatePairSerializer(pair, chooser.getSelectedProtocolVersion());
+            CertificatePairSerializer serializer =
+                    new CertificatePairSerializer(pair, chooser.getSelectedProtocolVersion());
             try {
                 stream.write(serializer.serialize());
             } catch (IOException ex) {
@@ -152,7 +156,7 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
         }
         LOGGER.debug(
                 "RequestContext: "
-                + ArrayConverter.bytesToHexString(msg.getRequestContext().getValue()));
+                        + ArrayConverter.bytesToHexString(msg.getRequestContext().getValue()));
     }
 
     private void prepareRequestContextLength(CertificateMessage msg) {

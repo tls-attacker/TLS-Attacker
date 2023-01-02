@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -53,8 +53,7 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
     }
 
     /**
-     * Reads the next bytes as the RequestContextLength and writes them in the
-     * message
+     * Reads the next bytes as the RequestContextLength and writes them in the message
      *
      * @param msg Message to write in
      */
@@ -65,8 +64,7 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
     }
 
     /**
-     * Reads the next bytes as the requestContextBytes and writes them in the
-     * message
+     * Reads the next bytes as the requestContextBytes and writes them in the message
      *
      * @param msg Message to write in
      */
@@ -77,8 +75,7 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
     }
 
     /**
-     * Reads the next bytes as the CertificateLength and writes them in the
-     * message
+     * Reads the next bytes as the CertificateLength and writes them in the message
      *
      * @param msg Message to write in
      */
@@ -88,8 +85,7 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
     }
 
     /**
-     * Reads the next bytes as the CertificateBytes and writes them in the
-     * message
+     * Reads the next bytes as the CertificateBytes and writes them in the message
      *
      * @param msg Message to write in
      */
@@ -102,8 +98,7 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
     }
 
     /**
-     * Reads the bytes from the CertificateListBytes and writes them in the
-     * CertificateList
+     * Reads the bytes from the CertificateListBytes and writes them in the CertificateList
      *
      * @param msg Message to write in
      */

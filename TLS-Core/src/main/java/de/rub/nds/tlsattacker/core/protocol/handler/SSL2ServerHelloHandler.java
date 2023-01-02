@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -77,7 +77,8 @@ public class SSL2ServerHelloHandler extends ProtocolMessageHandler<SSL2ServerHel
             LOGGER.debug("Adjusting RSA PublicKey");
             X509PublicKey publicKey = CertificateAnalyzer.getPublicKey(certificateChain.getLeaf());
             if (publicKey instanceof RsaPublicKey) {
-                tlsContext.setServerRSAModulus(((RsaPublicKey) publicKey).getModulus().getValue().getValue());
+                tlsContext.setServerRSAModulus(
+                        ((RsaPublicKey) publicKey).getModulus().getValue().getValue());
                 tlsContext.setServerRSAPublicKey(
                         ((RsaPublicKey) publicKey).getPublicExponent().getValue().getValue());
             } else {

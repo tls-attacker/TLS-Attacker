@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.serializer.cert;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -50,7 +49,9 @@ public class CertificatePairSerializer extends Serializer<CertificatePair> {
 
     private void writeCertificate(CertificatePair pair) {
         appendBytes(pair.getCertificateBytes().getValue());
-        LOGGER.debug("Certificate: " + ArrayConverter.bytesToHexString(pair.getCertificateBytes().getValue()));
+        LOGGER.debug(
+                "Certificate: "
+                        + ArrayConverter.bytesToHexString(pair.getCertificateBytes().getValue()));
     }
 
     private void writeExtensionsLength(CertificatePair pair) {
@@ -60,7 +61,8 @@ public class CertificatePairSerializer extends Serializer<CertificatePair> {
 
     private void writeExtensions(CertificatePair pair) {
         appendBytes(pair.getExtensionBytes().getValue());
-        LOGGER.debug("Extensions: " + ArrayConverter.bytesToHexString(pair.getExtensionBytes().getValue()));
+        LOGGER.debug(
+                "Extensions: "
+                        + ArrayConverter.bytesToHexString(pair.getExtensionBytes().getValue()));
     }
-
 }

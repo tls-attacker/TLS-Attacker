@@ -1,20 +1,17 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 package de.rub.nds.tlsattacker.core.protocol.message;
 
-import de.rub.nds.asn1.parser.ParserException;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.tlsattacker.core.certificate.ocsp.OCSPResponse;
-import de.rub.nds.tlsattacker.core.certificate.ocsp.OCSPResponseParser;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.CertificateStatusHandler;
@@ -22,7 +19,6 @@ import de.rub.nds.tlsattacker.core.protocol.parser.CertificateStatusParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.CertificateStatusPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateStatusSerializer;
 import jakarta.xml.bind.annotation.XmlRootElement;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
@@ -67,27 +63,8 @@ public class CertificateStatusMessage extends HandshakeMessage {
 
     @Override
     public String toString() {
-        OCSPResponse response = null;
-        if (getOcspResponseBytes() != null) {
-            try {
-                response = OCSPResponseParser.parseResponse(getOcspResponseBytes().getValue());
-            } catch (IOException | ParserException e) {
-                LOGGER.error(
-                        "Could not parse embedded OCSP response in CertificateStatusMessage." + e);
-            }
-        }
         StringBuilder builder = new StringBuilder();
-        builder.append("CertificateStatusMessage:");
-        if (response != null) {
-            try {
-                builder.append("\n ").append(response.toString());
-            } catch (Exception e) {
-                throw new RuntimeException(
-                        "Could not print parsed OCSP response in CertificateStatusMessage.");
-            }
-        } else {
-            builder.append("\n null");
-        }
+        builder.append("CertificateStatusMessage"); // TODO improve
         return builder.toString();
     }
 

@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.core.constants;
 
 import com.google.common.collect.Sets;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.certificate.CertificateKeyPair;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayInputStream;
@@ -339,7 +338,9 @@ public enum SignatureAndHashAlgorithm {
     }
 
     public static SignatureAndHashAlgorithm forCertificateKeyPair(
-            CertificateKeyPair keyPair, Chooser chooser, boolean selectingCertificate) {
+            CertificateKeyType leafCertificateKeyType,
+            Chooser chooser,
+            boolean selectingCertificate) {
         Sets.SetView<SignatureAndHashAlgorithm> intersection =
                 Sets.intersection(
                         Sets.newHashSet(chooser.getClientSupportedSignatureAndHashAlgorithms()),
@@ -355,13 +356,12 @@ public enum SignatureAndHashAlgorithm {
         }
 
         SignatureAndHashAlgorithm sigHashAlgo = null;
-        CertificateKeyType certPublicKeyType = keyPair.getLeafCertificateKeyType();
 
         boolean found = false;
         for (SignatureAndHashAlgorithm i : algorithms) {
             SignatureAlgorithm sig = i.getSignatureAlgorithm();
 
-            switch (certPublicKeyType) {
+            switch (leafCertificateKeyType) {
                 case ECDH:
                 case ECDH_ECDSA:
                     if (sig == SignatureAlgorithm.ECDSA) {
@@ -391,13 +391,13 @@ public enum SignatureAndHashAlgorithm {
                     if (sig == SignatureAlgorithm.GOSTR34102012_256
                             || sig == SignatureAlgorithm.GOSTR34102012_512) {
                         found = true;
-                        //if (keyPair.getLeafPublicKeyNamedGroup().isis512bit2012()) {
+                        // if (keyPair.getLeafPublicKeyNamedGroup().isis512bit2012()) {
                         //    sigHashAlgo =
                         //            SignatureAndHashAlgorithm.GOSTR34102012_512_GOSTR34112012_512;
-                        //} else {
+                        // } else {
                         //    sigHashAlgo =
                         //           SignatureAndHashAlgorithm.GOSTR34102012_256_GOSTR34112012_256;
-                        //}
+                        // }
                         throw new UnsupportedOperationException("Currently not supported");
                     }
                     break;
@@ -414,7 +414,7 @@ public enum SignatureAndHashAlgorithm {
         if (sigHashAlgo == null && !selectingCertificate) {
             LOGGER.warn(
                     "Could not auto select SignatureAndHashAlgorithm for certPublicKeyType={}, setting default value",
-                    certPublicKeyType);
+                    leafCertificateKeyType);
             sigHashAlgo = SignatureAndHashAlgorithm.RSA_SHA256;
         }
 

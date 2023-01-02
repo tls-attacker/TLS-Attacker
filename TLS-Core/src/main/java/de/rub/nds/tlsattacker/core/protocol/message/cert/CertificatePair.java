@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -39,8 +39,7 @@ public class CertificatePair extends ModifiableVariableHolder {
 
     private X509Certificate x509certificate;
 
-    public CertificatePair() {
-    }
+    public CertificatePair() {}
 
     public CertificatePair(X509Certificate x509Certificate) {
         this.x509certificate = x509Certificate;
@@ -63,7 +62,8 @@ public class CertificatePair extends ModifiableVariableHolder {
     }
 
     public void setCertificateBytes(byte[] certificateBytes) {
-        this.certificateBytes = ModifiableVariableFactory.safelySetValue(this.certificateBytes, certificateBytes);
+        this.certificateBytes =
+                ModifiableVariableFactory.safelySetValue(this.certificateBytes, certificateBytes);
     }
 
     public ModifiableInteger getCertificateLength() {
@@ -75,8 +75,8 @@ public class CertificatePair extends ModifiableVariableHolder {
     }
 
     public void setCertificateLength(int certificateLength) {
-        this.certificateLength
-                = ModifiableVariableFactory.safelySetValue(this.certificateLength, certificateLength);
+        this.certificateLength =
+                ModifiableVariableFactory.safelySetValue(this.certificateLength, certificateLength);
     }
 
     public ModifiableByteArray getExtensionBytes() {
@@ -88,7 +88,8 @@ public class CertificatePair extends ModifiableVariableHolder {
     }
 
     public void setExtensionBytes(byte[] extensionBytes) {
-        this.extensionBytes = ModifiableVariableFactory.safelySetValue(this.extensionBytes, extensionBytes);
+        this.extensionBytes =
+                ModifiableVariableFactory.safelySetValue(this.extensionBytes, extensionBytes);
     }
 
     public ModifiableInteger getExtensionsLength() {
@@ -100,8 +101,8 @@ public class CertificatePair extends ModifiableVariableHolder {
     }
 
     public void setExtensionsLength(int extensionsLength) {
-        this.extensionsLength
-                = ModifiableVariableFactory.safelySetValue(this.extensionsLength, extensionsLength);
+        this.extensionsLength =
+                ModifiableVariableFactory.safelySetValue(this.extensionsLength, extensionsLength);
     }
 
     public List<ExtensionMessage> getExtensionList() {
