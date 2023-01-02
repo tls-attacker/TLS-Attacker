@@ -92,7 +92,7 @@ public class GreaseExtensionMessage extends ExtensionMessage<GreaseExtensionMess
 
     @Override
     public GreaseExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return null;
+        return new GreaseExtensionParser(stream, tlsContext);
     }
 
     @Override
