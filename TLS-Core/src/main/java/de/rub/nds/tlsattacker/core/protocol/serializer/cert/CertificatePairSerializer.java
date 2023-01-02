@@ -12,8 +12,8 @@ package de.rub.nds.tlsattacker.core.protocol.serializer.cert;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificatePair;
-import de.rub.nds.tlsattacker.core.protocol.Serializer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -36,7 +36,7 @@ public class CertificatePairSerializer extends Serializer<CertificatePair> {
         writeCertificate(pair);
         if (version.isTLS13()) {
             writeExtensionsLength(pair);
-            if (pair.getExtensions() != null && pair.getExtensions().getValue() != null) {
+            if (pair.getExtensionBytes() != null && pair.getExtensionBytes().getValue() != null) {
                 writeExtensions(pair);
             }
         }
@@ -59,8 +59,8 @@ public class CertificatePairSerializer extends Serializer<CertificatePair> {
     }
 
     private void writeExtensions(CertificatePair pair) {
-        appendBytes(pair.getExtensions().getValue());
-        LOGGER.debug("Extensions: " + ArrayConverter.bytesToHexString(pair.getExtensions().getValue()));
+        appendBytes(pair.getExtensionBytes().getValue());
+        LOGGER.debug("Extensions: " + ArrayConverter.bytesToHexString(pair.getExtensionBytes().getValue()));
     }
 
 }

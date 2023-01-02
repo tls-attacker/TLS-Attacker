@@ -1,39 +1,23 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.util;
 
 import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.crypto.keys.CustomDHPrivateKey;
-import de.rub.nds.tlsattacker.core.crypto.keys.CustomDSAPrivateKey;
-import de.rub.nds.tlsattacker.core.crypto.keys.CustomDhPublicKey;
-import de.rub.nds.tlsattacker.core.crypto.keys.CustomDsaPublicKey;
-import de.rub.nds.tlsattacker.core.crypto.keys.CustomECPrivateKey;
-import de.rub.nds.tlsattacker.core.crypto.keys.CustomEcPublicKey;
-import de.rub.nds.tlsattacker.core.crypto.keys.CustomPrivateKey;
-import de.rub.nds.tlsattacker.core.crypto.keys.CustomPublicKey;
-import de.rub.nds.tlsattacker.core.crypto.keys.CustomRSAPrivateKey;
-import de.rub.nds.tlsattacker.core.crypto.keys.CustomRsaPublicKey;
+import de.rub.nds.tlsattacker.core.crypto.keys.*;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
-import java.security.interfaces.DSAPrivateKey;
-import java.security.interfaces.DSAPublicKey;
-import java.security.interfaces.ECPrivateKey;
-import java.security.interfaces.ECPublicKey;
-import java.security.interfaces.RSAKey;
-import java.security.interfaces.RSAPrivateKey;
-import java.security.interfaces.RSAPublicKey;
+import java.security.interfaces.*;
 import java.security.spec.ECPrivateKeySpec;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.RSAPrivateKeySpec;
@@ -70,17 +54,22 @@ public class CertificateUtils {
             return new CustomRSAPrivateKey(privKey.getModulus(), privKey.getPrivateExponent());
         } else if (key instanceof DSAPrivateKey) {
             DSAPrivateKey privKey = (DSAPrivateKey) key;
-            return new CustomDSAPrivateKey(privKey.getX(), privKey.getParams().getP(), privKey.getParams().getQ(),
-                privKey.getParams().getG());
+            return new CustomDSAPrivateKey(
+                    privKey.getX(),
+                    privKey.getParams().getP(),
+                    privKey.getParams().getQ(),
+                    privKey.getParams().getG());
         } else if (key instanceof DHPrivateKey) {
             DHPrivateKey privKey = (DHPrivateKey) key;
-            return new CustomDHPrivateKey(privKey.getX(), privKey.getParams().getP(), privKey.getParams().getG());
+            return new CustomDHPrivateKey(
+                    privKey.getX(), privKey.getParams().getP(), privKey.getParams().getG());
         } else if (key instanceof ECPrivateKey) {
             ECPrivateKey privKey = (ECPrivateKey) key;
 
             return new CustomECPrivateKey(privKey.getS(), NamedGroup.getNamedGroup(privKey));
         } else {
-            throw new UnsupportedOperationException("This private key is not supporter:" + key.toString());
+            throw new UnsupportedOperationException(
+                    "This private key is not supporter:" + key.toString());
         }
     }
 
@@ -92,21 +81,28 @@ public class CertificateUtils {
         } else if (key instanceof DSAPublicKey) {
             LOGGER.trace("Found a DSA PublicKey");
             DSAPublicKey pubKey = (DSAPublicKey) key;
-            return new CustomDsaPublicKey(pubKey.getParams().getP(), pubKey.getParams().getQ(),
-                pubKey.getParams().getG(), pubKey.getY());
+            return new CustomDsaPublicKey(
+                    pubKey.getParams().getP(),
+                    pubKey.getParams().getQ(),
+                    pubKey.getParams().getG(),
+                    pubKey.getY());
         } else if (key instanceof DHPublicKey) {
             LOGGER.trace("Found a DH PublicKey");
             DHPublicKey pubKey = (DHPublicKey) key;
-            return new CustomDhPublicKey(pubKey.getParams().getP(), pubKey.getParams().getG(), pubKey.getY());
+            return new CustomDhPublicKey(
+                    pubKey.getParams().getP(), pubKey.getParams().getG(), pubKey.getY());
         } else if (key instanceof ECPublicKey) {
             LOGGER.trace("Found an EC PublicKey");
             ECPublicKey pubKey = (ECPublicKey) key;
             NamedGroup group = NamedGroup.getNamedGroup(pubKey);
             if (group == null) {
-                return new CustomEcPublicKey(pubKey.getW().getAffineX(), pubKey.getW().getAffineY(),
-                    GOSTCurve.fromNamedSpec((ECNamedCurveSpec) pubKey.getParams()));
+                return new CustomEcPublicKey(
+                        pubKey.getW().getAffineX(),
+                        pubKey.getW().getAffineY(),
+                        GOSTCurve.fromNamedSpec((ECNamedCurveSpec) pubKey.getParams()));
             } else {
-                return new CustomEcPublicKey(pubKey.getW().getAffineX(), pubKey.getW().getAffineY(), group);
+                return new CustomEcPublicKey(
+                        pubKey.getW().getAffineX(), pubKey.getW().getAffineY(), group);
             }
         } else {
             throw new UnsupportedOperationException("This public key is not supported:" + key);
@@ -116,31 +112,41 @@ public class CertificateUtils {
     /**
      * Parses the leaf Certificate PublicKey from the CertificateStructure
      *
-     * @param  cert
-     *              The Certificate from which the PublicKey should be extracted
-     * @return      The parsed PublicKey
+     * @param cert The Certificate from which the PublicKey should be extracted
+     * @return The parsed PublicKey
      */
     public static PublicKey parsePublicKey(Certificate cert) {
         try {
-            X509Certificate x509Cert = X509Certificate.getInstance(cert.getCertificateAt(0).getEncoded());
+            X509Certificate x509Cert =
+                    X509Certificate.getInstance(cert.getCertificateAt(0).getEncoded());
             PublicKey key = x509Cert.getPublicKey();
-            if (key instanceof RSAPublicKey || key instanceof ECPublicKey || key instanceof DSAPublicKey) {
+            if (key instanceof RSAPublicKey
+                    || key instanceof ECPublicKey
+                    || key instanceof DSAPublicKey) {
                 return key;
             } else {
                 // Since java does not support DH natively we can try to
                 // manually
                 // parse this, this may fail
-                ASN1InputStream stream = new ASN1InputStream(
-                    cert.getCertificateAt(0).getSubjectPublicKeyInfo().toASN1Primitive().getEncoded());
+                ASN1InputStream stream =
+                        new ASN1InputStream(
+                                cert.getCertificateAt(0)
+                                        .getSubjectPublicKeyInfo()
+                                        .toASN1Primitive()
+                                        .getEncoded());
                 DLSequence sequence = (DLSequence) stream.readObject();
                 DLSequence objectAt = (DLSequence) sequence.getObjectAt(0).toASN1Primitive();
                 DLSequence dhparams = (DLSequence) objectAt.getObjectAt(1);
                 ASN1Integer asnModulus = (ASN1Integer) dhparams.getObjectAt(0); // modulus
                 ASN1Integer asnGenerator = (ASN1Integer) dhparams.getObjectAt(1); // generator
                 BigInteger publicKey = new BigInteger(1, x509Cert.getPublicKey().getEncoded());
-                return new CustomDhPublicKey(asnModulus.getPositiveValue(), asnGenerator.getPositiveValue(), publicKey);
+                return new CustomDhPublicKey(
+                        asnModulus.getPositiveValue(), asnGenerator.getPositiveValue(), publicKey);
             }
-        } catch (IOException | CertificateException | IllegalArgumentException | ClassCastException ex) {
+        } catch (IOException
+                | CertificateException
+                | IllegalArgumentException
+                | ClassCastException ex) {
             LOGGER.warn("Could not extract public key from Certificate!");
             LOGGER.debug(ex);
             return null;
@@ -153,8 +159,10 @@ public class CertificateUtils {
             KeyFactory f = KeyFactory.getInstance("EC");
             ECPrivateKeySpec s = f.getKeySpec(key, ECPrivateKeySpec.class);
             k = (ECPrivateKey) f.generatePrivate(s);
-        } catch (NoSuchAlgorithmException | InvalidKeySpecException | IllegalArgumentException
-            | ClassCastException ex) {
+        } catch (NoSuchAlgorithmException
+                | InvalidKeySpecException
+                | IllegalArgumentException
+                | ClassCastException ex) {
             LOGGER.warn("Could not convert key to EC private key!");
             LOGGER.debug(ex);
             return null;
@@ -168,8 +176,10 @@ public class CertificateUtils {
             KeyFactory f = KeyFactory.getInstance("RSA");
             RSAPrivateKeySpec s = f.getKeySpec(key, RSAPrivateKeySpec.class);
             k = (RSAPrivateKey) f.generatePrivate(s);
-        } catch (NoSuchAlgorithmException | InvalidKeySpecException | IllegalArgumentException
-            | ClassCastException ex) {
+        } catch (NoSuchAlgorithmException
+                | InvalidKeySpecException
+                | IllegalArgumentException
+                | ClassCastException ex) {
             LOGGER.warn("Could not convert key to EC private key!");
             LOGGER.debug(ex);
             return null;
@@ -248,7 +258,8 @@ public class CertificateUtils {
         }
     }
 
-    public static DHPublicKeyParameters extractDHPublicKeyParameters(Certificate cert) throws IOException {
+    public static DHPublicKeyParameters extractDHPublicKeyParameters(Certificate cert)
+            throws IOException {
         if (hasDHParameters(cert)) {
             if (cert.isEmpty()) {
                 return null;
@@ -260,7 +271,8 @@ public class CertificateUtils {
         }
     }
 
-    public static ECPublicKeyParameters extractECPublicKeyParameters(Certificate cert) throws IOException {
+    public static ECPublicKeyParameters extractECPublicKeyParameters(Certificate cert)
+            throws IOException {
         if (hasECParameters(cert)) {
             if (cert.isEmpty()) {
                 return null;
@@ -317,7 +329,8 @@ public class CertificateUtils {
         return (BCECGOST3410PublicKey) new JcaPEMKeyConverter().getPublicKey(publicKey);
     }
 
-    public static BCECGOST3410_2012PublicKey extract12PublicKey(Certificate cert) throws IOException {
+    public static BCECGOST3410_2012PublicKey extract12PublicKey(Certificate cert)
+            throws IOException {
         SubjectPublicKeyInfo publicKey = cert.getCertificateAt(0).getSubjectPublicKeyInfo();
         return (BCECGOST3410_2012PublicKey) new JcaPEMKeyConverter().getPublicKey(publicKey);
     }
@@ -327,7 +340,9 @@ public class CertificateUtils {
             return false;
         }
         SubjectPublicKeyInfo keyInfo = cert.getCertificateAt(0).getSubjectPublicKeyInfo();
-        return keyInfo.getAlgorithm().getAlgorithm().equals(CryptoProObjectIdentifiers.gostR3410_94);
+        return keyInfo.getAlgorithm()
+                .getAlgorithm()
+                .equals(CryptoProObjectIdentifiers.gostR3410_94);
     }
 
     public static boolean hasGost01EcParameters(Certificate cert) {
@@ -346,9 +361,8 @@ public class CertificateUtils {
         SubjectPublicKeyInfo keyInfo = cert.getCertificateAt(0).getSubjectPublicKeyInfo();
         ASN1ObjectIdentifier alg = keyInfo.getAlgorithm().getAlgorithm();
         return alg.equals(RosstandartObjectIdentifiers.id_tc26_gost_3410_12_256)
-            || alg.equals(RosstandartObjectIdentifiers.id_tc26_gost_3410_12_512);
+                || alg.equals(RosstandartObjectIdentifiers.id_tc26_gost_3410_12_512);
     }
 
-    private CertificateUtils() {
-    }
+    private CertificateUtils() {}
 }

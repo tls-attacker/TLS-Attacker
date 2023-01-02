@@ -1,20 +1,17 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message.computations;
-
-import java.math.BigInteger;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
-import de.rub.nds.tlsattacker.core.config.Config;
+import java.math.BigInteger;
 
 public class RSAServerComputations extends KeyExchangeComputations {
 
@@ -33,7 +30,8 @@ public class RSAServerComputations extends KeyExchangeComputations {
     }
 
     public void setPublicExponent(BigInteger publicExponent) {
-        this.publicExponent = ModifiableVariableFactory.safelySetValue(this.publicExponent, publicExponent);
+        this.publicExponent =
+                ModifiableVariableFactory.safelySetValue(this.publicExponent, publicExponent);
     }
 
     public ModifiableBigInteger getPublicExponent() {

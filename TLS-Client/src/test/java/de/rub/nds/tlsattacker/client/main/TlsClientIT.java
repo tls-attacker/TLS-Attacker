@@ -1,13 +1,15 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.client.main;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import de.rub.nds.modifiablevariable.util.BadRandom;
 import de.rub.nds.tlsattacker.client.config.ClientCommandConfig;
@@ -36,20 +38,14 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageActionFactory;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
-
 import de.rub.nds.tlsattacker.util.FixedTimeProvider;
 import de.rub.nds.tlsattacker.util.TimeHelper;
-
+import de.rub.nds.tlsattacker.util.tests.TestCategories;
 import java.io.IOException;
 import java.security.*;
 import java.security.cert.CertificateException;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import de.rub.nds.tlsattacker.util.tests.TestCategories;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -81,48 +77,72 @@ public class TlsClientIT {
     }
 
     @ParameterizedTest
-    @EnumSource(value = ProtocolVersion.class, names = { "SSL3", "TLS10", "TLS11", "TLS12" })
+    @EnumSource(
+            value = ProtocolVersion.class,
+            names = {"SSL3", "TLS10", "TLS11", "TLS12"})
     @Tag(TestCategories.INTEGRATION_TEST)
     public void testTlsClientWithRsaForProtocolVersion(ProtocolVersion protocolVersion)
-        throws UnrecoverableKeyException, CertificateException, KeyStoreException, IOException,
-        NoSuchAlgorithmException, SignatureException, InvalidKeyException, NoSuchProviderException,
-        OperatorCreationException, KeyManagementException {
+            throws UnrecoverableKeyException, CertificateException, KeyStoreException, IOException,
+                    NoSuchAlgorithmException, SignatureException, InvalidKeyException,
+                    NoSuchProviderException, OperatorCreationException, KeyManagementException {
         startBasicTlsServer(PublicKeyAlgorithm.RSA);
-        assumeTrue(tlsServer.getEnabledProtocolVersions().contains(protocolVersion),
-            "The TLS server used for testing does not support the protocol version to test, all supported versions: "
-                + tlsServer.getEnabledProtocolVersions()
-                + ". Are you using a newer JDK which has SSL3, TLSv1.0, and TLSv1.1 disabled by default?");
+        assumeTrue(
+                tlsServer.getEnabledProtocolVersions().contains(protocolVersion),
+                "The TLS server used for testing does not support the protocol version to test, all supported versions: "
+                        + tlsServer.getEnabledProtocolVersions()
+                        + ". Are you using a newer JDK which has SSL3, TLSv1.0, and TLSv1.1 disabled by default?");
         Config config = createAttackerConfig(protocolVersion, tlsServer.getPort());
-        List<CipherSuite> testableCipherSuites = CipherSuite.getImplemented().stream()
-            .filter(
-                cs -> isCipherSuiteTestable(PublicKeyAlgorithm.RSA, config, cs, List.of(tlsServer.getCipherSuites())))
-            .collect(Collectors.toList());
-        assertAll(testableCipherSuites.stream().map(cs -> () -> executeHandshakeWorkflowWithCipherSuite(config, cs)));
+        List<CipherSuite> testableCipherSuites =
+                CipherSuite.getImplemented().stream()
+                        .filter(
+                                cs ->
+                                        isCipherSuiteTestable(
+                                                PublicKeyAlgorithm.RSA,
+                                                config,
+                                                cs,
+                                                List.of(tlsServer.getCipherSuites())))
+                        .collect(Collectors.toList());
+        assertAll(
+                testableCipherSuites.stream()
+                        .map(cs -> () -> executeHandshakeWorkflowWithCipherSuite(config, cs)));
         executeCustomRsaWorkflow(tlsServer.getPort());
     }
 
     @ParameterizedTest
-    @EnumSource(value = ProtocolVersion.class, names = { "SSL3", "TLS10", "TLS11", "TLS12" })
+    @EnumSource(
+            value = ProtocolVersion.class,
+            names = {"SSL3", "TLS10", "TLS11", "TLS12"})
     @Tag(TestCategories.INTEGRATION_TEST)
-    public void testTlsClientWithEcForProtocolVersion(ProtocolVersion protocolVersion) throws OperatorCreationException,
-        UnrecoverableKeyException, CertificateException, KeyStoreException, IOException, NoSuchAlgorithmException,
-        SignatureException, InvalidKeyException, NoSuchProviderException, KeyManagementException {
+    public void testTlsClientWithEcForProtocolVersion(ProtocolVersion protocolVersion)
+            throws OperatorCreationException, UnrecoverableKeyException, CertificateException,
+                    KeyStoreException, IOException, NoSuchAlgorithmException, SignatureException,
+                    InvalidKeyException, NoSuchProviderException, KeyManagementException {
         startBasicTlsServer(PublicKeyAlgorithm.EC);
-        assumeTrue(tlsServer.getEnabledProtocolVersions().contains(protocolVersion),
-            "The TLS server used for testing does not support the protocol version to test, all supported versions: "
-                + tlsServer.getEnabledProtocolVersions()
-                + ". Are you using a newer JDK which has SSL3, TLSv1.0, and TLSv1.1 disabled by default?");
+        assumeTrue(
+                tlsServer.getEnabledProtocolVersions().contains(protocolVersion),
+                "The TLS server used for testing does not support the protocol version to test, all supported versions: "
+                        + tlsServer.getEnabledProtocolVersions()
+                        + ". Are you using a newer JDK which has SSL3, TLSv1.0, and TLSv1.1 disabled by default?");
         Config config = createAttackerConfig(protocolVersion, tlsServer.getPort());
-        List<CipherSuite> testableCipherSuites = CipherSuite.getImplemented().stream()
-            .filter(
-                cs -> isCipherSuiteTestable(PublicKeyAlgorithm.EC, config, cs, List.of(tlsServer.getCipherSuites())))
-            .collect(Collectors.toList());
-        assertAll(testableCipherSuites.stream().map(cs -> () -> executeHandshakeWorkflowWithCipherSuite(config, cs)));
+        List<CipherSuite> testableCipherSuites =
+                CipherSuite.getImplemented().stream()
+                        .filter(
+                                cs ->
+                                        isCipherSuiteTestable(
+                                                PublicKeyAlgorithm.EC,
+                                                config,
+                                                cs,
+                                                List.of(tlsServer.getCipherSuites())))
+                        .collect(Collectors.toList());
+        assertAll(
+                testableCipherSuites.stream()
+                        .map(cs -> () -> executeHandshakeWorkflowWithCipherSuite(config, cs)));
     }
 
-    public void startBasicTlsServer(PublicKeyAlgorithm algorithm) throws UnrecoverableKeyException,
-        CertificateException, KeyStoreException, IOException, NoSuchAlgorithmException, KeyManagementException,
-        SignatureException, InvalidKeyException, NoSuchProviderException, OperatorCreationException {
+    public void startBasicTlsServer(PublicKeyAlgorithm algorithm)
+            throws UnrecoverableKeyException, CertificateException, KeyStoreException, IOException,
+                    NoSuchAlgorithmException, KeyManagementException, SignatureException,
+                    InvalidKeyException, NoSuchProviderException, OperatorCreationException {
         TimeHelper.setProvider(new FixedTimeProvider(0));
         KeyPair k = null;
         switch (algorithm) {
@@ -154,32 +174,43 @@ public class TlsClientIT {
         return config;
     }
 
-    private boolean isCipherSuiteTestable(PublicKeyAlgorithm algorithm, Config config, CipherSuite cs,
-        List<String> serverSupportedCipherSuites) {
+    private boolean isCipherSuiteTestable(
+            PublicKeyAlgorithm algorithm,
+            Config config,
+            CipherSuite cs,
+            List<String> serverSupportedCipherSuites) {
         if (cs.name().toUpperCase().contains("NULL") || cs.name().toUpperCase().contains("ANON")) {
             return false;
         }
-        Set<PublicKeyAlgorithm> requiredAlgorithms = AlgorithmResolver.getRequiredKeystoreAlgorithms(cs);
+        Set<PublicKeyAlgorithm> requiredAlgorithms =
+                AlgorithmResolver.getRequiredKeystoreAlgorithms(cs);
         requiredAlgorithms.remove(algorithm);
-        final boolean serverSupportsCipherSuite = serverSupportedCipherSuites.contains(cs.toString());
+        final boolean serverSupportsCipherSuite =
+                serverSupportedCipherSuites.contains(cs.toString());
         final boolean cipherSuiteIsSupportedByProtocolVersion =
-            cs.isSupportedInProtocol(config.getHighestProtocolVersion());
-        return serverSupportsCipherSuite && cipherSuiteIsSupportedByProtocolVersion && requiredAlgorithms.isEmpty();
+                cs.isSupportedInProtocol(config.getHighestProtocolVersion());
+        return serverSupportsCipherSuite
+                && cipherSuiteIsSupportedByProtocolVersion
+                && requiredAlgorithms.isEmpty();
     }
 
     private void executeHandshakeWorkflowWithCipherSuite(Config config, CipherSuite cs) {
-        LOGGER.info("Executing handshake workflow - Protocol version: {}\t Cipher suite: {}",
-            config.getHighestProtocolVersion(), cs);
+        LOGGER.info(
+                "Executing handshake workflow - Protocol version: {}\t Cipher suite: {}",
+                config.getHighestProtocolVersion(),
+                cs);
         config.setWorkflowTraceType(WorkflowTraceType.HANDSHAKE);
         config.setDefaultClientSupportedCipherSuites(cs);
         config.setDefaultSelectedCipherSuite(cs);
         State state = new State(config);
 
         WorkflowExecutor workflowExecutor =
-            WorkflowExecutorFactory.createWorkflowExecutor(config.getWorkflowExecutorType(), state);
+                WorkflowExecutorFactory.createWorkflowExecutor(
+                        config.getWorkflowExecutorType(), state);
 
         assertDoesNotThrow(workflowExecutor::executeWorkflow);
-        assertTrue(state.getWorkflowTrace().executedAsPlanned(), state.getWorkflowTrace().toString());
+        assertTrue(
+                state.getWorkflowTrace().executedAsPlanned(), state.getWorkflowTrace().toString());
     }
 
     private void executeCustomRsaWorkflow(int port) {
@@ -194,18 +225,37 @@ public class TlsClientIT {
         AliasedConnection con = config.getDefaultClientConnection();
         WorkflowTrace trace = new WorkflowTrace();
         trace.addTlsAction(
-            MessageActionFactory.createAction(config, con, ConnectionEndType.CLIENT, new ClientHelloMessage(config)));
-        trace.addTlsAction(MessageActionFactory.createAction(config, con, ConnectionEndType.SERVER,
-            new ServerHelloMessage(config), new CertificateMessage(config), new ServerHelloDoneMessage(config)));
+                MessageActionFactory.createTLSAction(
+                        config, con, ConnectionEndType.CLIENT, new ClientHelloMessage(config)));
+        trace.addTlsAction(
+                MessageActionFactory.createTLSAction(
+                        config,
+                        con,
+                        ConnectionEndType.SERVER,
+                        new ServerHelloMessage(),
+                        new CertificateMessage(),
+                        new ServerHelloDoneMessage()));
 
-        trace.addTlsAction(MessageActionFactory.createAction(config, con, ConnectionEndType.CLIENT,
-            new RSAClientKeyExchangeMessage(config), new ChangeCipherSpecMessage(config), new FinishedMessage(config)));
-        trace.addTlsAction(MessageActionFactory.createAction(config, con, ConnectionEndType.SERVER,
-            new ChangeCipherSpecMessage(config), new FinishedMessage(config)));
+        trace.addTlsAction(
+                MessageActionFactory.createTLSAction(
+                        config,
+                        con,
+                        ConnectionEndType.CLIENT,
+                        new RSAClientKeyExchangeMessage(),
+                        new ChangeCipherSpecMessage(),
+                        new FinishedMessage()));
+        trace.addTlsAction(
+                MessageActionFactory.createTLSAction(
+                        config,
+                        con,
+                        ConnectionEndType.SERVER,
+                        new ChangeCipherSpecMessage(),
+                        new FinishedMessage()));
 
         State state = new State(config, trace);
         WorkflowExecutor workflowExecutor =
-            WorkflowExecutorFactory.createWorkflowExecutor(config.getWorkflowExecutorType(), state);
+                WorkflowExecutorFactory.createWorkflowExecutor(
+                        config.getWorkflowExecutorType(), state);
         assertDoesNotThrow(workflowExecutor::executeWorkflow);
         assertTrue(trace.executedAsPlanned());
     }

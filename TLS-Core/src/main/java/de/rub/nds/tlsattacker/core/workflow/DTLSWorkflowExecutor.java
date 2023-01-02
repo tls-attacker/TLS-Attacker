@@ -8,14 +8,15 @@
  */
 package de.rub.nds.tlsattacker.core.workflow;
 
-import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
+import de.rub.nds.tlsattacker.core.exceptions.SkipActionException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.layer.SpecificSendLayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
+import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceivingAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendingAction;
 import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
-import de.rub.nds.tlsattacker.core.workflow.action.executor.SendMessageHelper;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import java.io.IOException;
 import java.util.List;
@@ -26,20 +27,20 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private SendMessageHelper sendMessageHelper;
-
     public DTLSWorkflowExecutor(State state) {
         super(WorkflowExecutorType.DTLS, state);
-        sendMessageHelper = new SendMessageHelper();
     }
 
     @Override
     public void executeWorkflow() throws WorkflowExecutionException {
         if (config.isWorkflowExecutorShouldOpen()) {
-            initAllTransportHandler();
+            try {
+                initAllLayer();
+            } catch (IOException ex) {
+                throw new WorkflowExecutionException(
+                        "Workflow not executed, could not initialize transport handler: ", ex);
+            }
         }
-        initAllRecordLayer();
-
         state.getWorkflowTrace().reset();
         state.setStartTimestamp(System.currentTimeMillis());
         List<TlsAction> tlsActions = state.getWorkflowTrace().getTlsActions();
@@ -52,37 +53,23 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
                 retransmissionActionIndex = i;
             }
             TlsAction action = tlsActions.get(i);
+
             if (!action.isExecuted()) {
                 try {
-                    action.execute(state);
-                } catch (UnsupportedOperationException E) {
-                    LOGGER.warn("Unsupported operation!", E);
-                    state.setExecutionException(E);
-                } catch (PreparationException | WorkflowExecutionException ex) {
-                    state.setExecutionException(ex);
-                    throw new WorkflowExecutionException(
-                            "Problem while executing Action:" + action.toString(), ex);
-                } catch (Exception e) {
-                    LOGGER.error("", e);
-                    state.setExecutionException(e);
-                    throw e;
-                } finally {
-                    state.setEndTimestamp(System.currentTimeMillis());
+                    this.executeAction(action, state);
+                } catch (SkipActionException ex) {
+                    continue;
                 }
             } else {
-                try {
-                    if (action instanceof SendingAction) {
-                        executeRetransmission((SendingAction) action);
-                    } else if (action instanceof ReceivingAction) {
-                        action.reset();
-                        action.execute(state);
+                if (action instanceof SendingAction) {
+                    executeRetransmission((SendingAction) action);
+                } else if (action instanceof ReceivingAction) {
+                    action.reset();
+                    try {
+                        this.executeAction(action, state);
+                    } catch (SkipActionException ex) {
+                        continue;
                     }
-                } catch (IOException | PreparationException | WorkflowExecutionException ex) {
-                    if (config.isWorkflowExecutorShouldClose()) {
-                        closeConnection();
-                    }
-                    throw new WorkflowExecutionException(
-                            "Problem while executing Action:" + action.toString(), ex);
                 }
             }
 
@@ -116,13 +103,13 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
         }
 
         if (config.isFinishWithCloseNotify()) {
-            for (TlsContext context : state.getAllTlsContexts()) {
-                int currentEpoch = context.getRecordLayer().getWriteEpoch();
+            for (Context context : state.getAllContexts()) {
+                int currentEpoch = context.getTlsContext().getRecordLayer().getWriteEpoch();
                 for (int epoch = currentEpoch; epoch >= 0; epoch--) {
-                    context.getRecordLayer().setWriteEpoch(epoch);
+                    context.getTlsContext().getRecordLayer().setWriteEpoch(epoch);
                     sendCloseNotify();
                 }
-                context.getRecordLayer().setWriteEpoch(currentEpoch);
+                context.getTlsContext().getRecordLayer().setWriteEpoch(currentEpoch);
             }
         }
 
@@ -144,11 +131,21 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
         }
     }
 
-    private void executeRetransmission(SendingAction action) throws IOException {
+    private void executeRetransmission(SendingAction action) {
         LOGGER.info("Executing retransmission of last sent flight");
         for (String alias : action.getAllAliases()) {
             state.getTlsContext(alias).getRecordLayer().reencrypt(action.getSendRecords());
-            sendMessageHelper.sendRecords(action.getSendRecords(), state.getTlsContext(alias));
+            state.getTlsContext(alias)
+                    .getRecordLayer()
+                    .setLayerConfiguration(
+                            new SpecificSendLayerConfiguration(
+                                    ImplementedLayers.RECORD, action.getSendRecords()));
+            try {
+                state.getTlsContext(alias).getRecordLayer().sendConfiguration();
+            } catch (IOException ex) {
+                LOGGER.warn(ex);
+                state.getTlsContext().setReceivedTransportHandlerException(true);
+            }
         }
     }
 }

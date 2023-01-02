@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -17,16 +16,15 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class ClientAuthenticationDelegateTest extends AbstractDelegateTest<ClientAuthenticationDelegate> {
+public class ClientAuthenticationDelegateTest
+        extends AbstractDelegateTest<ClientAuthenticationDelegate> {
 
     @BeforeEach
     public void setUp() {
         super.setUp(new ClientAuthenticationDelegate());
     }
 
-    /**
-     * Test of isClientAuthentication method, of class ClientAuthenticationDelegate.
-     */
+    /** Test of isClientAuthentication method, of class ClientAuthenticationDelegate. */
     @Test
     public void testIsClientAuthentication() {
         args = new String[1];
@@ -36,9 +34,7 @@ public class ClientAuthenticationDelegateTest extends AbstractDelegateTest<Clien
         assertTrue(delegate.isClientAuthentication());
     }
 
-    /**
-     * Test of setClientAuthentication method, of class ClientAuthenticationDelegate.
-     */
+    /** Test of setClientAuthentication method, of class ClientAuthenticationDelegate. */
     @Test
     public void testSetClientAuthentication() {
         assertNull(delegate.isClientAuthentication());
@@ -46,9 +42,7 @@ public class ClientAuthenticationDelegateTest extends AbstractDelegateTest<Clien
         assertTrue(delegate.isClientAuthentication());
     }
 
-    /**
-     * Test of applyDelegate method, of class ClientAuthenticationDelegate.
-     */
+    /** Test of applyDelegate method, of class ClientAuthenticationDelegate. */
     @Test
     public void testApplyDelegate() {
         Config config = Config.createConfig();

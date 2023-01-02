@@ -1,42 +1,64 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerKeyExchangeMessage;
+import java.io.InputStream;
 
 /**
- * @param <T>
- *            The ServerKeyExchangeMessage that should be parsed
+ * @param <T> The ServerKeyExchangeMessage that should be parsed
  */
-public abstract class ServerKeyExchangeParser<T extends ServerKeyExchangeMessage> extends HandshakeMessageParser<T> {
+public abstract class ServerKeyExchangeParser<T extends ServerKeyExchangeMessage>
+        extends HandshakeMessageParser<T> {
+
+    private KeyExchangeAlgorithm keyExchangeAlgorithm;
 
     /**
      * Constructor for the Parser class
      *
-     * @param pointer
-     *                     Position in the array where the ServerKeyExchangeParser is supposed to start parsing
-     * @param array
-     *                     The byte[] which the ServerKeyExchangeParser is supposed to parse
-     * @param expectedType
-     *                     The Handshake message type that is expected
-     * @param version
-     *                     Version of the Protocol
-     * @param config
-     *                     A Config used in the current context
+     * @param stream
+     * @param tlsContext
      */
-    public ServerKeyExchangeParser(int pointer, byte[] array, HandshakeMessageType expectedType,
-        ProtocolVersion version, Config config) {
-        super(pointer, array, expectedType, version, config);
+    public ServerKeyExchangeParser(InputStream stream, TlsContext tlsContext) {
+        super(stream, tlsContext);
+        this.keyExchangeAlgorithm =
+                AlgorithmResolver.getKeyExchangeAlgorithm(
+                        tlsContext.getChooser().getSelectedCipherSuite());
     }
 
+    protected KeyExchangeAlgorithm getKeyExchangeAlgorithm() {
+        return this.keyExchangeAlgorithm;
+    }
+
+    protected void setKeyExchangeAlgorithm(KeyExchangeAlgorithm keyExchangeAlgorithm) {
+        this.keyExchangeAlgorithm = keyExchangeAlgorithm;
+    }
+
+    /**
+     * Checks if the version is TLS12
+     *
+     * @return True if the used version is TLS12
+     */
+    protected boolean isTLS12() {
+        return getVersion() == ProtocolVersion.TLS12;
+    }
+
+    /**
+     * Checks if the version is DTLS12
+     *
+     * @return True if the used version is DTLS12
+     */
+    protected boolean isDTLS12() {
+        return getVersion() == ProtocolVersion.DTLS12;
+    }
 }

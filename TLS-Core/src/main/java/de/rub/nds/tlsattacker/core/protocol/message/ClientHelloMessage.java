@@ -1,31 +1,33 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message;
 
-import de.rub.nds.tlsattacker.core.protocol.message.extension.*;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.ClientHelloHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.TlsMessageHandler;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.*;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.protocol.parser.ClientHelloParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.ClientHelloPreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.ClientHelloSerializer;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.Date;
-import jakarta.xml.bind.annotation.XmlRootElement;
+import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -33,24 +35,16 @@ import org.apache.logging.log4j.Logger;
 public class ClientHelloMessage extends HelloMessage {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    /**
-     * compression length
-     */
+    /** compression length */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger compressionLength;
-    /**
-     * cipher suite byte length
-     */
+    /** cipher suite byte length */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger cipherSuiteLength;
-    /**
-     * array of supported CipherSuites
-     */
+    /** array of supported CipherSuites */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByteArray cipherSuites;
-    /**
-     * array of supported compressions
-     */
+    /** array of supported compressions */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByteArray compressions;
 
@@ -65,9 +59,10 @@ public class ClientHelloMessage extends HelloMessage {
     }
 
     public ClientHelloMessage(Config tlsConfig) {
-        super(tlsConfig, HandshakeMessageType.CLIENT_HELLO);
+        super(HandshakeMessageType.CLIENT_HELLO);
         if (!tlsConfig.getHighestProtocolVersion().isSSL()
-            || (tlsConfig.getHighestProtocolVersion().isSSL() && tlsConfig.isAddExtensionsInSSL())) {
+                || (tlsConfig.getHighestProtocolVersion().isSSL()
+                        && tlsConfig.isAddExtensionsInSSL())) {
             if (tlsConfig.isAddHeartbeatExtension()) {
                 addExtension(new HeartbeatExtensionMessage());
             }
@@ -84,22 +79,26 @@ public class ClientHelloMessage extends HelloMessage {
                 addExtension(new RecordSizeLimitExtensionMessage());
             }
             if (tlsConfig.isAddServerNameIndicationExtension()) {
-                ServerNameIndicationExtensionMessage extension = new ServerNameIndicationExtensionMessage();
+                ServerNameIndicationExtensionMessage extension =
+                        new ServerNameIndicationExtensionMessage();
                 addExtension(extension);
             }
             if (tlsConfig.isAddEncryptedServerNameIndicationExtension()) {
                 EncryptedServerNameIndicationExtensionMessage extensionMessage =
-                    new EncryptedServerNameIndicationExtensionMessage();
-                String hostname = tlsConfig.getDefaultClientConnection().getHostname();
+                        new EncryptedServerNameIndicationExtensionMessage();
                 byte[] serverName;
                 if (tlsConfig.getDefaultClientConnection().getHostname() != null) {
                     serverName =
-                        tlsConfig.getDefaultClientConnection().getHostname().getBytes(Charset.forName("ASCII"));
+                            tlsConfig
+                                    .getDefaultClientConnection()
+                                    .getHostname()
+                                    .getBytes(Charset.forName("ASCII"));
                 } else {
                     LOGGER.warn("SNI not correctly configured!");
                     serverName = new byte[0];
                 }
-                ServerNamePair pair = new ServerNamePair(tlsConfig.getSniType().getValue(), serverName);
+                ServerNamePair pair =
+                        new ServerNamePair(tlsConfig.getSniType().getValue(), serverName);
                 extensionMessage.getClientEsniInner().getServerNameList().add(pair);
                 addExtension(extensionMessage);
             }
@@ -143,7 +142,7 @@ public class ClientHelloMessage extends HelloMessage {
                 addExtension(new CertificateStatusRequestExtensionMessage());
             }
             if (tlsConfig.isAddAlpnExtension()) {
-                addExtension(new AlpnExtensionMessage(tlsConfig));
+                addExtension(new AlpnExtensionMessage());
             }
             if (tlsConfig.isAddSRPExtension()) {
                 addExtension(new SRPExtensionMessage());
@@ -199,6 +198,9 @@ public class ClientHelloMessage extends HelloMessage {
             if (tlsConfig.isAddCookieExtension()) {
                 addExtension(new CookieExtensionMessage());
             }
+            if (tlsConfig.isAddConnectionIdExtension()) {
+                addExtension(new ConnectionIdExtensionMessage());
+            }
             if (tlsConfig.isAddPreSharedKeyExtension()) {
                 addExtension(new PreSharedKeyExtensionMessage(tlsConfig));
             }
@@ -227,7 +229,8 @@ public class ClientHelloMessage extends HelloMessage {
     }
 
     public void setCompressionLength(int compressionLength) {
-        this.compressionLength = ModifiableVariableFactory.safelySetValue(this.compressionLength, compressionLength);
+        this.compressionLength =
+                ModifiableVariableFactory.safelySetValue(this.compressionLength, compressionLength);
     }
 
     public void setCipherSuiteLength(ModifiableInteger cipherSuiteLength) {
@@ -235,7 +238,8 @@ public class ClientHelloMessage extends HelloMessage {
     }
 
     public void setCipherSuiteLength(int cipherSuiteLength) {
-        this.cipherSuiteLength = ModifiableVariableFactory.safelySetValue(this.cipherSuiteLength, cipherSuiteLength);
+        this.cipherSuiteLength =
+                ModifiableVariableFactory.safelySetValue(this.cipherSuiteLength, cipherSuiteLength);
     }
 
     public void setCipherSuites(ModifiableByteArray cipherSuites) {
@@ -271,7 +275,8 @@ public class ClientHelloMessage extends HelloMessage {
     }
 
     public void setCookieLength(int cookieLength) {
-        this.cookieLength = ModifiableVariableFactory.safelySetValue(this.cookieLength, cookieLength);
+        this.cookieLength =
+                ModifiableVariableFactory.safelySetValue(this.cookieLength, cookieLength);
     }
 
     public void setCookieLength(ModifiableInteger cookieLength) {
@@ -335,8 +340,65 @@ public class ClientHelloMessage extends HelloMessage {
     }
 
     @Override
-    public ClientHelloHandler getHandler(TlsContext context) {
-        return new ClientHelloHandler(context);
+    public ClientHelloHandler getHandler(TlsContext tlsContext) {
+        return new ClientHelloHandler(tlsContext);
     }
 
+    @Override
+    public ClientHelloParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new ClientHelloParser(stream, tlsContext);
+    }
+
+    @Override
+    public ClientHelloPreparator getPreparator(TlsContext tlsContext) {
+        return new ClientHelloPreparator(tlsContext.getChooser(), this);
+    }
+
+    @Override
+    public ClientHelloSerializer getSerializer(TlsContext tlsContext) {
+        return new ClientHelloSerializer(
+                this, tlsContext.getChooser().getSelectedProtocolVersion());
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 97 * hash + Objects.hashCode(this.compressionLength);
+        hash = 97 * hash + Objects.hashCode(this.cipherSuiteLength);
+        hash = 97 * hash + Objects.hashCode(this.cipherSuites);
+        hash = 97 * hash + Objects.hashCode(this.compressions);
+        hash = 97 * hash + Objects.hashCode(this.cookie);
+        hash = 97 * hash + Objects.hashCode(this.cookieLength);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final ClientHelloMessage other = (ClientHelloMessage) obj;
+        if (!Objects.equals(this.compressionLength, other.compressionLength)) {
+            return false;
+        }
+        if (!Objects.equals(this.cipherSuiteLength, other.cipherSuiteLength)) {
+            return false;
+        }
+        if (!Objects.equals(this.cipherSuites, other.cipherSuites)) {
+            return false;
+        }
+        if (!Objects.equals(this.compressions, other.compressions)) {
+            return false;
+        }
+        if (!Objects.equals(this.cookie, other.cookie)) {
+            return false;
+        }
+        return Objects.equals(this.cookieLength, other.cookieLength);
+    }
 }

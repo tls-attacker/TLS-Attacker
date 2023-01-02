@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedMasterSecretExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtendedMasterSecretExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,9 +18,8 @@ public class ExtendedMasterSecretExtensionPreparator extends ExtensionPreparator
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ExtendedMasterSecretExtensionPreparator(Chooser chooser, ExtendedMasterSecretExtensionMessage message,
-        ExtendedMasterSecretExtensionSerializer serializer) {
-        super(chooser, message, serializer);
+    public ExtendedMasterSecretExtensionPreparator(Chooser chooser, ExtendedMasterSecretExtensionMessage message) {
+        super(chooser, message);
     }
 
     /**

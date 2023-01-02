@@ -9,7 +9,7 @@
 
     <groupId>de.rub.nds.tls.attacker</groupId>
     <artifactId>tls-attacker</artifactId>
-    <version>4.0.3-SNAPSHOT</version>
+    <version>5.0.2-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>TLS-Attacker</name>
@@ -230,6 +230,11 @@
         <dependency>
             <groupId>com.openpojo</groupId>
             <artifactId>openpojo</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>de.rub.nds.tls.dockerlib</groupId>
+            <artifactId>tls-docker-library</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

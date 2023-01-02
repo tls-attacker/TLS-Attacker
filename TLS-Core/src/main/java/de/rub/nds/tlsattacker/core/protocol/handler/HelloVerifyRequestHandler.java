@@ -11,10 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.HelloVerifyRequestParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.HelloVerifyRequestPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.HelloVerifyRequestSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -27,23 +24,7 @@ public class HelloVerifyRequestHandler extends HandshakeMessageHandler<HelloVeri
     }
 
     @Override
-    public HelloVerifyRequestParser getParser(byte[] message, int pointer) {
-        return new HelloVerifyRequestParser(pointer, message, tlsContext.getChooser().getSelectedProtocolVersion(),
-            tlsContext.getConfig());
-    }
-
-    @Override
-    public HelloVerifyRequestPreparator getPreparator(HelloVerifyRequestMessage message) {
-        return new HelloVerifyRequestPreparator(tlsContext.getChooser(), message);
-    }
-
-    @Override
-    public HelloVerifyRequestSerializer getSerializer(HelloVerifyRequestMessage message) {
-        return new HelloVerifyRequestSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
-    }
-
-    @Override
-    public void adjustTLSContext(HelloVerifyRequestMessage message) {
+    public void adjustContext(HelloVerifyRequestMessage message) {
         adjustDTLSCookie(message);
     }
 

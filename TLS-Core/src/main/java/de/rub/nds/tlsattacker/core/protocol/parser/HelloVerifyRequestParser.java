@@ -1,20 +1,18 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,26 +20,23 @@ public class HelloVerifyRequestParser extends HandshakeMessageParser<HelloVerify
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public HelloVerifyRequestParser(int pointer, byte[] array, ProtocolVersion version, Config config) {
-        super(pointer, array, HandshakeMessageType.HELLO_VERIFY_REQUEST, version, config);
+    public HelloVerifyRequestParser(InputStream inputStream, TlsContext tlsContext) {
+        super(inputStream, tlsContext);
     }
 
     @Override
-    protected void parseHandshakeMessageContent(HelloVerifyRequestMessage msg) {
+    public void parse(HelloVerifyRequestMessage msg) {
         LOGGER.debug("Parsing HelloVerifyRequestMessage");
         parseProtocolVersion(msg);
         parseCookieLength(msg);
         parseCookie(msg);
     }
 
-    @Override
-    protected HelloVerifyRequestMessage createHandshakeMessage() {
-        return new HelloVerifyRequestMessage();
-    }
-
     private void parseProtocolVersion(HelloVerifyRequestMessage msg) {
         msg.setProtocolVersion(parseByteArrayField(HandshakeByteLength.VERSION));
-        LOGGER.debug("ProtocolVersion: " + ArrayConverter.bytesToHexString(msg.getProtocolVersion().getValue()));
+        LOGGER.debug(
+                "ProtocolVersion: "
+                        + ArrayConverter.bytesToHexString(msg.getProtocolVersion().getValue()));
     }
 
     private void parseCookieLength(HelloVerifyRequestMessage msg) {
@@ -53,5 +48,4 @@ public class HelloVerifyRequestParser extends HandshakeMessageParser<HelloVerify
         msg.setCookie(parseByteArrayField(msg.getCookieLength().getValue()));
         LOGGER.debug("Cookie: " + ArrayConverter.bytesToHexString(msg.getCookie().getValue()));
     }
-
 }

@@ -1,24 +1,22 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.config;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 public class TlsConfigIOTest {
 
@@ -35,7 +33,7 @@ public class TlsConfigIOTest {
     public void testEmptyConfig() throws IOException {
         try (InputStream stream = Config.class.getResourceAsStream("/test_empty_config.xml")) {
             IllegalArgumentException exception =
-                assertThrows(IllegalArgumentException.class, () -> Config.createConfig(stream));
+                    assertThrows(IllegalArgumentException.class, () -> Config.createConfig(stream));
             assertTrue(exception.getMessage().startsWith("Stream cannot be null"));
         }
     }
@@ -52,10 +50,12 @@ public class TlsConfigIOTest {
 
     @Test
     public void testReadCustomClientConnection() throws IOException {
-        OutboundConnection expected = new OutboundConnection("testConnection", 8002, "testHostname");
+        OutboundConnection expected =
+                new OutboundConnection("testConnection", 8002, "testHostname");
 
         Config config;
-        try (InputStream stream = Config.class.getResourceAsStream("/test_config_custom_client_connection.xml")) {
+        try (InputStream stream =
+                Config.class.getResourceAsStream("/test_config_custom_client_connection.xml")) {
             config = Config.createConfig(stream);
         }
         assertNotNull(config);
@@ -68,7 +68,8 @@ public class TlsConfigIOTest {
     @Test
     public void testReadCustomServerConnection() throws IOException {
         Config config;
-        try (InputStream stream = Config.class.getResourceAsStream("/test_config_custom_server_connection.xml")) {
+        try (InputStream stream =
+                Config.class.getResourceAsStream("/test_config_custom_server_connection.xml")) {
             config = Config.createConfig(stream);
         }
         assertNotNull(config);
@@ -78,5 +79,4 @@ public class TlsConfigIOTest {
         assertNotNull(con);
         assertEquals(expected, con);
     }
-
 }

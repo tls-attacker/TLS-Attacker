@@ -1,22 +1,21 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.util.Arrays;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -27,6 +26,7 @@ public class ChangeMasterSecretAction extends ConnectionBoundAction {
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] newValue = null;
+
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] oldValue = null;
 
@@ -35,8 +35,7 @@ public class ChangeMasterSecretAction extends ConnectionBoundAction {
         this.newValue = newValue;
     }
 
-    public ChangeMasterSecretAction() {
-    }
+    public ChangeMasterSecretAction() {}
 
     public void setNewValue(byte[] newValue) {
         this.newValue = newValue;
@@ -51,16 +50,19 @@ public class ChangeMasterSecretAction extends ConnectionBoundAction {
     }
 
     @Override
-    public void execute(State state) throws WorkflowExecutionException {
-        TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
+    public void execute(State state) throws ActionExecutionException {
+        TlsContext tlsContext = state.getContext(getConnectionAlias()).getTlsContext();
 
         if (isExecuted()) {
-            throw new WorkflowExecutionException("Action already executed!");
+            throw new ActionExecutionException("Action already executed!");
         }
         oldValue = tlsContext.getMasterSecret();
         tlsContext.setMasterSecret(newValue);
-        LOGGER.info("Changed MasterSecret from " + ArrayConverter.bytesToHexString(oldValue) + " to "
-            + ArrayConverter.bytesToHexString(newValue));
+        LOGGER.info(
+                "Changed MasterSecret from "
+                        + ArrayConverter.bytesToHexString(oldValue)
+                        + " to "
+                        + ArrayConverter.bytesToHexString(newValue));
         setExecuted(true);
     }
 
@@ -100,5 +102,4 @@ public class ChangeMasterSecretAction extends ConnectionBoundAction {
     public boolean executedAsPlanned() {
         return isExecuted();
     }
-
 }

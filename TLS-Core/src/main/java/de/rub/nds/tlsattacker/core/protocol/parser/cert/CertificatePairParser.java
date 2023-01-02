@@ -1,7 +1,7 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -10,8 +10,9 @@ package de.rub.nds.tlsattacker.core.protocol.parser.cert;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificatePair;
-import de.rub.nds.tlsattacker.core.protocol.Parser;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -19,20 +20,18 @@ public class CertificatePairParser extends Parser<CertificatePair> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public CertificatePairParser(int startposition, byte[] array) {
-        super(startposition, array);
+    public CertificatePairParser(InputStream stream) {
+        super(stream);
     }
 
     @Override
-    public CertificatePair parse() {
+    public void parse(CertificatePair pair) {
         LOGGER.debug("Parsing CertificatePair");
-        CertificatePair pair = new CertificatePair();
         parseCertificateLength(pair);
         parseCertificate(pair);
         parseExtensionsLength(pair);
         parseExtensionBytes(pair);
         parseExtensions(pair);
-        return pair;
     }
 
     /**
@@ -67,17 +66,11 @@ public class CertificatePairParser extends Parser<CertificatePair> {
      * them in the message
      */
     private void parseExtensionBytes(CertificatePair pair) {
-        pair.setExtensions(parseByteArrayField(pair.getExtensionsLength().getValue()));
-        LOGGER.debug("Extensions: " + ArrayConverter.bytesToHexString(pair.getCertificateBytes().getValue()));
-    }
-    
-    /**
-     * Reads the next bytes as the extensions of the CertificatePair and writes
-     * them in the message
-     */
-    private void parseExtensionBytes(CertificatePair pair) {
-        pair.setExtensions(parseByteArrayField(pair.getExtensionsLength().getValue()));
+        pair.setExtensionBytes(parseByteArrayField(pair.getExtensionsLength().getValue()));
         LOGGER.debug("Extensions: " + ArrayConverter.bytesToHexString(pair.getCertificateBytes().getValue()));
     }
 
+    private void parseExtensions(CertificatePair pair) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }

@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -20,9 +19,7 @@ public class ChangeCompressionActionTest extends AbstractChangeActionTest<Change
         super(new ChangeCompressionAction(CompressionMethod.LZS), ChangeCompressionAction.class);
     }
 
-    /**
-     * Test of setNewValue method, of class ChangeCompressionAction.
-     */
+    /** Test of setNewValue method, of class ChangeCompressionAction. */
     @Test
     @Override
     public void testSetNewValue() {
@@ -31,18 +28,14 @@ public class ChangeCompressionActionTest extends AbstractChangeActionTest<Change
         assertEquals(action.getNewValue(), CompressionMethod.DEFLATE);
     }
 
-    /**
-     * Test of getNewValue method, of class ChangeCompressionAction.
-     */
+    /** Test of getNewValue method, of class ChangeCompressionAction. */
     @Test
     @Override
     public void testGetNewValue() {
         assertEquals(action.getNewValue(), CompressionMethod.LZS);
     }
 
-    /**
-     * Test of getOldValue method, of class ChangeCompressionAction.
-     */
+    /** Test of getOldValue method, of class ChangeCompressionAction. */
     @Test
     @Override
     public void testGetOldValue() {
@@ -51,9 +44,7 @@ public class ChangeCompressionActionTest extends AbstractChangeActionTest<Change
         assertEquals(action.getOldValue(), CompressionMethod.NULL);
     }
 
-    /**
-     * Test of execute method, of class ChangeCompressionAction.
-     */
+    /** Test of execute method, of class ChangeCompressionAction. */
     @Test
     @Override
     public void testExecute() throws Exception {

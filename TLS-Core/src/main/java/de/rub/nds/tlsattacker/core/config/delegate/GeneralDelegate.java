@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
@@ -23,7 +22,10 @@ public class GeneralDelegate extends Delegate {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    @Parameter(names = { "-h", "-help" }, help = true, description = "Prints usage for all the existing commands.")
+    @Parameter(
+            names = {"-h", "-help"},
+            help = true,
+            description = "Prints usage for all the existing commands.")
     private boolean help;
 
     @Parameter(names = "-debug", description = "Show extra debug output (sets logLevel to DEBUG)")
@@ -35,8 +37,7 @@ public class GeneralDelegate extends Delegate {
     @Parameter(names = "-keylogfile", description = "Path to the keylogfile")
     protected String keylogfile = null;
 
-    public GeneralDelegate() {
-    }
+    public GeneralDelegate() {}
 
     public boolean isHelp() {
         return help;

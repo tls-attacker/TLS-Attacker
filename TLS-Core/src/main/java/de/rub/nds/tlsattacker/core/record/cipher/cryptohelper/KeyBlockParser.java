@@ -14,7 +14,8 @@ import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CipherType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.protocol.Parser;
+import de.rub.nds.tlsattacker.core.layer.data.Parser;
+import java.io.ByteArrayInputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -37,14 +38,13 @@ public class KeyBlockParser extends Parser<KeySet> {
     private final ProtocolVersion version;
 
     public KeyBlockParser(byte[] keyBlock, CipherSuite suite, ProtocolVersion version) {
-        super(0, keyBlock);
+        super(new ByteArrayInputStream(keyBlock));
         this.suite = suite;
         this.version = version;
     }
 
     @Override
-    public KeySet parse() {
-        KeySet keys = new KeySet();
+    public void parse(KeySet keys) {
         if (AlgorithmResolver.getCipherType(suite) != CipherType.AEAD) {
             parseClientWriteMacSecret(keys);
             parseServerWriteMacSecret(keys);
@@ -59,7 +59,6 @@ public class KeyBlockParser extends Parser<KeySet> {
             parseClientWriteIvAead(keys);
             parseServerWriteIvAead(keys);
         }
-        return keys;
     }
 
     private int getAeadSaltSize() {

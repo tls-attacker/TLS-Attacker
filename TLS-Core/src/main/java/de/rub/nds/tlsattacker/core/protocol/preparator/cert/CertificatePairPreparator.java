@@ -11,11 +11,9 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.cert;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
-import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.factory.HandlerFactory;
+import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificatePair;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.Preparator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -38,7 +36,7 @@ public class CertificatePairPreparator extends Preparator<CertificatePair> {
         LOGGER.debug("Preparing CertificatePair");
         prepareCertificate(pair);
         prepareCertificateLength(pair);
-        if (pair.getExtensionsConfig() != null) {
+        if (pair.getExtensionList() != null) {
             prepareExtensions(pair);
             prepareExtensionLength(pair);
         } else {
@@ -47,7 +45,7 @@ public class CertificatePairPreparator extends Preparator<CertificatePair> {
     }
 
     private void prepareCertificate(CertificatePair pair) {
-        pair.setCertificateBytes(pair.getCertificateConfig());
+        pair.setCertificateBytes(pair.getX509certificate().getSerializer().serialize());
         LOGGER.debug("Certificate: " + ArrayConverter.bytesToHexString(pair.getCertificateBytes().getValue()));
     }
 
@@ -58,24 +56,22 @@ public class CertificatePairPreparator extends Preparator<CertificatePair> {
 
     private void prepareExtensions(CertificatePair pair) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        if (pair.getExtensionsConfig() != null) {
-            for (ExtensionMessage extensionMessage : pair.getExtensionsConfig()) {
-                ExtensionHandler handler = HandlerFactory.getExtensionHandler(chooser.getContext(),
-                    extensionMessage.getExtensionTypeConstant());
-                handler.getPreparator(extensionMessage).prepare();
+        if (pair.getExtensionList() != null) {
+            for (ExtensionMessage extensionMessage : pair.getExtensionList()) {
+                extensionMessage.getPreparator(chooser.getContext().getTlsContext()).prepare();
                 try {
                     stream.write(extensionMessage.getExtensionBytes().getValue());
                 } catch (IOException ex) {
                     throw new PreparationException("Could not write ExtensionBytes to byte[]", ex);
                 }
             }
-            pair.setExtensions(stream.toByteArray());
+            pair.setExtensionBytes(stream.toByteArray());
         }
-        LOGGER.debug("ExtensionBytes: " + ArrayConverter.bytesToHexString(pair.getExtensions().getValue()));
+        LOGGER.debug("ExtensionBytes: " + ArrayConverter.bytesToHexString(pair.getExtensionBytes().getValue()));
     }
 
     private void prepareExtensionLength(CertificatePair pair) {
-        pair.setExtensionsLength(pair.getExtensions().getValue().length);
+        pair.setExtensionsLength(pair.getExtensionBytes().getValue().length);
         LOGGER.debug("ExtensionLength: " + pair.getExtensionsLength().getValue());
     }
 

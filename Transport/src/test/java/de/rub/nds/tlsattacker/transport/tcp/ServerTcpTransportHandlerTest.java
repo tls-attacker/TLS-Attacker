@@ -1,23 +1,21 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.transport.tcp;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import de.rub.nds.tlsattacker.util.FreePortFinder;
+import java.io.IOException;
+import java.net.Socket;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
-import java.net.Socket;
 
 public class ServerTcpTransportHandlerTest {
 
@@ -35,9 +33,7 @@ public class ServerTcpTransportHandlerTest {
         }
     }
 
-    /**
-     * Test of closeConnection method, of class ServerTcpTransportHandler.
-     */
+    /** Test of closeConnection method, of class ServerTcpTransportHandler. */
     @Test
     public void testCloseConnection() {
         assertThrows(IOException.class, handler::closeConnection);
@@ -60,16 +56,16 @@ public class ServerTcpTransportHandlerTest {
             socket.getOutputStream().flush();
             handler.closeClientConnection();
             Thread.sleep(50);
-            assertThrows(IOException.class, () -> {
-                socket.getOutputStream().write(123);
-                socket.getOutputStream().flush();
-            });
+            assertThrows(
+                    IOException.class,
+                    () -> {
+                        socket.getOutputStream().write(123);
+                        socket.getOutputStream().flush();
+                    });
         }
     }
 
-    /**
-     * Test of initialize method, of class ServerTcpTransportHandler.
-     */
+    /** Test of initialize method, of class ServerTcpTransportHandler. */
     @Test
     public void testInitialize() throws IOException {
         assertFalse(handler.isInitialized());
@@ -87,13 +83,12 @@ public class ServerTcpTransportHandlerTest {
         try (Socket socket = new Socket("localhost", handler.getSrcPort())) {
             handler.initialize();
             assertTrue(handler.isInitialized());
-            socket.getOutputStream().write(new byte[] { 0, 1, 2, 3 });
-            assertArrayEquals(new byte[] { 0, 1, 2, 3 }, handler.fetchData());
-            handler.sendData(new byte[] { 4, 3, 2, 1 });
+            socket.getOutputStream().write(new byte[] {0, 1, 2, 3});
+            assertArrayEquals(new byte[] {0, 1, 2, 3}, handler.fetchData());
+            handler.sendData(new byte[] {4, 3, 2, 1});
             byte[] received = new byte[4];
             assertEquals(4, socket.getInputStream().read(received));
-            assertArrayEquals(new byte[] { 4, 3, 2, 1 }, received);
+            assertArrayEquals(new byte[] {4, 3, 2, 1}, received);
         }
     }
-
 }

@@ -1,22 +1,16 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.constants;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 public enum CompressionMethod {
-
     NULL((byte) 0x00),
     DEFLATE((byte) 0x01),
     LZS((byte) 0x40);
@@ -63,6 +57,6 @@ public enum CompressionMethod {
     }
 
     public byte[] getArrayValue() {
-        return new byte[] { value };
+        return new byte[] {value};
     }
 }

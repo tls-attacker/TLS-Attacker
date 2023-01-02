@@ -1,51 +1,45 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.constants.AlertLevel;
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.https.HttpsRequestMessage;
-import de.rub.nds.tlsattacker.core.https.HttpsResponseMessage;
+import de.rub.nds.tlsattacker.core.http.HttpMessage;
+import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.*;
-import de.rub.nds.tlsattacker.core.record.AbstractRecord;
-import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
-import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
+import jakarta.xml.bind.annotation.XmlElementRef;
+import jakarta.xml.bind.annotation.XmlElementWrapper;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlElementRef;
-import jakarta.xml.bind.annotation.XmlElementWrapper;
-import jakarta.xml.bind.annotation.XmlElements;
-import jakarta.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @XmlRootElement
-public class ReceiveAction extends MessageAction implements ReceivingAction {
+public class ReceiveAction extends CommonReceiveAction implements ReceivingAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    @HoldsModifiableVariable
-    @XmlElementWrapper
-    @XmlElementRef
+    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
     protected List<ProtocolMessage> expectedMessages = new ArrayList<>();
+
+    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
+    protected List<HttpMessage> expectedHttpMessages = new ArrayList<>();
 
     public ReceiveAction() {
         super();
@@ -59,6 +53,16 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     public ReceiveAction(ProtocolMessage... expectedMessages) {
         super();
         this.expectedMessages = new ArrayList(Arrays.asList(expectedMessages));
+    }
+
+    public ReceiveAction(
+            List<ProtocolMessage> expectedMessages, List<HttpMessage> expectedHttpMessages) {
+        this(expectedMessages);
+        this.expectedHttpMessages = new ArrayList(Arrays.asList(expectedHttpMessages));
+    }
+
+    public ReceiveAction(HttpMessage... expectedHttpMessages) {
+        this.expectedHttpMessages = new ArrayList(Arrays.asList(expectedHttpMessages));
     }
 
     public ReceiveAction(Set<ActionOption> myActionOptions, List<ProtocolMessage> messages) {
@@ -92,33 +96,6 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
 
     public ReceiveAction(String connectionAliasAlias, ProtocolMessage... messages) {
         this(connectionAliasAlias, new ArrayList<>(Arrays.asList(messages)));
-    }
-
-    @Override
-    public void execute(State state) throws WorkflowExecutionException {
-        TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
-
-        if (isExecuted()) {
-            throw new WorkflowExecutionException("Action already executed!");
-        }
-
-        LOGGER.debug("Receiving Messages...");
-        MessageActionResult result = receiveMessageHelper.receiveMessages(expectedMessages, tlsContext);
-        records = new ArrayList<>(result.getRecordList());
-        messages = new ArrayList<>(result.getMessageList());
-        if (result.getMessageFragmentList() != null) {
-            fragments = new ArrayList<>(result.getMessageFragmentList());
-        }
-        setExecuted(true);
-
-        String expected = getReadableString(expectedMessages);
-        LOGGER.debug("Receive Expected:" + expected);
-        String received = getReadableString(messages);
-        if (hasDefaultAlias()) {
-            LOGGER.info("Received Messages: " + received);
-        } else {
-            LOGGER.info("Received Messages (" + getConnectionAlias() + "): " + received);
-        }
     }
 
     @Override
@@ -165,48 +142,24 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
 
     @Override
     public boolean executedAsPlanned() {
-        return receivedAsPlanned(getMessages(), getExpectedMessages(), getActionOptions());
-    }
-
-    public static boolean receivedAsPlanned(List<ProtocolMessage> messages, List<ProtocolMessage> expectedMessages) {
-        return receivedAsPlanned(messages, expectedMessages, new HashSet<>());
-    }
-
-    public static boolean receivedAsPlanned(List<ProtocolMessage> messages, List<ProtocolMessage> expectedMessages,
-        Set<ActionOption> actionOptions) {
-        if (messages == null) {
-            return false;
-        }
-        int j = 0;
-        for (int i = 0; i < expectedMessages.size(); i++) {
-            if (j >= messages.size() && expectedMessages.get(i).isRequired()) {
-                return false;
-            } else if (j < messages.size()) {
-                if (!Objects.equals(expectedMessages.get(i).getClass(), messages.get(j).getClass())
-                    && expectedMessages.get(i).isRequired()) {
-                    if (receivedMessageCanBeIgnored(messages.get(j), actionOptions)) {
-                        j++;
-                        i--;
-                    } else {
-                        return false;
-                    }
-
-                } else if (Objects.equals(expectedMessages.get(i).getClass(), messages.get(j).getClass())) {
-                    j++;
-                }
+        if (getLayerStackProcessingResult() != null) {
+            if (getLayerStackProcessingResult().getResultForLayer(ImplementedLayers.MESSAGE)
+                    != null) {
+                return getLayerStackProcessingResult()
+                        .getResultForLayer(ImplementedLayers.MESSAGE)
+                        .isExecutedAsPlanned();
+            } else if (getLayerStackProcessingResult().getResultForLayer(ImplementedLayers.SSL2)
+                    != null) {
+                return getLayerStackProcessingResult()
+                        .getResultForLayer(ImplementedLayers.SSL2)
+                        .isExecutedAsPlanned();
             }
         }
-
-        for (; j < messages.size(); j++) {
-            if (!receivedMessageCanBeIgnored(messages.get(j), actionOptions)
-                && !actionOptions.contains(ActionOption.CHECK_ONLY_EXPECTED)) {
-                return false; // additional messages are not allowed
-            }
-        }
-
-        return true;
+        // TODO check other configurations
+        return false;
     }
 
+    @Override
     public List<ProtocolMessage> getExpectedMessages() {
         return expectedMessages;
     }
@@ -215,7 +168,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         this.messages = receivedMessages;
     }
 
-    void setReceivedRecords(List<AbstractRecord> receivedRecords) {
+    void setReceivedRecords(List<Record> receivedRecords) {
         this.records = receivedRecords;
     }
 
@@ -236,7 +189,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         messages = null;
         records = null;
         fragments = null;
-        setExecuted(null);
+        setExecuted(false);
     }
 
     @Override
@@ -245,7 +198,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     }
 
     @Override
-    public List<AbstractRecord> getReceivedRecords() {
+    public List<Record> getReceivedRecords() {
         return records;
     }
 
@@ -319,51 +272,25 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         if (expectedMessages == null || expectedMessages.isEmpty()) {
             expectedMessages = null;
         }
+        if (expectedHttpMessages == null || expectedHttpMessages.isEmpty()) {
+            expectedHttpMessages = null;
+        }
     }
 
     private void initEmptyLists() {
         if (expectedMessages == null) {
             expectedMessages = new ArrayList<>();
-
         }
-    }
-
-    private static boolean receivedMessageCanBeIgnored(ProtocolMessage msg, Set<ActionOption> actionOptions) {
-        if (actionOptions.contains(ActionOption.IGNORE_UNEXPECTED_WARNINGS) && msg instanceof AlertMessage) {
-            AlertMessage alert = (AlertMessage) msg;
-            if (alert.getLevel().getOriginalValue() == AlertLevel.WARNING.getValue()) {
-                return true;
-            }
-        } else if (actionOptions.contains(ActionOption.IGNORE_UNEXPECTED_NEW_SESSION_TICKETS)
-            && msg instanceof NewSessionTicketMessage) {
-            return true;
-        } else if (actionOptions.contains(ActionOption.IGNORE_UNEXPECTED_KEY_UPDATE_MESSAGES)
-            && msg instanceof KeyUpdateMessage) {
-            return true;
-        } else if (actionOptions.contains(ActionOption.IGNORE_UNEXPECTED_APP_DATA)
-            && msg instanceof ApplicationMessage) {
-            return true;
-        } else if (actionOptions.contains(ActionOption.IGNORE_UNEXPECTED_HTTPS_MESSAGES)
-            && (msg instanceof HttpsResponseMessage || msg instanceof HttpsRequestMessage)) {
-            return true;
+        if (expectedHttpMessages == null) {
+            expectedHttpMessages = new ArrayList<>();
         }
-
-        return false;
-    }
-
-    @Override
-    public MessageActionDirection getMessageDirection() {
-        return MessageActionDirection.RECEIVING;
     }
 
     @Override
     public List<ProtocolMessageType> getGoingToReceiveProtocolMessageTypes() {
         List<ProtocolMessageType> protocolMessageTypes = new ArrayList<>();
         for (ProtocolMessage msg : expectedMessages) {
-            if (!(msg instanceof TlsMessage)) {
-                continue;
-            }
-            protocolMessageTypes.add(((TlsMessage) msg).getProtocolMessageType());
+            protocolMessageTypes.add(msg.getProtocolMessageType());
         }
         return protocolMessageTypes;
     }
@@ -377,5 +304,15 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
             }
         }
         return handshakeMessageTypes;
+    }
+
+    @Override
+    protected void distinctReceive(TlsContext tlsContext) {
+        receive(tlsContext, expectedMessages, fragments, records, httpMessages);
+    }
+
+    @Override
+    public List<HttpMessage> getReceivedHttpMessages() {
+        return httpMessages;
     }
 }

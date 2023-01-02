@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.certificate;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.crypto.keys.*;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.util.CertificateUtils;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -26,7 +25,6 @@ import java.security.PublicKey;
 import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bouncycastle.crypto.tls.Certificate;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class CertificateKeyPair implements Serializable {

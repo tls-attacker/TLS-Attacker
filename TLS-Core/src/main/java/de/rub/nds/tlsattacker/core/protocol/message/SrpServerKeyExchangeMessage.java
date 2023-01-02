@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
@@ -15,63 +14,48 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.SrpServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.SRPServerComputations;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.util.List;
+import de.rub.nds.tlsattacker.core.protocol.parser.SrpServerKeyExchangeParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.SrpServerKeyExchangePreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.SrpServerKeyExchangeSerializer;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import java.io.InputStream;
+import java.util.List;
 
 @XmlRootElement(name = "SrpServerKeyExchange")
 public class SrpServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
-    /**
-     * SRP modulus
-     */
+    /** SRP modulus */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
     private ModifiableByteArray modulus;
 
-    /**
-     * SRP modulus Length
-     */
+    /** SRP modulus Length */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger modulusLength;
 
-    /**
-     * SRP generator
-     */
+    /** SRP generator */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
     private ModifiableByteArray generator;
 
-    /**
-     * SRP generator Length
-     */
+    /** SRP generator Length */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger generatorLength;
 
-    /**
-     * SRP salt
-     */
+    /** SRP salt */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
     private ModifiableByteArray salt;
 
-    /**
-     * SRP salt Length
-     */
+    /** SRP salt Length */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger saltLength;
 
-    @HoldsModifiableVariable
-    protected SRPServerComputations computations;
+    @HoldsModifiableVariable protected SRPServerComputations computations;
 
     public SrpServerKeyExchangeMessage() {
         super();
-    }
-
-    public SrpServerKeyExchangeMessage(Config tlsConfig) {
-        super(tlsConfig, HandshakeMessageType.SERVER_KEY_EXCHANGE);
     }
 
     public ModifiableByteArray getModulus() {
@@ -131,7 +115,8 @@ public class SrpServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     }
 
     public void setModulusLength(int modulusLength) {
-        this.modulusLength = ModifiableVariableFactory.safelySetValue(this.modulusLength, modulusLength);
+        this.modulusLength =
+                ModifiableVariableFactory.safelySetValue(this.modulusLength, modulusLength);
     }
 
     public ModifiableInteger getGeneratorLength() {
@@ -143,7 +128,8 @@ public class SrpServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     }
 
     public void setGeneratorLength(int generatorLength) {
-        this.generatorLength = ModifiableVariableFactory.safelySetValue(this.generatorLength, generatorLength);
+        this.generatorLength =
+                ModifiableVariableFactory.safelySetValue(this.generatorLength, generatorLength);
     }
 
     @Override
@@ -174,7 +160,8 @@ public class SrpServerKeyExchangeMessage extends ServerKeyExchangeMessage {
             sb.append("null");
         }
         sb.append("\n  Signature and Hash Algorithm: ");
-        if (this.getSignatureAndHashAlgorithm() != null && getSignatureAndHashAlgorithm().getValue() != null) {
+        if (this.getSignatureAndHashAlgorithm() != null
+                && getSignatureAndHashAlgorithm().getValue() != null) {
             sb.append(ArrayConverter.bytesToHexString(getSignatureAndHashAlgorithm().getValue()));
         } else {
             sb.append("null");
@@ -194,8 +181,24 @@ public class SrpServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     }
 
     @Override
-    public SrpServerKeyExchangeHandler getHandler(TlsContext context) {
-        return new SrpServerKeyExchangeHandler(context);
+    public SrpServerKeyExchangeHandler getHandler(TlsContext tlsContext) {
+        return new SrpServerKeyExchangeHandler(tlsContext);
+    }
+
+    @Override
+    public SrpServerKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new SrpServerKeyExchangeParser(stream, tlsContext);
+    }
+
+    @Override
+    public SrpServerKeyExchangePreparator getPreparator(TlsContext tlsContext) {
+        return new SrpServerKeyExchangePreparator(tlsContext.getChooser(), this);
+    }
+
+    @Override
+    public SrpServerKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
+        return new SrpServerKeyExchangeSerializer(
+                this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

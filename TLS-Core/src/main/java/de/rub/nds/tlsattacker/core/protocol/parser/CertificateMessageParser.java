@@ -1,7 +1,7 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -9,18 +9,13 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.exceptions.ParserException;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificatePair;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.cert.CertificatePairParser;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParserFactory;
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -30,22 +25,21 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    private TlsContext tlsContext;
+
     /**
      * Constructor for the Parser class
      *
-     * @param startposition Position in the array where the
-     * HandshakeMessageParser is supposed to start parsing
-     * @param array The byte[] which the HandshakeMessageParser is supposed to
-     * parse
-     * @param version Version of the Protocol
-     * @param config A Config used in the current context
+     * @param stream
+     * @param tlsContext
      */
-    public CertificateMessageParser(int startposition, byte[] array, ProtocolVersion version, Config config) {
-        super(startposition, array, HandshakeMessageType.CERTIFICATE, version, config);
+    public CertificateMessageParser(InputStream stream, TlsContext tlsContext) {
+        super(stream, tlsContext.getChooser().getSelectedProtocolVersion(), tlsContext);
+        this.tlsContext = tlsContext;
     }
 
     @Override
-    protected void parseHandshakeMessageContent(CertificateMessage msg) {
+    public void parse(CertificateMessage msg) {
         LOGGER.debug("Parsing CertificateMessage");
         if (getVersion().isTLS13()) {
             parseRequestContextLength(msg);
@@ -58,11 +52,6 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
         }
     }
 
-    @Override
-    protected CertificateMessage createHandshakeMessage() {
-        return new CertificateMessage();
-    }
-
     /**
      * Reads the next bytes as the RequestContextLength and writes them in the
      * message
@@ -70,7 +59,8 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
      * @param msg Message to write in
      */
     private void parseRequestContextLength(CertificateMessage msg) {
-        msg.setRequestContextLength(parseIntField(HandshakeByteLength.CERTIFICATE_REQUEST_CONTEXT_LENGTH));
+        msg.setRequestContextLength(
+                parseIntField(HandshakeByteLength.CERTIFICATE_REQUEST_CONTEXT_LENGTH));
         LOGGER.debug("RequestContextLength: " + msg.getRequestContextLength());
     }
 
@@ -82,7 +72,8 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
      */
     private void parseRequestContextBytes(CertificateMessage msg) {
         msg.setRequestContext(parseByteArrayField(msg.getRequestContextLength().getValue()));
-        LOGGER.debug("RequestContextBytes: " + ArrayConverter.bytesToHexString(msg.getRequestContext()));
+        LOGGER.debug(
+                "RequestContextBytes: " + ArrayConverter.bytesToHexString(msg.getRequestContext()));
     }
 
     /**
@@ -103,8 +94,11 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
      * @param msg Message to write in
      */
     private void parseCertificateListBytes(CertificateMessage msg) {
-        msg.setCertificatesListBytes(parseByteArrayField(msg.getCertificatesListLength().getValue()));
-        LOGGER.debug("CertificatesListBytes: " + ArrayConverter.bytesToHexString(msg.getCertificatesListBytes()));
+        msg.setCertificatesListBytes(
+                parseByteArrayField(msg.getCertificatesListLength().getValue()));
+        LOGGER.debug(
+                "CertificatesListBytes: "
+                        + ArrayConverter.bytesToHexString(msg.getCertificatesListBytes()));
     }
 
     /**
@@ -114,12 +108,15 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
      * @param msg Message to write in
      */
     private void parseCertificateList(CertificateMessage msg) {
-        ByteArrayInputStream stream = new ByteArrayInputStream(msg.getCertificatesListBytes().getValue());
         List<CertificatePair> pairList = new LinkedList<>();
-        while (stream.available() > 0) {
-            CertificatePairParser parser = new CertificatePairParser(stream);
-            pairList.add(parser.parse());
+        ByteArrayInputStream innerStream =
+                new ByteArrayInputStream(msg.getCertificatesListBytes().getValue());
+        while (innerStream.available() > 0) {
+            CertificatePair pair = new CertificatePair();
+            CertificatePairParser parser = new CertificatePairParser(innerStream);
+            parser.parse(pair);
+            pairList.add(pair);
         }
-        msg.setCertificatesList(pairList);
+        msg.setCertificateList(pairList);
     }
 }

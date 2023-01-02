@@ -1,21 +1,18 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.ClientAuthenticationType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
 import de.rub.nds.tlsattacker.core.state.SessionTicket;
@@ -24,11 +21,11 @@ import de.rub.nds.tlsattacker.core.state.serializer.SessionTicketSerializer;
 import de.rub.nds.tlsattacker.core.state.serializer.StatePlaintextSerializer;
 import de.rub.nds.tlsattacker.core.util.StaticTicketCrypto;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import de.rub.nds.tlsattacker.util.TimeHelper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class NewSessionTicketPreparator extends HandshakeMessagePreparator<NewSessionTicketMessage> {
+public class NewSessionTicketPreparator
+        extends HandshakeMessagePreparator<NewSessionTicketMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -67,8 +64,12 @@ public class NewSessionTicketPreparator extends HandshakeMessagePreparator<NewSe
         byte[] plainStateSerialized = plaintextSerializer.serialize();
         byte[] encryptedState;
         try {
-            encryptedState = StaticTicketCrypto.encrypt(cipherAlgorithm, plainStateSerialized, encryptionKey,
-                newTicket.getIV().getValue());
+            encryptedState =
+                    StaticTicketCrypto.encrypt(
+                            cipherAlgorithm,
+                            plainStateSerialized,
+                            encryptionKey,
+                            newTicket.getIV().getValue());
         } catch (CryptoException e) {
             LOGGER.warn("Could not encrypt SessionState. Using empty byte[]");
             LOGGER.debug(e);
@@ -78,12 +79,18 @@ public class NewSessionTicketPreparator extends HandshakeMessagePreparator<NewSe
 
         byte[] keyHMAC = config.getSessionTicketKeyHMAC();
         // Mac(Name + IV + TicketLength + Ticket)
-        byte[] macInput = ArrayConverter.concatenate(config.getSessionTicketKeyName(), iv,
-            ArrayConverter.intToBytes(encryptedState.length, HandshakeByteLength.ENCRYPTED_STATE_LENGTH),
-            encryptedState);
+        byte[] macInput =
+                ArrayConverter.concatenate(
+                        config.getSessionTicketKeyName(),
+                        iv,
+                        ArrayConverter.intToBytes(
+                                encryptedState.length, HandshakeByteLength.ENCRYPTED_STATE_LENGTH),
+                        encryptedState);
         byte[] hmac;
         try {
-            hmac = StaticTicketCrypto.generateHMAC(config.getSessionTicketMacAlgorithm(), macInput, keyHMAC);
+            hmac =
+                    StaticTicketCrypto.generateHMAC(
+                            config.getSessionTicketMacAlgorithm(), macInput, keyHMAC);
         } catch (CryptoException ex) {
             LOGGER.warn("Could generate HMAC. Using empty byte[]");
             LOGGER.debug(ex);
@@ -107,7 +114,6 @@ public class NewSessionTicketPreparator extends HandshakeMessagePreparator<NewSe
         } else {
             prepareTicket(msg);
         }
-
     }
 
     private void prepareTicketTls13(NewSessionTicketMessage msg) {
@@ -130,5 +136,12 @@ public class NewSessionTicketPreparator extends HandshakeMessagePreparator<NewSe
     private void prepareNonce(NewSessionTicketMessage msg) {
         msg.getTicket().setTicketNonce(chooser.getConfig().getDefaultSessionTicketNonce());
         msg.getTicket().setTicketNonceLength(msg.getTicket().getTicketNonce().getValue().length);
+    }
+
+    @Override
+    public void prepareAfterParse(boolean clientMode) {
+        if (chooser.getSelectedProtocolVersion().isTLS13()) {
+            msg.setIncludeInDigest(false);
+        }
     }
 }

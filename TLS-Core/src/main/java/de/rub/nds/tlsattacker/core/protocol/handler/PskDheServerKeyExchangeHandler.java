@@ -10,10 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.PskDheServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.PskDheServerKeyExchangeParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.PskDheServerKeyExchangePreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.PskDheServerKeyExchangeSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,23 +24,7 @@ public class PskDheServerKeyExchangeHandler extends DHEServerKeyExchangeHandler<
     }
 
     @Override
-    public PskDheServerKeyExchangeParser getParser(byte[] message, int pointer) {
-        return new PskDheServerKeyExchangeParser(pointer, message, tlsContext.getChooser().getSelectedProtocolVersion(),
-            tlsContext.getConfig());
-    }
-
-    @Override
-    public PskDheServerKeyExchangePreparator getPreparator(PskDheServerKeyExchangeMessage message) {
-        return new PskDheServerKeyExchangePreparator(tlsContext.getChooser(), message);
-    }
-
-    @Override
-    public PskDheServerKeyExchangeSerializer getSerializer(PskDheServerKeyExchangeMessage message) {
-        return new PskDheServerKeyExchangeSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
-    }
-
-    @Override
-    public void adjustTLSContext(PskDheServerKeyExchangeMessage message) {
+    public void adjustContext(PskDheServerKeyExchangeMessage message) {
         adjustPSKGenerator(message);
         adjustPSKModulus(message);
         adjustServerPublicKey(message);

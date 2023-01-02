@@ -10,14 +10,7 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
-import de.rub.nds.tlsattacker.core.constants.Bits;
-import de.rub.nds.tlsattacker.core.constants.CipherSuite;
-import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
-import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.crypto.KeyShareCalculator;
 import de.rub.nds.tlsattacker.core.crypto.cipher.CipherWrapper;
@@ -34,12 +27,12 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareE
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ClientEsniInnerParser;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ClientEsniInnerSerializer;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.KeyShareEntrySerializer;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -65,9 +58,8 @@ public class EncryptedServerNameIndicationExtensionPreparator
     private EsniPreparatorMode esniPreparatorMode;
 
     public EncryptedServerNameIndicationExtensionPreparator(Chooser chooser,
-        EncryptedServerNameIndicationExtensionMessage message,
-        ExtensionSerializer<EncryptedServerNameIndicationExtensionMessage> serializer) {
-        super(chooser, message, serializer);
+        EncryptedServerNameIndicationExtensionMessage message) {
+        super(chooser, message);
         this.msg = message;
 
         if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
@@ -141,21 +133,16 @@ public class EncryptedServerNameIndicationExtensionPreparator
     public void prepareAfterParse() {
         LOGGER.debug("PreparingAfterParse EncryptedServerNameIndicationExtension");
         if (this.esniPreparatorMode == EsniPreparatorMode.SERVER) {
-            try {
-                prepareClientRandom(msg);
-                prepareEsniContents(msg);
-                prepareEsniContentsHash(msg);
-                prepareEsniServerSharedSecret(msg);
-                prepareEsniMasterSecret(msg);
-                prepareEsniKey(msg);
-                prepareEsniIv(msg);
-                prepareClientHelloKeyShare(msg);
-                parseEncryptedSni(msg);
-                parseClientEsniInnerBytes(msg);
-            } catch (NullPointerException e) {
-                throw new PreparationException(
-                    "Missing parameters to prepareAfterParse EncryptedServerNameIndicationExtension", e);
-            }
+            prepareClientRandom(msg);
+            prepareEsniContents(msg);
+            prepareEsniContentsHash(msg);
+            prepareEsniServerSharedSecret(msg);
+            prepareEsniMasterSecret(msg);
+            prepareEsniKey(msg);
+            prepareEsniIv(msg);
+            prepareClientHelloKeyShare(msg);
+            parseEncryptedSni(msg);
+            parseClientEsniInnerBytes(msg);
         }
     }
 
@@ -190,8 +177,10 @@ public class EncryptedServerNameIndicationExtensionPreparator
     }
 
     private void parseClientEsniInnerBytes(EncryptedServerNameIndicationExtensionMessage msg) {
-        ClientEsniInnerParser parser = new ClientEsniInnerParser(0, msg.getClientEsniInnerBytes().getValue());
-        ClientEsniInner clientEsniInner = parser.parse();
+        ClientEsniInnerParser parser =
+            new ClientEsniInnerParser(new ByteArrayInputStream(msg.getClientEsniInnerBytes().getValue()));
+        ClientEsniInner clientEsniInner = new ClientEsniInner();
+        parser.parse(clientEsniInner);
         msg.setClientEsniInner(clientEsniInner);
     }
 
@@ -547,8 +536,8 @@ public class EncryptedServerNameIndicationExtensionPreparator
                 .write(msg.getKeyShareEntry().getPublicKeyLength().getByteArray(ExtensionByteLength.KEY_SHARE_LENGTH));
             contentsStream.write(msg.getKeyShareEntry().getPublicKey().getValue());
             contentsStream.write(msg.getEncryptedSniComputation().getClientHelloRandom().getValue());
-        } catch (IOException e) {
-            throw new PreparationException("Failed to generate esniContents", e);
+        } catch (Exception e) {
+            throw new UnsupportedOperationException("Failed to generate esniContents", e);
         }
         return contentsStream.toByteArray();
     }

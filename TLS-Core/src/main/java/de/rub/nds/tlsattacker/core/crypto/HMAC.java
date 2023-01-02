@@ -1,26 +1,21 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.crypto;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-
-/**
- * Implements the HMAC class
- */
-
+/** Implements the HMAC class */
 public class HMAC {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -33,8 +28,7 @@ public class HMAC {
     /**
      * Creates an hmac instance.
      *
-     * @param macAlgorithm
-     *                     sets the hash algorithm that is going to be used for the HMAC computation
+     * @param macAlgorithm sets the hash algorithm that is going to be used for the HMAC computation
      */
     public HMAC(MacAlgorithm macAlgorithm) throws NoSuchAlgorithmException {
         this.macAlgorithm = macAlgorithm;
@@ -65,15 +59,15 @@ public class HMAC {
     }
 
     /**
-     * Initializes the hmac with a secret and data that is to be hashed later on. It also makes sure that the key, the
-     * ipad and opad have the same length by padding.
+     * Initializes the hmac with a secret and data that is to be hashed later on. It also makes sure
+     * that the key, the ipad and opad have the same length by padding.
      *
-     * @param secret
-     *               the hmac key
-     **/
+     * @param secret the hmac key
+     */
     public void init(byte[] secret) throws NoSuchAlgorithmException {
         if (secret == null) {
-            LOGGER.warn("Secret is null! Continuing to init hmac with a secret set to zero bytes...");
+            LOGGER.warn(
+                    "Secret is null! Continuing to init hmac with a secret set to zero bytes...");
             secret = new byte[0];
         }
         switch (this.macAlgorithm) {
@@ -108,16 +102,17 @@ public class HMAC {
     /**
      * Computes the hmac and returnes it.
      *
-     * @param  data
-     * @return                          the computed hmac of the hmac instance
-     *
+     * @param data
+     * @return the computed hmac of the hmac instance
      * @throws NoSuchAlgorithmException
-     *
      */
     public byte[] doFinal(byte[] data) throws NoSuchAlgorithmException {
         // hmac = hmac_<hash>(<hash>(secret XOR opad) || <hash>(secret XOR ipad || data))
-        byte[] hash = this.digest.digest(ArrayConverter.concatenate(xorBytes(this.secret, this.ipad), data));
-        return this.digest.digest(ArrayConverter.concatenate(xorBytes(this.secret, this.opad), hash));
+        byte[] hash =
+                this.digest.digest(
+                        ArrayConverter.concatenate(xorBytes(this.secret, this.ipad), data));
+        return this.digest.digest(
+                ArrayConverter.concatenate(xorBytes(this.secret, this.opad), hash));
     }
 
     /*

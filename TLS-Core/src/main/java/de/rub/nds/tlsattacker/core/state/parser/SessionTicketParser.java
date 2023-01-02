@@ -10,13 +10,12 @@
 package de.rub.nds.tlsattacker.core.state.parser;
 
 import static de.rub.nds.modifiablevariable.util.ArrayConverter.bytesToHexString;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
-import de.rub.nds.tlsattacker.core.protocol.Parser;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
+import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.state.SessionTicket;
+import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,21 +30,11 @@ public class SessionTicketParser extends Parser<SessionTicket> {
 
     public SessionTicketParser(int startposition, byte[] array, SessionTicket sessionTicket, byte[] configTicketKeyName,
         CipherAlgorithm configCipherAlgorithm, MacAlgorithm configMacAlgorithm) {
-        super(startposition, array);
+        super(new ByteArrayInputStream(array, startposition, array.length - startposition));
         this.configTicketKeyName = configTicketKeyName;
         this.configCipherAlgorithm = configCipherAlgorithm;
         this.configMacAlgorithm = configMacAlgorithm;
         this.sessionTicket = sessionTicket;
-    }
-
-    @Override
-    public SessionTicket parse() {
-        parseKeyName(sessionTicket);
-        parseIV(sessionTicket);
-        parseEncryptedStateLength(sessionTicket);
-        parseEncryptedState(sessionTicket);
-        parseMAC(sessionTicket);
-        return sessionTicket;
     }
 
     private void parseKeyName(SessionTicket sessionTicket) {
@@ -78,4 +67,12 @@ public class SessionTicketParser extends Parser<SessionTicket> {
         LOGGER.debug("Parsed session ticket MAC " + bytesToHexString(sessionTicket.getMAC().getValue()));
     }
 
+    @Override
+    public void parse(SessionTicket sessionTicket) {
+        parseKeyName(sessionTicket);
+        parseIV(sessionTicket);
+        parseEncryptedStateLength(sessionTicket);
+        parseEncryptedState(sessionTicket);
+        parseMAC(sessionTicket);
+    }
 }

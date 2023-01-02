@@ -1,23 +1,21 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.PskEcDhClientKeyExchangeMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class PskEcDhClientKeyExchangeSerializer
-    extends ECDHClientKeyExchangeSerializer<PskEcDhClientKeyExchangeMessage> {
+        extends ECDHClientKeyExchangeSerializer<PskEcDhClientKeyExchangeMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -26,13 +24,10 @@ public class PskEcDhClientKeyExchangeSerializer
     /**
      * Constructor for the PSKECDHClientKeyExchangeSerializer
      *
-     * @param message
-     *                Message that should be serialized
-     * @param version
-     *                Version of the Protocol
+     * @param message Message that should be serialized
      */
-    public PskEcDhClientKeyExchangeSerializer(PskEcDhClientKeyExchangeMessage message, ProtocolVersion version) {
-        super(message, version);
+    public PskEcDhClientKeyExchangeSerializer(PskEcDhClientKeyExchangeMessage message) {
+        super(message);
         this.msg = message;
     }
 
@@ -46,11 +41,14 @@ public class PskEcDhClientKeyExchangeSerializer
     }
 
     /**
-     * Writes the SerializedPublicKeyLength of the PskEcDhClientKeyExchangeMessage into the final byte[]
+     * Writes the SerializedPublicKeyLength of the PskEcDhClientKeyExchangeMessage into the final
+     * byte[]
      */
     private void writePSKIdentityLength(PskEcDhClientKeyExchangeMessage msg) {
         appendInt(msg.getIdentityLength().getValue(), HandshakeByteLength.PSK_IDENTITY_LENGTH);
-        LOGGER.debug("SerializedPSKIdentityLength: " + ArrayConverter.bytesToInt(msg.getIdentity().getValue()));
+        LOGGER.debug(
+                "SerializedPSKIdentityLength: "
+                        + ArrayConverter.bytesToInt(msg.getIdentity().getValue()));
     }
 
     /**
@@ -58,6 +56,8 @@ public class PskEcDhClientKeyExchangeSerializer
      */
     private void writePSKIdentity(PskEcDhClientKeyExchangeMessage msg) {
         appendBytes(msg.getIdentity().getValue());
-        LOGGER.debug("SerializedPSKIdentity: " + ArrayConverter.bytesToHexString(msg.getIdentity().getValue()));
+        LOGGER.debug(
+                "SerializedPSKIdentity: "
+                        + ArrayConverter.bytesToHexString(msg.getIdentity().getValue()));
     }
 }

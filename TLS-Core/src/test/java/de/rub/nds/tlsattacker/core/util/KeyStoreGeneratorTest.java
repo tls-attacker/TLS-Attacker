@@ -1,23 +1,21 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.util;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import de.rub.nds.modifiablevariable.util.BadRandom;
-import org.junit.jupiter.api.Test;
-
 import java.security.KeyPair;
 import java.security.KeyStore;
 import java.util.Random;
+import org.junit.jupiter.api.Test;
 
 public class KeyStoreGeneratorTest {
 
@@ -62,5 +60,4 @@ public class KeyStoreGeneratorTest {
         ks = KeyStoreGenerator.createKeyStore(k, random);
         assertNotNull(ks);
     }
-
 }

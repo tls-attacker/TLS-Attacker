@@ -1,7 +1,7 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -14,16 +14,20 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.CertificateMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificatePair;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.util.LinkedList;
-import java.util.List;
+import de.rub.nds.tlsattacker.core.protocol.parser.CertificateMessageParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.CertificateMessagePreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateMessageSerializer;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import java.io.InputStream;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
 
 @XmlRootElement(name = "Certificate")
 public class CertificateMessage extends HandshakeMessage {
@@ -51,14 +55,10 @@ public class CertificateMessage extends HandshakeMessage {
     @HoldsModifiableVariable
     @XmlElementWrapper
     @XmlElement(name = "certificatesList")
-    private List<CertificatePair> certificatesList;
+    private List<CertificatePair> certificateList;
 
     public CertificateMessage() {
         super(HandshakeMessageType.CERTIFICATE);
-    }
-
-    public CertificateMessage(Config tlsConfig) {
-        super(tlsConfig, HandshakeMessageType.CERTIFICATE);
     }
 
     public ModifiableInteger getCertificatesListLength() {
@@ -70,7 +70,8 @@ public class CertificateMessage extends HandshakeMessage {
     }
 
     public void setCertificatesListLength(int length) {
-        this.certificatesListLength = ModifiableVariableFactory.safelySetValue(certificatesListLength, length);
+        this.certificatesListLength
+                = ModifiableVariableFactory.safelySetValue(certificatesListLength, length);
     }
 
     public ModifiableByteArray getCertificatesListBytes() {
@@ -82,22 +83,8 @@ public class CertificateMessage extends HandshakeMessage {
     }
 
     public void setCertificatesListBytes(byte[] array) {
-        this.certificatesListBytes = ModifiableVariableFactory.safelySetValue(certificatesListBytes, array);
-    }
-
-    public List<CertificatePair> getCertificatesList() {
-        return certificatesList;
-    }
-
-    public void setCertificatesList(List<CertificatePair> certificatesList) {
-        this.certificatesList = certificatesList;
-    }
-
-    public void addCertificateList(CertificatePair certificatePair) {
-        if (this.certificatesList == null) {
-            certificatesList = new LinkedList<>();
-        }
-        this.certificatesList.add(certificatePair);
+        this.certificatesListBytes
+                = ModifiableVariableFactory.safelySetValue(certificatesListBytes, array);
     }
 
     public ModifiableInteger getRequestContextLength() {
@@ -109,7 +96,8 @@ public class CertificateMessage extends HandshakeMessage {
     }
 
     public void setRequestContextLength(int length) {
-        this.requestContextLength = ModifiableVariableFactory.safelySetValue(requestContextLength, length);
+        this.requestContextLength
+                = ModifiableVariableFactory.safelySetValue(requestContextLength, length);
     }
 
     public ModifiableByteArray getRequestContext() {
@@ -153,7 +141,69 @@ public class CertificateMessage extends HandshakeMessage {
     }
 
     @Override
-    public CertificateMessageHandler getHandler(TlsContext context) {
-        return new CertificateMessageHandler(context);
+    public CertificateMessageParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new CertificateMessageParser(stream, tlsContext);
+    }
+
+    @Override
+    public CertificateMessagePreparator getPreparator(TlsContext tlsContext) {
+        return new CertificateMessagePreparator(tlsContext.getChooser(), this);
+    }
+
+    @Override
+    public CertificateMessageSerializer getSerializer(TlsContext tlsContext) {
+        return new CertificateMessageSerializer(
+                this, tlsContext.getChooser().getSelectedProtocolVersion());
+    }
+
+    @Override
+    public CertificateMessageHandler getHandler(TlsContext tlsContext) {
+        return new CertificateMessageHandler(tlsContext);
+    }
+
+    public List<CertificatePair> getCertificateList() {
+        return certificateList;
+    }
+
+    public void setCertificateList(List<CertificatePair> certificatesList) {
+        this.certificateList = certificatesList;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 41 * hash + Objects.hashCode(this.requestContextLength);
+        hash = 41 * hash + Objects.hashCode(this.requestContext);
+        hash = 41 * hash + Objects.hashCode(this.certificatesListLength);
+        hash = 41 * hash + Objects.hashCode(this.certificatesListBytes);
+        hash = 41 * hash + Objects.hashCode(this.certificateList);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final CertificateMessage other = (CertificateMessage) obj;
+        if (!Objects.equals(this.requestContextLength, other.requestContextLength)) {
+            return false;
+        }
+        if (!Objects.equals(this.requestContext, other.requestContext)) {
+            return false;
+        }
+        if (!Objects.equals(this.certificatesListLength, other.certificatesListLength)) {
+            return false;
+        }
+        if (!Objects.equals(this.certificatesListBytes, other.certificatesListBytes)) {
+            return false;
+        }
+        return Objects.equals(this.certificateList, other.certificateList);
     }
 }

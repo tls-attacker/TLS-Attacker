@@ -1,23 +1,37 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.constants.ssl.SSL2ByteLength;
+import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.protocol.message.SSL2Message;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.util.tests.TestCategories;
+import java.io.ByteArrayInputStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
+import java.security.Security;
+import java.util.Arrays;
+import java.util.Set;
+import java.util.stream.Stream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -30,14 +44,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.opentest4j.TestAbortedException;
 import org.reflections.Reflections;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Modifier;
-import java.security.Security;
-import java.util.Set;
-import java.util.stream.Stream;
-
-@SuppressWarnings({ "rawtypes", "unchecked" })
+@SuppressWarnings({"rawtypes", "unchecked"})
 public class CyclicParserSerializerTest {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -58,7 +65,8 @@ public class CyclicParserSerializerTest {
         Stream.Builder<Arguments> builder = Stream.builder();
         // Get all parsers by reflection
         Reflections reflections = new Reflections("de.rub.nds.tlsattacker.core.protocol.message");
-        Set<Class<? extends ProtocolMessage>> messageClasses = reflections.getSubTypesOf(ProtocolMessage.class);
+        Set<Class<? extends ProtocolMessage>> messageClasses =
+                reflections.getSubTypesOf(ProtocolMessage.class);
         Class<? extends ProtocolMessageParser> parserClass = null;
         Class<? extends ProtocolMessagePreparator> preparatorClass = null;
         Class<? extends ProtocolMessageSerializer> serializerClass = null;
@@ -70,7 +78,7 @@ public class CyclicParserSerializerTest {
             }
             if (messageClass == DtlsHandshakeMessageFragment.class) {
                 LOGGER.debug(
-                    "Message class is DtlsHandshakeMessageFragment, will not be included in the provided test vectors");
+                        "Message class is DtlsHandshakeMessageFragment, will not be included in the provided test vectors");
                 continue;
             }
 
@@ -78,8 +86,9 @@ public class CyclicParserSerializerTest {
             try {
                 parserClass = getParser(testName);
                 if (Modifier.isAbstract(parserClass.getModifiers())) {
-                    LOGGER.error("Encountered abstract parser class for non-abstract message class, skipping it: {}",
-                        parserClass.getSimpleName());
+                    LOGGER.error(
+                            "Encountered abstract parser class for non-abstract message class, skipping it: {}",
+                            parserClass.getSimpleName());
                     continue;
                 }
             } catch (ClassNotFoundException e) {
@@ -92,8 +101,8 @@ public class CyclicParserSerializerTest {
                 preparatorClass = getPreparator(testName);
                 if (Modifier.isAbstract(preparatorClass.getModifiers())) {
                     LOGGER.error(
-                        "Encountered abstract preparator class for non-abstract message class, skipping it: {}",
-                        preparatorClass.getSimpleName());
+                            "Encountered abstract preparator class for non-abstract message class, skipping it: {}",
+                            preparatorClass.getSimpleName());
                     continue;
                 }
             } catch (ClassNotFoundException e) {
@@ -106,8 +115,8 @@ public class CyclicParserSerializerTest {
                 serializerClass = getSerializer(testName);
                 if (Modifier.isAbstract(serializerClass.getModifiers())) {
                     LOGGER.error(
-                        "Encountered abstract serializer class for non-abstract message class, skipping it: {}",
-                        serializerClass.getSimpleName());
+                            "Encountered abstract serializer class for non-abstract message class, skipping it: {}",
+                            serializerClass.getSimpleName());
                     continue;
                 }
             } catch (ClassNotFoundException e) {
@@ -120,9 +129,14 @@ public class CyclicParserSerializerTest {
                     continue;
                 }
                 builder.add(
-                    Arguments.of(testName, version, messageClass, true, parserClass, preparatorClass, serializerClass));
-                builder.add(Arguments.of(testName, version, messageClass, false, parserClass, preparatorClass,
-                    serializerClass));
+                        Arguments.of(
+                                testName,
+                                version,
+                                messageClass,
+                                true,
+                                parserClass,
+                                preparatorClass,
+                                serializerClass));
             }
         }
         return builder.build();
@@ -131,21 +145,33 @@ public class CyclicParserSerializerTest {
     @ParameterizedTest(name = "{0} [{1}, default message constructor: {3}]")
     @MethodSource("provideParserSerializerTestVectors")
     @Tag(TestCategories.INTEGRATION_TEST)
-    public void testParserSerializerPairs(String testName, ProtocolVersion protocolVersion,
-        Class<? extends ProtocolMessage> messageClass, boolean useDefaultMessageConstructor,
-        Class<? extends ProtocolMessageParser> parserClass, Class<? extends ProtocolMessagePreparator> preparatorClass,
-        Class<? extends ProtocolMessageSerializer> serializerClass) {
-        assumeTrue(messageClass != null, "Message class for test " + testName + " could not be found");
-        assumeTrue(parserClass != null, "Parser class for test " + testName + " could not be found");
-        assumeTrue(preparatorClass != null, "Preparator class for test " + testName + " could not be found");
-        assumeTrue(serializerClass != null, "Serializer class for test " + testName + " could not be found");
+    public void testParserSerializerPairs(
+            String testName,
+            ProtocolVersion protocolVersion,
+            Class<? extends ProtocolMessage> messageClass,
+            boolean useDefaultMessageConstructor,
+            Class<? extends ProtocolMessageParser> parserClass,
+            Class<? extends ProtocolMessagePreparator> preparatorClass,
+            Class<? extends ProtocolMessageSerializer> serializerClass) {
+        assumeTrue(
+                messageClass != null, "Message class for test " + testName + " could not be found");
+        assumeTrue(
+                parserClass != null, "Parser class for test " + testName + " could not be found");
+        assumeTrue(
+                preparatorClass != null,
+                "Preparator class for test " + testName + " could not be found");
+        assumeTrue(
+                serializerClass != null,
+                "Serializer class for test " + testName + " could not be found");
         ProtocolMessage message = null;
-        ProtocolMessageParser<? extends ProtocolMessage> parser = null;
+        ProtocolMessageParser parser = null;
         ProtocolMessagePreparator<? extends ProtocolMessage> preparator = null;
         ProtocolMessageSerializer<? extends ProtocolMessage> serializer = null;
 
+        context.setTalkingConnectionEndType(ConnectionEndType.CLIENT);
         context.setSelectedProtocolVersion(protocolVersion);
         context.getConfig().setHighestProtocolVersion(protocolVersion);
+        context.setLastRecordVersion(protocolVersion);
         context.getConfig().setDefaultHighestClientProtocolVersion(protocolVersion);
 
         Constructor<? extends ProtocolMessage> messageConstructor;
@@ -158,75 +184,73 @@ public class CyclicParserSerializerTest {
             fail("Could not find message constructor for test " + testName);
         }
         try {
-            if (useDefaultMessageConstructor) {
-                message = messageConstructor.newInstance();
-            } else {
-                message = messageConstructor.newInstance(context.getConfig());
-            }
+            message = messageConstructor.newInstance();
         } catch (InstantiationException | InvocationTargetException | IllegalAccessException e) {
             fail("Could not create message instance for test " + testName);
         }
 
-        Constructor<? extends ProtocolMessagePreparator> preparatorConstructor = getConstructor(preparatorClass, 2);
-        if (preparatorConstructor == null) {
-            fail("Could not find preparator constructor with two arguments for test " + testName);
-        }
-        try {
-            preparator = preparatorConstructor.newInstance(context.getChooser(), message);
-        } catch (InstantiationException | InvocationTargetException | IllegalAccessException e) {
-            fail("Could not create preparator instance for test " + testName);
-        }
+        preparator = message.getPreparator(context);
 
         // Skip test if preparation is not supported yet
         try {
             preparator.prepare();
         } catch (UnsupportedOperationException e) {
             LOGGER.info("Preparator for test " + testName + " is not yet supported");
-            throw new TestAbortedException("Preparator for test " + testName + " is not yet supported");
+            throw new TestAbortedException(
+                    "Preparator for test " + testName + " is not yet supported");
         }
 
-        Constructor<? extends ProtocolMessageSerializer> serializerConstructor = getConstructor(serializerClass, 2);
-        if (serializerConstructor == null) {
-            fail("Could not find serializer constructor with two arguments for test " + testName);
-        }
-        try {
-            serializer = serializerConstructor.newInstance(message, protocolVersion);
-        } catch (InstantiationException | InvocationTargetException | IllegalAccessException e) {
-            fail("Could not create serializer instance for test " + testName);
-        }
+        serializer = message.getSerializer(context);
         byte[] serializedMessage = serializer.serialize();
 
-        Constructor<? extends ProtocolMessageParser> parserConstructor = getConstructor(parserClass, 4);
-        if (parserConstructor == null) {
-            fail("Could not find parser constructor with four arguments for test " + testName);
+        byte[] messageHeader = null;
+        if (message.getProtocolMessageType() == ProtocolMessageType.HANDSHAKE
+                || message instanceof SSL2Message) {
+            int handshakeHeaderLength;
+            if (message instanceof SSL2Message) {
+                handshakeHeaderLength = SSL2ByteLength.LENGTH + SSL2ByteLength.MESSAGE_TYPE;
+            } else {
+                handshakeHeaderLength =
+                        HandshakeByteLength.MESSAGE_TYPE + HandshakeByteLength.MESSAGE_LENGTH_FIELD;
+            }
+            messageHeader = Arrays.copyOfRange(serializedMessage, 0, handshakeHeaderLength);
+            serializedMessage =
+                    Arrays.copyOfRange(
+                            serializedMessage, handshakeHeaderLength, serializedMessage.length);
         }
+        parser = message.getParser(context, new ByteArrayInputStream(serializedMessage));
         try {
-            parser = parserConstructor.newInstance(0, serializedMessage, protocolVersion, context.getConfig());
-        } catch (InstantiationException | InvocationTargetException | IllegalAccessException e) {
-            fail("Could not create parser instance for test " + testName);
-        }
-        try {
-            message = parser.parse();
+            parser.parse(message);
         } catch (UnsupportedOperationException e) {
             LOGGER.info("Parser for test " + testName + " is not yet supported");
             throw new TestAbortedException("Parser for test " + testName + " is not yet supported");
+        } catch (EndOfStreamException eos) {
+            LOGGER.info("EOS");
         }
 
-        try {
-            serializer = serializerConstructor.newInstance(message, protocolVersion);
-        } catch (InstantiationException | InvocationTargetException | IllegalAccessException e) {
-            fail("Could not create serializer instance for test " + testName);
+        serializer = message.getSerializer(context);
+        if (message.getProtocolMessageType() == ProtocolMessageType.HANDSHAKE
+                || message instanceof SSL2Message) {
+            assertArrayEquals(
+                    ArrayConverter.concatenate(messageHeader, serializedMessage),
+                    serializer.serialize());
+        } else {
+            assertArrayEquals(serializedMessage, serializer.serialize());
         }
-        assertArrayEquals(serializedMessage, serializer.serialize());
     }
 
-    private static Class<? extends ProtocolMessageParser> getParser(String testName) throws ClassNotFoundException {
-        String preparatorName = "de.rub.nds.tlsattacker.core.protocol.parser." + testName + "Parser";
+    private static Class<? extends ProtocolMessageParser> getParser(String testName)
+            throws ClassNotFoundException {
+        String preparatorName =
+                "de.rub.nds.tlsattacker.core.protocol.parser." + testName + "Parser";
         try {
             return (Class<? extends ProtocolMessageParser>) Class.forName(preparatorName);
         } catch (ClassNotFoundException E) {
             try {
-                preparatorName = "de.rub.nds.tlsattacker.core.protocol.preparator." + testName + "MessageParser";
+                preparatorName =
+                        "de.rub.nds.tlsattacker.core.protocol.preparator."
+                                + testName
+                                + "MessageParser";
                 return (Class<? extends ProtocolMessageParser>) Class.forName(preparatorName);
             } catch (ClassNotFoundException ex) {
                 throw new ClassNotFoundException("Could not find Parser for " + testName);
@@ -235,13 +259,17 @@ public class CyclicParserSerializerTest {
     }
 
     private static Class<? extends ProtocolMessagePreparator> getPreparator(String testName)
-        throws ClassNotFoundException {
-        String preparatorName = "de.rub.nds.tlsattacker.core.protocol.preparator." + testName + "Preparator";
+            throws ClassNotFoundException {
+        String preparatorName =
+                "de.rub.nds.tlsattacker.core.protocol.preparator." + testName + "Preparator";
         try {
             return (Class<? extends ProtocolMessagePreparator>) Class.forName(preparatorName);
         } catch (ClassNotFoundException E) {
             try {
-                preparatorName = "de.rub.nds.tlsattacker.core.protocol.preparator." + testName + "MessagePreparator";
+                preparatorName =
+                        "de.rub.nds.tlsattacker.core.protocol.preparator."
+                                + testName
+                                + "MessagePreparator";
                 return (Class<? extends ProtocolMessagePreparator>) Class.forName(preparatorName);
             } catch (ClassNotFoundException ex) {
                 throw new ClassNotFoundException("Could not find Preparator for " + testName);
@@ -250,13 +278,15 @@ public class CyclicParserSerializerTest {
     }
 
     private static Class<? extends ProtocolMessageSerializer> getSerializer(String testName)
-        throws ClassNotFoundException {
-        String serializerName = "de.rub.nds.tlsattacker.core.protocol.serializer." + testName + "Serializer";
+            throws ClassNotFoundException {
+        String serializerName =
+                "de.rub.nds.tlsattacker.core.protocol.serializer." + testName + "Serializer";
         try {
             return (Class<? extends ProtocolMessageSerializer>) Class.forName(serializerName);
         } catch (ClassNotFoundException E) {
             try {
-                return (Class<? extends ProtocolMessageSerializer>) Class.forName(serializerName + "MessageSerializer");
+                return (Class<? extends ProtocolMessageSerializer>)
+                        Class.forName(serializerName + "MessageSerializer");
             } catch (ClassNotFoundException ex) {
                 throw new ClassNotFoundException("Could not find Serializer for " + testName);
             }
@@ -278,16 +308,6 @@ public class CyclicParserSerializerTest {
     private static Constructor getDefaultMessageConstructor(Class someClass) {
         for (Constructor c : someClass.getDeclaredConstructors()) {
             if (c.getParameterCount() == 0) {
-                return c;
-            }
-        }
-        LOGGER.warn("Could not find Constructor: " + someClass.getSimpleName());
-        return null;
-    }
-
-    private static Constructor getConstructor(Class someClass, int numberOfArguments) {
-        for (Constructor c : someClass.getConstructors()) {
-            if (c.getParameterCount() == numberOfArguments) {
                 return c;
             }
         }

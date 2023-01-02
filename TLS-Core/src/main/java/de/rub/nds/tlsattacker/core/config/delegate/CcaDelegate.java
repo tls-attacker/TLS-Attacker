@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
@@ -20,23 +19,36 @@ import java.security.cert.X509Certificate;
 
 public class CcaDelegate extends Delegate {
 
-    @Parameter(names = "-certificatePath", description = "ASN.1 PEM encoded client certificate used for basic "
-        + "authentication bypass testing. Required for basic CCA test cases.")
+    @Parameter(
+            names = "-certificatePath",
+            description =
+                    "ASN.1 PEM encoded client certificate used for basic "
+                            + "authentication bypass testing. Required for basic CCA test cases.")
     private String clientCertificatePath;
-    @Parameter(names = "-certificateInputDirectory", description = "Path to directory that contains root certificates "
-        + "for CCA test cases. Required for further CCA tests.")
+
+    @Parameter(
+            names = "-certificateInputDirectory",
+            description =
+                    "Path to directory that contains root certificates "
+                            + "for CCA test cases. Required for further CCA tests.")
     private String certificateInputDirectory;
-    @Parameter(names = "-certificateOutputDirectory", description = "Path to directory to which certificates generated "
-        + "for test cases are written. Required for further CCA tests.")
+
+    @Parameter(
+            names = "-certificateOutputDirectory",
+            description =
+                    "Path to directory to which certificates generated "
+                            + "for test cases are written. Required for further CCA tests.")
     private String certificateOutputDirectory;
-    @Parameter(names = "-keyDirectory",
-        description = "Path to directory containing pre generated keys for "
-            + "certificates that will be generated, as well as the keys to the root certificates. Keys for root "
-            + "certificates need to have the same name as the certificate. Required for further CCA tests.")
+
+    @Parameter(
+            names = "-keyDirectory",
+            description =
+                    "Path to directory containing pre generated keys for "
+                            + "certificates that will be generated, as well as the keys to the root certificates. Keys for root "
+                            + "certificates need to have the same name as the certificate. Required for further CCA tests.")
     private String keyDirectory;
 
-    public CcaDelegate() {
-    }
+    public CcaDelegate() {}
 
     public byte[] getClientCertificate() {
         X509Certificate x509Certificate = null;
@@ -49,7 +61,9 @@ public class CcaDelegate extends Delegate {
             } catch (IOException e) {
                 LOGGER.error("Couldn't read client certificate." + e);
             } catch (CertificateException ce) {
-                LOGGER.error("Error while generating certificate from clientCertificatePath input." + ce);
+                LOGGER.error(
+                        "Error while generating certificate from clientCertificatePath input."
+                                + ce);
             }
 
             if (x509Certificate != null) {
@@ -68,7 +82,9 @@ public class CcaDelegate extends Delegate {
     }
 
     public Boolean directoriesSupplied() {
-        return certificateInputDirectory != null && certificateOutputDirectory != null && keyDirectory != null;
+        return certificateInputDirectory != null
+                && certificateOutputDirectory != null
+                && keyDirectory != null;
     }
 
     public String getClientCertificatePath() {
@@ -88,6 +104,5 @@ public class CcaDelegate extends Delegate {
     }
 
     @Override
-    public void applyDelegate(Config config) {
-    }
+    public void applyDelegate(Config config) {}
 }

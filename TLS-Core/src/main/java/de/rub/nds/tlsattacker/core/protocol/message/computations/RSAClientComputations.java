@@ -1,18 +1,16 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message.computations;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.tlsattacker.core.config.Config;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -23,15 +21,15 @@ public class RSAClientComputations extends KeyExchangeComputations {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.KEY_MATERIAL)
     private ModifiableByteArray premasterSecretProtocolVersion;
 
-    @ModifiableVariableProperty(format = ModifiableVariableProperty.Format.PKCS1,
-        type = ModifiableVariableProperty.Type.KEY_MATERIAL)
+    @ModifiableVariableProperty(
+            format = ModifiableVariableProperty.Format.PKCS1,
+            type = ModifiableVariableProperty.Type.KEY_MATERIAL)
     private ModifiableByteArray plainPaddedPremasterSecret;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PADDING)
     private ModifiableByteArray padding;
 
-    public RSAClientComputations() {
-    }
+    public RSAClientComputations() {}
 
     public ModifiableByteArray getPlainPaddedPremasterSecret() {
         return plainPaddedPremasterSecret;
@@ -43,7 +41,7 @@ public class RSAClientComputations extends KeyExchangeComputations {
 
     public void setPlainPaddedPremasterSecret(byte[] value) {
         this.plainPaddedPremasterSecret =
-            ModifiableVariableFactory.safelySetValue(this.plainPaddedPremasterSecret, value);
+                ModifiableVariableFactory.safelySetValue(this.plainPaddedPremasterSecret, value);
     }
 
     public ModifiableByteArray getPadding() {
@@ -62,13 +60,14 @@ public class RSAClientComputations extends KeyExchangeComputations {
         return premasterSecretProtocolVersion;
     }
 
-    public void setPremasterSecretProtocolVersion(ModifiableByteArray premasterSecretProtocolVersion) {
+    public void setPremasterSecretProtocolVersion(
+            ModifiableByteArray premasterSecretProtocolVersion) {
         this.premasterSecretProtocolVersion = premasterSecretProtocolVersion;
     }
 
     public void setPremasterSecretProtocolVersion(byte[] premasterSecretProtocolVersion) {
-        this.premasterSecretProtocolVersion = ModifiableVariableFactory
-            .safelySetValue(this.premasterSecretProtocolVersion, premasterSecretProtocolVersion);
+        this.premasterSecretProtocolVersion =
+                ModifiableVariableFactory.safelySetValue(
+                        this.premasterSecretProtocolVersion, premasterSecretProtocolVersion);
     }
-
 }

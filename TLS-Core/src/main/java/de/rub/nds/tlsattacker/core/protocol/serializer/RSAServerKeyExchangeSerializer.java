@@ -1,24 +1,22 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.serializer;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAServerKeyExchangeMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class RSAServerKeyExchangeSerializer<T extends RSAServerKeyExchangeMessage>
-    extends ServerKeyExchangeSerializer<T> {
+        extends ServerKeyExchangeSerializer<T> {
     private static final Logger LOGGER = LogManager.getLogger();
     private final T msg;
 
@@ -64,32 +62,22 @@ public class RSAServerKeyExchangeSerializer<T extends RSAServerKeyExchangeMessag
      */
     private void writeSignatureAndHashAlgorithm(T msg) {
         appendBytes(msg.getSignatureAndHashAlgorithm().getValue());
-        LOGGER.debug("SignatureAndHaslAlgorithm: "
-            + ArrayConverter.bytesToHexString(msg.getSignatureAndHashAlgorithm().getValue()));
+        LOGGER.debug(
+                "SignatureAndHaslAlgorithm: "
+                        + ArrayConverter.bytesToHexString(
+                                msg.getSignatureAndHashAlgorithm().getValue()));
     }
 
-    private boolean isTLS12() {
-        return version == ProtocolVersion.TLS12;
-    }
-
-    private boolean isDTLS12() {
-        return version == ProtocolVersion.DTLS12;
-    }
-
-    /**
-     * Writes the SignatureLength of the RSAServerKeyExchangeMessage into the final byte[]
-     */
+    /** Writes the SignatureLength of the RSAServerKeyExchangeMessage into the final byte[] */
     private void writeSignatureLength(T msg) {
         appendInt(msg.getSignatureLength().getValue(), HandshakeByteLength.SIGNATURE_LENGTH);
         LOGGER.debug("SignatureLength: " + msg.getSignatureLength().getValue());
     }
 
-    /**
-     * Writes the Signature of the RSAServerKeyExchangeMessage into the final byte[]
-     */
+    /** Writes the Signature of the RSAServerKeyExchangeMessage into the final byte[] */
     private void writeSignature(T msg) {
         appendBytes(msg.getSignature().getValue());
-        LOGGER.debug("Signature: " + ArrayConverter.bytesToHexString(msg.getSignature().getValue()));
+        LOGGER.debug(
+                "Signature: " + ArrayConverter.bytesToHexString(msg.getSignature().getValue()));
     }
-
 }

@@ -217,10 +217,13 @@ public class DHEServerKeyExchangePreparator<T extends DHEServerKeyExchangeMessag
     }
 
     private NamedGroup getMatchingNamedGroup() {
-        if (chooser.getContext().getClientNamedGroupsList() != null) {
+        if (chooser.getContext().getTlsContext().getClientNamedGroupsList() != null) {
             for (NamedGroup serverGroup : chooser.getConfig().getDefaultServerNamedGroups()) {
                 if (serverGroup.isDhGroup()
-                        && chooser.getContext().getClientNamedGroupsList().contains(serverGroup)) {
+                        && chooser.getContext()
+                                .getTlsContext()
+                                .getClientNamedGroupsList()
+                                .contains(serverGroup)) {
                     return serverGroup;
                 }
             }

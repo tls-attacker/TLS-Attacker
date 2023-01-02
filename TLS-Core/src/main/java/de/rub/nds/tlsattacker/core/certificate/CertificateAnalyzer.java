@@ -1,6 +1,10 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ *
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 package de.rub.nds.tlsattacker.core.certificate;
 
@@ -9,7 +13,6 @@ import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.x509attacker.x509.base.SubjectPublicKeyInfo;
 import de.rub.nds.x509attacker.x509.base.TbsCertificate;
 import de.rub.nds.x509attacker.x509.base.X509Certificate;
-import de.rub.nds.x509attacker.x509.base.X509CertificateChain;
 import de.rub.nds.x509attacker.x509.base.publickey.DhPublicKey;
 import de.rub.nds.x509attacker.x509.base.publickey.DsaPublicKey;
 import de.rub.nds.x509attacker.x509.base.publickey.EcdhEcdsaPublicKey;
@@ -26,10 +29,7 @@ import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- * A class designed to answer questions about a given certificate
- *
- */
+/** A class designed to answer questions about a given certificate */
 public class CertificateAnalyzer {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -40,7 +40,7 @@ public class CertificateAnalyzer {
         if (publicKey != null) {
             return publicKey.isEllipticCurve();
         } else {
-            //Certificate does not seem to have a public key
+            // Certificate does not seem to have a public key
             return false;
         }
     }
@@ -77,9 +77,11 @@ public class CertificateAnalyzer {
         if (publicKey instanceof X448PublicKey) {
             return CertificateKeyType.X448;
         }
-        LOGGER.warn("The public key " + publicKey.toString() + " has not been correctly integrated into TLS-Attacker. Returning NONE");
+        LOGGER.warn(
+                "The public key "
+                        + publicKey.toString()
+                        + " has not been correctly integrated into TLS-Attacker. Returning NONE");
         return CertificateKeyType.NONE;
-
     }
 
     public static NamedGroup getEllipticCurveGroup(X509Certificate certificate) {
@@ -99,22 +101,25 @@ public class CertificateAnalyzer {
 
     public static X509PublicKey getPublicKey(X509Certificate certificate) {
         Optional<TbsCertificate> optionalTbs = Optional.ofNullable(certificate.getTbsCertificate());
-        Optional<SubjectPublicKeyInfo> optionalPublicKeyType = optionalTbs.map(TbsCertificate::getSubjectPublicKeyInfo);
-        Optional<PublicKeyBitString> publicKeyString = optionalPublicKeyType.map(SubjectPublicKeyInfo::getSubjectPublicKeyBitString);
+        Optional<SubjectPublicKeyInfo> optionalPublicKeyType =
+                optionalTbs.map(TbsCertificate::getSubjectPublicKeyInfo);
+        Optional<PublicKeyBitString> publicKeyString =
+                optionalPublicKeyType.map(SubjectPublicKeyInfo::getSubjectPublicKeyBitString);
         var publicKeyOptional = publicKeyString.map(PublicKeyBitString::getPublicKey);
         return (X509PublicKey) publicKeyOptional.get();
     }
 
     public static PublicParameters getPublicParameters(X509Certificate certificate) {
         throw new UnsupportedOperationException("not implemented yet");
-
     }
 
     public static NamedGroup getPublicNamedGroup(X509Certificate certificate) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from
+        // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     public static NamedGroup getSignatureNamedGroup(X509Certificate certificate) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from
+        // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

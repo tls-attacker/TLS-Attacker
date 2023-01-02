@@ -10,12 +10,8 @@
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignedCertificateTimestampExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.SignedCertificateTimestampExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SignedCertificateTimestampExtensionPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SignedCertificateTimestampExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -27,51 +23,11 @@ public class SignedCertificateTimestampExtensionHandler
     /**
      * Constructor
      *
-     * @param context
-     *                A Chooser
+     * @param tlsContext
+     *                   A Chooser
      */
-    public SignedCertificateTimestampExtensionHandler(TlsContext context) {
-        super(context);
-    }
-
-    /**
-     * Returns a new SignedCertificateTimestampExtensionParser
-     *
-     * @param  message
-     *                 Message which holds the extensions
-     * @param  pointer
-     *                 Startposition of the extension
-     * @return         A SignedCertificateTimestampExtensionParser
-     */
-    @Override
-    public SignedCertificateTimestampExtensionParser getParser(byte[] message, int pointer, Config config) {
-        return new SignedCertificateTimestampExtensionParser(pointer, message, config);
-    }
-
-    /**
-     * Returns a new SignedCertificateTimestampExtensionPreparator
-     *
-     * @param  message
-     *                 A SignedCertificateTimestampExtensionMessage
-     * @return         A SignedCertificateTimestampExtensionPreparator
-     */
-    @Override
-    public SignedCertificateTimestampExtensionPreparator
-        getPreparator(SignedCertificateTimestampExtensionMessage message) {
-        return new SignedCertificateTimestampExtensionPreparator(context.getChooser(), message, getSerializer(message));
-    }
-
-    /**
-     * Returns a new SignedCertificateTimestampExtensionSerializer
-     *
-     * @param  message
-     *                 A SignedCertificateTimestampExtensionMessage
-     * @return         A SignedCertificateTimestampExtensionSerializer
-     */
-    @Override
-    public SignedCertificateTimestampExtensionSerializer
-        getSerializer(SignedCertificateTimestampExtensionMessage message) {
-        return new SignedCertificateTimestampExtensionSerializer(message);
+    public SignedCertificateTimestampExtensionHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     /**
@@ -86,7 +42,7 @@ public class SignedCertificateTimestampExtensionHandler
             LOGGER.warn("The SingedCertificateTimestamp length shouldn't exceed 2 bytes as defined in RFC 6962. "
                 + "Length was " + message.getExtensionLength().getValue());
         }
-        context.setSignedCertificateTimestamp(message.getSignedTimestamp().getValue());
+        tlsContext.setSignedCertificateTimestamp(message.getSignedTimestamp().getValue());
         LOGGER.debug("The context SignedCertificateTimestamp was set to "
             + ArrayConverter.bytesToHexString(message.getSignedTimestamp()));
     }

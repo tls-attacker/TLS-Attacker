@@ -9,8 +9,6 @@
 
 package de.rub.nds.tlsattacker.core.config.delegate;
 
-import static org.apache.commons.lang3.StringUtils.join;
-
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.certificate.CertificateKeyPair;
@@ -22,20 +20,17 @@ import de.rub.nds.tlsattacker.core.util.CertificateUtils;
 import de.rub.nds.tlsattacker.core.util.JKSLoader;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.util.KeystoreHandler;
-import de.rub.nds.x509attacker.filesystem.CertificateReader;
+import de.rub.nds.x509attacker.filesystem.CertificateIo;
 import de.rub.nds.x509attacker.x509.base.X509CertificateChain;
 import java.io.File;
 import java.io.IOException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.UnrecoverableKeyException;
+import java.security.*;
 import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import static org.apache.commons.lang3.StringUtils.join;
 import org.bouncycastle.crypto.tls.Certificate;
 
 public class CertificateDelegate extends Delegate {
@@ -121,7 +116,7 @@ public class CertificateDelegate extends Delegate {
         if (certificate != null) {
             LOGGER.debug("Loading certificate");
             try {
-                X509CertificateChain chain = CertificateReader.readPemChain(new File(certificate));
+                X509CertificateChain chain = CertificateIo.readPemChain(new File(certificate));
                 if (privateKey != null) {
                     config.setDefaultExplicitCertificateKeyPair(new CertificateKeyPair(chain, (CustomPrivateKey) privateKey));
                 } else {
@@ -159,9 +154,9 @@ public class CertificateDelegate extends Delegate {
                     throw new ConfigurationException("Unknown RunningMode");
             }
             KeyStore store = KeystoreHandler.loadKeyStore(keystore, password);
-            Certificate cert = JKSLoader.loadTLSCertificate(store, alias);//TODO Fix
+            Certificate cert = JKSLoader.loadTLSCertificate(store, alias);
             privateKey = (PrivateKey) store.getKey(alias, password.toCharArray());
-            CertificateKeyPair pair = new CertificateKeyPair(cert, privateKey);
+            CertificateKeyPair pair = new CertificateKeyPair(CertificateIo.convert(cert), (CustomPrivateKey) privateKey);
             pair.adjustInConfig(config, type);
             config.setAutoSelectCertificate(false);
         } catch (UnrecoverableKeyException | KeyStoreException | IOException | NoSuchAlgorithmException
