@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -525,6 +525,8 @@ public class Config implements Serializable {
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     @XmlElement(name = "defaultConnectionId")
     private byte[] defaultConnectionId = {0x01, 0x02, 0x03};
+
+    private Integer defaultNumberOfRequestedConnectionIds = 3;
 
     /** If we generate a ClientHello / ServerHello with DTLS 1.2 ConnectionID extension */
     private Boolean addConnectionIdExtension = false;
@@ -4173,6 +4175,15 @@ public class Config implements Serializable {
 
     public void setDefaultConnectionId(byte[] defaultConnectionId) {
         this.defaultConnectionId = defaultConnectionId;
+    }
+
+    public Integer getDefaultNumberOfRequestedConnectionIds() {
+        return defaultNumberOfRequestedConnectionIds;
+    }
+
+    public void setDefaultNumberOfRequestedConnectionIds(
+            Integer defaultNumberOfRequestedConnectionIds) {
+        this.defaultNumberOfRequestedConnectionIds = defaultNumberOfRequestedConnectionIds;
     }
 
     public Boolean isAddConnectionIdExtension() {

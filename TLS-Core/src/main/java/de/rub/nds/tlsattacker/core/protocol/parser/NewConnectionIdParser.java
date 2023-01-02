@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -13,7 +13,9 @@ import de.rub.nds.tlsattacker.core.constants.ConnectionIdUsage;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.NewConnectionIdMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.connectionid.ConnectionId;
 import java.io.InputStream;
+import java.util.LinkedList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -41,10 +43,17 @@ public class NewConnectionIdParser extends HandshakeMessageParser<NewConnectionI
     }
 
     private void parseConnectionIds(NewConnectionIdMessage message) {
-        message.setConnectionIds(parseByteArrayField(message.getConnectionIdsLength().getValue()));
-        LOGGER.debug(
-                "ConnectionIds: "
-                        + ArrayConverter.bytesToHexString(message.getConnectionIds().getValue()));
+        LOGGER.debug("ConnectionIds: ");
+        message.setConnectionIds(new LinkedList<>());
+        for (int i = 0; i < message.getConnectionIdsLength().getValue(); ) {
+            ConnectionId cid = new ConnectionId();
+            cid.setLength(parseIntField(HandshakeByteLength.CONNECTIONID_LENGTH));
+            cid.setConnectionId(parseByteArrayField(cid.getLength().getValue()));
+            message.getConnectionIds().add(cid);
+            i += cid.getLength().getValue();
+
+            LOGGER.debug(" - " + ArrayConverter.bytesToHexString(cid.getConnectionId().getValue()));
+        }
     }
 
     private void parseCidsLength(NewConnectionIdMessage message) {

@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -9,18 +9,19 @@
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
-import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ConnectionIdUsage;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.NewConnectionIdHandler;
+import de.rub.nds.tlsattacker.core.protocol.message.connectionid.ConnectionId;
 import de.rub.nds.tlsattacker.core.protocol.parser.NewConnectionIdParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.NewConnectionIdPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.NewConnectionIdSerializer;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Objects;
 
 @XmlRootElement(name = "NewConnectionId")
@@ -28,7 +29,7 @@ public class NewConnectionIdMessage extends HandshakeMessage<NewConnectionIdMess
 
     private ConnectionIdUsage usage;
     private ModifiableInteger connectionIdsLength;
-    private ModifiableByteArray connectionIds;
+    private List<ConnectionId> connectionIds;
 
     public NewConnectionIdMessage() {
         super(HandshakeMessageType.NEW_CONNECTION_ID);
@@ -72,20 +73,15 @@ public class NewConnectionIdMessage extends HandshakeMessage<NewConnectionIdMess
                         this.connectionIdsLength, connectionIdsLength);
     }
 
-    public ModifiableByteArray getConnectionIds() {
+    public List<ConnectionId> getConnectionIds() {
         return connectionIds;
-    }
-
-    public void setConnectionIds(byte[] connectionIds) {
-        this.connectionIds =
-                ModifiableVariableFactory.safelySetValue(this.connectionIds, connectionIds);
     }
 
     public void setConnectionIdsLength(ModifiableInteger connectionIdsLength) {
         this.connectionIdsLength = connectionIdsLength;
     }
 
-    public void setConnectionIds(ModifiableByteArray connectionIds) {
+    public void setConnectionIds(List<ConnectionId> connectionIds) {
         this.connectionIds = connectionIds;
     }
 
@@ -132,8 +128,12 @@ public class NewConnectionIdMessage extends HandshakeMessage<NewConnectionIdMess
             sb.append("null");
         }
         sb.append("\n  ConnectionIds: ");
-        if (connectionIds != null && connectionIds.getOriginalValue() != null) {
-            sb.append(ArrayConverter.bytesToHexString(connectionIds.getValue()));
+        if (connectionIds != null && !connectionIds.isEmpty()) {
+            for (ConnectionId cid : connectionIds) {
+                sb.append(" - ");
+                sb.append(ArrayConverter.bytesToHexString(cid.getConnectionId().getValue()));
+                sb.append("\n");
+            }
         } else {
             sb.append("null");
         }

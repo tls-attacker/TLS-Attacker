@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -1242,6 +1242,17 @@ public class DefaultChooser extends Chooser {
                 context.getTlsContext().setEchServerKeyShareEntry(keyShareEntry);
             }
             return keyShareEntry;
+        }
+    }
+
+    @Override
+    public Integer getNumberOfRequestedConnectionIds() {
+        if (context != null
+                && context.getTlsContext() != null
+                && context.getTlsContext().getNumberOfRequestedConnectionIds() != null) {
+            return context.getTlsContext().getNumberOfRequestedConnectionIds();
+        } else {
+            return config.getDefaultNumberOfRequestedConnectionIds();
         }
     }
 }

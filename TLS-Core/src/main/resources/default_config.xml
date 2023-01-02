@@ -968,6 +968,7 @@
     <addCertificateStatusRequestV2Extension>false</addCertificateStatusRequestV2Extension>
     <addCookieExtension>false</addCookieExtension>
     <defaultConnectionId>01 02 03</defaultConnectionId>
+    <defaultNumberOfRequestedConnectionIds>3</defaultNumberOfRequestedConnectionIds>
     <addConnectionIdExtension>false</addConnectionIdExtension>
     <pskKeyExchangeModes>
         <pskKeyExchangeMode>PSK_KE</pskKeyExchangeMode>

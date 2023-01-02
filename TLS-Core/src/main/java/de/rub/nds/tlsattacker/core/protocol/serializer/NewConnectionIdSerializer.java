@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.serializer;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.NewConnectionIdMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.connectionid.ConnectionId;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -40,8 +41,15 @@ public class NewConnectionIdSerializer extends HandshakeMessageSerializer<NewCon
     }
 
     private void serializeCids(NewConnectionIdMessage msg) {
-        appendBytes(msg.getConnectionIds().getValue());
-        LOGGER.debug("ConnectionIds: " + ArrayConverter.bytesToHexString(msg.getConnectionIds()));
+        LOGGER.debug("ConnectionIds: ");
+        for (ConnectionId connectionId : message.getConnectionIds()) {
+            appendInt(connectionId.getLength().getValue(), HandshakeByteLength.CONNECTIONID_LENGTH);
+            appendBytes(connectionId.getConnectionId().getValue());
+            LOGGER.debug(
+                    " - "
+                            + ArrayConverter.bytesToHexString(
+                                    connectionId.getConnectionId().getValue()));
+        }
     }
 
     private void serializeCidsLength(NewConnectionIdMessage msg) {

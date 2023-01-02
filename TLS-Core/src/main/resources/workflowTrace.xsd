@@ -3061,10 +3061,17 @@
         <xs:sequence>
           <xs:element name="usage" type="connectionIdUsage" minOccurs="0"/>
           <xs:element name="connectionIdsLength" type="modifiableInteger" minOccurs="0"/>
-          <xs:element name="connectionIds" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="connectionIds" type="connectionId" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="connectionId">
+    <xs:sequence>
+      <xs:element name="connectionId" type="modifiableByteArray" minOccurs="0"/>
+      <xs:element name="length" type="modifiableInteger" minOccurs="0"/>
+    </xs:sequence>
   </xs:complexType>
 
   <xs:complexType name="requestConnectionIdMessage">
@@ -3389,6 +3396,7 @@
           <xs:element name="outboundRecordSizeLimit" type="xs:int" minOccurs="0"/>
           <xs:element name="writeConnectionId" type="xs:base64Binary" minOccurs="0"/>
           <xs:element name="readConnectionID" type="xs:base64Binary" minOccurs="0"/>
+          <xs:element name="numberOfRequestedConnectionIds" type="xs:int" minOccurs="0"/>
           <xs:element name="acknowledgedRecords" type="xs:base64Binary" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
           <xs:element name="receivedAcknowledgedRecords" type="xs:base64Binary" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
@@ -3762,6 +3770,7 @@
       <xs:element name="addCertificateStatusRequestV2Extension" type="xs:boolean" minOccurs="0"/>
       <xs:element name="addCookieExtension" type="xs:boolean" minOccurs="0"/>
       <xs:element name="defaultConnectionId" type="xs:string" minOccurs="0"/>
+      <xs:element name="defaultNumberOfRequestedConnectionIds" type="xs:int" minOccurs="0"/>
       <xs:element name="addConnectionIdExtension" type="xs:boolean" minOccurs="0"/>
       <xs:element name="pskKeyExchangeModes" minOccurs="0">
         <xs:complexType>
