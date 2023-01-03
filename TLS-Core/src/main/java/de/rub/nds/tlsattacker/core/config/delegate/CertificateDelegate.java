@@ -165,7 +165,8 @@ public class CertificateDelegate extends Delegate {
             privateKey = (PrivateKey) store.getKey(alias, password.toCharArray());
             CertificateKeyPair pair =
                     new CertificateKeyPair(
-                            CertificateIo.convert(cert), (CustomPrivateKey) privateKey);
+                            CertificateIo.convert(cert),
+                            CertificateUtils.parseCustomPrivateKey(privateKey));
             adjustKeyPairInConfig(pair, config);
             config.setAutoSelectCertificate(false);
         } catch (UnrecoverableKeyException

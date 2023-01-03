@@ -70,9 +70,9 @@ public class CertificateKeyPair implements Serializable {
 
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 29 * hash + Objects.hashCode(this.x509CertificateChain);
-        hash = 29 * hash + Objects.hashCode(this.privateKey);
+        int hash = 5;
+        hash = 53 * hash + Objects.hashCode(this.x509CertificateChain);
+        hash = 53 * hash + Objects.hashCode(this.privateKey);
         return hash;
     }
 
