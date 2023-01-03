@@ -108,7 +108,7 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
                 new ByteArrayInputStream(msg.getCertificatesListBytes().getValue());
         while (innerStream.available() > 0) {
             CertificatePair pair = new CertificatePair();
-            CertificatePairParser parser = new CertificatePairParser(innerStream);
+            CertificatePairParser parser = new CertificatePairParser(innerStream, tlsContext);
             parser.parse(pair);
             pairList.add(pair);
         }

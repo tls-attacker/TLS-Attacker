@@ -12,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificatePair;
 import java.io.ByteArrayInputStream;
 import java.util.stream.Stream;
@@ -49,7 +50,8 @@ public class CertificatePairParserTest {
             int expectedExtensionLength,
             byte[] expectedExtension) {
         CertificatePairParser parser =
-                new CertificatePairParser(new ByteArrayInputStream(providedCertPair));
+                new CertificatePairParser(
+                        new ByteArrayInputStream(providedCertPair), new TlsContext());
         CertificatePair pair = new CertificatePair();
         parser.parse(pair);
         assertEquals(expectedCertificateLength, (int) pair.getCertificateLength().getValue());
