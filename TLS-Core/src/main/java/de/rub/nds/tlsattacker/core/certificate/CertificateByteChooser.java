@@ -13,6 +13,9 @@ import de.rub.nds.tlsattacker.core.crypto.keys.CustomPrivateKey;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.x509attacker.filesystem.CertificateIo;
 import de.rub.nds.x509attacker.x509.base.X509CertificateChain;
+import de.rub.nds.x509attacker.x509.base.publickey.DsaPublicKey;
+import de.rub.nds.x509attacker.x509.base.publickey.RsaPublicKey;
+import de.rub.nds.x509attacker.x509.base.publickey.X509PublicKey;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.PrivateKey;
@@ -256,15 +259,27 @@ public class CertificateByteChooser {
     }
 
     private Boolean isBadKeySize(CertificateKeyPair keyPair, Chooser chooser) {
-        Boolean badRsaKeySize =
-                (keyPair.getLeafCertificateKeyType() == CertificateKeyType.RSA
-                        && keyPair.getPublicKey().keySize()
-                                != chooser.getConfig().getPreferredCertRsaKeySize());
-        Boolean badDssKeySize =
-                (keyPair.getLeafCertificateKeyType() == CertificateKeyType.DSA
-                        && keyPair.getPublicKey().keySize()
-                                != chooser.getConfig().getPrefferedCertDssKeySize());
-        return badRsaKeySize || badDssKeySize;
+        X509PublicKey publicKey =
+                CertificateAnalyzer.getPublicKey(keyPair.getX509CertificateChain().getLeaf());
+        CertificateKeyType leafCertificateKeyType = keyPair.getLeafCertificateKeyType();
+        if (leafCertificateKeyType == CertificateKeyType.RSA) {
+            if (publicKey instanceof RsaPublicKey) {
+                return ((RsaPublicKey) publicKey).getModulus().getValue().getValue().bitLength()
+                        != chooser.getConfig().getPreferredCertRsaKeySize();
+            } else {
+                throw new RuntimeException("RSA certitficate without RSA public key");
+            }
+        } else if (leafCertificateKeyType == CertificateKeyType.DSA) {
+            if (publicKey instanceof DsaPublicKey) {
+                return ((DsaPublicKey) publicKey).getY().bitLength()
+                        != chooser.getConfig().getPreferredCertRsaKeySize();
+            } else {
+                throw new RuntimeException("RSA certitficate without RSA public key");
+            }
+        } else {
+            // No constraints on this type
+            return false;
+        }
     }
 
     private String resolveKeyfileFromCert(String certName) {

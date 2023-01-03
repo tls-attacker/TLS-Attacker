@@ -118,16 +118,15 @@ public class CertificateDelegate extends Delegate {
             }
         }
         if (certificate != null) {
+            if (privateKey == null) {
+                throw new RuntimeException("Certificate provided without private key");
+            }
             LOGGER.debug("Loading certificate");
             try {
                 X509CertificateChain chain = CertificateIo.readPemChain(new File(certificate));
-                if (privateKey != null) {
-                    config.setDefaultExplicitCertificateKeyPair(
-                            new CertificateKeyPair(chain, (CustomPrivateKey) privateKey));
-                } else {
-                    throw new RuntimeException("Certificate provided without private key");
-                }
-                config.setAutoSelectCertificate(false);
+                CertificateKeyPair keyPair =
+                        new CertificateKeyPair(chain, (CustomPrivateKey) privateKey);
+                adjustKeyPairInConfig(keyPair, config);
             } catch (Exception ex) {
                 LOGGER.warn("Could not read certificate", ex);
             }
@@ -167,7 +166,7 @@ public class CertificateDelegate extends Delegate {
             CertificateKeyPair pair =
                     new CertificateKeyPair(
                             CertificateIo.convert(cert), (CustomPrivateKey) privateKey);
-            pair.adjustInConfig(config, type);
+            adjustKeyPairInConfig(pair, config);
             config.setAutoSelectCertificate(false);
         } catch (UnrecoverableKeyException
                 | KeyStoreException
@@ -176,5 +175,11 @@ public class CertificateDelegate extends Delegate {
                 | CertificateException ex) {
             throw new ConfigurationException("Could not load private Key from Keystore", ex);
         }
+    }
+
+    public void adjustKeyPairInConfig(CertificateKeyPair keyPair, Config config) {
+        config.setDefaultExplicitCertificateKeyPair(keyPair);
+        config.setAutoSelectCertificate(false);
+        // TODO maybe we need to adjust the public here to and write the private key to the config
     }
 }

@@ -1,7 +1,45 @@
 <?xml version="1.0" standalone="yes"?>
 <xs:schema version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
+  <xs:element name="X509CertificateChain" type="x509CertificateChain"/>
+
   <xs:element name="accessModificationFilter" type="accessModificationFilter"/>
+
+  <xs:element name="asn1Any" type="asn1Any"/>
+
+  <xs:element name="asn1Boolean" type="asn1Boolean"/>
+
+  <xs:element name="asn1Choice" type="asn1Choice"/>
+
+  <xs:element name="asn1Container" type="asn1Container"/>
+
+  <xs:element name="asn1Field" type="asn1Field"/>
+
+  <xs:element name="asn1Integer" type="asn1Integer"/>
+
+  <xs:element name="asn1Null" type="asn1Null"/>
+
+  <xs:element name="asn1ObjectIdentifier" type="asn1ObjectIdentifier"/>
+
+  <xs:element name="asn1PrimitiveBitString" type="asn1PrimitiveBitString"/>
+
+  <xs:element name="asn1PrimitiveGeneralizedTime" type="asn1PrimitiveGeneralizedTime"/>
+
+  <xs:element name="asn1PrimitiveIa5String" type="asn1PrimitiveIa5String"/>
+
+  <xs:element name="asn1PrimitiveOctetString" type="asn1PrimitiveOctetString"/>
+
+  <xs:element name="asn1PrimitivePrintableString" type="asn1PrimitivePrintableString"/>
+
+  <xs:element name="asn1PrimitiveT61String" type="asn1PrimitiveT61String"/>
+
+  <xs:element name="asn1PrimitiveUtcTime" type="asn1PrimitiveUtcTime"/>
+
+  <xs:element name="asn1PrimitiveUtf8String" type="asn1PrimitiveUtf8String"/>
+
+  <xs:element name="asn1Sequence" type="asn1Sequence"/>
+
+  <xs:element name="asn1Set" type="asn1Set"/>
 
   <xs:element name="bigIntegerAddModification" type="bigIntegerAddModification"/>
 
@@ -69,15 +107,29 @@
 
   <xs:element name="longXorModification" type="longXorModification"/>
 
+  <xs:element name="modifiableBigInteger" type="modifiableBigInteger"/>
+
+  <xs:element name="modifiableBoolean" type="modifiableBoolean"/>
+
   <xs:element name="modifiableByte" type="modifiableByte"/>
 
   <xs:element name="modifiableByteArray" type="modifiableByteArray"/>
 
   <xs:element name="modifiableInteger" type="modifiableInteger"/>
 
+  <xs:element name="modifiableString" type="modifiableString"/>
+
   <xs:element name="point" type="point"/>
 
+  <xs:element name="selectableChoice" type="selectableChoice"/>
+
+  <xs:element name="stringAppendValueModification" type="stringAppendValueModification"/>
+
   <xs:element name="stringExplicitValueModification" type="stringExplicitValueModification"/>
+
+  <xs:element name="stringPrependValueModification" type="stringPrependValueModification"/>
+
+  <xs:element name="x509Certificate" type="x509Certificate"/>
 
   <xs:complexType name="config">
     <xs:all>
@@ -628,218 +680,137 @@
 
   <xs:complexType name="certificateKeyPair">
     <xs:sequence>
-      <xs:element name="certPublicKeyType" type="certificateKeyType" minOccurs="0"/>
-      <xs:element name="certSignatureType" type="certificateKeyType" minOccurs="0"/>
-      <xs:element name="signatureAndHashAlgorithm" type="signatureAndHashAlgorithm" minOccurs="0"/>
-      <xs:element name="gostCurve" type="gostCurve" minOccurs="0"/>
-      <xs:element name="certificateBytes" type="xs:string" minOccurs="0"/>
-      <xs:choice minOccurs="0">
-        <xs:element name="DhPublicKey" type="customDhPublicKey"/>
-        <xs:element name="DsaPublicKey" type="customDsaPublicKey"/>
-        <xs:element name="RsaPublicKey" type="customRsaPublicKey"/>
-        <xs:element name="EcPublicKey" type="customEcPublicKey"/>
-      </xs:choice>
+      <xs:element name="x509CertificateChain" type="x509CertificateChain" minOccurs="0"/>
       <xs:choice minOccurs="0">
         <xs:element name="DhPrivateKey" type="customDHPrivateKey"/>
         <xs:element name="DsaPrivateKey" type="customDSAPrivateKey"/>
         <xs:element name="RsaPrivateKey" type="customRSAPrivateKey"/>
         <xs:element name="EcPrivateKey" type="customECPrivateKey"/>
       </xs:choice>
-      <xs:element name="signatureGroup" type="namedGroup" minOccurs="0"/>
-      <xs:element name="publicKeyGroup" type="namedGroup" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
 
-  <xs:complexType name="customDhPublicKey">
-    <xs:complexContent>
-      <xs:extension base="customPublicKey">
-        <xs:sequence>
-          <xs:element name="modulus" type="xs:integer" minOccurs="0"/>
-          <xs:element name="generator" type="xs:integer" minOccurs="0"/>
-          <xs:element name="publicKey" type="xs:integer" minOccurs="0"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="customPublicKey" abstract="true">
-    <xs:sequence/>
-  </xs:complexType>
-
-  <xs:complexType name="customDsaPublicKey">
-    <xs:complexContent>
-      <xs:extension base="customPublicKey">
-        <xs:sequence>
-          <xs:element name="dsaP" type="xs:integer" minOccurs="0"/>
-          <xs:element name="dsaQ" type="xs:integer" minOccurs="0"/>
-          <xs:element name="dsaG" type="xs:integer" minOccurs="0"/>
-          <xs:element name="publicKey" type="xs:integer" minOccurs="0"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="customRsaPublicKey">
-    <xs:complexContent>
-      <xs:extension base="customPublicKey">
-        <xs:sequence>
-          <xs:element name="publicExponent" type="xs:integer" minOccurs="0"/>
-          <xs:element name="modulus" type="xs:integer" minOccurs="0"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="customEcPublicKey">
-    <xs:complexContent>
-      <xs:extension base="customPublicKey">
-        <xs:sequence>
-          <xs:element ref="point" minOccurs="0"/>
-          <xs:element name="group" type="namedGroup" minOccurs="0"/>
-          <xs:element name="gostCurve" type="gostCurve" minOccurs="0"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="point">
+  <xs:complexType name="x509CertificateChain">
     <xs:sequence>
-      <xs:choice minOccurs="0">
-        <xs:element name="xFieldElementF2m" type="fieldElementF2M"/>
-        <xs:element name="xFieldElementFp" type="fieldElementFp"/>
-      </xs:choice>
-      <xs:choice minOccurs="0">
-        <xs:element name="yFieldElementF2m" type="fieldElementF2M"/>
-        <xs:element name="yFieldElementFp" type="fieldElementFp"/>
-      </xs:choice>
-      <xs:element name="infinity" type="xs:boolean"/>
+      <xs:element name="X509Certificates" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="X509Certificate" type="x509Certificate" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
     </xs:sequence>
   </xs:complexType>
 
-  <xs:complexType name="fieldElementF2M">
+  <xs:complexType name="x509Certificate">
     <xs:complexContent>
-      <xs:extension base="fieldElement">
+      <xs:extension base="asn1Sequence">
+        <xs:sequence>
+          <xs:element name="tbsCertificate" type="tbsCertificate" minOccurs="0"/>
+          <xs:element name="signatureAlgorithm" type="algorithmIdentifier" minOccurs="0"/>
+          <xs:element name="signature" type="asn1PrimitiveBitString" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="asn1Sequence" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="asn1Container">
         <xs:sequence/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="fieldElement" abstract="true">
+  <xs:complexType name="asn1Container" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="asn1Field">
+        <xs:sequence>
+          <xs:element name="encodedChildren" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="children" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:choice minOccurs="0" maxOccurs="unbounded">
+                  <xs:element name="Asn1Any" type="asn1Any"/>
+                  <xs:element name="Asn1Boolean" type="asn1Boolean"/>
+                  <xs:element name="Asn1Choice" type="asn1Choice"/>
+                  <xs:element name="Asn1Container" type="asn1Container"/>
+                  <xs:element name="Asn1Enumerated" type="asn1Enumerated"/>
+                  <xs:element name="Asn1Explicit" type="asn1Explicit"/>
+                  <xs:element name="Asn1Field" type="asn1Field"/>
+                  <xs:element name="Asn1Integer" type="asn1Integer"/>
+                  <xs:element name="Asn1Null" type="asn1Null"/>
+                  <xs:element name="Asn1ObjectIdentifier" type="asn1ObjectIdentifier"/>
+                  <xs:element name="Asn1PrimitiveBitString" type="asn1PrimitiveBitString"/>
+                  <xs:element name="Asn1PrimitiveGeneralizedTime" type="asn1PrimitiveGeneralizedTime"/>
+                  <xs:element name="Asn1PrimitiveIa5String" type="asn1PrimitiveIa5String"/>
+                  <xs:element name="Asn1PrimitiveOctetString" type="asn1PrimitiveOctetString"/>
+                  <xs:element name="Asn1PrimitivePrintableString" type="asn1PrimitivePrintableString"/>
+                  <xs:element name="Asn1PrimitiveT61String" type="asn1PrimitiveT61String"/>
+                  <xs:element name="Asn1PrimitiveUtcTime" type="asn1PrimitiveUtcTime"/>
+                  <xs:element name="Asn1PrimitiveUtf8String" type="asn1PrimitiveUtf8String"/>
+                  <xs:element name="Asn1Sequence" type="asn1Sequence"/>
+                  <xs:element name="Asn1Set" type="asn1Set"/>
+                  <xs:element name="Asn1UnknownField" type="asn1UnknownField"/>
+                </xs:choice>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="asn1Field" abstract="true">
     <xs:sequence>
-      <xs:element name="data" type="xs:integer" minOccurs="0"/>
-      <xs:element name="modulus" type="xs:integer" minOccurs="0"/>
+      <xs:element name="tagClass" type="modifiableInteger" minOccurs="0"/>
+      <xs:element name="tagConstructed" type="modifiableBoolean" minOccurs="0"/>
+      <xs:element name="tagNumber" type="modifiableInteger" minOccurs="0"/>
+      <xs:element name="length" type="modifiableBigInteger" minOccurs="0"/>
+      <xs:element name="content" type="modifiableByteArray" minOccurs="0"/>
+      <xs:element name="tagOctets" type="modifiableByteArray" minOccurs="0"/>
+      <xs:element name="lengthOctets" type="modifiableByteArray" minOccurs="0"/>
+      <xs:element name="tagClassType" type="tagClass" minOccurs="0"/>
+      <xs:element name="tagConstructedType" type="tagConstructed" minOccurs="0"/>
     </xs:sequence>
+    <xs:attribute name="identifier" type="xs:string"/>
   </xs:complexType>
 
-  <xs:complexType name="fieldElementFp">
+  <xs:complexType name="tbsCertificate">
     <xs:complexContent>
-      <xs:extension base="fieldElement">
+      <xs:extension base="asn1Sequence">
+        <xs:sequence>
+          <xs:element name="version" type="version" minOccurs="0"/>
+          <xs:element name="serialNumber" type="asn1Integer" minOccurs="0"/>
+          <xs:element name="signature" type="algorithmIdentifier" minOccurs="0"/>
+          <xs:element name="issuer" type="name" minOccurs="0"/>
+          <xs:element name="validity" type="validity" minOccurs="0"/>
+          <xs:element name="subject" type="name" minOccurs="0"/>
+          <xs:element name="subjectPublicKeyInfo" type="subjectPublicKeyInfo" minOccurs="0"/>
+          <xs:element name="issuerUniqueID" type="asn1PrimitiveBitString" minOccurs="0"/>
+          <xs:element name="subjectUniqueID" type="asn1PrimitiveBitString" minOccurs="0"/>
+          <xs:element name="extensionExplicit" type="asn1Explicit" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="version">
+    <xs:complexContent>
+      <xs:extension base="asn1Explicit">
         <xs:sequence/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="customDHPrivateKey">
+  <xs:complexType name="asn1Explicit">
     <xs:complexContent>
-      <xs:extension base="customPrivateKey">
+      <xs:extension base="asn1Container">
         <xs:sequence>
-          <xs:element name="privateKey" type="xs:integer" minOccurs="0"/>
-          <xs:element name="modulus" type="xs:integer" minOccurs="0"/>
-          <xs:element name="generator" type="xs:integer" minOccurs="0"/>
+          <xs:any processContents="lax" namespace="##other"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="customPrivateKey" abstract="true">
-    <xs:sequence/>
-  </xs:complexType>
-
-  <xs:complexType name="customDSAPrivateKey">
-    <xs:complexContent>
-      <xs:extension base="customPrivateKey">
-        <xs:sequence>
-          <xs:element name="privateKey" type="xs:integer" minOccurs="0"/>
-          <xs:element name="primeP" type="xs:integer" minOccurs="0"/>
-          <xs:element name="primeQ" type="xs:integer" minOccurs="0"/>
-          <xs:element name="generator" type="xs:integer" minOccurs="0"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="customRSAPrivateKey">
-    <xs:complexContent>
-      <xs:extension base="customPrivateKey">
-        <xs:sequence>
-          <xs:element name="modulus" type="xs:integer" minOccurs="0"/>
-          <xs:element name="privateExponent" type="xs:integer" minOccurs="0"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="customECPrivateKey">
-    <xs:complexContent>
-      <xs:extension base="customPrivateKey">
-        <xs:sequence>
-          <xs:element name="privateKey" type="xs:integer" minOccurs="0"/>
-          <xs:element name="group" type="namedGroup" minOccurs="0"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="outboundConnection">
-    <xs:complexContent>
-      <xs:extension base="aliasedConnection">
-        <xs:sequence/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="aliasedConnection" abstract="true">
-    <xs:sequence>
-      <xs:element name="alias" type="xs:string" minOccurs="0"/>
-      <xs:element name="ip" type="xs:string" minOccurs="0"/>
-      <xs:element name="port" type="xs:int" minOccurs="0"/>
-      <xs:element name="hostname" type="xs:string" minOccurs="0"/>
-      <xs:element name="proxyDataPort" type="xs:int" minOccurs="0"/>
-      <xs:element name="proxyDataHostname" type="xs:string" minOccurs="0"/>
-      <xs:element name="proxyControlPort" type="xs:int" minOccurs="0"/>
-      <xs:element name="proxyControlHostname" type="xs:string" minOccurs="0"/>
-      <xs:element name="timeout" type="xs:int" minOccurs="0"/>
-      <xs:element name="firstTimeout" type="xs:int" minOccurs="0"/>
-      <xs:element name="connectionTimeout" type="xs:int" minOccurs="0"/>
-      <xs:element name="transportHandlerType" type="transportHandlerType" minOccurs="0"/>
-      <xs:element name="sourcePort" type="xs:int" minOccurs="0"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="inboundConnection">
-    <xs:complexContent>
-      <xs:extension base="aliasedConnection">
-        <xs:sequence/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="serverNamePair">
-    <xs:complexContent>
-      <xs:extension base="modifiableVariableHolder">
-        <xs:sequence>
-          <xs:element name="serverName" type="modifiableByteArray" minOccurs="0"/>
-          <xs:element name="serverNameConfig" type="xs:base64Binary" minOccurs="0"/>
-          <xs:element name="serverNameLength" type="modifiableInteger" minOccurs="0"/>
-          <xs:element name="serverNameType" type="modifiableByte" minOccurs="0"/>
-          <xs:element name="serverNameTypeConfig" type="xs:byte"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="modifiableVariableHolder" abstract="true">
-    <xs:sequence/>
   </xs:complexType>
 
   <xs:complexType name="modifiableByteArray">
@@ -876,6 +847,8 @@
         <xs:element name="ByteSubtractModification" type="byteSubtractModification"/>
         <xs:element name="ByteAddModification" type="byteAddModification"/>
         <xs:element name="ByteExplicitValueModification" type="byteExplicitValueModification"/>
+        <xs:element name="StringPrependValueModification" type="stringPrependValueModification"/>
+        <xs:element name="StringAppendValueModification" type="stringAppendValueModification"/>
         <xs:element name="StringExplicitValueModification" type="stringExplicitValueModification"/>
       </xs:choice>
       <xs:element name="assertEquals" type="xs:string" minOccurs="0"/>
@@ -1119,11 +1092,33 @@
     </xs:sequence>
   </xs:complexType>
 
+  <xs:complexType name="stringPrependValueModification">
+    <xs:sequence>
+      <xs:element name="prependValue" type="xs:string" minOccurs="0"/>
+      <xs:element name="AccessModificationFilter" type="accessModificationFilter" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="stringAppendValueModification">
+    <xs:sequence>
+      <xs:element name="appendValue" type="xs:string" minOccurs="0"/>
+      <xs:element name="AccessModificationFilter" type="accessModificationFilter" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
   <xs:complexType name="stringExplicitValueModification">
     <xs:sequence>
       <xs:element name="explicitValue" type="xs:string" minOccurs="0"/>
       <xs:element name="AccessModificationFilter" type="accessModificationFilter" minOccurs="0"/>
     </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="asn1Any">
+    <xs:sequence>
+      <xs:element name="instantiation" type="asn1Field" minOccurs="0"/>
+      <xs:element name="optional" type="xs:boolean"/>
+    </xs:sequence>
+    <xs:attribute name="identifier" type="xs:string"/>
   </xs:complexType>
 
   <xs:complexType name="modifiableInteger">
@@ -1160,12 +1155,223 @@
         <xs:element name="ByteSubtractModification" type="byteSubtractModification"/>
         <xs:element name="ByteAddModification" type="byteAddModification"/>
         <xs:element name="ByteExplicitValueModification" type="byteExplicitValueModification"/>
+        <xs:element name="StringPrependValueModification" type="stringPrependValueModification"/>
+        <xs:element name="StringAppendValueModification" type="stringAppendValueModification"/>
         <xs:element name="StringExplicitValueModification" type="stringExplicitValueModification"/>
       </xs:choice>
       <xs:element name="createRandomModification" type="xs:boolean" minOccurs="0"/>
       <xs:element name="assertEquals" type="xs:anyType" minOccurs="0"/>
       <xs:element name="originalValue" type="xs:int" minOccurs="0"/>
     </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="modifiableBoolean">
+    <xs:sequence>
+      <xs:choice minOccurs="0">
+        <xs:element name="BigIntegerXorModification" type="bigIntegerXorModification"/>
+        <xs:element name="BigIntegerSubtractModification" type="bigIntegerSubtractModification"/>
+        <xs:element name="BigIntegerShiftRightModification" type="bigIntegerShiftRightModification"/>
+        <xs:element name="BigIntegerShiftLeftModification" type="bigIntegerShiftLeftModification"/>
+        <xs:element name="BigIntegerExplicitValueModification" type="bigIntegerExplicitValueModification"/>
+        <xs:element name="BigIntegerAddModification" type="bigIntegerAddModification"/>
+        <xs:element name="BigIntegerInteractiveModification" type="bigIntegerInteractiveModification"/>
+        <xs:element name="BigIntegerMultiplyModification" type="bigIntegerMultiplyModification"/>
+        <xs:element name="BooleanToggleModification" type="booleanToggleModification"/>
+        <xs:element name="BooleanExplicitValueModification" type="booleanExplicitValueModification"/>
+        <xs:element name="ByteArrayXorModification" type="byteArrayXorModification"/>
+        <xs:element name="ByteArrayShuffleModification" type="byteArrayShuffleModification"/>
+        <xs:element name="ByteArrayPayloadModification" type="byteArrayPayloadModification"/>
+        <xs:element name="ByteArrayInsertModification" type="byteArrayInsertModification"/>
+        <xs:element name="ByteArrayExplicitValueModification" type="byteArrayExplicitValueModification"/>
+        <xs:element name="ByteArrayDuplicateModification" type="byteArrayDuplicateModification"/>
+        <xs:element name="ByteArrayDeleteModification" type="byteArrayDeleteModification"/>
+        <xs:element name="IntegerXorModification" type="integerXorModification"/>
+        <xs:element name="IntegerSubtractModification" type="integerSubtractModification"/>
+        <xs:element name="IntegerShiftRightModification" type="integerShiftRightModification"/>
+        <xs:element name="IntegerShiftLeftModification" type="integerShiftLeftModification"/>
+        <xs:element name="IntegerExplicitValueModification" type="integerExplicitValueModification"/>
+        <xs:element name="IntegerAddModification" type="integerAddModification"/>
+        <xs:element name="LongXorModification" type="longXorModification"/>
+        <xs:element name="LongSubtractModification" type="longSubtractModification"/>
+        <xs:element name="LongExplicitValueModification" type="longExplicitValueModification"/>
+        <xs:element name="LongAddModification" type="longAddModification"/>
+        <xs:element name="ByteXorModification" type="byteXorModification"/>
+        <xs:element name="ByteSubtractModification" type="byteSubtractModification"/>
+        <xs:element name="ByteAddModification" type="byteAddModification"/>
+        <xs:element name="ByteExplicitValueModification" type="byteExplicitValueModification"/>
+        <xs:element name="StringPrependValueModification" type="stringPrependValueModification"/>
+        <xs:element name="StringAppendValueModification" type="stringAppendValueModification"/>
+        <xs:element name="StringExplicitValueModification" type="stringExplicitValueModification"/>
+      </xs:choice>
+      <xs:element name="createRandomModification" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="assertEquals" type="xs:anyType" minOccurs="0"/>
+      <xs:element name="originalValue" type="xs:boolean" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="modifiableBigInteger">
+    <xs:sequence>
+      <xs:choice minOccurs="0">
+        <xs:element name="BigIntegerXorModification" type="bigIntegerXorModification"/>
+        <xs:element name="BigIntegerSubtractModification" type="bigIntegerSubtractModification"/>
+        <xs:element name="BigIntegerShiftRightModification" type="bigIntegerShiftRightModification"/>
+        <xs:element name="BigIntegerShiftLeftModification" type="bigIntegerShiftLeftModification"/>
+        <xs:element name="BigIntegerExplicitValueModification" type="bigIntegerExplicitValueModification"/>
+        <xs:element name="BigIntegerAddModification" type="bigIntegerAddModification"/>
+        <xs:element name="BigIntegerInteractiveModification" type="bigIntegerInteractiveModification"/>
+        <xs:element name="BigIntegerMultiplyModification" type="bigIntegerMultiplyModification"/>
+        <xs:element name="BooleanToggleModification" type="booleanToggleModification"/>
+        <xs:element name="BooleanExplicitValueModification" type="booleanExplicitValueModification"/>
+        <xs:element name="ByteArrayXorModification" type="byteArrayXorModification"/>
+        <xs:element name="ByteArrayShuffleModification" type="byteArrayShuffleModification"/>
+        <xs:element name="ByteArrayPayloadModification" type="byteArrayPayloadModification"/>
+        <xs:element name="ByteArrayInsertModification" type="byteArrayInsertModification"/>
+        <xs:element name="ByteArrayExplicitValueModification" type="byteArrayExplicitValueModification"/>
+        <xs:element name="ByteArrayDuplicateModification" type="byteArrayDuplicateModification"/>
+        <xs:element name="ByteArrayDeleteModification" type="byteArrayDeleteModification"/>
+        <xs:element name="IntegerXorModification" type="integerXorModification"/>
+        <xs:element name="IntegerSubtractModification" type="integerSubtractModification"/>
+        <xs:element name="IntegerShiftRightModification" type="integerShiftRightModification"/>
+        <xs:element name="IntegerShiftLeftModification" type="integerShiftLeftModification"/>
+        <xs:element name="IntegerExplicitValueModification" type="integerExplicitValueModification"/>
+        <xs:element name="IntegerAddModification" type="integerAddModification"/>
+        <xs:element name="LongXorModification" type="longXorModification"/>
+        <xs:element name="LongSubtractModification" type="longSubtractModification"/>
+        <xs:element name="LongExplicitValueModification" type="longExplicitValueModification"/>
+        <xs:element name="LongAddModification" type="longAddModification"/>
+        <xs:element name="ByteXorModification" type="byteXorModification"/>
+        <xs:element name="ByteSubtractModification" type="byteSubtractModification"/>
+        <xs:element name="ByteAddModification" type="byteAddModification"/>
+        <xs:element name="ByteExplicitValueModification" type="byteExplicitValueModification"/>
+        <xs:element name="StringPrependValueModification" type="stringPrependValueModification"/>
+        <xs:element name="StringAppendValueModification" type="stringAppendValueModification"/>
+        <xs:element name="StringExplicitValueModification" type="stringExplicitValueModification"/>
+      </xs:choice>
+      <xs:element name="createRandomModification" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="assertEquals" type="xs:anyType" minOccurs="0"/>
+      <xs:element name="originalValue" type="xs:integer" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="asn1Boolean">
+    <xs:complexContent>
+      <xs:extension base="asn1Field">
+        <xs:sequence>
+          <xs:element name="value" type="modifiableBoolean" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="asn1Choice" abstract="true">
+    <xs:sequence>
+      <xs:element name="selectedChoice" type="asn1Field" minOccurs="0"/>
+      <xs:element name="choiceList" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="selectableChoice" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+    <xs:attribute name="identifier" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="selectableChoice" final="extension restriction">
+    <xs:sequence>
+      <xs:element name="field" type="asn1Field" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="asn1Enumerated">
+    <xs:complexContent>
+      <xs:extension base="asn1Field">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="asn1Integer">
+    <xs:complexContent>
+      <xs:extension base="asn1Field">
+        <xs:sequence>
+          <xs:element name="value" type="modifiableBigInteger" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="asn1Null">
+    <xs:complexContent>
+      <xs:extension base="asn1Field">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="asn1ObjectIdentifier">
+    <xs:complexContent>
+      <xs:extension base="asn1Field">
+        <xs:sequence>
+          <xs:element name="value" type="modifiableString" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="modifiableString">
+    <xs:sequence>
+      <xs:choice minOccurs="0">
+        <xs:element name="BigIntegerXorModification" type="bigIntegerXorModification"/>
+        <xs:element name="BigIntegerSubtractModification" type="bigIntegerSubtractModification"/>
+        <xs:element name="BigIntegerShiftRightModification" type="bigIntegerShiftRightModification"/>
+        <xs:element name="BigIntegerShiftLeftModification" type="bigIntegerShiftLeftModification"/>
+        <xs:element name="BigIntegerExplicitValueModification" type="bigIntegerExplicitValueModification"/>
+        <xs:element name="BigIntegerAddModification" type="bigIntegerAddModification"/>
+        <xs:element name="BigIntegerInteractiveModification" type="bigIntegerInteractiveModification"/>
+        <xs:element name="BigIntegerMultiplyModification" type="bigIntegerMultiplyModification"/>
+        <xs:element name="BooleanToggleModification" type="booleanToggleModification"/>
+        <xs:element name="BooleanExplicitValueModification" type="booleanExplicitValueModification"/>
+        <xs:element name="ByteArrayXorModification" type="byteArrayXorModification"/>
+        <xs:element name="ByteArrayShuffleModification" type="byteArrayShuffleModification"/>
+        <xs:element name="ByteArrayPayloadModification" type="byteArrayPayloadModification"/>
+        <xs:element name="ByteArrayInsertModification" type="byteArrayInsertModification"/>
+        <xs:element name="ByteArrayExplicitValueModification" type="byteArrayExplicitValueModification"/>
+        <xs:element name="ByteArrayDuplicateModification" type="byteArrayDuplicateModification"/>
+        <xs:element name="ByteArrayDeleteModification" type="byteArrayDeleteModification"/>
+        <xs:element name="IntegerXorModification" type="integerXorModification"/>
+        <xs:element name="IntegerSubtractModification" type="integerSubtractModification"/>
+        <xs:element name="IntegerShiftRightModification" type="integerShiftRightModification"/>
+        <xs:element name="IntegerShiftLeftModification" type="integerShiftLeftModification"/>
+        <xs:element name="IntegerExplicitValueModification" type="integerExplicitValueModification"/>
+        <xs:element name="IntegerAddModification" type="integerAddModification"/>
+        <xs:element name="LongXorModification" type="longXorModification"/>
+        <xs:element name="LongSubtractModification" type="longSubtractModification"/>
+        <xs:element name="LongExplicitValueModification" type="longExplicitValueModification"/>
+        <xs:element name="LongAddModification" type="longAddModification"/>
+        <xs:element name="ByteXorModification" type="byteXorModification"/>
+        <xs:element name="ByteSubtractModification" type="byteSubtractModification"/>
+        <xs:element name="ByteAddModification" type="byteAddModification"/>
+        <xs:element name="ByteExplicitValueModification" type="byteExplicitValueModification"/>
+        <xs:element name="StringPrependValueModification" type="stringPrependValueModification"/>
+        <xs:element name="StringAppendValueModification" type="stringAppendValueModification"/>
+        <xs:element name="StringExplicitValueModification" type="stringExplicitValueModification"/>
+      </xs:choice>
+      <xs:element name="createRandomModification" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="assertEquals" type="xs:anyType" minOccurs="0"/>
+      <xs:element name="originalValue" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="asn1PrimitiveBitString">
+    <xs:complexContent>
+      <xs:extension base="asn1Field">
+        <xs:sequence>
+          <xs:element name="unusedBits" type="modifiableByte" minOccurs="0"/>
+          <xs:element name="value" type="modifiableByteArray" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
   </xs:complexType>
 
   <xs:complexType name="modifiableByte">
@@ -1202,12 +1408,275 @@
         <xs:element name="ByteSubtractModification" type="byteSubtractModification"/>
         <xs:element name="ByteAddModification" type="byteAddModification"/>
         <xs:element name="ByteExplicitValueModification" type="byteExplicitValueModification"/>
+        <xs:element name="StringPrependValueModification" type="stringPrependValueModification"/>
+        <xs:element name="StringAppendValueModification" type="stringAppendValueModification"/>
         <xs:element name="StringExplicitValueModification" type="stringExplicitValueModification"/>
       </xs:choice>
       <xs:element name="createRandomModification" type="xs:boolean" minOccurs="0"/>
       <xs:element name="assertEquals" type="xs:anyType" minOccurs="0"/>
       <xs:element name="originalValue" type="xs:byte" minOccurs="0"/>
     </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="asn1PrimitiveGeneralizedTime">
+    <xs:complexContent>
+      <xs:extension base="asn1Field">
+        <xs:sequence>
+          <xs:element name="value" type="modifiableString" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="asn1PrimitiveIa5String">
+    <xs:complexContent>
+      <xs:extension base="asn1Field">
+        <xs:sequence>
+          <xs:element name="value" type="modifiableString" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="asn1PrimitiveOctetString">
+    <xs:complexContent>
+      <xs:extension base="asn1Field">
+        <xs:sequence>
+          <xs:element name="value" type="modifiableByteArray" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="asn1PrimitivePrintableString">
+    <xs:complexContent>
+      <xs:extension base="asn1Field">
+        <xs:sequence>
+          <xs:element name="value" type="modifiableString" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="asn1PrimitiveT61String">
+    <xs:complexContent>
+      <xs:extension base="asn1Field">
+        <xs:sequence>
+          <xs:element name="value" type="modifiableString" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="asn1PrimitiveUtcTime">
+    <xs:complexContent>
+      <xs:extension base="asn1Field">
+        <xs:sequence>
+          <xs:element name="value" type="modifiableString" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="asn1PrimitiveUtf8String">
+    <xs:complexContent>
+      <xs:extension base="asn1Field">
+        <xs:sequence>
+          <xs:element name="value" type="modifiableString" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="asn1Set" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="asn1Container">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="asn1UnknownField">
+    <xs:complexContent>
+      <xs:extension base="asn1Field">
+        <xs:sequence>
+          <xs:element name="contentConfig" type="xs:base64Binary" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="algorithmIdentifier">
+    <xs:complexContent>
+      <xs:extension base="asn1Sequence">
+        <xs:sequence>
+          <xs:element name="algorithm" type="asn1ObjectIdentifier" minOccurs="0"/>
+          <xs:element name="parameters" type="asn1Any" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="name">
+    <xs:complexContent>
+      <xs:extension base="asn1Sequence">
+        <xs:sequence>
+          <xs:element name="relativeDistinguishedNames" type="relativeDistinguishedName" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="relativeDistinguishedName">
+    <xs:complexContent>
+      <xs:extension base="asn1Set">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="validity">
+    <xs:complexContent>
+      <xs:extension base="asn1Sequence">
+        <xs:sequence>
+          <xs:element name="notBefore" type="time" minOccurs="0"/>
+          <xs:element name="notAfter" type="time" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="time">
+    <xs:complexContent>
+      <xs:extension base="asn1Choice">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="subjectPublicKeyInfo">
+    <xs:complexContent>
+      <xs:extension base="asn1Sequence">
+        <xs:sequence>
+          <xs:element name="algorithm" type="algorithmIdentifier" minOccurs="0"/>
+          <xs:element name="subjectPublicKeyBitString" type="publicKeyBitString" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="publicKeyBitString">
+    <xs:complexContent>
+      <xs:extension base="asn1PrimitiveBitString">
+        <xs:sequence>
+          <xs:any processContents="lax" namespace="##other"/>
+          <xs:any processContents="lax" namespace="##other"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="customDHPrivateKey">
+    <xs:complexContent>
+      <xs:extension base="customPrivateKey">
+        <xs:sequence>
+          <xs:element name="privateKey" type="xs:integer" minOccurs="0"/>
+          <xs:element name="modulus" type="xs:integer" minOccurs="0"/>
+          <xs:element name="generator" type="xs:integer" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="customPrivateKey" abstract="true">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="customDSAPrivateKey">
+    <xs:complexContent>
+      <xs:extension base="customPrivateKey">
+        <xs:sequence>
+          <xs:element name="privateKey" type="xs:integer" minOccurs="0"/>
+          <xs:element name="primeP" type="xs:integer" minOccurs="0"/>
+          <xs:element name="primeQ" type="xs:integer" minOccurs="0"/>
+          <xs:element name="generator" type="xs:integer" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="customRSAPrivateKey">
+    <xs:complexContent>
+      <xs:extension base="customPrivateKey">
+        <xs:sequence>
+          <xs:element name="modulus" type="xs:integer" minOccurs="0"/>
+          <xs:element name="privateExponent" type="xs:integer" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="customECPrivateKey">
+    <xs:complexContent>
+      <xs:extension base="customPrivateKey">
+        <xs:sequence>
+          <xs:element name="privateKey" type="xs:integer" minOccurs="0"/>
+          <xs:element name="group" type="namedGroup" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="outboundConnection">
+    <xs:complexContent>
+      <xs:extension base="aliasedConnection">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="aliasedConnection" abstract="true">
+    <xs:sequence>
+      <xs:element name="alias" type="xs:string" minOccurs="0"/>
+      <xs:element name="ip" type="xs:string" minOccurs="0"/>
+      <xs:element name="port" type="xs:int" minOccurs="0"/>
+      <xs:element name="hostname" type="xs:string" minOccurs="0"/>
+      <xs:element name="proxyDataPort" type="xs:int" minOccurs="0"/>
+      <xs:element name="proxyDataHostname" type="xs:string" minOccurs="0"/>
+      <xs:element name="proxyControlPort" type="xs:int" minOccurs="0"/>
+      <xs:element name="proxyControlHostname" type="xs:string" minOccurs="0"/>
+      <xs:element name="timeout" type="xs:int" minOccurs="0"/>
+      <xs:element name="firstTimeout" type="xs:int" minOccurs="0"/>
+      <xs:element name="connectionTimeout" type="xs:int" minOccurs="0"/>
+      <xs:element name="transportHandlerType" type="transportHandlerType" minOccurs="0"/>
+      <xs:element name="sourcePort" type="xs:int" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="inboundConnection">
+    <xs:complexContent>
+      <xs:extension base="aliasedConnection">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="serverNamePair">
+    <xs:complexContent>
+      <xs:extension base="modifiableVariableHolder">
+        <xs:sequence>
+          <xs:element name="serverName" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="serverNameConfig" type="xs:base64Binary" minOccurs="0"/>
+          <xs:element name="serverNameLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="serverNameType" type="modifiableByte" minOccurs="0"/>
+          <xs:element name="serverNameTypeConfig" type="xs:byte"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="modifiableVariableHolder" abstract="true">
+    <xs:sequence/>
   </xs:complexType>
 
   <xs:complexType name="keyShareStoreEntry">
@@ -1285,6 +1754,43 @@
     </xs:sequence>
   </xs:complexType>
 
+  <xs:complexType name="point">
+    <xs:sequence>
+      <xs:choice minOccurs="0">
+        <xs:element name="xFieldElementF2m" type="fieldElementF2M"/>
+        <xs:element name="xFieldElementFp" type="fieldElementFp"/>
+      </xs:choice>
+      <xs:choice minOccurs="0">
+        <xs:element name="yFieldElementF2m" type="fieldElementF2M"/>
+        <xs:element name="yFieldElementFp" type="fieldElementFp"/>
+      </xs:choice>
+      <xs:element name="infinity" type="xs:boolean"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="fieldElementF2M">
+    <xs:complexContent>
+      <xs:extension base="fieldElement">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="fieldElement" abstract="true">
+    <xs:sequence>
+      <xs:element name="data" type="xs:integer" minOccurs="0"/>
+      <xs:element name="modulus" type="xs:integer" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="fieldElementFp">
+    <xs:complexContent>
+      <xs:extension base="fieldElement">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
   <xs:complexType name="keyShareEntry">
     <xs:complexContent>
       <xs:extension base="modifiableVariableHolder">
@@ -1316,12 +1822,16 @@
       <xs:enumeration value="DH"/>
       <xs:enumeration value="ECDH"/>
       <xs:enumeration value="RSA"/>
-      <xs:enumeration value="DSS"/>
-      <xs:enumeration value="ECDSA"/>
+      <xs:enumeration value="DSA"/>
+      <xs:enumeration value="ECDH_ECDSA"/>
       <xs:enumeration value="GOST01"/>
       <xs:enumeration value="GOST12"/>
       <xs:enumeration value="FORTEZZA"/>
       <xs:enumeration value="ECNRA"/>
+      <xs:enumeration value="ED25519"/>
+      <xs:enumeration value="ED448"/>
+      <xs:enumeration value="X25519"/>
+      <xs:enumeration value="X448"/>
       <xs:enumeration value="NONE"/>
     </xs:restriction>
   </xs:simpleType>
@@ -1384,77 +1894,19 @@
     </xs:restriction>
   </xs:simpleType>
 
-  <xs:simpleType name="signatureAndHashAlgorithm">
+  <xs:simpleType name="tagClass">
     <xs:restriction base="xs:string">
-      <xs:enumeration value="ANONYMOUS_NONE"/>
-      <xs:enumeration value="ANONYMOUS_MD5"/>
-      <xs:enumeration value="ANONYMOUS_SHA1"/>
-      <xs:enumeration value="ANONYMOUS_SHA224"/>
-      <xs:enumeration value="ANONYMOUS_SHA256"/>
-      <xs:enumeration value="ANONYMOUS_SHA384"/>
-      <xs:enumeration value="ANONYMOUS_SHA512"/>
-      <xs:enumeration value="RSA_NONE"/>
-      <xs:enumeration value="RSA_MD5"/>
-      <xs:enumeration value="RSA_SHA1"/>
-      <xs:enumeration value="RSA_SHA224"/>
-      <xs:enumeration value="RSA_SHA256"/>
-      <xs:enumeration value="RSA_SHA384"/>
-      <xs:enumeration value="RSA_SHA512"/>
-      <xs:enumeration value="DSA_NONE"/>
-      <xs:enumeration value="DSA_MD5"/>
-      <xs:enumeration value="DSA_SHA1"/>
-      <xs:enumeration value="DSA_SHA224"/>
-      <xs:enumeration value="DSA_SHA256"/>
-      <xs:enumeration value="DSA_SHA384"/>
-      <xs:enumeration value="DSA_SHA512"/>
-      <xs:enumeration value="ECDSA_NONE"/>
-      <xs:enumeration value="ECDSA_MD5"/>
-      <xs:enumeration value="ECDSA_SHA1"/>
-      <xs:enumeration value="ECDSA_SHA224"/>
-      <xs:enumeration value="ECDSA_SHA256"/>
-      <xs:enumeration value="ECDSA_SHA384"/>
-      <xs:enumeration value="ECDSA_SHA512"/>
-      <xs:enumeration value="ED25519"/>
-      <xs:enumeration value="ED448"/>
-      <xs:enumeration value="RSA_PSS_RSAE_SHA256"/>
-      <xs:enumeration value="RSA_PSS_RSAE_SHA384"/>
-      <xs:enumeration value="RSA_PSS_RSAE_SHA512"/>
-      <xs:enumeration value="RSA_PSS_PSS_SHA256"/>
-      <xs:enumeration value="RSA_PSS_PSS_SHA384"/>
-      <xs:enumeration value="RSA_PSS_PSS_SHA512"/>
-      <xs:enumeration value="GOSTR34102001_GOSTR3411"/>
-      <xs:enumeration value="GOSTR34102012_256_GOSTR34112012_256"/>
-      <xs:enumeration value="GOSTR34102012_512_GOSTR34112012_512"/>
-      <xs:enumeration value="GREASE_00"/>
-      <xs:enumeration value="GREASE_01"/>
-      <xs:enumeration value="GREASE_02"/>
-      <xs:enumeration value="GREASE_03"/>
-      <xs:enumeration value="GREASE_04"/>
-      <xs:enumeration value="GREASE_05"/>
-      <xs:enumeration value="GREASE_06"/>
-      <xs:enumeration value="GREASE_07"/>
-      <xs:enumeration value="GREASE_08"/>
-      <xs:enumeration value="GREASE_09"/>
-      <xs:enumeration value="GREASE_10"/>
-      <xs:enumeration value="GREASE_11"/>
-      <xs:enumeration value="GREASE_12"/>
-      <xs:enumeration value="GREASE_13"/>
-      <xs:enumeration value="GREASE_14"/>
-      <xs:enumeration value="GREASE_15"/>
+      <xs:enumeration value="UNIVERSAL"/>
+      <xs:enumeration value="APPLICATION"/>
+      <xs:enumeration value="CONTEXT_SPECIFIC"/>
+      <xs:enumeration value="PRIVATE"/>
     </xs:restriction>
   </xs:simpleType>
 
-  <xs:simpleType name="gostCurve">
+  <xs:simpleType name="tagConstructed">
     <xs:restriction base="xs:string">
-      <xs:enumeration value="GostR3410_2001_CryptoPro_A"/>
-      <xs:enumeration value="GostR3410_2001_CryptoPro_B"/>
-      <xs:enumeration value="GostR3410_2001_CryptoPro_C"/>
-      <xs:enumeration value="GostR3410_2001_CryptoPro_XchA"/>
-      <xs:enumeration value="GostR3410_2001_CryptoPro_XchB"/>
-      <xs:enumeration value="Tc26_Gost_3410_12_256_paramSetA"/>
-      <xs:enumeration value="Tc26_Gost_3410_12_512_paramSetA"/>
-      <xs:enumeration value="Tc26_Gost_3410_12_512_paramSetB"/>
-      <xs:enumeration value="Tc26_Gost_3410_12_512_paramSetC"/>
+      <xs:enumeration value="PRIMITIVE"/>
+      <xs:enumeration value="CONSTRUCTED"/>
     </xs:restriction>
   </xs:simpleType>
 
@@ -1545,6 +1997,66 @@
       <xs:enumeration value="CLIENT"/>
       <xs:enumeration value="SERVER"/>
       <xs:enumeration value="MITM"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="signatureAndHashAlgorithm">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="ANONYMOUS_NONE"/>
+      <xs:enumeration value="ANONYMOUS_MD5"/>
+      <xs:enumeration value="ANONYMOUS_SHA1"/>
+      <xs:enumeration value="ANONYMOUS_SHA224"/>
+      <xs:enumeration value="ANONYMOUS_SHA256"/>
+      <xs:enumeration value="ANONYMOUS_SHA384"/>
+      <xs:enumeration value="ANONYMOUS_SHA512"/>
+      <xs:enumeration value="RSA_NONE"/>
+      <xs:enumeration value="RSA_MD5"/>
+      <xs:enumeration value="RSA_SHA1"/>
+      <xs:enumeration value="RSA_SHA224"/>
+      <xs:enumeration value="RSA_SHA256"/>
+      <xs:enumeration value="RSA_SHA384"/>
+      <xs:enumeration value="RSA_SHA512"/>
+      <xs:enumeration value="DSA_NONE"/>
+      <xs:enumeration value="DSA_MD5"/>
+      <xs:enumeration value="DSA_SHA1"/>
+      <xs:enumeration value="DSA_SHA224"/>
+      <xs:enumeration value="DSA_SHA256"/>
+      <xs:enumeration value="DSA_SHA384"/>
+      <xs:enumeration value="DSA_SHA512"/>
+      <xs:enumeration value="ECDSA_NONE"/>
+      <xs:enumeration value="ECDSA_MD5"/>
+      <xs:enumeration value="ECDSA_SHA1"/>
+      <xs:enumeration value="ECDSA_SHA224"/>
+      <xs:enumeration value="ECDSA_SHA256"/>
+      <xs:enumeration value="ECDSA_SHA384"/>
+      <xs:enumeration value="ECDSA_SHA512"/>
+      <xs:enumeration value="ED25519"/>
+      <xs:enumeration value="ED448"/>
+      <xs:enumeration value="RSA_PSS_RSAE_SHA256"/>
+      <xs:enumeration value="RSA_PSS_RSAE_SHA384"/>
+      <xs:enumeration value="RSA_PSS_RSAE_SHA512"/>
+      <xs:enumeration value="RSA_PSS_PSS_SHA256"/>
+      <xs:enumeration value="RSA_PSS_PSS_SHA384"/>
+      <xs:enumeration value="RSA_PSS_PSS_SHA512"/>
+      <xs:enumeration value="GOSTR34102001_GOSTR3411"/>
+      <xs:enumeration value="GOSTR34102012_256_GOSTR34112012_256"/>
+      <xs:enumeration value="GOSTR34102012_512_GOSTR34112012_512"/>
+      <xs:enumeration value="GREASE_00"/>
+      <xs:enumeration value="GREASE_01"/>
+      <xs:enumeration value="GREASE_02"/>
+      <xs:enumeration value="GREASE_03"/>
+      <xs:enumeration value="GREASE_04"/>
+      <xs:enumeration value="GREASE_05"/>
+      <xs:enumeration value="GREASE_06"/>
+      <xs:enumeration value="GREASE_07"/>
+      <xs:enumeration value="GREASE_08"/>
+      <xs:enumeration value="GREASE_09"/>
+      <xs:enumeration value="GREASE_10"/>
+      <xs:enumeration value="GREASE_11"/>
+      <xs:enumeration value="GREASE_12"/>
+      <xs:enumeration value="GREASE_13"/>
+      <xs:enumeration value="GREASE_14"/>
+      <xs:enumeration value="GREASE_15"/>
     </xs:restriction>
   </xs:simpleType>
 
@@ -2102,6 +2614,20 @@
       <xs:enumeration value="IGNORE_UNEXPECTED_HTTPS_MESSAGES"/>
       <xs:enumeration value="MAY_FAIL"/>
       <xs:enumeration value="CHECK_ONLY_EXPECTED"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="gostCurve">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="GostR3410_2001_CryptoPro_A"/>
+      <xs:enumeration value="GostR3410_2001_CryptoPro_B"/>
+      <xs:enumeration value="GostR3410_2001_CryptoPro_C"/>
+      <xs:enumeration value="GostR3410_2001_CryptoPro_XchA"/>
+      <xs:enumeration value="GostR3410_2001_CryptoPro_XchB"/>
+      <xs:enumeration value="Tc26_Gost_3410_12_256_paramSetA"/>
+      <xs:enumeration value="Tc26_Gost_3410_12_512_paramSetA"/>
+      <xs:enumeration value="Tc26_Gost_3410_12_512_paramSetB"/>
+      <xs:enumeration value="Tc26_Gost_3410_12_512_paramSetC"/>
     </xs:restriction>
   </xs:simpleType>
 

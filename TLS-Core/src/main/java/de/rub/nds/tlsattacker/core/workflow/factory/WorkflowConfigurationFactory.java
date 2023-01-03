@@ -1,13 +1,14 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 package de.rub.nds.tlsattacker.core.workflow.factory;
 
+import de.rub.nds.tlsattacker.core.certificate.CertificateAnalyzer;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.constants.*;
@@ -21,6 +22,8 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceUtil;
 import de.rub.nds.tlsattacker.core.workflow.action.*;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import de.rub.nds.x509attacker.x509.base.publickey.RsaPublicKey;
+import de.rub.nds.x509attacker.x509.base.publickey.X509PublicKey;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -1000,9 +1003,20 @@ public class WorkflowConfigurationFactory {
                 case RSA_EXPORT:
                     // only send rsa server key exchange message if public key size is bigger than
                     // 512 bits
-                    if (config.getDefaultExplicitCertificateKeyPair().getPublicKey().keySize()
-                            <= 512) {
-                        return null;
+                    X509PublicKey publicKey =
+                            CertificateAnalyzer.getPublicKey(
+                                    config.getDefaultExplicitCertificateKeyPair()
+                                            .getX509CertificateChain()
+                                            .getLeaf());
+                    if (publicKey instanceof RsaPublicKey) {
+                        if (((RsaPublicKey) publicKey)
+                                        .getModulus()
+                                        .getValue()
+                                        .getValue()
+                                        .bitLength()
+                                >= 512) {
+                            return null;
+                        }
                     }
                     return new RSAServerKeyExchangeMessage();
                 default:
@@ -1017,6 +1031,7 @@ public class WorkflowConfigurationFactory {
                             + algorithm
                             + ", not creating ServerKeyExchange Message");
         }
+
         return null;
     }
 

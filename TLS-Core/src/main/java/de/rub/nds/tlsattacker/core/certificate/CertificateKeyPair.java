@@ -8,20 +8,15 @@
  */
 package de.rub.nds.tlsattacker.core.certificate;
 
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.crypto.keys.*;
-import de.rub.nds.tlsattacker.core.util.CertificateUtils;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.x509attacker.x509.base.X509CertificateChain;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElements;
 import java.io.*;
-import java.security.PrivateKey;
-import java.security.PublicKey;
 import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -35,15 +30,6 @@ public class CertificateKeyPair implements Serializable {
 
     @XmlElements(
             value = {
-                @XmlElement(type = CustomDhPublicKey.class, name = "DhPublicKey"),
-                @XmlElement(type = CustomDsaPublicKey.class, name = "DsaPublicKey"),
-                @XmlElement(type = CustomRsaPublicKey.class, name = "RsaPublicKey"),
-                @XmlElement(type = CustomEcPublicKey.class, name = "EcPublicKey")
-            })
-    private final CustomPublicKey publicKey;
-
-    @XmlElements(
-            value = {
                 @XmlElement(type = CustomDHPrivateKey.class, name = "DhPrivateKey"),
                 @XmlElement(type = CustomDSAPrivateKey.class, name = "DsaPrivateKey"),
                 @XmlElement(type = CustomRSAPrivateKey.class, name = "RsaPrivateKey"),
@@ -53,36 +39,13 @@ public class CertificateKeyPair implements Serializable {
 
     private CertificateKeyPair() {
         this.x509CertificateChain = null;
-        this.publicKey = null;
         this.privateKey = null;
-    }
-
-    public CertificateKeyPair(
-            X509CertificateChain x509CertificateChain,
-            CustomPublicKey publicKey,
-            CustomPrivateKey privateKey) {
-        this.x509CertificateChain = x509CertificateChain;
-        this.publicKey = publicKey;
-        this.privateKey = privateKey;
     }
 
     public CertificateKeyPair(
             X509CertificateChain x509CertificateChain, CustomPrivateKey privateKey) {
         this.x509CertificateChain = x509CertificateChain;
-
         this.privateKey = privateKey;
-        throw new UnsupportedOperationException("public key not set - implement");
-    }
-
-    public CertificateKeyPair(
-            X509CertificateChain x509CertificateChain, PrivateKey privateKey, PublicKey publicKey) {
-        this.x509CertificateChain = x509CertificateChain;
-        this.privateKey = CertificateUtils.parseCustomPrivateKey(privateKey);
-        this.publicKey = CertificateUtils.parseCustomPublicKey(publicKey);
-    }
-
-    public CustomPublicKey getPublicKey() {
-        return publicKey;
     }
 
     public CustomPrivateKey getPrivateKey() {
@@ -105,19 +68,10 @@ public class CertificateKeyPair implements Serializable {
         return x509CertificateChain;
     }
 
-    public void adjustInConfig(Config config, ConnectionEndType connectionEnd) {
-        publicKey.adjustInConfig(config, connectionEnd);
-        if (privateKey != null) {
-            privateKey.adjustInConfig(config, connectionEnd);
-        }
-        config.setDefaultExplicitCertificateKeyPair(this);
-    }
-
     @Override
     public int hashCode() {
         int hash = 3;
         hash = 29 * hash + Objects.hashCode(this.x509CertificateChain);
-        hash = 29 * hash + Objects.hashCode(this.publicKey);
         hash = 29 * hash + Objects.hashCode(this.privateKey);
         return hash;
     }
@@ -134,11 +88,7 @@ public class CertificateKeyPair implements Serializable {
             return false;
         }
         final CertificateKeyPair other = (CertificateKeyPair) obj;
-
         if (!Objects.equals(this.x509CertificateChain, other.x509CertificateChain)) {
-            return false;
-        }
-        if (!Objects.equals(this.publicKey, other.publicKey)) {
             return false;
         }
         return Objects.equals(this.privateKey, other.privateKey);
@@ -149,8 +99,6 @@ public class CertificateKeyPair implements Serializable {
         return "CertificateKeyPair{"
                 + "x509CertificateChain="
                 + x509CertificateChain
-                + ", publicKey="
-                + publicKey
                 + ", privateKey="
                 + privateKey
                 + '}';
