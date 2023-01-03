@@ -2546,11 +2546,18 @@
     <xs:complexContent>
       <xs:extension base="protocolMessage">
         <xs:sequence>
-          <xs:element name="recordNumbers" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="recordNumbers" type="recordNumber" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
           <xs:element name="recordNumberLength" type="modifiableInteger" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="recordNumber">
+    <xs:sequence>
+      <xs:element name="epoch" type="modifiableBigInteger" minOccurs="0"/>
+      <xs:element name="sequenceNumber" type="modifiableBigInteger" minOccurs="0"/>
+    </xs:sequence>
   </xs:complexType>
 
   <xs:complexType name="newSessionTicketMessage">
@@ -3397,8 +3404,8 @@
           <xs:element name="writeConnectionId" type="xs:base64Binary" minOccurs="0"/>
           <xs:element name="readConnectionID" type="xs:base64Binary" minOccurs="0"/>
           <xs:element name="numberOfRequestedConnectionIds" type="xs:int" minOccurs="0"/>
-          <xs:element name="acknowledgedRecords" type="xs:base64Binary" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
-          <xs:element name="receivedAcknowledgedRecords" type="xs:base64Binary" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="acknowledgedRecords" type="recordNumber" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="receivedAcknowledgedRecords" type="recordNumber" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>

@@ -9,39 +9,31 @@
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
-import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
-import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.tlsattacker.core.constants.AckByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.*;
 import de.rub.nds.tlsattacker.core.protocol.handler.AckHandler;
+import de.rub.nds.tlsattacker.core.protocol.message.ack.RecordNumber;
 import de.rub.nds.tlsattacker.core.protocol.parser.AckParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.AckPreperator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.AckSerializer;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
-import java.math.BigInteger;
+import java.util.List;
 
 @XmlRootElement(name = "ACK")
 public class AckMessage extends ProtocolMessage<AckMessage> {
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COUNT)
-    private ModifiableByteArray recordNumbers;
+    private List<RecordNumber> recordNumbers;
 
     private ModifiableInteger recordNumberLength;
 
-    public ModifiableByteArray getRecordNumbers() {
+    public List<RecordNumber> getRecordNumbers() {
         return recordNumbers;
     }
 
-    public void setRecordNumbers(byte[] recordNumbers) {
-        this.recordNumbers =
-                ModifiableVariableFactory.safelySetValue(this.recordNumbers, recordNumbers);
-    }
-
-    public void setRecordNumbers(ModifiableByteArray recordNumbers) {
+    public void setRecordNumbers(List<RecordNumber> recordNumbers) {
         this.recordNumbers = recordNumbers;
     }
 
@@ -78,20 +70,12 @@ public class AckMessage extends ProtocolMessage<AckMessage> {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("ACK Message");
-        sb.append("\t acknowledged record numbers:");
-        byte[] recordNumberBytes = recordNumbers.getValue();
-        for (int cursor = 0;
-                cursor < recordNumberBytes.length;
-                cursor += AckByteLength.RECORD_NUMBER_LENGTH) {
-            BigInteger epoch =
-                    new BigInteger(
-                            recordNumberBytes, cursor, AckByteLength.RECORD_NUMBER_EPOCH_LENGTH);
-            BigInteger seqNum =
-                    new BigInteger(
-                            recordNumberBytes,
-                            cursor + AckByteLength.RECORD_NUMBER_EPOCH_LENGTH,
-                            AckByteLength.RECORD_NUMBER_SEQUENCE_NUMBER_LENGTH);
-            sb.append(" - Epoch ").append(epoch).append(" | SQN ").append(seqNum);
+        sb.append("\t acknowledged record numbers: \n");
+        if (recordNumbers != null) {
+            for (RecordNumber recordNumber : recordNumbers) {
+                sb.append("\t - Epoch ").append(recordNumber.getEpoch().getValue());
+                sb.append(" | SQN ").append(recordNumber.getSequenceNumber().getValue());
+            }
         }
         return sb.toString();
     }

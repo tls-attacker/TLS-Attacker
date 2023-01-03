@@ -15,17 +15,18 @@ import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ack.RecordNumber;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PskSet;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
 import java.util.LinkedList;
 import javax.crypto.Mac;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bouncycastle.util.Arrays;
 
 public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
 
@@ -79,16 +80,12 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
     }
 
     private void acknowledgeFinished(FinishedMessage message) {
-        byte[] epoch =
-                ArrayConverter.intToBytes(
-                        tlsContext.getReadEpoch(), AckByteLength.RECORD_NUMBER_EPOCH_LENGTH);
-        byte[] sqn =
-                ArrayConverter.longToBytes(
-                        tlsContext.getReadSequenceNumber(tlsContext.getReadEpoch()),
-                        AckByteLength.RECORD_NUMBER_SEQUENCE_NUMBER_LENGTH);
-
+        RecordNumber recordNumber = new RecordNumber();
+        recordNumber.setEpoch(BigInteger.valueOf(tlsContext.getReadEpoch()));
+        recordNumber.setSequenceNumber(
+                BigInteger.valueOf(tlsContext.getReadSequenceNumber(tlsContext.getReadEpoch())));
         tlsContext.setAcknowledgedRecords(new LinkedList<>());
-        tlsContext.getAcknowledgedRecords().add(Arrays.concatenate(epoch, sqn));
+        tlsContext.getAcknowledgedRecords().add(recordNumber);
     }
 
     private void adjustApplicationTrafficSecrets() {

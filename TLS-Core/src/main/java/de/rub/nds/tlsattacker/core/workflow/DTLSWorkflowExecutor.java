@@ -8,12 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.workflow;
 
-import de.rub.nds.tlsattacker.core.constants.AckByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.SkipActionException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.layer.SpecificSendLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
+import de.rub.nds.tlsattacker.core.protocol.message.ack.RecordNumber;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceivingAction;
@@ -164,7 +164,7 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
     }
 
     private List<Record> filterRecordsBasedOnAcks(List<Record> sendRecords) {
-        List<byte[]> acks = state.getTlsContext().getAcknowledgedRecords();
+        List<RecordNumber> acks = state.getTlsContext().getAcknowledgedRecords();
         if (acks == null || acks.isEmpty()) {
             return sendRecords;
         }
@@ -177,14 +177,10 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
         return filteredRecords;
     }
 
-    private boolean isRecordAcknowledged(Record record, List<byte[]> acknowledgedRecords) {
-        for (byte[] ack : acknowledgedRecords) {
-            BigInteger epoch = new BigInteger(ack, 0, AckByteLength.RECORD_NUMBER_EPOCH_LENGTH);
-            BigInteger seqNum =
-                    new BigInteger(
-                            ack,
-                            AckByteLength.RECORD_NUMBER_EPOCH_LENGTH,
-                            AckByteLength.RECORD_NUMBER_SEQUENCE_NUMBER_LENGTH);
+    private boolean isRecordAcknowledged(Record record, List<RecordNumber> acknowledgedRecords) {
+        for (RecordNumber ack : acknowledgedRecords) {
+            BigInteger epoch = ack.getEpoch().getValue();
+            BigInteger seqNum = ack.getSequenceNumber().getValue();
             if (record.getEpoch().getValue().equals(epoch.intValue())
                     && record.getSequenceNumber().getValue().equals(seqNum)) {
                 return true;

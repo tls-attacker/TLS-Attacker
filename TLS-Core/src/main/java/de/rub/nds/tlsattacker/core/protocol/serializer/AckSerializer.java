@@ -8,10 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AckByteLength;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageSerializer;
 import de.rub.nds.tlsattacker.core.protocol.message.AckMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ack.RecordNumber;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -39,9 +39,18 @@ public class AckSerializer extends ProtocolMessageSerializer<AckMessage> {
     }
 
     private void writeRecordNumbers() {
-        LOGGER.debug(
-                "RecordNumbers:"
-                        + ArrayConverter.bytesToHexString(message.getRecordNumbers().getValue()));
-        appendBytes(message.getRecordNumbers().getValue());
+        LOGGER.debug("RecordNumbers:");
+        for (RecordNumber recordNumber : message.getRecordNumbers()) {
+            appendBigInteger(
+                    recordNumber.getEpoch().getValue(), AckByteLength.RECORD_NUMBER_EPOCH_LENGTH);
+            appendBigInteger(
+                    recordNumber.getSequenceNumber().getValue(),
+                    AckByteLength.RECORD_NUMBER_SEQUENCE_NUMBER_LENGTH);
+            LOGGER.debug(
+                    " - Epoch "
+                            + recordNumber.getEpoch().getValue()
+                            + " | SQN "
+                            + recordNumber.getSequenceNumber().getValue());
+        }
     }
 }

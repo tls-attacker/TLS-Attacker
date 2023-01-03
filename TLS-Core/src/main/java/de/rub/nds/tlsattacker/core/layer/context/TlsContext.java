@@ -21,6 +21,7 @@ import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.EncryptedClientHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ack.RecordNumber;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EchConfig;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
@@ -510,9 +511,9 @@ public class TlsContext extends LayerContext {
 
     private Integer numberOfRequestedConnectionIds;
 
-    private List<byte[]> acknowledgedRecords;
+    private List<RecordNumber> acknowledgedRecords;
 
-    private List<byte[]> receivedAcknowledgedRecords;
+    private List<RecordNumber> receivedAcknowledgedRecords;
 
     public TlsContext() {
         this(new Context(new Config()));
@@ -2437,19 +2438,19 @@ public class TlsContext extends LayerContext {
         this.numberOfRequestedConnectionIds = numberOfRequestedConnectionIds;
     }
 
-    public List<byte[]> getAcknowledgedRecords() {
+    public List<RecordNumber> getAcknowledgedRecords() {
         return acknowledgedRecords;
     }
 
-    public void setAcknowledgedRecords(List<byte[]> acknowledgedRecords) {
+    public void setAcknowledgedRecords(List<RecordNumber> acknowledgedRecords) {
         this.acknowledgedRecords = acknowledgedRecords;
     }
 
-    public List<byte[]> getReceivedAcknowledgedRecords() {
+    public List<RecordNumber> getReceivedAcknowledgedRecords() {
         return receivedAcknowledgedRecords;
     }
 
-    public void setReceivedAcknowledgedRecords(List<byte[]> receivedAcknowledgedRecords) {
+    public void setReceivedAcknowledgedRecords(List<RecordNumber> receivedAcknowledgedRecords) {
         this.receivedAcknowledgedRecords = receivedAcknowledgedRecords;
     }
 }
