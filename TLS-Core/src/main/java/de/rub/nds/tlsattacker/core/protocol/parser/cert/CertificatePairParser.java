@@ -10,9 +10,15 @@ package de.rub.nds.tlsattacker.core.protocol.parser.cert;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificatePair;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionListParser;
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.LinkedList;
+import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,8 +26,11 @@ public class CertificatePairParser extends Parser<CertificatePair> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public CertificatePairParser(InputStream stream) {
+    private final TlsContext context;
+
+    public CertificatePairParser(InputStream stream, TlsContext context) {
         super(stream);
+        this.context = context;
     }
 
     @Override
@@ -35,8 +44,8 @@ public class CertificatePairParser extends Parser<CertificatePair> {
     }
 
     /**
-     * Reads the next bytes as the certificateLength of the CertificatePair and writes them in the
-     * message
+     * Reads the next bytes as the certificateLength of the CertificatePair and
+     * writes them in the message
      */
     private void parseCertificateLength(CertificatePair pair) {
         pair.setCertificateLength(parseIntField(HandshakeByteLength.CERTIFICATE_LENGTH));
@@ -44,18 +53,19 @@ public class CertificatePairParser extends Parser<CertificatePair> {
     }
 
     /**
-     * Reads the next bytes as the certificate of the CertificatePair and writes them in the message
+     * Reads the next bytes as the certificate of the CertificatePair and writes
+     * them in the message
      */
     private void parseCertificate(CertificatePair pair) {
         pair.setCertificateBytes(parseByteArrayField(pair.getCertificateLength().getValue()));
         LOGGER.debug(
                 "Certificate: "
-                        + ArrayConverter.bytesToHexString(pair.getCertificateBytes().getValue()));
+                + ArrayConverter.bytesToHexString(pair.getCertificateBytes().getValue()));
     }
 
     /**
-     * Reads the next bytes as the extensionsLength of the CertificatePair and writes them in the
-     * message
+     * Reads the next bytes as the extensionsLength of the CertificatePair and
+     * writes them in the message
      */
     private void parseExtensionsLength(CertificatePair pair) {
         pair.setExtensionsLength(parseIntField(HandshakeByteLength.EXTENSION_LENGTH));
@@ -63,17 +73,21 @@ public class CertificatePairParser extends Parser<CertificatePair> {
     }
 
     /**
-     * Reads the next bytes as the extensions of the CertificatePair and writes them in the message
+     * Reads the next bytes as the extensions of the CertificatePair and writes
+     * them in the message
      */
     private void parseExtensionBytes(CertificatePair pair) {
         pair.setExtensionBytes(parseByteArrayField(pair.getExtensionsLength().getValue()));
         LOGGER.debug(
                 "Extensions: "
-                        + ArrayConverter.bytesToHexString(pair.getCertificateBytes().getValue()));
+                + ArrayConverter.bytesToHexString(pair.getCertificateBytes().getValue()));
     }
 
     private void parseExtensions(CertificatePair pair) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from
-        // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        ExtensionListParser parser
+                = new ExtensionListParser(new ByteArrayInputStream(pair.getCertificateBytes().getValue()), context, false);
+        List<ExtensionMessage> extensionMessages = new LinkedList<>();
+        parser.parse(extensionMessages);
+        pair.setExtensionList(extensionMessages);
     }
 }
