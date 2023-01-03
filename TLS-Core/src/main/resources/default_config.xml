@@ -30,8 +30,6 @@
                     <lengthOctets>
                         <originalValue>82 03 90</originalValue>
                     </lengthOctets>
-                    <tagClassType>UNIVERSAL</tagClassType>
-                    <tagConstructedType>CONSTRUCTED</tagConstructedType>
                     <children>
                         <Asn1Sequence xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="tbsCertificate" identifier="tbsCertificate">
                             <tagClass>
@@ -55,8 +53,6 @@
                             <lengthOctets>
 <originalValue>82 02 78</originalValue>
                             </lengthOctets>
-                            <tagClassType>UNIVERSAL</tagClassType>
-                            <tagConstructedType>CONSTRUCTED</tagConstructedType>
                             <children>
 <Asn1Explicit xsi:type="version" identifier="version">
     <tagClass>
@@ -80,8 +76,6 @@
     <lengthOctets>
         <originalValue>03</originalValue>
     </lengthOctets>
-    <tagClassType>CONTEXT_SPECIFIC</tagClassType>
-    <tagConstructedType>CONSTRUCTED</tagConstructedType>
     <children>
         <Asn1Integer identifier="value">
             <tagClass>
@@ -105,8 +99,6 @@
             <lengthOctets>
                 <originalValue>01</originalValue>
             </lengthOctets>
-            <tagClassType>UNIVERSAL</tagClassType>
-            <tagConstructedType>PRIMITIVE</tagConstructedType>
             <value>
                 <originalValue>2</originalValue>
             </value>
@@ -134,8 +126,6 @@
         <lengthOctets>
             <originalValue>01</originalValue>
         </lengthOctets>
-        <tagClassType>UNIVERSAL</tagClassType>
-        <tagConstructedType>PRIMITIVE</tagConstructedType>
         <value>
             <originalValue>2</originalValue>
         </value>
@@ -163,8 +153,6 @@
     <lengthOctets>
         <originalValue>09</originalValue>
     </lengthOctets>
-    <tagClassType>UNIVERSAL</tagClassType>
-    <tagConstructedType>PRIMITIVE</tagConstructedType>
     <value>
         <originalValue>11984289747213524941</originalValue>
     </value>
@@ -191,8 +179,6 @@
     <lengthOctets>
         <originalValue>0D</originalValue>
     </lengthOctets>
-    <tagClassType>UNIVERSAL</tagClassType>
-    <tagConstructedType>CONSTRUCTED</tagConstructedType>
     <children>
         <Asn1ObjectIdentifier identifier="algorithm">
             <tagClass>
@@ -216,8 +202,6 @@
             <lengthOctets>
                 <originalValue>09</originalValue>
             </lengthOctets>
-            <tagClassType>UNIVERSAL</tagClassType>
-            <tagConstructedType>PRIMITIVE</tagConstructedType>
             <value>
                 <originalValue>1.2.840.113549.1.1.11</originalValue>
             </value>
@@ -245,7 +229,6 @@
                 <lengthOctets>
                     <originalValue>00</originalValue>
                 </lengthOctets>
-                <tagClassType>UNIVERSAL</tagClassType>
                 <contentConfig></contentConfig>
             </instantiation>
             <optional>true</optional>
@@ -273,8 +256,6 @@
         <lengthOctets>
             <originalValue>09</originalValue>
         </lengthOctets>
-        <tagClassType>UNIVERSAL</tagClassType>
-        <tagConstructedType>PRIMITIVE</tagConstructedType>
         <value>
             <originalValue>1.2.840.113549.1.1.11</originalValue>
         </value>
@@ -302,7 +283,6 @@
             <lengthOctets>
                 <originalValue>00</originalValue>
             </lengthOctets>
-            <tagClassType>UNIVERSAL</tagClassType>
             <contentConfig></contentConfig>
         </instantiation>
         <optional>true</optional>
@@ -330,8 +310,6 @@
     <lengthOctets>
         <originalValue>5C</originalValue>
     </lengthOctets>
-    <tagClassType>UNIVERSAL</tagClassType>
-    <tagConstructedType>CONSTRUCTED</tagConstructedType>
     <children>
         <Asn1Set xsi:type="relativeDistinguishedName" identifier="rdn">
             <tagClass>
@@ -355,8 +333,6 @@
             <lengthOctets>
                 <originalValue>0B</originalValue>
             </lengthOctets>
-            <tagClassType>UNIVERSAL</tagClassType>
-            <tagConstructedType>CONSTRUCTED</tagConstructedType>
             <children>
                 <Asn1Sequence identifier="element">
                     <tagClass>
@@ -380,8 +356,6 @@
                     <lengthOctets>
                         <originalValue>09</originalValue>
                     </lengthOctets>
-                    <tagClassType>UNIVERSAL</tagClassType>
-                    <tagConstructedType>CONSTRUCTED</tagConstructedType>
                     <children>
                         <Asn1ObjectIdentifier identifier="type">
                             <tagClass>
@@ -405,8 +379,6 @@
                             <lengthOctets>
 <originalValue>03</originalValue>
                             </lengthOctets>
-                            <tagClassType>UNIVERSAL</tagClassType>
-                            <tagConstructedType>PRIMITIVE</tagConstructedType>
                             <value>
 <originalValue>2.5.4.6</originalValue>
                             </value>
@@ -434,7 +406,6 @@
 <lengthOctets>
     <originalValue>02</originalValue>
 </lengthOctets>
-<tagClassType>UNIVERSAL</tagClassType>
 <contentConfig>QVU=</contentConfig>
                             </instantiation>
                             <optional>false</optional>
@@ -465,8 +436,6 @@
             <lengthOctets>
                 <originalValue>13</originalValue>
             </lengthOctets>
-            <tagClassType>UNIVERSAL</tagClassType>
-            <tagConstructedType>CONSTRUCTED</tagConstructedType>
             <children>
                 <Asn1Sequence identifier="element">
                     <tagClass>
@@ -490,8 +459,6 @@
                     <lengthOctets>
                         <originalValue>11</originalValue>
                     </lengthOctets>
-                    <tagClassType>UNIVERSAL</tagClassType>
-                    <tagConstructedType>CONSTRUCTED</tagConstructedType>
                     <children>
                         <Asn1ObjectIdentifier identifier="type">
                             <tagClass>
@@ -515,8 +482,6 @@
                             <lengthOctets>
 <originalValue>03</originalValue>
                             </lengthOctets>
-                            <tagClassType>UNIVERSAL</tagClassType>
-                            <tagConstructedType>PRIMITIVE</tagConstructedType>
                             <value>
 <originalValue>2.5.4.8</originalValue>
                             </value>
@@ -544,7 +509,6 @@
 <lengthOctets>
     <originalValue>0A</originalValue>
 </lengthOctets>
-<tagClassType>UNIVERSAL</tagClassType>
 <contentConfig>U29tZS1TdGF0ZQ==</contentConfig>
                             </instantiation>
                             <optional>false</optional>
@@ -575,8 +539,6 @@
             <lengthOctets>
                 <originalValue>21</originalValue>
             </lengthOctets>
-            <tagClassType>UNIVERSAL</tagClassType>
-            <tagConstructedType>CONSTRUCTED</tagConstructedType>
             <children>
                 <Asn1Sequence identifier="element">
                     <tagClass>
@@ -600,8 +562,6 @@
                     <lengthOctets>
                         <originalValue>1F</originalValue>
                     </lengthOctets>
-                    <tagClassType>UNIVERSAL</tagClassType>
-                    <tagConstructedType>CONSTRUCTED</tagConstructedType>
                     <children>
                         <Asn1ObjectIdentifier identifier="type">
                             <tagClass>
@@ -625,8 +585,6 @@
                             <lengthOctets>
 <originalValue>03</originalValue>
                             </lengthOctets>
-                            <tagClassType>UNIVERSAL</tagClassType>
-                            <tagConstructedType>PRIMITIVE</tagConstructedType>
                             <value>
 <originalValue>2.5.4.10</originalValue>
                             </value>
@@ -654,7 +612,6 @@
 <lengthOctets>
     <originalValue>18</originalValue>
 </lengthOctets>
-<tagClassType>UNIVERSAL</tagClassType>
 <contentConfig>SW50ZXJuZXQgV2lkZ2l0cyBQdHkgTHRk</contentConfig>
                             </instantiation>
                             <optional>false</optional>
@@ -685,8 +642,6 @@
             <lengthOctets>
                 <originalValue>15</originalValue>
             </lengthOctets>
-            <tagClassType>UNIVERSAL</tagClassType>
-            <tagConstructedType>CONSTRUCTED</tagConstructedType>
             <children>
                 <Asn1Sequence identifier="element">
                     <tagClass>
@@ -710,8 +665,6 @@
                     <lengthOctets>
                         <originalValue>13</originalValue>
                     </lengthOctets>
-                    <tagClassType>UNIVERSAL</tagClassType>
-                    <tagConstructedType>CONSTRUCTED</tagConstructedType>
                     <children>
                         <Asn1ObjectIdentifier identifier="type">
                             <tagClass>
@@ -735,8 +688,6 @@
                             <lengthOctets>
 <originalValue>03</originalValue>
                             </lengthOctets>
-                            <tagClassType>UNIVERSAL</tagClassType>
-                            <tagConstructedType>PRIMITIVE</tagConstructedType>
                             <value>
 <originalValue>2.5.4.3</originalValue>
                             </value>
@@ -764,7 +715,6 @@
 <lengthOctets>
     <originalValue>0C</originalValue>
 </lengthOctets>
-<tagClassType>UNIVERSAL</tagClassType>
 <contentConfig>VExTLUF0dGFja2Vy</contentConfig>
                             </instantiation>
                             <optional>false</optional>
@@ -797,8 +747,6 @@
     <lengthOctets>
         <originalValue>20</originalValue>
     </lengthOctets>
-    <tagClassType>UNIVERSAL</tagClassType>
-    <tagConstructedType>CONSTRUCTED</tagConstructedType>
     <children>
         <Asn1Choice xsi:type="time" identifier="notBefore">
             <selectedChoice xsi:type="asn1PrimitiveUtcTime" identifier="utcTime">
@@ -823,8 +771,6 @@
                 <lengthOctets>
                     <originalValue>0D</originalValue>
                 </lengthOctets>
-                <tagClassType>UNIVERSAL</tagClassType>
-                <tagConstructedType>PRIMITIVE</tagConstructedType>
                 <value>
                     <originalValue>170713125318Z</originalValue>
                 </value>
@@ -853,18 +799,13 @@
                         <lengthOctets>
                             <originalValue>0D</originalValue>
                         </lengthOctets>
-                        <tagClassType>UNIVERSAL</tagClassType>
-                        <tagConstructedType>PRIMITIVE</tagConstructedType>
                         <value>
                             <originalValue>170713125318Z</originalValue>
                         </value>
                     </field>
                 </selectableChoice>
                 <selectableChoice>
-                    <field xsi:type="asn1PrimitiveGeneralizedTime" identifier="generalizedTime">
-                        <tagClassType>UNIVERSAL</tagClassType>
-                        <tagConstructedType>PRIMITIVE</tagConstructedType>
-                    </field>
+                    <field xsi:type="asn1PrimitiveGeneralizedTime" identifier="generalizedTime"/>
                 </selectableChoice>
             </choiceList>
         </Asn1Choice>
@@ -891,18 +832,13 @@
                 <lengthOctets>
                     <originalValue>0F</originalValue>
                 </lengthOctets>
-                <tagClassType>UNIVERSAL</tagClassType>
-                <tagConstructedType>PRIMITIVE</tagConstructedType>
                 <value>
                     <originalValue>21170619125318Z</originalValue>
                 </value>
             </selectedChoice>
             <choiceList>
                 <selectableChoice>
-                    <field xsi:type="asn1PrimitiveUtcTime" identifier="utcTime">
-                        <tagClassType>UNIVERSAL</tagClassType>
-                        <tagConstructedType>PRIMITIVE</tagConstructedType>
-                    </field>
+                    <field xsi:type="asn1PrimitiveUtcTime" identifier="utcTime"/>
                 </selectableChoice>
                 <selectableChoice>
                     <field xsi:type="asn1PrimitiveGeneralizedTime" identifier="generalizedTime">
@@ -927,8 +863,6 @@
                         <lengthOctets>
                             <originalValue>0F</originalValue>
                         </lengthOctets>
-                        <tagClassType>UNIVERSAL</tagClassType>
-                        <tagConstructedType>PRIMITIVE</tagConstructedType>
                         <value>
                             <originalValue>21170619125318Z</originalValue>
                         </value>
@@ -960,8 +894,6 @@
             <lengthOctets>
                 <originalValue>0D</originalValue>
             </lengthOctets>
-            <tagClassType>UNIVERSAL</tagClassType>
-            <tagConstructedType>PRIMITIVE</tagConstructedType>
             <value>
                 <originalValue>170713125318Z</originalValue>
             </value>
@@ -990,18 +922,13 @@
                     <lengthOctets>
                         <originalValue>0D</originalValue>
                     </lengthOctets>
-                    <tagClassType>UNIVERSAL</tagClassType>
-                    <tagConstructedType>PRIMITIVE</tagConstructedType>
                     <value>
                         <originalValue>170713125318Z</originalValue>
                     </value>
                 </field>
             </selectableChoice>
             <selectableChoice>
-                <field xsi:type="asn1PrimitiveGeneralizedTime" identifier="generalizedTime">
-                    <tagClassType>UNIVERSAL</tagClassType>
-                    <tagConstructedType>PRIMITIVE</tagConstructedType>
-                </field>
+                <field xsi:type="asn1PrimitiveGeneralizedTime" identifier="generalizedTime"/>
             </selectableChoice>
         </choiceList>
     </notBefore>
@@ -1028,18 +955,13 @@
             <lengthOctets>
                 <originalValue>0F</originalValue>
             </lengthOctets>
-            <tagClassType>UNIVERSAL</tagClassType>
-            <tagConstructedType>PRIMITIVE</tagConstructedType>
             <value>
                 <originalValue>21170619125318Z</originalValue>
             </value>
         </selectedChoice>
         <choiceList>
             <selectableChoice>
-                <field xsi:type="asn1PrimitiveUtcTime" identifier="utcTime">
-                    <tagClassType>UNIVERSAL</tagClassType>
-                    <tagConstructedType>PRIMITIVE</tagConstructedType>
-                </field>
+                <field xsi:type="asn1PrimitiveUtcTime" identifier="utcTime"/>
             </selectableChoice>
             <selectableChoice>
                 <field xsi:type="asn1PrimitiveGeneralizedTime" identifier="generalizedTime">
@@ -1064,8 +986,6 @@
                     <lengthOctets>
                         <originalValue>0F</originalValue>
                     </lengthOctets>
-                    <tagClassType>UNIVERSAL</tagClassType>
-                    <tagConstructedType>PRIMITIVE</tagConstructedType>
                     <value>
                         <originalValue>21170619125318Z</originalValue>
                     </value>
@@ -1096,8 +1016,6 @@
     <lengthOctets>
         <originalValue>5C</originalValue>
     </lengthOctets>
-    <tagClassType>UNIVERSAL</tagClassType>
-    <tagConstructedType>CONSTRUCTED</tagConstructedType>
     <children>
         <Asn1Set xsi:type="relativeDistinguishedName" identifier="rdn">
             <tagClass>
@@ -1121,8 +1039,6 @@
             <lengthOctets>
                 <originalValue>0B</originalValue>
             </lengthOctets>
-            <tagClassType>UNIVERSAL</tagClassType>
-            <tagConstructedType>CONSTRUCTED</tagConstructedType>
             <children>
                 <Asn1Sequence identifier="element">
                     <tagClass>
@@ -1146,8 +1062,6 @@
                     <lengthOctets>
                         <originalValue>09</originalValue>
                     </lengthOctets>
-                    <tagClassType>UNIVERSAL</tagClassType>
-                    <tagConstructedType>CONSTRUCTED</tagConstructedType>
                     <children>
                         <Asn1ObjectIdentifier identifier="type">
                             <tagClass>
@@ -1171,8 +1085,6 @@
                             <lengthOctets>
 <originalValue>03</originalValue>
                             </lengthOctets>
-                            <tagClassType>UNIVERSAL</tagClassType>
-                            <tagConstructedType>PRIMITIVE</tagConstructedType>
                             <value>
 <originalValue>2.5.4.6</originalValue>
                             </value>
@@ -1200,7 +1112,6 @@
 <lengthOctets>
     <originalValue>02</originalValue>
 </lengthOctets>
-<tagClassType>UNIVERSAL</tagClassType>
 <contentConfig>QVU=</contentConfig>
                             </instantiation>
                             <optional>false</optional>
@@ -1231,8 +1142,6 @@
             <lengthOctets>
                 <originalValue>13</originalValue>
             </lengthOctets>
-            <tagClassType>UNIVERSAL</tagClassType>
-            <tagConstructedType>CONSTRUCTED</tagConstructedType>
             <children>
                 <Asn1Sequence identifier="element">
                     <tagClass>
@@ -1256,8 +1165,6 @@
                     <lengthOctets>
                         <originalValue>11</originalValue>
                     </lengthOctets>
-                    <tagClassType>UNIVERSAL</tagClassType>
-                    <tagConstructedType>CONSTRUCTED</tagConstructedType>
                     <children>
                         <Asn1ObjectIdentifier identifier="type">
                             <tagClass>
@@ -1281,8 +1188,6 @@
                             <lengthOctets>
 <originalValue>03</originalValue>
                             </lengthOctets>
-                            <tagClassType>UNIVERSAL</tagClassType>
-                            <tagConstructedType>PRIMITIVE</tagConstructedType>
                             <value>
 <originalValue>2.5.4.8</originalValue>
                             </value>
@@ -1310,7 +1215,6 @@
 <lengthOctets>
     <originalValue>0A</originalValue>
 </lengthOctets>
-<tagClassType>UNIVERSAL</tagClassType>
 <contentConfig>U29tZS1TdGF0ZQ==</contentConfig>
                             </instantiation>
                             <optional>false</optional>
@@ -1341,8 +1245,6 @@
             <lengthOctets>
                 <originalValue>21</originalValue>
             </lengthOctets>
-            <tagClassType>UNIVERSAL</tagClassType>
-            <tagConstructedType>CONSTRUCTED</tagConstructedType>
             <children>
                 <Asn1Sequence identifier="element">
                     <tagClass>
@@ -1366,8 +1268,6 @@
                     <lengthOctets>
                         <originalValue>1F</originalValue>
                     </lengthOctets>
-                    <tagClassType>UNIVERSAL</tagClassType>
-                    <tagConstructedType>CONSTRUCTED</tagConstructedType>
                     <children>
                         <Asn1ObjectIdentifier identifier="type">
                             <tagClass>
@@ -1391,8 +1291,6 @@
                             <lengthOctets>
 <originalValue>03</originalValue>
                             </lengthOctets>
-                            <tagClassType>UNIVERSAL</tagClassType>
-                            <tagConstructedType>PRIMITIVE</tagConstructedType>
                             <value>
 <originalValue>2.5.4.10</originalValue>
                             </value>
@@ -1420,7 +1318,6 @@
 <lengthOctets>
     <originalValue>18</originalValue>
 </lengthOctets>
-<tagClassType>UNIVERSAL</tagClassType>
 <contentConfig>SW50ZXJuZXQgV2lkZ2l0cyBQdHkgTHRk</contentConfig>
                             </instantiation>
                             <optional>false</optional>
@@ -1451,8 +1348,6 @@
             <lengthOctets>
                 <originalValue>15</originalValue>
             </lengthOctets>
-            <tagClassType>UNIVERSAL</tagClassType>
-            <tagConstructedType>CONSTRUCTED</tagConstructedType>
             <children>
                 <Asn1Sequence identifier="element">
                     <tagClass>
@@ -1476,8 +1371,6 @@
                     <lengthOctets>
                         <originalValue>13</originalValue>
                     </lengthOctets>
-                    <tagClassType>UNIVERSAL</tagClassType>
-                    <tagConstructedType>CONSTRUCTED</tagConstructedType>
                     <children>
                         <Asn1ObjectIdentifier identifier="type">
                             <tagClass>
@@ -1501,8 +1394,6 @@
                             <lengthOctets>
 <originalValue>03</originalValue>
                             </lengthOctets>
-                            <tagClassType>UNIVERSAL</tagClassType>
-                            <tagConstructedType>PRIMITIVE</tagConstructedType>
                             <value>
 <originalValue>2.5.4.3</originalValue>
                             </value>
@@ -1530,7 +1421,6 @@
 <lengthOctets>
     <originalValue>0C</originalValue>
 </lengthOctets>
-<tagClassType>UNIVERSAL</tagClassType>
 <contentConfig>VExTLUF0dGFja2Vy</contentConfig>
                             </instantiation>
                             <optional>false</optional>
@@ -1563,8 +1453,6 @@
     <lengthOctets>
         <originalValue>82 01 22</originalValue>
     </lengthOctets>
-    <tagClassType>UNIVERSAL</tagClassType>
-    <tagConstructedType>CONSTRUCTED</tagConstructedType>
     <children>
         <Asn1Sequence xsi:type="algorithmIdentifier" identifier="algorithm">
             <tagClass>
@@ -1588,8 +1476,6 @@
             <lengthOctets>
                 <originalValue>0D</originalValue>
             </lengthOctets>
-            <tagClassType>UNIVERSAL</tagClassType>
-            <tagConstructedType>CONSTRUCTED</tagConstructedType>
             <children>
                 <Asn1ObjectIdentifier identifier="algorithm">
                     <tagClass>
@@ -1613,8 +1499,6 @@
                     <lengthOctets>
                         <originalValue>09</originalValue>
                     </lengthOctets>
-                    <tagClassType>UNIVERSAL</tagClassType>
-                    <tagConstructedType>PRIMITIVE</tagConstructedType>
                     <value>
                         <originalValue>1.2.840.113549.1.1.1</originalValue>
                     </value>
@@ -1642,7 +1526,6 @@
                         <lengthOctets>
                             <originalValue>00</originalValue>
                         </lengthOctets>
-                        <tagClassType>UNIVERSAL</tagClassType>
                         <contentConfig></contentConfig>
                     </instantiation>
                     <optional>true</optional>
@@ -1670,8 +1553,6 @@
                 <lengthOctets>
                     <originalValue>09</originalValue>
                 </lengthOctets>
-                <tagClassType>UNIVERSAL</tagClassType>
-                <tagConstructedType>PRIMITIVE</tagConstructedType>
                 <value>
                     <originalValue>1.2.840.113549.1.1.1</originalValue>
                 </value>
@@ -1699,7 +1580,6 @@
                     <lengthOctets>
                         <originalValue>00</originalValue>
                     </lengthOctets>
-                    <tagClassType>UNIVERSAL</tagClassType>
                     <contentConfig></contentConfig>
                 </instantiation>
                 <optional>true</optional>
@@ -1727,8 +1607,6 @@
             <lengthOctets>
                 <originalValue>82 01 0F</originalValue>
             </lengthOctets>
-            <tagClassType>UNIVERSAL</tagClassType>
-            <tagConstructedType>PRIMITIVE</tagConstructedType>
             <unusedBits>
                 <originalValue>0</originalValue>
             </unusedBits>
@@ -1759,8 +1637,6 @@
         <lengthOctets>
             <originalValue>0D</originalValue>
         </lengthOctets>
-        <tagClassType>UNIVERSAL</tagClassType>
-        <tagConstructedType>CONSTRUCTED</tagConstructedType>
         <children>
             <Asn1ObjectIdentifier identifier="algorithm">
                 <tagClass>
@@ -1784,8 +1660,6 @@
                 <lengthOctets>
                     <originalValue>09</originalValue>
                 </lengthOctets>
-                <tagClassType>UNIVERSAL</tagClassType>
-                <tagConstructedType>PRIMITIVE</tagConstructedType>
                 <value>
                     <originalValue>1.2.840.113549.1.1.1</originalValue>
                 </value>
@@ -1813,7 +1687,6 @@
                     <lengthOctets>
                         <originalValue>00</originalValue>
                     </lengthOctets>
-                    <tagClassType>UNIVERSAL</tagClassType>
                     <contentConfig></contentConfig>
                 </instantiation>
                 <optional>true</optional>
@@ -1841,8 +1714,6 @@
             <lengthOctets>
                 <originalValue>09</originalValue>
             </lengthOctets>
-            <tagClassType>UNIVERSAL</tagClassType>
-            <tagConstructedType>PRIMITIVE</tagConstructedType>
             <value>
                 <originalValue>1.2.840.113549.1.1.1</originalValue>
             </value>
@@ -1870,7 +1741,6 @@
                 <lengthOctets>
                     <originalValue>00</originalValue>
                 </lengthOctets>
-                <tagClassType>UNIVERSAL</tagClassType>
                 <contentConfig></contentConfig>
             </instantiation>
             <optional>true</optional>
@@ -1898,8 +1768,6 @@
         <lengthOctets>
             <originalValue>82 01 0F</originalValue>
         </lengthOctets>
-        <tagClassType>UNIVERSAL</tagClassType>
-        <tagConstructedType>PRIMITIVE</tagConstructedType>
         <unusedBits>
             <originalValue>0</originalValue>
         </unusedBits>
@@ -1908,14 +1776,8 @@
         </value>
     </subjectPublicKeyBitString>
 </Asn1Sequence>
-<Asn1PrimitiveBitString identifier="issuerUniqueID">
-    <tagClassType>UNIVERSAL</tagClassType>
-    <tagConstructedType>PRIMITIVE</tagConstructedType>
-</Asn1PrimitiveBitString>
-<Asn1PrimitiveBitString identifier="subjectUniqueID">
-    <tagClassType>UNIVERSAL</tagClassType>
-    <tagConstructedType>PRIMITIVE</tagConstructedType>
-</Asn1PrimitiveBitString>
+<Asn1PrimitiveBitString identifier="issuerUniqueID"/>
+<Asn1PrimitiveBitString identifier="subjectUniqueID"/>
 <Asn1Explicit identifier="extensionsExplicit">
     <tagClass>
         <originalValue>2</originalValue>
@@ -1938,8 +1800,6 @@
     <lengthOctets>
         <originalValue>53</originalValue>
     </lengthOctets>
-    <tagClassType>CONTEXT_SPECIFIC</tagClassType>
-    <tagConstructedType>CONSTRUCTED</tagConstructedType>
     <children>
         <Asn1Sequence identifier="extensions">
             <tagClass>
@@ -1963,8 +1823,6 @@
             <lengthOctets>
                 <originalValue>51</originalValue>
             </lengthOctets>
-            <tagClassType>UNIVERSAL</tagClassType>
-            <tagConstructedType>CONSTRUCTED</tagConstructedType>
             <children>
                 <Asn1Sequence identifier="extension">
                     <tagClass>
@@ -1988,8 +1846,6 @@
                     <lengthOctets>
                         <originalValue>1D</originalValue>
                     </lengthOctets>
-                    <tagClassType>UNIVERSAL</tagClassType>
-                    <tagConstructedType>CONSTRUCTED</tagConstructedType>
                     <children>
                         <Asn1ObjectIdentifier identifier="extensionId">
                             <tagClass>
@@ -2013,16 +1869,11 @@
                             <lengthOctets>
 <originalValue>03</originalValue>
                             </lengthOctets>
-                            <tagClassType>UNIVERSAL</tagClassType>
-                            <tagConstructedType>PRIMITIVE</tagConstructedType>
                             <value>
 <originalValue>2.5.29.14</originalValue>
                             </value>
                         </Asn1ObjectIdentifier>
-                        <Asn1Boolean identifier="critical">
-                            <tagClassType>UNIVERSAL</tagClassType>
-                            <tagConstructedType>PRIMITIVE</tagConstructedType>
-                        </Asn1Boolean>
+                        <Asn1Boolean identifier="critical"/>
                         <Asn1PrimitiveOctetString identifier="extensionValue">
                             <tagClass>
 <originalValue>0</originalValue>
@@ -2045,8 +1896,6 @@
                             <lengthOctets>
 <originalValue>16</originalValue>
                             </lengthOctets>
-                            <tagClassType>UNIVERSAL</tagClassType>
-                            <tagConstructedType>PRIMITIVE</tagConstructedType>
                             <value>
 <originalValue>04 14 E7 A9 2F E5 54 3A EE 2F F7 59 2F 80 0A C6 E6 65 41 E3 26 8B</originalValue>
                             </value>
@@ -2075,8 +1924,6 @@
                     <lengthOctets>
                         <originalValue>1F</originalValue>
                     </lengthOctets>
-                    <tagClassType>UNIVERSAL</tagClassType>
-                    <tagConstructedType>CONSTRUCTED</tagConstructedType>
                     <children>
                         <Asn1ObjectIdentifier identifier="extensionId">
                             <tagClass>
@@ -2100,16 +1947,11 @@
                             <lengthOctets>
 <originalValue>03</originalValue>
                             </lengthOctets>
-                            <tagClassType>UNIVERSAL</tagClassType>
-                            <tagConstructedType>PRIMITIVE</tagConstructedType>
                             <value>
 <originalValue>2.5.29.35</originalValue>
                             </value>
                         </Asn1ObjectIdentifier>
-                        <Asn1Boolean identifier="critical">
-                            <tagClassType>UNIVERSAL</tagClassType>
-                            <tagConstructedType>PRIMITIVE</tagConstructedType>
-                        </Asn1Boolean>
+                        <Asn1Boolean identifier="critical"/>
                         <Asn1PrimitiveOctetString identifier="extensionValue">
                             <tagClass>
 <originalValue>0</originalValue>
@@ -2132,8 +1974,6 @@
                             <lengthOctets>
 <originalValue>18</originalValue>
                             </lengthOctets>
-                            <tagClassType>UNIVERSAL</tagClassType>
-                            <tagConstructedType>PRIMITIVE</tagConstructedType>
                             <value>
 <originalValue>30 16 80 14 E7 A9 2F E5 54 3A EE 2F F7 59 2F 80 0A C6 E6 65 41 E3 26 8B</originalValue>
                             </value>
@@ -2162,8 +2002,6 @@
                     <lengthOctets>
                         <originalValue>0F</originalValue>
                     </lengthOctets>
-                    <tagClassType>UNIVERSAL</tagClassType>
-                    <tagConstructedType>CONSTRUCTED</tagConstructedType>
                     <children>
                         <Asn1ObjectIdentifier identifier="extensionId">
                             <tagClass>
@@ -2187,8 +2025,6 @@
                             <lengthOctets>
 <originalValue>03</originalValue>
                             </lengthOctets>
-                            <tagClassType>UNIVERSAL</tagClassType>
-                            <tagConstructedType>PRIMITIVE</tagConstructedType>
                             <value>
 <originalValue>2.5.29.19</originalValue>
                             </value>
@@ -2215,8 +2051,6 @@
                             <lengthOctets>
 <originalValue>01</originalValue>
                             </lengthOctets>
-                            <tagClassType>UNIVERSAL</tagClassType>
-                            <tagConstructedType>PRIMITIVE</tagConstructedType>
                             <value>
 <originalValue>true</originalValue>
                             </value>
@@ -2243,8 +2077,6 @@
                             <lengthOctets>
 <originalValue>05</originalValue>
                             </lengthOctets>
-                            <tagClassType>UNIVERSAL</tagClassType>
-                            <tagConstructedType>PRIMITIVE</tagConstructedType>
                             <value>
 <originalValue>30 03 01 01 FF</originalValue>
                             </value>
@@ -2276,8 +2108,6 @@
         <lengthOctets>
             <originalValue>51</originalValue>
         </lengthOctets>
-        <tagClassType>UNIVERSAL</tagClassType>
-        <tagConstructedType>CONSTRUCTED</tagConstructedType>
         <children>
             <Asn1Sequence identifier="extension">
                 <tagClass>
@@ -2301,8 +2131,6 @@
                 <lengthOctets>
                     <originalValue>1D</originalValue>
                 </lengthOctets>
-                <tagClassType>UNIVERSAL</tagClassType>
-                <tagConstructedType>CONSTRUCTED</tagConstructedType>
                 <children>
                     <Asn1ObjectIdentifier identifier="extensionId">
                         <tagClass>
@@ -2326,16 +2154,11 @@
                         <lengthOctets>
                             <originalValue>03</originalValue>
                         </lengthOctets>
-                        <tagClassType>UNIVERSAL</tagClassType>
-                        <tagConstructedType>PRIMITIVE</tagConstructedType>
                         <value>
                             <originalValue>2.5.29.14</originalValue>
                         </value>
                     </Asn1ObjectIdentifier>
-                    <Asn1Boolean identifier="critical">
-                        <tagClassType>UNIVERSAL</tagClassType>
-                        <tagConstructedType>PRIMITIVE</tagConstructedType>
-                    </Asn1Boolean>
+                    <Asn1Boolean identifier="critical"/>
                     <Asn1PrimitiveOctetString identifier="extensionValue">
                         <tagClass>
                             <originalValue>0</originalValue>
@@ -2358,8 +2181,6 @@
                         <lengthOctets>
                             <originalValue>16</originalValue>
                         </lengthOctets>
-                        <tagClassType>UNIVERSAL</tagClassType>
-                        <tagConstructedType>PRIMITIVE</tagConstructedType>
                         <value>
                             <originalValue>04 14 E7 A9 2F E5 54 3A EE 2F F7 59 2F 80 0A C6 E6 65 41 E3 26 8B</originalValue>
                         </value>
@@ -2388,8 +2209,6 @@
                 <lengthOctets>
                     <originalValue>1F</originalValue>
                 </lengthOctets>
-                <tagClassType>UNIVERSAL</tagClassType>
-                <tagConstructedType>CONSTRUCTED</tagConstructedType>
                 <children>
                     <Asn1ObjectIdentifier identifier="extensionId">
                         <tagClass>
@@ -2413,16 +2232,11 @@
                         <lengthOctets>
                             <originalValue>03</originalValue>
                         </lengthOctets>
-                        <tagClassType>UNIVERSAL</tagClassType>
-                        <tagConstructedType>PRIMITIVE</tagConstructedType>
                         <value>
                             <originalValue>2.5.29.35</originalValue>
                         </value>
                     </Asn1ObjectIdentifier>
-                    <Asn1Boolean identifier="critical">
-                        <tagClassType>UNIVERSAL</tagClassType>
-                        <tagConstructedType>PRIMITIVE</tagConstructedType>
-                    </Asn1Boolean>
+                    <Asn1Boolean identifier="critical"/>
                     <Asn1PrimitiveOctetString identifier="extensionValue">
                         <tagClass>
                             <originalValue>0</originalValue>
@@ -2445,8 +2259,6 @@
                         <lengthOctets>
                             <originalValue>18</originalValue>
                         </lengthOctets>
-                        <tagClassType>UNIVERSAL</tagClassType>
-                        <tagConstructedType>PRIMITIVE</tagConstructedType>
                         <value>
                             <originalValue>30 16 80 14 E7 A9 2F E5 54 3A EE 2F F7 59 2F 80 0A C6 E6 65 41 E3 26 8B</originalValue>
                         </value>
@@ -2475,8 +2287,6 @@
                 <lengthOctets>
                     <originalValue>0F</originalValue>
                 </lengthOctets>
-                <tagClassType>UNIVERSAL</tagClassType>
-                <tagConstructedType>CONSTRUCTED</tagConstructedType>
                 <children>
                     <Asn1ObjectIdentifier identifier="extensionId">
                         <tagClass>
@@ -2500,8 +2310,6 @@
                         <lengthOctets>
                             <originalValue>03</originalValue>
                         </lengthOctets>
-                        <tagClassType>UNIVERSAL</tagClassType>
-                        <tagConstructedType>PRIMITIVE</tagConstructedType>
                         <value>
                             <originalValue>2.5.29.19</originalValue>
                         </value>
@@ -2528,8 +2336,6 @@
                         <lengthOctets>
                             <originalValue>01</originalValue>
                         </lengthOctets>
-                        <tagClassType>UNIVERSAL</tagClassType>
-                        <tagConstructedType>PRIMITIVE</tagConstructedType>
                         <value>
                             <originalValue>true</originalValue>
                         </value>
@@ -2556,8 +2362,6 @@
                         <lengthOctets>
                             <originalValue>05</originalValue>
                         </lengthOctets>
-                        <tagClassType>UNIVERSAL</tagClassType>
-                        <tagConstructedType>PRIMITIVE</tagConstructedType>
                         <value>
                             <originalValue>30 03 01 01 FF</originalValue>
                         </value>
@@ -2590,8 +2394,6 @@
 <lengthOctets>
     <originalValue>03</originalValue>
 </lengthOctets>
-<tagClassType>CONTEXT_SPECIFIC</tagClassType>
-<tagConstructedType>CONSTRUCTED</tagConstructedType>
 <children>
     <Asn1Integer identifier="value">
         <tagClass>
@@ -2615,8 +2417,6 @@
         <lengthOctets>
             <originalValue>01</originalValue>
         </lengthOctets>
-        <tagClassType>UNIVERSAL</tagClassType>
-        <tagConstructedType>PRIMITIVE</tagConstructedType>
         <value>
             <originalValue>2</originalValue>
         </value>
@@ -2644,8 +2444,6 @@
     <lengthOctets>
         <originalValue>01</originalValue>
     </lengthOctets>
-    <tagClassType>UNIVERSAL</tagClassType>
-    <tagConstructedType>PRIMITIVE</tagConstructedType>
     <value>
         <originalValue>2</originalValue>
     </value>
@@ -2673,8 +2471,6 @@
 <lengthOctets>
     <originalValue>09</originalValue>
 </lengthOctets>
-<tagClassType>UNIVERSAL</tagClassType>
-<tagConstructedType>PRIMITIVE</tagConstructedType>
 <value>
     <originalValue>11984289747213524941</originalValue>
 </value>
@@ -2701,8 +2497,6 @@
 <lengthOctets>
     <originalValue>0D</originalValue>
 </lengthOctets>
-<tagClassType>UNIVERSAL</tagClassType>
-<tagConstructedType>CONSTRUCTED</tagConstructedType>
 <children>
     <Asn1ObjectIdentifier identifier="algorithm">
         <tagClass>
@@ -2726,8 +2520,6 @@
         <lengthOctets>
             <originalValue>09</originalValue>
         </lengthOctets>
-        <tagClassType>UNIVERSAL</tagClassType>
-        <tagConstructedType>PRIMITIVE</tagConstructedType>
         <value>
             <originalValue>1.2.840.113549.1.1.11</originalValue>
         </value>
@@ -2755,7 +2547,6 @@
             <lengthOctets>
                 <originalValue>00</originalValue>
             </lengthOctets>
-            <tagClassType>UNIVERSAL</tagClassType>
             <contentConfig></contentConfig>
         </instantiation>
         <optional>true</optional>
@@ -2783,8 +2574,6 @@
     <lengthOctets>
         <originalValue>09</originalValue>
     </lengthOctets>
-    <tagClassType>UNIVERSAL</tagClassType>
-    <tagConstructedType>PRIMITIVE</tagConstructedType>
     <value>
         <originalValue>1.2.840.113549.1.1.11</originalValue>
     </value>
@@ -2812,7 +2601,6 @@
         <lengthOctets>
             <originalValue>00</originalValue>
         </lengthOctets>
-        <tagClassType>UNIVERSAL</tagClassType>
         <contentConfig></contentConfig>
     </instantiation>
     <optional>true</optional>
@@ -2840,8 +2628,6 @@
 <lengthOctets>
     <originalValue>5C</originalValue>
 </lengthOctets>
-<tagClassType>UNIVERSAL</tagClassType>
-<tagConstructedType>CONSTRUCTED</tagConstructedType>
 <children>
     <Asn1Set xsi:type="relativeDistinguishedName" identifier="rdn">
         <tagClass>
@@ -2865,8 +2651,6 @@
         <lengthOctets>
             <originalValue>0B</originalValue>
         </lengthOctets>
-        <tagClassType>UNIVERSAL</tagClassType>
-        <tagConstructedType>CONSTRUCTED</tagConstructedType>
         <children>
             <Asn1Sequence identifier="element">
                 <tagClass>
@@ -2890,8 +2674,6 @@
                 <lengthOctets>
                     <originalValue>09</originalValue>
                 </lengthOctets>
-                <tagClassType>UNIVERSAL</tagClassType>
-                <tagConstructedType>CONSTRUCTED</tagConstructedType>
                 <children>
                     <Asn1ObjectIdentifier identifier="type">
                         <tagClass>
@@ -2915,8 +2697,6 @@
                         <lengthOctets>
                             <originalValue>03</originalValue>
                         </lengthOctets>
-                        <tagClassType>UNIVERSAL</tagClassType>
-                        <tagConstructedType>PRIMITIVE</tagConstructedType>
                         <value>
                             <originalValue>2.5.4.6</originalValue>
                         </value>
@@ -2944,7 +2724,6 @@
                             <lengthOctets>
 <originalValue>02</originalValue>
                             </lengthOctets>
-                            <tagClassType>UNIVERSAL</tagClassType>
                             <contentConfig>QVU=</contentConfig>
                         </instantiation>
                         <optional>false</optional>
@@ -2975,8 +2754,6 @@
         <lengthOctets>
             <originalValue>13</originalValue>
         </lengthOctets>
-        <tagClassType>UNIVERSAL</tagClassType>
-        <tagConstructedType>CONSTRUCTED</tagConstructedType>
         <children>
             <Asn1Sequence identifier="element">
                 <tagClass>
@@ -3000,8 +2777,6 @@
                 <lengthOctets>
                     <originalValue>11</originalValue>
                 </lengthOctets>
-                <tagClassType>UNIVERSAL</tagClassType>
-                <tagConstructedType>CONSTRUCTED</tagConstructedType>
                 <children>
                     <Asn1ObjectIdentifier identifier="type">
                         <tagClass>
@@ -3025,8 +2800,6 @@
                         <lengthOctets>
                             <originalValue>03</originalValue>
                         </lengthOctets>
-                        <tagClassType>UNIVERSAL</tagClassType>
-                        <tagConstructedType>PRIMITIVE</tagConstructedType>
                         <value>
                             <originalValue>2.5.4.8</originalValue>
                         </value>
@@ -3054,7 +2827,6 @@
                             <lengthOctets>
 <originalValue>0A</originalValue>
                             </lengthOctets>
-                            <tagClassType>UNIVERSAL</tagClassType>
                             <contentConfig>U29tZS1TdGF0ZQ==</contentConfig>
                         </instantiation>
                         <optional>false</optional>
@@ -3085,8 +2857,6 @@
         <lengthOctets>
             <originalValue>21</originalValue>
         </lengthOctets>
-        <tagClassType>UNIVERSAL</tagClassType>
-        <tagConstructedType>CONSTRUCTED</tagConstructedType>
         <children>
             <Asn1Sequence identifier="element">
                 <tagClass>
@@ -3110,8 +2880,6 @@
                 <lengthOctets>
                     <originalValue>1F</originalValue>
                 </lengthOctets>
-                <tagClassType>UNIVERSAL</tagClassType>
-                <tagConstructedType>CONSTRUCTED</tagConstructedType>
                 <children>
                     <Asn1ObjectIdentifier identifier="type">
                         <tagClass>
@@ -3135,8 +2903,6 @@
                         <lengthOctets>
                             <originalValue>03</originalValue>
                         </lengthOctets>
-                        <tagClassType>UNIVERSAL</tagClassType>
-                        <tagConstructedType>PRIMITIVE</tagConstructedType>
                         <value>
                             <originalValue>2.5.4.10</originalValue>
                         </value>
@@ -3164,7 +2930,6 @@
                             <lengthOctets>
 <originalValue>18</originalValue>
                             </lengthOctets>
-                            <tagClassType>UNIVERSAL</tagClassType>
                             <contentConfig>SW50ZXJuZXQgV2lkZ2l0cyBQdHkgTHRk</contentConfig>
                         </instantiation>
                         <optional>false</optional>
@@ -3195,8 +2960,6 @@
         <lengthOctets>
             <originalValue>15</originalValue>
         </lengthOctets>
-        <tagClassType>UNIVERSAL</tagClassType>
-        <tagConstructedType>CONSTRUCTED</tagConstructedType>
         <children>
             <Asn1Sequence identifier="element">
                 <tagClass>
@@ -3220,8 +2983,6 @@
                 <lengthOctets>
                     <originalValue>13</originalValue>
                 </lengthOctets>
-                <tagClassType>UNIVERSAL</tagClassType>
-                <tagConstructedType>CONSTRUCTED</tagConstructedType>
                 <children>
                     <Asn1ObjectIdentifier identifier="type">
                         <tagClass>
@@ -3245,8 +3006,6 @@
                         <lengthOctets>
                             <originalValue>03</originalValue>
                         </lengthOctets>
-                        <tagClassType>UNIVERSAL</tagClassType>
-                        <tagConstructedType>PRIMITIVE</tagConstructedType>
                         <value>
                             <originalValue>2.5.4.3</originalValue>
                         </value>
@@ -3274,7 +3033,6 @@
                             <lengthOctets>
 <originalValue>0C</originalValue>
                             </lengthOctets>
-                            <tagClassType>UNIVERSAL</tagClassType>
                             <contentConfig>VExTLUF0dGFja2Vy</contentConfig>
                         </instantiation>
                         <optional>false</optional>
@@ -3307,8 +3065,6 @@
 <lengthOctets>
     <originalValue>20</originalValue>
 </lengthOctets>
-<tagClassType>UNIVERSAL</tagClassType>
-<tagConstructedType>CONSTRUCTED</tagConstructedType>
 <children>
     <Asn1Choice xsi:type="time" identifier="notBefore">
         <selectedChoice xsi:type="asn1PrimitiveUtcTime" identifier="utcTime">
@@ -3333,8 +3089,6 @@
             <lengthOctets>
                 <originalValue>0D</originalValue>
             </lengthOctets>
-            <tagClassType>UNIVERSAL</tagClassType>
-            <tagConstructedType>PRIMITIVE</tagConstructedType>
             <value>
                 <originalValue>170713125318Z</originalValue>
             </value>
@@ -3363,18 +3117,13 @@
                     <lengthOctets>
                         <originalValue>0D</originalValue>
                     </lengthOctets>
-                    <tagClassType>UNIVERSAL</tagClassType>
-                    <tagConstructedType>PRIMITIVE</tagConstructedType>
                     <value>
                         <originalValue>170713125318Z</originalValue>
                     </value>
                 </field>
             </selectableChoice>
             <selectableChoice>
-                <field xsi:type="asn1PrimitiveGeneralizedTime" identifier="generalizedTime">
-                    <tagClassType>UNIVERSAL</tagClassType>
-                    <tagConstructedType>PRIMITIVE</tagConstructedType>
-                </field>
+                <field xsi:type="asn1PrimitiveGeneralizedTime" identifier="generalizedTime"/>
             </selectableChoice>
         </choiceList>
     </Asn1Choice>
@@ -3401,18 +3150,13 @@
             <lengthOctets>
                 <originalValue>0F</originalValue>
             </lengthOctets>
-            <tagClassType>UNIVERSAL</tagClassType>
-            <tagConstructedType>PRIMITIVE</tagConstructedType>
             <value>
                 <originalValue>21170619125318Z</originalValue>
             </value>
         </selectedChoice>
         <choiceList>
             <selectableChoice>
-                <field xsi:type="asn1PrimitiveUtcTime" identifier="utcTime">
-                    <tagClassType>UNIVERSAL</tagClassType>
-                    <tagConstructedType>PRIMITIVE</tagConstructedType>
-                </field>
+                <field xsi:type="asn1PrimitiveUtcTime" identifier="utcTime"/>
             </selectableChoice>
             <selectableChoice>
                 <field xsi:type="asn1PrimitiveGeneralizedTime" identifier="generalizedTime">
@@ -3437,8 +3181,6 @@
                     <lengthOctets>
                         <originalValue>0F</originalValue>
                     </lengthOctets>
-                    <tagClassType>UNIVERSAL</tagClassType>
-                    <tagConstructedType>PRIMITIVE</tagConstructedType>
                     <value>
                         <originalValue>21170619125318Z</originalValue>
                     </value>
@@ -3470,8 +3212,6 @@
         <lengthOctets>
             <originalValue>0D</originalValue>
         </lengthOctets>
-        <tagClassType>UNIVERSAL</tagClassType>
-        <tagConstructedType>PRIMITIVE</tagConstructedType>
         <value>
             <originalValue>170713125318Z</originalValue>
         </value>
@@ -3500,18 +3240,13 @@
                 <lengthOctets>
                     <originalValue>0D</originalValue>
                 </lengthOctets>
-                <tagClassType>UNIVERSAL</tagClassType>
-                <tagConstructedType>PRIMITIVE</tagConstructedType>
                 <value>
                     <originalValue>170713125318Z</originalValue>
                 </value>
             </field>
         </selectableChoice>
         <selectableChoice>
-            <field xsi:type="asn1PrimitiveGeneralizedTime" identifier="generalizedTime">
-                <tagClassType>UNIVERSAL</tagClassType>
-                <tagConstructedType>PRIMITIVE</tagConstructedType>
-            </field>
+            <field xsi:type="asn1PrimitiveGeneralizedTime" identifier="generalizedTime"/>
         </selectableChoice>
     </choiceList>
 </notBefore>
@@ -3538,18 +3273,13 @@
         <lengthOctets>
             <originalValue>0F</originalValue>
         </lengthOctets>
-        <tagClassType>UNIVERSAL</tagClassType>
-        <tagConstructedType>PRIMITIVE</tagConstructedType>
         <value>
             <originalValue>21170619125318Z</originalValue>
         </value>
     </selectedChoice>
     <choiceList>
         <selectableChoice>
-            <field xsi:type="asn1PrimitiveUtcTime" identifier="utcTime">
-                <tagClassType>UNIVERSAL</tagClassType>
-                <tagConstructedType>PRIMITIVE</tagConstructedType>
-            </field>
+            <field xsi:type="asn1PrimitiveUtcTime" identifier="utcTime"/>
         </selectableChoice>
         <selectableChoice>
             <field xsi:type="asn1PrimitiveGeneralizedTime" identifier="generalizedTime">
@@ -3574,8 +3304,6 @@
                 <lengthOctets>
                     <originalValue>0F</originalValue>
                 </lengthOctets>
-                <tagClassType>UNIVERSAL</tagClassType>
-                <tagConstructedType>PRIMITIVE</tagConstructedType>
                 <value>
                     <originalValue>21170619125318Z</originalValue>
                 </value>
@@ -3606,8 +3334,6 @@
 <lengthOctets>
     <originalValue>5C</originalValue>
 </lengthOctets>
-<tagClassType>UNIVERSAL</tagClassType>
-<tagConstructedType>CONSTRUCTED</tagConstructedType>
 <children>
     <Asn1Set xsi:type="relativeDistinguishedName" identifier="rdn">
         <tagClass>
@@ -3631,8 +3357,6 @@
         <lengthOctets>
             <originalValue>0B</originalValue>
         </lengthOctets>
-        <tagClassType>UNIVERSAL</tagClassType>
-        <tagConstructedType>CONSTRUCTED</tagConstructedType>
         <children>
             <Asn1Sequence identifier="element">
                 <tagClass>
@@ -3656,8 +3380,6 @@
                 <lengthOctets>
                     <originalValue>09</originalValue>
                 </lengthOctets>
-                <tagClassType>UNIVERSAL</tagClassType>
-                <tagConstructedType>CONSTRUCTED</tagConstructedType>
                 <children>
                     <Asn1ObjectIdentifier identifier="type">
                         <tagClass>
@@ -3681,8 +3403,6 @@
                         <lengthOctets>
                             <originalValue>03</originalValue>
                         </lengthOctets>
-                        <tagClassType>UNIVERSAL</tagClassType>
-                        <tagConstructedType>PRIMITIVE</tagConstructedType>
                         <value>
                             <originalValue>2.5.4.6</originalValue>
                         </value>
@@ -3710,7 +3430,6 @@
                             <lengthOctets>
 <originalValue>02</originalValue>
                             </lengthOctets>
-                            <tagClassType>UNIVERSAL</tagClassType>
                             <contentConfig>QVU=</contentConfig>
                         </instantiation>
                         <optional>false</optional>
@@ -3741,8 +3460,6 @@
         <lengthOctets>
             <originalValue>13</originalValue>
         </lengthOctets>
-        <tagClassType>UNIVERSAL</tagClassType>
-        <tagConstructedType>CONSTRUCTED</tagConstructedType>
         <children>
             <Asn1Sequence identifier="element">
                 <tagClass>
@@ -3766,8 +3483,6 @@
                 <lengthOctets>
                     <originalValue>11</originalValue>
                 </lengthOctets>
-                <tagClassType>UNIVERSAL</tagClassType>
-                <tagConstructedType>CONSTRUCTED</tagConstructedType>
                 <children>
                     <Asn1ObjectIdentifier identifier="type">
                         <tagClass>
@@ -3791,8 +3506,6 @@
                         <lengthOctets>
                             <originalValue>03</originalValue>
                         </lengthOctets>
-                        <tagClassType>UNIVERSAL</tagClassType>
-                        <tagConstructedType>PRIMITIVE</tagConstructedType>
                         <value>
                             <originalValue>2.5.4.8</originalValue>
                         </value>
@@ -3820,7 +3533,6 @@
                             <lengthOctets>
 <originalValue>0A</originalValue>
                             </lengthOctets>
-                            <tagClassType>UNIVERSAL</tagClassType>
                             <contentConfig>U29tZS1TdGF0ZQ==</contentConfig>
                         </instantiation>
                         <optional>false</optional>
@@ -3851,8 +3563,6 @@
         <lengthOctets>
             <originalValue>21</originalValue>
         </lengthOctets>
-        <tagClassType>UNIVERSAL</tagClassType>
-        <tagConstructedType>CONSTRUCTED</tagConstructedType>
         <children>
             <Asn1Sequence identifier="element">
                 <tagClass>
@@ -3876,8 +3586,6 @@
                 <lengthOctets>
                     <originalValue>1F</originalValue>
                 </lengthOctets>
-                <tagClassType>UNIVERSAL</tagClassType>
-                <tagConstructedType>CONSTRUCTED</tagConstructedType>
                 <children>
                     <Asn1ObjectIdentifier identifier="type">
                         <tagClass>
@@ -3901,8 +3609,6 @@
                         <lengthOctets>
                             <originalValue>03</originalValue>
                         </lengthOctets>
-                        <tagClassType>UNIVERSAL</tagClassType>
-                        <tagConstructedType>PRIMITIVE</tagConstructedType>
                         <value>
                             <originalValue>2.5.4.10</originalValue>
                         </value>
@@ -3930,7 +3636,6 @@
                             <lengthOctets>
 <originalValue>18</originalValue>
                             </lengthOctets>
-                            <tagClassType>UNIVERSAL</tagClassType>
                             <contentConfig>SW50ZXJuZXQgV2lkZ2l0cyBQdHkgTHRk</contentConfig>
                         </instantiation>
                         <optional>false</optional>
@@ -3961,8 +3666,6 @@
         <lengthOctets>
             <originalValue>15</originalValue>
         </lengthOctets>
-        <tagClassType>UNIVERSAL</tagClassType>
-        <tagConstructedType>CONSTRUCTED</tagConstructedType>
         <children>
             <Asn1Sequence identifier="element">
                 <tagClass>
@@ -3986,8 +3689,6 @@
                 <lengthOctets>
                     <originalValue>13</originalValue>
                 </lengthOctets>
-                <tagClassType>UNIVERSAL</tagClassType>
-                <tagConstructedType>CONSTRUCTED</tagConstructedType>
                 <children>
                     <Asn1ObjectIdentifier identifier="type">
                         <tagClass>
@@ -4011,8 +3712,6 @@
                         <lengthOctets>
                             <originalValue>03</originalValue>
                         </lengthOctets>
-                        <tagClassType>UNIVERSAL</tagClassType>
-                        <tagConstructedType>PRIMITIVE</tagConstructedType>
                         <value>
                             <originalValue>2.5.4.3</originalValue>
                         </value>
@@ -4040,7 +3739,6 @@
                             <lengthOctets>
 <originalValue>0C</originalValue>
                             </lengthOctets>
-                            <tagClassType>UNIVERSAL</tagClassType>
                             <contentConfig>VExTLUF0dGFja2Vy</contentConfig>
                         </instantiation>
                         <optional>false</optional>
@@ -4073,8 +3771,6 @@
 <lengthOctets>
     <originalValue>82 01 22</originalValue>
 </lengthOctets>
-<tagClassType>UNIVERSAL</tagClassType>
-<tagConstructedType>CONSTRUCTED</tagConstructedType>
 <children>
     <Asn1Sequence xsi:type="algorithmIdentifier" identifier="algorithm">
         <tagClass>
@@ -4098,8 +3794,6 @@
         <lengthOctets>
             <originalValue>0D</originalValue>
         </lengthOctets>
-        <tagClassType>UNIVERSAL</tagClassType>
-        <tagConstructedType>CONSTRUCTED</tagConstructedType>
         <children>
             <Asn1ObjectIdentifier identifier="algorithm">
                 <tagClass>
@@ -4123,8 +3817,6 @@
                 <lengthOctets>
                     <originalValue>09</originalValue>
                 </lengthOctets>
-                <tagClassType>UNIVERSAL</tagClassType>
-                <tagConstructedType>PRIMITIVE</tagConstructedType>
                 <value>
                     <originalValue>1.2.840.113549.1.1.1</originalValue>
                 </value>
@@ -4152,7 +3844,6 @@
                     <lengthOctets>
                         <originalValue>00</originalValue>
                     </lengthOctets>
-                    <tagClassType>UNIVERSAL</tagClassType>
                     <contentConfig></contentConfig>
                 </instantiation>
                 <optional>true</optional>
@@ -4180,8 +3871,6 @@
             <lengthOctets>
                 <originalValue>09</originalValue>
             </lengthOctets>
-            <tagClassType>UNIVERSAL</tagClassType>
-            <tagConstructedType>PRIMITIVE</tagConstructedType>
             <value>
                 <originalValue>1.2.840.113549.1.1.1</originalValue>
             </value>
@@ -4209,7 +3898,6 @@
                 <lengthOctets>
                     <originalValue>00</originalValue>
                 </lengthOctets>
-                <tagClassType>UNIVERSAL</tagClassType>
                 <contentConfig></contentConfig>
             </instantiation>
             <optional>true</optional>
@@ -4237,8 +3925,6 @@
         <lengthOctets>
             <originalValue>82 01 0F</originalValue>
         </lengthOctets>
-        <tagClassType>UNIVERSAL</tagClassType>
-        <tagConstructedType>PRIMITIVE</tagConstructedType>
         <unusedBits>
             <originalValue>0</originalValue>
         </unusedBits>
@@ -4269,8 +3955,6 @@
     <lengthOctets>
         <originalValue>0D</originalValue>
     </lengthOctets>
-    <tagClassType>UNIVERSAL</tagClassType>
-    <tagConstructedType>CONSTRUCTED</tagConstructedType>
     <children>
         <Asn1ObjectIdentifier identifier="algorithm">
             <tagClass>
@@ -4294,8 +3978,6 @@
             <lengthOctets>
                 <originalValue>09</originalValue>
             </lengthOctets>
-            <tagClassType>UNIVERSAL</tagClassType>
-            <tagConstructedType>PRIMITIVE</tagConstructedType>
             <value>
                 <originalValue>1.2.840.113549.1.1.1</originalValue>
             </value>
@@ -4323,7 +4005,6 @@
                 <lengthOctets>
                     <originalValue>00</originalValue>
                 </lengthOctets>
-                <tagClassType>UNIVERSAL</tagClassType>
                 <contentConfig></contentConfig>
             </instantiation>
             <optional>true</optional>
@@ -4351,8 +4032,6 @@
         <lengthOctets>
             <originalValue>09</originalValue>
         </lengthOctets>
-        <tagClassType>UNIVERSAL</tagClassType>
-        <tagConstructedType>PRIMITIVE</tagConstructedType>
         <value>
             <originalValue>1.2.840.113549.1.1.1</originalValue>
         </value>
@@ -4380,7 +4059,6 @@
             <lengthOctets>
                 <originalValue>00</originalValue>
             </lengthOctets>
-            <tagClassType>UNIVERSAL</tagClassType>
             <contentConfig></contentConfig>
         </instantiation>
         <optional>true</optional>
@@ -4408,8 +4086,6 @@
     <lengthOctets>
         <originalValue>82 01 0F</originalValue>
     </lengthOctets>
-    <tagClassType>UNIVERSAL</tagClassType>
-    <tagConstructedType>PRIMITIVE</tagConstructedType>
     <unusedBits>
         <originalValue>0</originalValue>
     </unusedBits>
@@ -4418,14 +4094,8 @@
     </value>
 </subjectPublicKeyBitString>
                             </subjectPublicKeyInfo>
-                            <issuerUniqueID identifier="issuerUniqueID">
-<tagClassType>UNIVERSAL</tagClassType>
-<tagConstructedType>PRIMITIVE</tagConstructedType>
-                            </issuerUniqueID>
-                            <subjectUniqueID identifier="subjectUniqueID">
-<tagClassType>UNIVERSAL</tagClassType>
-<tagConstructedType>PRIMITIVE</tagConstructedType>
-                            </subjectUniqueID>
+                            <issuerUniqueID identifier="issuerUniqueID"/>
+                            <subjectUniqueID identifier="subjectUniqueID"/>
                             <extensionExplicit identifier="extensionsExplicit">
 <tagClass>
     <originalValue>2</originalValue>
@@ -4448,8 +4118,6 @@
 <lengthOctets>
     <originalValue>53</originalValue>
 </lengthOctets>
-<tagClassType>CONTEXT_SPECIFIC</tagClassType>
-<tagConstructedType>CONSTRUCTED</tagConstructedType>
 <children>
     <Asn1Sequence identifier="extensions">
         <tagClass>
@@ -4473,8 +4141,6 @@
         <lengthOctets>
             <originalValue>51</originalValue>
         </lengthOctets>
-        <tagClassType>UNIVERSAL</tagClassType>
-        <tagConstructedType>CONSTRUCTED</tagConstructedType>
         <children>
             <Asn1Sequence identifier="extension">
                 <tagClass>
@@ -4498,8 +4164,6 @@
                 <lengthOctets>
                     <originalValue>1D</originalValue>
                 </lengthOctets>
-                <tagClassType>UNIVERSAL</tagClassType>
-                <tagConstructedType>CONSTRUCTED</tagConstructedType>
                 <children>
                     <Asn1ObjectIdentifier identifier="extensionId">
                         <tagClass>
@@ -4523,16 +4187,11 @@
                         <lengthOctets>
                             <originalValue>03</originalValue>
                         </lengthOctets>
-                        <tagClassType>UNIVERSAL</tagClassType>
-                        <tagConstructedType>PRIMITIVE</tagConstructedType>
                         <value>
                             <originalValue>2.5.29.14</originalValue>
                         </value>
                     </Asn1ObjectIdentifier>
-                    <Asn1Boolean identifier="critical">
-                        <tagClassType>UNIVERSAL</tagClassType>
-                        <tagConstructedType>PRIMITIVE</tagConstructedType>
-                    </Asn1Boolean>
+                    <Asn1Boolean identifier="critical"/>
                     <Asn1PrimitiveOctetString identifier="extensionValue">
                         <tagClass>
                             <originalValue>0</originalValue>
@@ -4555,8 +4214,6 @@
                         <lengthOctets>
                             <originalValue>16</originalValue>
                         </lengthOctets>
-                        <tagClassType>UNIVERSAL</tagClassType>
-                        <tagConstructedType>PRIMITIVE</tagConstructedType>
                         <value>
                             <originalValue>04 14 E7 A9 2F E5 54 3A EE 2F F7 59 2F 80 0A C6 E6 65 41 E3 26 8B</originalValue>
                         </value>
@@ -4585,8 +4242,6 @@
                 <lengthOctets>
                     <originalValue>1F</originalValue>
                 </lengthOctets>
-                <tagClassType>UNIVERSAL</tagClassType>
-                <tagConstructedType>CONSTRUCTED</tagConstructedType>
                 <children>
                     <Asn1ObjectIdentifier identifier="extensionId">
                         <tagClass>
@@ -4610,16 +4265,11 @@
                         <lengthOctets>
                             <originalValue>03</originalValue>
                         </lengthOctets>
-                        <tagClassType>UNIVERSAL</tagClassType>
-                        <tagConstructedType>PRIMITIVE</tagConstructedType>
                         <value>
                             <originalValue>2.5.29.35</originalValue>
                         </value>
                     </Asn1ObjectIdentifier>
-                    <Asn1Boolean identifier="critical">
-                        <tagClassType>UNIVERSAL</tagClassType>
-                        <tagConstructedType>PRIMITIVE</tagConstructedType>
-                    </Asn1Boolean>
+                    <Asn1Boolean identifier="critical"/>
                     <Asn1PrimitiveOctetString identifier="extensionValue">
                         <tagClass>
                             <originalValue>0</originalValue>
@@ -4642,8 +4292,6 @@
                         <lengthOctets>
                             <originalValue>18</originalValue>
                         </lengthOctets>
-                        <tagClassType>UNIVERSAL</tagClassType>
-                        <tagConstructedType>PRIMITIVE</tagConstructedType>
                         <value>
                             <originalValue>30 16 80 14 E7 A9 2F E5 54 3A EE 2F F7 59 2F 80 0A C6 E6 65 41 E3 26 8B</originalValue>
                         </value>
@@ -4672,8 +4320,6 @@
                 <lengthOctets>
                     <originalValue>0F</originalValue>
                 </lengthOctets>
-                <tagClassType>UNIVERSAL</tagClassType>
-                <tagConstructedType>CONSTRUCTED</tagConstructedType>
                 <children>
                     <Asn1ObjectIdentifier identifier="extensionId">
                         <tagClass>
@@ -4697,8 +4343,6 @@
                         <lengthOctets>
                             <originalValue>03</originalValue>
                         </lengthOctets>
-                        <tagClassType>UNIVERSAL</tagClassType>
-                        <tagConstructedType>PRIMITIVE</tagConstructedType>
                         <value>
                             <originalValue>2.5.29.19</originalValue>
                         </value>
@@ -4725,8 +4369,6 @@
                         <lengthOctets>
                             <originalValue>01</originalValue>
                         </lengthOctets>
-                        <tagClassType>UNIVERSAL</tagClassType>
-                        <tagConstructedType>PRIMITIVE</tagConstructedType>
                         <value>
                             <originalValue>true</originalValue>
                         </value>
@@ -4753,8 +4395,6 @@
                         <lengthOctets>
                             <originalValue>05</originalValue>
                         </lengthOctets>
-                        <tagClassType>UNIVERSAL</tagClassType>
-                        <tagConstructedType>PRIMITIVE</tagConstructedType>
                         <value>
                             <originalValue>30 03 01 01 FF</originalValue>
                         </value>
@@ -4786,8 +4426,6 @@
     <lengthOctets>
         <originalValue>51</originalValue>
     </lengthOctets>
-    <tagClassType>UNIVERSAL</tagClassType>
-    <tagConstructedType>CONSTRUCTED</tagConstructedType>
     <children>
         <Asn1Sequence identifier="extension">
             <tagClass>
@@ -4811,8 +4449,6 @@
             <lengthOctets>
                 <originalValue>1D</originalValue>
             </lengthOctets>
-            <tagClassType>UNIVERSAL</tagClassType>
-            <tagConstructedType>CONSTRUCTED</tagConstructedType>
             <children>
                 <Asn1ObjectIdentifier identifier="extensionId">
                     <tagClass>
@@ -4836,16 +4472,11 @@
                     <lengthOctets>
                         <originalValue>03</originalValue>
                     </lengthOctets>
-                    <tagClassType>UNIVERSAL</tagClassType>
-                    <tagConstructedType>PRIMITIVE</tagConstructedType>
                     <value>
                         <originalValue>2.5.29.14</originalValue>
                     </value>
                 </Asn1ObjectIdentifier>
-                <Asn1Boolean identifier="critical">
-                    <tagClassType>UNIVERSAL</tagClassType>
-                    <tagConstructedType>PRIMITIVE</tagConstructedType>
-                </Asn1Boolean>
+                <Asn1Boolean identifier="critical"/>
                 <Asn1PrimitiveOctetString identifier="extensionValue">
                     <tagClass>
                         <originalValue>0</originalValue>
@@ -4868,8 +4499,6 @@
                     <lengthOctets>
                         <originalValue>16</originalValue>
                     </lengthOctets>
-                    <tagClassType>UNIVERSAL</tagClassType>
-                    <tagConstructedType>PRIMITIVE</tagConstructedType>
                     <value>
                         <originalValue>04 14 E7 A9 2F E5 54 3A EE 2F F7 59 2F 80 0A C6 E6 65 41 E3 26 8B</originalValue>
                     </value>
@@ -4898,8 +4527,6 @@
             <lengthOctets>
                 <originalValue>1F</originalValue>
             </lengthOctets>
-            <tagClassType>UNIVERSAL</tagClassType>
-            <tagConstructedType>CONSTRUCTED</tagConstructedType>
             <children>
                 <Asn1ObjectIdentifier identifier="extensionId">
                     <tagClass>
@@ -4923,16 +4550,11 @@
                     <lengthOctets>
                         <originalValue>03</originalValue>
                     </lengthOctets>
-                    <tagClassType>UNIVERSAL</tagClassType>
-                    <tagConstructedType>PRIMITIVE</tagConstructedType>
                     <value>
                         <originalValue>2.5.29.35</originalValue>
                     </value>
                 </Asn1ObjectIdentifier>
-                <Asn1Boolean identifier="critical">
-                    <tagClassType>UNIVERSAL</tagClassType>
-                    <tagConstructedType>PRIMITIVE</tagConstructedType>
-                </Asn1Boolean>
+                <Asn1Boolean identifier="critical"/>
                 <Asn1PrimitiveOctetString identifier="extensionValue">
                     <tagClass>
                         <originalValue>0</originalValue>
@@ -4955,8 +4577,6 @@
                     <lengthOctets>
                         <originalValue>18</originalValue>
                     </lengthOctets>
-                    <tagClassType>UNIVERSAL</tagClassType>
-                    <tagConstructedType>PRIMITIVE</tagConstructedType>
                     <value>
                         <originalValue>30 16 80 14 E7 A9 2F E5 54 3A EE 2F F7 59 2F 80 0A C6 E6 65 41 E3 26 8B</originalValue>
                     </value>
@@ -4985,8 +4605,6 @@
             <lengthOctets>
                 <originalValue>0F</originalValue>
             </lengthOctets>
-            <tagClassType>UNIVERSAL</tagClassType>
-            <tagConstructedType>CONSTRUCTED</tagConstructedType>
             <children>
                 <Asn1ObjectIdentifier identifier="extensionId">
                     <tagClass>
@@ -5010,8 +4628,6 @@
                     <lengthOctets>
                         <originalValue>03</originalValue>
                     </lengthOctets>
-                    <tagClassType>UNIVERSAL</tagClassType>
-                    <tagConstructedType>PRIMITIVE</tagConstructedType>
                     <value>
                         <originalValue>2.5.29.19</originalValue>
                     </value>
@@ -5038,8 +4654,6 @@
                     <lengthOctets>
                         <originalValue>01</originalValue>
                     </lengthOctets>
-                    <tagClassType>UNIVERSAL</tagClassType>
-                    <tagConstructedType>PRIMITIVE</tagConstructedType>
                     <value>
                         <originalValue>true</originalValue>
                     </value>
@@ -5066,8 +4680,6 @@
                     <lengthOctets>
                         <originalValue>05</originalValue>
                     </lengthOctets>
-                    <tagClassType>UNIVERSAL</tagClassType>
-                    <tagConstructedType>PRIMITIVE</tagConstructedType>
                     <value>
                         <originalValue>30 03 01 01 FF</originalValue>
                     </value>
@@ -5100,8 +4712,6 @@
                             <lengthOctets>
 <originalValue>0D</originalValue>
                             </lengthOctets>
-                            <tagClassType>UNIVERSAL</tagClassType>
-                            <tagConstructedType>CONSTRUCTED</tagConstructedType>
                             <children>
 <Asn1ObjectIdentifier identifier="algorithm">
     <tagClass>
@@ -5125,8 +4735,6 @@
     <lengthOctets>
         <originalValue>09</originalValue>
     </lengthOctets>
-    <tagClassType>UNIVERSAL</tagClassType>
-    <tagConstructedType>PRIMITIVE</tagConstructedType>
     <value>
         <originalValue>1.2.840.113549.1.1.11</originalValue>
     </value>
@@ -5154,7 +4762,6 @@
         <lengthOctets>
             <originalValue>00</originalValue>
         </lengthOctets>
-        <tagClassType>UNIVERSAL</tagClassType>
         <contentConfig></contentConfig>
     </instantiation>
     <optional>true</optional>
@@ -5182,8 +4789,6 @@
 <lengthOctets>
     <originalValue>09</originalValue>
 </lengthOctets>
-<tagClassType>UNIVERSAL</tagClassType>
-<tagConstructedType>PRIMITIVE</tagConstructedType>
 <value>
     <originalValue>1.2.840.113549.1.1.11</originalValue>
 </value>
@@ -5211,7 +4816,6 @@
     <lengthOctets>
         <originalValue>00</originalValue>
     </lengthOctets>
-    <tagClassType>UNIVERSAL</tagClassType>
     <contentConfig></contentConfig>
 </instantiation>
 <optional>true</optional>
@@ -5239,8 +4843,6 @@
                             <lengthOctets>
 <originalValue>82 01 01</originalValue>
                             </lengthOctets>
-                            <tagClassType>UNIVERSAL</tagClassType>
-                            <tagConstructedType>PRIMITIVE</tagConstructedType>
                             <unusedBits>
 <originalValue>0</originalValue>
                             </unusedBits>
@@ -5271,8 +4873,6 @@
                         <lengthOctets>
                             <originalValue>82 02 78</originalValue>
                         </lengthOctets>
-                        <tagClassType>UNIVERSAL</tagClassType>
-                        <tagConstructedType>CONSTRUCTED</tagConstructedType>
                         <children>
                             <Asn1Explicit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="version" identifier="version">
 <tagClass>
@@ -5296,8 +4896,6 @@
 <lengthOctets>
     <originalValue>03</originalValue>
 </lengthOctets>
-<tagClassType>CONTEXT_SPECIFIC</tagClassType>
-<tagConstructedType>CONSTRUCTED</tagConstructedType>
 <children>
     <Asn1Integer identifier="value">
         <tagClass>
@@ -5321,8 +4919,6 @@
         <lengthOctets>
             <originalValue>01</originalValue>
         </lengthOctets>
-        <tagClassType>UNIVERSAL</tagClassType>
-        <tagConstructedType>PRIMITIVE</tagConstructedType>
         <value>
             <originalValue>2</originalValue>
         </value>
@@ -5350,8 +4946,6 @@
     <lengthOctets>
         <originalValue>01</originalValue>
     </lengthOctets>
-    <tagClassType>UNIVERSAL</tagClassType>
-    <tagConstructedType>PRIMITIVE</tagConstructedType>
     <value>
         <originalValue>2</originalValue>
     </value>
@@ -5379,8 +4973,6 @@
 <lengthOctets>
     <originalValue>09</originalValue>
 </lengthOctets>
-<tagClassType>UNIVERSAL</tagClassType>
-<tagConstructedType>PRIMITIVE</tagConstructedType>
 <value>
     <originalValue>11984289747213524941</originalValue>
 </value>
@@ -5407,8 +4999,6 @@
 <lengthOctets>
     <originalValue>0D</originalValue>
 </lengthOctets>
-<tagClassType>UNIVERSAL</tagClassType>
-<tagConstructedType>CONSTRUCTED</tagConstructedType>
 <children>
     <Asn1ObjectIdentifier identifier="algorithm">
         <tagClass>
@@ -5432,8 +5022,6 @@
         <lengthOctets>
             <originalValue>09</originalValue>
         </lengthOctets>
-        <tagClassType>UNIVERSAL</tagClassType>
-        <tagConstructedType>PRIMITIVE</tagConstructedType>
         <value>
             <originalValue>1.2.840.113549.1.1.11</originalValue>
         </value>
@@ -5461,7 +5049,6 @@
             <lengthOctets>
                 <originalValue>00</originalValue>
             </lengthOctets>
-            <tagClassType>UNIVERSAL</tagClassType>
             <contentConfig></contentConfig>
         </instantiation>
         <optional>true</optional>
@@ -5489,8 +5076,6 @@
     <lengthOctets>
         <originalValue>09</originalValue>
     </lengthOctets>
-    <tagClassType>UNIVERSAL</tagClassType>
-    <tagConstructedType>PRIMITIVE</tagConstructedType>
     <value>
         <originalValue>1.2.840.113549.1.1.11</originalValue>
     </value>
@@ -5518,7 +5103,6 @@
         <lengthOctets>
             <originalValue>00</originalValue>
         </lengthOctets>
-        <tagClassType>UNIVERSAL</tagClassType>
         <contentConfig></contentConfig>
     </instantiation>
     <optional>true</optional>
@@ -5546,8 +5130,6 @@
 <lengthOctets>
     <originalValue>5C</originalValue>
 </lengthOctets>
-<tagClassType>UNIVERSAL</tagClassType>
-<tagConstructedType>CONSTRUCTED</tagConstructedType>
 <children>
     <Asn1Set xsi:type="relativeDistinguishedName" identifier="rdn">
         <tagClass>
@@ -5571,8 +5153,6 @@
         <lengthOctets>
             <originalValue>0B</originalValue>
         </lengthOctets>
-        <tagClassType>UNIVERSAL</tagClassType>
-        <tagConstructedType>CONSTRUCTED</tagConstructedType>
         <children>
             <Asn1Sequence identifier="element">
                 <tagClass>
@@ -5596,8 +5176,6 @@
                 <lengthOctets>
                     <originalValue>09</originalValue>
                 </lengthOctets>
-                <tagClassType>UNIVERSAL</tagClassType>
-                <tagConstructedType>CONSTRUCTED</tagConstructedType>
                 <children>
                     <Asn1ObjectIdentifier identifier="type">
                         <tagClass>
@@ -5621,8 +5199,6 @@
                         <lengthOctets>
                             <originalValue>03</originalValue>
                         </lengthOctets>
-                        <tagClassType>UNIVERSAL</tagClassType>
-                        <tagConstructedType>PRIMITIVE</tagConstructedType>
                         <value>
                             <originalValue>2.5.4.6</originalValue>
                         </value>
@@ -5650,7 +5226,6 @@
                             <lengthOctets>
 <originalValue>02</originalValue>
                             </lengthOctets>
-                            <tagClassType>UNIVERSAL</tagClassType>
                             <contentConfig>QVU=</contentConfig>
                         </instantiation>
                         <optional>false</optional>
@@ -5681,8 +5256,6 @@
         <lengthOctets>
             <originalValue>13</originalValue>
         </lengthOctets>
-        <tagClassType>UNIVERSAL</tagClassType>
-        <tagConstructedType>CONSTRUCTED</tagConstructedType>
         <children>
             <Asn1Sequence identifier="element">
                 <tagClass>
@@ -5706,8 +5279,6 @@
                 <lengthOctets>
                     <originalValue>11</originalValue>
                 </lengthOctets>
-                <tagClassType>UNIVERSAL</tagClassType>
-                <tagConstructedType>CONSTRUCTED</tagConstructedType>
                 <children>
                     <Asn1ObjectIdentifier identifier="type">
                         <tagClass>
@@ -5731,8 +5302,6 @@
                         <lengthOctets>
                             <originalValue>03</originalValue>
                         </lengthOctets>
-                        <tagClassType>UNIVERSAL</tagClassType>
-                        <tagConstructedType>PRIMITIVE</tagConstructedType>
                         <value>
                             <originalValue>2.5.4.8</originalValue>
                         </value>
@@ -5760,7 +5329,6 @@
                             <lengthOctets>
 <originalValue>0A</originalValue>
                             </lengthOctets>
-                            <tagClassType>UNIVERSAL</tagClassType>
                             <contentConfig>U29tZS1TdGF0ZQ==</contentConfig>
                         </instantiation>
                         <optional>false</optional>
@@ -5791,8 +5359,6 @@
         <lengthOctets>
             <originalValue>21</originalValue>
         </lengthOctets>
-        <tagClassType>UNIVERSAL</tagClassType>
-        <tagConstructedType>CONSTRUCTED</tagConstructedType>
         <children>
             <Asn1Sequence identifier="element">
                 <tagClass>
@@ -5816,8 +5382,6 @@
                 <lengthOctets>
                     <originalValue>1F</originalValue>
                 </lengthOctets>
-                <tagClassType>UNIVERSAL</tagClassType>
-                <tagConstructedType>CONSTRUCTED</tagConstructedType>
                 <children>
                     <Asn1ObjectIdentifier identifier="type">
                         <tagClass>
@@ -5841,8 +5405,6 @@
                         <lengthOctets>
                             <originalValue>03</originalValue>
                         </lengthOctets>
-                        <tagClassType>UNIVERSAL</tagClassType>
-                        <tagConstructedType>PRIMITIVE</tagConstructedType>
                         <value>
                             <originalValue>2.5.4.10</originalValue>
                         </value>
@@ -5870,7 +5432,6 @@
                             <lengthOctets>
 <originalValue>18</originalValue>
                             </lengthOctets>
-                            <tagClassType>UNIVERSAL</tagClassType>
                             <contentConfig>SW50ZXJuZXQgV2lkZ2l0cyBQdHkgTHRk</contentConfig>
                         </instantiation>
                         <optional>false</optional>
@@ -5901,8 +5462,6 @@
         <lengthOctets>
             <originalValue>15</originalValue>
         </lengthOctets>
-        <tagClassType>UNIVERSAL</tagClassType>
-        <tagConstructedType>CONSTRUCTED</tagConstructedType>
         <children>
             <Asn1Sequence identifier="element">
                 <tagClass>
@@ -5926,8 +5485,6 @@
                 <lengthOctets>
                     <originalValue>13</originalValue>
                 </lengthOctets>
-                <tagClassType>UNIVERSAL</tagClassType>
-                <tagConstructedType>CONSTRUCTED</tagConstructedType>
                 <children>
                     <Asn1ObjectIdentifier identifier="type">
                         <tagClass>
@@ -5951,8 +5508,6 @@
                         <lengthOctets>
                             <originalValue>03</originalValue>
                         </lengthOctets>
-                        <tagClassType>UNIVERSAL</tagClassType>
-                        <tagConstructedType>PRIMITIVE</tagConstructedType>
                         <value>
                             <originalValue>2.5.4.3</originalValue>
                         </value>
@@ -5980,7 +5535,6 @@
                             <lengthOctets>
 <originalValue>0C</originalValue>
                             </lengthOctets>
-                            <tagClassType>UNIVERSAL</tagClassType>
                             <contentConfig>VExTLUF0dGFja2Vy</contentConfig>
                         </instantiation>
                         <optional>false</optional>
@@ -6013,8 +5567,6 @@
 <lengthOctets>
     <originalValue>20</originalValue>
 </lengthOctets>
-<tagClassType>UNIVERSAL</tagClassType>
-<tagConstructedType>CONSTRUCTED</tagConstructedType>
 <children>
     <Asn1Choice xsi:type="time" identifier="notBefore">
         <selectedChoice xsi:type="asn1PrimitiveUtcTime" identifier="utcTime">
@@ -6039,8 +5591,6 @@
             <lengthOctets>
                 <originalValue>0D</originalValue>
             </lengthOctets>
-            <tagClassType>UNIVERSAL</tagClassType>
-            <tagConstructedType>PRIMITIVE</tagConstructedType>
             <value>
                 <originalValue>170713125318Z</originalValue>
             </value>
@@ -6069,18 +5619,13 @@
                     <lengthOctets>
                         <originalValue>0D</originalValue>
                     </lengthOctets>
-                    <tagClassType>UNIVERSAL</tagClassType>
-                    <tagConstructedType>PRIMITIVE</tagConstructedType>
                     <value>
                         <originalValue>170713125318Z</originalValue>
                     </value>
                 </field>
             </selectableChoice>
             <selectableChoice>
-                <field xsi:type="asn1PrimitiveGeneralizedTime" identifier="generalizedTime">
-                    <tagClassType>UNIVERSAL</tagClassType>
-                    <tagConstructedType>PRIMITIVE</tagConstructedType>
-                </field>
+                <field xsi:type="asn1PrimitiveGeneralizedTime" identifier="generalizedTime"/>
             </selectableChoice>
         </choiceList>
     </Asn1Choice>
@@ -6107,18 +5652,13 @@
             <lengthOctets>
                 <originalValue>0F</originalValue>
             </lengthOctets>
-            <tagClassType>UNIVERSAL</tagClassType>
-            <tagConstructedType>PRIMITIVE</tagConstructedType>
             <value>
                 <originalValue>21170619125318Z</originalValue>
             </value>
         </selectedChoice>
         <choiceList>
             <selectableChoice>
-                <field xsi:type="asn1PrimitiveUtcTime" identifier="utcTime">
-                    <tagClassType>UNIVERSAL</tagClassType>
-                    <tagConstructedType>PRIMITIVE</tagConstructedType>
-                </field>
+                <field xsi:type="asn1PrimitiveUtcTime" identifier="utcTime"/>
             </selectableChoice>
             <selectableChoice>
                 <field xsi:type="asn1PrimitiveGeneralizedTime" identifier="generalizedTime">
@@ -6143,8 +5683,6 @@
                     <lengthOctets>
                         <originalValue>0F</originalValue>
                     </lengthOctets>
-                    <tagClassType>UNIVERSAL</tagClassType>
-                    <tagConstructedType>PRIMITIVE</tagConstructedType>
                     <value>
                         <originalValue>21170619125318Z</originalValue>
                     </value>
@@ -6176,8 +5714,6 @@
         <lengthOctets>
             <originalValue>0D</originalValue>
         </lengthOctets>
-        <tagClassType>UNIVERSAL</tagClassType>
-        <tagConstructedType>PRIMITIVE</tagConstructedType>
         <value>
             <originalValue>170713125318Z</originalValue>
         </value>
@@ -6206,18 +5742,13 @@
                 <lengthOctets>
                     <originalValue>0D</originalValue>
                 </lengthOctets>
-                <tagClassType>UNIVERSAL</tagClassType>
-                <tagConstructedType>PRIMITIVE</tagConstructedType>
                 <value>
                     <originalValue>170713125318Z</originalValue>
                 </value>
             </field>
         </selectableChoice>
         <selectableChoice>
-            <field xsi:type="asn1PrimitiveGeneralizedTime" identifier="generalizedTime">
-                <tagClassType>UNIVERSAL</tagClassType>
-                <tagConstructedType>PRIMITIVE</tagConstructedType>
-            </field>
+            <field xsi:type="asn1PrimitiveGeneralizedTime" identifier="generalizedTime"/>
         </selectableChoice>
     </choiceList>
 </notBefore>
@@ -6244,18 +5775,13 @@
         <lengthOctets>
             <originalValue>0F</originalValue>
         </lengthOctets>
-        <tagClassType>UNIVERSAL</tagClassType>
-        <tagConstructedType>PRIMITIVE</tagConstructedType>
         <value>
             <originalValue>21170619125318Z</originalValue>
         </value>
     </selectedChoice>
     <choiceList>
         <selectableChoice>
-            <field xsi:type="asn1PrimitiveUtcTime" identifier="utcTime">
-                <tagClassType>UNIVERSAL</tagClassType>
-                <tagConstructedType>PRIMITIVE</tagConstructedType>
-            </field>
+            <field xsi:type="asn1PrimitiveUtcTime" identifier="utcTime"/>
         </selectableChoice>
         <selectableChoice>
             <field xsi:type="asn1PrimitiveGeneralizedTime" identifier="generalizedTime">
@@ -6280,8 +5806,6 @@
                 <lengthOctets>
                     <originalValue>0F</originalValue>
                 </lengthOctets>
-                <tagClassType>UNIVERSAL</tagClassType>
-                <tagConstructedType>PRIMITIVE</tagConstructedType>
                 <value>
                     <originalValue>21170619125318Z</originalValue>
                 </value>
@@ -6312,8 +5836,6 @@
 <lengthOctets>
     <originalValue>5C</originalValue>
 </lengthOctets>
-<tagClassType>UNIVERSAL</tagClassType>
-<tagConstructedType>CONSTRUCTED</tagConstructedType>
 <children>
     <Asn1Set xsi:type="relativeDistinguishedName" identifier="rdn">
         <tagClass>
@@ -6337,8 +5859,6 @@
         <lengthOctets>
             <originalValue>0B</originalValue>
         </lengthOctets>
-        <tagClassType>UNIVERSAL</tagClassType>
-        <tagConstructedType>CONSTRUCTED</tagConstructedType>
         <children>
             <Asn1Sequence identifier="element">
                 <tagClass>
@@ -6362,8 +5882,6 @@
                 <lengthOctets>
                     <originalValue>09</originalValue>
                 </lengthOctets>
-                <tagClassType>UNIVERSAL</tagClassType>
-                <tagConstructedType>CONSTRUCTED</tagConstructedType>
                 <children>
                     <Asn1ObjectIdentifier identifier="type">
                         <tagClass>
@@ -6387,8 +5905,6 @@
                         <lengthOctets>
                             <originalValue>03</originalValue>
                         </lengthOctets>
-                        <tagClassType>UNIVERSAL</tagClassType>
-                        <tagConstructedType>PRIMITIVE</tagConstructedType>
                         <value>
                             <originalValue>2.5.4.6</originalValue>
                         </value>
@@ -6416,7 +5932,6 @@
                             <lengthOctets>
 <originalValue>02</originalValue>
                             </lengthOctets>
-                            <tagClassType>UNIVERSAL</tagClassType>
                             <contentConfig>QVU=</contentConfig>
                         </instantiation>
                         <optional>false</optional>
@@ -6447,8 +5962,6 @@
         <lengthOctets>
             <originalValue>13</originalValue>
         </lengthOctets>
-        <tagClassType>UNIVERSAL</tagClassType>
-        <tagConstructedType>CONSTRUCTED</tagConstructedType>
         <children>
             <Asn1Sequence identifier="element">
                 <tagClass>
@@ -6472,8 +5985,6 @@
                 <lengthOctets>
                     <originalValue>11</originalValue>
                 </lengthOctets>
-                <tagClassType>UNIVERSAL</tagClassType>
-                <tagConstructedType>CONSTRUCTED</tagConstructedType>
                 <children>
                     <Asn1ObjectIdentifier identifier="type">
                         <tagClass>
@@ -6497,8 +6008,6 @@
                         <lengthOctets>
                             <originalValue>03</originalValue>
                         </lengthOctets>
-                        <tagClassType>UNIVERSAL</tagClassType>
-                        <tagConstructedType>PRIMITIVE</tagConstructedType>
                         <value>
                             <originalValue>2.5.4.8</originalValue>
                         </value>
@@ -6526,7 +6035,6 @@
                             <lengthOctets>
 <originalValue>0A</originalValue>
                             </lengthOctets>
-                            <tagClassType>UNIVERSAL</tagClassType>
                             <contentConfig>U29tZS1TdGF0ZQ==</contentConfig>
                         </instantiation>
                         <optional>false</optional>
@@ -6557,8 +6065,6 @@
         <lengthOctets>
             <originalValue>21</originalValue>
         </lengthOctets>
-        <tagClassType>UNIVERSAL</tagClassType>
-        <tagConstructedType>CONSTRUCTED</tagConstructedType>
         <children>
             <Asn1Sequence identifier="element">
                 <tagClass>
@@ -6582,8 +6088,6 @@
                 <lengthOctets>
                     <originalValue>1F</originalValue>
                 </lengthOctets>
-                <tagClassType>UNIVERSAL</tagClassType>
-                <tagConstructedType>CONSTRUCTED</tagConstructedType>
                 <children>
                     <Asn1ObjectIdentifier identifier="type">
                         <tagClass>
@@ -6607,8 +6111,6 @@
                         <lengthOctets>
                             <originalValue>03</originalValue>
                         </lengthOctets>
-                        <tagClassType>UNIVERSAL</tagClassType>
-                        <tagConstructedType>PRIMITIVE</tagConstructedType>
                         <value>
                             <originalValue>2.5.4.10</originalValue>
                         </value>
@@ -6636,7 +6138,6 @@
                             <lengthOctets>
 <originalValue>18</originalValue>
                             </lengthOctets>
-                            <tagClassType>UNIVERSAL</tagClassType>
                             <contentConfig>SW50ZXJuZXQgV2lkZ2l0cyBQdHkgTHRk</contentConfig>
                         </instantiation>
                         <optional>false</optional>
@@ -6667,8 +6168,6 @@
         <lengthOctets>
             <originalValue>15</originalValue>
         </lengthOctets>
-        <tagClassType>UNIVERSAL</tagClassType>
-        <tagConstructedType>CONSTRUCTED</tagConstructedType>
         <children>
             <Asn1Sequence identifier="element">
                 <tagClass>
@@ -6692,8 +6191,6 @@
                 <lengthOctets>
                     <originalValue>13</originalValue>
                 </lengthOctets>
-                <tagClassType>UNIVERSAL</tagClassType>
-                <tagConstructedType>CONSTRUCTED</tagConstructedType>
                 <children>
                     <Asn1ObjectIdentifier identifier="type">
                         <tagClass>
@@ -6717,8 +6214,6 @@
                         <lengthOctets>
                             <originalValue>03</originalValue>
                         </lengthOctets>
-                        <tagClassType>UNIVERSAL</tagClassType>
-                        <tagConstructedType>PRIMITIVE</tagConstructedType>
                         <value>
                             <originalValue>2.5.4.3</originalValue>
                         </value>
@@ -6746,7 +6241,6 @@
                             <lengthOctets>
 <originalValue>0C</originalValue>
                             </lengthOctets>
-                            <tagClassType>UNIVERSAL</tagClassType>
                             <contentConfig>VExTLUF0dGFja2Vy</contentConfig>
                         </instantiation>
                         <optional>false</optional>
@@ -6779,8 +6273,6 @@
 <lengthOctets>
     <originalValue>82 01 22</originalValue>
 </lengthOctets>
-<tagClassType>UNIVERSAL</tagClassType>
-<tagConstructedType>CONSTRUCTED</tagConstructedType>
 <children>
     <Asn1Sequence xsi:type="algorithmIdentifier" identifier="algorithm">
         <tagClass>
@@ -6804,8 +6296,6 @@
         <lengthOctets>
             <originalValue>0D</originalValue>
         </lengthOctets>
-        <tagClassType>UNIVERSAL</tagClassType>
-        <tagConstructedType>CONSTRUCTED</tagConstructedType>
         <children>
             <Asn1ObjectIdentifier identifier="algorithm">
                 <tagClass>
@@ -6829,8 +6319,6 @@
                 <lengthOctets>
                     <originalValue>09</originalValue>
                 </lengthOctets>
-                <tagClassType>UNIVERSAL</tagClassType>
-                <tagConstructedType>PRIMITIVE</tagConstructedType>
                 <value>
                     <originalValue>1.2.840.113549.1.1.1</originalValue>
                 </value>
@@ -6858,7 +6346,6 @@
                     <lengthOctets>
                         <originalValue>00</originalValue>
                     </lengthOctets>
-                    <tagClassType>UNIVERSAL</tagClassType>
                     <contentConfig></contentConfig>
                 </instantiation>
                 <optional>true</optional>
@@ -6886,8 +6373,6 @@
             <lengthOctets>
                 <originalValue>09</originalValue>
             </lengthOctets>
-            <tagClassType>UNIVERSAL</tagClassType>
-            <tagConstructedType>PRIMITIVE</tagConstructedType>
             <value>
                 <originalValue>1.2.840.113549.1.1.1</originalValue>
             </value>
@@ -6915,7 +6400,6 @@
                 <lengthOctets>
                     <originalValue>00</originalValue>
                 </lengthOctets>
-                <tagClassType>UNIVERSAL</tagClassType>
                 <contentConfig></contentConfig>
             </instantiation>
             <optional>true</optional>
@@ -6943,8 +6427,6 @@
         <lengthOctets>
             <originalValue>82 01 0F</originalValue>
         </lengthOctets>
-        <tagClassType>UNIVERSAL</tagClassType>
-        <tagConstructedType>PRIMITIVE</tagConstructedType>
         <unusedBits>
             <originalValue>0</originalValue>
         </unusedBits>
@@ -6975,8 +6457,6 @@
     <lengthOctets>
         <originalValue>0D</originalValue>
     </lengthOctets>
-    <tagClassType>UNIVERSAL</tagClassType>
-    <tagConstructedType>CONSTRUCTED</tagConstructedType>
     <children>
         <Asn1ObjectIdentifier identifier="algorithm">
             <tagClass>
@@ -7000,8 +6480,6 @@
             <lengthOctets>
                 <originalValue>09</originalValue>
             </lengthOctets>
-            <tagClassType>UNIVERSAL</tagClassType>
-            <tagConstructedType>PRIMITIVE</tagConstructedType>
             <value>
                 <originalValue>1.2.840.113549.1.1.1</originalValue>
             </value>
@@ -7029,7 +6507,6 @@
                 <lengthOctets>
                     <originalValue>00</originalValue>
                 </lengthOctets>
-                <tagClassType>UNIVERSAL</tagClassType>
                 <contentConfig></contentConfig>
             </instantiation>
             <optional>true</optional>
@@ -7057,8 +6534,6 @@
         <lengthOctets>
             <originalValue>09</originalValue>
         </lengthOctets>
-        <tagClassType>UNIVERSAL</tagClassType>
-        <tagConstructedType>PRIMITIVE</tagConstructedType>
         <value>
             <originalValue>1.2.840.113549.1.1.1</originalValue>
         </value>
@@ -7086,7 +6561,6 @@
             <lengthOctets>
                 <originalValue>00</originalValue>
             </lengthOctets>
-            <tagClassType>UNIVERSAL</tagClassType>
             <contentConfig></contentConfig>
         </instantiation>
         <optional>true</optional>
@@ -7114,8 +6588,6 @@
     <lengthOctets>
         <originalValue>82 01 0F</originalValue>
     </lengthOctets>
-    <tagClassType>UNIVERSAL</tagClassType>
-    <tagConstructedType>PRIMITIVE</tagConstructedType>
     <unusedBits>
         <originalValue>0</originalValue>
     </unusedBits>
@@ -7124,14 +6596,8 @@
     </value>
 </subjectPublicKeyBitString>
                             </Asn1Sequence>
-                            <Asn1PrimitiveBitString identifier="issuerUniqueID">
-<tagClassType>UNIVERSAL</tagClassType>
-<tagConstructedType>PRIMITIVE</tagConstructedType>
-                            </Asn1PrimitiveBitString>
-                            <Asn1PrimitiveBitString identifier="subjectUniqueID">
-<tagClassType>UNIVERSAL</tagClassType>
-<tagConstructedType>PRIMITIVE</tagConstructedType>
-                            </Asn1PrimitiveBitString>
+                            <Asn1PrimitiveBitString identifier="issuerUniqueID"/>
+                            <Asn1PrimitiveBitString identifier="subjectUniqueID"/>
                             <Asn1Explicit identifier="extensionsExplicit">
 <tagClass>
     <originalValue>2</originalValue>
@@ -7154,8 +6620,6 @@
 <lengthOctets>
     <originalValue>53</originalValue>
 </lengthOctets>
-<tagClassType>CONTEXT_SPECIFIC</tagClassType>
-<tagConstructedType>CONSTRUCTED</tagConstructedType>
 <children>
     <Asn1Sequence identifier="extensions">
         <tagClass>
@@ -7179,8 +6643,6 @@
         <lengthOctets>
             <originalValue>51</originalValue>
         </lengthOctets>
-        <tagClassType>UNIVERSAL</tagClassType>
-        <tagConstructedType>CONSTRUCTED</tagConstructedType>
         <children>
             <Asn1Sequence identifier="extension">
                 <tagClass>
@@ -7204,8 +6666,6 @@
                 <lengthOctets>
                     <originalValue>1D</originalValue>
                 </lengthOctets>
-                <tagClassType>UNIVERSAL</tagClassType>
-                <tagConstructedType>CONSTRUCTED</tagConstructedType>
                 <children>
                     <Asn1ObjectIdentifier identifier="extensionId">
                         <tagClass>
@@ -7229,16 +6689,11 @@
                         <lengthOctets>
                             <originalValue>03</originalValue>
                         </lengthOctets>
-                        <tagClassType>UNIVERSAL</tagClassType>
-                        <tagConstructedType>PRIMITIVE</tagConstructedType>
                         <value>
                             <originalValue>2.5.29.14</originalValue>
                         </value>
                     </Asn1ObjectIdentifier>
-                    <Asn1Boolean identifier="critical">
-                        <tagClassType>UNIVERSAL</tagClassType>
-                        <tagConstructedType>PRIMITIVE</tagConstructedType>
-                    </Asn1Boolean>
+                    <Asn1Boolean identifier="critical"/>
                     <Asn1PrimitiveOctetString identifier="extensionValue">
                         <tagClass>
                             <originalValue>0</originalValue>
@@ -7261,8 +6716,6 @@
                         <lengthOctets>
                             <originalValue>16</originalValue>
                         </lengthOctets>
-                        <tagClassType>UNIVERSAL</tagClassType>
-                        <tagConstructedType>PRIMITIVE</tagConstructedType>
                         <value>
                             <originalValue>04 14 E7 A9 2F E5 54 3A EE 2F F7 59 2F 80 0A C6 E6 65 41 E3 26 8B</originalValue>
                         </value>
@@ -7291,8 +6744,6 @@
                 <lengthOctets>
                     <originalValue>1F</originalValue>
                 </lengthOctets>
-                <tagClassType>UNIVERSAL</tagClassType>
-                <tagConstructedType>CONSTRUCTED</tagConstructedType>
                 <children>
                     <Asn1ObjectIdentifier identifier="extensionId">
                         <tagClass>
@@ -7316,16 +6767,11 @@
                         <lengthOctets>
                             <originalValue>03</originalValue>
                         </lengthOctets>
-                        <tagClassType>UNIVERSAL</tagClassType>
-                        <tagConstructedType>PRIMITIVE</tagConstructedType>
                         <value>
                             <originalValue>2.5.29.35</originalValue>
                         </value>
                     </Asn1ObjectIdentifier>
-                    <Asn1Boolean identifier="critical">
-                        <tagClassType>UNIVERSAL</tagClassType>
-                        <tagConstructedType>PRIMITIVE</tagConstructedType>
-                    </Asn1Boolean>
+                    <Asn1Boolean identifier="critical"/>
                     <Asn1PrimitiveOctetString identifier="extensionValue">
                         <tagClass>
                             <originalValue>0</originalValue>
@@ -7348,8 +6794,6 @@
                         <lengthOctets>
                             <originalValue>18</originalValue>
                         </lengthOctets>
-                        <tagClassType>UNIVERSAL</tagClassType>
-                        <tagConstructedType>PRIMITIVE</tagConstructedType>
                         <value>
                             <originalValue>30 16 80 14 E7 A9 2F E5 54 3A EE 2F F7 59 2F 80 0A C6 E6 65 41 E3 26 8B</originalValue>
                         </value>
@@ -7378,8 +6822,6 @@
                 <lengthOctets>
                     <originalValue>0F</originalValue>
                 </lengthOctets>
-                <tagClassType>UNIVERSAL</tagClassType>
-                <tagConstructedType>CONSTRUCTED</tagConstructedType>
                 <children>
                     <Asn1ObjectIdentifier identifier="extensionId">
                         <tagClass>
@@ -7403,8 +6845,6 @@
                         <lengthOctets>
                             <originalValue>03</originalValue>
                         </lengthOctets>
-                        <tagClassType>UNIVERSAL</tagClassType>
-                        <tagConstructedType>PRIMITIVE</tagConstructedType>
                         <value>
                             <originalValue>2.5.29.19</originalValue>
                         </value>
@@ -7431,8 +6871,6 @@
                         <lengthOctets>
                             <originalValue>01</originalValue>
                         </lengthOctets>
-                        <tagClassType>UNIVERSAL</tagClassType>
-                        <tagConstructedType>PRIMITIVE</tagConstructedType>
                         <value>
                             <originalValue>true</originalValue>
                         </value>
@@ -7459,8 +6897,6 @@
                         <lengthOctets>
                             <originalValue>05</originalValue>
                         </lengthOctets>
-                        <tagClassType>UNIVERSAL</tagClassType>
-                        <tagConstructedType>PRIMITIVE</tagConstructedType>
                         <value>
                             <originalValue>30 03 01 01 FF</originalValue>
                         </value>
@@ -7492,8 +6928,6 @@
     <lengthOctets>
         <originalValue>51</originalValue>
     </lengthOctets>
-    <tagClassType>UNIVERSAL</tagClassType>
-    <tagConstructedType>CONSTRUCTED</tagConstructedType>
     <children>
         <Asn1Sequence identifier="extension">
             <tagClass>
@@ -7517,8 +6951,6 @@
             <lengthOctets>
                 <originalValue>1D</originalValue>
             </lengthOctets>
-            <tagClassType>UNIVERSAL</tagClassType>
-            <tagConstructedType>CONSTRUCTED</tagConstructedType>
             <children>
                 <Asn1ObjectIdentifier identifier="extensionId">
                     <tagClass>
@@ -7542,16 +6974,11 @@
                     <lengthOctets>
                         <originalValue>03</originalValue>
                     </lengthOctets>
-                    <tagClassType>UNIVERSAL</tagClassType>
-                    <tagConstructedType>PRIMITIVE</tagConstructedType>
                     <value>
                         <originalValue>2.5.29.14</originalValue>
                     </value>
                 </Asn1ObjectIdentifier>
-                <Asn1Boolean identifier="critical">
-                    <tagClassType>UNIVERSAL</tagClassType>
-                    <tagConstructedType>PRIMITIVE</tagConstructedType>
-                </Asn1Boolean>
+                <Asn1Boolean identifier="critical"/>
                 <Asn1PrimitiveOctetString identifier="extensionValue">
                     <tagClass>
                         <originalValue>0</originalValue>
@@ -7574,8 +7001,6 @@
                     <lengthOctets>
                         <originalValue>16</originalValue>
                     </lengthOctets>
-                    <tagClassType>UNIVERSAL</tagClassType>
-                    <tagConstructedType>PRIMITIVE</tagConstructedType>
                     <value>
                         <originalValue>04 14 E7 A9 2F E5 54 3A EE 2F F7 59 2F 80 0A C6 E6 65 41 E3 26 8B</originalValue>
                     </value>
@@ -7604,8 +7029,6 @@
             <lengthOctets>
                 <originalValue>1F</originalValue>
             </lengthOctets>
-            <tagClassType>UNIVERSAL</tagClassType>
-            <tagConstructedType>CONSTRUCTED</tagConstructedType>
             <children>
                 <Asn1ObjectIdentifier identifier="extensionId">
                     <tagClass>
@@ -7629,16 +7052,11 @@
                     <lengthOctets>
                         <originalValue>03</originalValue>
                     </lengthOctets>
-                    <tagClassType>UNIVERSAL</tagClassType>
-                    <tagConstructedType>PRIMITIVE</tagConstructedType>
                     <value>
                         <originalValue>2.5.29.35</originalValue>
                     </value>
                 </Asn1ObjectIdentifier>
-                <Asn1Boolean identifier="critical">
-                    <tagClassType>UNIVERSAL</tagClassType>
-                    <tagConstructedType>PRIMITIVE</tagConstructedType>
-                </Asn1Boolean>
+                <Asn1Boolean identifier="critical"/>
                 <Asn1PrimitiveOctetString identifier="extensionValue">
                     <tagClass>
                         <originalValue>0</originalValue>
@@ -7661,8 +7079,6 @@
                     <lengthOctets>
                         <originalValue>18</originalValue>
                     </lengthOctets>
-                    <tagClassType>UNIVERSAL</tagClassType>
-                    <tagConstructedType>PRIMITIVE</tagConstructedType>
                     <value>
                         <originalValue>30 16 80 14 E7 A9 2F E5 54 3A EE 2F F7 59 2F 80 0A C6 E6 65 41 E3 26 8B</originalValue>
                     </value>
@@ -7691,8 +7107,6 @@
             <lengthOctets>
                 <originalValue>0F</originalValue>
             </lengthOctets>
-            <tagClassType>UNIVERSAL</tagClassType>
-            <tagConstructedType>CONSTRUCTED</tagConstructedType>
             <children>
                 <Asn1ObjectIdentifier identifier="extensionId">
                     <tagClass>
@@ -7716,8 +7130,6 @@
                     <lengthOctets>
                         <originalValue>03</originalValue>
                     </lengthOctets>
-                    <tagClassType>UNIVERSAL</tagClassType>
-                    <tagConstructedType>PRIMITIVE</tagConstructedType>
                     <value>
                         <originalValue>2.5.29.19</originalValue>
                     </value>
@@ -7744,8 +7156,6 @@
                     <lengthOctets>
                         <originalValue>01</originalValue>
                     </lengthOctets>
-                    <tagClassType>UNIVERSAL</tagClassType>
-                    <tagConstructedType>PRIMITIVE</tagConstructedType>
                     <value>
                         <originalValue>true</originalValue>
                     </value>
@@ -7772,8 +7182,6 @@
                     <lengthOctets>
                         <originalValue>05</originalValue>
                     </lengthOctets>
-                    <tagClassType>UNIVERSAL</tagClassType>
-                    <tagConstructedType>PRIMITIVE</tagConstructedType>
                     <value>
                         <originalValue>30 03 01 01 FF</originalValue>
                     </value>
@@ -7806,8 +7214,6 @@
                             <lengthOctets>
 <originalValue>03</originalValue>
                             </lengthOctets>
-                            <tagClassType>CONTEXT_SPECIFIC</tagClassType>
-                            <tagConstructedType>CONSTRUCTED</tagConstructedType>
                             <children>
 <Asn1Integer identifier="value">
     <tagClass>
@@ -7831,8 +7237,6 @@
     <lengthOctets>
         <originalValue>01</originalValue>
     </lengthOctets>
-    <tagClassType>UNIVERSAL</tagClassType>
-    <tagConstructedType>PRIMITIVE</tagConstructedType>
     <value>
         <originalValue>2</originalValue>
     </value>
@@ -7860,8 +7264,6 @@
 <lengthOctets>
     <originalValue>01</originalValue>
 </lengthOctets>
-<tagClassType>UNIVERSAL</tagClassType>
-<tagConstructedType>PRIMITIVE</tagConstructedType>
 <value>
     <originalValue>2</originalValue>
 </value>
@@ -7889,8 +7291,6 @@
                             <lengthOctets>
 <originalValue>09</originalValue>
                             </lengthOctets>
-                            <tagClassType>UNIVERSAL</tagClassType>
-                            <tagConstructedType>PRIMITIVE</tagConstructedType>
                             <value>
 <originalValue>11984289747213524941</originalValue>
                             </value>
@@ -7917,8 +7317,6 @@
                             <lengthOctets>
 <originalValue>0D</originalValue>
                             </lengthOctets>
-                            <tagClassType>UNIVERSAL</tagClassType>
-                            <tagConstructedType>CONSTRUCTED</tagConstructedType>
                             <children>
 <Asn1ObjectIdentifier identifier="algorithm">
     <tagClass>
@@ -7942,8 +7340,6 @@
     <lengthOctets>
         <originalValue>09</originalValue>
     </lengthOctets>
-    <tagClassType>UNIVERSAL</tagClassType>
-    <tagConstructedType>PRIMITIVE</tagConstructedType>
     <value>
         <originalValue>1.2.840.113549.1.1.11</originalValue>
     </value>
@@ -7971,7 +7367,6 @@
         <lengthOctets>
             <originalValue>00</originalValue>
         </lengthOctets>
-        <tagClassType>UNIVERSAL</tagClassType>
         <contentConfig></contentConfig>
     </instantiation>
     <optional>true</optional>
@@ -7999,8 +7394,6 @@
 <lengthOctets>
     <originalValue>09</originalValue>
 </lengthOctets>
-<tagClassType>UNIVERSAL</tagClassType>
-<tagConstructedType>PRIMITIVE</tagConstructedType>
 <value>
     <originalValue>1.2.840.113549.1.1.11</originalValue>
 </value>
@@ -8028,7 +7421,6 @@
     <lengthOctets>
         <originalValue>00</originalValue>
     </lengthOctets>
-    <tagClassType>UNIVERSAL</tagClassType>
     <contentConfig></contentConfig>
 </instantiation>
 <optional>true</optional>
@@ -8056,8 +7448,6 @@
                             <lengthOctets>
 <originalValue>5C</originalValue>
                             </lengthOctets>
-                            <tagClassType>UNIVERSAL</tagClassType>
-                            <tagConstructedType>CONSTRUCTED</tagConstructedType>
                             <children>
 <Asn1Set xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="relativeDistinguishedName" identifier="rdn">
     <tagClass>
@@ -8081,8 +7471,6 @@
     <lengthOctets>
         <originalValue>0B</originalValue>
     </lengthOctets>
-    <tagClassType>UNIVERSAL</tagClassType>
-    <tagConstructedType>CONSTRUCTED</tagConstructedType>
     <children>
         <Asn1Sequence identifier="element">
             <tagClass>
@@ -8106,8 +7494,6 @@
             <lengthOctets>
                 <originalValue>09</originalValue>
             </lengthOctets>
-            <tagClassType>UNIVERSAL</tagClassType>
-            <tagConstructedType>CONSTRUCTED</tagConstructedType>
             <children>
                 <Asn1ObjectIdentifier identifier="type">
                     <tagClass>
@@ -8131,8 +7517,6 @@
                     <lengthOctets>
                         <originalValue>03</originalValue>
                     </lengthOctets>
-                    <tagClassType>UNIVERSAL</tagClassType>
-                    <tagConstructedType>PRIMITIVE</tagConstructedType>
                     <value>
                         <originalValue>2.5.4.6</originalValue>
                     </value>
@@ -8160,7 +7544,6 @@
                         <lengthOctets>
                             <originalValue>02</originalValue>
                         </lengthOctets>
-                        <tagClassType>UNIVERSAL</tagClassType>
                         <contentConfig>QVU=</contentConfig>
                     </instantiation>
                     <optional>false</optional>
@@ -8191,8 +7574,6 @@
     <lengthOctets>
         <originalValue>13</originalValue>
     </lengthOctets>
-    <tagClassType>UNIVERSAL</tagClassType>
-    <tagConstructedType>CONSTRUCTED</tagConstructedType>
     <children>
         <Asn1Sequence identifier="element">
             <tagClass>
@@ -8216,8 +7597,6 @@
             <lengthOctets>
                 <originalValue>11</originalValue>
             </lengthOctets>
-            <tagClassType>UNIVERSAL</tagClassType>
-            <tagConstructedType>CONSTRUCTED</tagConstructedType>
             <children>
                 <Asn1ObjectIdentifier identifier="type">
                     <tagClass>
@@ -8241,8 +7620,6 @@
                     <lengthOctets>
                         <originalValue>03</originalValue>
                     </lengthOctets>
-                    <tagClassType>UNIVERSAL</tagClassType>
-                    <tagConstructedType>PRIMITIVE</tagConstructedType>
                     <value>
                         <originalValue>2.5.4.8</originalValue>
                     </value>
@@ -8270,7 +7647,6 @@
                         <lengthOctets>
                             <originalValue>0A</originalValue>
                         </lengthOctets>
-                        <tagClassType>UNIVERSAL</tagClassType>
                         <contentConfig>U29tZS1TdGF0ZQ==</contentConfig>
                     </instantiation>
                     <optional>false</optional>
@@ -8301,8 +7677,6 @@
     <lengthOctets>
         <originalValue>21</originalValue>
     </lengthOctets>
-    <tagClassType>UNIVERSAL</tagClassType>
-    <tagConstructedType>CONSTRUCTED</tagConstructedType>
     <children>
         <Asn1Sequence identifier="element">
             <tagClass>
@@ -8326,8 +7700,6 @@
             <lengthOctets>
                 <originalValue>1F</originalValue>
             </lengthOctets>
-            <tagClassType>UNIVERSAL</tagClassType>
-            <tagConstructedType>CONSTRUCTED</tagConstructedType>
             <children>
                 <Asn1ObjectIdentifier identifier="type">
                     <tagClass>
@@ -8351,8 +7723,6 @@
                     <lengthOctets>
                         <originalValue>03</originalValue>
                     </lengthOctets>
-                    <tagClassType>UNIVERSAL</tagClassType>
-                    <tagConstructedType>PRIMITIVE</tagConstructedType>
                     <value>
                         <originalValue>2.5.4.10</originalValue>
                     </value>
@@ -8380,7 +7750,6 @@
                         <lengthOctets>
                             <originalValue>18</originalValue>
                         </lengthOctets>
-                        <tagClassType>UNIVERSAL</tagClassType>
                         <contentConfig>SW50ZXJuZXQgV2lkZ2l0cyBQdHkgTHRk</contentConfig>
                     </instantiation>
                     <optional>false</optional>
@@ -8411,8 +7780,6 @@
     <lengthOctets>
         <originalValue>15</originalValue>
     </lengthOctets>
-    <tagClassType>UNIVERSAL</tagClassType>
-    <tagConstructedType>CONSTRUCTED</tagConstructedType>
     <children>
         <Asn1Sequence identifier="element">
             <tagClass>
@@ -8436,8 +7803,6 @@
             <lengthOctets>
                 <originalValue>13</originalValue>
             </lengthOctets>
-            <tagClassType>UNIVERSAL</tagClassType>
-            <tagConstructedType>CONSTRUCTED</tagConstructedType>
             <children>
                 <Asn1ObjectIdentifier identifier="type">
                     <tagClass>
@@ -8461,8 +7826,6 @@
                     <lengthOctets>
                         <originalValue>03</originalValue>
                     </lengthOctets>
-                    <tagClassType>UNIVERSAL</tagClassType>
-                    <tagConstructedType>PRIMITIVE</tagConstructedType>
                     <value>
                         <originalValue>2.5.4.3</originalValue>
                     </value>
@@ -8490,7 +7853,6 @@
                         <lengthOctets>
                             <originalValue>0C</originalValue>
                         </lengthOctets>
-                        <tagClassType>UNIVERSAL</tagClassType>
                         <contentConfig>VExTLUF0dGFja2Vy</contentConfig>
                     </instantiation>
                     <optional>false</optional>
@@ -8523,8 +7885,6 @@
                             <lengthOctets>
 <originalValue>20</originalValue>
                             </lengthOctets>
-                            <tagClassType>UNIVERSAL</tagClassType>
-                            <tagConstructedType>CONSTRUCTED</tagConstructedType>
                             <children>
 <Asn1Choice xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="time" identifier="notBefore">
     <selectedChoice xsi:type="asn1PrimitiveUtcTime" identifier="utcTime">
@@ -8549,8 +7909,6 @@
         <lengthOctets>
             <originalValue>0D</originalValue>
         </lengthOctets>
-        <tagClassType>UNIVERSAL</tagClassType>
-        <tagConstructedType>PRIMITIVE</tagConstructedType>
         <value>
             <originalValue>170713125318Z</originalValue>
         </value>
@@ -8579,18 +7937,13 @@
                 <lengthOctets>
                     <originalValue>0D</originalValue>
                 </lengthOctets>
-                <tagClassType>UNIVERSAL</tagClassType>
-                <tagConstructedType>PRIMITIVE</tagConstructedType>
                 <value>
                     <originalValue>170713125318Z</originalValue>
                 </value>
             </field>
         </selectableChoice>
         <selectableChoice>
-            <field xsi:type="asn1PrimitiveGeneralizedTime" identifier="generalizedTime">
-                <tagClassType>UNIVERSAL</tagClassType>
-                <tagConstructedType>PRIMITIVE</tagConstructedType>
-            </field>
+            <field xsi:type="asn1PrimitiveGeneralizedTime" identifier="generalizedTime"/>
         </selectableChoice>
     </choiceList>
 </Asn1Choice>
@@ -8617,18 +7970,13 @@
         <lengthOctets>
             <originalValue>0F</originalValue>
         </lengthOctets>
-        <tagClassType>UNIVERSAL</tagClassType>
-        <tagConstructedType>PRIMITIVE</tagConstructedType>
         <value>
             <originalValue>21170619125318Z</originalValue>
         </value>
     </selectedChoice>
     <choiceList>
         <selectableChoice>
-            <field xsi:type="asn1PrimitiveUtcTime" identifier="utcTime">
-                <tagClassType>UNIVERSAL</tagClassType>
-                <tagConstructedType>PRIMITIVE</tagConstructedType>
-            </field>
+            <field xsi:type="asn1PrimitiveUtcTime" identifier="utcTime"/>
         </selectableChoice>
         <selectableChoice>
             <field xsi:type="asn1PrimitiveGeneralizedTime" identifier="generalizedTime">
@@ -8653,8 +8001,6 @@
                 <lengthOctets>
                     <originalValue>0F</originalValue>
                 </lengthOctets>
-                <tagClassType>UNIVERSAL</tagClassType>
-                <tagConstructedType>PRIMITIVE</tagConstructedType>
                 <value>
                     <originalValue>21170619125318Z</originalValue>
                 </value>
@@ -8686,8 +8032,6 @@
     <lengthOctets>
         <originalValue>0D</originalValue>
     </lengthOctets>
-    <tagClassType>UNIVERSAL</tagClassType>
-    <tagConstructedType>PRIMITIVE</tagConstructedType>
     <value>
         <originalValue>170713125318Z</originalValue>
     </value>
@@ -8716,18 +8060,13 @@
             <lengthOctets>
                 <originalValue>0D</originalValue>
             </lengthOctets>
-            <tagClassType>UNIVERSAL</tagClassType>
-            <tagConstructedType>PRIMITIVE</tagConstructedType>
             <value>
                 <originalValue>170713125318Z</originalValue>
             </value>
         </field>
     </selectableChoice>
     <selectableChoice>
-        <field xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="asn1PrimitiveGeneralizedTime" identifier="generalizedTime">
-            <tagClassType>UNIVERSAL</tagClassType>
-            <tagConstructedType>PRIMITIVE</tagConstructedType>
-        </field>
+        <field xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="asn1PrimitiveGeneralizedTime" identifier="generalizedTime"/>
     </selectableChoice>
 </choiceList>
                             </notBefore>
@@ -8754,18 +8093,13 @@
     <lengthOctets>
         <originalValue>0F</originalValue>
     </lengthOctets>
-    <tagClassType>UNIVERSAL</tagClassType>
-    <tagConstructedType>PRIMITIVE</tagConstructedType>
     <value>
         <originalValue>21170619125318Z</originalValue>
     </value>
 </selectedChoice>
 <choiceList>
     <selectableChoice>
-        <field xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="asn1PrimitiveUtcTime" identifier="utcTime">
-            <tagClassType>UNIVERSAL</tagClassType>
-            <tagConstructedType>PRIMITIVE</tagConstructedType>
-        </field>
+        <field xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="asn1PrimitiveUtcTime" identifier="utcTime"/>
     </selectableChoice>
     <selectableChoice>
         <field xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="asn1PrimitiveGeneralizedTime" identifier="generalizedTime">
@@ -8790,8 +8124,6 @@
             <lengthOctets>
                 <originalValue>0F</originalValue>
             </lengthOctets>
-            <tagClassType>UNIVERSAL</tagClassType>
-            <tagConstructedType>PRIMITIVE</tagConstructedType>
             <value>
                 <originalValue>21170619125318Z</originalValue>
             </value>
@@ -8822,8 +8154,6 @@
                             <lengthOctets>
 <originalValue>5C</originalValue>
                             </lengthOctets>
-                            <tagClassType>UNIVERSAL</tagClassType>
-                            <tagConstructedType>CONSTRUCTED</tagConstructedType>
                             <children>
 <Asn1Set xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="relativeDistinguishedName" identifier="rdn">
     <tagClass>
@@ -8847,8 +8177,6 @@
     <lengthOctets>
         <originalValue>0B</originalValue>
     </lengthOctets>
-    <tagClassType>UNIVERSAL</tagClassType>
-    <tagConstructedType>CONSTRUCTED</tagConstructedType>
     <children>
         <Asn1Sequence identifier="element">
             <tagClass>
@@ -8872,8 +8200,6 @@
             <lengthOctets>
                 <originalValue>09</originalValue>
             </lengthOctets>
-            <tagClassType>UNIVERSAL</tagClassType>
-            <tagConstructedType>CONSTRUCTED</tagConstructedType>
             <children>
                 <Asn1ObjectIdentifier identifier="type">
                     <tagClass>
@@ -8897,8 +8223,6 @@
                     <lengthOctets>
                         <originalValue>03</originalValue>
                     </lengthOctets>
-                    <tagClassType>UNIVERSAL</tagClassType>
-                    <tagConstructedType>PRIMITIVE</tagConstructedType>
                     <value>
                         <originalValue>2.5.4.6</originalValue>
                     </value>
@@ -8926,7 +8250,6 @@
                         <lengthOctets>
                             <originalValue>02</originalValue>
                         </lengthOctets>
-                        <tagClassType>UNIVERSAL</tagClassType>
                         <contentConfig>QVU=</contentConfig>
                     </instantiation>
                     <optional>false</optional>
@@ -8957,8 +8280,6 @@
     <lengthOctets>
         <originalValue>13</originalValue>
     </lengthOctets>
-    <tagClassType>UNIVERSAL</tagClassType>
-    <tagConstructedType>CONSTRUCTED</tagConstructedType>
     <children>
         <Asn1Sequence identifier="element">
             <tagClass>
@@ -8982,8 +8303,6 @@
             <lengthOctets>
                 <originalValue>11</originalValue>
             </lengthOctets>
-            <tagClassType>UNIVERSAL</tagClassType>
-            <tagConstructedType>CONSTRUCTED</tagConstructedType>
             <children>
                 <Asn1ObjectIdentifier identifier="type">
                     <tagClass>
@@ -9007,8 +8326,6 @@
                     <lengthOctets>
                         <originalValue>03</originalValue>
                     </lengthOctets>
-                    <tagClassType>UNIVERSAL</tagClassType>
-                    <tagConstructedType>PRIMITIVE</tagConstructedType>
                     <value>
                         <originalValue>2.5.4.8</originalValue>
                     </value>
@@ -9036,7 +8353,6 @@
                         <lengthOctets>
                             <originalValue>0A</originalValue>
                         </lengthOctets>
-                        <tagClassType>UNIVERSAL</tagClassType>
                         <contentConfig>U29tZS1TdGF0ZQ==</contentConfig>
                     </instantiation>
                     <optional>false</optional>
@@ -9067,8 +8383,6 @@
     <lengthOctets>
         <originalValue>21</originalValue>
     </lengthOctets>
-    <tagClassType>UNIVERSAL</tagClassType>
-    <tagConstructedType>CONSTRUCTED</tagConstructedType>
     <children>
         <Asn1Sequence identifier="element">
             <tagClass>
@@ -9092,8 +8406,6 @@
             <lengthOctets>
                 <originalValue>1F</originalValue>
             </lengthOctets>
-            <tagClassType>UNIVERSAL</tagClassType>
-            <tagConstructedType>CONSTRUCTED</tagConstructedType>
             <children>
                 <Asn1ObjectIdentifier identifier="type">
                     <tagClass>
@@ -9117,8 +8429,6 @@
                     <lengthOctets>
                         <originalValue>03</originalValue>
                     </lengthOctets>
-                    <tagClassType>UNIVERSAL</tagClassType>
-                    <tagConstructedType>PRIMITIVE</tagConstructedType>
                     <value>
                         <originalValue>2.5.4.10</originalValue>
                     </value>
@@ -9146,7 +8456,6 @@
                         <lengthOctets>
                             <originalValue>18</originalValue>
                         </lengthOctets>
-                        <tagClassType>UNIVERSAL</tagClassType>
                         <contentConfig>SW50ZXJuZXQgV2lkZ2l0cyBQdHkgTHRk</contentConfig>
                     </instantiation>
                     <optional>false</optional>
@@ -9177,8 +8486,6 @@
     <lengthOctets>
         <originalValue>15</originalValue>
     </lengthOctets>
-    <tagClassType>UNIVERSAL</tagClassType>
-    <tagConstructedType>CONSTRUCTED</tagConstructedType>
     <children>
         <Asn1Sequence identifier="element">
             <tagClass>
@@ -9202,8 +8509,6 @@
             <lengthOctets>
                 <originalValue>13</originalValue>
             </lengthOctets>
-            <tagClassType>UNIVERSAL</tagClassType>
-            <tagConstructedType>CONSTRUCTED</tagConstructedType>
             <children>
                 <Asn1ObjectIdentifier identifier="type">
                     <tagClass>
@@ -9227,8 +8532,6 @@
                     <lengthOctets>
                         <originalValue>03</originalValue>
                     </lengthOctets>
-                    <tagClassType>UNIVERSAL</tagClassType>
-                    <tagConstructedType>PRIMITIVE</tagConstructedType>
                     <value>
                         <originalValue>2.5.4.3</originalValue>
                     </value>
@@ -9256,7 +8559,6 @@
                         <lengthOctets>
                             <originalValue>0C</originalValue>
                         </lengthOctets>
-                        <tagClassType>UNIVERSAL</tagClassType>
                         <contentConfig>VExTLUF0dGFja2Vy</contentConfig>
                     </instantiation>
                     <optional>false</optional>
@@ -9289,8 +8591,6 @@
                             <lengthOctets>
 <originalValue>82 01 22</originalValue>
                             </lengthOctets>
-                            <tagClassType>UNIVERSAL</tagClassType>
-                            <tagConstructedType>CONSTRUCTED</tagConstructedType>
                             <children>
 <Asn1Sequence xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="algorithmIdentifier" identifier="algorithm">
     <tagClass>
@@ -9314,8 +8614,6 @@
     <lengthOctets>
         <originalValue>0D</originalValue>
     </lengthOctets>
-    <tagClassType>UNIVERSAL</tagClassType>
-    <tagConstructedType>CONSTRUCTED</tagConstructedType>
     <children>
         <Asn1ObjectIdentifier identifier="algorithm">
             <tagClass>
@@ -9339,8 +8637,6 @@
             <lengthOctets>
                 <originalValue>09</originalValue>
             </lengthOctets>
-            <tagClassType>UNIVERSAL</tagClassType>
-            <tagConstructedType>PRIMITIVE</tagConstructedType>
             <value>
                 <originalValue>1.2.840.113549.1.1.1</originalValue>
             </value>
@@ -9368,7 +8664,6 @@
                 <lengthOctets>
                     <originalValue>00</originalValue>
                 </lengthOctets>
-                <tagClassType>UNIVERSAL</tagClassType>
                 <contentConfig></contentConfig>
             </instantiation>
             <optional>true</optional>
@@ -9396,8 +8691,6 @@
         <lengthOctets>
             <originalValue>09</originalValue>
         </lengthOctets>
-        <tagClassType>UNIVERSAL</tagClassType>
-        <tagConstructedType>PRIMITIVE</tagConstructedType>
         <value>
             <originalValue>1.2.840.113549.1.1.1</originalValue>
         </value>
@@ -9425,7 +8718,6 @@
             <lengthOctets>
                 <originalValue>00</originalValue>
             </lengthOctets>
-            <tagClassType>UNIVERSAL</tagClassType>
             <contentConfig></contentConfig>
         </instantiation>
         <optional>true</optional>
@@ -9453,8 +8745,6 @@
     <lengthOctets>
         <originalValue>82 01 0F</originalValue>
     </lengthOctets>
-    <tagClassType>UNIVERSAL</tagClassType>
-    <tagConstructedType>PRIMITIVE</tagConstructedType>
     <unusedBits>
         <originalValue>0</originalValue>
     </unusedBits>
@@ -9485,8 +8775,6 @@
 <lengthOctets>
     <originalValue>0D</originalValue>
 </lengthOctets>
-<tagClassType>UNIVERSAL</tagClassType>
-<tagConstructedType>CONSTRUCTED</tagConstructedType>
 <children>
     <Asn1ObjectIdentifier identifier="algorithm">
         <tagClass>
@@ -9510,8 +8798,6 @@
         <lengthOctets>
             <originalValue>09</originalValue>
         </lengthOctets>
-        <tagClassType>UNIVERSAL</tagClassType>
-        <tagConstructedType>PRIMITIVE</tagConstructedType>
         <value>
             <originalValue>1.2.840.113549.1.1.1</originalValue>
         </value>
@@ -9539,7 +8825,6 @@
             <lengthOctets>
                 <originalValue>00</originalValue>
             </lengthOctets>
-            <tagClassType>UNIVERSAL</tagClassType>
             <contentConfig></contentConfig>
         </instantiation>
         <optional>true</optional>
@@ -9567,8 +8852,6 @@
     <lengthOctets>
         <originalValue>09</originalValue>
     </lengthOctets>
-    <tagClassType>UNIVERSAL</tagClassType>
-    <tagConstructedType>PRIMITIVE</tagConstructedType>
     <value>
         <originalValue>1.2.840.113549.1.1.1</originalValue>
     </value>
@@ -9596,7 +8879,6 @@
         <lengthOctets>
             <originalValue>00</originalValue>
         </lengthOctets>
-        <tagClassType>UNIVERSAL</tagClassType>
         <contentConfig></contentConfig>
     </instantiation>
     <optional>true</optional>
@@ -9624,8 +8906,6 @@
 <lengthOctets>
     <originalValue>82 01 0F</originalValue>
 </lengthOctets>
-<tagClassType>UNIVERSAL</tagClassType>
-<tagConstructedType>PRIMITIVE</tagConstructedType>
 <unusedBits>
     <originalValue>0</originalValue>
 </unusedBits>
@@ -9634,14 +8914,8 @@
 </value>
                             </subjectPublicKeyBitString>
                         </subjectPublicKeyInfo>
-                        <issuerUniqueID identifier="issuerUniqueID">
-                            <tagClassType>UNIVERSAL</tagClassType>
-                            <tagConstructedType>PRIMITIVE</tagConstructedType>
-                        </issuerUniqueID>
-                        <subjectUniqueID identifier="subjectUniqueID">
-                            <tagClassType>UNIVERSAL</tagClassType>
-                            <tagConstructedType>PRIMITIVE</tagConstructedType>
-                        </subjectUniqueID>
+                        <issuerUniqueID identifier="issuerUniqueID"/>
+                        <subjectUniqueID identifier="subjectUniqueID"/>
                         <extensionExplicit identifier="extensionsExplicit">
                             <tagClass>
 <originalValue>2</originalValue>
@@ -9664,8 +8938,6 @@
                             <lengthOctets>
 <originalValue>53</originalValue>
                             </lengthOctets>
-                            <tagClassType>CONTEXT_SPECIFIC</tagClassType>
-                            <tagConstructedType>CONSTRUCTED</tagConstructedType>
                             <children>
 <Asn1Sequence identifier="extensions">
     <tagClass>
@@ -9689,8 +8961,6 @@
     <lengthOctets>
         <originalValue>51</originalValue>
     </lengthOctets>
-    <tagClassType>UNIVERSAL</tagClassType>
-    <tagConstructedType>CONSTRUCTED</tagConstructedType>
     <children>
         <Asn1Sequence identifier="extension">
             <tagClass>
@@ -9714,8 +8984,6 @@
             <lengthOctets>
                 <originalValue>1D</originalValue>
             </lengthOctets>
-            <tagClassType>UNIVERSAL</tagClassType>
-            <tagConstructedType>CONSTRUCTED</tagConstructedType>
             <children>
                 <Asn1ObjectIdentifier identifier="extensionId">
                     <tagClass>
@@ -9739,16 +9007,11 @@
                     <lengthOctets>
                         <originalValue>03</originalValue>
                     </lengthOctets>
-                    <tagClassType>UNIVERSAL</tagClassType>
-                    <tagConstructedType>PRIMITIVE</tagConstructedType>
                     <value>
                         <originalValue>2.5.29.14</originalValue>
                     </value>
                 </Asn1ObjectIdentifier>
-                <Asn1Boolean identifier="critical">
-                    <tagClassType>UNIVERSAL</tagClassType>
-                    <tagConstructedType>PRIMITIVE</tagConstructedType>
-                </Asn1Boolean>
+                <Asn1Boolean identifier="critical"/>
                 <Asn1PrimitiveOctetString identifier="extensionValue">
                     <tagClass>
                         <originalValue>0</originalValue>
@@ -9771,8 +9034,6 @@
                     <lengthOctets>
                         <originalValue>16</originalValue>
                     </lengthOctets>
-                    <tagClassType>UNIVERSAL</tagClassType>
-                    <tagConstructedType>PRIMITIVE</tagConstructedType>
                     <value>
                         <originalValue>04 14 E7 A9 2F E5 54 3A EE 2F F7 59 2F 80 0A C6 E6 65 41 E3 26 8B</originalValue>
                     </value>
@@ -9801,8 +9062,6 @@
             <lengthOctets>
                 <originalValue>1F</originalValue>
             </lengthOctets>
-            <tagClassType>UNIVERSAL</tagClassType>
-            <tagConstructedType>CONSTRUCTED</tagConstructedType>
             <children>
                 <Asn1ObjectIdentifier identifier="extensionId">
                     <tagClass>
@@ -9826,16 +9085,11 @@
                     <lengthOctets>
                         <originalValue>03</originalValue>
                     </lengthOctets>
-                    <tagClassType>UNIVERSAL</tagClassType>
-                    <tagConstructedType>PRIMITIVE</tagConstructedType>
                     <value>
                         <originalValue>2.5.29.35</originalValue>
                     </value>
                 </Asn1ObjectIdentifier>
-                <Asn1Boolean identifier="critical">
-                    <tagClassType>UNIVERSAL</tagClassType>
-                    <tagConstructedType>PRIMITIVE</tagConstructedType>
-                </Asn1Boolean>
+                <Asn1Boolean identifier="critical"/>
                 <Asn1PrimitiveOctetString identifier="extensionValue">
                     <tagClass>
                         <originalValue>0</originalValue>
@@ -9858,8 +9112,6 @@
                     <lengthOctets>
                         <originalValue>18</originalValue>
                     </lengthOctets>
-                    <tagClassType>UNIVERSAL</tagClassType>
-                    <tagConstructedType>PRIMITIVE</tagConstructedType>
                     <value>
                         <originalValue>30 16 80 14 E7 A9 2F E5 54 3A EE 2F F7 59 2F 80 0A C6 E6 65 41 E3 26 8B</originalValue>
                     </value>
@@ -9888,8 +9140,6 @@
             <lengthOctets>
                 <originalValue>0F</originalValue>
             </lengthOctets>
-            <tagClassType>UNIVERSAL</tagClassType>
-            <tagConstructedType>CONSTRUCTED</tagConstructedType>
             <children>
                 <Asn1ObjectIdentifier identifier="extensionId">
                     <tagClass>
@@ -9913,8 +9163,6 @@
                     <lengthOctets>
                         <originalValue>03</originalValue>
                     </lengthOctets>
-                    <tagClassType>UNIVERSAL</tagClassType>
-                    <tagConstructedType>PRIMITIVE</tagConstructedType>
                     <value>
                         <originalValue>2.5.29.19</originalValue>
                     </value>
@@ -9941,8 +9189,6 @@
                     <lengthOctets>
                         <originalValue>01</originalValue>
                     </lengthOctets>
-                    <tagClassType>UNIVERSAL</tagClassType>
-                    <tagConstructedType>PRIMITIVE</tagConstructedType>
                     <value>
                         <originalValue>true</originalValue>
                     </value>
@@ -9969,8 +9215,6 @@
                     <lengthOctets>
                         <originalValue>05</originalValue>
                     </lengthOctets>
-                    <tagClassType>UNIVERSAL</tagClassType>
-                    <tagConstructedType>PRIMITIVE</tagConstructedType>
                     <value>
                         <originalValue>30 03 01 01 FF</originalValue>
                     </value>
@@ -10002,8 +9246,6 @@
 <lengthOctets>
     <originalValue>51</originalValue>
 </lengthOctets>
-<tagClassType>UNIVERSAL</tagClassType>
-<tagConstructedType>CONSTRUCTED</tagConstructedType>
 <children>
     <Asn1Sequence identifier="extension">
         <tagClass>
@@ -10027,8 +9269,6 @@
         <lengthOctets>
             <originalValue>1D</originalValue>
         </lengthOctets>
-        <tagClassType>UNIVERSAL</tagClassType>
-        <tagConstructedType>CONSTRUCTED</tagConstructedType>
         <children>
             <Asn1ObjectIdentifier identifier="extensionId">
                 <tagClass>
@@ -10052,16 +9292,11 @@
                 <lengthOctets>
                     <originalValue>03</originalValue>
                 </lengthOctets>
-                <tagClassType>UNIVERSAL</tagClassType>
-                <tagConstructedType>PRIMITIVE</tagConstructedType>
                 <value>
                     <originalValue>2.5.29.14</originalValue>
                 </value>
             </Asn1ObjectIdentifier>
-            <Asn1Boolean identifier="critical">
-                <tagClassType>UNIVERSAL</tagClassType>
-                <tagConstructedType>PRIMITIVE</tagConstructedType>
-            </Asn1Boolean>
+            <Asn1Boolean identifier="critical"/>
             <Asn1PrimitiveOctetString identifier="extensionValue">
                 <tagClass>
                     <originalValue>0</originalValue>
@@ -10084,8 +9319,6 @@
                 <lengthOctets>
                     <originalValue>16</originalValue>
                 </lengthOctets>
-                <tagClassType>UNIVERSAL</tagClassType>
-                <tagConstructedType>PRIMITIVE</tagConstructedType>
                 <value>
                     <originalValue>04 14 E7 A9 2F E5 54 3A EE 2F F7 59 2F 80 0A C6 E6 65 41 E3 26 8B</originalValue>
                 </value>
@@ -10114,8 +9347,6 @@
         <lengthOctets>
             <originalValue>1F</originalValue>
         </lengthOctets>
-        <tagClassType>UNIVERSAL</tagClassType>
-        <tagConstructedType>CONSTRUCTED</tagConstructedType>
         <children>
             <Asn1ObjectIdentifier identifier="extensionId">
                 <tagClass>
@@ -10139,16 +9370,11 @@
                 <lengthOctets>
                     <originalValue>03</originalValue>
                 </lengthOctets>
-                <tagClassType>UNIVERSAL</tagClassType>
-                <tagConstructedType>PRIMITIVE</tagConstructedType>
                 <value>
                     <originalValue>2.5.29.35</originalValue>
                 </value>
             </Asn1ObjectIdentifier>
-            <Asn1Boolean identifier="critical">
-                <tagClassType>UNIVERSAL</tagClassType>
-                <tagConstructedType>PRIMITIVE</tagConstructedType>
-            </Asn1Boolean>
+            <Asn1Boolean identifier="critical"/>
             <Asn1PrimitiveOctetString identifier="extensionValue">
                 <tagClass>
                     <originalValue>0</originalValue>
@@ -10171,8 +9397,6 @@
                 <lengthOctets>
                     <originalValue>18</originalValue>
                 </lengthOctets>
-                <tagClassType>UNIVERSAL</tagClassType>
-                <tagConstructedType>PRIMITIVE</tagConstructedType>
                 <value>
                     <originalValue>30 16 80 14 E7 A9 2F E5 54 3A EE 2F F7 59 2F 80 0A C6 E6 65 41 E3 26 8B</originalValue>
                 </value>
@@ -10201,8 +9425,6 @@
         <lengthOctets>
             <originalValue>0F</originalValue>
         </lengthOctets>
-        <tagClassType>UNIVERSAL</tagClassType>
-        <tagConstructedType>CONSTRUCTED</tagConstructedType>
         <children>
             <Asn1ObjectIdentifier identifier="extensionId">
                 <tagClass>
@@ -10226,8 +9448,6 @@
                 <lengthOctets>
                     <originalValue>03</originalValue>
                 </lengthOctets>
-                <tagClassType>UNIVERSAL</tagClassType>
-                <tagConstructedType>PRIMITIVE</tagConstructedType>
                 <value>
                     <originalValue>2.5.29.19</originalValue>
                 </value>
@@ -10254,8 +9474,6 @@
                 <lengthOctets>
                     <originalValue>01</originalValue>
                 </lengthOctets>
-                <tagClassType>UNIVERSAL</tagClassType>
-                <tagConstructedType>PRIMITIVE</tagConstructedType>
                 <value>
                     <originalValue>true</originalValue>
                 </value>
@@ -10282,8 +9500,6 @@
                 <lengthOctets>
                     <originalValue>05</originalValue>
                 </lengthOctets>
-                <tagClassType>UNIVERSAL</tagClassType>
-                <tagConstructedType>PRIMITIVE</tagConstructedType>
                 <value>
                     <originalValue>30 03 01 01 FF</originalValue>
                 </value>
@@ -10316,8 +9532,6 @@
                         <lengthOctets>
                             <originalValue>0D</originalValue>
                         </lengthOctets>
-                        <tagClassType>UNIVERSAL</tagClassType>
-                        <tagConstructedType>CONSTRUCTED</tagConstructedType>
                         <children>
                             <Asn1ObjectIdentifier identifier="algorithm">
 <tagClass>
@@ -10341,8 +9555,6 @@
 <lengthOctets>
     <originalValue>09</originalValue>
 </lengthOctets>
-<tagClassType>UNIVERSAL</tagClassType>
-<tagConstructedType>PRIMITIVE</tagConstructedType>
 <value>
     <originalValue>1.2.840.113549.1.1.11</originalValue>
 </value>
@@ -10370,7 +9582,6 @@
     <lengthOctets>
         <originalValue>00</originalValue>
     </lengthOctets>
-    <tagClassType>UNIVERSAL</tagClassType>
     <contentConfig></contentConfig>
 </instantiation>
 <optional>true</optional>
@@ -10398,8 +9609,6 @@
                             <lengthOctets>
 <originalValue>09</originalValue>
                             </lengthOctets>
-                            <tagClassType>UNIVERSAL</tagClassType>
-                            <tagConstructedType>PRIMITIVE</tagConstructedType>
                             <value>
 <originalValue>1.2.840.113549.1.1.11</originalValue>
                             </value>
@@ -10427,7 +9636,6 @@
 <lengthOctets>
     <originalValue>00</originalValue>
 </lengthOctets>
-<tagClassType>UNIVERSAL</tagClassType>
 <contentConfig></contentConfig>
                             </instantiation>
                             <optional>true</optional>
@@ -10455,8 +9663,6 @@
                         <lengthOctets>
                             <originalValue>82 01 01</originalValue>
                         </lengthOctets>
-                        <tagClassType>UNIVERSAL</tagClassType>
-                        <tagConstructedType>PRIMITIVE</tagConstructedType>
                         <unusedBits>
                             <originalValue>0</originalValue>
                         </unusedBits>

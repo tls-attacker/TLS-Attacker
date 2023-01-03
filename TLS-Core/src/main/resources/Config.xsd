@@ -770,8 +770,6 @@
       <xs:element name="content" type="modifiableByteArray" minOccurs="0"/>
       <xs:element name="tagOctets" type="modifiableByteArray" minOccurs="0"/>
       <xs:element name="lengthOctets" type="modifiableByteArray" minOccurs="0"/>
-      <xs:element name="tagClassType" type="tagClass" minOccurs="0"/>
-      <xs:element name="tagConstructedType" type="tagConstructed" minOccurs="0"/>
     </xs:sequence>
     <xs:attribute name="identifier" type="xs:string"/>
   </xs:complexType>
@@ -1891,22 +1889,6 @@
       <xs:enumeration value="GREASE_13"/>
       <xs:enumeration value="GREASE_14"/>
       <xs:enumeration value="GREASE_15"/>
-    </xs:restriction>
-  </xs:simpleType>
-
-  <xs:simpleType name="tagClass">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="UNIVERSAL"/>
-      <xs:enumeration value="APPLICATION"/>
-      <xs:enumeration value="CONTEXT_SPECIFIC"/>
-      <xs:enumeration value="PRIVATE"/>
-    </xs:restriction>
-  </xs:simpleType>
-
-  <xs:simpleType name="tagConstructed">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="PRIMITIVE"/>
-      <xs:enumeration value="CONSTRUCTED"/>
     </xs:restriction>
   </xs:simpleType>
 

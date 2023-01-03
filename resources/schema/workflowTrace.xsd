@@ -2262,8 +2262,6 @@
       <xs:element name="content" type="modifiableByteArray" minOccurs="0"/>
       <xs:element name="tagOctets" type="modifiableByteArray" minOccurs="0"/>
       <xs:element name="lengthOctets" type="modifiableByteArray" minOccurs="0"/>
-      <xs:element name="tagClassType" type="tagClass" minOccurs="0"/>
-      <xs:element name="tagConstructedType" type="tagConstructed" minOccurs="0"/>
     </xs:sequence>
     <xs:attribute name="identifier" type="xs:string"/>
   </xs:complexType>
@@ -5897,22 +5895,6 @@
       <xs:enumeration value="CERTIFICATE_STATUS"/>
       <xs:enumeration value="SUPPLEMENTAL_DATA"/>
       <xs:enumeration value="MESSAGE_HASH"/>
-    </xs:restriction>
-  </xs:simpleType>
-
-  <xs:simpleType name="tagClass">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="UNIVERSAL"/>
-      <xs:enumeration value="APPLICATION"/>
-      <xs:enumeration value="CONTEXT_SPECIFIC"/>
-      <xs:enumeration value="PRIVATE"/>
-    </xs:restriction>
-  </xs:simpleType>
-
-  <xs:simpleType name="tagConstructed">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="PRIMITIVE"/>
-      <xs:enumeration value="CONSTRUCTED"/>
     </xs:restriction>
   </xs:simpleType>
 
