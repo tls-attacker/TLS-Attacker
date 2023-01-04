@@ -8,9 +8,16 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.message;
 
+import java.util.stream.Stream;
+import org.junit.jupiter.params.provider.Arguments;
+
 public class CertificateStatusMessageTest extends AbstractMessageTest<CertificateStatusMessage> {
 
     public CertificateStatusMessageTest() {
         super(CertificateStatusMessage::new, "CertificateStatusMessage");
+    }
+
+    public static Stream<Arguments> provideToStringTestVectors() {
+        return Stream.of(Arguments.of(new Object[] {null}, null));
     }
 }
