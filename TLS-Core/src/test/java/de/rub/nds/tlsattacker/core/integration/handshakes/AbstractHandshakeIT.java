@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -42,6 +42,7 @@ import java.util.stream.Stream;
 import java.util.stream.Stream.Builder;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -92,6 +93,11 @@ public abstract class AbstractHandshakeIT {
 
     @BeforeAll
     public void loadList() {
+        try {
+            DockerClientManager.getDockerClient().listContainersCmd().exec();
+        } catch (Exception ex) {
+            Assume.assumeNoException(ex);
+        }
         localImages = DockerTlsManagerFactory.getAllImages();
     }
 
