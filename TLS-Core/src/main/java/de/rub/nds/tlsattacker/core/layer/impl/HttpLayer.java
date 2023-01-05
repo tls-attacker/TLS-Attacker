@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -21,7 +21,6 @@ import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
 import de.rub.nds.tlsattacker.core.layer.hints.HttpLayerHint;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
-import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
@@ -70,17 +69,8 @@ public class HttpLayer extends ProtocolLayer<HttpLayerHint, HttpMessage> {
     @Override
     public LayerProcessingResult receiveData() {
         try {
-            HintedInputStream dataStream;
             do {
-                try {
-                    dataStream = getLowerLayer().getDataStream();
-                } catch (IOException e) {
-                    // the lower layer does not give us any data so we can simply return here
-                    LOGGER.warn("The lower layer did not produce a data stream: ", e);
-                    return getLayerResult();
-                }
-
-                // for now we parse based on our endpoint
+                // for now, we parse based on our endpoint
                 if (context.getContext().getConnection().getLocalConnectionEndType()
                         == ConnectionEndType.CLIENT) {
                     HttpResponseMessage httpResponse = new HttpResponseMessage();
