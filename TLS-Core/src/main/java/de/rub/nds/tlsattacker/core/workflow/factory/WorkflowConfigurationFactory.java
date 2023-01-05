@@ -804,6 +804,12 @@ public class WorkflowConfigurationFactory {
         trace.addTlsAction(
                 MessageActionFactory.createTLSAction(
                         config, connection, ConnectionEndType.CLIENT, clientMessages));
+
+        if (config.getHighestProtocolVersion() == ProtocolVersion.DTLS13) {
+            trace.addTlsAction(
+                    MessageActionFactory.createTLSAction(
+                            config, connection, ConnectionEndType.SERVER, new AckMessage()));
+        }
         return trace;
     }
 

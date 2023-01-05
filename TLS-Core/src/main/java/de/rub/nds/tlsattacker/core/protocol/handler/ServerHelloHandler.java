@@ -246,20 +246,23 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                             HKDFunction.DERIVED,
                             new byte[0],
                             tlsContext.getChooser().getSelectedProtocolVersion());
-            byte[] sharedSecret;
-            BigInteger privateKey = tlsContext.getConfig().getKeySharePrivate();
-            if (tlsContext.getChooser().getSelectedCipherSuite().isPWD()) {
-                sharedSecret = computeSharedPWDSecret(keyShareStoreEntry);
-            } else {
-                sharedSecret =
-                        KeyShareCalculator.computeSharedSecret(
-                                keyShareStoreEntry.getGroup(),
-                                privateKey,
-                                keyShareStoreEntry.getPublicKey());
-                // This is a workaround for Tls1.3 InvalidCurve attacks
-                if (tlsContext.getConfig().getDefaultPreMasterSecret().length > 0) {
-                    LOGGER.debug("Using specified PMS instead of computed PMS");
-                    sharedSecret = tlsContext.getConfig().getDefaultPreMasterSecret();
+            byte[] sharedSecret = new byte[macLength];
+            // if PSK_only mode is selected, the keyShare will be null, and there is no sharedSecret
+            if (keyShareStoreEntry != null) {
+                BigInteger privateKey = tlsContext.getConfig().getKeySharePrivate();
+                if (tlsContext.getChooser().getSelectedCipherSuite().isPWD()) {
+                    sharedSecret = computeSharedPWDSecret(keyShareStoreEntry);
+                } else {
+                    sharedSecret =
+                            KeyShareCalculator.computeSharedSecret(
+                                    keyShareStoreEntry.getGroup(),
+                                    privateKey,
+                                    keyShareStoreEntry.getPublicKey());
+                    // This is a workaround for Tls1.3 InvalidCurve attacks
+                    if (tlsContext.getConfig().getDefaultPreMasterSecret().length > 0) {
+                        LOGGER.debug("Using specified PMS instead of computed PMS");
+                        sharedSecret = tlsContext.getConfig().getDefaultPreMasterSecret();
+                    }
                 }
             }
             byte[] handshakeSecret =
@@ -551,7 +554,10 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
     private KeyShareStoreEntry adjustKeyShareStoreEntry() {
         KeyShareStoreEntry selectedKeyShareStore;
         if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
-            selectedKeyShareStore = tlsContext.getChooser().getServerKeyShare();
+            selectedKeyShareStore = tlsContext.getServerKeyShareStoreEntry();
+            if (selectedKeyShareStore == null) {
+                return null;
+            }
         } else {
             Integer pos = null;
             for (KeyShareStoreEntry entry : tlsContext.getChooser().getClientKeyShares()) {

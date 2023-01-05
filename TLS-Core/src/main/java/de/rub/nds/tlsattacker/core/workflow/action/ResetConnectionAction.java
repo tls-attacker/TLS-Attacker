@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -71,6 +71,9 @@ public class ResetConnectionAction extends ConnectionBoundAction {
                 tlsContext.getRecordLayer().setWriteEpoch(0);
                 tlsContext.getRecordLayer().setReadEpoch(0);
             }
+            LOGGER.info("Resetting KeyShareStores");
+            tlsContext.setServerKeyShareStoreEntry(null);
+            tlsContext.setClientKeyShareStoreEntryList(null);
             LOGGER.info("Resetting SecureRenegotiation");
             tlsContext.setLastClientVerifyData(null);
             tlsContext.setLastServerVerifyData(null);
