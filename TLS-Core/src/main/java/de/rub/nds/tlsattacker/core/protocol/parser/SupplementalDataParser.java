@@ -1,27 +1,25 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.SupplementalDataMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.supplementaldata.SupplementalDataEntry;
 import de.rub.nds.tlsattacker.core.protocol.parser.supplementaldata.SupplementalDataEntryParser;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class SupplementalDataParser extends HandshakeMessageParser<SupplementalDataMessage> {
 
@@ -51,14 +49,18 @@ public class SupplementalDataParser extends HandshakeMessageParser<SupplementalD
     }
 
     private void parseSupplementalDataBytes(SupplementalDataMessage msg) {
-        msg.setSupplementalDataBytes(parseByteArrayField(msg.getSupplementalDataLength().getValue()));
+        msg.setSupplementalDataBytes(
+                parseByteArrayField(msg.getSupplementalDataLength().getValue()));
         LOGGER.debug(
-            "SupplementalDataBytes: " + ArrayConverter.bytesToHexString(msg.getSupplementalDataBytes().getValue()));
+                "SupplementalDataBytes: "
+                        + ArrayConverter.bytesToHexString(
+                                msg.getSupplementalDataBytes().getValue()));
     }
 
     private void parseSupplementalDataEntries(SupplementalDataMessage msg) {
         List<SupplementalDataEntry> entryList = new LinkedList<>();
-        ByteArrayInputStream innerStream = new ByteArrayInputStream(msg.getSupplementalDataBytes().getValue());
+        ByteArrayInputStream innerStream =
+                new ByteArrayInputStream(msg.getSupplementalDataBytes().getValue());
         while (innerStream.available() > 0) {
             SupplementalDataEntryParser parser = new SupplementalDataEntryParser(innerStream);
             SupplementalDataEntry entry = new SupplementalDataEntry();

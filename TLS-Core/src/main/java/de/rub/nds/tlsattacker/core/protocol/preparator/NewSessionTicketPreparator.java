@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -25,7 +24,8 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class NewSessionTicketPreparator extends HandshakeMessagePreparator<NewSessionTicketMessage> {
+public class NewSessionTicketPreparator
+        extends HandshakeMessagePreparator<NewSessionTicketMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -64,8 +64,12 @@ public class NewSessionTicketPreparator extends HandshakeMessagePreparator<NewSe
         byte[] plainStateSerialized = plaintextSerializer.serialize();
         byte[] encryptedState;
         try {
-            encryptedState = StaticTicketCrypto.encrypt(cipherAlgorithm, plainStateSerialized, encryptionKey,
-                newTicket.getIV().getValue());
+            encryptedState =
+                    StaticTicketCrypto.encrypt(
+                            cipherAlgorithm,
+                            plainStateSerialized,
+                            encryptionKey,
+                            newTicket.getIV().getValue());
         } catch (CryptoException e) {
             LOGGER.warn("Could not encrypt SessionState. Using empty byte[]");
             LOGGER.debug(e);
@@ -75,12 +79,18 @@ public class NewSessionTicketPreparator extends HandshakeMessagePreparator<NewSe
 
         byte[] keyHMAC = config.getSessionTicketKeyHMAC();
         // Mac(Name + IV + TicketLength + Ticket)
-        byte[] macInput = ArrayConverter.concatenate(config.getSessionTicketKeyName(), iv,
-            ArrayConverter.intToBytes(encryptedState.length, HandshakeByteLength.ENCRYPTED_STATE_LENGTH),
-            encryptedState);
+        byte[] macInput =
+                ArrayConverter.concatenate(
+                        config.getSessionTicketKeyName(),
+                        iv,
+                        ArrayConverter.intToBytes(
+                                encryptedState.length, HandshakeByteLength.ENCRYPTED_STATE_LENGTH),
+                        encryptedState);
         byte[] hmac;
         try {
-            hmac = StaticTicketCrypto.generateHMAC(config.getSessionTicketMacAlgorithm(), macInput, keyHMAC);
+            hmac =
+                    StaticTicketCrypto.generateHMAC(
+                            config.getSessionTicketMacAlgorithm(), macInput, keyHMAC);
         } catch (CryptoException ex) {
             LOGGER.warn("Could generate HMAC. Using empty byte[]");
             LOGGER.debug(ex);
@@ -104,7 +114,6 @@ public class NewSessionTicketPreparator extends HandshakeMessagePreparator<NewSe
         } else {
             prepareTicket(msg);
         }
-
     }
 
     private void prepareTicketTls13(NewSessionTicketMessage msg) {

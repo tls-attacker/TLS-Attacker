@@ -1,19 +1,19 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.certificate.ocsp;
+
+import static de.rub.nds.tlsattacker.core.certificate.ocsp.OCSPResponseTypes.*;
 
 import de.rub.nds.asn1.Asn1Encodable;
 import de.rub.nds.asn1.encoder.Asn1Encoder;
 import de.rub.nds.asn1.model.*;
 import de.rub.nds.tlsattacker.core.certificate.ObjectIdentifierTranslator;
-import static de.rub.nds.tlsattacker.core.certificate.ocsp.OCSPResponseTypes.*;
 import java.math.BigInteger;
 import java.util.LinkedList;
 import java.util.List;
@@ -42,7 +42,8 @@ public class OCSPRequestMessage {
         extensionExplicitSequence.addChild(extensionSequence);
     }
 
-    public OCSPRequestMessage(byte[] issuerNameHashValue, byte[] issuerKeyHashValue, BigInteger serialNumberValue) {
+    public OCSPRequestMessage(
+            byte[] issuerNameHashValue, byte[] issuerKeyHashValue, BigInteger serialNumberValue) {
         addToRequest(issuerNameHashValue, issuerKeyHashValue, serialNumberValue);
         tbsRequest.addChild(requestList);
         tbsRequestWrapper.addChild(tbsRequest);
@@ -106,7 +107,8 @@ public class OCSPRequestMessage {
         this.nonce = nonce;
     }
 
-    public void addToRequest(byte[] issuerNameHashValue, byte[] issuerKeyHashValue, BigInteger serialNumberValue) {
+    public void addToRequest(
+            byte[] issuerNameHashValue, byte[] issuerKeyHashValue, BigInteger serialNumberValue) {
         Asn1Null hashAlgorithmFiller = new Asn1Null();
         Asn1ObjectIdentifier hashAlgorithmId = new Asn1ObjectIdentifier();
         Asn1PrimitiveOctetString issuerNameHash = new Asn1PrimitiveOctetString();
@@ -141,7 +143,8 @@ public class OCSPRequestMessage {
     }
 
     public void addExtension(String extensionOid) {
-        if (!extensionOid.equals(NONCE.getOID()) && !extensionOid.equals(ACCEPTABLE_RESPONSES.getOID())) {
+        if (!extensionOid.equals(NONCE.getOID())
+                && !extensionOid.equals(ACCEPTABLE_RESPONSES.getOID())) {
             throw new NotImplementedException("This extension is not supported yet.");
         }
 

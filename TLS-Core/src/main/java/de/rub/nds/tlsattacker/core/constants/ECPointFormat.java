@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.constants;
 
 import java.io.*;
@@ -16,7 +15,6 @@ import java.util.Map;
 import java.util.Random;
 
 public enum ECPointFormat {
-
     UNCOMPRESSED((byte) 0),
     ANSIX962_COMPRESSED_PRIME((byte) 1),
     ANSIX962_COMPRESSED_CHAR2((byte) 2);
@@ -54,14 +52,15 @@ public enum ECPointFormat {
     }
 
     public byte[] getArrayValue() {
-        return new byte[] { value };
+        return new byte[] {value};
     }
 
     public short getShortValue() {
         return (short) (value & 0xFF);
     }
 
-    public static byte[] pointFormatsToByteArray(List<ECPointFormat> pointFormats) throws IOException {
+    public static byte[] pointFormatsToByteArray(List<ECPointFormat> pointFormats)
+            throws IOException {
         if (pointFormats == null || pointFormats.isEmpty()) {
             return new byte[0];
         }
@@ -71,11 +70,10 @@ public enum ECPointFormat {
         os.writeObject(pointFormats.toArray(new ECPointFormat[pointFormats.size()]));
 
         return bytes.toByteArray();
-
     }
 
     public static ECPointFormat[] pointFormatsFromByteArray(byte[] sourceBytes)
-        throws IOException, ClassNotFoundException {
+            throws IOException, ClassNotFoundException {
         if (sourceBytes == null || sourceBytes.length == 0) {
             return null;
         }

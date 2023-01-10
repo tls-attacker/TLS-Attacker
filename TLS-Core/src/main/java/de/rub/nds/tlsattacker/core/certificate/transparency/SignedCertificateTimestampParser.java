@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.certificate.transparency;
 
 import de.rub.nds.tlsattacker.core.constants.CertificateTransparencyLength;
@@ -34,11 +33,12 @@ public class SignedCertificateTimestampParser extends Parser<SignedCertificateTi
     public void parse(SignedCertificateTimestamp signedCertificateTimestamp) {
         // Decode and parse SCT version
         SignedCertificateTimestampVersion sctVersion =
-            SignedCertificateTimestampVersion.decodeVersion(parseByteField(1));
+                SignedCertificateTimestampVersion.decodeVersion(parseByteField(1));
         signedCertificateTimestamp.setVersion(sctVersion);
 
         // Decode 32 byte log id
-        signedCertificateTimestamp.setLogId(parseByteArrayField(CertificateTransparencyLength.LOG_ID));
+        signedCertificateTimestamp.setLogId(
+                parseByteArrayField(CertificateTransparencyLength.LOG_ID));
 
         // Decode 8 byte unix timestamp
         byte[] sctTimestamp = parseByteArrayField(CertificateTransparencyLength.TIMESTAMP);
@@ -66,7 +66,8 @@ public class SignedCertificateTimestampParser extends Parser<SignedCertificateTi
         // Decode signature (currently only copied and not further parsed)
         byte[] encodedSignature = parseByteArrayField(getBytesLeft());
         SignedCertificateTimestampSignatureParser signatureParser =
-            new SignedCertificateTimestampSignatureParser(new ByteArrayInputStream(encodedSignature));
+                new SignedCertificateTimestampSignatureParser(
+                        new ByteArrayInputStream(encodedSignature));
         SignedCertificateTimestampSignature signature = new SignedCertificateTimestampSignature();
         signatureParser.parse(signature);
         signedCertificateTimestamp.setSignature(signature);

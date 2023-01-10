@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -16,7 +15,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.PWDServerKeyExchangeMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class PWDServerKeyExchangeSerializer extends ServerKeyExchangeSerializer<PWDServerKeyExchangeMessage> {
+public class PWDServerKeyExchangeSerializer
+        extends ServerKeyExchangeSerializer<PWDServerKeyExchangeMessage> {
     private static final Logger LOGGER = LogManager.getLogger();
 
     private final PWDServerKeyExchangeMessage msg;
@@ -24,12 +24,11 @@ public class PWDServerKeyExchangeSerializer extends ServerKeyExchangeSerializer<
     /**
      * Constructor for the ECDHServerKeyExchangerSerializer
      *
-     * @param message
-     *                Message that should be serialized
-     * @param version
-     *                Version of the Protocol
+     * @param message Message that should be serialized
+     * @param version Version of the Protocol
      */
-    public PWDServerKeyExchangeSerializer(PWDServerKeyExchangeMessage message, ProtocolVersion version) {
+    public PWDServerKeyExchangeSerializer(
+            PWDServerKeyExchangeMessage message, ProtocolVersion version) {
         super(message, version);
         this.msg = message;
     }
@@ -65,7 +64,8 @@ public class PWDServerKeyExchangeSerializer extends ServerKeyExchangeSerializer<
 
     private void writeNamedGroup(PWDServerKeyExchangeMessage msg) {
         appendBytes(msg.getNamedGroup().getValue());
-        LOGGER.debug("NamedGroup: " + ArrayConverter.bytesToHexString(msg.getNamedGroup().getValue()));
+        LOGGER.debug(
+                "NamedGroup: " + ArrayConverter.bytesToHexString(msg.getNamedGroup().getValue()));
     }
 
     private void writeElementLength(PWDServerKeyExchangeMessage msg) {

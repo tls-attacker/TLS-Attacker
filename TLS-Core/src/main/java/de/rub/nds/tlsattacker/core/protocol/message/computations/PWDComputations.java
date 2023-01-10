@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message.computations;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -37,14 +36,13 @@ public class PWDComputations extends KeyExchangeComputations {
     /**
      * Computes the password element for TLS_ECCPWD according to RFC 8492
      *
-     * @param  chooser
-     * @param  curve
-     *                         The curve that the generated point should fall on
+     * @param chooser
+     * @param curve The curve that the generated point should fall on
      * @return
-     *
      * @throws CryptoException
      */
-    public static Point computePasswordElement(Chooser chooser, EllipticCurve curve) throws CryptoException {
+    public static Point computePasswordElement(Chooser chooser, EllipticCurve curve)
+            throws CryptoException {
         MacAlgorithm randomFunction = getMacAlgorithm(chooser.getSelectedCipherSuite());
 
         BigInteger prime = curve.getModulus();
@@ -58,13 +56,17 @@ public class PWDComputations extends KeyExchangeComputations {
             Digest digest = TlsUtils.createHash(HashAlgorithm.sha256);
             base = new byte[digest.getDigestSize()];
             byte[] usernamePW =
-                (chooser.getClientPWDUsername() + chooser.getPWDPassword()).getBytes(StandardCharsets.ISO_8859_1);
+                    (chooser.getClientPWDUsername() + chooser.getPWDPassword())
+                            .getBytes(StandardCharsets.ISO_8859_1);
             digest.update(usernamePW, 0, usernamePW.length);
             digest.doFinal(base, 0);
         } else {
-            base = StaticTicketCrypto.generateHMAC(MacAlgorithm.HMAC_SHA256,
-                (chooser.getClientPWDUsername() + chooser.getPWDPassword()).getBytes(StandardCharsets.ISO_8859_1),
-                salt);
+            base =
+                    StaticTicketCrypto.generateHMAC(
+                            MacAlgorithm.HMAC_SHA256,
+                            (chooser.getClientPWDUsername() + chooser.getPWDPassword())
+                                    .getBytes(StandardCharsets.ISO_8859_1),
+                            salt);
         }
 
         boolean found = false;
@@ -74,7 +76,9 @@ public class PWDComputations extends KeyExchangeComputations {
         if (chooser.getSelectedProtocolVersion().isTLS13()) {
             context = chooser.getClientRandom();
         } else {
-            context = ArrayConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom());
+            context =
+                    ArrayConverter.concatenate(
+                            chooser.getClientRandom(), chooser.getServerRandom());
         }
 
         Point createdPoint = null;
@@ -82,11 +86,15 @@ public class PWDComputations extends KeyExchangeComputations {
 
         do {
             counter++;
-            byte[] seedInput = ArrayConverter.concatenate(base, ArrayConverter.intToBytes(counter, 1),
-                ArrayConverter.bigIntegerToByteArray(prime));
+            byte[] seedInput =
+                    ArrayConverter.concatenate(
+                            base,
+                            ArrayConverter.intToBytes(counter, 1),
+                            ArrayConverter.bigIntegerToByteArray(prime));
             byte[] seed = StaticTicketCrypto.generateHMAC(randomFunction, seedInput, new byte[4]);
             byte[] tmp = prf(chooser, seed, context, n);
-            BigInteger tmpX = new BigInteger(1, tmp).mod(prime.subtract(BigInteger.ONE)).add(BigInteger.ONE);
+            BigInteger tmpX =
+                    new BigInteger(1, tmp).mod(prime.subtract(BigInteger.ONE)).add(BigInteger.ONE);
             Point tempPoint = curve.createAPointOnCurve(tmpX);
 
             if (!found && curve.isOnCurve(tempPoint)) {
@@ -121,30 +129,34 @@ public class PWDComputations extends KeyExchangeComputations {
         } else if (suite.name().endsWith("SHA")) {
             return MacAlgorithm.HMAC_SHA1;
         } else {
-            throw new PreparationException("Unsupported Mac Algorithm for suite " + suite.toString());
+            throw new PreparationException(
+                    "Unsupported Mac Algorithm for suite " + suite.toString());
         }
     }
 
     /**
      * Calculates the prf output for the dragonfly password element
      *
-     * Note that in the RFC, the order of secret and seed is actually switched (the seed is used as the secret in the
-     * prf and the context as the seed/message). It is unclear if the author intentionally switched the order of the
-     * arguments compared to the TLS RFC or if this is actually intentional.
+     * <p>Note that in the RFC, the order of secret and seed is actually switched (the seed is used
+     * as the secret in the prf and the context as the seed/message). It is unclear if the author
+     * intentionally switched the order of the arguments compared to the TLS RFC or if this is
+     * actually intentional.
      *
-     * @param  chooser
-     * @param  seed
-     * @param  context
-     * @param  outlen
+     * @param chooser
+     * @param seed
+     * @param context
+     * @param outlen
      * @return
-     *
      * @throws CryptoException
      */
-    protected static byte[] prf(Chooser chooser, byte[] seed, byte[] context, int outlen) throws CryptoException {
+    protected static byte[] prf(Chooser chooser, byte[] seed, byte[] context, int outlen)
+            throws CryptoException {
         if (chooser.getSelectedProtocolVersion().isTLS13()) {
-            HKDFAlgorithm hkdfAlgorithm = AlgorithmResolver.getHKDFAlgorithm(chooser.getSelectedCipherSuite());
-            DigestAlgorithm digestAlgo = AlgorithmResolver.getDigestAlgorithm(chooser.getSelectedProtocolVersion(),
-                chooser.getSelectedCipherSuite());
+            HKDFAlgorithm hkdfAlgorithm =
+                    AlgorithmResolver.getHKDFAlgorithm(chooser.getSelectedCipherSuite());
+            DigestAlgorithm digestAlgo =
+                    AlgorithmResolver.getDigestAlgorithm(
+                            chooser.getSelectedProtocolVersion(), chooser.getSelectedCipherSuite());
             MessageDigest hashFunction = null;
             try {
                 hashFunction = MessageDigest.getInstance(digestAlgo.getJavaName());
@@ -154,31 +166,44 @@ public class PWDComputations extends KeyExchangeComputations {
             hashFunction.update(context);
             byte[] hashValue = hashFunction.digest();
 
-            return HKDFunction.expandLabel(hkdfAlgorithm, seed, "TLS-PWD Hunting And Pecking", hashValue, outlen);
+            return HKDFunction.expandLabel(
+                    hkdfAlgorithm, seed, "TLS-PWD Hunting And Pecking", hashValue, outlen);
         } else {
-            PRFAlgorithm prf = AlgorithmResolver.getPRFAlgorithm(chooser.getSelectedProtocolVersion(),
-                chooser.getSelectedCipherSuite());
+            PRFAlgorithm prf =
+                    AlgorithmResolver.getPRFAlgorithm(
+                            chooser.getSelectedProtocolVersion(), chooser.getSelectedCipherSuite());
             if (prf != null) {
-                return PseudoRandomFunction.compute(prf, seed, "TLS-PWD Hunting And Pecking", context, outlen);
+                return PseudoRandomFunction.compute(
+                        prf, seed, "TLS-PWD Hunting And Pecking", context, outlen);
             } else {
-                LOGGER.warn("Could not select prf for " + chooser.getSelectedProtocolVersion() + " and "
-                    + chooser.getSelectedCipherSuite());
+                LOGGER.warn(
+                        "Could not select prf for "
+                                + chooser.getSelectedProtocolVersion()
+                                + " and "
+                                + chooser.getSelectedCipherSuite());
                 return new byte[outlen];
             }
         }
     }
 
-    public static PWDKeyMaterial generateKeyMaterial(EllipticCurve curve, Point passwordElement, Chooser chooser) {
+    public static PWDKeyMaterial generateKeyMaterial(
+            EllipticCurve curve, Point passwordElement, Chooser chooser) {
         BigInteger mask;
         PWDKeyMaterial keyMaterial = new PWDKeyMaterial();
         if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
-            mask = new BigInteger(1, chooser.getConfig().getDefaultClientPWDMask()).mod(curve.getBasePointOrder());
+            mask =
+                    new BigInteger(1, chooser.getConfig().getDefaultClientPWDMask())
+                            .mod(curve.getBasePointOrder());
             keyMaterial.privateKeyScalar =
-                new BigInteger(1, chooser.getConfig().getDefaultClientPWDPrivate()).mod(curve.getBasePointOrder());
+                    new BigInteger(1, chooser.getConfig().getDefaultClientPWDPrivate())
+                            .mod(curve.getBasePointOrder());
         } else {
-            mask = new BigInteger(1, chooser.getConfig().getDefaultServerPWDMask()).mod(curve.getBasePointOrder());
+            mask =
+                    new BigInteger(1, chooser.getConfig().getDefaultServerPWDMask())
+                            .mod(curve.getBasePointOrder());
             keyMaterial.privateKeyScalar =
-                new BigInteger(1, chooser.getConfig().getDefaultServerPWDPrivate()).mod(curve.getBasePointOrder());
+                    new BigInteger(1, chooser.getConfig().getDefaultServerPWDPrivate())
+                            .mod(curve.getBasePointOrder());
         }
 
         keyMaterial.scalar = mask.add(keyMaterial.privateKeyScalar).mod(curve.getBasePointOrder());
@@ -187,13 +212,12 @@ public class PWDComputations extends KeyExchangeComputations {
         return keyMaterial;
     }
 
-    /**
-     * shared secret derived from the shared password between server and client
-     */
+    /** shared secret derived from the shared password between server and client */
     private Point passwordElement;
 
     /**
-     * private secret used to calculate the premaster secret and part of the scalar that gets send to the peer
+     * private secret used to calculate the premaster secret and part of the scalar that gets send
+     * to the peer
      */
     private BigInteger privateKeyScalar;
 

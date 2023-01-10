@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -23,8 +22,7 @@ public class FinishedSerializer extends HandshakeMessageSerializer<FinishedMessa
     /**
      * Constructor for the FinishedMessageSerializer
      *
-     * @param message
-     *                Message that should be serialized
+     * @param message Message that should be serialized
      */
     public FinishedSerializer(FinishedMessage message) {
         super(message);
@@ -38,12 +36,10 @@ public class FinishedSerializer extends HandshakeMessageSerializer<FinishedMessa
         return getAlreadySerialized();
     }
 
-    /**
-     * Writes the VerifyData of the ECDHEServerKeyExchangeMessage into the final byte[]
-     */
+    /** Writes the VerifyData of the ECDHEServerKeyExchangeMessage into the final byte[] */
     private void writeVerifyData(FinishedMessage msg) {
         appendBytes(msg.getVerifyData().getValue());
-        LOGGER.debug("VerifyData: " + ArrayConverter.bytesToHexString(msg.getVerifyData().getValue()));
+        LOGGER.debug(
+                "VerifyData: " + ArrayConverter.bytesToHexString(msg.getVerifyData().getValue()));
     }
-
 }

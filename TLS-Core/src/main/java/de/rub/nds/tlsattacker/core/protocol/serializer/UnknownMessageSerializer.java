@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -22,8 +21,7 @@ public class UnknownMessageSerializer extends ProtocolMessageSerializer<UnknownM
     /**
      * Constructor for the UnknownMessageSerializer
      *
-     * @param message
-     *                Message that should be serialized
+     * @param message Message that should be serialized
      */
     public UnknownMessageSerializer(UnknownMessage message) {
         super(message);
@@ -36,13 +34,12 @@ public class UnknownMessageSerializer extends ProtocolMessageSerializer<UnknownM
         return getAlreadySerialized();
     }
 
-    /**
-     * Writes the CompleteResultingMessage of the UnknownMessage into the final byte[]
-     */
+    /** Writes the CompleteResultingMessage of the UnknownMessage into the final byte[] */
     private void writeCompleteResultingMessage() {
         appendBytes(message.getCompleteResultingMessage().getValue());
-        LOGGER.debug("CompleteResultingMessage: "
-            + ArrayConverter.bytesToHexString(message.getCompleteResultingMessage().getValue()));
+        LOGGER.debug(
+                "CompleteResultingMessage: "
+                        + ArrayConverter.bytesToHexString(
+                                message.getCompleteResultingMessage().getValue()));
     }
-
 }

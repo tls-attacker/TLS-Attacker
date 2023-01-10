@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.parser.supplementaldata;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -34,19 +33,26 @@ public class SupplementalDataEntryParser extends Parser<SupplementalDataEntry> {
     }
 
     private void parseSupplementalDataEntryType(SupplementalDataEntry entry) {
-        entry.setSupplementalDataEntryType(parseIntField(HandshakeByteLength.SUPPLEMENTAL_DATA_ENTRY_TYPE_LENGTH));
-        LOGGER.debug("SupplementalDataEntryType: " + entry.getSupplementalDataEntryType().getValue());
+        entry.setSupplementalDataEntryType(
+                parseIntField(HandshakeByteLength.SUPPLEMENTAL_DATA_ENTRY_TYPE_LENGTH));
+        LOGGER.debug(
+                "SupplementalDataEntryType: " + entry.getSupplementalDataEntryType().getValue());
     }
 
     private void parseSupplementalDataEntryLength(SupplementalDataEntry entry) {
-        entry.setSupplementalDataEntryLength(parseIntField(HandshakeByteLength.SUPPLEMENTAL_DATA_ENTRY_LENGTH));
-        LOGGER.debug("SupplementalDataEntryLength: " + entry.getSupplementalDataEntryLength().getValue());
+        entry.setSupplementalDataEntryLength(
+                parseIntField(HandshakeByteLength.SUPPLEMENTAL_DATA_ENTRY_LENGTH));
+        LOGGER.debug(
+                "SupplementalDataEntryLength: "
+                        + entry.getSupplementalDataEntryLength().getValue());
     }
 
     private void parseSupplementalDataEntry(SupplementalDataEntry entry) {
-        entry.setSupplementalDataEntry(parseByteArrayField(entry.getSupplementalDataEntryLength().getValue()));
+        entry.setSupplementalDataEntry(
+                parseByteArrayField(entry.getSupplementalDataEntryLength().getValue()));
         LOGGER.debug(
-            "SupplementalDataEntry: " + ArrayConverter.bytesToHexString(entry.getSupplementalDataEntry().getValue()));
+                "SupplementalDataEntry: "
+                        + ArrayConverter.bytesToHexString(
+                                entry.getSupplementalDataEntry().getValue()));
     }
-
 }

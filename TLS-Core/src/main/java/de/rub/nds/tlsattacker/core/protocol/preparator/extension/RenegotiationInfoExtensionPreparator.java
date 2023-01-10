@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -16,13 +15,15 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class RenegotiationInfoExtensionPreparator extends ExtensionPreparator<RenegotiationInfoExtensionMessage> {
+public class RenegotiationInfoExtensionPreparator
+        extends ExtensionPreparator<RenegotiationInfoExtensionMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     private final RenegotiationInfoExtensionMessage message;
 
-    public RenegotiationInfoExtensionPreparator(Chooser chooser, RenegotiationInfoExtensionMessage message) {
+    public RenegotiationInfoExtensionPreparator(
+            Chooser chooser, RenegotiationInfoExtensionMessage message) {
         super(chooser, message);
         this.message = message;
     }
@@ -30,26 +31,31 @@ public class RenegotiationInfoExtensionPreparator extends ExtensionPreparator<Re
     @Override
     public void prepareExtensionContent() {
         if (chooser.getContext().getTlsContext().getLastClientVerifyData() != null
-            && chooser.getContext().getTlsContext().getLastServerVerifyData() != null) {
+                && chooser.getContext().getTlsContext().getLastServerVerifyData() != null) {
             // We are renegotiating
             if (chooser.getContext().getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
-                message.setRenegotiationInfo(chooser.getContext().getTlsContext().getLastClientVerifyData());
+                message.setRenegotiationInfo(
+                        chooser.getContext().getTlsContext().getLastClientVerifyData());
             } else {
                 message.setRenegotiationInfo(
-                    ArrayConverter.concatenate(chooser.getContext().getTlsContext().getLastClientVerifyData(),
-                        chooser.getContext().getTlsContext().getLastServerVerifyData()));
+                        ArrayConverter.concatenate(
+                                chooser.getContext().getTlsContext().getLastClientVerifyData(),
+                                chooser.getContext().getTlsContext().getLastServerVerifyData()));
             }
         } else {
             // First time we send this message
             if (chooser.getContext().getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
-                message.setRenegotiationInfo(chooser.getConfig().getDefaultClientRenegotiationInfo());
+                message.setRenegotiationInfo(
+                        chooser.getConfig().getDefaultClientRenegotiationInfo());
             } else {
-                message.setRenegotiationInfo(chooser.getConfig().getDefaultServerRenegotiationInfo());
+                message.setRenegotiationInfo(
+                        chooser.getConfig().getDefaultServerRenegotiationInfo());
             }
         }
         message.setRenegotiationInfoLength(message.getRenegotiationInfo().getValue().length);
-        LOGGER.debug("Prepared the RenegotiationInfo extension with info "
-            + ArrayConverter.bytesToHexString(message.getRenegotiationInfo().getValue()));
+        LOGGER.debug(
+                "Prepared the RenegotiationInfo extension with info "
+                        + ArrayConverter.bytesToHexString(
+                                message.getRenegotiationInfo().getValue()));
     }
-
 }

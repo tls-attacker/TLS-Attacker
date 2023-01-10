@@ -1,23 +1,23 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.RecordSizeLimitExtensionMessage;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.RecordSizeLimitExtensionMessage;
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class RecordSizeLimitExtensionParser extends ExtensionParser<RecordSizeLimitExtensionMessage> {
+public class RecordSizeLimitExtensionParser
+        extends ExtensionParser<RecordSizeLimitExtensionMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -32,7 +32,10 @@ public class RecordSizeLimitExtensionParser extends ExtensionParser<RecordSizeLi
     }
 
     private void parseRecordSizeLimit(RecordSizeLimitExtensionMessage message) {
-        message.setRecordSizeLimit(parseByteArrayField(ExtensionByteLength.RECORD_SIZE_LIMIT_LENGTH));
-        LOGGER.debug("RecordSizeLimit: " + ArrayConverter.bytesToHexString(message.getRecordSizeLimit().getValue()));
+        message.setRecordSizeLimit(
+                parseByteArrayField(ExtensionByteLength.RECORD_SIZE_LIMIT_LENGTH));
+        LOGGER.debug(
+                "RecordSizeLimit: "
+                        + ArrayConverter.bytesToHexString(message.getRecordSizeLimit().getValue()));
     }
 }

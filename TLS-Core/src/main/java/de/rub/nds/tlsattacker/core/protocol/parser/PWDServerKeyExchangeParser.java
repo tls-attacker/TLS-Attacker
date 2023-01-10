@@ -1,23 +1,23 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.*;
-import de.rub.nds.tlsattacker.core.protocol.message.PWDServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.protocol.message.PWDServerKeyExchangeMessage;
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class PWDServerKeyExchangeParser extends ServerKeyExchangeParser<PWDServerKeyExchangeMessage> {
+public class PWDServerKeyExchangeParser
+        extends ServerKeyExchangeParser<PWDServerKeyExchangeMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -55,7 +55,8 @@ public class PWDServerKeyExchangeParser extends ServerKeyExchangeParser<PWDServe
 
     private void parseNamedGroup(PWDServerKeyExchangeMessage msg) {
         msg.setNamedGroup(parseByteArrayField(NamedGroup.LENGTH));
-        LOGGER.debug("NamedGroup: " + ArrayConverter.bytesToHexString(msg.getNamedGroup().getValue()));
+        LOGGER.debug(
+                "NamedGroup: " + ArrayConverter.bytesToHexString(msg.getNamedGroup().getValue()));
     }
 
     private void parseElementLength(PWDServerKeyExchangeMessage msg) {

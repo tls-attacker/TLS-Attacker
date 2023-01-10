@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -34,7 +33,8 @@ public class HeartbeatMessagePreparator extends ProtocolMessagePreparator<Heartb
             LOGGER.warn("HeartBeat payload length is smaller than 0. Setting it to 0 instead");
             payloadLength = 0;
         } else if (payloadLength > 65536) {
-            LOGGER.warn("HeartBeat payload length is bigger than the max value. Setting it to max value.");
+            LOGGER.warn(
+                    "HeartBeat payload length is bigger than the max value. Setting it to max value.");
             payloadLength = 65536;
         }
         byte[] payload = new byte[payloadLength];
@@ -48,7 +48,8 @@ public class HeartbeatMessagePreparator extends ProtocolMessagePreparator<Heartb
             LOGGER.warn("HeartBeat padding length is smaller than 0. Setting it to 0 instead");
             paddingLength = 0;
         } else if (paddingLength > 65536) {
-            LOGGER.warn("HeartBeat padding length is bigger than the max value. Setting it to max value.");
+            LOGGER.warn(
+                    "HeartBeat padding length is bigger than the max value. Setting it to max value.");
             paddingLength = 65536;
         }
         byte[] padding = new byte[paddingLength];

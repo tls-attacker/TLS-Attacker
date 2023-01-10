@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.constants;
 
 import java.util.HashMap;
@@ -14,7 +13,6 @@ import java.util.Map;
 import java.util.Random;
 
 public enum MaxFragmentLength {
-
     TWO_9((byte) 1),
     TWO_10((byte) 2),
     TWO_11((byte) 3),
@@ -49,7 +47,7 @@ public enum MaxFragmentLength {
                 return 2048;
             case TWO_12:
                 return 4096;
-            // this SHOULD be unreachable
+                // this SHOULD be unreachable
             default:
                 return null;
         }
@@ -60,7 +58,7 @@ public enum MaxFragmentLength {
     }
 
     public byte[] getArrayValue() {
-        return new byte[] { value };
+        return new byte[] {value};
     }
 
     public static MaxFragmentLength getRandom(Random random) {

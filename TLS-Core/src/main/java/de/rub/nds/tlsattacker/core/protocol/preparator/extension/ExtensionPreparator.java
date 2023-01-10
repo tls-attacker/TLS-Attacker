@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -18,8 +17,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * @param <T>
- *            The ExtensionMessage that should be prepared
+ * @param <T> The ExtensionMessage that should be prepared
  */
 public abstract class ExtensionPreparator<T extends ExtensionMessage> extends Preparator<T> {
 
@@ -63,13 +61,13 @@ public abstract class ExtensionPreparator<T extends ExtensionMessage> extends Pr
 
     public abstract void prepareExtensionContent();
 
-    public void afterPrepareExtensionContent() {
-
-    }
+    public void afterPrepareExtensionContent() {}
 
     private void prepareExtensionType(ExtensionMessage msg) {
         msg.setExtensionType(msg.getExtensionTypeConstant().getValue());
-        LOGGER.debug("ExtensionType: " + ArrayConverter.bytesToHexString(msg.getExtensionType().getValue()));
+        LOGGER.debug(
+                "ExtensionType: "
+                        + ArrayConverter.bytesToHexString(msg.getExtensionType().getValue()));
     }
 
     private void prepareExtensionLength(ExtensionMessage msg) {
@@ -79,12 +77,15 @@ public abstract class ExtensionPreparator<T extends ExtensionMessage> extends Pr
 
     private void prepareExtensionBytes(ExtensionMessage msg) {
         msg.setExtensionBytes(serializer.serialize());
-        LOGGER.debug("ExtensionBytes: " + ArrayConverter.bytesToHexString(msg.getExtensionBytes().getValue()));
+        LOGGER.debug(
+                "ExtensionBytes: "
+                        + ArrayConverter.bytesToHexString(msg.getExtensionBytes().getValue()));
     }
 
     private void prepareExtensionContentBytes(ExtensionMessage msg) {
         msg.setExtensionContent(content);
-        LOGGER.debug("ExtensionContent: " + ArrayConverter.bytesToHexString(msg.getExtensionContent().getValue()));
+        LOGGER.debug(
+                "ExtensionContent: "
+                        + ArrayConverter.bytesToHexString(msg.getExtensionContent().getValue()));
     }
-
 }

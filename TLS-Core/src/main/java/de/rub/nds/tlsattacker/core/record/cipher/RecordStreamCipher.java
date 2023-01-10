@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.record.cipher;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -30,13 +29,9 @@ public class RecordStreamCipher extends RecordCipher {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /**
-     * mac for verification of incoming messages
-     */
+    /** mac for verification of incoming messages */
     private WrappedMac readMac;
-    /**
-     * mac object for macing outgoing messages
-     */
+    /** mac object for macing outgoing messages */
     private WrappedMac writeMac;
 
     public RecordStreamCipher(TlsContext tlsContext, CipherState state) {
@@ -46,21 +41,36 @@ public class RecordStreamCipher extends RecordCipher {
 
     private void initCipherAndMac() throws UnsupportedOperationException {
         try {
-            encryptCipher = CipherWrapper.getEncryptionCipher(getState().getCipherSuite(), getLocalConnectionEndType(),
-                getState().getKeySet());
-            decryptCipher = CipherWrapper.getDecryptionCipher(getState().getCipherSuite(), getLocalConnectionEndType(),
-                getState().getKeySet());
-            readMac = MacWrapper.getMac(getState().getVersion(), getState().getCipherSuite(),
-                getState().getKeySet().getReadMacSecret(getLocalConnectionEndType()));
-            writeMac = MacWrapper.getMac(getState().getVersion(), getState().getCipherSuite(),
-                getState().getKeySet().getWriteMacSecret(getLocalConnectionEndType()));
+            encryptCipher =
+                    CipherWrapper.getEncryptionCipher(
+                            getState().getCipherSuite(),
+                            getLocalConnectionEndType(),
+                            getState().getKeySet());
+            decryptCipher =
+                    CipherWrapper.getDecryptionCipher(
+                            getState().getCipherSuite(),
+                            getLocalConnectionEndType(),
+                            getState().getKeySet());
+            readMac =
+                    MacWrapper.getMac(
+                            getState().getVersion(),
+                            getState().getCipherSuite(),
+                            getState().getKeySet().getReadMacSecret(getLocalConnectionEndType()));
+            writeMac =
+                    MacWrapper.getMac(
+                            getState().getVersion(),
+                            getState().getCipherSuite(),
+                            getState().getKeySet().getWriteMacSecret(getLocalConnectionEndType()));
         } catch (NoSuchAlgorithmException ex) {
-            throw new UnsupportedOperationException("Cipher not supported: " + getState().getCipherSuite().name(), ex);
+            throw new UnsupportedOperationException(
+                    "Cipher not supported: " + getState().getCipherSuite().name(), ex);
         }
     }
 
     public byte[] calculateMac(byte[] data, ConnectionEndType connectionEndType) {
-        LOGGER.debug("The MAC was calculated over the following data: {}", ArrayConverter.bytesToHexString(data));
+        LOGGER.debug(
+                "The MAC was calculated over the following data: {}",
+                ArrayConverter.bytesToHexString(data));
         byte[] result;
         if (connectionEndType == getConnectionEndType()) {
             result = writeMac.calculateMac(data);
@@ -88,17 +98,28 @@ public class RecordStreamCipher extends RecordCipher {
 
         // For unusual handshakes we need the length here if TLS 1.3 is
         // negotiated as a version.
-        record.setLength(cleanBytes.length
-            + AlgorithmResolver.getMacAlgorithm(getState().getVersion(), getState().getCipherSuite()).getSize());
+        record.setLength(
+                cleanBytes.length
+                        + AlgorithmResolver.getMacAlgorithm(
+                                        getState().getVersion(), getState().getCipherSuite())
+                                .getSize());
 
-        computations.setAuthenticatedMetaData(collectAdditionalAuthenticatedData(record, getState().getVersion()));
-        computations.setMac(calculateMac(ArrayConverter.concatenate(computations.getAuthenticatedMetaData().getValue(),
-            computations.getAuthenticatedNonMetaData().getValue()), getLocalConnectionEndType()));
+        computations.setAuthenticatedMetaData(
+                collectAdditionalAuthenticatedData(record, getState().getVersion()));
+        computations.setMac(
+                calculateMac(
+                        ArrayConverter.concatenate(
+                                computations.getAuthenticatedMetaData().getValue(),
+                                computations.getAuthenticatedNonMetaData().getValue()),
+                        getLocalConnectionEndType()));
 
-        computations.setPlainRecordBytes(ArrayConverter.concatenate(record.getCleanProtocolMessageBytes().getValue(),
-            computations.getMac().getValue()));
+        computations.setPlainRecordBytes(
+                ArrayConverter.concatenate(
+                        record.getCleanProtocolMessageBytes().getValue(),
+                        computations.getMac().getValue()));
 
-        computations.setCiphertext(encryptCipher.encrypt(record.getComputations().getPlainRecordBytes().getValue()));
+        computations.setCiphertext(
+                encryptCipher.encrypt(record.getComputations().getPlainRecordBytes().getValue()));
 
         record.setProtocolMessageBytes(computations.getCiphertext().getValue());
         // TODO our macs are always valid
@@ -128,12 +149,16 @@ public class RecordStreamCipher extends RecordCipher {
         record.setCleanProtocolMessageBytes(cleanBytes);
         record.getComputations().setAuthenticatedNonMetaData(cleanBytes);
         record.getComputations()
-            .setAuthenticatedMetaData(collectAdditionalAuthenticatedData(record, getState().getVersion()));
+                .setAuthenticatedMetaData(
+                        collectAdditionalAuthenticatedData(record, getState().getVersion()));
         byte[] hmac = parser.parseByteArrayField(readMac.getMacLength());
         record.getComputations().setMac(hmac);
         byte[] calculatedHmac =
-            calculateMac(ArrayConverter.concatenate(record.getComputations().getAuthenticatedMetaData().getValue(),
-                record.getComputations().getAuthenticatedNonMetaData().getValue()), getTalkingConnectionEndType());
+                calculateMac(
+                        ArrayConverter.concatenate(
+                                record.getComputations().getAuthenticatedMetaData().getValue(),
+                                record.getComputations().getAuthenticatedNonMetaData().getValue()),
+                        getTalkingConnectionEndType());
         record.getComputations().setMacValid(Arrays.equals(hmac, calculatedHmac));
     }
 
@@ -155,7 +180,8 @@ public class RecordStreamCipher extends RecordCipher {
 
         @Override
         public void parse(Object t) {
-            throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods,
+            throw new UnsupportedOperationException(
+                    "Not supported yet."); // To change body of generated methods,
             // choose Tools | Templates.
         }
     }

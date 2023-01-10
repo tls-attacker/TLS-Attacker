@@ -1,20 +1,20 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.certificate.ocsp;
+
+import static de.rub.nds.tlsattacker.core.certificate.ocsp.OCSPResponseTypes.BASIC;
 
 import de.rub.nds.asn1.Asn1Encodable;
 import de.rub.nds.asn1.model.*;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.certificate.CrlReason;
 import de.rub.nds.tlsattacker.core.certificate.ObjectIdentifierTranslator;
-import static de.rub.nds.tlsattacker.core.certificate.ocsp.OCSPResponseTypes.BASIC;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
@@ -136,8 +136,10 @@ public class OCSPResponse {
     }
 
     private String formatDate(String unformattedDateString) {
-        DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss'Z'", Locale.ENGLISH);
-        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
+        DateTimeFormatter inputFormatter =
+                DateTimeFormatter.ofPattern("yyyyMMddHHmmss'Z'", Locale.ENGLISH);
+        DateTimeFormatter outputFormatter =
+                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
         LocalDateTime date = LocalDateTime.parse(unformattedDateString, inputFormatter);
         return outputFormatter.format(date);
     }
@@ -155,7 +157,10 @@ public class OCSPResponse {
                 } else if (dnKeyValue.get(1) instanceof Asn1PrimitiveUtf8String) {
                     value = ((Asn1PrimitiveUtf8String) dnKeyValue.get(1)).getValue();
                 }
-                sb.append("\n   ").append(ObjectIdentifierTranslator.translate(oid)).append(": ").append(value);
+                sb.append("\n   ")
+                        .append(ObjectIdentifierTranslator.translate(oid))
+                        .append(": ")
+                        .append(value);
             }
         }
         return sb.toString();
@@ -208,25 +213,36 @@ public class OCSPResponse {
             certificateCounter++;
             sb.append("\n Certificate Status No. ").append(certificateCounter);
             sb.append("\n   Hash Algorithm: ")
-                .append(ObjectIdentifierTranslator.translate(certificateStatus.getHashAlgorithmIdentifier()));
-            sb.append("\n   Issuer Name Hash: ").append(Hex.toHexString(certificateStatus.getIssuerNameHash()));
-            sb.append("\n   Issuer Key Hash: ").append(Hex.toHexString(certificateStatus.getIssuerKeyHash()));
-            sb.append("\n   Serial Number: ").append("0x").append(certificateStatus.getSerialNumber().toString(16));
+                    .append(
+                            ObjectIdentifierTranslator.translate(
+                                    certificateStatus.getHashAlgorithmIdentifier()));
+            sb.append("\n   Issuer Name Hash: ")
+                    .append(Hex.toHexString(certificateStatus.getIssuerNameHash()));
+            sb.append("\n   Issuer Key Hash: ")
+                    .append(Hex.toHexString(certificateStatus.getIssuerKeyHash()));
+            sb.append("\n   Serial Number: ")
+                    .append("0x")
+                    .append(certificateStatus.getSerialNumber().toString(16));
             sb.append("\n   Certificate Status: ");
             sb.append(RevocationStatus.translate(certificateStatus.getCertificateStatus()));
-            if (certificateStatus.getCertificateStatus().equals(RevocationStatus.translate("revoked"))) {
-                sb.append("\n    Revocation Time: ").append(formatDate(certificateStatus.getRevocationTime()));
+            if (certificateStatus
+                    .getCertificateStatus()
+                    .equals(RevocationStatus.translate("revoked"))) {
+                sb.append("\n    Revocation Time: ")
+                        .append(formatDate(certificateStatus.getRevocationTime()));
                 if (certificateStatus.getRevocationReason() != null) {
                     sb.append("\n    Revocation Reason: ");
                     sb.append(CrlReason.translate(certificateStatus.getRevocationReason()));
                 }
             }
-            sb.append("\n   Last Update: ").append(formatDate(certificateStatus.getTimeOfLastUpdate()));
-            sb.append("\n   Next Update: ").append(formatDate(certificateStatus.getTimeOfNextUpdate()));
+            sb.append("\n   Last Update: ")
+                    .append(formatDate(certificateStatus.getTimeOfLastUpdate()));
+            sb.append("\n   Next Update: ")
+                    .append(formatDate(certificateStatus.getTimeOfNextUpdate()));
         }
 
         sb.append("\n Signature Algorithm: ")
-            .append(ObjectIdentifierTranslator.translate(getSignatureAlgorithmIdentifier()));
+                .append(ObjectIdentifierTranslator.translate(getSignatureAlgorithmIdentifier()));
 
         if (includeSignatureAndCertificate) {
             if (signature != null) {
@@ -236,7 +252,8 @@ public class OCSPResponse {
 
             if (getCertificate() != null) {
                 try {
-                    String certificateBytes = ArrayConverter.bytesToHexString(getResponseCertificateBytes());
+                    String certificateBytes =
+                            ArrayConverter.bytesToHexString(getResponseCertificateBytes());
                     sb.append("\n Certificate:").append(certificateBytes);
                 } catch (IOException e) {
                     e.printStackTrace();

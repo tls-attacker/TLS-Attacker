@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -15,7 +14,8 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class CertificateStatusPreparator extends HandshakeMessagePreparator<CertificateStatusMessage> {
+public class CertificateStatusPreparator
+        extends HandshakeMessagePreparator<CertificateStatusMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -31,7 +31,8 @@ public class CertificateStatusPreparator extends HandshakeMessagePreparator<Cert
     @Override
     protected void prepareHandshakeMessageContents() {
         LOGGER.debug("Preparing CertificateStatusMessage");
-        LOGGER.debug("Note: This is not properly implemented yet. Will use hardcoded message with empty content.");
+        LOGGER.debug(
+                "Note: This is not properly implemented yet. Will use hardcoded message with empty content.");
         // Dummy message, we can't create an own StatusMessage yet.
         prepareCertificateStatusType();
         prepareOcspResponseLength();
@@ -50,6 +51,8 @@ public class CertificateStatusPreparator extends HandshakeMessagePreparator<Cert
 
     private void prepareOcspResponseBytes() {
         msg.setOcspResponseBytes(new byte[0]);
-        LOGGER.debug("OCSPResponseBytes: " + ArrayConverter.bytesToHexString(msg.getOcspResponseBytes()));
+        LOGGER.debug(
+                "OCSPResponseBytes: "
+                        + ArrayConverter.bytesToHexString(msg.getOcspResponseBytes()));
     }
 }

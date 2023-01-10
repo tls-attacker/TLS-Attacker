@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.certificate.ocsp;
 
 import de.rub.nds.asn1.model.Asn1Sequence;
@@ -112,8 +111,10 @@ public class CertificateStatus {
     }
 
     private String formatDate(String unformattedDateString) {
-        DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss'Z'", Locale.ENGLISH);
-        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
+        DateTimeFormatter inputFormatter =
+                DateTimeFormatter.ofPattern("yyyyMMddHHmmss'Z'", Locale.ENGLISH);
+        DateTimeFormatter outputFormatter =
+                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
         LocalDateTime date = LocalDateTime.parse(unformattedDateString, inputFormatter);
         return outputFormatter.format(date);
     }
@@ -123,7 +124,8 @@ public class CertificateStatus {
         sb.append("Certificate Status");
         // Use status value to determine if object has been filled
         if (certificateStatus != null) {
-            sb.append("\n Hash Algorithm: ").append(ObjectIdentifierTranslator.translate(getHashAlgorithmIdentifier()));
+            sb.append("\n Hash Algorithm: ")
+                    .append(ObjectIdentifierTranslator.translate(getHashAlgorithmIdentifier()));
             sb.append("\n Issuer Name Hash: ").append(Hex.toHexString(getIssuerNameHash()));
             sb.append("\n Issuer Key Hash: ").append(Hex.toHexString(getIssuerKeyHash()));
             sb.append("\n Serial Number: ").append(getSerialNumber().toString(16));

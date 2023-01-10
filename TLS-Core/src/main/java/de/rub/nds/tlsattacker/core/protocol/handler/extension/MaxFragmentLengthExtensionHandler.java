@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -17,7 +16,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.MaxFragmentLengthE
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class MaxFragmentLengthExtensionHandler extends ExtensionHandler<MaxFragmentLengthExtensionMessage> {
+public class MaxFragmentLengthExtensionHandler
+        extends ExtensionHandler<MaxFragmentLengthExtensionMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -31,13 +31,15 @@ public class MaxFragmentLengthExtensionHandler extends ExtensionHandler<MaxFragm
         if (maxFragmentLengthBytes.length != 1) {
             throw new AdjustmentException("Cannot adjust MaxFragmentLength to a reasonable value");
         }
-        MaxFragmentLength length = MaxFragmentLength.getMaxFragmentLength(maxFragmentLengthBytes[0]);
+        MaxFragmentLength length =
+                MaxFragmentLength.getMaxFragmentLength(maxFragmentLengthBytes[0]);
         if (length == null) {
-            LOGGER.warn("Unknown MaxFragmentLength:" + ArrayConverter.bytesToHexString(maxFragmentLengthBytes));
+            LOGGER.warn(
+                    "Unknown MaxFragmentLength:"
+                            + ArrayConverter.bytesToHexString(maxFragmentLengthBytes));
         } else {
             LOGGER.debug("Setting MaxFragmentLength: " + length.getValue());
             tlsContext.setMaxFragmentLength(length);
         }
     }
-
 }

@@ -1,19 +1,18 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestV2ExtensionMessage;
 
 public class CertificateStatusRequestV2ExtensionHandler
-    extends ExtensionHandler<CertificateStatusRequestV2ExtensionMessage> {
+        extends ExtensionHandler<CertificateStatusRequestV2ExtensionMessage> {
 
     public CertificateStatusRequestV2ExtensionHandler(TlsContext tlsContext) {
         super(tlsContext);
@@ -23,5 +22,4 @@ public class CertificateStatusRequestV2ExtensionHandler
     public void adjustTLSExtensionContext(CertificateStatusRequestV2ExtensionMessage message) {
         tlsContext.setStatusRequestV2RequestList(message.getStatusRequestList());
     }
-
 }

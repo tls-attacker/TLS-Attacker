@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -42,14 +41,17 @@ public class ClientEsniInnerSerializer extends Serializer<ClientEsniInner> {
     }
 
     private void writeServerNameListLength(ClientEsniInner msg) {
-        appendInt(clientEsniInner.getServerNameListLength().getValue(), ExtensionByteLength.SERVER_NAME_LIST);
+        appendInt(
+                clientEsniInner.getServerNameListLength().getValue(),
+                ExtensionByteLength.SERVER_NAME_LIST);
         LOGGER.debug("ServerNameListLength: " + msg.getServerNameListLength().getValue());
     }
 
     private void writeServerNameListBytes(ClientEsniInner msg) {
         appendBytes(clientEsniInner.getServerNameListBytes().getValue());
-        LOGGER
-            .debug("ServerNameListBytes: " + ArrayConverter.bytesToHexString(msg.getServerNameListBytes().getValue()));
+        LOGGER.debug(
+                "ServerNameListBytes: "
+                        + ArrayConverter.bytesToHexString(msg.getServerNameListBytes().getValue()));
     }
 
     private void writePadding(ClientEsniInner msg) {

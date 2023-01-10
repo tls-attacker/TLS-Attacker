@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.record.cipher.cryptohelper;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -23,14 +22,10 @@ public class KeyBlockParser extends Parser<KeySet> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /**
-     * sequence Number length in byte
-     */
+    /** sequence Number length in byte */
     public static final int SEQUENCE_NUMBER_LENGTH = 8;
 
-    /**
-     * AEAD iv length in byte
-     */
+    /** AEAD iv length in byte */
     public static final int AEAD_IV_LENGTH = 12;
 
     private final CipherSuite suite;
@@ -51,8 +46,9 @@ public class KeyBlockParser extends Parser<KeySet> {
         }
         parseClientWriteKey(keys);
         parseServerWriteKey(keys);
-        if ((AlgorithmResolver.getCipherType(suite) == CipherType.BLOCK && !version.usesExplicitIv())
-            || suite.isSteamCipherWithIV()) {
+        if ((AlgorithmResolver.getCipherType(suite) == CipherType.BLOCK
+                        && !version.usesExplicitIv())
+                || suite.isSteamCipherWithIV()) {
             parseClientWriteIvBlock(keys);
             parseServerWriteIvBlock(keys);
         } else if (AlgorithmResolver.getCipherType(suite) == CipherType.AEAD) {
@@ -77,32 +73,38 @@ public class KeyBlockParser extends Parser<KeySet> {
 
     private void parseClientWriteIvAead(KeySet keys) {
         keys.setClientWriteIv(parseByteArrayField(getAeadSaltSize()));
-        LOGGER.debug("ClientWriteIV AEAD: " + ArrayConverter.bytesToHexString(keys.getClientWriteIv()));
+        LOGGER.debug(
+                "ClientWriteIV AEAD: " + ArrayConverter.bytesToHexString(keys.getClientWriteIv()));
     }
 
     private void parseServerWriteIvAead(KeySet keys) {
         keys.setServerWriteIv(parseByteArrayField(getAeadSaltSize()));
-        LOGGER.debug("ServerWriteIV AEAD: " + ArrayConverter.bytesToHexString(keys.getServerWriteIv()));
+        LOGGER.debug(
+                "ServerWriteIV AEAD: " + ArrayConverter.bytesToHexString(keys.getServerWriteIv()));
     }
 
     private void parseClientWriteKey(KeySet keys) {
         keys.setClientWriteKey(parseByteArrayField(getKeySize()));
-        LOGGER.debug("ClientWriteKey: " + ArrayConverter.bytesToHexString(keys.getClientWriteKey()));
+        LOGGER.debug(
+                "ClientWriteKey: " + ArrayConverter.bytesToHexString(keys.getClientWriteKey()));
     }
 
     private void parseServerWriteKey(KeySet keys) {
         keys.setServerWriteKey(parseByteArrayField(getKeySize()));
-        LOGGER.debug("ServerWriteKey: " + ArrayConverter.bytesToHexString(keys.getServerWriteKey()));
+        LOGGER.debug(
+                "ServerWriteKey: " + ArrayConverter.bytesToHexString(keys.getServerWriteKey()));
     }
 
     private void parseClientWriteMacSecret(KeySet keys) {
         keys.setClientWriteMacSecret(parseByteArrayField(getMacKeySize()));
-        LOGGER.debug("ClientMacKey: " + ArrayConverter.bytesToHexString(keys.getClientWriteMacSecret()));
+        LOGGER.debug(
+                "ClientMacKey: " + ArrayConverter.bytesToHexString(keys.getClientWriteMacSecret()));
     }
 
     private void parseServerWriteMacSecret(KeySet keys) {
         keys.setServerWriteMacSecret(parseByteArrayField(getMacKeySize()));
-        LOGGER.debug("ServerMacKey: " + ArrayConverter.bytesToHexString(keys.getServerWriteMacSecret()));
+        LOGGER.debug(
+                "ServerMacKey: " + ArrayConverter.bytesToHexString(keys.getServerWriteMacSecret()));
     }
 
     private int getMacKeySize() {
@@ -120,5 +122,4 @@ public class KeyBlockParser extends Parser<KeySet> {
     private int getIVSize() {
         return AlgorithmResolver.getCipher(suite).getNonceBytesFromHandshake();
     }
-
 }

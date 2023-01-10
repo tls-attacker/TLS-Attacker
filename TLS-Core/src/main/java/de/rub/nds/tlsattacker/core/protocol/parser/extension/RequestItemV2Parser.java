@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
@@ -26,16 +25,22 @@ public class RequestItemV2Parser extends Parser<RequestItemV2> {
 
     @Override
     public void parse(RequestItemV2 item) {
-        item.setRequestType(parseIntField(ExtensionByteLength.CERTIFICATE_STATUS_REQUEST_STATUS_TYPE));
-        item.setRequestLength(parseIntField(ExtensionByteLength.CERTIFICATE_STATUS_REQUEST_V2_REQUEST_LENGTH));
-        item.setResponderIdListLength(parseIntField(ExtensionByteLength.CERTIFICATE_STATUS_REQUEST_V2_RESPONDER_ID));
-        item.setResponderIdListBytes(parseByteArrayField(item.getResponderIdListLength().getValue()));
+        item.setRequestType(
+                parseIntField(ExtensionByteLength.CERTIFICATE_STATUS_REQUEST_STATUS_TYPE));
+        item.setRequestLength(
+                parseIntField(ExtensionByteLength.CERTIFICATE_STATUS_REQUEST_V2_REQUEST_LENGTH));
+        item.setResponderIdListLength(
+                parseIntField(ExtensionByteLength.CERTIFICATE_STATUS_REQUEST_V2_RESPONDER_ID));
+        item.setResponderIdListBytes(
+                parseByteArrayField(item.getResponderIdListLength().getValue()));
         item.setRequestExtensionsLength(
-            parseIntField(ExtensionByteLength.CERTIFICATE_STATUS_REQUEST_V2_REQUEST_EXTENSION));
-        item.setRequestExtensions(parseByteArrayField(item.getRequestExtensionsLength().getValue()));
+                parseIntField(ExtensionByteLength.CERTIFICATE_STATUS_REQUEST_V2_REQUEST_EXTENSION));
+        item.setRequestExtensions(
+                parseByteArrayField(item.getRequestExtensionsLength().getValue()));
 
         List<ResponderId> responderIds = new LinkedList<>();
-        ByteArrayInputStream innerStream = new ByteArrayInputStream(item.getResponderIdListBytes().getValue());
+        ByteArrayInputStream innerStream =
+                new ByteArrayInputStream(item.getResponderIdListBytes().getValue());
         while (innerStream.available() > 0) {
             ResponderIdParser parser = new ResponderIdParser(innerStream);
             ResponderId id = new ResponderId();

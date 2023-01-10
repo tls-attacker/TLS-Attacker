@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -67,8 +66,9 @@ public class ClientEsniInnerPreparator extends Preparator<ClientEsniInner> {
 
     private void prepareServerNameListBytes(ClientEsniInner msg) {
         msg.setServerNameListBytes(serverNamePairListStream.toByteArray());
-        LOGGER
-            .debug("ServerNameListBytes: " + ArrayConverter.bytesToHexString(msg.getServerNameListBytes().getValue()));
+        LOGGER.debug(
+                "ServerNameListBytes: "
+                        + ArrayConverter.bytesToHexString(msg.getServerNameListBytes().getValue()));
     }
 
     private void prepareServerNameListLength(ClientEsniInner msg) {
@@ -80,7 +80,9 @@ public class ClientEsniInnerPreparator extends Preparator<ClientEsniInner> {
         byte[] padding;
         int paddedLength = chooser.getEsniPaddedLength();
         int paddingLength =
-            paddedLength - msg.getServerNameListBytes().getValue().length - ExtensionByteLength.SERVER_NAME_LIST;
+                paddedLength
+                        - msg.getServerNameListBytes().getValue().length
+                        - ExtensionByteLength.SERVER_NAME_LIST;
         if (paddingLength > 65536) {
             LOGGER.warn("ESNI Inner PaddingLength is greater than 65536. Limiting it to 65536");
             paddingLength = 65536;
