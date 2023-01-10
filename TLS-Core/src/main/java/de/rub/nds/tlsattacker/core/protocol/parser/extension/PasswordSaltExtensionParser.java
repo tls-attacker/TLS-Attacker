@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PasswordSaltExtensionMessage;
@@ -38,6 +37,6 @@ public class PasswordSaltExtensionParser extends ExtensionParser<PasswordSaltExt
 
     private void parseSalt(PasswordSaltExtensionMessage msg) {
         msg.setSalt(parseByteArrayField(msg.getSaltLength().getValue()));
-        LOGGER.debug("Salt: " + ArrayConverter.bytesToHexString(msg.getSalt()));
+        LOGGER.debug("Salt: {}", msg.getSalt());
     }
 }

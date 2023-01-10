@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
@@ -58,9 +57,7 @@ public class CertificateMessageSerializer extends HandshakeMessageSerializer<Cer
     /** Writes the RequestContext of the CertificateMessage into the final byte[] */
     private void writeRequestContext(CertificateMessage msg) {
         appendBytes(msg.getRequestContext().getValue());
-        LOGGER.debug(
-                "RequestContext: "
-                        + ArrayConverter.bytesToHexString(msg.getRequestContext().getValue()));
+        LOGGER.debug("RequestContext: {}", msg.getRequestContext().getValue());
     }
 
     /** Writes the CertificateLength of the CertificateMessage into the final byte[] */
@@ -74,9 +71,6 @@ public class CertificateMessageSerializer extends HandshakeMessageSerializer<Cer
     /** Writes the Certificate of the CertificateMessage into the final byte[] */
     private void writeCertificatesListBytes(CertificateMessage msg) {
         appendBytes(msg.getCertificatesListBytes().getValue());
-        LOGGER.debug(
-                "certificatesListBytes: "
-                        + ArrayConverter.bytesToHexString(
-                                msg.getCertificatesListBytes().getValue()));
+        LOGGER.debug("certificatesListBytes: {}", msg.getCertificatesListBytes().getValue());
     }
 }

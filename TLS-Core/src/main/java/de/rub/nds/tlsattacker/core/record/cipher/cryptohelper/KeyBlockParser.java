@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.record.cipher.cryptohelper;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CipherType;
@@ -63,48 +62,42 @@ public class KeyBlockParser extends Parser<KeySet> {
 
     private void parseClientWriteIvBlock(KeySet keys) {
         keys.setClientWriteIv(parseByteArrayField(getIVSize()));
-        LOGGER.debug("ClientWriteIV: " + ArrayConverter.bytesToHexString(keys.getClientWriteIv()));
+        LOGGER.debug("ClientWriteIV: {}", keys.getClientWriteIv());
     }
 
     private void parseServerWriteIvBlock(KeySet keys) {
         keys.setServerWriteIv(parseByteArrayField(getIVSize()));
-        LOGGER.debug("ServerWriteIV: " + ArrayConverter.bytesToHexString(keys.getServerWriteIv()));
+        LOGGER.debug("ServerWriteIV: {}", keys.getServerWriteIv());
     }
 
     private void parseClientWriteIvAead(KeySet keys) {
         keys.setClientWriteIv(parseByteArrayField(getAeadSaltSize()));
-        LOGGER.debug(
-                "ClientWriteIV AEAD: " + ArrayConverter.bytesToHexString(keys.getClientWriteIv()));
+        LOGGER.debug("ClientWriteIV AEAD: {}", keys.getClientWriteIv());
     }
 
     private void parseServerWriteIvAead(KeySet keys) {
         keys.setServerWriteIv(parseByteArrayField(getAeadSaltSize()));
-        LOGGER.debug(
-                "ServerWriteIV AEAD: " + ArrayConverter.bytesToHexString(keys.getServerWriteIv()));
+        LOGGER.debug("ServerWriteIV AEAD: {}", keys.getServerWriteIv());
     }
 
     private void parseClientWriteKey(KeySet keys) {
         keys.setClientWriteKey(parseByteArrayField(getKeySize()));
-        LOGGER.debug(
-                "ClientWriteKey: " + ArrayConverter.bytesToHexString(keys.getClientWriteKey()));
+        LOGGER.debug("ClientWriteKey: {}", keys.getClientWriteKey());
     }
 
     private void parseServerWriteKey(KeySet keys) {
         keys.setServerWriteKey(parseByteArrayField(getKeySize()));
-        LOGGER.debug(
-                "ServerWriteKey: " + ArrayConverter.bytesToHexString(keys.getServerWriteKey()));
+        LOGGER.debug("ServerWriteKey: {}", keys.getServerWriteKey());
     }
 
     private void parseClientWriteMacSecret(KeySet keys) {
         keys.setClientWriteMacSecret(parseByteArrayField(getMacKeySize()));
-        LOGGER.debug(
-                "ClientMacKey: " + ArrayConverter.bytesToHexString(keys.getClientWriteMacSecret()));
+        LOGGER.debug("ClientMacKey: {}", keys.getClientWriteMacSecret());
     }
 
     private void parseServerWriteMacSecret(KeySet keys) {
         keys.setServerWriteMacSecret(parseByteArrayField(getMacKeySize()));
-        LOGGER.debug(
-                "ServerMacKey: " + ArrayConverter.bytesToHexString(keys.getServerWriteMacSecret()));
+        LOGGER.debug("ServerMacKey: {}", keys.getServerWriteMacSecret());
     }
 
     private int getMacKeySize() {

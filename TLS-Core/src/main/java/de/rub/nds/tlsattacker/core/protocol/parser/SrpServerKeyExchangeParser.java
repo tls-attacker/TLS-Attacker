@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.SrpServerKeyExchangeMessage;
@@ -127,9 +126,7 @@ public class SrpServerKeyExchangeParser
      */
     private void parseSerializedPublicKey(SrpServerKeyExchangeMessage msg) {
         msg.setPublicKey(parseByteArrayField(msg.getPublicKeyLength().getValue()));
-        LOGGER.debug(
-                "SerializedPublicKey: "
-                        + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
+        LOGGER.debug("SerializedPublicKey: {}", msg.getPublicKey().getValue());
     }
 
     /**
@@ -141,9 +138,7 @@ public class SrpServerKeyExchangeParser
         msg.setSignatureAndHashAlgorithm(
                 parseByteArrayField(HandshakeByteLength.SIGNATURE_HASH_ALGORITHM));
         LOGGER.debug(
-                "SignatureAndHashAlgorithm: "
-                        + ArrayConverter.bytesToHexString(
-                                msg.getSignatureAndHashAlgorithm().getValue()));
+                "SignatureAndHashAlgorithm: {}", msg.getSignatureAndHashAlgorithm().getValue());
     }
 
     /**
@@ -163,7 +158,6 @@ public class SrpServerKeyExchangeParser
      */
     private void parseSignature(SrpServerKeyExchangeMessage msg) {
         msg.setSignature(parseByteArrayField(msg.getSignatureLength().getValue()));
-        LOGGER.debug(
-                "Signature: " + ArrayConverter.bytesToHexString(msg.getSignature().getValue()));
+        LOGGER.debug("Signature: {}", msg.getSignature().getValue());
     }
 }

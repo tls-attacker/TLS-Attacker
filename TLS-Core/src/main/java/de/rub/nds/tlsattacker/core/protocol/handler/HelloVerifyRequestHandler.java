@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
 import org.apache.logging.log4j.LogManager;
@@ -30,9 +29,7 @@ public class HelloVerifyRequestHandler extends HandshakeMessageHandler<HelloVeri
     private void adjustDTLSCookie(HelloVerifyRequestMessage message) {
         byte[] dtlsCookie = message.getCookie().getValue();
         tlsContext.setDtlsCookie(dtlsCookie);
-        LOGGER.debug(
-                "Set DTLS Cookie in Context to "
-                        + ArrayConverter.bytesToHexString(dtlsCookie, false));
+        LOGGER.debug("Set DTLS Cookie in Context to {}", dtlsCookie);
         tlsContext.getDigest().reset();
         LOGGER.debug("Resetting MessageDigest");
     }

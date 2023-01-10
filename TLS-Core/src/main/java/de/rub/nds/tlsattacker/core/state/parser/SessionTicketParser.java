@@ -45,8 +45,8 @@ public class SessionTicketParser extends Parser<SessionTicket> {
     private void parseKeyName(SessionTicket sessionTicket) {
         sessionTicket.setKeyName(parseByteArrayField(configTicketKeyName.length));
         LOGGER.debug(
-                "Parsed session ticket key name "
-                        + bytesToHexString(sessionTicket.getKeyName().getValue()));
+                "Parsed session ticket key name {} ",
+                () -> bytesToHexString(sessionTicket.getKeyName().getValue()));
         if (!Arrays.equals(sessionTicket.getKeyName().getValue(), configTicketKeyName)) {
             LOGGER.warn(
                     "Parsed session ticket key name does not match expected key name - subsequent parsing will probably fail");
@@ -55,30 +55,28 @@ public class SessionTicketParser extends Parser<SessionTicket> {
 
     private void parseIV(SessionTicket sessionTicket) {
         sessionTicket.setIV(parseByteArrayField(configCipherAlgorithm.getBlocksize()));
-        LOGGER.debug(
-                "Parsed session ticket IV " + bytesToHexString(sessionTicket.getIV().getValue()));
+        LOGGER.debug("Parsed session ticket IV {}", () -> sessionTicket.getIV().getValue());
     }
 
     private void parseEncryptedStateLength(SessionTicket sessionTicket) {
         sessionTicket.setEncryptedStateLength(
                 parseIntField(ExtensionByteLength.ENCRYPTED_SESSION_TICKET_STATE_LENGTH));
         LOGGER.debug(
-                "Parsed encrypted state length "
-                        + sessionTicket.getEncryptedStateLength().getValue());
+                "Parsed encrypted state length {}",
+                () -> sessionTicket.getEncryptedStateLength().getValue());
     }
 
     private void parseEncryptedState(SessionTicket sessionTicket) {
         sessionTicket.setEncryptedState(
                 parseByteArrayField(sessionTicket.getEncryptedStateLength().getValue()));
         LOGGER.debug(
-                "Parsed session ticket encrypted state "
-                        + bytesToHexString(sessionTicket.getEncryptedState().getValue()));
+                "Parsed session ticket encrypted state {}",
+                () -> sessionTicket.getEncryptedState().getValue());
     }
 
     private void parseMAC(SessionTicket sessionTicket) {
         sessionTicket.setMAC(parseByteArrayField(configMacAlgorithm.getSize()));
-        LOGGER.debug(
-                "Parsed session ticket MAC " + bytesToHexString(sessionTicket.getMAC().getValue()));
+        LOGGER.debug("Parsed session ticket MAC {}", () -> sessionTicket.getMAC().getValue());
     }
 
     @Override

@@ -65,9 +65,7 @@ public class PSKIdentityPreparator extends Preparator<PSKIdentity> {
                     ArrayConverter.longToBytes(
                             difference.longValue(), ExtensionByteLength.TICKET_AGE_LENGTH);
 
-            LOGGER.debug(
-                    "Calculated ObfuscatedTicketAge: "
-                            + ArrayConverter.bytesToHexString(obfTicketAge));
+            LOGGER.debug("Calculated ObfuscatedTicketAge: {}", obfTicketAge);
             return obfTicketAge;
         } catch (Exception e) {
             LOGGER.warn(

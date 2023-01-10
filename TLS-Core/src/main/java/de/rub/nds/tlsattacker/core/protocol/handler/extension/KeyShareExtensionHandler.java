@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
@@ -57,14 +56,12 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
                     ksEntryList.add(new KeyShareStoreEntry(type, pair.getPublicKey().getValue()));
                 } else {
                     LOGGER.warn(
-                            "Empty KeyShare - Setting only selected KeyShareType: to "
-                                    + ArrayConverter.bytesToHexString(pair.getGroup()));
+                            "Empty KeyShare - Setting only selected KeyShareType: to {}",
+                            pair.getGroup());
                     tlsContext.setSelectedGroup(type);
                 }
             } else {
-                LOGGER.warn(
-                        "Unknown KS Type:"
-                                + ArrayConverter.bytesToHexString(pair.getPublicKey().getValue()));
+                LOGGER.warn("Unknown KS Type: {}", pair.getPublicKey().getValue());
             }
         }
         return ksEntryList;

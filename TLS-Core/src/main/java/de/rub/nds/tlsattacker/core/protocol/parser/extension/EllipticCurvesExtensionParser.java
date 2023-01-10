@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EllipticCurvesExtensionMessage;
@@ -49,8 +48,6 @@ public class EllipticCurvesExtensionParser extends ExtensionParser<EllipticCurve
      */
     private void parseSupportedGroups(EllipticCurvesExtensionMessage msg) {
         msg.setSupportedGroups(parseByteArrayField(msg.getSupportedGroupsLength().getValue()));
-        LOGGER.debug(
-                "SupportedGroups: "
-                        + ArrayConverter.bytesToHexString(msg.getSupportedGroups().getValue()));
+        LOGGER.debug("SupportedGroups: {}", msg.getSupportedGroups().getValue());
     }
 }

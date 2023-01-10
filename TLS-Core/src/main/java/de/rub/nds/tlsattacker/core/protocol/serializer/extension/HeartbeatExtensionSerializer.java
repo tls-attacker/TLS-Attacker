@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.HeartbeatExtensionMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -33,8 +32,6 @@ public class HeartbeatExtensionSerializer extends ExtensionSerializer<HeartbeatE
 
     private void writeHeartbeatMode(HeartbeatExtensionMessage msg) {
         appendBytes(msg.getHeartbeatMode().getValue());
-        LOGGER.debug(
-                "HeartbeatMode: "
-                        + ArrayConverter.bytesToHexString(msg.getHeartbeatMode().getValue()));
+        LOGGER.debug("HeartbeatMode: {}", msg.getHeartbeatMode().getValue());
     }
 }

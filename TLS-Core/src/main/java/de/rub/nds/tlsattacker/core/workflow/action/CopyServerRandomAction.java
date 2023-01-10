@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
@@ -30,9 +29,7 @@ public class CopyServerRandomAction extends CopyContextFieldAction {
     protected void copyField(TlsContext src, TlsContext dst) {
         dst.setServerRandom(src.getServerRandom());
         LOGGER.debug("Copying server random from " + src + " to " + dst);
-        LOGGER.debug(
-                "Copied server random is: "
-                        + ArrayConverter.bytesToHexString(dst.getServerRandom(), true, true));
+        LOGGER.debug("Copied server random is: {}", dst.getServerRandom());
         setExecuted(true);
     }
 

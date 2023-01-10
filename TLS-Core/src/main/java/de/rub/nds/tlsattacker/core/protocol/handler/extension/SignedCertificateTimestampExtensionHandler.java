@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignedCertificateTimestampExtensionMessage;
 import org.apache.logging.log4j.LogManager;
@@ -43,7 +42,7 @@ public class SignedCertificateTimestampExtensionHandler
         }
         tlsContext.setSignedCertificateTimestamp(message.getSignedTimestamp().getValue());
         LOGGER.debug(
-                "The context SignedCertificateTimestamp was set to "
-                        + ArrayConverter.bytesToHexString(message.getSignedTimestamp()));
+                "The context SignedCertificateTimestamp was set to {}",
+                message.getSignedTimestamp());
     }
 }

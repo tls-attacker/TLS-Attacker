@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CookieExtensionMessage;
 import org.apache.logging.log4j.LogManager;
@@ -40,6 +39,6 @@ public class CookieExtensionSerializer extends ExtensionSerializer<CookieExtensi
 
     private void serializeCookie(CookieExtensionMessage msg) {
         appendBytes(msg.getCookie().getValue());
-        LOGGER.debug("Cookie: " + ArrayConverter.bytesToHexString(msg.getCookie().getValue()));
+        LOGGER.debug("Cookie: {}", msg.getCookie().getValue());
     }
 }

@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
@@ -69,7 +68,7 @@ public class DHEServerKeyExchangeSerializer<T extends DHEServerKeyExchangeMessag
     /** Writes the P of the DHEServerKeyExchangeMessage into the final byte[] */
     private void writeP(T msg) {
         appendBytes(msg.getModulus().getValue());
-        LOGGER.debug("P: " + ArrayConverter.bytesToHexString(msg.getModulus().getValue()));
+        LOGGER.debug("P: {}", msg.getModulus().getValue());
     }
 
     /** Writes the gLength of the DHEServerKeyExchangeMessage into the final byte[] */
@@ -81,7 +80,7 @@ public class DHEServerKeyExchangeSerializer<T extends DHEServerKeyExchangeMessag
     /** Writes the G of the DHEServerKeyExchangeMessage into the final byte[] */
     private void writeG(T msg) {
         appendBytes(msg.getGenerator().getValue());
-        LOGGER.debug("G: " + ArrayConverter.bytesToHexString(msg.getGenerator().getValue()));
+        LOGGER.debug("G: {}", msg.getGenerator().getValue());
     }
 
     /**
@@ -95,9 +94,7 @@ public class DHEServerKeyExchangeSerializer<T extends DHEServerKeyExchangeMessag
     /** Writes the SerializedPublicKey of the DHEServerKeyExchangeMessage into the final byte[] */
     private void writeSerializedPublicKey(T msg) {
         appendBytes(msg.getPublicKey().getValue());
-        LOGGER.debug(
-                "SerializedPublicKey: "
-                        + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
+        LOGGER.debug("SerializedPublicKey: {}", msg.getPublicKey().getValue());
     }
 
     /**
@@ -106,9 +103,7 @@ public class DHEServerKeyExchangeSerializer<T extends DHEServerKeyExchangeMessag
     private void writeSignatureAndHashAlgorithm(T msg) {
         appendBytes(msg.getSignatureAndHashAlgorithm().getValue());
         LOGGER.debug(
-                "SignatureAndHashAlgorithm: "
-                        + ArrayConverter.bytesToHexString(
-                                msg.getSignatureAndHashAlgorithm().getValue()));
+                "SignatureAndHashAlgorithm: {}", msg.getSignatureAndHashAlgorithm().getValue());
     }
 
     /** Writes the SignatureLength of the DHEServerKeyExchangeMessage into the final byte[] */
@@ -120,7 +115,6 @@ public class DHEServerKeyExchangeSerializer<T extends DHEServerKeyExchangeMessag
     /** Writes the Signature of the DHEServerKeyExchangeMessage into the final byte[] */
     private void writeSignature(T msg) {
         appendBytes(msg.getSignature().getValue());
-        LOGGER.debug(
-                "Signature: " + ArrayConverter.bytesToHexString(msg.getSignature().getValue()));
+        LOGGER.debug("Signature: {}", msg.getSignature().getValue());
     }
 }

@@ -46,15 +46,13 @@ public class PskDhClientKeyExchangeSerializer
     private void writePSKIdentityLength(PskDhClientKeyExchangeMessage msg) {
         appendInt(msg.getIdentityLength().getValue(), HandshakeByteLength.PSK_IDENTITY_LENGTH);
         LOGGER.debug(
-                "SerializedPSKIdentityLength: "
-                        + ArrayConverter.bytesToInt(msg.getIdentity().getValue()));
+                "SerializedPSKIdentityLength: {}",
+                () -> ArrayConverter.bytesToInt(msg.getIdentity().getValue()));
     }
 
     /** Writes the SerializedPublicKey of the PSKClientKeyExchangeMessage into the final byte[] */
     private void writePSKIdentity(PskDhClientKeyExchangeMessage msg) {
         appendBytes(msg.getIdentity().getValue());
-        LOGGER.debug(
-                "SerializedPSKIdentity: "
-                        + ArrayConverter.bytesToHexString(msg.getIdentity().getValue()));
+        LOGGER.debug("SerializedPSKIdentity: {}", msg.getIdentity().getValue());
     }
 }

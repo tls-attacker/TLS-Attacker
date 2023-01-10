@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
@@ -70,8 +69,8 @@ public class KeyUpdateHandler extends HandshakeMessageHandler<KeyUpdateMessage> 
 
                 tlsContext.setClientApplicationTrafficSecret(clientApplicationTrafficSecret);
                 LOGGER.debug(
-                        "Set clientApplicationTrafficSecret in Context to "
-                                + ArrayConverter.bytesToHexString(clientApplicationTrafficSecret));
+                        "Set clientApplicationTrafficSecret in Context to {}",
+                        clientApplicationTrafficSecret);
 
             } else {
 
@@ -85,8 +84,8 @@ public class KeyUpdateHandler extends HandshakeMessageHandler<KeyUpdateMessage> 
 
                 tlsContext.setServerApplicationTrafficSecret(serverApplicationTrafficSecret);
                 LOGGER.debug(
-                        "Set serverApplicationTrafficSecret in Context to "
-                                + ArrayConverter.bytesToHexString(serverApplicationTrafficSecret));
+                        "Set serverApplicationTrafficSecret in Context to {}",
+                        serverApplicationTrafficSecret);
             }
 
         } catch (NoSuchAlgorithmException | CryptoException ex) {

@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
@@ -93,9 +92,7 @@ public class ServerNameIndicationExtensionPreparator
 
     private void prepareServerNameListBytes(ServerNameIndicationExtensionMessage msg) {
         msg.setServerNameListBytes(stream.toByteArray());
-        LOGGER.debug(
-                "ServerNameListBytes: "
-                        + ArrayConverter.bytesToHexString(msg.getServerNameListBytes().getValue()));
+        LOGGER.debug("ServerNameListBytes: {}", msg.getServerNameListBytes().getValue());
     }
 
     private void prepareServerNameListLength(ServerNameIndicationExtensionMessage msg) {

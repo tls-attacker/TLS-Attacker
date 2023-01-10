@@ -83,10 +83,8 @@ public class PWDClientKeyExchangePreparator
         msg.getComputations().setPasswordElement(passwordElement);
 
         LOGGER.debug(
-                "PasswordElement.x: "
-                        + ArrayConverter.bytesToHexString(
-                                ArrayConverter.bigIntegerToByteArray(
-                                        passwordElement.getFieldX().getData())));
+                "PasswordElement.x: {}",
+                ArrayConverter.bigIntegerToByteArray(passwordElement.getFieldX().getData()));
     }
 
     protected MacAlgorithm getMacAlgorithm(CipherSuite suite) {
@@ -141,10 +139,8 @@ public class PWDClientKeyExchangePreparator
 
         msg.getComputations().setPrivateKeyScalar(keyMaterial.privateKeyScalar);
         LOGGER.debug(
-                "Private: "
-                        + ArrayConverter.bytesToHexString(
-                                ArrayConverter.bigIntegerToByteArray(
-                                        keyMaterial.privateKeyScalar)));
+                "Private: {}",
+                () -> ArrayConverter.bigIntegerToByteArray(keyMaterial.privateKeyScalar));
 
         prepareScalar(msg, keyMaterial.scalar);
         prepareScalarLength(msg);
@@ -155,10 +151,7 @@ public class PWDClientKeyExchangePreparator
 
     protected void prepareScalar(PWDClientKeyExchangeMessage msg, BigInteger scalar) {
         msg.setScalar(ArrayConverter.bigIntegerToByteArray(scalar));
-        LOGGER.debug(
-                "Scalar: "
-                        + ArrayConverter.bytesToHexString(
-                                ArrayConverter.bigIntegerToByteArray(scalar)));
+        LOGGER.debug("Scalar: {}", () -> ArrayConverter.bigIntegerToByteArray(scalar));
     }
 
     protected void prepareScalarLength(PWDClientKeyExchangeMessage msg) {
@@ -173,7 +166,7 @@ public class PWDClientKeyExchangePreparator
                         element,
                         chooser.getConfig().getDefaultSelectedPointFormat());
         msg.setElement(serializedElement);
-        LOGGER.debug("Element: " + ArrayConverter.bytesToHexString(serializedElement));
+        LOGGER.debug("Element: {}", serializedElement);
     }
 
     protected void prepareElementLength(PWDClientKeyExchangeMessage msg) {
@@ -208,10 +201,7 @@ public class PWDClientKeyExchangePreparator
 
     private void preparePremasterSecret(PWDClientKeyExchangeMessage msg, byte[] premasterSecret) {
         msg.getComputations().setPremasterSecret(premasterSecret);
-        LOGGER.debug(
-                "PremasterSecret: "
-                        + ArrayConverter.bytesToHexString(
-                                msg.getComputations().getPremasterSecret().getValue()));
+        LOGGER.debug("PremasterSecret: {}", msg.getComputations().getPremasterSecret().getValue());
     }
 
     private void prepareClientServerRandom(PWDClientKeyExchangeMessage msg) {
@@ -219,8 +209,6 @@ public class PWDClientKeyExchangePreparator
                 ArrayConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom());
         msg.getComputations().setClientServerRandom(clientRandom);
         LOGGER.debug(
-                "ClientServerRandom: "
-                        + ArrayConverter.bytesToHexString(
-                                msg.getComputations().getClientServerRandom().getValue()));
+                "ClientServerRandom: {}", msg.getComputations().getClientServerRandom().getValue());
     }
 }

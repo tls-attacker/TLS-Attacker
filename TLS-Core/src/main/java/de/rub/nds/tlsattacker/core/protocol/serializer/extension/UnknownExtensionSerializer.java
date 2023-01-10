@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.UnknownExtensionMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -39,8 +38,6 @@ public class UnknownExtensionSerializer extends ExtensionSerializer<UnknownExten
 
     private void writeExtensionData(UnknownExtensionMessage msg) {
         appendBytes(msg.getExtensionData().getValue());
-        LOGGER.debug(
-                "ExtensionData: "
-                        + ArrayConverter.bytesToHexString(msg.getExtensionData().getValue()));
+        LOGGER.debug("ExtensionData: {}", msg.getExtensionData().getValue());
     }
 }

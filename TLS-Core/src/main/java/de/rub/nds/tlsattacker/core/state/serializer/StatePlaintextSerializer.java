@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.state.serializer;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import de.rub.nds.tlsattacker.core.state.StatePlaintext;
@@ -65,10 +64,7 @@ public class StatePlaintextSerializer extends Serializer<StatePlaintext> {
 
     private void writeMasterSecret(StatePlaintext statePlaintext) {
         appendBytes(statePlaintext.getMasterSecret().getValue());
-        LOGGER.debug(
-                "MasterSecret: "
-                        + ArrayConverter.bytesToHexString(
-                                statePlaintext.getMasterSecret().getValue(), true, true));
+        LOGGER.debug("MasterSecret: {}", statePlaintext.getMasterSecret().getValue());
     }
 
     private void writeClientAuthentication(StatePlaintext statePlaintext) {
@@ -97,11 +93,8 @@ public class StatePlaintextSerializer extends Serializer<StatePlaintext> {
                     "ClientAuthenticationDataLength: "
                             + statePlaintext.getClientAuthenticationDataLength().getValue());
             LOGGER.debug(
-                    "ClientAuthenticationData: "
-                            + ArrayConverter.bytesToHexString(
-                                    statePlaintext.getClientAuthenticationData().getValue(),
-                                    true,
-                                    true));
+                    "ClientAuthenticationData: {}",
+                    statePlaintext.getClientAuthenticationData().getValue());
         } else if (clientAuthenticationType == ClientAuthenticationType.PSK.getValue()) {
             appendByte(clientAuthenticationType);
             appendBytes(
@@ -118,11 +111,8 @@ public class StatePlaintextSerializer extends Serializer<StatePlaintext> {
                     "ClientAuthenticationDataLength: "
                             + statePlaintext.getClientAuthenticationDataLength().getValue());
             LOGGER.debug(
-                    "ClientAuthenticationData: "
-                            + ArrayConverter.bytesToHexString(
-                                    statePlaintext.getClientAuthenticationData().getValue(),
-                                    true,
-                                    true));
+                    "ClientAuthenticationData: {}",
+                    statePlaintext.getClientAuthenticationData().getValue());
         } else {
             appendByte(clientAuthenticationType);
             LOGGER.warn(
@@ -134,10 +124,7 @@ public class StatePlaintextSerializer extends Serializer<StatePlaintext> {
     private void writeTimestamp(StatePlaintext statePlaintext) {
         appendBytes(statePlaintext.getTimestamp().getByteArray(HandshakeByteLength.UNIX_TIME));
         LOGGER.debug(
-                "Timestamp: "
-                        + ArrayConverter.bytesToHexString(
-                                statePlaintext
-                                        .getTimestamp()
-                                        .getByteArray(HandshakeByteLength.UNIX_TIME)));
+                "Timestamp: {}",
+                statePlaintext.getTimestamp().getByteArray(HandshakeByteLength.UNIX_TIME));
     }
 }

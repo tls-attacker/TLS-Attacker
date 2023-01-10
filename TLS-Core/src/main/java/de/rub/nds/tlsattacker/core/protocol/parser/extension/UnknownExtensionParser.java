@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.UnknownExtensionMessage;
 import java.io.InputStream;
@@ -25,9 +24,7 @@ public class UnknownExtensionParser extends ExtensionParser<UnknownExtensionMess
 
     protected void parseExtensionData(UnknownExtensionMessage message) {
         message.setExtensionData(parseByteArrayField(getBytesLeft()));
-        LOGGER.debug(
-                "ExtensionData: "
-                        + ArrayConverter.bytesToHexString(message.getExtensionData().getValue()));
+        LOGGER.debug("ExtensionData: {}", message.getExtensionData().getValue());
         message.setDataConfig(message.getExtensionData().getValue());
     }
 

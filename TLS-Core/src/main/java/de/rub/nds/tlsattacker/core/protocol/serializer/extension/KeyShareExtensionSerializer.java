@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -47,8 +46,6 @@ public class KeyShareExtensionSerializer extends ExtensionSerializer<KeyShareExt
 
     private void writeKeyShareListBytes(KeyShareExtensionMessage msg) {
         appendBytes(msg.getKeyShareListBytes().getValue());
-        LOGGER.debug(
-                "KeyShareListBytes: "
-                        + ArrayConverter.bytesToHexString(msg.getKeyShareListBytes().getValue()));
+        LOGGER.debug("KeyShareListBytes: {}", msg.getKeyShareListBytes().getValue());
     }
 }

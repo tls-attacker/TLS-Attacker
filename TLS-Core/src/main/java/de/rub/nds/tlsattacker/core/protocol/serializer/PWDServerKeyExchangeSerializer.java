@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.PWDServerKeyExchangeMessage;
@@ -54,7 +53,7 @@ public class PWDServerKeyExchangeSerializer
 
     private void writeSalt(PWDServerKeyExchangeMessage msg) {
         appendBytes(msg.getSalt().getValue());
-        LOGGER.debug("Salt: " + ArrayConverter.bytesToHexString(msg.getSalt().getValue()));
+        LOGGER.debug("Salt: {}", msg.getSalt().getValue());
     }
 
     private void writeCurveType(PWDServerKeyExchangeMessage msg) {
@@ -64,8 +63,7 @@ public class PWDServerKeyExchangeSerializer
 
     private void writeNamedGroup(PWDServerKeyExchangeMessage msg) {
         appendBytes(msg.getNamedGroup().getValue());
-        LOGGER.debug(
-                "NamedGroup: " + ArrayConverter.bytesToHexString(msg.getNamedGroup().getValue()));
+        LOGGER.debug("NamedGroup: {}", msg.getNamedGroup().getValue());
     }
 
     private void writeElementLength(PWDServerKeyExchangeMessage msg) {
@@ -75,7 +73,7 @@ public class PWDServerKeyExchangeSerializer
 
     private void writeElement(PWDServerKeyExchangeMessage msg) {
         appendBytes(msg.getElement().getValue());
-        LOGGER.debug("Element: " + ArrayConverter.bytesToHexString(msg.getElement().getValue()));
+        LOGGER.debug("Element: {}", msg.getElement().getValue());
     }
 
     private void writeScalarLength(PWDServerKeyExchangeMessage msg) {
@@ -85,6 +83,6 @@ public class PWDServerKeyExchangeSerializer
 
     private void writeScalar(PWDServerKeyExchangeMessage msg) {
         appendBytes(msg.getScalar().getValue());
-        LOGGER.debug("Scalar: " + ArrayConverter.bytesToHexString(msg.getScalar().getValue()));
+        LOGGER.debug("Scalar: {}", msg.getScalar().getValue());
     }
 }

@@ -68,16 +68,14 @@ public class RecordStreamCipher extends RecordCipher {
     }
 
     public byte[] calculateMac(byte[] data, ConnectionEndType connectionEndType) {
-        LOGGER.debug(
-                "The MAC was calculated over the following data: {}",
-                ArrayConverter.bytesToHexString(data));
+        LOGGER.debug("The MAC was calculated over the following data: {}", data);
         byte[] result;
         if (connectionEndType == getConnectionEndType()) {
             result = writeMac.calculateMac(data);
         } else {
             result = readMac.calculateMac(data);
         }
-        LOGGER.debug("MAC: {}", ArrayConverter.bytesToHexString(result));
+        LOGGER.debug("MAC: {}", result);
         return result;
     }
 

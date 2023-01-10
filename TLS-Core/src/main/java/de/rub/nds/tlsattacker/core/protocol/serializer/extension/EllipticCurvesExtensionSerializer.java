@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EllipticCurvesExtensionMessage;
 import org.apache.logging.log4j.LogManager;
@@ -41,8 +40,6 @@ public class EllipticCurvesExtensionSerializer
 
     private void writeSupportedGroups(EllipticCurvesExtensionMessage msg) {
         appendBytes(msg.getSupportedGroups().getValue());
-        LOGGER.debug(
-                "SupportedGroups: "
-                        + ArrayConverter.bytesToHexString(msg.getSupportedGroups().getValue()));
+        LOGGER.debug("SupportedGroups: {}", msg.getSupportedGroups().getValue());
     }
 }

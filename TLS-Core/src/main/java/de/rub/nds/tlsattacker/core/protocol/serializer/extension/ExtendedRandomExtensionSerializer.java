@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedRandomExtensionMessage;
 import org.apache.logging.log4j.LogManager;
@@ -46,8 +45,6 @@ public class ExtendedRandomExtensionSerializer
 
     private void writeExtendedRandom(ExtendedRandomExtensionMessage msg) {
         appendBytes(message.getExtendedRandom().getValue());
-        LOGGER.debug(
-                "Serialized Extended Random: "
-                        + ArrayConverter.bytesToHexString(msg.getExtendedRandom().getValue()));
+        LOGGER.debug("Serialized Extended Random: {}", msg.getExtendedRandom().getValue());
     }
 }

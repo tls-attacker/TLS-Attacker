@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientEsniInner;
@@ -42,10 +41,7 @@ public class ClientEsniInnerParser extends Parser<ClientEsniInner> {
     private void parseClientNonce(ClientEsniInner clientEsniInner) {
         byte[] clientNonce = parseByteArrayField(ExtensionByteLength.NONCE);
         clientEsniInner.setClientNonce(clientNonce);
-        LOGGER.debug(
-                "clientNonce: "
-                        + ArrayConverter.bytesToHexString(
-                                clientEsniInner.getClientNonce().getValue()));
+        LOGGER.debug("clientNonce: {}", clientEsniInner.getClientNonce().getValue());
     }
 
     private void parseServerNameListLength(ClientEsniInner clientEsniInner) {
@@ -59,18 +55,13 @@ public class ClientEsniInnerParser extends Parser<ClientEsniInner> {
         byte[] serverNameListByte =
                 parseByteArrayField(clientEsniInner.getServerNameListLength().getValue());
         clientEsniInner.setServerNameListBytes(serverNameListByte);
-        LOGGER.debug(
-                "serverNameListByte: "
-                        + ArrayConverter.bytesToHexString(
-                                clientEsniInner.getServerNameListBytes().getValue()));
+        LOGGER.debug("serverNameListByte: {}", clientEsniInner.getServerNameListBytes().getValue());
     }
 
     private void parsePadding(ClientEsniInner clientEsniInner) {
         byte[] padding = parseByteArrayField(this.getBytesLeft());
         clientEsniInner.setPadding(padding);
-        LOGGER.debug(
-                "padding: "
-                        + ArrayConverter.bytesToHexString(clientEsniInner.getPadding().getValue()));
+        LOGGER.debug("padding: {}", clientEsniInner.getPadding().getValue());
     }
 
     private void parseServerNameList(ClientEsniInner clientEsniInner) {

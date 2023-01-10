@@ -49,7 +49,7 @@ public class PskDhClientKeyExchangePreparator
                     ArrayConverter.intToBytes(otherSecret.length, HandshakeByteLength.PSK_LENGTH));
             LOGGER.debug("OtherSecret Length: " + otherSecret.length);
             outputStream.write(otherSecret);
-            LOGGER.debug("OtherSecret: " + ArrayConverter.bytesToHexString(otherSecret));
+            LOGGER.debug("OtherSecret: {}", otherSecret);
             outputStream.write(
                     ArrayConverter.intToBytes(
                             chooser.getConfig().getDefaultPSKKey().length,
@@ -60,8 +60,7 @@ public class PskDhClientKeyExchangePreparator
             LOGGER.debug(ex);
         }
         byte[] tempPremasterSecret = outputStream.toByteArray();
-        LOGGER.debug(
-                "PSK PremasterSecret: " + ArrayConverter.bytesToHexString(tempPremasterSecret));
+        LOGGER.debug("PSK PremasterSecret: {}", tempPremasterSecret);
         return tempPremasterSecret;
     }
 }

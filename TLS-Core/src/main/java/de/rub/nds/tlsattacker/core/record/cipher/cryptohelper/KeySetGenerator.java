@@ -74,7 +74,7 @@ public class KeySetGenerator {
                     throw new CryptoException("Unknown KeySetType:" + keySetType.name());
             }
         }
-        LOGGER.debug("ActiveKeySetType is " + keySetType);
+        LOGGER.debug("ActiveKeySetType is {}", keySetType);
         CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
         KeySet keySet = new KeySet(keySetType);
         HKDFAlgorithm hkdfAlgorithm = AlgorithmResolver.getHKDFAlgorithm(cipherSuite);
@@ -85,9 +85,7 @@ public class KeySetGenerator {
                         HKDFunction.KEY,
                         new byte[] {},
                         cipherAlg.getKeySize()));
-        LOGGER.debug(
-                "Client write key: {}",
-                ArrayConverter.bytesToHexString(keySet.getClientWriteKey()));
+        LOGGER.debug("Client write key: {}", keySet.getClientWriteKey());
         keySet.setServerWriteKey(
                 HKDFunction.expandLabel(
                         hkdfAlgorithm,
@@ -95,9 +93,7 @@ public class KeySetGenerator {
                         HKDFunction.KEY,
                         new byte[] {},
                         cipherAlg.getKeySize()));
-        LOGGER.debug(
-                "Server write key: {}",
-                ArrayConverter.bytesToHexString(keySet.getServerWriteKey()));
+        LOGGER.debug("Server write key: {}", keySet.getServerWriteKey());
         keySet.setClientWriteIv(
                 HKDFunction.expandLabel(
                         hkdfAlgorithm,
@@ -105,8 +101,7 @@ public class KeySetGenerator {
                         HKDFunction.IV,
                         new byte[] {},
                         AEAD_IV_LENGTH));
-        LOGGER.debug(
-                "Client write IV: {}", ArrayConverter.bytesToHexString(keySet.getClientWriteIv()));
+        LOGGER.debug("Client write IV: {}", keySet.getClientWriteIv());
         keySet.setServerWriteIv(
                 HKDFunction.expandLabel(
                         hkdfAlgorithm,
@@ -114,8 +109,7 @@ public class KeySetGenerator {
                         HKDFunction.IV,
                         new byte[] {},
                         AEAD_IV_LENGTH));
-        LOGGER.debug(
-                "Server write IV: {}", ArrayConverter.bytesToHexString(keySet.getServerWriteIv()));
+        LOGGER.debug("Server write IV: {}", keySet.getServerWriteIv());
         keySet.setServerWriteMacSecret(new byte[0]);
         keySet.setClientWriteMacSecret(new byte[0]);
         return keySet;
@@ -146,8 +140,7 @@ public class KeySetGenerator {
                             seed,
                             getSecretSetSize(protocolVersion, cipherSuite));
         }
-        LOGGER.debug(
-                "A new key block was generated: {}", ArrayConverter.bytesToHexString(keyBlock));
+        LOGGER.debug("A new key block was generated: {}", keyBlock);
         KeyBlockParser parser = new KeyBlockParser(keyBlock, cipherSuite, protocolVersion);
         KeySet keySet = new KeySet();
         parser.parse(keySet);

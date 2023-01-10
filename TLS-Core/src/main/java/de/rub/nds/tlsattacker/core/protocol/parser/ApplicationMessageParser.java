@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import java.io.InputStream;
@@ -42,6 +41,6 @@ public class ApplicationMessageParser extends ProtocolMessageParser<ApplicationM
      */
     private void parseData(ApplicationMessage msg) {
         msg.setData(parseByteArrayField(getBytesLeft()));
-        LOGGER.debug("Data: " + ArrayConverter.bytesToHexString(msg.getData().getValue()));
+        LOGGER.debug("Data: {}", msg.getData().getValue());
     }
 }

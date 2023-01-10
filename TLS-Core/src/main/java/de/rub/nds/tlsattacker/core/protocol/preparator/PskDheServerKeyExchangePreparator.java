@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.PskDheServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
@@ -64,7 +63,6 @@ public class PskDheServerKeyExchangePreparator
 
     private void preparePskPublicKey(PskDheServerKeyExchangeMessage msg) {
         msg.setPublicKey(chooser.getPSKServerPublicKey().toByteArray());
-        LOGGER.debug(
-                "PublicKey: " + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
+        LOGGER.debug("PublicKey: {}", msg.getPublicKey().getValue());
     }
 }

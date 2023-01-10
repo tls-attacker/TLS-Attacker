@@ -63,11 +63,11 @@ public class NewSessionTicketSerializer
                         msg.getTicketLifetimeHint().getValue(),
                         HandshakeByteLength.NEWSESSIONTICKET_LIFETIMEHINT_LENGTH));
         LOGGER.debug(
-                "LifetimeHint: "
-                        + ArrayConverter.bytesToHexString(
-                                ArrayConverter.longToBytes(
-                                        msg.getTicketLifetimeHint().getValue(),
-                                        HandshakeByteLength.NEWSESSIONTICKET_LIFETIMEHINT_LENGTH)));
+                "LifetimeHint: {}",
+                () ->
+                        ArrayConverter.longToBytes(
+                                msg.getTicketLifetimeHint().getValue(),
+                                HandshakeByteLength.NEWSESSIONTICKET_LIFETIMEHINT_LENGTH));
     }
 
     private void writeTicketLength(NewSessionTicketMessage msg) {
@@ -76,27 +76,21 @@ public class NewSessionTicketSerializer
                         msg.getTicket().getIdentityLength().getValue(),
                         HandshakeByteLength.NEWSESSIONTICKET_TICKET_LENGTH));
         LOGGER.debug(
-                "TicketLength: "
-                        + ArrayConverter.bytesToHexString(
-                                ArrayConverter.intToBytes(
-                                        msg.getTicket().getIdentityLength().getValue(),
-                                        HandshakeByteLength.NEWSESSIONTICKET_TICKET_LENGTH)));
+                "TicketLength: {}",
+                () ->
+                        ArrayConverter.intToBytes(
+                                msg.getTicket().getIdentityLength().getValue(),
+                                HandshakeByteLength.NEWSESSIONTICKET_TICKET_LENGTH));
     }
 
     private void writeTicket(NewSessionTicketMessage msg) {
         appendBytes(msg.getTicket().getIdentity().getValue());
-        LOGGER.debug(
-                "Ticket: "
-                        + ArrayConverter.bytesToHexString(
-                                msg.getTicket().getIdentity().getValue()));
+        LOGGER.debug("Ticket: {}", msg.getTicket().getIdentity().getValue());
     }
 
     private void writeTicketAgeAdd(NewSessionTicketMessage msg) {
         appendBytes(msg.getTicket().getTicketAgeAdd().getValue());
-        LOGGER.debug(
-                "TicketAgeAdd: "
-                        + ArrayConverter.bytesToHexString(
-                                msg.getTicket().getTicketAgeAdd().getValue()));
+        LOGGER.debug("TicketAgeAdd: {}", msg.getTicket().getTicketAgeAdd().getValue());
     }
 
     private void writeTicketNonceLength(NewSessionTicketMessage msg) {
@@ -109,10 +103,7 @@ public class NewSessionTicketSerializer
 
     private void writeTicketNonce(NewSessionTicketMessage msg) {
         appendBytes(msg.getTicket().getTicketNonce().getValue());
-        LOGGER.debug(
-                "TicketNonce: "
-                        + ArrayConverter.bytesToHexString(
-                                msg.getTicket().getTicketNonce().getValue()));
+        LOGGER.debug("TicketNonce: {}", msg.getTicket().getTicketNonce().getValue());
     }
 
     private void writeTicketIdentityLength(NewSessionTicketMessage msg) {
@@ -125,10 +116,7 @@ public class NewSessionTicketSerializer
 
     private void writeTicketIdentity(NewSessionTicketMessage msg) {
         appendBytes(msg.getTicket().getIdentity().getValue());
-        LOGGER.debug(
-                "TicketIdentity: "
-                        + ArrayConverter.bytesToHexString(
-                                msg.getTicket().getIdentity().getValue()));
+        LOGGER.debug("TicketIdentity: {}", msg.getTicket().getIdentity().getValue());
     }
 
     private void writeExtensions() {

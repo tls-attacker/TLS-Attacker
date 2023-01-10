@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PaddingExtensionMessage;
 import org.apache.logging.log4j.LogManager;
@@ -31,7 +30,7 @@ public class PaddingExtensionHandler extends ExtensionHandler<PaddingExtensionMe
     public void adjustTLSExtensionContext(PaddingExtensionMessage message) {
         tlsContext.setPaddingExtensionBytes(message.getPaddingBytes().getValue());
         LOGGER.debug(
-                "The context PaddingExtension bytes were set to "
-                        + ArrayConverter.bytesToHexString(tlsContext.getPaddingExtensionBytes()));
+                "The context PaddingExtension bytes were set to {}",
+                tlsContext.getPaddingExtensionBytes());
     }
 }

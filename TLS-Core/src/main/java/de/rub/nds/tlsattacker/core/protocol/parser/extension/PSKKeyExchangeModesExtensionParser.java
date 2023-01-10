@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PSKKeyExchangeModesExtensionMessage;
@@ -43,9 +42,6 @@ public class PSKKeyExchangeModesExtensionParser
     private void parseExchangeModesBytes(PSKKeyExchangeModesExtensionMessage msg) {
         msg.setKeyExchangeModesListBytes(
                 parseByteArrayField(msg.getKeyExchangeModesListLength().getValue()));
-        LOGGER.debug(
-                "PSKKeyModesList bytes:"
-                        + ArrayConverter.bytesToHexString(
-                                msg.getKeyExchangeModesListBytes().getValue()));
+        LOGGER.debug("PSKKeyModesList bytes: {}", msg.getKeyExchangeModesListBytes().getValue());
     }
 }

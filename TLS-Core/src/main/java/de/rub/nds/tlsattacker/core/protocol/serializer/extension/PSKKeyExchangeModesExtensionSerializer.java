@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PSKKeyExchangeModesExtensionMessage;
 import org.apache.logging.log4j.LogManager;
@@ -46,8 +45,6 @@ public class PSKKeyExchangeModesExtensionSerializer
     private void writeKeyExchangeModesListBytes(PSKKeyExchangeModesExtensionMessage msg) {
         appendBytes(msg.getKeyExchangeModesListBytes().getValue());
         LOGGER.debug(
-                "KeyExchangeModesListBytes: "
-                        + ArrayConverter.bytesToHexString(
-                                msg.getKeyExchangeModesListBytes().getValue()));
+                "KeyExchangeModesListBytes: {}", msg.getKeyExchangeModesListBytes().getValue());
     }
 }

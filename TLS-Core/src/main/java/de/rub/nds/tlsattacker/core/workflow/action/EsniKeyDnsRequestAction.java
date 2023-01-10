@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
@@ -107,7 +106,7 @@ public class EsniKeyDnsRequestAction extends TlsAction {
             return;
         }
         LOGGER.debug("esniKeyRecordStr :" + esniKeyRecordStr);
-        LOGGER.debug("esniKeyRecordBytes: " + ArrayConverter.bytesToHexString(esniKeyRecordBytes));
+        LOGGER.debug("esniKeyRecordBytes: {}", esniKeyRecordBytes);
 
         EsniKeyRecordParser esniKeyParser =
                 new EsniKeyRecordParser(new ByteArrayInputStream(esniKeyRecordBytes), tlsContext);

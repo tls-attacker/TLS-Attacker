@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
@@ -87,7 +86,7 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage>
     protected void parseExtensionBytes(T message, boolean helloRetryRequestHint) {
         byte[] extensionBytes = parseByteArrayField(message.getExtensionsLength().getValue());
         message.setExtensionBytes(extensionBytes);
-        LOGGER.debug("ExtensionBytes:" + ArrayConverter.bytesToHexString(extensionBytes, false));
+        LOGGER.debug("ExtensionBytes:{}", extensionBytes);
 
         ByteArrayInputStream innerStream = new ByteArrayInputStream(extensionBytes);
         ExtensionListParser parser =

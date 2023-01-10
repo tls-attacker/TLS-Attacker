@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CookieExtensionMessage;
@@ -38,6 +37,6 @@ public class CookieExtensionParser extends ExtensionParser<CookieExtensionMessag
 
     private void parseCookie(CookieExtensionMessage msg) {
         msg.setCookie(parseByteArrayField(msg.getCookieLength().getValue()));
-        LOGGER.debug("Cookie: " + ArrayConverter.bytesToHexString(msg.getCookie().getValue()));
+        LOGGER.debug("Cookie: {}", msg.getCookie().getValue());
     }
 }

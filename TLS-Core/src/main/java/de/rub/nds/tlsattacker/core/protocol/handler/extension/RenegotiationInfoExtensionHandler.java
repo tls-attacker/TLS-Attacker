@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.RenegotiationInfoExtensionMessage;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -36,8 +35,7 @@ public class RenegotiationInfoExtensionHandler
                 != tlsContext.getChooser().getConnectionEndType()) {
             tlsContext.setRenegotiationInfo(message.getRenegotiationInfo().getValue());
             LOGGER.debug(
-                    "The context RenegotiationInfo was set to "
-                            + ArrayConverter.bytesToHexString(message.getRenegotiationInfo()));
+                    "The context RenegotiationInfo was set to {}", message.getRenegotiationInfo());
         }
         if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.SERVER) {
             if (message.getRenegotiationInfo().getValue().length == 1

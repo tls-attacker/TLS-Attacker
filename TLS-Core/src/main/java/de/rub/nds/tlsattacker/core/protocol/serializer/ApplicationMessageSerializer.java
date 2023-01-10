@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageSerializer;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import org.apache.logging.log4j.LogManager;
@@ -37,6 +36,6 @@ public class ApplicationMessageSerializer extends ProtocolMessageSerializer<Appl
     /** Writes the data of the ApplicationMessage into the final byte[] */
     private void writeData() {
         appendBytes(message.getData().getValue());
-        LOGGER.debug("Data: " + ArrayConverter.bytesToHexString(message.getData().getValue()));
+        LOGGER.debug("Data: {}", message.getData().getValue());
     }
 }

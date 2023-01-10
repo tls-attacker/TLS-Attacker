@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.PWDClientKeyExchangeMessage;
@@ -41,7 +40,7 @@ public class PWDClientKeyExchangeParser
 
     private void parseElement(PWDClientKeyExchangeMessage msg) {
         msg.setElement(parseByteArrayField(msg.getElementLength().getValue()));
-        LOGGER.debug("Element: " + ArrayConverter.bytesToHexString(msg.getElement().getValue()));
+        LOGGER.debug("Element: {}", msg.getElement().getValue());
     }
 
     private void parseScalarLength(PWDClientKeyExchangeMessage msg) {
@@ -51,6 +50,6 @@ public class PWDClientKeyExchangeParser
 
     private void parseScalar(PWDClientKeyExchangeMessage msg) {
         msg.setScalar(parseByteArrayField(msg.getScalarLength().getValue()));
-        LOGGER.debug("Scalar: " + ArrayConverter.bytesToHexString(msg.getScalar().getValue()));
+        LOGGER.debug("Scalar: {}", msg.getScalar().getValue());
     }
 }

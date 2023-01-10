@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SSL2CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ssl.SSL2ByteLength;
@@ -133,8 +132,6 @@ public class SSL2ServerHelloPreparator extends ProtocolMessagePreparator<SSL2Ser
             }
         }
         message.setCipherSuites(cipherStream.toByteArray());
-        LOGGER.debug(
-                "CipherSuites: "
-                        + ArrayConverter.bytesToHexString(message.getCipherSuites().getValue()));
+        LOGGER.debug("CipherSuites: {}", message.getCipherSuites().getValue());
     }
 }

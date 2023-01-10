@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAndHashAlgorithmsExtensionMessage;
@@ -43,9 +42,7 @@ public class SignatureAndHashAlgorithmsExtensionPreparator
     private void prepareSignatureAndHashAlgorithms(SignatureAndHashAlgorithmsExtensionMessage msg) {
         msg.setSignatureAndHashAlgorithms(createSignatureAndHashAlgorithmsArray());
         LOGGER.debug(
-                "SignatureAndHashAlgorithms: "
-                        + ArrayConverter.bytesToHexString(
-                                msg.getSignatureAndHashAlgorithms().getValue()));
+                "SignatureAndHashAlgorithms: {}", msg.getSignatureAndHashAlgorithms().getValue());
     }
 
     private byte[] createSignatureAndHashAlgorithmsArray() {

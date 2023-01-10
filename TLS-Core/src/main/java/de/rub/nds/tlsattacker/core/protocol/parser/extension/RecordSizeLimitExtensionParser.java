@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.RecordSizeLimitExtensionMessage;
@@ -34,8 +33,6 @@ public class RecordSizeLimitExtensionParser
     private void parseRecordSizeLimit(RecordSizeLimitExtensionMessage message) {
         message.setRecordSizeLimit(
                 parseByteArrayField(ExtensionByteLength.RECORD_SIZE_LIMIT_LENGTH));
-        LOGGER.debug(
-                "RecordSizeLimit: "
-                        + ArrayConverter.bytesToHexString(message.getRecordSizeLimit().getValue()));
+        LOGGER.debug("RecordSizeLimit: {}", message.getRecordSizeLimit().getValue());
     }
 }

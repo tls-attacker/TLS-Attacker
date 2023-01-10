@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.SrpServerKeyExchangeMessage;
 import java.math.BigInteger;
@@ -58,6 +57,6 @@ public class SrpServerKeyExchangeHandler
 
     private void adjustSalt(SrpServerKeyExchangeMessage message) {
         tlsContext.setSRPServerSalt(message.getSalt().getValue());
-        LOGGER.debug("SRP Salt: " + ArrayConverter.bytesToHexString(tlsContext.getSRPServerSalt()));
+        LOGGER.debug("SRP Salt: {}", tlsContext.getSRPServerSalt());
     }
 }

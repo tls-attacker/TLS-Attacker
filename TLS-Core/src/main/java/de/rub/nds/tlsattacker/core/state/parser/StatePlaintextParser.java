@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.state.parser;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ClientAuthenticationType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.layer.data.Parser;
@@ -43,17 +42,14 @@ public class StatePlaintextParser extends Parser<StatePlaintext> {
     private void parseProtocolVersion(StatePlaintext statePlaintext) {
         statePlaintext.setProtocolVersion(parseByteArrayField(HandshakeByteLength.VERSION));
         LOGGER.debug(
-                "Parsed protocol version from state "
-                        + ArrayConverter.bytesToHexString(
-                                statePlaintext.getProtocolVersion().getValue()));
+                "Parsed protocol version from state {}",
+                statePlaintext.getProtocolVersion().getValue());
     }
 
     private void parseCipherSuite(StatePlaintext statePlaintext) {
         statePlaintext.setCipherSuite(parseByteArrayField(HandshakeByteLength.CIPHER_SUITE));
         LOGGER.debug(
-                "Parsed cipher suite from state "
-                        + ArrayConverter.bytesToHexString(
-                                statePlaintext.getCipherSuite().getValue()));
+                "Parsed cipher suite from state {}", statePlaintext.getCipherSuite().getValue());
     }
 
     private void parseCompressionMethod(StatePlaintext statePlaintext) {
@@ -66,9 +62,7 @@ public class StatePlaintextParser extends Parser<StatePlaintext> {
     private void parseMasterSecret(StatePlaintext statePlaintext) {
         statePlaintext.setMasterSecret(parseByteArrayField(HandshakeByteLength.MASTER_SECRET));
         LOGGER.debug(
-                "Parsed master secret from state "
-                        + ArrayConverter.bytesToHexString(
-                                statePlaintext.getMasterSecret().getValue()));
+                "Parsed master secret from state {}", statePlaintext.getMasterSecret().getValue());
     }
 
     private void parseClientAuthenticationType(StatePlaintext statePlaintext) {

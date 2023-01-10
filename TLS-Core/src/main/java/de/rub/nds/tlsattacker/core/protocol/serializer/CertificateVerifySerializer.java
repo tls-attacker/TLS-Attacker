@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
@@ -52,10 +51,7 @@ public class CertificateVerifySerializer
     /** Writes the SignatureHashAlgorithm of the CertificateVerifyMessage into the final byte[] */
     private void writeSignatureHashAlgorithm(CertificateVerifyMessage msg) {
         appendBytes(msg.getSignatureHashAlgorithm().getValue());
-        LOGGER.debug(
-                "SignatureHashAlgorithms: "
-                        + ArrayConverter.bytesToHexString(
-                                msg.getSignatureHashAlgorithm().getValue()));
+        LOGGER.debug("SignatureHashAlgorithms: {}", msg.getSignatureHashAlgorithm().getValue());
     }
 
     /** Writes the SignatureLength of the CertificateVerifyMessage into the final byte[] */
@@ -67,7 +63,6 @@ public class CertificateVerifySerializer
     /** Writes the Signature of the CertificateVerifyMessage into the final byte[] */
     private void writeSignature(CertificateVerifyMessage msg) {
         appendBytes(msg.getSignature().getValue());
-        LOGGER.debug(
-                "Signature: " + ArrayConverter.bytesToHexString(msg.getSignature().getValue()));
+        LOGGER.debug("Signature: {}", msg.getSignature().getValue());
     }
 }

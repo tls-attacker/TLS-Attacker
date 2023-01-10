@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ECPointFormatExtensionMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
@@ -40,9 +39,7 @@ public class ECPointFormatExtensionPreparator
 
     private void preparePointFormats(ECPointFormatExtensionMessage msg) {
         msg.setPointFormats(createPointFormatsByteArray());
-        LOGGER.debug(
-                "PointFormats: "
-                        + ArrayConverter.bytesToHexString(msg.getPointFormats().getValue()));
+        LOGGER.debug("PointFormats: {}", msg.getPointFormats().getValue());
     }
 
     private byte[] createPointFormatsByteArray() {

@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
@@ -65,9 +64,7 @@ public abstract class ExtensionPreparator<T extends ExtensionMessage> extends Pr
 
     private void prepareExtensionType(ExtensionMessage msg) {
         msg.setExtensionType(msg.getExtensionTypeConstant().getValue());
-        LOGGER.debug(
-                "ExtensionType: "
-                        + ArrayConverter.bytesToHexString(msg.getExtensionType().getValue()));
+        LOGGER.debug("ExtensionType: {}", msg.getExtensionType().getValue());
     }
 
     private void prepareExtensionLength(ExtensionMessage msg) {
@@ -77,15 +74,11 @@ public abstract class ExtensionPreparator<T extends ExtensionMessage> extends Pr
 
     private void prepareExtensionBytes(ExtensionMessage msg) {
         msg.setExtensionBytes(serializer.serialize());
-        LOGGER.debug(
-                "ExtensionBytes: "
-                        + ArrayConverter.bytesToHexString(msg.getExtensionBytes().getValue()));
+        LOGGER.debug("ExtensionBytes: {}", msg.getExtensionBytes().getValue());
     }
 
     private void prepareExtensionContentBytes(ExtensionMessage msg) {
         msg.setExtensionContent(content);
-        LOGGER.debug(
-                "ExtensionContent: "
-                        + ArrayConverter.bytesToHexString(msg.getExtensionContent().getValue()));
+        LOGGER.debug("ExtensionContent: {}", msg.getExtensionContent().getValue());
     }
 }

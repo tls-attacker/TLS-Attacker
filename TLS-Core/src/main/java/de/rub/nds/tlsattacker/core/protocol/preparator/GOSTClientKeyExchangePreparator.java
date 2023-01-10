@@ -132,9 +132,7 @@ public abstract class GOSTClientKeyExchangePreparator
                 ArrayConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom());
         msg.getComputations().setClientServerRandom(random);
         LOGGER.debug(
-                "ClientServerRandom: "
-                        + ArrayConverter.bytesToHexString(
-                                msg.getComputations().getClientServerRandom().getValue()));
+                "ClientServerRandom: {}", msg.getComputations().getClientServerRandom().getValue());
     }
 
     private void prepareUkm() throws NoSuchAlgorithmException {
@@ -147,7 +145,7 @@ public abstract class GOSTClientKeyExchangePreparator
         byte[] ukm = new byte[8];
         System.arraycopy(hash, 0, ukm, 0, ukm.length);
         msg.getComputations().setUkm(ukm);
-        LOGGER.debug("UKM: " + ArrayConverter.bytesToHexString(msg.getComputations().getUkm()));
+        LOGGER.debug("UKM: {}", msg.getComputations().getUkm());
     }
 
     private void prepareKek(BigInteger privateKey, Point publicKey)
@@ -164,10 +162,7 @@ public abstract class GOSTClientKeyExchangePreparator
         byte[] kek = new byte[digest.getDigestSize()];
         digest.doFinal(kek, 0);
         msg.getComputations().setKeyEncryptionKey(kek);
-        LOGGER.debug(
-                "KEK: "
-                        + ArrayConverter.bytesToHexString(
-                                msg.getComputations().getKeyEncryptionKey()));
+        LOGGER.debug("KEK: {}", msg.getComputations().getKeyEncryptionKey());
     }
 
     private void preparePms() {
@@ -206,10 +201,10 @@ public abstract class GOSTClientKeyExchangePreparator
             byte[] result;
             try {
                 if (wrap) {
-                    LOGGER.debug("Wrapping GOST PMS: " + ArrayConverter.bytesToHexString(bytes));
+                    LOGGER.debug("Wrapping GOST PMS: {}", bytes);
                     result = cipher.wrap(bytes, 0, bytes.length);
                 } else {
-                    LOGGER.debug("Unwrapping GOST PMS: " + ArrayConverter.bytesToHexString(bytes));
+                    LOGGER.debug("Unwrapping GOST PMS: {}", bytes);
                     result = cipher.unwrap(bytes, 0, bytes.length);
                 }
             } catch (IndexOutOfBoundsException ex) {
@@ -221,7 +216,7 @@ public abstract class GOSTClientKeyExchangePreparator
                         "IndexOutOfBounds within GOST code. We catch this and return an empty byte array");
                 result = new byte[0];
             }
-            LOGGER.debug("Wrap result: " + ArrayConverter.bytesToHexString(result));
+            LOGGER.debug("Wrap result: {}", result);
             return result;
         } catch (Exception E) {
             if (E instanceof UnsupportedOperationException) {

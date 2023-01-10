@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -42,9 +41,7 @@ public class HelloVerifyRequestSerializer
     /** Writes the ProtocolVersion of the HelloVerifyMessage into the final byte[] */
     private void writeProtocolVersion(HelloVerifyRequestMessage msg) {
         appendBytes(msg.getProtocolVersion().getValue());
-        LOGGER.debug(
-                "ProtocolVersion: "
-                        + ArrayConverter.bytesToHexString(msg.getProtocolVersion().getValue()));
+        LOGGER.debug("ProtocolVersion: {}", msg.getProtocolVersion().getValue());
     }
 
     /** Writes the CookieLength of the HelloVerifyMessage into the final byte[] */
@@ -56,6 +53,6 @@ public class HelloVerifyRequestSerializer
     /** Writes the Cookie of the HelloVerifyMessage into the final byte[] */
     private void writeCookie(HelloVerifyRequestMessage msg) {
         appendBytes(msg.getCookie().getValue());
-        LOGGER.debug("Cookie: " + ArrayConverter.bytesToHexString(msg.getCookie().getValue()));
+        LOGGER.debug("Cookie: {}", msg.getCookie().getValue());
     }
 }

@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SrtpExtensionMessage;
@@ -33,12 +32,10 @@ public class SrtpExtensionParser extends ExtensionParser<SrtpExtensionMessage> {
                         + msg.getSrtpProtectionProfilesLength().getValue());
         msg.setSrtpProtectionProfiles(
                 parseByteArrayField(msg.getSrtpProtectionProfilesLength().getValue()));
-        LOGGER.debug(
-                "Parsed the srtp protection profiles "
-                        + ArrayConverter.bytesToHexString(msg.getSrtpProtectionProfiles()));
+        LOGGER.debug("Parsed the srtp protection profiles {}", msg.getSrtpProtectionProfiles());
         msg.setSrtpMkiLength(parseIntField(ExtensionByteLength.SRTP_MASTER_KEY_IDENTIFIER_LENGTH));
         LOGGER.debug("Parsed the srtp mki length of " + msg.getSrtpMkiLength().getValue());
         msg.setSrtpMki(parseByteArrayField(msg.getSrtpMkiLength().getValue()));
-        LOGGER.debug("Parsed the srtp mki " + ArrayConverter.bytesToHexString(msg.getSrtpMki()));
+        LOGGER.debug("Parsed the srtp mki {}", msg.getSrtpMki());
     }
 }

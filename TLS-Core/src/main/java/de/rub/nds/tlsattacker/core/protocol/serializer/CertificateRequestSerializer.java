@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
@@ -75,10 +74,7 @@ public class CertificateRequestSerializer
     /** Writes the ClientCertificateType of the CertificateRequestMessage into the final byte[] */
     private void writeClientCertificateTypes(CertificateRequestMessage msg) {
         appendBytes(msg.getClientCertificateTypes().getValue());
-        LOGGER.debug(
-                "ClientCertificateTypes: "
-                        + ArrayConverter.bytesToHexString(
-                                msg.getClientCertificateTypes().getValue()));
+        LOGGER.debug("ClientCertificateTypes: {}", msg.getClientCertificateTypes().getValue());
     }
 
     /**
@@ -100,10 +96,7 @@ public class CertificateRequestSerializer
      */
     private void writeSignatureHandshakeAlgorithms(CertificateRequestMessage msg) {
         appendBytes(msg.getSignatureHashAlgorithms().getValue());
-        LOGGER.debug(
-                "SignatureHashAlgorithms: "
-                        + ArrayConverter.bytesToHexString(
-                                msg.getSignatureHashAlgorithms().getValue()));
+        LOGGER.debug("SignatureHashAlgorithms: {}", msg.getSignatureHashAlgorithms().getValue());
     }
 
     /**
@@ -123,17 +116,13 @@ public class CertificateRequestSerializer
     /** Writes the DistinguishedNames of the CertificateRequestMessage into the final byte[] */
     private void writeDistinguishedNames(CertificateRequestMessage msg) {
         appendBytes(msg.getDistinguishedNames().getValue());
-        LOGGER.debug(
-                "DistinguishedNames: "
-                        + ArrayConverter.bytesToHexString(msg.getDistinguishedNames().getValue()));
+        LOGGER.debug("DistinguishedNames: {}", msg.getDistinguishedNames().getValue());
     }
 
     private void writeCertificateRequestContext(CertificateRequestMessage msg) {
         appendBytes(msg.getCertificateRequestContext().getValue());
         LOGGER.debug(
-                "CertificateRequestContext: "
-                        + ArrayConverter.bytesToHexString(
-                                msg.getCertificateRequestContext().getValue()));
+                "CertificateRequestContext: {}", msg.getCertificateRequestContext().getValue());
     }
 
     private void writeCertificateRequestContextLength(CertificateRequestMessage msg) {

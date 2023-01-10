@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import java.io.InputStream;
@@ -42,7 +41,6 @@ public class FinishedParser extends HandshakeMessageParser<FinishedMessage> {
      */
     private void parseVerifyData(FinishedMessage msg) {
         msg.setVerifyData(parseByteArrayField(getBytesLeft()));
-        LOGGER.debug(
-                "VerifyData: " + ArrayConverter.bytesToHexString(msg.getVerifyData().getValue()));
+        LOGGER.debug("VerifyData: {}", msg.getVerifyData().getValue());
     }
 }

@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientEsniInner;
@@ -37,7 +36,7 @@ public class ClientEsniInnerSerializer extends Serializer<ClientEsniInner> {
 
     private void writeNonce(ClientEsniInner msg) {
         appendBytes(msg.getClientNonce().getValue());
-        LOGGER.debug("Nonce: " + ArrayConverter.bytesToHexString(msg.getClientNonce().getValue()));
+        LOGGER.debug("Nonce: {}", msg.getClientNonce().getValue());
     }
 
     private void writeServerNameListLength(ClientEsniInner msg) {
@@ -49,13 +48,11 @@ public class ClientEsniInnerSerializer extends Serializer<ClientEsniInner> {
 
     private void writeServerNameListBytes(ClientEsniInner msg) {
         appendBytes(clientEsniInner.getServerNameListBytes().getValue());
-        LOGGER.debug(
-                "ServerNameListBytes: "
-                        + ArrayConverter.bytesToHexString(msg.getServerNameListBytes().getValue()));
+        LOGGER.debug("ServerNameListBytes: {}", msg.getServerNameListBytes().getValue());
     }
 
     private void writePadding(ClientEsniInner msg) {
         appendBytes(clientEsniInner.getPadding().getValue());
-        LOGGER.debug("Padding: " + ArrayConverter.bytesToHexString(msg.getPadding().getValue()));
+        LOGGER.debug("Padding: {}", msg.getPadding().getValue());
     }
 }

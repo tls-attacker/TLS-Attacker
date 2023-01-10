@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
@@ -34,9 +33,7 @@ public class MaxFragmentLengthExtensionHandler
         MaxFragmentLength length =
                 MaxFragmentLength.getMaxFragmentLength(maxFragmentLengthBytes[0]);
         if (length == null) {
-            LOGGER.warn(
-                    "Unknown MaxFragmentLength:"
-                            + ArrayConverter.bytesToHexString(maxFragmentLengthBytes));
+            LOGGER.warn("Unknown MaxFragmentLength: {}", maxFragmentLengthBytes);
         } else {
             LOGGER.debug("Setting MaxFragmentLength: " + length.getValue());
             tlsContext.setMaxFragmentLength(length);

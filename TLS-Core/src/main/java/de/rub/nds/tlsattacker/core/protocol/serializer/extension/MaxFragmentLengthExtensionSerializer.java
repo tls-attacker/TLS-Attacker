@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.MaxFragmentLengthExtensionMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -34,8 +33,6 @@ public class MaxFragmentLengthExtensionSerializer
 
     private void writeMaxFragmentLength(MaxFragmentLengthExtensionMessage msg) {
         appendBytes(msg.getMaxFragmentLength().getValue());
-        LOGGER.debug(
-                "MaxFragmentLength: "
-                        + ArrayConverter.bytesToHexString(msg.getMaxFragmentLength().getValue()));
+        LOGGER.debug("MaxFragmentLength: {}", msg.getMaxFragmentLength().getValue());
     }
 }

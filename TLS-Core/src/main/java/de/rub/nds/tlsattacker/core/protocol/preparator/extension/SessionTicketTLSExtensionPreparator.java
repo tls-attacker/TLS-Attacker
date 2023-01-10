@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
@@ -33,8 +32,7 @@ public class SessionTicketTLSExtensionPreparator
         message.getSessionTicket().setIdentity(chooser.getLatestSessionTicket());
         message.getSessionTicket().setIdentityLength(chooser.getLatestSessionTicket().length);
         LOGGER.debug(
-                "Prepared the SessionTicketTLSExtension with Ticket "
-                        + ArrayConverter.bytesToHexString(
-                                message.getSessionTicket().getIdentity().getValue()));
+                "Prepared the SessionTicketTLSExtension with Ticket {}",
+                message.getSessionTicket().getIdentity().getValue());
     }
 }

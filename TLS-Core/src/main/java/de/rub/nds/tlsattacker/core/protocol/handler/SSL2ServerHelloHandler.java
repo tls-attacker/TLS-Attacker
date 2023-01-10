@@ -31,7 +31,7 @@ public class SSL2ServerHelloHandler extends ProtocolMessageHandler<SSL2ServerHel
 
     private Certificate parseCertificate(int lengthBytes, byte[] bytesToParse) {
         LOGGER.debug("SSL2 lengthBytes:" + lengthBytes);
-        LOGGER.debug("SSL2 bytesToParse:" + ArrayConverter.bytesToHexString(bytesToParse, false));
+        LOGGER.debug("SSL2 bytesToParse: {}", bytesToParse);
 
         try {
             byte[] concatenated =
@@ -42,14 +42,12 @@ public class SSL2ServerHelloHandler extends ProtocolMessageHandler<SSL2ServerHel
                             ArrayConverter.intToBytes(
                                     lengthBytes, HandshakeByteLength.CERTIFICATES_LENGTH),
                             bytesToParse);
-            LOGGER.debug(
-                    "SSL2 concatenated:" + ArrayConverter.bytesToHexString(concatenated, false));
+            LOGGER.debug("SSL2 concatenated: {}", concatenated);
             ByteArrayInputStream stream = new ByteArrayInputStream(concatenated);
             return Certificate.parse(stream);
         } catch (IOException | IllegalArgumentException e) {
             LOGGER.warn(
-                    "Could not parse Certificate bytes into Certificate object:\n"
-                            + ArrayConverter.bytesToHexString(bytesToParse, false));
+                    "Could not parse Certificate bytes into Certificate object:\n{}", bytesToParse);
             LOGGER.debug(e);
             return null;
         }

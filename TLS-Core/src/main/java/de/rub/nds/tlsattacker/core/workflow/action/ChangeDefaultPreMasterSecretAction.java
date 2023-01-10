@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
@@ -59,11 +58,7 @@ public class ChangeDefaultPreMasterSecretAction extends ConnectionBoundAction {
         }
         oldValue = tlsContext.getConfig().getDefaultPreMasterSecret();
         tlsContext.getConfig().setDefaultPreMasterSecret(newValue);
-        LOGGER.info(
-                "Changed DefaultPreMasterSecret from "
-                        + ArrayConverter.bytesToHexString(oldValue)
-                        + " in config to "
-                        + ArrayConverter.bytesToHexString(newValue));
+        LOGGER.info("Changed DefaultPreMasterSecret from {}  in config to {}", oldValue, newValue);
         setExecuted(true);
     }
 

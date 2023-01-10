@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.SupplementalDataMessage;
@@ -51,10 +50,7 @@ public class SupplementalDataParser extends HandshakeMessageParser<SupplementalD
     private void parseSupplementalDataBytes(SupplementalDataMessage msg) {
         msg.setSupplementalDataBytes(
                 parseByteArrayField(msg.getSupplementalDataLength().getValue()));
-        LOGGER.debug(
-                "SupplementalDataBytes: "
-                        + ArrayConverter.bytesToHexString(
-                                msg.getSupplementalDataBytes().getValue()));
+        LOGGER.debug("SupplementalDataBytes: {}", msg.getSupplementalDataBytes().getValue());
     }
 
     private void parseSupplementalDataEntries(SupplementalDataMessage msg) {

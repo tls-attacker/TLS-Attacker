@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.core.protocol;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
@@ -64,9 +63,8 @@ public class ParserSerializerIT extends GenericParserSerializerTest {
                     message.getSerializer(tlsContext);
             byte[] result = serializer.serialize();
             LOGGER.debug(message.toString());
-            LOGGER.debug(
-                    "Bytes to parse:\t" + ArrayConverter.bytesToHexString(bytesToParse, false));
-            LOGGER.debug("Result:\t" + ArrayConverter.bytesToHexString(result, false));
+            LOGGER.debug("Bytes to parse:\t{}", bytesToParse);
+            LOGGER.debug("Result:\t{}", result);
             ProtocolMessageParser parser2 =
                     message.getParser(tlsContext, new ByteArrayInputStream(result));
             ProtocolMessage serialized = message.getClass().getConstructor().newInstance();

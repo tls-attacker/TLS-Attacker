@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.PskClientKeyExchangeMessage;
 import org.apache.logging.log4j.LogManager;
@@ -48,7 +47,6 @@ public class PskClientKeyExchangeSerializer
     /** Writes the pskIdentity of the PskClientKeyExchangeMessage into the final byte[] */
     private void writePskIdentity(PskClientKeyExchangeMessage msg) {
         appendBytes(msg.getIdentity().getValue());
-        LOGGER.debug(
-                "PskIdentity: " + ArrayConverter.bytesToHexString(msg.getIdentity().getValue()));
+        LOGGER.debug("PskIdentity: {}", msg.getIdentity().getValue());
     }
 }

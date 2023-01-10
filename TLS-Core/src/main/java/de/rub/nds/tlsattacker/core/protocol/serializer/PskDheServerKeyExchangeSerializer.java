@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.PskDheServerKeyExchangeMessage;
@@ -53,8 +52,6 @@ public class PskDheServerKeyExchangeSerializer
      */
     private void writePSKIdentityHint(PskDheServerKeyExchangeMessage msg) {
         appendBytes(msg.getIdentityHint().getValue());
-        LOGGER.debug(
-                "SerializedPSKIdentityHint: "
-                        + ArrayConverter.bytesToHexString(msg.getIdentityHint().getValue()));
+        LOGGER.debug("SerializedPSKIdentityHint: {}", msg.getIdentityHint().getValue());
     }
 }

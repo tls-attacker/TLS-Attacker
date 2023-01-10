@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMessageType;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
@@ -74,7 +73,7 @@ public class HeartbeatMessagePreparator extends ProtocolMessagePreparator<Heartb
 
     private void preparePayload(HeartbeatMessage msg) {
         msg.setPayload(generatePayload());
-        LOGGER.debug("Payload: " + ArrayConverter.bytesToHexString(msg.getPayload().getValue()));
+        LOGGER.debug("Payload: {}", msg.getPayload().getValue());
     }
 
     private void preparePayloadLength(HeartbeatMessage msg) {
@@ -84,6 +83,6 @@ public class HeartbeatMessagePreparator extends ProtocolMessagePreparator<Heartb
 
     private void preparePadding(HeartbeatMessage msg) {
         msg.setPadding(generatePadding());
-        LOGGER.debug("Padding: " + ArrayConverter.bytesToHexString(msg.getPadding().getValue()));
+        LOGGER.debug("Padding: {}", msg.getPadding().getValue());
     }
 }

@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -39,7 +38,6 @@ public class FinishedSerializer extends HandshakeMessageSerializer<FinishedMessa
     /** Writes the VerifyData of the ECDHEServerKeyExchangeMessage into the final byte[] */
     private void writeVerifyData(FinishedMessage msg) {
         appendBytes(msg.getVerifyData().getValue());
-        LOGGER.debug(
-                "VerifyData: " + ArrayConverter.bytesToHexString(msg.getVerifyData().getValue()));
+        LOGGER.debug("VerifyData: {}", msg.getVerifyData().getValue());
     }
 }

@@ -112,9 +112,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 
     private void adjustServerRandom(ServerHelloMessage message) {
         tlsContext.setServerRandom(message.getRandom().getValue());
-        LOGGER.debug(
-                "Set ServerRandom in Context to "
-                        + ArrayConverter.bytesToHexString(tlsContext.getServerRandom()));
+        LOGGER.debug("Set ServerRandom in Context to {}", tlsContext.getServerRandom());
     }
 
     private void adjustSelectedCompression(ServerHelloMessage message) {
@@ -137,8 +135,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
     private void adjustSelectedSessionID(ServerHelloMessage message) {
         byte[] sessionID = message.getSessionId().getValue();
         tlsContext.setServerSessionId(sessionID);
-        LOGGER.debug(
-                "Set SessionID in Context to " + ArrayConverter.bytesToHexString(sessionID, false));
+        LOGGER.debug("Set SessionID in Context to {}", sessionID);
     }
 
     private void adjustSelectedProtocolVersion(ServerHelloMessage message) {
@@ -153,9 +150,8 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
             LOGGER.debug("Set SelectedProtocolVersion in Context to " + version.name());
         } else {
             LOGGER.warn(
-                    "Did not Adjust ProtocolVersion since version is undefined "
-                            + ArrayConverter.bytesToHexString(
-                                    message.getProtocolVersion().getValue()));
+                    "Did not Adjust ProtocolVersion since version is undefined {}",
+                    message.getProtocolVersion().getValue());
         }
     }
 
@@ -250,9 +246,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
             byte[] handshakeSecret =
                     HKDFunction.extract(hkdfAlgorithm, saltHandshakeSecret, sharedSecret);
             tlsContext.setHandshakeSecret(handshakeSecret);
-            LOGGER.debug(
-                    "Set handshakeSecret in Context to "
-                            + ArrayConverter.bytesToHexString(handshakeSecret));
+            LOGGER.debug("Set handshakeSecret in Context to {}", handshakeSecret);
             byte[] clientHandshakeTrafficSecret =
                     HKDFunction.deriveSecret(
                             hkdfAlgorithm,
@@ -262,8 +256,8 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                             tlsContext.getDigest().getRawBytes());
             tlsContext.setClientHandshakeTrafficSecret(clientHandshakeTrafficSecret);
             LOGGER.debug(
-                    "Set clientHandshakeTrafficSecret in Context to "
-                            + ArrayConverter.bytesToHexString(clientHandshakeTrafficSecret));
+                    "Set clientHandshakeTrafficSecret in Context to {}",
+                    clientHandshakeTrafficSecret);
             byte[] serverHandshakeTrafficSecret =
                     HKDFunction.deriveSecret(
                             hkdfAlgorithm,
@@ -273,8 +267,8 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                             tlsContext.getDigest().getRawBytes());
             tlsContext.setServerHandshakeTrafficSecret(serverHandshakeTrafficSecret);
             LOGGER.debug(
-                    "Set serverHandshakeTrafficSecret in Context to "
-                            + ArrayConverter.bytesToHexString(serverHandshakeTrafficSecret));
+                    "Set serverHandshakeTrafficSecret in Context to {}",
+                    serverHandshakeTrafficSecret);
         } catch (CryptoException | NoSuchAlgorithmException ex) {
             throw new AdjustmentException(ex);
         }
@@ -306,14 +300,8 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                     new BigInteger(1, chooser.getConfig().getDefaultServerPWDPrivate())
                             .mod(curve.getBasePointOrder());
         }
-        LOGGER.debug(
-                "Element: "
-                        + ArrayConverter.bytesToHexString(
-                                PointFormatter.toRawFormat(keySharePoint)));
-        LOGGER.debug(
-                "Scalar: "
-                        + ArrayConverter.bytesToHexString(
-                                ArrayConverter.bigIntegerToByteArray(scalar)));
+        LOGGER.debug("Element: {}", () -> PointFormatter.toRawFormat(keySharePoint));
+        LOGGER.debug("Scalar: {}", () -> ArrayConverter.bigIntegerToByteArray(scalar));
 
         Point sharedSecret =
                 curve.mult(
@@ -479,8 +467,8 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         try {
             byte[] lastClientHello = tlsContext.getChooser().getLastClientHello();
             LOGGER.debug(
-                    "Replacing current digest for Hello Retry Request using Client Hello: "
-                            + ArrayConverter.bytesToHexString(lastClientHello));
+                    "Replacing current digest for Hello Retry Request using Client Hello: {}",
+                    lastClientHello);
 
             DigestAlgorithm algorithm =
                     AlgorithmResolver.getDigestAlgorithm(
@@ -500,10 +488,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                                     HandshakeByteLength.MESSAGE_LENGTH_FIELD));
             tlsContext.getDigest().append(clientHelloHash);
             tlsContext.getDigest().append(serverHelloBytes);
-            LOGGER.debug(
-                    "Complete resulting digest: "
-                            + ArrayConverter.bytesToHexString(
-                                    tlsContext.getDigest().getRawBytes()));
+            LOGGER.debug("Complete resulting digest: {}", tlsContext.getDigest().getRawBytes());
         } catch (NoSuchAlgorithmException ex) {
             LOGGER.error(ex);
         }

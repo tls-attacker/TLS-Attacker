@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
@@ -58,11 +57,7 @@ public class ChangeMasterSecretAction extends ConnectionBoundAction {
         }
         oldValue = tlsContext.getMasterSecret();
         tlsContext.setMasterSecret(newValue);
-        LOGGER.info(
-                "Changed MasterSecret from "
-                        + ArrayConverter.bytesToHexString(oldValue)
-                        + " to "
-                        + ArrayConverter.bytesToHexString(newValue));
+        LOGGER.info("Changed MasterSecret from {} to {}", oldValue, newValue);
         setExecuted(true);
     }
 

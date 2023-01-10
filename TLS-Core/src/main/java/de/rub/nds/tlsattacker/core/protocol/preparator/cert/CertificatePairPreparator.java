@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator.cert;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificatePair;
@@ -45,9 +44,7 @@ public class CertificatePairPreparator extends Preparator<CertificatePair> {
 
     private void prepareCertificate(CertificatePair pair) {
         pair.setCertificate(pair.getCertificateConfig());
-        LOGGER.debug(
-                "Certificate: "
-                        + ArrayConverter.bytesToHexString(pair.getCertificate().getValue()));
+        LOGGER.debug("Certificate: {}", pair.getCertificate().getValue());
     }
 
     private void prepareCertificateLength(CertificatePair pair) {
@@ -68,9 +65,7 @@ public class CertificatePairPreparator extends Preparator<CertificatePair> {
             }
             pair.setExtensions(stream.toByteArray());
         }
-        LOGGER.debug(
-                "ExtensionBytes: "
-                        + ArrayConverter.bytesToHexString(pair.getExtensions().getValue()));
+        LOGGER.debug("ExtensionBytes: {}", pair.getExtensions().getValue());
     }
 
     private void prepareExtensionLength(CertificatePair pair) {

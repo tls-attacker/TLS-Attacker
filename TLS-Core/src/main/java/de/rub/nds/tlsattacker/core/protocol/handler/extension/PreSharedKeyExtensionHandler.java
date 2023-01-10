@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PreSharedKeyExtensionMessage;
@@ -84,9 +83,8 @@ public class PreSharedKeyExtensionHandler extends ExtensionHandler<PreSharedKeyE
                             pskSets.get(x).getPreSharedKeyIdentity(),
                             pskIdentity.getIdentity().getValue())) {
                         LOGGER.debug(
-                                "Selected PSK identity: "
-                                        + ArrayConverter.bytesToHexString(
-                                                pskSets.get(x).getPreSharedKeyIdentity()));
+                                "Selected PSK identity: {}",
+                                pskSets.get(x).getPreSharedKeyIdentity());
                         tlsContext.setPsk(pskSets.get(x).getPreSharedKey());
                         tlsContext.setEarlyDataCipherSuite(pskSets.get(x).getCipherSuite());
                         tlsContext.setSelectedIdentityIndex(pskIdentityIndex);
@@ -102,8 +100,8 @@ public class PreSharedKeyExtensionHandler extends ExtensionHandler<PreSharedKeyE
     private void selectEarlyDataPsk(PreSharedKeyExtensionMessage message) {
 
         LOGGER.debug(
-                "Calculating early traffic secret using transcript: "
-                        + ArrayConverter.bytesToHexString(tlsContext.getDigest().getRawBytes()));
+                "Calculating early traffic secret using transcript: {}",
+                tlsContext.getDigest().getRawBytes());
 
         List<PskSet> pskSets = tlsContext.getChooser().getPskSets();
         for (int x = 0; x < pskSets.size(); x++) {
@@ -112,10 +110,7 @@ public class PreSharedKeyExtensionHandler extends ExtensionHandler<PreSharedKeyE
                     message.getIdentities().get(0).getIdentity().getValue())) {
                 tlsContext.setEarlyDataPsk(pskSets.get(x).getPreSharedKey());
                 tlsContext.setEarlyDataCipherSuite(pskSets.get(x).getCipherSuite());
-                LOGGER.debug(
-                        "EarlyData PSK: "
-                                + ArrayConverter.bytesToHexString(
-                                        pskSets.get(x).getPreSharedKey()));
+                LOGGER.debug("EarlyData PSK: {}", pskSets.get(x).getPreSharedKey());
                 break;
             }
         }

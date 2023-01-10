@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PreSharedKeyExtensionMessage;
@@ -55,9 +54,7 @@ public class PreSharedKeyExtensionParser extends ExtensionParser<PreSharedKeyExt
 
     private void parsePreSharedKeyIdentityListBytes(PreSharedKeyExtensionMessage msg) {
         msg.setIdentityListBytes(parseByteArrayField(msg.getIdentityListLength().getValue()));
-        LOGGER.debug(
-                "Identity list bytes: "
-                        + ArrayConverter.bytesToHexString(msg.getIdentityListBytes().getValue()));
+        LOGGER.debug("Identity list bytes: {}", msg.getIdentityListBytes().getValue());
 
         List<PSKIdentity> identities = new LinkedList<>();
         ByteArrayInputStream innerStream =
@@ -78,9 +75,7 @@ public class PreSharedKeyExtensionParser extends ExtensionParser<PreSharedKeyExt
 
     private void parsePreSharedKeyBinderListBytes(PreSharedKeyExtensionMessage msg) {
         msg.setBinderListBytes(parseByteArrayField(msg.getBinderListLength().getValue()));
-        LOGGER.debug(
-                "Binder list bytes: "
-                        + ArrayConverter.bytesToHexString(msg.getBinderListBytes().getValue()));
+        LOGGER.debug("Binder list bytes: {}", msg.getBinderListBytes().getValue());
 
         List<PSKBinder> binders = new LinkedList<>();
         ByteArrayInputStream innerStream =

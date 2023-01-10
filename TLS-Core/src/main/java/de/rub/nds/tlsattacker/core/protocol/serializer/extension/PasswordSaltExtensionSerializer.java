@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PasswordSaltExtensionMessage;
 import org.apache.logging.log4j.LogManager;
@@ -40,6 +39,6 @@ public class PasswordSaltExtensionSerializer
 
     private void writeSalt(PasswordSaltExtensionMessage msg) {
         appendBytes(msg.getSalt().getValue());
-        LOGGER.debug("Salt: " + ArrayConverter.bytesToHexString(msg.getSalt()));
+        LOGGER.debug("Salt: {}", msg.getSalt());
     }
 }

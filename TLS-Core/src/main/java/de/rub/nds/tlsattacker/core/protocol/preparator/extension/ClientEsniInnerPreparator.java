@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
@@ -46,7 +45,7 @@ public class ClientEsniInnerPreparator extends Preparator<ClientEsniInner> {
 
         byte[] nonce = chooser.getEsniClientNonce();
         msg.setClientNonce(nonce);
-        LOGGER.debug("Nonce: " + ArrayConverter.bytesToHexString(msg.getClientNonce().getValue()));
+        LOGGER.debug("Nonce: {}", msg.getClientNonce().getValue());
     }
 
     private void prepareServerPariNameList(ClientEsniInner msg) {
@@ -66,9 +65,7 @@ public class ClientEsniInnerPreparator extends Preparator<ClientEsniInner> {
 
     private void prepareServerNameListBytes(ClientEsniInner msg) {
         msg.setServerNameListBytes(serverNamePairListStream.toByteArray());
-        LOGGER.debug(
-                "ServerNameListBytes: "
-                        + ArrayConverter.bytesToHexString(msg.getServerNameListBytes().getValue()));
+        LOGGER.debug("ServerNameListBytes: {}", msg.getServerNameListBytes().getValue());
     }
 
     private void prepareServerNameListLength(ClientEsniInner msg) {
@@ -94,6 +91,6 @@ public class ClientEsniInnerPreparator extends Preparator<ClientEsniInner> {
         }
         msg.setPadding(padding);
         LOGGER.debug("paddedLength: " + paddedLength);
-        LOGGER.debug("Padding: " + ArrayConverter.bytesToHexString(msg.getPadding().getValue()));
+        LOGGER.debug("Padding: {}", msg.getPadding().getValue());
     }
 }

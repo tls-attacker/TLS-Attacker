@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.AlpnExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.alpn.AlpnEntry;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.alpn.AlpnEntryPreparator;
@@ -74,8 +73,8 @@ public class AlpnExtensionPreparator extends ExtensionPreparator<AlpnExtensionMe
         msg.setAlpnEntryList(alpnEntryList);
         setEntryListBytes(alpnEntryList);
         LOGGER.debug(
-                "Prepared the ALPN Extension with announced protocols "
-                        + ArrayConverter.bytesToHexString(msg.getProposedAlpnProtocols()));
+                "Prepared the ALPN Extension with announced protocols {}",
+                msg.getProposedAlpnProtocols());
         msg.setProposedAlpnProtocolsLength(msg.getProposedAlpnProtocols().getValue().length);
         LOGGER.debug(
                 "Prepared the ALPN Extension with announced protocols length "

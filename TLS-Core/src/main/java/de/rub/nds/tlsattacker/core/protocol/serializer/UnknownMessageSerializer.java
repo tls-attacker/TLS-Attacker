@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageSerializer;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
 import org.apache.logging.log4j.LogManager;
@@ -38,8 +37,6 @@ public class UnknownMessageSerializer extends ProtocolMessageSerializer<UnknownM
     private void writeCompleteResultingMessage() {
         appendBytes(message.getCompleteResultingMessage().getValue());
         LOGGER.debug(
-                "CompleteResultingMessage: "
-                        + ArrayConverter.bytesToHexString(
-                                message.getCompleteResultingMessage().getValue()));
+                "CompleteResultingMessage: {}", message.getCompleteResultingMessage().getValue());
     }
 }

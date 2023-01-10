@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.PskRsaClientKeyExchangeMessage;
@@ -56,7 +55,6 @@ public class PskRsaClientKeyExchangeParser
      */
     private void parsePskIdentity(PskRsaClientKeyExchangeMessage msg) {
         msg.setIdentity(parseByteArrayField(msg.getIdentityLength().getValue()));
-        LOGGER.debug(
-                "PSK-Identity: " + ArrayConverter.bytesToHexString(msg.getIdentity().getValue()));
+        LOGGER.debug("PSK-Identity: {}", msg.getIdentity().getValue());
     }
 }

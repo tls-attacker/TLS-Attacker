@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateStatusMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
@@ -51,8 +50,6 @@ public class CertificateStatusPreparator
 
     private void prepareOcspResponseBytes() {
         msg.setOcspResponseBytes(new byte[0]);
-        LOGGER.debug(
-                "OCSPResponseBytes: "
-                        + ArrayConverter.bytesToHexString(msg.getOcspResponseBytes()));
+        LOGGER.debug("OCSPResponseBytes: {}", msg.getOcspResponseBytes());
     }
 }

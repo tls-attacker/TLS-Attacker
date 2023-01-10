@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.PskEcDheServerKeyExchangeMessage;
@@ -51,8 +50,6 @@ public class PskEcDheServerKeyExchangeParser
      */
     private void parsePskIdentityHint(PskEcDheServerKeyExchangeMessage msg) {
         msg.setIdentityHint(parseByteArrayField(msg.getIdentityHintLength().getValue()));
-        LOGGER.debug(
-                "SerializedPSK-Identity: "
-                        + ArrayConverter.bytesToHexString(msg.getIdentityHint().getValue()));
+        LOGGER.debug("SerializedPSK-Identity: {}", msg.getIdentityHint().getValue());
     }
 }

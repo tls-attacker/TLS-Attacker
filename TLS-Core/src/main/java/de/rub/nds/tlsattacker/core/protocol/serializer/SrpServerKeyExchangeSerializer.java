@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.SrpServerKeyExchangeMessage;
@@ -62,7 +61,7 @@ public class SrpServerKeyExchangeSerializer
     /** Writes the N of the SrpServerKeyExchangeMessage into the final byte[] */
     private void writeModulus(SrpServerKeyExchangeMessage msg) {
         appendBytes(msg.getModulus().getValue());
-        LOGGER.debug("P: " + ArrayConverter.bytesToHexString(msg.getModulus().getValue()));
+        LOGGER.debug("P: {}", msg.getModulus().getValue());
     }
 
     /** Writes the saltLength of the SrpServerKeyExchangeMessage into the final byte[] */
@@ -74,7 +73,7 @@ public class SrpServerKeyExchangeSerializer
     /** Writes the Salt of the SrpServerKeyExchangeMessage into the final byte[] */
     private void writeSalt(SrpServerKeyExchangeMessage msg) {
         appendBytes(msg.getSalt().getValue());
-        LOGGER.debug("Salt: " + ArrayConverter.bytesToHexString(msg.getSalt().getValue()));
+        LOGGER.debug("Salt: {}", msg.getSalt().getValue());
     }
 
     /** Writes the gLength of the SrpServerKeyExchangeMessage into the final byte[] */
@@ -86,7 +85,7 @@ public class SrpServerKeyExchangeSerializer
     /** Writes the G of the SrpServerKeyExchangeMessage into the final byte[] */
     private void writeGenerator(SrpServerKeyExchangeMessage msg) {
         appendBytes(msg.getGenerator().getValue());
-        LOGGER.debug("G: " + ArrayConverter.bytesToHexString(msg.getGenerator().getValue()));
+        LOGGER.debug("G: {}", msg.getGenerator().getValue());
     }
 
     /**
@@ -100,9 +99,7 @@ public class SrpServerKeyExchangeSerializer
     /** Writes the SerializedPublicKey of the SrpServerKeyExchangeMessage into the final byte[] */
     private void writeSerializedPublicKey(SrpServerKeyExchangeMessage msg) {
         appendBytes(msg.getPublicKey().getValue());
-        LOGGER.debug(
-                "SerializedPublicKey: "
-                        + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
+        LOGGER.debug("SerializedPublicKey: {}", msg.getPublicKey().getValue());
     }
 
     /**
@@ -111,9 +108,7 @@ public class SrpServerKeyExchangeSerializer
     private void writeSignatureAndHashAlgorithm(SrpServerKeyExchangeMessage msg) {
         appendBytes(msg.getSignatureAndHashAlgorithm().getValue());
         LOGGER.debug(
-                "SignatureAndHashAlgorithm: "
-                        + ArrayConverter.bytesToHexString(
-                                msg.getSignatureAndHashAlgorithm().getValue()));
+                "SignatureAndHashAlgorithm: {}", msg.getSignatureAndHashAlgorithm().getValue());
     }
 
     /** Writes the SignatureLength of the SrpServerKeyExchangeMessage into the final byte[] */
@@ -125,7 +120,6 @@ public class SrpServerKeyExchangeSerializer
     /** Writes the Signature of the SrpServerKeyExchangeMessage into the final byte[] */
     private void writeSignature(SrpServerKeyExchangeMessage msg) {
         appendBytes(msg.getSignature().getValue());
-        LOGGER.debug(
-                "Signature: " + ArrayConverter.bytesToHexString(msg.getSignature().getValue()));
+        LOGGER.debug("Signature: {}", msg.getSignature().getValue());
     }
 }

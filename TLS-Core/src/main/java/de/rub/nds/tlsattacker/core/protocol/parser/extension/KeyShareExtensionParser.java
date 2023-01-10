@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
@@ -103,9 +102,7 @@ public class KeyShareExtensionParser extends ExtensionParser<KeyShareExtensionMe
      */
     private void parseKeyShareListBytes(KeyShareExtensionMessage msg) {
         msg.setKeyShareListBytes(parseByteArrayField(msg.getKeyShareListLength().getValue()));
-        LOGGER.debug(
-                "KeyShareListBytes: "
-                        + ArrayConverter.bytesToHexString(msg.getKeyShareListBytes().getValue()));
+        LOGGER.debug("KeyShareListBytes: {}", msg.getKeyShareListBytes().getValue());
     }
 
     /**

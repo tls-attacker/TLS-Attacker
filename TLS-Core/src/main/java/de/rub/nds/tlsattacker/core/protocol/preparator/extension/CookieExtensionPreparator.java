@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CookieExtensionMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
@@ -29,7 +28,7 @@ public class CookieExtensionPreparator extends ExtensionPreparator<CookieExtensi
     public void prepareExtensionContent() {
         LOGGER.debug("Preparing CookieExtensionMessage");
         msg.setCookie(chooser.getExtensionCookie());
-        LOGGER.debug("Cookie: " + ArrayConverter.bytesToHexString(msg.getCookie().getValue()));
+        LOGGER.debug("Cookie: {}", msg.getCookie().getValue());
         msg.setCookieLength(chooser.getExtensionCookie().length);
         LOGGER.debug("Cookie length: " + msg.getCookieLength().getValue());
     }

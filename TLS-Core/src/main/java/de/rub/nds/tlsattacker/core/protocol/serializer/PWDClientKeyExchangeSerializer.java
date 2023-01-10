@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.PWDClientKeyExchangeMessage;
 import org.apache.logging.log4j.LogManager;
@@ -47,7 +46,7 @@ public class PWDClientKeyExchangeSerializer
 
     private void writeElement(PWDClientKeyExchangeMessage msg) {
         appendBytes(msg.getElement().getValue());
-        LOGGER.debug("Element: " + ArrayConverter.bytesToHexString(msg.getElement().getValue()));
+        LOGGER.debug("Element: {}", msg.getElement().getValue());
     }
 
     private void writeScalarLength(PWDClientKeyExchangeMessage msg) {
@@ -57,6 +56,6 @@ public class PWDClientKeyExchangeSerializer
 
     private void writeScalar(PWDClientKeyExchangeMessage msg) {
         appendBytes(msg.getScalar().getValue());
-        LOGGER.debug("Scalar: " + ArrayConverter.bytesToHexString(msg.getScalar().getValue()));
+        LOGGER.debug("Scalar: {}", msg.getScalar().getValue());
     }
 }

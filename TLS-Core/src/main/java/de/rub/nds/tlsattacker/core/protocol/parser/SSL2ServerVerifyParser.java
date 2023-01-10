@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerVerifyMessage;
 import java.io.InputStream;
@@ -31,8 +30,6 @@ public class SSL2ServerVerifyParser extends SSL2MessageParser<SSL2ServerVerifyMe
 
     private void parseEncryptedPart(SSL2ServerVerifyMessage message) {
         message.setEncryptedPart(parseByteArrayField(message.getMessageLength().getValue()));
-        LOGGER.debug(
-                "Encrypted Part: "
-                        + ArrayConverter.bytesToHexString(message.getEncryptedPart().getValue()));
+        LOGGER.debug("Encrypted Part: {}", message.getEncryptedPart().getValue());
     }
 }

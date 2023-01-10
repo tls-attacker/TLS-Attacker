@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PWDProtectExtensionMessage;
 import org.apache.logging.log4j.LogManager;
@@ -39,6 +38,6 @@ public class PWDProtectExtensionSerializer extends ExtensionSerializer<PWDProtec
 
     private void writeUsername(PWDProtectExtensionMessage msg) {
         appendBytes(msg.getUsername().getValue());
-        LOGGER.debug("Username: " + ArrayConverter.bytesToHexString(msg.getUsername()));
+        LOGGER.debug("Username: {}", msg.getUsername());
     }
 }

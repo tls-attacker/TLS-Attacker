@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ECPointFormatExtensionMessage;
 import org.apache.logging.log4j.LogManager;
@@ -41,8 +40,6 @@ public class ECPointFormatExtensionSerializer
 
     private void writePointFormats(ECPointFormatExtensionMessage msg) {
         appendBytes(msg.getPointFormats().getValue());
-        LOGGER.debug(
-                "PointFormats: "
-                        + ArrayConverter.bytesToHexString(msg.getPointFormats().getValue()));
+        LOGGER.debug("PointFormats: {}", msg.getPointFormats().getValue());
     }
 }

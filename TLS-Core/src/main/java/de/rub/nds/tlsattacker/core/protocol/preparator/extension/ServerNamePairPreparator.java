@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
@@ -36,8 +35,7 @@ public class ServerNamePairPreparator extends Preparator<ServerNamePair> {
 
     private void prepareServerName(ServerNamePair pair) {
         pair.setServerName(pair.getServerNameConfig());
-        LOGGER.debug(
-                "ServerName: " + ArrayConverter.bytesToHexString(pair.getServerName().getValue()));
+        LOGGER.debug("ServerName: {}", pair.getServerName().getValue());
     }
 
     private void prepareServerNameType(ServerNamePair pair) {

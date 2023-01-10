@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatByteLength;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageSerializer;
 import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
@@ -53,14 +52,12 @@ public class HeartbeatMessageSerializer extends ProtocolMessageSerializer<Heartb
     /** Writes the Payload of the HeartbeatMessage into the final byte[] */
     private void writePayload() {
         appendBytes(message.getPayload().getValue());
-        LOGGER.debug(
-                "Payload: " + ArrayConverter.bytesToHexString(message.getPayload().getValue()));
+        LOGGER.debug("Payload: {}", message.getPayload().getValue());
     }
 
     /** Writes the Padding of the HeartbeatMessage into the final byte[] */
     private void writePadding() {
         appendBytes(message.getPadding().getValue());
-        LOGGER.debug(
-                "Padding: " + ArrayConverter.bytesToHexString(message.getPadding().getValue()));
+        LOGGER.debug("Padding: {}", message.getPadding().getValue());
     }
 }

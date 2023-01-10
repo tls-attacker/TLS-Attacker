@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAndHashAlgorithmsExtensionMessage;
@@ -56,8 +55,6 @@ public class SignatureAndHashAlgorithmsExtensionParser
         msg.setSignatureAndHashAlgorithms(
                 parseByteArrayField(msg.getSignatureAndHashAlgorithmsLength().getValue()));
         LOGGER.debug(
-                "SignatureAndHashAlgorithms: "
-                        + ArrayConverter.bytesToHexString(
-                                msg.getSignatureAndHashAlgorithms().getValue()));
+                "SignatureAndHashAlgorithms: {}", msg.getSignatureAndHashAlgorithms().getValue());
     }
 }

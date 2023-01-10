@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SupportedVersionsExtensionMessage;
@@ -43,9 +42,7 @@ public class SupportedVersionsExtensionPreparator
 
     private void prepareProtocolVersions(SupportedVersionsExtensionMessage msg) {
         msg.setSupportedVersions(createProtocolVersionArray());
-        LOGGER.debug(
-                "SupportedVersions: "
-                        + ArrayConverter.bytesToHexString(msg.getSupportedVersions().getValue()));
+        LOGGER.debug("SupportedVersions: {}", msg.getSupportedVersions().getValue());
     }
 
     private void prepareProtocolVersionsLength(SupportedVersionsExtensionMessage msg) {

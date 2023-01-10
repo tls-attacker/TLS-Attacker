@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
@@ -38,6 +37,6 @@ public class ApplicationMessagePreparator extends ProtocolMessagePreparator<Appl
         } else {
             msg.setData(chooser.getLastHandledApplicationMessageData());
         }
-        LOGGER.debug("Data: " + ArrayConverter.bytesToHexString(msg.getData().getValue()));
+        LOGGER.debug("Data: {}", msg.getData().getValue());
     }
 }

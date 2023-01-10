@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ECPointFormatExtensionMessage;
@@ -49,8 +48,6 @@ public class ECPointFormatExtensionParser extends ExtensionParser<ECPointFormatE
      */
     private void parsePointFormat(ECPointFormatExtensionMessage msg) {
         msg.setPointFormats(parseByteArrayField(msg.getPointFormatsLength().getValue()));
-        LOGGER.debug(
-                "PointFormats: "
-                        + ArrayConverter.bytesToHexString(msg.getPointFormats().getValue()));
+        LOGGER.debug("PointFormats: {}", msg.getPointFormats().getValue());
     }
 }

@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloMessage;
 import org.apache.logging.log4j.LogManager;
@@ -40,15 +39,13 @@ public abstract class HelloMessageSerializer<T extends HelloMessage>
     /** Writes the ProtocolVersion of the message into the final byte[] */
     protected void writeProtocolVersion() {
         appendBytes(msg.getProtocolVersion().getValue());
-        LOGGER.debug(
-                "ProtocolVersion: "
-                        + ArrayConverter.bytesToHexString(msg.getProtocolVersion().getValue()));
+        LOGGER.debug("ProtocolVersion: {}", msg.getProtocolVersion().getValue());
     }
 
     /** Writes the Random of the message into the final byte[] */
     protected void writeRandom() {
         appendBytes(msg.getRandom().getValue());
-        LOGGER.debug("Random: " + ArrayConverter.bytesToHexString(msg.getRandom().getValue()));
+        LOGGER.debug("Random: {}", msg.getRandom().getValue());
     }
 
     /** Writes the SessionID length field of the message into the final byte[] */
@@ -60,7 +57,6 @@ public abstract class HelloMessageSerializer<T extends HelloMessage>
     /** Writes the SessionID of the message into the final byte[] */
     protected void writeSessionID() {
         appendBytes(msg.getSessionId().getValue());
-        LOGGER.debug(
-                "SessionID: " + ArrayConverter.bytesToHexString(msg.getSessionId().getValue()));
+        LOGGER.debug("SessionID: {}", msg.getSessionId().getValue());
     }
 }

@@ -54,8 +54,7 @@ public class RenegotiationInfoExtensionPreparator
         }
         message.setRenegotiationInfoLength(message.getRenegotiationInfo().getValue().length);
         LOGGER.debug(
-                "Prepared the RenegotiationInfo extension with info "
-                        + ArrayConverter.bytesToHexString(
-                                message.getRenegotiationInfo().getValue()));
+                "Prepared the RenegotiationInfo extension with info {}",
+                message.getRenegotiationInfo().getValue());
     }
 }

@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PSKBinder;
@@ -38,8 +37,6 @@ public class PSKBinderParser extends Parser<PSKBinder> {
 
     private void parseBinderEntry(PSKBinder pskBinder) {
         pskBinder.setBinderEntry(parseByteArrayField(pskBinder.getBinderEntryLength().getValue()));
-        LOGGER.debug(
-                "Parsed binder:"
-                        + ArrayConverter.bytesToHexString(pskBinder.getBinderEntry().getValue()));
+        LOGGER.debug("Parsed binder: {}", pskBinder.getBinderEntry().getValue());
     }
 }

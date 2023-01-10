@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAlgorithmsCertExtensionMessage;
 import org.apache.logging.log4j.LogManager;
@@ -48,8 +47,6 @@ public class SignatureAlgorithmsCertExtensionSerializer
     private void writeSignatureAndHashAlgorithms(SignatureAlgorithmsCertExtensionMessage msg) {
         appendBytes(msg.getSignatureAndHashAlgorithms().getValue());
         LOGGER.debug(
-                "SignatureAndHashAlgorithms: "
-                        + ArrayConverter.bytesToHexString(
-                                msg.getSignatureAndHashAlgorithms().getValue()));
+                "SignatureAndHashAlgorithms: {}", msg.getSignatureAndHashAlgorithms().getValue());
     }
 }

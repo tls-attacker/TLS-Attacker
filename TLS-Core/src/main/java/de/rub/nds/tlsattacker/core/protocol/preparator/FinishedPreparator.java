@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
@@ -76,7 +75,7 @@ public class FinishedPreparator extends HandshakeMessagePreparator<FinishedMessa
                                     new byte[0],
                                     mac.getMacLength());
                 }
-                LOGGER.debug("Finished key: " + ArrayConverter.bytesToHexString(finishedKey));
+                LOGGER.debug("Finished key: {}", finishedKey);
                 SecretKeySpec keySpec = new SecretKeySpec(finishedKey, mac.getAlgorithm());
                 mac.init(keySpec);
                 mac.update(
@@ -95,7 +94,7 @@ public class FinishedPreparator extends HandshakeMessagePreparator<FinishedMessa
             final byte[] handshakeMessageContent =
                     chooser.getContext().getTlsContext().getDigest().getRawBytes();
             final byte[] masterSecret = chooser.getMasterSecret();
-            LOGGER.debug("Using MasterSecret:" + ArrayConverter.bytesToHexString(masterSecret));
+            LOGGER.debug("Using MasterSecret: {}", masterSecret);
             final ConnectionEndType endType = chooser.getConnectionEndType();
             return SSLUtils.calculateFinishedData(handshakeMessageContent, masterSecret, endType);
         } else {
@@ -103,7 +102,7 @@ public class FinishedPreparator extends HandshakeMessagePreparator<FinishedMessa
             PRFAlgorithm prfAlgorithm = chooser.getPRFAlgorithm();
             LOGGER.debug("Using PRF:" + prfAlgorithm.name());
             byte[] masterSecret = chooser.getMasterSecret();
-            LOGGER.debug("Using MasterSecret:" + ArrayConverter.bytesToHexString(masterSecret));
+            LOGGER.debug("Using MasterSecret: {}", masterSecret);
             byte[] handshakeMessageHash =
                     chooser.getContext()
                             .getTlsContext()
@@ -111,9 +110,7 @@ public class FinishedPreparator extends HandshakeMessagePreparator<FinishedMessa
                             .digest(
                                     chooser.getSelectedProtocolVersion(),
                                     chooser.getSelectedCipherSuite());
-            LOGGER.debug(
-                    "Using HandshakeMessage Hash:"
-                            + ArrayConverter.bytesToHexString(handshakeMessageHash));
+            LOGGER.debug("Using HandshakeMessage Hash: {}", handshakeMessageHash);
 
             String label;
             if (chooser.getConnectionEndType() == ConnectionEndType.SERVER) {
@@ -135,7 +132,6 @@ public class FinishedPreparator extends HandshakeMessagePreparator<FinishedMessa
 
     private void prepareVerifyData(FinishedMessage msg) {
         msg.setVerifyData(verifyData);
-        LOGGER.debug(
-                "VerifyData: " + ArrayConverter.bytesToHexString(msg.getVerifyData().getValue()));
+        LOGGER.debug("VerifyData: {}", msg.getVerifyData().getValue());
     }
 }

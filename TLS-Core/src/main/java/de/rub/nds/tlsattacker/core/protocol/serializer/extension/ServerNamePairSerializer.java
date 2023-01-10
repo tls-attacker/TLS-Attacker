@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
@@ -46,7 +45,6 @@ public class ServerNamePairSerializer extends Serializer<ServerNamePair> {
 
     private void writeServerName(ServerNamePair pair) {
         appendBytes(pair.getServerName().getValue());
-        LOGGER.debug(
-                "ServerName: " + ArrayConverter.bytesToHexString(pair.getServerName().getValue()));
+        LOGGER.debug("ServerName: {}", pair.getServerName().getValue());
     }
 }

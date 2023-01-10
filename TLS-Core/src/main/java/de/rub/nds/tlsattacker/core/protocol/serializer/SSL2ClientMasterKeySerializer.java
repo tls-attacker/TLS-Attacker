@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ssl.SSL2ByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientMasterKeyMessage;
 import java.util.Arrays;
@@ -40,13 +39,13 @@ public class SSL2ClientMasterKeySerializer
     private void writeEncryptedKeyData() {
         byte[] encryptedKeyData = message.getEncryptedKeyData().getValue();
         appendBytes(encryptedKeyData);
-        LOGGER.debug("EncryptedKey: " + ArrayConverter.bytesToHexString(encryptedKeyData));
+        LOGGER.debug("EncryptedKey: {}", encryptedKeyData);
     }
 
     private void writeClearKeyData() {
         byte[] clearKeyData = message.getClearKeyData().getValue();
         appendBytes(clearKeyData);
-        LOGGER.debug("ClearKey: " + ArrayConverter.bytesToHexString(clearKeyData));
+        LOGGER.debug("ClearKey: {}", clearKeyData);
     }
 
     private void writeEncryptedKeyLength() {
@@ -58,7 +57,7 @@ public class SSL2ClientMasterKeySerializer
     public void writeKeyArgData() {
         byte[] keyArgData = message.getKeyArgData().getValue();
         appendBytes(keyArgData);
-        LOGGER.debug("KeyArg: " + ArrayConverter.bytesToHexString(keyArgData));
+        LOGGER.debug("KeyArg: {}", keyArgData);
     }
 
     private void writeKeyArgLength() {

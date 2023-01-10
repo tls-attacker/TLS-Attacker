@@ -42,6 +42,7 @@ public class FinishedPreparatorTest
         context.setMasterSecret(ArrayConverter.hexStringToByteArray("AABBCCDDEEFF"));
         context.setPrfAlgorithm(PRFAlgorithm.TLS_PRF_SHA256);
         preparator.prepare();
+
         // TODO Did not check if this is calculated correctly, just made sure it
         // is set
         assertArrayEquals(

@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerNameIndicationExtensionMessage;
@@ -70,9 +69,7 @@ public class ServerNameIndicationExtensionParser
      */
     private void parseServerNameListBytes(ServerNameIndicationExtensionMessage msg) {
         msg.setServerNameListBytes(parseByteArrayField(msg.getServerNameListLength().getValue()));
-        LOGGER.debug(
-                "ServerNameListBytes: "
-                        + ArrayConverter.bytesToHexString(msg.getServerNameListBytes().getValue()));
+        LOGGER.debug("ServerNameListBytes: {}", msg.getServerNameListBytes().getValue());
     }
 
     /**

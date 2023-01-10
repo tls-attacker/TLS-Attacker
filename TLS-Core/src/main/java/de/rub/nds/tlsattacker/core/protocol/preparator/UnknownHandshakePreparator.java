@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownHandshakeMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
@@ -38,6 +37,6 @@ public class UnknownHandshakePreparator
         } else {
             msg.setData(new byte[0]);
         }
-        LOGGER.debug("Data: " + ArrayConverter.bytesToHexString(msg.getData().getValue()));
+        LOGGER.debug("Data: {}", msg.getData().getValue());
     }
 }

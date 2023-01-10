@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PasswordSaltExtensionMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
@@ -35,7 +34,7 @@ public class PasswordSaltExtensionPreparator
 
     private void prepareSalt(PasswordSaltExtensionMessage msg) {
         msg.setSalt(chooser.getConfig().getDefaultServerPWDSalt());
-        LOGGER.debug("Salt: " + ArrayConverter.bytesToHexString(msg.getSalt()));
+        LOGGER.debug("Salt: {}", msg.getSalt());
     }
 
     private void prepareSaltLength(PasswordSaltExtensionMessage msg) {

@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer.cert;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
@@ -49,9 +48,7 @@ public class CertificatePairSerializer extends Serializer<CertificatePair> {
 
     private void writeCertificate(CertificatePair pair) {
         appendBytes(pair.getCertificate().getValue());
-        LOGGER.debug(
-                "Certificate: "
-                        + ArrayConverter.bytesToHexString(pair.getCertificate().getValue()));
+        LOGGER.debug("Certificate: {}", pair.getCertificate().getValue());
     }
 
     private void writeExtensionsLength(CertificatePair pair) {
@@ -61,7 +58,6 @@ public class CertificatePairSerializer extends Serializer<CertificatePair> {
 
     private void writeExtensions(CertificatePair pair) {
         appendBytes(pair.getExtensions().getValue());
-        LOGGER.debug(
-                "Extensions: " + ArrayConverter.bytesToHexString(pair.getExtensions().getValue()));
+        LOGGER.debug("Extensions: {}", pair.getExtensions().getValue());
     }
 }

@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.protocol.message.certificatestatus.CertificateStatusObject;
@@ -38,6 +37,6 @@ public class CertificateStatusGenericParser extends Parser<CertificateStatusObje
 
         byte[] ocspResponse = parseByteArrayField(length);
         certificateStatusObject.setOcspResponse(ocspResponse);
-        LOGGER.debug("OCSP Response: " + ArrayConverter.bytesToHexString(ocspResponse));
+        LOGGER.debug("OCSP Response: {}", ocspResponse);
     }
 }

@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateStatusMessage;
 import org.apache.logging.log4j.LogManager;
@@ -51,8 +50,6 @@ public class CertificateStatusSerializer
 
     private void writeOcspResponse(CertificateStatusMessage msg) {
         appendBytes(msg.getOcspResponseBytes().getValue());
-        LOGGER.debug(
-                "OCSP Response: "
-                        + ArrayConverter.bytesToHexString(msg.getOcspResponseBytes().getValue()));
+        LOGGER.debug("OCSP Response: {}", msg.getOcspResponseBytes().getValue());
     }
 }

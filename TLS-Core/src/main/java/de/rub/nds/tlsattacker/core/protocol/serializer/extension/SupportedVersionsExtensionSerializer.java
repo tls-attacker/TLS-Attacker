@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SupportedVersionsExtensionMessage;
 import org.apache.logging.log4j.LogManager;
@@ -48,8 +47,6 @@ public class SupportedVersionsExtensionSerializer
 
     private void writeSupportedVersions(SupportedVersionsExtensionMessage msg) {
         appendBytes(msg.getSupportedVersions().getValue());
-        LOGGER.debug(
-                "SupportedVersions: "
-                        + ArrayConverter.bytesToHexString(msg.getSupportedVersions().getValue()));
+        LOGGER.debug("SupportedVersions: {}", msg.getSupportedVersions().getValue());
     }
 }

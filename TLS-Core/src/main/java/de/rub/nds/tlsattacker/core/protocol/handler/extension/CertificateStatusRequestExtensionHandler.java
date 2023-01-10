@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
-import static de.rub.nds.modifiablevariable.util.ArrayConverter.bytesToHexString;
 import static de.rub.nds.tlsattacker.transport.ConnectionEndType.CLIENT;
 
 import de.rub.nds.tlsattacker.core.constants.CertificateStatusRequestType;
@@ -38,17 +37,13 @@ public class CertificateStatusRequestExtensionHandler
             tlsContext.setCertificateStatusRequestExtensionRequestExtension(
                     message.getRequestExtension().getValue());
             LOGGER.debug(
-                    "Adjusted the Certificate Status Request Request Extension to "
-                            + bytesToHexString(
-                                    tlsContext
-                                            .getCertificateStatusRequestExtensionRequestExtension()));
+                    "Adjusted the Certificate Status Request Request Extension to {}",
+                    tlsContext.getCertificateStatusRequestExtensionRequestExtension());
             tlsContext.setCertificateStatusRequestExtensionResponderIDList(
                     message.getResponderIDList().getValue());
             LOGGER.debug(
-                    "Adjusted the Certificate Status Request Responder ID List to "
-                            + bytesToHexString(
-                                    tlsContext
-                                            .getCertificateStatusRequestExtensionResponderIDList()));
+                    "Adjusted the Certificate Status Request Responder ID List to {}",
+                    tlsContext.getCertificateStatusRequestExtensionResponderIDList());
         }
     }
 }

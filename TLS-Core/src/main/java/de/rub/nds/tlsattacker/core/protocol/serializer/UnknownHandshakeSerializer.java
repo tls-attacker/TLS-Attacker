@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownHandshakeMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -40,6 +39,6 @@ public class UnknownHandshakeSerializer
     /** Writes the Data of the UnknownHandshakeMessage into the final byte[] */
     private void writeData(UnknownHandshakeMessage msg) {
         appendBytes(msg.getData().getValue());
-        LOGGER.debug("Data: " + ArrayConverter.bytesToHexString(msg.getData().getValue()));
+        LOGGER.debug("Data: {}", msg.getData().getValue());
     }
 }

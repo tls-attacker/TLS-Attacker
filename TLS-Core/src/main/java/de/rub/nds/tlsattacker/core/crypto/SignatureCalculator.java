@@ -91,12 +91,10 @@ public class SignatureCalculator {
         }
         try {
             LOGGER.debug(
-                    "Creating Signature with "
-                            + algoName
-                            + " over "
-                            + ArrayConverter.bytesToHexString(toBeSigned)
-                            + " with the PrivateKey:"
-                            + key.toString());
+                    "Creating Signature with {} over {} with the PrivateKey: {}",
+                    algoName,
+                    toBeSigned,
+                    key.toString());
             Signature instance = Signature.getInstance(algoName);
             algorithm.setupSignature(instance);
             instance.initSign(key, random);

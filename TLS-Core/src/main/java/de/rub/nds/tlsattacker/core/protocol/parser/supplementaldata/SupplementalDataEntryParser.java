@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.supplementaldata;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.protocol.message.supplementaldata.SupplementalDataEntry;
@@ -50,9 +49,6 @@ public class SupplementalDataEntryParser extends Parser<SupplementalDataEntry> {
     private void parseSupplementalDataEntry(SupplementalDataEntry entry) {
         entry.setSupplementalDataEntry(
                 parseByteArrayField(entry.getSupplementalDataEntryLength().getValue()));
-        LOGGER.debug(
-                "SupplementalDataEntry: "
-                        + ArrayConverter.bytesToHexString(
-                                entry.getSupplementalDataEntry().getValue()));
+        LOGGER.debug("SupplementalDataEntry: {}", entry.getSupplementalDataEntry().getValue());
     }
 }

@@ -171,8 +171,8 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
             // This could really be anything. From classCast exception to
             // Arrayindexoutofbounds
             LOGGER.warn(
-                    "Could not parse Certificate bytes into Certificate object:"
-                            + ArrayConverter.bytesToHexString(bytesToParse, false),
+                    "Could not parse Certificate bytes into Certificate object: {}",
+                    bytesToParse,
                     e);
             LOGGER.debug(e);
             return null;
