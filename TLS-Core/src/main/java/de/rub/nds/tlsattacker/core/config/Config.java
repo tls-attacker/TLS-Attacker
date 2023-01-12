@@ -215,7 +215,7 @@ public class Config implements Serializable {
             new LinkedList<>(
                     Arrays.asList(
                             new ServerNamePair(
-                                    NameType.HOST_NAME.getValue(),
+                                    SniType.HOST_NAME.getValue(),
                                     "example.com".getBytes(Charset.forName("ASCII")))));
 
     /** Key type for KeyShareExtension */
@@ -233,7 +233,7 @@ public class Config implements Serializable {
 
     private KeyShareStoreEntry defaultServerKeyShareEntry;
 
-    private NameType sniType = NameType.HOST_NAME;
+    private SniType sniType = SniType.HOST_NAME;
 
     private Integer preferredCertRsaKeySize = 2048;
 
@@ -2351,11 +2351,11 @@ public class Config implements Serializable {
         this.workflowExecutorType = workflowExecutorType;
     }
 
-    public NameType getSniType() {
+    public SniType getSniType() {
         return sniType;
     }
 
-    public void setSniType(NameType sniType) {
+    public void setSniType(SniType sniType) {
         this.sniType = sniType;
     }
 

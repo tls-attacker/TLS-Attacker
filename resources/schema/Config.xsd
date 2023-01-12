@@ -241,7 +241,7 @@
         </xs:complexType>
       </xs:element>
       <xs:element name="defaultServerKeyShareEntry" type="keyShareStoreEntry" minOccurs="0"/>
-      <xs:element name="sniType" type="nameType" minOccurs="0"/>
+      <xs:element name="sniType" type="sniType" minOccurs="0"/>
       <xs:element name="preferredCertRsaKeySize" type="xs:int" minOccurs="0"/>
       <xs:element name="prefferedCertDssKeySize" type="xs:int" minOccurs="0"/>
       <xs:element name="defaultKeyUpdateRequestMode" type="keyUpdateRequest" minOccurs="0"/>
@@ -707,7 +707,7 @@
       <xs:extension base="asn1Sequence">
         <xs:sequence>
           <xs:element name="tbsCertificate" type="tbsCertificate" minOccurs="0"/>
-          <xs:element name="signatureAlgorithm" type="algorithmIdentifier" minOccurs="0"/>
+          <xs:element name="signatureAlgorithm" type="certificateSignatureAlgorithmIdentifier" minOccurs="0"/>
           <xs:element name="signature" type="asn1PrimitiveBitString" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
@@ -780,7 +780,7 @@
         <xs:sequence>
           <xs:element name="version" type="version" minOccurs="0"/>
           <xs:element name="serialNumber" type="asn1Integer" minOccurs="0"/>
-          <xs:element name="signature" type="algorithmIdentifier" minOccurs="0"/>
+          <xs:element name="signature" type="certificateSignatureAlgorithmIdentifier" minOccurs="0"/>
           <xs:element name="issuer" type="name" minOccurs="0"/>
           <xs:element name="validity" type="validity" minOccurs="0"/>
           <xs:element name="subject" type="name" minOccurs="0"/>
@@ -1366,7 +1366,8 @@
       <xs:extension base="asn1Field">
         <xs:sequence>
           <xs:element name="unusedBits" type="modifiableByte" minOccurs="0"/>
-          <xs:element name="value" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="usedBits" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="padding" type="modifiableByte" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -1504,7 +1505,15 @@
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="algorithmIdentifier">
+  <xs:complexType name="certificateSignatureAlgorithmIdentifier">
+    <xs:complexContent>
+      <xs:extension base="algorithmIdentifier">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="algorithmIdentifier" abstract="true">
     <xs:complexContent>
       <xs:extension base="asn1Sequence">
         <xs:sequence>
@@ -1520,6 +1529,7 @@
       <xs:extension base="asn1Sequence">
         <xs:sequence>
           <xs:element name="relativeDistinguishedNames" type="relativeDistinguishedName" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="type" type="nameType" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -1556,9 +1566,17 @@
     <xs:complexContent>
       <xs:extension base="asn1Sequence">
         <xs:sequence>
-          <xs:element name="algorithm" type="algorithmIdentifier" minOccurs="0"/>
+          <xs:element name="algorithm" type="subjectPublicKeyAlgorithmIdentifier" minOccurs="0"/>
           <xs:element name="subjectPublicKeyBitString" type="publicKeyBitString" minOccurs="0"/>
         </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="subjectPublicKeyAlgorithmIdentifier">
+    <xs:complexContent>
+      <xs:extension base="algorithmIdentifier">
+        <xs:sequence/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
@@ -1567,7 +1585,6 @@
     <xs:complexContent>
       <xs:extension base="asn1PrimitiveBitString">
         <xs:sequence>
-          <xs:any processContents="lax" namespace="##other"/>
           <xs:any processContents="lax" namespace="##other"/>
         </xs:sequence>
       </xs:extension>
@@ -1889,6 +1906,13 @@
       <xs:enumeration value="GREASE_13"/>
       <xs:enumeration value="GREASE_14"/>
       <xs:enumeration value="GREASE_15"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="nameType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="SUBJECT"/>
+      <xs:enumeration value="ISSUER"/>
     </xs:restriction>
   </xs:simpleType>
 
@@ -2469,7 +2493,7 @@
     </xs:restriction>
   </xs:simpleType>
 
-  <xs:simpleType name="nameType">
+  <xs:simpleType name="sniType">
     <xs:restriction base="xs:string">
       <xs:enumeration value="HOST_NAME"/>
     </xs:restriction>
