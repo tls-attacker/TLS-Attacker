@@ -521,6 +521,9 @@ public class Config implements Serializable {
     /** If we generate ClientHello with TLS 1.3 cookie extension */
     private Boolean addCookieExtension = false;
 
+    /** Collect handshake messages and send in as few records as possible * */
+    private Boolean sendHandshakeMessagesWithinSingleRecord = false;
+
     /** Default ConnectionID to use, if addConnectionIdExtension is true */
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     @XmlElement(name = "defaultConnectionId")
@@ -4186,5 +4189,14 @@ public class Config implements Serializable {
     public void setDefaultServerSupportedSSL2CipherSuites(
             List<SSL2CipherSuite> defaultServerSupportedSSL2CipherSuites) {
         this.defaultServerSupportedSSL2CipherSuites = defaultServerSupportedSSL2CipherSuites;
+    }
+
+    public Boolean getSendHandshakeMessagesWithinSingleRecord() {
+        return sendHandshakeMessagesWithinSingleRecord;
+    }
+
+    public void setSendHandshakeMessagesWithinSingleRecord(
+            Boolean sendHandshakeMessagesWithinSingleRecord) {
+        this.sendHandshakeMessagesWithinSingleRecord = sendHandshakeMessagesWithinSingleRecord;
     }
 }
