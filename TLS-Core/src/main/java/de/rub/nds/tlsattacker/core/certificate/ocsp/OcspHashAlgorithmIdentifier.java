@@ -10,27 +10,17 @@ package de.rub.nds.tlsattacker.core.certificate.ocsp;
 
 import de.rub.nds.asn1.handler.EmptyHandler;
 import de.rub.nds.asn1.handler.Handler;
-import de.rub.nds.asn1.model.Asn1Sequence;
-import java.util.List;
+import de.rub.nds.x509attacker.chooser.X509Chooser;
+import de.rub.nds.x509attacker.x509.base.AlgorithmIdentifier;
 
-public class OcspRequestList extends Asn1Sequence<OcspChooser> {
+public class OcspHashAlgorithmIdentifier extends AlgorithmIdentifier {
 
-    private List<OcspRequest> requestList;
-
-    public OcspRequestList(String identifier) {
+    public OcspHashAlgorithmIdentifier(String identifier) {
         super(identifier);
     }
 
-    public List<OcspRequest> getRequestList() {
-        return requestList;
-    }
-
-    public void setRequestList(List<OcspRequest> requestList) {
-        this.requestList = requestList;
-    }
-
     @Override
-    public Handler getHandler(OcspChooser chooser) {
+    public Handler getHandler(X509Chooser chooser) {
         return new EmptyHandler(chooser);
     }
 }

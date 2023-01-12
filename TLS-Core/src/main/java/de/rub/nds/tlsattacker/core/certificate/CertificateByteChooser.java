@@ -15,7 +15,7 @@ import de.rub.nds.x509attacker.filesystem.CertificateIo;
 import de.rub.nds.x509attacker.x509.base.X509CertificateChain;
 import de.rub.nds.x509attacker.x509.base.publickey.DsaPublicKey;
 import de.rub.nds.x509attacker.x509.base.publickey.RsaPublicKey;
-import de.rub.nds.x509attacker.x509.base.publickey.X509PublicKey;
+import de.rub.nds.x509attacker.x509.base.publickey.X509PublicKeyContent;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.PrivateKey;
@@ -259,12 +259,17 @@ public class CertificateByteChooser {
     }
 
     private Boolean isBadKeySize(CertificateKeyPair keyPair, Chooser chooser) {
-        X509PublicKey publicKey =
+        X509PublicKeyContent publicKey =
                 CertificateAnalyzer.getPublicKey(keyPair.getX509CertificateChain().getLeaf());
         CertificateKeyType leafCertificateKeyType = keyPair.getLeafCertificateKeyType();
         if (leafCertificateKeyType == CertificateKeyType.RSA) {
             if (publicKey instanceof RsaPublicKey) {
-                return ((RsaPublicKey) publicKey).getModulus().getValue().getValue().bitLength()
+                return ((RsaPublicKey) publicKey)
+                                .getRsaPublicKeyContentSequence()
+                                .getModulus()
+                                .getValue()
+                                .getValue()
+                                .bitLength()
                         != chooser.getConfig().getPreferredCertRsaKeySize();
             } else {
                 throw new RuntimeException("RSA certitficate without RSA public key");

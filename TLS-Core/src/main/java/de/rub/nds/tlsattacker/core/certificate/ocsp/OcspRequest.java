@@ -8,9 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.certificate.ocsp;
 
+import de.rub.nds.asn1.handler.EmptyHandler;
+import de.rub.nds.asn1.handler.Handler;
 import de.rub.nds.asn1.model.Asn1Sequence;
 
-public class OcspRequest extends Asn1Sequence {
+public class OcspRequest extends Asn1Sequence<OcspChooser> {
 
     private OcspCertId certId;
 
@@ -36,5 +38,10 @@ public class OcspRequest extends Asn1Sequence {
 
     public void setSingleRequestExtensions(OcspRequestExtensions singleRequestExtensions) {
         this.singleRequestExtensions = singleRequestExtensions;
+    }
+
+    @Override
+    public Handler getHandler(OcspChooser chooser) {
+        return new EmptyHandler(chooser);
     }
 }

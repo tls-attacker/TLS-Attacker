@@ -8,12 +8,14 @@
  */
 package de.rub.nds.tlsattacker.core.certificate.ocsp;
 
+import de.rub.nds.asn1.handler.EmptyHandler;
+import de.rub.nds.asn1.handler.Handler;
 import de.rub.nds.asn1.model.Asn1Integer;
 import de.rub.nds.asn1.model.Asn1PrimitiveOctetString;
 import de.rub.nds.asn1.model.Asn1Sequence;
 import de.rub.nds.x509attacker.x509.base.AlgorithmIdentifier;
 
-public class OcspCertId extends Asn1Sequence {
+public class OcspCertId extends Asn1Sequence<OcspChooser> {
 
     private AlgorithmIdentifier algorithmIdentifier;
     private Asn1PrimitiveOctetString issuerNameHash;
@@ -22,7 +24,7 @@ public class OcspCertId extends Asn1Sequence {
 
     public OcspCertId(String identifier) {
         super(identifier);
-        algorithmIdentifier = new AlgorithmIdentifier("hashAlgorithm");
+        algorithmIdentifier = new OcspHashAlgorithmIdentifier("hashAlgorithm");
         issuerNameHash = new Asn1PrimitiveOctetString("issuerNameHash");
         issuerKeyHash = new Asn1PrimitiveOctetString("issuerKeyHash");
         serialNumber = new Asn1Integer("serialNumber");
@@ -58,5 +60,10 @@ public class OcspCertId extends Asn1Sequence {
 
     public void setSerialNumber(Asn1Integer serialNumber) {
         this.serialNumber = serialNumber;
+    }
+
+    @Override
+    public Handler getHandler(OcspChooser chooser) {
+        return new EmptyHandler(chooser);
     }
 }

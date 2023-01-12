@@ -23,7 +23,7 @@ import de.rub.nds.x509attacker.x509.base.publickey.PublicKeyBitString;
 import de.rub.nds.x509attacker.x509.base.publickey.RsaPublicKey;
 import de.rub.nds.x509attacker.x509.base.publickey.X25519PublicKey;
 import de.rub.nds.x509attacker.x509.base.publickey.X448PublicKey;
-import de.rub.nds.x509attacker.x509.base.publickey.X509PublicKey;
+import de.rub.nds.x509attacker.x509.base.publickey.X509PublicKeyContent;
 import de.rub.nds.x509attacker.x509.base.publickey.parameters.PublicParameters;
 import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
@@ -36,7 +36,7 @@ public class CertificateAnalyzer {
 
     public static boolean isEllipticCurveCertificate(X509Certificate certificate) {
 
-        X509PublicKey publicKey = getPublicKey(certificate);
+        X509PublicKeyContent publicKey = getPublicKey(certificate);
         if (publicKey != null) {
             return publicKey.isEllipticCurve();
         } else {
@@ -46,7 +46,7 @@ public class CertificateAnalyzer {
     }
 
     public static CertificateKeyType getCertificateKeyType(X509Certificate certificate) {
-        X509PublicKey publicKey = getPublicKey(certificate);
+        X509PublicKeyContent publicKey = getPublicKey(certificate);
         if (publicKey == null) {
             return CertificateKeyType.NONE;
         }
@@ -86,7 +86,7 @@ public class CertificateAnalyzer {
 
     public static NamedGroup getEllipticCurveGroup(X509Certificate certificate) {
         if (isEllipticCurveCertificate(certificate)) {
-            X509PublicKey publicKey = getPublicKey(certificate);
+            X509PublicKeyContent publicKey = getPublicKey(certificate);
             if (publicKey instanceof X25519PublicKey) {
                 return NamedGroup.ECDH_X25519;
             } else if (publicKey instanceof X448PublicKey) {
@@ -99,14 +99,15 @@ public class CertificateAnalyzer {
         }
     }
 
-    public static X509PublicKey getPublicKey(X509Certificate certificate) {
+    public static X509PublicKeyContent getPublicKey(X509Certificate certificate) {
         Optional<TbsCertificate> optionalTbs = Optional.ofNullable(certificate.getTbsCertificate());
         Optional<SubjectPublicKeyInfo> optionalPublicKeyType =
                 optionalTbs.map(TbsCertificate::getSubjectPublicKeyInfo);
         Optional<PublicKeyBitString> publicKeyString =
                 optionalPublicKeyType.map(SubjectPublicKeyInfo::getSubjectPublicKeyBitString);
-        var publicKeyOptional = publicKeyString.map(PublicKeyBitString::getPublicKey);
-        return (X509PublicKey) publicKeyOptional.get();
+        Optional<X509PublicKeyContent> publicKeyContentOptional =
+                publicKeyString.map(PublicKeyBitString::getX509PublicKeyContent);
+        return (X509PublicKeyContent) publicKeyContentOptional.get();
     }
 
     public static PublicParameters getPublicParameters(X509Certificate certificate) {

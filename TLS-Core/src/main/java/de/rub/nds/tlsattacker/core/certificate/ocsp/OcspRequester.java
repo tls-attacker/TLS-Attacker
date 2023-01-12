@@ -33,7 +33,7 @@ public class OcspRequester {
     private OcspResponse performRequest(OcspRequestMessage requestMessage, String requestMethod) {
         try {
 
-            byte[] encodedRequest = requestMessage.getGenericSerializer().serialize();
+            byte[] encodedRequest = requestMessage.getSerializer().serialize();
             HttpURLConnection httpCon = null;
             if (requestMethod.equals("POST")) {
                 httpCon = (HttpURLConnection) serverUrl.openConnection();
@@ -58,7 +58,7 @@ public class OcspRequester {
             OcspResponse ocspResponse;
             if (status == 200) {
                 ocspResponse = new OcspResponse("ocspResponse");
-                ocspResponse.getParser().parse(httpCon.getInputStream());
+                ocspResponse.getParser(new OcspChooser()).parse(httpCon.getInputStream());
             } else {
                 throw new RuntimeException(
                         "Response not successful: Received status code " + status);

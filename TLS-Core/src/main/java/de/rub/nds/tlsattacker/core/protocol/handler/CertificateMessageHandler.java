@@ -27,7 +27,7 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.x509attacker.filesystem.CertificateIo;
 import de.rub.nds.x509attacker.x509.base.X509Certificate;
 import de.rub.nds.x509attacker.x509.base.X509CertificateChain;
-import de.rub.nds.x509attacker.x509.base.publickey.X509PublicKey;
+import de.rub.nds.x509attacker.x509.base.publickey.X509PublicKeyContent;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -146,7 +146,7 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
     }
 
     public void adjustLeafPublicKey(X509Certificate leafCertificate) {
-        X509PublicKey publicKey = CertificateAnalyzer.getPublicKey(leafCertificate);
+        X509PublicKeyContent publicKey = CertificateAnalyzer.getPublicKey(leafCertificate);
         if (tlsContext.getSelectedProtocolVersion() != ProtocolVersion.TLS13) {
             adjustPublicKey(tlsContext, ConnectionEndType.CLIENT, publicKey);
         }
@@ -191,7 +191,7 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
     }
 
     private void adjustPublicKey(
-            TlsContext context, ConnectionEndType connectionEnd, X509PublicKey publicKey) {
+            TlsContext context, ConnectionEndType connectionEnd, X509PublicKeyContent publicKey) {
         throw new UnsupportedOperationException("not yet implemented");
     }
 

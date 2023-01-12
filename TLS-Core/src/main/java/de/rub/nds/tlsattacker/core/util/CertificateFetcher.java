@@ -23,7 +23,7 @@ import de.rub.nds.tlsattacker.core.workflow.action.ReceiveTillAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.x509attacker.x509.base.X509CertificateChain;
-import de.rub.nds.x509attacker.x509.base.publickey.X509PublicKey;
+import de.rub.nds.x509attacker.x509.base.publickey.X509PublicKeyContent;
 import java.io.IOException;
 import java.security.cert.CertificateParsingException;
 import org.apache.logging.log4j.LogManager;
@@ -33,7 +33,7 @@ public class CertificateFetcher {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public static X509PublicKey fetchServerPublicKey(Config config)
+    public static X509PublicKeyContent fetchServerPublicKey(Config config)
             throws CertificateParsingException {
 
         X509CertificateChain fetchedServerCertificateChain = fetchServerCertificateChain(config);

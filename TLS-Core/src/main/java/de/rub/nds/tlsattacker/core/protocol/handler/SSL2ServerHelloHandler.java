@@ -18,7 +18,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
 import de.rub.nds.x509attacker.filesystem.CertificateIo;
 import de.rub.nds.x509attacker.x509.base.X509CertificateChain;
 import de.rub.nds.x509attacker.x509.base.publickey.RsaPublicKey;
-import de.rub.nds.x509attacker.x509.base.publickey.X509PublicKey;
+import de.rub.nds.x509attacker.x509.base.publickey.X509PublicKeyContent;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
@@ -75,12 +75,21 @@ public class SSL2ServerHelloHandler extends ProtocolMessageHandler<SSL2ServerHel
                 && CertificateAnalyzer.getCertificateKeyType(certificateChain.getLeaf())
                         == CertificateKeyType.RSA) {
             LOGGER.debug("Adjusting RSA PublicKey");
-            X509PublicKey publicKey = CertificateAnalyzer.getPublicKey(certificateChain.getLeaf());
+            X509PublicKeyContent publicKey =
+                    CertificateAnalyzer.getPublicKey(certificateChain.getLeaf());
             if (publicKey instanceof RsaPublicKey) {
                 tlsContext.setServerRSAModulus(
-                        ((RsaPublicKey) publicKey).getModulus().getValue().getValue());
+                        ((RsaPublicKey) publicKey)
+                                .getRsaPublicKeyContentSequence()
+                                .getModulus()
+                                .getValue()
+                                .getValue());
                 tlsContext.setServerRSAPublicKey(
-                        ((RsaPublicKey) publicKey).getPublicExponent().getValue().getValue());
+                        ((RsaPublicKey) publicKey)
+                                .getRsaPublicKeyContentSequence()
+                                .getPublicExponent()
+                                .getValue()
+                                .getValue());
             } else {
                 LOGGER.warn("Not an RSA key. Not adjusting...");
             }

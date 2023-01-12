@@ -23,7 +23,7 @@ import de.rub.nds.tlsattacker.core.workflow.action.*;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.x509attacker.x509.base.publickey.RsaPublicKey;
-import de.rub.nds.x509attacker.x509.base.publickey.X509PublicKey;
+import de.rub.nds.x509attacker.x509.base.publickey.X509PublicKeyContent;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -1003,13 +1003,14 @@ public class WorkflowConfigurationFactory {
                 case RSA_EXPORT:
                     // only send rsa server key exchange message if public key size is bigger than
                     // 512 bits
-                    X509PublicKey publicKey =
+                    X509PublicKeyContent publicKey =
                             CertificateAnalyzer.getPublicKey(
                                     config.getDefaultExplicitCertificateKeyPair()
                                             .getX509CertificateChain()
                                             .getLeaf());
                     if (publicKey instanceof RsaPublicKey) {
                         if (((RsaPublicKey) publicKey)
+                                        .getRsaPublicKeyContentSequence()
                                         .getModulus()
                                         .getValue()
                                         .getValue()
