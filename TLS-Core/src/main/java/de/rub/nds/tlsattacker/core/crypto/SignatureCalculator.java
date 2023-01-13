@@ -97,21 +97,21 @@ public class SignatureCalculator {
 
     public static byte[] generateRSASignature(Chooser chooser, byte[] toBeSigned, SignatureAndHashAlgorithm algorithm)
         throws CryptoException {
-        RSAPrivateKey key = KeyGenerator.getRSAPrivateKey(chooser);
+        RSAPrivateKey key = null;
         return generateSignature(key, toBeSigned, algorithm, chooser.getContext().getTlsContext().getBadSecureRandom(),
             chooser);
     }
 
     public static byte[] generateDSASignature(Chooser chooser, byte[] toBeSigned, SignatureAndHashAlgorithm algorithm)
         throws CryptoException {
-        DSAPrivateKey key = KeyGenerator.getDSAPrivateKey(chooser);
+        DSAPrivateKey key = null;
         return generateSignature(key, toBeSigned, algorithm, chooser.getContext().getTlsContext().getBadSecureRandom(),
             chooser);
     }
 
     public static byte[] generateECDSASignature(Chooser chooser, byte[] toBeSigned, SignatureAndHashAlgorithm algorithm)
         throws CryptoException {
-        ECPrivateKey key = KeyGenerator.getECPrivateKey(chooser);
+        ECPrivateKey key = null;
         return generateSignature(key, toBeSigned, algorithm, chooser.getContext().getTlsContext().getBadSecureRandom(),
             chooser);
     }
@@ -123,14 +123,14 @@ public class SignatureCalculator {
 
     private static byte[] generateGost01Signature(Chooser chooser, byte[] toBeSigned,
         SignatureAndHashAlgorithm algorithm) throws CryptoException {
-        BCECGOST3410PrivateKey privateKey = KeyGenerator.getGost01PrivateKey(chooser);
+        BCECGOST3410PrivateKey privateKey = null;
         return generateSignature(privateKey, toBeSigned, algorithm,
             chooser.getContext().getTlsContext().getBadSecureRandom(), chooser);
     }
 
     private static byte[] generateGost12Signature(Chooser chooser, byte[] toBeSigned,
         SignatureAndHashAlgorithm algorithm) throws CryptoException {
-        BCECGOST3410_2012PrivateKey privateKey = KeyGenerator.getGost12PrivateKey(chooser);
+        BCECGOST3410_2012PrivateKey privateKey = null;
         return generateSignature(privateKey, toBeSigned, algorithm,
             chooser.getContext().getTlsContext().getBadSecureRandom(), chooser);
     }

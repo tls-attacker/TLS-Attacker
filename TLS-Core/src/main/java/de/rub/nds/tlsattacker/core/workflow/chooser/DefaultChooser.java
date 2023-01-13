@@ -630,15 +630,6 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public NamedGroup getEcCertificateCurve() {
-        if (context.getTlsContext().getEcCertificateCurve() != null) {
-            return context.getTlsContext().getEcCertificateCurve();
-        } else {
-            return config.getDefaultEcCertificateCurve();
-        }
-    }
-
-    @Override
     public Point getClientEcPublicKey() {
         if (context.getTlsContext().getClientEcPublicKey() != null) {
             return context.getTlsContext().getClientEcPublicKey();

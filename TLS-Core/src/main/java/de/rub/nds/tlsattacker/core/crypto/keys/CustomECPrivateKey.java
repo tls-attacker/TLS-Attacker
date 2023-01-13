@@ -85,28 +85,6 @@ public class CustomECPrivateKey extends CustomPrivateKey implements ECPrivateKey
     }
 
     @Override
-    public void adjustInContext(TlsContext tlsContext, ConnectionEndType ownerOfKey) {
-        LOGGER.debug("Adjusting EC private key in context");
-        if (null == ownerOfKey) {
-            throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
-        } else {
-            switch (ownerOfKey) {
-                case CLIENT:
-                    tlsContext.setClientEcPrivateKey(privateKey);
-                    tlsContext.setEcCertificateCurve(group);
-                    break;
-                case SERVER:
-                    tlsContext.setServerEcPrivateKey(privateKey);
-                    tlsContext.setEcCertificateCurve(group);
-                    break;
-                default:
-                    throw new IllegalArgumentException(
-                            "Owner of Key " + ownerOfKey + " is not supported");
-            }
-        }
-    }
-
-    @Override
     public void adjustInConfig(Config config, ConnectionEndType ownerOfKey) {
         if (null == ownerOfKey) {
             throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");

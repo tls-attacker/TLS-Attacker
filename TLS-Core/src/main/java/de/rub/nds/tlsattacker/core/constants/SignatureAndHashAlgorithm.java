@@ -8,10 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
-import com.google.common.collect.Sets;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
-import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayInputStream;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.Signature;
@@ -335,90 +333,6 @@ public enum SignatureAndHashAlgorithm {
             default:
                 return suitedForSigningTls13Messages();
         }
-    }
-
-    public static SignatureAndHashAlgorithm forCertificateKeyPair(
-            CertificateKeyType leafCertificateKeyType,
-            Chooser chooser,
-            boolean selectingCertificate) {
-        Sets.SetView<SignatureAndHashAlgorithm> intersection =
-                Sets.intersection(
-                        Sets.newHashSet(chooser.getClientSupportedSignatureAndHashAlgorithms()),
-                        Sets.newHashSet(chooser.getServerSupportedSignatureAndHashAlgorithms()));
-        List<SignatureAndHashAlgorithm> algorithms = new ArrayList<>(intersection);
-        List<SignatureAndHashAlgorithm> clientPreferredHash = new ArrayList<>(algorithms);
-        clientPreferredHash.removeIf(
-                i -> i.getHashAlgorithm() != chooser.getConfig().getPreferredHashAlgorithm());
-        algorithms.addAll(0, clientPreferredHash);
-
-        if (chooser.getSelectedProtocolVersion().isTLS13()) {
-            algorithms.removeIf(i -> i.toString().contains("RSA_SHA"));
-        }
-
-        SignatureAndHashAlgorithm sigHashAlgo = null;
-
-        boolean found = false;
-        for (SignatureAndHashAlgorithm i : algorithms) {
-            SignatureAlgorithm sig = i.getSignatureAlgorithm();
-
-            switch (leafCertificateKeyType) {
-                case ECDH:
-                case ECDH_ECDSA:
-                    if (sig == SignatureAlgorithm.ECDSA) {
-                        found = true;
-                        sigHashAlgo = i;
-                    }
-                    break;
-                case RSA:
-                    if (sig.toString().contains("RSA")) {
-                        found = true;
-                        sigHashAlgo = i;
-                    }
-                    break;
-                case DSA:
-                    if (sig == SignatureAlgorithm.DSA) {
-                        found = true;
-                        sigHashAlgo = i;
-                    }
-                    break;
-                case GOST01:
-                    if (sig == SignatureAlgorithm.GOSTR34102001) {
-                        found = true;
-                        sigHashAlgo = SignatureAndHashAlgorithm.GOSTR34102001_GOSTR3411;
-                    }
-                    break;
-                case GOST12:
-                    if (sig == SignatureAlgorithm.GOSTR34102012_256
-                            || sig == SignatureAlgorithm.GOSTR34102012_512) {
-                        found = true;
-                        // if (keyPair.getLeafPublicKeyNamedGroup().isis512bit2012()) {
-                        //    sigHashAlgo =
-                        //            SignatureAndHashAlgorithm.GOSTR34102012_512_GOSTR34112012_512;
-                        // } else {
-                        //    sigHashAlgo =
-                        //           SignatureAndHashAlgorithm.GOSTR34102012_256_GOSTR34112012_256;
-                        // }
-                        throw new UnsupportedOperationException("Currently not supported");
-                    }
-                    break;
-                default:
-                    // we skip the default case to find an algorithm in the next
-                    // iteration
-                    ;
-            }
-            if (found) {
-                break;
-            }
-        }
-
-        if (sigHashAlgo == null && !selectingCertificate) {
-            LOGGER.warn(
-                    "Could not auto select SignatureAndHashAlgorithm for certPublicKeyType={}, setting default value",
-                    leafCertificateKeyType);
-            sigHashAlgo = SignatureAndHashAlgorithm.RSA_SHA256;
-        }
-
-        return sigHashAlgo;
     }
 
     public boolean isGrease() {

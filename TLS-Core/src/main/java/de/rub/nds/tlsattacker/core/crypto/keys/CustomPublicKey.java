@@ -17,9 +17,7 @@ import java.io.Serializable;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class CustomPublicKey implements Serializable {
-
-    public abstract void adjustInContext(TlsContext tlsContext, ConnectionEndType ownerOfKey);
-
+    
     public abstract void adjustInConfig(Config config, ConnectionEndType ownerOfKey);
 
     public abstract int keySize();

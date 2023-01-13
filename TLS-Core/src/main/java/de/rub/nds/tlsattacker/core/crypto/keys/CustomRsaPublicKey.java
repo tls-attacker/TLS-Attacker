@@ -39,28 +39,6 @@ public class CustomRsaPublicKey extends CustomPublicKey implements RSAPublicKey 
     }
 
     @Override
-    public void adjustInContext(TlsContext tlsContext, ConnectionEndType ownerOfKey) {
-        LOGGER.debug("Adjusting RSA public key in tlsContext");
-        if (null == ownerOfKey) {
-            throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
-        } else {
-            switch (ownerOfKey) {
-                case CLIENT:
-                    tlsContext.setClientRSAPublicKey(publicExponent);
-                    tlsContext.setClientRsaModulus(modulus);
-                    break;
-                case SERVER:
-                    tlsContext.setServerRSAPublicKey(publicExponent);
-                    tlsContext.setServerRSAModulus(modulus);
-                    break;
-                default:
-                    throw new IllegalArgumentException(
-                            "Owner of Key " + ownerOfKey + " is not supported");
-            }
-        }
-    }
-
-    @Override
     public BigInteger getPublicExponent() {
         return publicExponent;
     }

@@ -1,27 +1,25 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol;
 
-import de.rub.nds.tlsattacker.core.layer.data.Handler;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.data.Handler;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public abstract class ProtocolMessageHandler<MessageT extends ProtocolMessage> implements Handler<MessageT> {
+public abstract class ProtocolMessageHandler<MessageT extends ProtocolMessage>
+        implements Handler<MessageT> {
 
     protected static final Logger LOGGER = LogManager.getLogger();
-    /**
-     * context
-     */
+    /** context */
     protected final TlsContext tlsContext;
 
     public ProtocolMessageHandler(TlsContext tlsContext) {
@@ -34,6 +32,7 @@ public abstract class ProtocolMessageHandler<MessageT extends ProtocolMessage> i
      * @param message
      */
     public void prepareAfterParse(MessageT message) {
+        // TODO This should not be here
     }
 
     public void updateDigest(ProtocolMessage message, boolean goingToBeSent) {
@@ -48,7 +47,9 @@ public abstract class ProtocolMessageHandler<MessageT extends ProtocolMessage> i
 
         if (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS()) {
             DtlsHandshakeMessageFragment fragment =
-                tlsContext.getDtlsFragmentLayer().wrapInSingleFragment(tlsContext, handshakeMessage, goingToBeSent);
+                    tlsContext
+                            .getDtlsFragmentLayer()
+                            .wrapInSingleFragment(tlsContext, handshakeMessage, goingToBeSent);
             tlsContext.getDigest().append(fragment.getCompleteResultingMessage().getValue());
         } else {
             tlsContext.getDigest().append(message.getCompleteResultingMessage().getValue());
@@ -56,7 +57,13 @@ public abstract class ProtocolMessageHandler<MessageT extends ProtocolMessage> i
         LOGGER.debug("Included in digest: " + message.toCompactString());
     }
 
-    public void adjustContextAfterSerialize(MessageT message) {
-    }
+    public void adjustContextAfterSerialize(MessageT message) {}
 
+    public void adjustContextBeforeParse(MessageT message) {}
+
+    public void adjustContextAfterParse(MessageT message) {}
+
+    public void adjustContextAfterPrepare(MessageT message) {}
+
+    public void adjustContextBeforePrepare(MessageT message) {}
 }

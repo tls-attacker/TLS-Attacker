@@ -5,6 +5,8 @@
 
   <xs:element name="accessModificationFilter" type="accessModificationFilter"/>
 
+  <xs:element name="algorithmIdentifier" type="algorithmIdentifier"/>
+
   <xs:element name="asn1Any" type="asn1Any"/>
 
   <xs:element name="asn1Boolean" type="asn1Boolean"/>
@@ -83,6 +85,8 @@
 
   <xs:element name="byteXorModification" type="byteXorModification"/>
 
+  <xs:element name="certificateSignatureAlgorithmIdentifier" type="certificateSignatureAlgorithmIdentifier"/>
+
   <xs:element name="config" type="config"/>
 
   <xs:element name="integerAddModification" type="integerAddModification"/>
@@ -119,7 +123,13 @@
 
   <xs:element name="modifiableString" type="modifiableString"/>
 
+  <xs:element name="name" type="name"/>
+
   <xs:element name="point" type="point"/>
+
+  <xs:element name="publicKeyBitString" type="publicKeyBitString"/>
+
+  <xs:element name="relativeDistinguishedName" type="relativeDistinguishedName"/>
 
   <xs:element name="selectableChoice" type="selectableChoice"/>
 
@@ -128,6 +138,18 @@
   <xs:element name="stringExplicitValueModification" type="stringExplicitValueModification"/>
 
   <xs:element name="stringPrependValueModification" type="stringPrependValueModification"/>
+
+  <xs:element name="subjectPublicKeyAlgorithmIdentifier" type="subjectPublicKeyAlgorithmIdentifier"/>
+
+  <xs:element name="subjectPublicKeyInfo" type="subjectPublicKeyInfo"/>
+
+  <xs:element name="tbsCertificate" type="tbsCertificate"/>
+
+  <xs:element name="time" type="time"/>
+
+  <xs:element name="validity" type="validity"/>
+
+  <xs:element name="version" type="version"/>
 
   <xs:element name="x509Certificate" type="x509Certificate"/>
 
@@ -706,7 +728,7 @@
     <xs:complexContent>
       <xs:extension base="asn1Sequence">
         <xs:sequence>
-          <xs:element name="tbsCertificate" type="tbsCertificate" minOccurs="0"/>
+          <xs:element ref="tbsCertificate" minOccurs="0"/>
           <xs:element name="signatureAlgorithm" type="certificateSignatureAlgorithmIdentifier" minOccurs="0"/>
           <xs:element name="signature" type="asn1PrimitiveBitString" minOccurs="0"/>
         </xs:sequence>
@@ -778,13 +800,13 @@
     <xs:complexContent>
       <xs:extension base="asn1Sequence">
         <xs:sequence>
-          <xs:element name="version" type="version" minOccurs="0"/>
+          <xs:element ref="version" minOccurs="0"/>
           <xs:element name="serialNumber" type="asn1Integer" minOccurs="0"/>
           <xs:element name="signature" type="certificateSignatureAlgorithmIdentifier" minOccurs="0"/>
           <xs:element name="issuer" type="name" minOccurs="0"/>
-          <xs:element name="validity" type="validity" minOccurs="0"/>
+          <xs:element ref="validity" minOccurs="0"/>
           <xs:element name="subject" type="name" minOccurs="0"/>
-          <xs:element name="subjectPublicKeyInfo" type="subjectPublicKeyInfo" minOccurs="0"/>
+          <xs:element ref="subjectPublicKeyInfo" minOccurs="0"/>
           <xs:element name="issuerUniqueID" type="asn1PrimitiveBitString" minOccurs="0"/>
           <xs:element name="subjectUniqueID" type="asn1PrimitiveBitString" minOccurs="0"/>
           <xs:element name="extensionExplicit" type="asn1Explicit" minOccurs="0"/>

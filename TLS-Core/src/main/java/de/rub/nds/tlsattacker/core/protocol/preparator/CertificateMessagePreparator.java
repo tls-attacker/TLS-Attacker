@@ -9,8 +9,6 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.certificate.CertificateByteChooser;
-import de.rub.nds.tlsattacker.core.certificate.CertificateKeyPair;
 import de.rub.nds.tlsattacker.core.constants.CertificateType;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
@@ -18,12 +16,14 @@ import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificatePair;
-import de.rub.nds.tlsattacker.core.protocol.preparator.cert.CertificatePairPreparator;
+import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificateEntry;
+import de.rub.nds.tlsattacker.core.protocol.preparator.cert.CertificateEntryPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.cert.CertificatePairSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import de.rub.nds.x509attacker.x509.X509CertificateChainBuidler;
 import de.rub.nds.x509attacker.x509.base.X509Certificate;
+import de.rub.nds.x509attacker.x509.base.X509CertificateChain;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.LinkedList;
@@ -81,9 +81,9 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
                     // TODO this needs to be adjusted for different curves
                     asn1OutputStream.writeObject(
                             new DLSequence(
-                                    new ASN1Encodable[] {
+                                    new ASN1Encodable[]{
                                         new DLSequence(
-                                                new ASN1Encodable[] {
+                                                new ASN1Encodable[]{
                                                     new ASN1ObjectIdentifier("1.2.840.10045.2.1"),
                                                     new ASN1ObjectIdentifier("1.2.840.10045.3.1.7")
                                                 }),
@@ -104,26 +104,36 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
                 break;
 
             case X509:
-                List<CertificatePair> pairList = msg.getCertificateList();
-                if (pairList == null) {
-                    // There is no certificate list in the message, this means we need to auto
-                    // create one
-                    CertificateKeyPair selectedCertificateKeyPair =
-                            CertificateByteChooser.getInstance().chooseCertificateKeyPair(chooser);
-                    pairList = new LinkedList<>();
-                    for (X509Certificate certificate :
-                            selectedCertificateKeyPair
-                                    .getX509CertificateChain()
-                                    .getCertificateList()) {
-                        pairList.add(new CertificatePair(certificate));
+                List<CertificateEntry> entryList = msg.getCertificateEntryList();
+                if (chooser.getConfig().getDefaultExplicitCertificateChain() == null) {
+                    if (entryList == null) {
+                        if (chooser.getConfig().getAutoAdjustCertificate()) {
+                            throw new UnsupportedOperationException("Auto adjusting certificate config not supported yet");
+                        }
+                        // There is no certificate list in the message, this means we need to auto
+                        // create one
+                        X509CertificateChainBuidler builder = new X509CertificateChainBuidler();
+                        X509CertificateChain chain = builder.buildChain(chooser.getConfig().getCertificateChainConfig());
+
+                        entryList = new LinkedList<>();
+                        for (X509Certificate certificate : chain.getCertificateList()) {
+                            entryList.add(new CertificateEntry(certificate));
+                        }
+                        msg.setCertificateEntryList(entryList);
                     }
-                    msg.setCertificateList(pairList);
+                    prepareFromEntryList(msg);
+                } else {
+                    for (byte[] certificateBytes : chooser.getConfig().getDefaultExplicitCertificateChain()) {
+                        CertificateEntry entry = new CertificateEntry(certificateBytes);
+                        entryList.add(entry);
+                    }
+                    msg.setCertificateEntryList(entryList);
+                    prepareFromEntryList(msg);
                 }
-                prepareFromPairList(msg);
                 LOGGER.debug(
                         "CertificatesListBytes: "
-                                + ArrayConverter.bytesToHexString(
-                                        msg.getCertificatesListBytes().getValue()));
+                        + ArrayConverter.bytesToHexString(
+                                msg.getCertificatesListBytes().getValue()));
                 break;
 
             default:
@@ -131,13 +141,13 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
         }
     }
 
-    private void prepareFromPairList(CertificateMessage msg) {
+    private void prepareFromEntryList(CertificateMessage msg) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        for (CertificatePair pair : msg.getCertificateList()) {
-            CertificatePairPreparator preparator = new CertificatePairPreparator(chooser, pair);
+        for (CertificateEntry pair : msg.getCertificateEntryList()) {
+            CertificateEntryPreparator preparator = new CertificateEntryPreparator(chooser, pair);
             preparator.prepare();
-            CertificatePairSerializer serializer =
-                    new CertificatePairSerializer(pair, chooser.getSelectedProtocolVersion());
+            CertificatePairSerializer serializer
+                    = new CertificatePairSerializer(pair, chooser.getSelectedProtocolVersion());
             try {
                 stream.write(serializer.serialize());
             } catch (IOException ex) {
@@ -156,7 +166,7 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
         }
         LOGGER.debug(
                 "RequestContext: "
-                        + ArrayConverter.bytesToHexString(msg.getRequestContext().getValue()));
+                + ArrayConverter.bytesToHexString(msg.getRequestContext().getValue()));
     }
 
     private void prepareRequestContextLength(CertificateMessage msg) {

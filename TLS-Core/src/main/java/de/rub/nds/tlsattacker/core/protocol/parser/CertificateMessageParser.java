@@ -12,8 +12,8 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificatePair;
-import de.rub.nds.tlsattacker.core.protocol.parser.cert.CertificatePairParser;
+import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificateEntry;
+import de.rub.nds.tlsattacker.core.protocol.parser.cert.CertificateEntryParser;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.LinkedList;
@@ -103,15 +103,15 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
      * @param msg Message to write in
      */
     private void parseCertificateList(CertificateMessage msg) {
-        List<CertificatePair> pairList = new LinkedList<>();
+        List<CertificateEntry> entryList = new LinkedList<>();
         ByteArrayInputStream innerStream =
                 new ByteArrayInputStream(msg.getCertificatesListBytes().getValue());
         while (innerStream.available() > 0) {
-            CertificatePair pair = new CertificatePair();
-            CertificatePairParser parser = new CertificatePairParser(innerStream, tlsContext);
-            parser.parse(pair);
-            pairList.add(pair);
+            CertificateEntry entry = new CertificateEntry();
+            CertificateEntryParser parser = new CertificateEntryParser(innerStream, tlsContext);
+            parser.parse(entry);
+            entryList.add(entry);
         }
-        msg.setCertificateList(pairList);
+        msg.setCertificateEntryList(entryList);
     }
 }

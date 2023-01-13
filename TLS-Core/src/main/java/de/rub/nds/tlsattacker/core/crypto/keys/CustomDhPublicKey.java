@@ -52,30 +52,6 @@ public class CustomDhPublicKey extends CustomPublicKey implements DHPublicKey {
     }
 
     @Override
-    public void adjustInContext(TlsContext tlsContext, ConnectionEndType ownerOfKey) {
-        LOGGER.debug("Adjusting DH public key in tlsContext");
-        if (null == ownerOfKey) {
-            throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
-        } else {
-            switch (ownerOfKey) {
-                case CLIENT:
-                    tlsContext.setClientDhGenerator(generator);
-                    tlsContext.setClientDhModulus(modulus);
-                    tlsContext.setClientDhPublicKey(publicKey);
-                    break;
-                case SERVER:
-                    tlsContext.setServerDhGenerator(generator);
-                    tlsContext.setServerDhModulus(modulus);
-                    tlsContext.setServerDhPublicKey(publicKey);
-                    break;
-                default:
-                    throw new IllegalArgumentException(
-                            "Owner of Key " + ownerOfKey + " is not supported");
-            }
-        }
-    }
-
-    @Override
     public BigInteger getY() {
         return publicKey;
     }

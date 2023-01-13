@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificatePair;
+import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificateEntry;
 import java.io.ByteArrayInputStream;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -40,7 +40,7 @@ public class CertificatePairParserTest {
                         ArrayConverter.hexStringToByteArray("aa")));
     }
 
-    /** Test of testParse method, of class CertificatePairParser */
+    /** Test of testParse method, of class CertificateEntryParser */
     @ParameterizedTest
     @MethodSource("provideTestVectors")
     public void testParse(
@@ -49,10 +49,10 @@ public class CertificatePairParserTest {
             byte[] expectedCertificate,
             int expectedExtensionLength,
             byte[] expectedExtension) {
-        CertificatePairParser parser =
-                new CertificatePairParser(
+        CertificateEntryParser parser =
+                new CertificateEntryParser(
                         new ByteArrayInputStream(providedCertPair), new TlsContext());
-        CertificatePair pair = new CertificatePair();
+        CertificateEntry pair = new CertificateEntry();
         parser.parse(pair);
         assertEquals(expectedCertificateLength, (int) pair.getCertificateLength().getValue());
         assertEquals(expectedExtensionLength, (int) pair.getExtensionsLength().getValue());

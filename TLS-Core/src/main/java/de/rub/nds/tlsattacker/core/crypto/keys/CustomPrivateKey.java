@@ -18,7 +18,5 @@ import java.security.PrivateKey;
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class CustomPrivateKey implements PrivateKey {
 
-    public abstract void adjustInContext(TlsContext tlsContext, ConnectionEndType ownerOfKey);
-
     public abstract void adjustInConfig(Config config, ConnectionEndType ownerOfKey);
 }

@@ -63,28 +63,6 @@ public class CustomRSAPrivateKey extends CustomPrivateKey implements RSAPrivateK
     }
 
     @Override
-    public void adjustInContext(TlsContext tlsContext, ConnectionEndType ownerOfKey) {
-        LOGGER.debug("Adjusting RSA private key in context");
-        if (null == ownerOfKey) {
-            throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
-        } else {
-            switch (ownerOfKey) {
-                case CLIENT:
-                    tlsContext.setClientRSAPrivateKey(privateExponent);
-                    tlsContext.setClientRsaModulus(modulus);
-                    break;
-                case SERVER:
-                    tlsContext.setServerRSAPrivateKey(privateExponent);
-                    tlsContext.setServerRSAModulus(modulus);
-                    break;
-                default:
-                    throw new IllegalArgumentException(
-                            "Owner of Key " + ownerOfKey + " is not supported");
-            }
-        }
-    }
-
-    @Override
     public void adjustInConfig(Config config, ConnectionEndType ownerOfKey) {
         if (null == ownerOfKey) {
             throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");

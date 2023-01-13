@@ -17,7 +17,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.CertificateMessageHandler;
-import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificatePair;
+import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificateEntry;
 import de.rub.nds.tlsattacker.core.protocol.parser.CertificateMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.CertificateMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateMessageSerializer;
@@ -47,7 +47,7 @@ public class CertificateMessage extends HandshakeMessage {
     @HoldsModifiableVariable
     @XmlElementWrapper
     @XmlElement(name = "certificatesList")
-    private List<CertificatePair> certificateList;
+    private List<CertificateEntry> certificateEntryList;
 
     public CertificateMessage() {
         super(HandshakeMessageType.CERTIFICATE);
@@ -153,12 +153,12 @@ public class CertificateMessage extends HandshakeMessage {
         return new CertificateMessageHandler(tlsContext);
     }
 
-    public List<CertificatePair> getCertificateList() {
-        return certificateList;
+    public List<CertificateEntry> getCertificateEntryList() {
+        return certificateEntryList;
     }
 
-    public void setCertificateList(List<CertificatePair> certificatesList) {
-        this.certificateList = certificatesList;
+    public void setCertificateEntryList(List<CertificateEntry> certificateEntryList) {
+        this.certificateEntryList = certificateEntryList;
     }
 
     @Override
@@ -168,7 +168,7 @@ public class CertificateMessage extends HandshakeMessage {
         hash = 41 * hash + Objects.hashCode(this.requestContext);
         hash = 41 * hash + Objects.hashCode(this.certificatesListLength);
         hash = 41 * hash + Objects.hashCode(this.certificatesListBytes);
-        hash = 41 * hash + Objects.hashCode(this.certificateList);
+        hash = 41 * hash + Objects.hashCode(this.certificateEntryList);
         return hash;
     }
 
@@ -196,6 +196,6 @@ public class CertificateMessage extends HandshakeMessage {
         if (!Objects.equals(this.certificatesListBytes, other.certificatesListBytes)) {
             return false;
         }
-        return Objects.equals(this.certificateList, other.certificateList);
+        return Objects.equals(this.certificateEntryList, other.certificateEntryList);
     }
 }

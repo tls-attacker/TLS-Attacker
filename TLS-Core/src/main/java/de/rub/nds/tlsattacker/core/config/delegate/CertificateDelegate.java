@@ -12,7 +12,6 @@ import static org.apache.commons.lang3.StringUtils.join;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
-import de.rub.nds.tlsattacker.core.certificate.CertificateKeyPair;
 import de.rub.nds.tlsattacker.core.certificate.PemUtil;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.crypto.keys.CustomPrivateKey;
@@ -22,13 +21,14 @@ import de.rub.nds.tlsattacker.core.util.JKSLoader;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.util.KeystoreHandler;
 import de.rub.nds.x509attacker.filesystem.CertificateIo;
-import de.rub.nds.x509attacker.x509.base.X509CertificateChain;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.*;
 import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import org.bouncycastle.crypto.tls.Certificate;
@@ -54,7 +54,8 @@ public class CertificateDelegate extends Delegate {
             description = "Alias of the key to be used from Java Key Store (JKS)")
     private String alias = null;
 
-    public CertificateDelegate() {}
+    public CertificateDelegate() {
+    }
 
     public String getKeystore() {
         return keystore;
@@ -108,8 +109,8 @@ public class CertificateDelegate extends Delegate {
             LOGGER.debug("Loading private key");
             try {
                 privateKey = PemUtil.readPrivateKey(new File(key));
-                CustomPrivateKey customPrivateKey =
-                        CertificateUtils.parseCustomPrivateKey(privateKey);
+                CustomPrivateKey customPrivateKey
+                        = CertificateUtils.parseCustomPrivateKey(privateKey);
                 customPrivateKey.adjustInConfig(config, ConnectionEndType.CLIENT);
                 customPrivateKey.adjustInConfig(config, ConnectionEndType.SERVER);
 
@@ -119,14 +120,12 @@ public class CertificateDelegate extends Delegate {
         }
         if (certificate != null) {
             if (privateKey == null) {
-                throw new RuntimeException("Certificate provided without private key");
+                LOGGER.warn("Certificate provided without chain");
             }
-            LOGGER.debug("Loading certificate");
+            LOGGER.debug("Loading certificate chain");
             try {
-                X509CertificateChain chain = CertificateIo.readPemChain(new File(certificate));
-                CertificateKeyPair keyPair =
-                        new CertificateKeyPair(chain, (CustomPrivateKey) privateKey);
-                adjustKeyPairInConfig(keyPair, config);
+                List<byte[]> byteList = CertificateIo.readPemByteArrayList(new FileInputStream(new File(certificate)));
+                config.setDefaultExplicitCertificateChain(byteList);
             } catch (Exception ex) {
                 LOGGER.warn("Could not read certificate", ex);
             }
@@ -142,8 +141,8 @@ public class CertificateDelegate extends Delegate {
         } else if (!missingParameters.isEmpty()) {
             throw new ParameterException(
                     "The following parameters are required for loading a"
-                            + " keystore: "
-                            + join(mandatoryParameters.keySet()));
+                    + " keystore: "
+                    + join(mandatoryParameters.keySet()));
         }
         try {
             ConnectionEndType type;
@@ -163,12 +162,12 @@ public class CertificateDelegate extends Delegate {
             KeyStore store = KeystoreHandler.loadKeyStore(keystore, password);
             Certificate cert = JKSLoader.loadTLSCertificate(store, alias);
             privateKey = (PrivateKey) store.getKey(alias, password.toCharArray());
-            CertificateKeyPair pair =
-                    new CertificateKeyPair(
-                            CertificateIo.convert(cert),
-                            CertificateUtils.parseCustomPrivateKey(privateKey));
-            adjustKeyPairInConfig(pair, config);
-            config.setAutoSelectCertificate(false);
+            CertificateUtils.parseCustomPrivateKey(privateKey).adjustInConfig(config, type);
+            List<byte[]> byteList = new LinkedList<>();
+            for (org.bouncycastle.asn1.x509.Certificate tempCert : cert.getCertificateList()) {
+                byteList.add(tempCert.getEncoded());
+            }
+            config.setDefaultExplicitCertificateChain(byteList);
         } catch (UnrecoverableKeyException
                 | KeyStoreException
                 | IOException
@@ -176,11 +175,5 @@ public class CertificateDelegate extends Delegate {
                 | CertificateException ex) {
             throw new ConfigurationException("Could not load private Key from Keystore", ex);
         }
-    }
-
-    public void adjustKeyPairInConfig(CertificateKeyPair keyPair, Config config) {
-        config.setDefaultExplicitCertificateKeyPair(keyPair);
-        config.setAutoSelectCertificate(false);
-        // TODO maybe we need to adjust the public here to and write the private key to the config
     }
 }

@@ -173,8 +173,6 @@ public abstract class Chooser {
 
     public abstract NamedGroup getSelectedNamedGroup();
 
-    public abstract NamedGroup getEcCertificateCurve();
-
     public abstract Point getClientEcPublicKey();
 
     public abstract Point getServerEcPublicKey();

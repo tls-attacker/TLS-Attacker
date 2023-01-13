@@ -14,14 +14,22 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
+import de.rub.nds.x509attacker.chooser.X509Chooser;
+import de.rub.nds.x509attacker.config.X509CertificateConfig;
+import de.rub.nds.x509attacker.context.X509Context;
 import de.rub.nds.x509attacker.x509.base.X509Certificate;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
+import java.io.ByteArrayInputStream;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-public class CertificatePair extends ModifiableVariableHolder {
+public class CertificateEntry extends ModifiableVariableHolder {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private List<ExtensionMessage> extensionList;
 
@@ -38,11 +46,38 @@ public class CertificatePair extends ModifiableVariableHolder {
     private ModifiableInteger extensionsLength;
 
     private X509Certificate x509certificate;
+    /** If explicit certifcate bytes should be used, they can be set here */
+    private byte[] x509CerticiateConfig;
 
-    public CertificatePair() {}
+    public CertificateEntry() {}
 
-    public CertificatePair(X509Certificate x509Certificate) {
+    public CertificateEntry(byte[] x509CertificateConfig) {
+        this.x509CerticiateConfig = x509CertificateConfig;
+        // Try to set the x509 certificate
+        try {
+            X509Chooser chooser =
+                    new X509Chooser(
+                            new X509CertificateConfig(),
+                            new X509Context()); // TODO getParser should only use a context
+            x509certificate = new X509Certificate("certificate");
+            x509certificate
+                    .getParser(chooser)
+                    .parse(new ByteArrayInputStream(x509CerticiateConfig));
+        } catch (Exception E) {
+            LOGGER.warn("Could not parse a valid certificate from provided certificate bytes");
+        }
+    }
+
+    public CertificateEntry(X509Certificate x509Certificate) {
         this.x509certificate = x509Certificate;
+    }
+
+    public byte[] getX509CerticiateConfig() {
+        return x509CerticiateConfig;
+    }
+
+    public void setX509CerticiateConfig(byte[] x509CerticiateConfig) {
+        this.x509CerticiateConfig = x509CerticiateConfig;
     }
 
     public X509Certificate getX509certificate() {

@@ -47,32 +47,6 @@ public class CustomDsaPublicKey extends CustomPublicKey implements DSAPublicKey 
         publicKey = null;
     }
 
-    @Override
-    public void adjustInContext(TlsContext tlsContext, ConnectionEndType ownerOfKey) {
-        LOGGER.debug("Adjusting DSA public key in context");
-        if (null == ownerOfKey) {
-            throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
-        } else {
-            switch (ownerOfKey) {
-                case CLIENT:
-                    tlsContext.setClientDsaGenerator(dsaG);
-                    tlsContext.setClientDsaPrimeP(dsaP);
-                    tlsContext.setClientDsaPrimeQ(dsaQ);
-                    tlsContext.setClientDsaPublicKey(publicKey);
-                    break;
-                case SERVER:
-                    tlsContext.setServerDsaGenerator(dsaG);
-                    tlsContext.setServerDsaPrimeP(dsaP);
-                    tlsContext.setServerDsaPrimeQ(dsaQ);
-                    tlsContext.setServerDsaPublicKey(publicKey);
-                    break;
-                default:
-                    throw new IllegalArgumentException(
-                            "Owner of Key " + ownerOfKey + " is not supported");
-            }
-        }
-    }
-
     public BigInteger getDsaP() {
         return dsaP;
     }

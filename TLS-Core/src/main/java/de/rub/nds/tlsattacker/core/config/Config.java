@@ -11,16 +11,12 @@ package de.rub.nds.tlsattacker.core.config;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.IllegalStringAdapter;
 import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
-import de.rub.nds.tlsattacker.core.certificate.CertificateKeyPair;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
 import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
-import de.rub.nds.tlsattacker.core.crypto.keys.CustomPrivateKey;
-import de.rub.nds.tlsattacker.core.crypto.keys.CustomRSAPrivateKey;
-import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.layer.constant.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
@@ -33,8 +29,7 @@ import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.core.workflow.filter.FilterType;
-import de.rub.nds.x509attacker.filesystem.CertificateIo;
-import de.rub.nds.x509attacker.x509.base.X509CertificateChain;
+import de.rub.nds.x509attacker.config.X509CertificateConfig;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
@@ -46,7 +41,6 @@ import java.io.*;
 import java.lang.reflect.Field;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
-import java.security.PrivateKey;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -97,17 +91,21 @@ public class Config implements Serializable {
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultHandshakeSecret = new byte[32];
 
-    private CertificateKeyType preferredCertificateSignatureType = CertificateKeyType.RSA;
+    /**
+     * If this is non-null, TLS-Attacker will not create its own certificate chain but will simply
+     * send the bytes in the list as the certificates in the chain in the provided order
+     */
+    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
+    private List<byte[]> defaultExplicitCertificateChain = null;
 
-    private NamedGroup preferredCertificateSignatureGroup = NamedGroup.SECP256R1;
+    /**
+     * If set to true, dynamically creates certificates that are fit to use for the current TLS
+     * connection. If set to false, certificates are either generated as specified or the explicit
+     * certificate is used
+     */
+    private Boolean autoAdjustCertificate = true;
 
-    private Boolean autoSelectCertificate = true;
-
-    private CertificateKeyPair defaultExplicitCertificateKeyPair;
-
-    private Boolean autoAdjustSignatureAndHashAlgorithm = true;
-
-    private HashAlgorithm preferredHashAlgorithm = HashAlgorithm.SHA256;
+    private List<X509CertificateConfig> certificateChainConfig;
 
     /** List of filters to apply on workflow traces before serialization. */
     @XmlElement(name = "outputFilter")
@@ -1207,6 +1205,9 @@ public class Config implements Serializable {
     private String keylogFilePath = null;
 
     public Config() {
+        this.certificateChainConfig = new LinkedList<>();
+        certificateChainConfig.add(new X509CertificateConfig());
+        certificateChainConfig.add(new X509CertificateConfig());
         defaultLayerConfiguration = LayerConfiguration.TLS;
         defaultClientConnection = new OutboundConnection("client", 443, "localhost");
         defaultServerConnection = new InboundConnection("server", 443, "localhost");
@@ -1316,28 +1317,33 @@ public class Config implements Serializable {
         pskKeyExchangeModes.add(PskKeyExchangeMode.PSK_KE);
         pskKeyExchangeModes.add(PskKeyExchangeMode.PSK_DHE_KE);
         defaultPskSets = new LinkedList<>();
-        X509CertificateChain chain;
-        try {
-            chain =
-                    CertificateIo.readRawChain(
-                            new ByteArrayInputStream(
-                                    ArrayConverter.hexStringToByteArray(
-                                            "0003970003943082039030820278A003020102020900A650C00794049FCD300D06092A864886F70D01010B0500305C310B30090603550406130241553113301106035504080C0A536F6D652D53746174653121301F060355040A0C18496E7465726E6574205769646769747320507479204C74643115301306035504030C0C544C532D41747461636B65723020170D3137303731333132353331385A180F32313137303631393132353331385A305C310B30090603550406130241553113301106035504080C0A536F6D652D53746174653121301F060355040A0C18496E7465726E6574205769646769747320507479204C74643115301306035504030C0C544C532D41747461636B657230820122300D06092A864886F70D01010105000382010F003082010A0282010100C8820D6C3CE84C8430F6835ABFC7D7A912E1664F44578751F376501A8C68476C3072D919C5D39BD0DBE080E71DB83BD4AB2F2F9BDE3DFFB0080F510A5F6929C196551F2B3C369BE051054C877573195558FD282035934DC86EDAB8D4B1B7F555E5B2FEE7275384A756EF86CB86793B5D1333F0973203CB96966766E655CD2CCCAE1940E4494B8E9FB5279593B75AFD0B378243E51A88F6EB88DEF522A8CD5C6C082286A04269A2879760FCBA45005D7F2672DD228809D47274F0FE0EA5531C2BD95366C05BF69EDC0F3C3189866EDCA0C57ADCCA93250AE78D9EACA0393A95FF9952FC47FB7679DD3803E6A7A6FA771861E3D99E4B551A4084668B111B7EEF7D0203010001A3533051301D0603551D0E04160414E7A92FE5543AEE2FF7592F800AC6E66541E3268B301F0603551D23041830168014E7A92FE5543AEE2FF7592F800AC6E66541E3268B300F0603551D130101FF040530030101FF300D06092A864886F70D01010B050003820101000D5C11E28CF19D1BC17E4FF543695168570AA7DB85B3ECB85405392A0EDAFE4F097EE4685B7285E3D9B869D23257161CA65E20B5E6A585D33DA5CD653AF81243318132C9F64A476EC08BA80486B3E439F765635A7EA8A969B3ABD8650036D74C5FC4A04589E9AC8DC3BE2708743A6CFE3B451E3740F735F156D6DC7FFC8A2C852CD4E397B942461C2FCA884C7AFB7EBEF7918D6AAEF1F0D257E959754C4665779FA0E3253EF2BEDBBD5BE5DA600A0A68E51D2D1C125C4E198669A6BC715E8F3884E9C3EFF39D40838ADA4B1F38313F6286AA395DC6DEA9DAF49396CF12EC47EFA7A0D3882F8B84D9AEEFFB252C6B81A566609605FBFD3F0D17E5B12401492A1A")));
-        } catch (IOException ex) {
-            throw new ConfigurationException("Could not create default config");
-        }
-        PrivateKey key =
-                new CustomRSAPrivateKey(
-                        new BigInteger(
-                                "25311792238044219946174684693224603884785773358330971609415825404567987089738069857630011723336937795827963868604847118759739071441983186580158833210553280838765514351236797316564714837320618887805126341832834827826790060810763662161735652692660340953325435378344445537136408926502767545150207605087601783216982476527090447255508303291994973748877217756699811604529317375418362425978959405980207726316912995165050065189202729278788324244413992973017231054259638764128689366135764356716715140925548909967670376902528818677308871053953559814432449223427664069339511214707847837366043835739060653160903099571514118172541"),
-                        new BigInteger(
-                                "15874858421354831201422373086128612745111153124913833804748747602178280564406425154617488927847142136837462790351481317765255581632968169400556456985418488827925888221598273953686611745401672309465708043217648197631331184971921491765473252248751361737713587292004390571935209364268173007740802648762007661253254661694353602685239350183219876383969245059520622897526828073822681994419744648185400986499062312630392385618231497966730037670361639244062483305891646041343885072158127929403028249239589737831073084456798375448844113695963693837622356344855176327289719518978665114515326513514352049909912072269175924872321"));
-
-        defaultExplicitCertificateKeyPair = new CertificateKeyPair(chain, (CustomPrivateKey) key);
-
         defaultProposedAlpnProtocols = new LinkedList<>();
 
         defaultProposedAlpnProtocols.add(AlpnProtocol.HTTP_2.getConstant());
+    }
+
+    public List<byte[]> getDefaultExplicitCertificateChain() {
+        return defaultExplicitCertificateChain;
+    }
+
+    public void setDefaultExplicitCertificateChain(List<byte[]> defaultExplicitCertificateChain) {
+        this.defaultExplicitCertificateChain = defaultExplicitCertificateChain;
+    }
+
+    public Boolean getAutoAdjustCertificate() {
+        return autoAdjustCertificate;
+    }
+
+    public void setAutoAdjustCertificate(Boolean autoAdjustCertificate) {
+        this.autoAdjustCertificate = autoAdjustCertificate;
+    }
+
+    public List<X509CertificateConfig> getCertificateChainConfig() {
+        return certificateChainConfig;
+    }
+
+    public void setCertificateChainConfig(List<X509CertificateConfig> certificateChainConfig) {
+        this.certificateChainConfig = certificateChainConfig;
     }
 
     public String getDefaultSelectedAlpnProtocol() {
@@ -3538,41 +3544,6 @@ public class Config implements Serializable {
         this.defaultServerDsaGenerator = defaultServerDsaGenerator;
     }
 
-    public Boolean isAutoSelectCertificate() {
-        return autoSelectCertificate;
-    }
-
-    public void setAutoSelectCertificate(Boolean autoSelectCertificate) {
-        this.autoSelectCertificate = autoSelectCertificate;
-    }
-
-    public NamedGroup getPreferredCertificateSignatureGroup() {
-        return preferredCertificateSignatureGroup;
-    }
-
-    public void setPreferredCertificateSignatureGroup(
-            NamedGroup preferredCertificateSignatureGroup) {
-        this.preferredCertificateSignatureGroup = preferredCertificateSignatureGroup;
-    }
-
-    public CertificateKeyType getPreferredCertificateSignatureType() {
-        return preferredCertificateSignatureType;
-    }
-
-    public void setPreferredCertificateSignatureType(
-            CertificateKeyType preferredCertificateSignatureType) {
-        this.preferredCertificateSignatureType = preferredCertificateSignatureType;
-    }
-
-    public CertificateKeyPair getDefaultExplicitCertificateKeyPair() {
-        return defaultExplicitCertificateKeyPair;
-    }
-
-    public void setDefaultExplicitCertificateKeyPair(
-            CertificateKeyPair defaultExplicitCertificateKeyPair) {
-        this.defaultExplicitCertificateKeyPair = defaultExplicitCertificateKeyPair;
-    }
-
     public BigInteger getDefaultClientDsaPrivateKey() {
         return defaultClientDsaPrivateKey;
     }
@@ -3611,23 +3582,6 @@ public class Config implements Serializable {
 
     public void setDefaultClientDsaGenerator(BigInteger defaultClientDsaGenerator) {
         this.defaultClientDsaGenerator = defaultClientDsaGenerator;
-    }
-
-    public Boolean getAutoAdjustSignatureAndHashAlgorithm() {
-        return autoAdjustSignatureAndHashAlgorithm;
-    }
-
-    public void setAutoAdjustSignatureAndHashAlgorithm(
-            Boolean autoAdjustSignatureAndHashAlgorithm) {
-        this.autoAdjustSignatureAndHashAlgorithm = autoAdjustSignatureAndHashAlgorithm;
-    }
-
-    public HashAlgorithm getPreferredHashAlgorithm() {
-        return preferredHashAlgorithm;
-    }
-
-    public void setPreferredHashAlgorithm(HashAlgorithm preferredHashAlgorithm) {
-        this.preferredHashAlgorithm = preferredHashAlgorithm;
     }
 
     public byte[] getDefaultHandshakeSecret() {

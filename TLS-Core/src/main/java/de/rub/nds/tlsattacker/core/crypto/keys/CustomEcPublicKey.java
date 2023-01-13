@@ -76,32 +76,6 @@ public class CustomEcPublicKey extends CustomPublicKey implements ECPublicKey {
     }
 
     @Override
-    public void adjustInContext(TlsContext tlsContext, ConnectionEndType ownerOfKey) {
-        LOGGER.debug("Adjusting EC public key in context");
-        if (null == ownerOfKey) {
-            throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
-        } else {
-            switch (ownerOfKey) {
-                case CLIENT:
-                    tlsContext.setClientEcPublicKey(point);
-                    if (group != null) {
-                        tlsContext.setEcCertificateCurve(group);
-                    }
-                    break;
-                case SERVER:
-                    tlsContext.setServerEcPublicKey(point);
-                    if (group != null) {
-                        tlsContext.setEcCertificateCurve(group);
-                    }
-                    break;
-                default:
-                    throw new IllegalArgumentException(
-                            "Owner of Key " + ownerOfKey + " is not supported");
-            }
-        }
-    }
-
-    @Override
     public ECPoint getW() {
         return new ECPoint(point.getFieldX().getData(), point.getFieldY().getData());
     }
