@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.factory;
 
-import de.rub.nds.tlsattacker.core.certificate.CertificateAnalyzer;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.constants.*;
@@ -22,8 +21,6 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceUtil;
 import de.rub.nds.tlsattacker.core.workflow.action.*;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import de.rub.nds.x509attacker.x509.base.publickey.RsaPublicKey;
-import de.rub.nds.x509attacker.x509.base.publickey.X509PublicKeyContent;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -31,9 +28,7 @@ import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- * Create a WorkflowTrace based on a Config instance.
- */
+/** Create a WorkflowTrace based on a Config instance. */
 public class WorkflowConfigurationFactory {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -117,16 +112,16 @@ public class WorkflowConfigurationFactory {
                 default:
                     throw new ConfigurationException(
                             "This workflow can only be configured for"
-                            + " modes CLIENT and SERVER, but actual mode was "
-                            + mode);
+                                    + " modes CLIENT and SERVER, but actual mode was "
+                                    + mode);
             }
         }
         return con;
     }
 
     /**
-     * Create an empty - or almost empty workflow trace, depending on the
-     * StartTLS flag in the config.
+     * Create an empty - or almost empty workflow trace, depending on the StartTLS flag in the
+     * config.
      *
      * @param connection
      * @return An entry workflow trace
@@ -142,8 +137,7 @@ public class WorkflowConfigurationFactory {
     }
 
     /**
-     * Create a short hello workflow for the default connection end defined in
-     * config.
+     * Create a short hello workflow for the default connection end defined in config.
      *
      * @return A short hello workflow
      */
@@ -253,8 +247,7 @@ public class WorkflowConfigurationFactory {
     }
 
     /**
-     * Create a handshake workflow for the default connection end defined in
-     * config.
+     * Create a handshake workflow for the default connection end defined in config.
      *
      * @return A handshake workflow
      */
@@ -320,8 +313,7 @@ public class WorkflowConfigurationFactory {
     }
 
     /**
-     * Create an extended TLS workflow including an application data and
-     * heartbeat messages.
+     * Create an extended TLS workflow including an application data and heartbeat messages.
      *
      * @param connection
      * @return A full workflow with application messages
@@ -361,17 +353,12 @@ public class WorkflowConfigurationFactory {
         return trace;
     }
 
-    /**
-     * Create a handshake workflow for the default connection end defined in
-     * config.
-     */
+    /** Create a handshake workflow for the default connection end defined in config. */
     private WorkflowTrace createFalseStartWorkflow() {
         return createFalseStartWorkflow(getConnection());
     }
 
-    /**
-     * Create a false start workflow for the given connection end.
-     */
+    /** Create a false start workflow for the given connection end. */
     private WorkflowTrace createFalseStartWorkflow(AliasedConnection connection) {
 
         if (config.getHighestProtocolVersion().isTLS13()) {
@@ -380,8 +367,8 @@ public class WorkflowConfigurationFactory {
         }
 
         WorkflowTrace workflowTrace = this.createHandshakeWorkflow(connection);
-        MessageAction appData
-                = MessageActionFactory.createTLSAction(
+        MessageAction appData =
+                MessageActionFactory.createTLSAction(
                         config, connection, ConnectionEndType.CLIENT, new ApplicationMessage());
 
         // Client CKE, CCS, Fin
@@ -401,15 +388,15 @@ public class WorkflowConfigurationFactory {
     private WorkflowTrace createSsl2HelloWorkflow() {
         AliasedConnection connection = getConnection();
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
-        WorkflowTrace trace
-                = factory.createTlsEntryWorkflowTrace(config.getDefaultClientConnection());
+        WorkflowTrace trace =
+                factory.createTlsEntryWorkflowTrace(config.getDefaultClientConnection());
 
-        MessageAction action
-                = MessageActionFactory.createTLSAction(
+        MessageAction action =
+                MessageActionFactory.createTLSAction(
                         config, connection, ConnectionEndType.CLIENT, new SSL2ClientHelloMessage());
         trace.addTlsAction(action);
-        action
-                = MessageActionFactory.createTLSAction(
+        action =
+                MessageActionFactory.createTLSAction(
                         config, connection, ConnectionEndType.SERVER, new SSL2ServerHelloMessage());
         trace.addTlsAction(action);
         return trace;
@@ -432,9 +419,8 @@ public class WorkflowConfigurationFactory {
     }
 
     /**
-     * Create a resumption workflow for the default connection end defined in
-     * config. This can be used as the follow up to a normal handshake to test
-     * session resumption capabilities.
+     * Create a resumption workflow for the default connection end defined in config. This can be
+     * used as the follow up to a normal handshake to test session resumption capabilities.
      *
      * @return A resumption workflow
      */
@@ -443,9 +429,8 @@ public class WorkflowConfigurationFactory {
     }
 
     /**
-     * Create a resumption workflow for the given connection end. This can be
-     * used as the follow up to a normal handshake to test session resumption
-     * capabilities.
+     * Create a resumption workflow for the given connection end. This can be used as the follow up
+     * to a normal handshake to test session resumption capabilities.
      *
      * @param connection
      * @return A resumption workflow
@@ -526,8 +511,8 @@ public class WorkflowConfigurationFactory {
         WorkflowTrace trace = createHandshakeWorkflow(connection);
         WorkflowTrace renegotiationTrace = createHandshakeWorkflow(connection);
         trace.addTlsAction(new RenegotiationAction());
-        MessageAction action
-                = MessageActionFactory.createTLSAction(
+        MessageAction action =
+                MessageActionFactory.createTLSAction(
                         config, connection, ConnectionEndType.SERVER, new HelloRequestMessage());
         trace.addTlsAction(action);
         for (TlsAction reneAction : renegotiationTrace.getTlsActions()) {
@@ -568,8 +553,8 @@ public class WorkflowConfigurationFactory {
         if (mode != RunningModeType.MITM) {
             throw new ConfigurationException(
                     "This workflow trace can only be created when running"
-                    + " in MITM mode. Actual mode: "
-                    + mode);
+                            + " in MITM mode. Actual mode: "
+                            + mode);
         }
 
         AliasedConnection inboundConnection = config.getDefaultServerConnection();
@@ -590,8 +575,8 @@ public class WorkflowConfigurationFactory {
         WorkflowTrace mitmToServerHandshake = createHandshakeWorkflow(outboundConnection);
 
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
-        WorkflowTrace worklfowTrace
-                = factory.createTlsEntryWorkflowTrace(config.getDefaultClientConnection());
+        WorkflowTrace worklfowTrace =
+                factory.createTlsEntryWorkflowTrace(config.getDefaultClientConnection());
 
         worklfowTrace.addConnection(inboundConnection);
         worklfowTrace.addConnection(outboundConnection);
@@ -599,20 +584,20 @@ public class WorkflowConfigurationFactory {
         worklfowTrace.addTlsActions(mitmToServerHandshake.getTlsActions());
 
         // Forward request client -> server
-        ForwardMessagesAction f
-                = new ForwardMessagesAction(
+        ForwardMessagesAction f =
+                new ForwardMessagesAction(
                         clientToMitmAlias, mitmToServerAlias, new ApplicationMessage());
         worklfowTrace.addTlsAction(f);
 
         // Print client's app data contents
-        PrintLastHandledApplicationDataAction p
-                = new PrintLastHandledApplicationDataAction(clientToMitmAlias);
+        PrintLastHandledApplicationDataAction p =
+                new PrintLastHandledApplicationDataAction(clientToMitmAlias);
         p.setStringEncoding("US-ASCII");
         worklfowTrace.addTlsAction(p);
 
         // Forward response server -> client
-        f
-                = new ForwardMessagesAction(
+        f =
+                new ForwardMessagesAction(
                         mitmToServerAlias, clientToMitmAlias, new ApplicationMessage());
         worklfowTrace.addTlsAction(f);
 
@@ -629,8 +614,8 @@ public class WorkflowConfigurationFactory {
         if (mode != RunningModeType.MITM) {
             throw new ConfigurationException(
                     "This workflow trace can only be created when running"
-                    + " in MITM mode. Actual mode: "
-                    + mode);
+                            + " in MITM mode. Actual mode: "
+                            + mode);
         }
 
         AliasedConnection inboundConnection = config.getDefaultServerConnection();
@@ -648,30 +633,30 @@ public class WorkflowConfigurationFactory {
         LOGGER.debug("Building mitm trace for: " + inboundConnection + ", " + outboundConnection);
 
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
-        WorkflowTrace trace
-                = factory.createTlsEntryWorkflowTrace(config.getDefaultClientConnection());
+        WorkflowTrace trace =
+                factory.createTlsEntryWorkflowTrace(config.getDefaultClientConnection());
 
         trace.addConnection(inboundConnection);
         trace.addConnection(outboundConnection);
 
         // <!-- CH-->
-        ForwardRecordsAction forwardRecordsAction
-                = new ForwardRecordsAction(clientToMitmAlias, mitmToServerAlias);
+        ForwardRecordsAction forwardRecordsAction =
+                new ForwardRecordsAction(clientToMitmAlias, mitmToServerAlias);
         trace.addTlsAction(forwardRecordsAction);
 
         // <!-- SH, Cert, SHD-->
-        ForwardRecordsAction forwardRecordsAction2
-                = new ForwardRecordsAction(mitmToServerAlias, clientToMitmAlias);
+        ForwardRecordsAction forwardRecordsAction2 =
+                new ForwardRecordsAction(mitmToServerAlias, clientToMitmAlias);
         trace.addTlsAction(forwardRecordsAction2);
 
         // <!-- CKE, CCS, Fin -->
-        ForwardRecordsAction forwardRecordsAction3
-                = new ForwardRecordsAction(clientToMitmAlias, mitmToServerAlias);
+        ForwardRecordsAction forwardRecordsAction3 =
+                new ForwardRecordsAction(clientToMitmAlias, mitmToServerAlias);
         trace.addTlsAction(forwardRecordsAction3);
 
         // <!-- CCS, Fin -->
-        ForwardRecordsAction forwardRecordsAction4
-                = new ForwardRecordsAction(mitmToServerAlias, clientToMitmAlias);
+        ForwardRecordsAction forwardRecordsAction4 =
+                new ForwardRecordsAction(mitmToServerAlias, clientToMitmAlias);
         trace.addTlsAction(forwardRecordsAction4);
         return trace;
     }
@@ -688,8 +673,8 @@ public class WorkflowConfigurationFactory {
         }
 
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
-        WorkflowTrace trace
-                = factory.createTlsEntryWorkflowTrace(config.getDefaultClientConnection());
+        WorkflowTrace trace =
+                factory.createTlsEntryWorkflowTrace(config.getDefaultClientConnection());
 
         List<ProtocolMessage> clientHelloMessages = new LinkedList<>();
         List<ProtocolMessage> serverMessages = new LinkedList<>();
@@ -741,7 +726,7 @@ public class WorkflowConfigurationFactory {
         }
         if (!zeroRtt
                 && (Objects.equals(config.getTls13BackwardsCompatibilityMode(), Boolean.TRUE)
-                || connection.getLocalConnectionEndType() == ConnectionEndType.SERVER)) {
+                        || connection.getLocalConnectionEndType() == ConnectionEndType.SERVER)) {
             clientMessages.add(ccsClient);
         }
         serverMessages.add(encExtMsg);
@@ -767,37 +752,40 @@ public class WorkflowConfigurationFactory {
         // Remove extensions that are only required in the second handshake
         HelloMessage initialHello;
         if (ourConnection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
-            initialHello
-                    = (HelloMessage) WorkflowTraceUtil.getFirstSendMessage(
-                            HandshakeMessageType.CLIENT_HELLO, trace);
-            EarlyDataExtensionMessage earlyDataExtension
-                    = initialHello.getExtension(EarlyDataExtensionMessage.class);
+            initialHello =
+                    (HelloMessage)
+                            WorkflowTraceUtil.getFirstSendMessage(
+                                    HandshakeMessageType.CLIENT_HELLO, trace);
+            EarlyDataExtensionMessage earlyDataExtension =
+                    initialHello.getExtension(EarlyDataExtensionMessage.class);
             if (initialHello.getExtensions() != null) {
                 initialHello.getExtensions().remove(earlyDataExtension);
             }
         } else {
-            initialHello
-                    = (HelloMessage) WorkflowTraceUtil.getFirstSendMessage(
-                            HandshakeMessageType.SERVER_HELLO, trace);
-            EncryptedExtensionsMessage encryptedExtensionsMessage
-                    = (EncryptedExtensionsMessage) WorkflowTraceUtil.getFirstSendMessage(
-                            HandshakeMessageType.ENCRYPTED_EXTENSIONS, trace);
+            initialHello =
+                    (HelloMessage)
+                            WorkflowTraceUtil.getFirstSendMessage(
+                                    HandshakeMessageType.SERVER_HELLO, trace);
+            EncryptedExtensionsMessage encryptedExtensionsMessage =
+                    (EncryptedExtensionsMessage)
+                            WorkflowTraceUtil.getFirstSendMessage(
+                                    HandshakeMessageType.ENCRYPTED_EXTENSIONS, trace);
             if (encryptedExtensionsMessage != null
                     && encryptedExtensionsMessage.getExtensions() != null) {
-                EarlyDataExtensionMessage earlyDataExtension
-                        = encryptedExtensionsMessage.getExtension(EarlyDataExtensionMessage.class);
+                EarlyDataExtensionMessage earlyDataExtension =
+                        encryptedExtensionsMessage.getExtension(EarlyDataExtensionMessage.class);
                 encryptedExtensionsMessage.getExtensions().remove(earlyDataExtension);
             }
         }
 
         if (initialHello.getExtensions() != null) {
-            PreSharedKeyExtensionMessage pskExtension
-                    = initialHello.getExtension(PreSharedKeyExtensionMessage.class);
+            PreSharedKeyExtensionMessage pskExtension =
+                    initialHello.getExtension(PreSharedKeyExtensionMessage.class);
             initialHello.getExtensions().remove(pskExtension);
         }
 
-        MessageAction newSessionTicketAction
-                = MessageActionFactory.createTLSAction(
+        MessageAction newSessionTicketAction =
+                MessageActionFactory.createTLSAction(
                         config,
                         ourConnection,
                         ConnectionEndType.SERVER,
@@ -819,22 +807,20 @@ public class WorkflowConfigurationFactory {
     /**
      * A simple synchronizing proxy for RSA KE.
      *
-     * <p>
-     * Synchronizes the secrets between all parties and forwards first round of
-     * exchanged application data messages.
+     * <p>Synchronizes the secrets between all parties and forwards first round of exchanged
+     * application data messages.
      *
-     * <p>
-     * Works only for RSA KE ciphers. Extended Master Secret (and possibly other
-     * extensions) will brake it. So per default, all extensions are removed and
-     * all cipher suites except RSA suites are removed, too.
+     * <p>Works only for RSA KE ciphers. Extended Master Secret (and possibly other extensions) will
+     * brake it. So per default, all extensions are removed and all cipher suites except RSA suites
+     * are removed, too.
      */
     private WorkflowTrace createSyncProxyWorkflow() {
 
         if (mode != RunningModeType.MITM) {
             throw new ConfigurationException(
                     "This workflow trace can only be created when running"
-                    + " in MITM mode. Actual mode: "
-                    + mode);
+                            + " in MITM mode. Actual mode: "
+                            + mode);
         }
 
         // client -> mitm
@@ -850,13 +836,13 @@ public class WorkflowConfigurationFactory {
 
         LOGGER.info(
                 "Building synchronizing proxy trace for:\n"
-                + inboundConnection.toCompactString()
-                + ", "
-                + outboundConnection.toCompactString());
+                        + inboundConnection.toCompactString()
+                        + ", "
+                        + outboundConnection.toCompactString());
 
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
-        WorkflowTrace trace
-                = factory.createTlsEntryWorkflowTrace(config.getDefaultClientConnection());
+        WorkflowTrace trace =
+                factory.createTlsEntryWorkflowTrace(config.getDefaultClientConnection());
 
         trace.addConnection(inboundConnection);
         trace.addConnection(outboundConnection);
@@ -972,14 +958,14 @@ public class WorkflowConfigurationFactory {
                 default:
                     LOGGER.warn(
                             "Unsupported key exchange algorithm: "
-                            + algorithm
-                            + ", not creating ClientKeyExchange Message");
+                                    + algorithm
+                                    + ", not creating ClientKeyExchange Message");
             }
         } else {
             LOGGER.warn(
                     "Unsupported key exchange algorithm: "
-                    + algorithm
-                    + ", not creating ClientKeyExchange Message");
+                            + algorithm
+                            + ", not creating ClientKeyExchange Message");
         }
         return null;
     }
@@ -1015,9 +1001,9 @@ public class WorkflowConfigurationFactory {
                     // only send rsa server key exchange message if public key size is bigger than
                     // 512 bits
                     if (config.getDefaultExplicitCertificateChain() != null) {
-                        //Parse explicit certificate to check size
+                        // Parse explicit certificate to check size
                     } else {
-                        //Check config for key and size
+                        // Check config for key and size
                     }
                     if (1 == 1) {
                         return null;
@@ -1027,14 +1013,14 @@ public class WorkflowConfigurationFactory {
                 default:
                     LOGGER.warn(
                             "Unsupported key exchange algorithm: "
-                            + algorithm
-                            + ", not creating ServerKeyExchange Message");
+                                    + algorithm
+                                    + ", not creating ServerKeyExchange Message");
             }
         } else {
             LOGGER.warn(
                     "Unsupported key exchange algorithm: "
-                    + algorithm
-                    + ", not creating ServerKeyExchange Message");
+                            + algorithm
+                            + ", not creating ServerKeyExchange Message");
         }
 
         return null;
@@ -1042,8 +1028,8 @@ public class WorkflowConfigurationFactory {
 
     public void addClientKeyExchangeMessage(List<ProtocolMessage> messages) {
         CipherSuite cs = config.getDefaultSelectedCipherSuite();
-        ClientKeyExchangeMessage message
-                = createClientKeyExchangeMessage(AlgorithmResolver.getKeyExchangeAlgorithm(cs));
+        ClientKeyExchangeMessage message =
+                createClientKeyExchangeMessage(AlgorithmResolver.getKeyExchangeAlgorithm(cs));
         if (message != null) {
             messages.add(message);
         }
@@ -1051,8 +1037,8 @@ public class WorkflowConfigurationFactory {
 
     public void addServerKeyExchangeMessage(List<ProtocolMessage> messages) {
         CipherSuite cs = config.getDefaultSelectedCipherSuite();
-        ServerKeyExchangeMessage message
-                = createServerKeyExchangeMessage(AlgorithmResolver.getKeyExchangeAlgorithm(cs));
+        ServerKeyExchangeMessage message =
+                createServerKeyExchangeMessage(AlgorithmResolver.getKeyExchangeAlgorithm(cs));
         if (message != null) {
             messages.add(message);
         }
@@ -1097,8 +1083,7 @@ public class WorkflowConfigurationFactory {
     }
 
     /**
-     * Create a dynamic hello workflow for the default connection end defined in
-     * config.
+     * Create a dynamic hello workflow for the default connection end defined in config.
      *
      * @return A dynamic hello workflow
      */
@@ -1177,8 +1162,7 @@ public class WorkflowConfigurationFactory {
     }
 
     /**
-     * Create a dynamic handshake workflow for the default connection end
-     * defined in config.
+     * Create a dynamic handshake workflow for the default connection end defined in config.
      *
      * @return A dynamic handshake workflow
      */

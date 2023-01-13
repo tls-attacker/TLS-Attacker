@@ -81,9 +81,9 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
                     // TODO this needs to be adjusted for different curves
                     asn1OutputStream.writeObject(
                             new DLSequence(
-                                    new ASN1Encodable[]{
+                                    new ASN1Encodable[] {
                                         new DLSequence(
-                                                new ASN1Encodable[]{
+                                                new ASN1Encodable[] {
                                                     new ASN1ObjectIdentifier("1.2.840.10045.2.1"),
                                                     new ASN1ObjectIdentifier("1.2.840.10045.3.1.7")
                                                 }),
@@ -108,12 +108,14 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
                 if (chooser.getConfig().getDefaultExplicitCertificateChain() == null) {
                     if (entryList == null) {
                         if (chooser.getConfig().getAutoAdjustCertificate()) {
-                            throw new UnsupportedOperationException("Auto adjusting certificate config not supported yet");
+                            throw new UnsupportedOperationException(
+                                    "Auto adjusting certificate config not supported yet");
                         }
                         // There is no certificate list in the message, this means we need to auto
                         // create one
                         X509CertificateChainBuidler builder = new X509CertificateChainBuidler();
-                        X509CertificateChain chain = builder.buildChain(chooser.getConfig().getCertificateChainConfig());
+                        X509CertificateChain chain =
+                                builder.buildChain(chooser.getConfig().getCertificateChainConfig());
 
                         entryList = new LinkedList<>();
                         for (X509Certificate certificate : chain.getCertificateList()) {
@@ -123,7 +125,8 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
                     }
                     prepareFromEntryList(msg);
                 } else {
-                    for (byte[] certificateBytes : chooser.getConfig().getDefaultExplicitCertificateChain()) {
+                    for (byte[] certificateBytes :
+                            chooser.getConfig().getDefaultExplicitCertificateChain()) {
                         CertificateEntry entry = new CertificateEntry(certificateBytes);
                         entryList.add(entry);
                     }
@@ -132,8 +135,8 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
                 }
                 LOGGER.debug(
                         "CertificatesListBytes: "
-                        + ArrayConverter.bytesToHexString(
-                                msg.getCertificatesListBytes().getValue()));
+                                + ArrayConverter.bytesToHexString(
+                                        msg.getCertificatesListBytes().getValue()));
                 break;
 
             default:
@@ -146,8 +149,8 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
         for (CertificateEntry pair : msg.getCertificateEntryList()) {
             CertificateEntryPreparator preparator = new CertificateEntryPreparator(chooser, pair);
             preparator.prepare();
-            CertificatePairSerializer serializer
-                    = new CertificatePairSerializer(pair, chooser.getSelectedProtocolVersion());
+            CertificatePairSerializer serializer =
+                    new CertificatePairSerializer(pair, chooser.getSelectedProtocolVersion());
             try {
                 stream.write(serializer.serialize());
             } catch (IOException ex) {
@@ -166,7 +169,7 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
         }
         LOGGER.debug(
                 "RequestContext: "
-                + ArrayConverter.bytesToHexString(msg.getRequestContext().getValue()));
+                        + ArrayConverter.bytesToHexString(msg.getRequestContext().getValue()));
     }
 
     private void prepareRequestContextLength(CertificateMessage msg) {

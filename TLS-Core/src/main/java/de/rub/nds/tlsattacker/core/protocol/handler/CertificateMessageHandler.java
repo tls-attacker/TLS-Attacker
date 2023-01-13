@@ -51,8 +51,8 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
                 throw new UnsupportedOperationException("We do not support OpenPGP keys");
             case RAW_PUBLIC_KEY:
                 LOGGER.debug("Adjusting context for RAW PUBLIC KEY certificate message");
-                try (ASN1InputStream asn1Stream
-                        = new ASN1InputStream(message.getCertificatesListBytes().getValue())) {
+                try (ASN1InputStream asn1Stream =
+                        new ASN1InputStream(message.getCertificatesListBytes().getValue())) {
                     // TODO Temporary parsing, we need to redo this once
                     // x509/asn1 attacker is integrated
                     DLSequence dlSeq = (DLSequence) asn1Stream.readObject();
@@ -60,8 +60,8 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
                     NamedGroup group;
                     ASN1ObjectIdentifier keyType = (ASN1ObjectIdentifier) identifier.getObjectAt(0);
                     if (keyType.getId().equals("1.2.840.10045.2.1")) {
-                        ASN1ObjectIdentifier curveType
-                                = (ASN1ObjectIdentifier) identifier.getObjectAt(1);
+                        ASN1ObjectIdentifier curveType =
+                                (ASN1ObjectIdentifier) identifier.getObjectAt(1);
                         if (curveType.getId().equals("1.2.840.10045.3.1.7")) {
                             group = NamedGroup.SECP256R1;
                         } else {
@@ -70,8 +70,8 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
                         }
                         DERBitString publicKey = (DERBitString) dlSeq.getObjectAt(1);
                         byte[] pointBytes = publicKey.getBytes();
-                        Point publicKeyPoint
-                                = PointFormatter.formatFromByteArray(group, pointBytes);
+                        Point publicKeyPoint =
+                                PointFormatter.formatFromByteArray(group, pointBytes);
                         if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.SERVER) {
                             // TODO: this needs to be a new field in the context
                             tlsContext.setServerEcPublicKey(publicKeyPoint);
@@ -129,5 +129,4 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
     public void adjustContextBeforeParse(CertificateMessage message) {
         tlsContext.setX509Context(new X509Context());
     }
-
 }
