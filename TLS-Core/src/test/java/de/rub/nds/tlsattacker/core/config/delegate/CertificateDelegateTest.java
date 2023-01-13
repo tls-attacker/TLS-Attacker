@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -135,10 +135,10 @@ public class CertificateDelegateTest extends AbstractDelegateTest<CertificateDel
                 args[3], delegate.getPassword(), "Password parameter gets not parsed correctly");
         assertEquals(args[5], delegate.getAlias(), "Alias parameter gets not parsed correctly");
         Config config = Config.createConfig();
-        config.setDefaultExplicitCertificateKeyPair(null);
+        config.setDefaultExplicitCertificateChain(null);
         delegate.applyDelegate(config);
         assertNotNull(
-                config.getDefaultExplicitCertificateKeyPair(), "Certificate could not be loaded");
+                config.getDefaultExplicitCertificateChain(), "Certificate could not be loaded");
     }
 
     @Test
@@ -153,7 +153,7 @@ public class CertificateDelegateTest extends AbstractDelegateTest<CertificateDel
                 args[1], delegate.getPassword(), "Password parameter gets not parsed correctly");
         assertEquals(args[3], delegate.getAlias(), "Alias parameter gets not parsed correctly");
         Config config = Config.createConfig();
-        config.setDefaultExplicitCertificateKeyPair(null);
+        config.setDefaultExplicitCertificateChain(null);
 
         ParameterException exception =
                 assertThrows(ParameterException.class, () -> delegate.applyDelegate(config));
