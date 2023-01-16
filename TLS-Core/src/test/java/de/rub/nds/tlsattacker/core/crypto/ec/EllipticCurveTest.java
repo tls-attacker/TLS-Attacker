@@ -8,6 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.crypto.ec;
 
+import de.rub.nds.protocol.crypto.ec.CurveFactory;
+import de.rub.nds.protocol.crypto.ec.Point;
+import de.rub.nds.protocol.crypto.ec.EllipticCurveOverF2m;
+import de.rub.nds.protocol.crypto.ec.EllipticCurve;
 import static org.junit.jupiter.api.Assertions.*;
 
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;

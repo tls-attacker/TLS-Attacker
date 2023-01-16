@@ -32,8 +32,7 @@ public class EcPointFormatExtensionHandlerTest
         handler.adjustTLSExtensionContext(msg);
         assertEquals(2, context.getClientPointFormatsList().size());
         assertTrue(context.getClientPointFormatsList().contains(ECPointFormat.UNCOMPRESSED));
-        assertTrue(
-                context.getClientPointFormatsList()
+        assertTrue(context.getClientPointFormatsList()
                         .contains(ECPointFormat.ANSIX962_COMPRESSED_PRIME));
     }
 

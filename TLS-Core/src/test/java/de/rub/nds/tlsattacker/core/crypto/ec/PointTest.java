@@ -8,6 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.crypto.ec;
 
+import de.rub.nds.protocol.crypto.ec.Point;
+import de.rub.nds.protocol.crypto.ec.FieldElementFp;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 

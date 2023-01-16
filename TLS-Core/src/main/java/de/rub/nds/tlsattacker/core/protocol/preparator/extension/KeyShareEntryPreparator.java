@@ -10,11 +10,11 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
 import de.rub.nds.tlsattacker.core.constants.Bits;
 import de.rub.nds.tlsattacker.core.crypto.KeyShareCalculator;
-import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
-import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
-import de.rub.nds.tlsattacker.core.crypto.ec.Point;
+import de.rub.nds.protocol.crypto.ec.EllipticCurve;
+import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
@@ -54,7 +54,7 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
     }
 
     private void preparePWDKeyShare() throws CryptoException {
-        EllipticCurve curve = CurveFactory.getCurve(entry.getGroupConfig());
+        EllipticCurve curve = ((NamedEllipticCurveParameters)entry.getGroupConfig().getGroupParameters()).getCurve();
         Point passwordElement = PWDComputations.computePasswordElement(chooser, curve);
         PWDComputations.PWDKeyMaterial keyMaterial =
             PWDComputations.generateKeyMaterial(curve, passwordElement, chooser);

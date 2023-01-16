@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.crypto.ec;
 
+import de.rub.nds.protocol.crypto.ec.FieldElementF2m;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.math.BigInteger;

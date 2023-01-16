@@ -11,11 +11,10 @@ package de.rub.nds.tlsattacker.core.tokenbinding;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.BadRandom;
 import de.rub.nds.tlsattacker.core.constants.*;
-import de.rub.nds.tlsattacker.core.crypto.ECCUtilsBCWrapper;
-import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
-import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
-import de.rub.nds.tlsattacker.core.crypto.ec.Point;
-import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
+import de.rub.nds.protocol.crypto.ec.EllipticCurve;
+import de.rub.nds.protocol.crypto.ec.EllipticCurveSECP256R1;
+import de.rub.nds.protocol.crypto.ec.Point;
+import de.rub.nds.protocol.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessagePreparator;
@@ -54,7 +53,7 @@ public class TokenBindingMessagePreparator extends ProtocolMessagePreparator<Tok
                 chooser.getConfig().getDefaultTokenBindingKeyParameters().get(0).getValue());
         if (chooser.getConfig().getDefaultTokenBindingKeyParameters().get(0)
                 == TokenBindingKeyParameters.ECDSAP256) {
-            EllipticCurve curve = CurveFactory.getCurve(NamedGroup.SECP256R1);
+            EllipticCurve curve = new EllipticCurveSECP256R1();
             BigInteger privateKey = chooser.getConfig().getDefaultTokenBindingEcPrivateKey();
             LOGGER.debug("Using private Key:" + privateKey);
             Point publicKey = curve.mult(privateKey, curve.getBasePoint());
@@ -96,24 +95,6 @@ public class TokenBindingMessagePreparator extends ProtocolMessagePreparator<Tok
         message.setSignatureLength(message.getSignature().getValue().length);
         serializer = new TokenBindingMessageSerializer(message);
         message.setTokenbindingsLength(serializer.serializeBinding().length);
-    }
-
-    private ECDomainParameters generateEcParameters() {
-        NamedGroup[] groups = new NamedGroup[] {NamedGroup.SECP256R1};
-        ECPointFormat[] formats = new ECPointFormat[] {ECPointFormat.UNCOMPRESSED};
-        InputStream is =
-                new ByteArrayInputStream(
-                        ArrayConverter.concatenate(
-                                new byte[] {EllipticCurveType.NAMED_CURVE.getValue()},
-                                NamedGroup.SECP256R1.getValue()));
-        ECDomainParameters ecParams;
-        try {
-            ecParams = ECCUtilsBCWrapper.readECParameters(groups, formats, is);
-        } catch (IOException ex) {
-            throw new PreparationException("Failed to generate EC domain parameters", ex);
-        }
-
-        return ecParams;
     }
 
     private byte[] generateToBeSigned() {

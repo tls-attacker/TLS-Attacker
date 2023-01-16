@@ -11,12 +11,12 @@ package de.rub.nds.tlsattacker.core.config;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.IllegalStringAdapter;
 import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
+import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.*;
-import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
-import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
-import de.rub.nds.tlsattacker.core.crypto.ec.Point;
+import de.rub.nds.protocol.crypto.ec.EllipticCurve;
+import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.layer.constant.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
@@ -1255,12 +1255,11 @@ public class Config implements Serializable {
         defaultClientSupportedPointFormats = new LinkedList<>();
         defaultServerSupportedPointFormats.add(ECPointFormat.UNCOMPRESSED);
         defaultClientSupportedPointFormats.add(ECPointFormat.UNCOMPRESSED);
-        EllipticCurve curve = CurveFactory.getCurve(defaultSelectedNamedGroup);
+        EllipticCurve curve = NamedEllipticCurveParameters.SECP256R1.getCurve();
         defaultClientEcPublicKey = curve.mult(defaultClientEcPrivateKey, curve.getBasePoint());
         defaultServerEcPublicKey = curve.mult(defaultServerEcPrivateKey, curve.getBasePoint());
-        EllipticCurve secp256R1Curve = CurveFactory.getCurve(NamedGroup.SECP256R1);
         defaultTokenBindingECPublicKey =
-                secp256R1Curve.mult(defaultTokenBindingEcPrivateKey, secp256R1Curve.getBasePoint());
+                curve.mult(defaultTokenBindingEcPrivateKey, curve.getBasePoint());
         this.defaultServerPWDProtectPublicKey =
                 curve.mult(defaultServerPWDProtectPrivateKey, curve.getBasePoint());
         secureRealTimeTransportProtocolProtectionProfiles = new LinkedList<>();

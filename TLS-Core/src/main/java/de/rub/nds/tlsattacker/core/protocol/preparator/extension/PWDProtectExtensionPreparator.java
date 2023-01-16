@@ -9,13 +9,13 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.Bits;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
-import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
-import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
-import de.rub.nds.tlsattacker.core.crypto.ec.Point;
+import de.rub.nds.protocol.crypto.ec.EllipticCurve;
+import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PWDProtectExtensionMessage;
@@ -51,7 +51,7 @@ public class PWDProtectExtensionPreparator extends ExtensionPreparator<PWDProtec
 
     private void prepareUsername(PWDProtectExtensionMessage msg) throws CryptoException {
         Config config = chooser.getConfig();
-        EllipticCurve curve = CurveFactory.getCurve(config.getDefaultPWDProtectGroup());
+        EllipticCurve curve = ((NamedEllipticCurveParameters)config.getDefaultPWDProtectGroup().getGroupParameters()).getCurve();
         Point generator = curve.getBasePoint();
         Point serverPublicKey = config.getDefaultServerPWDProtectPublicKey();
 

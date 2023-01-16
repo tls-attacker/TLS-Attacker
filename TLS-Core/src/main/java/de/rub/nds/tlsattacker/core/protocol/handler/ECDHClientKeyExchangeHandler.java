@@ -9,8 +9,8 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.crypto.ec.Point;
-import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
+import de.rub.nds.protocol.crypto.ec.Point;
+import de.rub.nds.protocol.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
 import org.apache.logging.log4j.LogManager;
@@ -37,7 +37,7 @@ public class ECDHClientKeyExchangeHandler<T extends ECDHClientKeyExchangeMessage
         byte[] serializedPoint = message.getPublicKey().getValue();
         NamedGroup usedGroup = tlsContext.getChooser().getSelectedNamedGroup();
         LOGGER.debug("Adjusting EC Point");
-        Point publicKey = PointFormatter.formatFromByteArray(usedGroup, serializedPoint);
+        Point publicKey = PointFormatter.formatFromByteArray(usedGroup.getGroupParameters(), serializedPoint);
         tlsContext.setClientEcPublicKey(publicKey);
     }
 }

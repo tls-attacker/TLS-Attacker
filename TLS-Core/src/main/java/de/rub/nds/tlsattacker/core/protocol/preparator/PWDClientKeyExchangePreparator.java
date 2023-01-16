@@ -9,13 +9,14 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
-import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
-import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
-import de.rub.nds.tlsattacker.core.crypto.ec.Point;
-import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
+import de.rub.nds.protocol.crypto.ec.CurveFactory;
+import de.rub.nds.protocol.crypto.ec.EllipticCurve;
+import de.rub.nds.protocol.crypto.ec.Point;
+import de.rub.nds.protocol.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.PWDClientKeyExchangeMessage;
@@ -44,9 +45,8 @@ public class PWDClientKeyExchangePreparator
     public void prepareHandshakeMessageContents() {
         LOGGER.debug("Preparing PWDClientKeyExchangeMessage");
         msg.prepareComputations();
-        EllipticCurve curve = CurveFactory.getCurve(chooser.getSelectedNamedGroup());
-        LOGGER.debug(chooser.getSelectedNamedGroup().getJavaName());
-
+        EllipticCurve curve = ((NamedEllipticCurveParameters)chooser.getSelectedNamedGroup().getGroupParameters()).getCurve();
+        
         try {
             preparePasswordElement(msg);
         } catch (CryptoException e) {
@@ -66,7 +66,7 @@ public class PWDClientKeyExchangePreparator
     public void prepareAfterParse(boolean clientMode) {
         if (!clientMode) {
             msg.prepareComputations();
-            EllipticCurve curve = CurveFactory.getCurve(chooser.getSelectedNamedGroup());
+            EllipticCurve curve = ((NamedEllipticCurveParameters)chooser.getSelectedNamedGroup().getGroupParameters()).getCurve();
             byte[] premasterSecret =
                     generatePremasterSecret(
                             chooser.getContext().getTlsContext().getPWDPE(),
@@ -78,7 +78,7 @@ public class PWDClientKeyExchangePreparator
     }
 
     protected void preparePasswordElement(PWDClientKeyExchangeMessage msg) throws CryptoException {
-        EllipticCurve curve = CurveFactory.getCurve(chooser.getSelectedNamedGroup());
+        EllipticCurve curve = ((NamedEllipticCurveParameters)chooser.getSelectedNamedGroup().getGroupParameters()).getCurve();
         Point passwordElement = PWDComputations.computePasswordElement(chooser, curve);
         msg.getComputations().setPasswordElement(passwordElement);
 
@@ -134,7 +134,7 @@ public class PWDClientKeyExchangePreparator
     }
 
     protected void prepareScalarElement(PWDClientKeyExchangeMessage msg) {
-        EllipticCurve curve = CurveFactory.getCurve(chooser.getSelectedNamedGroup());
+        EllipticCurve curve = ((NamedEllipticCurveParameters)chooser.getSelectedNamedGroup().getGroupParameters()).getCurve();
         PWDComputations.PWDKeyMaterial keyMaterial =
                 PWDComputations.generateKeyMaterial(
                         curve, msg.getComputations().getPasswordElement(), chooser);
@@ -169,7 +169,7 @@ public class PWDClientKeyExchangePreparator
     protected void prepareElement(PWDClientKeyExchangeMessage msg, Point element) {
         byte[] serializedElement =
                 PointFormatter.formatToByteArray(
-                        chooser.getConfig().getDefaultSelectedNamedGroup(),
+                        chooser.getConfig().getDefaultSelectedNamedGroup().getGroupParameters(),
                         element,
                         chooser.getConfig().getDefaultSelectedPointFormat());
         msg.setElement(serializedElement);
@@ -192,7 +192,7 @@ public class PWDClientKeyExchangePreparator
             // TODO: wrong group
             peerElement =
                     PointFormatter.formatFromByteArray(
-                            chooser.getSelectedNamedGroup(), msg.getElement().getValue());
+                            chooser.getSelectedNamedGroup().getGroupParameters(), msg.getElement().getValue());
             peerScalar = new BigInteger(1, msg.getScalar().getValue());
         }
         if (peerElement == null || peerScalar == null) {

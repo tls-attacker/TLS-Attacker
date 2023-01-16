@@ -70,7 +70,7 @@ public class ECDHEServerKeyExchangeParser<T extends ECDHEServerKeyExchangeMessag
      * @param msg Message to write in
      */
     private void parseNamedGroup(ECDHEServerKeyExchangeMessage msg) {
-        msg.setNamedGroup(parseByteArrayField(NamedGroup.LENGTH));
+        msg.setNamedGroup(parseByteArrayField(HandshakeByteLength.NAMED_GROUP));
         LOGGER.debug(
                 "NamedGroup: " + ArrayConverter.bytesToHexString(msg.getNamedGroup().getValue()));
     }

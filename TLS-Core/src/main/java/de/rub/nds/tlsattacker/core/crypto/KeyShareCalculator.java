@@ -8,11 +8,16 @@
  */
 package de.rub.nds.tlsattacker.core.crypto;
 
+import de.rub.nds.protocol.crypto.ec.CurveFactory;
+import de.rub.nds.protocol.crypto.ec.EllipticCurve;
+import de.rub.nds.protocol.crypto.ec.PointFormatter;
+import de.rub.nds.protocol.crypto.ec.RFC7748Curve;
+import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
 import de.rub.nds.tlsattacker.core.constants.Bits;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.crypto.ec.*;
 import de.rub.nds.tlsattacker.core.crypto.ffdh.FFDHEGroup;
 import de.rub.nds.tlsattacker.core.crypto.ffdh.GroupFactory;
 import java.math.BigInteger;
@@ -26,8 +31,8 @@ public class KeyShareCalculator {
     public static byte[] createPublicKey(
             NamedGroup group, BigInteger privateKey, ECPointFormat pointFormat) {
         if (group.isCurve() || group.isGrease()) {
-            EllipticCurve curve = CurveFactory.getCurve(group);
-            if (group.isStandardCurve() || group.isGrease()) {
+            EllipticCurve curve = ((NamedEllipticCurveParameters)group.getGroupParameters()).getCurve();
+            if (group.isShortWeierstrass() || group.isGrease()) {
                 Point publicKey = curve.mult(privateKey, curve.getBasePoint());
                 return PointFormatter.formatToByteArray(group, publicKey, pointFormat);
             } else {
@@ -54,7 +59,7 @@ public class KeyShareCalculator {
     public static byte[] computeSharedSecret(
             NamedGroup group, BigInteger privateKey, byte[] publicKey) {
         if (group.isCurve()) {
-            EllipticCurve curve = CurveFactory.getCurve(group);
+            EllipticCurve curve = ((NamedEllipticCurveParameters)group.getGroupParameters()).getCurve();
             Point publicPoint = PointFormatter.formatFromByteArray(group, publicKey);
             switch (group) {
                 case ECDH_X25519:

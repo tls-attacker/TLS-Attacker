@@ -8,6 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.crypto.ec;
 
+import de.rub.nds.protocol.crypto.ec.CurveFactory;
+import de.rub.nds.protocol.crypto.ec.Point;
+import de.rub.nds.protocol.crypto.ec.PointFormatter;
+import de.rub.nds.protocol.crypto.ec.EllipticCurveOverFp;
+import de.rub.nds.protocol.crypto.ec.EllipticCurve;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -31,19 +36,17 @@ public class PointFormatterTest {
     public void cyclicTest() {
         for (int i = 0; i < 25; i++) {
             for (NamedGroup group : NamedGroup.getImplemented()) {
-                if (group.isStandardCurve()) {
+                if (group.isShortWeierstrass()) {
                     EllipticCurve curve = CurveFactory.getCurve(group);
                     Point point =
                             curve.getPoint(
                                     new BigInteger(i, new Random(i)),
                                     new BigInteger(i, new Random(i)));
                     byte[] byteArray1 =
-                            PointFormatter.formatToByteArray(
-                                    group, point, ECPointFormat.UNCOMPRESSED);
+                            PointFormatter.formatToByteArray(group, point, ECPointFormat.UNCOMPRESSED);
                     point = PointFormatter.formatFromByteArray(group, byteArray1);
                     byte[] byteArray2 =
-                            PointFormatter.formatToByteArray(
-                                    group, point, ECPointFormat.UNCOMPRESSED);
+                            PointFormatter.formatToByteArray(group, point, ECPointFormat.UNCOMPRESSED);
                     assertArrayEquals(byteArray1, byteArray2);
                 }
             }
@@ -55,7 +58,7 @@ public class PointFormatterTest {
     public void compressionFormatCyclicTest() {
         for (int i = 1; i < 25; i++) {
             for (NamedGroup group : NamedGroup.getImplemented()) {
-                if (group.isStandardCurve()) {
+                if (group.isShortWeierstrass()) {
                     EllipticCurve curve = CurveFactory.getCurve(group);
                     BigInteger scalar = new BigInteger(i, new Random(i));
                     Point point = curve.mult(scalar, curve.getBasePoint());

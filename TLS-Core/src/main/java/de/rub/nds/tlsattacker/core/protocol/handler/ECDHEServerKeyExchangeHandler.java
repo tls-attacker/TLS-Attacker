@@ -10,8 +10,8 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.crypto.ec.Point;
-import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
+import de.rub.nds.protocol.crypto.ec.Point;
+import de.rub.nds.protocol.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import org.apache.logging.log4j.LogManager;
@@ -41,7 +41,7 @@ public class ECDHEServerKeyExchangeHandler<T extends ECDHEServerKeyExchangeMessa
             tlsContext.setSelectedGroup(group);
 
             LOGGER.debug("Adjusting EC Point");
-            Point publicKeyPoint = PointFormatter.formatFromByteArray(group, message.getPublicKey().getValue());
+            Point publicKeyPoint = PointFormatter.formatFromByteArray(group.getGroupParameters(), message.getPublicKey().getValue());
             tlsContext.setServerEcPublicKey(publicKeyPoint);
         } else {
             LOGGER.warn("Could not adjust server public key, named group is unknown.");

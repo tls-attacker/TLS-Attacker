@@ -33,11 +33,9 @@ public class NamedGroupsDelegateTest extends AbstractDelegateTest<NamedGroupsDel
         args[0] = "-point_formats";
         args[1] = "ANSIX962_COMPRESSED_PRIME,UNCOMPRESSED";
         jcommander.parse(args);
-        assertTrue(
-                delegate.getPointFormats().contains(ECPointFormat.UNCOMPRESSED),
+        assertTrue(delegate.getPointFormats().contains(ECPointFormat.UNCOMPRESSED),
                 "UNCOMPRESSED should get parsed correctly");
-        assertTrue(
-                delegate.getPointFormats().contains(ECPointFormat.ANSIX962_COMPRESSED_PRIME),
+        assertTrue(delegate.getPointFormats().contains(ECPointFormat.ANSIX962_COMPRESSED_PRIME),
                 "ANSIX962_COMPRESSED_PRIME should get parsed correctly");
     }
 
@@ -118,18 +116,14 @@ public class NamedGroupsDelegateTest extends AbstractDelegateTest<NamedGroupsDel
         assertTrue(
                 config.getDefaultClientNamedGroups().contains(NamedGroup.SECP192R1),
                 "SECP256R1 should get parsed correctly");
-        assertTrue(
-                config.getDefaultClientSupportedPointFormats().contains(ECPointFormat.UNCOMPRESSED),
+        assertTrue(config.getDefaultClientSupportedPointFormats().contains(ECPointFormat.UNCOMPRESSED),
                 "UNCOMPRESSED should get parsed correctly");
-        assertTrue(
-                config.getDefaultClientSupportedPointFormats()
+        assertTrue(config.getDefaultClientSupportedPointFormats()
                         .contains(ECPointFormat.ANSIX962_COMPRESSED_PRIME),
                 "ANSIX962_COMPRESSED_PRIME should get parsed correctly");
-        assertTrue(
-                config.getDefaultServerSupportedPointFormats().contains(ECPointFormat.UNCOMPRESSED),
+        assertTrue(config.getDefaultServerSupportedPointFormats().contains(ECPointFormat.UNCOMPRESSED),
                 "UNCOMPRESSED should get parsed correctly");
-        assertTrue(
-                config.getDefaultServerSupportedPointFormats()
+        assertTrue(config.getDefaultServerSupportedPointFormats()
                         .contains(ECPointFormat.ANSIX962_COMPRESSED_PRIME),
                 "ANSIX962_COMPRESSED_PRIME should get parsed correctly");
     }

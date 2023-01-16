@@ -9,13 +9,13 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
 import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.crypto.KeyShareCalculator;
-import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
-import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
-import de.rub.nds.tlsattacker.core.crypto.ec.Point;
-import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
+import de.rub.nds.protocol.crypto.ec.EllipticCurve;
+import de.rub.nds.protocol.crypto.ec.Point;
+import de.rub.nds.protocol.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
@@ -264,7 +264,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 
     private byte[] computeSharedPWDSecret(KeyShareStoreEntry keyShare) throws CryptoException {
         Chooser chooser = tlsContext.getChooser();
-        EllipticCurve curve = CurveFactory.getCurve(keyShare.getGroup());
+        EllipticCurve curve = ((NamedEllipticCurveParameters)keyShare.getGroup().getGroupParameters()).getCurve();
         DragonFlyKeyShareEntryParser parser =
                 new DragonFlyKeyShareEntryParser(
                         new ByteArrayInputStream(keyShare.getPublicKey()), keyShare.getGroup());
@@ -272,8 +272,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         parser.parse(dragonFlyKeyShareEntry);
         int curveSize = curve.getModulus().bitLength();
         Point keySharePoint =
-                PointFormatter.fromRawFormat(
-                        keyShare.getGroup(), dragonFlyKeyShareEntry.getRawPublicKey());
+                PointFormatter.fromRawFormat((NamedEllipticCurveParameters) keyShare.getGroup().getGroupParameters(), dragonFlyKeyShareEntry.getRawPublicKey());
 
         BigInteger scalar = dragonFlyKeyShareEntry.getScalar();
         Point passwordElement =
@@ -381,12 +380,12 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
             if (tlsContext.getChooser().getSelectedCipherSuite().isPWD()) {
                 publicPoint =
                         PointFormatter.fromRawFormat(
-                                selectedKeyShareStore.getGroup(),
+                                selectedKeyShareStore.getGroup().getGroupParameters(),
                                 selectedKeyShareStore.getPublicKey());
             } else {
                 publicPoint =
                         PointFormatter.formatFromByteArray(
-                                selectedKeyShareStore.getGroup(),
+                                selectedKeyShareStore.getGroup().getGroupParameters(),
                                 selectedKeyShareStore.getPublicKey());
             }
             tlsContext.setServerEcPublicKey(publicPoint);

@@ -9,11 +9,11 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
+import de.rub.nds.protocol.constants.PointFormat;
 import de.rub.nds.tlsattacker.core.constants.CertificateType;
-import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
-import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.crypto.ec.Point;
-import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
+import de.rub.nds.protocol.crypto.ec.Point;
+import de.rub.nds.protocol.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificateEntry;
@@ -79,8 +79,7 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
                         ecPointToEncode = chooser.getServerEcPublicKey();
                     }
                     // TODO this needs to be adjusted for different curves
-                    asn1OutputStream.writeObject(
-                            new DLSequence(
+                    asn1OutputStream.writeObject(new DLSequence(
                                     new ASN1Encodable[] {
                                         new DLSequence(
                                                 new ASN1Encodable[] {
@@ -88,10 +87,9 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
                                                     new ASN1ObjectIdentifier("1.2.840.10045.3.1.7")
                                                 }),
                                         new DERBitString(
-                                                PointFormatter.formatToByteArray(
-                                                        NamedGroup.SECP256R1,
+                                                PointFormatter.formatToByteArray(NamedEllipticCurveParameters.SECP256R1,
                                                         ecPointToEncode,
-                                                        ECPointFormat.UNCOMPRESSED))
+                                                        PointFormat.UNCOMPRESSED))
                                     }));
                     asn1OutputStream.flush();
                     msg.setCertificatesListBytes(byteArrayOutputStream.toByteArray());
