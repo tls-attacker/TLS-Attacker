@@ -20,6 +20,7 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.data.*;
 import de.rub.nds.tlsattacker.core.protocol.*;
+import de.rub.nds.tlsattacker.core.protocol.message.ack.RecordNumber;
 import de.rub.nds.tlsattacker.core.record.compressor.RecordCompressor;
 import de.rub.nds.tlsattacker.core.record.crypto.Encryptor;
 import de.rub.nds.tlsattacker.core.record.parser.RecordParser;
@@ -259,6 +260,10 @@ public class Record extends ModifiableVariableHolder implements DataContainer<Re
                 ModifiableVariableFactory.safelySetValue(this.unifiedHeader, unifiedHeader);
     }
 
+    public void setUnifiedHeader(ModifiableByte unifiedHeader) {
+        this.unifiedHeader = unifiedHeader;
+    }
+
     public ModifiableByteArray getCompleteRecordBytes() {
         return completeRecordBytes;
     }
@@ -392,5 +397,9 @@ public class Record extends ModifiableVariableHolder implements DataContainer<Re
         throw new UnsupportedOperationException(
                 "Not supported yet."); // To change body of generated methods, choose
         // Tools | Templates.
+    }
+
+    public RecordNumber getRecordNumber() {
+        return new RecordNumber(this);
     }
 }

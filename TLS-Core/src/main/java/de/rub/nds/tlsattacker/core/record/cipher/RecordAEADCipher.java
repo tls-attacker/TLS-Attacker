@@ -373,7 +373,10 @@ public class RecordAEADCipher extends RecordCipher {
         LOGGER.debug(
                 "Encrypted Sequence Number: "
                         + ArrayConverter.bytesToHexString(
-                                record.getEncryptedSequenceNumber().getValue()));
+                                record.getEncryptedSequenceNumber().getValue())
+                        + " (unencrypted: "
+                        + ArrayConverter.bytesToHexString(sequenceNumber)
+                        + ")");
     }
 
     public byte[] preprocessIv(long sequenceNumber, byte[] iv) {

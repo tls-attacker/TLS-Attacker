@@ -21,9 +21,8 @@ import de.rub.nds.tlsattacker.core.workflow.action.SendingAction;
 import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import java.io.IOException;
-import java.math.BigInteger;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -168,24 +167,8 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
         if (acks == null || acks.isEmpty()) {
             return sendRecords;
         }
-        List<Record> filteredRecords = new LinkedList<>();
-        for (Record record : sendRecords) {
-            if (!isRecordAcknowledged(record, acks)) {
-                filteredRecords.add(record);
-            }
-        }
-        return filteredRecords;
-    }
-
-    private boolean isRecordAcknowledged(Record record, List<RecordNumber> acknowledgedRecords) {
-        for (RecordNumber ack : acknowledgedRecords) {
-            BigInteger epoch = ack.getEpoch().getValue();
-            BigInteger seqNum = ack.getSequenceNumber().getValue();
-            if (record.getEpoch().getValue().equals(epoch.intValue())
-                    && record.getSequenceNumber().getValue().equals(seqNum)) {
-                return true;
-            }
-        }
-        return false;
+        return sendRecords.stream()
+                .filter((r) -> !acks.contains(r.getRecordNumber()))
+                .collect(Collectors.toList());
     }
 }

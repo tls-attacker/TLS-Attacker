@@ -763,22 +763,32 @@ public class WorkflowConfigurationFactory {
                 MessageActionFactory.createTLSAction(
                         config, connection, ConnectionEndType.CLIENT, clientHelloMessages));
 
-        ServerHelloMessage serverHello;
-        EncryptedExtensionsMessage encExtMsg;
-        FinishedMessage serverFin = new FinishedMessage();
-
-        if (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
-            serverHello = new ServerHelloMessage();
-            encExtMsg = new EncryptedExtensionsMessage();
-        } else {
-            serverHello = new ServerHelloMessage(config);
-            encExtMsg = new EncryptedExtensionsMessage(config);
+        if (config.isAddCookieExtension()) {
+            trace.addTlsAction(
+                    MessageActionFactory.createTLSAction(
+                            config,
+                            connection,
+                            ConnectionEndType.SERVER,
+                            new ServerHelloMessage(config, true)));
+            trace.addTlsAction(
+                    MessageActionFactory.createTLSAction(
+                            config,
+                            connection,
+                            ConnectionEndType.CLIENT,
+                            new ClientHelloMessage(config, true)));
         }
+        trace.addTlsAction(
+                MessageActionFactory.createTLSAction(
+                        config,
+                        connection,
+                        ConnectionEndType.SERVER,
+                        new ServerHelloMessage(config)));
+
+        EncryptedExtensionsMessage encExtMsg = new EncryptedExtensionsMessage(config);
+        FinishedMessage serverFin = new FinishedMessage();
         if (zeroRtt) {
             encExtMsg.addExtension(new EarlyDataExtensionMessage());
         }
-
-        serverMessages.add(serverHello);
         if ((Objects.equals(config.getTls13BackwardsCompatibilityMode(), Boolean.TRUE)
                         || connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT)
                 && config.getHighestProtocolVersion() != ProtocolVersion.DTLS13) {

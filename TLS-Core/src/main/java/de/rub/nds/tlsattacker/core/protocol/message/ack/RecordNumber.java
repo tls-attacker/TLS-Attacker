@@ -11,9 +11,11 @@ package de.rub.nds.tlsattacker.core.protocol.message.ack;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
+import de.rub.nds.tlsattacker.core.record.Record;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import java.math.BigInteger;
+import java.util.Objects;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class RecordNumber {
@@ -30,6 +32,15 @@ public class RecordNumber {
         this.epoch = ModifiableVariableFactory.safelySetValue(this.epoch, epoch);
         this.sequenceNumber =
                 ModifiableVariableFactory.safelySetValue(this.sequenceNumber, sequenceNumber);
+    }
+
+    public RecordNumber(Record record) {
+        this.epoch =
+                ModifiableVariableFactory.safelySetValue(
+                        this.epoch, BigInteger.valueOf(record.getEpoch().getValue()));
+        this.sequenceNumber =
+                ModifiableVariableFactory.safelySetValue(
+                        this.sequenceNumber, record.getSequenceNumber().getValue());
     }
 
     public ModifiableBigInteger getEpoch() {
@@ -55,5 +66,19 @@ public class RecordNumber {
     public void setSequenceNumber(BigInteger sequenceNumber) {
         this.sequenceNumber =
                 ModifiableVariableFactory.safelySetValue(this.sequenceNumber, sequenceNumber);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        RecordNumber that = (RecordNumber) o;
+        return Objects.equals(epoch, that.epoch)
+                && Objects.equals(sequenceNumber, that.sequenceNumber);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(epoch, sequenceNumber);
     }
 }

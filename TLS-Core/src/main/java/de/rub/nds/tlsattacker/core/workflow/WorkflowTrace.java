@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -97,6 +97,13 @@ public class WorkflowTrace implements Serializable {
                         name = "BufferedGenericReceive"),
                 @XmlElement(type = BufferedSendAction.class, name = "BufferedSend"),
                 @XmlElement(type = ChangeCipherSuiteAction.class, name = "ChangeCipherSuite"),
+                @XmlElement(
+                        type = ChangeNegotiatedExtensionsAction.class,
+                        name = "ChangeNegotiatedExtensions"),
+                @XmlElement(
+                        type = ChangeProposedExtensionsAction.class,
+                        name = "ChangeProposedExtensions"),
+                @XmlElement(type = ChangeConnectionIdAction.class, name = "ChangeConnectionId"),
                 @XmlElement(type = ChangeClientRandomAction.class, name = "ChangeClientRandom"),
                 @XmlElement(type = ChangeCompressionAction.class, name = "ChangeCompression"),
                 @XmlElement(type = ChangeContextValueAction.class, name = "ChangeContextValue"),
