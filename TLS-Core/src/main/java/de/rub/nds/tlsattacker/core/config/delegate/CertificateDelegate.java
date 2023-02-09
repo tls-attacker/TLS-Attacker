@@ -14,7 +14,6 @@ import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.certificate.PemUtil;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.crypto.keys.CustomPrivateKey;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.util.JKSLoader;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -53,8 +52,7 @@ public class CertificateDelegate extends Delegate {
             description = "Alias of the key to be used from Java Key Store (JKS)")
     private String alias = null;
 
-    public CertificateDelegate() {
-    }
+    public CertificateDelegate() {}
 
     public String getKeystore() {
         return keystore;
@@ -119,8 +117,8 @@ public class CertificateDelegate extends Delegate {
             }
             LOGGER.debug("Loading certificate chain");
             try {
-                List<byte[]> byteList
-                        = CertificateIo.readPemByteArrayList(
+                List<byte[]> byteList =
+                        CertificateIo.readPemByteArrayList(
                                 new FileInputStream(new File(certificate)));
                 config.setDefaultExplicitCertificateChain(byteList);
             } catch (Exception ex) {
@@ -138,8 +136,8 @@ public class CertificateDelegate extends Delegate {
         } else if (!missingParameters.isEmpty()) {
             throw new ParameterException(
                     "The following parameters are required for loading a"
-                    + " keystore: "
-                    + join(mandatoryParameters.keySet()));
+                            + " keystore: "
+                            + join(mandatoryParameters.keySet()));
         }
         try {
             ConnectionEndType type;
@@ -159,7 +157,7 @@ public class CertificateDelegate extends Delegate {
             KeyStore store = KeystoreHandler.loadKeyStore(keystore, password);
             Certificate cert = JKSLoader.loadTLSCertificate(store, alias);
             privateKey = (PrivateKey) store.getKey(alias, password.toCharArray());
-            //CertificateUtils.parseCustomPrivateKey(privateKey).adjustInConfig(config, type);
+            // CertificateUtils.parseCustomPrivateKey(privateKey).adjustInConfig(config, type);
             List<byte[]> byteList = new LinkedList<>();
             for (org.bouncycastle.asn1.x509.Certificate tempCert : cert.getCertificateList()) {
                 byteList.add(tempCert.getEncoded());

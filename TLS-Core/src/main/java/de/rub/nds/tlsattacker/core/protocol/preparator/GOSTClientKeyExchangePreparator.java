@@ -272,8 +272,11 @@ public abstract class GOSTClientKeyExchangePreparator
     private void prepareKeyBlob() throws IOException {
         try {
             Point ecPoint =
-                    Point.createPoint(msg.getComputations().getClientPublicKeyX().getValue(),
-                            msg.getComputations().getClientPublicKeyY().getValue(), (NamedEllipticCurveParameters) chooser.getSelectedGostCurve().getGroupParameters());
+                    Point.createPoint(
+                            msg.getComputations().getClientPublicKeyX().getValue(),
+                            msg.getComputations().getClientPublicKeyY().getValue(),
+                            (NamedEllipticCurveParameters)
+                                    chooser.getSelectedGostCurve().getGroupParameters());
             SubjectPublicKeyInfo ephemeralKey =
                     SubjectPublicKeyInfo.getInstance(
                             GOSTUtils.generatePublicKey(chooser.getSelectedGostCurve(), ecPoint)

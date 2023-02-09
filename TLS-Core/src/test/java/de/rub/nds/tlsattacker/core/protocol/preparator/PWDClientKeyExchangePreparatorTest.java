@@ -60,7 +60,10 @@ public class PWDClientKeyExchangePreparatorTest
         context.getConfig().setDefaultPWDPassword("barney");
         context.setServerPWDScalar(new BigInteger(scalar));
         context.setServerPWDElement(
-                PointFormatter.formatFromByteArray((NamedEllipticCurveParameters) NamedGroup.BRAINPOOLP256R1.getGroupParameters(), element));
+                PointFormatter.formatFromByteArray(
+                        (NamedEllipticCurveParameters)
+                                NamedGroup.BRAINPOOLP256R1.getGroupParameters(),
+                        element));
         context.getConfig()
                 .setDefaultClientPWDMask(
                         ArrayConverter.hexStringToByteArray(

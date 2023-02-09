@@ -202,7 +202,10 @@ public class PWDServerKeyExchangePreparator
     protected void prepareElement(PWDServerKeyExchangeMessage msg, Point element) {
         byte[] serializedElement =
                 PointFormatter.formatToByteArray(
-                        (NamedEllipticCurveParameters)chooser.getConfig().getDefaultSelectedNamedGroup().getGroupParameters(),
+                        (NamedEllipticCurveParameters)
+                                chooser.getConfig()
+                                        .getDefaultSelectedNamedGroup()
+                                        .getGroupParameters(),
                         element,
                         chooser.getConfig().getDefaultSelectedPointFormat().getFormat());
         msg.setElement(serializedElement);

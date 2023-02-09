@@ -179,7 +179,10 @@ public class EmptyClientKeyExchangePreparatorTest
 
         // testParse and set client certificate
         Point pubKey =
-                PointFormatter.formatFromByteArray((NamedEllipticCurveParameters) context.getChooser().getSelectedNamedGroup().getGroupParameters(), EC_SERVER_PUBLIC_KEY_BYTES);
+                PointFormatter.formatFromByteArray(
+                        (NamedEllipticCurveParameters)
+                                context.getChooser().getSelectedNamedGroup().getGroupParameters(),
+                        EC_SERVER_PUBLIC_KEY_BYTES);
         context.setServerEcPublicKey(pubKey);
 
         // testParse and set client certificate

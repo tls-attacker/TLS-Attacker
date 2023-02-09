@@ -37,7 +37,9 @@ public class PWDComputationsTest {
                         "528fbf524378a1b13b8d2cbd247090721369f8bfa3ceeb3cfcd85cbfcdd58eaa"));
         context.setClientPWDUsername("fred");
         context.getConfig().setDefaultPWDPassword("barney");
-        EllipticCurve curve = ((NamedEllipticCurveParameters)NamedGroup.BRAINPOOLP256R1.getGroupParameters()).getCurve();
+        EllipticCurve curve =
+                ((NamedEllipticCurveParameters) NamedGroup.BRAINPOOLP256R1.getGroupParameters())
+                        .getCurve();
         Point passwordElement = PWDComputations.computePasswordElement(context.getChooser(), curve);
         BigInteger expectedX =
                 new BigInteger(

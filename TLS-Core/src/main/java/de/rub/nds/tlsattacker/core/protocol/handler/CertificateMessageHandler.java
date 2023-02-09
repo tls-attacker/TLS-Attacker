@@ -72,7 +72,9 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
                         DERBitString publicKey = (DERBitString) dlSeq.getObjectAt(1);
                         byte[] pointBytes = publicKey.getBytes();
                         Point publicKeyPoint =
-                                PointFormatter.formatFromByteArray((NamedEllipticCurveParameters) group.getGroupParameters(), pointBytes);
+                                PointFormatter.formatFromByteArray(
+                                        (NamedEllipticCurveParameters) group.getGroupParameters(),
+                                        pointBytes);
                         if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.SERVER) {
                             // TODO: this needs to be a new field in the context
                             tlsContext.setServerEcPublicKey(publicKeyPoint);

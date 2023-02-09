@@ -45,7 +45,9 @@ public class PWDClientKeyExchangeHandlerTest
         context.setClientPWDUsername("fred");
         context.getConfig().setDefaultPWDPassword("barney");
         context.setServerPWDElement(
-                PointFormatter.formatFromByteArray((NamedEllipticCurveParameters) NamedGroup.BRAINPOOLP256R1.getGroupParameters(),
+                PointFormatter.formatFromByteArray(
+                        (NamedEllipticCurveParameters)
+                                NamedGroup.BRAINPOOLP256R1.getGroupParameters(),
                         ArrayConverter.hexStringToByteArray(
                                 "0422bbd56b481d7fa90c35e8d42fcd06618a0778de506b1bc38882abc73132eef37f02e13bd544acc145bdd806450d43be34b9288348d03d6cd9832487b129dbe1")));
         context.setServerPWDScalar(

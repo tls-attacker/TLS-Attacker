@@ -42,7 +42,9 @@ public class ECDHEServerKeyExchangeHandler<T extends ECDHEServerKeyExchangeMessa
 
             LOGGER.debug("Adjusting EC Point");
             Point publicKeyPoint =
-                    PointFormatter.formatFromByteArray((NamedEllipticCurveParameters) group.getGroupParameters(), message.getPublicKey().getValue());
+                    PointFormatter.formatFromByteArray(
+                            (NamedEllipticCurveParameters) group.getGroupParameters(),
+                            message.getPublicKey().getValue());
             tlsContext.setServerEcPublicKey(publicKeyPoint);
         } else {
             LOGGER.warn("Could not adjust server public key, named group is unknown.");

@@ -70,13 +70,18 @@ public class GOSTClientKeyExchangePreparatorTest
         GOSTCurve curve = GOSTCurve.fromNamedSpec((ECNamedCurveSpec) publicKey.getParams());
         context.setSelectedGostCurve(curve);
         context.setClientEcPublicKey(
-                Point.createPoint(new BigInteger(
+                Point.createPoint(
+                        new BigInteger(
                                 "10069287008658366627190983283629950164812876811521243982114767082045824150473125516608530551778844996599072529376320668260150663514143959293374556657645673"),
                         new BigInteger(
-                                "4228377264366878847378418012458228511431314506811669878991142841071421303960493802009018251089924600277704518780058414193146250040620726620722848816814410"), (NamedEllipticCurveParameters) curve.getGroupParameters()));
+                                "4228377264366878847378418012458228511431314506811669878991142841071421303960493802009018251089924600277704518780058414193146250040620726620722848816814410"),
+                        (NamedEllipticCurveParameters) curve.getGroupParameters()));
         ECPoint q = publicKey.getQ();
         Point ecPoint =
-                Point.createPoint(q.getRawXCoord().toBigInteger(), q.getRawYCoord().toBigInteger(), (NamedEllipticCurveParameters) curve.getGroupParameters());
+                Point.createPoint(
+                        q.getRawXCoord().toBigInteger(),
+                        q.getRawYCoord().toBigInteger(),
+                        (NamedEllipticCurveParameters) curve.getGroupParameters());
 
         context.setServerEcPublicKey(ecPoint);
 

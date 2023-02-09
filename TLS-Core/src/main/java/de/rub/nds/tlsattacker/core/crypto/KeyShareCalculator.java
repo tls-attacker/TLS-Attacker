@@ -34,7 +34,10 @@ public class KeyShareCalculator {
                     ((NamedEllipticCurveParameters) group.getGroupParameters()).getCurve();
             if (group.isShortWeierstrass() || group.isGrease()) {
                 Point publicKey = curve.mult(privateKey, curve.getBasePoint());
-                return PointFormatter.formatToByteArray((NamedEllipticCurveParameters)(group.getGroupParameters()), publicKey, pointFormat.getFormat());
+                return PointFormatter.formatToByteArray(
+                        (NamedEllipticCurveParameters) (group.getGroupParameters()),
+                        publicKey,
+                        pointFormat.getFormat());
             } else {
                 RFC7748Curve rfcCurve = (RFC7748Curve) curve;
                 return rfcCurve.computePublicKey(privateKey);
@@ -61,7 +64,9 @@ public class KeyShareCalculator {
         if (group.isCurve()) {
             EllipticCurve curve =
                     ((NamedEllipticCurveParameters) group.getGroupParameters()).getCurve();
-            Point publicPoint = PointFormatter.formatFromByteArray((NamedEllipticCurveParameters) group.getGroupParameters(), publicKey);
+            Point publicPoint =
+                    PointFormatter.formatFromByteArray(
+                            (NamedEllipticCurveParameters) group.getGroupParameters(), publicKey);
             switch (group) {
                 case ECDH_X25519:
                 case ECDH_X448:

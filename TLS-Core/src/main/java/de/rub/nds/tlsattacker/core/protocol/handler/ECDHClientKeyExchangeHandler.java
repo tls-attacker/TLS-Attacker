@@ -39,7 +39,9 @@ public class ECDHClientKeyExchangeHandler<T extends ECDHClientKeyExchangeMessage
         NamedGroup usedGroup = tlsContext.getChooser().getSelectedNamedGroup();
         LOGGER.debug("Adjusting EC Point");
         Point publicKey =
-                PointFormatter.formatFromByteArray((NamedEllipticCurveParameters) usedGroup.getGroupParameters(), serializedPoint);
+                PointFormatter.formatFromByteArray(
+                        (NamedEllipticCurveParameters) usedGroup.getGroupParameters(),
+                        serializedPoint);
         tlsContext.setClientEcPublicKey(publicKey);
     }
 }

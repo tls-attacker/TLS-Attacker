@@ -180,7 +180,10 @@ public class PWDClientKeyExchangePreparator
     protected void prepareElement(PWDClientKeyExchangeMessage msg, Point element) {
         byte[] serializedElement =
                 PointFormatter.formatToByteArray(
-                        (NamedEllipticCurveParameters)chooser.getConfig().getDefaultSelectedNamedGroup().getGroupParameters(),
+                        (NamedEllipticCurveParameters)
+                                chooser.getConfig()
+                                        .getDefaultSelectedNamedGroup()
+                                        .getGroupParameters(),
                         element,
                         chooser.getConfig().getDefaultSelectedPointFormat().getFormat());
         msg.setElement(serializedElement);
@@ -202,7 +205,9 @@ public class PWDClientKeyExchangePreparator
         } else {
             // TODO: wrong group
             peerElement =
-                    PointFormatter.formatFromByteArray((NamedEllipticCurveParameters) chooser.getSelectedNamedGroup().getGroupParameters(),
+                    PointFormatter.formatFromByteArray(
+                            (NamedEllipticCurveParameters)
+                                    chooser.getSelectedNamedGroup().getGroupParameters(),
                             msg.getElement().getValue());
             peerScalar = new BigInteger(1, msg.getScalar().getValue());
         }

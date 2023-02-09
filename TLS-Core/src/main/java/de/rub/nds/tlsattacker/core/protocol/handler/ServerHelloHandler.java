@@ -383,11 +383,15 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
             Point publicPoint;
             if (tlsContext.getChooser().getSelectedCipherSuite().isPWD()) {
                 publicPoint =
-                        PointFormatter.fromRawFormat((NamedEllipticCurveParameters) selectedKeyShareStore.getGroup().getGroupParameters(),
+                        PointFormatter.fromRawFormat(
+                                (NamedEllipticCurveParameters)
+                                        selectedKeyShareStore.getGroup().getGroupParameters(),
                                 selectedKeyShareStore.getPublicKey());
             } else {
                 publicPoint =
-                        PointFormatter.formatFromByteArray((NamedEllipticCurveParameters) selectedKeyShareStore.getGroup().getGroupParameters(),
+                        PointFormatter.formatFromByteArray(
+                                (NamedEllipticCurveParameters)
+                                        selectedKeyShareStore.getGroup().getGroupParameters(),
                                 selectedKeyShareStore.getPublicKey());
             }
             tlsContext.setServerEcPublicKey(publicPoint);

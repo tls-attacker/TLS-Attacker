@@ -27,7 +27,12 @@ public class PWDServerKeyExchangeHandler
         tlsContext.setSelectedGroup(NamedGroup.getNamedGroup(message.getNamedGroup().getValue()));
         tlsContext.setServerPWDSalt(message.getSalt().getValue());
         tlsContext.setServerPWDElement(
-                PointFormatter.formatFromByteArray((NamedEllipticCurveParameters) tlsContext.getChooser().getSelectedNamedGroup().getGroupParameters(),
+                PointFormatter.formatFromByteArray(
+                        (NamedEllipticCurveParameters)
+                                tlsContext
+                                        .getChooser()
+                                        .getSelectedNamedGroup()
+                                        .getGroupParameters(),
                         message.getElement().getValue()));
         tlsContext.setServerPWDScalar(new BigInteger(1, message.getScalar().getValue()));
         if (message.getComputations() != null) {

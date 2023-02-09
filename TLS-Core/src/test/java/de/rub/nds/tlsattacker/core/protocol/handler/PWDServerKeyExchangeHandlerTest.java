@@ -48,7 +48,10 @@ public class PWDServerKeyExchangeHandlerTest
 
         assertArrayEquals(
                 ArrayConverter.bigIntegerToByteArray(
-                        PointFormatter.formatFromByteArray((NamedEllipticCurveParameters) NamedGroup.BRAINPOOLP256R1.getGroupParameters(), element)
+                        PointFormatter.formatFromByteArray(
+                                        (NamedEllipticCurveParameters)
+                                                NamedGroup.BRAINPOOLP256R1.getGroupParameters(),
+                                        element)
                                 .getFieldX()
                                 .getData()),
                 ArrayConverter.bigIntegerToByteArray(
