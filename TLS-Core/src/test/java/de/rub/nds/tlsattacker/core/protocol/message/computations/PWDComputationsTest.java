@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.message.computations;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.protocol.crypto.ec.CurveFactory;
+import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
 import de.rub.nds.protocol.crypto.ec.EllipticCurve;
 import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
@@ -37,7 +37,7 @@ public class PWDComputationsTest {
                         "528fbf524378a1b13b8d2cbd247090721369f8bfa3ceeb3cfcd85cbfcdd58eaa"));
         context.setClientPWDUsername("fred");
         context.getConfig().setDefaultPWDPassword("barney");
-        EllipticCurve curve = CurveFactory.getCurve(NamedGroup.BRAINPOOLP256R1);
+        EllipticCurve curve = ((NamedEllipticCurveParameters)NamedGroup.BRAINPOOLP256R1.getGroupParameters()).getCurve();
         Point passwordElement = PWDComputations.computePasswordElement(context.getChooser(), curve);
         BigInteger expectedX =
                 new BigInteger(

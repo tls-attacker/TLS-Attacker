@@ -12,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
 import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.protocol.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
@@ -178,8 +179,7 @@ public class EmptyClientKeyExchangePreparatorTest
 
         // testParse and set client certificate
         Point pubKey =
-                PointFormatter.formatFromByteArray(
-                        context.getChooser().getSelectedNamedGroup(), EC_SERVER_PUBLIC_KEY_BYTES);
+                PointFormatter.formatFromByteArray((NamedEllipticCurveParameters) context.getChooser().getSelectedNamedGroup().getGroupParameters(), EC_SERVER_PUBLIC_KEY_BYTES);
         context.setServerEcPublicKey(pubKey);
 
         // testParse and set client certificate

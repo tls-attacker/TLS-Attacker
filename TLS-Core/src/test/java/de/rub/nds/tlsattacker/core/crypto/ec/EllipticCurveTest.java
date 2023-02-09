@@ -8,9 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.crypto.ec;
 
+import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
 import static org.junit.jupiter.api.Assertions.*;
 
-import de.rub.nds.protocol.crypto.ec.CurveFactory;
 import de.rub.nds.protocol.crypto.ec.EllipticCurve;
 import de.rub.nds.protocol.crypto.ec.EllipticCurveOverF2m;
 import de.rub.nds.protocol.crypto.ec.Point;
@@ -23,14 +23,16 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
-/** Testing EllipticCurve, CurveFactory, EllipticCurveOverFp and EllipticCurveOverF2m */
+/**
+ * Testing EllipticCurve, CurveFactory, EllipticCurveOverFp and
+ * EllipticCurveOverF2m
+ */
 public class EllipticCurveTest {
 
     /*
      * Please notice that these tests can provide correctness only in a probabilistic sense. (Though with a very high
      * probability, since the curve parameters are very large.)
      */
-
     private Random rnd;
     private Point inf;
 
@@ -48,7 +50,7 @@ public class EllipticCurveTest {
             mode = EnumSource.Mode.MATCH_NONE)
     @Tag(TestCategories.SLOW_TEST)
     public void test(NamedGroup providedNamedGroup) {
-        EllipticCurve curve = CurveFactory.getCurve(providedNamedGroup);
+        EllipticCurve curve = ((NamedEllipticCurveParameters) providedNamedGroup.getGroupParameters()).getCurve();
         Point basePoint = curve.getBasePoint();
         BigInteger basePointOrder = curve.getBasePointOrder();
 

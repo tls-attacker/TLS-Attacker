@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.workflow.chooser;
 import static org.junit.jupiter.api.Assertions.*;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
 import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.*;
@@ -587,17 +588,17 @@ public class DefaultChooserTest {
     public void testGetClientEcPublicKey() {
         context.setClientEcPublicKey(null);
         config.setDefaultClientEcPublicKey(
-                Point.createPoint(BigInteger.ONE, BigInteger.TEN, NamedGroup.SECP256R1));
+                Point.createPoint(BigInteger.ONE, BigInteger.TEN, (NamedEllipticCurveParameters) NamedGroup.SECP256R1.getGroupParameters()));
         assertEquals(
-                Point.createPoint(BigInteger.ONE, BigInteger.TEN, NamedGroup.SECP256R1),
+                Point.createPoint(BigInteger.ONE, BigInteger.TEN, (NamedEllipticCurveParameters) NamedGroup.SECP256R1.getGroupParameters()),
                 config.getDefaultClientEcPublicKey());
         assertEquals(
-                Point.createPoint(BigInteger.ONE, BigInteger.TEN, NamedGroup.SECP256R1),
+                Point.createPoint(BigInteger.ONE, BigInteger.TEN, (NamedEllipticCurveParameters) NamedGroup.SECP256R1.getGroupParameters()),
                 chooser.getClientEcPublicKey());
         context.setClientEcPublicKey(
-                Point.createPoint(BigInteger.ZERO, BigInteger.TEN, NamedGroup.SECP256R1));
+                Point.createPoint(BigInteger.ZERO, BigInteger.TEN, (NamedEllipticCurveParameters) NamedGroup.SECP256R1.getGroupParameters()));
         assertEquals(
-                Point.createPoint(BigInteger.ZERO, BigInteger.TEN, NamedGroup.SECP256R1),
+                Point.createPoint(BigInteger.ZERO, BigInteger.TEN, (NamedEllipticCurveParameters) NamedGroup.SECP256R1.getGroupParameters()),
                 chooser.getClientEcPublicKey());
     }
 
@@ -606,17 +607,17 @@ public class DefaultChooserTest {
     public void testGetServerEcPublicKey() {
         context.setServerEcPublicKey(null);
         config.setDefaultServerEcPublicKey(
-                Point.createPoint(BigInteger.ONE, BigInteger.TEN, NamedGroup.SECP256R1));
+                Point.createPoint(BigInteger.ONE, BigInteger.TEN, (NamedEllipticCurveParameters) NamedGroup.SECP256R1.getGroupParameters()));
         assertEquals(
-                Point.createPoint(BigInteger.ONE, BigInteger.TEN, NamedGroup.SECP256R1),
+                Point.createPoint(BigInteger.ONE, BigInteger.TEN, (NamedEllipticCurveParameters) NamedGroup.SECP256R1.getGroupParameters()),
                 config.getDefaultServerEcPublicKey());
         assertEquals(
-                Point.createPoint(BigInteger.ONE, BigInteger.TEN, NamedGroup.SECP256R1),
+                Point.createPoint(BigInteger.ONE, BigInteger.TEN, (NamedEllipticCurveParameters) NamedGroup.SECP256R1.getGroupParameters()),
                 chooser.getServerEcPublicKey());
         context.setServerEcPublicKey(
-                Point.createPoint(BigInteger.ZERO, BigInteger.TEN, NamedGroup.SECP256R1));
+                Point.createPoint(BigInteger.ZERO, BigInteger.TEN, (NamedEllipticCurveParameters) NamedGroup.SECP256R1.getGroupParameters()));
         assertEquals(
-                Point.createPoint(BigInteger.ZERO, BigInteger.TEN, NamedGroup.SECP256R1),
+                Point.createPoint(BigInteger.ZERO, BigInteger.TEN, (NamedEllipticCurveParameters) NamedGroup.SECP256R1.getGroupParameters()),
                 chooser.getServerEcPublicKey());
     }
 

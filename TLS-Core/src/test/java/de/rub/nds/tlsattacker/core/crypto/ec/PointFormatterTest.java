@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.crypto.ec;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.protocol.crypto.ec.CurveFactory;
+import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
 import de.rub.nds.protocol.crypto.ec.EllipticCurve;
 import de.rub.nds.protocol.crypto.ec.EllipticCurveOverFp;
 import de.rub.nds.protocol.crypto.ec.Point;
@@ -30,25 +30,27 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 public class PointFormatterTest {
 
-    /** Test of formatToByteArray method, of class PointFormatter. */
+    /**
+     * Test of formatToByteArray method, of class PointFormatter.
+     */
     @Test
     @Tag(TestCategories.INTEGRATION_TEST)
     public void cyclicTest() {
         for (int i = 0; i < 25; i++) {
             for (NamedGroup group : NamedGroup.getImplemented()) {
                 if (group.isShortWeierstrass()) {
-                    EllipticCurve curve = CurveFactory.getCurve(group);
-                    Point point =
-                            curve.getPoint(
+                    EllipticCurve curve = ((NamedEllipticCurveParameters) group.getGroupParameters()).getCurve();
+                    Point point
+                            = curve.getPoint(
                                     new BigInteger(i, new Random(i)),
                                     new BigInteger(i, new Random(i)));
-                    byte[] byteArray1 =
-                            PointFormatter.formatToByteArray(
-                                    group, point, ECPointFormat.UNCOMPRESSED);
-                    point = PointFormatter.formatFromByteArray(group, byteArray1);
-                    byte[] byteArray2 =
-                            PointFormatter.formatToByteArray(
-                                    group, point, ECPointFormat.UNCOMPRESSED);
+                    byte[] byteArray1
+                            = PointFormatter.formatToByteArray(
+                                    (NamedEllipticCurveParameters) group.getGroupParameters(), point, ECPointFormat.UNCOMPRESSED.getFormat());
+                    point = PointFormatter.formatFromByteArray((NamedEllipticCurveParameters) group.getGroupParameters(), byteArray1);
+                    byte[] byteArray2
+                            = PointFormatter.formatToByteArray(
+                                    (NamedEllipticCurveParameters) group.getGroupParameters(), point, ECPointFormat.UNCOMPRESSED.getFormat());
                     assertArrayEquals(byteArray1, byteArray2);
                 }
             }
@@ -61,7 +63,7 @@ public class PointFormatterTest {
         for (int i = 1; i < 25; i++) {
             for (NamedGroup group : NamedGroup.getImplemented()) {
                 if (group.isShortWeierstrass()) {
-                    EllipticCurve curve = CurveFactory.getCurve(group);
+                    EllipticCurve curve = ((NamedEllipticCurveParameters) group.getGroupParameters()).getCurve();
                     BigInteger scalar = new BigInteger(i, new Random(i));
                     Point point = curve.mult(scalar, curve.getBasePoint());
                     ECPointFormat format;
@@ -70,9 +72,9 @@ public class PointFormatterTest {
                     } else {
                         format = ECPointFormat.ANSIX962_COMPRESSED_CHAR2;
                     }
-                    byte[] byteArray1 = PointFormatter.formatToByteArray(group, point, format);
-                    point = PointFormatter.formatFromByteArray(group, byteArray1);
-                    byte[] byteArray2 = PointFormatter.formatToByteArray(group, point, format);
+                    byte[] byteArray1 = PointFormatter.formatToByteArray((NamedEllipticCurveParameters) group.getGroupParameters(), point, format.getFormat());
+                    point = PointFormatter.formatFromByteArray((NamedEllipticCurveParameters) group.getGroupParameters(), byteArray1);
+                    byte[] byteArray2 = PointFormatter.formatToByteArray((NamedEllipticCurveParameters) group.getGroupParameters(), point, format.getFormat());
                     assertArrayEquals(byteArray1, byteArray2);
                 }
             }
@@ -80,7 +82,8 @@ public class PointFormatterTest {
     }
 
     /**
-     * Provides test vectors of format (providedNamedGroup, expectedCompressedBasePoint) for {@link
+     * Provides test vectors of format (providedNamedGroup,
+     * expectedCompressedBasePoint) for {@link
      * #testCompressionFormat(NamedGroup, String)}.
      */
     public static Stream<Arguments> provideCompressionFormatTestVectors() {
@@ -108,16 +111,16 @@ public class PointFormatterTest {
     @Tag(TestCategories.SLOW_TEST)
     public void testCompressionFormat(
             NamedGroup providedNamedGroup, String expectedCompressedBasePoint) {
-        byte[] expectedCompressedBasePointBytes =
-                ArrayConverter.hexStringToByteArray(expectedCompressedBasePoint);
-        EllipticCurve curve = CurveFactory.getCurve(providedNamedGroup);
-        ECPointFormat pointFormat =
-                curve instanceof EllipticCurveOverFp
+        byte[] expectedCompressedBasePointBytes
+                = ArrayConverter.hexStringToByteArray(expectedCompressedBasePoint);
+        EllipticCurve curve = ((NamedEllipticCurveParameters) providedNamedGroup.getGroupParameters()).getCurve();
+        ECPointFormat pointFormat
+                = curve instanceof EllipticCurveOverFp
                         ? ECPointFormat.ANSIX962_COMPRESSED_PRIME
                         : ECPointFormat.ANSIX962_COMPRESSED_CHAR2;
-        byte[] actualCompressedBasePointBytes =
-                PointFormatter.formatToByteArray(
-                        providedNamedGroup, curve.getBasePoint(), pointFormat);
+        byte[] actualCompressedBasePointBytes
+                = PointFormatter.formatToByteArray(
+                        (NamedEllipticCurveParameters) providedNamedGroup.getGroupParameters(), curve.getBasePoint(), pointFormat.getFormat());
         assertArrayEquals(expectedCompressedBasePointBytes, actualCompressedBasePointBytes);
     }
 }

@@ -13,22 +13,15 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.*;
-import de.rub.nds.tlsattacker.core.crypto.ECCUtilsBCWrapper;
-import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.math.BigInteger;
 import java.security.Security;
 import java.util.Base64;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.asn1.ASN1Integer;
-import org.bouncycastle.crypto.params.ECDomainParameters;
-import org.bouncycastle.crypto.params.ECPublicKeyParameters;
-import org.bouncycastle.crypto.signers.ECDSASigner;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -86,7 +79,7 @@ public class TokenbindingMessagePreparatorTest {
         byte[] decode = Base64.getUrlDecoder().decode(base64);
         TokenBindingMessageParser parser =
                 new TokenBindingMessageParser(new ByteArrayInputStream(decode));
-        TokenBindingMessage message = new TokenBindingMessage();
+        message = new TokenBindingMessage();
         parser.parse(message);
         byte[] xBytes = new byte[32];
         System.arraycopy(message.getPoint().getValue(), 0, xBytes, 0, 32);
@@ -99,23 +92,7 @@ public class TokenbindingMessagePreparatorTest {
 
         ASN1Integer x = new ASN1Integer(xBytes);
         LOGGER.debug("xasn1:" + x.getPositiveValue());
-        ASN1Integer y = new ASN1Integer(yBytes);
-        ECDomainParameters generateEcParameters = generateEcParameters();
-        ECPublicKeyParameters ecPublicKeyParameters =
-                new ECPublicKeyParameters(
-                        generateEcParameters
-                                .getCurve()
-                                .createPoint(x.getPositiveValue(), y.getPositiveValue()),
-                        generateEcParameters);
-        LOGGER.debug("RAW X:" + ecPublicKeyParameters.getQ().getRawXCoord().toBigInteger());
-        LOGGER.debug("RAW Y:" + ecPublicKeyParameters.getQ().getRawYCoord().toBigInteger());
-        LOGGER.debug("Valid: " + ecPublicKeyParameters.getQ().isValid());
-        ECDSASigner signer = new ECDSASigner();
-        signer.init(false, ecPublicKeyParameters);
-
-        byte[] signedContent =
-                ArrayConverter.hexStringToByteArray(
-                        "0002A5F86D4EA32D7B305774F6EA56DB444F4D70D777ABF77B810561935F3A96B9C2"); // Correct
+        
         // ekm
         // with
         // blablub
@@ -130,23 +107,5 @@ public class TokenbindingMessagePreparatorTest {
         LOGGER.debug("r:" + new ASN1Integer(rBytes).getPositiveValue());
         LOGGER.debug("s:" + new ASN1Integer(sBytes).getPositiveValue());
         // decodeASN1(parsedMessage.getSignature().getValue());
-    }
-
-    private ECDomainParameters generateEcParameters() {
-        NamedGroup[] curves = new NamedGroup[] {NamedGroup.SECP256R1};
-        ECPointFormat[] formats = new ECPointFormat[] {ECPointFormat.UNCOMPRESSED};
-        InputStream is =
-                new ByteArrayInputStream(
-                        ArrayConverter.concatenate(
-                                new byte[] {EllipticCurveType.NAMED_CURVE.getValue()},
-                                NamedGroup.SECP256R1.getValue()));
-        ECDomainParameters ecParams;
-        try {
-            ecParams = ECCUtilsBCWrapper.readECParameters(curves, formats, is);
-        } catch (IOException ex) {
-            throw new PreparationException("Failed to generate EC domain parameters", ex);
-        }
-
-        return ecParams;
     }
 }
