@@ -30,6 +30,7 @@ import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.core.workflow.filter.FilterType;
 import de.rub.nds.x509attacker.config.X509CertificateConfig;
+import de.rub.nds.x509attacker.filesystem.CertificateBytes;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
@@ -95,8 +96,7 @@ public class Config implements Serializable {
      * If this is non-null, TLS-Attacker will not create its own certificate chain but will simply
      * send the bytes in the list as the certificates in the chain in the provided order
      */
-    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
-    private List<byte[]> defaultExplicitCertificateChain = null;
+    private List<CertificateBytes> defaultExplicitCertificateChain = null;
 
     /**
      * If set to true, dynamically creates certificates that are fit to use for the current TLS
@@ -1321,11 +1321,12 @@ public class Config implements Serializable {
         defaultProposedAlpnProtocols.add(AlpnProtocol.HTTP_2.getConstant());
     }
 
-    public List<byte[]> getDefaultExplicitCertificateChain() {
+    public List<CertificateBytes> getDefaultExplicitCertificateChain() {
         return defaultExplicitCertificateChain;
     }
 
-    public void setDefaultExplicitCertificateChain(List<byte[]> defaultExplicitCertificateChain) {
+    public void setDefaultExplicitCertificateChain(
+            List<CertificateBytes> defaultExplicitCertificateChain) {
         this.defaultExplicitCertificateChain = defaultExplicitCertificateChain;
     }
 

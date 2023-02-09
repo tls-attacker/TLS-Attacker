@@ -21,6 +21,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.cert.CertificateEntryPrep
 import de.rub.nds.tlsattacker.core.protocol.serializer.cert.CertificatePairSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import de.rub.nds.x509attacker.filesystem.CertificateBytes;
 import de.rub.nds.x509attacker.x509.X509CertificateChainBuidler;
 import de.rub.nds.x509attacker.x509.base.X509Certificate;
 import de.rub.nds.x509attacker.x509.base.X509CertificateChain;
@@ -125,9 +126,9 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
                     }
                     prepareFromEntryList(msg);
                 } else {
-                    for (byte[] certificateBytes :
+                    for (CertificateBytes certificateBytes :
                             chooser.getConfig().getDefaultExplicitCertificateChain()) {
-                        CertificateEntry entry = new CertificateEntry(certificateBytes);
+                        CertificateEntry entry = new CertificateEntry(certificateBytes.getBytes());
                         entryList.add(entry);
                     }
                     msg.setCertificateEntryList(entryList);

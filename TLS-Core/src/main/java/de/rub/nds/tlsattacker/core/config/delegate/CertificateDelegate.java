@@ -18,6 +18,7 @@ import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.util.JKSLoader;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.util.KeystoreHandler;
+import de.rub.nds.x509attacker.filesystem.CertificateBytes;
 import de.rub.nds.x509attacker.filesystem.CertificateIo;
 import java.io.File;
 import java.io.FileInputStream;
@@ -117,8 +118,8 @@ public class CertificateDelegate extends Delegate {
             }
             LOGGER.debug("Loading certificate chain");
             try {
-                List<byte[]> byteList =
-                        CertificateIo.readPemByteArrayList(
+                List<CertificateBytes> byteList =
+                        CertificateIo.readPemCertificateByteList(
                                 new FileInputStream(new File(certificate)));
                 config.setDefaultExplicitCertificateChain(byteList);
             } catch (Exception ex) {
@@ -158,9 +159,9 @@ public class CertificateDelegate extends Delegate {
             Certificate cert = JKSLoader.loadTLSCertificate(store, alias);
             privateKey = (PrivateKey) store.getKey(alias, password.toCharArray());
             // CertificateUtils.parseCustomPrivateKey(privateKey).adjustInConfig(config, type);
-            List<byte[]> byteList = new LinkedList<>();
+            List<CertificateBytes> byteList = new LinkedList<>();
             for (org.bouncycastle.asn1.x509.Certificate tempCert : cert.getCertificateList()) {
-                byteList.add(tempCert.getEncoded());
+                byteList.add(new CertificateBytes(tempCert.getEncoded()));
             }
             config.setDefaultExplicitCertificateChain(byteList);
             throw new UnsupportedOperationException("Currently not supported");
