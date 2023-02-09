@@ -29,6 +29,7 @@ public class HMAC {
      * Creates an hmac instance.
      *
      * @param macAlgorithm sets the hash algorithm that is going to be used for the HMAC computation
+     * @throws java.security.NoSuchAlgorithmException
      */
     public HMAC(MacAlgorithm macAlgorithm) throws NoSuchAlgorithmException {
         this.macAlgorithm = macAlgorithm;
@@ -59,10 +60,11 @@ public class HMAC {
     }
 
     /**
-     * Initializes the hmac with a secret and data that is to be hashed later on. It also makes sure
+     * Initializes the hmac with a secret and data that is to be hashed later on.It also makes sure
      * that the key, the ipad and opad have the same length by padding.
      *
      * @param secret the hmac key
+     * @throws java.security.NoSuchAlgorithmException
      */
     public void init(byte[] secret) throws NoSuchAlgorithmException {
         if (secret == null) {

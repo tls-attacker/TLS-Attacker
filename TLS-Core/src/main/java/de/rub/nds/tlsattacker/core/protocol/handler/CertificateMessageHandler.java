@@ -8,6 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
+import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
+import de.rub.nds.protocol.crypto.ec.Point;
+import de.rub.nds.protocol.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.constants.CertificateType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
@@ -18,7 +21,6 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.x509attacker.context.X509Context;
 import de.rub.nds.x509attacker.x509.base.X509Certificate;
 import de.rub.nds.x509attacker.x509.base.X509CertificateChain;
-import java.awt.Point;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -70,7 +72,7 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
                         DERBitString publicKey = (DERBitString) dlSeq.getObjectAt(1);
                         byte[] pointBytes = publicKey.getBytes();
                         Point publicKeyPoint =
-                                PointFormatter.formatFromByteArray(group, pointBytes);
+                                PointFormatter.formatFromByteArray((NamedEllipticCurveParameters) group.getGroupParameters(), pointBytes);
                         if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.SERVER) {
                             // TODO: this needs to be a new field in the context
                             tlsContext.setServerEcPublicKey(publicKeyPoint);

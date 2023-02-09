@@ -9,9 +9,9 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.protocol.crypto.ec.EllipticCurve;
 import de.rub.nds.protocol.crypto.ec.Point;
+import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.PskEcDhClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;

@@ -10,11 +10,11 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
-import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
-import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
 import de.rub.nds.protocol.crypto.ec.EllipticCurve;
 import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.protocol.crypto.ec.PointFormatter;
+import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.gost.GOST28147WrapEngine;
 import de.rub.nds.tlsattacker.core.crypto.gost.TLSGostKeyTransportBlob;
 import de.rub.nds.tlsattacker.core.protocol.message.GOSTClientKeyExchangeMessage;
@@ -152,7 +152,9 @@ public abstract class GOSTClientKeyExchangePreparator
 
     private void prepareKek(BigInteger privateKey, Point publicKey)
             throws GeneralSecurityException {
-        EllipticCurve curve = ((NamedEllipticCurveParameters)chooser.getSelectedGostCurve().getGroupParameters()).getCurve();
+        EllipticCurve curve =
+                ((NamedEllipticCurveParameters) chooser.getSelectedGostCurve().getGroupParameters())
+                        .getCurve();
         Point sharedPoint = curve.mult(privateKey, publicKey);
         if (sharedPoint == null) {
             LOGGER.warn("GOST shared point is null - using base point instead");
@@ -184,7 +186,9 @@ public abstract class GOSTClientKeyExchangePreparator
     }
 
     private void prepareEphemeralKey() {
-        EllipticCurve curve = ((NamedEllipticCurveParameters)chooser.getSelectedGostCurve().getGroupParameters()).getCurve();
+        EllipticCurve curve =
+                ((NamedEllipticCurveParameters) chooser.getSelectedGostCurve().getGroupParameters())
+                        .getCurve();
         LOGGER.debug("Using key from context.");
         msg.getComputations().setPrivateKey(chooser.getClientEcPrivateKey());
         Point publicKey =
@@ -268,10 +272,8 @@ public abstract class GOSTClientKeyExchangePreparator
     private void prepareKeyBlob() throws IOException {
         try {
             Point ecPoint =
-                    Point.createPoint(
-                            msg.getComputations().getClientPublicKeyX().getValue(),
-                            msg.getComputations().getClientPublicKeyY().getValue(),
-                            chooser.getSelectedGostCurve().getGroupParameters().getCurve());
+                    Point.createPoint(msg.getComputations().getClientPublicKeyX().getValue(),
+                            msg.getComputations().getClientPublicKeyY().getValue(), (NamedEllipticCurveParameters) chooser.getSelectedGostCurve().getGroupParameters());
             SubjectPublicKeyInfo ephemeralKey =
                     SubjectPublicKeyInfo.getInstance(
                             GOSTUtils.generatePublicKey(chooser.getSelectedGostCurve(), ecPoint)

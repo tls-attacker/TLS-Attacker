@@ -10,11 +10,11 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
+import de.rub.nds.protocol.crypto.ec.EllipticCurve;
+import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.certificate.CertificateAnalyzer;
 import de.rub.nds.tlsattacker.core.constants.CertificateKeyType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.protocol.crypto.ec.EllipticCurve;
-import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.protocol.message.EmptyClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.math.BigInteger;
@@ -111,7 +111,9 @@ public class EmptyClientKeyExchangePreparator<T extends EmptyClientKeyExchangeMe
                     NamedGroup usedGroup = chooser.getSelectedNamedGroup();
                     LOGGER.debug("PMS used Group: " + usedGroup.name());
 
-                    EllipticCurve curve = ((NamedEllipticCurveParameters)usedGroup.getGroupParameters()).getCurve();
+                    EllipticCurve curve =
+                            ((NamedEllipticCurveParameters) usedGroup.getGroupParameters())
+                                    .getCurve();
                     Point publicKey = chooser.getServerEcPublicKey();
                     BigInteger privateKey = chooser.getClientEcPrivateKey();
                     premasterSecret = computeECPremasterSecret(curve, publicKey, privateKey);

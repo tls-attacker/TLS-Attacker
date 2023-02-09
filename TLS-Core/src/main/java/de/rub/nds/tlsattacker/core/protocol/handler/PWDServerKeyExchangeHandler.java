@@ -8,8 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.tlsattacker.core.constants.NamedGroup;
+import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
 import de.rub.nds.protocol.crypto.ec.PointFormatter;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.PWDServerKeyExchangeMessage;
 import java.math.BigInteger;
@@ -26,8 +27,7 @@ public class PWDServerKeyExchangeHandler
         tlsContext.setSelectedGroup(NamedGroup.getNamedGroup(message.getNamedGroup().getValue()));
         tlsContext.setServerPWDSalt(message.getSalt().getValue());
         tlsContext.setServerPWDElement(
-                PointFormatter.formatFromByteArray(
-                        tlsContext.getChooser().getSelectedNamedGroup().getGroupParameters(),
+                PointFormatter.formatFromByteArray((NamedEllipticCurveParameters) tlsContext.getChooser().getSelectedNamedGroup().getGroupParameters(),
                         message.getElement().getValue()));
         tlsContext.setServerPWDScalar(new BigInteger(1, message.getScalar().getValue()));
         if (message.getComputations() != null) {

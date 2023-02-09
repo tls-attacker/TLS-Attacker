@@ -6,9 +6,9 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.constants;
 
+import de.rub.nds.protocol.constants.PointFormat;
 import java.io.*;
 import java.util.HashMap;
 import java.util.List;
@@ -17,16 +17,18 @@ import java.util.Random;
 
 public enum ECPointFormat {
 
-    UNCOMPRESSED((byte) 0),
-    ANSIX962_COMPRESSED_PRIME((byte) 1),
-    ANSIX962_COMPRESSED_CHAR2((byte) 2);
+    UNCOMPRESSED((byte) 0, PointFormat.UNCOMPRESSED),
+    ANSIX962_COMPRESSED_PRIME((byte) 1, PointFormat.ANSIX962_COMPRESSED_PRIME),
+    ANSIX962_COMPRESSED_CHAR2((byte) 2, PointFormat.ANSIX962_COMPRESSED_CHAR2);
 
     private byte value;
+    private PointFormat format;
 
     private static final Map<Byte, ECPointFormat> MAP;
 
-    private ECPointFormat(byte value) {
+    private ECPointFormat(byte value, PointFormat format) {
         this.value = value;
+        this.format = format;
     }
 
     static {
@@ -38,6 +40,10 @@ public enum ECPointFormat {
 
     public static ECPointFormat getECPointFormat(byte value) {
         return MAP.get(value);
+    }
+
+    public PointFormat getFormat() {
+        return format;
     }
 
     public byte getValue() {
@@ -54,7 +60,7 @@ public enum ECPointFormat {
     }
 
     public byte[] getArrayValue() {
-        return new byte[] { value };
+        return new byte[]{value};
     }
 
     public short getShortValue() {
@@ -75,7 +81,7 @@ public enum ECPointFormat {
     }
 
     public static ECPointFormat[] pointFormatsFromByteArray(byte[] sourceBytes)
-        throws IOException, ClassNotFoundException {
+            throws IOException, ClassNotFoundException {
         if (sourceBytes == null || sourceBytes.length == 0) {
             return null;
         }

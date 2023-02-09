@@ -1,19 +1,19 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.protocol.crypto.ec.EllipticCurve;
-import de.rub.nds.protocol.crypto.ec.PointFormatter;
-import de.rub.nds.protocol.crypto.ec.RFC7748Curve;
-import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
+import de.rub.nds.protocol.crypto.ec.EllipticCurve;
+import de.rub.nds.protocol.crypto.ec.Point;
+import de.rub.nds.protocol.crypto.ec.PointFormatter;
+import de.rub.nds.protocol.crypto.ec.RFC7748Curve;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
@@ -101,14 +101,17 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
         if (msg.getComputations().getPrivateKey() == null) {
             setComputationPrivateKey(msg, clientMode);
         }
-        EllipticCurve curve = ((NamedEllipticCurveParameters)usedGroup.getGroupParameters()).getCurve();
+        EllipticCurve curve =
+                ((NamedEllipticCurveParameters) usedGroup.getGroupParameters()).getCurve();
         Point publicKey;
 
         if (clientMode) {
             publicKey = chooser.getServerEcPublicKey();
         } else {
             publicKey =
-                    PointFormatter.formatFromByteArray((NamedEllipticCurveParameters) usedGroup.getGroupParameters(), msg.getPublicKey().getValue());
+                    PointFormatter.formatFromByteArray(
+                            (NamedEllipticCurveParameters) usedGroup.getGroupParameters(),
+                            msg.getPublicKey().getValue());
         }
         premasterSecret =
                 computePremasterSecret(
@@ -124,7 +127,8 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
         setComputationPrivateKey(msg, true);
         byte[] publicKeyBytes;
         BigInteger privateKey = msg.getComputations().getPrivateKey().getValue();
-        EllipticCurve curve = ((NamedEllipticCurveParameters)usedGroup.getGroupParameters()).getCurve();
+        EllipticCurve curve =
+                ((NamedEllipticCurveParameters) usedGroup.getGroupParameters()).getCurve();
         if (usedGroup == NamedGroup.ECDH_X25519 || usedGroup == NamedGroup.ECDH_X448) {
             RFC7748Curve rfcCurve = (RFC7748Curve) curve;
             publicKeyBytes = rfcCurve.computePublicKey(privateKey);
@@ -136,7 +140,11 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
                     curve.getPoint(
                             msg.getComputations().getPublicKeyX().getValue(),
                             msg.getComputations().getPublicKeyY().getValue());
-            publicKeyBytes = PointFormatter.formatToByteArray((NamedEllipticCurveParameters)usedGroup.getGroupParameters(), publicKey, pointFormat);
+            publicKeyBytes =
+                    PointFormatter.formatToByteArray(
+                            (NamedEllipticCurveParameters) usedGroup.getGroupParameters(),
+                            publicKey,
+                            pointFormat.getFormat());
         }
         msg.setPublicKey(publicKeyBytes);
     }

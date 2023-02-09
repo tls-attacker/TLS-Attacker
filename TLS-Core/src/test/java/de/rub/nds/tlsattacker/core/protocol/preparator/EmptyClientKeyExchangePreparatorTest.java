@@ -12,10 +12,10 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.CipherSuite;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.protocol.crypto.ec.PointFormatter;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.EmptyClientKeyExchangeMessage;
 import de.rub.nds.x509attacker.filesystem.CertificateIo;
 import de.rub.nds.x509attacker.x509.base.X509CertificateChain;

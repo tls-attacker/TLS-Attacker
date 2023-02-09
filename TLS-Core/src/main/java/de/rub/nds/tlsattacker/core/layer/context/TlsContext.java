@@ -10,10 +10,10 @@ package de.rub.nds.tlsattacker.core.layer.context;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.BadRandom;
+import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.crypto.MessageDigestCollector;
-import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.layer.impl.DtlsFragmentLayer;
 import de.rub.nds.tlsattacker.core.layer.impl.RecordLayer;

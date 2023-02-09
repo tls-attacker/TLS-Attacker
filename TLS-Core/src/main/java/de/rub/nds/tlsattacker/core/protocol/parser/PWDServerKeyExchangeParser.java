@@ -54,7 +54,7 @@ public class PWDServerKeyExchangeParser
     }
 
     private void parseNamedGroup(PWDServerKeyExchangeMessage msg) {
-        msg.setNamedGroup(parseByteArrayField(NamedGroup.LENGTH));
+        msg.setNamedGroup(parseByteArrayField(HandshakeByteLength.NAMED_GROUP));
         LOGGER.debug(
                 "NamedGroup: " + ArrayConverter.bytesToHexString(msg.getNamedGroup().getValue()));
     }

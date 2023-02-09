@@ -1,19 +1,19 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.protocol.crypto.ec.EllipticCurve;
-import de.rub.nds.protocol.crypto.ec.PointFormatter;
-import de.rub.nds.protocol.crypto.ec.RFC7748Curve;
-import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
+import de.rub.nds.protocol.crypto.ec.EllipticCurve;
+import de.rub.nds.protocol.crypto.ec.Point;
+import de.rub.nds.protocol.crypto.ec.PointFormatter;
+import de.rub.nds.protocol.crypto.ec.RFC7748Curve;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
@@ -86,7 +86,8 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
         }
 
         // Compute publicKey
-        EllipticCurve curve = ((NamedEllipticCurveParameters)namedGroup.getGroupParameters()).getCurve();
+        EllipticCurve curve =
+                ((NamedEllipticCurveParameters) namedGroup.getGroupParameters()).getCurve();
         byte[] publicKeyBytes = null;
         if (!namedGroup.isShortWeierstrass()) {
             RFC7748Curve rfcCurve = (RFC7748Curve) curve;
@@ -96,7 +97,11 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
             Point publicKey =
                     curve.mult(
                             msg.getComputations().getPrivateKey().getValue(), curve.getBasePoint());
-            publicKeyBytes = PointFormatter.formatToByteArray((NamedEllipticCurveParameters)(namedGroup.getGroupParameters()), publicKey, pointFormat);
+            publicKeyBytes =
+                    PointFormatter.formatToByteArray(
+                            (NamedEllipticCurveParameters) (namedGroup.getGroupParameters()),
+                            publicKey,
+                            pointFormat.getFormat());
         } else {
             LOGGER.warn(
                     "Could not set public key. The selected curve is probably not a real curve. Using empty public key instead");

@@ -9,10 +9,10 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension.keyshare;
 
 import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
+import de.rub.nds.protocol.crypto.ec.EllipticCurve;
 import de.rub.nds.tlsattacker.core.constants.Bits;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.protocol.crypto.ec.EllipticCurve;
 import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.DragonFlyKeyShareEntry;
 import java.io.InputStream;
@@ -30,7 +30,8 @@ public class DragonFlyKeyShareEntryParser extends Parser<DragonFlyKeyShareEntry>
     @Override
     public void parse(DragonFlyKeyShareEntry keyShare) {
         if (group.isCurve()) {
-            EllipticCurve curve = ((NamedEllipticCurveParameters)group.getGroupParameters()).getCurve();
+            EllipticCurve curve =
+                    ((NamedEllipticCurveParameters) group.getGroupParameters()).getCurve();
             int elementLength = curve.getModulus().bitLength();
             byte[] rawPublicKey = parseByteArrayField(elementLength * 2 / Bits.IN_A_BYTE);
             int scalarLength = parseIntField(ExtensionByteLength.PWD_SCALAR);

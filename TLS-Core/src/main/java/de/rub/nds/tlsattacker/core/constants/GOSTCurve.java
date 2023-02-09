@@ -6,9 +6,9 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.constants;
 
+import de.rub.nds.protocol.constants.GroupParameters;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.cryptopro.CryptoProObjectIdentifiers;
 import org.bouncycastle.asn1.rosstandart.RosstandartObjectIdentifiers;
@@ -27,12 +27,18 @@ public enum GOSTCurve {
 
     private final ASN1ObjectIdentifier identifier;
 
+    private GroupParameters groupParameters;
+
     GOSTCurve(ASN1ObjectIdentifier identifier) {
         this.identifier = identifier;
     }
 
     public ASN1ObjectIdentifier getIdentifier() {
         return identifier;
+    }
+
+    public GroupParameters getGroupParameters() {
+        return groupParameters;
     }
 
     public String getJavaName() {

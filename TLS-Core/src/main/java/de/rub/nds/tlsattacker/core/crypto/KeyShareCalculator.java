@@ -1,20 +1,19 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 package de.rub.nds.tlsattacker.core.crypto;
 
-import de.rub.nds.protocol.crypto.ec.CurveFactory;
-import de.rub.nds.protocol.crypto.ec.EllipticCurve;
-import de.rub.nds.protocol.crypto.ec.PointFormatter;
-import de.rub.nds.protocol.crypto.ec.RFC7748Curve;
-import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
+import de.rub.nds.protocol.crypto.ec.EllipticCurve;
+import de.rub.nds.protocol.crypto.ec.Point;
+import de.rub.nds.protocol.crypto.ec.PointFormatter;
+import de.rub.nds.protocol.crypto.ec.RFC7748Curve;
 import de.rub.nds.tlsattacker.core.constants.Bits;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
@@ -31,10 +30,11 @@ public class KeyShareCalculator {
     public static byte[] createPublicKey(
             NamedGroup group, BigInteger privateKey, ECPointFormat pointFormat) {
         if (group.isCurve() || group.isGrease()) {
-            EllipticCurve curve = ((NamedEllipticCurveParameters)group.getGroupParameters()).getCurve();
+            EllipticCurve curve =
+                    ((NamedEllipticCurveParameters) group.getGroupParameters()).getCurve();
             if (group.isShortWeierstrass() || group.isGrease()) {
                 Point publicKey = curve.mult(privateKey, curve.getBasePoint());
-                return PointFormatter.formatToByteArray(group, publicKey, pointFormat);
+                return PointFormatter.formatToByteArray((NamedEllipticCurveParameters)(group.getGroupParameters()), publicKey, pointFormat.getFormat());
             } else {
                 RFC7748Curve rfcCurve = (RFC7748Curve) curve;
                 return rfcCurve.computePublicKey(privateKey);
@@ -59,8 +59,9 @@ public class KeyShareCalculator {
     public static byte[] computeSharedSecret(
             NamedGroup group, BigInteger privateKey, byte[] publicKey) {
         if (group.isCurve()) {
-            EllipticCurve curve = ((NamedEllipticCurveParameters)group.getGroupParameters()).getCurve();
-            Point publicPoint = PointFormatter.formatFromByteArray(group, publicKey);
+            EllipticCurve curve =
+                    ((NamedEllipticCurveParameters) group.getGroupParameters()).getCurve();
+            Point publicPoint = PointFormatter.formatFromByteArray((NamedEllipticCurveParameters) group.getGroupParameters(), publicKey);
             switch (group) {
                 case ECDH_X25519:
                 case ECDH_X448:

@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -10,26 +10,25 @@ package de.rub.nds.tlsattacker.core.tokenbinding;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.BadRandom;
-import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.protocol.crypto.ec.EllipticCurve;
 import de.rub.nds.protocol.crypto.ec.EllipticCurveSECP256R1;
 import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.protocol.crypto.ec.PointFormatter;
+import de.rub.nds.tlsattacker.core.constants.*;
+import de.rub.nds.tlsattacker.core.crypto.SignatureCalculator;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessagePreparator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Random;
+import java.util.logging.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bouncycastle.crypto.params.ECDomainParameters;
 import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 import org.bouncycastle.crypto.params.ParametersWithRandom;
 import org.bouncycastle.crypto.signers.ECDSASigner;
@@ -60,12 +59,6 @@ public class TokenBindingMessagePreparator extends ProtocolMessagePreparator<Tok
 
             message.setPoint(PointFormatter.toRawFormat(publicKey));
             message.setPointLength(message.getPoint().getValue().length);
-            ParametersWithRandom params =
-                    new ParametersWithRandom(
-                            new ECPrivateKeyParameters(privateKey, generateEcParameters()),
-                            new BadRandom(new Random(0), new byte[0]));
-            ECDSASigner signer = new ECDSASigner();
-            signer.init(true, params);
             MessageDigest dig;
             try {
                 dig = MessageDigest.getInstance("SHA-256");
@@ -73,12 +66,14 @@ public class TokenBindingMessagePreparator extends ProtocolMessagePreparator<Tok
                 throw new PreparationException("Could not create SHA-256 digest", ex);
             }
             dig.update(generateToBeSigned());
-            BigInteger[] signature = signer.generateSignature(dig.digest());
+            byte[] signature;
+            try {
+                signature = SignatureCalculator.generateECDSASignature(chooser, dig.digest(), SignatureAndHashAlgorithm.ECDSA_SHA256);
+            } catch (CryptoException ex) {
+                throw new RuntimeException(ex);
+            }
 
-            message.setSignature(
-                    ArrayConverter.concatenate(
-                            ArrayConverter.bigIntegerToByteArray(signature[0]),
-                            ArrayConverter.bigIntegerToByteArray(signature[1])));
+            message.setSignature(signature);
         } else {
             message.setModulus(
                     chooser.getConfig().getDefaultTokenBindingRsaModulus().toByteArray());
@@ -100,8 +95,8 @@ public class TokenBindingMessagePreparator extends ProtocolMessagePreparator<Tok
     private byte[] generateToBeSigned() {
         try {
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            stream.write(new byte[] {message.getTokenbindingType().getValue()});
-            stream.write(new byte[] {message.getKeyParameter().getValue()});
+            stream.write(new byte[]{message.getTokenbindingType().getValue()});
+            stream.write(new byte[]{message.getKeyParameter().getValue()});
             stream.write(TokenCalculator.calculateEKM(chooser, 32));
             return stream.toByteArray();
         } catch (IOException | CryptoException ex) {
