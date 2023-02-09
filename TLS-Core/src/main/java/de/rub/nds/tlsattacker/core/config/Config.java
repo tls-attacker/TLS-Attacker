@@ -96,7 +96,9 @@ public class Config implements Serializable {
      * If this is non-null, TLS-Attacker will not create its own certificate chain but will simply
      * send the bytes in the list as the certificates in the chain in the provided order
      */
-    @XmlElementWrapper private List<CertificateBytes> defaultExplicitCertificateChain = null;
+    @XmlElement(name = "certificateBytes")
+    @XmlElementWrapper
+    private List<CertificateBytes> defaultExplicitCertificateChain = null;
 
     /**
      * If set to true, dynamically creates certificates that are fit to use for the current TLS
@@ -105,6 +107,8 @@ public class Config implements Serializable {
      */
     private Boolean autoAdjustCertificate = true;
 
+    @XmlElement(name = "certificateConfig")
+    @XmlElementWrapper
     private List<X509CertificateConfig> certificateChainConfig;
 
     /** List of filters to apply on workflow traces before serialization. */

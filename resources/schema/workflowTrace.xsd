@@ -3863,12 +3863,18 @@
       <xs:element name="defaultExplicitCertificateChain" minOccurs="0">
         <xs:complexType>
           <xs:sequence>
-            <xs:element name="defaultExplicitCertificateChain" type="certificateBytes" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element ref="certificateBytes" minOccurs="0" maxOccurs="unbounded"/>
           </xs:sequence>
         </xs:complexType>
       </xs:element>
       <xs:element name="autoAdjustCertificate" type="xs:boolean" minOccurs="0"/>
-      <xs:element name="certificateChainConfig" type="x509CertificateConfig" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="certificateChainConfig" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="certificateConfig" type="x509CertificateConfig" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
       <xs:element name="outputFilters" minOccurs="0">
         <xs:complexType>
           <xs:sequence>

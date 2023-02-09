@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -19,8 +19,12 @@ import java.util.Map;
 import javax.xml.transform.Result;
 import javax.xml.transform.stream.StreamResult;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ConfigSchemaGenerator {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private static final String ROOT_NS = "";
 
@@ -32,7 +36,7 @@ public class ConfigSchemaGenerator {
             assert outputDirectory.exists() || outputDirectory.mkdirs();
             generateSchema(outputDirectory);
         } catch (IOException | JAXBException e) {
-            e.printStackTrace();
+            LOGGER.error(e);
         }
     }
 
@@ -50,6 +54,7 @@ public class ConfigSchemaGenerator {
     }
 
     public static class AccumulatingSchemaOutputResolver extends SchemaOutputResolver {
+
         public static String mapSystemIds() {
             return "Config.xsd";
         }
