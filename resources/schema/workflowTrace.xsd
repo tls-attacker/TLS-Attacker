@@ -275,6 +275,8 @@
 
   <xs:element name="byteXorModification" type="byteXorModification"/>
 
+  <xs:element name="certificateBytes" type="certificateBytes"/>
+
   <xs:element name="certificateSignatureAlgorithmIdentifier" type="certificateSignatureAlgorithmIdentifier"/>
 
   <xs:element name="changeCipherSuiteAction" type="changeCipherSuiteAction"/>
@@ -3858,7 +3860,13 @@
     <xs:all>
       <xs:element name="defaultLayerConfiguration" type="layerConfiguration" minOccurs="0"/>
       <xs:element name="defaultHandshakeSecret" type="xs:string" minOccurs="0"/>
-      <xs:element name="defaultExplicitCertificateChain" type="xs:string" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="defaultExplicitCertificateChain" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="defaultExplicitCertificateChain" type="certificateBytes" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
       <xs:element name="autoAdjustCertificate" type="xs:boolean" minOccurs="0"/>
       <xs:element name="certificateChainConfig" type="x509CertificateConfig" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="outputFilters" minOccurs="0">
@@ -4396,6 +4404,12 @@
       <xs:element name="writeKeylogFile" type="xs:boolean" minOccurs="0"/>
       <xs:element name="keylogFilePath" type="xs:string" minOccurs="0"/>
     </xs:all>
+  </xs:complexType>
+
+  <xs:complexType name="certificateBytes">
+    <xs:sequence>
+      <xs:element name="bytes" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
   </xs:complexType>
 
   <xs:complexType name="x509CertificateConfig">
