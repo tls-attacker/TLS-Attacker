@@ -393,6 +393,8 @@
 
   <xs:element name="name" type="name"/>
 
+  <xs:element name="pair" type="pair"/>
+
   <xs:element name="point" type="point"/>
 
   <xs:element name="popAndSendAction" type="popAndSendAction"/>
@@ -472,6 +474,8 @@
   <xs:element name="workflowTrace" type="workflowTrace"/>
 
   <xs:element name="x509Certificate" type="x509Certificate"/>
+
+  <xs:element name="x509CertificateConfig" type="x509CertificateConfig"/>
 
   <xs:complexType name="workflowTrace">
     <xs:sequence>
@@ -3838,8 +3842,11 @@
     </xs:sequence>
   </xs:complexType>
 
-  <xs:complexType name="pair" abstract="true">
-    <xs:sequence/>
+  <xs:complexType name="pair">
+    <xs:sequence>
+      <xs:element name="leftElement" type="xs:anyType" minOccurs="0"/>
+      <xs:element name="rightElement" type="xs:anyType" minOccurs="0"/>
+    </xs:sequence>
   </xs:complexType>
 
   <xs:complexType name="context">
@@ -4420,38 +4427,51 @@
 
   <xs:complexType name="x509CertificateConfig">
     <xs:sequence>
-      <xs:element name="defaultIssuer" type="pair" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
-      <xs:element name="defaultIssuerDsaPrivateKey" type="xs:integer" minOccurs="0"/>
-      <xs:element name="defaultIssuerDsaPublicKeyY" type="xs:integer" minOccurs="0"/>
-      <xs:element name="defaultIssuerEcPrivateKey" type="xs:integer" minOccurs="0"/>
-      <xs:element name="defaultIssuerPublicKeyType" type="x509PublicKeyType" minOccurs="0"/>
-      <xs:element name="defaultIssuerRsaModulus" type="xs:integer" minOccurs="0"/>
-      <xs:element name="defaultIssuerRsaPrivateKey" type="xs:integer" minOccurs="0"/>
-      <xs:element name="defaultIssuerRsaPublicKey" type="xs:integer" minOccurs="0"/>
-      <xs:element name="defaultIssuerUniqueId" type="xs:base64Binary" minOccurs="0"/>
-      <xs:element name="defaultNotAfterEncoding" type="validityEncoding" minOccurs="0"/>
-      <xs:element name="defaultNotBeforeEncoding" type="validityEncoding" minOccurs="0"/>
-      <xs:element name="defaultSubjectNamedCurve" type="x509NamedCurve" minOccurs="0"/>
-      <xs:element name="dsaPrivateKey" type="xs:integer" minOccurs="0"/>
-      <xs:element name="dsaPublicKeyY" type="xs:integer" minOccurs="0"/>
-      <xs:element name="ecPrivateKey" type="xs:integer" minOccurs="0"/>
-      <xs:element name="includeDhValidationParameters" type="xs:boolean" minOccurs="0"/>
-      <xs:element name="includeExtensions" type="xs:boolean"/>
-      <xs:element name="includeIssuerUniqueId" type="xs:boolean"/>
-      <xs:element name="includeSubjectUniqueId" type="xs:boolean"/>
-      <xs:element name="notAfter" type="dateTime" minOccurs="0"/>
-      <xs:element name="notAfterAccurracy" type="timeAccurracy" minOccurs="0"/>
+      <xs:element name="signatureAlgorithm" type="x509SignatureAlgorithm" minOccurs="0"/>
+      <xs:element name="version" type="x509Version" minOccurs="0"/>
+      <xs:element name="serialNumber" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultIssuer" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="attributeField" type="pair" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="subject" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="attributeField" type="pair" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
       <xs:element name="notBefore" type="dateTime" minOccurs="0"/>
       <xs:element name="notBeforeAccurracy" type="timeAccurracy" minOccurs="0"/>
+      <xs:element name="defaultNotBeforeEncoding" type="validityEncoding" minOccurs="0"/>
+      <xs:element name="notAfter" type="dateTime" minOccurs="0"/>
+      <xs:element name="notAfterAccurracy" type="timeAccurracy" minOccurs="0"/>
+      <xs:element name="defaultNotAfterEncoding" type="validityEncoding" minOccurs="0"/>
+      <xs:element name="timezoneOffsetInMinutes" type="xs:int"/>
+      <xs:element name="defaultIssuerUniqueId" type="xs:string" minOccurs="0"/>
+      <xs:element name="subjectUniqueId" type="xs:string" minOccurs="0"/>
+      <xs:element name="includeIssuerUniqueId" type="xs:boolean"/>
+      <xs:element name="includeSubjectUniqueId" type="xs:boolean"/>
+      <xs:element name="includeExtensions" type="xs:boolean"/>
       <xs:element name="publicKeyType" type="x509PublicKeyType" minOccurs="0"/>
+      <xs:element name="defaultIssuerPublicKeyType" type="x509PublicKeyType" minOccurs="0"/>
       <xs:element name="rsaModulus" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultIssuerRsaModulus" type="xs:integer" minOccurs="0"/>
       <xs:element name="rsaPrivateKey" type="xs:integer" minOccurs="0"/>
       <xs:element name="rsaPublicKey" type="xs:integer" minOccurs="0"/>
-      <xs:element name="serialNumber" type="xs:integer" minOccurs="0"/>
-      <xs:element name="subject" type="pair" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
-      <xs:element name="subjectUniqueId" type="xs:base64Binary" minOccurs="0"/>
-      <xs:element name="timezoneOffsetInMinutes" type="xs:int"/>
-      <xs:element name="version" type="x509Version" minOccurs="0"/>
+      <xs:element name="defaultIssuerRsaPublicKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="dsaPublicKeyY" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultIssuerDsaPublicKeyY" type="xs:integer" minOccurs="0"/>
+      <xs:element name="dsaPrivateKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="ecPrivateKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultIssuerRsaPrivateKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultIssuerDsaPrivateKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultIssuerEcPrivateKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="includeDhValidationParameters" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="defaultSubjectNamedCurve" type="x509NamedCurve" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
 
@@ -6470,13 +6490,11 @@
     </xs:restriction>
   </xs:simpleType>
 
-  <xs:simpleType name="validityEncoding">
+  <xs:simpleType name="x509Version">
     <xs:restriction base="xs:string">
-      <xs:enumeration value="UTC"/>
-      <xs:enumeration value="UTC_DIFFERENTIAL"/>
-      <xs:enumeration value="GENERALIZED_TIME_LOCAL"/>
-      <xs:enumeration value="GENERALIZED_TIME_UTC"/>
-      <xs:enumeration value="GENERALIZED_TIME_DIFFERENTIAL"/>
+      <xs:enumeration value="V1"/>
+      <xs:enumeration value="V2"/>
+      <xs:enumeration value="V3"/>
     </xs:restriction>
   </xs:simpleType>
 
@@ -6489,11 +6507,24 @@
     </xs:restriction>
   </xs:simpleType>
 
-  <xs:simpleType name="x509Version">
+  <xs:simpleType name="validityEncoding">
     <xs:restriction base="xs:string">
-      <xs:enumeration value="V1"/>
-      <xs:enumeration value="V2"/>
-      <xs:enumeration value="V3"/>
+      <xs:enumeration value="UTC"/>
+      <xs:enumeration value="UTC_DIFFERENTIAL"/>
+      <xs:enumeration value="GENERALIZED_TIME_LOCAL"/>
+      <xs:enumeration value="GENERALIZED_TIME_UTC"/>
+      <xs:enumeration value="GENERALIZED_TIME_DIFFERENTIAL"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="x500AttributeType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="COMMON_NAME"/>
+      <xs:enumeration value="COUNTRY_NAME"/>
+      <xs:enumeration value="LOCALITY"/>
+      <xs:enumeration value="STATE_OR_PROVINCE_NAME"/>
+      <xs:enumeration value="ORGANISATION_NAME"/>
+      <xs:enumeration value="ORGANISATION_UNIT_NAME"/>
     </xs:restriction>
   </xs:simpleType>
 

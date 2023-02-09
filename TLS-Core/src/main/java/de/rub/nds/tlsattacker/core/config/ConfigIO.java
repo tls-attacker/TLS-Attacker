@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -10,6 +10,8 @@ package de.rub.nds.tlsattacker.core.config;
 
 import de.rub.nds.tlsattacker.core.config.filter.ConfigDisplayFilter;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceSerializer;
+import de.rub.nds.x509attacker.config.X509CertificateConfig;
+import de.rub.nds.x509attacker.constants.X500AttributeType;
 import jakarta.xml.bind.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -33,7 +35,9 @@ public class ConfigIO {
 
     static synchronized JAXBContext getJAXBContext() throws JAXBException {
         if (context == null) {
-            context = JAXBContext.newInstance(Config.class);
+            context =
+                    JAXBContext.newInstance(
+                            Config.class, X509CertificateConfig.class, X500AttributeType.class);
         }
         return context;
     }
