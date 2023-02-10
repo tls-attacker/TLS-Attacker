@@ -11,7 +11,11 @@ package de.rub.nds.tlsattacker.core.certificate.ocsp;
 import static de.rub.nds.tlsattacker.core.certificate.ocsp.OCSPResponseTypes.BASIC;
 
 import de.rub.nds.asn1.Asn1Encodable;
-import de.rub.nds.asn1.model.*;
+import de.rub.nds.asn1.model.Asn1ObjectIdentifier;
+import de.rub.nds.asn1.model.Asn1PrimitivePrintableString;
+import de.rub.nds.asn1.model.Asn1PrimitiveUtf8String;
+import de.rub.nds.asn1.model.Asn1Sequence;
+import de.rub.nds.asn1.model.Asn1Set;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.certificate.CrlReason;
 import de.rub.nds.tlsattacker.core.certificate.ObjectIdentifierTranslator;
@@ -189,7 +193,7 @@ public class OCSPResponse {
         if (getResponseDataVersion() == null || getResponseDataVersion() == 0) {
             sb.append("1 (0x0)");
         } else {
-            sb.append(Integer.toHexString(getResponseDataVersion()));
+            sb.append("0x").append(Integer.toHexString(getResponseDataVersion()));
         }
         sb.append("\n Produced at: ").append(formatDate(getProducedAt()));
         sb.append("\n Response Type: ");
@@ -201,7 +205,7 @@ public class OCSPResponse {
         if (getResponderName() != null) {
             sb.append("\n Responder DN: ").append(parseResponderName());
         } else if (getResponderKey() != null) {
-            sb.append("\n Responder ID: ").append(Hex.toHexString(getResponderKey()));
+            sb.append("\n Responder ID: ").append("0x").append(Hex.toHexString(getResponderKey()));
         }
         if (getNonce() != null) {
             sb.append("\n Nonce: ").append(getNonce().toString());
@@ -217,8 +221,10 @@ public class OCSPResponse {
                             ObjectIdentifierTranslator.translate(
                                     certificateStatus.getHashAlgorithmIdentifier()));
             sb.append("\n   Issuer Name Hash: ")
+                    .append("0x")
                     .append(Hex.toHexString(certificateStatus.getIssuerNameHash()));
             sb.append("\n   Issuer Key Hash: ")
+                    .append("0x")
                     .append(Hex.toHexString(certificateStatus.getIssuerKeyHash()));
             sb.append("\n   Serial Number: ")
                     .append("0x")

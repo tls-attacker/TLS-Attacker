@@ -126,9 +126,9 @@ public class CertificateStatus {
         if (certificateStatus != null) {
             sb.append("\n Hash Algorithm: ")
                     .append(ObjectIdentifierTranslator.translate(getHashAlgorithmIdentifier()));
-            sb.append("\n Issuer Name Hash: ").append(Hex.toHexString(getIssuerNameHash()));
-            sb.append("\n Issuer Key Hash: ").append(Hex.toHexString(getIssuerKeyHash()));
-            sb.append("\n Serial Number: ").append(getSerialNumber().toString(16));
+            sb.append("\n Issuer Name Hash: 0x").append(Hex.toHexString(getIssuerNameHash()));
+            sb.append("\n Issuer Key Hash: 0x").append(Hex.toHexString(getIssuerKeyHash()));
+            sb.append("\n Serial Number: 0x").append(getSerialNumber().toString(16));
             sb.append("\n Certificate Status: ");
             sb.append(RevocationStatus.translate(getCertificateStatus()));
             if (getCertificateStatus().equals(RevocationStatus.translate("revoked"))) {

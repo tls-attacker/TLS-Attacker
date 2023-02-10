@@ -140,4 +140,16 @@ public class Point implements Serializable {
                     + ")";
         }
     }
+
+    public String toString(int radix) {
+        if (this.isAtInfinity()) {
+            return "Point: Infinity";
+        } else {
+            return "Point: ("
+                    + this.getFieldX().getData().toString(radix)
+                    + ", "
+                    + this.getFieldY().getData().toString(radix)
+                    + ")";
+        }
+    }
 }

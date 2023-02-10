@@ -113,7 +113,7 @@ public class SignedCertificateTimestamp {
         if (version == SignedCertificateTimestampVersion.V1) {
             sb.append("v1 (0x0)");
         } else {
-            sb.append(Integer.toHexString(encodedTimestamp[0]));
+            sb.append("0x").append(Integer.toHexString(encodedTimestamp[0]));
         }
 
         sb.append("\n Log: ");
