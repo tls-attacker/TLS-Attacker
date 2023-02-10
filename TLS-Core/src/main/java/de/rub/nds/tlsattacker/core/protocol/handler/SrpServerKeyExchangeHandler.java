@@ -1,23 +1,22 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.protocol.message.SrpServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.protocol.message.SrpServerKeyExchangeMessage;
+import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.math.BigInteger;
-
-public class SrpServerKeyExchangeHandler extends ServerKeyExchangeHandler<SrpServerKeyExchangeMessage> {
+public class SrpServerKeyExchangeHandler
+        extends ServerKeyExchangeHandler<SrpServerKeyExchangeMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -31,7 +30,8 @@ public class SrpServerKeyExchangeHandler extends ServerKeyExchangeHandler<SrpSer
         adjustSRPModulus(message);
         adjustSalt(message);
         adjustServerPublicKey(message);
-        if (message.getKeyExchangeComputations() != null && message.getKeyExchangeComputations().getPrivateKey() != null) {
+        if (message.getKeyExchangeComputations() != null
+                && message.getKeyExchangeComputations().getPrivateKey() != null) {
             adjustServerPrivateKey(message);
         }
     }
@@ -52,7 +52,8 @@ public class SrpServerKeyExchangeHandler extends ServerKeyExchangeHandler<SrpSer
     }
 
     private void adjustServerPrivateKey(SrpServerKeyExchangeMessage message) {
-        tlsContext.setServerSRPPrivateKey(message.getKeyExchangeComputations().getPrivateKey().getValue());
+        tlsContext.setServerSRPPrivateKey(
+                message.getKeyExchangeComputations().getPrivateKey().getValue());
         LOGGER.debug("Server PrivateKey: " + tlsContext.getServerSRPPrivateKey());
     }
 

@@ -30,7 +30,8 @@ public class ECDHEServerKeyExchangeHandler<T extends ECDHEServerKeyExchangeMessa
     public void adjustContext(T message) {
         adjustECParameter(message);
         if (message.getKeyExchangeComputations() != null) {
-            tlsContext.setServerEcPrivateKey(message.getKeyExchangeComputations().getPrivateKey().getValue());
+            tlsContext.setServerEcPrivateKey(
+                    message.getKeyExchangeComputations().getPrivateKey().getValue());
         }
     }
 

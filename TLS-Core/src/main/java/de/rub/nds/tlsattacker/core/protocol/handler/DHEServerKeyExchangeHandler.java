@@ -1,25 +1,24 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.crypto.ffdh.FFDHEGroup;
 import de.rub.nds.tlsattacker.core.crypto.ffdh.GroupFactory;
-import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
+import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.math.BigInteger;
-
-public class DHEServerKeyExchangeHandler<T extends DHEServerKeyExchangeMessage> extends ServerKeyExchangeHandler<T> {
+public class DHEServerKeyExchangeHandler<T extends DHEServerKeyExchangeMessage>
+        extends ServerKeyExchangeHandler<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -33,7 +32,8 @@ public class DHEServerKeyExchangeHandler<T extends DHEServerKeyExchangeMessage> 
         adjustDhModulus(message);
         adjustServerPublicKey(message);
         recognizeNamedGroup();
-        if (message.getKeyExchangeComputations() != null && message.getKeyExchangeComputations().getPrivateKey() != null) {
+        if (message.getKeyExchangeComputations() != null
+                && message.getKeyExchangeComputations().getPrivateKey() != null) {
             adjustServerPrivateKey(message);
         }
     }
@@ -54,7 +54,8 @@ public class DHEServerKeyExchangeHandler<T extends DHEServerKeyExchangeMessage> 
     }
 
     private void adjustServerPrivateKey(T message) {
-        tlsContext.setServerDhPrivateKey(message.getKeyExchangeComputations().getPrivateKey().getValue());
+        tlsContext.setServerDhPrivateKey(
+                message.getKeyExchangeComputations().getPrivateKey().getValue());
         LOGGER.debug("Server PrivateKey: " + tlsContext.getServerDhPrivateKey());
     }
 
@@ -64,10 +65,12 @@ public class DHEServerKeyExchangeHandler<T extends DHEServerKeyExchangeMessage> 
         for (NamedGroup group : NamedGroup.getImplemented()) {
             if (group.isDhGroup()) {
                 FFDHEGroup ffdheGroup = GroupFactory.getGroup(group);
-                if (serverDhGenerator.equals(ffdheGroup.getG()) && serverDhModulus.equals(ffdheGroup.getP())) {
+                if (serverDhGenerator.equals(ffdheGroup.getG())
+                        && serverDhModulus.equals(ffdheGroup.getP())) {
                     tlsContext.setSelectedGroup(group);
-                    LOGGER.debug("Set recognized NamedGroup {} of Server Key Exchange message as selected in context",
-                        group);
+                    LOGGER.debug(
+                            "Set recognized NamedGroup {} of Server Key Exchange message as selected in context",
+                            group);
                     break;
                 }
             }

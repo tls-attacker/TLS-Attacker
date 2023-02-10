@@ -1,7 +1,7 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -18,8 +18,8 @@ import de.rub.nds.protocol.crypto.signature.SignatureComputations;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.TlsSignatureUtil;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import java.io.InputStream;
 
 public class TokenBindingMessage<TokenBindingMessage> extends ProtocolMessage {
@@ -63,11 +63,9 @@ public class TokenBindingMessage<TokenBindingMessage> extends ProtocolMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger extensionLength;
 
-    @ModifiableVariableProperty
-    private ModifiableByteArray extensionBytes;
+    @ModifiableVariableProperty private ModifiableByteArray extensionBytes;
 
-    @HoldsModifiableVariable
-    private SignatureComputations signatureComputations;
+    @HoldsModifiableVariable private SignatureComputations signatureComputations;
 
     public TokenBindingMessage() {
         super();
@@ -88,8 +86,9 @@ public class TokenBindingMessage<TokenBindingMessage> extends ProtocolMessage {
     }
 
     public void setTokenbindingsLength(int tokenbindingsLength) {
-        this.tokenbindingsLength
-                = ModifiableVariableFactory.safelySetValue(this.tokenbindingsLength, tokenbindingsLength);
+        this.tokenbindingsLength =
+                ModifiableVariableFactory.safelySetValue(
+                        this.tokenbindingsLength, tokenbindingsLength);
     }
 
     public ModifiableInteger getModulusLength() {
@@ -97,7 +96,8 @@ public class TokenBindingMessage<TokenBindingMessage> extends ProtocolMessage {
     }
 
     public void setModulusLength(int modulusLength) {
-        this.modulusLength = ModifiableVariableFactory.safelySetValue(this.modulusLength, modulusLength);
+        this.modulusLength =
+                ModifiableVariableFactory.safelySetValue(this.modulusLength, modulusLength);
     }
 
     public void setModulusLength(ModifiableInteger modulusLength) {
@@ -125,8 +125,9 @@ public class TokenBindingMessage<TokenBindingMessage> extends ProtocolMessage {
     }
 
     public void setPublicExponentLength(int publicExponentLength) {
-        this.publicExponentLength
-                = ModifiableVariableFactory.safelySetValue(this.publicExponentLength, publicExponentLength);
+        this.publicExponentLength =
+                ModifiableVariableFactory.safelySetValue(
+                        this.publicExponentLength, publicExponentLength);
     }
 
     public ModifiableByteArray getPublicExponent() {
@@ -138,7 +139,8 @@ public class TokenBindingMessage<TokenBindingMessage> extends ProtocolMessage {
     }
 
     public void setPublicExponent(byte[] publicExponent) {
-        this.publicExponent = ModifiableVariableFactory.safelySetValue(this.publicExponent, publicExponent);
+        this.publicExponent =
+                ModifiableVariableFactory.safelySetValue(this.publicExponent, publicExponent);
     }
 
     public ModifiableInteger getKeyLength() {
@@ -186,7 +188,8 @@ public class TokenBindingMessage<TokenBindingMessage> extends ProtocolMessage {
     }
 
     public void setTokenbindingType(byte tokenbindingType) {
-        this.tokenbindingType = ModifiableVariableFactory.safelySetValue(this.tokenbindingType, tokenbindingType);
+        this.tokenbindingType =
+                ModifiableVariableFactory.safelySetValue(this.tokenbindingType, tokenbindingType);
     }
 
     public ModifiableByte getKeyParameter() {
@@ -198,7 +201,8 @@ public class TokenBindingMessage<TokenBindingMessage> extends ProtocolMessage {
     }
 
     public void setKeyParameter(byte keyParameter) {
-        this.keyParameter = ModifiableVariableFactory.safelySetValue(this.keyParameter, keyParameter);
+        this.keyParameter =
+                ModifiableVariableFactory.safelySetValue(this.keyParameter, keyParameter);
     }
 
     public ModifiableInteger getSignatureLength() {
@@ -210,7 +214,8 @@ public class TokenBindingMessage<TokenBindingMessage> extends ProtocolMessage {
     }
 
     public void setSignatureLength(int signatureLength) {
-        this.signatureLength = ModifiableVariableFactory.safelySetValue(this.signatureLength, signatureLength);
+        this.signatureLength =
+                ModifiableVariableFactory.safelySetValue(this.signatureLength, signatureLength);
     }
 
     public ModifiableByteArray getSignature() {
@@ -234,7 +239,8 @@ public class TokenBindingMessage<TokenBindingMessage> extends ProtocolMessage {
     }
 
     public void setExtensionLength(int extensionLength) {
-        this.extensionLength = ModifiableVariableFactory.safelySetValue(this.extensionLength, extensionLength);
+        this.extensionLength =
+                ModifiableVariableFactory.safelySetValue(this.extensionLength, extensionLength);
     }
 
     public ModifiableByteArray getExtensionBytes() {
@@ -246,7 +252,8 @@ public class TokenBindingMessage<TokenBindingMessage> extends ProtocolMessage {
     }
 
     public void setExtensionBytes(byte[] extensionBytes) {
-        this.extensionBytes = ModifiableVariableFactory.safelySetValue(this.extensionBytes, extensionBytes);
+        this.extensionBytes =
+                ModifiableVariableFactory.safelySetValue(this.extensionBytes, extensionBytes);
     }
 
     @Override
@@ -275,7 +282,7 @@ public class TokenBindingMessage<TokenBindingMessage> extends ProtocolMessage {
     }
 
     public SignatureComputations getSignatureComputations(SignatureAlgorithm algorithm) {
-        //TODO its unlucky that this design can cause a conflict here if the type mismatches
+        // TODO its unlucky that this design can cause a conflict here if the type mismatches
         if (signatureComputations == null) {
             TlsSignatureUtil util = new TlsSignatureUtil();
             util.createSignatureComputations(algorithm);

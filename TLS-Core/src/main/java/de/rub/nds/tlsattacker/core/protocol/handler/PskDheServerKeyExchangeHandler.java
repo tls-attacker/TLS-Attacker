@@ -1,21 +1,21 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.tlsattacker.core.protocol.message.PskDheServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.protocol.message.PskDheServerKeyExchangeMessage;
 import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class PskDheServerKeyExchangeHandler extends DHEServerKeyExchangeHandler<PskDheServerKeyExchangeMessage> {
+public class PskDheServerKeyExchangeHandler
+        extends DHEServerKeyExchangeHandler<PskDheServerKeyExchangeMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -28,7 +28,8 @@ public class PskDheServerKeyExchangeHandler extends DHEServerKeyExchangeHandler<
         adjustPSKGenerator(message);
         adjustPSKModulus(message);
         adjustServerPublicKey(message);
-        if (message.getKeyExchangeComputations() != null && message.getKeyExchangeComputations().getPrivateKey() != null) {
+        if (message.getKeyExchangeComputations() != null
+                && message.getKeyExchangeComputations().getPrivateKey() != null) {
             adjustServerPrivateKey(message);
         }
     }
@@ -49,7 +50,8 @@ public class PskDheServerKeyExchangeHandler extends DHEServerKeyExchangeHandler<
     }
 
     private void adjustServerPrivateKey(PskDheServerKeyExchangeMessage message) {
-        tlsContext.setServerPSKPrivateKey(message.getKeyExchangeComputations().getPrivateKey().getValue());
+        tlsContext.setServerPSKPrivateKey(
+                message.getKeyExchangeComputations().getPrivateKey().getValue());
         LOGGER.debug("Server PrivateKey: " + tlsContext.getServerPSKPrivateKey());
     }
 }

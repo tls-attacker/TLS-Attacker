@@ -65,8 +65,7 @@ public class PWDServerKeyExchangePreparator
     protected void preparePasswordElement(PWDServerKeyExchangeMessage msg) throws CryptoException {
         NamedGroup group = selectNamedGroup(msg);
         EllipticCurve curve =
-                ((NamedEllipticCurveParameters) group.getGroupParameters())
-                        .getCurve();
+                ((NamedEllipticCurveParameters) group.getGroupParameters()).getCurve();
         Point passwordElement = PWDComputations.computePasswordElement(chooser, curve);
         msg.getKeyExchangeComputations().setPasswordElement(passwordElement);
 

@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -40,17 +40,15 @@ public class CertificateVerifyMessage extends HandshakeMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.SIGNATURE)
     private ModifiableByteArray signature;
 
-    @HoldsModifiableVariable
-    private SignatureComputations signatureComputations;
-    
+    @HoldsModifiableVariable private SignatureComputations signatureComputations;
+
     public CertificateVerifyMessage() {
         super(HandshakeMessageType.CERTIFICATE_VERIFY);
     }
-    
-     public SignatureComputations getSignatureComputations(SignatureAlgorithm algorithm) {
-        //TODO its unlucky that this design can cause a conflict here if the type mismatches
-        if(signatureComputations == null)
-        {
+
+    public SignatureComputations getSignatureComputations(SignatureAlgorithm algorithm) {
+        // TODO its unlucky that this design can cause a conflict here if the type mismatches
+        if (signatureComputations == null) {
             TlsSignatureUtil util = new TlsSignatureUtil();
             util.createSignatureComputations(algorithm);
         }

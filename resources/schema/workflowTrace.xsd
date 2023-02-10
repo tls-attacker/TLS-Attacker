@@ -1338,6 +1338,7 @@
           <xs:element name="signature" type="modifiableByteArray" minOccurs="0"/>
           <xs:element name="extensionLength" type="modifiableInteger" minOccurs="0"/>
           <xs:element name="extensionBytes" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="signatureComputations" type="signatureComputations" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -1384,6 +1385,15 @@
       <xs:element name="createRandomModification" type="xs:boolean" minOccurs="0"/>
       <xs:element name="assertEquals" type="xs:anyType" minOccurs="0"/>
       <xs:element name="originalValue" type="xs:byte" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="signatureComputations" abstract="true">
+    <xs:sequence>
+      <xs:element name="digestBytes" type="modifiableByteArray" minOccurs="0"/>
+      <xs:element name="signatureBytes" type="modifiableByteArray" minOccurs="0"/>
+      <xs:element name="signatureValid" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="toBeSignedBytes" type="modifiableByteArray" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
 
@@ -2643,6 +2653,7 @@
           <xs:element name="signatureHashAlgorithm" type="modifiableByteArray" minOccurs="0"/>
           <xs:element name="signatureLength" type="modifiableInteger" minOccurs="0"/>
           <xs:element name="signature" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="signatureComputations" type="signatureComputations" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -2774,6 +2785,7 @@
           <xs:element name="signature" type="modifiableByteArray" minOccurs="0"/>
           <xs:element name="publicKeyLength" type="modifiableInteger" minOccurs="0"/>
           <xs:element name="publicKey" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="signatureComputations" type="signatureComputations" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -4182,6 +4194,7 @@
       <xs:element name="defaultClientDsaPrimeP" type="xs:integer" minOccurs="0"/>
       <xs:element name="defaultClientDsaPrimeQ" type="xs:integer" minOccurs="0"/>
       <xs:element name="defaultClientDsaGenerator" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultEcdsaNonce" type="xs:integer" minOccurs="0"/>
       <xs:element name="defaultSelectedGostCurve" type="gostCurve" minOccurs="0"/>
       <xs:element name="defaultApplicationMessageData" type="xs:string" minOccurs="0"/>
       <xs:element name="clientCertificateTypes" minOccurs="0">

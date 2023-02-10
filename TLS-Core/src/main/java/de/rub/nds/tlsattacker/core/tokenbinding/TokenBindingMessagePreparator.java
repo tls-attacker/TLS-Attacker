@@ -50,8 +50,9 @@ public class TokenBindingMessagePreparator extends ProtocolMessagePreparator<Tok
 
             message.setPoint(PointFormatter.toRawFormat(publicKey));
             message.setPointLength(message.getPoint().getValue().length);
-            
-            byte[] signature = generateSignature(SignatureAndHashAlgorithm.ECDSA_SHA256, generateToBeSigned());
+
+            byte[] signature =
+                    generateSignature(SignatureAndHashAlgorithm.ECDSA_SHA256, generateToBeSigned());
 
             message.setSignature(signature);
         } else {
@@ -71,11 +72,18 @@ public class TokenBindingMessagePreparator extends ProtocolMessagePreparator<Tok
         serializer = new TokenBindingMessageSerializer(message);
         message.setTokenbindingsLength(serializer.serializeBinding().length);
     }
-    
-    private byte[] generateSignature(SignatureAndHashAlgorithm algorithm, byte[] toBeHashedAndSigned) {
+
+    private byte[] generateSignature(
+            SignatureAndHashAlgorithm algorithm, byte[] toBeHashedAndSigned) {
         TlsSignatureUtil util = new TlsSignatureUtil();
-        util.computeSignature(chooser, algorithm, toBeHashedAndSigned, message.getSignatureComputations(algorithm.getSignatureAlgorithm()));
-        return message.getSignatureComputations(algorithm.getSignatureAlgorithm()).getSignatureBytes().getValue();
+        util.computeSignature(
+                chooser,
+                algorithm,
+                toBeHashedAndSigned,
+                message.getSignatureComputations(algorithm.getSignatureAlgorithm()));
+        return message.getSignatureComputations(algorithm.getSignatureAlgorithm())
+                .getSignatureBytes()
+                .getValue();
     }
 
     private byte[] generateToBeSigned() {

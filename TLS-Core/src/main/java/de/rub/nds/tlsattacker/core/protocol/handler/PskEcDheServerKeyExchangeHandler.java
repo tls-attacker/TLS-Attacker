@@ -22,7 +22,8 @@ public class PskEcDheServerKeyExchangeHandler
     public void adjustContext(PskEcDheServerKeyExchangeMessage message) {
         super.adjustECParameter(message);
         if (message.getKeyExchangeComputations() != null) {
-            tlsContext.setServerEcPrivateKey(message.getKeyExchangeComputations().getPrivateKey().getValue());
+            tlsContext.setServerEcPrivateKey(
+                    message.getKeyExchangeComputations().getPrivateKey().getValue());
         }
     }
 }

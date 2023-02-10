@@ -25,7 +25,8 @@ public class RSAServerKeyExchangeHandler
         tlsContext.setServerRSAPublicKey(new BigInteger(1, message.getPublicKey().getValue()));
         if (message.getKeyExchangeComputations() != null
                 && message.getKeyExchangeComputations().getPrivateKey() != null) {
-            tlsContext.setServerRSAPrivateKey(message.getKeyExchangeComputations().getPrivateKey().getValue());
+            tlsContext.setServerRSAPrivateKey(
+                    message.getKeyExchangeComputations().getPrivateKey().getValue());
         }
     }
 }

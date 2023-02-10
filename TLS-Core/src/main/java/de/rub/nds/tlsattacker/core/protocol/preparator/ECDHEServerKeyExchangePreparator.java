@@ -18,7 +18,6 @@ import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
@@ -45,7 +44,8 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
     public void prepareHandshakeMessageContents() {
 
         msg.prepareKeyExchangeComputations();
-        msg.getKeyExchangeComputations().setPrivateKey(chooser.getConfig().getDefaultServerEcPrivateKey());
+        msg.getKeyExchangeComputations()
+                .setPrivateKey(chooser.getConfig().getDefaultServerEcPrivateKey());
 
         prepareCurveType(msg);
         prepareEcDhParams();
@@ -62,7 +62,9 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
         msg.getKeyExchangeComputations().setNamedGroup(namedGroup.getValue());
         prepareNamedGroup(msg);
         // Rereading NamedGroup
-        namedGroup = NamedGroup.getNamedGroup(msg.getKeyExchangeComputations().getNamedGroup().getValue());
+        namedGroup =
+                NamedGroup.getNamedGroup(
+                        msg.getKeyExchangeComputations().getNamedGroup().getValue());
         if (namedGroup == null) {
             LOGGER.warn(
                     "Could not deserialize group from computations. Using default group instead");
@@ -72,7 +74,8 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
         msg.getKeyExchangeComputations().setEcPointFormat(pointFormat.getValue());
         // Rereading EcPointFormat
         pointFormat =
-                ECPointFormat.getECPointFormat(msg.getKeyExchangeComputations().getEcPointFormat().getValue());
+                ECPointFormat.getECPointFormat(
+                        msg.getKeyExchangeComputations().getEcPointFormat().getValue());
         if (pointFormat == null) {
             LOGGER.warn(
                     "Could not deserialize group from computations. Using default point format instead");
@@ -86,11 +89,13 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
         if (!namedGroup.isShortWeierstrass()) {
             RFC7748Curve rfcCurve = (RFC7748Curve) curve;
             publicKeyBytes =
-                    rfcCurve.computePublicKey(msg.getKeyExchangeComputations().getPrivateKey().getValue());
+                    rfcCurve.computePublicKey(
+                            msg.getKeyExchangeComputations().getPrivateKey().getValue());
         } else if (namedGroup.isCurve()) {
             Point publicKey =
                     curve.mult(
-                            msg.getKeyExchangeComputations().getPrivateKey().getValue(), curve.getBasePoint());
+                            msg.getKeyExchangeComputations().getPrivateKey().getValue(),
+                            curve.getBasePoint());
             publicKeyBytes =
                     PointFormatter.formatToByteArray(
                             (NamedEllipticCurveParameters) (namedGroup.getGroupParameters()),
@@ -190,10 +195,9 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
         }
 
         return ArrayConverter.concatenate(
-                msg.getKeyExchangeComputations().getClientServerRandom().getValue(), ecParams.toByteArray());
+                msg.getKeyExchangeComputations().getClientServerRandom().getValue(),
+                ecParams.toByteArray());
     }
-
-
 
     protected void prepareSignatureAndHashAlgorithm(T msg, SignatureAndHashAlgorithm signHashAlgo) {
         msg.setSignatureAndHashAlgorithm(signHashAlgo.getByteValue());
@@ -211,7 +215,9 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
         LOGGER.debug(
                 "ClientServerRandom: "
                         + ArrayConverter.bytesToHexString(
-                                msg.getKeyExchangeComputations().getClientServerRandom().getValue()));
+                                msg.getKeyExchangeComputations()
+                                        .getClientServerRandom()
+                                        .getValue()));
     }
 
     protected void prepareSignature(T msg, byte[] signature) {
@@ -236,7 +242,9 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
 
     protected void prepareNamedGroup(T msg) {
         NamedGroup group;
-        group = NamedGroup.getNamedGroup(msg.getKeyExchangeComputations().getNamedGroup().getValue());
+        group =
+                NamedGroup.getNamedGroup(
+                        msg.getKeyExchangeComputations().getNamedGroup().getValue());
         if (group == null) {
             LOGGER.warn(
                     "Could not deserialize group from computations. Using default group instead");

@@ -12,10 +12,6 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.protocol.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import java.io.ByteArrayInputStream;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.Signature;
-import java.security.spec.MGF1ParameterSpec;
-import java.security.spec.PSSParameterSpec;
 import java.util.*;
 import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
@@ -251,7 +247,6 @@ public enum SignatureAndHashAlgorithm {
         }
         return HashAlgorithm.NONE;
     }
-
 
     public boolean suitedForSigningTls13Messages() {
         switch (this) {

@@ -408,6 +408,7 @@
       <xs:element name="defaultClientDsaPrimeP" type="xs:integer" minOccurs="0"/>
       <xs:element name="defaultClientDsaPrimeQ" type="xs:integer" minOccurs="0"/>
       <xs:element name="defaultClientDsaGenerator" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultEcdsaNonce" type="xs:integer" minOccurs="0"/>
       <xs:element name="defaultSelectedGostCurve" type="gostCurve" minOccurs="0"/>
       <xs:element name="defaultApplicationMessageData" type="xs:string" minOccurs="0"/>
       <xs:element name="clientCertificateTypes" minOccurs="0">

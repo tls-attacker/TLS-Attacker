@@ -22,36 +22,25 @@ import java.util.Objects;
 
 public abstract class ServerKeyExchangeMessage extends HandshakeMessage {
 
-    /**
-     * signature and hash algorithm
-     */
+    /** signature and hash algorithm */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByteArray signatureAndHashAlgorithm;
-    /**
-     * signature length
-     */
+    /** signature length */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger signatureLength;
-    /**
-     * signature
-     */
+    /** signature */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.SIGNATURE)
     private ModifiableByteArray signature;
 
-    /**
-     * Length of the serialized public key
-     */
+    /** Length of the serialized public key */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger publicKeyLength;
-    /**
-     * serialized public key
-     */
+    /** serialized public key */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
     private ModifiableByteArray publicKey;
 
-    @HoldsModifiableVariable
-    private SignatureComputations signatureComputations;
-    
+    @HoldsModifiableVariable private SignatureComputations signatureComputations;
+
     public ServerKeyExchangeMessage() {
         super(HandshakeMessageType.SERVER_KEY_EXCHANGE);
     }
@@ -61,9 +50,8 @@ public abstract class ServerKeyExchangeMessage extends HandshakeMessage {
     public abstract void prepareKeyExchangeComputations();
 
     public SignatureComputations getSignatureComputations(SignatureAlgorithm algorithm) {
-        //TODO its unlucky that this design can cause a conflict here if the type mismatches
-        if(signatureComputations == null)
-        {
+        // TODO its unlucky that this design can cause a conflict here if the type mismatches
+        if (signatureComputations == null) {
             TlsSignatureUtil util = new TlsSignatureUtil();
             util.createSignatureComputations(algorithm);
         }
@@ -79,8 +67,8 @@ public abstract class ServerKeyExchangeMessage extends HandshakeMessage {
     }
 
     public void setSignatureAndHashAlgorithm(byte[] signatureAndHashAlgorithm) {
-        this.signatureAndHashAlgorithm
-                = ModifiableVariableFactory.safelySetValue(
+        this.signatureAndHashAlgorithm =
+                ModifiableVariableFactory.safelySetValue(
                         this.signatureAndHashAlgorithm, signatureAndHashAlgorithm);
     }
 
@@ -93,8 +81,8 @@ public abstract class ServerKeyExchangeMessage extends HandshakeMessage {
     }
 
     public void setSignatureLength(int length) {
-        this.signatureLength
-                = ModifiableVariableFactory.safelySetValue(this.signatureLength, length);
+        this.signatureLength =
+                ModifiableVariableFactory.safelySetValue(this.signatureLength, length);
     }
 
     public ModifiableByteArray getSignature() {
@@ -118,8 +106,8 @@ public abstract class ServerKeyExchangeMessage extends HandshakeMessage {
     }
 
     public void setPublicKeyLength(Integer publicKeyLength) {
-        this.publicKeyLength
-                = ModifiableVariableFactory.safelySetValue(this.publicKeyLength, publicKeyLength);
+        this.publicKeyLength =
+                ModifiableVariableFactory.safelySetValue(this.publicKeyLength, publicKeyLength);
     }
 
     public ModifiableByteArray getPublicKey() {

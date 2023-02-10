@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -60,11 +60,11 @@ public class SignedCertificateTimestampSignature {
 
     private boolean verifySignature(SignedCertificateTimestamp sct, CtLog ctLog) {
         try {
-            //TODO implement verification
+            // TODO implement verification
             ctLog.getPublicKey();
             signatureAndhashAlgorithm.getSignatureAlgorithm();
             byte[] data = assembleSignatureData(sct);
-            //this.signature
+            // this.signature
             throw new UnsupportedOperationException("Verification not implemented");
         } catch (Exception e) {
             LOGGER.warn("Unable to verify SCT signature", e);
@@ -81,8 +81,8 @@ public class SignedCertificateTimestampSignature {
         outputStream.write(SignedCertificateTimestampVersion.encodeVersion(sct.getVersion()));
 
         // signature type
-        byte signatureType
-                = SignedCertificateTimestampSignatureType.encodeVersion(
+        byte signatureType =
+                SignedCertificateTimestampSignatureType.encodeVersion(
                         SignedCertificateTimestampSignatureType.CERTIFICATE_TIMESTAMP);
         outputStream.write(signatureType);
 
@@ -100,8 +100,8 @@ public class SignedCertificateTimestampSignature {
             encodedCertificate = convertCertificateToDer(sct.getCertificate());
         } else {
             // PreCertificate
-            encodedCertificate
-                    = convertToPreCertificate(sct.getCertificate(), sct.getIssuerCertificate());
+            encodedCertificate =
+                    convertToPreCertificate(sct.getCertificate(), sct.getIssuerCertificate());
         }
         outputStream.write(encodedCertificate);
 
@@ -119,10 +119,9 @@ public class SignedCertificateTimestampSignature {
     }
 
     /**
-     * Converts an end-entity certificate into a precertificate used to verify
-     * precertificate SCT signatures. See RFC 6962 Section 3.2 for more
-     * information on how to construct a precertificate entry:
-     * <a href="https://tools.ietf.org/html/rfc6962#section-3.2">RFC 6962
+     * Converts an end-entity certificate into a precertificate used to verify precertificate SCT
+     * signatures. See RFC 6962 Section 3.2 for more information on how to construct a
+     * precertificate entry: <a href="https://tools.ietf.org/html/rfc6962#section-3.2">RFC 6962
      * Section 3.2</a>
      *
      * @param leafCertificate The leaf certificate
@@ -138,8 +137,8 @@ public class SignedCertificateTimestampSignature {
         // represented as SubjectPublicKeyInfo.
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] encodedIssuerCertificate
-                    = issuerCertificate.getSubjectPublicKeyInfo().getEncoded("DER");
+            byte[] encodedIssuerCertificate =
+                    issuerCertificate.getSubjectPublicKeyInfo().getEncoded("DER");
             byte[] issuerKeyHash = digest.digest(encodedIssuerCertificate);
             outputStream.write(issuerKeyHash);
         } catch (NoSuchAlgorithmException e) {
@@ -180,7 +179,7 @@ public class SignedCertificateTimestampSignature {
         }
 
         tbsCertificateGenerator.setExtensions(
-                new Extensions(extensionList.toArray(new Extension[]{})));
+                new Extensions(extensionList.toArray(new Extension[] {})));
         TBSCertificate modifiedTbsCertificate = tbsCertificateGenerator.generateTBSCertificate();
 
         // Append DER encoded TBSCertificate
@@ -209,8 +208,8 @@ public class SignedCertificateTimestampSignature {
         sb.append("\n Signature: ");
         sb.append(
                 signatureAndhashAlgorithm.getSignatureAlgorithm()
-                + " with "
-                + signatureAndhashAlgorithm.getHashAlgorithm());
+                        + " with "
+                        + signatureAndhashAlgorithm.getHashAlgorithm());
         if (ctLog != null) {
             boolean signatureValid = verifySignature(sct, ctLog);
             sb.append(signatureValid ? " (valid)" : " (invalid)");
