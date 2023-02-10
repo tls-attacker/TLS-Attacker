@@ -107,7 +107,7 @@ public class CertificateDelegate extends Delegate {
             LOGGER.debug("Loading private key");
             try {
                 privateKey = PemUtil.readPrivateKey(new File(key));
-                throw new UnsupportedOperationException("Currently not supported");
+                adjustPrivateKey(config, privateKey);
             } catch (IOException ex) {
                 LOGGER.warn("Could not read private key", ex);
             }
@@ -164,8 +164,7 @@ public class CertificateDelegate extends Delegate {
                 byteList.add(new CertificateBytes(tempCert.getEncoded()));
             }
             config.setDefaultExplicitCertificateChain(byteList);
-            throw new UnsupportedOperationException("Currently not supported");
-
+            adjustPrivateKey(config, privateKey);
         } catch (UnrecoverableKeyException
                 | KeyStoreException
                 | IOException
@@ -174,4 +173,6 @@ public class CertificateDelegate extends Delegate {
             throw new ConfigurationException("Could not load private Key from Keystore", ex);
         }
     }
+
+    private void adjustPrivateKey(Config config, PrivateKey privateKey) {}
 }

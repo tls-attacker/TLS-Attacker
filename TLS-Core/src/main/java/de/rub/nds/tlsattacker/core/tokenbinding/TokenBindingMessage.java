@@ -6,15 +6,18 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.tokenbinding;
 
+import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
+import de.rub.nds.protocol.crypto.signature.SignatureComputations;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
+import de.rub.nds.tlsattacker.core.crypto.TlsSignatureUtil;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.InputStream;
@@ -63,6 +66,9 @@ public class TokenBindingMessage<TokenBindingMessage> extends ProtocolMessage {
     @ModifiableVariableProperty
     private ModifiableByteArray extensionBytes;
 
+    @HoldsModifiableVariable
+    private SignatureComputations signatureComputations;
+
     public TokenBindingMessage() {
         super();
         protocolMessageType = ProtocolMessageType.APPLICATION_DATA;
@@ -82,8 +88,8 @@ public class TokenBindingMessage<TokenBindingMessage> extends ProtocolMessage {
     }
 
     public void setTokenbindingsLength(int tokenbindingsLength) {
-        this.tokenbindingsLength =
-            ModifiableVariableFactory.safelySetValue(this.tokenbindingsLength, tokenbindingsLength);
+        this.tokenbindingsLength
+                = ModifiableVariableFactory.safelySetValue(this.tokenbindingsLength, tokenbindingsLength);
     }
 
     public ModifiableInteger getModulusLength() {
@@ -119,8 +125,8 @@ public class TokenBindingMessage<TokenBindingMessage> extends ProtocolMessage {
     }
 
     public void setPublicExponentLength(int publicExponentLength) {
-        this.publicExponentLength =
-            ModifiableVariableFactory.safelySetValue(this.publicExponentLength, publicExponentLength);
+        this.publicExponentLength
+                = ModifiableVariableFactory.safelySetValue(this.publicExponentLength, publicExponentLength);
     }
 
     public ModifiableByteArray getPublicExponent() {
@@ -266,5 +272,14 @@ public class TokenBindingMessage<TokenBindingMessage> extends ProtocolMessage {
     @Override
     public String toShortString() {
         return "TB";
+    }
+
+    public SignatureComputations getSignatureComputations(SignatureAlgorithm algorithm) {
+        //TODO its unlucky that this design can cause a conflict here if the type mismatches
+        if (signatureComputations == null) {
+            TlsSignatureUtil util = new TlsSignatureUtil();
+            util.createSignatureComputations(algorithm);
+        }
+        return signatureComputations;
     }
 }

@@ -33,7 +33,7 @@ public class DHEServerKeyExchangeHandler<T extends DHEServerKeyExchangeMessage> 
         adjustDhModulus(message);
         adjustServerPublicKey(message);
         recognizeNamedGroup();
-        if (message.getComputations() != null && message.getComputations().getPrivateKey() != null) {
+        if (message.getKeyExchangeComputations() != null && message.getKeyExchangeComputations().getPrivateKey() != null) {
             adjustServerPrivateKey(message);
         }
     }
@@ -54,7 +54,7 @@ public class DHEServerKeyExchangeHandler<T extends DHEServerKeyExchangeMessage> 
     }
 
     private void adjustServerPrivateKey(T message) {
-        tlsContext.setServerDhPrivateKey(message.getComputations().getPrivateKey().getValue());
+        tlsContext.setServerDhPrivateKey(message.getKeyExchangeComputations().getPrivateKey().getValue());
         LOGGER.debug("Server PrivateKey: " + tlsContext.getServerDhPrivateKey());
     }
 

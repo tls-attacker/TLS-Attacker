@@ -55,7 +55,7 @@ public class ECDHEServerKeyExchangePreparatorTest
         context.getConfig().setDefaultExplicitCertificateChain(certificateChain);
         assertArrayEquals(
                 ArrayConverter.concatenate(context.getClientRandom(), context.getServerRandom()),
-                message.getComputations().getClientServerRandom().getValue());
+                message.getKeyExchangeComputations().getClientServerRandom().getValue());
         assertEquals(
                 EllipticCurveType.NAMED_CURVE,
                 EllipticCurveType.getCurveType(message.getGroupType().getValue()));

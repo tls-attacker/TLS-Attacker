@@ -39,8 +39,8 @@ public class DHEServerKeyExchangeHandlerTest
         message.setGenerator(BigInteger.ONE.toByteArray());
         message.setPublicKey(new byte[] {1, 2, 3});
         context.setSelectedCipherSuite(CipherSuite.TLS_DHE_RSA_WITH_AES_128_CBC_SHA);
-        message.prepareComputations();
-        message.getComputations().setPrivateKey(BigInteger.ZERO);
+        message.prepareKeyExchangeComputations();
+        message.getKeyExchangeComputations().setPrivateKey(BigInteger.ZERO);
         handler.adjustContext(message);
         assertEquals(BigInteger.TEN, context.getServerDhModulus());
         assertEquals(BigInteger.ONE, context.getServerDhGenerator());

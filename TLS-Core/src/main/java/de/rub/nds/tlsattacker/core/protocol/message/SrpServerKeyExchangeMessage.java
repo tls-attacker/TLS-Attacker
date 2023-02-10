@@ -133,7 +133,7 @@ public class SrpServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     }
 
     @Override
-    public SRPServerComputations getComputations() {
+    public SRPServerComputations getKeyExchangeComputations() {
         return computations;
     }
 
@@ -207,8 +207,8 @@ public class SrpServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     }
 
     @Override
-    public void prepareComputations() {
-        if (getComputations() == null) {
+    public void prepareKeyExchangeComputations() {
+        if (getKeyExchangeComputations() == null) {
             computations = new SRPServerComputations();
         }
     }

@@ -735,7 +735,7 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public BigInteger getClientRSAPrivateKey() {
+    public BigInteger getClientRsaPrivateKey() {
         if (context.getTlsContext().getClientRSAPrivateKey() != null) {
             return context.getTlsContext().getClientRSAPrivateKey();
         } else {
@@ -744,7 +744,7 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public BigInteger getServerRSAPrivateKey() {
+    public BigInteger getServerRsaPrivateKey() {
         if (context.getTlsContext().getServerRSAPrivateKey() != null) {
             return context.getTlsContext().getServerRSAPrivateKey();
         } else {

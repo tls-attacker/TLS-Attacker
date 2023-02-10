@@ -41,13 +41,13 @@ public class RSAServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     }
 
     @Override
-    public RSAServerComputations getComputations() {
+    public RSAServerComputations getKeyExchangeComputations() {
         return computations;
     }
 
     @Override
-    public void prepareComputations() {
-        if (getComputations() == null) {
+    public void prepareKeyExchangeComputations() {
+        if (getKeyExchangeComputations() == null) {
             computations = new RSAServerComputations();
         }
     }

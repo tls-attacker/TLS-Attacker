@@ -13,7 +13,7 @@ import de.rub.nds.protocol.crypto.ec.EllipticCurveSECP256R1;
 import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.protocol.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.constants.*;
-import de.rub.nds.tlsattacker.core.crypto.SignatureCalculator;
+import de.rub.nds.tlsattacker.core.crypto.TlsSignatureUtil;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessagePreparator;
@@ -21,8 +21,6 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -52,21 +50,8 @@ public class TokenBindingMessagePreparator extends ProtocolMessagePreparator<Tok
 
             message.setPoint(PointFormatter.toRawFormat(publicKey));
             message.setPointLength(message.getPoint().getValue().length);
-            MessageDigest dig;
-            try {
-                dig = MessageDigest.getInstance("SHA-256");
-            } catch (NoSuchAlgorithmException ex) {
-                throw new PreparationException("Could not create SHA-256 digest", ex);
-            }
-            dig.update(generateToBeSigned());
-            byte[] signature;
-            try {
-                signature =
-                        SignatureCalculator.generateECDSASignature(
-                                chooser, dig.digest(), SignatureAndHashAlgorithm.ECDSA_SHA256);
-            } catch (CryptoException ex) {
-                throw new RuntimeException(ex);
-            }
+            
+            byte[] signature = generateSignature(SignatureAndHashAlgorithm.ECDSA_SHA256, generateToBeSigned());
 
             message.setSignature(signature);
         } else {
@@ -85,6 +70,12 @@ public class TokenBindingMessagePreparator extends ProtocolMessagePreparator<Tok
         message.setSignatureLength(message.getSignature().getValue().length);
         serializer = new TokenBindingMessageSerializer(message);
         message.setTokenbindingsLength(serializer.serializeBinding().length);
+    }
+    
+    private byte[] generateSignature(SignatureAndHashAlgorithm algorithm, byte[] toBeHashedAndSigned) {
+        TlsSignatureUtil util = new TlsSignatureUtil();
+        util.computeSignature(chooser, algorithm, toBeHashedAndSigned, message.getSignatureComputations(algorithm.getSignatureAlgorithm()));
+        return message.getSignatureComputations(algorithm.getSignatureAlgorithm()).getSignatureBytes().getValue();
     }
 
     private byte[] generateToBeSigned() {

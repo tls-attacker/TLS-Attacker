@@ -31,7 +31,7 @@ public class SrpServerKeyExchangeHandler extends ServerKeyExchangeHandler<SrpSer
         adjustSRPModulus(message);
         adjustSalt(message);
         adjustServerPublicKey(message);
-        if (message.getComputations() != null && message.getComputations().getPrivateKey() != null) {
+        if (message.getKeyExchangeComputations() != null && message.getKeyExchangeComputations().getPrivateKey() != null) {
             adjustServerPrivateKey(message);
         }
     }
@@ -52,7 +52,7 @@ public class SrpServerKeyExchangeHandler extends ServerKeyExchangeHandler<SrpSer
     }
 
     private void adjustServerPrivateKey(SrpServerKeyExchangeMessage message) {
-        tlsContext.setServerSRPPrivateKey(message.getComputations().getPrivateKey().getValue());
+        tlsContext.setServerSRPPrivateKey(message.getKeyExchangeComputations().getPrivateKey().getValue());
         LOGGER.debug("Server PrivateKey: " + tlsContext.getServerSRPPrivateKey());
     }
 

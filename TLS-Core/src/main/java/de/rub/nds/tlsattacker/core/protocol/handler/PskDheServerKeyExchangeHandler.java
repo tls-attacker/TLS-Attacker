@@ -28,7 +28,7 @@ public class PskDheServerKeyExchangeHandler extends DHEServerKeyExchangeHandler<
         adjustPSKGenerator(message);
         adjustPSKModulus(message);
         adjustServerPublicKey(message);
-        if (message.getComputations() != null && message.getComputations().getPrivateKey() != null) {
+        if (message.getKeyExchangeComputations() != null && message.getKeyExchangeComputations().getPrivateKey() != null) {
             adjustServerPrivateKey(message);
         }
     }
@@ -49,7 +49,7 @@ public class PskDheServerKeyExchangeHandler extends DHEServerKeyExchangeHandler<
     }
 
     private void adjustServerPrivateKey(PskDheServerKeyExchangeMessage message) {
-        tlsContext.setServerPSKPrivateKey(message.getComputations().getPrivateKey().getValue());
+        tlsContext.setServerPSKPrivateKey(message.getKeyExchangeComputations().getPrivateKey().getValue());
         LOGGER.debug("Server PrivateKey: " + tlsContext.getServerPSKPrivateKey());
     }
 }

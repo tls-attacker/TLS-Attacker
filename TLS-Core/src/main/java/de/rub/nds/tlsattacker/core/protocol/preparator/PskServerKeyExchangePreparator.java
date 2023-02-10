@@ -28,16 +28,16 @@ public class PskServerKeyExchangePreparator extends ServerKeyExchangePreparator<
 
     @Override
     public void prepareHandshakeMessageContents() {
-        msg.prepareComputations();
+        msg.prepareKeyExchangeComputations();
         msg.setIdentityHint(chooser.getPSKIdentityHint());
         msg.setIdentityHintLength(msg.getIdentityHint().getValue().length);
-        msg.prepareComputations();
+        msg.prepareKeyExchangeComputations();
         prepareClientServerRandom(msg);
     }
 
     private void prepareClientServerRandom(PskServerKeyExchangeMessage msg) {
-        msg.getComputations().setClientServerRandom(chooser.getClientRandom());
+        msg.getKeyExchangeComputations().setClientServerRandom(chooser.getClientRandom());
         LOGGER.debug("ClientServerRandom: "
-            + ArrayConverter.bytesToHexString(msg.getComputations().getClientServerRandom().getValue()));
+            + ArrayConverter.bytesToHexString(msg.getKeyExchangeComputations().getClientServerRandom().getValue()));
     }
 }

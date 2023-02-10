@@ -107,7 +107,7 @@ public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     }
 
     @Override
-    public ECDHEServerComputations getComputations() {
+    public ECDHEServerComputations getKeyExchangeComputations() {
         return computations;
     }
 
@@ -143,7 +143,7 @@ public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     }
 
     @Override
-    public void prepareComputations() {
+    public void prepareKeyExchangeComputations() {
         if (computations == null) {
             computations = new ECDHEServerComputations();
         }

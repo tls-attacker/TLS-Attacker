@@ -62,7 +62,7 @@ public class DHEServerKeyExchangePreparatorTest
                 message.getModulus().getValue());
         assertArrayEquals(
                 ArrayConverter.hexStringToByteArray("AABBCCDDAABBCCDD"),
-                message.getComputations().getClientServerRandom().getValue());
+                message.getKeyExchangeComputations().getClientServerRandom().getValue());
         assertArrayEquals(
                 ArrayConverter.hexStringToByteArray("0201"),
                 message.getSignatureAndHashAlgorithm().getValue());

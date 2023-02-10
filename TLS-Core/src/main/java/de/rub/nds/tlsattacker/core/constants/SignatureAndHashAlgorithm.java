@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.constants;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.protocol.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import java.io.ByteArrayInputStream;
 import java.security.InvalidAlgorithmParameterException;
@@ -251,55 +252,6 @@ public enum SignatureAndHashAlgorithm {
         return HashAlgorithm.NONE;
     }
 
-    public String getJavaName() {
-        if (this.toString().contains("RSA_PSS")) {
-            return this.getHashAlgorithm().getJavaName().replaceAll("-", "") + "withRSA/PSS";
-        }
-
-        String hashAlgorithmName = getHashAlgorithm().getJavaName();
-        if (!hashAlgorithmName.contains("GOST")) {
-            hashAlgorithmName = hashAlgorithmName.replace("-", "");
-        }
-        String signatureAlgorithmName = getSignatureAlgorithm().getJavaName();
-        return hashAlgorithmName + "with" + signatureAlgorithmName;
-    }
-
-    public void setupSignature(Signature signature) throws InvalidAlgorithmParameterException {
-        if (this.getSignatureAlgorithm().toString().startsWith("RSA_PSS")) {
-            String hashName = this.getHashAlgorithm().getJavaName();
-            int saltLength = 0;
-            switch (this.getHashAlgorithm()) {
-                case SHA1:
-                    saltLength = 20;
-                    break;
-                case MD5:
-                    saltLength = 16;
-                    break;
-                case SHA256:
-                case GOSTR3411:
-                case GOSTR34112012_256:
-                    saltLength = 32;
-                    break;
-                case SHA224:
-                    saltLength = 28;
-                    break;
-                case SHA384:
-                    saltLength = 48;
-                    break;
-                case GOSTR34112012_512:
-                case SHA512:
-                    saltLength = 64;
-                    break;
-                case NONE:
-                    break;
-                default:
-                    break;
-            }
-            signature.setParameter(
-                    new PSSParameterSpec(
-                            hashName, "MGF1", new MGF1ParameterSpec(hashName), saltLength, 1));
-        }
-    }
 
     public boolean suitedForSigningTls13Messages() {
         switch (this) {

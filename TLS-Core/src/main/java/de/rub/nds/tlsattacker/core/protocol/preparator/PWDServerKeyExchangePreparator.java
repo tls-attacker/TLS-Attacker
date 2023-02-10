@@ -45,7 +45,7 @@ public class PWDServerKeyExchangePreparator
     @Override
     public void prepareHandshakeMessageContents() {
         LOGGER.debug("Preparing PWDServerKeyExchangeMessage");
-        msg.prepareComputations();
+        msg.prepareKeyExchangeComputations();
         prepareCurveType(msg);
         NamedGroup group = selectNamedGroup(msg);
         EllipticCurve curve =
@@ -65,10 +65,10 @@ public class PWDServerKeyExchangePreparator
     protected void preparePasswordElement(PWDServerKeyExchangeMessage msg) throws CryptoException {
         NamedGroup group = selectNamedGroup(msg);
         EllipticCurve curve =
-                ((NamedEllipticCurveParameters) selectNamedGroup(msg).getGroupParameters())
+                ((NamedEllipticCurveParameters) group.getGroupParameters())
                         .getCurve();
         Point passwordElement = PWDComputations.computePasswordElement(chooser, curve);
-        msg.getComputations().setPasswordElement(passwordElement);
+        msg.getKeyExchangeComputations().setPasswordElement(passwordElement);
 
         LOGGER.debug(
                 "PasswordElement.x: "
@@ -170,9 +170,9 @@ public class PWDServerKeyExchangePreparator
                         .getCurve();
         PWDComputations.PWDKeyMaterial keyMaterial =
                 PWDComputations.generateKeyMaterial(
-                        curve, msg.getComputations().getPasswordElement(), chooser);
+                        curve, msg.getKeyExchangeComputations().getPasswordElement(), chooser);
 
-        msg.getComputations().setPrivateKeyScalar(keyMaterial.privateKeyScalar);
+        msg.getKeyExchangeComputations().setPrivateKeyScalar(keyMaterial.privateKeyScalar);
         LOGGER.debug(
                 "Private: "
                         + ArrayConverter.bytesToHexString(

@@ -56,13 +56,13 @@ public class PWDServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     }
 
     @Override
-    public PWDComputations getComputations() {
+    public PWDComputations getKeyExchangeComputations() {
         return computations;
     }
 
     @Override
-    public void prepareComputations() {
-        if (getComputations() == null) {
+    public void prepareKeyExchangeComputations() {
+        if (getKeyExchangeComputations() == null) {
             computations = new PWDComputations();
         }
     }

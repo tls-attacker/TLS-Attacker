@@ -13,7 +13,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CertificateVerifyConstants;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.SSLUtils;
-import de.rub.nds.tlsattacker.core.crypto.SignatureCalculator;
+import de.rub.nds.tlsattacker.core.crypto.TlsSignatureUtil;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
@@ -73,7 +73,9 @@ public class CertificateVerifyPreparator extends HandshakeMessagePreparator<Cert
             return SSLUtils.calculateSSLCertificateVerifySignature(handshakeMessageContent, masterSecret);
         }
         algorithm = chooser.getSelectedSigHashAlgorithm();
-        return SignatureCalculator.generateSignature(algorithm, chooser, toBeSigned);
+        TlsSignatureUtil signatureUtil = new TlsSignatureUtil();
+        signatureUtil.computeSignature(chooser, algorithm, toBeSigned, msg.getSignatureComputations(algorithm.getSignatureAlgorithm()));
+        return msg.getSignatureComputations(algorithm.getSignatureAlgorithm()).getSignatureBytes().getValue();
     }
 
     private void prepareSignature(CertificateVerifyMessage msg) {

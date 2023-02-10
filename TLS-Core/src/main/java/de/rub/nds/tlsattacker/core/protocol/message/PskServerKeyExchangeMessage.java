@@ -66,7 +66,7 @@ public class PskServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     }
 
     @Override
-    public PSKPremasterComputations getComputations() {
+    public PSKPremasterComputations getKeyExchangeComputations() {
         return computations;
     }
 
@@ -116,8 +116,8 @@ public class PskServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     }
 
     @Override
-    public void prepareComputations() {
-        if (getComputations() == null) {
+    public void prepareKeyExchangeComputations() {
+        if (getKeyExchangeComputations() == null) {
             computations = new PSKPremasterComputations();
         }
     }

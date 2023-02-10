@@ -126,7 +126,7 @@ public class RSAClientKeyExchangePreparator<T extends RSAClientKeyExchangeMessag
     public byte[] decryptPremasterSecret() {
         BigInteger bigIntegerEncryptedPremasterSecret =
                 new BigInteger(1, msg.getPublicKey().getValue());
-        BigInteger serverPrivateKey = chooser.getServerRSAPrivateKey();
+        BigInteger serverPrivateKey = chooser.getServerRsaPrivateKey();
         if (chooser.getServerRsaModulus().equals(BigInteger.ZERO)) {
             LOGGER.warn("RSA Modulus is Zero, returning new byte[0] as decryptedPremasterSecret");
             return new byte[0];

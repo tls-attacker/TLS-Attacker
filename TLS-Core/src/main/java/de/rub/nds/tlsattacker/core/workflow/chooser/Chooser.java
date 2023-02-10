@@ -197,9 +197,9 @@ public abstract class Chooser {
 
     public abstract byte[] getServerApplicationTrafficSecret();
 
-    public abstract BigInteger getClientRSAPrivateKey();
+    public abstract BigInteger getClientRsaPrivateKey();
 
-    public abstract BigInteger getServerRSAPrivateKey();
+    public abstract BigInteger getServerRsaPrivateKey();
 
     public abstract Connection getConnection();
 
