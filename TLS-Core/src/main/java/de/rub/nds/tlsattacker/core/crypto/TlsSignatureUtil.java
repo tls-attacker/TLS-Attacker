@@ -54,7 +54,17 @@ public class TlsSignatureUtil {
         switch (algorithm.getSignatureAlgorithm()) {
             case ANONYMOUS:
             case DSA:
+                computeDsaSignature(
+                        chooser,
+                        algorithm.getHashAlgorithm(),
+                        toBeHasedAndSigned,
+                        (EcdsaSignatureComputations) computations);
             case ECDSA:
+                computeEcdsaSignature(
+                        chooser,
+                        algorithm.getHashAlgorithm(),
+                        toBeHasedAndSigned,
+                        (EcdsaSignatureComputations) computations);
             case ED25519:
             case ED448:
             case GOSTR34102001:
@@ -93,6 +103,28 @@ public class TlsSignatureUtil {
     }
 
     private void computeEcdsaSignature(
+            Chooser chooser,
+            HashAlgorithm algorithm,
+            byte[] toBeHasedAndSigned,
+            EcdsaSignatureComputations computations) {
+        BigInteger nonce;
+        BigInteger privateKey;
+        if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
+            privateKey = chooser.getClientRsaPrivateKey();
+        } else {
+            privateKey = chooser.getServerRsaPrivateKey();
+        }
+        nonce = chooser.getConfig().getDefaultEcdsaNonce();
+        calculator.computeEcdsaSignature(
+                computations,
+                privateKey,
+                toBeHasedAndSigned,
+                nonce,
+                NamedEllipticCurveParameters.SECP112R1,
+                algorithm);
+    }
+
+    private void computeDsaSignature(
             Chooser chooser,
             HashAlgorithm algorithm,
             byte[] toBeHasedAndSigned,
