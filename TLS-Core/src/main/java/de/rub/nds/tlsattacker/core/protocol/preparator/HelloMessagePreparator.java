@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.util.TimeHelper;
@@ -35,7 +36,9 @@ public abstract class HelloMessagePreparator<T extends HelloMessage<?>>
 
     protected void prepareRandom() {
         byte[] random;
-        if (chooser.getConfig().isUseFreshRandom()) {
+        if (msg instanceof ServerHelloMessage && ((ServerHelloMessage) msg).isHelloRetryRequest()) {
+            random = ServerHelloMessage.getHelloRetryRequestRandom();
+        } else if (chooser.getConfig().isUseFreshRandom()) {
             if (chooser.getHighestProtocolVersion().isTLS13()
                     || chooser.getHighestProtocolVersion() == ProtocolVersion.DTLS13) {
                 random = new byte[HandshakeByteLength.RANDOM];

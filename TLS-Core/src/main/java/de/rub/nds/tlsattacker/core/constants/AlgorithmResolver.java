@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -342,7 +342,8 @@ public class AlgorithmResolver {
         if (cipherSuite.isGCM()
                 || cipherSuite.isCCM()
                 || cipherSuite.isOCB()
-                || cipherSuite.usesStrictExplicitIv()) {
+                || cipherSuite.usesStrictExplicitIv()
+                || cipherSuite.isTLS13()) {
             return CipherType.AEAD;
         } else if (cs.contains("AES")
                 || cs.contains("DES")

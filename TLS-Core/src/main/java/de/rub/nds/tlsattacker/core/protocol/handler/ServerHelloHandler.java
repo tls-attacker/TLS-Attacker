@@ -60,7 +60,8 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         if (tlsContext.getConfig().isAddEncryptedClientHelloExtension()
                 && tlsContext.getTransportHandler().getConnectionEndType()
                         == ConnectionEndType.CLIENT) {
-            determineEncryptedClientHelloSupport(message, message.isTls13HelloRetryRequest());
+            determineEncryptedClientHelloSupport(
+                    message, message.hasTls13HelloRetryRequestRandom());
         } else if (!tlsContext.getConfig().isAddEncryptedClientHelloExtension()) {
             LOGGER.debug("Not determining Server ECH support because ECH disabled");
         } else if (tlsContext.getTransportHandler().getConnectionEndType()
@@ -74,7 +75,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         adjustServerRandom(message);
         adjustExtensions(message);
         warnOnConflictingExtensions();
-        if (!message.isTls13HelloRetryRequest()) {
+        if (!message.hasTls13HelloRetryRequestRandom()) {
             if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()
                     || tlsContext.getChooser().getSelectedProtocolVersion()
                             == ProtocolVersion.DTLS13) {
@@ -216,7 +217,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         if ((tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()
                         || tlsContext.getChooser().getSelectedProtocolVersion()
                                 == ProtocolVersion.DTLS13)
-                && !message.isTls13HelloRetryRequest()) {
+                && !message.hasTls13HelloRetryRequestRandom()) {
             setServerRecordCipher();
         }
     }

@@ -83,6 +83,8 @@ public class ServerHelloMessage extends HelloMessage<ServerHelloMessage> {
 
     private Boolean autoSetHelloRetryModeInKeyShare = true;
 
+    private Boolean isHelloRetryRequest = false;
+
     public ServerHelloMessage(Config tlsConfig) {
         super(HandshakeMessageType.SERVER_HELLO);
         addExtensionsBasedOnConfig(tlsConfig);
@@ -206,8 +208,7 @@ public class ServerHelloMessage extends HelloMessage<ServerHelloMessage> {
             if (tlsConfig.isAddExtendedRandomExtension()) {
                 addExtension(new ExtendedRandomExtensionMessage());
             }
-            if (tlsConfig.isAddCookieExtension()
-                    && (Boolean.TRUE.equals(isTls13HelloRetryRequest()))) {
+            if (tlsConfig.isAddCookieExtension() && (Boolean.TRUE.equals(isHelloRetryRequest()))) {
                 addExtension(new CookieExtensionMessage());
             }
             if (tlsConfig.isAddConnectionIdExtension()) {
@@ -218,16 +219,20 @@ public class ServerHelloMessage extends HelloMessage<ServerHelloMessage> {
 
     public ServerHelloMessage(Config tlsConfig, boolean isHelloRetryRequest) {
         super(HandshakeMessageType.SERVER_HELLO);
-        if (!isHelloRetryRequest) {
-            addExtensionsBasedOnConfig(tlsConfig);
-        } else {
-            addExtensionsBasedOnConfig(tlsConfig);
-            setRandom(getHelloRetryRequestRandom());
-        }
+        setHelloRetryRequest(isHelloRetryRequest);
+        addExtensionsBasedOnConfig(tlsConfig);
     }
 
     public ServerHelloMessage() {
         super(HandshakeMessageType.SERVER_HELLO);
+    }
+
+    public Boolean isHelloRetryRequest() {
+        return isHelloRetryRequest;
+    }
+
+    public void setHelloRetryRequest(Boolean helloRetryRequest) {
+        isHelloRetryRequest = helloRetryRequest;
     }
 
     public ModifiableByteArray getSelectedCipherSuite() {
@@ -256,7 +261,7 @@ public class ServerHelloMessage extends HelloMessage<ServerHelloMessage> {
                 ModifiableVariableFactory.safelySetValue(this.selectedCompressionMethod, value);
     }
 
-    public Boolean isTls13HelloRetryRequest() {
+    public Boolean hasTls13HelloRetryRequestRandom() {
         if (this.getRandom() != null && this.getRandom().getValue() != null) {
             return Arrays.equals(this.getRandom().getValue(), HELLO_RETRY_REQUEST_RANDOM);
         } else {
@@ -371,7 +376,8 @@ public class ServerHelloMessage extends HelloMessage<ServerHelloMessage> {
     }
 
     public boolean setRetryRequestModeInKeyShare() {
-        if (Boolean.TRUE.equals(isTls13HelloRetryRequest()) && autoSetHelloRetryModeInKeyShare) {
+        if (Boolean.TRUE.equals(hasTls13HelloRetryRequestRandom())
+                && autoSetHelloRetryModeInKeyShare) {
             return true;
         }
         return false;
@@ -379,7 +385,7 @@ public class ServerHelloMessage extends HelloMessage<ServerHelloMessage> {
 
     @Override
     public String toCompactString() {
-        Boolean isHrr = isTls13HelloRetryRequest();
+        Boolean isHrr = hasTls13HelloRetryRequestRandom();
         String compactString = super.toCompactString();
         if (isHrr != null && isHrr == true) {
             compactString += "(HRR)";
@@ -389,7 +395,7 @@ public class ServerHelloMessage extends HelloMessage<ServerHelloMessage> {
 
     @Override
     public String toShortString() {
-        if (isTls13HelloRetryRequest()) {
+        if (hasTls13HelloRetryRequestRandom()) {
             return "HRR";
         }
         return "SH";

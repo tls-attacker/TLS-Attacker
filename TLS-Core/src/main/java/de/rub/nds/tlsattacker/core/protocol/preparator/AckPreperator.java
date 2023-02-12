@@ -15,7 +15,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.AckMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ack.RecordNumber;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.util.LinkedList;
-import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -46,15 +45,17 @@ public class AckPreperator extends ProtocolMessagePreparator<AckMessage> {
     }
 
     private void prepareRecordNumbers() {
-        List<RecordNumber> recordNumbers = new LinkedList<>();
-        recordNumbers.addAll(tlsContext.getAcknowledgedRecords());
-        message.setRecordNumbers(recordNumbers);
-
-        // clear acknowledged records
-        tlsContext.getAcknowledgedRecords().clear();
+        if (message.getRecordNumbers() == null) {
+            message.setRecordNumbers(new LinkedList<>());
+        }
+        if (tlsContext.getAcknowledgedRecords() != null) {
+            message.getRecordNumbers().addAll(tlsContext.getAcknowledgedRecords());
+            // clear acknowledged records
+            tlsContext.getAcknowledgedRecords().clear();
+        }
 
         LOGGER.debug("RecordNumbers: ");
-        for (RecordNumber recordNumber : recordNumbers) {
+        for (RecordNumber recordNumber : message.getRecordNumbers()) {
             LOGGER.debug(
                     " - Epoch "
                             + recordNumber.getEpoch().getValue()
