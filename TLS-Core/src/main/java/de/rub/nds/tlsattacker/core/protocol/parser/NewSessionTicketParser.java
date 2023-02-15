@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
 import java.io.InputStream;
@@ -82,5 +83,4 @@ public class NewSessionTicketParser extends HandshakeMessageParser<NewSessionTic
                 .setIdentity(parseByteArrayField(msg.getTicket().getIdentityLength().getValue()));
         LOGGER.debug("Identity: {}", msg.getTicket().getIdentity().getValue());
     }
-
 }

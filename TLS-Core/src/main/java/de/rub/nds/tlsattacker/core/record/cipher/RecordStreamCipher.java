@@ -29,13 +29,9 @@ public class RecordStreamCipher extends RecordCipher {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /**
-     * mac for verification of incoming messages
-     */
+    /** mac for verification of incoming messages */
     private WrappedMac readMac;
-    /**
-     * mac object for macing outgoing messages
-     */
+    /** mac object for macing outgoing messages */
     private WrappedMac writeMac;
 
     public RecordStreamCipher(TlsContext tlsContext, CipherState state) {

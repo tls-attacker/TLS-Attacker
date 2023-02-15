@@ -1,4 +1,4 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
  * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
@@ -46,9 +46,7 @@ public class CertificateMessageSerializer extends HandshakeMessageSerializer<Cer
         return getAlreadySerialized();
     }
 
-    /**
-     * Writes the RequestContextLength of the CertificateMessage into the final byte[]
-     */
+    /** Writes the RequestContextLength of the CertificateMessage into the final byte[] */
     private void writeRequestContextLength(CertificateMessage msg) {
         appendInt(
                 msg.getRequestContextLength().getValue(),
@@ -56,17 +54,13 @@ public class CertificateMessageSerializer extends HandshakeMessageSerializer<Cer
         LOGGER.debug("RequestContextLength: " + msg.getRequestContextLength().getValue());
     }
 
-    /**
-     * Writes the RequestContext of the CertificateMessage into the final byte[]
-     */
+    /** Writes the RequestContext of the CertificateMessage into the final byte[] */
     private void writeRequestContext(CertificateMessage msg) {
         appendBytes(msg.getRequestContext().getValue());
-        LOGGER.debug("RequestContext: " + ArrayConverter.bytesToHexString(msg.getRequestContext().getValue()));
+        LOGGER.debug("RequestContext: {}", msg.getRequestContext().getValue());
     }
 
-    /**
-     * Writes the CertificateLength of the CertificateMessage into the final byte[]
-     */
+    /** Writes the CertificateLength of the CertificateMessage into the final byte[] */
     private void writeCertificatesListLength(CertificateMessage msg) {
         appendInt(
                 msg.getCertificatesListLength().getValue(),
@@ -74,12 +68,9 @@ public class CertificateMessageSerializer extends HandshakeMessageSerializer<Cer
         LOGGER.debug("certificatesListLength: " + msg.getCertificatesListLength().getValue());
     }
 
-    /**
-     * Writes the Certificate of the CertificateMessage into the final byte[]
-     */
+    /** Writes the Certificate of the CertificateMessage into the final byte[] */
     private void writeCertificatesListBytes(CertificateMessage msg) {
         appendBytes(msg.getCertificatesListBytes().getValue());
         LOGGER.debug("certificatesListBytes: {}", msg.getCertificatesListBytes().getValue());
     }
-
 }

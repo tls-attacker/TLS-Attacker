@@ -8,10 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
-import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.crypto.PseudoRandomFunction;
 import de.rub.nds.tlsattacker.core.crypto.SSLUtils;
@@ -105,7 +102,7 @@ public class FinishedPreparator extends HandshakeMessagePreparator<FinishedMessa
             PRFAlgorithm prfAlgorithm = chooser.getPRFAlgorithm();
             LOGGER.debug("Using PRF:" + prfAlgorithm.name());
             byte[] masterSecret = chooser.getMasterSecret();
-            LOGGER.debug("Using MasterSecret:" + ArrayConverter.bytesToHexString(masterSecret));
+            LOGGER.debug("Using MasterSecret: {}", masterSecret);
             byte[] handshakeMessageHash =
                     chooser.getContext()
                             .getTlsContext()
@@ -113,9 +110,7 @@ public class FinishedPreparator extends HandshakeMessagePreparator<FinishedMessa
                             .digest(
                                     chooser.getSelectedProtocolVersion(),
                                     chooser.getSelectedCipherSuite());
-            LOGGER.debug(
-                    "Using HandshakeMessage Hash:"
-                            + ArrayConverter.bytesToHexString(handshakeMessageHash));
+            LOGGER.debug("Using HandshakeMessage Hash: {}", handshakeMessageHash);
 
             String label;
             if (chooser.getConnectionEndType() == ConnectionEndType.SERVER) {

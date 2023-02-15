@@ -137,7 +137,7 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
             HandshakeMessage handshakeMessage = (HandshakeMessage) message;
             if (handshakeMessage.getHandshakeMessageType() == HandshakeMessageType.SERVER_HELLO) {
                 // we must flush to avoid encrypting the SH later on
-                return !((ServerHelloMessage) message).isTls13HelloRetryRequest();
+                return !((ServerHelloMessage) message).hasTls13HelloRetryRequestRandom();
             } else if (handshakeMessage.getHandshakeMessageType() == HandshakeMessageType.FINISHED
                     || handshakeMessage.getHandshakeMessageType() == HandshakeMessageType.KEY_UPDATE
                     || handshakeMessage.getHandshakeMessageType()

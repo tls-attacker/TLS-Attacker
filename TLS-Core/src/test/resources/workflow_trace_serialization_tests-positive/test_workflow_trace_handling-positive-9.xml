@@ -121,6 +121,7 @@ Test a MITM workflow trace
         <messages>
             <ServerHello>
                 <autoSetHelloRetryModeInKeyShare>true</autoSetHelloRetryModeInKeyShare>
+                <isHelloRetryRequest>false</isHelloRetryRequest>
             </ServerHello>
             <Certificate/>
             <ServerHelloDone/>
@@ -174,6 +175,7 @@ Test a MITM workflow trace
         <expectedMessages>
             <ServerHello>
                 <autoSetHelloRetryModeInKeyShare>true</autoSetHelloRetryModeInKeyShare>
+                <isHelloRetryRequest>false</isHelloRetryRequest>
             </ServerHello>
             <Certificate/>
             <ServerHelloDone/>
@@ -237,6 +239,7 @@ Test a MITM workflow trace
         <messages>
             <ServerHello>
                 <autoSetHelloRetryModeInKeyShare>true</autoSetHelloRetryModeInKeyShare>
+                <isHelloRetryRequest>false</isHelloRetryRequest>
             </ServerHello>
             <Certificate/>
             <ServerHelloDone/>
@@ -272,6 +275,7 @@ Test a MITM workflow trace
         <expectedMessages>
             <ServerHello>
                 <autoSetHelloRetryModeInKeyShare>true</autoSetHelloRetryModeInKeyShare>
+                <isHelloRetryRequest>false</isHelloRetryRequest>
             </ServerHello>
             <Certificate/>
             <ServerHelloDone/>

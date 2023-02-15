@@ -84,7 +84,8 @@ public class KeySetGenerator {
                         clientSecret,
                         HKDFunction.KEY,
                         new byte[] {},
-                        cipherAlg.getKeySize()));
+                        cipherAlg.getKeySize(),
+                        tlsContext.getChooser().getSelectedProtocolVersion()));
         LOGGER.debug("Client write key: {}", keySet.getClientWriteKey());
         keySet.setServerWriteKey(
                 HKDFunction.expandLabel(
@@ -92,7 +93,8 @@ public class KeySetGenerator {
                         serverSecret,
                         HKDFunction.KEY,
                         new byte[] {},
-                        cipherAlg.getKeySize()));
+                        cipherAlg.getKeySize(),
+                        tlsContext.getChooser().getSelectedProtocolVersion()));
         LOGGER.debug("Server write key: {}", keySet.getServerWriteKey());
         keySet.setClientWriteIv(
                 HKDFunction.expandLabel(
@@ -100,7 +102,8 @@ public class KeySetGenerator {
                         clientSecret,
                         HKDFunction.IV,
                         new byte[] {},
-                        AEAD_IV_LENGTH));
+                        AEAD_IV_LENGTH,
+                        tlsContext.getChooser().getSelectedProtocolVersion()));
         LOGGER.debug("Client write IV: {}", keySet.getClientWriteIv());
         keySet.setServerWriteIv(
                 HKDFunction.expandLabel(
@@ -108,7 +111,8 @@ public class KeySetGenerator {
                         serverSecret,
                         HKDFunction.IV,
                         new byte[] {},
-                        AEAD_IV_LENGTH));
+                        AEAD_IV_LENGTH,
+                        tlsContext.getChooser().getSelectedProtocolVersion()));
         LOGGER.debug("Server write IV: {}", keySet.getServerWriteIv());
         keySet.setServerWriteMacSecret(new byte[0]);
         keySet.setClientWriteMacSecret(new byte[0]);

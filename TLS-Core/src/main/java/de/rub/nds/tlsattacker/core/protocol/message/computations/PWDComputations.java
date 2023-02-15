@@ -169,7 +169,12 @@ public class PWDComputations extends KeyExchangeComputations {
             byte[] hashValue = hashFunction.digest();
 
             return HKDFunction.expandLabel(
-                    hkdfAlgorithm, seed, "TLS-PWD Hunting And Pecking", hashValue, outlen);
+                    hkdfAlgorithm,
+                    seed,
+                    "TLS-PWD Hunting And Pecking",
+                    hashValue,
+                    outlen,
+                    chooser.getSelectedProtocolVersion());
         } else {
             PRFAlgorithm prf =
                     AlgorithmResolver.getPRFAlgorithm(
@@ -214,9 +219,7 @@ public class PWDComputations extends KeyExchangeComputations {
         return keyMaterial;
     }
 
-    /**
-     * shared secret derived from the shared password between server and client
-     */
+    /** shared secret derived from the shared password between server and client */
     private Point passwordElement;
 
     /**

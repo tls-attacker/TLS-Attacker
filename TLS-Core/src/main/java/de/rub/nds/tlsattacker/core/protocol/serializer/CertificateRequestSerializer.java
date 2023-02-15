@@ -71,9 +71,7 @@ public class CertificateRequestSerializer
                 "ClientCertificateTypesCount: " + msg.getClientCertificateTypesCount().getValue());
     }
 
-    /**
-     * Writes the ClientCertificateType of the CertificateRequestMessage into the final byte[]
-     */
+    /** Writes the ClientCertificateType of the CertificateRequestMessage into the final byte[] */
     private void writeClientCertificateTypes(CertificateRequestMessage msg) {
         appendBytes(msg.getClientCertificateTypes().getValue());
         LOGGER.debug("ClientCertificateTypes: {}", msg.getClientCertificateTypes().getValue());
@@ -115,9 +113,7 @@ public class CertificateRequestSerializer
         return msg.getDistinguishedNamesLength().getValue() != 0;
     }
 
-    /**
-     * Writes the DistinguishedNames of the CertificateRequestMessage into the final byte[]
-     */
+    /** Writes the DistinguishedNames of the CertificateRequestMessage into the final byte[] */
     private void writeDistinguishedNames(CertificateRequestMessage msg) {
         appendBytes(msg.getDistinguishedNames().getValue());
         LOGGER.debug("DistinguishedNames: {}", msg.getDistinguishedNames().getValue());

@@ -281,7 +281,11 @@
 
   <xs:element name="point" type="point"/>
 
+  <xs:element name="stringAppendValueModification" type="stringAppendValueModification"/>
+
   <xs:element name="stringExplicitValueModification" type="stringExplicitValueModification"/>
+
+  <xs:element name="stringPrependValueModification" type="stringPrependValueModification"/>
 
   <xs:element name="userMappingExtensionMessage" type="userMappingExtensionMessage"/>
 
@@ -1093,6 +1097,8 @@
         <xs:element name="ByteSubtractModification" type="byteSubtractModification"/>
         <xs:element name="ByteAddModification" type="byteAddModification"/>
         <xs:element name="ByteExplicitValueModification" type="byteExplicitValueModification"/>
+        <xs:element name="StringPrependValueModification" type="stringPrependValueModification"/>
+        <xs:element name="StringAppendValueModification" type="stringAppendValueModification"/>
         <xs:element name="StringExplicitValueModification" type="stringExplicitValueModification"/>
       </xs:choice>
       <xs:element name="assertEquals" type="xs:string" minOccurs="0"/>
@@ -1336,6 +1342,20 @@
     </xs:sequence>
   </xs:complexType>
 
+  <xs:complexType name="stringPrependValueModification">
+    <xs:sequence>
+      <xs:element name="prependValue" type="xs:string" minOccurs="0"/>
+      <xs:element name="AccessModificationFilter" type="accessModificationFilter" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="stringAppendValueModification">
+    <xs:sequence>
+      <xs:element name="appendValue" type="xs:string" minOccurs="0"/>
+      <xs:element name="AccessModificationFilter" type="accessModificationFilter" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
   <xs:complexType name="stringExplicitValueModification">
     <xs:sequence>
       <xs:element name="explicitValue" type="xs:string" minOccurs="0"/>
@@ -1377,6 +1397,8 @@
         <xs:element name="ByteSubtractModification" type="byteSubtractModification"/>
         <xs:element name="ByteAddModification" type="byteAddModification"/>
         <xs:element name="ByteExplicitValueModification" type="byteExplicitValueModification"/>
+        <xs:element name="StringPrependValueModification" type="stringPrependValueModification"/>
+        <xs:element name="StringAppendValueModification" type="stringAppendValueModification"/>
         <xs:element name="StringExplicitValueModification" type="stringExplicitValueModification"/>
       </xs:choice>
       <xs:element name="createRandomModification" type="xs:boolean" minOccurs="0"/>
@@ -1419,6 +1441,8 @@
         <xs:element name="ByteSubtractModification" type="byteSubtractModification"/>
         <xs:element name="ByteAddModification" type="byteAddModification"/>
         <xs:element name="ByteExplicitValueModification" type="byteExplicitValueModification"/>
+        <xs:element name="StringPrependValueModification" type="stringPrependValueModification"/>
+        <xs:element name="StringAppendValueModification" type="stringAppendValueModification"/>
         <xs:element name="StringExplicitValueModification" type="stringExplicitValueModification"/>
       </xs:choice>
       <xs:element name="createRandomModification" type="xs:boolean" minOccurs="0"/>
@@ -1852,6 +1876,8 @@
         <xs:element name="ByteSubtractModification" type="byteSubtractModification"/>
         <xs:element name="ByteAddModification" type="byteAddModification"/>
         <xs:element name="ByteExplicitValueModification" type="byteExplicitValueModification"/>
+        <xs:element name="StringPrependValueModification" type="stringPrependValueModification"/>
+        <xs:element name="StringAppendValueModification" type="stringAppendValueModification"/>
         <xs:element name="StringExplicitValueModification" type="stringExplicitValueModification"/>
       </xs:choice>
       <xs:element name="createRandomModification" type="xs:boolean" minOccurs="0"/>
@@ -1929,6 +1955,8 @@
         <xs:element name="ByteSubtractModification" type="byteSubtractModification"/>
         <xs:element name="ByteAddModification" type="byteAddModification"/>
         <xs:element name="ByteExplicitValueModification" type="byteExplicitValueModification"/>
+        <xs:element name="StringPrependValueModification" type="stringPrependValueModification"/>
+        <xs:element name="StringAppendValueModification" type="stringAppendValueModification"/>
         <xs:element name="StringExplicitValueModification" type="stringExplicitValueModification"/>
       </xs:choice>
       <xs:element name="createRandomModification" type="xs:boolean" minOccurs="0"/>
@@ -2674,6 +2702,8 @@
         <xs:element name="ByteSubtractModification" type="byteSubtractModification"/>
         <xs:element name="ByteAddModification" type="byteAddModification"/>
         <xs:element name="ByteExplicitValueModification" type="byteExplicitValueModification"/>
+        <xs:element name="StringPrependValueModification" type="stringPrependValueModification"/>
+        <xs:element name="StringAppendValueModification" type="stringAppendValueModification"/>
         <xs:element name="StringExplicitValueModification" type="stringExplicitValueModification"/>
       </xs:choice>
       <xs:element name="createRandomModification" type="xs:boolean" minOccurs="0"/>
@@ -2857,6 +2887,7 @@
           <xs:element name="selectedCipherSuite" type="modifiableByteArray" minOccurs="0"/>
           <xs:element name="selectedCompressionMethod" type="modifiableByte" minOccurs="0"/>
           <xs:element name="autoSetHelloRetryModeInKeyShare" type="xs:boolean" minOccurs="0"/>
+          <xs:element name="isHelloRetryRequest" type="xs:boolean" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -2937,6 +2968,8 @@
         <xs:element name="ByteSubtractModification" type="byteSubtractModification"/>
         <xs:element name="ByteAddModification" type="byteAddModification"/>
         <xs:element name="ByteExplicitValueModification" type="byteExplicitValueModification"/>
+        <xs:element name="StringPrependValueModification" type="stringPrependValueModification"/>
+        <xs:element name="StringAppendValueModification" type="stringAppendValueModification"/>
         <xs:element name="StringExplicitValueModification" type="stringExplicitValueModification"/>
       </xs:choice>
       <xs:element name="createRandomModification" type="xs:boolean" minOccurs="0"/>
