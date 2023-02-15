@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.record.preparator;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
@@ -84,10 +83,7 @@ public class RecordPreparator extends Preparator<Record> {
                             .getConnectionId();
             if (connectionId != null) {
                 record.setConnectionId(connectionId);
-                LOGGER.debug(
-                        "ConnectionId: "
-                                + ArrayConverter.bytesToHexString(
-                                        record.getConnectionId().getValue()));
+                LOGGER.debug("ConnectionId: {}", record.getConnectionId().getValue());
             }
         }
     }
@@ -107,9 +103,7 @@ public class RecordPreparator extends Preparator<Record> {
         } else {
             record.setProtocolVersion(chooser.getSelectedProtocolVersion().getValue());
         }
-        LOGGER.debug(
-                "ProtocolVersion: "
-                        + ArrayConverter.bytesToHexString(record.getProtocolVersion().getValue()));
+        LOGGER.debug("ProtocolVersion: {}", record.getProtocolVersion().getValue());
     }
 
     private void prepareLength(Record record) {
@@ -119,7 +113,6 @@ public class RecordPreparator extends Preparator<Record> {
 
     protected void prepareContentMessageType(ProtocolMessageType type) {
         getObject().setContentMessageType(this.type);
-        LOGGER.debug(
-                "ContentMessageType: " + ArrayConverter.bytesToHexString(type.getArrayValue()));
+        LOGGER.debug("ContentMessageType: {}", type.getArrayValue());
     }
 }

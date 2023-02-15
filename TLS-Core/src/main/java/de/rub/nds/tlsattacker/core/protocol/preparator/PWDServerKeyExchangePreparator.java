@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -27,7 +26,8 @@ import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class PWDServerKeyExchangePreparator extends ServerKeyExchangePreparator<PWDServerKeyExchangeMessage> {
+public class PWDServerKeyExchangePreparator
+        extends ServerKeyExchangePreparator<PWDServerKeyExchangeMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -63,8 +63,9 @@ public class PWDServerKeyExchangePreparator extends ServerKeyExchangePreparator<
         Point passwordElement = PWDComputations.computePasswordElement(chooser, curve);
         msg.getComputations().setPasswordElement(passwordElement);
 
-        LOGGER.debug("PasswordElement.x: " + ArrayConverter
-            .bytesToHexString(ArrayConverter.bigIntegerToByteArray(passwordElement.getFieldX().getData())));
+        LOGGER.debug(
+                "PasswordElement.x: {}",
+                () -> ArrayConverter.bigIntegerToByteArray(passwordElement.getFieldX().getData()));
     }
 
     protected NamedGroup selectNamedGroup(PWDServerKeyExchangeMessage msg) {
@@ -109,7 +110,7 @@ public class PWDServerKeyExchangePreparator extends ServerKeyExchangePreparator<
 
     protected void prepareSalt(PWDServerKeyExchangeMessage msg) {
         msg.setSalt(chooser.getConfig().getDefaultServerPWDSalt());
-        LOGGER.debug("Salt: " + ArrayConverter.bytesToHexString(msg.getSalt().getValue()));
+        LOGGER.debug("Salt: {}", msg.getSalt().getValue());
     }
 
     protected void prepareSaltLength(PWDServerKeyExchangeMessage msg) {
@@ -122,10 +123,12 @@ public class PWDServerKeyExchangePreparator extends ServerKeyExchangePreparator<
     }
 
     protected List<ECPointFormat> getPointFormatList() {
-        List<ECPointFormat> sharedPointFormats = new ArrayList<>(chooser.getServerSupportedPointFormats());
+        List<ECPointFormat> sharedPointFormats =
+                new ArrayList<>(chooser.getServerSupportedPointFormats());
 
         if (sharedPointFormats.isEmpty()) {
-            LOGGER.warn("Don't know which point format to use for PWD. " + "Check if pointFormats is set in config.");
+            LOGGER.warn(
+                    "Don't know which point format to use for PWD. Check if pointFormats is set in config.");
             sharedPointFormats = chooser.getConfig().getDefaultServerSupportedPointFormats();
         }
 
@@ -142,7 +145,8 @@ public class PWDServerKeyExchangePreparator extends ServerKeyExchangePreparator<
 
         sharedPointFormats.removeAll(unsupportedFormats);
         if (sharedPointFormats.isEmpty()) {
-            sharedPointFormats = new ArrayList<>(chooser.getConfig().getDefaultServerSupportedPointFormats());
+            sharedPointFormats =
+                    new ArrayList<>(chooser.getConfig().getDefaultServerSupportedPointFormats());
         }
 
         return sharedPointFormats;
@@ -151,11 +155,13 @@ public class PWDServerKeyExchangePreparator extends ServerKeyExchangePreparator<
     protected void prepareScalarElement(PWDServerKeyExchangeMessage msg) {
         EllipticCurve curve = CurveFactory.getCurve(selectNamedGroup(msg));
         PWDComputations.PWDKeyMaterial keyMaterial =
-            PWDComputations.generateKeyMaterial(curve, msg.getComputations().getPasswordElement(), chooser);
+                PWDComputations.generateKeyMaterial(
+                        curve, msg.getComputations().getPasswordElement(), chooser);
 
         msg.getComputations().setPrivateKeyScalar(keyMaterial.privateKeyScalar);
-        LOGGER.debug("Private: "
-            + ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(keyMaterial.privateKeyScalar)));
+        LOGGER.debug(
+                "Private: {}",
+                () -> ArrayConverter.bigIntegerToByteArray(keyMaterial.privateKeyScalar));
 
         prepareScalar(msg, keyMaterial.scalar);
         prepareScalarLength(msg);
@@ -166,7 +172,7 @@ public class PWDServerKeyExchangePreparator extends ServerKeyExchangePreparator<
 
     protected void prepareScalar(PWDServerKeyExchangeMessage msg, BigInteger scalar) {
         msg.setScalar(ArrayConverter.bigIntegerToByteArray(scalar));
-        LOGGER.debug("Scalar: " + ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(scalar)));
+        LOGGER.debug("Scalar: {}", () -> ArrayConverter.bigIntegerToByteArray(scalar));
     }
 
     protected void prepareScalarLength(PWDServerKeyExchangeMessage msg) {
@@ -175,14 +181,17 @@ public class PWDServerKeyExchangePreparator extends ServerKeyExchangePreparator<
     }
 
     protected void prepareElement(PWDServerKeyExchangeMessage msg, Point element) {
-        byte[] serializedElement = PointFormatter.formatToByteArray(chooser.getConfig().getDefaultSelectedNamedGroup(),
-            element, chooser.getConfig().getDefaultSelectedPointFormat());
+        byte[] serializedElement =
+                PointFormatter.formatToByteArray(
+                        chooser.getConfig().getDefaultSelectedNamedGroup(),
+                        element,
+                        chooser.getConfig().getDefaultSelectedPointFormat());
         msg.setElement(serializedElement);
-        LOGGER.debug("Element: " + ArrayConverter.bytesToHexString(serializedElement));
+        LOGGER.debug("Element: {}", serializedElement);
     }
 
     protected void prepareElementLength(PWDServerKeyExchangeMessage msg) {
         msg.setElementLength(msg.getElement().getValue().length);
-        LOGGER.debug("ElementLength: " + msg.getElementLength());
+        LOGGER.debug("ElementLength: {}", msg.getElementLength());
     }
 }

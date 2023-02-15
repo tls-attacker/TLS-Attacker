@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
@@ -21,17 +20,14 @@ import de.rub.nds.tlsattacker.core.workflow.filter.FilterType;
 import java.util.EnumSet;
 import org.apache.commons.lang3.StringUtils;
 
-/**
- * Plot a list of supported parameters.
- */
+/** Plot a list of supported parameters. */
 public class ListDelegate extends Delegate {
 
     // Setting help=true allows us to surpass any parameters marked as required.
     @Parameter(names = "-list", description = "Plot a list of available parameters")
     private ListDelegateType listDelegateType = null;
 
-    public ListDelegate() {
-    }
+    public ListDelegate() {}
 
     public boolean isSet() {
         return (listDelegateType != null);
@@ -70,6 +66,5 @@ public class ListDelegate extends Delegate {
     }
 
     @Override
-    public void applyDelegate(Config config) {
-    }
+    public void applyDelegate(Config config) {}
 }

@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.record.parser;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.RecordByteLength;
@@ -81,9 +80,7 @@ public class RecordParser extends Parser<Record> {
                         .getConnectionId()
                         .length;
         record.setConnectionId(parseByteArrayField(connectionIdLength));
-        LOGGER.debug(
-                "ConnectionID: "
-                        + ArrayConverter.bytesToHexString(record.getConnectionId().getValue()));
+        LOGGER.debug("ConnectionID: {}", record.getConnectionId().getValue());
     }
 
     private boolean parseContentType(Record record) {
@@ -120,9 +117,7 @@ public class RecordParser extends Parser<Record> {
                     parseByteArrayField(RecordByteLength.DTLS13_SEQUENCE_NUMBER_HEADER_LONG));
         }
         LOGGER.debug(
-                "Encrypted SequenceNumber: "
-                        + ArrayConverter.bytesToHexString(
-                                record.getEncryptedSequenceNumber().getValue()));
+                "Encrypted SequenceNumber: {}", record.getEncryptedSequenceNumber().getValue());
         if (isLengthPresent) {
             parseLength(record);
         }
@@ -130,9 +125,7 @@ public class RecordParser extends Parser<Record> {
 
     private void parseVersion(Record record) {
         record.setProtocolVersion(parseByteArrayField(RecordByteLength.PROTOCOL_VERSION));
-        LOGGER.debug(
-                "ProtocolVersion: "
-                        + ArrayConverter.bytesToHexString(record.getProtocolVersion().getValue()));
+        LOGGER.debug("ProtocolVersion: {}", record.getProtocolVersion().getValue());
     }
 
     private void parseLength(Record record) {
@@ -147,9 +140,6 @@ public class RecordParser extends Parser<Record> {
         } else {
             record.setProtocolMessageBytes(parseByteArrayField(getBytesLeft()));
         }
-        LOGGER.debug(
-                "ProtocolMessageBytes: "
-                        + ArrayConverter.bytesToHexString(
-                                record.getProtocolMessageBytes().getValue()));
+        LOGGER.debug("ProtocolMessageBytes: {}", record.getProtocolMessageBytes().getValue());
     }
 }

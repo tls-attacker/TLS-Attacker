@@ -119,8 +119,8 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
                             tlsContext.getChooser().getSelectedProtocolVersion());
             tlsContext.setClientApplicationTrafficSecret(clientApplicationTrafficSecret);
             LOGGER.debug(
-                    "Set clientApplicationTrafficSecret in Context to "
-                            + ArrayConverter.bytesToHexString(clientApplicationTrafficSecret));
+                    "Set clientApplicationTrafficSecret in Context to {}",
+                    clientApplicationTrafficSecret);
             byte[] serverApplicationTrafficSecret =
                     HKDFunction.deriveSecret(
                             hkdfAlgorithm,
@@ -131,12 +131,10 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
                             tlsContext.getChooser().getSelectedProtocolVersion());
             tlsContext.setServerApplicationTrafficSecret(serverApplicationTrafficSecret);
             LOGGER.debug(
-                    "Set serverApplicationTrafficSecret in Context to "
-                            + ArrayConverter.bytesToHexString(serverApplicationTrafficSecret));
+                    "Set serverApplicationTrafficSecret in Context to {}",
+                    serverApplicationTrafficSecret);
             tlsContext.setMasterSecret(masterSecret);
-            LOGGER.debug(
-                    "Set masterSecret in Context to "
-                            + ArrayConverter.bytesToHexString(masterSecret));
+            LOGGER.debug("Set masterSecret in Context to {}", masterSecret);
         } catch (NoSuchAlgorithmException | CryptoException ex) {
             throw new AdjustmentException(ex);
         }

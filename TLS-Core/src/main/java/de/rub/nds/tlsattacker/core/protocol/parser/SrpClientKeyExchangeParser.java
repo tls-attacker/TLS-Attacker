@@ -1,24 +1,22 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.core.protocol.message.SrpClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.protocol.message.SrpClientKeyExchangeMessage;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.InputStream;
-
-public class SrpClientKeyExchangeParser extends ClientKeyExchangeParser<SrpClientKeyExchangeMessage> {
+public class SrpClientKeyExchangeParser
+        extends ClientKeyExchangeParser<SrpClientKeyExchangeMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -27,7 +25,6 @@ public class SrpClientKeyExchangeParser extends ClientKeyExchangeParser<SrpClien
      *
      * @param stream
      * @param tlsContext
-     *
      */
     public SrpClientKeyExchangeParser(InputStream stream, TlsContext tlsContext) {
         super(stream, tlsContext);
@@ -43,8 +40,7 @@ public class SrpClientKeyExchangeParser extends ClientKeyExchangeParser<SrpClien
     /**
      * Reads the next bytes as the PublicKeyLength and writes them in the message
      *
-     * @param msg
-     *            Message to write in
+     * @param msg Message to write in
      */
     private void parsePublicKeyLength(SrpClientKeyExchangeMessage msg) {
         msg.setPublicKeyLength(parseIntField(HandshakeByteLength.SRP_PUBLICKEY_LENGTH));
@@ -54,11 +50,10 @@ public class SrpClientKeyExchangeParser extends ClientKeyExchangeParser<SrpClien
     /**
      * Reads the next bytes as the PublicKey and writes them in the message
      *
-     * @param msg
-     *            Message to write in
+     * @param msg Message to write in
      */
     private void parsePublicKey(SrpClientKeyExchangeMessage msg) {
         msg.setPublicKey(parseByteArrayField(msg.getPublicKeyLength().getValue()));
-        LOGGER.debug("PublicKey: " + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
+        LOGGER.debug("PublicKey: {}", msg.getPublicKey().getValue());
     }
 }

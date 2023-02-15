@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
@@ -17,12 +16,13 @@ import java.util.List;
 
 public class SignatureAndHashAlgorithmDelegate extends Delegate {
 
-    @Parameter(names = "-signature_hash_algo",
-        description = "Supported Signature and Hash Algorithms separated by comma eg. RSA-SHA512,DSA-SHA512")
+    @Parameter(
+            names = "-signature_hash_algo",
+            description =
+                    "Supported Signature and Hash Algorithms separated by comma eg. RSA-SHA512,DSA-SHA512")
     private List<SignatureAndHashAlgorithm> signatureAndHashAlgorithms = null;
 
-    public SignatureAndHashAlgorithmDelegate() {
-    }
+    public SignatureAndHashAlgorithmDelegate() {}
 
     public List<SignatureAndHashAlgorithm> getSignatureAndHashAlgorithms() {
         if (signatureAndHashAlgorithms == null) {
@@ -31,7 +31,8 @@ public class SignatureAndHashAlgorithmDelegate extends Delegate {
         return Collections.unmodifiableList(signatureAndHashAlgorithms);
     }
 
-    public void setSignatureAndHashAlgorithms(List<SignatureAndHashAlgorithm> signatureAndHashAlgorithms) {
+    public void setSignatureAndHashAlgorithms(
+            List<SignatureAndHashAlgorithm> signatureAndHashAlgorithms) {
         this.signatureAndHashAlgorithms = signatureAndHashAlgorithms;
     }
 

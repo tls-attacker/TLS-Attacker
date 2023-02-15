@@ -8,10 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
 import java.io.InputStream;
@@ -52,16 +50,13 @@ public class NewSessionTicketParser extends HandshakeMessageParser<NewSessionTic
     private void parseLifetime(NewSessionTicketMessage msg) {
         msg.setTicketLifetimeHint(
                 parseIntField(HandshakeByteLength.NEWSESSIONTICKET_LIFETIMEHINT_LENGTH));
-        LOGGER.debug("TicketLifetimeHint:" + msg.getTicketLifetimeHint().getValue());
+        LOGGER.debug("TicketLifetimeHint: " + msg.getTicketLifetimeHint().getValue());
     }
 
     private void parseAgeAdd(NewSessionTicketMessage msg) {
         msg.getTicket()
                 .setTicketAgeAdd(parseByteArrayField(HandshakeByteLength.TICKET_AGE_ADD_LENGTH));
-        LOGGER.debug(
-                "TicketAgeAdd:"
-                        + ArrayConverter.bytesToHexString(
-                                msg.getTicket().getTicketAgeAdd().getValue()));
+        LOGGER.debug("TicketAgeAdd: {}", msg.getTicket().getTicketAgeAdd().getValue());
     }
 
     private void parseNonceLength(NewSessionTicketMessage msg) {
@@ -74,10 +69,7 @@ public class NewSessionTicketParser extends HandshakeMessageParser<NewSessionTic
         msg.getTicket()
                 .setTicketNonce(
                         parseByteArrayField(msg.getTicket().getTicketNonceLength().getValue()));
-        LOGGER.debug(
-                "TicketNonce:"
-                        + ArrayConverter.bytesToHexString(
-                                msg.getTicket().getTicketNonce().getValue()));
+        LOGGER.debug("TicketNonce: {}", msg.getTicket().getTicketNonce().getValue());
     }
 
     private void parseIdentityLength(NewSessionTicketMessage msg) {
@@ -88,9 +80,7 @@ public class NewSessionTicketParser extends HandshakeMessageParser<NewSessionTic
     private void parseIdentity(NewSessionTicketMessage msg) {
         msg.getTicket()
                 .setIdentity(parseByteArrayField(msg.getTicket().getIdentityLength().getValue()));
-        LOGGER.debug(
-                "Identity:"
-                        + ArrayConverter.bytesToHexString(
-                                msg.getTicket().getIdentity().getValue()));
+        LOGGER.debug("Identity: {}", msg.getTicket().getIdentity().getValue());
     }
+
 }

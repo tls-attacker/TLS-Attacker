@@ -1,15 +1,13 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageSerializer;
 import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
 import org.apache.logging.log4j.LogManager;
@@ -24,8 +22,7 @@ public class ChangeCipherSpecSerializer extends ProtocolMessageSerializer<Change
     /**
      * Constructor for the ChangerCipherSpecSerializer
      *
-     * @param message
-     *                Message that should be serialized
+     * @param message Message that should be serialized
      */
     public ChangeCipherSpecSerializer(ChangeCipherSpecMessage message) {
         super(message);
@@ -39,11 +36,9 @@ public class ChangeCipherSpecSerializer extends ProtocolMessageSerializer<Change
         return getAlreadySerialized();
     }
 
-    /**
-     * Writes the CcsProtocolType of the ChangeCipherSpecMessage into the final byte[]
-     */
+    /** Writes the CcsProtocolType of the ChangeCipherSpecMessage into the final byte[] */
     private void writeCcsProtocolType(ChangeCipherSpecMessage msg) {
         appendBytes(msg.getCcsProtocolType().getValue());
-        LOGGER.debug("CcsProtocolType: " + ArrayConverter.bytesToHexString(msg.getCcsProtocolType().getValue()));
+        LOGGER.debug("CcsProtocolType: {}", msg.getCcsProtocolType().getValue());
     }
 }

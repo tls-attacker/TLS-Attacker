@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
@@ -45,10 +44,9 @@ public class CertificateStatusRequestExtensionParser
                                     .CERTIFICATE_STATUS_REQUEST_RESPONDER_ID_LIST_LENGTH));
             msg.setResponderIDList(parseByteArrayField(msg.getResponderIDListLength().getValue()));
             LOGGER.debug(
-                    "Parsed the responder ID list with length "
-                            + msg.getResponderIDListLength().getValue()
-                            + " and value "
-                            + ArrayConverter.bytesToHexString(msg.getResponderIDList()));
+                    "Parsed the responder ID list with length {} and value {}",
+                    msg.getResponderIDListLength().getValue(),
+                    msg.getResponderIDList());
             msg.setRequestExtensionLength(
                     parseIntField(
                             ExtensionByteLength
@@ -56,10 +54,9 @@ public class CertificateStatusRequestExtensionParser
             msg.setRequestExtension(
                     parseByteArrayField(msg.getRequestExtensionLength().getValue()));
             LOGGER.debug(
-                    "Parsed the request extension with length "
-                            + msg.getRequestExtensionLength().getValue()
-                            + " and value "
-                            + ArrayConverter.bytesToHexString(msg.getRequestExtension()));
+                    "Parsed the request extension with length {} and value {}",
+                    msg.getRequestExtensionLength().getValue(),
+                    msg.getRequestExtension());
         } else {
             parseAsCertificateStatus(msg);
         }

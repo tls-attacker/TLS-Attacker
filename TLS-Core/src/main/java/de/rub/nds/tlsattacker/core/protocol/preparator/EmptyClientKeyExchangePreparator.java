@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -17,14 +16,13 @@ import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.protocol.message.EmptyClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.util.BigIntegers;
 
-import java.math.BigInteger;
-
 public class EmptyClientKeyExchangePreparator<T extends EmptyClientKeyExchangeMessage>
-    extends ClientKeyExchangePreparator<T> {
+        extends ClientKeyExchangePreparator<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -47,11 +45,12 @@ public class EmptyClientKeyExchangePreparator<T extends EmptyClientKeyExchangeMe
         random = ArrayConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom());
         msg.getComputations().setClientServerRandom(random);
         random = msg.getComputations().getClientServerRandom().getValue();
-        LOGGER.debug("ClientServerRandom: "
-            + ArrayConverter.bytesToHexString(msg.getComputations().getClientServerRandom().getValue()));
+        LOGGER.debug(
+                "ClientServerRandom: {}", msg.getComputations().getClientServerRandom().getValue());
     }
 
-    protected byte[] calculateDhPremasterSecret(BigInteger modulus, BigInteger privateKey, BigInteger publicKey) {
+    protected byte[] calculateDhPremasterSecret(
+            BigInteger modulus, BigInteger privateKey, BigInteger publicKey) {
         if (modulus.compareTo(BigInteger.ZERO) == 0) {
             LOGGER.warn("Modulus is ZERO. Returning empty premaster Secret");
             return new byte[0];
@@ -62,14 +61,16 @@ public class EmptyClientKeyExchangePreparator<T extends EmptyClientKeyExchangeMe
     protected void preparePremasterSecret(T msg) {
         msg.getComputations().setPremasterSecret(premasterSecret);
         premasterSecret = msg.getComputations().getPremasterSecret().getValue();
-        LOGGER.debug("PremasterSecret: "
-            + ArrayConverter.bytesToHexString(msg.getComputations().getPremasterSecret().getValue()));
+        LOGGER.debug("PremasterSecret: {}", msg.getComputations().getPremasterSecret().getValue());
     }
 
-    protected byte[] computeECPremasterSecret(EllipticCurve curve, Point publicKey, BigInteger privateKey) {
+    protected byte[] computeECPremasterSecret(
+            EllipticCurve curve, Point publicKey, BigInteger privateKey) {
         Point sharedPoint = curve.mult(privateKey, publicKey);
-        int elementLength = ArrayConverter.bigIntegerToByteArray(sharedPoint.getFieldX().getModulus()).length;
-        return ArrayConverter.bigIntegerToNullPaddedByteArray(sharedPoint.getFieldX().getData(), elementLength);
+        int elementLength =
+                ArrayConverter.bigIntegerToByteArray(sharedPoint.getFieldX().getModulus()).length;
+        return ArrayConverter.bigIntegerToNullPaddedByteArray(
+                sharedPoint.getFieldX().getData(), elementLength);
     }
 
     @Override
@@ -78,10 +79,17 @@ public class EmptyClientKeyExchangePreparator<T extends EmptyClientKeyExchangeMe
         prepareClientServerRandom(msg);
 
         if (chooser.getContext().getTlsContext().getClientCertificate() != null
-            && !chooser.getContext().getTlsContext().getClientCertificate().isEmpty()) {
+                && !chooser.getContext().getTlsContext().getClientCertificate().isEmpty()) {
 
-            String algorithm = chooser.getContext().getTlsContext().getClientCertificate().getCertificateAt(0)
-                .getSubjectPublicKeyInfo().getAlgorithm().getAlgorithm().toString();
+            String algorithm =
+                    chooser.getContext()
+                            .getTlsContext()
+                            .getClientCertificate()
+                            .getCertificateAt(0)
+                            .getSubjectPublicKeyInfo()
+                            .getAlgorithm()
+                            .getAlgorithm()
+                            .toString();
             if (PublicKeyType.fromOid(algorithm) == PublicKeyType.DH) {
                 BigInteger modulus = chooser.getClientDhModulus();
                 BigInteger publicKey = chooser.getServerDhPublicKey();
@@ -103,5 +111,4 @@ public class EmptyClientKeyExchangePreparator<T extends EmptyClientKeyExchangeMe
             preparePremasterSecret(msg);
         }
     }
-
 }

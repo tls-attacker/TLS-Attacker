@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.tlsattacker.core.protocol.message.KeyUpdateMessage;
@@ -21,10 +20,8 @@ public class KeyUpdateSerializer extends HandshakeMessageSerializer<KeyUpdateMes
     /**
      * Constructor for the FinishedMessageSerializer
      *
-     * @param message
-     *                Message that should be serialized
+     * @param message Message that should be serialized
      */
-
     public KeyUpdateSerializer(KeyUpdateMessage message) {
         super(message);
         this.msg = message;
@@ -41,5 +38,4 @@ public class KeyUpdateSerializer extends HandshakeMessageSerializer<KeyUpdateMes
         appendByte(msg.getRequestMode().getValue());
         LOGGER.debug("Serialized KeyUpdate Value: " + msg.getRequestMode());
     }
-
 }

@@ -174,18 +174,14 @@ public class RecordAEADCipher extends RecordCipher {
         byte[] aeadSalt = prepareEncryptionAeadSalt(record);
         byte[] gcmNonce = prepareEncryptionGcmNonce(aeadSalt, explicitNonce, record);
 
-        LOGGER.debug(
-                "Encrypting AEAD with the following IV: {}",
-                ArrayConverter.bytesToHexString(gcmNonce));
+        LOGGER.debug("Encrypting AEAD with the following IV: {}", gcmNonce);
         byte[] additionalAuthenticatedData =
                 collectAdditionalAuthenticatedData(record, getState().getVersion());
         record.getComputations().setAuthenticatedMetaData(additionalAuthenticatedData);
         additionalAuthenticatedData =
                 record.getComputations().getAuthenticatedMetaData().getValue();
 
-        LOGGER.debug(
-                "Encrypting AEAD with the following AAD: {}",
-                ArrayConverter.bytesToHexString(additionalAuthenticatedData));
+        LOGGER.debug("Encrypting AEAD with the following AAD: {}", additionalAuthenticatedData);
 
         byte[] plainBytes = record.getComputations().getPlainRecordBytes().getValue();
         byte[] wholeCipherText =
@@ -249,9 +245,7 @@ public class RecordAEADCipher extends RecordCipher {
         additionalAuthenticatedData =
                 record.getComputations().getAuthenticatedMetaData().getValue();
 
-        LOGGER.debug(
-                "Decrypting AEAD with the following AAD: {}",
-                ArrayConverter.bytesToHexString(additionalAuthenticatedData));
+        LOGGER.debug("Decrypting AEAD with the following AAD: {}", additionalAuthenticatedData);
 
         byte[] gcmNonce = ArrayConverter.concatenate(salt, explicitNonce);
 
@@ -287,9 +281,7 @@ public class RecordAEADCipher extends RecordCipher {
         record.getComputations().setGcmNonce(gcmNonce);
         gcmNonce = record.getComputations().getGcmNonce().getValue();
 
-        LOGGER.debug(
-                "Decrypting AEAD with the following IV: {}",
-                ArrayConverter.bytesToHexString(gcmNonce));
+        LOGGER.debug("Decrypting AEAD with the following IV: {}", gcmNonce);
 
         byte[] authenticationTag = parser.parseByteArrayField(parser.getBytesLeft());
 

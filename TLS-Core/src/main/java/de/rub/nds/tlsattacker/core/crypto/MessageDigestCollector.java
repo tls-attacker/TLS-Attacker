@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.crypto;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -22,8 +21,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Computes message digest for two algorithms at once, typically for MD5 and SHA1 for TLS 1.0. At the end it returns
- * MD5(value) || SHA1(value). For TLS 1.2 SHA256 is used, as described in the RFC.
+ * Computes message digest for two algorithms at once, typically for MD5 and SHA1 for TLS 1.0. At
+ * the end it returns MD5(value) || SHA1(value). For TLS 1.2 SHA256 is used, as described in the
+ * RFC.
  */
 public class MessageDigestCollector {
 
@@ -31,9 +31,7 @@ public class MessageDigestCollector {
 
     private ByteArrayOutputStream stream;
 
-    /**
-     * Default constructor.
-     */
+    /** Default constructor. */
     public MessageDigestCollector() {
         stream = new ByteArrayOutputStream();
     }
@@ -78,7 +76,6 @@ public class MessageDigestCollector {
         } catch (NoSuchAlgorithmException ex) {
             throw new UnsupportedOperationException("Unsupported Hash algorithm!");
         }
-
     }
 
     public void reset() {

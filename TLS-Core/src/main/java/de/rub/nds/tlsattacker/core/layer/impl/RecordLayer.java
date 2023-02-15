@@ -295,18 +295,16 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
 
     public void updateEncryptionCipher(RecordCipher encryptionCipher) {
         LOGGER.debug(
-                "Activating new EncryptionCipher ("
-                        + encryptionCipher.getClass().getSimpleName()
-                        + ")");
+                "Activating new EncryptionCipher ({})",
+                encryptionCipher.getClass().getSimpleName());
         encryptor.addNewRecordCipher(encryptionCipher);
         writeEpoch++;
     }
 
     public void updateDecryptionCipher(RecordCipher decryptionCipher) {
         LOGGER.debug(
-                "Activating new DecryptionCipher ("
-                        + decryptionCipher.getClass().getSimpleName()
-                        + ")");
+                "Activating new DecryptionCipher ({})",
+                decryptionCipher.getClass().getSimpleName());
         decryptor.addNewRecordCipher(decryptionCipher);
         readEpoch++;
     }

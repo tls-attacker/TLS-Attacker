@@ -1,23 +1,21 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.protocol.message.SrpServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.protocol.message.SrpServerKeyExchangeMessage;
+import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.math.BigInteger;
-
-public class SrpServerKeyExchangeHandler extends ServerKeyExchangeHandler<SrpServerKeyExchangeMessage> {
+public class SrpServerKeyExchangeHandler
+        extends ServerKeyExchangeHandler<SrpServerKeyExchangeMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -31,7 +29,8 @@ public class SrpServerKeyExchangeHandler extends ServerKeyExchangeHandler<SrpSer
         adjustSRPModulus(message);
         adjustSalt(message);
         adjustServerPublicKey(message);
-        if (message.getComputations() != null && message.getComputations().getPrivateKey() != null) {
+        if (message.getComputations() != null
+                && message.getComputations().getPrivateKey() != null) {
             adjustServerPrivateKey(message);
         }
     }
@@ -58,6 +57,6 @@ public class SrpServerKeyExchangeHandler extends ServerKeyExchangeHandler<SrpSer
 
     private void adjustSalt(SrpServerKeyExchangeMessage message) {
         tlsContext.setSRPServerSalt(message.getSalt().getValue());
-        LOGGER.debug("SRP Salt: " + ArrayConverter.bytesToHexString(tlsContext.getSRPServerSalt()));
+        LOGGER.debug("SRP Salt: {}", tlsContext.getSRPServerSalt());
     }
 }

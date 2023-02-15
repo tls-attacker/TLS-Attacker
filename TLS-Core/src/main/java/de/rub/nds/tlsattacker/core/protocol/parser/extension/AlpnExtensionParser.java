@@ -1,18 +1,17 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.AlpnExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.alpn.AlpnEntry;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.LinkedList;
@@ -26,8 +25,10 @@ public class AlpnExtensionParser extends ExtensionParser<AlpnExtensionMessage> {
 
     @Override
     public void parse(AlpnExtensionMessage msg) {
-        msg.setProposedAlpnProtocolsLength(parseIntField(ExtensionByteLength.ALPN_EXTENSION_LENGTH));
-        byte[] proposedProtocol = parseByteArrayField(msg.getProposedAlpnProtocolsLength().getValue());
+        msg.setProposedAlpnProtocolsLength(
+                parseIntField(ExtensionByteLength.ALPN_EXTENSION_LENGTH));
+        byte[] proposedProtocol =
+                parseByteArrayField(msg.getProposedAlpnProtocolsLength().getValue());
         msg.setProposedAlpnProtocols(proposedProtocol);
         List<AlpnEntry> entryList = new LinkedList<>();
         ByteArrayInputStream innerStream = new ByteArrayInputStream(proposedProtocol);
@@ -39,5 +40,4 @@ public class AlpnExtensionParser extends ExtensionParser<AlpnExtensionMessage> {
         }
         msg.setAlpnEntryList(entryList);
     }
-
 }

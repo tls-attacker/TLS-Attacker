@@ -1,14 +1,13 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatByteLength;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
@@ -66,7 +65,7 @@ public class HeartbeatMessageParser extends ProtocolMessageParser<HeartbeatMessa
      */
     private void parsePayload(HeartbeatMessage msg) {
         msg.setPayload(parseByteArrayField(msg.getPayloadLength().getValue()));
-        LOGGER.debug("Payload: " + ArrayConverter.bytesToHexString(msg.getPayload().getValue()));
+        LOGGER.debug("Payload: {}", msg.getPayload().getValue());
     }
 
     /**
@@ -76,6 +75,6 @@ public class HeartbeatMessageParser extends ProtocolMessageParser<HeartbeatMessa
      */
     private void parsePadding(HeartbeatMessage msg) {
         msg.setPadding(parseByteArrayField(getBytesLeft()));
-        LOGGER.debug("Padding: " + ArrayConverter.bytesToHexString(msg.getPadding().getValue()));
+        LOGGER.debug("Padding: {}", msg.getPadding().getValue());
     }
 }

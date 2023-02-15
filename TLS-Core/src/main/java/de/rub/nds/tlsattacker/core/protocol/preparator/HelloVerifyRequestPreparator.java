@@ -1,21 +1,20 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class HelloVerifyRequestPreparator extends HandshakeMessagePreparator<HelloVerifyRequestMessage> {
+public class HelloVerifyRequestPreparator
+        extends HandshakeMessagePreparator<HelloVerifyRequestMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -48,7 +47,7 @@ public class HelloVerifyRequestPreparator extends HandshakeMessagePreparator<Hel
 
     private void prepareCookie(HelloVerifyRequestMessage msg) {
         msg.setCookie(generateCookie());
-        LOGGER.debug("Cookie: " + ArrayConverter.bytesToHexString(msg.getCookie().getValue()));
+        LOGGER.debug("Cookie: {}", msg.getCookie().getValue());
     }
 
     private void prepareCookieLength(HelloVerifyRequestMessage msg) {
@@ -58,7 +57,6 @@ public class HelloVerifyRequestPreparator extends HandshakeMessagePreparator<Hel
 
     private void prepareProtocolVersion(HelloVerifyRequestMessage msg) {
         msg.setProtocolVersion(chooser.getConfig().getHighestProtocolVersion().getValue());
-        LOGGER.debug("ProtocolVersion: " + ArrayConverter.bytesToHexString(msg.getProtocolVersion().getValue()));
+        LOGGER.debug("ProtocolVersion: {}", msg.getProtocolVersion().getValue());
     }
-
 }

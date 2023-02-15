@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -90,10 +90,10 @@ public class TokenbindingMessagePreparatorTest {
         parser.parse(message);
         byte[] xBytes = new byte[32];
         System.arraycopy(message.getPoint().getValue(), 0, xBytes, 0, 32);
-        LOGGER.debug("X:" + ArrayConverter.bytesToHexString(xBytes));
+        LOGGER.debug("X: {}", xBytes);
         byte[] yBytes = new byte[32];
         System.arraycopy(message.getPoint().getValue(), 32, yBytes, 0, 32);
-        LOGGER.debug("Y:" + ArrayConverter.bytesToHexString(yBytes));
+        LOGGER.debug("Y: {}", yBytes);
         BigInteger intX = new BigInteger(xBytes);
         LOGGER.debug("intx: " + intX);
 
@@ -125,8 +125,8 @@ public class TokenbindingMessagePreparatorTest {
         System.arraycopy(message.getSignature().getValue(), 0, rBytes, 0, 32);
         byte[] sBytes = new byte[32];
         System.arraycopy(message.getSignature().getValue(), 32, sBytes, 0, 32);
-        LOGGER.debug("r:" + ArrayConverter.bytesToHexString(rBytes));
-        LOGGER.debug("s:" + ArrayConverter.bytesToHexString(sBytes));
+        LOGGER.debug("r: {}", rBytes);
+        LOGGER.debug("s: {}", sBytes);
         LOGGER.debug("r:" + new ASN1Integer(rBytes).getPositiveValue());
         LOGGER.debug("s:" + new ASN1Integer(sBytes).getPositiveValue());
         // decodeASN1(parsedMessage.getSignature().getValue());

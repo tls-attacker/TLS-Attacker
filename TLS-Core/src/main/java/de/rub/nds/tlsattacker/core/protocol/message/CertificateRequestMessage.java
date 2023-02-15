@@ -12,7 +12,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
@@ -236,8 +235,8 @@ public class CertificateRequestMessage extends HandshakeMessage<CertificateReque
             } catch (Exception e) {
                 LOGGER.debug(e);
                 LOGGER.debug(
-                        "Signature and HashAlgorithms contain unparseable Algorithms:"
-                                + ArrayConverter.bytesToHexString(signatureHashAlgorithms));
+                        "Signature and HashAlgorithms contain unparseable Algorithms: {}",
+                        signatureHashAlgorithms);
             }
         } else {
             sb.append("null");

@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
@@ -83,9 +82,7 @@ public class CertificateRequestHandler extends HandshakeMessageHandler<Certifica
                 && message.getDistinguishedNames().getValue() != null) {
             byte[] distinguishedNames = message.getDistinguishedNames().getValue();
             tlsContext.setDistinguishedNames(distinguishedNames);
-            LOGGER.debug(
-                    "Set DistinguishedNames in Context to "
-                            + ArrayConverter.bytesToHexString(distinguishedNames, false));
+            LOGGER.debug("Set DistinguishedNames in Context to {}", distinguishedNames);
         } else {
             LOGGER.debug("Not adjusting DistinguishedNames");
         }
@@ -114,10 +111,7 @@ public class CertificateRequestHandler extends HandshakeMessageHandler<Certifica
     private List<SignatureAndHashAlgorithm> convertSignatureAndHashAlgorithms(
             byte[] bytesToConvert) {
         if (bytesToConvert.length % 2 != 0) {
-            LOGGER.warn(
-                    "Cannot convert:"
-                            + ArrayConverter.bytesToHexString(bytesToConvert, false)
-                            + " to a List<SignatureAndHashAlgorithm>");
+            LOGGER.warn("Cannot convert: {} to a List<SignatureAndHashAlgorithm>", bytesToConvert);
             return new LinkedList<>();
         }
         List<SignatureAndHashAlgorithm> list = new LinkedList<>();

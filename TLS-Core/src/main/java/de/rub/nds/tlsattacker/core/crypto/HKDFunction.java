@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.core.crypto;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -20,9 +19,10 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-import org.apache.commons.lang3.NotImplementedException;
 
-/** HKDF functions computation for TLS 1.3 */
+/**
+ * HKDF functions computation for TLS 1.3
+ */
 public class HKDFunction {
 
     public static final String KEY = "key";
@@ -60,8 +60,6 @@ public class HKDFunction {
     public static final String RESUMPTION = "resumption";
 
     public static final String TRAFFICUPD = "traffic upd";
-
-    public static final String SN_KEY = "sn";
 
     /**
      * Computes HKDF-Extract output as defined in RFC 5869

@@ -1,20 +1,17 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.constants;
 
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Available exchange modes for pre-shared keys (TLS 1.3)
- */
+/** Available exchange modes for pre-shared keys (TLS 1.3) */
 public enum PskKeyExchangeMode {
     PSK_KE((byte) 0),
     PSK_DHE_KE((byte) 1);

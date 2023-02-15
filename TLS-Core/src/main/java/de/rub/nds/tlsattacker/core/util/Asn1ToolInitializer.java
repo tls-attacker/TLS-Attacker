@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.util;
 
 import de.rub.nds.asn1.parser.contentunpackers.ContentUnpackerRegister;
@@ -30,7 +29,8 @@ public class Asn1ToolInitializer {
 
     private static void registerContexts() {
         ContextRegister contextRegister = ContextRegister.getInstance();
-        contextRegister.registerContext(ParseNativeTypesContext.NAME, ParseNativeTypesContext.class);
+        contextRegister.registerContext(
+                ParseNativeTypesContext.NAME, ParseNativeTypesContext.class);
         contextRegister.registerContext(ParseOcspTypesContext.NAME, ParseOcspTypesContext.class);
     }
 

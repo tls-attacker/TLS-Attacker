@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message.computations;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -22,8 +21,7 @@ public class PSKPremasterComputations extends KeyExchangeComputations {
 
     private ModifiableByteArray psk;
 
-    public PSKPremasterComputations() {
-    }
+    public PSKPremasterComputations() {}
 
     public PSKPremasterComputations(ModifiableByteArray psk) {
         this.psk = psk;
@@ -41,6 +39,7 @@ public class PSKPremasterComputations extends KeyExchangeComputations {
 
     @Override
     public void setPremasterSecret(byte[] value) {
-        this.premasterSecret = ModifiableVariableFactory.safelySetValue(this.premasterSecret, value);
+        this.premasterSecret =
+                ModifiableVariableFactory.safelySetValue(this.premasterSecret, value);
     }
 }

@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.util;
 
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
@@ -52,7 +51,8 @@ public class GOSTUtils {
         return (BCECGOST3410_2012PrivateKey) generateEcPrivateKey(curve, s, "ECGOST3410-2012");
     }
 
-    private static PrivateKey generateEcPrivateKey(GOSTCurve curve, BigInteger s, String keyFactoryAlg) {
+    private static PrivateKey generateEcPrivateKey(
+            GOSTCurve curve, BigInteger s, String keyFactoryAlg) {
         try {
             ECParameterSpec ecParameterSpec = getEcParameterSpec(curve);
             ECPrivateKeySpec privateKeySpec = new ECPrivateKeySpec(s, ecParameterSpec);
@@ -66,7 +66,8 @@ public class GOSTUtils {
     public static ECNamedCurveSpec getEcParameterSpec(GOSTCurve curve) {
         String curveName = curve.getJavaName();
         ECNamedCurveParameterSpec spec = ECNamedCurveTable.getParameterSpec(curveName);
-        return new ECNamedCurveSpec(curveName, spec.getCurve(), spec.getG(), spec.getN(), spec.getH(), spec.getSeed());
+        return new ECNamedCurveSpec(
+                curveName, spec.getCurve(), spec.getG(), spec.getN(), spec.getH(), spec.getSeed());
     }
 
     public static PublicKey generatePublicKey(GOSTCurve curve, Point point) {
@@ -83,13 +84,16 @@ public class GOSTUtils {
             case Tc26_Gost_3410_12_512_paramSetB:
             case Tc26_Gost_3410_12_512_paramSetC:
                 LOGGER.debug("Generating GOST12 public key for " + curve.name());
-                return (BCECGOST3410_2012PublicKey) convertPointToPublicKey(curve, point, "ECGOST3410-2012");
+                return (BCECGOST3410_2012PublicKey)
+                        convertPointToPublicKey(curve, point, "ECGOST3410-2012");
             default:
-                throw new UnsupportedOperationException("Gost Curve " + curve + " is not supported");
+                throw new UnsupportedOperationException(
+                        "Gost Curve " + curve + " is not supported");
         }
     }
 
-    private static PublicKey convertPointToPublicKey(GOSTCurve curve, Point point, String keyFactoryAlg) {
+    private static PublicKey convertPointToPublicKey(
+            GOSTCurve curve, Point point, String keyFactoryAlg) {
         try {
             ECParameterSpec ecParameterSpec = getEcParameterSpec(curve);
             ECPoint ecPoint = new ECPoint(point.getFieldX().getData(), point.getFieldY().getData());

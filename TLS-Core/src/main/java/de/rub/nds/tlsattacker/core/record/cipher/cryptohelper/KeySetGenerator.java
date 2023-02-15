@@ -74,7 +74,7 @@ public class KeySetGenerator {
                     throw new CryptoException("Unknown KeySetType:" + keySetType.name());
             }
         }
-        LOGGER.debug("ActiveKeySetType is " + keySetType);
+        LOGGER.debug("ActiveKeySetType is {}", keySetType);
         CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
         KeySet keySet = new KeySet(keySetType);
         HKDFAlgorithm hkdfAlgorithm = AlgorithmResolver.getHKDFAlgorithm(cipherSuite);
@@ -84,60 +84,32 @@ public class KeySetGenerator {
                         clientSecret,
                         HKDFunction.KEY,
                         new byte[] {},
-                        cipherAlg.getKeySize(),
-                        tlsContext.getChooser().getSelectedProtocolVersion()));
-        LOGGER.debug(
-                "Client write key: {}",
-                ArrayConverter.bytesToHexString(keySet.getClientWriteKey()));
+                        cipherAlg.getKeySize()));
+        LOGGER.debug("Client write key: {}", keySet.getClientWriteKey());
         keySet.setServerWriteKey(
                 HKDFunction.expandLabel(
                         hkdfAlgorithm,
                         serverSecret,
                         HKDFunction.KEY,
                         new byte[] {},
-                        cipherAlg.getKeySize(),
-                        tlsContext.getChooser().getSelectedProtocolVersion()));
-        LOGGER.debug(
-                "Server write key: {}",
-                ArrayConverter.bytesToHexString(keySet.getServerWriteKey()));
+                        cipherAlg.getKeySize()));
+        LOGGER.debug("Server write key: {}", keySet.getServerWriteKey());
         keySet.setClientWriteIv(
                 HKDFunction.expandLabel(
                         hkdfAlgorithm,
                         clientSecret,
                         HKDFunction.IV,
                         new byte[] {},
-                        AEAD_IV_LENGTH,
-                        tlsContext.getChooser().getSelectedProtocolVersion()));
-        LOGGER.debug(
-                "Client write IV: {}", ArrayConverter.bytesToHexString(keySet.getClientWriteIv()));
+                        AEAD_IV_LENGTH));
+        LOGGER.debug("Client write IV: {}", keySet.getClientWriteIv());
         keySet.setServerWriteIv(
                 HKDFunction.expandLabel(
                         hkdfAlgorithm,
                         serverSecret,
                         HKDFunction.IV,
                         new byte[] {},
-                        AEAD_IV_LENGTH,
-                        tlsContext.getChooser().getSelectedProtocolVersion()));
-        LOGGER.debug(
-                "Server write IV: {}", ArrayConverter.bytesToHexString(keySet.getServerWriteIv()));
-        keySet.setClientSnKey(
-                HKDFunction.expandLabel(
-                        hkdfAlgorithm,
-                        clientSecret,
-                        HKDFunction.SN_KEY,
-                        new byte[] {},
-                        cipherAlg.getKeySize(),
-                        tlsContext.getChooser().getSelectedProtocolVersion()));
-        LOGGER.debug("Client sn key: {}", ArrayConverter.bytesToHexString(keySet.getClientSnKey()));
-        keySet.setServerSnKey(
-                HKDFunction.expandLabel(
-                        hkdfAlgorithm,
-                        serverSecret,
-                        HKDFunction.SN_KEY,
-                        new byte[] {},
-                        cipherAlg.getKeySize(),
-                        tlsContext.getChooser().getSelectedProtocolVersion()));
-        LOGGER.debug("Server sn key: {}", ArrayConverter.bytesToHexString(keySet.getServerSnKey()));
+                        AEAD_IV_LENGTH));
+        LOGGER.debug("Server write IV: {}", keySet.getServerWriteIv());
         keySet.setServerWriteMacSecret(new byte[0]);
         keySet.setClientWriteMacSecret(new byte[0]);
         return keySet;
@@ -168,8 +140,7 @@ public class KeySetGenerator {
                             seed,
                             getSecretSetSize(protocolVersion, cipherSuite));
         }
-        LOGGER.debug(
-                "A new key block was generated: {}", ArrayConverter.bytesToHexString(keyBlock));
+        LOGGER.debug("A new key block was generated: {}", keyBlock);
         KeyBlockParser parser = new KeyBlockParser(keyBlock, cipherSuite, protocolVersion);
         KeySet keySet = new KeySet();
         parser.parse(keySet);

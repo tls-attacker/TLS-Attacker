@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.crypto;
 
 import de.rub.nds.tlsattacker.core.crypto.keys.CustomDHPrivateKey;
@@ -41,49 +40,64 @@ public class KeyGenerator {
 
     public static ECPrivateKey getECPrivateKey(Chooser chooser) {
         if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
-            return new CustomECPrivateKey(chooser.getClientEcPrivateKey(), chooser.getEcCertificateCurve());
+            return new CustomECPrivateKey(
+                    chooser.getClientEcPrivateKey(), chooser.getEcCertificateCurve());
         } else {
-            return new CustomECPrivateKey(chooser.getServerEcPrivateKey(), chooser.getEcCertificateCurve());
+            return new CustomECPrivateKey(
+                    chooser.getServerEcPrivateKey(), chooser.getEcCertificateCurve());
         }
     }
 
     public static BCECGOST3410PrivateKey getGost01PrivateKey(Chooser chooser) {
         if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
-            return GOSTUtils.generate01PrivateKey(chooser.getSelectedGostCurve(), chooser.getClientEcPrivateKey());
+            return GOSTUtils.generate01PrivateKey(
+                    chooser.getSelectedGostCurve(), chooser.getClientEcPrivateKey());
         } else {
-            return GOSTUtils.generate01PrivateKey(chooser.getSelectedGostCurve(), chooser.getServerEcPrivateKey());
+            return GOSTUtils.generate01PrivateKey(
+                    chooser.getSelectedGostCurve(), chooser.getServerEcPrivateKey());
         }
     }
 
     public static BCECGOST3410_2012PrivateKey getGost12PrivateKey(Chooser chooser) {
         if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
-            return GOSTUtils.generate12PrivateKey(chooser.getSelectedGostCurve(), chooser.getClientEcPrivateKey());
+            return GOSTUtils.generate12PrivateKey(
+                    chooser.getSelectedGostCurve(), chooser.getClientEcPrivateKey());
         } else {
-            return GOSTUtils.generate12PrivateKey(chooser.getSelectedGostCurve(), chooser.getServerEcPrivateKey());
+            return GOSTUtils.generate12PrivateKey(
+                    chooser.getSelectedGostCurve(), chooser.getServerEcPrivateKey());
         }
     }
 
     public static DHPrivateKey getDHPrivateKey(Chooser chooser) {
         if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
-            return new CustomDHPrivateKey(chooser.getClientDhPrivateKey(), chooser.getClientDhModulus(),
-                chooser.getClientDhGenerator());
+            return new CustomDHPrivateKey(
+                    chooser.getClientDhPrivateKey(),
+                    chooser.getClientDhModulus(),
+                    chooser.getClientDhGenerator());
         } else {
-            return new CustomDHPrivateKey(chooser.getServerDhPrivateKey(), chooser.getServerDhModulus(),
-                chooser.getServerDhGenerator());
+            return new CustomDHPrivateKey(
+                    chooser.getServerDhPrivateKey(),
+                    chooser.getServerDhModulus(),
+                    chooser.getServerDhGenerator());
         }
     }
 
     public static DSAPrivateKey getDSAPrivateKey(Chooser chooser) {
         if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
-            return new CustomDSAPrivateKey(chooser.getDsaClientPrivateKey(), chooser.getDsaClientPrimeP(),
-                chooser.getDsaClientPrimeQ(), chooser.getDsaClientGenerator());
+            return new CustomDSAPrivateKey(
+                    chooser.getDsaClientPrivateKey(),
+                    chooser.getDsaClientPrimeP(),
+                    chooser.getDsaClientPrimeQ(),
+                    chooser.getDsaClientGenerator());
         } else {
 
-            return new CustomDSAPrivateKey(chooser.getDsaServerPrivateKey(), chooser.getDsaServerPrimeP(),
-                chooser.getDsaServerPrimeQ(), chooser.getDsaServerGenerator());
+            return new CustomDSAPrivateKey(
+                    chooser.getDsaServerPrivateKey(),
+                    chooser.getDsaServerPrimeP(),
+                    chooser.getDsaServerPrimeQ(),
+                    chooser.getDsaServerGenerator());
         }
     }
 
-    private KeyGenerator() {
-    }
+    private KeyGenerator() {}
 }

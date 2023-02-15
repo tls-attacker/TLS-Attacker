@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.connection;
 
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -15,8 +14,7 @@ public class InboundConnection extends AliasedConnection {
 
     private static final ConnectionEndType LOCAL_CONNECTION_END_TYPE = ConnectionEndType.SERVER;
 
-    public InboundConnection() {
-    }
+    public InboundConnection() {}
 
     public InboundConnection(Integer port) {
         super(port);

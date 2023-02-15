@@ -1,14 +1,13 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
@@ -39,9 +38,7 @@ public abstract class ClientKeyExchangeHandler<MessageT extends ClientKeyExchang
         if (message.getComputations().getPremasterSecret() != null) {
             byte[] premasterSecret = message.getComputations().getPremasterSecret().getValue();
             tlsContext.setPreMasterSecret(premasterSecret);
-            LOGGER.debug(
-                    "Set PremasterSecret in Context to "
-                            + ArrayConverter.bytesToHexString(premasterSecret));
+            LOGGER.debug("Set PremasterSecret in Context to {}", premasterSecret);
         } else {
             LOGGER.debug("Did not set in Context PremasterSecret");
         }
@@ -52,9 +49,8 @@ public abstract class ClientKeyExchangeHandler<MessageT extends ClientKeyExchang
         Chooser chooser = tlsContext.getChooser();
         if (chooser.getSelectedProtocolVersion() == ProtocolVersion.SSL3) {
             LOGGER.debug(
-                    "Calculate SSL MasterSecret with Client and Server Nonces, which are: "
-                            + ArrayConverter.bytesToHexString(
-                                    message.getComputations().getClientServerRandom().getValue()));
+                    "Calculate SSL MasterSecret with Client and Server Nonces, which are: {}",
+                    message.getComputations().getClientServerRandom().getValue());
             return SSLUtils.calculateMasterSecretSSL3(
                     chooser.getPreMasterSecret(),
                     message.getComputations().getClientServerRandom().getValue());
@@ -70,11 +66,9 @@ public abstract class ClientKeyExchangeHandler<MessageT extends ClientKeyExchang
                                 .digest(
                                         chooser.getSelectedProtocolVersion(),
                                         chooser.getSelectedCipherSuite());
-                LOGGER.debug(
-                        "Premastersecret: "
-                                + ArrayConverter.bytesToHexString(chooser.getPreMasterSecret()));
+                LOGGER.debug("Premastersecret: {}", chooser.getPreMasterSecret());
 
-                LOGGER.debug("SessionHash: " + ArrayConverter.bytesToHexString(sessionHash));
+                LOGGER.debug("SessionHash: {}", sessionHash);
                 byte[] extendedMasterSecret =
                         PseudoRandomFunction.compute(
                                 prfAlgorithm,
@@ -105,8 +99,7 @@ public abstract class ClientKeyExchangeHandler<MessageT extends ClientKeyExchang
             throw new UnsupportedOperationException("Could not calculate masterSecret", ex);
         }
         tlsContext.setMasterSecret(masterSecret);
-        LOGGER.debug(
-                "Set MasterSecret in Context to " + ArrayConverter.bytesToHexString(masterSecret));
+        LOGGER.debug("Set MasterSecret in Context to {}", masterSecret);
     }
 
     protected void spawnNewSession() {

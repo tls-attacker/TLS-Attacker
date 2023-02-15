@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
@@ -74,8 +73,7 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
      */
     private void parseRequestContextBytes(CertificateMessage msg) {
         msg.setRequestContext(parseByteArrayField(msg.getRequestContextLength().getValue()));
-        LOGGER.debug(
-                "RequestContextBytes: " + ArrayConverter.bytesToHexString(msg.getRequestContext()));
+        LOGGER.debug("RequestContextBytes: {}", msg.getRequestContext());
     }
 
     /**
@@ -96,9 +94,7 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
     private void parseCertificateListBytes(CertificateMessage msg) {
         msg.setCertificatesListBytes(
                 parseByteArrayField(msg.getCertificatesListLength().getValue()));
-        LOGGER.debug(
-                "CertificatesListBytes: "
-                        + ArrayConverter.bytesToHexString(msg.getCertificatesListBytes()));
+        LOGGER.debug("CertificatesListBytes: {}", msg.getCertificatesListBytes());
     }
 
     /**

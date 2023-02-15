@@ -8,9 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
@@ -89,10 +87,7 @@ public class CertificateRequestPreparator
 
     private void prepareClientCertificateTypes(byte[] certTypes, CertificateRequestMessage msg) {
         msg.setClientCertificateTypes(certTypes);
-        LOGGER.debug(
-                "ClientCertificateTypes: "
-                        + ArrayConverter.bytesToHexString(
-                                msg.getClientCertificateTypes().getValue()));
+        LOGGER.debug("ClientCertificateTypes: {}", msg.getClientCertificateTypes().getValue());
     }
 
     private void prepareClientCertificateTypesCount(CertificateRequestMessage msg) {
@@ -103,9 +98,7 @@ public class CertificateRequestPreparator
 
     private void prepareDistinguishedNames(CertificateRequestMessage msg) {
         msg.setDistinguishedNames(chooser.getConfig().getDistinguishedNames());
-        LOGGER.debug(
-                "DistinguishedNames: "
-                        + ArrayConverter.bytesToHexString(msg.getDistinguishedNames().getValue()));
+        LOGGER.debug("DistinguishedNames: {}", msg.getDistinguishedNames().getValue());
     }
 
     private void prepareDistinguishedNamesLength(CertificateRequestMessage msg) {
@@ -115,10 +108,7 @@ public class CertificateRequestPreparator
 
     private void prepareSignatureHashAlgorithms(CertificateRequestMessage msg) {
         msg.setSignatureHashAlgorithms(sigHashAlgos);
-        LOGGER.debug(
-                "SignatureHashAlgorithms: "
-                        + ArrayConverter.bytesToHexString(
-                                msg.getSignatureHashAlgorithms().getValue()));
+        LOGGER.debug("SignatureHashAlgorithms: {}", msg.getSignatureHashAlgorithms().getValue());
     }
 
     private void prepareSignatureHashAlgorithmsLength(CertificateRequestMessage msg) {
@@ -131,9 +121,7 @@ public class CertificateRequestPreparator
     private void prepareCertificateRequestContext(CertificateRequestMessage msg) {
         msg.setCertificateRequestContext(chooser.getConfig().getDefaultCertificateRequestContext());
         LOGGER.debug(
-                "CertificateRequestContext: "
-                        + ArrayConverter.bytesToHexString(
-                                msg.getCertificateRequestContext().getValue()));
+                "CertificateRequestContext: {}", msg.getCertificateRequestContext().getValue());
     }
 
     private void prepareCertificateRequestContextLength(CertificateRequestMessage msg) {

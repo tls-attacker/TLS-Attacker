@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -21,13 +20,12 @@ import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PWDProtectExtensionMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.cryptomator.siv.SivMode;
-
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.cryptomator.siv.SivMode;
 
 public class PWDProtectExtensionPreparator extends ExtensionPreparator<PWDProtectExtensionMessage> {
 
@@ -71,23 +69,34 @@ public class PWDProtectExtensionPreparator extends ExtensionPreparator<PWDProtec
         if (!multedPoint.isAtInfinity()) {
             clientPublicKey = multedPoint.getFieldX().getData();
         } else {
-            LOGGER.warn("Computed intermediate value as point in infinity. Using Zero instead for X value");
+            LOGGER.warn(
+                    "Computed intermediate value as point in infinity. Using Zero instead for X value");
             clientPublicKey = BigInteger.ZERO;
         }
-        Point sharedPoint = curve.mult(config.getDefaultServerPWDProtectRandomSecret(), serverPublicKey);
+        Point sharedPoint =
+                curve.mult(config.getDefaultServerPWDProtectRandomSecret(), serverPublicKey);
         BigInteger sharedSecret;
         if (!sharedPoint.isAtInfinity()) {
             sharedSecret =
-                curve.mult(config.getDefaultServerPWDProtectRandomSecret(), serverPublicKey).getFieldX().getData();
+                    curve.mult(config.getDefaultServerPWDProtectRandomSecret(), serverPublicKey)
+                            .getFieldX()
+                            .getData();
         } else {
-            LOGGER.warn("Computed shared secet as point in infinity. Using Zero instead for X value");
+            LOGGER.warn(
+                    "Computed shared secet as point in infinity. Using Zero instead for X value");
             sharedSecret = BigInteger.ZERO;
         }
 
-        byte[] key = HKDFunction.expand(hkdfAlgorithm,
-            HKDFunction.extract(hkdfAlgorithm, null, ArrayConverter.bigIntegerToByteArray(sharedSecret)), new byte[0],
-            curve.getModulus().bitLength() / Bits.IN_A_BYTE);
-        LOGGER.debug("Username encryption key: " + ArrayConverter.bytesToHexString(key));
+        byte[] key =
+                HKDFunction.expand(
+                        hkdfAlgorithm,
+                        HKDFunction.extract(
+                                hkdfAlgorithm,
+                                null,
+                                ArrayConverter.bigIntegerToByteArray(sharedSecret)),
+                        new byte[0],
+                        curve.getModulus().bitLength() / Bits.IN_A_BYTE);
+        LOGGER.debug("Username encryption key: {}", key);
 
         byte[] ctrKey = Arrays.copyOfRange(key, 0, key.length / 2);
         byte[] macKey = Arrays.copyOfRange(key, key.length / 2, key.length);
@@ -101,10 +110,18 @@ public class PWDProtectExtensionPreparator extends ExtensionPreparator<PWDProtec
         }
         SivMode aesSIV = new SivMode();
         byte[] protectedUsername =
-            aesSIV.encrypt(ctrKey, macKey, chooser.getClientPWDUsername().getBytes(StandardCharsets.ISO_8859_1));
-        msg.setUsername(ArrayConverter.concatenate(ArrayConverter.bigIntegerToByteArray(clientPublicKey,
-            curve.getModulus().bitLength() / Bits.IN_A_BYTE, true), protectedUsername));
-        LOGGER.debug("Username: " + ArrayConverter.bytesToHexString(msg.getUsername()));
+                aesSIV.encrypt(
+                        ctrKey,
+                        macKey,
+                        chooser.getClientPWDUsername().getBytes(StandardCharsets.ISO_8859_1));
+        msg.setUsername(
+                ArrayConverter.concatenate(
+                        ArrayConverter.bigIntegerToByteArray(
+                                clientPublicKey,
+                                curve.getModulus().bitLength() / Bits.IN_A_BYTE,
+                                true),
+                        protectedUsername));
+        LOGGER.debug("Username: {}", msg.getUsername());
     }
 
     private void prepareUsernameLength(PWDProtectExtensionMessage msg) {

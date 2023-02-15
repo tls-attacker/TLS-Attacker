@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
@@ -14,9 +13,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.EarlyDataExtension
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- * RFC draft-ietf-tls-tls13-21
- */
+/** RFC draft-ietf-tls-tls13-21 */
 public class EarlyDataExtensionSerializer extends ExtensionSerializer<EarlyDataExtensionMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -38,8 +35,9 @@ public class EarlyDataExtensionSerializer extends ExtensionSerializer<EarlyDataE
     }
 
     private void serializeMaxEarlyData() {
-        appendInt(msg.getMaxEarlyDataSize().getValue(), ExtensionByteLength.MAX_EARLY_DATA_SIZE_LENGTH);
+        appendInt(
+                msg.getMaxEarlyDataSize().getValue(),
+                ExtensionByteLength.MAX_EARLY_DATA_SIZE_LENGTH);
         LOGGER.debug("MaxEarlyDataSize: " + msg.getMaxEarlyDataSize());
     }
-
 }

@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
@@ -23,10 +22,10 @@ public class PSKBinderSerializer extends Serializer<PSKBinder> {
 
     @Override
     protected byte[] serializeBytes() {
-        appendInt(pskBinder.getBinderEntryLength().getValue(), ExtensionByteLength.PSK_BINDER_LENGTH);
+        appendInt(
+                pskBinder.getBinderEntryLength().getValue(), ExtensionByteLength.PSK_BINDER_LENGTH);
         appendBytes(pskBinder.getBinderEntry().getValue());
 
         return getAlreadySerialized();
     }
-
 }

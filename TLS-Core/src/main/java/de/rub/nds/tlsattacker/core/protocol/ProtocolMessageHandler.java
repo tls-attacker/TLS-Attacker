@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol;
 
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.data.Handler;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
@@ -20,7 +19,9 @@ public abstract class ProtocolMessageHandler<MessageT extends ProtocolMessage>
         implements Handler<MessageT> {
 
     protected static final Logger LOGGER = LogManager.getLogger();
-    /** context */
+    /**
+     * context
+     */
     protected final TlsContext tlsContext;
 
     public ProtocolMessageHandler(TlsContext tlsContext) {

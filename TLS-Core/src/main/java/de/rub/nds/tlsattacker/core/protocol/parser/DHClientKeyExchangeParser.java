@@ -1,24 +1,22 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.InputStream;
-
-public class DHClientKeyExchangeParser<T extends DHClientKeyExchangeMessage> extends ClientKeyExchangeParser<T> {
+public class DHClientKeyExchangeParser<T extends DHClientKeyExchangeMessage>
+        extends ClientKeyExchangeParser<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -47,8 +45,7 @@ public class DHClientKeyExchangeParser<T extends DHClientKeyExchangeMessage> ext
     /**
      * Reads the next bytes as the SerializedPublicKeyLength and writes them in the message
      *
-     * @param msg
-     *            Message to write in
+     * @param msg Message to write in
      */
     private void parseSerializedPublicKeyLength(T msg) {
         msg.setPublicKeyLength(parseIntField(HandshakeByteLength.DH_PUBLICKEY_LENGTH));
@@ -58,11 +55,10 @@ public class DHClientKeyExchangeParser<T extends DHClientKeyExchangeMessage> ext
     /**
      * Reads the next bytes as the SerializedPublicKey and writes them in the message
      *
-     * @param msg
-     *            Message to write in
+     * @param msg Message to write in
      */
     private void parseSerializedPublicKey(T msg) {
         msg.setPublicKey(parseByteArrayField(msg.getPublicKeyLength().getValue()));
-        LOGGER.debug("SerializedPublicKey: " + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
+        LOGGER.debug("SerializedPublicKey: {}", msg.getPublicKey().getValue());
     }
 }

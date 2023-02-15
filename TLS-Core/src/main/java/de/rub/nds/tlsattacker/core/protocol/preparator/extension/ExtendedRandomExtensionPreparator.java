@@ -1,14 +1,13 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedRandomExtensionMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -41,9 +40,8 @@ public class ExtendedRandomExtensionPreparator
             LOGGER.debug("Preparing Client Extended Random of Extended Random Extension Message.");
             message.setExtendedRandom(chooser.getClientExtendedRandom());
             LOGGER.debug(
-                    "Prepared the Client Extended Random with value "
-                            + ArrayConverter.bytesToHexString(
-                                    message.getExtendedRandom().getValue()));
+                    "Prepared the Client Extended Random with value {}",
+                    message.getExtendedRandom().getValue());
         }
         if (chooser.getConnectionEndType().equals(ConnectionEndType.SERVER)) {
             LOGGER.debug("Preparing Server Extended Random of Extended Random Extension Message.");
@@ -59,9 +57,8 @@ public class ExtendedRandomExtensionPreparator
                 message.setExtendedRandom(chooser.getServerExtendedRandom());
             }
             LOGGER.debug(
-                    "Prepared the Server Extended Random with value "
-                            + ArrayConverter.bytesToHexString(
-                                    message.getExtendedRandom().getValue()));
+                    "Prepared the Server Extended Random with value {}",
+                    message.getExtendedRandom().getValue());
         }
         prepareExtendedRandomLength(message);
     }

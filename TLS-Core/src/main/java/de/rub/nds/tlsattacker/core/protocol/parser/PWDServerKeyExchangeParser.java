@@ -1,23 +1,22 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.*;
-import de.rub.nds.tlsattacker.core.protocol.message.PWDServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.protocol.message.PWDServerKeyExchangeMessage;
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class PWDServerKeyExchangeParser extends ServerKeyExchangeParser<PWDServerKeyExchangeMessage> {
+public class PWDServerKeyExchangeParser
+        extends ServerKeyExchangeParser<PWDServerKeyExchangeMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -45,7 +44,7 @@ public class PWDServerKeyExchangeParser extends ServerKeyExchangeParser<PWDServe
 
     private void parseSalt(PWDServerKeyExchangeMessage msg) {
         msg.setSalt(parseByteArrayField(msg.getSaltLength().getValue()));
-        LOGGER.debug("Salt: " + ArrayConverter.bytesToHexString(msg.getSalt().getValue()));
+        LOGGER.debug("Salt: {}", msg.getSalt().getValue());
     }
 
     private void parseCurveType(PWDServerKeyExchangeMessage msg) {
@@ -55,7 +54,7 @@ public class PWDServerKeyExchangeParser extends ServerKeyExchangeParser<PWDServe
 
     private void parseNamedGroup(PWDServerKeyExchangeMessage msg) {
         msg.setNamedGroup(parseByteArrayField(NamedGroup.LENGTH));
-        LOGGER.debug("NamedGroup: " + ArrayConverter.bytesToHexString(msg.getNamedGroup().getValue()));
+        LOGGER.debug("NamedGroup: {}", msg.getNamedGroup().getValue());
     }
 
     private void parseElementLength(PWDServerKeyExchangeMessage msg) {
@@ -65,7 +64,7 @@ public class PWDServerKeyExchangeParser extends ServerKeyExchangeParser<PWDServe
 
     private void parseElement(PWDServerKeyExchangeMessage msg) {
         msg.setElement(parseByteArrayField(msg.getElementLength().getValue()));
-        LOGGER.debug("Element: " + ArrayConverter.bytesToHexString(msg.getElement().getValue()));
+        LOGGER.debug("Element: {}", msg.getElement().getValue());
     }
 
     private void parseScalarLength(PWDServerKeyExchangeMessage msg) {
@@ -75,6 +74,6 @@ public class PWDServerKeyExchangeParser extends ServerKeyExchangeParser<PWDServe
 
     private void parseScalar(PWDServerKeyExchangeMessage msg) {
         msg.setScalar(parseByteArrayField(msg.getScalarLength().getValue()));
-        LOGGER.debug("Scalar: " + ArrayConverter.bytesToHexString(msg.getScalar().getValue()));
+        LOGGER.debug("Scalar: {}", msg.getScalar().getValue());
     }
 }

@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageParser;
@@ -29,12 +28,11 @@ public class UnknownMessageParser extends ProtocolMessageParser<UnknownMessage> 
     }
 
     /**
-     * Since we don't know what this is, we cannot make assumptions about length fields or the such, so we assume that
-     * all data we received in the array is part of this unknown message
+     * Since we don't know what this is, we cannot make assumptions about length fields or the such,
+     * so we assume that all data we received in the array is part of this unknown message
      */
     private void parseCompleteMessage(UnknownMessage msg) {
         msg.setCompleteResultingMessage(parseByteArrayField(getBytesLeft()));
-
     }
 
     @Override
@@ -42,5 +40,4 @@ public class UnknownMessageParser extends ProtocolMessageParser<UnknownMessage> 
         LOGGER.debug("Parsing UnknownMessage");
         parseCompleteMessage(message);
     }
-
 }

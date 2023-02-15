@@ -1,14 +1,13 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAlgorithmsCertExtensionMessage;
 import org.apache.logging.log4j.LogManager;
@@ -48,8 +47,6 @@ public class SignatureAlgorithmsCertExtensionSerializer
     private void writeSignatureAndHashAlgorithms(SignatureAlgorithmsCertExtensionMessage msg) {
         appendBytes(msg.getSignatureAndHashAlgorithms().getValue());
         LOGGER.debug(
-                "SignatureAndHashAlgorithms: "
-                        + ArrayConverter.bytesToHexString(
-                                msg.getSignatureAndHashAlgorithms().getValue()));
+                "SignatureAndHashAlgorithms: {}", msg.getSignatureAndHashAlgorithms().getValue());
     }
 }

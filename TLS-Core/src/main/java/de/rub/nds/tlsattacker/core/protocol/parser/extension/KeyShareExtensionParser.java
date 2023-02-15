@@ -1,14 +1,13 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
@@ -103,9 +102,7 @@ public class KeyShareExtensionParser extends ExtensionParser<KeyShareExtensionMe
      */
     private void parseKeyShareListBytes(KeyShareExtensionMessage msg) {
         msg.setKeyShareListBytes(parseByteArrayField(msg.getKeyShareListLength().getValue()));
-        LOGGER.debug(
-                "KeyShareListBytes: "
-                        + ArrayConverter.bytesToHexString(msg.getKeyShareListBytes().getValue()));
+        LOGGER.debug("KeyShareListBytes: {}", msg.getKeyShareListBytes().getValue());
     }
 
     /**

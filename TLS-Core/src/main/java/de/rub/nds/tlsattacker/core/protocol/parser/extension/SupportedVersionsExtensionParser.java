@@ -1,14 +1,13 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
@@ -32,10 +31,7 @@ public class SupportedVersionsExtensionParser
         LOGGER.debug("Parsing SupportedVersionsExtensionMessage");
         if (getTlsContext().getTalkingConnectionEndType() == ConnectionEndType.SERVER) {
             msg.setSupportedVersions(parseByteArrayField(HandshakeByteLength.VERSION));
-            LOGGER.debug(
-                    "Supported version: "
-                            + ArrayConverter.bytesToHexString(
-                                    msg.getSupportedVersions().getValue()));
+            LOGGER.debug("Supported version: {}", msg.getSupportedVersions().getValue());
         } else {
             parseSupportedVersionLength(msg);
             parseSupportedVersion(msg);
@@ -61,8 +57,6 @@ public class SupportedVersionsExtensionParser
      */
     private void parseSupportedVersion(SupportedVersionsExtensionMessage msg) {
         msg.setSupportedVersions(parseByteArrayField(msg.getSupportedVersionsLength().getValue()));
-        LOGGER.debug(
-                "SupportedVersions: "
-                        + ArrayConverter.bytesToHexString(msg.getSupportedVersions().getValue()));
+        LOGGER.debug("SupportedVersions: {}", msg.getSupportedVersions().getValue());
     }
 }

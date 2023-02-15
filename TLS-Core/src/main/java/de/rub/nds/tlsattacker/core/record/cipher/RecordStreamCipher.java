@@ -29,9 +29,13 @@ public class RecordStreamCipher extends RecordCipher {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /** mac for verification of incoming messages */
+    /**
+     * mac for verification of incoming messages
+     */
     private WrappedMac readMac;
-    /** mac object for macing outgoing messages */
+    /**
+     * mac object for macing outgoing messages
+     */
     private WrappedMac writeMac;
 
     public RecordStreamCipher(TlsContext tlsContext, CipherState state) {
@@ -68,16 +72,14 @@ public class RecordStreamCipher extends RecordCipher {
     }
 
     public byte[] calculateMac(byte[] data, ConnectionEndType connectionEndType) {
-        LOGGER.debug(
-                "The MAC was calculated over the following data: {}",
-                ArrayConverter.bytesToHexString(data));
+        LOGGER.debug("The MAC was calculated over the following data: {}", data);
         byte[] result;
         if (connectionEndType == getConnectionEndType()) {
             result = writeMac.calculateMac(data);
         } else {
             result = readMac.calculateMac(data);
         }
-        LOGGER.debug("MAC: {}", ArrayConverter.bytesToHexString(result));
+        LOGGER.debug("MAC: {}", result);
         return result;
     }
 

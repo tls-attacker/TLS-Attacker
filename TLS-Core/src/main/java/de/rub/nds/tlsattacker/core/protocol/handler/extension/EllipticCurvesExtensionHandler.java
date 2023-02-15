@@ -1,14 +1,13 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
@@ -51,7 +50,7 @@ public class EllipticCurvesExtensionHandler
             byte[] group = Arrays.copyOfRange(groupBytes, i, i + NamedGroup.LENGTH);
             NamedGroup namedGroup = NamedGroup.getNamedGroup(group);
             if (namedGroup == null) {
-                LOGGER.warn("Unknown EllipticCurve:" + ArrayConverter.bytesToHexString(group));
+                LOGGER.warn("Unknown EllipticCurve: {}", group);
             } else {
                 groupList.add(namedGroup);
             }

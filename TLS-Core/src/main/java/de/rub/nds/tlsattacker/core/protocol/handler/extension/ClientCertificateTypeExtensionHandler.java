@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.constants.CertificateType;
@@ -16,7 +15,8 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ClientCertificateTypeExtensionHandler extends ExtensionHandler<ClientCertificateTypeExtensionMessage> {
+public class ClientCertificateTypeExtensionHandler
+        extends ExtensionHandler<ClientCertificateTypeExtensionMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -31,16 +31,17 @@ public class ClientCertificateTypeExtensionHandler extends ExtensionHandler<Clie
                 LOGGER.warn("Invalid ClientCertificateType extension. Not adjusting context");
             } else {
                 tlsContext.setSelectedClientCertificateType(
-                    CertificateType.getCertificateType(message.getCertificateTypes().getValue()[0]));
+                        CertificateType.getCertificateType(
+                                message.getCertificateTypes().getValue()[0]));
             }
         } else {
             if (message.getCertificateTypes() != null) {
                 tlsContext.setClientCertificateTypeDesiredTypes(
-                    CertificateType.getCertificateTypesAsList(message.getCertificateTypes().getValue()));
+                        CertificateType.getCertificateTypesAsList(
+                                message.getCertificateTypes().getValue()));
             } else {
                 LOGGER.warn("Null CertificateTypes - not adjusting");
             }
         }
     }
-
 }

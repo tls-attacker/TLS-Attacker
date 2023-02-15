@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CertificateVerifyConstants;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.SSLUtils;
 import de.rub.nds.tlsattacker.core.crypto.SignatureCalculator;
@@ -96,8 +95,7 @@ public class CertificateVerifyPreparator
 
     private void prepareSignature(CertificateVerifyMessage msg) {
         msg.setSignature(signature);
-        LOGGER.debug(
-                "Signature: " + ArrayConverter.bytesToHexString(msg.getSignature().getValue()));
+        LOGGER.debug("Signature: {}", msg.getSignature().getValue());
     }
 
     private void prepareSignatureLength(CertificateVerifyMessage msg) {
@@ -107,9 +105,6 @@ public class CertificateVerifyPreparator
 
     private void prepareSignatureHashAlgorithm(CertificateVerifyMessage msg) {
         msg.setSignatureHashAlgorithm(algorithm.getByteValue());
-        LOGGER.debug(
-                "SignatureHasAlgorithm: "
-                        + ArrayConverter.bytesToHexString(
-                                msg.getSignatureHashAlgorithm().getValue()));
+        LOGGER.debug("SignatureHasAlgorithm: {}", msg.getSignatureHashAlgorithm().getValue());
     }
 }

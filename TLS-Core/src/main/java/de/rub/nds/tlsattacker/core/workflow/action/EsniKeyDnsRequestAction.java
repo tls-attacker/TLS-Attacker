@@ -1,14 +1,13 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
@@ -26,6 +25,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.xbill.DNS.*;
+import org.xbill.DNS.Record;
 
 @XmlRootElement
 public class EsniKeyDnsRequestAction extends TlsAction {
@@ -107,7 +107,7 @@ public class EsniKeyDnsRequestAction extends TlsAction {
             return;
         }
         LOGGER.debug("esniKeyRecordStr :" + esniKeyRecordStr);
-        LOGGER.debug("esniKeyRecordBytes: " + ArrayConverter.bytesToHexString(esniKeyRecordBytes));
+        LOGGER.debug("esniKeyRecordBytes: {}", esniKeyRecordBytes);
 
         EsniKeyRecordParser esniKeyParser =
                 new EsniKeyRecordParser(new ByteArrayInputStream(esniKeyRecordBytes), tlsContext);

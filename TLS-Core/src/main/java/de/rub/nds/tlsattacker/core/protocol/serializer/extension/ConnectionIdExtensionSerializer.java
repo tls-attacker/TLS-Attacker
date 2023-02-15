@@ -8,8 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ConnectionIdExtensionMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -41,8 +40,6 @@ public class ConnectionIdExtensionSerializer
 
     private void serializeConnectionId(ConnectionIdExtensionMessage msg) {
         appendBytes(msg.getConnectionId().getValue());
-        LOGGER.debug(
-                "ConnectionId: "
-                        + ArrayConverter.bytesToHexString(msg.getConnectionId().getValue()));
+        LOGGER.debug("ConnectionId: {}", msg.getConnectionId().getValue());
     }
 }

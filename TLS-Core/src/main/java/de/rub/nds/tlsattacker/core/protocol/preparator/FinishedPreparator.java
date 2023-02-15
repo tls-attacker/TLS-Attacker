@@ -8,8 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.*;
+import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.crypto.PseudoRandomFunction;
 import de.rub.nds.tlsattacker.core.crypto.SSLUtils;
@@ -76,7 +78,7 @@ public class FinishedPreparator extends HandshakeMessagePreparator<FinishedMessa
                                     mac.getMacLength(),
                                     chooser.getSelectedProtocolVersion());
                 }
-                LOGGER.debug("Finished key: " + ArrayConverter.bytesToHexString(finishedKey));
+                LOGGER.debug("Finished key: {}", finishedKey);
                 SecretKeySpec keySpec = new SecretKeySpec(finishedKey, mac.getAlgorithm());
                 mac.init(keySpec);
                 mac.update(
@@ -95,7 +97,7 @@ public class FinishedPreparator extends HandshakeMessagePreparator<FinishedMessa
             final byte[] handshakeMessageContent =
                     chooser.getContext().getTlsContext().getDigest().getRawBytes();
             final byte[] masterSecret = chooser.getMasterSecret();
-            LOGGER.debug("Using MasterSecret:" + ArrayConverter.bytesToHexString(masterSecret));
+            LOGGER.debug("Using MasterSecret: {}", masterSecret);
             final ConnectionEndType endType = chooser.getConnectionEndType();
             return SSLUtils.calculateFinishedData(handshakeMessageContent, masterSecret, endType);
         } else {
@@ -135,7 +137,6 @@ public class FinishedPreparator extends HandshakeMessagePreparator<FinishedMessa
 
     private void prepareVerifyData(FinishedMessage msg) {
         msg.setVerifyData(verifyData);
-        LOGGER.debug(
-                "VerifyData: " + ArrayConverter.bytesToHexString(msg.getVerifyData().getValue()));
+        LOGGER.debug("VerifyData: {}", msg.getVerifyData().getValue());
     }
 }

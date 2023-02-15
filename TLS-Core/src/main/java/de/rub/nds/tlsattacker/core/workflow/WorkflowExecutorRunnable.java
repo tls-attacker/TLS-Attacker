@@ -1,18 +1,17 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.transport.tcp.ServerTcpTransportHandler;
 import java.io.IOException;
 import java.net.Socket;
@@ -23,7 +22,7 @@ import org.apache.logging.log4j.Logger;
 /**
  * Spawn a new workflow trace for incoming connection.
  *
- * Experimental. Really just a starting point (it works, though ;)
+ * <p>Experimental. Really just a starting point (it works, though ;)
  */
 public class WorkflowExecutorRunnable implements Runnable {
 
@@ -32,7 +31,8 @@ public class WorkflowExecutorRunnable implements Runnable {
     protected final State globalState;
     protected final ThreadedServerWorkflowExecutor parent;
 
-    public WorkflowExecutorRunnable(State globalState, Socket socket, ThreadedServerWorkflowExecutor parent) {
+    public WorkflowExecutorRunnable(
+            State globalState, Socket socket, ThreadedServerWorkflowExecutor parent) {
         this.globalState = globalState;
         this.socket = socket;
         this.parent = parent;
@@ -40,10 +40,12 @@ public class WorkflowExecutorRunnable implements Runnable {
 
     @Override
     public void run() {
-        String loggingContextString = String.format("%s %s", socket.getLocalPort(), socket.getRemoteSocketAddress());
+        String loggingContextString =
+                String.format("%s %s", socket.getLocalPort(), socket.getRemoteSocketAddress());
         // add local port and remote address onto logging thread context
         // see https://logging.apache.org/log4j/2.x/manual/thread-context.html
-        try (final CloseableThreadContext.Instance ctc = CloseableThreadContext.push(loggingContextString)) {
+        try (final CloseableThreadContext.Instance ctc =
+                CloseableThreadContext.push(loggingContextString)) {
             this.runInternal();
         } finally {
             parent.clientDone(socket);
@@ -96,5 +98,4 @@ public class WorkflowExecutorRunnable implements Runnable {
         }
         serverCtx.getTcpContext().setTransportHandler(th);
     }
-
 }

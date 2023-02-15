@@ -8,8 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.*;
+import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
@@ -114,13 +116,9 @@ public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionT
                             tlsContext.getDigest().getRawBytes(),
                             tlsContext.getChooser().getSelectedProtocolVersion());
             tlsContext.setResumptionMasterSecret(resumptionMasterSecret);
+            LOGGER.debug("Derived ResumptionMasterSecret: {}", resumptionMasterSecret);
             LOGGER.debug(
-                    "Derived ResumptionMasterSecret: "
-                            + ArrayConverter.bytesToHexString(resumptionMasterSecret));
-            LOGGER.debug(
-                    "Handshake Transcript Raw Bytes: "
-                            + ArrayConverter.bytesToHexString(
-                                    tlsContext.getDigest().getRawBytes()));
+                    "Handshake Transcript Raw Bytes: {}", tlsContext.getDigest().getRawBytes());
             byte[] psk =
                     HKDFunction.expandLabel(
                             hkdfAlgorithm,
@@ -129,7 +127,7 @@ public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionT
                             pskSet.getTicketNonce(),
                             macLength,
                             tlsContext.getChooser().getSelectedProtocolVersion());
-            LOGGER.debug("New derived pre-shared-key: " + ArrayConverter.bytesToHexString(psk));
+            LOGGER.debug("New derived pre-shared-key: {}", psk);
             return psk;
 
         } catch (NoSuchAlgorithmException | CryptoException ex) {

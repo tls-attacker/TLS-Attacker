@@ -9,9 +9,11 @@
 package de.rub.nds.tlsattacker.core.layer.impl;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
 import de.rub.nds.tlsattacker.core.exceptions.TimeoutException;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
@@ -30,7 +32,9 @@ import de.rub.nds.tlsattacker.core.protocol.MessageFactory;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageSerializer;
 import de.rub.nds.tlsattacker.core.protocol.message.*;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -59,30 +63,94 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
     @Override
     public LayerProcessingResult sendConfiguration() throws IOException {
         LayerConfiguration<ProtocolMessage> configuration = getLayerConfiguration();
+        ProtocolMessageType runningProtocolMessageType = null;
+        ByteArrayOutputStream collectedMessageStream = new ByteArrayOutputStream();
         if (configuration != null && configuration.getContainerList() != null) {
             for (ProtocolMessage message : configuration.getContainerList()) {
                 if (containerAlreadyUsedByHigherLayer(message)
                         || !prepareDataContainer(message, context)) {
                     continue;
                 }
-                ProtocolMessageSerializer serializer = message.getSerializer(context);
-                byte[] serializedMessage = serializer.serialize();
-                message.setCompleteResultingMessage(serializedMessage);
-                message.getHandler(context).updateDigest(message, true);
-                if (message.getAdjustContext()) {
-                    message.getHandler(context).adjustContext(message);
+                if (!message.isHandshakeMessage()) {
+                    // only handshake messages may share a record
+                    flushCollectedMessages(runningProtocolMessageType, collectedMessageStream);
                 }
-                getLowerLayer()
-                        .sendData(
-                                new RecordLayerHint(message.getProtocolMessageType()),
-                                serializedMessage);
-                if (message.getAdjustContext()) {
-                    message.getHandler(context).adjustContextAfterSerialize(message);
-                }
+                runningProtocolMessageType = message.getProtocolMessageType();
+                processMessage(message, collectedMessageStream);
                 addProducedContainer(message);
             }
         }
+        // hand remaining serialized to record layer
+        flushCollectedMessages(runningProtocolMessageType, collectedMessageStream);
         return getLayerResult();
+    }
+
+    private void processMessage(
+            ProtocolMessage message, ByteArrayOutputStream collectedMessageStream)
+            throws IOException {
+        ProtocolMessageSerializer serializer = message.getSerializer(context);
+        byte[] serializedMessage = serializer.serialize();
+        message.setCompleteResultingMessage(serializedMessage);
+        message.getHandler(context).updateDigest(message, true);
+        if (message.getAdjustContext()) {
+            message.getHandler(context).adjustContext(message);
+        }
+        collectedMessageStream.writeBytes(serializedMessage);
+        if (mustFlushCollectedMessagesImmediately(message)) {
+            flushCollectedMessages(message.getProtocolMessageType(), collectedMessageStream);
+        }
+        if (message.getAdjustContext()) {
+            message.getHandler(context).adjustContextAfterSerialize(message);
+        }
+    }
+
+    private void flushCollectedMessages(
+            ProtocolMessageType runningProtocolMessageType, ByteArrayOutputStream byteStream)
+            throws IOException {
+        if (byteStream.size() > 0) {
+            getLowerLayer()
+                    .sendData(
+                            new RecordLayerHint(runningProtocolMessageType),
+                            byteStream.toByteArray());
+            byteStream.reset();
+        }
+    }
+
+    /**
+     * Determine if the current message must be flushed with all possibly previously collected. This
+     * mostly avoids cases where the message updates the crypto state but must be sent with old
+     * state.
+     *
+     * @param message
+     * @return true if must be flushed
+     */
+    private boolean mustFlushCollectedMessagesImmediately(ProtocolMessage message) {
+        if (!context.getConfig().getSendHandshakeMessagesWithinSingleRecord()) {
+            // if any, handshake messages are the only messages we put in a single record
+            return true;
+        } else if (message.getProtocolMessageType() == ProtocolMessageType.CHANGE_CIPHER_SPEC) {
+            // CCS is the only message for its content type, so we can/must always flush immediately
+            return true;
+        } else if (message.isHandshakeMessage()
+                && (context.getSelectedProtocolVersion() == ProtocolVersion.TLS13)) {
+            // TODO: add DTLS 1.3 above once implemented
+            HandshakeMessage handshakeMessage = (HandshakeMessage) message;
+            if (handshakeMessage.getHandshakeMessageType() == HandshakeMessageType.SERVER_HELLO) {
+                // we must flush to avoid encrypting the SH later on
+                return !((ServerHelloMessage) message).isTls13HelloRetryRequest();
+            } else if (handshakeMessage.getHandshakeMessageType() == HandshakeMessageType.FINISHED
+                    || handshakeMessage.getHandshakeMessageType() == HandshakeMessageType.KEY_UPDATE
+                    || handshakeMessage.getHandshakeMessageType()
+                            == HandshakeMessageType.END_OF_EARLY_DATA) {
+                return true;
+            } else if (handshakeMessage.getHandshakeMessageType()
+                            == HandshakeMessageType.CLIENT_HELLO
+                    && context.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT
+                    && context.isExtensionProposed(ExtensionType.EARLY_DATA)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

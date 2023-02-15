@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.state;
 
 import de.rub.nds.tlsattacker.core.connection.Aliasable;
@@ -18,10 +17,7 @@ import java.util.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- * Manages contexts.
- *
- */
+/** Manages contexts. */
 public class ContextContainer {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -31,34 +27,32 @@ public class ContextContainer {
     private final Map<String, Context> contexts = new HashMap<>();
 
     /**
-     * An inbound context is a context bound to an incoming connection. I.e. it represents a connection that we accepted
-     * from a connecting client.
+     * An inbound context is a context bound to an incoming connection. I.e. it represents a
+     * connection that we accepted from a connecting client.
      */
     private final List<Context> inboundContexts = new ArrayList<>();
 
     /**
-     * An outbound context is a context bound to an outgoing connection. I.e. it represents a connection established by
-     * us to a remote server.
+     * An outbound context is a context bound to an outgoing connection. I.e. it represents a
+     * connection established by us to a remote server.
      */
     private final List<Context> outboundContexts = new ArrayList<>();
 
     /**
      * Get the only defined context.
-     * <p>
-     * </p>
-     * Convenience method, useful when working with a single context only.
      *
-     * @return                        the only known context
-     * @throws ConfigurationException
-     *                                if there is more than one context in the container
+     * <p>Convenience method, useful when working with a single context only.
      *
+     * @return the only known context
+     * @throws ConfigurationException if there is more than one context in the container
      */
     public Context getContext() {
         if (contexts.isEmpty()) {
             throw new ConfigurationException("No context defined.");
         }
         if (contexts.size() > 1) {
-            throw new ConfigurationException("getContext requires an alias if multiple contexts are defined");
+            throw new ConfigurationException(
+                    "getContext requires an alias if multiple contexts are defined");
         }
         return contexts.entrySet().iterator().next().getValue();
     }
@@ -66,11 +60,9 @@ public class ContextContainer {
     /**
      * Get context with the given alias.
      *
-     * @param  alias
-     * @return                        the context with the given connection end alias
-     * @throws ConfigurationException
-     *                                if there is no Context with the given alias
-     *
+     * @param alias
+     * @return the context with the given connection end alias
+     * @throws ConfigurationException if there is no Context with the given alias
      */
     public Context getContext(String alias) {
         Context ctx = contexts.get(alias);
@@ -84,7 +76,8 @@ public class ContextContainer {
         AliasedConnection con = context.getConnection();
         String alias = con.getAlias();
         if (alias == null) {
-            throw new ContextHandlingException("Connection end alias not set (null). Can't add the Context.");
+            throw new ContextHandlingException(
+                    "Connection end alias not set (null). Can't add the Context.");
         }
         if (containsAlias(alias)) {
             throw new ConfigurationException("Connection end alias already in use: " + alias);
@@ -151,14 +144,12 @@ public class ContextContainer {
 
     /**
      * Replace existing Context with new Context.
-     * <p>
-     * </p>
-     * The Context can only be replaced if the connection of both the new and the old Context equal.
      *
-     * @param  newContext
-     *                                the new Context, not null
-     * @throws ConfigurationException
-     *                                if the connections of new and old Context differ
+     * <p>The Context can only be replaced if the connection of both the new and the old Context
+     * equal.
+     *
+     * @param newContext the new Context, not null
+     * @throws ConfigurationException if the connections of new and old Context differ
      */
     public void replaceContext(Context newContext) {
         String alias = newContext.getConnection().getAlias();
@@ -168,7 +159,8 @@ public class ContextContainer {
         Context replaceMe = contexts.get(alias);
         if (!replaceMe.getConnection().equals(newContext.getConnection())) {
             throw new ContextHandlingException(
-                "Cannot replace Context because the new Context" + " defines another connection.");
+                    "Cannot replace Context because the new Context"
+                            + " defines another connection.");
         }
         removeContext(alias);
         addContext(newContext);

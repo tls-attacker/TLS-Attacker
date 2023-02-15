@@ -1,34 +1,33 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EllipticCurvesExtensionMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-public class EllipticCurvesExtensionPreparator extends ExtensionPreparator<EllipticCurvesExtensionMessage> {
+public class EllipticCurvesExtensionPreparator
+        extends ExtensionPreparator<EllipticCurvesExtensionMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     private final EllipticCurvesExtensionMessage msg;
 
-    public EllipticCurvesExtensionPreparator(Chooser chooser, EllipticCurvesExtensionMessage message) {
+    public EllipticCurvesExtensionPreparator(
+            Chooser chooser, EllipticCurvesExtensionMessage message) {
         super(chooser, message);
         msg = message;
     }
@@ -42,7 +41,7 @@ public class EllipticCurvesExtensionPreparator extends ExtensionPreparator<Ellip
 
     private void prepareSupportedGroups(EllipticCurvesExtensionMessage msg) {
         msg.setSupportedGroups(createNamedGroupsArray());
-        LOGGER.debug("SupportedGroups: " + ArrayConverter.bytesToHexString(msg.getSupportedGroups().getValue()));
+        LOGGER.debug("SupportedGroups: {}", msg.getSupportedGroups().getValue());
     }
 
     private byte[] createNamedGroupsArray() {

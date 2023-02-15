@@ -1,14 +1,13 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.cert;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificatePair;
@@ -47,9 +46,7 @@ public class CertificatePairParser extends Parser<CertificatePair> {
      */
     private void parseCertificate(CertificatePair pair) {
         pair.setCertificate(parseByteArrayField(pair.getCertificateLength().getValue()));
-        LOGGER.debug(
-                "Certificate: "
-                        + ArrayConverter.bytesToHexString(pair.getCertificate().getValue()));
+        LOGGER.debug("Certificate: {}", pair.getCertificate().getValue());
     }
 
     /**
@@ -66,7 +63,6 @@ public class CertificatePairParser extends Parser<CertificatePair> {
      */
     private void parseExtensions(CertificatePair pair) {
         pair.setExtensions(parseByteArrayField(pair.getExtensionsLength().getValue()));
-        LOGGER.debug(
-                "Extensions: " + ArrayConverter.bytesToHexString(pair.getCertificate().getValue()));
+        LOGGER.debug("Extensions: {}", pair.getCertificate().getValue());
     }
 }

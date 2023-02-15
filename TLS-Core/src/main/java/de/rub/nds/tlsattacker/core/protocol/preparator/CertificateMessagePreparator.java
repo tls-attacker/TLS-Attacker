@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.certificate.CertificateByteChooser;
 import de.rub.nds.tlsattacker.core.certificate.CertificateKeyPair;
 import de.rub.nds.tlsattacker.core.constants.CertificateType;
@@ -142,9 +141,7 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
                 }
 
                 LOGGER.debug(
-                        "CertificatesListBytes: "
-                                + ArrayConverter.bytesToHexString(
-                                        msg.getCertificatesListBytes().getValue()));
+                        "CertificatesListBytes: {}", msg.getCertificatesListBytes().getValue());
                 break;
             default:
                 throw new UnsupportedOperationException("Unsupported CertificateType");
@@ -174,9 +171,7 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
         } else {
             msg.setRequestContext(new byte[0]);
         }
-        LOGGER.debug(
-                "RequestContext: "
-                        + ArrayConverter.bytesToHexString(msg.getRequestContext().getValue()));
+        LOGGER.debug("RequestContext: {}", msg.getRequestContext().getValue());
     }
 
     private void prepareRequestContextLength(CertificateMessage msg) {
