@@ -114,6 +114,24 @@ public class KeySetGenerator {
                         AEAD_IV_LENGTH,
                         tlsContext.getChooser().getSelectedProtocolVersion()));
         LOGGER.debug("Server write IV: {}", keySet.getServerWriteIv());
+        keySet.setClientSnKey(
+                HKDFunction.expandLabel(
+                        hkdfAlgorithm,
+                        clientSecret,
+                        HKDFunction.SN_KEY,
+                        new byte[] {},
+                        cipherAlg.getKeySize(),
+                        tlsContext.getChooser().getSelectedProtocolVersion()));
+        LOGGER.debug("Client sn key: {}", keySet.getClientSnKey());
+        keySet.setServerSnKey(
+                HKDFunction.expandLabel(
+                        hkdfAlgorithm,
+                        serverSecret,
+                        HKDFunction.SN_KEY,
+                        new byte[] {},
+                        cipherAlg.getKeySize(),
+                        tlsContext.getChooser().getSelectedProtocolVersion()));
+        LOGGER.debug("Server sn key: {}", keySet.getServerSnKey());
         keySet.setServerWriteMacSecret(new byte[0]);
         keySet.setClientWriteMacSecret(new byte[0]);
         return keySet;

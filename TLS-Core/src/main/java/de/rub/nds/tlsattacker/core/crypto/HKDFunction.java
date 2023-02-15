@@ -61,6 +61,8 @@ public class HKDFunction {
 
     public static final String TRAFFICUPD = "traffic upd";
 
+    public static final String SN_KEY = "sn";
+
     /**
      * Computes HKDF-Extract output as defined in RFC 5869
      *
