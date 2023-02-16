@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -403,9 +403,13 @@ public class WorkflowTraceUtil {
             HandshakeMessageType type, WorkflowTrace trace) {
         TlsAction receiving = getFirstReceivingActionForMessage(type, trace);
         TlsAction sending = getFirstSendingActionForMessage(type, trace);
-        if (receiving == null && sending == null) return null;
-        else if (receiving == null) return sending;
-        else if (sending == null) return receiving;
+        if (receiving == null && sending == null) {
+            return null;
+        } else if (receiving == null) {
+            return sending;
+        } else if (sending == null) {
+            return receiving;
+        }
 
         return trace.getTlsActions().indexOf(receiving) < trace.getTlsActions().indexOf(sending)
                 ? receiving
@@ -416,9 +420,13 @@ public class WorkflowTraceUtil {
             ProtocolMessageType type, WorkflowTrace trace) {
         TlsAction receiving = getFirstReceivingActionForMessage(type, trace);
         TlsAction sending = getFirstSendingActionForMessage(type, trace);
-        if (receiving == null && sending == null) return null;
-        else if (receiving == null) return sending;
-        else if (sending == null) return receiving;
+        if (receiving == null && sending == null) {
+            return null;
+        } else if (receiving == null) {
+            return sending;
+        } else if (sending == null) {
+            return receiving;
+        }
 
         return trace.getTlsActions().indexOf(receiving) < trace.getTlsActions().indexOf(sending)
                 ? receiving
@@ -461,9 +469,13 @@ public class WorkflowTraceUtil {
             HandshakeMessageType type, WorkflowTrace trace) {
         TlsAction receiving = getLastReceivingActionForMessage(type, trace);
         TlsAction sending = getLastSendingActionForMessage(type, trace);
-        if (receiving == null && sending == null) return null;
-        else if (receiving == null) return sending;
-        else if (sending == null) return receiving;
+        if (receiving == null && sending == null) {
+            return null;
+        } else if (receiving == null) {
+            return sending;
+        } else if (sending == null) {
+            return receiving;
+        }
 
         return trace.getTlsActions().indexOf(receiving) > trace.getTlsActions().indexOf(sending)
                 ? receiving
@@ -473,9 +485,13 @@ public class WorkflowTraceUtil {
     public static TlsAction getLastActionForMessage(ProtocolMessageType type, WorkflowTrace trace) {
         TlsAction receiving = getLastReceivingActionForMessage(type, trace);
         TlsAction sending = getLastSendingActionForMessage(type, trace);
-        if (receiving == null && sending == null) return null;
-        else if (receiving == null) return sending;
-        else if (sending == null) return receiving;
+        if (receiving == null && sending == null) {
+            return null;
+        } else if (receiving == null) {
+            return sending;
+        } else if (sending == null) {
+            return receiving;
+        }
 
         return trace.getTlsActions().indexOf(receiving) > trace.getTlsActions().indexOf(sending)
                 ? receiving
