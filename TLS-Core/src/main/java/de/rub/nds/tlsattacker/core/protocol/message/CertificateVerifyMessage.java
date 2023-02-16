@@ -50,7 +50,7 @@ public class CertificateVerifyMessage extends HandshakeMessage {
         // TODO its unlucky that this design can cause a conflict here if the type mismatches
         if (signatureComputations == null) {
             TlsSignatureUtil util = new TlsSignatureUtil();
-            util.createSignatureComputations(algorithm);
+            signatureComputations = util.createSignatureComputations(algorithm);
         }
         return signatureComputations;
     }
