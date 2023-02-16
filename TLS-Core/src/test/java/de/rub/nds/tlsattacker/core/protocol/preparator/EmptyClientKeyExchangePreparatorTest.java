@@ -151,7 +151,7 @@ public class EmptyClientKeyExchangePreparatorTest
 
         // testParse and set client certificate
         X509CertificateChain clientCertificateChain =
-                CertificateIo.readRawChain(new ByteArrayInputStream(DH_CLIENT_CERT.getBytes()));
+                CertificateIo.readPemChain(new ByteArrayInputStream(DH_CLIENT_CERT.getBytes()));
         context.setClientCertificateChain(clientCertificateChain);
 
         // set DH private key
@@ -187,7 +187,7 @@ public class EmptyClientKeyExchangePreparatorTest
 
         // testParse and set client certificate
         X509CertificateChain clientCertificateChain =
-                CertificateIo.readRawChain(new ByteArrayInputStream(EC_CLIENT_CERT.getBytes()));
+                CertificateIo.readPemChain(new ByteArrayInputStream(EC_CLIENT_CERT.getBytes()));
         context.setClientCertificateChain(clientCertificateChain);
 
         // set EC private key
