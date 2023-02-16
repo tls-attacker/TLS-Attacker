@@ -62,8 +62,8 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
         msg.getKeyExchangeComputations().setNamedGroup(namedGroup.getValue());
         prepareNamedGroup(msg);
         // Rereading NamedGroup
-        namedGroup
-                = NamedGroup.getNamedGroup(
+        namedGroup =
+                NamedGroup.getNamedGroup(
                         msg.getKeyExchangeComputations().getNamedGroup().getValue());
         if (namedGroup == null) {
             LOGGER.warn(
@@ -73,8 +73,8 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
         ECPointFormat pointFormat = selectPointFormat(msg);
         msg.getKeyExchangeComputations().setEcPointFormat(pointFormat.getValue());
         // Rereading EcPointFormat
-        pointFormat
-                = ECPointFormat.getECPointFormat(
+        pointFormat =
+                ECPointFormat.getECPointFormat(
                         msg.getKeyExchangeComputations().getEcPointFormat().getValue());
         if (pointFormat == null) {
             LOGGER.warn(
@@ -83,22 +83,22 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
         }
 
         // Compute publicKey
-        EllipticCurve curve
-                = ((NamedEllipticCurveParameters) namedGroup.getGroupParameters()).getCurve();
+        EllipticCurve curve =
+                ((NamedEllipticCurveParameters) namedGroup.getGroupParameters()).getCurve();
         LOGGER.debug("NamedGroup: {} ", namedGroup.name());
         byte[] publicKeyBytes;
         if (!namedGroup.isShortWeierstrass()) {
             RFC7748Curve rfcCurve = (RFC7748Curve) curve;
-            publicKeyBytes
-                    = rfcCurve.computePublicKey(
+            publicKeyBytes =
+                    rfcCurve.computePublicKey(
                             msg.getKeyExchangeComputations().getPrivateKey().getValue());
         } else if (namedGroup.isCurve()) {
-            Point publicKey
-                    = curve.mult(
+            Point publicKey =
+                    curve.mult(
                             msg.getKeyExchangeComputations().getPrivateKey().getValue(),
                             curve.getBasePoint());
-            publicKeyBytes
-                    = PointFormatter.formatToByteArray(
+            publicKeyBytes =
+                    PointFormatter.formatToByteArray(
                             (NamedEllipticCurveParameters) (namedGroup.getGroupParameters()),
                             publicKey,
                             pointFormat.getFormat());
@@ -117,8 +117,8 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
         if (chooser.getConfig().isEnforceSettings()) {
             selectedFormat = chooser.getConfig().getDefaultSelectedPointFormat();
         } else {
-            Set<ECPointFormat> serverSet
-                    = new HashSet<>(chooser.getConfig().getDefaultServerSupportedPointFormats());
+            Set<ECPointFormat> serverSet =
+                    new HashSet<>(chooser.getConfig().getDefaultServerSupportedPointFormats());
             Set<ECPointFormat> clientSet = new HashSet<>(chooser.getClientSupportedPointFormats());
             serverSet.retainAll(clientSet);
             if (serverSet.isEmpty()) {
@@ -140,8 +140,8 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
         if (chooser.getConfig().isEnforceSettings()) {
             namedGroup = chooser.getConfig().getDefaultSelectedNamedGroup();
         } else {
-            Set<NamedGroup> serverSet
-                    = new HashSet<>(chooser.getConfig().getDefaultServerNamedGroups());
+            Set<NamedGroup> serverSet =
+                    new HashSet<>(chooser.getConfig().getDefaultServerNamedGroups());
             Set<NamedGroup> clientSet = new HashSet<>(chooser.getClientSupportedNamedGroups());
             serverSet.retainAll(clientSet);
             if (serverSet.isEmpty()) {
@@ -204,8 +204,8 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
         msg.setSignatureAndHashAlgorithm(signHashAlgo.getByteValue());
         LOGGER.debug(
                 "SignatureAndHashAlgorithm: "
-                + ArrayConverter.bytesToHexString(
-                        msg.getSignatureAndHashAlgorithm().getValue()));
+                        + ArrayConverter.bytesToHexString(
+                                msg.getSignatureAndHashAlgorithm().getValue()));
     }
 
     protected void prepareClientServerRandom(T msg) {
@@ -215,10 +215,10 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
                                 chooser.getClientRandom(), chooser.getServerRandom()));
         LOGGER.debug(
                 "ClientServerRandom: "
-                + ArrayConverter.bytesToHexString(
-                        msg.getKeyExchangeComputations()
-                                .getClientServerRandom()
-                                .getValue()));
+                        + ArrayConverter.bytesToHexString(
+                                msg.getKeyExchangeComputations()
+                                        .getClientServerRandom()
+                                        .getValue()));
     }
 
     protected void prepareSignature(T msg, byte[] signature) {
@@ -243,8 +243,8 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
 
     protected void prepareNamedGroup(T msg) {
         NamedGroup group;
-        group
-                = NamedGroup.getNamedGroup(
+        group =
+                NamedGroup.getNamedGroup(
                         msg.getKeyExchangeComputations().getNamedGroup().getValue());
         if (group == null) {
             LOGGER.warn(
