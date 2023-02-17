@@ -41,10 +41,14 @@ public class CertificateEntryParser extends Parser<CertificateEntry> {
         LOGGER.debug("Parsing CertificatePair");
         parseCertificateLength(entry);
         parseCertificateBytes(entry);
-        parseExtensionsLength(entry);
-        parseExtensionBytes(entry);
+        if (context.getChooser().getSelectedProtocolVersion().isTLS13()) {
+            parseExtensionsLength(entry);
+            parseExtensionBytes(entry);
+        }
         parseX509Certificate(entry);
-        parseExtensions(entry);
+        if (context.getChooser().getSelectedProtocolVersion().isTLS13()) {
+            parseExtensions(entry);
+        }
     }
 
     /**
@@ -89,7 +93,7 @@ public class CertificateEntryParser extends Parser<CertificateEntry> {
     private void parseExtensions(CertificateEntry pair) {
         ExtensionListParser parser =
                 new ExtensionListParser(
-                        new ByteArrayInputStream(pair.getCertificateBytes().getValue()),
+                        new ByteArrayInputStream(pair.getExtensionBytes().getValue()),
                         context,
                         false);
         List<ExtensionMessage> extensionMessages = new LinkedList<>();
