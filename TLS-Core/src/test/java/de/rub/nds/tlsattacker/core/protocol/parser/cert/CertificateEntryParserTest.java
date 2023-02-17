@@ -34,11 +34,11 @@ public class CertificateEntryParserTest {
                         4,
                         ArrayConverter.hexStringToByteArray("00FF0000")),
                 Arguments.of(
-                        ArrayConverter.hexStringToByteArray("000002aaaa000600FF00000000"),
+                        ArrayConverter.hexStringToByteArray("000002aaaa000600FF00020000"),
                         2,
                         ArrayConverter.hexStringToByteArray("aaaa"),
                         6,
-                        ArrayConverter.hexStringToByteArray("00FF00000000")));
+                        ArrayConverter.hexStringToByteArray("00FF00020000")));
     }
 
     /** Test of testParse method, of class CertificateEntryParser */
