@@ -697,6 +697,9 @@
       <xs:element name="dhPrivateKey" type="xs:integer" minOccurs="0"/>
       <xs:element name="dhModulus" type="xs:integer" minOccurs="0"/>
       <xs:element name="dhGenerator" type="xs:integer" minOccurs="0"/>
+      <xs:element name="dsaPrimeP" type="xs:integer" minOccurs="0"/>
+      <xs:element name="dsaPrimeQ" type="xs:integer" minOccurs="0"/>
+      <xs:element name="dsaGenerator" type="xs:integer" minOccurs="0"/>
       <xs:element name="defaultIssuerRsaPrivateKey" type="xs:integer" minOccurs="0"/>
       <xs:element name="defaultIssuerDsaPrivateKey" type="xs:integer" minOccurs="0"/>
       <xs:element name="defaultIssuerEcPrivateKey" type="xs:integer" minOccurs="0"/>
