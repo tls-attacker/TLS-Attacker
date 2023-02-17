@@ -13,10 +13,10 @@ import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
 import de.rub.nds.protocol.crypto.ec.EllipticCurve;
 import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.certificate.CertificateAnalyzer;
-import de.rub.nds.tlsattacker.core.constants.CertificateKeyType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.protocol.message.EmptyClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import de.rub.nds.x509attacker.constants.X509PublicKeyType;
 import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -91,14 +91,14 @@ public class EmptyClientKeyExchangePreparator<T extends EmptyClientKeyExchangeMe
                         .getCertificateList()
                         .isEmpty()) {
 
-            CertificateKeyType certificateKeyType =
+            X509PublicKeyType certificateKeyType =
                     CertificateAnalyzer.getCertificateKeyType(
                             chooser.getContext()
                                     .getTlsContext()
                                     .getClientCertificateChain()
                                     .getLeaf());
 
-            if (certificateKeyType == CertificateKeyType.DH) {
+            if (certificateKeyType == X509PublicKeyType.DH) {
                 BigInteger modulus =
                         chooser.getContext()
                                 .getTlsContext()
@@ -116,10 +116,10 @@ public class EmptyClientKeyExchangePreparator<T extends EmptyClientKeyExchangeMe
                                 .getChooser()
                                 .getSubjectDhPrivateKey();
                 premasterSecret = calculateDhPremasterSecret(modulus, privateKey, publicKey);
-            } else if (certificateKeyType == CertificateKeyType.ECDH
-                    || certificateKeyType == CertificateKeyType.ECDH_ECDSA
-                    || certificateKeyType == CertificateKeyType.X25519
-                    || certificateKeyType == CertificateKeyType.X448) {
+            } else if (certificateKeyType == X509PublicKeyType.ECDH_ONLY
+                    || certificateKeyType == X509PublicKeyType.ECDH_ECDSA
+                    || certificateKeyType == X509PublicKeyType.X25519
+                    || certificateKeyType == X509PublicKeyType.X448) {
                 if (clientMode) {
                     NamedGroup usedGroup = chooser.getSelectedNamedGroup();
                     LOGGER.debug("PMS used Group: " + usedGroup.name());

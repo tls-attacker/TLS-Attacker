@@ -13,6 +13,7 @@ import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
 import de.rub.nds.protocol.constants.PointFormat;
 import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.protocol.crypto.ec.PointFormatter;
+import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CertificateType;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
@@ -21,6 +22,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.cert.CertificateEntryPrep
 import de.rub.nds.tlsattacker.core.protocol.serializer.cert.CertificatePairSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import de.rub.nds.x509attacker.constants.X509PublicKeyType;
 import de.rub.nds.x509attacker.filesystem.CertificateBytes;
 import de.rub.nds.x509attacker.x509.X509CertificateChainBuidler;
 import de.rub.nds.x509attacker.x509.base.X509Certificate;
@@ -109,8 +111,18 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
                 if (chooser.getConfig().getDefaultExplicitCertificateChain() == null) {
                     if (entryList == null) {
                         if (chooser.getConfig().getAutoAdjustCertificate()) {
-                            throw new UnsupportedOperationException(
-                                    "Auto adjusting certificate config not supported yet");
+                            X509PublicKeyType certificateKeyType =
+                                    AlgorithmResolver.getCertificateKeyType(
+                                            chooser.getSelectedCipherSuite());
+                            if (certificateKeyType != null) {
+                                chooser.getConfig()
+                                        .getCertificateChainConfig()
+                                        .get(0)
+                                        .setPublicKeyType(certificateKeyType);
+                            } else {
+                                LOGGER.warn(
+                                        "Could not adjust public key in certificate to fit cipher suite");
+                            }
                         }
                         // There is no certificate list in the message, this means we need to auto
                         // create one

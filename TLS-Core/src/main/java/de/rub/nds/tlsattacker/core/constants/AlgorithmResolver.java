@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
+import de.rub.nds.x509attacker.constants.X509PublicKeyType;
 import java.util.HashSet;
 import java.util.Set;
 import org.apache.logging.log4j.LogManager;
@@ -172,7 +173,7 @@ public class AlgorithmResolver {
      * @param suite
      * @return
      */
-    public static CertificateKeyType getCertificateKeyType(CipherSuite suite) {
+    public static X509PublicKeyType getCertificateKeyType(CipherSuite suite) {
         KeyExchangeAlgorithm keyExchangeAlgorithm = getKeyExchangeAlgorithm(suite);
         switch (keyExchangeAlgorithm) {
             case DHE_RSA:
@@ -181,24 +182,26 @@ public class AlgorithmResolver {
             case RSA_EXPORT:
             case SRP_SHA_RSA:
             case PSK_RSA:
-                return CertificateKeyType.RSA;
+                return X509PublicKeyType.RSA;
             case DH_RSA:
             case DH_DSS:
-                return CertificateKeyType.DH;
+                return X509PublicKeyType.DH;
             case ECDH_ECDSA:
+                return X509PublicKeyType.ECDH_ECDSA;
             case ECDH_RSA:
-                return CertificateKeyType.ECDH;
+                return X509PublicKeyType.ECDH_ONLY;
             case ECDHE_ECDSA:
             case ECMQV_ECDSA:
             case CECPQ1_ECDSA:
-                return CertificateKeyType.ECDH_ECDSA;
+                return X509PublicKeyType.ECDH_ECDSA;
             case DHE_DSS:
             case SRP_SHA_DSS:
-                return CertificateKeyType.DSA;
+                return X509PublicKeyType.DSA;
             case VKO_GOST01:
-                return CertificateKeyType.GOST01;
+                return X509PublicKeyType.GOST_R3411_2001;
             case VKO_GOST12:
-                return CertificateKeyType.GOST12;
+                // TODO Not correct
+                return X509PublicKeyType.GOST_R3411_94;
             case DHE_PSK:
             case DH_ANON:
             case ECCPWD:
@@ -208,12 +211,12 @@ public class AlgorithmResolver {
             case PSK:
             case SRP_SHA:
             case KRB5:
-                return CertificateKeyType.NONE;
+                return null;
             case ECDH_ECNRA:
             case ECMQV_ECNRA:
-                return CertificateKeyType.ECNRA;
+                throw new UnsupportedOperationException("Not Implemented");
             case FORTEZZA_KEA:
-                return CertificateKeyType.FORTEZZA;
+                return X509PublicKeyType.KEA;
             default:
                 throw new UnsupportedOperationException(
                         "Unsupported KeyExchange Algorithm: " + keyExchangeAlgorithm);

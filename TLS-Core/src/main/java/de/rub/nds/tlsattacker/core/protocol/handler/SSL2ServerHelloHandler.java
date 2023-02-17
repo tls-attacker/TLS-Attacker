@@ -10,11 +10,11 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.certificate.CertificateAnalyzer;
-import de.rub.nds.tlsattacker.core.constants.CertificateKeyType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
+import de.rub.nds.x509attacker.constants.X509PublicKeyType;
 import de.rub.nds.x509attacker.filesystem.CertificateIo;
 import de.rub.nds.x509attacker.x509.base.X509CertificateChain;
 import de.rub.nds.x509attacker.x509.base.publickey.RsaPublicKey;
@@ -73,7 +73,7 @@ public class SSL2ServerHelloHandler extends ProtocolMessageHandler<SSL2ServerHel
 
         if (certificateChain != null
                 && CertificateAnalyzer.getCertificateKeyType(certificateChain.getLeaf())
-                        == CertificateKeyType.RSA) {
+                        == X509PublicKeyType.RSA) {
             LOGGER.debug("Adjusting RSA PublicKey");
             X509PublicKeyContent publicKey =
                     CertificateAnalyzer.getPublicKey(certificateChain.getLeaf());

@@ -8,6 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
+import de.rub.nds.x509attacker.constants.X509PublicKeyType;
+
 public enum SignatureAlgorithm {
     ANONYMOUS,
     RSA,
@@ -35,23 +37,23 @@ public enum SignatureAlgorithm {
         return javaName != null ? javaName : toString();
     }
 
-    public CertificateKeyType getRequiredCertificateKeyType() {
+    public X509PublicKeyType getRequiredCertificateKeyType() {
         switch (this) {
             case RSA:
             case RSA_PSS_PSS:
             case RSA_PSS_RSAE:
-                return CertificateKeyType.RSA;
+                return X509PublicKeyType.RSA;
             case DSA:
-                return CertificateKeyType.DSA;
+                return X509PublicKeyType.DSA;
             case ECDSA:
             case ED25519:
             case ED448:
-                return CertificateKeyType.ECDH_ECDSA;
+                return X509PublicKeyType.ECDH_ECDSA;
             case GOSTR34102001:
-                return CertificateKeyType.GOST01;
+                return X509PublicKeyType.GOST_R3411_2001;
             case GOSTR34102012_256:
             case GOSTR34102012_512:
-                return CertificateKeyType.GOST12;
+                throw new UnsupportedOperationException("Currently not supported");
             default:
                 return null;
         }

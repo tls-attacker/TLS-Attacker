@@ -8,8 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.certificate;
 
-import de.rub.nds.tlsattacker.core.constants.CertificateKeyType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
+import de.rub.nds.x509attacker.constants.X509PublicKeyType;
 import de.rub.nds.x509attacker.x509.base.SubjectPublicKeyInfo;
 import de.rub.nds.x509attacker.x509.base.TbsCertificate;
 import de.rub.nds.x509attacker.x509.base.X509Certificate;
@@ -45,43 +45,43 @@ public class CertificateAnalyzer {
         }
     }
 
-    public static CertificateKeyType getCertificateKeyType(X509Certificate certificate) {
+    public static X509PublicKeyType getCertificateKeyType(X509Certificate certificate) {
         X509PublicKeyContent publicKey = getPublicKey(certificate);
         if (publicKey == null) {
-            return CertificateKeyType.NONE;
+            return null;
         }
         if (publicKey instanceof DhPublicKey) {
-            return CertificateKeyType.DH;
+            return X509PublicKeyType.DH;
         }
         if (publicKey instanceof RsaPublicKey) {
-            return CertificateKeyType.RSA;
+            return X509PublicKeyType.RSA;
         }
         if (publicKey instanceof DsaPublicKey) {
-            return CertificateKeyType.DSA;
+            return X509PublicKeyType.DSA;
         }
         if (publicKey instanceof EcdhEcdsaPublicKey) {
-            return CertificateKeyType.ECDH_ECDSA;
+            return X509PublicKeyType.ECDH_ECDSA;
         }
         if (publicKey instanceof EcdhPublicKey) {
-            return CertificateKeyType.ECDH;
+            return X509PublicKeyType.ECDH_ONLY;
         }
         if (publicKey instanceof Ed25519PublicKey) {
-            return CertificateKeyType.ED25519;
+            return X509PublicKeyType.ED25519;
         }
         if (publicKey instanceof Ed448PublicKey) {
-            return CertificateKeyType.ED448;
+            return X509PublicKeyType.ED448;
         }
         if (publicKey instanceof X25519PublicKey) {
-            return CertificateKeyType.X25519;
+            return X509PublicKeyType.X25519;
         }
         if (publicKey instanceof X448PublicKey) {
-            return CertificateKeyType.X448;
+            return X509PublicKeyType.X448;
         }
         LOGGER.warn(
                 "The public key "
                         + publicKey.toString()
                         + " has not been correctly integrated into TLS-Attacker. Returning NONE");
-        return CertificateKeyType.NONE;
+        return null;
     }
 
     public static NamedGroup getEllipticCurveGroup(X509Certificate certificate) {
