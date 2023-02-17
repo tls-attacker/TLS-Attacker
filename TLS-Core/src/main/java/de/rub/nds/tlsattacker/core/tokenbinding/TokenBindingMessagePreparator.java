@@ -8,12 +8,16 @@
  */
 package de.rub.nds.tlsattacker.core.tokenbinding;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.protocol.constants.HashAlgorithm;
+import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
 import de.rub.nds.protocol.crypto.ec.EllipticCurve;
 import de.rub.nds.protocol.crypto.ec.EllipticCurveSECP256R1;
 import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.protocol.crypto.ec.PointFormatter;
+import de.rub.nds.protocol.crypto.signature.EcdsaSignatureComputations;
+import de.rub.nds.protocol.crypto.signature.SignatureCalculator;
 import de.rub.nds.tlsattacker.core.constants.*;
-import de.rub.nds.tlsattacker.core.crypto.TlsSignatureUtil;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessagePreparator;
@@ -53,7 +57,7 @@ public class TokenBindingMessagePreparator extends ProtocolMessagePreparator<Tok
 
             byte[] signature =
                     generateSignature(SignatureAndHashAlgorithm.ECDSA_SHA256, generateToBeSigned());
-
+            System.out.println("Sig: " + ArrayConverter.bytesToHexString(signature));
             message.setSignature(signature);
         } else {
             message.setModulus(
@@ -75,12 +79,16 @@ public class TokenBindingMessagePreparator extends ProtocolMessagePreparator<Tok
 
     private byte[] generateSignature(
             SignatureAndHashAlgorithm algorithm, byte[] toBeHashedAndSigned) {
-        TlsSignatureUtil util = new TlsSignatureUtil();
-        util.computeSignature(
-                chooser,
-                algorithm,
+
+        SignatureCalculator calculator = new SignatureCalculator();
+        calculator.computeRawEcdsaSignature(
+                (EcdsaSignatureComputations)
+                        message.getSignatureComputations(SignatureAlgorithm.ECDSA),
+                chooser.getConfig().getDefaultTokenBindingEcPrivateKey(),
                 toBeHashedAndSigned,
-                message.getSignatureComputations(algorithm.getSignatureAlgorithm()));
+                chooser.getConfig().getDefaultEcdsaNonce(),
+                NamedEllipticCurveParameters.SECP256R1,
+                HashAlgorithm.SHA256);
         return message.getSignatureComputations(algorithm.getSignatureAlgorithm())
                 .getSignatureBytes()
                 .getValue();
