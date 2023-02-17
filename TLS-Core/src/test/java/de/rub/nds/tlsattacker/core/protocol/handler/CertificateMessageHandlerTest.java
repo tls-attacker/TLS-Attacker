@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.security.Security;
+import java.util.LinkedList;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -72,6 +73,7 @@ public class CertificateMessageHandlerTest
             CertificateMessage message = new CertificateMessage();
             message.setCertificatesListBytes(new byte[] {0, 1, 2, 3, 4});
             message.setCertificatesListLength(5);
+            message.setCertificateEntryList(new LinkedList<>());
             handler.adjustContext(message);
             assertNull(context.getClientCertificateChain());
             assertNull(context.getServerCertificateChain());
