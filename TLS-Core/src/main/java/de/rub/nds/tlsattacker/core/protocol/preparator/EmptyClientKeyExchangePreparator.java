@@ -99,9 +99,22 @@ public class EmptyClientKeyExchangePreparator<T extends EmptyClientKeyExchangeMe
                                     .getLeaf());
 
             if (certificateKeyType == CertificateKeyType.DH) {
-                BigInteger modulus = chooser.getClientDhModulus();
-                BigInteger publicKey = chooser.getServerDhPublicKey();
-                BigInteger privateKey = chooser.getClientDhPrivateKey();
+                BigInteger modulus =
+                        chooser.getContext()
+                                .getTlsContext()
+                                .getX509Context()
+                                .getChooser()
+                                .getSubjectDhModulus();
+
+                BigInteger publicKey =
+                        chooser.getServerDhPublicKey(); // TODO This should either be the ske key
+                // or the certificate public key
+                BigInteger privateKey =
+                        chooser.getContext()
+                                .getTlsContext()
+                                .getX509Context()
+                                .getChooser()
+                                .getSubjectDhPrivateKey();
                 premasterSecret = calculateDhPremasterSecret(modulus, privateKey, publicKey);
             } else if (certificateKeyType == CertificateKeyType.ECDH
                     || certificateKeyType == CertificateKeyType.ECDH_ECDSA

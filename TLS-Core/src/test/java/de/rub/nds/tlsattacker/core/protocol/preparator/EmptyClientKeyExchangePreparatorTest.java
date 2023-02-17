@@ -18,13 +18,17 @@ import de.rub.nds.protocol.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.EmptyClientKeyExchangeMessage;
+import de.rub.nds.x509attacker.context.X509Context;
+import de.rub.nds.x509attacker.filesystem.CertificateBytes;
 import de.rub.nds.x509attacker.filesystem.CertificateIo;
+import de.rub.nds.x509attacker.x509.base.X509Certificate;
 import de.rub.nds.x509attacker.x509.base.X509CertificateChain;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.Security;
 import java.security.cert.CertificateException;
+import java.util.List;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -49,7 +53,6 @@ public class EmptyClientKeyExchangePreparatorTest
      * -inkey ec_client_privkey.pem -peerkey ec_server_pubkey.pem -hexdump To get the actual key values that are needed
      * here, you can use this OpenSSL command: openssl pkey -in <file> -noout -text
      */
-
     private final String RANDOM = "AABBCCDDEEFF";
 
     private final String DH_CLIENT_CERT =
@@ -150,12 +153,22 @@ public class EmptyClientKeyExchangePreparatorTest
         context.setServerDhPublicKey(DH_SERVER_PUBLIC_KEY);
 
         // testParse and set client certificate
-        X509CertificateChain clientCertificateChain =
-                CertificateIo.readPemChain(new ByteArrayInputStream(DH_CLIENT_CERT.getBytes()));
-        context.setClientCertificateChain(clientCertificateChain);
+        X509CertificateChain clientCertificateChain = new X509CertificateChain();
+        context.setX509Context(new X509Context());
 
+        List<CertificateBytes> byteList =
+                CertificateIo.readPemCertificateByteList(
+                        new ByteArrayInputStream(DH_CLIENT_CERT.getBytes()));
+        for (CertificateBytes certificateBytes : byteList) {
+            X509Certificate x509Certificate = new X509Certificate("x509Certificate");
+            x509Certificate
+                    .getParser(context.getX509Context().getChooser())
+                    .parse(new ByteArrayInputStream(certificateBytes.getBytes()));
+            clientCertificateChain.addCertificate(x509Certificate);
+        }
+        context.setClientCertificateChain(clientCertificateChain);
         // set DH private key
-        context.setClientDhPrivateKey(DH_CLIENT_PRIVATE_KEY);
+        context.getX509Context().setSubjectDhPrivateKey(DH_CLIENT_PRIVATE_KEY);
 
         // test
         preparator.prepareHandshakeMessageContents();

@@ -3832,6 +3832,7 @@
 
   <xs:complexType name="x509Context">
     <xs:sequence>
+      <xs:element name="config" type="x509CertificateConfig" minOccurs="0"/>
       <xs:element name="issuer" type="pair" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="issuerDsaPrivateKey" type="xs:integer" minOccurs="0"/>
       <xs:element name="issuerDsaPublicKeyY" type="xs:integer" minOccurs="0"/>
@@ -3842,6 +3843,9 @@
       <xs:element name="issuerRsaPrivateKey" type="xs:integer" minOccurs="0"/>
       <xs:element name="issuerUniqueId" type="xs:base64Binary" minOccurs="0"/>
       <xs:element name="subject" type="pair" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="subjectDhGenerator" type="xs:integer" minOccurs="0"/>
+      <xs:element name="subjectDhModulus" type="xs:integer" minOccurs="0"/>
+      <xs:element name="subjectDhPrivateKey" type="xs:integer" minOccurs="0"/>
       <xs:element name="subjectDhPublicKey" type="xs:integer" minOccurs="0"/>
       <xs:element name="subjectDsaPrivateKey" type="xs:integer" minOccurs="0"/>
       <xs:element name="subjectDsaPublicKeyY" type="xs:integer" minOccurs="0"/>
@@ -3854,11 +3858,92 @@
     </xs:sequence>
   </xs:complexType>
 
+  <xs:complexType name="x509CertificateConfig">
+    <xs:sequence>
+      <xs:element name="signatureAlgorithm" type="x509SignatureAlgorithm" minOccurs="0"/>
+      <xs:element name="version" type="x509Version" minOccurs="0"/>
+      <xs:element name="serialNumber" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultIssuer" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="attributeField" type="pair" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="subject" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="attributeField" type="pair" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="notBefore" type="dateTime" minOccurs="0"/>
+      <xs:element name="notBeforeAccurracy" type="timeAccurracy" minOccurs="0"/>
+      <xs:element name="defaultNotBeforeEncoding" type="validityEncoding" minOccurs="0"/>
+      <xs:element name="notAfter" type="dateTime" minOccurs="0"/>
+      <xs:element name="notAfterAccurracy" type="timeAccurracy" minOccurs="0"/>
+      <xs:element name="defaultNotAfterEncoding" type="validityEncoding" minOccurs="0"/>
+      <xs:element name="timezoneOffsetInMinutes" type="xs:int"/>
+      <xs:element name="defaultIssuerUniqueId" type="xs:string" minOccurs="0"/>
+      <xs:element name="subjectUniqueId" type="xs:string" minOccurs="0"/>
+      <xs:element name="includeIssuerUniqueId" type="xs:boolean"/>
+      <xs:element name="includeSubjectUniqueId" type="xs:boolean"/>
+      <xs:element name="includeExtensions" type="xs:boolean"/>
+      <xs:element name="publicKeyType" type="x509PublicKeyType" minOccurs="0"/>
+      <xs:element name="defaultIssuerPublicKeyType" type="x509PublicKeyType" minOccurs="0"/>
+      <xs:element name="rsaModulus" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultIssuerRsaModulus" type="xs:integer" minOccurs="0"/>
+      <xs:element name="rsaPrivateKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="rsaPublicKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultIssuerRsaPublicKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="dsaPublicKeyY" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultIssuerDsaPublicKeyY" type="xs:integer" minOccurs="0"/>
+      <xs:element name="dsaPrivateKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="ecPrivateKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="dhPrivateKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="dhModulus" type="xs:integer" minOccurs="0"/>
+      <xs:element name="dhGenerator" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultIssuerRsaPrivateKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultIssuerDsaPrivateKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultIssuerEcPrivateKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="includeDhValidationParameters" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="defaultSubjectNamedCurve" type="x509NamedCurve" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
   <xs:complexType name="pair">
     <xs:sequence>
       <xs:element name="leftElement" type="xs:anyType" minOccurs="0"/>
       <xs:element name="rightElement" type="xs:anyType" minOccurs="0"/>
     </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="dateTime" final="extension restriction">
+    <xs:complexContent>
+      <xs:extension base="baseDateTime">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="baseDateTime" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractDateTime">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractDateTime" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractInstant">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractInstant" abstract="true">
+    <xs:sequence/>
   </xs:complexType>
 
   <xs:complexType name="context">
@@ -4436,84 +4521,6 @@
     <xs:sequence>
       <xs:element name="bytes" type="xs:string" minOccurs="0"/>
     </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="x509CertificateConfig">
-    <xs:sequence>
-      <xs:element name="signatureAlgorithm" type="x509SignatureAlgorithm" minOccurs="0"/>
-      <xs:element name="version" type="x509Version" minOccurs="0"/>
-      <xs:element name="serialNumber" type="xs:integer" minOccurs="0"/>
-      <xs:element name="defaultIssuer" minOccurs="0">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element name="attributeField" type="pair" minOccurs="0" maxOccurs="unbounded"/>
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
-      <xs:element name="subject" minOccurs="0">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element name="attributeField" type="pair" minOccurs="0" maxOccurs="unbounded"/>
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
-      <xs:element name="notBefore" type="dateTime" minOccurs="0"/>
-      <xs:element name="notBeforeAccurracy" type="timeAccurracy" minOccurs="0"/>
-      <xs:element name="defaultNotBeforeEncoding" type="validityEncoding" minOccurs="0"/>
-      <xs:element name="notAfter" type="dateTime" minOccurs="0"/>
-      <xs:element name="notAfterAccurracy" type="timeAccurracy" minOccurs="0"/>
-      <xs:element name="defaultNotAfterEncoding" type="validityEncoding" minOccurs="0"/>
-      <xs:element name="timezoneOffsetInMinutes" type="xs:int"/>
-      <xs:element name="defaultIssuerUniqueId" type="xs:string" minOccurs="0"/>
-      <xs:element name="subjectUniqueId" type="xs:string" minOccurs="0"/>
-      <xs:element name="includeIssuerUniqueId" type="xs:boolean"/>
-      <xs:element name="includeSubjectUniqueId" type="xs:boolean"/>
-      <xs:element name="includeExtensions" type="xs:boolean"/>
-      <xs:element name="publicKeyType" type="x509PublicKeyType" minOccurs="0"/>
-      <xs:element name="defaultIssuerPublicKeyType" type="x509PublicKeyType" minOccurs="0"/>
-      <xs:element name="rsaModulus" type="xs:integer" minOccurs="0"/>
-      <xs:element name="defaultIssuerRsaModulus" type="xs:integer" minOccurs="0"/>
-      <xs:element name="rsaPrivateKey" type="xs:integer" minOccurs="0"/>
-      <xs:element name="rsaPublicKey" type="xs:integer" minOccurs="0"/>
-      <xs:element name="defaultIssuerRsaPublicKey" type="xs:integer" minOccurs="0"/>
-      <xs:element name="dsaPublicKeyY" type="xs:integer" minOccurs="0"/>
-      <xs:element name="defaultIssuerDsaPublicKeyY" type="xs:integer" minOccurs="0"/>
-      <xs:element name="dsaPrivateKey" type="xs:integer" minOccurs="0"/>
-      <xs:element name="ecPrivateKey" type="xs:integer" minOccurs="0"/>
-      <xs:element name="defaultIssuerRsaPrivateKey" type="xs:integer" minOccurs="0"/>
-      <xs:element name="defaultIssuerDsaPrivateKey" type="xs:integer" minOccurs="0"/>
-      <xs:element name="defaultIssuerEcPrivateKey" type="xs:integer" minOccurs="0"/>
-      <xs:element name="includeDhValidationParameters" type="xs:boolean" minOccurs="0"/>
-      <xs:element name="defaultSubjectNamedCurve" type="x509NamedCurve" minOccurs="0"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="dateTime" final="extension restriction">
-    <xs:complexContent>
-      <xs:extension base="baseDateTime">
-        <xs:sequence/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="baseDateTime" abstract="true">
-    <xs:complexContent>
-      <xs:extension base="abstractDateTime">
-        <xs:sequence/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="abstractDateTime" abstract="true">
-    <xs:complexContent>
-      <xs:extension base="abstractInstant">
-        <xs:sequence/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="abstractInstant" abstract="true">
-    <xs:sequence/>
   </xs:complexType>
 
   <xs:complexType name="transportHandler" abstract="true">
@@ -6448,26 +6455,6 @@
     </xs:restriction>
   </xs:simpleType>
 
-  <xs:simpleType name="x509PublicKeyType">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="RSA"/>
-      <xs:enumeration value="DSA"/>
-      <xs:enumeration value="DH"/>
-      <xs:enumeration value="KEA"/>
-      <xs:enumeration value="ECDH_ECDSA"/>
-      <xs:enumeration value="RSASSA_PSS"/>
-      <xs:enumeration value="RSAES_OAEP"/>
-      <xs:enumeration value="GOST_R3411_94"/>
-      <xs:enumeration value="GOST_R3411_2001"/>
-      <xs:enumeration value="ECDH_ONLY"/>
-      <xs:enumeration value="ECMQV"/>
-      <xs:enumeration value="X25519"/>
-      <xs:enumeration value="X448"/>
-      <xs:enumeration value="ED25519"/>
-      <xs:enumeration value="ED448"/>
-    </xs:restriction>
-  </xs:simpleType>
-
   <xs:simpleType name="x509SignatureAlgorithm">
     <xs:restriction base="xs:string">
       <xs:enumeration value="MD2_WITH_RSA_ENCRYPTION"/>
@@ -6488,18 +6475,6 @@
       <xs:enumeration value="ECDSA_WITH_SHA256"/>
       <xs:enumeration value="ECDSA_WITH_SHA384"/>
       <xs:enumeration value="ECDSA_WITH_SHA512"/>
-    </xs:restriction>
-  </xs:simpleType>
-
-  <xs:simpleType name="layerConfiguration">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="TLS"/>
-      <xs:enumeration value="DTLS"/>
-      <xs:enumeration value="QUIC"/>
-      <xs:enumeration value="OPEN_VPN"/>
-      <xs:enumeration value="STARTTLS"/>
-      <xs:enumeration value="HTTPS"/>
-      <xs:enumeration value="SSL2"/>
     </xs:restriction>
   </xs:simpleType>
 
@@ -6530,6 +6505,26 @@
     </xs:restriction>
   </xs:simpleType>
 
+  <xs:simpleType name="x509PublicKeyType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="RSA"/>
+      <xs:enumeration value="DSA"/>
+      <xs:enumeration value="DH"/>
+      <xs:enumeration value="KEA"/>
+      <xs:enumeration value="ECDH_ECDSA"/>
+      <xs:enumeration value="RSASSA_PSS"/>
+      <xs:enumeration value="RSAES_OAEP"/>
+      <xs:enumeration value="GOST_R3411_94"/>
+      <xs:enumeration value="GOST_R3411_2001"/>
+      <xs:enumeration value="ECDH_ONLY"/>
+      <xs:enumeration value="ECMQV"/>
+      <xs:enumeration value="X25519"/>
+      <xs:enumeration value="X448"/>
+      <xs:enumeration value="ED25519"/>
+      <xs:enumeration value="ED448"/>
+    </xs:restriction>
+  </xs:simpleType>
+
   <xs:simpleType name="x500AttributeType">
     <xs:restriction base="xs:string">
       <xs:enumeration value="COMMON_NAME"/>
@@ -6538,6 +6533,18 @@
       <xs:enumeration value="STATE_OR_PROVINCE_NAME"/>
       <xs:enumeration value="ORGANISATION_NAME"/>
       <xs:enumeration value="ORGANISATION_UNIT_NAME"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="layerConfiguration">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="TLS"/>
+      <xs:enumeration value="DTLS"/>
+      <xs:enumeration value="QUIC"/>
+      <xs:enumeration value="OPEN_VPN"/>
+      <xs:enumeration value="STARTTLS"/>
+      <xs:enumeration value="HTTPS"/>
+      <xs:enumeration value="SSL2"/>
     </xs:restriction>
   </xs:simpleType>
 

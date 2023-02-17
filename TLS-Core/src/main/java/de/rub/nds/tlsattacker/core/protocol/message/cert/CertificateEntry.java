@@ -15,7 +15,6 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.x509attacker.chooser.X509Chooser;
-import de.rub.nds.x509attacker.config.X509CertificateConfig;
 import de.rub.nds.x509attacker.context.X509Context;
 import de.rub.nds.x509attacker.x509.base.X509Certificate;
 import jakarta.xml.bind.annotation.XmlAccessType;
@@ -55,10 +54,8 @@ public class CertificateEntry extends ModifiableVariableHolder {
         this.x509CerticiateConfig = x509CertificateConfig;
         // Try to set the x509 certificate
         try {
-            X509Chooser chooser =
-                    new X509Chooser(
-                            new X509CertificateConfig(),
-                            new X509Context()); // TODO getParser should only use a context
+            X509Context context = new X509Context();
+            X509Chooser chooser = context.getChooser();
             x509certificate = new X509Certificate("certificate");
             x509certificate
                     .getParser(chooser)

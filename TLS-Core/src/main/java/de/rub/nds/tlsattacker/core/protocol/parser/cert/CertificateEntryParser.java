@@ -16,7 +16,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificateEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionListParser;
 import de.rub.nds.x509attacker.chooser.X509Chooser;
-import de.rub.nds.x509attacker.config.X509CertificateConfig;
 import de.rub.nds.x509attacker.context.X509Context;
 import de.rub.nds.x509attacker.x509.base.X509Certificate;
 import java.io.ByteArrayInputStream;
@@ -102,7 +101,7 @@ public class CertificateEntryParser extends Parser<CertificateEntry> {
         try {
             X509Context x509context = this.context.getX509Context();
             X509Certificate x509Certificate = new X509Certificate("certificate");
-            X509Chooser x509Chooser = new X509Chooser(new X509CertificateConfig(), x509context);
+            X509Chooser x509Chooser = x509context.getChooser();
             x509Certificate
                     .getParser(x509Chooser)
                     .parse(new ByteArrayInputStream(entry.getCertificateBytes().getValue()));
