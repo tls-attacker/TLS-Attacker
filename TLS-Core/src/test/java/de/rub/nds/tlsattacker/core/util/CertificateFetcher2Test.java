@@ -17,7 +17,6 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.util.FixedTimeProvider;
 import de.rub.nds.tlsattacker.util.TimeHelper;
-import de.rub.nds.tlsattacker.util.tests.TestCategories;
 import de.rub.nds.x509attacker.filesystem.CertificateIo;
 import de.rub.nds.x509attacker.x509.base.X509CertificateChain;
 import de.rub.nds.x509attacker.x509.base.publickey.X509PublicKeyContent;
@@ -29,12 +28,14 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
 import java.security.cert.CertificateParsingException;
 import java.util.Random;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.jupiter.api.*;
 
-public class CertificateFetcherIT {
+public class CertificateFetcher2Test {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -81,10 +82,11 @@ public class CertificateFetcherIT {
         ClientDelegate clientDelegate = new ClientDelegate();
         clientDelegate.setHost("localhost:" + SERVER_PORT);
         clientDelegate.applyDelegate(config);
+        Configurator.setAllLevels("", Level.ALL);
     }
 
     @Test
-    @Tag(TestCategories.INTEGRATION_TEST)
+    // @Tag(TestCategories.INTEGRATION_TEST)
     public void testFetchServerPublicKey() {
         X509PublicKeyContent actual;
         try {
@@ -98,7 +100,7 @@ public class CertificateFetcherIT {
     }
 
     @Test
-    @Tag(TestCategories.INTEGRATION_TEST)
+    // @Tag(TestCategories.INTEGRATION_TEST)
     public void testFetchServerCertificate() throws Exception {
         byte[] actualEncoded =
                 CertificateFetcher.fetchServerCertificateChain(config)

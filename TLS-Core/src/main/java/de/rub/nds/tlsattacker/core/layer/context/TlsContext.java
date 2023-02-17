@@ -491,7 +491,7 @@ public class TlsContext extends LayerContext {
 
     private byte[] readConnectionID;
 
-    private X509Context x509Context = null;
+    private X509Context x509Context;
 
     public TlsContext() {
         this(new Context(new Config()));
@@ -509,6 +509,7 @@ public class TlsContext extends LayerContext {
      */
     public TlsContext(Context context) {
         super(context);
+        x509Context = new X509Context();
         context.setTlsContext(this);
         RunningModeType mode = getConfig().getDefaultRunningMode();
         if (null == mode) {

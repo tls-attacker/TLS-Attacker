@@ -43,7 +43,7 @@ public class EllipticCurveTest {
     @EnumSource(
             value = NamedGroup.class,
             // Exclude FFDHE and EXPLICIT groups from this test
-            names = {"^FFDHE[0-9]*", "^EXPLICIT_.*"},
+            names = {"^FFDHE[0-9]*", "^EXPLICIT_.*", "^GREASE.*"},
             mode = EnumSource.Mode.MATCH_NONE)
     @Tag(TestCategories.SLOW_TEST)
     public void test(NamedGroup providedNamedGroup) {

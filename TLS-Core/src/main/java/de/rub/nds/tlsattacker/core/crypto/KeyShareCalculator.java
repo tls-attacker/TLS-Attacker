@@ -29,7 +29,7 @@ public class KeyShareCalculator {
 
     public static byte[] createPublicKey(
             NamedGroup group, BigInteger privateKey, ECPointFormat pointFormat) {
-        if (group.isCurve() || group.isGrease()) {
+        if (group.isCurve()) {
             EllipticCurve curve =
                     ((NamedEllipticCurveParameters) group.getGroupParameters()).getCurve();
             if (group.isShortWeierstrass() || group.isGrease()) {
@@ -42,15 +42,15 @@ public class KeyShareCalculator {
                 RFC7748Curve rfcCurve = (RFC7748Curve) curve;
                 return rfcCurve.computePublicKey(privateKey);
             }
-        } else if (group != NamedGroup.EXPLICIT_CHAR2 && group != NamedGroup.EXPLICIT_PRIME) {
+        } else if (group.isDhGroup()) {
             FFDHEGroup ffdheGroup = GroupFactory.getGroup(group);
             BigInteger publicKey =
                     ffdheGroup.getG().modPow(privateKey.abs(), ffdheGroup.getP().abs());
             return ArrayConverter.bigIntegerToNullPaddedByteArray(
                     publicKey, ffdheGroup.getP().bitLength() / Bits.IN_A_BYTE);
         } else {
-            throw new IllegalArgumentException(
-                    "Cannot create Public Key for group " + group.name());
+            LOGGER.warn("Cannot create Public Key for group {}", group.name());
+            return new byte[0];
         }
     }
 
