@@ -138,6 +138,7 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
                     }
                     prepareFromEntryList(msg);
                 } else {
+                    entryList = new LinkedList<>();
                     for (CertificateBytes certificateBytes :
                             chooser.getConfig().getDefaultExplicitCertificateChain()) {
                         CertificateEntry entry = new CertificateEntry(certificateBytes.getBytes());

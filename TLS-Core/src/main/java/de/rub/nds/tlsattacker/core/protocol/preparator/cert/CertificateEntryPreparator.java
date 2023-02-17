@@ -50,6 +50,7 @@ public class CertificateEntryPreparator extends Preparator<CertificateEntry> {
             entry.setCertificateBytes(entry.getX509certificate().getSerializer().serialize());
         } else {
             LOGGER.warn("Unsure how to encode entry. Using new byte[0]");
+            entry.setCertificateBytes(new byte[0]);
         }
 
         LOGGER.debug(
