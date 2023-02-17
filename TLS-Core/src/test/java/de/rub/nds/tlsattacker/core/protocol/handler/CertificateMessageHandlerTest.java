@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -75,8 +76,8 @@ public class CertificateMessageHandlerTest
             message.setCertificatesListLength(5);
             message.setCertificateEntryList(new LinkedList<>());
             handler.adjustContext(message);
-            assertNull(context.getClientCertificateChain());
-            assertNull(context.getServerCertificateChain());
+            assertTrue(context.getClientCertificateChain().size() == 0);
+            assertTrue(context.getServerCertificateChain().size() == 0);
             context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
             context.setSelectedProtocolVersion(version);
             message.setCertificatesListBytes(new byte[] {0, 1, 2, 3, 4});
