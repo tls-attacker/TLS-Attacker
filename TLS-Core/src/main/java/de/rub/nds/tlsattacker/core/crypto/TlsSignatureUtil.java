@@ -59,12 +59,14 @@ public class TlsSignatureUtil {
                         algorithm.getHashAlgorithm(),
                         toBeHasedAndSigned,
                         (EcdsaSignatureComputations) computations);
+                break;
             case ECDSA:
                 computeEcdsaSignature(
                         chooser,
                         algorithm.getHashAlgorithm(),
                         toBeHasedAndSigned,
                         (EcdsaSignatureComputations) computations);
+                break;
             case ED25519:
             case ED448:
             case GOSTR34102001:
@@ -76,6 +78,7 @@ public class TlsSignatureUtil {
                         algorithm.getHashAlgorithm(),
                         toBeHasedAndSigned,
                         (RsaPkcs1SignatureComputations) computations);
+                break;
             case RSA_PSS_PSS:
             case RSA_PSS_RSAE:
         }
