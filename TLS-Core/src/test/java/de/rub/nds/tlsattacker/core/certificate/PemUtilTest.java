@@ -32,7 +32,7 @@ public class PemUtilTest {
         PemUtil.writePrivateKey(key.getEncoded(), baos);
         String result = baos.toString();
         assertTrue(result.contains("-----BEGIN PRIVATE KEY-----"));
-        assertTrue(result.contains("]6"));
+        assertTrue(result.contains("AQID"));
         assertTrue(result.contains("-----END PRIVATE KEY-----"));
     }
 
