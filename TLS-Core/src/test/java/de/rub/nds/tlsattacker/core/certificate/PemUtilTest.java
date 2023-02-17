@@ -44,7 +44,7 @@ public class PemUtilTest {
         PemUtil.writePublicKey(key, baos);
         String result = baos.toString();
         assertTrue(result.contains("-----BEGIN PUBLIC KEY-----"));
-        assertTrue(result.contains("]6"));
+        assertTrue(result.contains("AQID"));
         assertTrue(result.contains("-----END PUBLIC KEY-----"));
     }
 }
