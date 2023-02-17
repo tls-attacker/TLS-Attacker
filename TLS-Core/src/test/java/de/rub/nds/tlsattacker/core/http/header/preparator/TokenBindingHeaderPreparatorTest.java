@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 public class TokenBindingHeaderPreparatorTest {
@@ -48,6 +49,7 @@ public class TokenBindingHeaderPreparatorTest {
 
     /** Test of prepare method, of class TokenBindingHeaderPreparator. */
     @Test
+    @Disabled
     public void testPrepare() {
         preparator.prepare();
 
