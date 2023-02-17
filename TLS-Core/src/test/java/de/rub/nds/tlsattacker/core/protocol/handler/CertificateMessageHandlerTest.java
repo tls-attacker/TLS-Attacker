@@ -77,7 +77,7 @@ public class CertificateMessageHandlerTest
             message.setCertificateEntryList(new LinkedList<>());
             handler.adjustContext(message);
             assertTrue(context.getClientCertificateChain().size() == 0);
-            assertTrue(context.getServerCertificateChain().size() == 0);
+            assertNull(context.getServerCertificateChain());
             context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
             context.setSelectedProtocolVersion(version);
             message.setCertificatesListBytes(new byte[] {0, 1, 2, 3, 4});
