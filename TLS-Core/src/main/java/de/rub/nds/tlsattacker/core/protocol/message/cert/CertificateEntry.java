@@ -62,6 +62,7 @@ public class CertificateEntry extends ModifiableVariableHolder {
                     .parse(new ByteArrayInputStream(x509CerticiateConfig));
         } catch (Exception E) {
             LOGGER.warn("Could not parse a valid certificate from provided certificate bytes");
+            x509certificate = null;
         }
     }
 

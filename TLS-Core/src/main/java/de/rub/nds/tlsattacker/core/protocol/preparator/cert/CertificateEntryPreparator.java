@@ -46,7 +46,7 @@ public class CertificateEntryPreparator extends Preparator<CertificateEntry> {
     private void prepareCertificateBytes(CertificateEntry entry) {
         if (entry.getX509certificate() == null && entry.getX509CerticiateConfig() != null) {
             entry.setCertificateBytes(entry.getX509CerticiateConfig());
-        } else if (entry.getX509certificate() != null && entry.getX509CerticiateConfig() == null) {
+        } else if (entry.getX509certificate() != null) {
             entry.setCertificateBytes(entry.getX509certificate().getSerializer().serialize());
         } else {
             LOGGER.warn("Unsure how to encode entry. Using new byte[0]");
