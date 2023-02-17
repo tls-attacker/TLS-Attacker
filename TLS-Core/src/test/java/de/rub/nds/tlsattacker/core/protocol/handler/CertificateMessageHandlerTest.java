@@ -78,12 +78,13 @@ public class CertificateMessageHandlerTest
             handler.adjustContext(message);
             assertTrue(context.getClientCertificateChain().size() == 0);
             assertNull(context.getServerCertificateChain());
+            context.setClientCertificateChain(null);
             context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
             context.setSelectedProtocolVersion(version);
             message.setCertificatesListBytes(new byte[] {0, 1, 2, 3, 4});
             handler.adjustContext(message);
             assertNull(context.getClientCertificateChain());
-            assertNull(context.getServerCertificateChain());
+            assertTrue(context.getServerCertificateChain().size() == 0);
         }
     }
 }
