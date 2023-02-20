@@ -57,7 +57,17 @@ public class RecordDecryptor extends Decryptor {
         try {
             if (!tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()
                     || record.getContentMessageType() != ProtocolMessageType.CHANGE_CIPHER_SPEC) {
-                recordCipher.decrypt(record);
+                try {
+                    recordCipher.decrypt(record);
+                } catch (ParserException | CryptoException ex) {
+                    if (recordCipherList.indexOf(recordCipher) > 0) {
+                        LOGGER.warn(
+                                "Failed to decrypt record, will try to process with previous cipher");
+                        recordCipherList
+                                .get(recordCipherList.indexOf(recordCipher) - 1)
+                                .decrypt(record);
+                    }
+                }
                 recordCipher.getState().increaseReadSequenceNumber();
             } else {
                 LOGGER.debug("Skipping decryption for legacy CCS");
