@@ -94,7 +94,6 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
                 LOGGER.debug("Adjusting context for x509 certificate message");
                 X509CertificateChain certificateChain = new X509CertificateChain();
                 List<CertificateEntry> certificateEntryList = message.getCertificateEntryList();
-                System.out.println("handler list length:" + certificateEntryList.size());
                 for (CertificateEntry entry : certificateEntryList) {
                     X509Certificate x509certificate = entry.getX509certificate();
                     if (x509certificate != null) {

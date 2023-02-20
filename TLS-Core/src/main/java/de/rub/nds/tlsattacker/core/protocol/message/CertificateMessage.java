@@ -158,7 +158,6 @@ public class CertificateMessage extends HandshakeMessage {
     }
 
     public void setCertificateEntryList(List<CertificateEntry> certificateEntryList) {
-        System.out.println("Setting entryList: " + certificateEntryList.size());
         this.certificateEntryList = certificateEntryList;
     }
 
