@@ -38,7 +38,7 @@ public class CertificateFetcher {
 
         X509CertificateChain fetchedServerCertificateChain = fetchServerCertificateChain(config);
         if (fetchedServerCertificateChain != null
-                && fetchedServerCertificateChain.getCertificateList().isEmpty()) {
+                && !fetchedServerCertificateChain.getCertificateList().isEmpty()) {
             return CertificateAnalyzer.getPublicKey(fetchedServerCertificateChain.getLeaf());
         }
         return null;
