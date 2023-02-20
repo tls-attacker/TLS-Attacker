@@ -45,7 +45,7 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
 
         msg.prepareKeyExchangeComputations();
         msg.getKeyExchangeComputations()
-                .setPrivateKey(chooser.getConfig().getDefaultServerEcPrivateKey());
+                .setPrivateKey(chooser.getConfig().getDefaultServerEphemeralEcPrivateKey());
 
         prepareCurveType(msg);
         prepareEcDhParams();

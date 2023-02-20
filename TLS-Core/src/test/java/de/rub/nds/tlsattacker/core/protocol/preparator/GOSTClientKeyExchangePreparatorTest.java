@@ -69,7 +69,7 @@ public class GOSTClientKeyExchangePreparatorTest
                         new JcaPEMKeyConverter().getPublicKey(cert.getSubjectPublicKeyInfo());
         GOSTCurve curve = GOSTCurve.fromNamedSpec((ECNamedCurveSpec) publicKey.getParams());
         context.setSelectedGostCurve(curve);
-        context.setClientEcPublicKey(
+        context.setClientEphemeralEcPublicKey(
                 Point.createPoint(
                         new BigInteger(
                                 "10069287008658366627190983283629950164812876811521243982114767082045824150473125516608530551778844996599072529376320668260150663514143959293374556657645673"),
@@ -83,13 +83,13 @@ public class GOSTClientKeyExchangePreparatorTest
                         q.getRawYCoord().toBigInteger(),
                         (NamedEllipticCurveParameters) curve.getGroupParameters());
 
-        context.setServerEcPublicKey(ecPoint);
+        context.setServerEphemeralEcPublicKey(ecPoint);
 
         BigInteger s =
                 new BigInteger(
                         "9E861AD6F9061ADC8D94634E3C27DADF415EAE3FEA8AF1BAA803DDD4DAA20E1D57BAA0B9F48B664A9C17C778478238FA936B0DC331328EB6BB76E057CB2FE24C",
                         16);
-        context.setClientEcPrivateKey(s);
+        context.setClientEphemeralEcPrivateKey(s);
 
         createNewMessageAndPreparator(true);
         preparator.prepare();

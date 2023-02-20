@@ -75,12 +75,11 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
                     // limited. Only secp256r1 is supported.
                     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                     ASN1OutputStream asn1OutputStream = new ASN1OutputStream(byteArrayOutputStream);
-                    Point ecPointToEncode;
-                    if (chooser.getTalkingConnectionEnd() == ConnectionEndType.CLIENT) {
-                        ecPointToEncode = chooser.getClientEcPublicKey();
-                    } else {
-                        ecPointToEncode = chooser.getServerEcPublicKey();
-                    }
+                    Point ecPointToEncode =
+                            chooser.getContext()
+                                    .getTlsContext()
+                                    .getX509Context()
+                                    .getSubjectEcPublicKey();
                     // TODO this needs to be adjusted for different curves
                     asn1OutputStream.writeObject(
                             new DLSequence(

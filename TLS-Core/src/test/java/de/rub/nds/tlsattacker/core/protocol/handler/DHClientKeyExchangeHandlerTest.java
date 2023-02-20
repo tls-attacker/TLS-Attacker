@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -52,6 +52,6 @@ public class DHClientKeyExchangeHandlerTest
                 ArrayConverter.hexStringToByteArray(
                         "4a0a7f6a0598acb36684359e1a19d848ab03b3ba1167430471166d94dcf8315d1c4290c9d9e40c50ae834df7b4f4bdef"),
                 context.getMasterSecret());
-        assertEquals(context.getClientDhPublicKey(), BigInteger.ONE);
+        assertEquals(context.getClientEphemeralDhPublicKey(), BigInteger.ONE);
     }
 }

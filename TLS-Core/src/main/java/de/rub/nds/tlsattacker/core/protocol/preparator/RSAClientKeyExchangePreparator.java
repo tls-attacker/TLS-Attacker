@@ -126,15 +126,16 @@ public class RSAClientKeyExchangePreparator<T extends RSAClientKeyExchangeMessag
     public byte[] decryptPremasterSecret() {
         BigInteger bigIntegerEncryptedPremasterSecret =
                 new BigInteger(1, msg.getPublicKey().getValue());
-        BigInteger serverPrivateKey = chooser.getServerRsaPrivateKey();
-        if (chooser.getServerRsaModulus().equals(BigInteger.ZERO)) {
+        BigInteger serverPrivateKey = chooser.getX509Chooser().getConfig().getRsaPrivateKey();
+        if (chooser.getX509Chooser().getSubjectRsaModulus().equals(BigInteger.ZERO)) {
             LOGGER.warn("RSA Modulus is Zero, returning new byte[0] as decryptedPremasterSecret");
             return new byte[0];
         }
         // Make sure that the private key is not negative
         BigInteger decrypted =
                 bigIntegerEncryptedPremasterSecret.modPow(
-                        serverPrivateKey.abs(), chooser.getServerRsaModulus().abs());
+                        serverPrivateKey.abs(),
+                        chooser.getX509Chooser().getSubjectRsaModulus().abs());
         return decrypted.toByteArray();
     }
 
@@ -142,7 +143,8 @@ public class RSAClientKeyExchangePreparator<T extends RSAClientKeyExchangeMessag
     public void prepareAfterParse(boolean clientMode) {
         msg.prepareComputations();
         prepareClientServerRandom(msg);
-        int keyByteLength = chooser.getServerRsaModulus().bitLength() / Bits.IN_A_BYTE;
+        int keyByteLength =
+                chooser.getX509Chooser().getSubjectRsaModulus().bitLength() / Bits.IN_A_BYTE;
         // For RSA, the PublicKey field actually contains the encrypted
         // premaster secret
         if (clientMode && (msg.getPublicKey() == null || msg.getPublicKey().getValue() == null)) {
@@ -171,12 +173,13 @@ public class RSAClientKeyExchangePreparator<T extends RSAClientKeyExchangeMessag
             BigInteger biPaddedPremasterSecret = new BigInteger(1, paddedPremasterSecret);
             BigInteger biEncrypted =
                     biPaddedPremasterSecret.modPow(
-                            chooser.getServerRSAPublicKey().abs(),
-                            chooser.getServerRsaModulus().abs());
+                            chooser.getX509Chooser().getSubjectRsaPublicExponent().abs(),
+                            chooser.getX509Chooser().getSubjectRsaModulus().abs());
             encrypted =
                     ArrayConverter.bigIntegerToByteArray(
                             biEncrypted,
-                            chooser.getServerRsaModulus().bitLength() / Bits.IN_A_BYTE,
+                            chooser.getX509Chooser().getSubjectRsaModulus().bitLength()
+                                    / Bits.IN_A_BYTE,
                             true);
             prepareSerializedPublicKey(msg);
             premasterSecret = manipulatePremasterSecret(premasterSecret);

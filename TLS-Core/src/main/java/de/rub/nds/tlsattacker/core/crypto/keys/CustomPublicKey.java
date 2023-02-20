@@ -8,16 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.crypto.keys;
 
-import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import java.io.Serializable;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class CustomPublicKey implements Serializable {
-
-    public abstract void adjustInConfig(Config config, ConnectionEndType ownerOfKey);
 
     public abstract int keySize();
 }

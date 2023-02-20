@@ -150,7 +150,7 @@ public class EmptyClientKeyExchangePreparatorTest
     public void testPrepareHandshakeMessageContentsDH() throws CertificateException, IOException {
         // prepare message params
         context.setSelectedCipherSuite(CipherSuite.TLS_DH_RSA_WITH_AES_256_CBC_SHA);
-        context.setServerDhPublicKey(DH_SERVER_PUBLIC_KEY);
+        context.setServerEphemeralDhPublicKey(DH_SERVER_PUBLIC_KEY);
 
         // testParse and set client certificate
         X509CertificateChain clientCertificateChain = new X509CertificateChain();
@@ -196,7 +196,7 @@ public class EmptyClientKeyExchangePreparatorTest
                         (NamedEllipticCurveParameters)
                                 context.getChooser().getSelectedNamedGroup().getGroupParameters(),
                         EC_SERVER_PUBLIC_KEY_BYTES);
-        context.setServerEcPublicKey(pubKey);
+        context.setServerEphemeralEcPublicKey(pubKey);
 
         // testParse and set client certificate
         X509CertificateChain clientCertificateChain =
@@ -204,7 +204,7 @@ public class EmptyClientKeyExchangePreparatorTest
         context.setClientCertificateChain(clientCertificateChain);
 
         // set EC private key
-        context.setClientEcPrivateKey(EC_CLIENT_PRIVATE_KEY);
+        context.setClientEphemeralEcPrivateKey(EC_CLIENT_PRIVATE_KEY);
 
         // test
         preparator.prepareHandshakeMessageContents();

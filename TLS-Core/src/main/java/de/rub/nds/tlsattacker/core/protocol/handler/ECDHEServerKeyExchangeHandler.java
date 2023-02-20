@@ -30,7 +30,7 @@ public class ECDHEServerKeyExchangeHandler<T extends ECDHEServerKeyExchangeMessa
     public void adjustContext(T message) {
         adjustECParameter(message);
         if (message.getKeyExchangeComputations() != null) {
-            tlsContext.setServerEcPrivateKey(
+            tlsContext.setServerEphemeralEcPrivateKey(
                     message.getKeyExchangeComputations().getPrivateKey().getValue());
         }
     }
@@ -46,7 +46,7 @@ public class ECDHEServerKeyExchangeHandler<T extends ECDHEServerKeyExchangeMessa
                     PointFormatter.formatFromByteArray(
                             (NamedEllipticCurveParameters) group.getGroupParameters(),
                             message.getPublicKey().getValue());
-            tlsContext.setServerEcPublicKey(publicKeyPoint);
+            tlsContext.setServerEphemeralEcPublicKey(publicKeyPoint);
         } else {
             LOGGER.warn("Could not adjust server public key, named group is unknown.");
         }

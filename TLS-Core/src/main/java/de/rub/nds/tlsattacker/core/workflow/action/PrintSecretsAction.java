@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -39,20 +39,35 @@ public class PrintSecretsAction extends ConnectionBoundAction {
         }
 
         sb.append("\n  (RSA Key Exchange) ");
-        if (ctx.getChooser().getServerRSAPublicKey() == null) {
+        if (ctx.getChooser()
+                        .getContext()
+                        .getTlsContext()
+                        .getX509Context()
+                        .getSubjectRsaPublicExponent()
+                == null) {
             sb.append("\n  ServerRsaPublicKey (chooser): null");
         } else {
             sb.append("\n  ServerRsaPublicKey (chooser): ");
-            sb.append(ctx.getChooser().getServerRSAPublicKey());
+            sb.append(
+                    ctx.getChooser()
+                            .getContext()
+                            .getTlsContext()
+                            .getX509Context()
+                            .getSubjectRsaPublicExponent());
         }
-        if (ctx.getChooser().getServerRsaModulus() == null) {
+        if (ctx.getChooser().getContext().getTlsContext().getX509Context().getSubjectRsaModulus()
+                == null) {
             sb.append("\n  ServerRsaModulus(chooser): null");
         } else {
             sb.append("\n  ServerRsaModulus (chooser): ");
             sb.append(
                     toIndentedString(
                             ArrayConverter.bigIntegerToByteArray(
-                                    ctx.getChooser().getServerRsaModulus())));
+                                    ctx.getChooser()
+                                            .getContext()
+                                            .getTlsContext()
+                                            .getX509Context()
+                                            .getSubjectRsaModulus())));
         }
 
         sb.append("\n\n  (Handshake) ");

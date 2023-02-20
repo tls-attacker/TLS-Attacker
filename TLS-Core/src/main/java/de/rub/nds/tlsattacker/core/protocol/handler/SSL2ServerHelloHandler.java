@@ -9,16 +9,12 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.certificate.CertificateAnalyzer;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
-import de.rub.nds.x509attacker.constants.X509PublicKeyType;
 import de.rub.nds.x509attacker.filesystem.CertificateIo;
 import de.rub.nds.x509attacker.x509.base.X509CertificateChain;
-import de.rub.nds.x509attacker.x509.base.publickey.RsaPublicKey;
-import de.rub.nds.x509attacker.x509.base.publickey.X509PublicKeyContent;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
@@ -48,7 +44,8 @@ public class SSL2ServerHelloHandler extends ProtocolMessageHandler<SSL2ServerHel
             LOGGER.debug(
                     "SSL2 concatenated:" + ArrayConverter.bytesToHexString(concatenated, false));
             ByteArrayInputStream stream = new ByteArrayInputStream(concatenated);
-            return CertificateIo.readRawChain(stream);
+            return CertificateIo.readRawChain(
+                    stream); // TODO This is not correct, we are not adjusting the x509 context
         } catch (IOException | IllegalArgumentException e) {
             LOGGER.warn(
                     "Could not parse Certificate bytes into Certificate object:\n"
@@ -70,29 +67,5 @@ public class SSL2ServerHelloHandler extends ProtocolMessageHandler<SSL2ServerHel
                         message.getCertificate().getValue());
         LOGGER.debug("Setting ServerCertificate in Context");
         tlsContext.setServerCertificateChain(certificateChain);
-
-        if (certificateChain != null
-                && CertificateAnalyzer.getCertificateKeyType(certificateChain.getLeaf())
-                        == X509PublicKeyType.RSA) {
-            LOGGER.debug("Adjusting RSA PublicKey");
-            X509PublicKeyContent publicKey =
-                    CertificateAnalyzer.getPublicKey(certificateChain.getLeaf());
-            if (publicKey instanceof RsaPublicKey) {
-                tlsContext.setServerRSAModulus(
-                        ((RsaPublicKey) publicKey)
-                                .getRsaPublicKeyContentSequence()
-                                .getModulus()
-                                .getValue()
-                                .getValue());
-                tlsContext.setServerRSAPublicKey(
-                        ((RsaPublicKey) publicKey)
-                                .getRsaPublicKeyContentSequence()
-                                .getPublicExponent()
-                                .getValue()
-                                .getValue());
-            } else {
-                LOGGER.warn("Not an RSA key. Not adjusting...");
-            }
-        }
     }
 }

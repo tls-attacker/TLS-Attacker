@@ -255,8 +255,10 @@ public class DefaultChooser extends Chooser {
     }
 
     /**
-     * Additional Check for Extended Random. If extended Random was negotiated, we add the
-     * additional bytes to the Client Random
+     * Additional Check for Extended Random.If extended Random was negotiated, we add the additional
+     * bytes to the Client Random
+     *
+     * @return
      */
     @Override
     public byte[] getClientRandom() {
@@ -387,51 +389,6 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public BigInteger getServerDhModulus() {
-        if (context.getTlsContext().getServerDhModulus() != null) {
-            return context.getTlsContext().getServerDhModulus();
-        } else {
-            return config.getDefaultServerDhModulus();
-        }
-    }
-
-    @Override
-    public BigInteger getServerDhGenerator() {
-        if (context.getTlsContext().getServerDhGenerator() != null) {
-            return context.getTlsContext().getServerDhGenerator();
-        } else {
-            return config.getDefaultServerDhGenerator();
-        }
-    }
-
-    @Override
-    public BigInteger getClientDhModulus() {
-        if (context.getTlsContext().getClientDhModulus() != null) {
-            return context.getTlsContext().getClientDhModulus();
-        } else {
-            return config.getDefaultClientDhModulus();
-        }
-    }
-
-    @Override
-    public BigInteger getClientDhGenerator() {
-        if (context.getTlsContext().getClientDhGenerator() != null) {
-            return context.getTlsContext().getClientDhGenerator();
-        } else {
-            return config.getDefaultClientDhGenerator();
-        }
-    }
-
-    @Override
-    public BigInteger getServerDhPrivateKey() {
-        if (context.getTlsContext().getServerDhPrivateKey() != null) {
-            return context.getTlsContext().getServerDhPrivateKey();
-        } else {
-            return config.getDefaultServerDhPrivateKey();
-        }
-    }
-
-    @Override
     public BigInteger getSRPModulus() {
         if (context.getTlsContext().getSRPModulus() != null) {
             return context.getTlsContext().getSRPModulus();
@@ -455,42 +412,6 @@ public class DefaultChooser extends Chooser {
             return copy(context.getTlsContext().getPSKIdentityHint());
         } else {
             return config.getDefaultPSKIdentityHint();
-        }
-    }
-
-    @Override
-    public BigInteger getPSKModulus() {
-        if (context.getTlsContext().getPSKModulus() != null) {
-            return context.getTlsContext().getPSKModulus();
-        } else {
-            return config.getDefaultPSKModulus();
-        }
-    }
-
-    @Override
-    public BigInteger getPSKServerPrivateKey() {
-        if (context.getTlsContext().getServerPSKPrivateKey() != null) {
-            return context.getTlsContext().getServerPSKPrivateKey();
-        } else {
-            return config.getDefaultPSKServerPrivateKey();
-        }
-    }
-
-    @Override
-    public BigInteger getPSKServerPublicKey() {
-        if (context.getTlsContext().getServerPSKPublicKey() != null) {
-            return context.getTlsContext().getServerPSKPublicKey();
-        } else {
-            return config.getDefaultPSKServerPublicKey();
-        }
-    }
-
-    @Override
-    public BigInteger getPSKGenerator() {
-        if (context.getTlsContext().getPSKGenerator() != null) {
-            return context.getTlsContext().getPSKGenerator();
-        } else {
-            return config.getDefaultPSKGenerator();
         }
     }
 
@@ -567,56 +488,11 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public BigInteger getClientDhPrivateKey() {
-        if (context.getTlsContext().getClientDhPrivateKey() != null) {
-            return context.getTlsContext().getClientDhPrivateKey();
-        } else {
-            return config.getDefaultClientDhPrivateKey();
-        }
-    }
-
-    @Override
-    public BigInteger getServerDhPublicKey() {
-        if (context.getTlsContext().getServerDhPublicKey() != null) {
-            return context.getTlsContext().getServerDhPublicKey();
-        } else {
-            return config.getDefaultServerDhPublicKey();
-        }
-    }
-
-    @Override
-    public BigInteger getClientDhPublicKey() {
-        if (context.getTlsContext().getClientDhPublicKey() != null) {
-            return context.getTlsContext().getClientDhPublicKey();
-        } else {
-            return config.getDefaultClientDhPublicKey();
-        }
-    }
-
-    @Override
-    public BigInteger getServerEcPrivateKey() {
-        if (context.getTlsContext().getServerEcPrivateKey() != null) {
-            return context.getTlsContext().getServerEcPrivateKey();
-        } else {
-            return config.getDefaultServerEcPrivateKey();
-        }
-    }
-
-    @Override
     public GOSTCurve getSelectedGostCurve() {
         if (context.getTlsContext().getSelectedGostCurve() != null) {
             return context.getTlsContext().getSelectedGostCurve();
         } else {
             return config.getDefaultSelectedGostCurve();
-        }
-    }
-
-    @Override
-    public BigInteger getClientEcPrivateKey() {
-        if (context.getTlsContext().getClientEcPrivateKey() != null) {
-            return context.getTlsContext().getClientEcPrivateKey();
-        } else {
-            return config.getDefaultClientEcPrivateKey();
         }
     }
 
@@ -630,63 +506,9 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public Point getClientEcPublicKey() {
-        if (context.getTlsContext().getClientEcPublicKey() != null) {
-            return context.getTlsContext().getClientEcPublicKey();
-        } else {
-            return config.getDefaultClientEcPublicKey();
-        }
-    }
-
-    @Override
-    public Point getServerEcPublicKey() {
-        if (context.getTlsContext().getServerEcPublicKey() != null) {
-            return context.getTlsContext().getServerEcPublicKey();
-        } else {
-            return config.getDefaultServerEcPublicKey();
-        }
-    }
-
-    @Override
     public EllipticCurveType getEcCurveType() {
         // We currently only support named curves TODO
         return EllipticCurveType.NAMED_CURVE;
-    }
-
-    @Override
-    public BigInteger getServerRsaModulus() {
-        if (context.getTlsContext().getServerRSAModulus() != null) {
-            return context.getTlsContext().getServerRSAModulus();
-        } else {
-            return config.getDefaultServerRSAModulus();
-        }
-    }
-
-    @Override
-    public BigInteger getClientRsaModulus() {
-        if (context.getTlsContext().getClientRsaModulus() != null) {
-            return context.getTlsContext().getClientRsaModulus();
-        } else {
-            return config.getDefaultClientRSAModulus();
-        }
-    }
-
-    @Override
-    public BigInteger getServerRSAPublicKey() {
-        if (context.getTlsContext().getServerRSAPublicKey() != null) {
-            return context.getTlsContext().getServerRSAPublicKey();
-        } else {
-            return config.getDefaultServerRSAPublicKey();
-        }
-    }
-
-    @Override
-    public BigInteger getClientRSAPublicKey() {
-        if (context.getTlsContext().getClientRSAPublicKey() != null) {
-            return context.getTlsContext().getClientRSAPublicKey();
-        } else {
-            return config.getDefaultClientRSAPublicKey();
-        }
     }
 
     @Override
@@ -731,24 +553,6 @@ public class DefaultChooser extends Chooser {
             return copy(context.getTlsContext().getServerApplicationTrafficSecret());
         } else {
             return config.getDefaultServerApplicationTrafficSecret();
-        }
-    }
-
-    @Override
-    public BigInteger getClientRsaPrivateKey() {
-        if (context.getTlsContext().getClientRSAPrivateKey() != null) {
-            return context.getTlsContext().getClientRSAPrivateKey();
-        } else {
-            return config.getDefaultClientRSAPrivateKey();
-        }
-    }
-
-    @Override
-    public BigInteger getServerRsaPrivateKey() {
-        if (context.getTlsContext().getServerRSAPrivateKey() != null) {
-            return context.getTlsContext().getServerRSAPrivateKey();
-        } else {
-            return config.getDefaultServerRSAPrivateKey();
         }
     }
 
@@ -889,96 +693,6 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public BigInteger getDsaClientPrivateKey() {
-        if (context.getTlsContext().getClientDsaPrivateKey() != null) {
-            return context.getTlsContext().getClientDsaPrivateKey();
-        } else {
-            return config.getDefaultClientDsaPrivateKey();
-        }
-    }
-
-    @Override
-    public BigInteger getDsaClientPublicKey() {
-        if (context.getTlsContext().getClientDsaPublicKey() != null) {
-            return context.getTlsContext().getClientDsaPublicKey();
-        } else {
-            return config.getDefaultClientDsaPublicKey();
-        }
-    }
-
-    @Override
-    public BigInteger getDsaClientPrimeP() {
-        if (context.getTlsContext().getClientDsaPrimeP() != null) {
-            return context.getTlsContext().getClientDsaPrimeP();
-        } else {
-            return config.getDefaultClientDsaPrimeP();
-        }
-    }
-
-    @Override
-    public BigInteger getDsaClientPrimeQ() {
-        if (context.getTlsContext().getClientDsaPrimeQ() != null) {
-            return context.getTlsContext().getClientDsaPrimeQ();
-        } else {
-            return config.getDefaultClientDsaPrimeQ();
-        }
-    }
-
-    @Override
-    public BigInteger getDsaClientGenerator() {
-        if (context.getTlsContext().getClientDsaGenerator() != null) {
-            return context.getTlsContext().getClientDsaGenerator();
-        } else {
-            return config.getDefaultClientDsaGenerator();
-        }
-    }
-
-    @Override
-    public BigInteger getDsaServerPrivateKey() {
-        if (context.getTlsContext().getServerDsaPrivateKey() != null) {
-            return context.getTlsContext().getServerDsaPrivateKey();
-        } else {
-            return config.getDefaultServerDsaPrivateKey();
-        }
-    }
-
-    @Override
-    public BigInteger getDsaServerPublicKey() {
-        if (context.getTlsContext().getServerDsaPublicKey() != null) {
-            return context.getTlsContext().getServerDsaPublicKey();
-        } else {
-            return config.getDefaultServerDsaPublicKey();
-        }
-    }
-
-    @Override
-    public BigInteger getDsaServerPrimeP() {
-        if (context.getTlsContext().getServerDsaPrimeP() != null) {
-            return context.getTlsContext().getServerDsaPrimeP();
-        } else {
-            return config.getDefaultServerDsaPrimeP();
-        }
-    }
-
-    @Override
-    public BigInteger getDsaServerPrimeQ() {
-        if (context.getTlsContext().getServerDsaPrimeQ() != null) {
-            return context.getTlsContext().getServerDsaPrimeQ();
-        } else {
-            return config.getDefaultServerDsaPrimeQ();
-        }
-    }
-
-    @Override
-    public BigInteger getDsaServerGenerator() {
-        if (context.getTlsContext().getServerDsaGenerator() != null) {
-            return context.getTlsContext().getServerDsaGenerator();
-        } else {
-            return config.getDefaultServerDsaGenerator();
-        }
-    }
-
-    @Override
     public byte[] getHandshakeSecret() {
         if (context.getTlsContext().getHandshakeSecret() != null) {
             return copy(context.getTlsContext().getHandshakeSecret());
@@ -1114,6 +828,7 @@ public class DefaultChooser extends Chooser {
         }
     }
 
+    @Override
     public Integer getMaxEarlyDataSize() {
         if (context.getTlsContext().getMaxEarlyDataSize() != null) {
             return context.getTlsContext().getMaxEarlyDataSize();
@@ -1173,6 +888,158 @@ public class DefaultChooser extends Chooser {
             return context.getTlsContext().getInboundMaxRecordDataSize();
         } else {
             return config.getDefaultMaxRecordData();
+        }
+    }
+
+    @Override
+    public BigInteger getServerEphemeralDhModulus() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from
+        // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public BigInteger getServerEphemeralDhGenerator() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from
+        // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public BigInteger getServerEphemeralDhPrivateKey() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from
+        // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public BigInteger getClientEphemeralDhPrivateKey() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from
+        // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public BigInteger getServerEphemeralDhPublicKey() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from
+        // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public BigInteger getClientEphemeralDhPublicKey() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from
+        // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public BigInteger getServerEphemeralEcPrivateKey() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from
+        // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public BigInteger getClientEphemeralEcPrivateKey() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from
+        // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public Point getClientEphemeralEcPublicKey() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from
+        // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public Point getServerEphemeralEcPublicKey() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from
+        // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public BigInteger getServerEphemeralRsaExportModulus() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from
+        // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public BigInteger getServerEphemeralRsaExportPublicKey() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from
+        // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public BigInteger getServerEphemeralRsaExportPrivateKey() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from
+        // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public BigInteger getRsaKeyExchangePublicExponent() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from
+        // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public BigInteger getRsaKeyExchangeModulus() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from
+        // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public BigInteger getRsaKeyExchangePrivateKey() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from
+        // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public BigInteger getDhKeyExchangePeerPublicKey() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from
+        // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public BigInteger getDhKeyExchangeModulus() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from
+        // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public BigInteger getDhKeyExchangeGenerator() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from
+        // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public BigInteger getDhKeyExchangePrivateKey() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from
+        // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public Point getEcKeyExchangePeerPublicKey() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from
+        // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public BigInteger getEcKeyExchangePrivateKey() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from
+        // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public BigInteger getKeySharePrivateKey(NamedGroup keyStoreGroup) {
+
+        if (keyStoreGroup.isDhGroup()) {
+            if (getContext().getConnection().getLocalConnectionEndType()
+                    == ConnectionEndType.CLIENT) {
+                return getClientEphemeralDhPrivateKey();
+            } else {
+                return getServerEphemeralDhPrivateKey();
+            }
+        } else {
+            if (getContext().getConnection().getLocalConnectionEndType()
+                    == ConnectionEndType.CLIENT) {
+                return getClientEphemeralEcPrivateKey();
+            } else {
+                return getServerEphemeralEcPrivateKey();
+            }
         }
     }
 }

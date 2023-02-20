@@ -41,15 +41,15 @@ public class ECDHClientKeyExchangeHandlerTest
         // set server ECDH-parameters
         context.getConfig().setDefaultSelectedNamedGroup(NamedGroup.SECP192R1);
         context.setSelectedGroup(NamedGroup.SECP192R1);
-        context.setServerEcPublicKey(
+        context.setServerEphemeralEcPublicKey(
                 Point.createPoint(
                         new BigInteger(
                                 "1336698681267683560144780033483217462176613397209956026562"),
                         new BigInteger(
                                 "4390496211885670837594012513791855863576256216444143941964"),
                         (NamedEllipticCurveParameters) NamedGroup.SECP192R1.getGroupParameters()));
-        context.getConfig().setDefaultClientEcPrivateKey(new BigInteger("3"));
-        context.getConfig().setDefaultServerEcPrivateKey(new BigInteger("3"));
+        context.getConfig().setDefaultClientEphemeralEcPrivateKey(new BigInteger("3"));
+        context.getConfig().setDefaultServerEphemeralEcPrivateKey(new BigInteger("3"));
         ECDHClientKeyExchangeMessage message = new ECDHClientKeyExchangeMessage();
         ECDHClientKeyExchangePreparator<ECDHClientKeyExchangeMessage> prep =
                 new ECDHClientKeyExchangePreparator<>(context.getChooser(), message);

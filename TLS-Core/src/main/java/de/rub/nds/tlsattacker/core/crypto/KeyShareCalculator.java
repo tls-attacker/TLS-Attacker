@@ -9,16 +9,16 @@
 package de.rub.nds.tlsattacker.core.crypto;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.protocol.constants.EcCurveEquationType;
 import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
 import de.rub.nds.protocol.crypto.ec.EllipticCurve;
 import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.protocol.crypto.ec.PointFormatter;
 import de.rub.nds.protocol.crypto.ec.RFC7748Curve;
+import de.rub.nds.protocol.crypto.ffdh.FFDHEGroup;
 import de.rub.nds.tlsattacker.core.constants.Bits;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.crypto.ffdh.FFDHEGroup;
-import de.rub.nds.tlsattacker.core.crypto.ffdh.GroupFactory;
 import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -43,7 +43,7 @@ public class KeyShareCalculator {
                 return rfcCurve.computePublicKey(privateKey);
             }
         } else if (group.isDhGroup()) {
-            FFDHEGroup ffdheGroup = GroupFactory.getGroup(group);
+            FFDHEGroup ffdheGroup = (FFDHEGroup) group.getGroupParameters();
             BigInteger publicKey =
                     ffdheGroup.getG().modPow(privateKey.abs(), ffdheGroup.getP().abs());
             return ArrayConverter.bigIntegerToNullPaddedByteArray(
@@ -55,65 +55,50 @@ public class KeyShareCalculator {
     }
 
     public static byte[] computeSharedSecret(
-            NamedGroup group, byte[] privateKey, byte[] publicKey) {
-        return KeyShareCalculator.computeSharedSecret(group, new BigInteger(privateKey), publicKey);
+            NamedGroup group, BigInteger privateKey, byte[] publicKey) {
+        if (group.isDhGroup()) {
+            return computeDhSharedSecret(group, privateKey, new BigInteger(1, publicKey));
+        } else if (group.isEcGroup()) {
+            NamedEllipticCurveParameters parameters =
+                    (NamedEllipticCurveParameters) group.getGroupParameters();
+            Point point;
+            if (parameters.getEquationType() == EcCurveEquationType.MONTGOMERY) {
+                point = PointFormatter.fromRawFormat(parameters, publicKey);
+            } else {
+                point = PointFormatter.formatFromByteArray(parameters, publicKey);
+            }
+            return computeEcSharedSecret(group, privateKey, point);
+        } else {
+            LOGGER.warn(
+                    "Not sure how to compute shared secret for with: {} - using new byte[0] instead.",
+                    group.name());
+            return new byte[0];
+        }
     }
 
-    public static byte[] computeSharedSecret(
-            NamedGroup group, BigInteger privateKey, byte[] publicKey) {
-        if (group.isCurve()) {
-            EllipticCurve curve =
-                    ((NamedEllipticCurveParameters) group.getGroupParameters()).getCurve();
-            Point publicPoint =
-                    PointFormatter.formatFromByteArray(
-                            (NamedEllipticCurveParameters) group.getGroupParameters(), publicKey);
-            switch (group) {
-                case ECDH_X25519:
-                case ECDH_X448:
-                    RFC7748Curve rfcCurve = (RFC7748Curve) curve;
-                    return rfcCurve.computeSharedSecretFromDecodedPoint(privateKey, publicPoint);
-                case SECP160K1:
-                case SECP160R1:
-                case SECP160R2:
-                case SECP192K1:
-                case SECP192R1:
-                case SECP224K1:
-                case SECP224R1:
-                case SECP256K1:
-                case SECP256R1:
-                case SECP384R1:
-                case SECP521R1:
-                case SECT163K1:
-                case SECT163R1:
-                case SECT163R2:
-                case SECT193R1:
-                case SECT193R2:
-                case SECT233K1:
-                case SECT233R1:
-                case SECT239K1:
-                case SECT283K1:
-                case SECT283R1:
-                case SECT409K1:
-                case SECT409R1:
-                case SECT571K1:
-                case SECT571R1:
-                    Point sharedPoint = curve.mult(privateKey, publicPoint);
-                    int elementLength =
-                            ArrayConverter.bigIntegerToByteArray(
-                                            sharedPoint.getFieldX().getModulus())
-                                    .length;
-                    return ArrayConverter.bigIntegerToNullPaddedByteArray(
-                            sharedPoint.getFieldX().getData(), elementLength);
-                default:
-                    throw new UnsupportedOperationException(
-                            "KeyShare type " + group + " is unsupported");
-            }
-        } else {
-            FFDHEGroup ffdheGroup = GroupFactory.getGroup(group);
-            BigInteger sharedElement =
-                    new BigInteger(1, publicKey).modPow(privateKey.abs(), ffdheGroup.getP().abs());
-            return ArrayConverter.bigIntegerToNullPaddedByteArray(
-                    sharedElement, ffdheGroup.getP().bitLength() / Bits.IN_A_BYTE);
+    public static byte[] computeDhSharedSecret(
+            NamedGroup group, BigInteger privateKey, BigInteger publicKey) {
+        if (!group.isDhGroup()) {
+            throw new IllegalArgumentException(
+                    "Cannot compute dh shared secret for non ffdhe group");
         }
+        BigInteger modulus = ((FFDHEGroup) group.getGroupParameters()).getP();
+        return ArrayConverter.bigIntegerToNullPaddedByteArray(
+                publicKey.modPow(privateKey, modulus), group.getGroupParameters().getElementSize());
+    }
+
+    public static byte[] computeEcSharedSecret(
+            NamedGroup group, BigInteger privateKey, Point publicKey) {
+        if (!group.isEcGroup()) {
+            throw new IllegalArgumentException("Cannot compute ec shared secret for non ec group");
+        }
+        NamedEllipticCurveParameters parameters =
+                (NamedEllipticCurveParameters) group.getGroupParameters();
+        EllipticCurve curve = parameters.getCurve();
+        Point sharedPoint = curve.mult(privateKey, publicKey);
+        int elementLength =
+                ArrayConverter.bigIntegerToByteArray(sharedPoint.getFieldX().getModulus()).length;
+        return ArrayConverter.bigIntegerToNullPaddedByteArray(
+                sharedPoint.getFieldX().getData(), elementLength);
     }
 }

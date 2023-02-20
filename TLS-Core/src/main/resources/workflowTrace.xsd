@@ -3637,19 +3637,13 @@
           <xs:element name="userMappingExtensionHintType" type="userMappingExtensionHintType" minOccurs="0"/>
           <xs:element name="clientAuthzDataFormatList" type="authzDataFormat" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
           <xs:element name="serverAuthzDataFormatList" type="authzDataFormat" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
-          <xs:element name="serverDhGenerator" type="xs:integer" minOccurs="0"/>
-          <xs:element name="serverDhModulus" type="xs:integer" minOccurs="0"/>
-          <xs:element name="clientDhGenerator" type="xs:integer" minOccurs="0"/>
-          <xs:element name="clientDhModulus" type="xs:integer" minOccurs="0"/>
-          <xs:element name="serverDhPrivateKey" type="xs:integer" minOccurs="0"/>
-          <xs:element name="serverDhPublicKey" type="xs:integer" minOccurs="0"/>
-          <xs:element name="clientDhPrivateKey" type="xs:integer" minOccurs="0"/>
-          <xs:element name="clientDhPublicKey" type="xs:integer" minOccurs="0"/>
+          <xs:element name="serverEphemeralDhGenerator" type="xs:integer" minOccurs="0"/>
+          <xs:element name="serverEphemeralDhModulus" type="xs:integer" minOccurs="0"/>
+          <xs:element name="serverEphemeralDhPrivateKey" type="xs:integer" minOccurs="0"/>
+          <xs:element name="serverEphemeralDhPublicKey" type="xs:integer" minOccurs="0"/>
+          <xs:element name="clientEphemeralDhPrivateKey" type="xs:integer" minOccurs="0"/>
+          <xs:element name="clientEphemeralDhPublicKey" type="xs:integer" minOccurs="0"/>
           <xs:element name="srpModulus" type="xs:integer" minOccurs="0"/>
-          <xs:element name="pskModulus" type="xs:integer" minOccurs="0"/>
-          <xs:element name="serverPSKPrivateKey" type="xs:integer" minOccurs="0"/>
-          <xs:element name="serverPSKPublicKey" type="xs:integer" minOccurs="0"/>
-          <xs:element name="pskGenerator" type="xs:integer" minOccurs="0"/>
           <xs:element name="srpGenerator" type="xs:integer" minOccurs="0"/>
           <xs:element name="serverSRPPublicKey" type="xs:integer" minOccurs="0"/>
           <xs:element name="serverSRPPrivateKey" type="xs:integer" minOccurs="0"/>
@@ -3666,26 +3660,13 @@
           <xs:element name="serverEcCertificateSignatureCurve" type="x509NamedCurve" minOccurs="0"/>
           <xs:element name="clientEcCertificateCurve" type="x509NamedCurve" minOccurs="0"/>
           <xs:element name="clientEcCertificateSignatureCurve" type="x509NamedCurve" minOccurs="0"/>
-          <xs:element name="clientEcPublicKey" type="point" minOccurs="0"/>
-          <xs:element name="serverEcPublicKey" type="point" minOccurs="0"/>
-          <xs:element name="serverEcPrivateKey" type="xs:integer" minOccurs="0"/>
-          <xs:element name="clientEcPrivateKey" type="xs:integer" minOccurs="0"/>
-          <xs:element name="clientRsaModulus" type="xs:integer" minOccurs="0"/>
-          <xs:element name="serverRSAModulus" type="xs:integer" minOccurs="0"/>
-          <xs:element name="serverRSAPublicKey" type="xs:integer" minOccurs="0"/>
-          <xs:element name="clientRSAPublicKey" type="xs:integer" minOccurs="0"/>
-          <xs:element name="serverRSAPrivateKey" type="xs:integer" minOccurs="0"/>
-          <xs:element name="clientRSAPrivateKey" type="xs:integer" minOccurs="0"/>
-          <xs:element name="clientDsaPrivateKey" type="xs:integer" minOccurs="0"/>
-          <xs:element name="serverDsaPrivateKey" type="xs:integer" minOccurs="0"/>
-          <xs:element name="serverDsaPrimeP" type="xs:integer" minOccurs="0"/>
-          <xs:element name="serverDsaPrimeQ" type="xs:integer" minOccurs="0"/>
-          <xs:element name="serverDsaGenerator" type="xs:integer" minOccurs="0"/>
-          <xs:element name="serverDsaPublicKey" type="xs:integer" minOccurs="0"/>
-          <xs:element name="clientDsaPublicKey" type="xs:integer" minOccurs="0"/>
-          <xs:element name="clientDsaPrimeP" type="xs:integer" minOccurs="0"/>
-          <xs:element name="clientDsaPrimeQ" type="xs:integer" minOccurs="0"/>
-          <xs:element name="clientDsaGenerator" type="xs:integer" minOccurs="0"/>
+          <xs:element name="clientEphemeralEcPublicKey" type="point" minOccurs="0"/>
+          <xs:element name="serverEphemeralEcPublicKey" type="point" minOccurs="0"/>
+          <xs:element name="serverEphemeralEcPrivateKey" type="xs:integer" minOccurs="0"/>
+          <xs:element name="clientEphemeralEcPrivateKey" type="xs:integer" minOccurs="0"/>
+          <xs:element name="serverEphemeralRsaExportModulus" type="xs:integer" minOccurs="0"/>
+          <xs:element name="serverEphemeralRsaExportPublicKey" type="xs:integer" minOccurs="0"/>
+          <xs:element name="serverEphemeralRsaExportPrivateKey" type="xs:integer" minOccurs="0"/>
           <xs:element name="clientNamedGroupsList" type="namedGroup" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
           <xs:element name="serverNamedGroupsList" type="namedGroup" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
           <xs:element name="clientPointFormatsList" type="ecPointFormat" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
@@ -3850,10 +3831,12 @@
       <xs:element name="subjectDsaPrivateKey" type="xs:integer" minOccurs="0"/>
       <xs:element name="subjectDsaPublicKeyY" type="xs:integer" minOccurs="0"/>
       <xs:element name="subjectEcPrivateKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="subjectEcPublicKey" type="point" minOccurs="0"/>
       <xs:element name="subjectNamedCurve" type="x509NamedCurve" minOccurs="0"/>
       <xs:element name="subjectPublicKeyType" type="x509PublicKeyType" minOccurs="0"/>
       <xs:element name="subjectRsaModulus" type="xs:integer" minOccurs="0"/>
       <xs:element name="subjectRsaPrivateKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="subjectRsaPublicExponent" type="xs:integer" minOccurs="0"/>
       <xs:element name="subjectSignatureAlgorithm" type="x509SignatureAlgorithm" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
@@ -4264,24 +4247,12 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
-      <xs:element name="defaultServerDhGenerator" type="xs:integer" minOccurs="0"/>
-      <xs:element name="defaultServerDhModulus" type="xs:integer" minOccurs="0"/>
-      <xs:element name="defaultClientDhGenerator" type="xs:integer" minOccurs="0"/>
-      <xs:element name="defaultClientDhModulus" type="xs:integer" minOccurs="0"/>
-      <xs:element name="defaultServerDhPrivateKey" type="xs:integer" minOccurs="0"/>
-      <xs:element name="defaultClientDhPrivateKey" type="xs:integer" minOccurs="0"/>
-      <xs:element name="defaultServerDhPublicKey" type="xs:integer" minOccurs="0"/>
-      <xs:element name="defaultClientDhPublicKey" type="xs:integer" minOccurs="0"/>
-      <xs:element name="defaultServerDsaPrivateKey" type="xs:integer" minOccurs="0"/>
-      <xs:element name="defaultServerDsaPublicKey" type="xs:integer" minOccurs="0"/>
-      <xs:element name="defaultServerDsaPrimeP" type="xs:integer" minOccurs="0"/>
-      <xs:element name="defaultServerDsaPrimeQ" type="xs:integer" minOccurs="0"/>
-      <xs:element name="defaultServerDsaGenerator" type="xs:integer" minOccurs="0"/>
-      <xs:element name="defaultClientDsaPrivateKey" type="xs:integer" minOccurs="0"/>
-      <xs:element name="defaultClientDsaPublicKey" type="xs:integer" minOccurs="0"/>
-      <xs:element name="defaultClientDsaPrimeP" type="xs:integer" minOccurs="0"/>
-      <xs:element name="defaultClientDsaPrimeQ" type="xs:integer" minOccurs="0"/>
-      <xs:element name="defaultClientDsaGenerator" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultServerEphemeralDhGenerator" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultServerEphemeralDhModulus" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultServerEphemeralDhPrivateKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultClientEphemeralDhPrivateKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultServerEphemeralDhPublicKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultClientEphemeralDhPublicKey" type="xs:integer" minOccurs="0"/>
       <xs:element name="defaultEcdsaNonce" type="xs:integer" minOccurs="0"/>
       <xs:element name="defaultSelectedGostCurve" type="gostCurve" minOccurs="0"/>
       <xs:element name="defaultApplicationMessageData" type="xs:string" minOccurs="0"/>
@@ -4386,24 +4357,17 @@
       <xs:element name="defaultAlertDescription" type="alertDescription" minOccurs="0"/>
       <xs:element name="defaultAlertLevel" type="alertLevel" minOccurs="0"/>
       <xs:element name="defaultEcCertificateCurve" type="namedGroup" minOccurs="0"/>
-      <xs:element name="defaultClientEcPublicKey" type="point" minOccurs="0"/>
-      <xs:element name="defaultServerEcPublicKey" type="point" minOccurs="0"/>
-      <xs:element name="defaultServerEcPrivateKey" type="xs:integer" minOccurs="0"/>
-      <xs:element name="defaultClientEcPrivateKey" type="xs:integer" minOccurs="0"/>
-      <xs:element name="defaultServerRSAModulus" type="xs:integer" minOccurs="0"/>
-      <xs:element name="defaultClientRSAModulus" type="xs:integer" minOccurs="0"/>
-      <xs:element name="defaultServerRSAPublicKey" type="xs:integer" minOccurs="0"/>
-      <xs:element name="defaultClientRSAPublicKey" type="xs:integer" minOccurs="0"/>
-      <xs:element name="defaultServerRSAPrivateKey" type="xs:integer" minOccurs="0"/>
-      <xs:element name="defaultClientRSAPrivateKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultClientEphemeralEcPublicKey" type="point" minOccurs="0"/>
+      <xs:element name="defaultServerEphemeralEcPublicKey" type="point" minOccurs="0"/>
+      <xs:element name="defaultServerEphemeralEcPrivateKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultClientEphemeralEcPrivateKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultServerEphemeralRsaExportModulus" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultServerEphemeralRsaExportPublicKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultServerEphemeralRsaExportPrivateKey" type="xs:integer" minOccurs="0"/>
       <xs:element name="defaultPSKKey" type="xs:string" minOccurs="0"/>
       <xs:element name="defaultPSKIdentity" type="xs:string" minOccurs="0"/>
       <xs:element name="defaultPSKIdentityHint" type="xs:string" minOccurs="0"/>
       <xs:element name="defaultSRPModulus" type="xs:integer" minOccurs="0"/>
-      <xs:element name="defaultPSKModulus" type="xs:integer" minOccurs="0"/>
-      <xs:element name="defaultPSKGenerator" type="xs:integer" minOccurs="0"/>
-      <xs:element name="defaultPskDhServerPrivateKey" type="xs:integer" minOccurs="0"/>
-      <xs:element name="defaultPskDhServerPublicKey" type="xs:integer" minOccurs="0"/>
       <xs:element name="defaultSRPGenerator" type="xs:integer" minOccurs="0"/>
       <xs:element name="defaultSRPServerPrivateKey" type="xs:integer" minOccurs="0"/>
       <xs:element name="defaultSRPClientPrivateKey" type="xs:integer" minOccurs="0"/>
@@ -4416,13 +4380,11 @@
       <xs:element name="defaultServerHandshakeTrafficSecret" type="xs:string" minOccurs="0"/>
       <xs:element name="defaultClientApplicationTrafficSecret" type="xs:string" minOccurs="0"/>
       <xs:element name="defaultServerApplicationTrafficSecret" type="xs:string" minOccurs="0"/>
-      <xs:element name="defaultServerRSAExportModulus" type="xs:integer" minOccurs="0"/>
-      <xs:element name="defaultServerRSAExportPublicKey" type="xs:integer" minOccurs="0"/>
-      <xs:element name="defaultServerRSAExportPrivateKey" type="xs:integer" minOccurs="0"/>
-      <xs:element name="defaultServerDhExportGenerator" type="xs:integer" minOccurs="0"/>
-      <xs:element name="defaultServerDhExportModulus" type="xs:integer" minOccurs="0"/>
-      <xs:element name="defaultServerDhExportPublicKey" type="xs:integer" minOccurs="0"/>
-      <xs:element name="defaultServerDhExportPrivateKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultServerExphemeralRsaExportModulus" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultServerEphemeralDhExportGenerator" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultServerEphemeralDhExportModulus" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultServerEphemeralDhExportPublicKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultServerEphemeralDhExportPrivateKey" type="xs:integer" minOccurs="0"/>
       <xs:element name="defaultTokenBindingType" type="tokenBindingType" minOccurs="0"/>
       <xs:element name="defaultTokenBindingECPublicKey" type="point" minOccurs="0"/>
       <xs:element name="defaultTokenBindingRsaPublicKey" type="xs:integer" minOccurs="0"/>

@@ -8,9 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
+import de.rub.nds.protocol.crypto.ffdh.FFDHEGroup;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.crypto.ffdh.FFDHEGroup;
-import de.rub.nds.tlsattacker.core.crypto.ffdh.GroupFactory;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
 import java.math.BigInteger;
@@ -38,33 +37,35 @@ public class DHEServerKeyExchangeHandler<T extends DHEServerKeyExchangeMessage>
         }
     }
 
-    private void adjustDhGenerator(T message) {
-        tlsContext.setServerDhGenerator(new BigInteger(1, message.getGenerator().getValue()));
-        LOGGER.debug("Dh Generator: " + tlsContext.getServerDhGenerator());
+    protected void adjustDhGenerator(T message) {
+        tlsContext.setServerEphemeralDhGenerator(
+                new BigInteger(1, message.getGenerator().getValue()));
+        LOGGER.debug("Dh Generator: " + tlsContext.getServerEphemeralDhGenerator());
     }
 
-    private void adjustDhModulus(T message) {
-        tlsContext.setServerDhModulus(new BigInteger(1, message.getModulus().getValue()));
-        LOGGER.debug("Dh Modulus: " + tlsContext.getServerDhModulus());
+    protected void adjustDhModulus(T message) {
+        tlsContext.setServerEphemeralDhModulus(new BigInteger(1, message.getModulus().getValue()));
+        LOGGER.debug("Dh Modulus: " + tlsContext.getServerEphemeralDhModulus());
     }
 
-    private void adjustServerPublicKey(T message) {
-        tlsContext.setServerDhPublicKey(new BigInteger(1, message.getPublicKey().getValue()));
-        LOGGER.debug("Server PublicKey: " + tlsContext.getServerDhPublicKey());
+    protected void adjustServerPublicKey(T message) {
+        tlsContext.setServerEphemeralDhPublicKey(
+                new BigInteger(1, message.getPublicKey().getValue()));
+        LOGGER.debug("Server PublicKey: " + tlsContext.getServerEphemeralDhPublicKey());
     }
 
-    private void adjustServerPrivateKey(T message) {
-        tlsContext.setServerDhPrivateKey(
+    protected void adjustServerPrivateKey(T message) {
+        tlsContext.setServerEphemeralDhPrivateKey(
                 message.getKeyExchangeComputations().getPrivateKey().getValue());
-        LOGGER.debug("Server PrivateKey: " + tlsContext.getServerDhPrivateKey());
+        LOGGER.debug("Server PrivateKey: " + tlsContext.getServerEphemeralDhPrivateKey());
     }
 
     private void recognizeNamedGroup() {
-        BigInteger serverDhGenerator = tlsContext.getServerDhGenerator();
-        BigInteger serverDhModulus = tlsContext.getServerDhModulus();
+        BigInteger serverDhGenerator = tlsContext.getServerEphemeralDhGenerator();
+        BigInteger serverDhModulus = tlsContext.getServerEphemeralDhModulus();
         for (NamedGroup group : NamedGroup.getImplemented()) {
             if (group.isDhGroup()) {
-                FFDHEGroup ffdheGroup = GroupFactory.getGroup(group);
+                FFDHEGroup ffdheGroup = (FFDHEGroup) group.getGroupParameters();
                 if (serverDhGenerator.equals(ffdheGroup.getG())
                         && serverDhModulus.equals(ffdheGroup.getP())) {
                     tlsContext.setSelectedGroup(group);

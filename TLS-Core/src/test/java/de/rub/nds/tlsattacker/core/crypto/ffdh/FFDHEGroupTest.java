@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.crypto.ffdh;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import de.rub.nds.protocol.crypto.ffdh.FFDHEGroup;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.util.tests.TestCategories;
 import java.math.BigInteger;
@@ -25,7 +26,7 @@ public class FFDHEGroupTest {
     @EnumSource(value = NamedGroup.class, names = "^FFDHE[0-9]*", mode = EnumSource.Mode.MATCH_ANY)
     @Tag(TestCategories.SLOW_TEST)
     public void test(NamedGroup providedNamedGroup) {
-        FFDHEGroup group = GroupFactory.getGroup(providedNamedGroup);
+        FFDHEGroup group = (FFDHEGroup) providedNamedGroup.getGroupParameters();
         BigInteger p = group.getP();
         BigInteger g = group.getG();
 
@@ -37,7 +38,7 @@ public class FFDHEGroupTest {
 
     @Test
     public void groupFFDHE2048Test() {
-        FFDHEGroup group = GroupFactory.getGroup(NamedGroup.FFDHE2048);
+        FFDHEGroup group = (FFDHEGroup) NamedGroup.FFDHE2048.getGroupParameters();
         assertEquals(BigInteger.TWO, group.getG());
         BigInteger q = group.getP().subtract(BigInteger.ONE).divide(BigInteger.TWO);
         assertEquals(
@@ -49,7 +50,7 @@ public class FFDHEGroupTest {
 
     @Test
     public void groupFFDHE3072Test() {
-        FFDHEGroup group = GroupFactory.getGroup(NamedGroup.FFDHE3072);
+        FFDHEGroup group = (FFDHEGroup) NamedGroup.FFDHE3072.getGroupParameters();
         assertEquals(BigInteger.TWO, group.getG());
         BigInteger q = group.getP().subtract(BigInteger.ONE).divide(BigInteger.TWO);
         assertEquals(
@@ -61,7 +62,7 @@ public class FFDHEGroupTest {
 
     @Test
     public void groupFFDHE4096Test() {
-        FFDHEGroup group = GroupFactory.getGroup(NamedGroup.FFDHE4096);
+        FFDHEGroup group = (FFDHEGroup) NamedGroup.FFDHE4096.getGroupParameters();
         assertEquals(BigInteger.TWO, group.getG());
         BigInteger q = group.getP().subtract(BigInteger.ONE).divide(BigInteger.TWO);
         assertEquals(
@@ -73,7 +74,7 @@ public class FFDHEGroupTest {
 
     @Test
     public void groupFFDHE6144Test() {
-        FFDHEGroup group = GroupFactory.getGroup(NamedGroup.FFDHE6144);
+        FFDHEGroup group = (FFDHEGroup) NamedGroup.FFDHE6144.getGroupParameters();
         assertEquals(BigInteger.TWO, group.getG());
         BigInteger q = group.getP().subtract(BigInteger.ONE).divide(BigInteger.TWO);
         assertEquals(
@@ -85,7 +86,7 @@ public class FFDHEGroupTest {
 
     @Test
     public void groupFFDHE8192Test() {
-        FFDHEGroup group = GroupFactory.getGroup(NamedGroup.FFDHE8192);
+        FFDHEGroup group = (FFDHEGroup) NamedGroup.FFDHE8192.getGroupParameters();
         assertEquals(BigInteger.TWO, group.getG());
         BigInteger q = group.getP().subtract(BigInteger.ONE).divide(BigInteger.TWO);
         assertEquals(

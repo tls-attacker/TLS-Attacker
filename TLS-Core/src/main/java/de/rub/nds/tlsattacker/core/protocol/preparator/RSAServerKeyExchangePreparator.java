@@ -44,18 +44,12 @@ public class RSAServerKeyExchangePreparator<T extends RSAServerKeyExchangeMessag
 
     protected void setRsaParams() {
         msg.prepareKeyExchangeComputations();
-        if (chooser.getSelectedCipherSuite().isExport()) {
-            msg.getKeyExchangeComputations()
-                    .setPrivateKey(chooser.getConfig().getDefaultServerRSAExportPrivateKey());
-            msg.getKeyExchangeComputations()
-                    .setModulus(chooser.getConfig().getDefaultServerRSAExportModulus());
-            msg.getKeyExchangeComputations()
-                    .setPublicExponent(chooser.getConfig().getDefaultServerRSAExportPublicKey());
-        } else {
-            msg.getKeyExchangeComputations().setPrivateKey(chooser.getServerRsaPrivateKey());
-            msg.getKeyExchangeComputations().setModulus(chooser.getServerRsaModulus());
-            msg.getKeyExchangeComputations().setPublicExponent(chooser.getServerRSAPublicKey());
-        }
+        msg.getKeyExchangeComputations()
+                .setPrivateKey(chooser.getConfig().getDefaultServerEphemeralRsaExportPrivateKey());
+        msg.getKeyExchangeComputations()
+                .setModulus(chooser.getConfig().getDefaultServerEphemeralRsaExportModulus());
+        msg.getKeyExchangeComputations()
+                .setPublicExponent(chooser.getConfig().getDefaultServerEphemeralRsaExportModulus());
     }
 
     protected void prepareRsaParams() {

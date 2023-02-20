@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -37,10 +37,10 @@ public class DHClientKeyExchangePreparatorTest
 
     public DHClientKeyExchangePreparatorTest() {
         super(DHClientKeyExchangeMessage::new, DHClientKeyExchangePreparator::new);
-        context.getConfig().setDefaultServerDhGenerator(new BigInteger(DH_G, 16));
-        context.getConfig().setDefaultServerDhModulus(new BigInteger(DH_M, 16));
+        context.getConfig().setDefaultServerEphemeralDhGenerator(new BigInteger(DH_G, 16));
+        context.getConfig().setDefaultServerEphemeralDhModulus(new BigInteger(DH_M, 16));
         context.getConfig()
-                .setDefaultClientDhPrivateKey(
+                .setDefaultClientEphemeralDhPrivateKey(
                         new BigInteger("1234567891234567889123546712839632542648746452354265471"));
     }
 
@@ -54,9 +54,9 @@ public class DHClientKeyExchangePreparatorTest
         context.setClientRandom(ArrayConverter.hexStringToByteArray(RANDOM));
         context.setServerRandom(ArrayConverter.hexStringToByteArray(RANDOM));
         // set server DH-parameters
-        context.setServerDhModulus(new BigInteger(DH_M, 16));
-        context.setServerDhGenerator(new BigInteger(DH_G, 16));
-        context.setServerDhPublicKey(SERVER_PUBLIC_KEY);
+        context.setServerEphemeralDhModulus(new BigInteger(DH_M, 16));
+        context.setServerEphemeralDhGenerator(new BigInteger(DH_G, 16));
+        context.setServerEphemeralDhPublicKey(SERVER_PUBLIC_KEY);
 
         preparator.prepareHandshakeMessageContents();
 
@@ -76,7 +76,7 @@ public class DHClientKeyExchangePreparatorTest
     @Test
     public void testPrepareAfterParse() {
         // This method should only be called when we received the message before
-        message.setPublicKey(context.getChooser().getClientDhPublicKey().toByteArray());
+        message.setPublicKey(context.getChooser().getClientEphemeralDhPublicKey().toByteArray());
         preparator.prepareAfterParse(false);
     }
 

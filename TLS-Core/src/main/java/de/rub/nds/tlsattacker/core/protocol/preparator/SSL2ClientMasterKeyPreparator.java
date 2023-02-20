@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -47,7 +47,7 @@ public class SSL2ClientMasterKeyPreparator
         prepareKeyArg(message);
         prepareKeyArgLength(message);
 
-        LOGGER.debug("RSA Modulus: " + chooser.getServerRsaModulus().toString());
+        LOGGER.debug("RSA Modulus: " + chooser.getX509Chooser().getSubjectRsaModulus().toString());
 
         prepareRSACiphertext(message);
 
@@ -178,7 +178,8 @@ public class SSL2ClientMasterKeyPreparator
         preparePremasterSecret(message);
 
         // the number of random bytes in the pkcs1 message
-        int keyByteLength = chooser.getServerRsaModulus().bitLength() / Bits.IN_A_BYTE;
+        int keyByteLength =
+                chooser.getX509Chooser().getSubjectRsaModulus().bitLength() / Bits.IN_A_BYTE;
 
         int unpaddedLength = message.getComputations().getPremasterSecret().getValue().length;
 
@@ -199,11 +200,13 @@ public class SSL2ClientMasterKeyPreparator
         BigInteger biPaddedPremasterSecret = new BigInteger(1, paddedPremasterSecret);
         BigInteger biEncrypted =
                 biPaddedPremasterSecret.modPow(
-                        chooser.getServerRSAPublicKey(), chooser.getServerRsaModulus());
+                        chooser.getX509Chooser().getSubjectRsaPublicExponent(),
+                        chooser.getX509Chooser().getSubjectRsaModulus());
         encryptedPremasterSecret =
                 ArrayConverter.bigIntegerToByteArray(
                         biEncrypted,
-                        chooser.getServerRsaModulus().bitLength() / Bits.IN_A_BYTE,
+                        chooser.getX509Chooser().getSubjectRsaModulus().bitLength()
+                                / Bits.IN_A_BYTE,
                         true);
         prepareEncryptedKeyData(message);
         prepareEncryptedKeyDataLength(message);

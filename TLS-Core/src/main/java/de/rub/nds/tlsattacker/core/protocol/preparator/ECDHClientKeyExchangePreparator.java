@@ -106,7 +106,7 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
         Point publicKey;
 
         if (clientMode) {
-            publicKey = chooser.getServerEcPublicKey();
+            publicKey = chooser.getServerEphemeralEcPublicKey();
         } else {
             publicKey =
                     PointFormatter.formatFromByteArray(
@@ -164,10 +164,10 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
     protected void setComputationPrivateKey(T msg, boolean clientMode) {
         if (clientMode) {
             LOGGER.debug("Using Client PrivateKey");
-            msg.getComputations().setPrivateKey(chooser.getClientEcPrivateKey());
+            msg.getComputations().setPrivateKey(chooser.getClientEphemeralEcPrivateKey());
         } else {
             LOGGER.debug("Using Server PrivateKey");
-            msg.getComputations().setPrivateKey(chooser.getServerEcPrivateKey());
+            msg.getComputations().setPrivateKey(chooser.getServerEphemeralEcPrivateKey());
         }
         LOGGER.debug(
                 "Computation PrivateKey: "

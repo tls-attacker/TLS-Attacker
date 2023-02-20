@@ -82,10 +82,10 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
     private void prepareKeyShare() {
         if (entry.getPrivateKey() == null) {
             if (chooser.getConnectionEndType().equals(ConnectionEndType.CLIENT)) {
-                entry.setPrivateKey(chooser.getClientEcPrivateKey());
+                entry.setPrivateKey(chooser.getClientEphemeralEcPrivateKey());
             }
             if (chooser.getConnectionEndType().equals(ConnectionEndType.SERVER)) {
-                entry.setPrivateKey(chooser.getServerEcPrivateKey());
+                entry.setPrivateKey(chooser.getServerEphemeralEcPrivateKey());
             }
         }
         byte[] serializedPoint =

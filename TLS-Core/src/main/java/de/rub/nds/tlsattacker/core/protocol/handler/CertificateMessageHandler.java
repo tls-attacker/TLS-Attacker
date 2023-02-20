@@ -75,13 +75,10 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
                                 PointFormatter.formatFromByteArray(
                                         (NamedEllipticCurveParameters) group.getGroupParameters(),
                                         pointBytes);
-                        if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.SERVER) {
-                            // TODO: this needs to be a new field in the context
-                            tlsContext.setServerEcPublicKey(publicKeyPoint);
-                        } else {
-                            // TODO: this needs to be a new field in the context
-                            tlsContext.setClientEcPublicKey(publicKeyPoint);
-                        }
+                        // This uses the x509 context, its technically not correct but for usability
+                        // its beneficial
+                        tlsContext.getX509Context().setSubjectEcPublicKey(publicKeyPoint);
+
                     } else {
                         throw new UnsupportedOperationException(
                                 "We currently do only support EC raw public keys. Sorry...");

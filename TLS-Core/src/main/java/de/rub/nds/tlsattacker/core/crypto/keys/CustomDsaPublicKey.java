@@ -8,8 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.crypto.keys;
 
-import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import java.math.BigInteger;
@@ -81,31 +79,6 @@ public class CustomDsaPublicKey extends CustomPublicKey implements DSAPublicKey 
     @Override
     public byte[] getEncoded() {
         throw new UnsupportedOperationException("Not supported yet."); // To
-    }
-
-    @Override
-    public void adjustInConfig(Config config, ConnectionEndType ownerOfKey) {
-        if (null == ownerOfKey) {
-            throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
-        } else {
-            switch (ownerOfKey) {
-                case CLIENT:
-                    config.setDefaultClientDsaGenerator(dsaG);
-                    config.setDefaultClientDsaPrimeP(dsaP);
-                    config.setDefaultClientDsaPrimeQ(dsaQ);
-                    config.setDefaultClientDsaPublicKey(publicKey);
-                    break;
-                case SERVER:
-                    config.setDefaultServerDsaGenerator(dsaG);
-                    config.setDefaultServerDsaPrimeP(dsaP);
-                    config.setDefaultServerDsaPrimeQ(dsaQ);
-                    config.setDefaultServerDsaPublicKey(publicKey);
-                    break;
-                default:
-                    throw new IllegalArgumentException(
-                            "Owner of Key " + ownerOfKey + " is not supported");
-            }
-        }
     }
 
     @Override

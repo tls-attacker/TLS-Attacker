@@ -42,6 +42,6 @@ public class ECDHClientKeyExchangeHandler<T extends ECDHClientKeyExchangeMessage
                 PointFormatter.formatFromByteArray(
                         (NamedEllipticCurveParameters) usedGroup.getGroupParameters(),
                         serializedPoint);
-        tlsContext.setClientEcPublicKey(publicKey);
+        tlsContext.setClientEphemeralEcPublicKey(publicKey);
     }
 }

@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -111,11 +111,11 @@ public class SendRaccoonCkeAction extends MessageAction implements SendingAction
 
         DHClientKeyExchangeMessage cke = new DHClientKeyExchangeMessage();
         Chooser chooser = state.getContext().getChooser();
-        byte[] clientPublicKey =
+        byte[] clientPublicKey = // TODO might be wrong key depending on CS
                 getClientPublicKey(
-                        chooser.getServerDhGenerator(),
-                        chooser.getServerDhModulus(),
-                        chooser.getServerDhPublicKey(),
+                        chooser.getServerEphemeralDhGenerator(),
+                        chooser.getServerEphemeralDhModulus(),
+                        chooser.getServerEphemeralDhPublicKey(),
                         initialSecret,
                         withNullByte);
         cke.setPublicKey(Modifiable.explicit(clientPublicKey));

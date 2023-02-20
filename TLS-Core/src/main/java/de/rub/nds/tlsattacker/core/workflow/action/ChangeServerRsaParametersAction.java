@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -38,9 +38,9 @@ public class ChangeServerRsaParametersAction extends ConnectionBoundAction {
             throw new WorkflowExecutionException("Action already executed!");
         }
 
-        state.getTlsContext().setServerRSAModulus(modulus);
-        state.getTlsContext().setServerRSAPublicKey(publicExponent);
-        state.getTlsContext().setServerRSAPrivateKey(privateExponent);
+        state.getTlsContext().getX509Context().setSubjectRsaModulus(modulus);
+        state.getTlsContext().getX509Context().setSubjectRsaPublicExponent(publicExponent);
+        state.getTlsContext().getX509Context().setSubjectRsaPrivateKey(privateExponent);
 
         setExecuted(true);
         LOGGER.info("Changed server RSA parameters");

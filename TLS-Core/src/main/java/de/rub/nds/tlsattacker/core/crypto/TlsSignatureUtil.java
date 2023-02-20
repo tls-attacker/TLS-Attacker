@@ -35,7 +35,6 @@ import de.rub.nds.protocol.crypto.signature.SignatureVerificationComputations;
 import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.math.BigInteger;
 
 public class TlsSignatureUtil {
@@ -111,12 +110,9 @@ public class TlsSignatureUtil {
             byte[] toBeHasedAndSigned,
             EcdsaSignatureComputations computations) {
         BigInteger nonce;
-        BigInteger privateKey;
-        if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
-            privateKey = chooser.getClientRsaPrivateKey();
-        } else {
-            privateKey = chooser.getServerRsaPrivateKey();
-        }
+        BigInteger privateKey =
+                chooser.getContext().getTlsContext().getX509Context().getSubjectEcPrivateKey();
+
         nonce = chooser.getConfig().getDefaultEcdsaNonce();
         calculator.computeEcdsaSignature(
                 computations,
@@ -133,12 +129,8 @@ public class TlsSignatureUtil {
             byte[] toBeHasedAndSigned,
             EcdsaSignatureComputations computations) {
         BigInteger nonce;
-        BigInteger privateKey;
-        if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
-            privateKey = chooser.getClientRsaPrivateKey();
-        } else {
-            privateKey = chooser.getServerRsaPrivateKey();
-        }
+        BigInteger privateKey =
+                chooser.getContext().getTlsContext().getX509Context().getSubjectDsaPrivateKey();
         nonce = chooser.getConfig().getDefaultEcdsaNonce();
         calculator.computeEcdsaSignature(
                 computations,
@@ -154,15 +146,11 @@ public class TlsSignatureUtil {
             HashAlgorithm algorithm,
             byte[] toBeHasedAndSigned,
             RsaPkcs1SignatureComputations computations) {
-        BigInteger modulus;
-        BigInteger privateKey;
-        if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
-            modulus = chooser.getClientRsaModulus();
-            privateKey = chooser.getClientRsaPrivateKey();
-        } else {
-            modulus = chooser.getServerRsaModulus();
-            privateKey = chooser.getServerRsaPrivateKey();
-        }
+
+        BigInteger modulus =
+                chooser.getContext().getTlsContext().getX509Context().getSubjectRsaModulus();
+        BigInteger privateKey =
+                chooser.getContext().getTlsContext().getX509Context().getSubjectRsaPrivateKey();
         calculator.computeRsaPkcs1Signature(
                 computations, privateKey, modulus, toBeHasedAndSigned, algorithm);
     }

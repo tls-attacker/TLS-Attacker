@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.layer.data;
 
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
@@ -15,8 +14,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * @param <T>
- *            The Object that should be prepared
+ * @param <T> The Object that should be prepared
  */
 public abstract class Preparator<T> {
 
@@ -35,23 +33,11 @@ public abstract class Preparator<T> {
 
     public abstract void prepare();
 
-    /**
-     * If clientMode is active, the prepareAfterParse method will compute all the values as though the client parsed
-     * this Method. This is mostly only useful if you are reparsing or doing something really crazy. For any normal use
-     * case this should be set to false;
-     *
-     * @param clientMode
-     */
-    public void prepareAfterParse(boolean clientMode) {
-
-    }
+    public void prepareAfterParse() {}
 
     public T getObject() {
         return object;
     }
 
-    public void afterPrepare() {
-
-    }
-
+    public void afterPrepare() {}
 }

@@ -214,7 +214,8 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                             HKDFunction.DERIVED,
                             new byte[0]);
             byte[] sharedSecret;
-            BigInteger privateKey = tlsContext.getConfig().getKeySharePrivate();
+            BigInteger privateKey =
+                    tlsContext.getChooser().getKeySharePrivateKey(keyShareStoreEntry.getGroup());
             if (tlsContext.getChooser().getSelectedCipherSuite().isPWD()) {
                 sharedSecret = computeSharedPWDSecret(keyShareStoreEntry);
             } else {
@@ -394,9 +395,10 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                                         selectedKeyShareStore.getGroup().getGroupParameters(),
                                 selectedKeyShareStore.getPublicKey());
             }
-            tlsContext.setServerEcPublicKey(publicPoint);
+            tlsContext.setServerEphemeralEcPublicKey(publicPoint);
         } else {
-            tlsContext.setServerDhPublicKey(new BigInteger(selectedKeyShareStore.getPublicKey()));
+            tlsContext.setServerEphemeralDhPublicKey(
+                    new BigInteger(selectedKeyShareStore.getPublicKey()));
         }
 
         return selectedKeyShareStore;

@@ -8,8 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.crypto.keys;
 
-import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import java.math.BigInteger;
@@ -60,27 +58,6 @@ public class CustomRsaPublicKey extends CustomPublicKey implements RSAPublicKey 
     @Override
     public BigInteger getModulus() {
         return modulus;
-    }
-
-    @Override
-    public void adjustInConfig(Config config, ConnectionEndType ownerOfKey) {
-        if (null == ownerOfKey) {
-            throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
-        } else {
-            switch (ownerOfKey) {
-                case CLIENT:
-                    config.setDefaultClientRSAPublicKey(publicExponent);
-                    config.setDefaultClientRSAModulus(modulus);
-                    break;
-                case SERVER:
-                    config.setDefaultServerRSAPublicKey(publicExponent);
-                    config.setDefaultServerRSAModulus(modulus);
-                    break;
-                default:
-                    throw new IllegalArgumentException(
-                            "Owner of Key " + ownerOfKey + " is not supported");
-            }
-        }
     }
 
     @Override

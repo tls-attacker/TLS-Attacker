@@ -107,7 +107,8 @@ public class EmptyClientKeyExchangePreparator<T extends EmptyClientKeyExchangeMe
                                 .getSubjectDhModulus();
 
                 BigInteger publicKey =
-                        chooser.getServerDhPublicKey(); // TODO This should either be the ske key
+                        chooser.getServerEphemeralDhPublicKey(); // TODO This should either be the
+                // ske key
                 // or the certificate public key
                 BigInteger privateKey =
                         chooser.getContext()
@@ -127,8 +128,8 @@ public class EmptyClientKeyExchangePreparator<T extends EmptyClientKeyExchangeMe
                     EllipticCurve curve =
                             ((NamedEllipticCurveParameters) usedGroup.getGroupParameters())
                                     .getCurve();
-                    Point publicKey = chooser.getServerEcPublicKey();
-                    BigInteger privateKey = chooser.getClientEcPrivateKey();
+                    Point publicKey = chooser.getServerEphemeralEcPublicKey();
+                    BigInteger privateKey = chooser.getClientEphemeralEcPrivateKey();
                     premasterSecret = computeECPremasterSecret(curve, publicKey, privateKey);
                 } else {
                     LOGGER.warn("KEX with " + certificateKeyType.name() + " not Implemented.");

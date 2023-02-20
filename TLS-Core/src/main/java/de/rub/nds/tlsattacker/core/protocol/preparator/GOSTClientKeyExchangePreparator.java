@@ -85,11 +85,11 @@ public abstract class GOSTClientKeyExchangePreparator
 
             if (clientMode) {
                 preparePms();
-                msg.getComputations().setPrivateKey(chooser.getClientEcPrivateKey());
+                msg.getComputations().setPrivateKey(chooser.getClientEphemeralEcPrivateKey());
                 prepareEphemeralKey();
                 prepareKek(
                         msg.getComputations().getPrivateKey().getValue(),
-                        chooser.getServerEcPublicKey());
+                        chooser.getServerEphemeralEcPublicKey());
                 prepareEncryptionParams();
                 prepareCek();
                 prepareKeyBlob();
@@ -108,9 +108,9 @@ public abstract class GOSTClientKeyExchangePreparator
 
                 SubjectPublicKeyInfo ephemeralKey =
                         keyBlob.getTransportParameters().getEphemeralPublicKey();
-                Point publicKey = chooser.getClientEcPublicKey();
+                Point publicKey = chooser.getClientEphemeralEcPublicKey();
 
-                prepareKek(chooser.getServerEcPrivateKey(), publicKey);
+                prepareKek(chooser.getServerEphemeralEcPrivateKey(), publicKey);
 
                 byte[] wrapped =
                         ArrayConverter.concatenate(
@@ -190,7 +190,7 @@ public abstract class GOSTClientKeyExchangePreparator
                 ((NamedEllipticCurveParameters) chooser.getSelectedGostCurve().getGroupParameters())
                         .getCurve();
         LOGGER.debug("Using key from context.");
-        msg.getComputations().setPrivateKey(chooser.getClientEcPrivateKey());
+        msg.getComputations().setPrivateKey(chooser.getClientEphemeralEcPrivateKey());
         Point publicKey =
                 curve.mult(msg.getComputations().getPrivateKey().getValue(), curve.getBasePoint());
         msg.getComputations().setClientPublicKey(publicKey);

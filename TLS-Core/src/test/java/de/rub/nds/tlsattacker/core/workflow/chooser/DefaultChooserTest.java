@@ -487,89 +487,89 @@ public class DefaultChooserTest {
     /** Test of getServerDhModulus method, of class DefaultChooser. */
     @Test
     public void testGetDhModulus() {
-        context.setServerDhModulus(null);
-        config.setDefaultServerDhModulus(BigInteger.ONE);
-        assertEquals(BigInteger.ONE, config.getDefaultServerDhModulus());
-        assertEquals(BigInteger.ONE, chooser.getServerDhModulus());
-        context.setServerDhModulus(BigInteger.TEN);
-        assertEquals(BigInteger.TEN, chooser.getServerDhModulus());
+        context.setServerEphemeralDhModulus(null);
+        config.setDefaultServerEphemeralDhModulus(BigInteger.ONE);
+        assertEquals(BigInteger.ONE, config.getDefaultServerEphemeralDhModulus());
+        assertEquals(BigInteger.ONE, chooser.getServerEphemeralDhModulus());
+        context.setServerEphemeralDhModulus(BigInteger.TEN);
+        assertEquals(BigInteger.TEN, chooser.getServerEphemeralDhModulus());
     }
 
     /** Test of getServerDhGenerator method, of class DefaultChooser. */
     @Test
     public void testGetDhGenerator() {
-        context.setServerDhGenerator(null);
-        config.setDefaultServerDhGenerator(BigInteger.ONE);
-        assertEquals(BigInteger.ONE, config.getDefaultServerDhGenerator());
-        assertEquals(BigInteger.ONE, chooser.getServerDhGenerator());
-        context.setServerDhGenerator(BigInteger.TEN);
-        assertEquals(BigInteger.TEN, chooser.getServerDhGenerator());
+        context.setServerEphemeralDhGenerator(null);
+        config.setDefaultServerEphemeralDhGenerator(BigInteger.ONE);
+        assertEquals(BigInteger.ONE, config.getDefaultServerEphemeralDhGenerator());
+        assertEquals(BigInteger.ONE, chooser.getServerEphemeralDhGenerator());
+        context.setServerEphemeralDhGenerator(BigInteger.TEN);
+        assertEquals(BigInteger.TEN, chooser.getServerEphemeralDhGenerator());
     }
 
     /** Test of getDhServerPrivateKey method, of class DefaultChooser. */
     @Test
     public void testGetDhServerPrivateKey() {
-        context.setServerDhPrivateKey(null);
-        config.setDefaultServerDhPrivateKey(BigInteger.ONE);
-        assertEquals(BigInteger.ONE, config.getDefaultServerDhPrivateKey());
-        assertEquals(BigInteger.ONE, chooser.getServerDhPrivateKey());
-        context.setServerDhPrivateKey(BigInteger.TEN);
-        assertEquals(BigInteger.TEN, chooser.getServerDhPrivateKey());
+        context.setServerEphemeralDhPrivateKey(null);
+        config.setDefaultServerEphemeralDhPrivateKey(BigInteger.ONE);
+        assertEquals(BigInteger.ONE, config.getDefaultServerEphemeralDhPrivateKey());
+        assertEquals(BigInteger.ONE, chooser.getServerEphemeralDhPrivateKey());
+        context.setServerEphemeralDhPrivateKey(BigInteger.TEN);
+        assertEquals(BigInteger.TEN, chooser.getServerEphemeralDhPrivateKey());
     }
 
     /** Test of getDhClientPrivateKey method, of class DefaultChooser. */
     @Test
     public void testGetDhClientPrivateKey() {
-        context.setClientDhPrivateKey(null);
-        config.setDefaultClientDhPrivateKey(BigInteger.ONE);
-        assertEquals(BigInteger.ONE, config.getDefaultClientDhPrivateKey());
-        assertEquals(BigInteger.ONE, chooser.getClientDhPrivateKey());
-        context.setClientDhPrivateKey(BigInteger.TEN);
-        assertEquals(BigInteger.TEN, chooser.getClientDhPrivateKey());
+        context.setClientEphemeralDhPrivateKey(null);
+        config.setDefaultClientEphemeralDhPrivateKey(BigInteger.ONE);
+        assertEquals(BigInteger.ONE, config.getDefaultClientEphemeralDhPrivateKey());
+        assertEquals(BigInteger.ONE, chooser.getClientEphemeralDhPrivateKey());
+        context.setClientEphemeralDhPrivateKey(BigInteger.TEN);
+        assertEquals(BigInteger.TEN, chooser.getClientEphemeralDhPrivateKey());
     }
 
     /** Test of getDhServerPublicKey method, of class DefaultChooser. */
     @Test
     public void testGetDhServerPublicKey() {
-        context.setServerDhPublicKey(null);
-        config.setDefaultServerDhPublicKey(BigInteger.ONE);
-        assertEquals(BigInteger.ONE, config.getDefaultServerDhPublicKey());
-        assertEquals(BigInteger.ONE, chooser.getServerDhPublicKey());
-        context.setServerDhPublicKey(BigInteger.TEN);
-        assertEquals(BigInteger.TEN, chooser.getServerDhPublicKey());
+        context.setServerEphemeralDhPublicKey(null);
+        config.setDefaultServerEphemeralDhPublicKey(BigInteger.ONE);
+        assertEquals(BigInteger.ONE, config.getDefaultServerEphemeralDhPublicKey());
+        assertEquals(BigInteger.ONE, chooser.getServerEphemeralDhPublicKey());
+        context.setServerEphemeralDhPublicKey(BigInteger.TEN);
+        assertEquals(BigInteger.TEN, chooser.getServerEphemeralDhPublicKey());
     }
 
     /** Test of getDhClientPublicKey method, of class DefaultChooser. */
     @Test
     public void testGetDhClientPublicKey() {
-        context.setClientDhPublicKey(null);
-        config.setDefaultClientDhPublicKey(BigInteger.ONE);
-        assertEquals(BigInteger.ONE, config.getDefaultClientDhPublicKey());
-        assertEquals(BigInteger.ONE, chooser.getClientDhPublicKey());
-        context.setClientDhPublicKey(BigInteger.TEN);
-        assertEquals(BigInteger.TEN, chooser.getClientDhPublicKey());
+        context.setClientEphemeralDhPublicKey(null);
+        config.setDefaultClientEphemeralDhPublicKey(BigInteger.ONE);
+        assertEquals(BigInteger.ONE, config.getDefaultClientEphemeralDhPublicKey());
+        assertEquals(BigInteger.ONE, chooser.getClientEphemeralDhPublicKey());
+        context.setClientEphemeralDhPublicKey(BigInteger.TEN);
+        assertEquals(BigInteger.TEN, chooser.getClientEphemeralDhPublicKey());
     }
 
     /** Test of getServerEcPrivateKey method, of class DefaultChooser. */
     @Test
     public void testGetServerEcPrivateKey() {
-        context.setServerEcPrivateKey(null);
-        config.setDefaultServerEcPrivateKey(BigInteger.ONE);
-        assertEquals(BigInteger.ONE, config.getDefaultServerEcPrivateKey());
-        assertEquals(BigInteger.ONE, chooser.getServerEcPrivateKey());
-        context.setServerEcPrivateKey(BigInteger.TEN);
-        assertEquals(BigInteger.TEN, chooser.getServerEcPrivateKey());
+        context.setServerEphemeralEcPrivateKey(null);
+        config.setDefaultServerEphemeralEcPrivateKey(BigInteger.ONE);
+        assertEquals(BigInteger.ONE, config.getDefaultServerEphemeralEcPrivateKey());
+        assertEquals(BigInteger.ONE, chooser.getServerEphemeralEcPrivateKey());
+        context.setServerEphemeralEcPrivateKey(BigInteger.TEN);
+        assertEquals(BigInteger.TEN, chooser.getServerEphemeralEcPrivateKey());
     }
 
     /** Test of getClientEcPrivateKey method, of class DefaultChooser. */
     @Test
     public void testGetClientEcPrivateKey() {
-        context.setClientEcPrivateKey(null);
-        config.setDefaultClientEcPrivateKey(BigInteger.ONE);
-        assertEquals(BigInteger.ONE, config.getDefaultClientEcPrivateKey());
-        assertEquals(BigInteger.ONE, chooser.getClientEcPrivateKey());
-        context.setClientEcPrivateKey(BigInteger.TEN);
-        assertEquals(BigInteger.TEN, chooser.getClientEcPrivateKey());
+        context.setClientEphemeralEcPrivateKey(null);
+        config.setDefaultClientEphemeralEcPrivateKey(BigInteger.ONE);
+        assertEquals(BigInteger.ONE, config.getDefaultClientEphemeralEcPrivateKey());
+        assertEquals(BigInteger.ONE, chooser.getClientEphemeralEcPrivateKey());
+        context.setClientEphemeralEcPrivateKey(BigInteger.TEN);
+        assertEquals(BigInteger.TEN, chooser.getClientEphemeralEcPrivateKey());
     }
 
     /** Test of getSelectedNamedGroup method, of class DefaultChooser. */
@@ -586,8 +586,8 @@ public class DefaultChooserTest {
     /** Test of getClientEcPublicKey method, of class DefaultChooser. */
     @Test
     public void testGetClientEcPublicKey() {
-        context.setClientEcPublicKey(null);
-        config.setDefaultClientEcPublicKey(
+        context.setClientEphemeralEcPublicKey(null);
+        config.setDefaultClientEphemeralEcPublicKey(
                 Point.createPoint(
                         BigInteger.ONE,
                         BigInteger.TEN,
@@ -597,14 +597,14 @@ public class DefaultChooserTest {
                         BigInteger.ONE,
                         BigInteger.TEN,
                         (NamedEllipticCurveParameters) NamedGroup.SECP256R1.getGroupParameters()),
-                config.getDefaultClientEcPublicKey());
+                config.getDefaultClientEphemeralEcPublicKey());
         assertEquals(
                 Point.createPoint(
                         BigInteger.ONE,
                         BigInteger.TEN,
                         (NamedEllipticCurveParameters) NamedGroup.SECP256R1.getGroupParameters()),
-                chooser.getClientEcPublicKey());
-        context.setClientEcPublicKey(
+                chooser.getClientEphemeralEcPublicKey());
+        context.setClientEphemeralEcPublicKey(
                 Point.createPoint(
                         BigInteger.ZERO,
                         BigInteger.TEN,
@@ -614,14 +614,14 @@ public class DefaultChooserTest {
                         BigInteger.ZERO,
                         BigInteger.TEN,
                         (NamedEllipticCurveParameters) NamedGroup.SECP256R1.getGroupParameters()),
-                chooser.getClientEcPublicKey());
+                chooser.getClientEphemeralEcPublicKey());
     }
 
     /** Test of getServerEcPublicKey method, of class DefaultChooser. */
     @Test
     public void testGetServerEcPublicKey() {
-        context.setServerEcPublicKey(null);
-        config.setDefaultServerEcPublicKey(
+        context.setServerEphemeralEcPublicKey(null);
+        config.setDefaultServerEphemeralEcPublicKey(
                 Point.createPoint(
                         BigInteger.ONE,
                         BigInteger.TEN,
@@ -631,14 +631,14 @@ public class DefaultChooserTest {
                         BigInteger.ONE,
                         BigInteger.TEN,
                         (NamedEllipticCurveParameters) NamedGroup.SECP256R1.getGroupParameters()),
-                config.getDefaultServerEcPublicKey());
+                config.getDefaultServerEphemeralEcPublicKey());
         assertEquals(
                 Point.createPoint(
                         BigInteger.ONE,
                         BigInteger.TEN,
                         (NamedEllipticCurveParameters) NamedGroup.SECP256R1.getGroupParameters()),
-                chooser.getServerEcPublicKey());
-        context.setServerEcPublicKey(
+                chooser.getServerEphemeralEcPublicKey());
+        context.setServerEphemeralEcPublicKey(
                 Point.createPoint(
                         BigInteger.ZERO,
                         BigInteger.TEN,
@@ -648,46 +648,13 @@ public class DefaultChooserTest {
                         BigInteger.ZERO,
                         BigInteger.TEN,
                         (NamedEllipticCurveParameters) NamedGroup.SECP256R1.getGroupParameters()),
-                chooser.getServerEcPublicKey());
+                chooser.getServerEphemeralEcPublicKey());
     }
 
     /** Test of getEcCurveType method, of class DefaultChooser. */
     @Test
     public void testGetEcCurveType() {
         assertEquals(EllipticCurveType.NAMED_CURVE, chooser.getEcCurveType());
-    }
-
-    /** Test of getRsaModulus method, of class DefaultChooser. */
-    @Test
-    public void testGetRsaModulus() {
-        context.setServerRSAModulus(null);
-        config.setDefaultServerRSAModulus(BigInteger.ONE);
-        assertEquals(BigInteger.ONE, config.getDefaultServerRSAModulus());
-        assertEquals(BigInteger.ONE, chooser.getServerRsaModulus());
-        context.setServerRSAModulus(BigInteger.TEN);
-        assertEquals(BigInteger.TEN, chooser.getServerRsaModulus());
-    }
-
-    /** Test of getServerRSAPublicKey method, of class DefaultChooser. */
-    @Test
-    public void testGetServerRSAPublicKey() {
-        context.setServerRSAPublicKey(null);
-        config.setDefaultServerRSAPublicKey(BigInteger.ONE);
-        assertEquals(BigInteger.ONE, config.getDefaultServerRSAPublicKey());
-        assertEquals(BigInteger.ONE, chooser.getServerRSAPublicKey());
-        context.setServerRSAPublicKey(BigInteger.TEN);
-        assertEquals(BigInteger.TEN, chooser.getServerRSAPublicKey());
-    }
-
-    /** Test of getClientRSAPublicKey method, of class DefaultChooser. */
-    @Test
-    public void testGetClientRSAPublicKey() {
-        context.setClientRSAPublicKey(null);
-        config.setDefaultClientRSAPublicKey(BigInteger.ONE);
-        assertEquals(BigInteger.ONE, config.getDefaultClientRSAPublicKey());
-        assertEquals(BigInteger.ONE, chooser.getClientRSAPublicKey());
-        context.setClientRSAPublicKey(BigInteger.TEN);
-        assertEquals(BigInteger.TEN, chooser.getClientRSAPublicKey());
     }
 
     /** Test of getCertificateRequestContext method, of class DefaultChooser. */
