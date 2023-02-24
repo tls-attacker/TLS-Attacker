@@ -735,9 +735,9 @@ public class DefaultChooserTest {
         config.setInboundRecordSizeLimit(null);
         assertEquals(1337, config.getDefaultMaxRecordData());
         assertNull(config.getInboundRecordSizeLimit());
-        assertEquals(1337, (int) chooser.getInboundRecordSizeLimit());
+        assertEquals(1337, (int) chooser.getInboundMaxRecordDataSize());
         config.setInboundRecordSizeLimit(42);
-        assertEquals(42, (int) chooser.getInboundRecordSizeLimit());
+        assertEquals(42, (int) chooser.getInboundMaxRecordDataSize());
     }
 
     /** Test of getOutboundRecordSizeLimit method, of class DefaultChooser. */
@@ -746,8 +746,8 @@ public class DefaultChooserTest {
         config.setDefaultMaxRecordData(1337);
         assertEquals(1337, config.getDefaultMaxRecordData());
         assertNull(context.getOutboundRecordSizeLimit());
-        assertEquals(1337, (int) chooser.getOutboundRecordSizeLimit());
+        assertEquals(1337, (int) chooser.getOutboundMaxRecordDataSize());
         context.setOutboundRecordSizeLimit(1234);
-        assertEquals(1234, (int) chooser.getOutboundRecordSizeLimit());
+        assertEquals(1234, (int) chooser.getOutboundMaxRecordDataSize());
     }
 }

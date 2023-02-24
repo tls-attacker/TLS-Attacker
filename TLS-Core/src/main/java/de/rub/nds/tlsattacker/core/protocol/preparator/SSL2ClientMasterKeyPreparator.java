@@ -47,7 +47,8 @@ public class SSL2ClientMasterKeyPreparator
         prepareKeyArg(message);
         prepareKeyArgLength(message);
 
-        LOGGER.debug("RSA Modulus: " + chooser.getX509Chooser().getSubjectRsaModulus().toString());
+        LOGGER.debug(
+                "RSA Modulus: " + chooser.getServerX509Chooser().getSubjectRsaModulus().toString());
 
         prepareRSACiphertext(message);
 
@@ -179,7 +180,7 @@ public class SSL2ClientMasterKeyPreparator
 
         // the number of random bytes in the pkcs1 message
         int keyByteLength =
-                chooser.getX509Chooser().getSubjectRsaModulus().bitLength() / Bits.IN_A_BYTE;
+                chooser.getServerX509Chooser().getSubjectRsaModulus().bitLength() / Bits.IN_A_BYTE;
 
         int unpaddedLength = message.getComputations().getPremasterSecret().getValue().length;
 
@@ -200,12 +201,12 @@ public class SSL2ClientMasterKeyPreparator
         BigInteger biPaddedPremasterSecret = new BigInteger(1, paddedPremasterSecret);
         BigInteger biEncrypted =
                 biPaddedPremasterSecret.modPow(
-                        chooser.getX509Chooser().getSubjectRsaPublicExponent(),
-                        chooser.getX509Chooser().getSubjectRsaModulus());
+                        chooser.getServerX509Chooser().getSubjectRsaPublicExponent(),
+                        chooser.getServerX509Chooser().getSubjectRsaModulus());
         encryptedPremasterSecret =
                 ArrayConverter.bigIntegerToByteArray(
                         biEncrypted,
-                        chooser.getX509Chooser().getSubjectRsaModulus().bitLength()
+                        chooser.getServerX509Chooser().getSubjectRsaModulus().bitLength()
                                 / Bits.IN_A_BYTE,
                         true);
         prepareEncryptedKeyData(message);

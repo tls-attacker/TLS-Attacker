@@ -78,7 +78,7 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
                     Point ecPointToEncode =
                             chooser.getContext()
                                     .getTlsContext()
-                                    .getX509Context()
+                                    .getTalkingX509Context()
                                     .getSubjectEcPublicKey();
                     // TODO this needs to be adjusted for different curves
                     asn1OutputStream.writeObject(

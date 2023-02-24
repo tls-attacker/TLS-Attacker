@@ -13,6 +13,8 @@ import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
 import de.rub.nds.protocol.crypto.ec.EllipticCurve;
 import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.certificate.CertificateAnalyzer;
+import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.protocol.message.EmptyClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
@@ -39,7 +41,7 @@ public class EmptyClientKeyExchangePreparator<T extends EmptyClientKeyExchangeMe
     @Override
     public void prepareHandshakeMessageContents() {
         LOGGER.debug("Preparing EmptyClientKeyExchangeMessage");
-        prepareAfterParse(true);
+        prepareAfterParse();
     }
 
     protected void prepareClientServerRandom(T msg) {
@@ -80,7 +82,7 @@ public class EmptyClientKeyExchangePreparator<T extends EmptyClientKeyExchangeMe
     }
 
     @Override
-    public void prepareAfterParse(boolean clientMode) {
+    public void prepareAfterParse() {
         msg.prepareComputations();
         prepareClientServerRandom(msg);
 
@@ -97,45 +99,51 @@ public class EmptyClientKeyExchangePreparator<T extends EmptyClientKeyExchangeMe
                                     .getTlsContext()
                                     .getClientCertificateChain()
                                     .getLeaf());
-
-            if (certificateKeyType == X509PublicKeyType.DH) {
-                BigInteger modulus =
-                        chooser.getContext()
-                                .getTlsContext()
-                                .getX509Context()
-                                .getChooser()
-                                .getSubjectDhModulus();
-
-                BigInteger publicKey =
-                        chooser.getServerEphemeralDhPublicKey(); // TODO This should either be the
-                // ske key
-                // or the certificate public key
-                BigInteger privateKey =
-                        chooser.getContext()
-                                .getTlsContext()
-                                .getX509Context()
-                                .getChooser()
-                                .getSubjectDhPrivateKey();
-                premasterSecret = calculateDhPremasterSecret(modulus, privateKey, publicKey);
-            } else if (certificateKeyType == X509PublicKeyType.ECDH_ONLY
-                    || certificateKeyType == X509PublicKeyType.ECDH_ECDSA
-                    || certificateKeyType == X509PublicKeyType.X25519
-                    || certificateKeyType == X509PublicKeyType.X448) {
-                if (clientMode) {
-                    NamedGroup usedGroup = chooser.getSelectedNamedGroup();
-                    LOGGER.debug("PMS used Group: " + usedGroup.name());
-
-                    EllipticCurve curve =
-                            ((NamedEllipticCurveParameters) usedGroup.getGroupParameters())
-                                    .getCurve();
-                    Point publicKey = chooser.getServerEphemeralEcPublicKey();
-                    BigInteger privateKey = chooser.getClientEphemeralEcPrivateKey();
-                    premasterSecret = computeECPremasterSecret(curve, publicKey, privateKey);
-                } else {
-                    LOGGER.warn("KEX with " + certificateKeyType.name() + " not Implemented.");
-                }
+            KeyExchangeAlgorithm keyExchangeAlgorithm =
+                    AlgorithmResolver.getKeyExchangeAlgorithm(chooser.getSelectedCipherSuite());
+            if (keyExchangeAlgorithm.isKeyExchangeDh() || keyExchangeAlgorithm.isKeyExchangeDhe()) {
+                computeDhKeyExchangePms();
+            } else if (keyExchangeAlgorithm.isEC()) {
+                computeEcKeyExchangePms();
+            } else {
+                LOGGER.warn(
+                        "KEX with "
+                                + certificateKeyType.name()
+                                + " not Implemented. Using new byte[0] as PMS");
+                premasterSecret = new byte[0];
             }
-            preparePremasterSecret(msg);
         }
+        preparePremasterSecret(msg);
+    }
+
+    public void computeDhKeyExchangePms() {
+        BigInteger modulus = chooser.getDhKeyExchangeModulus();
+        msg.getComputations().setDhModulus(modulus);
+        BigInteger publicKey = chooser.getDhKeyExchangePeerPublicKey();
+        msg.getComputations().setDhPeerPublicKey(publicKey);
+        BigInteger privateKey = chooser.getDhKeyExchangePrivateKey();
+        msg.getComputations().setPrivateKey(privateKey);
+        premasterSecret =
+                calculateDhPremasterSecret(
+                        msg.getComputations().getDhModulus().getValue(),
+                        msg.getComputations().getPrivateKey().getValue(),
+                        msg.getComputations().getDhPeerPublicKey().getValue());
+    }
+
+    public void computeEcKeyExchangePms() {
+        NamedGroup usedGroup = chooser.getSelectedNamedGroup();
+        LOGGER.debug("PMS used Group: " + usedGroup.name());
+        EllipticCurve curve =
+                ((NamedEllipticCurveParameters) usedGroup.getGroupParameters()).getCurve();
+        Point publicKey = chooser.getEcKeyExchangePeerPublicKey();
+        msg.getComputations().setEcPublicKeyX(publicKey.getFieldX().getData());
+        msg.getComputations().setEcPublicKeyY(publicKey.getFieldY().getData());
+        publicKey =
+                curve.getPoint(
+                        msg.getComputations().getEcPublicKeyX().getValue(),
+                        msg.getComputations().getEcPublicKeyY().getValue());
+        msg.getComputations().setPrivateKey(chooser.getEcKeyExchangePrivateKey());
+        BigInteger privateKey = msg.getComputations().getPrivateKey().getValue();
+        premasterSecret = computeECPremasterSecret(curve, publicKey, privateKey);
     }
 }

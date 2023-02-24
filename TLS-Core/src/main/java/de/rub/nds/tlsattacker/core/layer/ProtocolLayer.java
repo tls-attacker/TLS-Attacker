@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -227,7 +227,7 @@ public abstract class ProtocolLayer<
         try {
             parser.parse(container);
             Preparator preparator = container.getPreparator(context);
-            preparator.prepareAfterParse(false); // TODO REMOVE THIS CLIENTMODE FLAG
+            preparator.prepareAfterParse();
             Handler handler = container.getHandler(context);
             handler.adjustContext(container);
             addProducedContainer(container);

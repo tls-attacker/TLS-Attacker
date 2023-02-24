@@ -42,7 +42,7 @@ public class PrintSecretsAction extends ConnectionBoundAction {
         if (ctx.getChooser()
                         .getContext()
                         .getTlsContext()
-                        .getX509Context()
+                        .getServerX509Context()
                         .getSubjectRsaPublicExponent()
                 == null) {
             sb.append("\n  ServerRsaPublicKey (chooser): null");
@@ -52,10 +52,14 @@ public class PrintSecretsAction extends ConnectionBoundAction {
                     ctx.getChooser()
                             .getContext()
                             .getTlsContext()
-                            .getX509Context()
+                            .getServerX509Context()
                             .getSubjectRsaPublicExponent());
         }
-        if (ctx.getChooser().getContext().getTlsContext().getX509Context().getSubjectRsaModulus()
+        if (ctx.getChooser()
+                        .getContext()
+                        .getTlsContext()
+                        .getServerX509Context()
+                        .getSubjectRsaModulus()
                 == null) {
             sb.append("\n  ServerRsaModulus(chooser): null");
         } else {
@@ -66,7 +70,7 @@ public class PrintSecretsAction extends ConnectionBoundAction {
                                     ctx.getChooser()
                                             .getContext()
                                             .getTlsContext()
-                                            .getX509Context()
+                                            .getServerX509Context()
                                             .getSubjectRsaModulus())));
         }
 

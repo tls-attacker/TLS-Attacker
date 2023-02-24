@@ -77,11 +77,11 @@ public class DHClientKeyExchangePreparatorTest
     public void testPrepareAfterParse() {
         // This method should only be called when we received the message before
         message.setPublicKey(context.getChooser().getClientEphemeralDhPublicKey().toByteArray());
-        preparator.prepareAfterParse(false);
+        preparator.prepareAfterParse();
     }
 
     @Test
     public void testPrepareAfterParseReverseMode() {
-        preparator.prepareAfterParse(true);
+        preparator.prepareAfterParse();
     }
 }

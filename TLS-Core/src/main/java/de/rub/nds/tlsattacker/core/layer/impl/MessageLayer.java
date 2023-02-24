@@ -238,7 +238,7 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
             Parser parser = handshakeMessage.getParser(context, new ByteArrayInputStream(payload));
             parser.parse(handshakeMessage);
             Preparator preparator = handshakeMessage.getPreparator(context);
-            preparator.prepareAfterParse(false); // TODO REMOVE THIS CLIENTMODE FLAG
+            preparator.prepareAfterParse();
             if (context.getChooser().getSelectedProtocolVersion().isDTLS()) {
                 handshakeMessage.setMessageSequence(
                         ((RecordLayerHint) handshakeStream.getHint()).getMessageSequence());

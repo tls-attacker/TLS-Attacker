@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -88,7 +88,7 @@ public class TlsContextTest {
     /** Test of getOutboundMaxRecordDataSize method, of class TlsContext. */
     @Test
     public void testGetOutboundMaxRecordDataSizeEncryptionInactiveNoExtensions() {
-        final Integer result = tlsContext.getOutboundMaxRecordDataSize();
+        final Integer result = tlsContext.getOutboundRecordSizeLimit();
         assertEquals(config.getDefaultMaxRecordData(), (int) result);
         assertNull(tlsContext.getOutboundRecordSizeLimit());
         assertFalse(config.isAddRecordSizeLimitExtension());
@@ -99,7 +99,7 @@ public class TlsContextTest {
     public void testGetOutboundMaxRecordDataSizeEncryptionActiveNoExtensions() {
         activateEncryptionInContext();
 
-        final Integer result = tlsContext.getOutboundMaxRecordDataSize();
+        final Integer result = tlsContext.getOutboundRecordSizeLimit();
         assertEquals(config.getDefaultMaxRecordData(), (int) result);
         assertNull(tlsContext.getOutboundRecordSizeLimit());
         assertFalse(config.isAddRecordSizeLimitExtension());
@@ -110,7 +110,7 @@ public class TlsContextTest {
     public void testGetOutboundMaxRecordDataSizeEncryptionInactiveMaxFragmentLength() {
         tlsContext.setMaxFragmentLength(MaxFragmentLength.TWO_11);
 
-        final Integer result = tlsContext.getOutboundMaxRecordDataSize();
+        final Integer result = tlsContext.getOutboundRecordSizeLimit();
         assertEquals(result, MaxFragmentLength.getIntegerRepresentation(MaxFragmentLength.TWO_11));
         assertNull(tlsContext.getOutboundRecordSizeLimit());
         assertFalse(config.isAddRecordSizeLimitExtension());
@@ -121,7 +121,7 @@ public class TlsContextTest {
         activateEncryptionInContext();
         tlsContext.setMaxFragmentLength(MaxFragmentLength.TWO_11);
 
-        final Integer result = tlsContext.getOutboundMaxRecordDataSize();
+        final Integer result = tlsContext.getOutboundRecordSizeLimit();
         assertEquals(result, MaxFragmentLength.getIntegerRepresentation(MaxFragmentLength.TWO_11));
         assertNull(tlsContext.getOutboundRecordSizeLimit());
         assertFalse(config.isAddRecordSizeLimitExtension());
@@ -133,7 +133,7 @@ public class TlsContextTest {
         tlsContext.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         tlsContext.setOutboundRecordSizeLimit(1337);
 
-        final Integer result = tlsContext.getOutboundMaxRecordDataSize();
+        final Integer result = tlsContext.getOutboundRecordSizeLimit();
         assertEquals(1337, (int) result);
         assertEquals(1337, (int) tlsContext.getOutboundRecordSizeLimit());
         assertFalse(config.isAddRecordSizeLimitExtension());
@@ -146,7 +146,7 @@ public class TlsContextTest {
         config.setDefaultAdditionalPadding(42);
         tlsContext.setOutboundRecordSizeLimit(1337);
 
-        final Integer result = tlsContext.getOutboundMaxRecordDataSize();
+        final Integer result = tlsContext.getOutboundRecordSizeLimit();
         assertEquals((1337 - 1 - 42), (int) result);
         assertEquals(1337, (int) tlsContext.getOutboundRecordSizeLimit());
         assertFalse(config.isAddRecordSizeLimitExtension());
@@ -159,7 +159,7 @@ public class TlsContextTest {
         config.setDefaultAdditionalPadding(42);
         tlsContext.setOutboundRecordSizeLimit(42);
 
-        final Integer result = tlsContext.getOutboundMaxRecordDataSize();
+        final Integer result = tlsContext.getOutboundRecordSizeLimit();
         assertEquals(0, (int) result);
         assertEquals(42, (int) tlsContext.getOutboundRecordSizeLimit());
         assertFalse(config.isAddRecordSizeLimitExtension());
@@ -168,7 +168,7 @@ public class TlsContextTest {
     /** Test of getOutboundMaxRecordDataSize method, of class TlsContext. */
     @Test
     public void testGetInboundMaxRecordDataSizeEncryptionInactiveNoExtensions() {
-        final Integer result = tlsContext.getInboundMaxRecordDataSize();
+        final Integer result = tlsContext.getInboundRecordSizeLimit();
         assertEquals(config.getDefaultMaxRecordData(), (int) result);
         assertNull(tlsContext.getOutboundRecordSizeLimit());
         assertFalse(config.isAddRecordSizeLimitExtension());
@@ -179,7 +179,7 @@ public class TlsContextTest {
     public void testGetInboundMaxRecordDataSizeEncryptionActiveNoExtensions() {
         activateEncryptionInContext();
 
-        final Integer result = tlsContext.getInboundMaxRecordDataSize();
+        final Integer result = tlsContext.getInboundRecordSizeLimit();
         assertEquals(config.getDefaultMaxRecordData(), (int) result);
         assertNull(tlsContext.getOutboundRecordSizeLimit());
         assertFalse(config.isAddRecordSizeLimitExtension());
@@ -190,7 +190,7 @@ public class TlsContextTest {
     public void testGetInboundMaxRecordDataSizeEncryptionInactiveMaxFragmentLength() {
         tlsContext.setMaxFragmentLength(MaxFragmentLength.TWO_11);
 
-        final Integer result = tlsContext.getInboundMaxRecordDataSize();
+        final Integer result = tlsContext.getInboundRecordSizeLimit();
         assertEquals(result, MaxFragmentLength.getIntegerRepresentation(MaxFragmentLength.TWO_11));
         assertNull(tlsContext.getOutboundRecordSizeLimit());
         assertFalse(config.isAddRecordSizeLimitExtension());
@@ -201,7 +201,7 @@ public class TlsContextTest {
         activateEncryptionInContext();
         tlsContext.setMaxFragmentLength(MaxFragmentLength.TWO_11);
 
-        final Integer result = tlsContext.getInboundMaxRecordDataSize();
+        final Integer result = tlsContext.getInboundRecordSizeLimit();
         assertEquals(result, MaxFragmentLength.getIntegerRepresentation(MaxFragmentLength.TWO_11));
         assertNull(tlsContext.getOutboundRecordSizeLimit());
         assertFalse(config.isAddRecordSizeLimitExtension());
@@ -214,7 +214,7 @@ public class TlsContextTest {
         config.setAddRecordSizeLimitExtension(Boolean.TRUE);
         config.setInboundRecordSizeLimit(123);
 
-        final Integer result = tlsContext.getInboundMaxRecordDataSize();
+        final Integer result = tlsContext.getInboundRecordSizeLimit();
         assertEquals(123, (int) result);
         assertNull(tlsContext.getOutboundRecordSizeLimit());
         assertTrue(config.isAddRecordSizeLimitExtension());
@@ -229,7 +229,7 @@ public class TlsContextTest {
         config.setAddRecordSizeLimitExtension(Boolean.TRUE);
         config.setInboundRecordSizeLimit(123);
 
-        final Integer result = tlsContext.getInboundMaxRecordDataSize();
+        final Integer result = tlsContext.getInboundRecordSizeLimit();
         assertEquals((123 - 1 - 42), (int) result);
         assertNull(tlsContext.getOutboundRecordSizeLimit());
         assertTrue(config.isAddRecordSizeLimitExtension());
@@ -244,7 +244,7 @@ public class TlsContextTest {
         config.setAddRecordSizeLimitExtension(Boolean.TRUE);
         config.setInboundRecordSizeLimit(123);
 
-        final Integer result = tlsContext.getInboundMaxRecordDataSize();
+        final Integer result = tlsContext.getInboundRecordSizeLimit();
         assertEquals(0, (int) result);
         assertNull(tlsContext.getOutboundRecordSizeLimit());
         assertEquals(123, (int) config.getInboundRecordSizeLimit());

@@ -77,7 +77,7 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
                                         pointBytes);
                         // This uses the x509 context, its technically not correct but for usability
                         // its beneficial
-                        tlsContext.getX509Context().setSubjectEcPublicKey(publicKeyPoint);
+                        tlsContext.getTalkingX509Context().setSubjectEcPublicKey(publicKeyPoint);
 
                     } else {
                         throw new UnsupportedOperationException(
@@ -127,6 +127,6 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
 
     @Override
     public void adjustContextBeforeParse(CertificateMessage message) {
-        tlsContext.setX509Context(new X509Context());
+        tlsContext.setTalkingX509Context(new X509Context());
     }
 }

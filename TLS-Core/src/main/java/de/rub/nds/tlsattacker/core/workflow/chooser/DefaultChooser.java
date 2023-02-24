@@ -776,7 +776,7 @@ public class DefaultChooser extends Chooser {
     @Override
     public List<KeyShareStoreEntry> getEsniServerKeyShareEntries() {
         if (context.getTlsContext().getEsniServerKeyShareEntries() != null
-                && context.getTlsContext().getEsniServerKeyShareEntries().size() > 0) {
+                && !context.getTlsContext().getEsniServerKeyShareEntries().isEmpty()) {
             return context.getTlsContext().getEsniServerKeyShareEntries();
         } else {
             return config.getDefaultEsniServerKeyShareEntries();
@@ -856,7 +856,7 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public Integer getOutboundRecordSizeLimit() {
+    public Integer getOutboundMaxRecordDataSize() {
         if (context.getTlsContext().getOutboundRecordSizeLimit() != null) {
             return context.getTlsContext().getOutboundRecordSizeLimit();
         } else {
@@ -865,27 +865,9 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public Integer getInboundRecordSizeLimit() {
-        if (config.getInboundRecordSizeLimit() != null) {
-            return config.getInboundRecordSizeLimit();
-        } else {
-            return config.getDefaultMaxRecordData();
-        }
-    }
-
-    @Override
-    public Integer getOutboundMaxRecordDataSize() {
-        if (context.getTlsContext() != null) {
-            return context.getTlsContext().getOutboundMaxRecordDataSize();
-        } else {
-            return config.getDefaultMaxRecordData();
-        }
-    }
-
-    @Override
     public Integer getInboundMaxRecordDataSize() {
-        if (context.getTlsContext() != null) {
-            return context.getTlsContext().getInboundMaxRecordDataSize();
+        if (context.getTlsContext().getInboundRecordSizeLimit() != null) {
+            return context.getTlsContext().getInboundRecordSizeLimit();
         } else {
             return config.getDefaultMaxRecordData();
         }
@@ -893,80 +875,119 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public BigInteger getServerEphemeralDhModulus() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from
-        // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        if (context.getTlsContext().getServerEphemeralDhModulus() != null) {
+            return context.getTlsContext().getServerEphemeralDhModulus();
+        } else {
+            return config.getDefaultServerEphemeralDhModulus();
+        }
     }
 
     @Override
     public BigInteger getServerEphemeralDhGenerator() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from
-        // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        if (context.getTlsContext().getServerEphemeralDhGenerator() != null) {
+            return context.getTlsContext().getServerEphemeralDhGenerator();
+        } else {
+            return config.getDefaultServerEphemeralDhGenerator();
+        }
     }
 
     @Override
     public BigInteger getServerEphemeralDhPrivateKey() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from
-        // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        if (context.getTlsContext().getServerEphemeralDhPrivateKey() != null) {
+            return context.getTlsContext().getServerEphemeralDhPrivateKey();
+        } else {
+            return config.getDefaultServerEphemeralDhPrivateKey();
+        }
     }
 
     @Override
     public BigInteger getClientEphemeralDhPrivateKey() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from
-        // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        if (context.getTlsContext().getClientEphemeralDhPrivateKey() != null) {
+            return context.getTlsContext().getClientEphemeralDhPrivateKey();
+        } else {
+            return config.getDefaultClientEphemeralDhPrivateKey();
+        }
     }
 
     @Override
     public BigInteger getServerEphemeralDhPublicKey() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from
-        // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        if (context.getTlsContext().getServerEphemeralDhPublicKey() != null) {
+            return context.getTlsContext().getServerEphemeralDhPublicKey();
+        } else {
+            return config.getDefaultServerEphemeralDhPublicKey();
+        }
     }
 
     @Override
     public BigInteger getClientEphemeralDhPublicKey() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from
-        // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        if (context.getTlsContext().getClientEphemeralDhPublicKey() != null) {
+            return context.getTlsContext().getClientEphemeralDhPublicKey();
+        } else {
+            return config.getDefaultClientEphemeralDhPublicKey();
+        }
     }
 
     @Override
     public BigInteger getServerEphemeralEcPrivateKey() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from
-        // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        if (context.getTlsContext().getServerEphemeralEcPrivateKey() != null) {
+            return context.getTlsContext().getServerEphemeralEcPrivateKey();
+        } else {
+            return config.getDefaultServerEphemeralEcPrivateKey();
+        }
     }
 
     @Override
     public BigInteger getClientEphemeralEcPrivateKey() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from
-        // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        if (context.getTlsContext().getClientEphemeralEcPrivateKey() != null) {
+            return context.getTlsContext().getClientEphemeralEcPrivateKey();
+        } else {
+            return config.getDefaultClientEphemeralEcPrivateKey();
+        }
     }
 
     @Override
     public Point getClientEphemeralEcPublicKey() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from
-        // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        if (context.getTlsContext().getClientEphemeralEcPublicKey() != null) {
+            return context.getTlsContext().getClientEphemeralEcPublicKey();
+        } else {
+            return config.getDefaultClientEphemeralEcPublicKey();
+        }
     }
 
     @Override
     public Point getServerEphemeralEcPublicKey() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from
-        // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        if (context.getTlsContext().getServerEphemeralEcPublicKey() != null) {
+            return context.getTlsContext().getServerEphemeralEcPublicKey();
+        } else {
+            return config.getDefaultServerEphemeralEcPublicKey();
+        }
     }
 
     @Override
     public BigInteger getServerEphemeralRsaExportModulus() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from
-        // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        if (context.getTlsContext().getServerEphemeralRsaExportModulus() != null) {
+            return context.getTlsContext().getServerEphemeralRsaExportModulus();
+        } else {
+            return config.getDefaultServerEphemeralRsaExportModulus();
+        }
     }
 
     @Override
     public BigInteger getServerEphemeralRsaExportPublicKey() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from
-        // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        if (context.getTlsContext().getServerEphemeralRsaExportPublicKey() != null) {
+            return context.getTlsContext().getServerEphemeralRsaExportPublicKey();
+        } else {
+            return config.getDefaultServerEphemeralRsaExportPublicKey();
+        }
     }
 
     @Override
     public BigInteger getServerEphemeralRsaExportPrivateKey() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from
-        // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        if (context.getTlsContext().getServerEphemeralRsaExportPrivateKey() != null) {
+            return context.getTlsContext().getServerEphemeralRsaExportPrivateKey();
+        } else {
+            return config.getDefaultServerEphemeralRsaExportPrivateKey();
+        }
     }
 
     @Override
@@ -989,43 +1010,103 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public BigInteger getDhKeyExchangePeerPublicKey() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from
-        // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        KeyExchangeAlgorithm algorithm =
+                AlgorithmResolver.getKeyExchangeAlgorithm(getSelectedCipherSuite());
+        if (algorithm.isKeyExchangeStaticDh()) {
+            return context.getTlsContext()
+                    .getPeerX509Context()
+                    .getChooser()
+                    .getSubjectDhPublicKey();
+        } else {
+            if (getTalkingConnectionEnd() == ConnectionEndType.CLIENT) {
+                return getServerEphemeralDhPublicKey();
+            } else {
+                return getClientEphemeralDhPublicKey();
+            }
+        }
     }
 
     @Override
     public BigInteger getDhKeyExchangeModulus() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from
-        // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        KeyExchangeAlgorithm algorithm =
+                AlgorithmResolver.getKeyExchangeAlgorithm(getSelectedCipherSuite());
+        if (algorithm.isKeyExchangeStaticDh()) {
+            return context.getTlsContext().getPeerX509Context().getChooser().getSubjectDhModulus();
+        } else {
+            return getServerEphemeralDhModulus();
+        }
     }
 
     @Override
     public BigInteger getDhKeyExchangeGenerator() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from
-        // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        KeyExchangeAlgorithm algorithm =
+                AlgorithmResolver.getKeyExchangeAlgorithm(getSelectedCipherSuite());
+        if (algorithm.isKeyExchangeStaticDh()) {
+            return context.getTlsContext()
+                    .getPeerX509Context()
+                    .getChooser()
+                    .getSubjectDhGenerator();
+        } else {
+            return getServerEphemeralDhGenerator();
+        }
     }
 
     @Override
     public BigInteger getDhKeyExchangePrivateKey() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from
-        // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        KeyExchangeAlgorithm algorithm =
+                AlgorithmResolver.getKeyExchangeAlgorithm(getSelectedCipherSuite());
+        if (algorithm.isKeyExchangeStaticDh()) {
+            return context.getTlsContext()
+                    .getTalkingX509Context()
+                    .getChooser()
+                    .getSubjectDhPrivateKey();
+        } else {
+            if (getTalkingConnectionEnd() == ConnectionEndType.CLIENT) {
+                return getClientEphemeralDhPrivateKey();
+            } else {
+                return getServerEphemeralDhPrivateKey();
+            }
+        }
     }
 
     @Override
     public Point getEcKeyExchangePeerPublicKey() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from
-        // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        KeyExchangeAlgorithm algorithm =
+                AlgorithmResolver.getKeyExchangeAlgorithm(getSelectedCipherSuite());
+        if (algorithm.isKeyExchangeStaticEcdh()) {
+            return context.getTlsContext()
+                    .getPeerX509Context()
+                    .getChooser()
+                    .getSubjectEcPublicKey();
+        } else {
+            if (getTalkingConnectionEnd() == ConnectionEndType.CLIENT) {
+                return getServerEphemeralEcPublicKey();
+            } else {
+                return getClientEphemeralEcPublicKey();
+            }
+        }
     }
 
     @Override
     public BigInteger getEcKeyExchangePrivateKey() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from
-        // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        KeyExchangeAlgorithm algorithm =
+                AlgorithmResolver.getKeyExchangeAlgorithm(getSelectedCipherSuite());
+        if (algorithm.isKeyExchangeStaticEcdh()) {
+            return context.getTlsContext()
+                    .getTalkingX509Context()
+                    .getChooser()
+                    .getSubjectEcPrivateKey();
+        } else {
+            if (getTalkingConnectionEnd() == ConnectionEndType.CLIENT) {
+                return getClientEphemeralEcPrivateKey();
+            } else {
+                return getServerEphemeralEcPrivateKey();
+            }
+        }
     }
 
     @Override
     public BigInteger getKeySharePrivateKey(NamedGroup keyStoreGroup) {
-
         if (keyStoreGroup.isDhGroup()) {
             if (getContext().getConnection().getLocalConnectionEndType()
                     == ConnectionEndType.CLIENT) {

@@ -2890,9 +2890,11 @@
     <xs:complexContent>
       <xs:extension base="keyExchangeComputations">
         <xs:sequence>
+          <xs:element name="modulus" type="modifiableBigInteger" minOccurs="0"/>
           <xs:element name="padding" type="modifiableByteArray" minOccurs="0"/>
           <xs:element name="plainPaddedPremasterSecret" type="modifiableByteArray" minOccurs="0"/>
           <xs:element name="premasterSecretProtocolVersion" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="publicExponent" type="modifiableBigInteger" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -3454,7 +3456,13 @@
   <xs:complexType name="emptyClientComputations">
     <xs:complexContent>
       <xs:extension base="keyExchangeComputations">
-        <xs:sequence/>
+        <xs:sequence>
+          <xs:element name="dhGenerator" type="modifiableBigInteger" minOccurs="0"/>
+          <xs:element name="dhModulus" type="modifiableBigInteger" minOccurs="0"/>
+          <xs:element name="dhPeerPublicKey" type="modifiableBigInteger" minOccurs="0"/>
+          <xs:element name="ecPublicKeyX" type="modifiableBigInteger" minOccurs="0"/>
+          <xs:element name="ecPublicKeyY" type="modifiableBigInteger" minOccurs="0"/>
+        </xs:sequence>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
@@ -3733,9 +3741,11 @@
           <xs:element name="esniExtensions" type="extensionType" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
           <xs:element name="maxFragmentLength" type="maxFragmentLength" minOccurs="0"/>
           <xs:element name="outboundRecordSizeLimit" type="xs:int" minOccurs="0"/>
+          <xs:element name="inboundRecordSizeLimit" type="xs:int" minOccurs="0"/>
           <xs:element name="writeConnectionId" type="xs:base64Binary" minOccurs="0"/>
           <xs:element name="readConnectionID" type="xs:base64Binary" minOccurs="0"/>
-          <xs:element name="x509Context" type="x509Context" minOccurs="0"/>
+          <xs:element name="clientX509Context" type="x509Context" minOccurs="0"/>
+          <xs:element name="serverX509Context" type="x509Context" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -3883,6 +3893,8 @@
       <xs:element name="defaultIssuerDsaPublicKeyY" type="xs:integer" minOccurs="0"/>
       <xs:element name="dsaPrivateKey" type="xs:integer" minOccurs="0"/>
       <xs:element name="ecPrivateKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="ecPublicKey" type="point" minOccurs="0"/>
+      <xs:element name="dhPublicKey" type="xs:integer" minOccurs="0"/>
       <xs:element name="dhPrivateKey" type="xs:integer" minOccurs="0"/>
       <xs:element name="dhModulus" type="xs:integer" minOccurs="0"/>
       <xs:element name="dhGenerator" type="xs:integer" minOccurs="0"/>

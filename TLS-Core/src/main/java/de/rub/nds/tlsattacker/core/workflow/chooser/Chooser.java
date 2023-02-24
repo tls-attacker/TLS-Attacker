@@ -40,8 +40,12 @@ public abstract class Chooser {
         return context;
     }
 
-    public X509Chooser getX509Chooser() {
-        return context.getTlsContext().getX509Context().getChooser();
+    public X509Chooser getServerX509Chooser() {
+        return context.getTlsContext().getServerX509Context().getChooser();
+    }
+
+    public X509Chooser getClientX509Chooser() {
+        return context.getTlsContext().getClientX509Context().getChooser();
     }
 
     public abstract List<ECPointFormat> getClientSupportedPointFormats();
@@ -255,10 +259,6 @@ public abstract class Chooser {
     public abstract List<String> getProposedAlpnProtocols();
 
     public abstract byte[] getLastClientHello();
-
-    public abstract Integer getOutboundRecordSizeLimit();
-
-    public abstract Integer getInboundRecordSizeLimit();
 
     public abstract Integer getOutboundMaxRecordDataSize();
 

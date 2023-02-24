@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -63,11 +63,22 @@ public enum KeyExchangeAlgorithm {
         }
     }
 
+    public boolean isKeyExchangeStaticDh() {
+        switch (this) {
+            case DH_DSS:
+            case DH_RSA:
+                return true;
+            default:
+                return false;
+        }
+    }
+
     public boolean isKeyExchangeDhe() {
         switch (this) {
             case DHE_DSS:
             case DHE_PSK:
             case DHE_RSA:
+            case DH_ANON: // This is also ephemeral(!)
                 return true;
             default:
                 return false;
@@ -83,6 +94,29 @@ public enum KeyExchangeAlgorithm {
             case ECDH_ECDSA:
             case ECDH_ECNRA:
             case ECDH_RSA:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    public boolean isKeyExchangeStaticEcdh() {
+        switch (this) {
+            case ECDH_ECDSA:
+            case ECDH_ECNRA:
+            case ECDH_RSA:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    public boolean isKeyExchangeEphemeralEcdh() {
+        switch (this) {
+            case ECDHE_ECDSA:
+            case ECDHE_PSK:
+            case ECDHE_RSA:
+            case ECDH_ANON: // This is also ephemeral(!)
                 return true;
             default:
                 return false;

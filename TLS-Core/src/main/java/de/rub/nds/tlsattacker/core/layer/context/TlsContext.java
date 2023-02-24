@@ -461,12 +461,14 @@ public class TlsContext extends LayerContext {
     private MaxFragmentLength maxFragmentLength;
 
     private Integer outboundRecordSizeLimit;
+    private Integer inboundRecordSizeLimit;
 
     private byte[] writeConnectionId;
 
     private byte[] readConnectionID;
 
-    private X509Context x509Context;
+    private X509Context clientX509Context;
+    private X509Context serverX509Context;
 
     public TlsContext() {
         this(new Context(new Config()));
@@ -484,7 +486,8 @@ public class TlsContext extends LayerContext {
      */
     public TlsContext(Context context) {
         super(context);
-        x509Context = new X509Context();
+        clientX509Context = new X509Context();
+        serverX509Context = new X509Context();
         context.setTlsContext(this);
         RunningModeType mode = getConfig().getDefaultRunningMode();
         if (null == mode) {
@@ -494,12 +497,44 @@ public class TlsContext extends LayerContext {
         }
     }
 
-    public X509Context getX509Context() {
-        return x509Context;
+    public X509Context getTalkingX509Context() {
+        if (getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
+            return clientX509Context;
+        } else {
+            return serverX509Context;
+        }
     }
 
-    public void setX509Context(X509Context x509Context) {
-        this.x509Context = x509Context;
+    public X509Context getPeerX509Context() {
+        if (getTalkingConnectionEndType() != ConnectionEndType.CLIENT) {
+            return clientX509Context;
+        } else {
+            return serverX509Context;
+        }
+    }
+
+    public void setTalkingX509Context(X509Context context) {
+        if (getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
+            clientX509Context = context;
+        } else {
+            serverX509Context = context;
+        }
+    }
+
+    public X509Context getClientX509Context() {
+        return clientX509Context;
+    }
+
+    public void setClientX509Context(X509Context clientX509Context) {
+        this.clientX509Context = clientX509Context;
+    }
+
+    public X509Context getServerX509Context() {
+        return serverX509Context;
+    }
+
+    public void setServerX509Context(X509Context serverX509Context) {
+        this.serverX509Context = serverX509Context;
     }
 
     private void init() {
@@ -1946,12 +1981,8 @@ public class TlsContext extends LayerContext {
         return !(this.getRecordLayer().getDecryptorCipher() instanceof RecordNullCipher);
     }
 
-    public Integer getOutboundMaxRecordDataSize() {
-        return getMaxRecordDataSize(chooser.getOutboundRecordSizeLimit());
-    }
-
-    public Integer getInboundMaxRecordDataSize() {
-        return getMaxRecordDataSize(chooser.getInboundRecordSizeLimit());
+    public Integer getInboundRecordSizeLimit() {
+        return inboundRecordSizeLimit;
     }
 
     /**

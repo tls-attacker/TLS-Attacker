@@ -154,7 +154,7 @@ public class EmptyClientKeyExchangePreparatorTest
 
         // testParse and set client certificate
         X509CertificateChain clientCertificateChain = new X509CertificateChain();
-        context.setX509Context(new X509Context());
+        context.setClientX509Context(new X509Context());
 
         List<CertificateBytes> byteList =
                 CertificateIo.readPemCertificateByteList(
@@ -162,13 +162,13 @@ public class EmptyClientKeyExchangePreparatorTest
         for (CertificateBytes certificateBytes : byteList) {
             X509Certificate x509Certificate = new X509Certificate("x509Certificate");
             x509Certificate
-                    .getParser(context.getX509Context().getChooser())
+                    .getParser(context.getClientX509Context().getChooser())
                     .parse(new ByteArrayInputStream(certificateBytes.getBytes()));
             clientCertificateChain.addCertificate(x509Certificate);
         }
         context.setClientCertificateChain(clientCertificateChain);
         // set DH private key
-        context.getX509Context().setSubjectDhPrivateKey(DH_CLIENT_PRIVATE_KEY);
+        context.getClientX509Context().setSubjectDhPrivateKey(DH_CLIENT_PRIVATE_KEY);
 
         // test
         preparator.prepareHandshakeMessageContents();

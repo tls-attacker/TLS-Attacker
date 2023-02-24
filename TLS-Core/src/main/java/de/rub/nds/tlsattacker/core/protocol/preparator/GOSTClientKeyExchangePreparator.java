@@ -20,6 +20,7 @@ import de.rub.nds.tlsattacker.core.crypto.gost.TLSGostKeyTransportBlob;
 import de.rub.nds.tlsattacker.core.protocol.message.GOSTClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.util.GOSTUtils;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.GeneralSecurityException;
@@ -71,19 +72,20 @@ public abstract class GOSTClientKeyExchangePreparator
 
     @Override
     protected void prepareHandshakeMessageContents() {
-        prepareAfterParse(true);
+        prepareAfterParse();
     }
 
     @Override
-    public void prepareAfterParse(boolean clientMode) {
+    public void prepareAfterParse() {
         try {
-            LOGGER.debug("Preparing GOST EC VKO. Client mode: " + clientMode);
+            LOGGER.debug("Preparing GOST EC VKO.");
+            LOGGER.warn(
+                    "You ran into old buggy code of TLS-Attacker - this is likely not functional");
+            if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
+                msg.prepareComputations();
+                prepareClientServerRandom();
+                prepareUkm();
 
-            msg.prepareComputations();
-            prepareClientServerRandom();
-            prepareUkm();
-
-            if (clientMode) {
                 preparePms();
                 msg.getComputations().setPrivateKey(chooser.getClientEphemeralEcPrivateKey());
                 prepareEphemeralKey();

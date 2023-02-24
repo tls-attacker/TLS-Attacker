@@ -65,21 +65,19 @@ public class PWDClientKeyExchangePreparator
     }
 
     @Override
-    public void prepareAfterParse(boolean clientMode) {
-        if (!clientMode) {
-            msg.prepareComputations();
-            EllipticCurve curve =
-                    ((NamedEllipticCurveParameters)
-                                    chooser.getSelectedNamedGroup().getGroupParameters())
-                            .getCurve();
-            byte[] premasterSecret =
-                    generatePremasterSecret(
-                            chooser.getContext().getTlsContext().getPWDPE(),
-                            chooser.getContext().getTlsContext().getServerPWDPrivate(),
-                            curve);
-            preparePremasterSecret(msg, premasterSecret);
-            prepareClientServerRandom(msg);
-        }
+    public void prepareAfterParse() {
+        msg.prepareComputations();
+        EllipticCurve curve =
+                ((NamedEllipticCurveParameters)
+                                chooser.getSelectedNamedGroup().getGroupParameters())
+                        .getCurve();
+        byte[] premasterSecret =
+                generatePremasterSecret(
+                        chooser.getContext().getTlsContext().getPWDPE(),
+                        chooser.getContext().getTlsContext().getServerPWDPrivate(),
+                        curve);
+        preparePremasterSecret(msg, premasterSecret);
+        prepareClientServerRandom(msg);
     }
 
     protected void preparePasswordElement(PWDClientKeyExchangeMessage msg) throws CryptoException {

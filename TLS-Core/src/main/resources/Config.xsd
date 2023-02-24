@@ -673,6 +673,8 @@
       <xs:element name="defaultIssuerDsaPublicKeyY" type="xs:integer" minOccurs="0"/>
       <xs:element name="dsaPrivateKey" type="xs:integer" minOccurs="0"/>
       <xs:element name="ecPrivateKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="ecPublicKey" type="point" minOccurs="0"/>
+      <xs:element name="dhPublicKey" type="xs:integer" minOccurs="0"/>
       <xs:element name="dhPrivateKey" type="xs:integer" minOccurs="0"/>
       <xs:element name="dhModulus" type="xs:integer" minOccurs="0"/>
       <xs:element name="dhGenerator" type="xs:integer" minOccurs="0"/>
@@ -720,6 +722,43 @@
 
   <xs:complexType name="abstractInstant" abstract="true">
     <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="point">
+    <xs:sequence>
+      <xs:choice minOccurs="0">
+        <xs:element name="xFieldElementF2m" type="fieldElementF2M"/>
+        <xs:element name="xFieldElementFp" type="fieldElementFp"/>
+      </xs:choice>
+      <xs:choice minOccurs="0">
+        <xs:element name="yFieldElementF2m" type="fieldElementF2M"/>
+        <xs:element name="yFieldElementFp" type="fieldElementFp"/>
+      </xs:choice>
+      <xs:element name="infinity" type="xs:boolean"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="fieldElementF2M">
+    <xs:complexContent>
+      <xs:extension base="fieldElement">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="fieldElement" abstract="true">
+    <xs:sequence>
+      <xs:element name="data" type="xs:integer" minOccurs="0"/>
+      <xs:element name="modulus" type="xs:integer" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="fieldElementFp">
+    <xs:complexContent>
+      <xs:extension base="fieldElement">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
   </xs:complexType>
 
   <xs:complexType name="outboundConnection">
@@ -1235,43 +1274,6 @@
       <xs:element name="ticketNonce" type="xs:string" minOccurs="0"/>
       <xs:element name="cipherSuite" type="cipherSuite" minOccurs="0"/>
     </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="point">
-    <xs:sequence>
-      <xs:choice minOccurs="0">
-        <xs:element name="xFieldElementF2m" type="fieldElementF2M"/>
-        <xs:element name="xFieldElementFp" type="fieldElementFp"/>
-      </xs:choice>
-      <xs:choice minOccurs="0">
-        <xs:element name="yFieldElementF2m" type="fieldElementF2M"/>
-        <xs:element name="yFieldElementFp" type="fieldElementFp"/>
-      </xs:choice>
-      <xs:element name="infinity" type="xs:boolean"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="fieldElementF2M">
-    <xs:complexContent>
-      <xs:extension base="fieldElement">
-        <xs:sequence/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="fieldElement" abstract="true">
-    <xs:sequence>
-      <xs:element name="data" type="xs:integer" minOccurs="0"/>
-      <xs:element name="modulus" type="xs:integer" minOccurs="0"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="fieldElementFp">
-    <xs:complexContent>
-      <xs:extension base="fieldElement">
-        <xs:sequence/>
-      </xs:extension>
-    </xs:complexContent>
   </xs:complexType>
 
   <xs:complexType name="keyShareEntry">

@@ -111,7 +111,11 @@ public class TlsSignatureUtil {
             EcdsaSignatureComputations computations) {
         BigInteger nonce;
         BigInteger privateKey =
-                chooser.getContext().getTlsContext().getX509Context().getSubjectEcPrivateKey();
+                chooser.getContext()
+                        .getTlsContext()
+                        .getTalkingX509Context()
+                        .getChooser()
+                        .getSubjectEcPrivateKey();
 
         nonce = chooser.getConfig().getDefaultEcdsaNonce();
         calculator.computeEcdsaSignature(
@@ -130,7 +134,11 @@ public class TlsSignatureUtil {
             EcdsaSignatureComputations computations) {
         BigInteger nonce;
         BigInteger privateKey =
-                chooser.getContext().getTlsContext().getX509Context().getSubjectDsaPrivateKey();
+                chooser.getContext()
+                        .getTlsContext()
+                        .getTalkingX509Context()
+                        .getChooser()
+                        .getSubjectDsaPrivateKey();
         nonce = chooser.getConfig().getDefaultEcdsaNonce();
         calculator.computeEcdsaSignature(
                 computations,
@@ -148,9 +156,17 @@ public class TlsSignatureUtil {
             RsaPkcs1SignatureComputations computations) {
 
         BigInteger modulus =
-                chooser.getContext().getTlsContext().getX509Context().getSubjectRsaModulus();
+                chooser.getContext()
+                        .getTlsContext()
+                        .getTalkingX509Context()
+                        .getChooser()
+                        .getSubjectRsaModulus();
         BigInteger privateKey =
-                chooser.getContext().getTlsContext().getX509Context().getSubjectRsaPrivateKey();
+                chooser.getContext()
+                        .getTlsContext()
+                        .getTalkingX509Context()
+                        .getChooser()
+                        .getSubjectRsaPrivateKey();
         calculator.computeRsaPkcs1Signature(
                 computations, privateKey, modulus, toBeHasedAndSigned, algorithm);
     }
