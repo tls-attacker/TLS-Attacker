@@ -3,6 +3,7 @@
     <defaultLayerConfiguration>TLS</defaultLayerConfiguration>
     <defaultHandshakeSecret>00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00</defaultHandshakeSecret>
     <autoAdjustCertificate>true</autoAdjustCertificate>
+    <autoAdjustSignatureAndHashAlgorithm>true</autoAdjustSignatureAndHashAlgorithm>
     <certificateChainConfig>
         <certificateConfig>
             <signatureAlgorithm>SHA256_WITH_RSA_ENCRYPTION</signatureAlgorithm>

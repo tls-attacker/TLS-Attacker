@@ -12,6 +12,9 @@ import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.TlsSignatureUtil;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import de.rub.nds.x509attacker.constants.X509PublicKeyType;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @param <T> The ServerKeyExchangeMessage that should be prepared
@@ -34,5 +37,38 @@ public abstract class ServerKeyExchangePreparator<T extends ServerKeyExchangeMes
         return message.getSignatureComputations(algorithm.getSignatureAlgorithm())
                 .getSignatureBytes()
                 .getValue();
+    }
+
+    protected SignatureAndHashAlgorithm chooseSignatureAndHashAlgorithm() {
+        SignatureAndHashAlgorithm signHashAlgo;
+        if (chooser.getConfig().getAutoAdjustSignatureAndHashAlgorithm()) {
+            X509PublicKeyType publicKeyType =
+                    chooser.getContext()
+                            .getTlsContext()
+                            .getServerX509Context()
+                            .getChooser()
+                            .getSubjectPublicKeyType();
+            List<SignatureAndHashAlgorithm> candidateList = new LinkedList<>();
+            for (SignatureAndHashAlgorithm tempSignatureAndHashAlgorithm :
+                    SignatureAndHashAlgorithm.getImplemented()) {
+                if (tempSignatureAndHashAlgorithm
+                                .getSignatureAlgorithm()
+                                .getRequiredCertificateKeyType()
+                        == publicKeyType) {
+                    candidateList.add(tempSignatureAndHashAlgorithm);
+                }
+            }
+            List<SignatureAndHashAlgorithm> clientSupportedList =
+                    chooser.getClientSupportedSignatureAndHashAlgorithms();
+            candidateList.retainAll(clientSupportedList);
+            if (candidateList.isEmpty()) {
+                signHashAlgo = chooser.getSelectedSigHashAlgorithm();
+            } else {
+                signHashAlgo = candidateList.get(0);
+            }
+        } else {
+            signHashAlgo = chooser.getSelectedSigHashAlgorithm();
+        }
+        return signHashAlgo;
     }
 }

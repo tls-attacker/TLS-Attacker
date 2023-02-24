@@ -107,6 +107,8 @@ public class Config implements Serializable {
      */
     private Boolean autoAdjustCertificate = true;
 
+    private Boolean autoAdjustSignatureAndHashAlgorithm = true;
+
     @XmlElement(name = "certificateConfig")
     @XmlElementWrapper
     private List<X509CertificateConfig> certificateChainConfig;
@@ -3837,5 +3839,14 @@ public class Config implements Serializable {
     public void setDefaultServerEphemeralDhExportPrivateKey(
             BigInteger defaultServerEphemeralDhExportPrivateKey) {
         this.defaultServerEphemeralDhExportPrivateKey = defaultServerEphemeralDhExportPrivateKey;
+    }
+
+    public Boolean getAutoAdjustSignatureAndHashAlgorithm() {
+        return autoAdjustSignatureAndHashAlgorithm;
+    }
+
+    public void setAutoAdjustSignatureAndHashAlgorithm(
+            Boolean autoAdjustSignatureAndHashAlgorithm) {
+        this.autoAdjustSignatureAndHashAlgorithm = autoAdjustSignatureAndHashAlgorithm;
     }
 }

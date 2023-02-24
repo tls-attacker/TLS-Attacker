@@ -44,7 +44,7 @@ public class DHEServerKeyExchangePreparator<T extends DHEServerKeyExchangeMessag
         // Compute PublicKeys
         preparePublicKey(msg);
         prepareDheParams();
-        selectedSignatureHashAlgo = chooser.getSelectedSigHashAlgorithm();
+        selectedSignatureHashAlgo = chooseSignatureAndHashAlgorithm();
         prepareSignatureAndHashAlgorithm(msg);
         signature = generateSignature(selectedSignatureHashAlgo, generateToBeSigned());
         prepareSignature(msg);
