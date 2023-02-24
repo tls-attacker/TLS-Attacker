@@ -548,7 +548,7 @@ public class WorkflowTraceUtil {
     }
 
     public static boolean hasUnreadBytes(@Nonnull WorkflowTrace trace) {
-        return (getMessageActionsWithUnreadBytes(trace).isEmpty());
+        return !(getMessageActionsWithUnreadBytes(trace).isEmpty());
     }
 
     public static int indexOfIdenticalAction(WorkflowTrace trace, TlsAction action) {
