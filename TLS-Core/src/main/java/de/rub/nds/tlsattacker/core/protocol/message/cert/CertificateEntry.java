@@ -57,7 +57,6 @@ public class CertificateEntry extends ModifiableVariableHolder {
             X509Context context = new X509Context();
             X509Chooser chooser = context.getChooser();
             x509certificate = new X509Certificate("certificate");
-            System.out.println("this");
             x509certificate
                     .getParser(chooser)
                     .parse(new ByteArrayInputStream(x509CerticiateConfig));

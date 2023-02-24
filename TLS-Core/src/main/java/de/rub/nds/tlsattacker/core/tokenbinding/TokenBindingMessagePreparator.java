@@ -57,7 +57,6 @@ public class TokenBindingMessagePreparator extends ProtocolMessagePreparator<Tok
 
             byte[] signature =
                     generateSignature(SignatureAndHashAlgorithm.ECDSA_SHA256, generateToBeSigned());
-            System.out.println("Sig: " + ArrayConverter.bytesToHexString(signature));
             message.setSignature(signature);
         } else {
             message.setModulus(
