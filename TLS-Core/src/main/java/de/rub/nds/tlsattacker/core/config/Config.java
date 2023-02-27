@@ -14,6 +14,7 @@ import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
 import de.rub.nds.protocol.crypto.ec.EllipticCurve;
 import de.rub.nds.protocol.crypto.ec.Point;
+import de.rub.nds.tlsattacker.core.config.adapter.MapAdapter;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.*;
@@ -44,8 +45,10 @@ import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -87,7 +90,7 @@ public class Config implements Serializable {
         return c;
     }
 
-    private boolean respectPeerRecordSizeLimitations = true;
+    private Boolean respectPeerRecordSizeLimitations = true;
 
     private LayerConfiguration defaultLayerConfiguration;
 
@@ -227,7 +230,10 @@ public class Config implements Serializable {
     /** Key type for KeyShareExtension */
     private NamedGroup defaultSelectedNamedGroup = NamedGroup.SECP256R1;
 
-    private BigInteger defaultKeySharePrivateKey = new BigInteger("FFFF", 16);
+    @XmlElement(nillable = true)
+    // @XmlElementWrapper
+    @XmlJavaTypeAdapter(MapAdapter.class)
+    private Map<NamedGroup, BigInteger> defaultKeySharePrivateMap;
 
     @XmlElement(name = "defaultClientKeyShareNamedGroup")
     @XmlElementWrapper
@@ -1240,6 +1246,9 @@ public class Config implements Serializable {
         defaultProposedAlpnProtocols = new LinkedList<>();
 
         defaultProposedAlpnProtocols.add(AlpnProtocol.HTTP_2.getConstant());
+        defaultKeySharePrivateMap = new HashMap<>();
+        defaultKeySharePrivateMap.computeIfAbsent(
+                defaultPWDProtectGroup, s -> new BigInteger("FFFF", 16));
     }
 
     public BigInteger getDefaultEcdsaNonce() {
@@ -2486,14 +2495,6 @@ public class Config implements Serializable {
         this.defaultAdditionalPadding = defaultAdditionalPadding;
     }
 
-    public BigInteger getKeySharePrivate() {
-        return defaultKeySharePrivateKey;
-    }
-
-    public void setKeySharePrivate(BigInteger defaultKeySharePrivateKey) {
-        this.defaultKeySharePrivateKey = defaultKeySharePrivateKey;
-    }
-
     public byte[] getTlsSessionTicket() {
         return Arrays.copyOf(tlsSessionTicket, tlsSessionTicket.length);
     }
@@ -3210,14 +3211,6 @@ public class Config implements Serializable {
         this.starttlsType = starttlsType;
     }
 
-    public BigInteger getDefaultKeySharePrivateKey() {
-        return defaultKeySharePrivateKey;
-    }
-
-    public void setDefaultKeySharePrivateKey(BigInteger defaultKeySharePrivateKey) {
-        this.defaultKeySharePrivateKey = defaultKeySharePrivateKey;
-    }
-
     public KeyShareStoreEntry getDefaultServerKeyShareEntry() {
         return defaultServerKeyShareEntry;
     }
@@ -3857,5 +3850,16 @@ public class Config implements Serializable {
 
     public void setDefaultAssumedMaxReceiveLimit(Integer defaultAssumedMaxReceiveLimit) {
         this.defaultAssumedMaxReceiveLimit = defaultAssumedMaxReceiveLimit;
+    }
+
+    public BigInteger getDefaultKeySharePrivateKey(NamedGroup group) {
+        return defaultKeySharePrivateMap.get(group);
+    }
+
+    public void setDefaultKeySharePrivateKey(NamedGroup group, BigInteger privateKey) {
+        if (defaultKeySharePrivateMap.containsKey(group)) {
+            defaultKeySharePrivateMap.remove(group);
+        }
+        defaultKeySharePrivateMap.put(group, privateKey);
     }
 }

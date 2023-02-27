@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -53,7 +53,8 @@ public class ServerHelloHandlerTest
     public void testadjustContextTls13() {
         ServerHelloMessage message = new ServerHelloMessage();
         context.getConfig()
-                .setKeySharePrivate(
+                .setDefaultKeySharePrivateKey(
+                        NamedGroup.ECDH_X25519,
                         new BigInteger(
                                 ArrayConverter.hexStringToByteArray(
                                         "03BD8BCA70C19F657E897E366DBE21A466E4924AF6082DBDF573827BCDDE5DEF")));

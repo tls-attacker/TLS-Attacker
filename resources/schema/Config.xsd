@@ -91,7 +91,7 @@
 
   <xs:complexType name="config">
     <xs:all>
-      <xs:element name="respectPeerRecordSizeLimitations" type="xs:boolean"/>
+      <xs:element name="respectPeerRecordSizeLimitations" type="xs:boolean" minOccurs="0"/>
       <xs:element name="defaultLayerConfiguration" type="layerConfiguration" minOccurs="0"/>
       <xs:element name="defaultHandshakeSecret" type="xs:string" minOccurs="0"/>
       <xs:element name="defaultExplicitCertificateChain" minOccurs="0">
@@ -194,7 +194,7 @@
         </xs:complexType>
       </xs:element>
       <xs:element name="defaultSelectedNamedGroup" type="namedGroup" minOccurs="0"/>
-      <xs:element name="defaultKeySharePrivateKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultKeySharePrivateMap" type="mapElementsArray" nillable="true" minOccurs="0"/>
       <xs:element name="defaultClientKeyShareNamedGroups" minOccurs="0">
         <xs:complexType>
           <xs:sequence>
@@ -1201,6 +1201,12 @@
       <xs:element name="assertEquals" type="xs:anyType" minOccurs="0"/>
       <xs:element name="originalValue" type="xs:byte" minOccurs="0"/>
     </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mapElements">
+    <xs:sequence/>
+    <xs:attribute name="key" type="namedGroup"/>
+    <xs:attribute name="value" type="xs:integer"/>
   </xs:complexType>
 
   <xs:complexType name="keyShareStoreEntry">
@@ -2469,5 +2475,11 @@
       <xs:enumeration value="UNKNOWN"/>
     </xs:restriction>
   </xs:simpleType>
+
+  <xs:complexType name="mapElementsArray" final="#all">
+    <xs:sequence>
+      <xs:element name="item" type="mapElements" minOccurs="0" maxOccurs="unbounded" nillable="true"/>
+    </xs:sequence>
+  </xs:complexType>
 </xs:schema>
 
