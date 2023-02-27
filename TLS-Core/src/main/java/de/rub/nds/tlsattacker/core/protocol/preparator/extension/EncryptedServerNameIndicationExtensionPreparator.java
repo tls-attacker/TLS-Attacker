@@ -29,7 +29,6 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ClientEsniInner
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.KeyShareEntrySerializer;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -255,8 +254,7 @@ public class EncryptedServerNameIndicationExtensionPreparator
     private void prepareCipherSuite(EncryptedServerNameIndicationExtensionMessage msg) {
         List<CipherSuite> clientSupportedCipherSuites =
                 chooser.getConfig().getClientSupportedEsniCipherSuites();
-        List<CipherSuite> serverSupportedCipherSuites =
-                ((DefaultChooser) chooser).getEsniServerCipherSuites();
+        List<CipherSuite> serverSupportedCipherSuites = chooser.getEsniServerCipherSuites();
         List<CipherSuite> implementedCipherSuites = CipherSuite.getEsniImplemented();
         CipherSuite selectedCipherSuite = implementedCipherSuites.get(0);
         boolean isFoundSharedCipher = false;

@@ -58,8 +58,10 @@ public abstract class ServerKeyExchangePreparator<T extends ServerKeyExchangeMes
                     candidateList.add(tempSignatureAndHashAlgorithm);
                 }
             }
+
             List<SignatureAndHashAlgorithm> clientSupportedList =
                     chooser.getClientSupportedSignatureAndHashAlgorithms();
+
             candidateList.retainAll(clientSupportedList);
             if (candidateList.isEmpty()) {
                 signHashAlgo = chooser.getSelectedSigHashAlgorithm();

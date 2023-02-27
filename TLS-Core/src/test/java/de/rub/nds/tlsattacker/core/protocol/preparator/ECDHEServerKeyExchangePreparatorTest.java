@@ -18,6 +18,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.Security;
@@ -48,6 +49,16 @@ public class ECDHEServerKeyExchangePreparatorTest
                                 "191991257030464195512760799659436374116556484140110877679395918219072292938297573720808302564562486757422301181089761"));
         loadTestVectorsToContext();
         context.setRandom(random);
+        context.setClientSupportedSignatureAndHashAlgorithms(SignatureAndHashAlgorithm.RSA_SHA512);
+        context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
+        context.getServerX509Context()
+                .setSubjectRsaModulus(
+                        new BigInteger(
+                                "138176188281796802921728019830883835791466819775862616369528695291051113778191409365728255919237920070170415489798919694047238160141762618463534095589006064306561457254708835463402335256295540403269922932223802187003458396441731541262280889819064536522708759209693618435045828861540756050456047286072194938393"));
+        context.getServerX509Context()
+                .setSubjectRsaPrivateKey(
+                        new BigInteger(
+                                "14412811436201885114865385104046903298449229900480596388331753986444686418171665996675440704699794339070829612101033233570455163689657586703949205448013264184348068987367675661812419501134437771698938168350748107551389943071416238444845593800428715108981594372030316329952869373604711395976776700362569716737"));
     }
 
     @Test

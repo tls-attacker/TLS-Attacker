@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
@@ -135,8 +134,7 @@ public class EmptyClientKeyExchangePreparatorTest
 
         preparator.prepareHandshakeMessageContents();
 
-        // PMS SHOULD not be calculatable without client key information
-        assertNull(message.getComputations().getPremasterSecret());
+        assertArrayEquals(new byte[0], message.getComputations().getPremasterSecret().getValue());
 
         // check client and server random are correctly set and concatenated
         assertArrayEquals(
@@ -150,7 +148,8 @@ public class EmptyClientKeyExchangePreparatorTest
     public void testPrepareHandshakeMessageContentsDH() throws CertificateException, IOException {
         // prepare message params
         context.setSelectedCipherSuite(CipherSuite.TLS_DH_RSA_WITH_AES_256_CBC_SHA);
-        context.setServerEphemeralDhPublicKey(DH_SERVER_PUBLIC_KEY);
+        context.getServerX509Context().setSubjectDhPublicKey(DH_SERVER_PUBLIC_KEY);
+        context.getServerX509Context().setSubjectDhModulus(DH_SERVER_PUBLIC_KEY);
 
         // testParse and set client certificate
         X509CertificateChain clientCertificateChain = new X509CertificateChain();
@@ -166,6 +165,10 @@ public class EmptyClientKeyExchangePreparatorTest
                     .parse(new ByteArrayInputStream(certificateBytes.getBytes()));
             clientCertificateChain.addCertificate(x509Certificate);
         }
+        context.getServerX509Context()
+                .setSubjectDhModulus(
+                        new BigInteger(
+                                "139654574825163086931039779432700084721137093728592448263724893367282260875033276765642723398595467214600686069576825731414046467249623447307063533378369049982018500484294019122053107608715606657740629267449299233407157095954596131791080517152891252136791647808354801798603593447782078871273849261750140791763"));
         context.setClientCertificateChain(clientCertificateChain);
         // set DH private key
         context.getClientX509Context().setSubjectDhPrivateKey(DH_CLIENT_PRIVATE_KEY);
@@ -196,7 +199,7 @@ public class EmptyClientKeyExchangePreparatorTest
                         (NamedEllipticCurveParameters)
                                 context.getChooser().getSelectedNamedGroup().getGroupParameters(),
                         EC_SERVER_PUBLIC_KEY_BYTES);
-        context.setServerEphemeralEcPublicKey(pubKey);
+        context.getServerX509Context().setSubjectEcPublicKey(pubKey);
 
         // testParse and set client certificate
         X509CertificateChain clientCertificateChain =
@@ -204,7 +207,7 @@ public class EmptyClientKeyExchangePreparatorTest
         context.setClientCertificateChain(clientCertificateChain);
 
         // set EC private key
-        context.setClientEphemeralEcPrivateKey(EC_CLIENT_PRIVATE_KEY);
+        context.getClientX509Context().setSubjectEcPrivateKey(EC_CLIENT_PRIVATE_KEY);
 
         // test
         preparator.prepareHandshakeMessageContents();

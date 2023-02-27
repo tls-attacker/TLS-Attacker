@@ -53,7 +53,7 @@ public enum SignatureAlgorithm {
                 return X509PublicKeyType.GOST_R3411_2001;
             case GOSTR34102012_256:
             case GOSTR34102012_512:
-                throw new UnsupportedOperationException("Currently not supported");
+                return X509PublicKeyType.GOST_R3411_2012;
             default:
                 return null;
         }

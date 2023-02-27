@@ -112,6 +112,8 @@ public class EmptyClientKeyExchangePreparator<T extends EmptyClientKeyExchangeMe
                                 + " not Implemented. Using new byte[0] as PMS");
                 premasterSecret = new byte[0];
             }
+        } else {
+            premasterSecret = new byte[0];
         }
         preparePremasterSecret(msg);
     }

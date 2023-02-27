@@ -35,7 +35,7 @@ public class ECDHClientKeyExchangeHandlerTest
     @Override
     public void testadjustContext() {
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
-        context.setSelectedCipherSuite(CipherSuite.TLS_ECDH_RSA_WITH_AES_128_CBC_SHA256);
+        context.setSelectedCipherSuite(CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256);
         context.setClientRandom(new byte[] {});
         context.setServerRandom(new byte[] {});
         // set server ECDH-parameters

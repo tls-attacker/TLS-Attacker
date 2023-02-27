@@ -48,6 +48,11 @@ public class DHClientKeyExchangePreparator<T extends DHClientKeyExchangeMessage>
         preparePublicKey(msg);
         preparePublicKeyLength(msg);
         setComputationPublicKey(msg);
+        premasterSecret =
+                calculatePremasterSecret(
+                        msg.getComputations().getModulus().getValue(),
+                        msg.getComputations().getPrivateKey().getValue(),
+                        msg.getComputations().getPublicKey().getValue());
         preparePremasterSecret(msg);
     }
 

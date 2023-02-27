@@ -1364,6 +1364,7 @@
       <xs:enumeration value="RSAES_OAEP"/>
       <xs:enumeration value="GOST_R3411_94"/>
       <xs:enumeration value="GOST_R3411_2001"/>
+      <xs:enumeration value="GOST_R3411_2012"/>
       <xs:enumeration value="ECDH_ONLY"/>
       <xs:enumeration value="ECMQV"/>
       <xs:enumeration value="X25519"/>
