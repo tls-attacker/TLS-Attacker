@@ -992,20 +992,17 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public BigInteger getRsaKeyExchangePublicExponent() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from
-        // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return getServerX509Chooser().getSubjectRsaPublicExponent();
     }
 
     @Override
     public BigInteger getRsaKeyExchangeModulus() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from
-        // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return getServerX509Chooser().getSubjectRsaModulus();
     }
 
     @Override
     public BigInteger getRsaKeyExchangePrivateKey() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from
-        // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return getServerX509Chooser().getSubjectRsaPrivateKey();
     }
 
     @Override
