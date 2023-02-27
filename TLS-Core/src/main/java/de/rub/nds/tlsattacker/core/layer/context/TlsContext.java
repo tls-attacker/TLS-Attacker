@@ -175,8 +175,6 @@ public class TlsContext extends LayerContext {
 
     private HeartbeatMode heartbeatMode;
 
-    private SignatureAndHashAlgorithm selectedSigHashAlgorithm;
-
     private boolean cachedInfoExtensionClientState;
 
     private List<CachedObject> cachedInfoExtensionObjects;
