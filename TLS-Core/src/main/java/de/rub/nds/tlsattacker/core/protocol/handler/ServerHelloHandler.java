@@ -215,7 +215,9 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                             new byte[0]);
             byte[] sharedSecret;
             BigInteger privateKey =
-                    tlsContext.getChooser().getKeySharePrivateKey(keyShareStoreEntry.getGroup());
+                    tlsContext
+                            .getConfig()
+                            .getDefaultKeySharePrivateKey(keyShareStoreEntry.getGroup());
             if (tlsContext.getChooser().getSelectedCipherSuite().isPWD()) {
                 sharedSecret = computeSharedPWDSecret(keyShareStoreEntry);
             } else {
