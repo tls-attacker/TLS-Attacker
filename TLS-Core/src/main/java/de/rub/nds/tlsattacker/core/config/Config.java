@@ -87,6 +87,8 @@ public class Config implements Serializable {
         return c;
     }
 
+    private boolean respectPeerRecordSizeLimitations = true;
+
     private LayerConfiguration defaultLayerConfiguration;
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
@@ -748,10 +750,9 @@ public class Config implements Serializable {
      */
     private MaxFragmentLength defaultMaxFragmentLength = MaxFragmentLength.TWO_12;
 
-    private Integer defaultMaxRecordData = RecordSizeLimit.DEFAULT_MAX_RECORD_DATA_SIZE;
+    private Integer defaultAssumedMaxReceiveLimit = RecordSizeLimit.DEFAULT_MAX_RECORD_DATA_SIZE;
 
-    // Overrides any limit negotiated if set
-    private Integer enforcedMaxRecordData;
+    private Integer defaultMaxRecordData = RecordSizeLimit.DEFAULT_MAX_RECORD_DATA_SIZE;
 
     private Integer inboundRecordSizeLimit = RecordSizeLimit.DEFAULT_MAX_RECORD_DATA_SIZE;
 
@@ -2104,7 +2105,7 @@ public class Config implements Serializable {
         this.individualTransportPacketCooldown = individualTransportPacketCooldown;
     }
 
-    public int getDefaultMaxRecordData() {
+    public Integer getDefaultMaxRecordData() {
         return defaultMaxRecordData;
     }
 
@@ -2131,7 +2132,7 @@ public class Config implements Serializable {
         this.sniType = sniType;
     }
 
-    public int getHeartbeatPayloadLength() {
+    public Integer getHeartbeatPayloadLength() {
         return heartbeatPayloadLength;
     }
 
@@ -2139,7 +2140,7 @@ public class Config implements Serializable {
         this.heartbeatPayloadLength = heartbeatPayloadLength;
     }
 
-    public int getHeartbeatPaddingLength() {
+    public Integer getHeartbeatPaddingLength() {
         return heartbeatPaddingLength;
     }
 
@@ -3677,14 +3678,6 @@ public class Config implements Serializable {
         this.addConnectionIdExtension = addConnectionIdExtension;
     }
 
-    public Integer getEnforcedMaxRecordData() {
-        return enforcedMaxRecordData;
-    }
-
-    public void setEnforcedMaxRecordData(Integer enforcedMaxRecordData) {
-        this.enforcedMaxRecordData = enforcedMaxRecordData;
-    }
-
     public List<SSL2CipherSuite> getDefaultServerSupportedSSL2CipherSuites() {
         return defaultServerSupportedSSL2CipherSuites;
     }
@@ -3848,5 +3841,21 @@ public class Config implements Serializable {
     public void setAutoAdjustSignatureAndHashAlgorithm(
             Boolean autoAdjustSignatureAndHashAlgorithm) {
         this.autoAdjustSignatureAndHashAlgorithm = autoAdjustSignatureAndHashAlgorithm;
+    }
+
+    public boolean isRespectPeerRecordSizeLimitations() {
+        return respectPeerRecordSizeLimitations;
+    }
+
+    public void setRespectPeerRecordSizeLimitations(boolean respectPeerRecordSizeLimitations) {
+        this.respectPeerRecordSizeLimitations = respectPeerRecordSizeLimitations;
+    }
+
+    public Integer getDefaultAssumedMaxReceiveLimit() {
+        return defaultAssumedMaxReceiveLimit;
+    }
+
+    public void setDefaultAssumedMaxReceiveLimit(Integer defaultAssumedMaxReceiveLimit) {
+        this.defaultAssumedMaxReceiveLimit = defaultAssumedMaxReceiveLimit;
     }
 }

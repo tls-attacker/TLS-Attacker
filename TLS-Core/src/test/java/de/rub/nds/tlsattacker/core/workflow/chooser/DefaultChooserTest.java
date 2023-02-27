@@ -55,7 +55,7 @@ public class DefaultChooserTest {
         config.setDefaultClientSupportedPointFormats(formatList);
         assertEquals(8, config.getDefaultClientSupportedPointFormats().size());
         assertEquals(8, chooser.getClientSupportedPointFormats().size());
-        context.setClientPointFormatsList(new LinkedList<ECPointFormat>());
+        context.setClientPointFormatsList(new LinkedList<>());
         assertTrue(chooser.getClientSupportedPointFormats().isEmpty());
     }
 
@@ -84,7 +84,7 @@ public class DefaultChooserTest {
         config.setDefaultClientNamedGroups(curveList);
         assertEquals(3, config.getDefaultClientNamedGroups().size());
         assertEquals(3, chooser.getClientSupportedNamedGroups().size());
-        context.setClientNamedGroupsList(new LinkedList<NamedGroup>());
+        context.setClientNamedGroupsList(new LinkedList<>());
         assertTrue(chooser.getClientSupportedNamedGroups().isEmpty());
     }
 
@@ -103,7 +103,7 @@ public class DefaultChooserTest {
         config.setDefaultServerSupportedPointFormats(formatList);
         assertEquals(8, config.getDefaultServerSupportedPointFormats().size());
         assertEquals(8, chooser.getServerSupportedPointFormats().size());
-        context.setServerPointFormatsList(new LinkedList<ECPointFormat>());
+        context.setServerPointFormatsList(new LinkedList<>());
         assertTrue(chooser.getServerSupportedPointFormats().isEmpty());
     }
 
@@ -115,8 +115,7 @@ public class DefaultChooserTest {
         config.setDefaultClientSupportedSignatureAndHashAlgorithms(algoList);
         assertEquals(1, config.getDefaultClientSupportedSignatureAndHashAlgorithms().size());
         assertEquals(1, chooser.getClientSupportedSignatureAndHashAlgorithms().size());
-        context.setClientSupportedSignatureAndHashAlgorithms(
-                new LinkedList<SignatureAndHashAlgorithm>());
+        context.setClientSupportedSignatureAndHashAlgorithms(new LinkedList<>());
         assertTrue(chooser.getClientSupportedSignatureAndHashAlgorithms().isEmpty());
     }
 
@@ -156,18 +155,8 @@ public class DefaultChooserTest {
         config.setClientCertificateTypes(typeList);
         assertEquals(7, config.getClientCertificateTypes().size());
         assertEquals(7, chooser.getClientCertificateTypes().size());
-        context.setClientCertificateTypes(new LinkedList<ClientCertificateType>());
+        context.setClientCertificateTypes(new LinkedList<>());
         assertTrue(chooser.getClientCertificateTypes().isEmpty());
-    }
-
-    /** Test of getMaxFragmentLength method, of class DefaultChooser. */
-    @Test
-    public void testGetMaxFragmentLength() {
-        config.setDefaultMaxFragmentLength(MaxFragmentLength.TWO_9);
-        assertEquals(MaxFragmentLength.TWO_9, config.getDefaultMaxFragmentLength());
-        assertEquals(MaxFragmentLength.TWO_9, chooser.getMaxFragmentLength());
-        context.setMaxFragmentLength(MaxFragmentLength.TWO_11);
-        assertEquals(MaxFragmentLength.TWO_11, chooser.getMaxFragmentLength());
     }
 
     /** Test of getHeartbeatMode method, of class DefaultChooser. */
@@ -726,28 +715,5 @@ public class DefaultChooserTest {
     public void testGetPWDPassword() {
         config.setDefaultPWDPassword("Jake");
         assertEquals("Jake", chooser.getPWDPassword());
-    }
-
-    /** Test of getInboundRecordSizeLimit method, of class DefaultChooser. */
-    @Test
-    public void testGetInboundRecordSizeLimit() {
-        config.setDefaultMaxRecordData(1337);
-        config.setInboundRecordSizeLimit(null);
-        assertEquals(1337, config.getDefaultMaxRecordData());
-        assertNull(config.getInboundRecordSizeLimit());
-        assertEquals(1337, (int) chooser.getInboundMaxRecordDataSize());
-        config.setInboundRecordSizeLimit(42);
-        assertEquals(42, (int) chooser.getInboundMaxRecordDataSize());
-    }
-
-    /** Test of getOutboundRecordSizeLimit method, of class DefaultChooser. */
-    @Test
-    public void testGetOutboundRecordSizeLimit() {
-        config.setDefaultMaxRecordData(1337);
-        assertEquals(1337, config.getDefaultMaxRecordData());
-        assertNull(context.getOutboundRecordSizeLimit());
-        assertEquals(1337, (int) chooser.getOutboundMaxRecordDataSize());
-        context.setOutboundRecordSizeLimit(1234);
-        assertEquals(1234, (int) chooser.getOutboundMaxRecordDataSize());
     }
 }

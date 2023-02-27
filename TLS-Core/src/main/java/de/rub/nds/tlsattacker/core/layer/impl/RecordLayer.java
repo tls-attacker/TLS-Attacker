@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -135,10 +135,16 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
                     "Sending record without a LayerProcessing hint. Using \"UNKNOWN\" as the type");
         }
 
+        int maxDataSize;
+        if (context.getConfig().isRespectPeerRecordSizeLimitations()) {
+            maxDataSize = context.getChooser().getPeerReceiveLimit();
+        } else {
+            maxDataSize = context.getConfig().getDefaultMaxRecordData();
+        }
         // Generate records
         CleanRecordByteSeperator separator =
                 new CleanRecordByteSeperator(
-                        context.getChooser().getOutboundMaxRecordDataSize(),
+                        maxDataSize,
                         new ByteArrayInputStream(data),
                         context.getConfig().isCreateRecordsDynamically());
         List<Record> records = new LinkedList<>();
@@ -160,7 +166,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
                     int recordData =
                             (nextRecord.getMaxRecordLengthConfig() != null
                                     ? nextRecord.getMaxRecordLengthConfig()
-                                    : context.getChooser().getOutboundMaxRecordDataSize());
+                                    : maxDataSize);
                     dataToBeSent -= recordData;
                 }
             }

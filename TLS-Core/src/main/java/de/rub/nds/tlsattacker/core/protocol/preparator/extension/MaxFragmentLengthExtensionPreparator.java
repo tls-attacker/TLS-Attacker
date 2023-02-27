@@ -29,6 +29,7 @@ public class MaxFragmentLengthExtensionPreparator
     @Override
     public void prepareExtensionContent() {
         LOGGER.debug("Preparing MaxFragmentLengthExtensionMessage");
-        message.setMaxFragmentLength(chooser.getMaxFragmentLength().getArrayValue());
+        message.setMaxFragmentLength(
+                chooser.getConfig().getDefaultMaxFragmentLength().getArrayValue());
     }
 }

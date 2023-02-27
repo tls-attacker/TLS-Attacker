@@ -461,6 +461,8 @@ public class TlsContext extends LayerContext {
     private Integer outboundRecordSizeLimit;
     private Integer inboundRecordSizeLimit;
 
+    private Integer peerReceiveLimit;
+
     private byte[] writeConnectionId;
 
     private byte[] readConnectionID;
@@ -1983,51 +1985,6 @@ public class TlsContext extends LayerContext {
         return inboundRecordSizeLimit;
     }
 
-    /**
-     * Calculates the record data size limit for the current connection direction with respect to
-     * extensions and the current encryption status.
-     *
-     * <p>Disclaimer: this is not 100% accurate for TLS 1.3 since the actual padding length can be
-     * slightly different (compared to configured additional padding length) depending on the
-     * ciphers block size. I don't think it is necessary to introduce this additional complexity.
-     * Revisit if we run into problems with an implementation.
-     *
-     * @param recordSizeLimit the record_size_limit extension value for the current connection
-     *     direction
-     * @return the record data size limit for the target connection end type
-     */
-    private Integer getMaxRecordDataSize(Integer recordSizeLimit) {
-        // max_fragment_length extension applies to all records if record_size_limit extension is
-        // not active
-        if (!isRecordSizeLimitExtensionActive() && maxFragmentLength != null) {
-            return MaxFragmentLength.getIntegerRepresentation(maxFragmentLength);
-        }
-
-        // record_size_limit extension applies only to encrypted records
-        if (!isRecordSizeLimitExtensionActive() || !isRecordEncryptionActive()) {
-            return getConfig().getDefaultMaxRecordData();
-        }
-
-        Integer maxRecordDataSize = recordSizeLimit;
-        // for TLS 1.3, record_size_limit covers the whole TLSInnerPlaintext
-        // -> we need to reserve space for the content type (1 byte) and possibly additional padding
-        if (chooser.getSelectedProtocolVersion().isTLS13()) {
-            maxRecordDataSize -= 1;
-            maxRecordDataSize -= getConfig().getDefaultAdditionalPadding();
-        }
-        // poorly configured combination of record_size_limit extension and TLS 1.3 additional
-        // padding
-        if (maxRecordDataSize < 0) {
-            LOGGER.warn(
-                    "Calculated record data size limit is too low ("
-                            + maxRecordDataSize
-                            + "), setting to zero");
-            return 0;
-        }
-
-        return maxRecordDataSize;
-    }
-
     public int getWriteEpoch() {
         return getRecordLayer().getWriteEpoch();
     }
@@ -2229,5 +2186,13 @@ public class TlsContext extends LayerContext {
     public void setServerEphemeralRsaExportPrivateKey(
             BigInteger serverEphemeralRsaExportPrivateKey) {
         this.serverEphemeralRsaExportPrivateKey = serverEphemeralRsaExportPrivateKey;
+    }
+
+    public Integer getPeerReceiveLimit() {
+        return peerReceiveLimit;
+    }
+
+    public void setPeerReceiveLimit(Integer peerReceiveLimit) {
+        this.peerReceiveLimit = peerReceiveLimit;
     }
 }

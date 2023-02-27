@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <config>
+    <respectPeerRecordSizeLimitations>true</respectPeerRecordSizeLimitations>
     <defaultLayerConfiguration>TLS</defaultLayerConfiguration>
     <defaultHandshakeSecret>00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00</defaultHandshakeSecret>
     <autoAdjustCertificate>true</autoAdjustCertificate>
@@ -1208,6 +1209,7 @@
     <defaultSelectedProtocolVersion>TLS12</defaultSelectedProtocolVersion>
     <defaultHighestClientProtocolVersion>TLS12</defaultHighestClientProtocolVersion>
     <defaultMaxFragmentLength>TWO_12</defaultMaxFragmentLength>
+    <defaultAssumedMaxReceiveLimit>16384</defaultAssumedMaxReceiveLimit>
     <defaultMaxRecordData>16384</defaultMaxRecordData>
     <inboundRecordSizeLimit>16384</inboundRecordSizeLimit>
     <defaultHeartbeatMode>PEER_ALLOWED_TO_SEND</defaultHeartbeatMode>

@@ -137,15 +137,6 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public MaxFragmentLength getMaxFragmentLength() {
-        if (context.getTlsContext().getMaxFragmentLength() != null) {
-            return context.getTlsContext().getMaxFragmentLength();
-        } else {
-            return config.getDefaultMaxFragmentLength();
-        }
-    }
-
-    @Override
     public HeartbeatMode getHeartbeatMode() {
         if (context.getTlsContext().getHeartbeatMode() != null) {
             return context.getTlsContext().getHeartbeatMode();
@@ -856,24 +847,6 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public Integer getOutboundMaxRecordDataSize() {
-        if (context.getTlsContext().getOutboundRecordSizeLimit() != null) {
-            return context.getTlsContext().getOutboundRecordSizeLimit();
-        } else {
-            return config.getDefaultMaxRecordData();
-        }
-    }
-
-    @Override
-    public Integer getInboundMaxRecordDataSize() {
-        if (context.getTlsContext().getInboundRecordSizeLimit() != null) {
-            return context.getTlsContext().getInboundRecordSizeLimit();
-        } else {
-            return config.getDefaultMaxRecordData();
-        }
-    }
-
-    @Override
     public BigInteger getServerEphemeralDhModulus() {
         if (context.getTlsContext().getServerEphemeralDhModulus() != null) {
             return context.getTlsContext().getServerEphemeralDhModulus();
@@ -1118,6 +1091,15 @@ public class DefaultChooser extends Chooser {
             } else {
                 return getServerEphemeralEcPrivateKey();
             }
+        }
+    }
+
+    @Override
+    public Integer getPeerReceiveLimit() {
+        if (context.getTlsContext().getPeerReceiveLimit() != null) {
+            return context.getTlsContext().getPeerReceiveLimit();
+        } else {
+            return config.getDefaultAssumedMaxReceiveLimit();
         }
     }
 }

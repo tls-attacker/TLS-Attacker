@@ -68,8 +68,6 @@ public abstract class Chooser {
 
     public abstract List<ClientCertificateType> getClientCertificateTypes();
 
-    public abstract MaxFragmentLength getMaxFragmentLength();
-
     public abstract Integer getMaxEarlyDataSize();
 
     public abstract HeartbeatMode getHeartbeatMode();
@@ -260,10 +258,6 @@ public abstract class Chooser {
 
     public abstract byte[] getLastClientHello();
 
-    public abstract Integer getOutboundMaxRecordDataSize();
-
-    public abstract Integer getInboundMaxRecordDataSize();
-
     /**
      * Always returns the correct value depending on the selected cipher suites
      *
@@ -334,4 +328,6 @@ public abstract class Chooser {
      * @return
      */
     public abstract BigInteger getKeySharePrivateKey(NamedGroup keyStoreGroup);
+
+    public abstract Integer getPeerReceiveLimit();
 }

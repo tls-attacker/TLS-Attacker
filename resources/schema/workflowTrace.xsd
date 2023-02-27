@@ -3626,7 +3626,6 @@
           <xs:element name="clientSupportedCertificateSignAlgorithms" type="signatureAndHashAlgorithm" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
           <xs:element name="serverSupportedCertificateSignAlgorithms" type="signatureAndHashAlgorithm" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
           <xs:element name="heartbeatMode" type="heartbeatMode" minOccurs="0"/>
-          <xs:element name="selectedSigHashAlgorithm" type="signatureAndHashAlgorithm" minOccurs="0"/>
           <xs:element name="cachedInfoExtensionClientState" type="xs:boolean"/>
           <xs:element name="cachedInfoExtensionObjects" type="cachedObject" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
           <xs:element name="statusRequestV2RequestList" type="requestItemV2" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
@@ -3708,7 +3707,7 @@
           <xs:element name="clientAuthentication" type="xs:boolean" minOccurs="0"/>
           <xs:element name="clientPWDUsername" type="xs:string" minOccurs="0"/>
           <xs:element name="serverPWDSalt" type="xs:base64Binary" minOccurs="0"/>
-          <xs:element name="pwdpe" type="point" minOccurs="0"/>
+          <xs:element name="pwdPasswordElement" type="point" minOccurs="0"/>
           <xs:element name="clientPWDPrivate" type="xs:integer" minOccurs="0"/>
           <xs:element name="serverPWDPrivate" type="xs:integer" minOccurs="0"/>
           <xs:element name="serverPWDScalar" type="xs:integer" minOccurs="0"/>
@@ -3742,6 +3741,7 @@
           <xs:element name="maxFragmentLength" type="maxFragmentLength" minOccurs="0"/>
           <xs:element name="outboundRecordSizeLimit" type="xs:int" minOccurs="0"/>
           <xs:element name="inboundRecordSizeLimit" type="xs:int" minOccurs="0"/>
+          <xs:element name="peerReceiveLimit" type="xs:int" minOccurs="0"/>
           <xs:element name="writeConnectionId" type="xs:base64Binary" minOccurs="0"/>
           <xs:element name="readConnectionID" type="xs:base64Binary" minOccurs="0"/>
           <xs:element name="clientX509Context" type="x509Context" minOccurs="0"/>
@@ -3960,6 +3960,7 @@
 
   <xs:complexType name="config">
     <xs:all>
+      <xs:element name="respectPeerRecordSizeLimitations" type="xs:boolean"/>
       <xs:element name="defaultLayerConfiguration" type="layerConfiguration" minOccurs="0"/>
       <xs:element name="defaultHandshakeSecret" type="xs:string" minOccurs="0"/>
       <xs:element name="defaultExplicitCertificateChain" minOccurs="0">
@@ -4335,8 +4336,8 @@
       <xs:element name="defaultSelectedProtocolVersion" type="protocolVersion" minOccurs="0"/>
       <xs:element name="defaultHighestClientProtocolVersion" type="protocolVersion" minOccurs="0"/>
       <xs:element name="defaultMaxFragmentLength" type="maxFragmentLength" minOccurs="0"/>
+      <xs:element name="defaultAssumedMaxReceiveLimit" type="xs:int" minOccurs="0"/>
       <xs:element name="defaultMaxRecordData" type="xs:int" minOccurs="0"/>
-      <xs:element name="enforcedMaxRecordData" type="xs:int" minOccurs="0"/>
       <xs:element name="inboundRecordSizeLimit" type="xs:int" minOccurs="0"/>
       <xs:element name="defaultHeartbeatMode" type="heartbeatMode" minOccurs="0"/>
       <xs:element name="defaultClientSupportedCompressionMethods" minOccurs="0">
@@ -6642,7 +6643,6 @@
   <xs:simpleType name="chooserType">
     <xs:restriction base="xs:string">
       <xs:enumeration value="DEFAULT"/>
-      <xs:enumeration value="SMART_RECORD_SIZE"/>
     </xs:restriction>
   </xs:simpleType>
 
