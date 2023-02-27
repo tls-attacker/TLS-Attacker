@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.core.crypto;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.protocol.constants.EcCurveEquationType;
 import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
 import de.rub.nds.protocol.crypto.ec.EllipticCurve;
 import de.rub.nds.protocol.crypto.ec.Point;
@@ -56,17 +55,19 @@ public class KeyShareCalculator {
 
     public static byte[] computeSharedSecret(
             NamedGroup group, BigInteger privateKey, byte[] publicKey) {
+        System.out.println("Group; " + group.name());
+        System.out.println("PrivateKey; " + privateKey);
+        System.out.println("PublicKey; " + ArrayConverter.bytesToHexString(publicKey));
+
         if (group.isDhGroup()) {
             return computeDhSharedSecret(group, privateKey, new BigInteger(1, publicKey));
         } else if (group.isEcGroup()) {
+
             NamedEllipticCurveParameters parameters =
                     (NamedEllipticCurveParameters) group.getGroupParameters();
             Point point;
-            if (parameters.getEquationType() == EcCurveEquationType.MONTGOMERY) {
-                point = PointFormatter.fromRawFormat(parameters, publicKey);
-            } else {
-                point = PointFormatter.formatFromByteArray(parameters, publicKey);
-            }
+            point = PointFormatter.formatFromByteArray(parameters, publicKey);
+
             return computeEcSharedSecret(group, privateKey, point);
         } else {
             LOGGER.warn(
@@ -95,6 +96,10 @@ public class KeyShareCalculator {
         NamedEllipticCurveParameters parameters =
                 (NamedEllipticCurveParameters) group.getGroupParameters();
         EllipticCurve curve = parameters.getCurve();
+        if (group == NamedGroup.ECDH_X25519 || group == NamedGroup.ECDH_X448) {
+            RFC7748Curve rfcCurve = (RFC7748Curve) curve;
+            return rfcCurve.computeSharedSecretFromDecodedPoint(privateKey, publicKey);
+        }
         Point sharedPoint = curve.mult(privateKey, publicKey);
         int elementLength =
                 ArrayConverter.bigIntegerToByteArray(sharedPoint.getFieldX().getModulus()).length;
