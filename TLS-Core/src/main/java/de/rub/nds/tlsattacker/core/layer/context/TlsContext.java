@@ -366,7 +366,7 @@ public class TlsContext extends LayerContext {
     private byte[] serverPWDSalt;
 
     /** Password Element for TLS_ECCPWD */
-    private Point pwdpe;
+    private Point pwdPasswordElement;
 
     private BigInteger clientPWDPrivate;
 
@@ -1799,11 +1799,11 @@ public class TlsContext extends LayerContext {
     }
 
     public Point getPWDPE() {
-        return pwdpe;
+        return pwdPasswordElement;
     }
 
     public void setPWDPE(Point pwdpe) {
-        this.pwdpe = pwdpe;
+        this.pwdPasswordElement = pwdpe;
     }
 
     public BigInteger getClientPWDPrivate() {
