@@ -81,7 +81,7 @@ public class RecordPreparator extends Preparator<Record> {
                             .getRecordCipher(recordLayer.getWriteEpoch())
                             .getState()
                             .getConnectionId();
-            if (connectionId != null) {
+            if (connectionId != null && chooser.getConfig().isAddConnectionIdExtension()) {
                 record.setConnectionId(connectionId);
                 LOGGER.debug("ConnectionId: {}", record.getConnectionId().getValue());
             }

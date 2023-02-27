@@ -49,8 +49,8 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
                         setClientRecordCipher(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
                     }
                 } else {
-                    setClientRecordCipher(Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS);
                     acknowledgeFinished(message);
+                    setClientRecordCipher(Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS);
                 }
             } else if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.SERVER
                     && !tlsContext.isExtensionNegotiated(ExtensionType.EARLY_DATA)) {
@@ -80,12 +80,15 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
     }
 
     private void acknowledgeFinished(FinishedMessage message) {
-        RecordNumber recordNumber = new RecordNumber();
-        recordNumber.setEpoch(BigInteger.valueOf(tlsContext.getReadEpoch()));
-        recordNumber.setSequenceNumber(
-                BigInteger.valueOf(tlsContext.getReadSequenceNumber(tlsContext.getReadEpoch())));
         tlsContext.setAcknowledgedRecords(new LinkedList<>());
-        tlsContext.getAcknowledgedRecords().add(recordNumber);
+        int epoch = tlsContext.getReadEpoch();
+        long finalSeqNum = tlsContext.getReadSequenceNumber(epoch);
+        // acknowledge all records of the given epoch
+        for (long seqNum = 0; seqNum <= finalSeqNum; seqNum++) {
+            RecordNumber recordNumber =
+                    new RecordNumber(BigInteger.valueOf(epoch), BigInteger.valueOf(seqNum));
+            tlsContext.getAcknowledgedRecords().add(recordNumber);
+        }
     }
 
     private void adjustApplicationTrafficSecrets() {

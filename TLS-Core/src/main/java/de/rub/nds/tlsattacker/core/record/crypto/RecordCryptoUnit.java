@@ -43,9 +43,7 @@ public abstract class RecordCryptoUnit {
                 return recordCipherList.get(i);
             }
         }
-        LOGGER.warn(
-                "No RecordCipher found, for epoch bits: " + epochBits + ". Using epoch 0 cipher.");
-        return recordCipherList.get(0);
+        return null;
     }
 
     /** Return true, if we are still in epoch 0 and no early data was sent yet. */
@@ -54,7 +52,7 @@ public abstract class RecordCryptoUnit {
     }
 
     public RecordCipher getRecordCipher(int epoch) {
-        if (recordCipherList.size() > epoch) {
+        if (recordCipherList.size() > epoch && recordCipherList.get(epoch) != null) {
             return recordCipherList.get(epoch);
         } else {
             LOGGER.warn("Got no RecordCipher for epoch: " + epoch + " using epoch 0 cipher");

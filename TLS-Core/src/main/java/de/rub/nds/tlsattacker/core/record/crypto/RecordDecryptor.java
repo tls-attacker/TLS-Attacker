@@ -47,6 +47,13 @@ public class RecordDecryptor extends Decryptor {
                     && record.getUnifiedHeader() != null) {
                 // after handshake dtls 1.3 epochs must be guessed based on the last 2 bits
                 recordCipher = getRecordCipherForEpochBits(record.getEpoch().getValue(), record);
+                if (recordCipher == null) {
+                    LOGGER.warn(
+                            "No RecordCipher found, for epoch bits: "
+                                    + record.getEpoch().getValue()
+                                    + ". Using most recent cipher instead.");
+                    recordCipher = getRecordMostRecentCipher();
+                }
             } else {
                 recordCipher = getRecordCipher(record.getEpoch().getValue());
             }
