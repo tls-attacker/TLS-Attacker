@@ -333,6 +333,16 @@
 
   <xs:element name="deepCopyBuffersAction" type="deepCopyBuffersAction"/>
 
+  <xs:element name="dhPublicKey" type="dhPublicKey"/>
+
+  <xs:element name="dsaPublicKey" type="dsaPublicKey"/>
+
+  <xs:element name="ecdhEcdsaPublicKey" type="ecdhEcdsaPublicKey"/>
+
+  <xs:element name="ed25519PublicKey" type="ed25519PublicKey"/>
+
+  <xs:element name="ed448PublicKey" type="ed448PublicKey"/>
+
   <xs:element name="esniKeyDnsRequestAction" type="esniKeyDnsRequestAction"/>
 
   <xs:element name="findReceivedProtocolMessageAction" type="findReceivedProtocolMessageAction"/>
@@ -433,6 +443,10 @@
 
   <xs:element name="resetConnectionAction" type="resetConnectionAction"/>
 
+  <xs:element name="rsaPublicKey" type="rsaPublicKey"/>
+
+  <xs:element name="rsaPublicKeyContentSequence" type="rsaPublicKeyContentSequence"/>
+
   <xs:element name="selectableChoice" type="selectableChoice"/>
 
   <xs:element name="sendAction" type="sendAction"/>
@@ -473,9 +487,15 @@
 
   <xs:element name="workflowTrace" type="workflowTrace"/>
 
+  <xs:element name="x25519PublicKey" type="x25519PublicKey"/>
+
+  <xs:element name="x448PublicKey" type="x448PublicKey"/>
+
   <xs:element name="x509Certificate" type="x509Certificate"/>
 
   <xs:element name="x509CertificateConfig" type="x509CertificateConfig"/>
+
+  <xs:element name="x509PublicKeyContent" type="x509PublicKeyContent"/>
 
   <xs:complexType name="workflowTrace">
     <xs:sequence>
@@ -2344,10 +2364,20 @@
 
   <xs:complexType name="asn1Any">
     <xs:sequence>
-      <xs:element name="instantiation" type="asn1Field" minOccurs="0"/>
+      <xs:any processContents="lax" namespace="##other"/>
       <xs:element name="optional" type="xs:boolean"/>
     </xs:sequence>
     <xs:attribute name="identifier" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="asn1Boolean">
+    <xs:complexContent>
+      <xs:extension base="asn1Field">
+        <xs:sequence>
+          <xs:element name="value" type="modifiableBoolean" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
   </xs:complexType>
 
   <xs:complexType name="modifiableBigInteger">
@@ -2394,19 +2424,9 @@
     </xs:sequence>
   </xs:complexType>
 
-  <xs:complexType name="asn1Boolean">
-    <xs:complexContent>
-      <xs:extension base="asn1Field">
-        <xs:sequence>
-          <xs:element name="value" type="modifiableBoolean" minOccurs="0"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
   <xs:complexType name="asn1Choice" abstract="true">
     <xs:sequence>
-      <xs:element name="selectedChoice" type="asn1Field" minOccurs="0"/>
+      <xs:any processContents="lax" namespace="##other"/>
       <xs:element name="choiceList" minOccurs="0">
         <xs:complexType>
           <xs:sequence>
@@ -2420,7 +2440,7 @@
 
   <xs:complexType name="selectableChoice" final="extension restriction">
     <xs:sequence>
-      <xs:element name="field" type="asn1Field" minOccurs="0"/>
+      <xs:any processContents="lax" namespace="##other"/>
     </xs:sequence>
   </xs:complexType>
 
@@ -5478,6 +5498,98 @@
   <xs:complexType name="genericReceiveAsciiAction">
     <xs:complexContent>
       <xs:extension base="asciiAction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="rsaPublicKey">
+    <xs:complexContent>
+      <xs:extension base="x509PublicKeyContent">
+        <xs:sequence>
+          <xs:element ref="rsaPublicKeyContentSequence" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="x509PublicKeyContent" abstract="true">
+    <xs:sequence>
+      <xs:element name="identifier" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="rsaPublicKeyContentSequence">
+    <xs:complexContent>
+      <xs:extension base="asn1Sequence">
+        <xs:sequence>
+          <xs:element name="modulus" type="asn1Integer" minOccurs="0"/>
+          <xs:element name="publicExponent" type="asn1Integer" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="dhPublicKey">
+    <xs:complexContent>
+      <xs:extension base="x509PublicKeyContent">
+        <xs:sequence>
+          <xs:element name="publicKey" type="asn1Integer" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="dsaPublicKey">
+    <xs:complexContent>
+      <xs:extension base="x509PublicKeyContent">
+        <xs:sequence>
+          <xs:element name="publicKeyY" type="asn1Integer" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="ecdhEcdsaPublicKey">
+    <xs:complexContent>
+      <xs:extension base="x509PublicKeyContent">
+        <xs:sequence>
+          <xs:element name="xCoordinate" type="modifiableBigInteger" minOccurs="0"/>
+          <xs:element name="yCoordinate" type="modifiableBigInteger" minOccurs="0"/>
+          <xs:element name="formatByte" type="modifiableByte" minOccurs="0"/>
+          <xs:element name="pointOctets" type="modifiableByteArray" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="ed25519PublicKey">
+    <xs:complexContent>
+      <xs:extension base="x509PublicKeyContent">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="ed448PublicKey">
+    <xs:complexContent>
+      <xs:extension base="x509PublicKeyContent">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="x25519PublicKey">
+    <xs:complexContent>
+      <xs:extension base="x509PublicKeyContent">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="x448PublicKey">
+    <xs:complexContent>
+      <xs:extension base="x509PublicKeyContent">
         <xs:sequence/>
       </xs:extension>
     </xs:complexContent>

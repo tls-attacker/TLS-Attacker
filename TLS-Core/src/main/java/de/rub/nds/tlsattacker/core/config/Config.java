@@ -14,6 +14,7 @@ import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
 import de.rub.nds.protocol.crypto.ec.EllipticCurve;
 import de.rub.nds.protocol.crypto.ec.Point;
+import de.rub.nds.protocol.xml.Pair;
 import de.rub.nds.tlsattacker.core.config.adapter.MapAdapter;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
@@ -31,6 +32,7 @@ import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.core.workflow.filter.FilterType;
 import de.rub.nds.x509attacker.config.X509CertificateConfig;
+import de.rub.nds.x509attacker.constants.X500AttributeType;
 import de.rub.nds.x509attacker.filesystem.CertificateBytes;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
@@ -1131,8 +1133,35 @@ public class Config implements Serializable {
 
     public Config() {
         this.certificateChainConfig = new LinkedList<>();
-        certificateChainConfig.add(new X509CertificateConfig());
-        certificateChainConfig.add(new X509CertificateConfig());
+        List<Pair<X500AttributeType, String>> rdn = new LinkedList<>();
+        rdn.add(
+                new Pair<>(
+                        X500AttributeType.COMMON_NAME, "Attacker CA - Global Insecurity Provider"));
+        rdn.add(new Pair<>(X500AttributeType.COUNTRY_NAME, "Global"));
+        rdn.add(new Pair<>(X500AttributeType.ORGANISATION_NAME, "TLS-Attacker"));
+        X509CertificateConfig caConfig = new X509CertificateConfig();
+        caConfig.setIssuer(rdn);
+        caConfig.setSubject(rdn);
+        byte[] serialNumber =
+                ArrayConverter.hexStringToByteArray("DEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEF");
+        caConfig.setSerialNumber(new BigInteger(serialNumber));
+
+        X509CertificateConfig leafConfig = new X509CertificateConfig();
+        leafConfig.setIssuer(rdn);
+        rdn = new LinkedList<>();
+        rdn.add(
+                new Pair<>(
+                        X500AttributeType.COMMON_NAME, "Attacker CA - Global Insecurity Provider"));
+        rdn.add(new Pair<>(X500AttributeType.COUNTRY_NAME, "Global"));
+        rdn.add(new Pair<>(X500AttributeType.ORGANISATION_NAME, "TLS-Attacker"));
+
+        leafConfig.setSubject(rdn);
+        serialNumber =
+                ArrayConverter.hexStringToByteArray("0F1F2F34F5F6F7F8F9F0F0F9F8F7F6F5F4F3F2F1");
+        leafConfig.setSerialNumber(new BigInteger(serialNumber));
+
+        certificateChainConfig.add(caConfig);
+        certificateChainConfig.add(leafConfig);
         defaultLayerConfiguration = LayerConfiguration.TLS;
         defaultClientConnection = new OutboundConnection("client", 443, "localhost");
         defaultServerConnection = new InboundConnection("server", 443, "localhost");

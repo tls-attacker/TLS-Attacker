@@ -125,6 +125,7 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
                         }
                         // There is no certificate list in the message, this means we need to auto
                         // create one
+                        LOGGER.debug("Building new certificate chain");
                         X509CertificateChainBuidler builder = new X509CertificateChainBuidler();
                         X509CertificateChain chain =
                                 builder.buildChain(chooser.getConfig().getCertificateChainConfig());
