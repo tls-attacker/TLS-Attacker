@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -10,6 +10,14 @@ package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.modifiablevariable.util.ModifiableVariableField;
 import de.rub.nds.tlsattacker.core.workflow.modifiableVariable.ModvarHelper;
+import de.rub.nds.x509attacker.x509.base.publickey.DhPublicKey;
+import de.rub.nds.x509attacker.x509.base.publickey.DsaPublicKey;
+import de.rub.nds.x509attacker.x509.base.publickey.EcdhEcdsaPublicKey;
+import de.rub.nds.x509attacker.x509.base.publickey.Ed25519PublicKey;
+import de.rub.nds.x509attacker.x509.base.publickey.Ed448PublicKey;
+import de.rub.nds.x509attacker.x509.base.publickey.RsaPublicKey;
+import de.rub.nds.x509attacker.x509.base.publickey.X25519PublicKey;
+import de.rub.nds.x509attacker.x509.base.publickey.X448PublicKey;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
@@ -52,7 +60,17 @@ public class WorkflowTraceSerializer {
 
     static synchronized JAXBContext getJAXBContext() throws JAXBException, IOException {
         if (context == null) {
-            context = JAXBContext.newInstance(WorkflowTrace.class);
+            context =
+                    JAXBContext.newInstance(
+                            WorkflowTrace.class,
+                            RsaPublicKey.class,
+                            DhPublicKey.class,
+                            DsaPublicKey.class,
+                            EcdhEcdsaPublicKey.class,
+                            Ed25519PublicKey.class,
+                            Ed448PublicKey.class,
+                            X25519PublicKey.class,
+                            X448PublicKey.class);
         }
         return context;
     }
@@ -110,7 +128,7 @@ public class WorkflowTraceSerializer {
                             .replaceAll("\r?\n", System.lineSeparator())
                             .getBytes(StandardCharsets.UTF_8));
         } catch (TransformerException E) {
-            LOGGER.debug(E.getStackTrace());
+            throw new RuntimeException(E);
         }
     }
 
@@ -242,8 +260,7 @@ public class WorkflowTraceSerializer {
                     trace.setName(file.getAbsolutePath());
                     list.add(trace);
                 } catch (JAXBException | IOException | XMLStreamException ex) {
-                    LOGGER.warn("Could not read " + file.getAbsolutePath() + " from Folder.");
-                    LOGGER.debug(ex.getLocalizedMessage(), ex);
+                    LOGGER.warn("Could not read {} from Folder.", ex);
                 }
             }
             return list;
