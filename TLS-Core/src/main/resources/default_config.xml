@@ -9,7 +9,7 @@
         <certificateConfig>
             <signatureAlgorithm>SHA256_WITH_RSA_ENCRYPTION</signatureAlgorithm>
             <version>V3</version>
-            <serialNumber>97815534420055201845582701110698800905769394705</serialNumber>
+            <serialNumber>-190231024330861262386236484584007130589038788881</serialNumber>
             <defaultIssuer>
                 <attributeField>
                     <leftElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="x500AttributeType">COMMON_NAME</leftElement>
@@ -27,7 +27,11 @@
             <subject>
                 <attributeField>
                     <leftElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="x500AttributeType">COMMON_NAME</leftElement>
-                    <rightElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema" xsi:type="xs:string">tls-attacker.com</rightElement>
+                    <rightElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema" xsi:type="xs:string">Attacker CA - Global Insecurity Provider</rightElement>
+                </attributeField>
+                <attributeField>
+                    <leftElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="x500AttributeType">COUNTRY_NAME</leftElement>
+                    <rightElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema" xsi:type="xs:string">Global</rightElement>
                 </attributeField>
                 <attributeField>
                     <leftElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="x500AttributeType">ORGANISATION_NAME</leftElement>
@@ -84,7 +88,7 @@
         <certificateConfig>
             <signatureAlgorithm>SHA256_WITH_RSA_ENCRYPTION</signatureAlgorithm>
             <version>V3</version>
-            <serialNumber>97815534420055201845582701110698800905769394705</serialNumber>
+            <serialNumber>86330296962577108276890666431737358272177631985</serialNumber>
             <defaultIssuer>
                 <attributeField>
                     <leftElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="x500AttributeType">COMMON_NAME</leftElement>

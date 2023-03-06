@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -277,7 +277,6 @@ public class DtlsFragmentLayer
             fragment.setHandshakeMessageTypeConfig(type);
             fragment.setFragmentContentConfig(fragmentBytes);
             fragment.setMessageSequenceConfig(writeHandshakeMessageSequence);
-            increaseWriteHandshakeMessageSequence();
             fragment.setOffsetConfig(currentOffset);
             fragment.setHandshakeMessageLengthConfig(handshakeBytes.length);
             currentOffset += fragmentBytes.length;
@@ -288,6 +287,8 @@ public class DtlsFragmentLayer
                             + type
                             + ". Not enough dtls fragments specified and disabled dynamic fragment creation in config.");
         }
+        increaseWriteHandshakeMessageSequence();
+
         return fragments;
     }
 

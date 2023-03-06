@@ -1149,10 +1149,7 @@ public class Config implements Serializable {
         X509CertificateConfig leafConfig = new X509CertificateConfig();
         leafConfig.setIssuer(rdn);
         rdn = new LinkedList<>();
-        rdn.add(
-                new Pair<>(
-                        X500AttributeType.COMMON_NAME, "Attacker CA - Global Insecurity Provider"));
-        rdn.add(new Pair<>(X500AttributeType.COUNTRY_NAME, "Global"));
+        rdn.add(new Pair<>(X500AttributeType.COMMON_NAME, "tls-attacker.com"));
         rdn.add(new Pair<>(X500AttributeType.ORGANISATION_NAME, "TLS-Attacker"));
 
         leafConfig.setSubject(rdn);
