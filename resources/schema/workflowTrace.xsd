@@ -333,16 +333,6 @@
 
   <xs:element name="deepCopyBuffersAction" type="deepCopyBuffersAction"/>
 
-  <xs:element name="dhPublicKey" type="dhPublicKey"/>
-
-  <xs:element name="dsaPublicKey" type="dsaPublicKey"/>
-
-  <xs:element name="ecdhEcdsaPublicKey" type="ecdhEcdsaPublicKey"/>
-
-  <xs:element name="ed25519PublicKey" type="ed25519PublicKey"/>
-
-  <xs:element name="ed448PublicKey" type="ed448PublicKey"/>
-
   <xs:element name="esniKeyDnsRequestAction" type="esniKeyDnsRequestAction"/>
 
   <xs:element name="findReceivedProtocolMessageAction" type="findReceivedProtocolMessageAction"/>
@@ -427,6 +417,8 @@
 
   <xs:element name="publicKeyBitString" type="publicKeyBitString"/>
 
+  <xs:element name="publicKeyContent" type="publicKeyContent"/>
+
   <xs:element name="receiveAction" type="receiveAction"/>
 
   <xs:element name="receiveAsciiAction" type="receiveAsciiAction"/>
@@ -442,10 +434,6 @@
   <xs:element name="renegotiationAction" type="renegotiationAction"/>
 
   <xs:element name="resetConnectionAction" type="resetConnectionAction"/>
-
-  <xs:element name="rsaPublicKey" type="rsaPublicKey"/>
-
-  <xs:element name="rsaPublicKeyContentSequence" type="rsaPublicKeyContentSequence"/>
 
   <xs:element name="selectableChoice" type="selectableChoice"/>
 
@@ -487,15 +475,27 @@
 
   <xs:element name="workflowTrace" type="workflowTrace"/>
 
-  <xs:element name="x25519PublicKey" type="x25519PublicKey"/>
-
-  <xs:element name="x448PublicKey" type="x448PublicKey"/>
-
   <xs:element name="x509Certificate" type="x509Certificate"/>
 
   <xs:element name="x509CertificateConfig" type="x509CertificateConfig"/>
 
-  <xs:element name="x509PublicKeyContent" type="x509PublicKeyContent"/>
+  <xs:element name="x509DhPublicKey" type="x509DhPublicKey"/>
+
+  <xs:element name="x509DsaPublicKey" type="x509DsaPublicKey"/>
+
+  <xs:element name="x509EcdhEcdsaPublicKey" type="x509EcdhEcdsaPublicKey"/>
+
+  <xs:element name="x509Ed25519PublicKey" type="x509Ed25519PublicKey"/>
+
+  <xs:element name="x509Ed448PublicKey" type="x509Ed448PublicKey"/>
+
+  <xs:element name="x509RsaPublicKey" type="x509RsaPublicKey"/>
+
+  <xs:element name="x509RsaPublicKeyContentSequence" type="x509RsaPublicKeyContentSequence"/>
+
+  <xs:element name="x509X25519PublicKey" type="x509X25519PublicKey"/>
+
+  <xs:element name="x509X448PublicKey" type="x509X448PublicKey"/>
 
   <xs:complexType name="workflowTrace">
     <xs:sequence>
@@ -5503,23 +5503,23 @@
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="rsaPublicKey">
+  <xs:complexType name="x509RsaPublicKey">
     <xs:complexContent>
-      <xs:extension base="x509PublicKeyContent">
+      <xs:extension base="publicKeyContent">
         <xs:sequence>
-          <xs:element ref="rsaPublicKeyContentSequence" minOccurs="0"/>
+          <xs:element name="rsaPublicKeyContentSequence" type="x509RsaPublicKeyContentSequence" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="x509PublicKeyContent" abstract="true">
+  <xs:complexType name="publicKeyContent" abstract="true">
     <xs:sequence>
       <xs:element name="identifier" type="xs:string" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
 
-  <xs:complexType name="rsaPublicKeyContentSequence">
+  <xs:complexType name="x509RsaPublicKeyContentSequence">
     <xs:complexContent>
       <xs:extension base="asn1Sequence">
         <xs:sequence>
@@ -5530,9 +5530,9 @@
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="dhPublicKey">
+  <xs:complexType name="x509DhPublicKey">
     <xs:complexContent>
-      <xs:extension base="x509PublicKeyContent">
+      <xs:extension base="publicKeyContent">
         <xs:sequence>
           <xs:element name="publicKey" type="asn1Integer" minOccurs="0"/>
         </xs:sequence>
@@ -5540,9 +5540,9 @@
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="dsaPublicKey">
+  <xs:complexType name="x509DsaPublicKey">
     <xs:complexContent>
-      <xs:extension base="x509PublicKeyContent">
+      <xs:extension base="publicKeyContent">
         <xs:sequence>
           <xs:element name="publicKeyY" type="asn1Integer" minOccurs="0"/>
         </xs:sequence>
@@ -5550,9 +5550,9 @@
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="ecdhEcdsaPublicKey">
+  <xs:complexType name="x509EcdhEcdsaPublicKey">
     <xs:complexContent>
-      <xs:extension base="x509PublicKeyContent">
+      <xs:extension base="publicKeyContent">
         <xs:sequence>
           <xs:element name="xCoordinate" type="modifiableBigInteger" minOccurs="0"/>
           <xs:element name="yCoordinate" type="modifiableBigInteger" minOccurs="0"/>
@@ -5563,33 +5563,33 @@
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="ed25519PublicKey">
+  <xs:complexType name="x509Ed25519PublicKey">
     <xs:complexContent>
-      <xs:extension base="x509PublicKeyContent">
+      <xs:extension base="publicKeyContent">
         <xs:sequence/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="ed448PublicKey">
+  <xs:complexType name="x509Ed448PublicKey">
     <xs:complexContent>
-      <xs:extension base="x509PublicKeyContent">
+      <xs:extension base="publicKeyContent">
         <xs:sequence/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="x25519PublicKey">
+  <xs:complexType name="x509X25519PublicKey">
     <xs:complexContent>
-      <xs:extension base="x509PublicKeyContent">
+      <xs:extension base="publicKeyContent">
         <xs:sequence/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="x448PublicKey">
+  <xs:complexType name="x509X448PublicKey">
     <xs:complexContent>
-      <xs:extension base="x509PublicKeyContent">
+      <xs:extension base="publicKeyContent">
         <xs:sequence/>
       </xs:extension>
     </xs:complexContent>

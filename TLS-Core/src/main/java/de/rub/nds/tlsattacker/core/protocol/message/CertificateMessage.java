@@ -21,10 +21,12 @@ import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificateEntry;
 import de.rub.nds.tlsattacker.core.protocol.parser.CertificateMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.CertificateMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateMessageSerializer;
+import de.rub.nds.x509attacker.x509.base.X509Certificate;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
@@ -159,6 +161,14 @@ public class CertificateMessage extends HandshakeMessage {
 
     public void setCertificateEntryList(List<CertificateEntry> certificateEntryList) {
         this.certificateEntryList = certificateEntryList;
+    }
+
+    public List<X509Certificate> getX509CertificateListFromEntries() {
+        List<X509Certificate> x509CertificateList = new LinkedList<>();
+        for (CertificateEntry entry : certificateEntryList) {
+            x509CertificateList.add(entry.getX509certificate());
+        }
+        return x509CertificateList;
     }
 
     @Override

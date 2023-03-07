@@ -21,7 +21,7 @@ import de.rub.nds.tlsattacker.util.TimeHelper;
 import de.rub.nds.tlsattacker.util.tests.TestCategories;
 import de.rub.nds.x509attacker.filesystem.CertificateIo;
 import de.rub.nds.x509attacker.x509.base.X509CertificateChain;
-import de.rub.nds.x509attacker.x509.base.publickey.X509PublicKeyContent;
+import de.rub.nds.x509attacker.x509.base.publickey.PublicKeyContent;
 import java.security.KeyPair;
 import java.security.KeyStore;
 import java.security.Security;
@@ -41,7 +41,7 @@ public class CertificateFetcherTest {
     private static final int SERVER_PORT = 4999;
 
     private static BasicTlsServer tlsServer;
-    private static X509PublicKeyContent expectedPublicKey;
+    private static PublicKeyContent expectedPublicKey;
     private static X509CertificateChain expectedCertificate;
 
     @BeforeAll
@@ -87,7 +87,7 @@ public class CertificateFetcherTest {
     @Test
     @Tag(TestCategories.INTEGRATION_TEST)
     public void testFetchServerPublicKey() {
-        X509PublicKeyContent actual;
+        PublicKeyContent actual;
         try {
             actual = CertificateFetcher.fetchServerPublicKey(config);
         } catch (CertificateParsingException ex) {

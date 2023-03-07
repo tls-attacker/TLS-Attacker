@@ -10,14 +10,14 @@ package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.modifiablevariable.util.ModifiableVariableField;
 import de.rub.nds.tlsattacker.core.workflow.modifiableVariable.ModvarHelper;
-import de.rub.nds.x509attacker.x509.base.publickey.DhPublicKey;
-import de.rub.nds.x509attacker.x509.base.publickey.DsaPublicKey;
-import de.rub.nds.x509attacker.x509.base.publickey.EcdhEcdsaPublicKey;
-import de.rub.nds.x509attacker.x509.base.publickey.Ed25519PublicKey;
-import de.rub.nds.x509attacker.x509.base.publickey.Ed448PublicKey;
-import de.rub.nds.x509attacker.x509.base.publickey.RsaPublicKey;
-import de.rub.nds.x509attacker.x509.base.publickey.X25519PublicKey;
-import de.rub.nds.x509attacker.x509.base.publickey.X448PublicKey;
+import de.rub.nds.x509attacker.x509.base.publickey.X509DhPublicKey;
+import de.rub.nds.x509attacker.x509.base.publickey.X509DsaPublicKey;
+import de.rub.nds.x509attacker.x509.base.publickey.X509EcdhEcdsaPublicKey;
+import de.rub.nds.x509attacker.x509.base.publickey.X509Ed25519PublicKey;
+import de.rub.nds.x509attacker.x509.base.publickey.X509Ed448PublicKey;
+import de.rub.nds.x509attacker.x509.base.publickey.X509RsaPublicKey;
+import de.rub.nds.x509attacker.x509.base.publickey.X509X25519PublicKey;
+import de.rub.nds.x509attacker.x509.base.publickey.X509X448PublicKey;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
@@ -63,14 +63,14 @@ public class WorkflowTraceSerializer {
             context =
                     JAXBContext.newInstance(
                             WorkflowTrace.class,
-                            RsaPublicKey.class,
-                            DhPublicKey.class,
-                            DsaPublicKey.class,
-                            EcdhEcdsaPublicKey.class,
-                            Ed25519PublicKey.class,
-                            Ed448PublicKey.class,
-                            X25519PublicKey.class,
-                            X448PublicKey.class);
+                            X509RsaPublicKey.class,
+                            X509DhPublicKey.class,
+                            X509DsaPublicKey.class,
+                            X509EcdhEcdsaPublicKey.class,
+                            X509Ed25519PublicKey.class,
+                            X509Ed448PublicKey.class,
+                            X509X25519PublicKey.class,
+                            X509X448PublicKey.class);
         }
         return context;
     }
