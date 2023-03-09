@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -99,8 +99,8 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
                             tlsContext.getDigest().getRawBytes());
             tlsContext.setClientApplicationTrafficSecret(clientApplicationTrafficSecret);
             LOGGER.debug(
-                    "Set clientApplicationTrafficSecret in Context to "
-                            + ArrayConverter.bytesToHexString(clientApplicationTrafficSecret));
+                    "Set clientApplicationTrafficSecret in Context to {}",
+                    clientApplicationTrafficSecret);
             byte[] serverApplicationTrafficSecret =
                     HKDFunction.deriveSecret(
                             hkdfAlgorithm,
@@ -110,12 +110,10 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
                             tlsContext.getDigest().getRawBytes());
             tlsContext.setServerApplicationTrafficSecret(serverApplicationTrafficSecret);
             LOGGER.debug(
-                    "Set serverApplicationTrafficSecret in Context to "
-                            + ArrayConverter.bytesToHexString(serverApplicationTrafficSecret));
+                    "Set serverApplicationTrafficSecret in Context to {}",
+                    serverApplicationTrafficSecret);
             tlsContext.setMasterSecret(masterSecret);
-            LOGGER.debug(
-                    "Set masterSecret in Context to "
-                            + ArrayConverter.bytesToHexString(masterSecret));
+            LOGGER.debug("Set masterSecret in Context to {}", masterSecret);
         } catch (NoSuchAlgorithmException | CryptoException ex) {
             throw new AdjustmentException(ex);
         }

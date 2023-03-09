@@ -8,6 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.config;
 
+import static java.nio.charset.StandardCharsets.US_ASCII;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.IllegalStringAdapter;
 import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
@@ -20,6 +22,7 @@ import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.layer.constant.LayerConfiguration;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.EchConfig;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
@@ -163,6 +166,12 @@ public class Config implements Serializable {
      */
     private Boolean retryFailedClientTcpSocketInitialization = false;
 
+    /**
+     * Setting this to true results in the Client transporthandlers trying to acquire a new port on
+     * each connection attempt. Default behavior true so that reused ports are not an issue.
+     */
+    private Boolean resetClientSourcePort = true;
+
     /** The default connection parameters to use when running TLS-Server. */
     private InboundConnection defaultServerConnection;
 
@@ -224,11 +233,10 @@ public class Config implements Serializable {
     @XmlElementWrapper
     private List<ServerNamePair> defaultSniHostnames =
             new LinkedList<>(
-                    Arrays.asList(
+                    List.of(
                             new ServerNamePair(
                                     SniType.HOST_NAME.getValue(),
-                                    "example.com".getBytes(Charset.forName("ASCII")))));
-
+                                    "example.com".getBytes(US_ASCII))));
     /** Key type for KeyShareExtension */
     private NamedGroup defaultSelectedNamedGroup = NamedGroup.SECP256R1;
 
@@ -251,7 +259,7 @@ public class Config implements Serializable {
 
     private Integer preferredCertRsaKeySize = 2048;
 
-    private Integer prefferedCertDssKeySize = 2048;
+    private Integer preferredCertDssKeySize = 2048;
 
     /** Determine if a KeyUpdate should be requested from peer */
     private KeyUpdateRequest defaultKeyUpdateRequestMode = KeyUpdateRequest.UPDATE_NOT_REQUESTED;
@@ -528,6 +536,9 @@ public class Config implements Serializable {
     /** If we generate ClientHello with TLS 1.3 cookie extension */
     private Boolean addCookieExtension = false;
 
+    /** Collect handshake messages and send in as few records as possible * */
+    private Boolean sendHandshakeMessagesWithinSingleRecord = false;
+
     /** Default ConnectionID to use, if addConnectionIdExtension is true */
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     @XmlElement(name = "defaultConnectionId")
@@ -673,10 +684,10 @@ public class Config implements Serializable {
      */
     private Boolean createRecordsDynamically = true;
 
-    /** Every record will be sent in one individual transport packet [ADD FOR LAYER!] */
-    private Boolean createIndividualTransportPackets = false;
+    /** Every fragment will be sent in one individual transport packet */
+    private Boolean individualTransportPacketsForFragments = false;
 
-    /** If we should wait after sending one transport packet */
+    /** If we should wait after sending one transport packet [ADD FOR LAYER!] */
     private Integer individualTransportPacketCooldown = 0;
 
     /**
@@ -1065,6 +1076,9 @@ public class Config implements Serializable {
 
     private ECPointFormat defaultSelectedPointFormat = ECPointFormat.UNCOMPRESSED;
 
+    /** The DNS server to use for DNS queries (e.g. ech keys) */
+    private String defaultDnsServer = "8.8.8.8";
+
     /** Private Key of the Client for the EncryptedServerNameIndication extension. */
     private BigInteger defaultEsniClientPrivateKey =
             new BigInteger(
@@ -1122,6 +1136,25 @@ public class Config implements Serializable {
     @XmlElement(name = "defaultEsniExtension")
     @XmlElementWrapper
     private List<ExtensionType> defaultEsniExtensions = new LinkedList();
+
+    /** Private Key of the Client for the EncryptedClientHello extension. */
+    private BigInteger defaultEchClientPrivateKey =
+            new BigInteger(
+                    "191991257030464195512760799659436374116556484140110877679395918219072292938297573720808302564562486757422301181089761");
+
+    /** Default value of a server's public key */
+    private BigInteger defaultEchServerPrivateKey =
+            new BigInteger(
+                    "-1673869334575128978734767576405071540980308529037586990006706167463937836529");
+
+    /** Default algorithm values for ECH */
+    private EchConfig defaultEchConfig;
+
+    /** If we generate ClientHello with the EncryptedClientHello extension */
+    private Boolean addEncryptedClientHelloExtension = false;
+
+    /** Padding for the list of alpn values */
+    private Integer defaultMaxEchAlpnPadding = 25;
 
     private Boolean acceptOnlyFittingDtlsFragments = false;
 
@@ -1265,6 +1298,7 @@ public class Config implements Serializable {
                         NamedGroup.ECDH_X25519,
                         ArrayConverter.hexStringToByteArray(
                                 "2A981DB6CDD02A06C1763102C9E741365AC4E6F72B3176A6BD6A3523D3EC0F4C"));
+        defaultEchConfig = EchConfig.createDefaultEchConfig();
         pskKeyExchangeModes = new LinkedList<>();
         pskKeyExchangeModes.add(PskKeyExchangeMode.PSK_KE);
         pskKeyExchangeModes.add(PskKeyExchangeMode.PSK_DHE_KE);
@@ -2124,12 +2158,13 @@ public class Config implements Serializable {
         this.createRecordsDynamically = createRecordsDynamically;
     }
 
-    public Boolean isCreateIndividualTransportPackets() {
-        return createIndividualTransportPackets;
+    public Boolean isIndividualTransportPacketsForFragments() {
+        return individualTransportPacketsForFragments;
     }
 
-    public void setCreateIndividualTransportPackets(Boolean createIndividualTransportPackets) {
-        this.createIndividualTransportPackets = createIndividualTransportPackets;
+    public void setIndividualTransportPacketsForFragments(
+            Boolean individualTransportPacketsForFragments) {
+        this.individualTransportPacketsForFragments = individualTransportPacketsForFragments;
     }
 
     public Integer getIndividualTransportPacketCooldown() {
@@ -2479,6 +2514,14 @@ public class Config implements Serializable {
     public void setAddEncryptedServerNameIndicationExtension(
             Boolean addEncryptedServerNameIndicationExtension) {
         this.addEncryptedServerNameIndicationExtension = addEncryptedServerNameIndicationExtension;
+    }
+
+    public Boolean isAddEncryptedClientHelloExtension() {
+        return addEncryptedClientHelloExtension;
+    }
+
+    public void setAddEncryptedClientHelloExtension(Boolean addEncryptedClientHelloExtension) {
+        this.addEncryptedClientHelloExtension = addEncryptedClientHelloExtension;
     }
 
     public void setAddPWDClearExtension(Boolean addPWDClearExtension) {
@@ -3414,6 +3457,22 @@ public class Config implements Serializable {
         this.defaultEsniClientNonce = defaultEsniClientNonce;
     }
 
+    public BigInteger getDefaultEchClientPrivateKey() {
+        return defaultEchClientPrivateKey;
+    }
+
+    public void setDefaultEchClientPrivateKey(BigInteger defaultEchClientPrivateKey) {
+        this.defaultEchClientPrivateKey = defaultEchClientPrivateKey;
+    }
+
+    public BigInteger getDefaultEchServerPrivateKey() {
+        return defaultEchServerPrivateKey;
+    }
+
+    public void setDefaultEchServerPrivateKey(BigInteger defaultEchServerPrivateKey) {
+        this.defaultEchServerPrivateKey = defaultEchServerPrivateKey;
+    }
+
     public byte[] getDefaultEsniServerNonce() {
         return Arrays.copyOf(defaultEsniServerNonce, defaultEsniServerNonce.length);
     }
@@ -3560,6 +3619,14 @@ public class Config implements Serializable {
         this.retryFailedClientTcpSocketInitialization = retryFailedClientTcpSocketInitialization;
     }
 
+    public Boolean isResetClientSourcePort() {
+        return resetClientSourcePort;
+    }
+
+    public void setResetClientSourcePort(Boolean resetClientSourcePort) {
+        this.resetClientSourcePort = resetClientSourcePort;
+    }
+
     public Boolean isLimitPsksToOne() {
         return limitPsksToOne;
     }
@@ -3600,12 +3667,12 @@ public class Config implements Serializable {
         this.preferredCertRsaKeySize = preferredCertRsaKeySize;
     }
 
-    public int getPrefferedCertDssKeySize() {
-        return prefferedCertDssKeySize;
+    public int getPreferredCertDssKeySize() {
+        return preferredCertDssKeySize;
     }
 
-    public void setPrefferedCertDssKeySize(int prefferedCertDssKeySize) {
-        this.prefferedCertDssKeySize = prefferedCertDssKeySize;
+    public void setPreferredCertDssKeySize(int preferredCertDssKeySize) {
+        this.preferredCertDssKeySize = preferredCertDssKeySize;
     }
 
     public byte[] getDefaultExtensionCookie() {
@@ -3673,6 +3740,30 @@ public class Config implements Serializable {
         this.defaultSniHostnames = defaultSniHostnames;
     }
 
+    public String getDefaultDnsServer() {
+        return defaultDnsServer;
+    }
+
+    public void setDefaultDnsServer(String defaultDnsServer) {
+        this.defaultDnsServer = defaultDnsServer;
+    }
+
+    public EchConfig getDefaultEchConfig() {
+        return defaultEchConfig;
+    }
+
+    public void setDefaultEchConfig(EchConfig defaultEchConfig) {
+        this.defaultEchConfig = defaultEchConfig;
+    }
+
+    public Integer getDefaultMaxEchAlpnPadding() {
+        return defaultMaxEchAlpnPadding;
+    }
+
+    public void setDefaultMaxEchAlpnPadding(Integer defaultMaxEchAlpnPadding) {
+        this.defaultMaxEchAlpnPadding = defaultMaxEchAlpnPadding;
+    }
+
     public LayerConfiguration getDefaultLayerConfiguration() {
         return defaultLayerConfiguration;
     }
@@ -3704,6 +3795,15 @@ public class Config implements Serializable {
     public void setDefaultServerSupportedSSL2CipherSuites(
             List<SSL2CipherSuite> defaultServerSupportedSSL2CipherSuites) {
         this.defaultServerSupportedSSL2CipherSuites = defaultServerSupportedSSL2CipherSuites;
+    }
+
+    public Boolean getSendHandshakeMessagesWithinSingleRecord() {
+        return sendHandshakeMessagesWithinSingleRecord;
+    }
+
+    public void setSendHandshakeMessagesWithinSingleRecord(
+            Boolean sendHandshakeMessagesWithinSingleRecord) {
+        this.sendHandshakeMessagesWithinSingleRecord = sendHandshakeMessagesWithinSingleRecord;
     }
 
     public BigInteger getDefaultServerEphemeralDhGenerator() {

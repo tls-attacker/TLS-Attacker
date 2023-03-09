@@ -26,7 +26,8 @@ import java.io.InputStream;
 import java.util.List;
 
 @XmlRootElement(name = "SrpServerKeyExchange")
-public class SrpServerKeyExchangeMessage extends ServerKeyExchangeMessage {
+public class SrpServerKeyExchangeMessage
+        extends ServerKeyExchangeMessage<SrpServerKeyExchangeMessage> {
 
     /** SRP modulus */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
@@ -203,7 +204,12 @@ public class SrpServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
     @Override
     public String toCompactString() {
-        return "SRP_SERVER_KEY_EXCHANGE";
+        StringBuilder sb = new StringBuilder();
+        sb.append("SRP_SERVER_KEY_EXCHANGE");
+        if (isRetransmission()) {
+            sb.append(" (ret.)");
+        }
+        return sb.toString();
     }
 
     @Override

@@ -36,7 +36,7 @@ public class EncryptedServerNameIndicationExtensionParser
             LOGGER.debug("Received empty ESNI Extension");
             return;
         }
-        if (talkingConnectionEnd == ConnectionEndType.CLIENT) {
+        if (talkingConnectionEnd == ConnectionEndType.SERVER) {
             parseNonce(msg);
         } else {
             parseCipherSuite(msg);

@@ -18,7 +18,10 @@ import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.layer.impl.DtlsFragmentLayer;
 import de.rub.nds.tlsattacker.core.layer.impl.RecordLayer;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
+import de.rub.nds.tlsattacker.core.protocol.message.EncryptedClientHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.EchConfig;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
@@ -38,7 +41,7 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.x509attacker.constants.X509NamedCurve;
 import de.rub.nds.x509attacker.context.X509Context;
-import de.rub.nds.x509attacker.x509.base.X509CertificateChain;
+import de.rub.nds.x509attacker.x509.X509CertificateChain;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import java.math.BigInteger;
@@ -427,6 +430,24 @@ public class TlsContext extends LayerContext {
     /** Experimental flag for forensics and reparsing */
     private boolean reversePrepareAfterParse = false;
 
+    /** An EchConfig object that holds information regarding the server's ECH capabilities */
+    private EchConfig echConfig;
+
+    /** innerClientHello if present */
+    private ClientHelloMessage innerClientHello;
+
+    /** Outer clientHello needs to be saved for server handling of ECH */
+    private EncryptedClientHelloMessage outerClientHello;
+
+    /** Indicates whether the server supports ECH */
+    private boolean supportsECH;
+
+    /** KeyShare object for ECH holding clients public key etc. */
+    private KeyShareEntry echClientKeyShareEntry;
+
+    /** KeyShare object for ECH holding clients public key etc. */
+    private KeyShareEntry echServerKeyShareEntry;
+
     /** Nonce sent by the Client in the EncryptedServerNameIndication extension */
     private byte[] esniClientNonce;
 
@@ -439,6 +460,8 @@ public class TlsContext extends LayerContext {
     private EsniDnsKeyRecordVersion esniRecordVersion;
 
     private byte[] esniRecordChecksum;
+
+    private byte[] publicName;
 
     private List<KeyShareStoreEntry> esniServerKeyShareEntries;
 
@@ -1848,6 +1871,54 @@ public class TlsContext extends LayerContext {
         this.selectedGostCurve = selectedGostCurve;
     }
 
+    public EchConfig getEchConfig() {
+        return echConfig;
+    }
+
+    public void setEchConfig(EchConfig echConfig) {
+        this.echConfig = echConfig;
+    }
+
+    public ClientHelloMessage getInnerClientHello() {
+        return innerClientHello;
+    }
+
+    public void setInnerClientHello(ClientHelloMessage innerClientHello) {
+        this.innerClientHello = innerClientHello;
+    }
+
+    public EncryptedClientHelloMessage getOuterClientHello() {
+        return outerClientHello;
+    }
+
+    public void setOuterClientHello(EncryptedClientHelloMessage outerClientHello) {
+        this.outerClientHello = outerClientHello;
+    }
+
+    public boolean isSupportsECH() {
+        return supportsECH;
+    }
+
+    public void setSupportsECH(boolean supportsECH) {
+        this.supportsECH = supportsECH;
+    }
+
+    public KeyShareEntry getEchClientKeyShareEntry() {
+        return echClientKeyShareEntry;
+    }
+
+    public void setEchClientKeyShareEntry(KeyShareEntry echClientKeyShareEntry) {
+        this.echClientKeyShareEntry = echClientKeyShareEntry;
+    }
+
+    public KeyShareEntry getEchServerKeyShareEntry() {
+        return echServerKeyShareEntry;
+    }
+
+    public void setEchServerKeyShareEntry(KeyShareEntry echServerKeyShareEntry) {
+        this.echServerKeyShareEntry = echServerKeyShareEntry;
+    }
+
     public byte[] getEsniClientNonce() {
         return this.esniClientNonce;
     }
@@ -1886,6 +1957,14 @@ public class TlsContext extends LayerContext {
 
     public void setEsniRecordChecksum(byte[] esniRecordChecksum) {
         this.esniRecordChecksum = esniRecordChecksum;
+    }
+
+    public byte[] getPublicName() {
+        return publicName;
+    }
+
+    public void setPublicName(byte[] publicName) {
+        this.publicName = publicName;
     }
 
     public List<KeyShareStoreEntry> getEsniServerKeyShareEntries() {

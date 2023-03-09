@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Objects;
 
 @XmlRootElement(name = "Certificate")
-public class CertificateMessage extends HandshakeMessage {
+public class CertificateMessage extends HandshakeMessage<CertificateMessage> {
 
     /** request context length */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)

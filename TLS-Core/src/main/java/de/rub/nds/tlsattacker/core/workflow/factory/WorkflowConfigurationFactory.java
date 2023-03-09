@@ -12,6 +12,8 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.core.http.HttpRequestMessage;
+import de.rub.nds.tlsattacker.core.http.HttpResponseMessage;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.*;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EarlyDataExtensionMessage;
@@ -158,13 +160,27 @@ public class WorkflowConfigurationFactory {
                 && connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
             workflowTrace.addTlsAction(new EsniKeyDnsRequestAction());
         }
+        if (config.isAddEncryptedClientHelloExtension()
+                && connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
+            workflowTrace.addTlsAction(new EchConfigDnsRequestAction());
+        }
 
-        workflowTrace.addTlsAction(
-                MessageActionFactory.createTLSAction(
-                        config,
-                        connection,
-                        ConnectionEndType.CLIENT,
-                        new ClientHelloMessage(config)));
+        if (config.isAddEncryptedClientHelloExtension()
+                && connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
+            workflowTrace.addTlsAction(
+                    MessageActionFactory.createTLSAction(
+                            config,
+                            connection,
+                            ConnectionEndType.CLIENT,
+                            new EncryptedClientHelloMessage(config)));
+        } else {
+            workflowTrace.addTlsAction(
+                    MessageActionFactory.createTLSAction(
+                            config,
+                            connection,
+                            ConnectionEndType.CLIENT,
+                            new ClientHelloMessage(config)));
+        }
 
         if (config.getHighestProtocolVersion().isDTLS() && config.isDtlsCookieExchange()) {
             workflowTrace.addTlsAction(
@@ -524,28 +540,30 @@ public class WorkflowConfigurationFactory {
     }
 
     private WorkflowTrace createHttpsWorkflow() {
-        throw new UnsupportedOperationException(
-                "Currently, sending Http(s) messages is not supported");
-
-        /*
-         * AliasedConnection connection = getConnection(); WorkflowTrace trace = createHandshakeWorkflow(connection);
-         * MessageAction action = MessageActionFactory.createTLSAction(config, connection, ConnectionEndType.CLIENT, new
-         * HttpsRequestMessage(config)); trace.addTlsAction(action); action =
-         * MessageActionFactory.createTLSAction(config, connection, ConnectionEndType.SERVER, new
-         * HttpsResponseMessage(config)); trace.addTlsAction(action); return trace;
-         */
+        AliasedConnection connection = getConnection();
+        WorkflowTrace trace = createHandshakeWorkflow(connection);
+        appendHttpMessages(connection, trace);
+        return trace;
     }
 
     private WorkflowTrace createHttpsDynamicWorkflow() {
-        throw new UnsupportedOperationException(
-                "Currently, sending Http(s) messages is not supported");
-        /*
-         * AliasedConnection connection = getConnection(); WorkflowTrace trace = createDynamicHandshakeWorkflow();
-         * MessageAction action = MessageActionFactory.createTLSAction(config, connection, ConnectionEndType.CLIENT, new
-         * HttpsRequestMessage(config)); trace.addTlsAction(action); action =
-         * MessageActionFactory.createTLSAction(config, connection, ConnectionEndType.SERVER, new
-         * HttpsResponseMessage(config)); trace.addTlsAction(action); return trace;
-         */
+        AliasedConnection connection = getConnection();
+        WorkflowTrace trace = createDynamicHandshakeWorkflow();
+        appendHttpMessages(connection, trace);
+        return trace;
+    }
+
+    public void appendHttpMessages(AliasedConnection connection, WorkflowTrace trace) {
+        MessageAction action =
+                MessageActionFactory.createTLSAction(
+                        config, connection, ConnectionEndType.CLIENT, new ApplicationMessage());
+        trace.addTlsAction(action);
+        action.getHttpMessages().add(new HttpRequestMessage(config));
+        action =
+                MessageActionFactory.createTLSAction(
+                        config, connection, ConnectionEndType.SERVER, new ApplicationMessage());
+        trace.addTlsAction(action);
+        action.getHttpMessages().add(new HttpResponseMessage());
     }
 
     private WorkflowTrace createSimpleMitmProxyWorkflow() {
@@ -750,7 +768,7 @@ public class WorkflowConfigurationFactory {
         AliasedConnection ourConnection = getConnection();
         WorkflowTrace trace = createHandshakeWorkflow();
         // Remove extensions that are only required in the second handshake
-        HelloMessage initialHello;
+        HelloMessage<?> initialHello;
         if (ourConnection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
             initialHello =
                     (HelloMessage)

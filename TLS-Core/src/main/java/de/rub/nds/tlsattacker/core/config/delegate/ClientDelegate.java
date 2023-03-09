@@ -1,12 +1,14 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 package de.rub.nds.tlsattacker.core.config.delegate;
+
+import static java.nio.charset.StandardCharsets.US_ASCII;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
@@ -15,8 +17,8 @@ import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
 import java.net.*;
-import java.nio.charset.Charset;
-import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 import org.bouncycastle.util.IPAddress;
 
 public class ClientDelegate extends Delegate {
@@ -77,10 +79,11 @@ public class ClientDelegate extends Delegate {
     public void setHostname(Config config, String hostname, OutboundConnection connection) {
         connection.setHostname(hostname);
         config.setDefaultSniHostnames(
-                Arrays.asList(
-                        new ServerNamePair(
-                                config.getSniType().getValue(),
-                                hostname.getBytes(Charset.forName("ASCII")))));
+                new LinkedList<>(
+                        List.of(
+                                new ServerNamePair(
+                                        config.getSniType().getValue(),
+                                        hostname.getBytes(US_ASCII)))));
     }
 
     private void extractParameters() {

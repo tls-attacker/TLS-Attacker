@@ -316,7 +316,7 @@ public class EncryptedServerNameIndicationExtensionPreparator
     }
 
     private void prepareClientRandom(EncryptedServerNameIndicationExtensionMessage msg) {
-        byte[] clientRandom = chooser.getClientRandom();
+        byte[] clientRandom;
         if (clientHelloMessage != null) {
             clientRandom = clientHelloMessage.getRandom().getValue();
         } else {
@@ -394,6 +394,9 @@ public class EncryptedServerNameIndicationExtensionPreparator
                 "esniSharedSecret: "
                         + ArrayConverter.bytesToHexString(
                                 msg.getEncryptedSniComputation().getEsniSharedSecret().getValue()));
+        LOGGER.debug(
+                "esniSharedSecret: {}",
+                msg.getEncryptedSniComputation().getEsniSharedSecret().getValue());
     }
 
     private void prepareEsniMasterSecret(EncryptedServerNameIndicationExtensionMessage msg) {
@@ -515,7 +518,7 @@ public class EncryptedServerNameIndicationExtensionPreparator
     }
 
     private void prepareEncryptedSni(EncryptedServerNameIndicationExtensionMessage msg) {
-        byte[] encryptedSni = null;
+        byte[] encryptedSni;
 
         CipherSuite cipherSuite = CipherSuite.getCipherSuite(msg.getCipherSuite().getValue());
         byte[] plainText = msg.getClientEsniInnerBytes().getValue();

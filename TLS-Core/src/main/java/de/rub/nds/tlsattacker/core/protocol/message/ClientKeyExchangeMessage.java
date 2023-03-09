@@ -16,7 +16,8 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.KeyExchangeComputations;
 import java.util.Objects;
 
-public abstract class ClientKeyExchangeMessage extends HandshakeMessage {
+public abstract class ClientKeyExchangeMessage<Self extends ClientKeyExchangeMessage<?>>
+        extends HandshakeMessage<Self> {
 
     /** Length of the serialized public key */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)

@@ -9,7 +9,7 @@
 
     <groupId>de.rub.nds.tls.attacker</groupId>
     <artifactId>tls-attacker</artifactId>
-    <version>5.0.2-SNAPSHOT</version>
+    <version>5.1.5-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>TLS-Attacker</name>
@@ -438,9 +438,6 @@
                 <artifactId>spotless-maven-plugin</artifactId>
                 <configuration>
                     <java>
-                        <!-- Introduce spotless using ratchetFrom to format files gradually on change.
-                        Also avoid merge conflicts when merging into master due to one large format commit. -->
-                        <ratchetFrom>origin/master</ratchetFrom>
                         <lineEndings>GIT_ATTRIBUTES</lineEndings>
                         <trimTrailingWhitespace />
                         <endWithNewline />

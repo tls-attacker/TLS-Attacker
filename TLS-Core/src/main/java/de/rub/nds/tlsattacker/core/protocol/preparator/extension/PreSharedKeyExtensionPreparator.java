@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -152,7 +152,7 @@ public class PreSharedKeyExtensionPreparator
                     0,
                     Math.min(remainingBytes, clientHelloBytes.length));
 
-            LOGGER.debug("Relevant Bytes:" + ArrayConverter.bytesToHexString(relevantBytes));
+            LOGGER.debug("Relevant Bytes: {}", relevantBytes);
             return relevantBytes;
         } else {
             // This can happen if the client hello degenerates
@@ -204,9 +204,8 @@ public class PreSharedKeyExtensionPreparator
                         byte[] binderVal = mac.doFinal();
                         tlsContext.getDigest().setRawBytes(new byte[0]);
 
-                        LOGGER.debug("Using PSK:" + ArrayConverter.bytesToHexString(psk));
-                        LOGGER.debug(
-                                "Calculated Binder:" + ArrayConverter.bytesToHexString(binderVal));
+                        LOGGER.debug("Using PSK: {}", psk);
+                        LOGGER.debug("Calculated Binder: {}", binderVal);
 
                         msg.getBinders().get(x).setBinderEntry(binderVal);
                         // First entry = PSK for early Data

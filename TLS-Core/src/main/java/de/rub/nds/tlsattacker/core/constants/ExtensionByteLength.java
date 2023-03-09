@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -166,6 +166,8 @@ public class ExtensionByteLength {
 
     public static final int ESNI_RECORD_CHECKSUM = 4;
 
+    public static final int ESNI_RECORD_PUBLIC_NAME = 2;
+
     public static final int ESNI_RECORD_PADDED_LENGTH = 2;
 
     public static final int ESNI_RECORD_NOT_BEFORE = 8;
@@ -185,6 +187,37 @@ public class ExtensionByteLength {
 
     /** recordDigestLength in EncryptedServerNameIndicationExtension */
     public static final int RECORD_DIGEST_LENGTH = 2;
+
+    /** Fields in the ECH Config of the EncryptedClientHelloExtension */
+    public static final int ECH_CONFIG_LIST_LENGTH = 2;
+
+    public static final int ECH_CONFIG_LENGTH = 2;
+
+    public static final int ECH_CONFIG_PUBLIC_NAME = 1;
+
+    public static final int ECH_CONFIG_PUBLIC_NAME_LONG = 2;
+
+    public static final int ECH_CONFIG_PUBLIC_KEY = 2;
+
+    public static final int ECH_CONFIG_MAX_NAME_LENGTH = 1;
+
+    public static final int ECH_CONFIG_ID = 1;
+
+    public static final int ECH_CONFIG_KEM_ID = 2;
+
+    public static final int ECH_CONFIG_CIPHERSUITES = 2;
+
+    public static final int ECH_CONFIG_KDF_ID = 2;
+
+    public static final int ECH_CONFIG_AEAD_ID = 2;
+
+    public static final int ECH_CLIENT_HELLO_TYPE = 1;
+
+    public static final int ECH_ENC_LENGTH = 2;
+
+    public static final int ECH_PAYLOAD_LENGTH = 2;
+
+    public static final int ECH_ACCEPT_CONFIRMATION_LENGTH = 8;
 
     /** cookieLength in the CookieExtension */
     public static final int COOKIE_LENGTH = 2;

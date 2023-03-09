@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAServerKeyExchangeMessage;
@@ -63,9 +62,7 @@ public class RSAServerKeyExchangeSerializer<T extends RSAServerKeyExchangeMessag
     private void writeSignatureAndHashAlgorithm(T msg) {
         appendBytes(msg.getSignatureAndHashAlgorithm().getValue());
         LOGGER.debug(
-                "SignatureAndHaslAlgorithm: "
-                        + ArrayConverter.bytesToHexString(
-                                msg.getSignatureAndHashAlgorithm().getValue()));
+                "SignatureAndHaslAlgorithm: {}", msg.getSignatureAndHashAlgorithm().getValue());
     }
 
     /** Writes the SignatureLength of the RSAServerKeyExchangeMessage into the final byte[] */
@@ -77,7 +74,6 @@ public class RSAServerKeyExchangeSerializer<T extends RSAServerKeyExchangeMessag
     /** Writes the Signature of the RSAServerKeyExchangeMessage into the final byte[] */
     private void writeSignature(T msg) {
         appendBytes(msg.getSignature().getValue());
-        LOGGER.debug(
-                "Signature: " + ArrayConverter.bytesToHexString(msg.getSignature().getValue()));
+        LOGGER.debug("Signature: {}", msg.getSignature().getValue());
     }
 }

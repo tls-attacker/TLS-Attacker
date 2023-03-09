@@ -70,13 +70,10 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
                                 keyMaterial.element.getFieldY().getData(), curveSize, true),
                         ArrayConverter.intToBytes(serializedScalar.length, 1),
                         serializedScalar));
+        LOGGER.debug("KeyShare: {}", entry.getPublicKey().getValue());
         LOGGER.debug(
-                "KeyShare: " + ArrayConverter.bytesToHexString(entry.getPublicKey().getValue()));
-        LOGGER.debug(
-                "PasswordElement.x: "
-                        + ArrayConverter.bytesToHexString(
-                                ArrayConverter.bigIntegerToByteArray(
-                                        passwordElement.getFieldX().getData())));
+                "PasswordElement.x: {}",
+                ArrayConverter.bigIntegerToByteArray(passwordElement.getFieldX().getData()));
     }
 
     private void prepareKeyShare() {
@@ -95,14 +92,12 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
                         chooser.getConfig().getDefaultSelectedPointFormat());
         entry.setPublicKey(serializedPoint);
 
-        LOGGER.debug(
-                "KeyShare: " + ArrayConverter.bytesToHexString(entry.getPublicKey().getValue()));
+        LOGGER.debug("KeyShare: {}", entry.getPublicKey().getValue());
     }
 
     private void prepareKeyShareType() {
         entry.setGroup(entry.getGroupConfig().getValue());
-        LOGGER.debug(
-                "KeyShareType: " + ArrayConverter.bytesToHexString(entry.getGroup().getValue()));
+        LOGGER.debug("KeyShareType: {}", entry.getGroup().getValue());
     }
 
     private void prepareKeyShareLength() {

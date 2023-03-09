@@ -26,7 +26,8 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
 @XmlRootElement(name = "PWDServerKeyExchange")
-public class PWDServerKeyExchangeMessage extends ServerKeyExchangeMessage {
+public class PWDServerKeyExchangeMessage
+        extends ServerKeyExchangeMessage<PWDServerKeyExchangeMessage> {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger saltLength;
@@ -226,7 +227,12 @@ public class PWDServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
     @Override
     public String toCompactString() {
-        return "PWD_SERVER_KEY_EXCHANGE";
+        StringBuilder sb = new StringBuilder();
+        sb.append("PWD_SERVER_KEY_EXCHANGE");
+        if (isRetransmission()) {
+            sb.append(" (ret.)");
+        }
+        return sb.toString();
     }
 
     @Override

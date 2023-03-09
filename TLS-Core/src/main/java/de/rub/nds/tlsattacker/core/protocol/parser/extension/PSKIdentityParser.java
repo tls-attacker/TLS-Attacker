@@ -1,15 +1,13 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PSKIdentity;
@@ -40,13 +38,12 @@ public class PSKIdentityParser extends Parser<PSKIdentity> {
 
     private void parseIdentity(PSKIdentity pskIdentity) {
         pskIdentity.setIdentity(parseByteArrayField(pskIdentity.getIdentityLength().getValue()));
-        LOGGER.debug("Identity:" + ArrayConverter.bytesToHexString(pskIdentity.getIdentity().getValue()));
+        LOGGER.debug("Identity: {}", pskIdentity.getIdentity().getValue());
     }
 
     private void parseObfuscatedTicketAge(PSKIdentity pskIdentity) {
-        pskIdentity.setObfuscatedTicketAge(parseByteArrayField(ExtensionByteLength.TICKET_AGE_LENGTH));
-        LOGGER.debug("Obfuscated ticket age:"
-            + ArrayConverter.bytesToHexString(pskIdentity.getObfuscatedTicketAge().getValue()));
+        pskIdentity.setObfuscatedTicketAge(
+                parseByteArrayField(ExtensionByteLength.TICKET_AGE_LENGTH));
+        LOGGER.debug("Obfuscated ticket age: {}", pskIdentity.getObfuscatedTicketAge().getValue());
     }
-
 }

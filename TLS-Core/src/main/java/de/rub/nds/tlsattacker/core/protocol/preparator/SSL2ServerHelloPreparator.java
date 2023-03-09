@@ -1,14 +1,13 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SSL2CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ssl.SSL2ByteLength;
@@ -133,8 +132,6 @@ public class SSL2ServerHelloPreparator extends ProtocolMessagePreparator<SSL2Ser
             }
         }
         message.setCipherSuites(cipherStream.toByteArray());
-        LOGGER.debug(
-                "CipherSuites: "
-                        + ArrayConverter.bytesToHexString(message.getCipherSuites().getValue()));
+        LOGGER.debug("CipherSuites: {}", message.getCipherSuites().getValue());
     }
 }

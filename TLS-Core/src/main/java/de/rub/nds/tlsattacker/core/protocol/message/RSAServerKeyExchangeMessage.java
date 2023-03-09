@@ -26,7 +26,8 @@ import java.io.InputStream;
 import java.util.List;
 
 @XmlRootElement(name = "RSAServerKeyExchange")
-public class RSAServerKeyExchangeMessage extends ServerKeyExchangeMessage {
+public class RSAServerKeyExchangeMessage
+        extends ServerKeyExchangeMessage<RSAServerKeyExchangeMessage> {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
     protected ModifiableByteArray modulus;
@@ -109,7 +110,12 @@ public class RSAServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
     @Override
     public String toCompactString() {
-        return "RSA_SERVER_KEY_EXCHANGE";
+        StringBuilder sb = new StringBuilder();
+        sb.append("RSA_SERVER_KEY_EXCHANGE");
+        if (isRetransmission()) {
+            sb.append(" (ret.)");
+        }
+        return sb.toString();
     }
 
     @Override

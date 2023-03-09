@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
@@ -77,8 +76,7 @@ public class ECDHEServerKeyExchangeSerializer<T extends ECDHEServerKeyExchangeMe
     /** Writes the NamedCurve of the ECDHEServerKeyExchangeMessage into the final byte[] */
     private void writeNamedGroup(T msg) {
         appendBytes(msg.getNamedGroup().getValue());
-        LOGGER.debug(
-                "NamedGroup: " + ArrayConverter.bytesToHexString(msg.getNamedGroup().getValue()));
+        LOGGER.debug("NamedGroup: {}", msg.getNamedGroup().getValue());
     }
 
     /**
@@ -93,9 +91,7 @@ public class ECDHEServerKeyExchangeSerializer<T extends ECDHEServerKeyExchangeMe
     /** Writes the SerializedPublicKey of the ECDHEServerKeyExchangeMessage into the final byte[] */
     private void writeSerializedPublicKey(T msg) {
         appendBytes(msg.getPublicKey().getValue());
-        LOGGER.debug(
-                "SerializedPublicKey: "
-                        + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
+        LOGGER.debug("SerializedPublicKey: {}", msg.getPublicKey().getValue());
     }
 
     /**
@@ -105,9 +101,7 @@ public class ECDHEServerKeyExchangeSerializer<T extends ECDHEServerKeyExchangeMe
     private void writeSignatureAndHashAlgorithm(T msg) {
         appendBytes(msg.getSignatureAndHashAlgorithm().getValue());
         LOGGER.debug(
-                "SignatureAndHashAlgorithm: "
-                        + ArrayConverter.bytesToHexString(
-                                msg.getSignatureAndHashAlgorithm().getValue()));
+                "SignatureAndHashAlgorithm: {}", msg.getSignatureAndHashAlgorithm().getValue());
     }
 
     /** Writes the SignatureLength of the ECDHEServerKeyExchangeMessage into the final byte[] */
@@ -119,7 +113,6 @@ public class ECDHEServerKeyExchangeSerializer<T extends ECDHEServerKeyExchangeMe
     /** Writes the Signature of the ECDHEServerKeyExchangeMessage into the final byte[] */
     private void writeSignature(T msg) {
         appendBytes(msg.getSignature().getValue());
-        LOGGER.debug(
-                "Signature: " + ArrayConverter.bytesToHexString(msg.getSignature().getValue()));
+        LOGGER.debug("Signature: {}", msg.getSignature().getValue());
     }
 }

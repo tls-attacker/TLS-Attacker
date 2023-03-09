@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownHandshakeMessage;
 import java.io.InputStream;
@@ -33,9 +32,7 @@ public class UnknownHandshakeParser extends HandshakeMessageParser<UnknownHandsh
     public void parse(UnknownHandshakeMessage msg) {
         LOGGER.debug("Parsing UnknownHandshakeMessage");
         parseData(msg);
-        LOGGER.warn(
-                "Parsed UnknownHandshake Message: "
-                        + ArrayConverter.bytesToHexString(msg.getData().getValue(), false));
+        LOGGER.warn("Parsed UnknownHandshake Message: {}", msg.getData().getValue());
     }
 
     /**
@@ -45,6 +42,6 @@ public class UnknownHandshakeParser extends HandshakeMessageParser<UnknownHandsh
      */
     private void parseData(UnknownHandshakeMessage msg) {
         msg.setData(parseByteArrayField(getBytesLeft()));
-        LOGGER.debug("Data: " + ArrayConverter.bytesToHexString(msg.getData().getValue()));
+        LOGGER.debug("Data: {}", msg.getData().getValue());
     }
 }

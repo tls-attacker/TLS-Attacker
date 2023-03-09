@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
@@ -22,20 +21,16 @@ import java.util.List;
 
 public class ClientEsniInner extends ModifiableVariableHolder implements Serializable {
 
-    @ModifiableVariableProperty
-    private ModifiableByteArray clientNonce;
+    @ModifiableVariableProperty private ModifiableByteArray clientNonce;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger serverNameListLength;
 
-    @ModifiableVariableProperty
-    private ModifiableByteArray serverNameListBytes;
+    @ModifiableVariableProperty private ModifiableByteArray serverNameListBytes;
 
-    @ModifiableVariableProperty
-    private ModifiableByteArray padding;
+    @ModifiableVariableProperty private ModifiableByteArray padding;
 
-    @HoldsModifiableVariable
-    private List<ServerNamePair> serverNameList;
+    @HoldsModifiableVariable private List<ServerNamePair> serverNameList;
 
     public ClientEsniInner() {
         this.serverNameList = new LinkedList<>();
@@ -63,7 +58,8 @@ public class ClientEsniInner extends ModifiableVariableHolder implements Seriali
 
     public void setServerNameListBytes(byte[] serverNameListBytes) {
         this.serverNameListBytes =
-            ModifiableVariableFactory.safelySetValue(this.serverNameListBytes, serverNameListBytes);
+                ModifiableVariableFactory.safelySetValue(
+                        this.serverNameListBytes, serverNameListBytes);
     }
 
     public ModifiableByteArray getPadding() {
@@ -88,7 +84,8 @@ public class ClientEsniInner extends ModifiableVariableHolder implements Seriali
 
     public void setServerNameListLength(int serverNameListLength) {
         this.serverNameListLength =
-            ModifiableVariableFactory.safelySetValue(this.serverNameListLength, serverNameListLength);
+                ModifiableVariableFactory.safelySetValue(
+                        this.serverNameListLength, serverNameListLength);
     }
 
     public List<ServerNamePair> getServerNameList() {

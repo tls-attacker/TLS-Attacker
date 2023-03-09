@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -19,6 +19,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareS
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.EncryptedServerNameIndicationExtensionPreparator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.math.BigInteger;
 import java.security.Security;
 import java.util.List;
@@ -163,7 +164,8 @@ public class EncryptedServerNameIndicationExtensionParserTest
                                         new KeyShareStoreEntry(
                                                 NamedGroup.SECP256R1,
                                                 ArrayConverter.hexStringToByteArray(
-                                                        "0401e31149fb03eee9a101c3660bb29db586d1a347414f0c28011a5fe4805a355d37edfec598888d76083580f0394e754a4666f9a66678c23ae2058ac2fa55a459")))),
+                                                        "0401e31149fb03eee9a101c3660bb29db586d1a347414f0c28011a5fe4805a355d37edfec598888d76083580f0394e754a4666f9a66678c23ae2058ac2fa55a459"))),
+                                ConnectionEndType.SERVER),
                         ExtensionType.ENCRYPTED_SERVER_NAME_INDICATION,
                         366,
                         List.of(

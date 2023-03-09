@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import org.apache.logging.log4j.LogManager;
@@ -42,9 +41,7 @@ public class DtlsHandshakeMessageFragmentSerializer
 
     private void writeContent() {
         appendBytes(message.getMessageContent().getValue());
-        LOGGER.debug(
-                "DTLS fragment content: "
-                        + ArrayConverter.bytesToHexString(message.getMessageContent().getValue()));
+        LOGGER.debug("DTLS fragment content: {}", message.getMessageContent().getValue());
     }
 
     /** Writes the sequenceNumber of the HandshakeMessage into the final byte[] */

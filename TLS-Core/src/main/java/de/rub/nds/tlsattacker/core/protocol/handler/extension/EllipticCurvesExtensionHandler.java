@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
@@ -52,7 +51,7 @@ public class EllipticCurvesExtensionHandler
             byte[] group = Arrays.copyOfRange(groupBytes, i, i + HandshakeByteLength.NAMED_GROUP);
             NamedGroup namedGroup = NamedGroup.getNamedGroup(group);
             if (namedGroup == null) {
-                LOGGER.warn("Unknown EllipticCurve:" + ArrayConverter.bytesToHexString(group));
+                LOGGER.warn("Unknown EllipticCurve: {}", group);
             } else {
                 groupList.add(namedGroup);
             }

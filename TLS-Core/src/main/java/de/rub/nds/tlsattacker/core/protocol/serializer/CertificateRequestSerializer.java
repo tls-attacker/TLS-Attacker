@@ -1,22 +1,21 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class CertificateRequestSerializer extends HandshakeMessageSerializer<CertificateRequestMessage> {
+public class CertificateRequestSerializer
+        extends HandshakeMessageSerializer<CertificateRequestMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -27,12 +26,11 @@ public class CertificateRequestSerializer extends HandshakeMessageSerializer<Cer
     /**
      * Constructor for the CertificateRequestSerializer
      *
-     * @param message
-     *                Message that should be serialized
-     * @param version
-     *                Version of the Protocol
+     * @param message Message that should be serialized
+     * @param version Version of the Protocol
      */
-    public CertificateRequestSerializer(CertificateRequestMessage message, ProtocolVersion version) {
+    public CertificateRequestSerializer(
+            CertificateRequestMessage message, ProtocolVersion version) {
         super(message);
         this.msg = message;
         this.version = version;
@@ -66,42 +64,48 @@ public class CertificateRequestSerializer extends HandshakeMessageSerializer<Cer
      * Writes the ClientCertificateTypeCount of the CertificateRequestMessage into the final byte[]
      */
     private void writeClientCertificateTypesCount(CertificateRequestMessage msg) {
-        appendInt(msg.getClientCertificateTypesCount().getValue(), HandshakeByteLength.CERTIFICATES_TYPES_COUNT);
-        LOGGER.debug("ClientCertificateTypesCount: " + msg.getClientCertificateTypesCount().getValue());
+        appendInt(
+                msg.getClientCertificateTypesCount().getValue(),
+                HandshakeByteLength.CERTIFICATES_TYPES_COUNT);
+        LOGGER.debug(
+                "ClientCertificateTypesCount: " + msg.getClientCertificateTypesCount().getValue());
     }
 
-    /**
-     * Writes the ClientCertificateType of the CertificateRequestMessage into the final byte[]
-     */
+    /** Writes the ClientCertificateType of the CertificateRequestMessage into the final byte[] */
     private void writeClientCertificateTypes(CertificateRequestMessage msg) {
         appendBytes(msg.getClientCertificateTypes().getValue());
-        LOGGER.debug(
-            "ClientCertificateTypes: " + ArrayConverter.bytesToHexString(msg.getClientCertificateTypes().getValue()));
+        LOGGER.debug("ClientCertificateTypes: {}", msg.getClientCertificateTypes().getValue());
     }
 
     /**
-     * Writes the SignatureHandshakeAlgorithmsLength of the CertificateRequestMessage into the final byte[]
+     * Writes the SignatureHandshakeAlgorithmsLength of the CertificateRequestMessage into the final
+     * byte[]
      */
     private void writeSignatureHandshakeAlgorithmsLength(CertificateRequestMessage msg) {
-        appendInt(msg.getSignatureHashAlgorithmsLength().getValue(),
-            HandshakeByteLength.SIGNATURE_HASH_ALGORITHMS_LENGTH);
-        LOGGER.debug("SignatureHashAlgorithmsLength: " + msg.getSignatureHashAlgorithmsLength().getValue());
+        appendInt(
+                msg.getSignatureHashAlgorithmsLength().getValue(),
+                HandshakeByteLength.SIGNATURE_HASH_ALGORITHMS_LENGTH);
+        LOGGER.debug(
+                "SignatureHashAlgorithmsLength: "
+                        + msg.getSignatureHashAlgorithmsLength().getValue());
     }
 
     /**
-     * Writes the SignatureHandshakeAlgorithms of the CertificateRequestMessage into the final byte[]
+     * Writes the SignatureHandshakeAlgorithms of the CertificateRequestMessage into the final
+     * byte[]
      */
     private void writeSignatureHandshakeAlgorithms(CertificateRequestMessage msg) {
         appendBytes(msg.getSignatureHashAlgorithms().getValue());
-        LOGGER.debug(
-            "SignatureHashAlgorithms: " + ArrayConverter.bytesToHexString(msg.getSignatureHashAlgorithms().getValue()));
+        LOGGER.debug("SignatureHashAlgorithms: {}", msg.getSignatureHashAlgorithms().getValue());
     }
 
     /**
      * Writes the DistinguishedNamesLength of the CertificateRequestMessage into the final byte[]
      */
     private void writeDistinguishedNamesLength(CertificateRequestMessage msg) {
-        appendInt(msg.getDistinguishedNamesLength().getValue(), HandshakeByteLength.DISTINGUISHED_NAMES_LENGTH);
+        appendInt(
+                msg.getDistinguishedNamesLength().getValue(),
+                HandshakeByteLength.DISTINGUISHED_NAMES_LENGTH);
         LOGGER.debug("DistinguishedNamesLength: " + msg.getDistinguishedNamesLength().getValue());
     }
 
@@ -109,24 +113,24 @@ public class CertificateRequestSerializer extends HandshakeMessageSerializer<Cer
         return msg.getDistinguishedNamesLength().getValue() != 0;
     }
 
-    /**
-     * Writes the DistinguishedNames of the CertificateRequestMessage into the final byte[]
-     */
+    /** Writes the DistinguishedNames of the CertificateRequestMessage into the final byte[] */
     private void writeDistinguishedNames(CertificateRequestMessage msg) {
         appendBytes(msg.getDistinguishedNames().getValue());
-        LOGGER.debug("DistinguishedNames: " + ArrayConverter.bytesToHexString(msg.getDistinguishedNames().getValue()));
+        LOGGER.debug("DistinguishedNames: {}", msg.getDistinguishedNames().getValue());
     }
 
     private void writeCertificateRequestContext(CertificateRequestMessage msg) {
         appendBytes(msg.getCertificateRequestContext().getValue());
-        LOGGER.debug("CertificateRequestContext: "
-            + ArrayConverter.bytesToHexString(msg.getCertificateRequestContext().getValue()));
+        LOGGER.debug(
+                "CertificateRequestContext: {}", msg.getCertificateRequestContext().getValue());
     }
 
     private void writeCertificateRequestContextLength(CertificateRequestMessage msg) {
-        appendInt(msg.getCertificateRequestContextLength().getValue(),
-            HandshakeByteLength.CERTIFICATE_REQUEST_CONTEXT_LENGTH);
-        LOGGER.debug("CertificateRequestContextLength: " + msg.getCertificateRequestContextLength().getValue());
+        appendInt(
+                msg.getCertificateRequestContextLength().getValue(),
+                HandshakeByteLength.CERTIFICATE_REQUEST_CONTEXT_LENGTH);
+        LOGGER.debug(
+                "CertificateRequestContextLength: "
+                        + msg.getCertificateRequestContextLength().getValue());
     }
-
 }

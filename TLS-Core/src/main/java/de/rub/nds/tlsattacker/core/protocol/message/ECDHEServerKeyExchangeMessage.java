@@ -27,7 +27,8 @@ import java.io.InputStream;
 import java.util.List;
 
 @XmlRootElement(name = "ECDHEServerKeyExchange")
-public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
+public class ECDHEServerKeyExchangeMessage<Self extends ECDHEServerKeyExchangeMessage<?>>
+        extends ServerKeyExchangeMessage<Self> {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     protected ModifiableByte curveType;
@@ -134,7 +135,12 @@ public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
     @Override
     public String toCompactString() {
-        return "ECDHE_SERVER_KEY_EXCHANGE";
+        StringBuilder sb = new StringBuilder();
+        sb.append("ECDHE_SERVER_KEY_EXCHANGE");
+        if (isRetransmission()) {
+            sb.append(" (ret.)");
+        }
+        return sb.toString();
     }
 
     @Override

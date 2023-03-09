@@ -1,14 +1,13 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
@@ -29,10 +28,8 @@ public class CopyClientRandomAction extends CopyContextFieldAction {
     @Override
     protected void copyField(TlsContext src, TlsContext dst) {
         dst.setClientRandom(src.getClientRandom());
-        LOGGER.debug("Copying client random from " + src + " to " + dst);
-        LOGGER.debug(
-                "Copied client random is: "
-                        + ArrayConverter.bytesToHexString(dst.getClientRandom(), true, true));
+        LOGGER.debug("Copying client random from {} to {}", src, dst);
+        LOGGER.debug("Copied client random is: {}", dst.getClientRandom());
         setExecuted(true);
     }
 

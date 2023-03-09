@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -33,7 +33,7 @@ import java.util.Date;
 import java.util.Objects;
 
 @XmlRootElement(name = "ServerHello")
-public class ServerHelloMessage extends HelloMessage {
+public class ServerHelloMessage extends HelloMessage<ServerHelloMessage> {
 
     private static final byte[] HELLO_RETRY_REQUEST_RANDOM =
             new byte[] {
@@ -102,7 +102,9 @@ public class ServerHelloMessage extends HelloMessage {
                     && !tlsConfig.getHighestProtocolVersion().isTLS13()) {
                 addExtension(new RecordSizeLimitExtensionMessage());
             }
-            if (tlsConfig.isAddServerNameIndicationExtension()) {
+            if (tlsConfig.isAddServerNameIndicationExtension()
+                    && !tlsConfig.isAddEncryptedClientHelloExtension()
+                    && !tlsConfig.isAddEncryptedServerNameIndicationExtension()) {
                 ServerNameIndicationExtensionMessage extension =
                         new ServerNameIndicationExtensionMessage();
                 ServerNamePair pair =

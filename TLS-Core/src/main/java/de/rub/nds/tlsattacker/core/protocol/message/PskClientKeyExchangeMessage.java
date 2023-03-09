@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -27,7 +27,8 @@ import java.io.InputStream;
 import java.util.List;
 
 @XmlRootElement(name = "PskClientKeyExchange")
-public class PskClientKeyExchangeMessage extends ClientKeyExchangeMessage {
+public class PskClientKeyExchangeMessage
+        extends ClientKeyExchangeMessage<PskClientKeyExchangeMessage> {
 
     @HoldsModifiableVariable @XmlElement protected PSKPremasterComputations computations;
 
@@ -114,7 +115,12 @@ public class PskClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     @Override
     public String toCompactString() {
-        return "PSK_CLIENT_KEY_EXCHANGE";
+        StringBuilder sb = new StringBuilder();
+        sb.append("PSK_CLIENT_KEY_EXCHANGE");
+        if (isRetransmission()) {
+            sb.append(" (ret.)");
+        }
+        return sb.toString();
     }
 
     @Override

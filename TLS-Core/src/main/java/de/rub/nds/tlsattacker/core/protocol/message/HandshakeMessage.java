@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -37,7 +37,8 @@ import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public abstract class HandshakeMessage extends ProtocolMessage {
+public abstract class HandshakeMessage<Self extends HandshakeMessage<?>>
+        extends ProtocolMessage<Self> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -254,7 +255,7 @@ public abstract class HandshakeMessage extends ProtocolMessage {
         StringBuilder sb = new StringBuilder();
         sb.append(handshakeMessageType.getName());
         if (isRetransmission()) {
-            sb.append(" (retransmission)");
+            sb.append(" (ret.)");
         }
         return sb.toString();
     }
@@ -273,16 +274,17 @@ public abstract class HandshakeMessage extends ProtocolMessage {
     }
 
     @Override
-    public abstract HandshakeMessageParser getParser(TlsContext tlsContext, InputStream stream);
+    public abstract HandshakeMessageParser<Self> getParser(
+            TlsContext tlsContext, InputStream stream);
 
     @Override
-    public abstract HandshakeMessagePreparator getPreparator(TlsContext tlsContext);
+    public abstract HandshakeMessagePreparator<Self> getPreparator(TlsContext tlsContext);
 
     @Override
-    public abstract HandshakeMessageSerializer getSerializer(TlsContext tlsContext);
+    public abstract HandshakeMessageSerializer<Self> getSerializer(TlsContext tlsContext);
 
     @Override
-    public abstract HandshakeMessageHandler getHandler(TlsContext tlsContext);
+    public abstract HandshakeMessageHandler<Self> getHandler(TlsContext tlsContext);
 
     public ModifiableByteArray getMessageContent() {
         return messageContent;

@@ -16,7 +16,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.util.BigIntegers;
 
-public class DHClientKeyExchangePreparator<T extends DHClientKeyExchangeMessage>
+public class DHClientKeyExchangePreparator<T extends DHClientKeyExchangeMessage<?>>
         extends ClientKeyExchangePreparator<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -87,16 +87,12 @@ public class DHClientKeyExchangePreparator<T extends DHClientKeyExchangeMessage>
     protected void preparePremasterSecret(T msg) {
         msg.getComputations().setPremasterSecret(premasterSecret);
         premasterSecret = msg.getComputations().getPremasterSecret().getValue();
-        LOGGER.debug(
-                "PremasterSecret: "
-                        + ArrayConverter.bytesToHexString(
-                                msg.getComputations().getPremasterSecret().getValue()));
+        LOGGER.debug("PremasterSecret: {}", msg.getComputations().getPremasterSecret().getValue());
     }
 
     protected void preparePublicKey(T msg) {
         msg.setPublicKey(ArrayConverter.bigIntegerToByteArray(clientPublicKey));
-        LOGGER.debug(
-                "PublicKey: " + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
+        LOGGER.debug("PublicKey: {}", msg.getPublicKey().getValue());
     }
 
     protected void preparePublicKeyLength(T msg) {
@@ -132,7 +128,6 @@ public class DHClientKeyExchangePreparator<T extends DHClientKeyExchangeMessage>
 
     protected void setComputationPrivateKey(T msg) {
         msg.getComputations().setPrivateKey(chooser.getDhKeyExchangePrivateKey());
-
         LOGGER.debug(
                 "Computation PrivateKey: "
                         + msg.getComputations().getPrivateKey().getValue().toString());

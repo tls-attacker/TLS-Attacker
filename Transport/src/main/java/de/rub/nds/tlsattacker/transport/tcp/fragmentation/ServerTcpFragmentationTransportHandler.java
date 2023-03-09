@@ -1,17 +1,15 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.transport.tcp.fragmentation;
 
 import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.tcp.ServerTcpTransportHandler;
-
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -29,12 +27,13 @@ public class ServerTcpFragmentationTransportHandler extends ServerTcpTransportHa
         super(firstTimeout, timeout, port);
     }
 
-    public ServerTcpFragmentationTransportHandler(long firstTimeout, long timeout, ServerSocket serverSocket)
-        throws IOException {
+    public ServerTcpFragmentationTransportHandler(
+            long firstTimeout, long timeout, ServerSocket serverSocket) throws IOException {
         super(firstTimeout, timeout, serverSocket);
     }
 
-    public ServerTcpFragmentationTransportHandler(Connection con, Socket socket) throws IOException {
+    public ServerTcpFragmentationTransportHandler(Connection con, Socket socket)
+            throws IOException {
         super(con, socket);
     }
 

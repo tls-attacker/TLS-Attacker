@@ -22,8 +22,8 @@ import org.junit.jupiter.api.Test;
 
 public class RSAClientKeyExchangePreparatorTest
         extends AbstractProtocolMessagePreparatorTest<
-                RSAClientKeyExchangeMessage,
-                RSAClientKeyExchangePreparator<RSAClientKeyExchangeMessage>> {
+                RSAClientKeyExchangeMessage<?>,
+                RSAClientKeyExchangePreparator<RSAClientKeyExchangeMessage<?>>> {
 
     public RSAClientKeyExchangePreparatorTest() {
         super(RSAClientKeyExchangeMessage::new, RSAClientKeyExchangePreparator::new);

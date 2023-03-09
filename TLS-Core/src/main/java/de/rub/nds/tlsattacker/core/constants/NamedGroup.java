@@ -8,16 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
-import static de.rub.nds.x509attacker.constants.X509NamedCurve.SECT163R1;
-import static de.rub.nds.x509attacker.constants.X509NamedCurve.SECT163R2;
-import static de.rub.nds.x509attacker.constants.X509NamedCurve.SECT239K1;
-import static de.rub.nds.x509attacker.constants.X509NamedCurve.SECT283K1;
-import static de.rub.nds.x509attacker.constants.X509NamedCurve.SECT283R1;
-import static de.rub.nds.x509attacker.constants.X509NamedCurve.SECT409K1;
-import static de.rub.nds.x509attacker.constants.X509NamedCurve.SECT409R1;
-import static de.rub.nds.x509attacker.constants.X509NamedCurve.SECT571K1;
-import static de.rub.nds.x509attacker.constants.X509NamedCurve.SECT571R1;
-
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.protocol.constants.EcCurveEquationType;
 import de.rub.nds.protocol.constants.GroupParameters;
@@ -166,18 +156,22 @@ public enum NamedGroup {
             // TODO: X25519 and X448 not supported for classic java curves
             if (group.isCurve() && group.isShortWeierstrass()) {
                 try {
-                    EllipticCurve curve =
+                    EllipticCurve tlsAttackerCurve =
                             ((NamedEllipticCurveParameters) group.getGroupParameters()).getCurve();
                     if (privateKey
                                     .getParams()
                                     .getGenerator()
                                     .getAffineX()
-                                    .equals(curve.getBasePoint().getFieldX().getData())
+                                    .equals(tlsAttackerCurve.getBasePoint().getFieldX().getData())
                             && privateKey
                                     .getParams()
                                     .getGenerator()
                                     .getAffineY()
-                                    .equals(curve.getBasePoint().getFieldY().getData())) {
+                                    .equals(
+                                            tlsAttackerCurve
+                                                    .getBasePoint()
+                                                    .getFieldY()
+                                                    .getData())) {
                         return group;
                     }
                 } catch (UnsupportedOperationException e) {
@@ -198,7 +192,8 @@ public enum NamedGroup {
                 return X509NamedCurve.BRAINPOOLP512R1;
             case ECDH_X25519:
             case ECDH_X448:
-                // X448 and X25519 are special values in x509 that are treated differently to all
+                // X448 and X25519 are special values in x509 that are treated differently to
+                // all
                 // other curves
                 return null;
             case EXPLICIT_CHAR2:

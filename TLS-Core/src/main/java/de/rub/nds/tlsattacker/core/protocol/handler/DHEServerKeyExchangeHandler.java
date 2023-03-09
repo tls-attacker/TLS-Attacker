@@ -16,7 +16,7 @@ import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class DHEServerKeyExchangeHandler<T extends DHEServerKeyExchangeMessage>
+public class DHEServerKeyExchangeHandler<T extends DHEServerKeyExchangeMessage<?>>
         extends ServerKeyExchangeHandler<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();

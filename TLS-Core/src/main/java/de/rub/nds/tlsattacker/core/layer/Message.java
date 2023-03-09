@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -26,10 +26,8 @@ import jakarta.xml.bind.annotation.XmlSeeAlso;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlSeeAlso({Message.class, ProtocolMessage.class, HttpMessage.class})
-public abstract class Message<Self extends Message, Context extends LayerContext>
+public abstract class Message<Self extends Message<?, ?>, Context extends LayerContext>
         extends ModifiableVariableHolder implements DataContainer<Self, Context> {
-
-    public abstract String toCompactString();
 
     public abstract String toShortString();
 }

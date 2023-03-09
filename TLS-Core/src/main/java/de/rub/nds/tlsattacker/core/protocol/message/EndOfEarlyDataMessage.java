@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -19,7 +19,7 @@ import java.io.InputStream;
 
 /** RFC draft-ietf-tls-tls13-21 */
 @XmlRootElement(name = "EndOfEarlyData")
-public class EndOfEarlyDataMessage extends HandshakeMessage {
+public class EndOfEarlyDataMessage extends HandshakeMessage<EndOfEarlyDataMessage> {
 
     public EndOfEarlyDataMessage() {
         super(HandshakeMessageType.END_OF_EARLY_DATA);

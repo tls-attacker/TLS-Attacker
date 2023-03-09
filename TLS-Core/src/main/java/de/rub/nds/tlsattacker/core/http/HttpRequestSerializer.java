@@ -39,7 +39,7 @@ public class HttpRequestSerializer extends HttpMessageSerializer<HttpRequestMess
             builder.append(new String(serializer.serialize(), StandardCharsets.ISO_8859_1));
         }
         builder.append("\r\n");
-        LOGGER.info(builder.toString());
+        LOGGER.debug(builder.toString());
         appendBytes(builder.toString().getBytes(StandardCharsets.ISO_8859_1));
         return getAlreadySerialized();
     }

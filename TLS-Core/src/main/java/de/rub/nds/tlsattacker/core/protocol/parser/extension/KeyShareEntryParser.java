@@ -1,14 +1,13 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.layer.data.Parser;
@@ -41,8 +40,7 @@ public class KeyShareEntryParser extends Parser<KeyShareEntry> {
     /** Reads the next bytes as the keyShareType of the Extension and writes them in the message */
     private void parseKeyShareGroup(KeyShareEntry pair) {
         pair.setGroup(parseByteArrayField(ExtensionByteLength.KEY_SHARE_GROUP));
-        LOGGER.debug(
-                "KeyShareGroup: " + ArrayConverter.bytesToHexString(pair.getGroup().getValue()));
+        LOGGER.debug("KeyShareGroup: {}", pair.getGroup().getValue());
     }
 
     /**
@@ -56,7 +54,6 @@ public class KeyShareEntryParser extends Parser<KeyShareEntry> {
     /** Reads the next bytes as the keyShare of the Extension and writes them in the message */
     private void parseKeyShare(KeyShareEntry pair) {
         pair.setPublicKey(parseByteArrayField(pair.getPublicKeyLength().getValue()));
-        LOGGER.debug(
-                "KeyShare: " + ArrayConverter.bytesToHexString(pair.getPublicKey().getValue()));
+        LOGGER.debug("KeyShare: {}", pair.getPublicKey().getValue());
     }
 }

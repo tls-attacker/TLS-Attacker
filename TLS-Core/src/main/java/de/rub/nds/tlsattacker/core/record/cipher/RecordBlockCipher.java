@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -71,16 +71,14 @@ public final class RecordBlockCipher extends RecordCipher {
     }
 
     private byte[] calculateMac(byte[] data, ConnectionEndType connectionEndType) {
-        LOGGER.debug(
-                "The MAC was calculated over the following data: {}",
-                ArrayConverter.bytesToHexString(data));
+        LOGGER.debug("The MAC was calculated over the following data: {}", data);
         byte[] result;
         if (connectionEndType == getConnectionEndType()) {
             result = writeMac.calculateMac(data);
         } else {
             result = readMac.calculateMac(data);
         }
-        LOGGER.debug("MAC: {}", ArrayConverter.bytesToHexString(result));
+        LOGGER.debug("MAC: {}", result);
         return result;
     }
 
@@ -97,7 +95,7 @@ public final class RecordBlockCipher extends RecordCipher {
         if (!useExplicitIv) {
             encryptCipher.setIv(extractNextEncryptIv(ciphertext));
         }
-        LOGGER.debug("EncryptIv: " + ArrayConverter.bytesToHexString(encryptCipher.getIv()));
+        LOGGER.debug("EncryptIv: {}", encryptCipher.getIv());
         return ciphertext;
     }
 
@@ -133,16 +131,10 @@ public final class RecordBlockCipher extends RecordCipher {
 
             computations.setPadding(
                     calculatePadding(calculatePaddingLength(record, cleanBytes.length)));
-            LOGGER.debug(
-                    "Padding: "
-                            + ArrayConverter.bytesToHexString(
-                                    computations.getPadding().getValue()));
+            LOGGER.debug("Padding: {}", computations.getPadding().getValue());
             computations.setPlainRecordBytes(
                     ArrayConverter.concatenate(cleanBytes, computations.getPadding().getValue()));
-            LOGGER.debug(
-                    "PlainRecordBytes: "
-                            + ArrayConverter.bytesToHexString(
-                                    computations.getPlainRecordBytes().getValue()));
+            LOGGER.debug("PlainRecordBytes: {}", computations.getPlainRecordBytes().getValue());
             byte[] ciphertext = encrypt(computations.getPlainRecordBytes().getValue(), iv);
             computations.setCiphertext(ciphertext);
             if (useExplicitIv) {
@@ -189,10 +181,7 @@ public final class RecordBlockCipher extends RecordCipher {
                             calculatePaddingLength(
                                     record,
                                     cleanBytes.length + computations.getMac().getValue().length)));
-            LOGGER.debug(
-                    "Padding: "
-                            + ArrayConverter.bytesToHexString(
-                                    computations.getPadding().getValue()));
+            LOGGER.debug("Padding: {}", computations.getPadding().getValue());
 
             record.getComputations()
                     .setPlainRecordBytes(
@@ -200,10 +189,7 @@ public final class RecordBlockCipher extends RecordCipher {
                                     cleanBytes,
                                     computations.getMac().getValue(),
                                     computations.getPadding().getValue()));
-            LOGGER.debug(
-                    "PlainRecordBytes: "
-                            + ArrayConverter.bytesToHexString(
-                                    computations.getPlainRecordBytes().getValue()));
+            LOGGER.debug("PlainRecordBytes: {}", computations.getPlainRecordBytes().getValue());
 
             computations.setCiphertext(
                     encrypt(record.getComputations().getPlainRecordBytes().getValue(), iv));
@@ -315,7 +301,7 @@ public final class RecordBlockCipher extends RecordCipher {
             LOGGER.debug("Using implicit IV");
             iv = decryptCipher.getIv();
         }
-        LOGGER.debug("Using IV:" + ArrayConverter.bytesToHexString(iv));
+        LOGGER.debug("Using IV: {}", iv);
         record.getComputations().setCbcInitialisationVector(iv);
 
         if (getState().isEncryptThenMac()) {
@@ -334,7 +320,7 @@ public final class RecordBlockCipher extends RecordCipher {
             computations.setPlainRecordBytes(plainData);
             plainData = computations.getPlainRecordBytes().getValue();
 
-            LOGGER.debug("Decrypted plaintext: " + ArrayConverter.bytesToHexString(plainData));
+            LOGGER.debug("Decrypted plaintext: {}", plainData);
             parser = new PlaintextParser(plainData);
             byte[] cleanProtocolBytes =
                     parser.parseByteArrayField(

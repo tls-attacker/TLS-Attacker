@@ -14,7 +14,7 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 
-public abstract class HelloMessage extends HandshakeMessage {
+public abstract class HelloMessage<Self extends HelloMessage<?>> extends HandshakeMessage<Self> {
 
     /** protocol version in the client and server hello */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)

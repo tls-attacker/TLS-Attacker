@@ -1,22 +1,21 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class CertificateVerifySerializer extends HandshakeMessageSerializer<CertificateVerifyMessage> {
+public class CertificateVerifySerializer
+        extends HandshakeMessageSerializer<CertificateVerifyMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -27,10 +26,8 @@ public class CertificateVerifySerializer extends HandshakeMessageSerializer<Cert
     /**
      * Constructor for the CertificateVerifyMessageSerializer
      *
-     * @param message
-     *                Message that should be serialized
-     * @param version
-     *                Version of the Protocol
+     * @param message Message that should be serialized
+     * @param version Version of the Protocol
      */
     public CertificateVerifySerializer(CertificateVerifyMessage message, ProtocolVersion version) {
         super(message);
@@ -41,7 +38,9 @@ public class CertificateVerifySerializer extends HandshakeMessageSerializer<Cert
     @Override
     public byte[] serializeHandshakeMessageContent() {
         LOGGER.debug("Serializing CertificateVerifyMessage");
-        if (version == ProtocolVersion.TLS12 || version == ProtocolVersion.DTLS12 || version.isTLS13()) {
+        if (version == ProtocolVersion.TLS12
+                || version == ProtocolVersion.DTLS12
+                || version.isTLS13()) {
             writeSignatureHashAlgorithm(msg);
         }
         writeSignatureLength(msg);
@@ -49,29 +48,21 @@ public class CertificateVerifySerializer extends HandshakeMessageSerializer<Cert
         return getAlreadySerialized();
     }
 
-    /**
-     * Writes the SignatureHashAlgorithm of the CertificateVerifyMessage into the final byte[]
-     */
+    /** Writes the SignatureHashAlgorithm of the CertificateVerifyMessage into the final byte[] */
     private void writeSignatureHashAlgorithm(CertificateVerifyMessage msg) {
         appendBytes(msg.getSignatureHashAlgorithm().getValue());
-        LOGGER.debug(
-            "SignatureHashAlgorithms: " + ArrayConverter.bytesToHexString(msg.getSignatureHashAlgorithm().getValue()));
+        LOGGER.debug("SignatureHashAlgorithms: {}", msg.getSignatureHashAlgorithm().getValue());
     }
 
-    /**
-     * Writes the SignatureLength of the CertificateVerifyMessage into the final byte[]
-     */
+    /** Writes the SignatureLength of the CertificateVerifyMessage into the final byte[] */
     private void writeSignatureLength(CertificateVerifyMessage msg) {
         appendInt(msg.getSignatureLength().getValue(), HandshakeByteLength.SIGNATURE_LENGTH);
         LOGGER.debug("SignatureLength: " + msg.getSignatureLength().getValue());
     }
 
-    /**
-     * Writes the Signature of the CertificateVerifyMessage into the final byte[]
-     */
+    /** Writes the Signature of the CertificateVerifyMessage into the final byte[] */
     private void writeSignature(CertificateVerifyMessage msg) {
         appendBytes(msg.getSignature().getValue());
-        LOGGER.debug("Signature: " + ArrayConverter.bytesToHexString(msg.getSignature().getValue()));
+        LOGGER.debug("Signature: {}", msg.getSignature().getValue());
     }
-
 }

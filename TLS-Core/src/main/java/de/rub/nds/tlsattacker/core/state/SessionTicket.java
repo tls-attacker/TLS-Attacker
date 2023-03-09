@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.state;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -18,38 +17,28 @@ import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import java.io.Serializable;
 
 public class SessionTicket extends ModifiableVariableHolder implements Serializable {
-    @ModifiableVariableProperty()
-    private ModifiableByteArray keyName;
+    @ModifiableVariableProperty() private ModifiableByteArray keyName;
 
-    @ModifiableVariableProperty()
-    private ModifiableByteArray iv;
+    @ModifiableVariableProperty() private ModifiableByteArray iv;
 
-    @ModifiableVariableProperty()
-    private ModifiableInteger encryptedStateLength;
+    @ModifiableVariableProperty() private ModifiableInteger encryptedStateLength;
 
-    @ModifiableVariableProperty()
-    private ModifiableByteArray encryptedState;
+    @ModifiableVariableProperty() private ModifiableByteArray encryptedState;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.HMAC)
     private ModifiableByteArray mac;
 
-    @ModifiableVariableProperty()
-    private ModifiableByteArray identity;
+    @ModifiableVariableProperty() private ModifiableByteArray identity;
 
-    @ModifiableVariableProperty()
-    private ModifiableByteArray ticketAgeAdd;
+    @ModifiableVariableProperty() private ModifiableByteArray ticketAgeAdd;
 
-    @ModifiableVariableProperty()
-    private ModifiableByteArray ticketNonce;
+    @ModifiableVariableProperty() private ModifiableByteArray ticketNonce;
 
-    @ModifiableVariableProperty()
-    private ModifiableInteger identityLength;
+    @ModifiableVariableProperty() private ModifiableInteger identityLength;
 
-    @ModifiableVariableProperty()
-    private ModifiableInteger ticketNonceLength;
+    @ModifiableVariableProperty() private ModifiableInteger ticketNonceLength;
 
-    public SessionTicket() {
-    }
+    public SessionTicket() {}
 
     public ModifiableByteArray getKeyName() {
         return keyName;
@@ -84,7 +73,8 @@ public class SessionTicket extends ModifiableVariableHolder implements Serializa
     }
 
     public void setEncryptedState(byte[] encryptedState) {
-        this.encryptedState = ModifiableVariableFactory.safelySetValue(this.encryptedState, encryptedState);
+        this.encryptedState =
+                ModifiableVariableFactory.safelySetValue(this.encryptedState, encryptedState);
     }
 
     public ModifiableByteArray getMAC() {
@@ -141,16 +131,14 @@ public class SessionTicket extends ModifiableVariableHolder implements Serializa
     }
 
     /**
-     * @param identity
-     *                 the identity to set
+     * @param identity the identity to set
      */
     public void setIdentity(ModifiableByteArray identity) {
         this.identity = identity;
     }
 
     /**
-     * @param identity
-     *                 the identity to set
+     * @param identity the identity to set
      */
     public void setIdentity(byte[] identity) {
         this.identity = ModifiableVariableFactory.safelySetValue(this.identity, identity);
@@ -164,19 +152,18 @@ public class SessionTicket extends ModifiableVariableHolder implements Serializa
     }
 
     /**
-     * @param ticketAgeAdd
-     *                     the ticketAgeAdd to set
+     * @param ticketAgeAdd the ticketAgeAdd to set
      */
     public void setTicketAgeAdd(ModifiableByteArray ticketAgeAdd) {
         this.ticketAgeAdd = ticketAgeAdd;
     }
 
     /**
-     * @param ticketAgeAdd
-     *                     the ticketAgeAdd to set
+     * @param ticketAgeAdd the ticketAgeAdd to set
      */
     public void setTicketAgeAdd(byte[] ticketAgeAdd) {
-        this.ticketAgeAdd = ModifiableVariableFactory.safelySetValue(this.ticketAgeAdd, ticketAgeAdd);
+        this.ticketAgeAdd =
+                ModifiableVariableFactory.safelySetValue(this.ticketAgeAdd, ticketAgeAdd);
     }
 
     /**
@@ -187,16 +174,14 @@ public class SessionTicket extends ModifiableVariableHolder implements Serializa
     }
 
     /**
-     * @param ticketNonce
-     *                    the ticketNonce to set
+     * @param ticketNonce the ticketNonce to set
      */
     public void setTicketNonce(ModifiableByteArray ticketNonce) {
         this.ticketNonce = ticketNonce;
     }
 
     /**
-     * @param ticketNonce
-     *                    the ticketNonce to set
+     * @param ticketNonce the ticketNonce to set
      */
     public void setTicketNonce(byte[] ticketNonce) {
         this.ticketNonce = ModifiableVariableFactory.safelySetValue(this.ticketNonce, ticketNonce);
@@ -210,19 +195,18 @@ public class SessionTicket extends ModifiableVariableHolder implements Serializa
     }
 
     /**
-     * @param identityLength
-     *                       the identityLength to set
+     * @param identityLength the identityLength to set
      */
     public void setIdentityLength(ModifiableInteger identityLength) {
         this.identityLength = identityLength;
     }
 
     /**
-     * @param identityLength
-     *                       the identityLength to set
+     * @param identityLength the identityLength to set
      */
     public void setIdentityLength(int identityLength) {
-        this.identityLength = ModifiableVariableFactory.safelySetValue(this.identityLength, identityLength);
+        this.identityLength =
+                ModifiableVariableFactory.safelySetValue(this.identityLength, identityLength);
     }
 
     /**
@@ -233,19 +217,18 @@ public class SessionTicket extends ModifiableVariableHolder implements Serializa
     }
 
     /**
-     * @param ticketNonceLength
-     *                          the ticketNonceLength to set
+     * @param ticketNonceLength the ticketNonceLength to set
      */
     public void setTicketNonceLength(ModifiableInteger ticketNonceLength) {
         this.ticketNonceLength = ticketNonceLength;
     }
 
     /**
-     * @param ticketNonceLength
-     *                          the ticketNonceLength to set
+     * @param ticketNonceLength the ticketNonceLength to set
      */
     public void setTicketNonceLength(int ticketNonceLength) {
-        this.ticketNonceLength = ModifiableVariableFactory.safelySetValue(this.ticketNonceLength, ticketNonceLength);
+        this.ticketNonceLength =
+                ModifiableVariableFactory.safelySetValue(this.ticketNonceLength, ticketNonceLength);
     }
 
     public ModifiableInteger getEncryptedStateLength() {
@@ -258,6 +241,7 @@ public class SessionTicket extends ModifiableVariableHolder implements Serializa
 
     public void setEncryptedStateLength(int encryptedStateLength) {
         this.encryptedStateLength =
-            ModifiableVariableFactory.safelySetValue(this.encryptedStateLength, encryptedStateLength);
+                ModifiableVariableFactory.safelySetValue(
+                        this.encryptedStateLength, encryptedStateLength);
     }
 }

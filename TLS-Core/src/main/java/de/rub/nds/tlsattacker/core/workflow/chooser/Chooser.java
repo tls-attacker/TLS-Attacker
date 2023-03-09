@@ -11,6 +11,9 @@ package de.rub.nds.tlsattacker.core.workflow.chooser;
 import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.*;
+import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.EchConfig;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PskSet;
 import de.rub.nds.tlsattacker.core.state.Context;
@@ -101,6 +104,8 @@ public abstract class Chooser {
     public abstract byte[] getServerExtendedRandom();
 
     public abstract byte[] getClientRandom();
+
+    public abstract ClientHelloMessage getInnerClientHello();
 
     public abstract byte[] getServerRandom();
 
@@ -330,4 +335,10 @@ public abstract class Chooser {
     public abstract BigInteger getKeySharePrivateKey(NamedGroup keyStoreGroup);
 
     public abstract Integer getPeerReceiveLimit();
+
+    public abstract EchConfig getEchConfig();
+
+    public abstract KeyShareEntry getEchClientKeyShareEntry();
+
+    public abstract KeyShareEntry getEchServerKeyShareEntry();
 }

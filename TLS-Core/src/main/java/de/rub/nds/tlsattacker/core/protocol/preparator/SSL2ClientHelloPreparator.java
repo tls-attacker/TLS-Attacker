@@ -1,14 +1,13 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.SSL2CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ssl.SSL2ByteLength;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
@@ -70,9 +69,7 @@ public class SSL2ClientHelloPreparator extends ProtocolMessagePreparator<SSL2Cli
 
     private void prepareProtocolVersion(SSL2ClientHelloMessage message) {
         message.setProtocolVersion(chooser.getConfig().getHighestProtocolVersion().getValue());
-        LOGGER.debug(
-                "ProtocolVersion: "
-                        + ArrayConverter.bytesToHexString(message.getProtocolVersion().getValue()));
+        LOGGER.debug("ProtocolVersion: {}", message.getProtocolVersion().getValue());
     }
 
     private void prepareCipherSuites(SSL2ClientHelloMessage message) {
@@ -89,21 +86,17 @@ public class SSL2ClientHelloPreparator extends ProtocolMessagePreparator<SSL2Cli
             }
         }
         message.setCipherSuites(cipherStream.toByteArray());
-        LOGGER.debug(
-                "CipherSuites: "
-                        + ArrayConverter.bytesToHexString(message.getCipherSuites().getValue()));
+        LOGGER.debug("CipherSuites: {}", message.getCipherSuites().getValue());
     }
 
     private void prepareChallenge(SSL2ClientHelloMessage message, byte[] challenge) {
         message.setChallenge(challenge);
-        LOGGER.debug(
-                "Challenge: " + ArrayConverter.bytesToHexString(message.getChallenge().getValue()));
+        LOGGER.debug("Challenge: {}", message.getChallenge().getValue());
     }
 
     private void prepareSessionID(SSL2ClientHelloMessage message) {
         message.setSessionID(chooser.getClientSessionId());
-        LOGGER.debug(
-                "SessionID: " + ArrayConverter.bytesToHexString(message.getSessionId().getValue()));
+        LOGGER.debug("SessionID: {}", message.getSessionId().getValue());
     }
 
     private void prepareSessionIDLength(SSL2ClientHelloMessage message) {

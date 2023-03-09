@@ -20,8 +20,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.EmptyClientKeyExchangeMessag
 import de.rub.nds.x509attacker.context.X509Context;
 import de.rub.nds.x509attacker.filesystem.CertificateBytes;
 import de.rub.nds.x509attacker.filesystem.CertificateIo;
+import de.rub.nds.x509attacker.x509.X509CertificateChain;
 import de.rub.nds.x509attacker.x509.base.X509Certificate;
-import de.rub.nds.x509attacker.x509.base.X509CertificateChain;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.math.BigInteger;

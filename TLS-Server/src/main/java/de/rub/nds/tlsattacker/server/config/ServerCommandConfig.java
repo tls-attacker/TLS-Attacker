@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -34,6 +34,7 @@ public class ServerCommandConfig extends TLSDelegateConfig {
     @ParametersDelegate private ListDelegate listDelegate;
     @ParametersDelegate private ExecutorTypeDelegate executorTypeDelegate;
     @ParametersDelegate private StarttlsDelegate starttlsDelegate;
+    @ParametersDelegate private TimeoutDelegate timeoutDelegate;
 
     @Parameter(
             names = "-workflow_input",
@@ -62,6 +63,7 @@ public class ServerCommandConfig extends TLSDelegateConfig {
         this.listDelegate = new ListDelegate();
         this.executorTypeDelegate = new ExecutorTypeDelegate();
         this.starttlsDelegate = new StarttlsDelegate();
+        this.timeoutDelegate = new TimeoutDelegate();
         addDelegate(maxFragmentLengthDelegate);
         addDelegate(ciphersuiteDelegate);
         addDelegate(ellipticCurveDelegate);
@@ -77,6 +79,7 @@ public class ServerCommandConfig extends TLSDelegateConfig {
         addDelegate(listDelegate);
         addDelegate(executorTypeDelegate);
         addDelegate(starttlsDelegate);
+        addDelegate(timeoutDelegate);
     }
 
     @Override

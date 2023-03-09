@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message.extension.psk;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -23,8 +22,7 @@ public class PSKBinder extends ModifiableVariableHolder implements Serializable 
     private ModifiableInteger binderEntryLength;
     private ModifiableByteArray binderEntry;
 
-    public PSKBinder() {
-    }
+    public PSKBinder() {}
 
     public void setBinderEntry(ModifiableByteArray binderEntry) {
         this.binderEntry = binderEntry;
@@ -43,7 +41,8 @@ public class PSKBinder extends ModifiableVariableHolder implements Serializable 
     }
 
     public void setBinderEntryLength(int binderEntryLength) {
-        this.binderEntryLength = ModifiableVariableFactory.safelySetValue(this.binderEntryLength, binderEntryLength);
+        this.binderEntryLength =
+                ModifiableVariableFactory.safelySetValue(this.binderEntryLength, binderEntryLength);
     }
 
     public ModifiableInteger getBinderEntryLength() {
@@ -58,11 +57,9 @@ public class PSKBinder extends ModifiableVariableHolder implements Serializable 
     }
 
     /**
-     * @param binderCipherConfig
-     *                           the binderCipherConfig to set
+     * @param binderCipherConfig the binderCipherConfig to set
      */
     public void setBinderCipherConfig(CipherSuite binderCipherConfig) {
         this.binderCipherConfig = binderCipherConfig;
     }
-
 }

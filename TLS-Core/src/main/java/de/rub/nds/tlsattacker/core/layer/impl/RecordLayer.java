@@ -83,10 +83,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
         LayerConfiguration<Record> configuration = getLayerConfiguration();
         if (configuration != null && configuration.getContainerList() != null) {
             for (Record record : configuration.getContainerList()) {
-                if (!context.getConfig().isUseAllProvidedRecords()
-                        && record.getCompleteRecordBytes() != null
-                        && record.getCompleteRecordBytes().getValue().length == 0) {
-                    // skip empty records if specified in config
+                if (containerAlreadyUsedByHigherLayer(record) || skipEmptyRecords(record)) {
                     continue;
                 }
                 ProtocolMessageType contentType = record.getContentMessageType();
@@ -95,7 +92,8 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
                     LOGGER.warn(
                             "Sending record without a LayerProcessing hint. Using \"UNKNOWN\" as the type");
                 }
-                if (encryptor.getRecordCipher(writeEpoch).getState().getVersion().isDTLS()) {
+                if (encryptor.getRecordCipher(writeEpoch).getState().getVersion().isDTLS()
+                        && record.getEpoch() == null) {
                     record.setEpoch(writeEpoch);
                 }
                 if (record.getCleanProtocolMessageBytes() == null) {
@@ -113,6 +111,12 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
             }
         }
         return getLayerResult();
+    }
+
+    private boolean skipEmptyRecords(Record record) {
+        return !context.getConfig().isUseAllProvidedRecords()
+                && record.getCompleteRecordBytes() != null
+                && record.getCompleteRecordBytes().getValue().length == 0;
     }
 
     /**
@@ -242,10 +246,20 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
             }
             // only set the currentInputStream when we received the expected message
             if (desiredHint == null || currentHint.equals(desiredHint)) {
-                currentInputStream = new HintedLayerInputStream(currentHint, this);
+                if (currentInputStream == null) {
+                    // only set new input stream if necessary, extend current stream otherwise
+                    currentInputStream = new HintedLayerInputStream(currentHint, this);
+                } else {
+                    currentInputStream.setHint(currentHint);
+                }
                 currentInputStream.extendStream(record.getCleanProtocolMessageBytes().getValue());
             } else {
-                nextInputStream = new HintedLayerInputStream(currentHint, this);
+                if (nextInputStream == null) {
+                    // only set new input stream if necessary, extend current stream otherwise
+                    nextInputStream = new HintedLayerInputStream(currentHint, this);
+                } else {
+                    nextInputStream.setHint(currentHint);
+                }
                 nextInputStream.extendStream(record.getCleanProtocolMessageBytes().getValue());
             }
         } catch (ParserException e) {
@@ -264,7 +278,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
             }
         } catch (EndOfStreamException ex) {
             setUnreadBytes(parser.getAlreadyParsed());
-            LOGGER.warn("Reached end of stream, cannot parse more records", ex);
+            LOGGER.debug("Reached end of stream, cannot parse more records", ex);
             throw ex;
         }
     }
@@ -287,18 +301,16 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
 
     public void updateEncryptionCipher(RecordCipher encryptionCipher) {
         LOGGER.debug(
-                "Activating new EncryptionCipher ("
-                        + encryptionCipher.getClass().getSimpleName()
-                        + ")");
+                "Activating new EncryptionCipher ({})",
+                encryptionCipher.getClass().getSimpleName());
         encryptor.addNewRecordCipher(encryptionCipher);
         writeEpoch++;
     }
 
     public void updateDecryptionCipher(RecordCipher decryptionCipher) {
         LOGGER.debug(
-                "Activating new DecryptionCipher ("
-                        + decryptionCipher.getClass().getSimpleName()
-                        + ")");
+                "Activating new DecryptionCipher ({})",
+                decryptionCipher.getClass().getSimpleName());
         decryptor.addNewRecordCipher(decryptionCipher);
         readEpoch++;
     }

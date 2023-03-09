@@ -49,9 +49,7 @@ public class EmptyClientKeyExchangePreparator<T extends EmptyClientKeyExchangeMe
         msg.getComputations().setClientServerRandom(random);
         random = msg.getComputations().getClientServerRandom().getValue();
         LOGGER.debug(
-                "ClientServerRandom: "
-                        + ArrayConverter.bytesToHexString(
-                                msg.getComputations().getClientServerRandom().getValue()));
+                "ClientServerRandom: {}", msg.getComputations().getClientServerRandom().getValue());
     }
 
     protected byte[] calculateDhPremasterSecret(
@@ -66,10 +64,7 @@ public class EmptyClientKeyExchangePreparator<T extends EmptyClientKeyExchangeMe
     protected void preparePremasterSecret(T msg) {
         msg.getComputations().setPremasterSecret(premasterSecret);
         premasterSecret = msg.getComputations().getPremasterSecret().getValue();
-        LOGGER.debug(
-                "PremasterSecret: "
-                        + ArrayConverter.bytesToHexString(
-                                msg.getComputations().getPremasterSecret().getValue()));
+        LOGGER.debug("PremasterSecret: {}", msg.getComputations().getPremasterSecret().getValue());
     }
 
     protected byte[] computeECPremasterSecret(

@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EllipticCurvesExtensionMessage;
@@ -42,9 +41,7 @@ public class EllipticCurvesExtensionPreparator
 
     private void prepareSupportedGroups(EllipticCurvesExtensionMessage msg) {
         msg.setSupportedGroups(createNamedGroupsArray());
-        LOGGER.debug(
-                "SupportedGroups: "
-                        + ArrayConverter.bytesToHexString(msg.getSupportedGroups().getValue()));
+        LOGGER.debug("SupportedGroups: {}", msg.getSupportedGroups().getValue());
     }
 
     private byte[] createNamedGroupsArray() {

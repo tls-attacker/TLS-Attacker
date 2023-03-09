@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.layer.constant.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
+import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import java.io.File;
 import java.lang.reflect.Field;
@@ -112,8 +113,96 @@ public class ConfigTest {
         ArrayList<KeyShareEntry> list = new ArrayList<>();
         list.add(keyShareEntry);
         config.setEsniServerKeyPairs(list);
+        config.setWorkflowExecutorType(WorkflowExecutorType.THREADED_SERVER);
 
         ConfigIO.write(config, new File(RESOURCE_CONFIG_DIR, "esniServer.config"));
+    }
+
+    /** Server that supports both ESNI and ECH client messages */
+    @Test
+    public void generateEsniEchServerConfig() {
+
+        config.setAddEncryptedServerNameIndicationExtension(true);
+
+        KeyShareEntry keyShareEntry = new KeyShareEntry();
+
+        keyShareEntry.setPrivateKey(
+                new BigInteger(
+                        "-35862849564059803287082945144062507860160501396022878289617408550825798132134"));
+
+        ModifiableByteArray publicKey = new ModifiableByteArray();
+        publicKey.setOriginalValue(
+                ArrayConverter.hexStringToByteArray(
+                        "2A981DB6CDD02A06C1763102C9E741365AC4E6F72B3176A6BD6A3523D3EC0F4C"));
+
+        ModifiableByteArray group = new ModifiableByteArray();
+        group.setOriginalValue(ArrayConverter.hexStringToByteArray("001D"));
+
+        keyShareEntry.setGroup(group);
+        keyShareEntry.setPublicKey(publicKey);
+        ArrayList<KeyShareEntry> list = new ArrayList<>();
+        list.add(keyShareEntry);
+
+        config.setEsniServerKeyPairs(list);
+
+        config.setHighestProtocolVersion(ProtocolVersion.TLS13);
+        config.setSupportedVersions(ProtocolVersion.TLS13);
+
+        ArrayList<CipherSuite> clientSupportedCipherSuites = new ArrayList<>();
+        clientSupportedCipherSuites.add(CipherSuite.TLS_AES_128_GCM_SHA256);
+        clientSupportedCipherSuites.add(CipherSuite.TLS_AES_256_GCM_SHA384);
+        ArrayList<CipherSuite> serverSupportedCipherSuites = new ArrayList<>();
+        serverSupportedCipherSuites.add(CipherSuite.TLS_AES_128_GCM_SHA256);
+        serverSupportedCipherSuites.add(CipherSuite.TLS_AES_256_GCM_SHA384);
+        config.setDefaultClientSupportedCipherSuites(clientSupportedCipherSuites);
+        config.setDefaultServerSupportedCipherSuites(serverSupportedCipherSuites);
+
+        ArrayList<NamedGroup> defaultClientNamedGroups = new ArrayList<>();
+        defaultClientNamedGroups.add(NamedGroup.ECDH_X25519);
+        config.setDefaultClientNamedGroups(defaultClientNamedGroups);
+
+        ArrayList<NamedGroup> defaultServerNamedGroups = new ArrayList<>();
+        defaultServerNamedGroups.add(NamedGroup.ECDH_X25519);
+        config.setDefaultServerNamedGroups(defaultServerNamedGroups);
+
+        ArrayList<SignatureAndHashAlgorithm> clientSignatureAndHashAlgorithms = new ArrayList<>();
+        clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_SHA256);
+        clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_SHA384);
+        clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_SHA512);
+        clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.ECDSA_SHA256);
+        clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.ECDSA_SHA384);
+        clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.ECDSA_SHA512);
+        clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_PSS_RSAE_SHA256);
+        clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_PSS_RSAE_SHA384);
+        clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_PSS_RSAE_SHA512);
+        config.setDefaultClientSupportedSignatureAndHashAlgorithms(
+                clientSignatureAndHashAlgorithms);
+
+        ArrayList<SignatureAndHashAlgorithm> serverSignatureAndHashAlgorithms = new ArrayList<>();
+        serverSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_SHA256);
+        serverSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_SHA384);
+        serverSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_SHA512);
+        serverSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.ECDSA_SHA256);
+        serverSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.ECDSA_SHA384);
+        serverSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.ECDSA_SHA512);
+        config.setDefaultServerSupportedSignatureAndHashAlgorithms(
+                serverSignatureAndHashAlgorithms);
+
+        config.setDefaultSelectedNamedGroup(NamedGroup.ECDH_X25519);
+        config.setDefaultSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
+
+        config.setAddECPointFormatExtension(false);
+        config.setAddEllipticCurveExtension(true);
+        config.setAddSignatureAndHashAlgorithmsExtension(true);
+        config.setAddSupportedVersionsExtension(true);
+        config.setAddKeyShareExtension(true);
+        config.setAddEncryptedClientHelloExtension(true);
+        config.setAddServerNameIndicationExtension(true);
+        config.setClientSupportedEsniNamedGroups(NamedGroup.ECDH_X25519);
+        config.setClientSupportedEsniCipherSuites(CipherSuite.TLS_AES_128_GCM_SHA256);
+        config.setWorkflowExecutorType(WorkflowExecutorType.THREADED_SERVER);
+
+        ConfigIO.write(config, new File(RESOURCE_CONFIG_DIR, "esniEchServer.config"));
     }
 
     @Test
@@ -136,6 +225,8 @@ public class ConfigTest {
 
     @Test
     public void generateHttpsConfig() {
+        config.setDefaultLayerConfiguration(LayerConfiguration.HTTPS);
+        config.setWorkflowTraceType(WorkflowTraceType.DYNAMIC_HTTPS);
         ConfigIO.write(config, new File(RESOURCE_CONFIG_DIR, "https.config"));
     }
 
@@ -442,6 +533,74 @@ public class ConfigTest {
         config.setClientSupportedEsniCipherSuites(CipherSuite.TLS_AES_128_GCM_SHA256);
 
         ConfigIO.write(config, new File(RESOURCE_CONFIG_DIR, "tls13_esni.config"));
+    }
+
+    @Test
+    public void generateTls13EchConfigs() {
+        Config config = new Config();
+        stripConfig(config);
+
+        config.setHighestProtocolVersion(ProtocolVersion.TLS13);
+        config.setSupportedVersions(ProtocolVersion.TLS13);
+
+        ArrayList<CipherSuite> clientSupportedCipherSuites = new ArrayList<>();
+        clientSupportedCipherSuites.add(CipherSuite.TLS_AES_128_GCM_SHA256);
+        clientSupportedCipherSuites.add(CipherSuite.TLS_AES_256_GCM_SHA384);
+        ArrayList<CipherSuite> serverSupportedCipherSuites = new ArrayList<>();
+        serverSupportedCipherSuites.add(CipherSuite.TLS_AES_128_GCM_SHA256);
+        serverSupportedCipherSuites.add(CipherSuite.TLS_AES_256_GCM_SHA384);
+        config.setDefaultClientSupportedCipherSuites(clientSupportedCipherSuites);
+        config.setDefaultServerSupportedCipherSuites(serverSupportedCipherSuites);
+
+        ArrayList<NamedGroup> defaultClientNamedGroups = new ArrayList<>();
+        defaultClientNamedGroups.add(NamedGroup.ECDH_X25519);
+        config.setDefaultClientNamedGroups(defaultClientNamedGroups);
+
+        ArrayList<NamedGroup> defaultServerNamedGroups = new ArrayList<>();
+        defaultServerNamedGroups.add(NamedGroup.ECDH_X25519);
+        config.setDefaultServerNamedGroups(defaultServerNamedGroups);
+
+        ArrayList<SignatureAndHashAlgorithm> clientSignatureAndHashAlgorithms = new ArrayList<>();
+        clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_SHA256);
+        clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_SHA384);
+        clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_SHA512);
+        clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.ECDSA_SHA256);
+        clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.ECDSA_SHA384);
+        clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.ECDSA_SHA512);
+        clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_PSS_RSAE_SHA256);
+        clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_PSS_RSAE_SHA384);
+        clientSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_PSS_RSAE_SHA512);
+        config.setDefaultClientSupportedSignatureAndHashAlgorithms(
+                clientSignatureAndHashAlgorithms);
+
+        ArrayList<SignatureAndHashAlgorithm> serverSignatureAndHashAlgorithms = new ArrayList<>();
+        serverSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_SHA256);
+        serverSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_SHA384);
+        serverSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.RSA_SHA512);
+        serverSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.ECDSA_SHA256);
+        serverSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.ECDSA_SHA384);
+        serverSignatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.ECDSA_SHA512);
+        config.setDefaultServerSupportedSignatureAndHashAlgorithms(
+                serverSignatureAndHashAlgorithms);
+
+        config.setDefaultSelectedNamedGroup(NamedGroup.ECDH_X25519);
+        config.setDefaultSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
+
+        config.setAddECPointFormatExtension(false);
+        config.setAddEllipticCurveExtension(true);
+        config.setAddSignatureAndHashAlgorithmsExtension(true);
+        config.setAddSupportedVersionsExtension(true);
+        config.setAddKeyShareExtension(true);
+        config.setAddEncryptedClientHelloExtension(true);
+        config.setAddServerNameIndicationExtension(true);
+        config.setClientSupportedEsniNamedGroups(NamedGroup.ECDH_X25519);
+        config.setClientSupportedEsniCipherSuites(CipherSuite.TLS_AES_128_GCM_SHA256);
+
+        ConfigIO.write(config, new File(RESOURCE_CONFIG_DIR, "tls13_ech.config"));
+
+        config.setWorkflowExecutorType(WorkflowExecutorType.THREADED_SERVER);
+
+        ConfigIO.write(config, new File("echServer.config"));
     }
 
     @Test

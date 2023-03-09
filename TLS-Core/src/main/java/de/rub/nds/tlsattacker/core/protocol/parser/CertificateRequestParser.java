@@ -1,14 +1,13 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
@@ -100,10 +99,7 @@ public class CertificateRequestParser extends HandshakeMessageParser<Certificate
     private void parseSignatureHashAlgorithms(CertificateRequestMessage msg) {
         msg.setSignatureHashAlgorithms(
                 parseByteArrayField(msg.getSignatureHashAlgorithmsLength().getValue()));
-        LOGGER.debug(
-                "SignatureHashAlgorithms: "
-                        + ArrayConverter.bytesToHexString(
-                                msg.getSignatureHashAlgorithms().getValue()));
+        LOGGER.debug("SignatureHashAlgorithms: {}", msg.getSignatureHashAlgorithms().getValue());
     }
 
     /**
@@ -135,9 +131,7 @@ public class CertificateRequestParser extends HandshakeMessageParser<Certificate
     private void parseDistinguishedNames(CertificateRequestMessage msg) {
         msg.setDistinguishedNames(
                 parseByteArrayField(msg.getDistinguishedNamesLength().getValue()));
-        LOGGER.debug(
-                "DistinguishedNames: "
-                        + ArrayConverter.bytesToHexString(msg.getDistinguishedNames().getValue()));
+        LOGGER.debug("DistinguishedNames: {}", msg.getDistinguishedNames().getValue());
     }
 
     private void parseCertificateRequestContextLength(CertificateRequestMessage msg) {
@@ -152,8 +146,6 @@ public class CertificateRequestParser extends HandshakeMessageParser<Certificate
         msg.setCertificateRequestContext(
                 parseByteArrayField(msg.getCertificateRequestContextLength().getValue()));
         LOGGER.debug(
-                "CertificateRequestContext: "
-                        + ArrayConverter.bytesToHexString(
-                                msg.getCertificateRequestContext().getValue()));
+                "CertificateRequestContext: {}", msg.getCertificateRequestContext().getValue());
     }
 }

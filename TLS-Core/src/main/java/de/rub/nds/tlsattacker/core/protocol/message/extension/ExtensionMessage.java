@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -73,9 +73,10 @@ import java.io.Serializable;
     UserMappingExtensionMessage.class,
     SRPExtensionMessage.class,
     CachedInfoExtensionMessage.class,
-    ConnectionIdExtensionMessage.class
+    ConnectionIdExtensionMessage.class,
+    EncryptedClientHelloExtensionMessage.class
 })
-public abstract class ExtensionMessage<Self extends ExtensionMessage>
+public abstract class ExtensionMessage<Self extends ExtensionMessage<?>>
         extends ModifiableVariableHolder implements Serializable, DataContainer<Self, TlsContext> {
 
     protected ExtensionType extensionTypeConstant;

@@ -10,6 +10,12 @@ package de.rub.nds.tlsattacker.core.constants;
 
 public class HandshakeByteLength {
 
+    /** Type length */
+    public static final int TYPE_LENGTH = 1;
+
+    /** Length length */
+    public static final int HANDSHAKE_MESSAGE_LENGTH_FIELD_LENGTH = 3;
+
     /** certificate length field */
     public static final int CERTIFICATE_LENGTH = 3;
 

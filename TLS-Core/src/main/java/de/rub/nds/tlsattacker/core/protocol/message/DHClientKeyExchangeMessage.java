@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -21,7 +21,8 @@ import java.io.InputStream;
 import java.util.List;
 
 @XmlRootElement(name = "DHClientKeyExchange")
-public class DHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
+public class DHClientKeyExchangeMessage<Self extends DHClientKeyExchangeMessage<?>>
+        extends ClientKeyExchangeMessage<Self> {
 
     @HoldsModifiableVariable protected DHClientComputations computations;
 
@@ -42,29 +43,33 @@ public class DHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     }
 
     @Override
-    public DHClientKeyExchangeHandler<? extends DHClientKeyExchangeMessage> getHandler(
-            TlsContext tlsContext) {
+    public DHClientKeyExchangeHandler<Self> getHandler(TlsContext tlsContext) {
         return new DHClientKeyExchangeHandler<>(tlsContext);
     }
 
     @Override
-    public DHClientKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new DHClientKeyExchangeParser(stream, tlsContext);
+    public DHClientKeyExchangeParser<Self> getParser(TlsContext tlsContext, InputStream stream) {
+        return new DHClientKeyExchangeParser<>(stream, tlsContext);
     }
 
     @Override
-    public DHClientKeyExchangePreparator getPreparator(TlsContext tlsContext) {
-        return new DHClientKeyExchangePreparator(tlsContext.getChooser(), this);
+    public DHClientKeyExchangePreparator<Self> getPreparator(TlsContext tlsContext) {
+        return new DHClientKeyExchangePreparator<Self>(tlsContext.getChooser(), (Self) this);
     }
 
     @Override
-    public DHClientKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
-        return new DHClientKeyExchangeSerializer(this);
+    public DHClientKeyExchangeSerializer<Self> getSerializer(TlsContext tlsContext) {
+        return new DHClientKeyExchangeSerializer<Self>((Self) this);
     }
 
     @Override
     public String toCompactString() {
-        return "DH_CLIENT_KEY_EXCHANGE";
+        StringBuilder sb = new StringBuilder();
+        sb.append("DH_CLIENT_KEY_EXCHANGE");
+        if (isRetransmission()) {
+            sb.append(" (ret.)");
+        }
+        return sb.toString();
     }
 
     @Override

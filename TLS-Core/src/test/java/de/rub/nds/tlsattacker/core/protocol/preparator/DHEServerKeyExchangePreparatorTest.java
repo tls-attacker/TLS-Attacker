@@ -21,8 +21,8 @@ import org.junit.jupiter.api.Test;
 
 public class DHEServerKeyExchangePreparatorTest
         extends AbstractProtocolMessagePreparatorTest<
-                DHEServerKeyExchangeMessage,
-                DHEServerKeyExchangePreparator<DHEServerKeyExchangeMessage>> {
+                DHEServerKeyExchangeMessage<?>,
+                DHEServerKeyExchangePreparator<DHEServerKeyExchangeMessage<?>>> {
 
     public DHEServerKeyExchangePreparatorTest() {
         super(DHEServerKeyExchangeMessage::new, DHEServerKeyExchangePreparator::new);

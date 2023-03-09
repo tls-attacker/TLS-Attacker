@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.MaxFragmentLengthExtensionMessage;
@@ -38,8 +37,6 @@ public class MaxFragmentLengthExtensionParser
      */
     private void parseMaxFragmentLength(MaxFragmentLengthExtensionMessage msg) {
         msg.setMaxFragmentLength(parseByteArrayField(ExtensionByteLength.MAX_FRAGMENT));
-        LOGGER.debug(
-                "MaxFragmentLength: "
-                        + ArrayConverter.bytesToHexString(msg.getMaxFragmentLength().getValue()));
+        LOGGER.debug("MaxFragmentLength: {}", msg.getMaxFragmentLength().getValue());
     }
 }

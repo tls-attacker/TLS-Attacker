@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -22,7 +22,8 @@ import java.io.InputStream;
 import java.util.List;
 
 @XmlRootElement(name = "RSAClientKeyExchange")
-public class RSAClientKeyExchangeMessage extends ClientKeyExchangeMessage {
+public class RSAClientKeyExchangeMessage<Self extends RSAClientKeyExchangeMessage<?>>
+        extends ClientKeyExchangeMessage<Self> {
 
     @HoldsModifiableVariable @XmlElement protected RSAClientComputations computations;
 
@@ -65,7 +66,12 @@ public class RSAClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     @Override
     public String toCompactString() {
-        return "RSA_CLIENT_KEY_EXCHANGE";
+        StringBuilder sb = new StringBuilder();
+        sb.append("RSA_CLIENT_KEY_EXCHANGE");
+        if (isRetransmission()) {
+            sb.append(" (ret.)");
+        }
+        return sb.toString();
     }
 
     @Override

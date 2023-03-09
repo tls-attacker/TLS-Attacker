@@ -1,15 +1,13 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import java.io.InputStream;
@@ -39,12 +37,10 @@ public class ApplicationMessageParser extends ProtocolMessageParser<ApplicationM
     /**
      * Reads the next bytes as the Data and writes them in the message
      *
-     * @param msg
-     *            Message to write in
+     * @param msg Message to write in
      */
     private void parseData(ApplicationMessage msg) {
         msg.setData(parseByteArrayField(getBytesLeft()));
-        LOGGER.debug("Data: " + ArrayConverter.bytesToHexString(msg.getData().getValue()));
+        LOGGER.debug("Data: {}", msg.getData().getValue());
     }
-
 }

@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -21,7 +21,8 @@ import java.io.InputStream;
 import java.util.List;
 
 @XmlRootElement(name = "EmptyClientKeyExchange")
-public class EmptyClientKeyExchangeMessage extends ClientKeyExchangeMessage {
+public class EmptyClientKeyExchangeMessage
+        extends ClientKeyExchangeMessage<EmptyClientKeyExchangeMessage> {
 
     @HoldsModifiableVariable protected EmptyClientComputations computations;
 
@@ -63,7 +64,12 @@ public class EmptyClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     @Override
     public String toCompactString() {
-        return "EMPTY_CLIENT_KEY_EXCHANGE";
+        StringBuilder sb = new StringBuilder();
+        sb.append("EMPTY_CLIENT_KEY_EXCHANGE");
+        if (isRetransmission()) {
+            sb.append(" (ret.)");
+        }
+        return sb.toString();
     }
 
     @Override

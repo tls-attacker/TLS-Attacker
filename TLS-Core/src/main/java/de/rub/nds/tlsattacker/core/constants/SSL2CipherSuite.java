@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.constants;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -38,7 +37,8 @@ public enum SSL2CipherSuite implements Serializable {
 
     private static final Map<Integer, SSL2CipherSuite> MAP;
 
-    private SSL2CipherSuite(int value, int secretKeyByteNumber, int clearKeyByteNumber, int blockSize) {
+    private SSL2CipherSuite(
+            int value, int secretKeyByteNumber, int clearKeyByteNumber, int blockSize) {
         this.value = value;
         this.secretKeyByteNumber = secretKeyByteNumber;
         this.clearKeyByteNumber = clearKeyByteNumber;
@@ -56,7 +56,8 @@ public enum SSL2CipherSuite implements Serializable {
         List<SSL2CipherSuite> cipherSuites = new LinkedList<>();
         int pointer = 0;
         while (pointer < values.length) {
-            byte[] suiteBytes = Arrays.copyOfRange(values, pointer, pointer + SSL2CipherSuiteLength);
+            byte[] suiteBytes =
+                    Arrays.copyOfRange(values, pointer, pointer + SSL2CipherSuiteLength);
             int suiteValue = ArrayConverter.bytesToInt(suiteBytes);
             cipherSuites.add(getCipherSuite(suiteValue));
             pointer += SSL2CipherSuiteLength;
@@ -93,12 +94,13 @@ public enum SSL2CipherSuite implements Serializable {
     }
 
     public boolean isWeak() {
-        return this == SSL_CK_DES_64_CBC_WITH_MD5 || this == SSL_CK_RC2_128_CBC_EXPORT40_WITH_MD5
-            || this == SSL_CK_RC4_128_EXPORT40_WITH_MD5;
+        return this == SSL_CK_DES_64_CBC_WITH_MD5
+                || this == SSL_CK_RC2_128_CBC_EXPORT40_WITH_MD5
+                || this == SSL_CK_RC4_128_EXPORT40_WITH_MD5;
     }
 
     public boolean isExport() {
-        return this == SSL_CK_RC2_128_CBC_EXPORT40_WITH_MD5 || this == SSL_CK_RC4_128_EXPORT40_WITH_MD5;
+        return this == SSL_CK_RC2_128_CBC_EXPORT40_WITH_MD5
+                || this == SSL_CK_RC4_128_EXPORT40_WITH_MD5;
     }
-
 }

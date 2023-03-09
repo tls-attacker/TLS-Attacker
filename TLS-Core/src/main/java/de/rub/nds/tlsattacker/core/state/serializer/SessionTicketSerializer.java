@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.state.serializer;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import de.rub.nds.tlsattacker.core.state.SessionTicket;
@@ -38,14 +37,12 @@ public class SessionTicketSerializer extends Serializer<SessionTicket> {
 
     private void writeKeyName(SessionTicket sessionTicket) {
         appendBytes(sessionTicket.getKeyName().getValue());
-        LOGGER.debug(
-                "KeyName: "
-                        + ArrayConverter.bytesToHexString(sessionTicket.getKeyName().getValue()));
+        LOGGER.debug("KeyName: {}", sessionTicket.getKeyName().getValue());
     }
 
     private void writeIV(SessionTicket sessionTicket) {
         appendBytes(sessionTicket.getIV().getValue());
-        LOGGER.debug("IV: " + ArrayConverter.bytesToHexString(sessionTicket.getIV().getValue()));
+        LOGGER.debug("IV: {}", sessionTicket.getIV().getValue());
     }
 
     private void writeEncryptedStateLength(SessionTicket sessionTicket) {
@@ -56,14 +53,11 @@ public class SessionTicketSerializer extends Serializer<SessionTicket> {
 
     private void writeEncryptedState(SessionTicket sessionTicket) {
         appendBytes(sessionTicket.getEncryptedState().getValue());
-        LOGGER.debug(
-                "EncryptedState: "
-                        + ArrayConverter.bytesToHexString(
-                                sessionTicket.getEncryptedState().getValue(), true, true));
+        LOGGER.debug("EncryptedState: {}", sessionTicket.getEncryptedState().getValue());
     }
 
     private void writeMAC(SessionTicket sessionTicket) {
         appendBytes(sessionTicket.getMAC().getValue());
-        LOGGER.debug("MAC: " + ArrayConverter.bytesToHexString(sessionTicket.getMAC().getValue()));
+        LOGGER.debug("MAC: {}", sessionTicket.getMAC().getValue());
     }
 }

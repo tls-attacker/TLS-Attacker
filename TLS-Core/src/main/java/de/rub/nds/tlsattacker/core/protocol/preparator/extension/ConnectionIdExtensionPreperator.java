@@ -1,14 +1,13 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ConnectionIdExtensionMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
@@ -30,9 +29,7 @@ public class ConnectionIdExtensionPreperator
     public void prepareExtensionContent() {
         LOGGER.debug("Preparing ConnectionIdExtensionMessage");
         message.setConnectionId(chooser.getConfig().getDefaultConnectionId());
-        LOGGER.debug(
-                "ConnectionId: "
-                        + ArrayConverter.bytesToHexString(message.getConnectionId().getValue()));
+        LOGGER.debug("ConnectionId: {}", message.getConnectionId().getValue());
         message.setConnectionIdLength(message.getConnectionId().getValue().length);
         LOGGER.debug("ConnectionId length: " + message.getConnectionIdLength().getValue());
     }

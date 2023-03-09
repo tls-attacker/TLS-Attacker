@@ -42,6 +42,7 @@ import java.util.stream.Stream;
 import java.util.stream.Stream.Builder;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -92,6 +93,11 @@ public abstract class AbstractHandshakeIT {
 
     @BeforeAll
     public void loadList() {
+        try {
+            DockerClientManager.getDockerClient().listContainersCmd().exec();
+        } catch (Exception ex) {
+            Assume.assumeNoException(ex);
+        }
         localImages = DockerTlsManagerFactory.getAllImages();
     }
 
@@ -221,7 +227,7 @@ public abstract class AbstractHandshakeIT {
                 System.out.println(
                         "Encountered exception during handshake (" + ignored.getMessage() + ")");
             }
-            if (!state.getWorkflowTrace().executedAsPlanned()) {
+            if (!state.getWorkflowTrace().executedAsPlanned() && (i + 1) < MAX_ATTEMPTS) {
                 System.out.println("Failed to complete handshake, reexecuting...");
                 killContainer();
                 prepareContainer();

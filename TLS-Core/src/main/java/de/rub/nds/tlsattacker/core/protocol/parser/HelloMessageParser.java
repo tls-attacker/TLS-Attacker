@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloMessage;
@@ -47,9 +46,7 @@ public abstract class HelloMessageParser<T extends HelloMessage> extends Handsha
      */
     protected void parseProtocolVersion(HelloMessage message) {
         message.setProtocolVersion(parseByteArrayField(HandshakeByteLength.VERSION));
-        LOGGER.debug(
-                "ProtocolVersion:"
-                        + ArrayConverter.bytesToHexString(message.getProtocolVersion().getValue()));
+        LOGGER.debug("ProtocolVersion: {}", message.getProtocolVersion().getValue());
     }
 
     /**
@@ -59,11 +56,10 @@ public abstract class HelloMessageParser<T extends HelloMessage> extends Handsha
      */
     protected void parseRandom(HelloMessage message) {
         message.setRandom(parseByteArrayField(HandshakeByteLength.RANDOM));
-        LOGGER.debug("Random:" + ArrayConverter.bytesToHexString(message.getRandom().getValue()));
+        LOGGER.debug("Random: {}", message.getRandom().getValue());
         message.setUnixTime(
                 Arrays.copyOf(message.getRandom().getValue(), HandshakeByteLength.UNIX_TIME));
-        LOGGER.debug(
-                "UnixTime:" + ArrayConverter.bytesToHexString(message.getUnixTime().getValue()));
+        LOGGER.debug("UnixTime: {}", message.getUnixTime().getValue());
     }
 
     /**
@@ -83,7 +79,6 @@ public abstract class HelloMessageParser<T extends HelloMessage> extends Handsha
      */
     protected void parseSessionID(HelloMessage message) {
         message.setSessionId(parseByteArrayField(message.getSessionIdLength().getOriginalValue()));
-        LOGGER.debug(
-                "SessionID:" + ArrayConverter.bytesToHexString(message.getSessionId().getValue()));
+        LOGGER.debug("SessionID: {}", message.getSessionId().getValue());
     }
 }

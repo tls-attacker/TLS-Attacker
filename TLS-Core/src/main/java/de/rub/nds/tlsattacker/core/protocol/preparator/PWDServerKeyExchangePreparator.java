@@ -70,10 +70,8 @@ public class PWDServerKeyExchangePreparator
         msg.getKeyExchangeComputations().setPasswordElement(passwordElement);
 
         LOGGER.debug(
-                "PasswordElement.x: "
-                        + ArrayConverter.bytesToHexString(
-                                ArrayConverter.bigIntegerToByteArray(
-                                        passwordElement.getFieldX().getData())));
+                "PasswordElement.x: {}",
+                () -> ArrayConverter.bigIntegerToByteArray(passwordElement.getFieldX().getData()));
     }
 
     protected NamedGroup selectNamedGroup(PWDServerKeyExchangeMessage msg) {
@@ -120,7 +118,7 @@ public class PWDServerKeyExchangePreparator
 
     protected void prepareSalt(PWDServerKeyExchangeMessage msg) {
         msg.setSalt(chooser.getConfig().getDefaultServerPWDSalt());
-        LOGGER.debug("Salt: " + ArrayConverter.bytesToHexString(msg.getSalt().getValue()));
+        LOGGER.debug("Salt: {}", msg.getSalt().getValue());
     }
 
     protected void prepareSaltLength(PWDServerKeyExchangeMessage msg) {
@@ -138,8 +136,7 @@ public class PWDServerKeyExchangePreparator
 
         if (sharedPointFormats.isEmpty()) {
             LOGGER.warn(
-                    "Don't know which point format to use for PWD. "
-                            + "Check if pointFormats is set in config.");
+                    "Don't know which point format to use for PWD. Check if pointFormats is set in config.");
             sharedPointFormats = chooser.getConfig().getDefaultServerSupportedPointFormats();
         }
 
@@ -173,10 +170,8 @@ public class PWDServerKeyExchangePreparator
 
         msg.getKeyExchangeComputations().setPrivateKeyScalar(keyMaterial.privateKeyScalar);
         LOGGER.debug(
-                "Private: "
-                        + ArrayConverter.bytesToHexString(
-                                ArrayConverter.bigIntegerToByteArray(
-                                        keyMaterial.privateKeyScalar)));
+                "Private: {}",
+                () -> ArrayConverter.bigIntegerToByteArray(keyMaterial.privateKeyScalar));
 
         prepareScalar(msg, keyMaterial.scalar);
         prepareScalarLength(msg);
@@ -187,10 +182,7 @@ public class PWDServerKeyExchangePreparator
 
     protected void prepareScalar(PWDServerKeyExchangeMessage msg, BigInteger scalar) {
         msg.setScalar(ArrayConverter.bigIntegerToByteArray(scalar));
-        LOGGER.debug(
-                "Scalar: "
-                        + ArrayConverter.bytesToHexString(
-                                ArrayConverter.bigIntegerToByteArray(scalar)));
+        LOGGER.debug("Scalar: {}", () -> ArrayConverter.bigIntegerToByteArray(scalar));
     }
 
     protected void prepareScalarLength(PWDServerKeyExchangeMessage msg) {
@@ -208,11 +200,11 @@ public class PWDServerKeyExchangePreparator
                         element,
                         chooser.getConfig().getDefaultSelectedPointFormat().getFormat());
         msg.setElement(serializedElement);
-        LOGGER.debug("Element: " + ArrayConverter.bytesToHexString(serializedElement));
+        LOGGER.debug("Element: {}", serializedElement);
     }
 
     protected void prepareElementLength(PWDServerKeyExchangeMessage msg) {
         msg.setElementLength(msg.getElement().getValue().length);
-        LOGGER.debug("ElementLength: " + msg.getElementLength());
+        LOGGER.debug("ElementLength: {}", msg.getElementLength());
     }
 }

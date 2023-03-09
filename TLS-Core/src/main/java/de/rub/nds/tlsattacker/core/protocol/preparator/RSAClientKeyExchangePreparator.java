@@ -18,7 +18,7 @@ import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class RSAClientKeyExchangePreparator<T extends RSAClientKeyExchangeMessage>
+public class RSAClientKeyExchangePreparator<T extends RSAClientKeyExchangeMessage<?>>
         extends ClientKeyExchangePreparator<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -183,7 +183,7 @@ public class RSAClientKeyExchangePreparator<T extends RSAClientKeyExchangeMessag
         int randomByteLength = keyByteLength - HandshakeByteLength.PREMASTER_SECRET - 1;
         // decrypt premasterSecret
         byte[] paddedPremasterSecret = decryptPremasterSecret();
-        LOGGER.debug("PaddedPremaster:" + ArrayConverter.bytesToHexString(paddedPremasterSecret));
+        LOGGER.debug("PaddedPremaster: {}", ArrayConverter.bytesToHexString(paddedPremasterSecret));
         if (randomByteLength < paddedPremasterSecret.length && randomByteLength > 0) {
             premasterSecret =
                     Arrays.copyOfRange(

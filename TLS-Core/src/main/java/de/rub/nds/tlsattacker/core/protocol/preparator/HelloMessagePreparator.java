@@ -20,7 +20,7 @@ import org.apache.logging.log4j.Logger;
 /**
  * @param <T> The HelloMessage that should be prepared
  */
-public abstract class HelloMessagePreparator<T extends HelloMessage>
+public abstract class HelloMessagePreparator<T extends HelloMessage<?>>
         extends HandshakeMessagePreparator<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -35,10 +35,17 @@ public abstract class HelloMessagePreparator<T extends HelloMessage>
     protected void prepareRandom() {
         byte[] random;
         if (chooser.getConfig().isUseFreshRandom()) {
-            random = new byte[HandshakeByteLength.RANDOM - HandshakeByteLength.UNIX_TIME];
-            chooser.getContext().getTlsContext().getRandom().nextBytes(random);
-            msg.setUnixTime(ArrayConverter.longToUint32Bytes(TimeHelper.getTime()));
-            random = ArrayConverter.concatenate(msg.getUnixTime().getValue(), random);
+            if (chooser.getHighestProtocolVersion().isTLS13()) {
+                random = new byte[HandshakeByteLength.RANDOM];
+                chooser.getContext().getTlsContext().getRandom().nextBytes(random);
+                chooser.getContext().getTlsContext().setServerRandom(random);
+            } else {
+                random = new byte[HandshakeByteLength.RANDOM - HandshakeByteLength.UNIX_TIME];
+                chooser.getContext().getTlsContext().getRandom().nextBytes(random);
+                msg.setUnixTime(ArrayConverter.longToUint32Bytes(TimeHelper.getTime()));
+                random = ArrayConverter.concatenate(msg.getUnixTime().getValue(), random);
+                chooser.getContext().getTlsContext().setServerRandom(random);
+            }
         } else {
             if (chooser.getTalkingConnectionEnd() == ConnectionEndType.CLIENT) {
                 random = chooser.getClientRandom();

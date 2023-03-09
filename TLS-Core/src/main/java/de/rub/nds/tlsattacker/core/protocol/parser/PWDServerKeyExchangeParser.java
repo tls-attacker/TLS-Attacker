@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.PWDServerKeyExchangeMessage;
@@ -45,7 +44,7 @@ public class PWDServerKeyExchangeParser
 
     private void parseSalt(PWDServerKeyExchangeMessage msg) {
         msg.setSalt(parseByteArrayField(msg.getSaltLength().getValue()));
-        LOGGER.debug("Salt: " + ArrayConverter.bytesToHexString(msg.getSalt().getValue()));
+        LOGGER.debug("Salt: {}", msg.getSalt().getValue());
     }
 
     private void parseCurveType(PWDServerKeyExchangeMessage msg) {
@@ -55,8 +54,7 @@ public class PWDServerKeyExchangeParser
 
     private void parseNamedGroup(PWDServerKeyExchangeMessage msg) {
         msg.setNamedGroup(parseByteArrayField(HandshakeByteLength.NAMED_GROUP));
-        LOGGER.debug(
-                "NamedGroup: " + ArrayConverter.bytesToHexString(msg.getNamedGroup().getValue()));
+        LOGGER.debug("NamedGroup: {}", msg.getNamedGroup().getValue());
     }
 
     private void parseElementLength(PWDServerKeyExchangeMessage msg) {
@@ -66,7 +64,7 @@ public class PWDServerKeyExchangeParser
 
     private void parseElement(PWDServerKeyExchangeMessage msg) {
         msg.setElement(parseByteArrayField(msg.getElementLength().getValue()));
-        LOGGER.debug("Element: " + ArrayConverter.bytesToHexString(msg.getElement().getValue()));
+        LOGGER.debug("Element: {}", msg.getElement().getValue());
     }
 
     private void parseScalarLength(PWDServerKeyExchangeMessage msg) {
@@ -76,6 +74,6 @@ public class PWDServerKeyExchangeParser
 
     private void parseScalar(PWDServerKeyExchangeMessage msg) {
         msg.setScalar(parseByteArrayField(msg.getScalarLength().getValue()));
-        LOGGER.debug("Scalar: " + ArrayConverter.bytesToHexString(msg.getScalar().getValue()));
+        LOGGER.debug("Scalar: {}", msg.getScalar().getValue());
     }
 }

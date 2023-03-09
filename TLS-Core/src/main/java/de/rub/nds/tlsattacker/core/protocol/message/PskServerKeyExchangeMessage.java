@@ -26,7 +26,8 @@ import java.io.InputStream;
 import java.util.List;
 
 @XmlRootElement(name = "PskServerKeyExchange")
-public class PskServerKeyExchangeMessage extends ServerKeyExchangeMessage {
+public class PskServerKeyExchangeMessage
+        extends ServerKeyExchangeMessage<PskServerKeyExchangeMessage> {
 
     @HoldsModifiableVariable protected PSKPremasterComputations computations;
 
@@ -112,7 +113,12 @@ public class PskServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
     @Override
     public String toCompactString() {
-        return "PSK_SERVER_KEY_EXCHANGE";
+        StringBuilder sb = new StringBuilder();
+        sb.append("PSK_SERVER_KEY_EXCHANGE");
+        if (isRetransmission()) {
+            sb.append(" (ret.)");
+        }
+        return sb.toString();
     }
 
     @Override

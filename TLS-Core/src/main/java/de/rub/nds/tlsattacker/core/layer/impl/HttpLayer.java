@@ -1,29 +1,34 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 package de.rub.nds.tlsattacker.core.layer.impl;
 
+import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
+import de.rub.nds.tlsattacker.core.exceptions.TimeoutException;
+import de.rub.nds.tlsattacker.core.http.HttpMessage;
+import de.rub.nds.tlsattacker.core.http.HttpMessageSerializer;
 import de.rub.nds.tlsattacker.core.http.HttpRequestMessage;
 import de.rub.nds.tlsattacker.core.http.HttpResponseMessage;
+import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
-import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
+import de.rub.nds.tlsattacker.core.layer.hints.HttpLayerHint;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
-import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-/** The HTTPLayer handles HTTP data. Currently WIP */
-public class HttpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer> {
+public class HttpLayer extends ProtocolLayer<HttpLayerHint, HttpMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final HttpContext context;
 
@@ -34,47 +39,60 @@ public class HttpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer>
 
     @Override
     public LayerProcessingResult sendConfiguration() throws IOException {
-        throw new UnsupportedOperationException(
-                "Not supported yet."); // To change body of generated methods, choose
-        // Tools | Templates.
+        LayerConfiguration<HttpMessage> configuration = getLayerConfiguration();
+        if (configuration != null && configuration.getContainerList() != null) {
+            for (HttpMessage httpMsg : configuration.getContainerList()) {
+                if (!prepareDataContainer(httpMsg, context)) {
+                    continue;
+                }
+                httpMsg.getHandler(context).adjustContext(httpMsg);
+                HttpMessageSerializer serializer = httpMsg.getSerializer(context);
+                byte[] serializedMessage = serializer.serialize();
+                getLowerLayer().sendData(null, serializedMessage);
+                addProducedContainer(httpMsg);
+            }
+        }
+        return getLayerResult();
     }
 
     @Override
-    public LayerProcessingResult sendData(LayerProcessingHint hint, byte[] additionalData)
+    public LayerProcessingResult sendData(HttpLayerHint hint, byte[] additionalData)
             throws IOException {
-        throw new UnsupportedOperationException(
-                "Not supported yet."); // To change body of generated methods, choose
-        // Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public void receiveMoreDataForHint(LayerProcessingHint hint) throws IOException {
-        HintedInputStream dataStream = getLowerLayer().getDataStream();
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        while (dataStream.available() > 0) {
-            if (context.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
-                HttpRequestMessage message = new HttpRequestMessage();
-                message.getParser(context, dataStream);
-                addProducedContainer(message);
-                // TODO we are currently not passing client requests upwards
-            } else {
-                // Server talking
-                HttpResponseMessage message = new HttpResponseMessage();
-                message.getParser(context, dataStream);
-                addProducedContainer(message);
-                outputStream.write(
-                        message.getResponseContent()
-                                .getValue()
-                                .getBytes(StandardCharsets.ISO_8859_1));
-            }
-        }
-        dataStream.extendStream(outputStream.toByteArray());
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public LayerProcessingResult receiveData() {
-        throw new UnsupportedOperationException(
-                "Not supported yet."); // To change body of generated methods, choose
-        // Tools | Templates.
+        try {
+            do {
+                // for now, we parse based on our endpoint
+                if (context.getContext().getConnection().getLocalConnectionEndType()
+                        == ConnectionEndType.CLIENT) {
+                    HttpResponseMessage httpResponse = new HttpResponseMessage();
+                    readDataContainer(httpResponse, context);
+                } else {
+                    HttpRequestMessage httpRequest = new HttpRequestMessage();
+                    readDataContainer(httpRequest, context);
+                }
+                // receive until the layer configuration is satisfied or no data is left
+            } while (shouldContinueProcessing());
+        } catch (TimeoutException ex) {
+            LOGGER.debug(ex);
+        } catch (EndOfStreamException ex) {
+            if (getLayerConfiguration() != null
+                    && getLayerConfiguration().getContainerList() != null
+                    && !getLayerConfiguration().getContainerList().isEmpty()) {
+                LOGGER.debug("Reached end of stream, cannot parse more messages", ex);
+            } else {
+                LOGGER.debug("No messages required for layer.");
+            }
+        }
+
+        return getLayerResult();
     }
 }

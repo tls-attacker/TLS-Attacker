@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
 import org.apache.logging.log4j.LogManager;
@@ -56,8 +55,6 @@ public class DHClientKeyExchangeSerializer<T extends DHClientKeyExchangeMessage>
     /** Writes the SerializedPublicKey of the DHClientKeyExchangeMessage into the final byte[] */
     private void writeSerializedPublicKey(T msg) {
         appendBytes(msg.getPublicKey().getValue());
-        LOGGER.debug(
-                "SerializedPublicKey: "
-                        + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
+        LOGGER.debug("SerializedPublicKey: {}", msg.getPublicKey().getValue());
     }
 }

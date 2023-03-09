@@ -21,7 +21,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.EncryptedServer
 /**
  * @param <HandshakeMessageT> The ProtocolMessage that should be handled
  */
-public abstract class HandshakeMessageHandler<HandshakeMessageT extends HandshakeMessage>
+public abstract class HandshakeMessageHandler<HandshakeMessageT extends HandshakeMessage<?>>
         extends ProtocolMessageHandler<HandshakeMessageT> {
 
     public HandshakeMessageHandler(TlsContext tlsContext) {

@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
 import de.rub.nds.protocol.constants.PointFormat;
 import de.rub.nds.protocol.crypto.ec.Point;
@@ -24,16 +23,20 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.x509attacker.constants.X509PublicKeyType;
 import de.rub.nds.x509attacker.filesystem.CertificateBytes;
+import de.rub.nds.x509attacker.x509.X509CertificateChain;
 import de.rub.nds.x509attacker.x509.X509CertificateChainBuidler;
 import de.rub.nds.x509attacker.x509.base.X509Certificate;
-import de.rub.nds.x509attacker.x509.base.X509CertificateChain;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bouncycastle.asn1.*;
+import org.bouncycastle.asn1.ASN1Encodable;
+import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+import org.bouncycastle.asn1.ASN1OutputStream;
+import org.bouncycastle.asn1.DERBitString;
+import org.bouncycastle.asn1.DLSequence;
 
 public class CertificateMessagePreparator extends HandshakeMessagePreparator<CertificateMessage> {
 
@@ -148,9 +151,7 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
                     prepareFromEntryList(msg);
                 }
                 LOGGER.debug(
-                        "CertificatesListBytes: "
-                                + ArrayConverter.bytesToHexString(
-                                        msg.getCertificatesListBytes().getValue()));
+                        "CertificatesListBytes: {}", msg.getCertificatesListBytes().getValue());
                 break;
 
             default:
@@ -181,9 +182,7 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
         } else {
             msg.setRequestContext(new byte[0]);
         }
-        LOGGER.debug(
-                "RequestContext: "
-                        + ArrayConverter.bytesToHexString(msg.getRequestContext().getValue()));
+        LOGGER.debug("RequestContext: {}", msg.getRequestContext().getValue());
     }
 
     private void prepareRequestContextLength(CertificateMessage msg) {

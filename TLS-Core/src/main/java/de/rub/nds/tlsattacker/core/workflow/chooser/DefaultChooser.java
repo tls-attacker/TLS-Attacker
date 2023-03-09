@@ -11,8 +11,12 @@ package de.rub.nds.tlsattacker.core.workflow.chooser;
 import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.*;
+import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.EchConfig;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PskSet;
+import de.rub.nds.tlsattacker.core.protocol.preparator.extension.KeyShareEntryPreparator;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -257,6 +261,15 @@ public class DefaultChooser extends Chooser {
             return copy(context.getTlsContext().getClientRandom());
         } else {
             return config.getDefaultClientRandom();
+        }
+    }
+
+    @Override
+    public ClientHelloMessage getInnerClientHello() {
+        if (context.getTlsContext().getInnerClientHello() != null) {
+            return context.getTlsContext().getInnerClientHello();
+        } else {
+            return new ClientHelloMessage();
         }
     }
 
@@ -1100,6 +1113,53 @@ public class DefaultChooser extends Chooser {
             return context.getTlsContext().getPeerReceiveLimit();
         } else {
             return config.getDefaultAssumedMaxReceiveLimit();
+        }
+    }
+
+    @Override
+    public EchConfig getEchConfig() {
+        if (context != null && context.getTlsContext().getEchConfig() != null) {
+            return context.getTlsContext().getEchConfig();
+        } else {
+            return config.getDefaultEchConfig();
+        }
+    }
+
+    @Override
+    public KeyShareEntry getEchClientKeyShareEntry() {
+        if (context != null && context.getTlsContext().getEchClientKeyShareEntry() != null) {
+            return context.getTlsContext().getEchClientKeyShareEntry();
+        } else {
+            KeyShareEntry keyShareEntry = new KeyShareEntry();
+            keyShareEntry.setPrivateKey(config.getDefaultEchClientPrivateKey());
+            KeyShareEntryPreparator keyShareEntryPreparator =
+                    new KeyShareEntryPreparator(this, keyShareEntry);
+            keyShareEntry.setGroupConfig(getEchConfig().getKem().getNamedGroup());
+            keyShareEntryPreparator.prepare();
+            if (context != null) {
+                context.getTlsContext().setEchClientKeyShareEntry(keyShareEntry);
+            }
+            return keyShareEntry;
+        }
+    }
+
+    @Override
+    public KeyShareEntry getEchServerKeyShareEntry() {
+        if (context != null
+                && context.getTlsContext() != null
+                && context.getTlsContext().getEchClientKeyShareEntry() != null) {
+            return context.getTlsContext().getEchServerKeyShareEntry();
+        } else {
+            KeyShareEntry keyShareEntry = new KeyShareEntry();
+            keyShareEntry.setPrivateKey(config.getDefaultEchServerPrivateKey());
+            KeyShareEntryPreparator keyShareEntryPreparator =
+                    new KeyShareEntryPreparator(this, keyShareEntry);
+            keyShareEntry.setGroupConfig(getEchConfig().getKem().getNamedGroup());
+            keyShareEntryPreparator.prepare();
+            if (context != null) {
+                context.getTlsContext().setEchServerKeyShareEntry(keyShareEntry);
+            }
+            return keyShareEntry;
         }
     }
 }

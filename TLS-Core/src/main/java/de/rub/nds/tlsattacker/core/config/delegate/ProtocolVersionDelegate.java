@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
@@ -23,8 +22,7 @@ public class ProtocolVersionDelegate extends Delegate {
     @Parameter(names = "-version", description = "Highest supported protocol version ")
     private ProtocolVersion protocolVersion = null;
 
-    public ProtocolVersionDelegate() {
-    }
+    public ProtocolVersionDelegate() {}
 
     public ProtocolVersionDelegate(ProtocolVersion protocolVersion) {
         this.protocolVersion = protocolVersion;
@@ -64,5 +62,4 @@ public class ProtocolVersionDelegate extends Delegate {
         config.getDefaultClientConnection().setTransportHandlerType(th);
         config.getDefaultServerConnection().setTransportHandlerType(th);
     }
-
 }

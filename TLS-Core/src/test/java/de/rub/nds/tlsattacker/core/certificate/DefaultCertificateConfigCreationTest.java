@@ -10,9 +10,9 @@ package de.rub.nds.tlsattacker.core.certificate;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.x509attacker.x509.X509CertificateChain;
 import de.rub.nds.x509attacker.x509.X509CertificateChainBuidler;
 import de.rub.nds.x509attacker.x509.base.X509Certificate;
-import de.rub.nds.x509attacker.x509.base.X509CertificateChain;
 import org.junit.jupiter.api.Test;
 
 public class DefaultCertificateConfigCreationTest {

@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.tokenbinding;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageParser;
 import java.io.InputStream;
@@ -44,7 +43,7 @@ public class TokenBindingMessageParser extends ProtocolMessageParser<TokenBindin
             LOGGER.debug("PointLength:" + message.getPointLength().getValue());
 
             message.setPoint(parseByteArrayField(message.getPointLength().getValue()));
-            LOGGER.debug("Point:" + ArrayConverter.bytesToHexString(message.getPoint().getValue()));
+            LOGGER.debug("Point: {}", message.getPoint().getValue());
 
         } else {
             message.setModulusLength(parseIntField(TokenBindingLength.MODULUS));
@@ -57,15 +56,12 @@ public class TokenBindingMessageParser extends ProtocolMessageParser<TokenBindin
         LOGGER.debug("SignatureLength:" + message.getSignatureLength().getValue());
 
         message.setSignature(parseByteArrayField(message.getSignatureLength().getValue()));
-        LOGGER.debug(
-                "Signature:" + ArrayConverter.bytesToHexString(message.getSignature().getValue()));
+        LOGGER.debug("Signature: {}", message.getSignature().getValue());
 
         message.setExtensionLength(parseIntField(TokenBindingLength.EXTENSIONS));
         LOGGER.debug("ExtensionLength:" + message.getExtensionLength().getValue());
 
         message.setExtensionBytes(parseByteArrayField(message.getExtensionLength().getValue()));
-        LOGGER.debug(
-                "Extensions:"
-                        + ArrayConverter.bytesToHexString(message.getExtensionBytes().getValue()));
+        LOGGER.debug("Extensions: {}", message.getExtensionBytes().getValue());
     }
 }

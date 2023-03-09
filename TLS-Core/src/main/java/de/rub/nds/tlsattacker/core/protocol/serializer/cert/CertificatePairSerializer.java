@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer.cert;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
@@ -32,11 +31,11 @@ public class CertificatePairSerializer extends Serializer<CertificateEntry> {
     protected byte[] serializeBytes() {
         LOGGER.debug("Serializing CertificatePair");
         writeCertificateLength(pair);
-        writeCertificate(pair);
+        writeCertificateBytes(pair);
         if (version.isTLS13()) {
             writeExtensionsLength(pair);
             if (pair.getExtensionBytes() != null && pair.getExtensionBytes().getValue() != null) {
-                writeExtensions(pair);
+                writeExtensionBytes(pair);
             }
         }
         return getAlreadySerialized();
@@ -47,11 +46,9 @@ public class CertificatePairSerializer extends Serializer<CertificateEntry> {
         LOGGER.debug("CertificateLength: " + pair.getCertificateLength().getValue());
     }
 
-    private void writeCertificate(CertificateEntry pair) {
+    private void writeCertificateBytes(CertificateEntry pair) {
         appendBytes(pair.getCertificateBytes().getValue());
-        LOGGER.debug(
-                "Certificate: "
-                        + ArrayConverter.bytesToHexString(pair.getCertificateBytes().getValue()));
+        LOGGER.debug("Certificate: {}", pair.getCertificateBytes().getValue());
     }
 
     private void writeExtensionsLength(CertificateEntry pair) {
@@ -59,10 +56,8 @@ public class CertificatePairSerializer extends Serializer<CertificateEntry> {
         LOGGER.debug("ExtensionsLength: " + pair.getExtensionsLength().getValue());
     }
 
-    private void writeExtensions(CertificateEntry pair) {
+    private void writeExtensionBytes(CertificateEntry pair) {
         appendBytes(pair.getExtensionBytes().getValue());
-        LOGGER.debug(
-                "Extensions: "
-                        + ArrayConverter.bytesToHexString(pair.getExtensionBytes().getValue()));
+        LOGGER.debug("Extensions: {}", pair.getExtensionBytes().getValue());
     }
 }

@@ -1,24 +1,22 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.transport.tcp;
 
 import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.io.IOException;
 import java.io.PushbackInputStream;
 import java.net.ConnectException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ClientTcpTransportHandler extends TcpTransportHandler {
 
@@ -29,16 +27,22 @@ public class ClientTcpTransportHandler extends TcpTransportHandler {
     private boolean retryFailedSocketInitialization = false;
 
     public ClientTcpTransportHandler(Connection connection) {
-        this(connection.getConnectionTimeout(), connection.getFirstTimeout(), connection.getTimeout(),
-            connection.getIp(), connection.getPort());
+        super(connection);
+        this.connectionTimeout = connection.getConnectionTimeout();
+        this.hostname = connection.getIp();
+        this.dstPort = connection.getPort();
     }
 
     public ClientTcpTransportHandler(long firstTimeout, long timeout, String hostname, int port) {
         this(timeout, firstTimeout, timeout, hostname, port);
     }
 
-    public ClientTcpTransportHandler(long connectionTimeout, long firstTimeout, long timeout, String hostname,
-        int serverPort) {
+    public ClientTcpTransportHandler(
+            long connectionTimeout,
+            long firstTimeout,
+            long timeout,
+            String hostname,
+            int serverPort) {
         super(firstTimeout, timeout, ConnectionEndType.CLIENT);
         this.hostname = hostname;
         this.dstPort = serverPort;
@@ -46,8 +50,8 @@ public class ClientTcpTransportHandler extends TcpTransportHandler {
         this.srcPort = null;
     }
 
-    public ClientTcpTransportHandler(long connectionTimeout, long timeout, String hostname, int serverPort,
-        int clientPort) {
+    public ClientTcpTransportHandler(
+            long connectionTimeout, long timeout, String hostname, int serverPort, int clientPort) {
         super(connectionTimeout, timeout, ConnectionEndType.CLIENT);
         this.hostname = hostname;
         this.dstPort = serverPort;
@@ -75,7 +79,12 @@ public class ClientTcpTransportHandler extends TcpTransportHandler {
             try {
                 socket = new Socket();
                 socket.setReuseAddress(true);
-                if (srcPort != null && retryFailedSocketInitialization) {
+                // reuse client port only when present and either retried socket initializations are
+                // enabled or
+                // client port has been manually set and the resetClientSourcePort setting is
+                // disabled
+                if (srcPort != null
+                        && (retryFailedSocketInitialization || !resetClientSourcePort)) {
                     socket.bind(new InetSocketAddress(srcPort));
                 }
                 socket.connect(new InetSocketAddress(hostname, dstPort), (int) connectionTimeout);
@@ -138,7 +147,8 @@ public class ClientTcpTransportHandler extends TcpTransportHandler {
     @Override
     public void setDstPort(int serverPort) {
         if (isInitialized()) {
-            throw new RuntimeException("Cannot change the server port once the TransportHandler is initialized");
+            throw new RuntimeException(
+                    "Cannot change the server port once the TransportHandler is initialized");
         } else {
             this.dstPort = serverPort;
         }
@@ -147,7 +157,8 @@ public class ClientTcpTransportHandler extends TcpTransportHandler {
     @Override
     public void setSrcPort(int clientPort) {
         if (isInitialized()) {
-            throw new RuntimeException("Cannot change the client port once the TransportHandler is initialized");
+            throw new RuntimeException(
+                    "Cannot change the client port once the TransportHandler is initialized");
         } else {
             this.srcPort = clientPort;
         }

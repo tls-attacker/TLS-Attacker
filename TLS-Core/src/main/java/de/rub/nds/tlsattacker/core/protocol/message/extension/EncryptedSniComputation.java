@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -16,35 +15,25 @@ import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 
 public class EncryptedSniComputation extends ModifiableVariableHolder {
 
-    @ModifiableVariableProperty
-    private ModifiableByteArray clientHelloRandom;
+    @ModifiableVariableProperty private ModifiableByteArray clientHelloRandom;
 
-    @ModifiableVariableProperty
-    private ModifiableByteArray esniContents;
+    @ModifiableVariableProperty private ModifiableByteArray esniContents;
 
-    @ModifiableVariableProperty
-    private ModifiableByteArray esniRecordBytes;
+    @ModifiableVariableProperty private ModifiableByteArray esniRecordBytes;
 
-    @ModifiableVariableProperty
-    private ModifiableByteArray clientHelloKeyShare;
+    @ModifiableVariableProperty private ModifiableByteArray clientHelloKeyShare;
 
-    @ModifiableVariableProperty
-    private ModifiableByteArray esniServerPublicKey;
+    @ModifiableVariableProperty private ModifiableByteArray esniServerPublicKey;
 
-    @ModifiableVariableProperty
-    private ModifiableByteArray esniContentsHash;
+    @ModifiableVariableProperty private ModifiableByteArray esniContentsHash;
 
-    @ModifiableVariableProperty
-    private ModifiableByteArray esniSharedSecret;
+    @ModifiableVariableProperty private ModifiableByteArray esniSharedSecret;
 
-    @ModifiableVariableProperty
-    private ModifiableByteArray esniMasterSecret;
+    @ModifiableVariableProperty private ModifiableByteArray esniMasterSecret;
 
-    @ModifiableVariableProperty
-    private ModifiableByteArray esniKey;
+    @ModifiableVariableProperty private ModifiableByteArray esniKey;
 
-    @ModifiableVariableProperty
-    private ModifiableByteArray esniIv;
+    @ModifiableVariableProperty private ModifiableByteArray esniIv;
 
     public ModifiableByteArray getClientHelloRandom() {
         return clientHelloRandom;
@@ -55,7 +44,8 @@ public class EncryptedSniComputation extends ModifiableVariableHolder {
     }
 
     public void setClientHelloRandom(byte[] clientHelloRandom) {
-        this.clientHelloRandom = ModifiableVariableFactory.safelySetValue(this.clientHelloRandom, clientHelloRandom);
+        this.clientHelloRandom =
+                ModifiableVariableFactory.safelySetValue(this.clientHelloRandom, clientHelloRandom);
     }
 
     public ModifiableByteArray getEsniContents() {
@@ -67,7 +57,8 @@ public class EncryptedSniComputation extends ModifiableVariableHolder {
     }
 
     public void setEsniContents(byte[] esniContents) {
-        this.esniContents = ModifiableVariableFactory.safelySetValue(this.esniContents, esniContents);
+        this.esniContents =
+                ModifiableVariableFactory.safelySetValue(this.esniContents, esniContents);
     }
 
     public ModifiableByteArray getEsniRecordBytes() {
@@ -79,7 +70,8 @@ public class EncryptedSniComputation extends ModifiableVariableHolder {
     }
 
     public void setEsniRecordBytes(byte[] esniRecordBytes) {
-        this.esniRecordBytes = ModifiableVariableFactory.safelySetValue(this.esniRecordBytes, esniRecordBytes);
+        this.esniRecordBytes =
+                ModifiableVariableFactory.safelySetValue(this.esniRecordBytes, esniRecordBytes);
     }
 
     public ModifiableByteArray getClientHelloKeyShare() {
@@ -92,7 +84,8 @@ public class EncryptedSniComputation extends ModifiableVariableHolder {
 
     public void setClientHelloKeyShare(byte[] clientHelloKeyShare) {
         this.clientHelloKeyShare =
-            ModifiableVariableFactory.safelySetValue(this.clientHelloKeyShare, clientHelloKeyShare);
+                ModifiableVariableFactory.safelySetValue(
+                        this.clientHelloKeyShare, clientHelloKeyShare);
     }
 
     public ModifiableByteArray getEsniServerPublicKey() {
@@ -105,7 +98,8 @@ public class EncryptedSniComputation extends ModifiableVariableHolder {
 
     public void setEsniServerPublicKey(byte[] esniServerPublicKey) {
         this.esniServerPublicKey =
-            ModifiableVariableFactory.safelySetValue(this.esniServerPublicKey, esniServerPublicKey);
+                ModifiableVariableFactory.safelySetValue(
+                        this.esniServerPublicKey, esniServerPublicKey);
     }
 
     public ModifiableByteArray getEsniContentsHash() {
@@ -117,7 +111,8 @@ public class EncryptedSniComputation extends ModifiableVariableHolder {
     }
 
     public void setEsniContentsHash(byte[] esniContentsHash) {
-        this.esniContentsHash = ModifiableVariableFactory.safelySetValue(this.esniContentsHash, esniContentsHash);
+        this.esniContentsHash =
+                ModifiableVariableFactory.safelySetValue(this.esniContentsHash, esniContentsHash);
     }
 
     public ModifiableByteArray getEsniSharedSecret() {
@@ -129,7 +124,8 @@ public class EncryptedSniComputation extends ModifiableVariableHolder {
     }
 
     public void setEsniSharedSecret(byte[] esniSharedSecret) {
-        this.esniSharedSecret = ModifiableVariableFactory.safelySetValue(this.esniSharedSecret, esniSharedSecret);
+        this.esniSharedSecret =
+                ModifiableVariableFactory.safelySetValue(this.esniSharedSecret, esniSharedSecret);
     }
 
     public ModifiableByteArray getEsniMasterSecret() {
@@ -141,7 +137,8 @@ public class EncryptedSniComputation extends ModifiableVariableHolder {
     }
 
     public void setEsniMasterSecret(byte[] esniMasterSecret) {
-        this.esniMasterSecret = ModifiableVariableFactory.safelySetValue(this.esniMasterSecret, esniMasterSecret);
+        this.esniMasterSecret =
+                ModifiableVariableFactory.safelySetValue(this.esniMasterSecret, esniMasterSecret);
     }
 
     public ModifiableByteArray getEsniKey() {

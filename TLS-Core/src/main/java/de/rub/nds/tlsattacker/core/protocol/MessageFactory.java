@@ -68,8 +68,10 @@ public class MessageFactory {
                 return getServerKeyExchangeMessage(tlsContext);
             case UNKNOWN:
                 return new UnknownHandshakeMessage();
+            case SUPPLEMENTAL_DATA:
+                return new SupplementalDataMessage();
             default:
-                throw new RuntimeException("Unexpected HandshakeMessage Type");
+                throw new RuntimeException("Unexpected HandshakeMessage Type " + type);
         }
     }
 

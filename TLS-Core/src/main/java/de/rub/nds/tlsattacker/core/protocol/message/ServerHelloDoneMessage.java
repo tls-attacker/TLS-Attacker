@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -18,7 +18,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
 @XmlRootElement(name = "ServerHelloDone")
-public class ServerHelloDoneMessage extends HandshakeMessage {
+public class ServerHelloDoneMessage extends HandshakeMessage<ServerHelloDoneMessage> {
 
     public ServerHelloDoneMessage() {
         super(HandshakeMessageType.SERVER_HELLO_DONE);

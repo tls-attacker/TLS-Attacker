@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -121,10 +121,16 @@ public class WorkflowTrace implements Serializable {
                 @XmlElement(
                         type = ChangeReadSequenceNumberAction.class,
                         name = "ChangeReadSequenceNumber"),
+                @XmlElement(
+                        type = ChangeReadMessageSequenceAction.class,
+                        name = "ChangeReadMessageSequence"),
                 @XmlElement(type = ChangeWriteEpochAction.class, name = "ChangeWriteEpoch"),
                 @XmlElement(
                         type = ChangeWriteSequenceNumberAction.class,
                         name = "ChangeWriteSequenceNumber"),
+                @XmlElement(
+                        type = ChangeWriteMessageSequenceAction.class,
+                        name = "ChangeWriteMessageSequence"),
                 @XmlElement(type = ClearBuffersAction.class, name = "ClearBuffers"),
                 @XmlElement(type = ClearDigestAction.class, name = "ClearDigest"),
                 @XmlElement(type = ConnectionBoundAction.class, name = "ConnectionBound"),
@@ -145,6 +151,7 @@ public class WorkflowTrace implements Serializable {
                         name = "DeepCopyBufferedRecords"),
                 @XmlElement(type = DeepCopyBuffersAction.class, name = "DeepCopyBuffers"),
                 @XmlElement(type = EsniKeyDnsRequestAction.class, name = "EsniKeyDnsRequest"),
+                @XmlElement(type = EchConfigDnsRequestAction.class, name = "EchConfigDnsRequest"),
                 @XmlElement(
                         type = FindReceivedProtocolMessageAction.class,
                         name = "FindReceivedProtocolMessage"),
@@ -204,7 +211,7 @@ public class WorkflowTrace implements Serializable {
                 @XmlElement(type = FlushSessionCacheAction.class, name = "FlushSessionCache"),
                 @XmlElement(type = SendAsciiAction.class, name = "SendAscii"),
                 @XmlElement(type = ReceiveAsciiAction.class, name = "ReceiveAscii"),
-                @XmlElement(type = GenericReceiveAsciiAction.class, name = "GenericReceiveAscii")
+                @XmlElement(type = GenericReceiveAsciiAction.class, name = "GenericReceiveAscii"),
             })
     private List<TlsAction> tlsActions = new ArrayList<>();
 

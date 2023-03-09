@@ -1,14 +1,13 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 package de.rub.nds.tlsattacker.core.record.parser;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.RecordByteLength;
@@ -75,9 +74,7 @@ public class RecordParser extends Parser<Record> {
                         .getConnectionId()
                         .length;
         record.setConnectionId(parseByteArrayField(connectionIdLength));
-        LOGGER.debug(
-                "ConnectionID: "
-                        + ArrayConverter.bytesToHexString(record.getConnectionId().getValue()));
+        LOGGER.debug("ConnectionID: {}", record.getConnectionId().getValue());
     }
 
     private void parseContentType(Record record) {
@@ -87,9 +84,7 @@ public class RecordParser extends Parser<Record> {
 
     private void parseVersion(Record record) {
         record.setProtocolVersion(parseByteArrayField(RecordByteLength.PROTOCOL_VERSION));
-        LOGGER.debug(
-                "ProtocolVersion: "
-                        + ArrayConverter.bytesToHexString(record.getProtocolVersion().getValue()));
+        LOGGER.debug("ProtocolVersion: {}", record.getProtocolVersion().getValue());
     }
 
     private void parseLength(Record record) {
@@ -99,9 +94,6 @@ public class RecordParser extends Parser<Record> {
 
     private void parseProtocolMessageBytes(Record record) {
         record.setProtocolMessageBytes(parseByteArrayField(record.getLength().getValue()));
-        LOGGER.debug(
-                "ProtocolMessageBytes: "
-                        + ArrayConverter.bytesToHexString(
-                                record.getProtocolMessageBytes().getValue()));
+        LOGGER.debug("ProtocolMessageBytes: {}", record.getProtocolMessageBytes().getValue());
     }
 }

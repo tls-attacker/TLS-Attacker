@@ -99,7 +99,7 @@ public class PWDProtectExtensionPreparator extends ExtensionPreparator<PWDProtec
                                 ArrayConverter.bigIntegerToByteArray(sharedSecret)),
                         new byte[0],
                         curve.getModulus().bitLength() / Bits.IN_A_BYTE);
-        LOGGER.debug("Username encryption key: " + ArrayConverter.bytesToHexString(key));
+        LOGGER.debug("Username encryption key: {}", key);
 
         byte[] ctrKey = Arrays.copyOfRange(key, 0, key.length / 2);
         byte[] macKey = Arrays.copyOfRange(key, key.length / 2, key.length);
@@ -124,7 +124,7 @@ public class PWDProtectExtensionPreparator extends ExtensionPreparator<PWDProtec
                                 curve.getModulus().bitLength() / Bits.IN_A_BYTE,
                                 true),
                         protectedUsername));
-        LOGGER.debug("Username: " + ArrayConverter.bytesToHexString(msg.getUsername()));
+        LOGGER.debug("Username: {}", msg.getUsername());
     }
 
     private void prepareUsernameLength(PWDProtectExtensionMessage msg) {

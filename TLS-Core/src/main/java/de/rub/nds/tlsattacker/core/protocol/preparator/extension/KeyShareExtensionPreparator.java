@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
@@ -135,9 +134,7 @@ public class KeyShareExtensionPreparator extends ExtensionPreparator<KeyShareExt
 
     private void prepareKeyShareListBytes(KeyShareExtensionMessage msg) {
         msg.setKeyShareListBytes(stream.toByteArray());
-        LOGGER.debug(
-                "KeyShareListBytes: "
-                        + ArrayConverter.bytesToHexString(msg.getKeyShareListBytes().getValue()));
+        LOGGER.debug("KeyShareListBytes: {}", msg.getKeyShareListBytes().getValue());
     }
 
     private void prepareKeyShareListLength(KeyShareExtensionMessage msg) {

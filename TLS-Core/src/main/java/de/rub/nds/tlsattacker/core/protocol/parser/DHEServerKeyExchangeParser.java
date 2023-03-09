@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
@@ -118,9 +117,7 @@ public class DHEServerKeyExchangeParser<T extends DHEServerKeyExchangeMessage>
      */
     private void parseSerializedPublicKey(DHEServerKeyExchangeMessage msg) {
         msg.setPublicKey(parseByteArrayField(msg.getPublicKeyLength().getValue()));
-        LOGGER.debug(
-                "SerializedPublicKey: "
-                        + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
+        LOGGER.debug("SerializedPublicKey: {}", msg.getPublicKey().getValue());
     }
 
     /**
@@ -132,9 +129,7 @@ public class DHEServerKeyExchangeParser<T extends DHEServerKeyExchangeMessage>
         msg.setSignatureAndHashAlgorithm(
                 parseByteArrayField(HandshakeByteLength.SIGNATURE_HASH_ALGORITHM));
         LOGGER.debug(
-                "SignatureAndHashAlgorithm: "
-                        + ArrayConverter.bytesToHexString(
-                                msg.getSignatureAndHashAlgorithm().getValue()));
+                "SignatureAndHashAlgorithm: {}", msg.getSignatureAndHashAlgorithm().getValue());
     }
 
     /**
@@ -154,7 +149,6 @@ public class DHEServerKeyExchangeParser<T extends DHEServerKeyExchangeMessage>
      */
     private void parseSignature(DHEServerKeyExchangeMessage msg) {
         msg.setSignature(parseByteArrayField(msg.getSignatureLength().getValue()));
-        LOGGER.debug(
-                "Signature: " + ArrayConverter.bytesToHexString(msg.getSignature().getValue()));
+        LOGGER.debug("Signature: {}", msg.getSignature().getValue());
     }
 }

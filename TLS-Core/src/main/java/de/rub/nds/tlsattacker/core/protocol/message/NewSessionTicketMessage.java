@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Objects;
 
 @XmlRootElement(name = "NewSessionTicket")
-public class NewSessionTicketMessage extends HandshakeMessage {
+public class NewSessionTicketMessage extends HandshakeMessage<NewSessionTicketMessage> {
 
     @ModifiableVariableProperty() private ModifiableLong ticketLifetimeHint;
 
@@ -94,7 +94,12 @@ public class NewSessionTicketMessage extends HandshakeMessage {
 
     @Override
     public String toCompactString() {
-        return "NewSessionTicket";
+        StringBuilder sb = new StringBuilder();
+        sb.append("NEW_SESSION_TICKET");
+        if (isRetransmission()) {
+            sb.append(" (ret.)");
+        }
+        return sb.toString();
     }
 
     @Override

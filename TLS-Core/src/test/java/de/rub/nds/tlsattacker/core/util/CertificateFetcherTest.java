@@ -20,7 +20,7 @@ import de.rub.nds.tlsattacker.util.FixedTimeProvider;
 import de.rub.nds.tlsattacker.util.TimeHelper;
 import de.rub.nds.tlsattacker.util.tests.TestCategories;
 import de.rub.nds.x509attacker.filesystem.CertificateIo;
-import de.rub.nds.x509attacker.x509.base.X509CertificateChain;
+import de.rub.nds.x509attacker.x509.X509CertificateChain;
 import de.rub.nds.x509attacker.x509.base.publickey.PublicKeyContent;
 import java.security.KeyPair;
 import java.security.KeyStore;

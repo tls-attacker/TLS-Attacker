@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.constants;
 
 import java.util.HashMap;
@@ -14,7 +13,6 @@ import java.util.Map;
 import java.util.Random;
 
 public enum HeartbeatMode {
-
     PEER_ALLOWED_TO_SEND((byte) 1),
     PEER_NOT_ALLOWED_TO_SEND((byte) 2);
 
@@ -42,7 +40,7 @@ public enum HeartbeatMode {
     }
 
     public byte[] getArrayValue() {
-        return new byte[] { value };
+        return new byte[] {value};
     }
 
     public static HeartbeatMode getRandom(Random random) {

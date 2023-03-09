@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
 import de.rub.nds.x509attacker.filesystem.CertificateIo;
-import de.rub.nds.x509attacker.x509.base.X509CertificateChain;
+import de.rub.nds.x509attacker.x509.X509CertificateChain;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
@@ -30,7 +30,7 @@ public class SSL2ServerHelloHandler extends ProtocolMessageHandler<SSL2ServerHel
 
     private X509CertificateChain parseCertificate(int lengthBytes, byte[] bytesToParse) {
         LOGGER.debug("SSL2 lengthBytes:" + lengthBytes);
-        LOGGER.debug("SSL2 bytesToParse:" + ArrayConverter.bytesToHexString(bytesToParse, false));
+        LOGGER.debug("SSL2 bytesToParse: {}", bytesToParse);
 
         try {
             byte[] concatenated =
@@ -41,15 +41,13 @@ public class SSL2ServerHelloHandler extends ProtocolMessageHandler<SSL2ServerHel
                             ArrayConverter.intToBytes(
                                     lengthBytes, HandshakeByteLength.CERTIFICATES_LENGTH),
                             bytesToParse);
-            LOGGER.debug(
-                    "SSL2 concatenated:" + ArrayConverter.bytesToHexString(concatenated, false));
+            LOGGER.debug("SSL2 concatenated: {}", concatenated);
             ByteArrayInputStream stream = new ByteArrayInputStream(concatenated);
             return CertificateIo.readRawChain(
                     stream); // TODO This is not correct, we are not adjusting the x509 context
         } catch (IOException | IllegalArgumentException e) {
             LOGGER.warn(
-                    "Could not parse Certificate bytes into Certificate object:\n"
-                            + ArrayConverter.bytesToHexString(bytesToParse, false));
+                    "Could not parse Certificate bytes into Certificate object:\n{}", bytesToParse);
             LOGGER.debug(e);
             return null;
         }

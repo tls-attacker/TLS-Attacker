@@ -29,8 +29,8 @@ import org.junit.jupiter.api.Test;
 
 public class ECDHClientKeyExchangePreparatorTest
         extends AbstractProtocolMessagePreparatorTest<
-                ECDHClientKeyExchangeMessage,
-                ECDHClientKeyExchangePreparator<ECDHClientKeyExchangeMessage>> {
+                ECDHClientKeyExchangeMessage<?>,
+                ECDHClientKeyExchangePreparator<ECDHClientKeyExchangeMessage<?>>> {
 
     private static final String RANDOM = "CAFEBABECAFE";
     private static final byte[] PREMASTER_SECRET =

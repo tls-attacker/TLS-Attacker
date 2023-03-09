@@ -1,15 +1,13 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageSerializer;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import org.apache.logging.log4j.LogManager;
@@ -22,8 +20,7 @@ public class ApplicationMessageSerializer extends ProtocolMessageSerializer<Appl
     /**
      * Constructor for the ApplicationMessageSerializer
      *
-     * @param message
-     *                Message that should be serialized
+     * @param message Message that should be serialized
      */
     public ApplicationMessageSerializer(ApplicationMessage message) {
         super(message);
@@ -36,11 +33,9 @@ public class ApplicationMessageSerializer extends ProtocolMessageSerializer<Appl
         return getAlreadySerialized();
     }
 
-    /**
-     * Writes the data of the ApplicationMessage into the final byte[]
-     */
+    /** Writes the data of the ApplicationMessage into the final byte[] */
     private void writeData() {
         appendBytes(message.getData().getValue());
-        LOGGER.debug("Data: " + ArrayConverter.bytesToHexString(message.getData().getValue()));
+        LOGGER.debug("Data: {}", message.getData().getValue());
     }
 }

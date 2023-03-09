@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
@@ -48,7 +47,7 @@ public class HelloVerifyRequestPreparator
 
     private void prepareCookie(HelloVerifyRequestMessage msg) {
         msg.setCookie(generateCookie());
-        LOGGER.debug("Cookie: " + ArrayConverter.bytesToHexString(msg.getCookie().getValue()));
+        LOGGER.debug("Cookie: {}", msg.getCookie().getValue());
     }
 
     private void prepareCookieLength(HelloVerifyRequestMessage msg) {
@@ -58,8 +57,6 @@ public class HelloVerifyRequestPreparator
 
     private void prepareProtocolVersion(HelloVerifyRequestMessage msg) {
         msg.setProtocolVersion(chooser.getConfig().getHighestProtocolVersion().getValue());
-        LOGGER.debug(
-                "ProtocolVersion: "
-                        + ArrayConverter.bytesToHexString(msg.getProtocolVersion().getValue()));
+        LOGGER.debug("ProtocolVersion: {}", msg.getProtocolVersion().getValue());
     }
 }

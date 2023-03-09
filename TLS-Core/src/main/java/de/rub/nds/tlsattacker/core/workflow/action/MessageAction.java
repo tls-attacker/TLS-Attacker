@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -230,15 +230,42 @@ public abstract class MessageAction extends ConnectionBoundAction {
         LayerConfiguration httpConfiguration =
                 new SpecificSendLayerConfiguration<>(ImplementedLayers.HTTP, httpMessagesToSend);
 
+        checkLayerConsistency(layerStack, httpMessagesToSend);
+
         List<LayerConfiguration> layerConfigurationList =
                 sortLayerConfigurations(
                         layerStack,
                         dtlsConfiguration,
                         messageConfiguration,
                         recordConfiguration,
-                        ssl2Configuration);
+                        ssl2Configuration,
+                        httpConfiguration);
         LayerStackProcessingResult processingResult = layerStack.sendData(layerConfigurationList);
         setContainers(processingResult);
+    }
+
+    /**
+     * Check if HTTP messages were set without an HTTP layer. This is a (temporary) safety check
+     * since a distinct layer was not necessary for old TLS-Attacker versions.
+     *
+     * @param layerStack the active layer stack
+     * @param givenHttpMessages preconfigured messages
+     */
+    private void checkLayerConsistency(LayerStack layerStack, List<HttpMessage> givenHttpMessages) {
+        ImplementedLayers faultyLayer = null;
+        if (!layerStack.getLayersInStack().contains(ImplementedLayers.HTTP)
+                && givenHttpMessages != null
+                && !givenHttpMessages.isEmpty()) {
+            faultyLayer = ImplementedLayers.HTTP;
+        }
+
+        // TODO: extend for more layers?
+        if (faultyLayer != null) {
+            LOGGER.warn(
+                    "Layer stack does not contain {} layer but {} messages were set. These messages will be ignored!",
+                    faultyLayer,
+                    faultyLayer);
+        }
     }
 
     protected void receive(
@@ -249,6 +276,55 @@ public abstract class MessageAction extends ConnectionBoundAction {
             List<HttpMessage> httpMessagesToReceive) {
         LayerStack layerStack = tlsContext.getLayerStack();
 
+        List<LayerConfiguration> layerConfigurationList;
+        if (protocolMessagesToReceive == null
+                && fragmentsToReceive == null
+                && recordsToReceive == null
+                && httpMessagesToReceive == null) {
+            layerConfigurationList = getGenericReceiveConfigurations(layerStack);
+        } else {
+            layerConfigurationList =
+                    getSpecificReceiveConfigurations(
+                            fragmentsToReceive,
+                            protocolMessagesToReceive,
+                            recordsToReceive,
+                            httpMessagesToReceive,
+                            layerStack);
+        }
+
+        getReceiveResult(layerStack, layerConfigurationList);
+    }
+
+    private List<LayerConfiguration> getGenericReceiveConfigurations(LayerStack layerStack) {
+        List<LayerConfiguration> layerConfigurationList;
+        LayerConfiguration dtlsConfiguration =
+                new GenericReceiveLayerConfiguration(ImplementedLayers.DTLS_FRAGMENT);
+        LayerConfiguration messageConfiguration =
+                new GenericReceiveLayerConfiguration(ImplementedLayers.MESSAGE);
+        LayerConfiguration ssl2Configuration =
+                new GenericReceiveLayerConfiguration(ImplementedLayers.HTTP);
+        LayerConfiguration recordConfiguration =
+                new GenericReceiveLayerConfiguration(ImplementedLayers.RECORD);
+        LayerConfiguration httpConfiguration =
+                new GenericReceiveLayerConfiguration(ImplementedLayers.HTTP);
+        layerConfigurationList =
+                sortLayerConfigurations(
+                        layerStack,
+                        dtlsConfiguration,
+                        messageConfiguration,
+                        recordConfiguration,
+                        ssl2Configuration,
+                        httpConfiguration);
+        return layerConfigurationList;
+    }
+
+    private List<LayerConfiguration> getSpecificReceiveConfigurations(
+            List<DtlsHandshakeMessageFragment> fragmentsToReceive,
+            List<ProtocolMessage> protocolMessagesToReceive,
+            List<Record> recordsToReceive,
+            List<HttpMessage> httpMessagesToReceive,
+            LayerStack layerStack) {
+        List<LayerConfiguration> layerConfigurationList;
         LayerConfiguration dtlsConfiguration =
                 new SpecificReceiveLayerConfiguration(
                         ImplementedLayers.DTLS_FRAGMENT, fragmentsToReceive);
@@ -260,12 +336,17 @@ public abstract class MessageAction extends ConnectionBoundAction {
                         ImplementedLayers.SSL2, protocolMessagesToReceive);
         LayerConfiguration recordConfiguration =
                 new SpecificReceiveLayerConfiguration<>(ImplementedLayers.RECORD, recordsToReceive);
+        if (recordsToReceive == null || recordsToReceive.isEmpty()) {
+            // always allow (trailing) records when no records were set
+            // a ReceiveAction actually intended to expect no records is pointless
+            ((SpecificReceiveLayerConfiguration) recordConfiguration)
+                    .setAllowTrailingContainers(true);
+        }
         LayerConfiguration httpConfiguration =
                 new SpecificReceiveLayerConfiguration<>(
                         ImplementedLayers.HTTP, httpMessagesToReceive);
-
         applyActionOptionFilters(messageConfiguration);
-        List<LayerConfiguration> layerConfigurationList =
+        layerConfigurationList =
                 sortLayerConfigurations(
                         layerStack,
                         dtlsConfiguration,
@@ -273,7 +354,7 @@ public abstract class MessageAction extends ConnectionBoundAction {
                         recordConfiguration,
                         ssl2Configuration,
                         httpConfiguration);
-        getReceiveResult(layerStack, layerConfigurationList);
+        return layerConfigurationList;
     }
 
     protected void receiveTill(TlsContext tlsContext, ProtocolMessage protocolMessageToReceive) {

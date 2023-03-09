@@ -15,7 +15,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /** Handler for DH and DHE ClientKeyExchange messages */
-public class DHClientKeyExchangeHandler<T extends DHClientKeyExchangeMessage>
+public class DHClientKeyExchangeHandler<T extends DHClientKeyExchangeMessage<?>>
         extends ClientKeyExchangeHandler<T> {
 
     private Logger LOGGER = LogManager.getLogger();

@@ -25,8 +25,9 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.List;
 
-@XmlRootElement(name = "DHEClientKeyExchange")
-public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
+@XmlRootElement(name = "DHEServerKeyExchange")
+public class DHEServerKeyExchangeMessage<Self extends DHEServerKeyExchangeMessage<?>>
+        extends ServerKeyExchangeMessage<Self> {
 
     /** DH modulus */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
@@ -145,30 +146,34 @@ public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     }
 
     @Override
-    public DHEServerKeyExchangeHandler<? extends DHEServerKeyExchangeMessage> getHandler(
-            TlsContext tlsContext) {
+    public DHEServerKeyExchangeHandler<Self> getHandler(TlsContext tlsContext) {
         return new DHEServerKeyExchangeHandler<>(tlsContext);
     }
 
     @Override
-    public DHEServerKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new DHEServerKeyExchangeParser(stream, tlsContext);
+    public DHEServerKeyExchangeParser<Self> getParser(TlsContext tlsContext, InputStream stream) {
+        return new DHEServerKeyExchangeParser<Self>(stream, tlsContext);
     }
 
     @Override
-    public DHEServerKeyExchangePreparator getPreparator(TlsContext tlsContext) {
-        return new DHEServerKeyExchangePreparator(tlsContext.getChooser(), this);
+    public DHEServerKeyExchangePreparator<Self> getPreparator(TlsContext tlsContext) {
+        return new DHEServerKeyExchangePreparator<Self>(tlsContext.getChooser(), (Self) this);
     }
 
     @Override
-    public DHEServerKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
-        return new DHEServerKeyExchangeSerializer(
-                this, tlsContext.getChooser().getSelectedProtocolVersion());
+    public DHEServerKeyExchangeSerializer<Self> getSerializer(TlsContext tlsContext) {
+        return new DHEServerKeyExchangeSerializer<Self>(
+                (Self) this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override
     public String toCompactString() {
-        return "DHE_SERVER_KEY_EXCHANGE";
+        StringBuilder sb = new StringBuilder();
+        sb.append("DHE_SERVER_KEY_EXCHANGE");
+        if (isRetransmission()) {
+            sb.append(" (ret.)");
+        }
+        return sb.toString();
     }
 
     @Override

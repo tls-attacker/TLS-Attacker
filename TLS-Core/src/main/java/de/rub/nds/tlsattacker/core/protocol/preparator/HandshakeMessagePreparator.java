@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedClientHelloExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
@@ -34,7 +35,7 @@ import org.apache.logging.log4j.Logger;
 /**
  * @param <T> The HandshakeMessage that should be prepared
  */
-public abstract class HandshakeMessagePreparator<T extends HandshakeMessage>
+public abstract class HandshakeMessagePreparator<T extends HandshakeMessage<?>>
         extends ProtocolMessagePreparator<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -67,7 +68,7 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage>
     }
 
     public void prepareEncapsulatingFields() {
-        HandshakeMessageSerializer<T> serializer =
+        HandshakeMessageSerializer<?> serializer =
                 message.getSerializer(chooser.getContext().getTlsContext());
         byte[] content = serializer.serializeHandshakeMessageContent();
         prepareMessageContent(content);
@@ -119,6 +120,13 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage>
                             .setClientHello((ClientHelloMessage) message);
                     preparator.afterPrepare();
                 } else if (extensionMessage instanceof EncryptedServerNameIndicationExtensionMessage
+                        && message instanceof ClientHelloMessage
+                        && chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
+                    ClientHelloMessage clientHelloMessage = (ClientHelloMessage) message;
+                    ((EncryptedServerNameIndicationExtensionPreparator) preparator)
+                            .setClientHelloMessage(clientHelloMessage);
+                    preparator.afterPrepare();
+                } else if (extensionMessage instanceof EncryptedClientHelloExtensionMessage
                         && message instanceof ClientHelloMessage
                         && chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
                     ClientHelloMessage clientHelloMessage = (ClientHelloMessage) message;

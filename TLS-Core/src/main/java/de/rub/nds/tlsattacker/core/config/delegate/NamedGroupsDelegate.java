@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
@@ -18,13 +17,15 @@ import java.util.List;
 
 public class NamedGroupsDelegate extends Delegate {
 
-    @Parameter(names = "-point_formats", description = "Sets the elliptic curve point formats, divided by a comma")
+    @Parameter(
+            names = "-point_formats",
+            description = "Sets the elliptic curve point formats, divided by a comma")
     private List<ECPointFormat> pointFormats = null;
+
     @Parameter(names = "-named_group", description = "Named groups to be used, divided by a comma")
     private List<NamedGroup> namedGroups = null;
 
-    public NamedGroupsDelegate() {
-    }
+    public NamedGroupsDelegate() {}
 
     public List<ECPointFormat> getPointFormats() {
         if (pointFormats == null) {

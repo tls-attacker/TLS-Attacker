@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -23,7 +23,8 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
 @XmlRootElement(name = "PskDheServerKeyExchange")
-public class PskDheServerKeyExchangeMessage extends DHEServerKeyExchangeMessage {
+public class PskDheServerKeyExchangeMessage
+        extends DHEServerKeyExchangeMessage<PskDheServerKeyExchangeMessage> {
 
     private ModifiableByteArray identityHint;
 
@@ -109,7 +110,12 @@ public class PskDheServerKeyExchangeMessage extends DHEServerKeyExchangeMessage 
 
     @Override
     public String toCompactString() {
-        return "DHE_PSK_SERVER_KEY_EXCHANGE";
+        StringBuilder sb = new StringBuilder();
+        sb.append("DHE_PSK_SERVER_KEY_EXCHANGE");
+        if (isRetransmission()) {
+            sb.append(" (ret.)");
+        }
+        return sb.toString();
     }
 
     @Override

@@ -176,9 +176,7 @@ public enum SignatureAndHashAlgorithm {
             if (algo == null
                     || algo.getSignatureAlgorithm() == null
                     || algo.getHashAlgorithm() == null) {
-                LOGGER.warn(
-                        "Unknown SignatureAndHashAlgorithm:"
-                                + ArrayConverter.bytesToHexString(algoBytes));
+                LOGGER.warn("Unknown SignatureAndHashAlgorithm: {}", algoBytes);
             } else {
                 algoList.add(algo);
             }

@@ -17,7 +17,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ECDHClientKeyExchangeHandler<T extends ECDHClientKeyExchangeMessage>
+public class ECDHClientKeyExchangeHandler<T extends ECDHClientKeyExchangeMessage<?>>
         extends ClientKeyExchangeHandler<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();

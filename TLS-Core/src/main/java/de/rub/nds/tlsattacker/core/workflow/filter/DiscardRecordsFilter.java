@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.workflow.filter;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -16,9 +15,7 @@ import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- * Strips all record messages.
- */
+/** Strips all record messages. */
 public class DiscardRecordsFilter extends Filter {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -30,8 +27,7 @@ public class DiscardRecordsFilter extends Filter {
     /**
      * Apply filter to trace.
      *
-     * @param trace
-     *              The workflow trace that should be filtered.
+     * @param trace The workflow trace that should be filtered.
      */
     @Override
     public void applyFilter(WorkflowTrace trace) {
@@ -46,5 +42,4 @@ public class DiscardRecordsFilter extends Filter {
     public FilterType getFilterType() {
         return FilterType.DISCARD_RECORDS;
     }
-
 }

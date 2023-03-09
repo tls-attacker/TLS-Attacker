@@ -1,14 +1,13 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ssl.SSL2ByteLength;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
@@ -66,9 +65,7 @@ public class SSL2ServerHelloParser extends SSL2MessageParser<SSL2ServerHelloMess
      */
     private void parseProtocolVersion(SSL2ServerHelloMessage message) {
         message.setProtocolVersion(parseByteArrayField(SSL2ByteLength.VERSION));
-        LOGGER.debug(
-                "ProtocolVersion: "
-                        + ArrayConverter.bytesToHexString(message.getProtocolVersion().getValue()));
+        LOGGER.debug("ProtocolVersion: {}", message.getProtocolVersion().getValue());
     }
 
     /**
@@ -108,9 +105,7 @@ public class SSL2ServerHelloParser extends SSL2MessageParser<SSL2ServerHelloMess
      */
     private void parseCertificate(SSL2ServerHelloMessage message) {
         message.setCertificate(parseByteArrayField(message.getCertificateLength().getValue()));
-        LOGGER.debug(
-                "Certificate: "
-                        + ArrayConverter.bytesToHexString(message.getCertificate().getValue()));
+        LOGGER.debug("Certificate: {}", message.getCertificate().getValue());
     }
 
     /**
@@ -120,9 +115,7 @@ public class SSL2ServerHelloParser extends SSL2MessageParser<SSL2ServerHelloMess
      */
     private void parseCipherSuites(SSL2ServerHelloMessage message) {
         message.setCipherSuites(parseByteArrayField(message.getCipherSuitesLength().getValue()));
-        LOGGER.debug(
-                "CipherSuites: "
-                        + ArrayConverter.bytesToHexString(message.getCipherSuites().getValue()));
+        LOGGER.debug("CipherSuites: {}", message.getCipherSuites().getValue());
     }
 
     /**
@@ -132,7 +125,6 @@ public class SSL2ServerHelloParser extends SSL2MessageParser<SSL2ServerHelloMess
      */
     private void parseSessionID(SSL2ServerHelloMessage message) {
         message.setSessionID(parseByteArrayField(message.getSessionIdLength().getValue()));
-        LOGGER.debug(
-                "SessionID: " + ArrayConverter.bytesToHexString(message.getSessionId().getValue()));
+        LOGGER.debug("SessionID: {}", message.getSessionId().getValue());
     }
 }

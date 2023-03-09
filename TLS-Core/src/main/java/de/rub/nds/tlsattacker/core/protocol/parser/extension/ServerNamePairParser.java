@@ -1,14 +1,13 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
@@ -52,7 +51,6 @@ public class ServerNamePairParser extends Parser<ServerNamePair> {
     /** Reads the next bytes as the serverName of the Extension and writes them in the message */
     private void parseServerName(ServerNamePair pair) {
         pair.setServerName(parseByteArrayField(pair.getServerNameLength().getValue()));
-        LOGGER.debug(
-                "ServerName: " + ArrayConverter.bytesToHexString(pair.getServerName().getValue()));
+        LOGGER.debug("ServerName: {}", pair.getServerName().getValue());
     }
 }

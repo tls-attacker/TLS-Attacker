@@ -1,17 +1,14 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.constants.ssl;
 
-/**
- * Length of fields in SSL2 Messages
- */
+/** Length of fields in SSL2 Messages */
 public class SSL2ByteLength {
     public static final int LENGTH = 2;
 
@@ -45,6 +42,5 @@ public class SSL2ByteLength {
 
     public static final int KEY_ARG_LENGTH = 2;
 
-    private SSL2ByteLength() {
-    }
+    private SSL2ByteLength() {}
 }

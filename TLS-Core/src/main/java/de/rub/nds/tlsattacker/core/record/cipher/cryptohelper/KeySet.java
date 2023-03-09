@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.record.cipher.cryptohelper;
 
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
@@ -27,8 +26,7 @@ public class KeySet {
 
     private Tls13KeySetType keySetType = Tls13KeySetType.NONE;
 
-    public KeySet() {
-    }
+    public KeySet() {}
 
     public KeySet(Tls13KeySetType keySetType) {
         this.keySetType = keySetType;
@@ -92,10 +90,12 @@ public class KeySet {
 
     public byte[] getReadKey(ConnectionEndType connectionEndType) {
         if (connectionEndType == ConnectionEndType.SERVER) {
-            LOGGER.debug("getReadKey: Using clientWriteKey for connectionEndType {}", connectionEndType);
+            LOGGER.debug(
+                    "getReadKey: Using clientWriteKey for connectionEndType {}", connectionEndType);
             return clientWriteKey;
         } else {
-            LOGGER.debug("getReadKey: Using serverWriteKey for connectionEndType {}", connectionEndType);
+            LOGGER.debug(
+                    "getReadKey: Using serverWriteKey for connectionEndType {}", connectionEndType);
             return serverWriteKey;
         }
     }
@@ -140,8 +140,7 @@ public class KeySet {
     }
 
     /**
-     * @param keySetType
-     *                   the keySetType to set
+     * @param keySetType the keySetType to set
      */
     public void setKeySetType(Tls13KeySetType keySetType) {
         this.keySetType = keySetType;

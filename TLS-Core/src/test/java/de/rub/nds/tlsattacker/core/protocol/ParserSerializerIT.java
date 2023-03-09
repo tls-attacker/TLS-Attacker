@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.core.protocol;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
@@ -64,9 +63,8 @@ public class ParserSerializerIT extends GenericParserSerializerTest {
                     message.getSerializer(tlsContext);
             byte[] result = serializer.serialize();
             LOGGER.debug(message.toString());
-            LOGGER.debug(
-                    "Bytes to parse:\t" + ArrayConverter.bytesToHexString(bytesToParse, false));
-            LOGGER.debug("Result:\t" + ArrayConverter.bytesToHexString(result, false));
+            LOGGER.debug("Bytes to parse:\t{}", bytesToParse);
+            LOGGER.debug("Result:\t{}", result);
             ProtocolMessageParser parser2 =
                     message.getParser(tlsContext, new ByteArrayInputStream(result));
             ProtocolMessage serialized = message.getClass().getConstructor().newInstance();

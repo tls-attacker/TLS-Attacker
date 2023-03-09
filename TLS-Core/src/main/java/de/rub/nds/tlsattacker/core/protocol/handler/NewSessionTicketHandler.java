@@ -1,14 +1,13 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
@@ -115,13 +114,9 @@ public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionT
                             HKDFunction.RESUMPTION_MASTER_SECRET,
                             tlsContext.getDigest().getRawBytes());
             tlsContext.setResumptionMasterSecret(resumptionMasterSecret);
+            LOGGER.debug("Derived ResumptionMasterSecret: {}", resumptionMasterSecret);
             LOGGER.debug(
-                    "Derived ResumptionMasterSecret: "
-                            + ArrayConverter.bytesToHexString(resumptionMasterSecret));
-            LOGGER.debug(
-                    "Handshake Transcript Raw Bytes: "
-                            + ArrayConverter.bytesToHexString(
-                                    tlsContext.getDigest().getRawBytes()));
+                    "Handshake Transcript Raw Bytes: {}", tlsContext.getDigest().getRawBytes());
             byte[] psk =
                     HKDFunction.expandLabel(
                             hkdfAlgorithm,
@@ -129,7 +124,7 @@ public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionT
                             HKDFunction.RESUMPTION,
                             pskSet.getTicketNonce(),
                             macLength);
-            LOGGER.debug("New derived pre-shared-key: " + ArrayConverter.bytesToHexString(psk));
+            LOGGER.debug("New derived pre-shared-key: {}", psk);
             return psk;
 
         } catch (NoSuchAlgorithmException | CryptoException ex) {

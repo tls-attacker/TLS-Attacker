@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SRPExtensionMessage;
 import org.apache.logging.log4j.LogManager;
@@ -27,8 +26,7 @@ public class SRPExtensionHandler extends ExtensionHandler<SRPExtensionMessage> {
         tlsContext.setSecureRemotePasswordExtensionIdentifier(
                 message.getSrpIdentifier().getValue());
         LOGGER.debug(
-                "Adjusted the TLSContext secure remote password extension identifier to "
-                        + ArrayConverter.bytesToHexString(
-                                tlsContext.getSecureRemotePasswordExtensionIdentifier()));
+                "Adjusted the TLSContext secure remote password extension identifier to {}",
+                tlsContext.getSecureRemotePasswordExtensionIdentifier());
     }
 }
