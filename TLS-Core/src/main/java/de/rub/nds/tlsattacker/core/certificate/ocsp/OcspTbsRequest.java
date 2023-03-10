@@ -30,8 +30,8 @@ public class OcspTbsRequest extends Asn1Sequence<OcspChooser> {
         requestorName = new GeneralName("requestorName");
         requestList = new OcspRequestList("requestList");
         requestExtensions = new OcspRequestExtensions("requestExtensions");
-        addChild(version);
-        addChild(requestorName);
+        // addChild(version); //TODO This should be a version
+        // addChild(requestorName); //TODO This should be a requestorName
         addChild(requestList);
         addChild(requestExtensions);
     }
@@ -69,7 +69,7 @@ public class OcspTbsRequest extends Asn1Sequence<OcspChooser> {
     }
 
     @Override
-    public Handler getHandler(OcspChooser chooser) {
+    public Handler<OcspChooser> getHandler(OcspChooser chooser) {
         return new EmptyHandler(chooser);
     }
 }
