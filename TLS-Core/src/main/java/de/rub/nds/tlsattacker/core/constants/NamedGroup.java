@@ -381,6 +381,15 @@ public enum NamedGroup {
         }
     }
 
+    public static NamedGroup convert(GroupParameters parameters) {
+        for (NamedGroup group : NamedGroup.values()) {
+            if (group.getGroupParameters() == parameters) {
+                return group;
+            }
+        }
+        return null;
+    }
+
     public byte[] getValue() {
         return value;
     }
