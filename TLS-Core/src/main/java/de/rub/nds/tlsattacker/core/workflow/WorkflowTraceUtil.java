@@ -540,6 +540,7 @@ public class WorkflowTraceUtil {
         for (TlsAction action : trace.getTlsActions()) {
             if (action instanceof MessageAction
                     && action instanceof ReceivingAction
+                    && ((MessageAction) action).getLayerStackProcessingResult() != null
                     && ((MessageAction) action).getLayerStackProcessingResult().hasUnreadBytes()) {
                 messageActionsWithUnreadBytes.add((MessageAction) action);
             }
