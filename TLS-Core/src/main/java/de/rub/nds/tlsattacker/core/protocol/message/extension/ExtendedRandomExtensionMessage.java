@@ -26,8 +26,7 @@ import java.io.InputStream;
  * href="https://tools.ietf.org/html/draft-rescorla-tls-extended-random-02">draft-rescorla-tls-extended-random-02</a>
  */
 @XmlRootElement(name = "ExtendedRandomExtension")
-public class ExtendedRandomExtensionMessage
-        extends ExtensionMessage<ExtendedRandomExtensionMessage> {
+public class ExtendedRandomExtensionMessage extends ExtensionMessage {
 
     @ModifiableVariableProperty private ModifiableByteArray extendedRandom;
 

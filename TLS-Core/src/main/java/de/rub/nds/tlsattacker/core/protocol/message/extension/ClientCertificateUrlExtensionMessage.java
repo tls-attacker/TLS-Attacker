@@ -18,8 +18,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
 @XmlRootElement(name = "ClientCertificateUrlExtension")
-public class ClientCertificateUrlExtensionMessage
-        extends ExtensionMessage<ClientCertificateUrlExtensionMessage> {
+public class ClientCertificateUrlExtensionMessage extends ExtensionMessage {
 
     public ClientCertificateUrlExtensionMessage() {
         super(ExtensionType.CLIENT_CERTIFICATE_URL);

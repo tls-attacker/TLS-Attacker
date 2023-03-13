@@ -26,8 +26,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
 @XmlRootElement(name = "PWDServerKeyExchange")
-public class PWDServerKeyExchangeMessage
-        extends ServerKeyExchangeMessage<PWDServerKeyExchangeMessage> {
+public class PWDServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger saltLength;

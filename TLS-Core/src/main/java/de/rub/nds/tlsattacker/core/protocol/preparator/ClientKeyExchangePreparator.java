@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 /**
  * @param <T> The ClientKeyExchangeMessage that should be prepared
  */
-public abstract class ClientKeyExchangePreparator<T extends ClientKeyExchangeMessage<?>>
+public abstract class ClientKeyExchangePreparator<T extends ClientKeyExchangeMessage>
         extends HandshakeMessagePreparator<T> {
 
     public ClientKeyExchangePreparator(Chooser chooser, T message) {

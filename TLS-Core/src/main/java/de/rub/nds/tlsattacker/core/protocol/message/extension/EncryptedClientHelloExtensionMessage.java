@@ -26,8 +26,7 @@ import java.io.InputStream;
 
 /** The encrypted client hello extension */
 @XmlRootElement(name = "EncryptedClientHelloExtension")
-public class EncryptedClientHelloExtensionMessage
-        extends ExtensionMessage<EncryptedClientHelloExtensionMessage> {
+public class EncryptedClientHelloExtensionMessage extends ExtensionMessage {
 
     private EchClientHelloType echClientHelloType;
 

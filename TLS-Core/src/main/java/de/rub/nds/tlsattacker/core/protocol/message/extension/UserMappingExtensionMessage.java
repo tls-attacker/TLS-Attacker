@@ -21,7 +21,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
 @XmlRootElement
-public class UserMappingExtensionMessage extends ExtensionMessage<UserMappingExtensionMessage> {
+public class UserMappingExtensionMessage extends ExtensionMessage {
 
     @ModifiableVariableProperty private ModifiableByte userMappingType;
 

@@ -13,14 +13,15 @@ import static de.rub.nds.modifiablevariable.ModifiableVariableFactory.safelySetV
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 
-public class ResponderId {
+public class ResponderId extends ModifiableVariableHolder {
 
-    @ModifiableVariableProperty ModifiableInteger idLength;
-    @ModifiableVariableProperty ModifiableByteArray id;
+    @ModifiableVariableProperty private ModifiableInteger idLength;
+    @ModifiableVariableProperty private ModifiableByteArray id;
 
-    Integer idLengthConfig;
-    byte[] idConfig;
+    private Integer idLengthConfig;
+    private byte[] idConfig;
 
     public ResponderId(Integer preparatorIdLength, byte[] preparatorId) {
         this.idLengthConfig = preparatorIdLength;

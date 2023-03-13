@@ -22,7 +22,7 @@ public abstract class ExtensionPreparator<T extends ExtensionMessage> extends Pr
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final ExtensionMessage msg;
+    private final T msg;
     private byte[] content;
     private final ExtensionSerializer<T> serializer;
 
@@ -35,7 +35,8 @@ public abstract class ExtensionPreparator<T extends ExtensionMessage> extends Pr
     public ExtensionPreparator(Chooser chooser, T message) {
         super(chooser, message);
         this.msg = message;
-        this.serializer = message.getSerializer(chooser.getContext().getTlsContext());
+        this.serializer =
+                (ExtensionSerializer<T>) msg.getSerializer(chooser.getContext().getTlsContext());
     }
 
     @Override

@@ -22,8 +22,8 @@ import org.junit.jupiter.params.provider.EnumSource;
 
 public class DHEServerKeyExchangeHandlerTest
         extends AbstractProtocolMessageHandlerTest<
-                DHEServerKeyExchangeMessage<?>,
-                ServerKeyExchangeHandler<DHEServerKeyExchangeMessage<?>>> {
+                DHEServerKeyExchangeMessage,
+                ServerKeyExchangeHandler<DHEServerKeyExchangeMessage>> {
 
     DHEServerKeyExchangeHandlerTest() {
         super(DHEServerKeyExchangeMessage::new, DHEServerKeyExchangeHandler::new);

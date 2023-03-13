@@ -22,8 +22,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
 @XmlRootElement(name = "SupportedVersions")
-public class SupportedVersionsExtensionMessage
-        extends ExtensionMessage<SupportedVersionsExtensionMessage> {
+public class SupportedVersionsExtensionMessage extends ExtensionMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger supportedVersionsLength;

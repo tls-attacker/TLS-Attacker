@@ -23,7 +23,7 @@ import java.io.InputStream;
 
 /** This extension is defined in RFC-ietf-tls-rfc-4492bis-17 */
 @XmlRootElement(name = "ECPointFormat")
-public class ECPointFormatExtensionMessage extends ExtensionMessage<ECPointFormatExtensionMessage> {
+public class ECPointFormatExtensionMessage extends ExtensionMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger pointFormatsLength;

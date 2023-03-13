@@ -17,8 +17,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessag
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ECDHEServerKeyExchangeHandler<T extends ECDHEServerKeyExchangeMessage<?>>
-        extends ServerKeyExchangeHandler<T> {
+public class ECDHEServerKeyExchangeHandler<KeyExchangeMessage extends ECDHEServerKeyExchangeMessage>
+        extends ServerKeyExchangeHandler<KeyExchangeMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -27,7 +27,7 @@ public class ECDHEServerKeyExchangeHandler<T extends ECDHEServerKeyExchangeMessa
     }
 
     @Override
-    public void adjustContext(T message) {
+    public void adjustContext(KeyExchangeMessage message) {
         adjustECParameter(message);
         if (message.getKeyExchangeComputations() != null) {
             tlsContext.setServerEphemeralEcPrivateKey(

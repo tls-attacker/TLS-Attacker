@@ -25,8 +25,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
 @XmlRootElement(name = "PskEcDheServerKeyExchange")
-public class PskEcDheServerKeyExchangeMessage
-        extends ECDHEServerKeyExchangeMessage<PskEcDheServerKeyExchangeMessage> {
+public class PskEcDheServerKeyExchangeMessage extends ECDHEServerKeyExchangeMessage {
 
     private ModifiableByteArray identityHint;
 

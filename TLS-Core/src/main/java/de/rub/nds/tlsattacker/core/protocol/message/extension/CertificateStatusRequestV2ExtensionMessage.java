@@ -26,8 +26,7 @@ import java.util.List;
 
 /** RFC 6961 */
 @XmlRootElement(name = "CertificateStatusRequestV2Extension")
-public class CertificateStatusRequestV2ExtensionMessage
-        extends ExtensionMessage<CertificateStatusRequestV2ExtensionMessage> {
+public class CertificateStatusRequestV2ExtensionMessage extends ExtensionMessage {
 
     @ModifiableVariableProperty private ModifiableInteger statusRequestListLength;
     @HoldsModifiableVariable private List<RequestItemV2> statusRequestList;

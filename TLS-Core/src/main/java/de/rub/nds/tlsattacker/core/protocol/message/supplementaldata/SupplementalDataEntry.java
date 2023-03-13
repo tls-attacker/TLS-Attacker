@@ -12,8 +12,9 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 
-public class SupplementalDataEntry {
+public class SupplementalDataEntry extends ModifiableVariableHolder {
 
     @ModifiableVariableProperty private ModifiableByteArray supplementalDataEntry;
 

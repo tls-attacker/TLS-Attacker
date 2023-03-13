@@ -24,8 +24,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
 @XmlRootElement(name = "EncryptedServerNameIndicationExtension")
-public class EncryptedServerNameIndicationExtensionMessage
-        extends ExtensionMessage<EncryptedServerNameIndicationExtensionMessage> {
+public class EncryptedServerNameIndicationExtensionMessage extends ExtensionMessage {
 
     private EsniMessageType esniMessageTypeConfig;
 

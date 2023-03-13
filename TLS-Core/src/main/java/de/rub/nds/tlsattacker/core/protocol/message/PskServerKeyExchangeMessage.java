@@ -26,8 +26,7 @@ import java.io.InputStream;
 import java.util.List;
 
 @XmlRootElement(name = "PskServerKeyExchange")
-public class PskServerKeyExchangeMessage
-        extends ServerKeyExchangeMessage<PskServerKeyExchangeMessage> {
+public class PskServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
     @HoldsModifiableVariable protected PSKPremasterComputations computations;
 

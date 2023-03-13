@@ -27,7 +27,7 @@ import java.io.InputStream;
 
 /** Class representing a Connection ID Extension Message, as defined as in RFC9146 */
 @XmlRootElement(name = "ConnectionIdExtension")
-public class ConnectionIdExtensionMessage extends ExtensionMessage<ConnectionIdExtensionMessage> {
+public class ConnectionIdExtensionMessage extends ExtensionMessage {
 
     public ConnectionIdExtensionMessage() {
         super(ExtensionType.CONNECTION_ID);

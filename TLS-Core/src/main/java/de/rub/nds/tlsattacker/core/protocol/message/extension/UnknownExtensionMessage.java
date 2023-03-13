@@ -23,7 +23,7 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.InputStream;
 
 @XmlRootElement(name = "UnknownExtension")
-public class UnknownExtensionMessage extends ExtensionMessage<UnknownExtensionMessage> {
+public class UnknownExtensionMessage extends ExtensionMessage {
 
     private byte[] typeConfig;
     private Integer lengthConfig;

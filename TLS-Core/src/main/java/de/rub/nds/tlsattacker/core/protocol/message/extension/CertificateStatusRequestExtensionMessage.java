@@ -24,8 +24,7 @@ import java.io.InputStream;
 
 /** This extension is defined in RFC6066 */
 @XmlRootElement(name = "CertificateStatusRequestExtension")
-public class CertificateStatusRequestExtensionMessage
-        extends ExtensionMessage<CertificateStatusRequestExtensionMessage> {
+public class CertificateStatusRequestExtensionMessage extends ExtensionMessage {
 
     @ModifiableVariableProperty private ModifiableInteger certificateStatusRequestType;
     @ModifiableVariableProperty private ModifiableInteger responderIDListLength;

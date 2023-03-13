@@ -22,7 +22,7 @@ import java.io.InputStream;
 
 /** This extension is defined in RFC7685 */
 @XmlRootElement(name = "PaddingExtension")
-public class PaddingExtensionMessage extends ExtensionMessage<PaddingExtensionMessage> {
+public class PaddingExtensionMessage extends ExtensionMessage {
 
     /** Contains the padding bytes of the padding extension. The bytes shall be empty. */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.NONE)

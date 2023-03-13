@@ -16,7 +16,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.util.BigIntegers;
 
-public class DHClientKeyExchangePreparator<T extends DHClientKeyExchangeMessage<?>>
+public class DHClientKeyExchangePreparator<T extends DHClientKeyExchangeMessage>
         extends ClientKeyExchangePreparator<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();

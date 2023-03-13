@@ -32,8 +32,7 @@ import java.io.InputStream;
 /** RFC draft-ietf-tls-tls13-21 */
 @XmlRootElement(name = "PSKKeyExchangeModesExtension")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class PSKKeyExchangeModesExtensionMessage
-        extends ExtensionMessage<PSKKeyExchangeModesExtensionMessage> {
+public class PSKKeyExchangeModesExtensionMessage extends ExtensionMessage {
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] keyExchangeModesConfig;

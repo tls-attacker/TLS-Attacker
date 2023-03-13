@@ -24,13 +24,14 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.data.Handler;
 import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
+import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.hints.RecordLayerHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerInputStream;
 import de.rub.nds.tlsattacker.core.protocol.MessageFactory;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageSerializer;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.*;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
@@ -88,10 +89,10 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
     private void processMessage(
             ProtocolMessage message, ByteArrayOutputStream collectedMessageStream)
             throws IOException {
-        ProtocolMessageSerializer serializer = message.getSerializer(context);
+        Serializer serializer = message.getSerializer(context);
         byte[] serializedMessage = serializer.serialize();
         message.setCompleteResultingMessage(serializedMessage);
-        message.getHandler(context).updateDigest(message, true);
+        ((ProtocolMessageHandler<?>) message.getHandler(context)).updateDigest(message, true);
         if (message.getAdjustContext()) {
             message.getHandler(context).adjustContext(message);
         }

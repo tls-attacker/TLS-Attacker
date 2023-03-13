@@ -18,7 +18,7 @@ import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class RSAClientKeyExchangePreparator<T extends RSAClientKeyExchangeMessage<?>>
+public class RSAClientKeyExchangePreparator<T extends RSAClientKeyExchangeMessage>
         extends ClientKeyExchangePreparator<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();

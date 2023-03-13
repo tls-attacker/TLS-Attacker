@@ -21,8 +21,7 @@ import java.io.InputStream;
 
 /** This extension is defined in RFC4507 */
 @XmlRootElement(name = "SessionTicketTLSExtension")
-public class SessionTicketTLSExtensionMessage
-        extends ExtensionMessage<SessionTicketTLSExtensionMessage> {
+public class SessionTicketTLSExtensionMessage extends ExtensionMessage {
 
     @HoldsModifiableVariable private SessionTicket sessionTicket;
 

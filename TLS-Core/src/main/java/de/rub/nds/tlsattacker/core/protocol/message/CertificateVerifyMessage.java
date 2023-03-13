@@ -28,7 +28,7 @@ import java.io.InputStream;
 import java.util.Objects;
 
 @XmlRootElement(name = "CertificateVerify")
-public class CertificateVerifyMessage extends HandshakeMessage<CertificateVerifyMessage> {
+public class CertificateVerifyMessage extends HandshakeMessage {
 
     /** selected Signature and Hashalgorithm */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)

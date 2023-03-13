@@ -20,7 +20,6 @@ import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlSeeAlso;
 import jakarta.xml.bind.annotation.XmlTransient;
-import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Random;
@@ -78,8 +77,7 @@ import java.util.Random;
     EmptyClientKeyExchangeMessage.class,
     EncryptedClientHelloMessage.class
 })
-public abstract class ProtocolMessage<Self extends ProtocolMessage<?>>
-        extends Message<Self, TlsContext> {
+public abstract class ProtocolMessage extends Message<TlsContext> {
 
     @XmlTransient protected boolean goingToBeSentDefault = true;
     @XmlTransient protected boolean requiredDefault = true;
@@ -178,19 +176,6 @@ public abstract class ProtocolMessage<Self extends ProtocolMessage<?>>
         this.adjustContext =
                 ModifiableVariableFactory.safelySetValue(this.adjustContext, adjustContext);
     }
-
-    @Override
-    public abstract ProtocolMessageHandler<Self> getHandler(TlsContext tlsContext);
-
-    @Override
-    public abstract ProtocolMessageSerializer<Self> getSerializer(TlsContext tlsContext);
-
-    @Override
-    public abstract ProtocolMessagePreparator<Self> getPreparator(TlsContext tlsContext);
-
-    @Override
-    public abstract ProtocolMessageParser<Self> getParser(
-            TlsContext tlsContext, InputStream stream);
 
     public boolean isHandshakeMessage() {
         return this instanceof HandshakeMessage;

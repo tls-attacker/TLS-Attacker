@@ -22,8 +22,7 @@ import java.io.InputStream;
 import java.util.List;
 
 @XmlRootElement(name = "RSAClientKeyExchange")
-public class RSAClientKeyExchangeMessage<Self extends RSAClientKeyExchangeMessage<?>>
-        extends ClientKeyExchangeMessage<Self> {
+public class RSAClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     @HoldsModifiableVariable @XmlElement protected RSAClientComputations computations;
 
@@ -45,12 +44,12 @@ public class RSAClientKeyExchangeMessage<Self extends RSAClientKeyExchangeMessag
 
     @Override
     public RSAClientKeyExchangeHandler getHandler(TlsContext tlsContext) {
-        return new RSAClientKeyExchangeHandler<>(tlsContext);
+        return new RSAClientKeyExchangeHandler(tlsContext);
     }
 
     @Override
     public RSAClientKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new RSAClientKeyExchangeParser<>(stream, tlsContext);
+        return new RSAClientKeyExchangeParser(stream, tlsContext);
     }
 
     @Override

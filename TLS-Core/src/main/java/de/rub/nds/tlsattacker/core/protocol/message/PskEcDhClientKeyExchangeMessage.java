@@ -23,8 +23,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
 @XmlRootElement(name = "PskEcDhClientKeyExchange")
-public class PskEcDhClientKeyExchangeMessage
-        extends ECDHClientKeyExchangeMessage<PskEcDhClientKeyExchangeMessage> {
+public class PskEcDhClientKeyExchangeMessage extends ECDHClientKeyExchangeMessage {
 
     @ModifiableVariableProperty(
             format = ModifiableVariableProperty.Format.PKCS1,

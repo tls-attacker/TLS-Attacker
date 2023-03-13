@@ -23,8 +23,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
 @XmlRootElement(name = "PskDheServerKeyExchange")
-public class PskDheServerKeyExchangeMessage
-        extends DHEServerKeyExchangeMessage<PskDheServerKeyExchangeMessage> {
+public class PskDheServerKeyExchangeMessage extends DHEServerKeyExchangeMessage {
 
     private ModifiableByteArray identityHint;
 
@@ -87,8 +86,7 @@ public class PskDheServerKeyExchangeMessage
     }
 
     @Override
-    public DHEServerKeyExchangeHandler<PskDheServerKeyExchangeMessage> getHandler(
-            TlsContext tlsContext) {
+    public DHEServerKeyExchangeHandler getHandler(TlsContext tlsContext) {
         return new PskDheServerKeyExchangeHandler(tlsContext);
     }
 

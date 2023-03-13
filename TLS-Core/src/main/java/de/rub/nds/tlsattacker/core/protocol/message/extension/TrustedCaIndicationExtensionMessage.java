@@ -25,8 +25,7 @@ import java.io.InputStream;
 import java.util.List;
 
 @XmlRootElement(name = "TrustedCaIndicationExtension")
-public class TrustedCaIndicationExtensionMessage
-        extends ExtensionMessage<TrustedCaIndicationExtensionMessage> {
+public class TrustedCaIndicationExtensionMessage extends ExtensionMessage {
 
     @ModifiableVariableProperty private ModifiableInteger trustedAuthoritiesLength;
     @HoldsModifiableVariable private List<TrustedAuthority> trustedAuthorities;

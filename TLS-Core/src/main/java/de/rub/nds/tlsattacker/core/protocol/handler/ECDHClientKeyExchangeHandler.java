@@ -17,8 +17,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ECDHClientKeyExchangeHandler<T extends ECDHClientKeyExchangeMessage<?>>
-        extends ClientKeyExchangeHandler<T> {
+public class ECDHClientKeyExchangeHandler<KeyExchangeMessage extends ECDHClientKeyExchangeMessage>
+        extends ClientKeyExchangeHandler<KeyExchangeMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -27,14 +27,14 @@ public class ECDHClientKeyExchangeHandler<T extends ECDHClientKeyExchangeMessage
     }
 
     @Override
-    public void adjustContext(T message) {
+    public void adjustContext(KeyExchangeMessage message) {
         adjustPremasterSecret(message);
         adjustMasterSecret(message);
         adjustClientPublicKey(message);
         spawnNewSession();
     }
 
-    private void adjustClientPublicKey(T message) {
+    private void adjustClientPublicKey(KeyExchangeMessage message) {
         byte[] serializedPoint = message.getPublicKey().getValue();
         NamedGroup usedGroup = tlsContext.getChooser().getSelectedNamedGroup();
         LOGGER.debug("Adjusting EC Point");

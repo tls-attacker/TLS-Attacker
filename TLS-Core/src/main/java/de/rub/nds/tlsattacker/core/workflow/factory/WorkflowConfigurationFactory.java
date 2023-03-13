@@ -768,7 +768,7 @@ public class WorkflowConfigurationFactory {
         AliasedConnection ourConnection = getConnection();
         WorkflowTrace trace = createHandshakeWorkflow();
         // Remove extensions that are only required in the second handshake
-        HelloMessage<?> initialHello;
+        HelloMessage initialHello;
         if (ourConnection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
             initialHello =
                     (HelloMessage)

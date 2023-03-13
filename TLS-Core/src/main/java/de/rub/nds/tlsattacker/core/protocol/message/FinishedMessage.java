@@ -23,7 +23,7 @@ import java.io.InputStream;
 import java.util.Objects;
 
 @XmlRootElement(name = "Finished")
-public class FinishedMessage extends HandshakeMessage<FinishedMessage> {
+public class FinishedMessage extends HandshakeMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.HMAC)
     private ModifiableByteArray verifyData;

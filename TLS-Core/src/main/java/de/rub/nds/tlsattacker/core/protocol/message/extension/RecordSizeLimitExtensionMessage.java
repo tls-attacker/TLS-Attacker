@@ -23,8 +23,7 @@ import java.io.InputStream;
 
 /** Record Size Limit Extension described in RFC 8449 */
 @XmlRootElement(name = "RecordSizeLimitExtension")
-public class RecordSizeLimitExtensionMessage
-        extends ExtensionMessage<RecordSizeLimitExtensionMessage> {
+public class RecordSizeLimitExtensionMessage extends ExtensionMessage {
 
     @ModifiableVariableProperty private ModifiableByteArray recordSizeLimit;
 

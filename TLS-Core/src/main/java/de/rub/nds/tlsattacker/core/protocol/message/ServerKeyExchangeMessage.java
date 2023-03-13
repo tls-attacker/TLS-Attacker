@@ -20,8 +20,7 @@ import de.rub.nds.tlsattacker.core.crypto.TlsSignatureUtil;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.KeyExchangeComputations;
 import java.util.Objects;
 
-public abstract class ServerKeyExchangeMessage<Self extends ServerKeyExchangeMessage<?>>
-        extends HandshakeMessage<Self> {
+public abstract class ServerKeyExchangeMessage extends HandshakeMessage {
 
     /** signature and hash algorithm */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)

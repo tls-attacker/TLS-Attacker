@@ -18,10 +18,9 @@ import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import java.io.Serializable;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-public class TrustedAuthority extends ModifiableVariableHolder implements Serializable {
+public class TrustedAuthority extends ModifiableVariableHolder {
 
     @ModifiableVariableProperty private ModifiableByte identifierType;
     @ModifiableVariableProperty private ModifiableByteArray sha1Hash;

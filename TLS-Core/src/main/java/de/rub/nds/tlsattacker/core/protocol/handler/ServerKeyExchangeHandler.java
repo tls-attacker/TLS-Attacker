@@ -16,7 +16,7 @@ import org.apache.logging.log4j.Logger;
 /**
  * @param <MessageT> The ServerKeyExchangeMessage that should be handled
  */
-public abstract class ServerKeyExchangeHandler<MessageT extends ServerKeyExchangeMessage<?>>
+public abstract class ServerKeyExchangeHandler<MessageT extends ServerKeyExchangeMessage>
         extends HandshakeMessageHandler<MessageT> {
 
     private static final Logger LOGGER = LogManager.getLogger();

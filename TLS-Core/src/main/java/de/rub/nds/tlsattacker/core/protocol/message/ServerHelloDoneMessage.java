@@ -18,7 +18,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
 @XmlRootElement(name = "ServerHelloDone")
-public class ServerHelloDoneMessage extends HandshakeMessage<ServerHelloDoneMessage> {
+public class ServerHelloDoneMessage extends HandshakeMessage {
 
     public ServerHelloDoneMessage() {
         super(HandshakeMessageType.SERVER_HELLO_DONE);

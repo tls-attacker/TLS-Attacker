@@ -30,7 +30,7 @@ import java.math.BigInteger;
 import java.util.List;
 import java.util.Objects;
 
-public class Record extends ModifiableVariableHolder implements DataContainer<Record, TlsContext> {
+public class Record extends ModifiableVariableHolder implements DataContainer<TlsContext> {
 
     /** maximum length configuration for this record */
     private Integer maxRecordLengthConfig;
@@ -351,7 +351,7 @@ public class Record extends ModifiableVariableHolder implements DataContainer<Re
     }
 
     @Override
-    public Handler getHandler(TlsContext tlsContext) {
+    public Handler<Record> getHandler(TlsContext tlsContext) {
         throw new UnsupportedOperationException(
                 "Not supported yet."); // To change body of generated methods, choose
         // Tools | Templates.

@@ -23,7 +23,7 @@ import java.io.InputStream;
 
 /** This extension is defined in RFC5764 */
 @XmlRootElement(name = "SrtpExtension")
-public class SrtpExtensionMessage extends ExtensionMessage<SrtpExtensionMessage> {
+public class SrtpExtensionMessage extends ExtensionMessage {
 
     @ModifiableVariableProperty private ModifiableByteArray srtpProtectionProfiles;
     @ModifiableVariableProperty private ModifiableInteger srtpProtectionProfilesLength; // 2 Byte

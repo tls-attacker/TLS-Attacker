@@ -21,8 +21,7 @@ import java.io.InputStream;
 import java.util.List;
 
 @XmlRootElement(name = "EmptyClientKeyExchange")
-public class EmptyClientKeyExchangeMessage
-        extends ClientKeyExchangeMessage<EmptyClientKeyExchangeMessage> {
+public class EmptyClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     @HoldsModifiableVariable protected EmptyClientComputations computations;
 

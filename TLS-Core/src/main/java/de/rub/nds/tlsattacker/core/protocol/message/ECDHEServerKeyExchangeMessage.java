@@ -27,8 +27,7 @@ import java.io.InputStream;
 import java.util.List;
 
 @XmlRootElement(name = "ECDHEServerKeyExchange")
-public class ECDHEServerKeyExchangeMessage<Self extends ECDHEServerKeyExchangeMessage<?>>
-        extends ServerKeyExchangeMessage<Self> {
+public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     protected ModifiableByte curveType;
@@ -114,7 +113,7 @@ public class ECDHEServerKeyExchangeMessage<Self extends ECDHEServerKeyExchangeMe
 
     @Override
     public ECDHEServerKeyExchangeHandler getHandler(TlsContext tlsContext) {
-        return new ECDHEServerKeyExchangeHandler<>(tlsContext);
+        return new ECDHEServerKeyExchangeHandler(tlsContext);
     }
 
     @Override

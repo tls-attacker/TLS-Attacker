@@ -1518,29 +1518,37 @@
   </xs:complexType>
 
   <xs:complexType name="requestItemV2">
-    <xs:sequence>
-      <xs:element name="requestExtensionLengthConfig" type="xs:int" minOccurs="0"/>
-      <xs:element name="requestExtensions" type="modifiableByteArray" minOccurs="0"/>
-      <xs:element name="requestExtensionsConfig" type="xs:base64Binary" minOccurs="0"/>
-      <xs:element name="requestExtensionsLength" type="modifiableInteger" minOccurs="0"/>
-      <xs:element name="requestLength" type="modifiableInteger" minOccurs="0"/>
-      <xs:element name="requestLengthConfig" type="xs:int" minOccurs="0"/>
-      <xs:element name="requestType" type="modifiableInteger" minOccurs="0"/>
-      <xs:element name="requestTypeConfig" type="xs:int" minOccurs="0"/>
-      <xs:element name="responderIdList" type="responderId" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
-      <xs:element name="responderIdListBytes" type="modifiableByteArray" minOccurs="0"/>
-      <xs:element name="responderIdListLength" type="modifiableInteger" minOccurs="0"/>
-      <xs:element name="responderIdListLengthConfig" type="xs:int" minOccurs="0"/>
-    </xs:sequence>
+    <xs:complexContent>
+      <xs:extension base="modifiableVariableHolder">
+        <xs:sequence>
+          <xs:element name="requestExtensionLengthConfig" type="xs:int" minOccurs="0"/>
+          <xs:element name="requestExtensions" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="requestExtensionsConfig" type="xs:base64Binary" minOccurs="0"/>
+          <xs:element name="requestExtensionsLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="requestLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="requestLengthConfig" type="xs:int" minOccurs="0"/>
+          <xs:element name="requestType" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="requestTypeConfig" type="xs:int" minOccurs="0"/>
+          <xs:element name="responderIdList" type="responderId" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="responderIdListBytes" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="responderIdListLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="responderIdListLengthConfig" type="xs:int" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
   </xs:complexType>
 
   <xs:complexType name="responderId">
-    <xs:sequence>
-      <xs:element name="id" type="modifiableByteArray" minOccurs="0"/>
-      <xs:element name="idConfig" type="xs:base64Binary" minOccurs="0"/>
-      <xs:element name="idLength" type="modifiableInteger" minOccurs="0"/>
-      <xs:element name="idLengthConfig" type="xs:int" minOccurs="0"/>
-    </xs:sequence>
+    <xs:complexContent>
+      <xs:extension base="modifiableVariableHolder">
+        <xs:sequence>
+          <xs:element name="id" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="idConfig" type="xs:base64Binary" minOccurs="0"/>
+          <xs:element name="idLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="idLengthConfig" type="xs:int" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
   </xs:complexType>
 
   <xs:complexType name="pskSet">
@@ -2181,14 +2189,18 @@
   </xs:complexType>
 
   <xs:complexType name="pskIdentity">
-    <xs:sequence>
-      <xs:element name="identityConfig" type="xs:string" minOccurs="0"/>
-      <xs:element name="ticketAgeConfig" type="xs:string" minOccurs="0"/>
-      <xs:element name="ticketAgeAddConfig" type="xs:string" minOccurs="0"/>
-      <xs:element name="identityLength" type="modifiableInteger" minOccurs="0"/>
-      <xs:element name="identity" type="modifiableByteArray" minOccurs="0"/>
-      <xs:element name="obfuscatedTicketAge" type="modifiableByteArray" minOccurs="0"/>
-    </xs:sequence>
+    <xs:complexContent>
+      <xs:extension base="modifiableVariableHolder">
+        <xs:sequence>
+          <xs:element name="identityConfig" type="xs:string" minOccurs="0"/>
+          <xs:element name="ticketAgeConfig" type="xs:string" minOccurs="0"/>
+          <xs:element name="ticketAgeAddConfig" type="xs:string" minOccurs="0"/>
+          <xs:element name="identityLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="identity" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="obfuscatedTicketAge" type="modifiableByteArray" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
   </xs:complexType>
 
   <xs:complexType name="unknownExtensionMessage">
@@ -3530,11 +3542,15 @@
   </xs:complexType>
 
   <xs:complexType name="supplementalDataEntry">
-    <xs:sequence>
-      <xs:element name="supplementalDataEntry" type="modifiableByteArray" minOccurs="0"/>
-      <xs:element name="supplementalDataEntryLength" type="modifiableInteger" minOccurs="0"/>
-      <xs:element name="supplementalDataEntryType" type="modifiableInteger" minOccurs="0"/>
-    </xs:sequence>
+    <xs:complexContent>
+      <xs:extension base="modifiableVariableHolder">
+        <xs:sequence>
+          <xs:element name="supplementalDataEntry" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="supplementalDataEntryLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="supplementalDataEntryType" type="modifiableInteger" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
   </xs:complexType>
 
   <xs:complexType name="encryptedExtensionsMessage">

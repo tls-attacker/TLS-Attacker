@@ -24,7 +24,7 @@ import java.io.InputStream;
 import java.util.Objects;
 
 @XmlRootElement(name = "HelloVerifyRequest")
-public class HelloVerifyRequestMessage extends HandshakeMessage<HelloVerifyRequestMessage> {
+public class HelloVerifyRequestMessage extends HandshakeMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByteArray protocolVersion = null;

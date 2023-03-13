@@ -19,6 +19,7 @@ import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
+import de.rub.nds.tlsattacker.core.layer.data.Handler;
 import de.rub.nds.tlsattacker.core.layer.hints.HttpLayerHint;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -45,7 +46,8 @@ public class HttpLayer extends ProtocolLayer<HttpLayerHint, HttpMessage> {
                 if (!prepareDataContainer(httpMsg, context)) {
                     continue;
                 }
-                httpMsg.getHandler(context).adjustContext(httpMsg);
+                Handler<?> handler = httpMsg.getHandler(context);
+                handler.adjustContext(httpMsg);
                 HttpMessageSerializer serializer = httpMsg.getSerializer(context);
                 byte[] serializedMessage = serializer.serialize();
                 getLowerLayer().sendData(null, serializedMessage);

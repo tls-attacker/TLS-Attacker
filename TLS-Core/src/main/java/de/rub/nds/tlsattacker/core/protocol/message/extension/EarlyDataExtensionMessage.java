@@ -21,7 +21,7 @@ import java.io.InputStream;
 
 /** RFC draft-ietf-tls-tls13-21 */
 @XmlRootElement(name = "EarlyDataExtension")
-public class EarlyDataExtensionMessage extends ExtensionMessage<EarlyDataExtensionMessage> {
+public class EarlyDataExtensionMessage extends ExtensionMessage {
 
     private ModifiableInteger maxEarlyDataSize;
 

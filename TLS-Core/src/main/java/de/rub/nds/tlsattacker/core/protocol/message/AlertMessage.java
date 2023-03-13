@@ -27,7 +27,7 @@ import java.io.InputStream;
 import java.util.Objects;
 
 @XmlRootElement(name = "Alert")
-public class AlertMessage extends ProtocolMessage<AlertMessage> {
+public class AlertMessage extends ProtocolMessage {
 
     /** config array used to configure alert message */
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)

@@ -25,8 +25,7 @@ import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.InputStream;
 
 @XmlRootElement(name = "EncryptedClientHello")
-public class EncryptedClientHelloMessage
-        extends CoreClientHelloMessage<EncryptedClientHelloMessage> {
+public class EncryptedClientHelloMessage extends CoreClientHelloMessage {
 
     @HoldsModifiableVariable ClientHelloMessage clientHelloInner;
 

@@ -28,7 +28,7 @@ import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMessage<?>>
+public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMessage>
         extends ServerKeyExchangePreparator<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();

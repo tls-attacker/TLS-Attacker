@@ -23,7 +23,7 @@ import java.io.InputStream;
 
 /** This extension is defined in RFC5054 */
 @XmlRootElement(name = "SRPExtension")
-public class SRPExtensionMessage extends ExtensionMessage<SRPExtensionMessage> {
+public class SRPExtensionMessage extends ExtensionMessage {
 
     // UTF-8 encoded and according to RFC 4013 with the SASLprep profile
     @ModifiableVariableProperty private ModifiableByteArray srpIdentifier;

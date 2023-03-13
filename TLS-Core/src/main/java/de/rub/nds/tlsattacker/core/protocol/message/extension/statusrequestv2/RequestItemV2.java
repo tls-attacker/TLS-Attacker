@@ -13,10 +13,10 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import java.io.Serializable;
+import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import java.util.List;
 
-public class RequestItemV2 implements Serializable {
+public class RequestItemV2 extends ModifiableVariableHolder {
 
     @ModifiableVariableProperty ModifiableInteger requestType;
     @ModifiableVariableProperty ModifiableInteger requestLength;

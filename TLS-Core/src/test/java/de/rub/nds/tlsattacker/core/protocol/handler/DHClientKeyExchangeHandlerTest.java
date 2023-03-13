@@ -20,8 +20,7 @@ import org.junit.jupiter.api.Test;
 
 public class DHClientKeyExchangeHandlerTest
         extends AbstractProtocolMessageHandlerTest<
-                DHClientKeyExchangeMessage<?>,
-                ClientKeyExchangeHandler<DHClientKeyExchangeMessage<?>>> {
+                DHClientKeyExchangeMessage, ClientKeyExchangeHandler<DHClientKeyExchangeMessage>> {
 
     public DHClientKeyExchangeHandlerTest() {
         super(DHClientKeyExchangeMessage::new, DHClientKeyExchangeHandler::new);

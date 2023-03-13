@@ -35,7 +35,7 @@ import org.apache.logging.log4j.Logger;
 /**
  * @param <T> The HandshakeMessage that should be prepared
  */
-public abstract class HandshakeMessagePreparator<T extends HandshakeMessage<?>>
+public abstract class HandshakeMessagePreparator<T extends HandshakeMessage>
         extends ProtocolMessagePreparator<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();

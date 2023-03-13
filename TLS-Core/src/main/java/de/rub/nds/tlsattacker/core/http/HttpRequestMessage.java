@@ -23,7 +23,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 @XmlRootElement
-public class HttpRequestMessage extends HttpMessage<HttpRequestMessage> {
+public class HttpRequestMessage extends HttpMessage {
 
     @XmlElementWrapper
     @XmlElements(

@@ -26,7 +26,7 @@ import java.util.List;
 
 /** This extension is defined in RFC7301 */
 @XmlRootElement(name = "AlpnExtension")
-public class AlpnExtensionMessage extends ExtensionMessage<AlpnExtensionMessage> {
+public class AlpnExtensionMessage extends ExtensionMessage {
 
     @ModifiableVariableProperty private ModifiableInteger proposedAlpnProtocolsLength;
     @ModifiableVariableProperty private ModifiableByteArray proposedAlpnProtocols;

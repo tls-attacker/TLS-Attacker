@@ -16,10 +16,9 @@ import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import java.io.Serializable;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-public class AlpnEntry extends ModifiableVariableHolder implements Serializable {
+public class AlpnEntry extends ModifiableVariableHolder {
 
     private ModifiableInteger alpnEntryLength;
 

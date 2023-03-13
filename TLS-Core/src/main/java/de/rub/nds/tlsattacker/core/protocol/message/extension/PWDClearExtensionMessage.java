@@ -23,7 +23,7 @@ import java.io.InputStream;
 
 /** This extension is defined in RFC8492 */
 @XmlRootElement(name = "PWDClearExtension")
-public class PWDClearExtensionMessage extends ExtensionMessage<PWDClearExtensionMessage> {
+public class PWDClearExtensionMessage extends ExtensionMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger usernameLength;

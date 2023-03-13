@@ -23,7 +23,7 @@ import java.io.InputStream;
 
 /** This extension is defined in RFC8492, used for the HelloRetryRequest */
 @XmlRootElement(name = "PasswordSaltExtension")
-public class PasswordSaltExtensionMessage extends ExtensionMessage<PasswordSaltExtensionMessage> {
+public class PasswordSaltExtensionMessage extends ExtensionMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger saltLength;

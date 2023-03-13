@@ -19,7 +19,7 @@ import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class DHEServerKeyExchangePreparator<T extends DHEServerKeyExchangeMessage<?>>
+public class DHEServerKeyExchangePreparator<T extends DHEServerKeyExchangeMessage>
         extends ServerKeyExchangePreparator<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();

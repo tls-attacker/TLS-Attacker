@@ -25,8 +25,8 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public abstract class CoreClientHelloHandler<T extends CoreClientHelloMessage<?>>
-        extends HandshakeMessageHandler<T> {
+public abstract class CoreClientHelloHandler<Message extends CoreClientHelloMessage>
+        extends HandshakeMessageHandler<Message> {
 
     protected static final Logger LOGGER = LogManager.getLogger();
 
@@ -35,7 +35,7 @@ public abstract class CoreClientHelloHandler<T extends CoreClientHelloMessage<?>
     }
 
     @Override
-    public void adjustContext(T message) {
+    public void adjustContext(Message message) {
         adjustProtocolVersion(message);
         adjustSessionID(message);
         adjustClientSupportedCipherSuites(message);
@@ -57,11 +57,11 @@ public abstract class CoreClientHelloHandler<T extends CoreClientHelloMessage<?>
         }
     }
 
-    private boolean isCookieFieldSet(T message) {
+    private boolean isCookieFieldSet(Message message) {
         return message.getCookie() != null;
     }
 
-    private void adjustClientSupportedCipherSuites(T message) {
+    private void adjustClientSupportedCipherSuites(Message message) {
         List<CipherSuite> suiteList = convertCipherSuites(message.getCipherSuites().getValue());
         tlsContext.setClientSupportedCipherSuites(suiteList);
         if (suiteList != null) {
@@ -71,28 +71,28 @@ public abstract class CoreClientHelloHandler<T extends CoreClientHelloMessage<?>
         }
     }
 
-    private void adjustClientSupportedCompressions(T message) {
+    private void adjustClientSupportedCompressions(Message message) {
         List<CompressionMethod> compressionList =
                 convertCompressionMethods(message.getCompressions().getValue());
         tlsContext.setClientSupportedCompressions(compressionList);
         LOGGER.debug("Set ClientSupportedCompressions in Context to " + compressionList.toString());
     }
 
-    private void adjustDTLSCookie(T message) {
+    private void adjustDTLSCookie(Message message) {
         byte[] dtlsCookie = message.getCookie().getValue();
         tlsContext.setDtlsCookie(dtlsCookie);
         LOGGER.debug(
                 "Set DTLS Cookie in Context to " + ArrayConverter.bytesToHexString(dtlsCookie));
     }
 
-    private void adjustSessionID(T message) {
+    private void adjustSessionID(Message message) {
         byte[] sessionId = message.getSessionId().getValue();
         tlsContext.setClientSessionId(sessionId);
         LOGGER.debug(
                 "Set SessionId in Context to " + ArrayConverter.bytesToHexString(sessionId, false));
     }
 
-    private void adjustProtocolVersion(T message) {
+    private void adjustProtocolVersion(Message message) {
         ProtocolVersion version =
                 ProtocolVersion.getProtocolVersion(message.getProtocolVersion().getValue());
         if (version != null) {
@@ -106,7 +106,7 @@ public abstract class CoreClientHelloHandler<T extends CoreClientHelloMessage<?>
         }
     }
 
-    private void adjustRandomContext(T message) {
+    private void adjustRandomContext(Message message) {
         tlsContext.setClientRandom(message.getRandom().getValue());
         LOGGER.debug(
                 "Set ClientRandom in Context to "
@@ -154,7 +154,7 @@ public abstract class CoreClientHelloHandler<T extends CoreClientHelloMessage<?>
     }
 
     @Override
-    public void adjustContextAfterSerialize(T message) {
+    public void adjustContextAfterSerialize(Message message) {
         if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT
                 && tlsContext.isExtensionProposed(ExtensionType.EARLY_DATA)) {
             try {

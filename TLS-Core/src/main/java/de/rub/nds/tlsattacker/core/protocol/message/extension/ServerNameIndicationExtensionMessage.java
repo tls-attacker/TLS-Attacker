@@ -31,8 +31,7 @@ import java.util.List;
  * 6066</a>
  */
 @XmlRootElement(name = "ServerNameIndicationExtension")
-public class ServerNameIndicationExtensionMessage
-        extends ExtensionMessage<ServerNameIndicationExtensionMessage> {
+public class ServerNameIndicationExtensionMessage extends ExtensionMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger serverNameListLength;

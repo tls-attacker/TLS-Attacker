@@ -16,8 +16,8 @@ import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class DHEServerKeyExchangeHandler<T extends DHEServerKeyExchangeMessage<?>>
-        extends ServerKeyExchangeHandler<T> {
+public class DHEServerKeyExchangeHandler<KeyExchangeMessage extends DHEServerKeyExchangeMessage>
+        extends ServerKeyExchangeHandler<KeyExchangeMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -26,7 +26,7 @@ public class DHEServerKeyExchangeHandler<T extends DHEServerKeyExchangeMessage<?
     }
 
     @Override
-    public void adjustContext(T message) {
+    public void adjustContext(KeyExchangeMessage message) {
         adjustDhGenerator(message);
         adjustDhModulus(message);
         adjustServerPublicKey(message);
@@ -37,24 +37,24 @@ public class DHEServerKeyExchangeHandler<T extends DHEServerKeyExchangeMessage<?
         }
     }
 
-    protected void adjustDhGenerator(T message) {
+    protected void adjustDhGenerator(KeyExchangeMessage message) {
         tlsContext.setServerEphemeralDhGenerator(
                 new BigInteger(1, message.getGenerator().getValue()));
         LOGGER.debug("Dh Generator: " + tlsContext.getServerEphemeralDhGenerator());
     }
 
-    protected void adjustDhModulus(T message) {
+    protected void adjustDhModulus(KeyExchangeMessage message) {
         tlsContext.setServerEphemeralDhModulus(new BigInteger(1, message.getModulus().getValue()));
         LOGGER.debug("Dh Modulus: " + tlsContext.getServerEphemeralDhModulus());
     }
 
-    protected void adjustServerPublicKey(T message) {
+    protected void adjustServerPublicKey(KeyExchangeMessage message) {
         tlsContext.setServerEphemeralDhPublicKey(
                 new BigInteger(1, message.getPublicKey().getValue()));
         LOGGER.debug("Server PublicKey: " + tlsContext.getServerEphemeralDhPublicKey());
     }
 
-    protected void adjustServerPrivateKey(T message) {
+    protected void adjustServerPrivateKey(KeyExchangeMessage message) {
         tlsContext.setServerEphemeralDhPrivateKey(
                 message.getKeyExchangeComputations().getPrivateKey().getValue());
         LOGGER.debug("Server PrivateKey: " + tlsContext.getServerEphemeralDhPrivateKey());

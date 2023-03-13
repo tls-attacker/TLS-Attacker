@@ -20,7 +20,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
 @XmlRootElement(name = "ClientHello")
-public class ClientHelloMessage extends CoreClientHelloMessage<ClientHelloMessage> {
+public class ClientHelloMessage extends CoreClientHelloMessage {
 
     public ClientHelloMessage() {
         super();

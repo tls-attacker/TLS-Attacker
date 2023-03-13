@@ -23,7 +23,7 @@ import java.io.InputStream;
 
 /** This extension is defined in RFC8492 */
 @XmlRootElement(name = "PWDProtectExtension")
-public class PWDProtectExtensionMessage extends ExtensionMessage<PWDProtectExtensionMessage> {
+public class PWDProtectExtensionMessage extends ExtensionMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger usernameLength;

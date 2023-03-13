@@ -23,7 +23,7 @@ import java.io.InputStream;
 
 /** This extension is defined in RFC6520 */
 @XmlRootElement(name = "HeartbeatExtension")
-public class HeartbeatExtensionMessage extends ExtensionMessage<HeartbeatExtensionMessage> {
+public class HeartbeatExtensionMessage extends ExtensionMessage {
 
     private HeartbeatMode heartbeatModeConfig;
 

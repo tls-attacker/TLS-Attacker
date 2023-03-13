@@ -22,8 +22,7 @@ import java.io.InputStream;
 
 /** This extension is defined in RFC6962 */
 @XmlRootElement(name = "SignedCertificateTimestampExtension")
-public class SignedCertificateTimestampExtensionMessage
-        extends ExtensionMessage<SignedCertificateTimestampExtensionMessage> {
+public class SignedCertificateTimestampExtensionMessage extends ExtensionMessage {
 
     @ModifiableVariableProperty private ModifiableByteArray singedTimestamp;
 

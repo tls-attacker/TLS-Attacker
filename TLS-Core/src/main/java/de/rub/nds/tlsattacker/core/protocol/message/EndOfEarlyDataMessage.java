@@ -19,7 +19,7 @@ import java.io.InputStream;
 
 /** RFC draft-ietf-tls-tls13-21 */
 @XmlRootElement(name = "EndOfEarlyData")
-public class EndOfEarlyDataMessage extends HandshakeMessage<EndOfEarlyDataMessage> {
+public class EndOfEarlyDataMessage extends HandshakeMessage {
 
     public EndOfEarlyDataMessage() {
         super(HandshakeMessageType.END_OF_EARLY_DATA);

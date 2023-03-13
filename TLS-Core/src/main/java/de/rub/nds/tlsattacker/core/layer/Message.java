@@ -26,8 +26,8 @@ import jakarta.xml.bind.annotation.XmlSeeAlso;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlSeeAlso({Message.class, ProtocolMessage.class, HttpMessage.class})
-public abstract class Message<Self extends Message<?, ?>, Context extends LayerContext>
-        extends ModifiableVariableHolder implements DataContainer<Self, Context> {
+public abstract class Message<Context extends LayerContext> extends ModifiableVariableHolder
+        implements DataContainer<Context> {
 
     public abstract String toShortString();
 }
