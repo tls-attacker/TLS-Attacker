@@ -12,7 +12,7 @@ import de.rub.nds.tlsattacker.core.http.header.HttpHeader;
 import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
 import de.rub.nds.tlsattacker.core.layer.data.Handler;
 
-public abstract class HttpHeaderHandler implements Handler<HttpHeader> {
+public abstract class HttpHeaderHandler extends Handler<HttpHeader> {
 
     private final HttpContext context;
 

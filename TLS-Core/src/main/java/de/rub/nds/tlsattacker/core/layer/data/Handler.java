@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.layer.data;
 /**
  * @param <T> The Object that should be Handled
  */
-public interface Handler<T> {
+public abstract class Handler<T> {
 
-    void adjustContext(T object);
+    public abstract void adjustContext(T httpMsg);
 }

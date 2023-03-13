@@ -47,8 +47,8 @@ public class HttpLayer extends ProtocolLayer<HttpLayerHint, HttpMessage> {
                     continue;
                 }
                 Handler<?> handler = httpMsg.getHandler(context);
-                handler.adjustContext(httpMsg);
-                HttpMessageSerializer serializer = httpMsg.getSerializer(context);
+                handler.adjustContext((Object)httpMsg);
+                Serializer<?> serializer = httpMsg.getSerializer(context);
                 byte[] serializedMessage = serializer.serialize();
                 getLowerLayer().sendData(null, serializedMessage);
                 addProducedContainer(httpMsg);
