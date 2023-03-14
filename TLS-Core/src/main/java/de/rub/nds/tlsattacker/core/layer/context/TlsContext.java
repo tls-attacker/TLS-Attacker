@@ -473,8 +473,6 @@ public class TlsContext extends LayerContext {
 
     private Long esniNotAfter;
 
-    private List<ExtensionType> esniExtensions;
-
     /**
      * Both methods of limiting record size as defined in RFC 3546 (MaximumFragmentLength extension)
      * and RFC 8449 (RecordSizeLimit extension)

@@ -16,7 +16,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public abstract class ProtocolMessageHandler<MessageT extends ProtocolMessage>
-        implements Handler<MessageT> {
+        extends Handler<MessageT> {
 
     protected static final Logger LOGGER = LogManager.getLogger();
     /** context */

@@ -10,13 +10,11 @@ package de.rub.nds.tlsattacker.core.http.header;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.tlsattacker.core.http.header.handler.HttpHeaderHandler;
 import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
-import de.rub.nds.tlsattacker.core.layer.data.Preparator;
+import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
-import java.io.Serializable;
 
-public abstract class HttpHeader extends ModifiableVariableHolder implements Serializable {
+public abstract class HttpHeader extends ModifiableVariableHolder implements DataContainer<HttpContext> {
 
     protected ModifiableString headerName;
 
@@ -46,11 +44,5 @@ public abstract class HttpHeader extends ModifiableVariableHolder implements Ser
 
     public void setHeaderValue(String headerValue) {
         this.headerValue = ModifiableVariableFactory.safelySetValue(this.headerValue, headerValue);
-    }
-
-    public abstract Preparator getPreparator(HttpContext httpContext);
-
-    public HttpHeaderHandler getHandler() {
-        return null;
     }
 }

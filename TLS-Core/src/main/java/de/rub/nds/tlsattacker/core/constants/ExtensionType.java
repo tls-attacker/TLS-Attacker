@@ -264,7 +264,8 @@ public enum ExtensionType {
             case EARLY_DATA:
             case RECORD_SIZE_LIMIT:
                 return true;
+            default:
+                return false;
         }
-        return false;
     }
 }

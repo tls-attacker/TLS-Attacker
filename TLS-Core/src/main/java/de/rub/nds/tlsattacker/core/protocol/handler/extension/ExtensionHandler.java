@@ -17,7 +17,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public abstract class ExtensionHandler<Extension extends ExtensionMessage>
-        implements Handler<Extension> {
+        extends Handler<Extension> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 

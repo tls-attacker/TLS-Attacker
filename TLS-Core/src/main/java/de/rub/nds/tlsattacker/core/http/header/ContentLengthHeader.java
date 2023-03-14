@@ -8,10 +8,15 @@
  */
 package de.rub.nds.tlsattacker.core.http.header;
 
+import java.io.InputStream;
+
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.http.header.preparator.ContentLengthHeaderPreparator;
 import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
+import de.rub.nds.tlsattacker.core.layer.data.Handler;
+import de.rub.nds.tlsattacker.core.layer.data.Parser;
+import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import jakarta.xml.bind.annotation.XmlTransient;
 
 public class ContentLengthHeader extends HttpHeader {
@@ -45,5 +50,22 @@ public class ContentLengthHeader extends HttpHeader {
 
     public void setConfigLength(int configLength) {
         this.configLength = configLength;
+    }
+
+    @Override
+    public Parser<?> getParser(HttpContext context, InputStream stream) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getParser'");
+    }
+
+    @Override
+    public Serializer<?> getSerializer(HttpContext context) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getSerializer'");
+    }
+
+    @Override
+    public Handler<?> getHandler(HttpContext context) {
+        return null;
     }
 }

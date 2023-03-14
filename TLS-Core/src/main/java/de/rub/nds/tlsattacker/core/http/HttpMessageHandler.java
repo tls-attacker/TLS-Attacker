@@ -10,5 +10,4 @@ package de.rub.nds.tlsattacker.core.http;
 
 import de.rub.nds.tlsattacker.core.layer.data.Handler;
 
-public abstract class HttpMessageHandler<MessageT extends HttpMessage>
-        extends Handler<MessageT> {}
+public abstract class HttpMessageHandler<MessageT extends HttpMessage> extends Handler<MessageT> {}
