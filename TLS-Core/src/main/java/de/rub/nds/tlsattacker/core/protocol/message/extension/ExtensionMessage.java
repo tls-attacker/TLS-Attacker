@@ -17,8 +17,13 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtensionPreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import jakarta.xml.bind.annotation.XmlSeeAlso;
+import java.io.InputStream;
 
 @XmlSeeAlso({
     EncryptedServerNameIndicationExtensionMessage.class,
@@ -161,4 +166,16 @@ public abstract class ExtensionMessage extends ModifiableVariableHolder
         this.extensionContent =
                 ModifiableVariableFactory.safelySetValue(this.extensionContent, content);
     }
+
+    @Override
+    public abstract ExtensionHandler<?> getHandler(TlsContext context);
+
+    @Override
+    public abstract ExtensionParser<?> getParser(TlsContext context, InputStream stream);
+
+    @Override
+    public abstract ExtensionPreparator<?> getPreparator(TlsContext context);
+
+    @Override
+    public abstract ExtensionSerializer<?> getSerializer(TlsContext context);
 }

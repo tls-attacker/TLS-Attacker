@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.layer.impl;
 import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
 import de.rub.nds.tlsattacker.core.exceptions.TimeoutException;
 import de.rub.nds.tlsattacker.core.http.HttpMessage;
+import de.rub.nds.tlsattacker.core.http.HttpMessageHandler;
 import de.rub.nds.tlsattacker.core.http.HttpRequestMessage;
 import de.rub.nds.tlsattacker.core.http.HttpResponseMessage;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
@@ -18,7 +19,6 @@ import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
-import de.rub.nds.tlsattacker.core.layer.data.Handler;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import de.rub.nds.tlsattacker.core.layer.hints.HttpLayerHint;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
@@ -46,8 +46,8 @@ public class HttpLayer extends ProtocolLayer<HttpLayerHint, HttpMessage> {
                 if (!prepareDataContainer(httpMsg, context)) {
                     continue;
                 }
-                Handler<?> handler = httpMsg.getHandler(context);
-                handler.adjustContext((Object) httpMsg);
+                HttpMessageHandler handler = httpMsg.getHandler(context);
+                handler.adjustContext((HttpMessage) httpMsg);
                 Serializer<?> serializer = httpMsg.getSerializer(context);
                 byte[] serializedMessage = serializer.serialize();
                 getLowerLayer().sendData(null, serializedMessage);

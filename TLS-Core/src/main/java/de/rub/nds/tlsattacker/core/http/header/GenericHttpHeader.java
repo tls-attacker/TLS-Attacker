@@ -8,8 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.http.header;
 
-import java.io.InputStream;
-
 import de.rub.nds.modifiablevariable.util.IllegalStringAdapter;
 import de.rub.nds.tlsattacker.core.http.header.preparator.GenericHttpHeaderPreparator;
 import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
@@ -19,6 +17,7 @@ import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import java.io.InputStream;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class GenericHttpHeader extends HttpHeader {

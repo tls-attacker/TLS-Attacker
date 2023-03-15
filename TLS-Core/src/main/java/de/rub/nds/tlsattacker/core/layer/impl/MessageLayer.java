@@ -21,10 +21,7 @@ import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.layer.data.Handler;
-import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
-import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.hints.RecordLayerHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
@@ -32,7 +29,10 @@ import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerInputStream;
 import de.rub.nds.tlsattacker.core.protocol.MessageFactory;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageSerializer;
+import de.rub.nds.tlsattacker.core.protocol.handler.HandshakeMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.*;
+import de.rub.nds.tlsattacker.core.protocol.parser.HandshakeMessageParser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -89,19 +89,21 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
     private void processMessage(
             ProtocolMessage message, ByteArrayOutputStream collectedMessageStream)
             throws IOException {
-        Serializer serializer = message.getSerializer(context);
+        ProtocolMessageSerializer<? extends ProtocolMessage> serializer =
+                message.getSerializer(context);
         byte[] serializedMessage = serializer.serialize();
         message.setCompleteResultingMessage(serializedMessage);
-        ((ProtocolMessageHandler) message.getHandler(context)).updateDigest(message, true);
+        ProtocolMessageHandler handler = message.getHandler(context);
+        handler.updateDigest(message, true);
         if (message.getAdjustContext()) {
-            message.getHandler(context).adjustContext(message);
+            handler.adjustContext(message);
         }
         collectedMessageStream.writeBytes(serializedMessage);
         if (mustFlushCollectedMessagesImmediately(message)) {
             flushCollectedMessages(message.getProtocolMessageType(), collectedMessageStream);
         }
         if (message.getAdjustContext()) {
-            message.getHandler(context).adjustContextAfterSerialize(message);
+            handler.adjustContextAfterSerialize(message);
         }
     }
 
@@ -311,7 +313,7 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
             setUnreadBytes(ArrayConverter.concatenate(this.getUnreadBytes(), readBytes));
             return;
         }
-        Handler handler = handshakeMessage.getHandler(context);
+        HandshakeMessageHandler handler = handshakeMessage.getHandler(context);
         handshakeMessage.setMessageContent(payload);
 
         try {
@@ -321,7 +323,8 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
                             ArrayConverter.intToBytes(
                                     length, HandshakeByteLength.MESSAGE_LENGTH_FIELD),
                             payload));
-            Parser parser = handshakeMessage.getParser(context, new ByteArrayInputStream(payload));
+            HandshakeMessageParser parser =
+                    handshakeMessage.getParser(context, new ByteArrayInputStream(payload));
             parser.parse(handshakeMessage);
             Preparator preparator = handshakeMessage.getPreparator(context);
             preparator.prepareAfterParse();
@@ -329,7 +332,7 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
                 handshakeMessage.setMessageSequence(
                         ((RecordLayerHint) handshakeStream.getHint()).getMessageSequence());
             }
-            handshakeMessage.getHandler(context).updateDigest(handshakeMessage, false);
+            handler.updateDigest(handshakeMessage, false);
             handler.adjustContext(handshakeMessage);
             addProducedContainer(handshakeMessage);
         } catch (RuntimeException ex) {

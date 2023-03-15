@@ -20,6 +20,7 @@ import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlSeeAlso;
 import jakarta.xml.bind.annotation.XmlTransient;
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Random;
@@ -188,4 +189,20 @@ public abstract class ProtocolMessage extends Message<TlsContext> {
     public ProtocolMessageType getProtocolMessageType() {
         return protocolMessageType;
     }
+
+    @Override
+    public abstract ProtocolMessageHandler<? extends ProtocolMessage> getHandler(
+            TlsContext context);
+
+    @Override
+    public abstract ProtocolMessageParser<? extends ProtocolMessage> getParser(
+            TlsContext context, InputStream stream);
+
+    @Override
+    public abstract ProtocolMessagePreparator<? extends ProtocolMessage> getPreparator(
+            TlsContext context);
+
+    @Override
+    public abstract ProtocolMessageSerializer<? extends ProtocolMessage> getSerializer(
+            TlsContext context);
 }

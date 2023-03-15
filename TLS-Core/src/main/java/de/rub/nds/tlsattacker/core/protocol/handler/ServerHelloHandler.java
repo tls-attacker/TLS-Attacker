@@ -470,7 +470,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                 ClientHelloHandler clientHelloHandler = new ClientHelloHandler(tlsContext);
                 clientHelloHandler.adjustContext(innerClientHello);
                 chooser.getContext().getTlsContext().getDigest().reset();
-                updateDigest(innerClientHello, false);
+                clientHelloHandler.updateDigest(innerClientHello, false);
                 updateDigest(message, false);
                 LOGGER.info("Server supports ECH");
             }

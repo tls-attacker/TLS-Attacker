@@ -8,8 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.http.header;
 
-import java.io.InputStream;
-
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.http.header.preparator.ContentLengthHeaderPreparator;
@@ -18,6 +16,7 @@ import de.rub.nds.tlsattacker.core.layer.data.Handler;
 import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import jakarta.xml.bind.annotation.XmlTransient;
+import java.io.InputStream;
 
 public class ContentLengthHeader extends HttpHeader {
 

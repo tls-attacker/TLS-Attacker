@@ -128,18 +128,22 @@ public class HttpRequestMessage extends HttpMessage {
         return "HTTP_REQ";
     }
 
+    @Override
     public HttpRequestHandler getHandler(HttpContext context) {
         return new HttpRequestHandler(context);
     }
 
+    @Override
     public HttpRequestParser getParser(HttpContext context, InputStream stream) {
         return new HttpRequestParser(stream);
     }
 
+    @Override
     public HttpRequestPreparator getPreparator(HttpContext context) {
         return new HttpRequestPreparator(context, this);
     }
 
+    @Override
     public HttpRequestSerializer getSerializer(HttpContext context) {
         return new HttpRequestSerializer(this);
     }

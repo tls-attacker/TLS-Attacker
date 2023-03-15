@@ -13,7 +13,22 @@ import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlSeeAlso;
+import java.io.InputStream;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlSeeAlso({HttpRequestMessage.class, HttpResponseMessage.class})
-public abstract class HttpMessage extends Message<HttpContext> {}
+public abstract class HttpMessage extends Message<HttpContext> {
+
+    @Override
+    public abstract HttpMessageHandler<? extends HttpMessage> getHandler(HttpContext httpContext);
+
+    @Override
+    public abstract HttpMessageParser<? extends HttpMessage> getParser(
+            HttpContext context, InputStream stream);
+
+    @Override
+    public abstract HttpMessagePreparator<? extends HttpMessage> getPreparator(HttpContext context);
+
+    @Override
+    public abstract HttpMessageSerializer<? extends HttpMessage> getSerializer(HttpContext context);
+}

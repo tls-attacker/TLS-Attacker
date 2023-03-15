@@ -22,6 +22,7 @@ import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.hints.RecordLayerHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageSerializer;
 import de.rub.nds.tlsattacker.core.protocol.message.*;
@@ -47,12 +48,13 @@ public class SSL2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
                 ProtocolMessagePreparator preparator = ssl2message.getPreparator(context);
                 preparator.prepare();
                 preparator.afterPrepare();
-                ssl2message.getHandler(context).adjustContext(ssl2message);
+                ProtocolMessageHandler handler = ssl2message.getHandler(context);
+                handler.adjustContext(ssl2message);
                 ProtocolMessageSerializer serializer = ssl2message.getSerializer(context);
                 byte[] serializedMessage = serializer.serialize();
                 ssl2message.setCompleteResultingMessage(serializedMessage);
-                ssl2message.getHandler(context).adjustContextAfterSerialize(ssl2message);
-                ssl2message.getHandler(context).updateDigest(ssl2message, true);
+                handler.adjustContextAfterSerialize(ssl2message);
+                handler.updateDigest(ssl2message, true);
                 getLowerLayer()
                         .sendData(
                                 new RecordLayerHint(ssl2message.getProtocolMessageType()),

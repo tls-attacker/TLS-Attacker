@@ -14,6 +14,7 @@ import de.rub.nds.protocol.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.constants.CertificateType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificateEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
@@ -120,7 +121,8 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
     private void adjustCertExtensions(CertificateMessage certificateMessage) {
         for (CertificateEntry pair : certificateMessage.getCertificateEntryList()) {
             for (ExtensionMessage extensionMessage : pair.getExtensionList()) {
-                extensionMessage.getHandler(tlsContext).adjustContext(extensionMessage);
+                ExtensionHandler handler = extensionMessage.getHandler(tlsContext);
+                handler.adjustContext(extensionMessage);
             }
         }
     }

@@ -35,7 +35,7 @@ public abstract class ProtocolMessageHandler<MessageT extends ProtocolMessage>
         // TODO This should not be here
     }
 
-    public void updateDigest(ProtocolMessage message, boolean goingToBeSent) {
+    public void updateDigest(MessageT message, boolean goingToBeSent) {
         if (!(message instanceof HandshakeMessage)) {
             return;
         }
