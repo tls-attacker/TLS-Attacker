@@ -1307,8 +1307,6 @@ public class Config implements Serializable {
 
         defaultProposedAlpnProtocols.add(AlpnProtocol.HTTP_2.getConstant());
         defaultKeySharePrivateMap = new HashMap<>();
-        defaultKeySharePrivateMap.computeIfAbsent(
-                defaultPWDProtectGroup, s -> new BigInteger("FFFF", 16));
     }
 
     public BigInteger getDefaultEcdsaNonce() {
@@ -3979,7 +3977,7 @@ public class Config implements Serializable {
     }
 
     public BigInteger getDefaultKeySharePrivateKey(NamedGroup group) {
-        return defaultKeySharePrivateMap.get(group);
+        return defaultKeySharePrivateMap.getOrDefault(group, new BigInteger("FFFF", 16));
     }
 
     public void setDefaultKeySharePrivateKey(NamedGroup group, BigInteger privateKey) {
