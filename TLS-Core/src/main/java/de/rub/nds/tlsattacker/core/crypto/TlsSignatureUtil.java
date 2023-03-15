@@ -8,18 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.crypto;
 
-import static de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm.ANONYMOUS;
-import static de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm.DSA;
-import static de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm.ECDSA;
-import static de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm.ED25519;
-import static de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm.ED448;
-import static de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm.GOSTR34102001;
-import static de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm.GOSTR34102012_256;
-import static de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm.GOSTR34102012_512;
-import static de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm.RSA;
-import static de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm.RSA_PSS_PSS;
-import static de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm.RSA_PSS_RSAE;
-
 import de.rub.nds.protocol.constants.HashAlgorithm;
 import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
 import de.rub.nds.protocol.crypto.signature.DsaSignatureComputations;
