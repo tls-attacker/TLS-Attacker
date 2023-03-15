@@ -55,10 +55,7 @@ public class KeyShareCalculator {
 
     public static byte[] computeSharedSecret(
             NamedGroup group, BigInteger privateKey, byte[] publicKey) {
-        System.out.println("Group; " + group.name());
-        System.out.println("PrivateKey; " + privateKey);
-        System.out.println("PublicKey; " + ArrayConverter.bytesToHexString(publicKey));
-
+        
         if (group.isDhGroup()) {
             return computeDhSharedSecret(group, privateKey, new BigInteger(1, publicKey));
         } else if (group.isEcGroup()) {
