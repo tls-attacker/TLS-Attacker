@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.util;
 
+import de.rub.nds.protocol.crypto.key.PublicKeyContainer;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
@@ -22,7 +23,6 @@ import de.rub.nds.tlsattacker.core.workflow.action.ReceiveTillAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.x509attacker.x509.X509CertificateChain;
-import de.rub.nds.x509attacker.x509.base.publickey.PublicKeyContent;
 import java.io.IOException;
 import java.security.cert.CertificateParsingException;
 import org.apache.logging.log4j.LogManager;
@@ -32,13 +32,13 @@ public class CertificateFetcher {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public static PublicKeyContent fetchServerPublicKey(Config config)
+    public static PublicKeyContainer fetchServerPublicKey(Config config)
             throws CertificateParsingException {
 
         X509CertificateChain fetchedServerCertificateChain = fetchServerCertificateChain(config);
         if (fetchedServerCertificateChain != null
                 && !fetchedServerCertificateChain.getCertificateList().isEmpty()) {
-            return fetchedServerCertificateChain.getLeaf().getPublicKey();
+            return fetchedServerCertificateChain.getLeaf().getPublicKeyContainer();
         }
         return null;
     }
