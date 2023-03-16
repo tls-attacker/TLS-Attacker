@@ -47,7 +47,7 @@ public abstract class RecordCryptoUnit {
     }
 
     /** Return true, if we are still in epoch 0 and no early data was sent yet. */
-    public boolean isFirstEpoch() {
+    public boolean isEpochZero() {
         return recordCipherList.size() == 1;
     }
 

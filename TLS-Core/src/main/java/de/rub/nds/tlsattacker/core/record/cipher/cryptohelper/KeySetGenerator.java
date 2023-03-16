@@ -30,7 +30,7 @@ public class KeySetGenerator {
     public static KeySet generateKeySet(
             TlsContext tlsContext, ProtocolVersion protocolVersion, Tls13KeySetType keySetType)
             throws NoSuchAlgorithmException, CryptoException {
-        if (protocolVersion.isTLS13() || protocolVersion == ProtocolVersion.DTLS13) {
+        if (protocolVersion.is13()) {
             return getTls13KeySet(tlsContext, keySetType);
         } else {
             return getTlsKeySet(tlsContext);

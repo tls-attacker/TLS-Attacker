@@ -10,9 +10,13 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.tlsattacker.core.protocol.message.RequestConnectionIdMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class RequestConnectionIdPreperator
         extends HandshakeMessagePreparator<RequestConnectionIdMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public RequestConnectionIdPreperator(Chooser chooser, RequestConnectionIdMessage message) {
         super(chooser, message);
@@ -20,6 +24,15 @@ public class RequestConnectionIdPreperator
 
     @Override
     protected void prepareHandshakeMessageContents() {
-        // nothing to do here, since this message has to be constructed by hand
+        LOGGER.debug("Preparing AckMessage");
+        prepareNumberOfConnectionIds();
+    }
+
+    private void prepareNumberOfConnectionIds() {
+        message.setNumberOfConnectionIds(
+                chooser.getConfig().getDefaultNumberOfRequestedConnectionIds());
+        LOGGER.debug(
+                "Number of requested connection IDs: "
+                        + message.getNumberOfConnectionIds().getValue());
     }
 }

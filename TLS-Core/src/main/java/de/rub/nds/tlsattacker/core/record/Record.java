@@ -84,6 +84,9 @@ public class Record extends ModifiableVariableHolder implements DataContainer<Re
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.KEY_MATERIAL)
     private ModifiableByte unifiedHeader;
 
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COUNT)
+    private RecordNumber recordNumber;
+
     private RecordCryptoComputations computations;
 
     public Record(Config config) {
@@ -198,8 +201,8 @@ public class Record extends ModifiableVariableHolder implements DataContainer<Re
         return new RecordParser(stream, version, tlsContext);
     }
 
-    public RecordSerializer getRecordSerializer(TlsContext tlsContext) {
-        return new RecordSerializer(this, tlsContext);
+    public RecordSerializer getRecordSerializer() {
+        return new RecordSerializer(this);
     }
 
     public void adjustContext(TlsContext tlsContext) {
@@ -316,6 +319,7 @@ public class Record extends ModifiableVariableHolder implements DataContainer<Re
         hash = 29 * hash + Objects.hashCode(this.connectionId);
         hash = 29 * hash + Objects.hashCode(this.computations);
         hash = 29 * hash + Objects.hashCode(this.unifiedHeader);
+        hash = 29 * hash + Objects.hashCode(this.recordNumber);
         return hash;
     }
 
@@ -358,6 +362,9 @@ public class Record extends ModifiableVariableHolder implements DataContainer<Re
         if (!Objects.equals(this.unifiedHeader, other.unifiedHeader)) {
             return false;
         }
+        if (!Objects.equals(this.recordNumber, other.recordNumber)) {
+            return false;
+        }
         return true;
     }
 
@@ -389,7 +396,7 @@ public class Record extends ModifiableVariableHolder implements DataContainer<Re
 
     @Override
     public RecordSerializer getSerializer(TlsContext context) {
-        return new RecordSerializer(this, context);
+        return new RecordSerializer(this);
     }
 
     @Override
@@ -400,6 +407,15 @@ public class Record extends ModifiableVariableHolder implements DataContainer<Re
     }
 
     public RecordNumber getRecordNumber() {
-        return new RecordNumber(this);
+        if (recordNumber == null) {
+            if (this.epoch != null && this.sequenceNumber != null) {
+                recordNumber = new RecordNumber(this);
+            }
+        }
+        return recordNumber;
+    }
+
+    public void setRecordNumber(RecordNumber recordNumber) {
+        this.recordNumber = recordNumber;
     }
 }

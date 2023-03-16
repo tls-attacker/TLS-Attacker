@@ -505,15 +505,17 @@ public class TlsContext extends LayerContext {
 
     private Integer outboundRecordSizeLimit;
 
-    private byte[] writeConnectionId;
+    private List<byte[]> writeConnectionIds = new ArrayList<>();
+    private int writeConnectionIdIndex = 0;
 
-    private byte[] readConnectionID;
+    private List<byte[]> readConnectionIDs = new ArrayList<>();
+    private int readConnectionIdIndex = 0;
 
     private Integer numberOfRequestedConnectionIds;
 
-    private List<RecordNumber> acknowledgedRecords;
+    private List<RecordNumber> dtlsAcknowledgedRecords;
 
-    private List<RecordNumber> receivedAcknowledgedRecords;
+    private List<RecordNumber> dtlsReceivedAcknowledgedRecords;
 
     public TlsContext() {
         this(new Context(new Config()));
@@ -2348,8 +2350,7 @@ public class TlsContext extends LayerContext {
         Integer maxRecordDataSize = recordSizeLimit;
         // for TLS 1.3, record_size_limit covers the whole TLSInnerPlaintext
         // -> we need to reserve space for the content type (1 byte) and possibly additional padding
-        if (chooser.getSelectedProtocolVersion().isTLS13()
-                || chooser.getSelectedProtocolVersion() == ProtocolVersion.DTLS13) {
+        if (chooser.getSelectedProtocolVersion().is13()) {
             maxRecordDataSize -= 1;
             maxRecordDataSize -= getConfig().getDefaultAdditionalPadding();
         }
@@ -2415,19 +2416,43 @@ public class TlsContext extends LayerContext {
     }
 
     public byte[] getWriteConnectionId() {
-        return writeConnectionId;
+        if (writeConnectionIdIndex < writeConnectionIds.size()) {
+            return writeConnectionIds.get(writeConnectionIdIndex);
+        } else {
+            return null;
+        }
     }
 
     public void setWriteConnectionId(byte[] writeConnectionId) {
-        this.writeConnectionId = writeConnectionId;
+        this.writeConnectionIds.set(writeConnectionIdIndex, writeConnectionId);
     }
 
     public byte[] getReadConnectionId() {
-        return readConnectionID;
+        if (readConnectionIdIndex < readConnectionIDs.size()) {
+            return readConnectionIDs.get(readConnectionIdIndex);
+        } else {
+            return null;
+        }
     }
 
     public void setReadConnectionId(byte[] readConnectionID) {
-        this.readConnectionID = readConnectionID;
+        this.readConnectionIDs.set(readConnectionIdIndex, readConnectionID);
+    }
+
+    public void addNewWriteConnectionId(byte[] writeConnectionId, boolean spare) {
+        this.writeConnectionIds.add(writeConnectionId);
+        if (!spare) {
+            writeConnectionIdIndex++;
+            getRecordLayer().getEncryptorCipher().getState().setConnectionId(writeConnectionId);
+        }
+    }
+
+    public void addNewReadConnectionId(byte[] readConnectionId, boolean spare) {
+        this.readConnectionIDs.add(readConnectionId);
+        if (!spare) {
+            readConnectionIdIndex++;
+            getRecordLayer().getDecryptorCipher().getState().setConnectionId(readConnectionId);
+        }
     }
 
     public Integer getNumberOfRequestedConnectionIds() {
@@ -2438,19 +2463,20 @@ public class TlsContext extends LayerContext {
         this.numberOfRequestedConnectionIds = numberOfRequestedConnectionIds;
     }
 
-    public List<RecordNumber> getAcknowledgedRecords() {
-        return acknowledgedRecords;
+    public List<RecordNumber> getDtlsAcknowledgedRecords() {
+        return dtlsAcknowledgedRecords;
     }
 
-    public void setAcknowledgedRecords(List<RecordNumber> acknowledgedRecords) {
-        this.acknowledgedRecords = acknowledgedRecords;
+    public void setDtlsAcknowledgedRecords(List<RecordNumber> dtlsAcknowledgedRecords) {
+        this.dtlsAcknowledgedRecords = dtlsAcknowledgedRecords;
     }
 
-    public List<RecordNumber> getReceivedAcknowledgedRecords() {
-        return receivedAcknowledgedRecords;
+    public List<RecordNumber> getDtlsReceivedAcknowledgedRecords() {
+        return dtlsReceivedAcknowledgedRecords;
     }
 
-    public void setReceivedAcknowledgedRecords(List<RecordNumber> receivedAcknowledgedRecords) {
-        this.receivedAcknowledgedRecords = receivedAcknowledgedRecords;
+    public void setDtlsReceivedAcknowledgedRecords(
+            List<RecordNumber> dtlsReceivedAcknowledgedRecords) {
+        this.dtlsReceivedAcknowledgedRecords = dtlsReceivedAcknowledgedRecords;
     }
 }

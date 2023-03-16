@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.tlsattacker.core.constants.AckByteLength;
+import de.rub.nds.tlsattacker.core.constants.RecordNumberByteLength;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.message.AckMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ack.RecordNumber;
@@ -28,7 +29,7 @@ public class AckParser extends ProtocolMessageParser<AckMessage> {
     @Override
     public void parse(AckMessage ackMessage) {
         LOGGER.debug("Parsing AckMessage");
-        parseRecordNumberLength(ackMessage);
+        parseRecordNumbersLength(ackMessage);
         parseRecordNumbers(ackMessage);
     }
 
@@ -36,11 +37,11 @@ public class AckParser extends ProtocolMessageParser<AckMessage> {
         int recordNumberLength = ackMessage.getRecordNumberLength().getValue();
         ackMessage.setRecordNumbers(new LinkedList<>());
         LOGGER.debug("RecordNumbers: ");
-        for (int i = 0; i < recordNumberLength; i += AckByteLength.RECORD_NUMBER_LENGTH) {
+        for (int i = 0; i < recordNumberLength; i += AckByteLength.RECORD_NUMBER) {
             RecordNumber recordNumber = new RecordNumber();
-            recordNumber.setEpoch(parseBigIntField(AckByteLength.RECORD_NUMBER_EPOCH_LENGTH));
+            recordNumber.setEpoch(parseBigIntField(RecordNumberByteLength.EPOCH));
             recordNumber.setSequenceNumber(
-                    parseBigIntField(AckByteLength.RECORD_NUMBER_SEQUENCE_NUMBER_LENGTH));
+                    parseBigIntField(RecordNumberByteLength.SEQUENCE_NUMBER));
             ackMessage.getRecordNumbers().add(recordNumber);
             LOGGER.debug(
                     " - Epoch "
@@ -50,8 +51,8 @@ public class AckParser extends ProtocolMessageParser<AckMessage> {
         }
     }
 
-    private void parseRecordNumberLength(AckMessage ackMessage) {
-        ackMessage.setRecordNumberLength(parseIntField(AckByteLength.RECORD_NUMBER_LENGTH_LENGTH));
-        LOGGER.debug("RecordNumberLength: " + ackMessage.getRecordNumberLength().getValue());
+    private void parseRecordNumbersLength(AckMessage ackMessage) {
+        ackMessage.setRecordNumberLength(parseIntField(AckByteLength.RECORD_NUMBERS_LENGTH));
+        LOGGER.debug("RecordNumbersLength: " + ackMessage.getRecordNumberLength().getValue());
     }
 }

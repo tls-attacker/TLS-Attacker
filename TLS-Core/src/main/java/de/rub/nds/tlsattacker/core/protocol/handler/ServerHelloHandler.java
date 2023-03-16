@@ -76,9 +76,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         adjustExtensions(message);
         warnOnConflictingExtensions();
         if (!message.hasTls13HelloRetryRequestRandom()) {
-            if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()
-                    || tlsContext.getChooser().getSelectedProtocolVersion()
-                            == ProtocolVersion.DTLS13) {
+            if (tlsContext.getChooser().getSelectedProtocolVersion().is13()) {
                 KeyShareStoreEntry keyShareStoreEntry = adjustKeyShareStoreEntry();
                 adjustHandshakeTrafficSecrets(keyShareStoreEntry);
                 if (tlsContext.getTalkingConnectionEndType()
@@ -176,8 +174,8 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
             // DTLS 1.3: skip epoch 1 if no early data was sent
             if (tlsContext.getChooser().getSelectedProtocolVersion() == ProtocolVersion.DTLS13
-                    && tlsContext.getRecordLayer().getDecryptor().isFirstEpoch()) {
-                tlsContext.getRecordLayer().skipEarlyDataDecryptionEpoch();
+                    && tlsContext.getRecordLayer().getDecryptor().isEpochZero()) {
+                tlsContext.getRecordLayer().updateDecryptionCipher(null);
             }
             tlsContext
                     .getRecordLayer()
@@ -186,8 +184,8 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         } else {
             // DTLS 1.3: skip epoch 1 if no early data was sent
             if (tlsContext.getChooser().getSelectedProtocolVersion() == ProtocolVersion.DTLS13
-                    && tlsContext.getRecordLayer().getEncryptor().isFirstEpoch()) {
-                tlsContext.getRecordLayer().skipEarlyDataEncryptionEpoch();
+                    && tlsContext.getRecordLayer().getEncryptor().isEpochZero()) {
+                tlsContext.getRecordLayer().updateEncryptionCipher(null);
             }
             tlsContext
                     .getRecordLayer()
@@ -210,9 +208,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 
     @Override
     public void adjustContextAfterSerialize(ServerHelloMessage message) {
-        if ((tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()
-                        || tlsContext.getChooser().getSelectedProtocolVersion()
-                                == ProtocolVersion.DTLS13)
+        if ((tlsContext.getChooser().getSelectedProtocolVersion().is13())
                 && !message.hasTls13HelloRetryRequestRandom()) {
             setServerRecordCipher();
         }
@@ -525,9 +521,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         if (tlsContext.getTalkingConnectionEndType()
                 == tlsContext.getChooser().getMyConnectionPeer()) {
             // for TLS 1.3, this is handled in encrypted extensions
-            if (!(tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()
-                    || tlsContext.getChooser().getSelectedProtocolVersion()
-                            == ProtocolVersion.DTLS13)) {
+            if (!(tlsContext.getChooser().getSelectedProtocolVersion().is13())) {
                 if (tlsContext.isExtensionNegotiated(ExtensionType.MAX_FRAGMENT_LENGTH)
                         && tlsContext.isExtensionNegotiated(ExtensionType.RECORD_SIZE_LIMIT)) {
                     // this is supposed to result in a fatal error, just warning for now

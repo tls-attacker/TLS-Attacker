@@ -9,9 +9,7 @@
 package de.rub.nds.tlsattacker.core.record.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.RecordByteLength;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import de.rub.nds.tlsattacker.core.record.Record;
 import org.apache.logging.log4j.LogManager;
@@ -23,18 +21,14 @@ public class RecordSerializer extends Serializer<Record> {
 
     private final Record record;
 
-    private final TlsContext tlsContext;
-
-    public RecordSerializer(Record record, TlsContext tlsContext) {
+    public RecordSerializer(Record record) {
         this.record = record;
-        this.tlsContext = tlsContext;
     }
 
     @Override
     protected byte[] serializeBytes() {
         LOGGER.debug("Serializing Record");
-        if (tlsContext.getChooser().getSelectedProtocolVersion() == ProtocolVersion.DTLS13
-                && record.getEpoch().getValue() > 0) {
+        if (record.getUnifiedHeader() != null) {
             writeDtls13Header(record);
         } else {
             writeContentType(record);
@@ -54,24 +48,7 @@ public class RecordSerializer extends Serializer<Record> {
         return getAlreadySerialized();
     }
 
-    public static byte createUnifiedHeader(Record record, TlsContext context) {
-        byte firstByte = 0x24; // 00100100 (length field is always present)
-        if (record.getConnectionId() != null
-                && record.getConnectionId().getValue() != null
-                && record.getConnectionId().getValue().length > 0) {
-            firstByte = (byte) (firstByte ^ 0x10);
-        }
-        if (context.getConfig().getDtls13HeaderSeqNumSizeLong()) {
-            firstByte = (byte) (firstByte ^ 0x08);
-        }
-        byte lowerEpoch = (byte) (record.getEpoch().getValue() % 4);
-        firstByte = (byte) (firstByte ^ lowerEpoch);
-        record.setUnifiedHeader(firstByte);
-        return firstByte;
-    }
-
     private void writeDtls13Header(Record record) {
-        record.setUnifiedHeader(createUnifiedHeader(record, tlsContext));
         writeUnifiedHeader(record);
         if (record.getConnectionId() != null
                 && record.getConnectionId().getValue() != null

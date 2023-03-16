@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.record.cipher;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.crypto.cipher.CipherWrapper;
-import de.rub.nds.tlsattacker.core.crypto.cipher.RecordNumberMaskingCipher;
+import de.rub.nds.tlsattacker.core.crypto.cipher.Dtls13MaskingCipher;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.record.Record;
@@ -54,8 +54,7 @@ public class RecordAEADCipher extends RecordCipher {
         } else {
             aeadTagLength = AEAD_TAG_LENGTH;
         }
-        if (getState().getVersion().isTLS13()
-                || getState().getVersion() == ProtocolVersion.DTLS13) {
+        if (getState().getVersion().is13()) {
             aeadExplicitLength = 0;
         } else {
             aeadExplicitLength =
@@ -65,8 +64,7 @@ public class RecordAEADCipher extends RecordCipher {
     }
 
     public int getAeadSizeIncrease() {
-        if (getState().getVersion().isTLS13()
-                || getState().getVersion() == ProtocolVersion.DTLS13) {
+        if (getState().getVersion().is13()) {
             return aeadTagLength;
         } else {
             return aeadExplicitLength + aeadTagLength;
@@ -77,8 +75,7 @@ public class RecordAEADCipher extends RecordCipher {
         byte[] gcmNonce = ArrayConverter.concatenate(aeadSalt, explicitNonce);
 
         // Nonce construction is different for chacha & tls1.3
-        if (getState().getVersion().isTLS13()
-                || getState().getVersion() == ProtocolVersion.DTLS13) {
+        if (getState().getVersion().is13()) {
             gcmNonce = preprocessIv(record.getSequenceNumber().getValue().longValue(), gcmNonce);
         } else if (getState().getCipherAlg() == CipherAlgorithm.CHACHA20_POLY1305) {
             if (getState().getVersion().isDTLS()) {
@@ -140,8 +137,7 @@ public class RecordAEADCipher extends RecordCipher {
         LOGGER.debug("Encrypting Record");
         record.getComputations()
                 .setCipherKey(getState().getKeySet().getWriteKey(getConnectionEndType()));
-        if (getState().getVersion().isTLS13()
-                || getState().getVersion() == ProtocolVersion.DTLS13) {
+        if (getState().getVersion().is13()) {
             int additionalPadding = getDefaultAdditionalPadding();
             if (additionalPadding > 65536) {
                 LOGGER.warn("Additional padding is too big. setting it to max possible value");
@@ -250,8 +246,7 @@ public class RecordAEADCipher extends RecordCipher {
         byte[] gcmNonce = ArrayConverter.concatenate(salt, explicitNonce);
 
         // Nonce construction is different for chacha & tls1.3
-        if (getState().getVersion().isTLS13()
-                || getState().getVersion() == ProtocolVersion.DTLS13) {
+        if (getState().getVersion().is13()) {
             gcmNonce = preprocessIv(record.getSequenceNumber().getValue().longValue(), gcmNonce);
         } else if (getState().getCipherAlg() == CipherAlgorithm.CHACHA20_POLY1305) {
             if (getState().getVersion().isDTLS()) {
@@ -301,8 +296,7 @@ public class RecordAEADCipher extends RecordCipher {
             record.getComputations().setAuthenticationTagValid(true);
             record.getComputations().setPlainRecordBytes(plainRecordBytes);
             plainRecordBytes = record.getComputations().getPlainRecordBytes().getValue();
-            if (getState().getVersion().isTLS13()
-                    || getState().getVersion() == ProtocolVersion.DTLS13
+            if (getState().getVersion().is13()
                     || (getState().getVersion().isDTLS()
                             && record.getContentMessageType() == ProtocolMessageType.TLS12_CID)) {
                 parseEncapsulatedRecordBytes(plainRecordBytes, record);
@@ -317,13 +311,13 @@ public class RecordAEADCipher extends RecordCipher {
     }
 
     @Override
-    public void decryptSequenceNumber(Record record) throws CryptoException {
-        if (!(decryptCipher instanceof RecordNumberMaskingCipher)) {
+    public void decryptDtls13SequenceNumber(Record record) throws CryptoException {
+        if (!(decryptCipher instanceof Dtls13MaskingCipher)) {
             throw new CryptoException("DecryptCipher does not support record number masking");
         }
         byte[] mask =
-                ((RecordNumberMaskingCipher) decryptCipher)
-                        .getRecordNumberMask(
+                ((Dtls13MaskingCipher) decryptCipher)
+                        .getDtls13Mask(
                                 getState().getKeySet().getReadSnKey(getLocalConnectionEndType()),
                                 record.getProtocolMessageBytes().getValue());
         byte[] encSequenceNumber = record.getEncryptedSequenceNumber().getValue();
@@ -340,13 +334,13 @@ public class RecordAEADCipher extends RecordCipher {
     }
 
     @Override
-    public void encryptSequenceNumber(Record record) throws CryptoException {
-        if (!(encryptCipher instanceof RecordNumberMaskingCipher)) {
+    public void encryptDtls13SequenceNumber(Record record) throws CryptoException {
+        if (!(encryptCipher instanceof Dtls13MaskingCipher)) {
             throw new CryptoException("EncryptCipher does not support record number masking");
         }
         byte[] mask =
-                ((RecordNumberMaskingCipher) encryptCipher)
-                        .getRecordNumberMask(
+                ((Dtls13MaskingCipher) encryptCipher)
+                        .getDtls13Mask(
                                 getState().getKeySet().getWriteSnKey(getLocalConnectionEndType()),
                                 record.getProtocolMessageBytes().getValue());
         byte[] sequenceNumber = record.getSequenceNumber().getValue().toByteArray();
@@ -355,8 +349,8 @@ public class RecordAEADCipher extends RecordCipher {
         }
         int length =
                 tlsContext.getConfig().getDtls13HeaderSeqNumSizeLong()
-                        ? RecordByteLength.DTLS13_SEQUENCE_NUMBER_HEADER_LONG
-                        : RecordByteLength.DTLS13_SEQUENCE_NUMBER_HEADER_SHORT;
+                        ? RecordByteLength.DTLS13_CIPHERTEXT_SEQUENCE_NUMBER_LONG
+                        : RecordByteLength.DTLS13_CIPHERTEXT_SEQUENCE_NUMBER_SHORT;
         byte[] encSequenceNumber = new byte[length];
         for (int i = 0; i < length; i++) {
             encSequenceNumber[i] = (byte) (sequenceNumber[i] ^ mask[i]);

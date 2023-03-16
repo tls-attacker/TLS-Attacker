@@ -51,7 +51,7 @@ public abstract class CoreClientHelloMessage<Self extends CoreClientHelloMessage
         super(HandshakeMessageType.CLIENT_HELLO);
     }
 
-    public CoreClientHelloMessage(Config tlsConfig, boolean addCookieExtensionIfEnabled) {
+    public CoreClientHelloMessage(Config tlsConfig) {
         super(HandshakeMessageType.CLIENT_HELLO);
         if (!tlsConfig.getHighestProtocolVersion().isSSL()
                 || (tlsConfig.getHighestProtocolVersion().isSSL()
@@ -188,7 +188,7 @@ public abstract class CoreClientHelloMessage<Self extends CoreClientHelloMessage
             if (tlsConfig.isAddExtendedRandomExtension()) {
                 addExtension(new ExtendedRandomExtensionMessage());
             }
-            if (tlsConfig.isAddCookieExtension() && addCookieExtensionIfEnabled) {
+            if (tlsConfig.isAddCookieExtension()) {
                 addExtension(new CookieExtensionMessage());
             }
             if (tlsConfig.isAddConnectionIdExtension()) {

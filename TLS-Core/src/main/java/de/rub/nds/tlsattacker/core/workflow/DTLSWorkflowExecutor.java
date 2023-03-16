@@ -107,8 +107,8 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
                         && state.getTlsContext().getChooser().getSelectedProtocolVersion()
                                 == ProtocolVersion.DTLS13) {
                     LOGGER.debug("Clearing received ACKs");
-                    if (state.getTlsContext().getReceivedAcknowledgedRecords() != null) {
-                        state.getTlsContext().getReceivedAcknowledgedRecords().clear();
+                    if (state.getTlsContext().getDtlsReceivedAcknowledgedRecords() != null) {
+                        state.getTlsContext().getDtlsReceivedAcknowledgedRecords().clear();
                     }
                 }
             }
@@ -119,7 +119,11 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
             for (int epoch = currentEpoch; epoch >= 0; epoch--) {
                 state.getTlsContext().getRecordLayer().setWriteEpoch(epoch);
                 if (state.getTlsContext().getRecordLayer().getEncryptor().getRecordCipher(epoch)
-                        == null) {
+                                == state.getTlsContext()
+                                        .getRecordLayer()
+                                        .getEncryptor()
+                                        .getRecordCipher(0)
+                        && epoch != 0) {
                     LOGGER.debug(
                             "Not sending a close notify for epoch "
                                     + epoch
@@ -149,7 +153,10 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
 
     private void executeRetransmission(SendingAction action) {
         LOGGER.info("Executing retransmission of last sent flight");
-        List<Record> recordsToRetransmit = filterRecordsBasedOnAcks(action.getSendRecords());
+        List<Record> recordsToRetransmit =
+                config.getRetransmitAcknowledgedRecords()
+                        ? action.getSendRecords()
+                        : filterRecordsBasedOnAcks(action.getSendRecords());
         state.getTlsContext()
                 .getRecordLayer()
                 .setLayerConfiguration(
@@ -163,7 +170,7 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
     }
 
     private List<Record> filterRecordsBasedOnAcks(List<Record> sendRecords) {
-        List<RecordNumber> acks = state.getTlsContext().getAcknowledgedRecords();
+        List<RecordNumber> acks = state.getTlsContext().getDtlsAcknowledgedRecords();
         if (acks == null || acks.isEmpty()) {
             return sendRecords;
         }

@@ -103,7 +103,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
                         record.getRecordPreparator(context, encryptor, compressor, contentType);
                 preparator.prepare();
                 preparator.afterPrepare();
-                RecordSerializer serializer = record.getRecordSerializer(context);
+                RecordSerializer serializer = record.getRecordSerializer();
                 byte[] serializedMessage = serializer.serialize();
                 record.setCompleteRecordBytes(serializedMessage);
                 getLowerLayer().sendData(null, serializedMessage);
@@ -193,7 +193,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
             preparator.prepare();
             preparator.afterPrepare();
             try {
-                byte[] recordBytes = record.getRecordSerializer(context).serialize();
+                byte[] recordBytes = record.getRecordSerializer().serialize();
                 record.setCompleteRecordBytes(recordBytes);
                 stream.write(record.getCompleteRecordBytes().getValue());
             } catch (IOException ex) {
@@ -294,31 +294,27 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
     }
 
     public void updateEncryptionCipher(RecordCipher encryptionCipher) {
-        LOGGER.debug(
-                "Activating new EncryptionCipher ({})",
-                encryptionCipher.getClass().getSimpleName());
+        if (encryptionCipher == null) {
+            LOGGER.debug("Skipped writeEpoch " + readEpoch);
+        } else {
+            LOGGER.debug(
+                    "Activating new EncryptionCipher ({})",
+                    encryptionCipher.getClass().getSimpleName());
+        }
         encryptor.addNewRecordCipher(encryptionCipher);
         writeEpoch++;
     }
 
     public void updateDecryptionCipher(RecordCipher decryptionCipher) {
-        LOGGER.debug(
-                "Activating new DecryptionCipher ({})",
-                decryptionCipher.getClass().getSimpleName());
+        if (decryptionCipher == null) {
+            LOGGER.debug("Skipped readEpoch " + readEpoch);
+        } else {
+            LOGGER.debug(
+                    "Activating new DecryptionCipher ({})",
+                    decryptionCipher.getClass().getSimpleName());
+        }
         decryptor.addNewRecordCipher(decryptionCipher);
         readEpoch++;
-    }
-
-    public void skipEarlyDataEncryptionEpoch() {
-        encryptor.addNewRecordCipher(null);
-        writeEpoch++;
-        LOGGER.debug("Skipped writeEpoch " + writeEpoch);
-    }
-
-    public void skipEarlyDataDecryptionEpoch() {
-        decryptor.addNewRecordCipher(null);
-        readEpoch++;
-        LOGGER.debug("Skipped readEpoch " + readEpoch);
     }
 
     /**
@@ -338,7 +334,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
                             record.getContentMessageType());
             preparator.encrypt();
             try {
-                byte[] recordBytes = record.getRecordSerializer(context).serialize();
+                byte[] recordBytes = record.getRecordSerializer().serialize();
                 record.setCompleteRecordBytes(recordBytes);
                 stream.write(record.getCompleteRecordBytes().getValue());
             } catch (IOException ex) {

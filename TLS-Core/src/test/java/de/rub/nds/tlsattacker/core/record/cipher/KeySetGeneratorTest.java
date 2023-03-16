@@ -47,8 +47,7 @@ public class KeySetGeneratorTest {
             for (ProtocolVersion version : ProtocolVersion.values()) {
                 if (version == ProtocolVersion.SSL2
                         || version == ProtocolVersion.SSL3
-                        || (!suite.isTLS13()
-                                && (version.isTLS13() || version == ProtocolVersion.DTLS13))) {
+                        || (!suite.isTLS13() && version.is13())) {
                     continue;
                 }
                 builder.add(Arguments.of(version, suite));

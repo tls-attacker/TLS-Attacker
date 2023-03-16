@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
@@ -37,8 +36,7 @@ public class CertificateRequestPreparator
     @Override
     public void prepareHandshakeMessageContents() {
         LOGGER.debug("Preparing CertificateRequestMessage");
-        if (chooser.getSelectedProtocolVersion().isTLS13()
-                || chooser.getSelectedProtocolVersion() == ProtocolVersion.DTLS13) {
+        if (chooser.getSelectedProtocolVersion().is13()) {
             prepareCertificateRequestContext(msg);
             prepareCertificateRequestContextLength(msg);
             prepareExtensions();

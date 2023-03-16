@@ -844,6 +844,7 @@
       <xs:element name="writeKeylogFile" type="xs:boolean" minOccurs="0"/>
       <xs:element name="keylogFilePath" type="xs:string" minOccurs="0"/>
       <xs:element name="dtls13HeaderSeqNumSizeLong" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="retransmitAcknowledgedRecords" type="xs:boolean" minOccurs="0"/>
     </xs:all>
   </xs:complexType>
 
@@ -2917,10 +2918,14 @@
   </xs:complexType>
 
   <xs:complexType name="recordNumber">
-    <xs:sequence>
-      <xs:element name="epoch" type="modifiableBigInteger" minOccurs="0"/>
-      <xs:element name="sequenceNumber" type="modifiableBigInteger" minOccurs="0"/>
-    </xs:sequence>
+    <xs:complexContent>
+      <xs:extension base="modifiableVariableHolder">
+        <xs:sequence>
+          <xs:element name="epoch" type="modifiableBigInteger" minOccurs="0"/>
+          <xs:element name="sequenceNumber" type="modifiableBigInteger" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
   </xs:complexType>
 
   <xs:complexType name="newSessionTicketMessage">
@@ -3403,10 +3408,14 @@
   </xs:complexType>
 
   <xs:complexType name="connectionId">
-    <xs:sequence>
-      <xs:element name="connectionId" type="modifiableByteArray" minOccurs="0"/>
-      <xs:element name="length" type="modifiableInteger" minOccurs="0"/>
-    </xs:sequence>
+    <xs:complexContent>
+      <xs:extension base="modifiableVariableHolder">
+        <xs:sequence>
+          <xs:element name="connectionId" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="length" type="modifiableInteger" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
   </xs:complexType>
 
   <xs:complexType name="requestConnectionIdMessage">

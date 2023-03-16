@@ -40,12 +40,14 @@ public class RecordNullCipher extends RecordCipher {
     }
 
     @Override
-    public void decryptSequenceNumber(Record record) throws CryptoException {
-        throw new CryptoException("Sequence Number decryption not possible in NullCipher.");
+    public void decryptDtls13SequenceNumber(Record record) throws CryptoException {
+        throw new CryptoException(
+                "DTLS 1.3 Sequence Number decryption not possible in NullCipher.");
     }
 
     @Override
-    public void encryptSequenceNumber(Record record) throws CryptoException {
-        throw new CryptoException("Sequence Number encryption not possible in NullCipher.");
+    public void encryptDtls13SequenceNumber(Record record) throws CryptoException {
+        throw new CryptoException(
+                "DTLS 1.3 Sequence Number encryption not possible in NullCipher.");
     }
 }

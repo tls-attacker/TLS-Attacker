@@ -653,8 +653,8 @@ public enum CipherSuite {
         }
 
         if (this.isTLS13()) {
-            return version.isTLS13() || version == ProtocolVersion.DTLS13;
-        } else if (version.isTLS13() || version == ProtocolVersion.DTLS13) {
+            return version.is13();
+        } else if (version.is13()) {
             return false;
         }
 

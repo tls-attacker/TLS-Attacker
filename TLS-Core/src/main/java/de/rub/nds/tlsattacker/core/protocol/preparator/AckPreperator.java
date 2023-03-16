@@ -35,23 +35,22 @@ public class AckPreperator extends ProtocolMessagePreparator<AckMessage> {
     protected void prepareProtocolMessageContents() {
         LOGGER.debug("Preparing AckMessage");
         prepareRecordNumbers();
-        prepareRecordLength();
+        prepareRecordNumbersLength();
     }
 
-    private void prepareRecordLength() {
+    private void prepareRecordNumbersLength() {
         message.setRecordNumberLength(
-                message.getRecordNumbers().size() * AckByteLength.RECORD_NUMBER_LENGTH);
-        LOGGER.debug("RecordNumber Length: " + message.getRecordNumberLength());
+                message.getRecordNumbers().size() * AckByteLength.RECORD_NUMBER);
+        LOGGER.debug("RecordNumbers Length: " + message.getRecordNumberLength());
     }
 
     private void prepareRecordNumbers() {
         if (message.getRecordNumbers() == null) {
             message.setRecordNumbers(new LinkedList<>());
         }
-        if (tlsContext.getAcknowledgedRecords() != null) {
-            message.getRecordNumbers().addAll(tlsContext.getAcknowledgedRecords());
-            // clear acknowledged records
-            tlsContext.getAcknowledgedRecords().clear();
+        if (tlsContext.getDtlsAcknowledgedRecords() != null) {
+            message.getRecordNumbers().addAll(tlsContext.getDtlsAcknowledgedRecords());
+            tlsContext.getDtlsAcknowledgedRecords().clear();
         }
 
         LOGGER.debug("RecordNumbers: ");

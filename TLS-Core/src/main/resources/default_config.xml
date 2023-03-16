@@ -1279,4 +1279,5 @@
     <acceptContentRewritingDtlsFragments>true</acceptContentRewritingDtlsFragments>
     <writeKeylogFile>false</writeKeylogFile>
     <dtls13HeaderSeqNumSizeLong>true</dtls13HeaderSeqNumSizeLong>
+    <retransmitAcknowledgedRecords>false</retransmitAcknowledgedRecords>
 </config>

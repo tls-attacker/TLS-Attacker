@@ -41,7 +41,7 @@ public class NewSessionTicketSerializer
     public byte[] serializeHandshakeMessageContent() {
         LOGGER.debug("Serializing NewSessionTicketMessage");
         writeLifetimeHint(msg);
-        if (version.isTLS13() || version == ProtocolVersion.DTLS13) {
+        if (version.is13()) {
             // TLS 1.3
             writeTicketAgeAdd(msg);
             writeTicketNonceLength(msg);

@@ -2594,10 +2594,14 @@
   </xs:complexType>
 
   <xs:complexType name="recordNumber">
-    <xs:sequence>
-      <xs:element name="epoch" type="modifiableBigInteger" minOccurs="0"/>
-      <xs:element name="sequenceNumber" type="modifiableBigInteger" minOccurs="0"/>
-    </xs:sequence>
+    <xs:complexContent>
+      <xs:extension base="modifiableVariableHolder">
+        <xs:sequence>
+          <xs:element name="epoch" type="modifiableBigInteger" minOccurs="0"/>
+          <xs:element name="sequenceNumber" type="modifiableBigInteger" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
   </xs:complexType>
 
   <xs:complexType name="newSessionTicketMessage">
@@ -3117,10 +3121,14 @@
   </xs:complexType>
 
   <xs:complexType name="connectionId">
-    <xs:sequence>
-      <xs:element name="connectionId" type="modifiableByteArray" minOccurs="0"/>
-      <xs:element name="length" type="modifiableInteger" minOccurs="0"/>
-    </xs:sequence>
+    <xs:complexContent>
+      <xs:extension base="modifiableVariableHolder">
+        <xs:sequence>
+          <xs:element name="connectionId" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="length" type="modifiableInteger" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
   </xs:complexType>
 
   <xs:complexType name="requestConnectionIdMessage">
@@ -3160,6 +3168,7 @@
           <xs:element name="maxRecordLengthConfig" type="xs:int" minOccurs="0"/>
           <xs:element name="protocolMessageBytes" type="modifiableByteArray" minOccurs="0"/>
           <xs:element name="protocolVersion" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="recordNumber" type="recordNumber" minOccurs="0"/>
           <xs:element name="sequenceNumber" type="modifiableBigInteger" minOccurs="0"/>
           <xs:element name="unifiedHeader" type="modifiableByte" minOccurs="0"/>
         </xs:sequence>
@@ -3232,17 +3241,17 @@
           <xs:element name="added" type="extensionType" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
           <xs:element name="removed" type="extensionType" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
           <xs:element name="replaced" type="extensionType" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="replace" type="xs:boolean"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="changeConnectionIdAction">
+  <xs:complexType name="changeConnectionIdAction" abstract="true">
     <xs:complexContent>
       <xs:extension base="connectionBoundAction">
         <xs:sequence>
-          <xs:element name="readConnectionId" type="xs:base64Binary" minOccurs="0"/>
-          <xs:element name="writeConnectionId" type="xs:base64Binary" minOccurs="0"/>
+          <xs:element name="connectionId" type="xs:base64Binary" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -3479,11 +3488,13 @@
           <xs:element name="esniExtensions" type="extensionType" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
           <xs:element name="maxFragmentLength" type="maxFragmentLength" minOccurs="0"/>
           <xs:element name="outboundRecordSizeLimit" type="xs:int" minOccurs="0"/>
-          <xs:element name="writeConnectionId" type="xs:base64Binary" minOccurs="0"/>
-          <xs:element name="readConnectionID" type="xs:base64Binary" minOccurs="0"/>
+          <xs:element name="writeConnectionIds" type="xs:base64Binary" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="writeConnectionIdIndex" type="xs:int"/>
+          <xs:element name="readConnectionIDs" type="xs:base64Binary" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="readConnectionIdIndex" type="xs:int"/>
           <xs:element name="numberOfRequestedConnectionIds" type="xs:int" minOccurs="0"/>
-          <xs:element name="acknowledgedRecords" type="recordNumber" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
-          <xs:element name="receivedAcknowledgedRecords" type="recordNumber" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="dtlsAcknowledgedRecords" type="recordNumber" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="dtlsReceivedAcknowledgedRecords" type="recordNumber" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -4154,6 +4165,7 @@
       <xs:element name="writeKeylogFile" type="xs:boolean" minOccurs="0"/>
       <xs:element name="keylogFilePath" type="xs:string" minOccurs="0"/>
       <xs:element name="dtls13HeaderSeqNumSizeLong" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="retransmitAcknowledgedRecords" type="xs:boolean" minOccurs="0"/>
     </xs:all>
   </xs:complexType>
 

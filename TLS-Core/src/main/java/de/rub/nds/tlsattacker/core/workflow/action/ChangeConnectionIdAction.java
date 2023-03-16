@@ -26,53 +26,36 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @XmlRootElement
-public class ChangeConnectionIdAction extends ConnectionBoundAction {
+public abstract class ChangeConnectionIdAction extends ConnectionBoundAction {
 
-    private static final Logger LOGGER = LogManager.getLogger();
+    protected static final Logger LOGGER = LogManager.getLogger();
 
-    private byte[] readConnectionId = null;
-    private byte[] writeConnectionId = null;
+    protected byte[] connectionId = null;
 
-    public ChangeConnectionIdAction(byte[] readConnectionId, byte[] writeConnectionId) {
-        this.readConnectionId = readConnectionId;
-        this.writeConnectionId = writeConnectionId;
+    protected abstract void changeConnectionId(TlsContext tlsContext);
+
+    public ChangeConnectionIdAction(byte[] connectionId) {
+        this.connectionId = connectionId;
     }
 
     public ChangeConnectionIdAction() {}
 
-    public byte[] getReadConnectionId() {
-        return readConnectionId;
+    public byte[] getConnectionId() {
+        return connectionId;
     }
 
-    public void setReadConnectionId(byte[] readConnectionId) {
-        this.readConnectionId = readConnectionId;
-    }
-
-    public byte[] getWriteConnectionId() {
-        return writeConnectionId;
-    }
-
-    public void setWriteConnectionId(byte[] writeConnectionId) {
-        this.writeConnectionId = writeConnectionId;
+    public void setConnectionId(byte[] connectionId) {
+        this.connectionId = connectionId;
     }
 
     @Override
     public void execute(State state) throws ActionExecutionException {
         TlsContext tlsContext = state.getContext(getConnectionAlias()).getTlsContext();
 
-        if (readConnectionId != null) {
-            tlsContext.setReadConnectionId(readConnectionId);
-            LOGGER.debug("Changed the read connection id");
-        }
-        if (writeConnectionId != null) {
-            tlsContext.setWriteConnectionId(writeConnectionId);
-            LOGGER.debug("Changed the write connection id");
-        }
-
         if (isExecuted()) {
             throw new ActionExecutionException("Action already executed!");
         }
-
+        changeConnectionId(tlsContext);
         setExecuted(true);
     }
 
@@ -94,15 +77,13 @@ public class ChangeConnectionIdAction extends ConnectionBoundAction {
 
         ChangeConnectionIdAction that = (ChangeConnectionIdAction) o;
 
-        if (!Arrays.equals(readConnectionId, that.readConnectionId)) return false;
-        return Arrays.equals(writeConnectionId, that.writeConnectionId);
+        return Arrays.equals(connectionId, that.connectionId);
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + Arrays.hashCode(readConnectionId);
-        result = 31 * result + Arrays.hashCode(writeConnectionId);
+        result = 31 * result + Arrays.hashCode(connectionId);
         return result;
     }
 }

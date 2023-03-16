@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CertificateVerifyConstants;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.SSLUtils;
 import de.rub.nds.tlsattacker.core.crypto.SignatureCalculator;
@@ -52,8 +51,7 @@ public class CertificateVerifyPreparator
 
     private byte[] createSignature() throws CryptoException {
         byte[] toBeSigned = chooser.getContext().getTlsContext().getDigest().getRawBytes();
-        if (chooser.getSelectedProtocolVersion().isTLS13()
-                || chooser.getSelectedProtocolVersion() == ProtocolVersion.DTLS13) {
+        if (chooser.getSelectedProtocolVersion().is13()) {
             if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
                 toBeSigned =
                         ArrayConverter.concatenate(

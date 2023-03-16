@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ConnectionIdUsage;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.NewConnectionIdMessage;
@@ -26,14 +27,21 @@ public class NewConnectionIdHandler extends HandshakeMessageHandler<NewConnectio
     public void adjustContext(NewConnectionIdMessage message) {
         if (tlsContext.getTalkingConnectionEndType()
                 != tlsContext.getConnection().getLocalConnectionEndType()) {
-            if (message.getUsage() == ConnectionIdUsage.CID_IMMEDIATE
-                    && message.getConnectionIds() != null
-                    && !message.getConnectionIds().isEmpty()) {
-                LOGGER.debug("set new write connectionId in context");
-                tlsContext.setWriteConnectionId(
-                        message.getConnectionIds().get(0).getConnectionId().getValue());
+            if (message.getConnectionIds() != null && !message.getConnectionIds().isEmpty()) {
+                // set the first one immediately if usage is set to it
+                tlsContext.addNewWriteConnectionId(
+                        message.getConnectionIds().get(0).getConnectionId().getValue(),
+                        message.getUsage() == ConnectionIdUsage.CID_SPARE);
+                for (int i = 1; i < message.getConnectionIds().size(); i++) {
+                    tlsContext.addNewWriteConnectionId(
+                            message.getConnectionIds().get(i).getConnectionId().getValue(), true);
+                }
+                LOGGER.debug(
+                        "Set WriteConnectionId in Context to "
+                                + ArrayConverter.bytesToHexString(
+                                        tlsContext.getWriteConnectionId()));
             } else {
-                LOGGER.debug("write connectionId does not need to update");
+                LOGGER.debug("Did not adjust WriteConnectionId in Context.");
             }
         }
     }

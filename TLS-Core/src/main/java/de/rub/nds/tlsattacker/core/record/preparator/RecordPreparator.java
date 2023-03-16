@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.layer.impl.RecordLayer;
 import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
 import de.rub.nds.tlsattacker.core.record.compressor.RecordCompressor;
 import de.rub.nds.tlsattacker.core.record.crypto.Encryptor;
 import org.apache.logging.log4j.LogManager;
@@ -53,6 +54,12 @@ public class RecordPreparator extends Preparator<Record> {
         record.prepareComputations();
         prepareContentType(record);
         prepareProtocolVersion(record);
+        // set DTLS 1.3 unified header only in to be encrypted records
+        if (tlsContext.getChooser().getSelectedProtocolVersion() == ProtocolVersion.DTLS13
+                && !(encryptor.getRecordCipher(record.getEpoch().getValue())
+                        instanceof RecordNullCipher)) {
+            prepareUnifiedHeader(record);
+        }
         compressor.compress(record);
         encrypt();
     }
@@ -114,5 +121,27 @@ public class RecordPreparator extends Preparator<Record> {
     protected void prepareContentMessageType(ProtocolMessageType type) {
         getObject().setContentMessageType(this.type);
         LOGGER.debug("ContentMessageType: {}", type.getArrayValue());
+    }
+
+    protected void prepareUnifiedHeader(Record record) {
+        record.setUnifiedHeader(createUnifiedHeader(record, tlsContext));
+        LOGGER.debug(
+                "UnifiedHeader: 00" + Integer.toBinaryString(record.getUnifiedHeader().getValue()));
+    }
+
+    private static byte createUnifiedHeader(Record record, TlsContext context) {
+        byte firstByte = 0x24; // 00100100 (length field is always present)
+        if (record.getConnectionId() != null
+                && record.getConnectionId().getValue() != null
+                && record.getConnectionId().getValue().length > 0) {
+            firstByte = (byte) (firstByte ^ 0x10);
+        }
+        if (context.getConfig().getDtls13HeaderSeqNumSizeLong()) {
+            firstByte = (byte) (firstByte ^ 0x08);
+        }
+        byte lowerEpoch = (byte) (record.getEpoch().getValue() % 4);
+        firstByte = (byte) (firstByte ^ lowerEpoch);
+        record.setUnifiedHeader(firstByte);
+        return firstByte;
     }
 }

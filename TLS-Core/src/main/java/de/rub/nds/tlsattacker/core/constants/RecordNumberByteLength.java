@@ -6,11 +6,11 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-package de.rub.nds.tlsattacker.core.crypto.cipher;
+package de.rub.nds.tlsattacker.core.constants;
 
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
+public class RecordNumberByteLength {
 
-public interface RecordNumberMaskingCipher {
+    public static final int EPOCH = 8;
 
-    public byte[] getRecordNumberMask(byte[] key, byte[] ciphertext) throws CryptoException;
+    public static final int SEQUENCE_NUMBER = 8;
 }

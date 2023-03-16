@@ -1,0 +1,16 @@
+/*
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ *
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
+ */
+package de.rub.nds.tlsattacker.core.crypto.cipher;
+
+import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
+
+public interface Dtls13MaskingCipher {
+
+    public byte[] getDtls13Mask(byte[] key, byte[] ciphertext) throws CryptoException;
+}

@@ -25,13 +25,13 @@ public class RequestConnectionIdParser extends HandshakeMessageParser<RequestCon
 
     @Override
     public void parse(RequestConnectionIdMessage message) {
-        LOGGER.debug("Parsing RequestConnectionId");
+        LOGGER.debug("Parsing RequestConnectionIdMessage");
         parseNumCids(message);
     }
 
     private void parseNumCids(RequestConnectionIdMessage message) {
         message.setNumberOfConnectionIds(
-                parseIntField(HandshakeByteLength.REQUESTCONNECTIONID_NUMCID_LENGTH));
+                parseIntField(HandshakeByteLength.REQUEST_CONNECTION_ID_NUMBER_CIDS_LENGTH));
         LOGGER.debug("NumberOfConnectionIds: " + message.getNumberOfConnectionIds().getValue());
     }
 }

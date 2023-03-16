@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.tlsattacker.core.constants.AckByteLength;
+import de.rub.nds.tlsattacker.core.constants.RecordNumberByteLength;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageSerializer;
 import de.rub.nds.tlsattacker.core.protocol.message.AckMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ack.RecordNumber;
@@ -26,26 +27,23 @@ public class AckSerializer extends ProtocolMessageSerializer<AckMessage> {
     @Override
     protected byte[] serializeBytes() {
         LOGGER.debug("Serializing AckMessage");
-        writeRecordNumberLength();
+        writeRecordNumbersLength();
         writeRecordNumbers();
         return getAlreadySerialized();
     }
 
-    private void writeRecordNumberLength() {
+    private void writeRecordNumbersLength() {
         LOGGER.debug("RecordNumbersLength: " + message.getRecordNumberLength().getValue());
-        appendInt(
-                message.getRecordNumberLength().getValue(),
-                AckByteLength.RECORD_NUMBER_LENGTH_LENGTH);
+        appendInt(message.getRecordNumberLength().getValue(), AckByteLength.RECORD_NUMBERS_LENGTH);
     }
 
     private void writeRecordNumbers() {
         LOGGER.debug("RecordNumbers:");
         for (RecordNumber recordNumber : message.getRecordNumbers()) {
-            appendBigInteger(
-                    recordNumber.getEpoch().getValue(), AckByteLength.RECORD_NUMBER_EPOCH_LENGTH);
+            appendBigInteger(recordNumber.getEpoch().getValue(), RecordNumberByteLength.EPOCH);
             appendBigInteger(
                     recordNumber.getSequenceNumber().getValue(),
-                    AckByteLength.RECORD_NUMBER_SEQUENCE_NUMBER_LENGTH);
+                    RecordNumberByteLength.SEQUENCE_NUMBER);
             LOGGER.debug(
                     " - Epoch "
                             + recordNumber.getEpoch().getValue()

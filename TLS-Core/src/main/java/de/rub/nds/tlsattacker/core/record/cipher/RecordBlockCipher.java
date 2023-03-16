@@ -402,13 +402,15 @@ public final class RecordBlockCipher extends RecordCipher {
     }
 
     @Override
-    public void decryptSequenceNumber(Record record) throws CryptoException {
-        throw new CryptoException("Sequence Number decryption not possible in BlockCipher.");
+    public void decryptDtls13SequenceNumber(Record record) throws CryptoException {
+        throw new CryptoException(
+                "DTLS 1.3 Sequence Number decryption not possible in BlockCipher.");
     }
 
     @Override
-    public void encryptSequenceNumber(Record record) throws CryptoException {
-        throw new CryptoException("Sequence Number encryption not possible in BlockCipher.");
+    public void encryptDtls13SequenceNumber(Record record) throws CryptoException {
+        throw new CryptoException(
+                "DTLS 1.3 Sequence Number encryption not possible in BlockCipher.");
     }
 
     private boolean isPaddingValid(byte[] padding) {

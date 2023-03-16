@@ -43,7 +43,8 @@ public class NewConnectionIdSerializer extends HandshakeMessageSerializer<NewCon
     private void serializeCids(NewConnectionIdMessage msg) {
         LOGGER.debug("ConnectionIds: ");
         for (ConnectionId connectionId : message.getConnectionIds()) {
-            appendInt(connectionId.getLength().getValue(), HandshakeByteLength.CONNECTIONID_LENGTH);
+            appendInt(
+                    connectionId.getLength().getValue(), HandshakeByteLength.CONNECTION_ID_LENGTH);
             appendBytes(connectionId.getConnectionId().getValue());
             LOGGER.debug(
                     " - "
@@ -55,7 +56,7 @@ public class NewConnectionIdSerializer extends HandshakeMessageSerializer<NewCon
     private void serializeCidsLength(NewConnectionIdMessage msg) {
         appendInt(
                 msg.getConnectionIdsLength().getValue(),
-                HandshakeByteLength.NEWCONNECTIONID_CIDS_LENGTH);
+                HandshakeByteLength.NEW_CONNECTION_ID_CIDS_LENGTH);
         LOGGER.debug("ConnectionIdsLength: " + msg.getConnectionIdsLength());
     }
 }

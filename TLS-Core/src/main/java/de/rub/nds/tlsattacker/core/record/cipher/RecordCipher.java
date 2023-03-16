@@ -19,7 +19,6 @@ import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.record.Record;
-import de.rub.nds.tlsattacker.core.record.serializer.RecordSerializer;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -65,9 +64,9 @@ public abstract class RecordCipher {
 
     public abstract void decrypt(Record record) throws CryptoException;
 
-    public abstract void decryptSequenceNumber(Record record) throws CryptoException;
+    public abstract void decryptDtls13SequenceNumber(Record record) throws CryptoException;
 
-    public abstract void encryptSequenceNumber(Record record) throws CryptoException;
+    public abstract void encryptDtls13SequenceNumber(Record record) throws CryptoException;
 
     /**
      * This function collects data needed for computing MACs and other authentication tags in
@@ -99,7 +98,7 @@ public abstract class RecordCipher {
                     // It may happen that the record does not have a length prepared - in that case
                     // we will need to add
                     // the length of the data content
-                    // This is mostly interessting for fuzzing
+                    // This is mostly interesting for fuzzing
                     stream.write(
                             ArrayConverter.intToBytes(
                                     record.getCleanProtocolMessageBytes().getValue().length,
@@ -107,13 +106,7 @@ public abstract class RecordCipher {
                 }
                 return stream.toByteArray();
             } else if (protocolVersion == ProtocolVersion.DTLS13) {
-                byte firstByte;
-                if (record.getUnifiedHeader() != null
-                        && record.getUnifiedHeader().getValue() != null) {
-                    firstByte = record.getUnifiedHeader().getValue();
-                } else {
-                    firstByte = RecordSerializer.createUnifiedHeader(record, tlsContext);
-                }
+                byte firstByte = record.getUnifiedHeader().getValue();
                 stream.write(firstByte);
                 // parse first byte
                 boolean isConnectionIdPresent = (firstByte & 0x10) == 0x10;
@@ -130,14 +123,14 @@ public abstract class RecordCipher {
                     stream.write(
                             sequenceNumberBytes,
                             sequenceNumberBytes.length
-                                    - RecordByteLength.DTLS13_SEQUENCE_NUMBER_HEADER_SHORT,
-                            RecordByteLength.DTLS13_SEQUENCE_NUMBER_HEADER_SHORT);
+                                    - RecordByteLength.DTLS13_CIPHERTEXT_SEQUENCE_NUMBER_SHORT,
+                            RecordByteLength.DTLS13_CIPHERTEXT_SEQUENCE_NUMBER_SHORT);
                 } else { // 16 bit sequence number
                     stream.write(
                             sequenceNumberBytes,
                             sequenceNumberBytes.length
-                                    - RecordByteLength.DTLS13_SEQUENCE_NUMBER_HEADER_LONG,
-                            RecordByteLength.DTLS13_SEQUENCE_NUMBER_HEADER_LONG);
+                                    - RecordByteLength.DTLS13_CIPHERTEXT_SEQUENCE_NUMBER_LONG,
+                            RecordByteLength.DTLS13_CIPHERTEXT_SEQUENCE_NUMBER_LONG);
                 }
                 if (isLengthPresent) {
                     if (record.getLength() != null && record.getLength().getValue() != null) {

@@ -144,7 +144,7 @@ public class HKDFunction {
             label = "dtls13" + labelIn;
         } else {
             throw new NotImplementedException(
-                    "The given protocolversion does not have a label for expansion implemented.");
+                    "The given protocol version does not have a label for expansion implemented.");
         }
         int labelLength = label.getBytes().length;
         int hashValueLength = hashValue.length;

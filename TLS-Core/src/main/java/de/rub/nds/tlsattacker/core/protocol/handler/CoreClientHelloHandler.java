@@ -46,9 +46,7 @@ public abstract class CoreClientHelloHandler<T extends CoreClientHelloMessage<?>
         adjustExtensions(message);
         warnOnConflictingExtensions();
         adjustRandomContext(message);
-        if ((tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()
-                        || tlsContext.getChooser().getSelectedProtocolVersion()
-                                == ProtocolVersion.DTLS13)
+        if ((tlsContext.getChooser().getSelectedProtocolVersion().is13())
                 && tlsContext.isExtensionNegotiated(ExtensionType.EARLY_DATA)) {
             try {
                 adjustEarlyTrafficSecret();

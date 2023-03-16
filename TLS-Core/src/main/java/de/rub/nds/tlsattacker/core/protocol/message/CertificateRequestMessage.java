@@ -15,7 +15,6 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.CertificateRequestHandler;
@@ -72,8 +71,7 @@ public class CertificateRequestMessage extends HandshakeMessage<CertificateReque
 
     public CertificateRequestMessage(Config tlsConfig) {
         super(HandshakeMessageType.CERTIFICATE_REQUEST);
-        if (tlsConfig.getHighestProtocolVersion().isTLS13()
-                || tlsConfig.getHighestProtocolVersion() == ProtocolVersion.DTLS13) {
+        if (tlsConfig.getHighestProtocolVersion().is13()) {
             this.setExtensions(new LinkedList<ExtensionMessage>());
             this.addExtension(new SignatureAndHashAlgorithmsExtensionMessage());
         }

@@ -28,13 +28,13 @@ public class ConnectionIdExtensionHandler extends ExtensionHandler<ConnectionIdE
                 == tlsContext.getChooser().getConnectionEndType()) {
             tlsContext.setReadConnectionId(message.getConnectionId().getValue());
             LOGGER.debug(
-                    "Set ReadConnectionId in context to "
+                    "Set ReadConnectionId in Context to "
                             + ArrayConverter.bytesToHexString(
                                     message.getConnectionId().getValue()));
         } else {
             tlsContext.setWriteConnectionId(message.getConnectionId().getValue());
             LOGGER.debug(
-                    "Set WriteConnectionId in context to "
+                    "Set WriteConnectionId in Context to "
                             + ArrayConverter.bytesToHexString(
                                     message.getConnectionId().getValue()));
         }

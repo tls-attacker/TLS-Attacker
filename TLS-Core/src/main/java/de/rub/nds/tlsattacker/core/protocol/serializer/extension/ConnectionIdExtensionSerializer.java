@@ -34,7 +34,7 @@ public class ConnectionIdExtensionSerializer
     }
 
     private void serializeConnectionIdLength(ConnectionIdExtensionMessage msg) {
-        appendInt(msg.getConnectionIdLength().getValue(), HandshakeByteLength.CONNECTIONID_LENGTH);
+        appendInt(msg.getConnectionIdLength().getValue(), HandshakeByteLength.CONNECTION_ID_LENGTH);
         LOGGER.debug("ConnectionId length: " + msg.getConnectionIdLength().getValue());
     }
 

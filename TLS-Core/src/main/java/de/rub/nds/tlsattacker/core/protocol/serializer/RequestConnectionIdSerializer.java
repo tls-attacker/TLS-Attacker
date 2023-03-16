@@ -24,17 +24,15 @@ public class RequestConnectionIdSerializer
 
     @Override
     public byte[] serializeHandshakeMessageContent() {
-        LOGGER.debug("Serializing RequestConnectionId");
+        LOGGER.debug("Serializing RequestConnectionIdMessage");
         writeNumCids(message);
         return getAlreadySerialized();
     }
 
     private void writeNumCids(RequestConnectionIdMessage message) {
-        LOGGER.debug("Message: " + message);
-        LOGGER.debug("numcids: " + message.getNumberOfConnectionIds());
         appendInt(
                 message.getNumberOfConnectionIds().getValue(),
-                HandshakeByteLength.REQUESTCONNECTIONID_NUMCID_LENGTH);
+                HandshakeByteLength.REQUEST_CONNECTION_ID_NUMBER_CIDS_LENGTH);
         LOGGER.debug("NumberOfConnectionIds: " + message.getNumberOfConnectionIds().getValue());
     }
 }

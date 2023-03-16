@@ -33,8 +33,7 @@ import org.bouncycastle.util.Arrays;
  * TLS-AEAD-Cipher "Chacha20Poly1305", based on BouncyCastle's class "BcChaCha20Poly1305". See
  * RFC7905 for further information.
  */
-public abstract class ChaCha20Poly1305Cipher extends BaseCipher
-        implements RecordNumberMaskingCipher {
+public abstract class ChaCha20Poly1305Cipher extends BaseCipher implements Dtls13MaskingCipher {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -269,13 +268,15 @@ public abstract class ChaCha20Poly1305Cipher extends BaseCipher
     }
 
     @Override
-    public byte[] getRecordNumberMask(byte[] key, byte[] ciphertext) throws CryptoException {
+    public byte[] getDtls13Mask(byte[] key, byte[] ciphertext) throws CryptoException {
+
+        if (ciphertext.length < 16) {
+            throw new CryptoException("Ciphertext is too short. Can not be processed.");
+        }
+
         try {
             Cipher chachaCipher = Cipher.getInstance("ChaCha20");
 
-            if (ciphertext.length < 16) {
-                throw new CryptoException("Ciphertext is too short. Can not be processed.");
-            }
             byte[] block_counter = new byte[4];
             System.arraycopy(ciphertext, 0, block_counter, 0, block_counter.length);
             byte[] nonce = new byte[12];
@@ -286,8 +287,8 @@ public abstract class ChaCha20Poly1305Cipher extends BaseCipher
             SecretKeySpec keySpec = new SecretKeySpec(key, "ChaCha20");
             chachaCipher.init(Cipher.ENCRYPT_MODE, keySpec, parameterSpec);
 
-            byte[] plaintext = new byte[64];
-            return chachaCipher.doFinal(plaintext);
+            byte[] toEncrypt = new byte[64];
+            return chachaCipher.doFinal(toEncrypt);
         } catch (NoSuchAlgorithmException
                 | NoSuchPaddingException
                 | InvalidAlgorithmParameterException

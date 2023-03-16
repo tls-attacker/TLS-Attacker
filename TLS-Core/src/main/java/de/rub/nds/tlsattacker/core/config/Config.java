@@ -1244,6 +1244,8 @@ public class Config implements Serializable {
 
     private Boolean dtls13HeaderSeqNumSizeLong = true;
 
+    private Boolean retransmitAcknowledgedRecords = false;
+
     public Config() {
         defaultLayerConfiguration = LayerConfiguration.TLS;
         defaultClientConnection = new OutboundConnection("client", 443, "localhost");
@@ -4229,5 +4231,13 @@ public class Config implements Serializable {
 
     public void setDtls13HeaderSeqNumSizeLong(Boolean dtls13HeaderSeqNumSizeLong) {
         this.dtls13HeaderSeqNumSizeLong = dtls13HeaderSeqNumSizeLong;
+    }
+
+    public Boolean getRetransmitAcknowledgedRecords() {
+        return retransmitAcknowledgedRecords;
+    }
+
+    public void setRetransmitAcknowledgedRecords(Boolean retransmitAcknowledgedRecords) {
+        this.retransmitAcknowledgedRecords = retransmitAcknowledgedRecords;
     }
 }

@@ -91,8 +91,6 @@ public class RecordTest {
     /** Test of getRecordSerializer method, of class Record. */
     @Test
     public void testGetRecordSerializer() {
-        assertEquals(
-                record.getRecordSerializer(context.getTlsContext()).getClass(),
-                RecordSerializer.class);
+        assertEquals(record.getRecordSerializer().getClass(), RecordSerializer.class);
     }
 }

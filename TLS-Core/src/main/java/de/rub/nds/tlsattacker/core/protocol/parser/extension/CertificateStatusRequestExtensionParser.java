@@ -33,7 +33,7 @@ public class CertificateStatusRequestExtensionParser
 
     @Override
     public void parse(CertificateStatusRequestExtensionMessage msg) {
-        if (!(selectedVersion.isTLS13() || selectedVersion == ProtocolVersion.DTLS13)) {
+        if (!(selectedVersion.is13())) {
             msg.setCertificateStatusRequestType(
                     parseIntField(ExtensionByteLength.CERTIFICATE_STATUS_REQUEST_STATUS_TYPE));
             LOGGER.debug(

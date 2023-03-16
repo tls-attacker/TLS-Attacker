@@ -17,7 +17,7 @@ import de.rub.nds.tlsattacker.core.record.compressor.compression.NullCompression
 public class AlgorithmFactory {
     public CompressionAlgorithm getAlgorithm(ProtocolVersion version, CompressionMethod method) {
         CompressionAlgorithm algorithm;
-        if (version.isTLS13() || version == ProtocolVersion.DTLS13) {
+        if (version.is13()) {
             algorithm = new NullCompression();
         } else {
             if (method == CompressionMethod.DEFLATE) {

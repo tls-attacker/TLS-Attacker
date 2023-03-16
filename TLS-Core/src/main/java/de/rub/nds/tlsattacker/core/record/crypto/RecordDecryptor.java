@@ -57,10 +57,10 @@ public class RecordDecryptor extends Decryptor {
             } else {
                 recordCipher = getRecordCipher(record.getEpoch().getValue());
             }
-            // reconstruct sequence number for dtls 1.3 records
+            // decrypt encrypted record sequence numbers in DTLS 1.3
             if (record.getEncryptedSequenceNumber() != null) {
                 try {
-                    recordCipher.decryptSequenceNumber(record);
+                    recordCipher.decryptDtls13SequenceNumber(record);
                 } catch (CryptoException ex) {
                     throw new ParserException(ex);
                 }

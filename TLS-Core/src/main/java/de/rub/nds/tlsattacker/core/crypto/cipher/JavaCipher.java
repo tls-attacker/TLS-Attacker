@@ -24,7 +24,7 @@ import javax.crypto.spec.SecretKeySpec;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-class JavaCipher extends BaseCipher implements RecordNumberMaskingCipher {
+class JavaCipher extends BaseCipher implements Dtls13MaskingCipher {
 
     private Logger LOGGER = LogManager.getLogger();
 
@@ -268,18 +268,19 @@ class JavaCipher extends BaseCipher implements RecordNumberMaskingCipher {
     }
 
     @Override
-    public byte[] getRecordNumberMask(byte[] snKey, byte[] ciphertext) throws CryptoException {
+    public byte[] getDtls13Mask(byte[] key, byte[] ciphertext) throws CryptoException {
         if (!algorithm.getJavaName().startsWith("AES")) {
-            throw new CryptoException("Selected cipher does not support Record number encryption");
+            throw new CryptoException("Selected cipher does not support DTLS 1.3 masking");
         }
+        if (ciphertext.length < 16) {
+            throw new CryptoException("Ciphertext is too short. Can not be processed.");
+        }
+
         try {
             Cipher recordNumberCipher;
             recordNumberCipher = Cipher.getInstance("AES/ECB/NoPadding");
-            recordNumberCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(snKey, "AES"));
+            recordNumberCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key, "AES"));
 
-            if (ciphertext.length < 16) {
-                throw new CryptoException("Ciphertext is too short. Can not be processed.");
-            }
             byte[] toEncrypt = new byte[16];
             System.arraycopy(ciphertext, 0, toEncrypt, 0, toEncrypt.length);
 

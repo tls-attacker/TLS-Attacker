@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.message.ack;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
+import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.record.Record;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
@@ -18,12 +19,12 @@ import java.math.BigInteger;
 import java.util.Objects;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-public class RecordNumber {
+public class RecordNumber extends ModifiableVariableHolder {
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.NONE)
     private ModifiableBigInteger epoch;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.NONE)
     private ModifiableBigInteger sequenceNumber;
 
     public RecordNumber() {}

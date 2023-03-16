@@ -70,7 +70,7 @@ public class AckMessage extends ProtocolMessage<AckMessage> {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("ACK Message");
-        sb.append("\t acknowledged record numbers: \n");
+        sb.append("\t Acknowledged record numbers: \n");
         if (recordNumbers != null) {
             for (RecordNumber recordNumber : recordNumbers) {
                 sb.append("\t - Epoch ").append(recordNumber.getEpoch().getValue());

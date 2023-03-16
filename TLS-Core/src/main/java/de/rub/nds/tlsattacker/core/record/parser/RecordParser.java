@@ -98,7 +98,6 @@ public class RecordParser extends Parser<Record> {
     }
 
     private void parseDtls13Header(Record record, byte firstByte) {
-        // parse first byte
         boolean isConnectionIdPresent = (firstByte & 0x10) == 0x10;
         boolean sequenceNumberLength = (firstByte & 0x08) == 0x08;
         boolean isLengthPresent = (firstByte & 0x04) == 0x04;
@@ -111,10 +110,10 @@ public class RecordParser extends Parser<Record> {
         }
         if (sequenceNumberLength == false) { // 8 bit sequence number
             record.setEncryptedSequenceNumber(
-                    parseByteArrayField(RecordByteLength.DTLS13_SEQUENCE_NUMBER_HEADER_SHORT));
+                    parseByteArrayField(RecordByteLength.DTLS13_CIPHERTEXT_SEQUENCE_NUMBER_SHORT));
         } else { // 16 bit sequence number
             record.setEncryptedSequenceNumber(
-                    parseByteArrayField(RecordByteLength.DTLS13_SEQUENCE_NUMBER_HEADER_LONG));
+                    parseByteArrayField(RecordByteLength.DTLS13_CIPHERTEXT_SEQUENCE_NUMBER_LONG));
         }
         LOGGER.debug(
                 "Encrypted SequenceNumber: {}", record.getEncryptedSequenceNumber().getValue());

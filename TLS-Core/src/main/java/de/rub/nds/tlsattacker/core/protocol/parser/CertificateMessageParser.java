@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificateEntry;
@@ -44,13 +43,13 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
     @Override
     public void parse(CertificateMessage msg) {
         LOGGER.debug("Parsing CertificateMessage");
-        if (getVersion().isTLS13() || getVersion() == ProtocolVersion.DTLS13) {
+        if (getVersion().is13()) {
             parseRequestContextLength(msg);
             parseRequestContextBytes(msg);
         }
         parseCertificatesListLength(msg);
         parseCertificateListBytes(msg);
-        if (getVersion().isTLS13() || getVersion() == ProtocolVersion.DTLS13) {
+        if (getVersion().is13()) {
             parseCertificateList(msg);
         }
     }

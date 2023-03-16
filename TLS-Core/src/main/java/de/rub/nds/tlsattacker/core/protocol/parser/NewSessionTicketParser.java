@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
 import java.io.InputStream;
@@ -28,7 +27,7 @@ public class NewSessionTicketParser extends HandshakeMessageParser<NewSessionTic
     @Override
     public void parse(NewSessionTicketMessage msg) {
         LOGGER.debug("Parsing NewSessionTicket");
-        if (getVersion().isTLS13() || getVersion() == ProtocolVersion.DTLS13) {
+        if (getVersion().is13()) {
             parseLifetime(msg);
             parseAgeAdd(msg);
             parseNonceLength(msg);

@@ -26,9 +26,18 @@ public class NewConnectionIdPreparator extends HandshakeMessagePreparator<NewCon
 
     @Override
     protected void prepareHandshakeMessageContents() {
+        LOGGER.debug("Preparing NewConnectionIdMessage");
+        prepareUsage();
+        prepareConnectionIds();
+    }
+
+    private void prepareUsage() {
         message.setUsage(ConnectionIdUsage.CID_SPARE);
+        LOGGER.debug("Usage: " + message.getUsage());
+    }
+
+    private void prepareConnectionIds() {
         int numCids = chooser.getNumberOfRequestedConnectionIds();
-        LOGGER.debug("Preparing NewConnectionId with " + numCids + "CIDs");
         message.setConnectionIds(new LinkedList<>());
         int length = 0;
         for (int i = 0; i < numCids; i++) {
@@ -37,5 +46,6 @@ public class NewConnectionIdPreparator extends HandshakeMessagePreparator<NewCon
             length += cid.getLength().getValue();
         }
         message.setConnectionIdsLength(length);
+        LOGGER.debug("Number of Connection IDs: " + numCids);
     }
 }

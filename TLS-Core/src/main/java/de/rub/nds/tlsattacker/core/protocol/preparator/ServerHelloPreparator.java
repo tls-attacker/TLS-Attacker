@@ -105,8 +105,7 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
     }
 
     private void prepareSessionID() {
-        if (chooser.getConfig().getHighestProtocolVersion().isTLS13()
-                || chooser.getConfig().getHighestProtocolVersion() == ProtocolVersion.DTLS13) {
+        if (chooser.getConfig().getHighestProtocolVersion().is13()) {
             msg.setSessionId(chooser.getClientSessionId());
         } else {
             msg.setSessionId(chooser.getServerSessionId());

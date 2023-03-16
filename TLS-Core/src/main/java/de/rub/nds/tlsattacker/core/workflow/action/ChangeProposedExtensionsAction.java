@@ -22,6 +22,7 @@ import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.state.State;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
@@ -32,19 +33,23 @@ public class ChangeProposedExtensionsAction extends ConnectionBoundAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private List<ExtensionType> added = null;
-    private List<ExtensionType> removed = null;
-    private List<ExtensionType> replaced = null;
+    private List<ExtensionType> added = new LinkedList<>();
+    private List<ExtensionType> removed = new LinkedList<>();
+    private List<ExtensionType> replaced = new LinkedList<>();
+
+    private boolean replace;
 
     public ChangeProposedExtensionsAction(List<ExtensionType> added, List<ExtensionType> removed) {
         super();
         this.added = added;
         this.removed = removed;
+        this.replace = false;
     }
 
     public ChangeProposedExtensionsAction(List<ExtensionType> replaced) {
         super();
         this.replaced = replaced;
+        this.replace = true;
     }
 
     public ChangeProposedExtensionsAction() {}
@@ -73,11 +78,19 @@ public class ChangeProposedExtensionsAction extends ConnectionBoundAction {
         this.replaced = replaced;
     }
 
+    public boolean isReplace() {
+        return replace;
+    }
+
+    public void setReplace(boolean replace) {
+        this.replace = replace;
+    }
+
     @Override
     public void execute(State state) throws ActionExecutionException {
         TlsContext tlsContext = state.getContext(getConnectionAlias()).getTlsContext();
 
-        if (replaced != null) {
+        if (replace) {
             tlsContext.getProposedExtensions().clear();
             tlsContext.getProposedExtensions().addAll(replaced);
         } else {

@@ -424,11 +424,13 @@ public class ConfigTest {
         config.getDefaultServerNamedGroups().add(NamedGroup.SECP256R1);
         config.setMessageFactoryActionOptions(new LinkedList<>());
         config.getMessageFactoryActionOptions().add(ActionOption.IGNORE_ACK_MESSAGES);
-        config.setAddCookieExtension(true);
+        // config.setAddCookieExtension(true);
+        // config.setDefaultExtensionCookie(new byte[] {5, 6, 7});
         // config.setClientAuthentication(true);
         // config.getDefaultClientConnection().setTransportHandlerType(th);
         // config.getDefaultServerConnection().setTransportHandlerType(th);
         // config.setAddConnectionIdExtension(true);
+        // config.setCanSkipMessageSequenceNumber(true);
 
         ConfigIO.write(config, new File(RESOURCE_CONFIG_DIR, "dtls13.config"));
     }

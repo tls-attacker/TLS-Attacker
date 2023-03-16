@@ -13,7 +13,6 @@ import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
 import de.rub.nds.tlsattacker.core.state.SessionTicket;
@@ -110,8 +109,7 @@ public class NewSessionTicketPreparator
     protected void prepareHandshakeMessageContents() {
         LOGGER.debug("Preparing NewSessionTicketMessage");
         prepareTicketLifetimeHint(msg);
-        if (chooser.getSelectedProtocolVersion().isTLS13()
-                || chooser.getSelectedProtocolVersion() == ProtocolVersion.DTLS13) {
+        if (chooser.getSelectedProtocolVersion().is13()) {
             prepareTicketTls13(msg);
         } else {
             prepareTicket(msg);
@@ -142,8 +140,7 @@ public class NewSessionTicketPreparator
 
     @Override
     public void prepareAfterParse(boolean clientMode) {
-        if (chooser.getSelectedProtocolVersion().isTLS13()
-                || chooser.getSelectedProtocolVersion() == ProtocolVersion.DTLS13) {
+        if (chooser.getSelectedProtocolVersion().is13()) {
             msg.setIncludeInDigest(false);
         }
     }

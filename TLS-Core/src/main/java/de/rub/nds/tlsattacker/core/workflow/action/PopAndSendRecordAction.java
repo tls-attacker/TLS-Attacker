@@ -54,7 +54,7 @@ public class PopAndSendRecordAction extends MessageAction implements SendingActi
         } else {
             LOGGER.info("Sending record(" + connectionAlias + "): " + sending);
         }
-        RecordSerializer s = record.getRecordSerializer(tlsContext);
+        RecordSerializer s = record.getRecordSerializer();
         try {
             tcpContext.getTransportHandler().sendData(s.serialize());
             asPlanned = true;

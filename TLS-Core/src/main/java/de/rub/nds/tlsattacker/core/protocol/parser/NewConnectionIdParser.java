@@ -30,7 +30,7 @@ public class NewConnectionIdParser extends HandshakeMessageParser<NewConnectionI
     @Override
     public void parse(NewConnectionIdMessage message) {
         LOGGER.debug("Parsing NewConnectionId");
-        parseCidsLength(message);
+        parseConnectionIdsLength(message);
         parseConnectionIds(message);
         parseUsage(message);
     }
@@ -38,7 +38,7 @@ public class NewConnectionIdParser extends HandshakeMessageParser<NewConnectionI
     private void parseUsage(NewConnectionIdMessage message) {
         message.setUsage(
                 ConnectionIdUsage.getConnectionIdUsage(
-                        parseByteField(HandshakeByteLength.NEWCONNECTIONID_USAGE_LENGTH)));
+                        parseByteField(HandshakeByteLength.NEW_CONNECTION_ID_USAGE_LENGTH)));
         LOGGER.debug("Usage: " + message.getUsage());
     }
 
@@ -47,7 +47,7 @@ public class NewConnectionIdParser extends HandshakeMessageParser<NewConnectionI
         message.setConnectionIds(new LinkedList<>());
         for (int i = 0; i < message.getConnectionIdsLength().getValue(); ) {
             ConnectionId cid = new ConnectionId();
-            cid.setLength(parseIntField(HandshakeByteLength.CONNECTIONID_LENGTH));
+            cid.setLength(parseIntField(HandshakeByteLength.CONNECTION_ID_LENGTH));
             cid.setConnectionId(parseByteArrayField(cid.getLength().getValue()));
             message.getConnectionIds().add(cid);
             i += cid.getLength().getValue();
@@ -56,9 +56,9 @@ public class NewConnectionIdParser extends HandshakeMessageParser<NewConnectionI
         }
     }
 
-    private void parseCidsLength(NewConnectionIdMessage message) {
+    private void parseConnectionIdsLength(NewConnectionIdMessage message) {
         message.setConnectionIdsLength(
-                parseIntField(HandshakeByteLength.NEWCONNECTIONID_CIDS_LENGTH));
+                parseIntField(HandshakeByteLength.NEW_CONNECTION_ID_CIDS_LENGTH));
         LOGGER.debug("ConnectionIdsLength: " + message.getConnectionIdsLength().getValue());
     }
 }

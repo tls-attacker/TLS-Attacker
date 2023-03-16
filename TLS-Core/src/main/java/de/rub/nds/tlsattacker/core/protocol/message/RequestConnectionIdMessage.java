@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
@@ -23,6 +24,7 @@ import java.util.Objects;
 @XmlRootElement(name = "RequestConnectionId")
 public class RequestConnectionIdMessage extends HandshakeMessage<RequestConnectionIdMessage> {
 
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.NONE)
     ModifiableInteger numberOfConnectionIds;
 
     public RequestConnectionIdMessage() {

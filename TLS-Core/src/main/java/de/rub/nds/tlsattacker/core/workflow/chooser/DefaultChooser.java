@@ -1247,9 +1247,7 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public Integer getNumberOfRequestedConnectionIds() {
-        if (context != null
-                && context.getTlsContext() != null
-                && context.getTlsContext().getNumberOfRequestedConnectionIds() != null) {
+        if (context.getTlsContext().getNumberOfRequestedConnectionIds() != null) {
             return context.getTlsContext().getNumberOfRequestedConnectionIds();
         } else {
             return config.getDefaultNumberOfRequestedConnectionIds();

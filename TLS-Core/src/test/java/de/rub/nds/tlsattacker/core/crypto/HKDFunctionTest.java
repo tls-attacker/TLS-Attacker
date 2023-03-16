@@ -124,12 +124,12 @@ public class HKDFunctionTest {
     }
 
     /**
-     * Test of deriveSecret method, of class HKDFunction
+     * Test of deriveSecret method, of class HKDFunction in TLS 1.3
      *
      * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     @Test
-    public void testDeriveSecret() throws CryptoException {
+    public void testDeriveSecretTls13() throws CryptoException {
         HKDFAlgorithm hkdfAlgorithm = HKDFAlgorithm.TLS_HKDF_SHA256;
         String hashAlgorithm = DigestAlgorithm.SHA256.getJavaName();
         byte[] prk =
@@ -148,12 +148,36 @@ public class HKDFunctionTest {
     }
 
     /**
-     * Test of expandLabel method, of class HKDFunction
+     * Test of deriveSecret method, of class HKDFunction in DTLS 1.3
      *
      * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     @Test
-    public void testExpandLabel() throws CryptoException {
+    public void testDeriveSecretDtls13() throws CryptoException {
+        HKDFAlgorithm hkdfAlgorithm = HKDFAlgorithm.TLS_HKDF_SHA256;
+        String hashAlgorithm = DigestAlgorithm.SHA256.getJavaName();
+        byte[] prk =
+                ArrayConverter.hexStringToByteArray(
+                        "33AD0A1C607EC03B09E6CD9893680CE210ADF300AA1F2660E1B22E10F170F92A");
+        byte[] toHash = ArrayConverter.hexStringToByteArray("");
+        String labelIn = HKDFunction.DERIVED;
+
+        byte[] result =
+                HKDFunction.deriveSecret(
+                        hkdfAlgorithm, hashAlgorithm, prk, labelIn, toHash, ProtocolVersion.DTLS13);
+        byte[] resultCorrect =
+                ArrayConverter.hexStringToByteArray(
+                        "B17BCE9451EE8BC6E8AEBC0AA9E98295677A4A6A91F78440833146E465F2FF95");
+        assertArrayEquals(result, resultCorrect);
+    }
+
+    /**
+     * Test of expandLabel method, of class HKDFunction for TLS 1.3
+     *
+     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
+     */
+    @Test
+    public void testExpandLabelTls13() throws CryptoException {
         HKDFAlgorithm hkdfAlgorithm = HKDFAlgorithm.TLS_HKDF_SHA256;
         byte[] prk =
                 ArrayConverter.hexStringToByteArray(
@@ -167,6 +191,29 @@ public class HKDFunctionTest {
                         hkdfAlgorithm, prk, labelIn, hashValue, outLen, ProtocolVersion.TLS13);
         byte[] resultCorrect =
                 ArrayConverter.hexStringToByteArray("04C5DA6EC39FC1653E085FA83E51C6AF");
+        assertArrayEquals(result, resultCorrect);
+    }
+
+    /**
+     * Test of expandLabel method, of class HKDFunction for DTLS 1.3
+     *
+     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
+     */
+    @Test
+    public void testExpandLabelDtls13() throws CryptoException {
+        HKDFAlgorithm hkdfAlgorithm = HKDFAlgorithm.TLS_HKDF_SHA256;
+        byte[] prk =
+                ArrayConverter.hexStringToByteArray(
+                        "E056D47C7DB9C04BBECE6AC9525163DE72B7D25B6B0899366F8FA741A5C01709");
+        byte[] hashValue = ArrayConverter.hexStringToByteArray("");
+        String labelIn = HKDFunction.KEY;
+        int outLen = 16;
+
+        byte[] result =
+                HKDFunction.expandLabel(
+                        hkdfAlgorithm, prk, labelIn, hashValue, outLen, ProtocolVersion.DTLS13);
+        byte[] resultCorrect =
+                ArrayConverter.hexStringToByteArray("EDAE449DA1ABB0929AA80268FA0D4E25");
         assertArrayEquals(result, resultCorrect);
     }
 

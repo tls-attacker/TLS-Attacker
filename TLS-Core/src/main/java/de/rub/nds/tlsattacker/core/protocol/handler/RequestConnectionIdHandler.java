@@ -19,7 +19,9 @@ public class RequestConnectionIdHandler
 
     @Override
     public void adjustContext(RequestConnectionIdMessage message) {
-        LOGGER.debug("Set number of requested connectionIds in context");
+        LOGGER.debug(
+                "Set number of requested Connection IDs in Context to "
+                        + message.getNumberOfConnectionIds().getValue());
         tlsContext.setNumberOfRequestedConnectionIds(message.getNumberOfConnectionIds().getValue());
     }
 }

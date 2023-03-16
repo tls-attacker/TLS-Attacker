@@ -12,11 +12,13 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
+import java.util.Objects;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-public class ConnectionId {
+public class ConnectionId extends ModifiableVariableHolder {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.NONE)
     private ModifiableByteArray connectionId;
@@ -60,5 +62,23 @@ public class ConnectionId {
 
     public void setLength(int length) {
         this.length = ModifiableVariableFactory.safelySetValue(this.length, length);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ConnectionId that = (ConnectionId) o;
+
+        if (!Objects.equals(connectionId, that.connectionId)) return false;
+        return Objects.equals(length, that.length);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = connectionId != null ? connectionId.hashCode() : 0;
+        result = 31 * result + (length != null ? length.hashCode() : 0);
+        return result;
     }
 }

@@ -99,16 +99,14 @@ public class ServerHelloMessage extends HelloMessage<ServerHelloMessage> {
                 addExtension(new HeartbeatExtensionMessage());
             }
             if (tlsConfig.isAddECPointFormatExtension()
-                    && !(tlsConfig.getHighestProtocolVersion().isTLS13()
-                            || tlsConfig.getHighestProtocolVersion() == ProtocolVersion.DTLS13)) {
+                    && !tlsConfig.getHighestProtocolVersion().is13()) {
                 addExtension(new ECPointFormatExtensionMessage());
             }
             if (tlsConfig.isAddMaxFragmentLengthExtension()) {
                 addExtension(new MaxFragmentLengthExtensionMessage());
             }
             if (tlsConfig.isAddRecordSizeLimitExtension()
-                    && !(tlsConfig.getHighestProtocolVersion().isTLS13()
-                            || tlsConfig.getHighestProtocolVersion() == ProtocolVersion.DTLS13)) {
+                    && !tlsConfig.getHighestProtocolVersion().is13()) {
                 addExtension(new RecordSizeLimitExtensionMessage());
             }
             if (tlsConfig.isAddServerNameIndicationExtension()
@@ -208,7 +206,7 @@ public class ServerHelloMessage extends HelloMessage<ServerHelloMessage> {
             if (tlsConfig.isAddExtendedRandomExtension()) {
                 addExtension(new ExtendedRandomExtensionMessage());
             }
-            if (tlsConfig.isAddCookieExtension() && (Boolean.TRUE.equals(isHelloRetryRequest()))) {
+            if (tlsConfig.isAddCookieExtension()) {
                 addExtension(new CookieExtensionMessage());
             }
             if (tlsConfig.isAddConnectionIdExtension()) {
@@ -280,17 +278,13 @@ public class ServerHelloMessage extends HelloMessage<ServerHelloMessage> {
         }
         if (getProtocolVersion() != null
                 && getProtocolVersion().getValue() != null
-                && !(ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()).isTLS13()
-                        || ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue())
-                                == ProtocolVersion.DTLS13)) {
+                && !ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()).is13()) {
             sb.append("\n  Server Unix Time: ")
                     .append(new Date(ArrayConverter.bytesToLong(getUnixTime().getValue()) * 1000));
         }
         sb.append("\n  Server Unix Time: ");
         if (getProtocolVersion() != null) {
-            if (!(ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()).isTLS13()
-                    || ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue())
-                            == ProtocolVersion.DTLS13)) {
+            if (!ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()).is13()) {
                 sb.append(new Date(ArrayConverter.bytesToLong(getUnixTime().getValue()) * 1000));
             } else {
                 sb.append("null");
@@ -306,9 +300,7 @@ public class ServerHelloMessage extends HelloMessage<ServerHelloMessage> {
         }
         sb.append("\n  Session ID: ");
         if (getProtocolVersion() != null && getProtocolVersion().getValue() != null) {
-            if (!(ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()).isTLS13()
-                    || ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue())
-                            == ProtocolVersion.DTLS13)) {
+            if (!ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()).is13()) {
                 sb.append(ArrayConverter.bytesToHexString(getSessionId().getValue()));
             } else {
                 sb.append("null");
@@ -324,9 +316,7 @@ public class ServerHelloMessage extends HelloMessage<ServerHelloMessage> {
         }
         sb.append("\n  Selected Compression Method: ");
         if (getProtocolVersion() != null && getProtocolVersion().getValue() != null) {
-            if (!(ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()).isTLS13()
-                    || ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue())
-                            == ProtocolVersion.DTLS13)) {
+            if (!ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()).is13()) {
                 sb.append(
                         CompressionMethod.getCompressionMethod(
                                 selectedCompressionMethod.getValue()));
