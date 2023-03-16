@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.util;
 
-import de.rub.nds.tlsattacker.core.certificate.CertificateAnalyzer;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
@@ -39,7 +38,7 @@ public class CertificateFetcher {
         X509CertificateChain fetchedServerCertificateChain = fetchServerCertificateChain(config);
         if (fetchedServerCertificateChain != null
                 && !fetchedServerCertificateChain.getCertificateList().isEmpty()) {
-            return CertificateAnalyzer.getPublicKey(fetchedServerCertificateChain.getLeaf());
+            return fetchedServerCertificateChain.getLeaf().getPublicKey();
         }
         return null;
     }

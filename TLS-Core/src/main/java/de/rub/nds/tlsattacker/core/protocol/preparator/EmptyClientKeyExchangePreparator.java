@@ -12,7 +12,6 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
 import de.rub.nds.protocol.crypto.ec.EllipticCurve;
 import de.rub.nds.protocol.crypto.ec.Point;
-import de.rub.nds.tlsattacker.core.certificate.CertificateAnalyzer;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
@@ -89,11 +88,11 @@ public class EmptyClientKeyExchangePreparator<T extends EmptyClientKeyExchangeMe
                         .isEmpty()) {
 
             X509PublicKeyType certificateKeyType =
-                    CertificateAnalyzer.getCertificateKeyType(
-                            chooser.getContext()
-                                    .getTlsContext()
-                                    .getClientCertificateChain()
-                                    .getLeaf());
+                    chooser.getContext()
+                            .getTlsContext()
+                            .getClientCertificateChain()
+                            .getLeaf()
+                            .getCertificateKeyType();
             KeyExchangeAlgorithm keyExchangeAlgorithm =
                     AlgorithmResolver.getKeyExchangeAlgorithm(chooser.getSelectedCipherSuite());
             if (keyExchangeAlgorithm.isKeyExchangeDh() || keyExchangeAlgorithm.isKeyExchangeDhe()) {

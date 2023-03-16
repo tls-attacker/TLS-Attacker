@@ -13,7 +13,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import de.rub.nds.modifiablevariable.util.BadRandom;
-import de.rub.nds.tlsattacker.core.certificate.CertificateAnalyzer;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.util.FixedTimeProvider;
@@ -56,7 +55,7 @@ public class CertificateFetcherTest {
 
         expectedCertificate =
                 CertificateIo.convert(keyStore.getCertificate(KeyStoreGenerator.ALIAS));
-        expectedPublicKey = CertificateAnalyzer.getPublicKey(expectedCertificate.getLeaf());
+        expectedPublicKey = expectedCertificate.getLeaf().getPublicKey();
 
         tlsServer = new BasicTlsServer(keyStore, KeyStoreGenerator.PASSWORD, "TLS", SERVER_PORT);
 
