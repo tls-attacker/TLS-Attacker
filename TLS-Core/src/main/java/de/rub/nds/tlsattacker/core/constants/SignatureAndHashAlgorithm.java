@@ -18,39 +18,35 @@ import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- * Construction of a hash and signature algorithm. Very confusing, consists of two bytes, the first
- * is hash algorithm: {HashAlgorithm, SignatureAlgorithm}
- */
 public enum SignatureAndHashAlgorithm {
-    ANONYMOUS_NONE(0x0000),
-    ANONYMOUS_MD5(0x0100),
-    ANONYMOUS_SHA1(0x0200),
-    ANONYMOUS_SHA224(0x0300),
-    ANONYMOUS_SHA256(0x0400),
-    ANONYMOUS_SHA384(0x0500),
-    ANONYMOUS_SHA512(0x0600),
-    RSA_NONE(0x0001),
-    RSA_MD5(0x0101),
-    RSA_SHA1(0x0201),
-    RSA_SHA224(0x0301),
-    RSA_SHA256(0x0401),
-    RSA_SHA384(0x0501),
-    RSA_SHA512(0x0601),
-    DSA_NONE(0x0002),
-    DSA_MD5(0x0102),
-    DSA_SHA1(0x0202),
-    DSA_SHA224(0x0302),
-    DSA_SHA256(0x0402),
-    DSA_SHA384(0x0502),
-    DSA_SHA512(0x0602),
-    ECDSA_NONE(0x0003),
-    ECDSA_MD5(0x0103),
-    ECDSA_SHA1(0x0203),
-    ECDSA_SHA224(0x0303),
-    ECDSA_SHA256(0x0403),
-    ECDSA_SHA384(0x0503),
-    ECDSA_SHA512(0x0603),
+    ANONYMOUS_NONE(0x0000, null, null),
+    ANONYMOUS_MD5(0x0100, null, HashAlgorithm.MD5),
+    ANONYMOUS_SHA1(0x0200, null, HashAlgorithm.SHA1),
+    ANONYMOUS_SHA224(0x0300, null, HashAlgorithm.SHA512_224), //Is this correct?
+    ANONYMOUS_SHA256(0x0400, null, HashAlgorithm.SHA256),
+    ANONYMOUS_SHA384(0x0500, null, HashAlgorithm.SHA384),
+    ANONYMOUS_SHA512(0x0600, null, HashAlgorithm.SHA512),
+    RSA_NONE(0x0001, SignatureAlgorithm.RSA_PKCS1, null),
+    RSA_MD5(0x0101, SignatureAlgorithm.RSA_PKCS1 , HashAlgorithm.MD5),
+    RSA_SHA1(0x0201,  SignatureAlgorithm.RSA_PKCS1, HashAlgorithm.SHA1),
+    RSA_SHA224(0x0301,  SignatureAlgorithm.RSA_PKCS1, HashAlgorithm.SHA512_224),
+    RSA_SHA256(0x0401,  SignatureAlgorithm.RSA_PKCS1, HashAlgorithm.SHA256),
+    RSA_SHA384(0x0501,  SignatureAlgorithm.RSA_PKCS1, HashAlgorithm.SHA384),
+    RSA_SHA512(0x0601,  SignatureAlgorithm.RSA_PKCS1, HashAlgorithm.SHA512),
+    DSA_NONE(0x0002,  SignatureAlgorithm.DSA, null),
+    DSA_MD5(0x0102, SignatureAlgorithm.DSA, HashAlgorithm.MD5),
+    DSA_SHA1(0x0202, SignatureAlgorithm.DSA, HashAlgorithm.SHA1),
+    DSA_SHA224(0x0302, SignatureAlgorithm.DSA , HashAlgorithm.SHA512_224),
+    DSA_SHA256(0x0402, SignatureAlgorithm.DSA, HashAlgorithm.SHA256),
+    DSA_SHA384(0x0502, SignatureAlgorithm.DSA, HashAlgorithm.SHA384),
+    DSA_SHA512(0x0602, SignatureAlgorithm.DSA, HashAlgorithm.SHA512),
+    ECDSA_NONE(0x0003, SignatureAlgorithm.ECDSA, null),
+    ECDSA_MD5(0x0103, SignatureAlgorithm.ECDSA, HashAlgorithm.MD5),
+    ECDSA_SHA1(0x0203, SignatureAlgorithm.ECDSA , HashAlgorithm.SHA1),
+    ECDSA_SHA224(0x0303, SignatureAlgorithm.ECDSA, HashAlgorithm.SHA512_224),
+    ECDSA_SHA256(0x0403, SignatureAlgorithm.ECDSA, HashAlgorithm.SHA256),
+    ECDSA_SHA384(0x0503, SignatureAlgorithm.ECDSA, HashAlgorithm.SHA384),
+    ECDSA_SHA512(0x0603, SignatureAlgorithm.ECDSA, HashAlgorithm.SHA512),
     ED25519(0x0807),
     ED448(0x0808),
     /* RSASSA-PSS algorithms with public key OID rsaEncryption */
@@ -139,10 +135,16 @@ public enum SignatureAndHashAlgorithm {
 
     private int value;
 
+    private HashAlgorithm hashAlgorithm;
+
+    private SignatureAlgorithm signatureAlgorithm;
+
     private static final Map<Integer, SignatureAndHashAlgorithm> MAP;
 
-    private SignatureAndHashAlgorithm(int value) {
+    private SignatureAndHashAlgorithm(int value, SignatureAlgorithm signatureAlgorithm, HashAlgorithm hashAlgorithm) {
         this.value = value;
+        this.hashAlgorithm = hashAlgorithm;
+        this.signatureAlgorithm = signatureAlgorithm;
     }
 
     static {
@@ -170,10 +172,8 @@ public enum SignatureAndHashAlgorithm {
         }
         ByteArrayInputStream algorithmsStream = new ByteArrayInputStream(signatureAndHashBytes);
         byte[] algoBytes = new byte[HandshakeByteLength.SIGNATURE_HASH_ALGORITHM];
-        while (algorithmsStream.read(algoBytes, 0, HandshakeByteLength.SIGNATURE_HASH_ALGORITHM)
-                != -1) {
-            SignatureAndHashAlgorithm algo =
-                    SignatureAndHashAlgorithm.getSignatureAndHashAlgorithm(algoBytes);
+        while (algorithmsStream.read(algoBytes, 0, HandshakeByteLength.SIGNATURE_HASH_ALGORITHM) != -1) {
+            SignatureAndHashAlgorithm algo = SignatureAndHashAlgorithm.getSignatureAndHashAlgorithm(algoBytes);
             if (algo == null
                     || algo.getSignatureAlgorithm() == null
                     || algo.getHashAlgorithm() == null) {
