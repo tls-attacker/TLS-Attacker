@@ -18,7 +18,6 @@ import java.util.List;
 
 /**
  * @param <T> The ServerKeyExchangeMessage that should be prepared
- * @param <T> The ServerKeyExchangeMessage that should be prepared
  */
 public abstract class ServerKeyExchangePreparator<T extends ServerKeyExchangeMessage>
         extends HandshakeMessagePreparator<T> {
