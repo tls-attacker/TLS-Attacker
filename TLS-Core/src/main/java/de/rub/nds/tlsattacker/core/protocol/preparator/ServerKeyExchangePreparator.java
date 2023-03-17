@@ -42,25 +42,20 @@ public abstract class ServerKeyExchangePreparator<T extends ServerKeyExchangeMes
     protected SignatureAndHashAlgorithm chooseSignatureAndHashAlgorithm() {
         SignatureAndHashAlgorithm signHashAlgo;
         if (chooser.getConfig().getAutoAdjustSignatureAndHashAlgorithm()) {
-            X509PublicKeyType publicKeyType =
-                    chooser.getContext()
-                            .getTlsContext()
-                            .getServerX509Context()
-                            .getChooser()
-                            .getSubjectPublicKeyType();
+            X509PublicKeyType publicKeyType = chooser.getContext()
+                    .getTlsContext()
+                    .getServerX509Context()
+                    .getChooser()
+                    .getSubjectPublicKeyType();
             List<SignatureAndHashAlgorithm> candidateList = new LinkedList<>();
-            for (SignatureAndHashAlgorithm tempSignatureAndHashAlgorithm :
-                    SignatureAndHashAlgorithm.getImplemented()) {
-                if (tempSignatureAndHashAlgorithm
-                                .getSignatureAlgorithm()
-                                .getRequiredCertificateKeyType()
-                        == publicKeyType) {
+            for (SignatureAndHashAlgorithm tempSignatureAndHashAlgorithm : SignatureAndHashAlgorithm.getImplemented()) {
+                if (publicKeyType.canBeUsedWithSignatureAlgorithm(tempSignatureAndHashAlgorithm.getSignatureAlgorithm())) {
                     candidateList.add(tempSignatureAndHashAlgorithm);
                 }
             }
 
-            List<SignatureAndHashAlgorithm> clientSupportedList =
-                    chooser.getClientSupportedSignatureAndHashAlgorithms();
+            List<SignatureAndHashAlgorithm> clientSupportedList = chooser
+                    .getClientSupportedSignatureAndHashAlgorithms();
 
             candidateList.retainAll(clientSupportedList);
             if (candidateList.isEmpty()) {
