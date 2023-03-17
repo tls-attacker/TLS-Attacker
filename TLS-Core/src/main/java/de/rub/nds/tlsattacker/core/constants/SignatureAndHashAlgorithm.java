@@ -220,7 +220,7 @@ public enum SignatureAndHashAlgorithm {
     public SignatureAlgorithm getSignatureAlgorithm() {
         SignatureAlgorithm bestMatch = null;
         for (SignatureAlgorithm algo : SignatureAlgorithm.values()) {
-            if (this.name().contains(algo.name())) { //TODO THis might not work
+            if (this.name().contains(algo.name())) { // TODO THis might not work
                 if (bestMatch == null || bestMatch.name().length() < algo.name().length()) {
                     bestMatch = algo;
                 }
@@ -235,7 +235,7 @@ public enum SignatureAndHashAlgorithm {
     public HashAlgorithm getHashAlgorithm() {
         HashAlgorithm bestMatch = null;
         for (HashAlgorithm algo : HashAlgorithm.values()) {
-            if (this.name().contains(algo.name())) { //TODO THis might not work
+            if (this.name().contains(algo.name())) { // TODO THis might not work
                 if (bestMatch == null || bestMatch.name().length() < algo.name().length()) {
                     bestMatch = algo;
                 }

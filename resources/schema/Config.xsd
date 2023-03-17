@@ -2592,7 +2592,7 @@
       <xs:extension base="asn1Sequence">
         <xs:sequence>
           <xs:element ref="tbsCertificate" minOccurs="0"/>
-          <xs:element name="signatureAlgorithm" type="certificateSignatureAlgorithmIdentifier" minOccurs="0"/>
+          <xs:element name="signatureAlgorithmIdentifier" type="certificateSignatureAlgorithmIdentifier" minOccurs="0"/>
           <xs:element name="signature" type="asn1PrimitiveBitString" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>

@@ -45,8 +45,7 @@ public class ECDHEServerKeyExchangeSerializer<T extends ECDHEServerKeyExchangeMe
             SignatureAndHashAlgorithm sigHashAlg =
                     SignatureAndHashAlgorithm.getSignatureAndHashAlgorithm(
                             msg.getSignatureAndHashAlgorithm().getValue());
-            if (sigHashAlg == null
-                    || sigHashAlg.getSignatureAlgorithm() != null) {
+            if (sigHashAlg == null || sigHashAlg.getSignatureAlgorithm() != null) {
                 writeSignatureLength(msg);
                 writeSignature(msg);
             }

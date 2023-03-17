@@ -94,11 +94,12 @@ public class TlsSignatureUtil {
             byte[] toBeHasedAndSigned,
             EcdsaSignatureComputations computations) {
         BigInteger nonce;
-        BigInteger privateKey = chooser.getContext()
-                .getTlsContext()
-                .getTalkingX509Context()
-                .getChooser()
-                .getSubjectEcPrivateKey();
+        BigInteger privateKey =
+                chooser.getContext()
+                        .getTlsContext()
+                        .getTalkingX509Context()
+                        .getChooser()
+                        .getSubjectEcPrivateKey();
 
         nonce = chooser.getConfig().getDefaultEcdsaNonce();
         calculator.computeEcdsaSignature(
@@ -116,11 +117,12 @@ public class TlsSignatureUtil {
             byte[] toBeHasedAndSigned,
             EcdsaSignatureComputations computations) {
         BigInteger nonce;
-        BigInteger privateKey = chooser.getContext()
-                .getTlsContext()
-                .getTalkingX509Context()
-                .getChooser()
-                .getSubjectDsaPrivateKey();
+        BigInteger privateKey =
+                chooser.getContext()
+                        .getTlsContext()
+                        .getTalkingX509Context()
+                        .getChooser()
+                        .getSubjectDsaPrivateKey();
         nonce = chooser.getConfig().getDefaultEcdsaNonce();
         calculator.computeEcdsaSignature(
                 computations,
@@ -137,16 +139,18 @@ public class TlsSignatureUtil {
             byte[] toBeHasedAndSigned,
             RsaPkcs1SignatureComputations computations) {
 
-        BigInteger modulus = chooser.getContext()
-                .getTlsContext()
-                .getTalkingX509Context()
-                .getChooser()
-                .getSubjectRsaModulus();
-        BigInteger privateKey = chooser.getContext()
-                .getTlsContext()
-                .getTalkingX509Context()
-                .getChooser()
-                .getSubjectRsaPrivateKey();
+        BigInteger modulus =
+                chooser.getContext()
+                        .getTlsContext()
+                        .getTalkingX509Context()
+                        .getChooser()
+                        .getSubjectRsaModulus();
+        BigInteger privateKey =
+                chooser.getContext()
+                        .getTlsContext()
+                        .getTalkingX509Context()
+                        .getChooser()
+                        .getSubjectRsaPrivateKey();
         calculator.computeRsaPkcs1Signature(
                 computations, privateKey, modulus, toBeHasedAndSigned, algorithm);
     }
