@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.constants;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.protocol.constants.HashAlgorithm;
+import de.rub.nds.protocol.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import java.io.ByteArrayInputStream;
 import java.util.*;
@@ -219,7 +220,7 @@ public enum SignatureAndHashAlgorithm {
     public SignatureAlgorithm getSignatureAlgorithm() {
         SignatureAlgorithm bestMatch = null;
         for (SignatureAlgorithm algo : SignatureAlgorithm.values()) {
-            if (this.name().contains(algo.name())) {
+            if (this.name().contains(algo.name())) { //TODO THis might not work
                 if (bestMatch == null || bestMatch.name().length() < algo.name().length()) {
                     bestMatch = algo;
                 }
@@ -228,13 +229,13 @@ public enum SignatureAndHashAlgorithm {
         if (bestMatch != null) {
             return bestMatch;
         }
-        return SignatureAlgorithm.ANONYMOUS;
+        throw new UnsupportedOperationException("Unknown Signature Algorithm");
     }
 
     public HashAlgorithm getHashAlgorithm() {
         HashAlgorithm bestMatch = null;
         for (HashAlgorithm algo : HashAlgorithm.values()) {
-            if (this.name().contains(algo.name())) {
+            if (this.name().contains(algo.name())) { //TODO THis might not work
                 if (bestMatch == null || bestMatch.name().length() < algo.name().length()) {
                     bestMatch = algo;
                 }

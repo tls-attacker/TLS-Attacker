@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
+import de.rub.nds.protocol.constants.SignatureAlgorithm;
 import de.rub.nds.x509attacker.constants.X509PublicKeyType;
 import java.util.HashSet;
 import java.util.Set;
@@ -458,7 +459,7 @@ public class AlgorithmResolver {
             case RSA_EXPORT:
             case SRP_SHA_RSA:
             case PSK_RSA:
-                return SignatureAlgorithm.RSA;
+                return SignatureAlgorithm.RSA_PKCS1;
             case ECDHE_ECDSA:
             case ECDH_ECDSA:
             case ECMQV_ECDSA:
