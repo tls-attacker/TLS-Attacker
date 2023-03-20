@@ -15,6 +15,7 @@ import de.rub.nds.protocol.crypto.ec.EllipticCurve;
 import de.rub.nds.protocol.crypto.ec.EllipticCurveSECP256R1;
 import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.protocol.crypto.ec.PointFormatter;
+import de.rub.nds.protocol.crypto.key.EcdsaPrivateKey;
 import de.rub.nds.protocol.crypto.signature.EcdsaSignatureComputations;
 import de.rub.nds.protocol.crypto.signature.SignatureCalculator;
 import de.rub.nds.tlsattacker.core.constants.*;
@@ -83,10 +84,11 @@ public class TokenBindingMessagePreparator extends ProtocolMessagePreparator<Tok
         calculator.computeRawEcdsaSignature(
                 (EcdsaSignatureComputations)
                         message.getSignatureComputations(SignatureAlgorithm.ECDSA),
-                chooser.getConfig().getDefaultTokenBindingEcPrivateKey(),
+                new EcdsaPrivateKey(
+                        chooser.getConfig().getDefaultTokenBindingEcPrivateKey(),
+                        chooser.getConfig().getDefaultEcdsaNonce(),
+                        NamedEllipticCurveParameters.SECP256R1),
                 toBeHashedAndSigned,
-                chooser.getConfig().getDefaultEcdsaNonce(),
-                NamedEllipticCurveParameters.SECP256R1,
                 HashAlgorithm.SHA256);
         return message.getSignatureComputations(algorithm.getSignatureAlgorithm())
                 .getSignatureBytes()

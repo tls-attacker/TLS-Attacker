@@ -10,14 +10,10 @@ package de.rub.nds.tlsattacker.core.crypto;
 
 import de.rub.nds.protocol.constants.HashAlgorithm;
 import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
-import de.rub.nds.protocol.constants.SignatureAlgorithm;
-import de.rub.nds.protocol.crypto.signature.DsaSignatureComputations;
+import de.rub.nds.protocol.crypto.key.EcdsaPrivateKey;
+import de.rub.nds.protocol.crypto.key.RsaPrivateKey;
 import de.rub.nds.protocol.crypto.signature.EcdsaSignatureComputations;
-import de.rub.nds.protocol.crypto.signature.EdwardsSignatureComputations;
-import de.rub.nds.protocol.crypto.signature.GostSignatureComputations;
-import de.rub.nds.protocol.crypto.signature.NoSignatureComputations;
 import de.rub.nds.protocol.crypto.signature.RsaPkcs1SignatureComputations;
-import de.rub.nds.protocol.crypto.signature.RsaPssSignatureComputations;
 import de.rub.nds.protocol.crypto.signature.SignatureCalculator;
 import de.rub.nds.protocol.crypto.signature.SignatureComputations;
 import de.rub.nds.protocol.crypto.signature.SignatureVerificationComputations;
@@ -104,10 +100,8 @@ public class TlsSignatureUtil {
         nonce = chooser.getConfig().getDefaultEcdsaNonce();
         calculator.computeEcdsaSignature(
                 computations,
-                privateKey,
+                new EcdsaPrivateKey(privateKey, nonce, NamedEllipticCurveParameters.SECP112R1),
                 toBeHasedAndSigned,
-                nonce,
-                NamedEllipticCurveParameters.SECP112R1,
                 algorithm);
     }
 
@@ -126,10 +120,8 @@ public class TlsSignatureUtil {
         nonce = chooser.getConfig().getDefaultEcdsaNonce();
         calculator.computeEcdsaSignature(
                 computations,
-                privateKey,
+                new EcdsaPrivateKey(privateKey, nonce, NamedEllipticCurveParameters.SECP112R1),
                 toBeHasedAndSigned,
-                nonce,
-                NamedEllipticCurveParameters.SECP112R1,
                 algorithm);
     }
 
@@ -152,33 +144,9 @@ public class TlsSignatureUtil {
                         .getChooser()
                         .getSubjectRsaPrivateKey();
         calculator.computeRsaPkcs1Signature(
-                computations, privateKey, modulus, toBeHasedAndSigned, algorithm);
-    }
-
-    public SignatureComputations createSignatureComputations(
-            SignatureAlgorithm signatureAlgorithm) {
-        if (signatureAlgorithm == null) {
-            return new NoSignatureComputations();
-        }
-        switch (signatureAlgorithm) {
-            case DSA:
-                return new DsaSignatureComputations();
-            case ECDSA:
-                return new EcdsaSignatureComputations();
-            case ED25519:
-            case ED448:
-                return new EdwardsSignatureComputations();
-            case GOSTR34102001:
-            case GOSTR34102012_256:
-            case GOSTR34102012_512:
-                return new GostSignatureComputations();
-            case RSA_PKCS1:
-                return new RsaPkcs1SignatureComputations();
-            case RSA_PSS:
-                return new RsaPssSignatureComputations();
-            default:
-                throw new UnsupportedOperationException(
-                        "Unsupported signature algorithm: " + signatureAlgorithm);
-        }
+                computations,
+                new RsaPrivateKey(privateKey, modulus),
+                toBeHasedAndSigned,
+                algorithm);
     }
 }

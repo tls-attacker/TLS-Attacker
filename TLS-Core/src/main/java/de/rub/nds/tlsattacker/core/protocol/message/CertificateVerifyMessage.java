@@ -15,9 +15,9 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.protocol.constants.SignatureAlgorithm;
+import de.rub.nds.protocol.crypto.signature.SignatureCalculator;
 import de.rub.nds.protocol.crypto.signature.SignatureComputations;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.crypto.TlsSignatureUtil;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.CertificateVerifyHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.CertificateVerifyParser;
@@ -49,8 +49,8 @@ public class CertificateVerifyMessage extends HandshakeMessage {
     public SignatureComputations getSignatureComputations(SignatureAlgorithm algorithm) {
         // TODO its unlucky that this design can cause a conflict here if the type mismatches
         if (signatureComputations == null) {
-            TlsSignatureUtil util = new TlsSignatureUtil();
-            signatureComputations = util.createSignatureComputations(algorithm);
+            SignatureCalculator calculator = new SignatureCalculator();
+            signatureComputations = calculator.createSignatureComputations(algorithm);
         }
         return signatureComputations;
     }

@@ -2594,6 +2594,7 @@
           <xs:element ref="tbsCertificate" minOccurs="0"/>
           <xs:element name="signatureAlgorithmIdentifier" type="certificateSignatureAlgorithmIdentifier" minOccurs="0"/>
           <xs:element name="signature" type="asn1PrimitiveBitString" minOccurs="0"/>
+          <xs:element name="signatureComputations" type="signatureComputations" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>

@@ -20,8 +20,11 @@ import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import jakarta.xml.bind.JAXBException;
 import java.io.IOException;
+import java.security.Security;
 import java.util.ArrayList;
 import java.util.List;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
@@ -34,6 +37,11 @@ public class SendDynamicServerCertificateActionTest
         TlsContext context = state.getTlsContext();
         context.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
         context.setTransportHandler(new FakeTransportHandler(ConnectionEndType.SERVER));
+    }
+
+    @BeforeAll
+    public static void before() {
+        Security.addProvider(new BouncyCastleProvider());
     }
 
     @Override
