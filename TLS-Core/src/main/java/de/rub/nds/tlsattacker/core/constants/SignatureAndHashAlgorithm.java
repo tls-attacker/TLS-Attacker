@@ -47,37 +47,37 @@ public enum SignatureAndHashAlgorithm {
     ECDSA_SHA256(0x0403, SignatureAlgorithm.ECDSA, HashAlgorithm.SHA256),
     ECDSA_SHA384(0x0503, SignatureAlgorithm.ECDSA, HashAlgorithm.SHA384),
     ECDSA_SHA512(0x0603, SignatureAlgorithm.ECDSA, HashAlgorithm.SHA512),
-    ED25519(0x0807),
-    ED448(0x0808),
+    ED25519(0x080, SignatureAlgorithm.ED25519, null),
+    ED448(0x0808, SignatureAlgorithm.ED448, null),
     /* RSASSA-PSS algorithms with public key OID rsaEncryption */
-    RSA_PSS_RSAE_SHA256(0x0804),
-    RSA_PSS_RSAE_SHA384(0x0805),
-    RSA_PSS_RSAE_SHA512(0x0806),
+    RSA_PSS_RSAE_SHA256(0x0804, SignatureAlgorithm.RSA_PSS, HashAlgorithm.SHA256),
+    RSA_PSS_RSAE_SHA384(0x0805, SignatureAlgorithm.RSA_PSS, HashAlgorithm.SHA384),
+    RSA_PSS_RSAE_SHA512(0x0806, SignatureAlgorithm.RSA_PSS, HashAlgorithm.SHA512),
     /* RSASSA-PSS algorithms with public key OID RSASSA-PSS */
-    RSA_PSS_PSS_SHA256(0x0809),
-    RSA_PSS_PSS_SHA384(0x080a),
-    RSA_PSS_PSS_SHA512(0x080b),
-    GOSTR34102001_GOSTR3411(0xEDED),
-    GOSTR34102012_256_GOSTR34112012_256(0xEEEE),
-    GOSTR34102012_512_GOSTR34112012_512(0xEFEF),
+    RSA_PSS_PSS_SHA256(0x0809, SignatureAlgorithm.RSA_PSS, HashAlgorithm.SHA256),
+    RSA_PSS_PSS_SHA384(0x080a, SignatureAlgorithm.RSA_PSS, HashAlgorithm.SHA384),
+    RSA_PSS_PSS_SHA512(0x080b, SignatureAlgorithm.RSA_PSS, HashAlgorithm.SHA512),
+    GOSTR34102001_GOSTR3411(0xEDED, SignatureAlgorithm.GOSTR34102001, null),//TODO this is probably not correct
+    GOSTR34102012_256_GOSTR34112012_256(0xEEEE, SignatureAlgorithm.GOSTR34102012_256, null),//TODO this is probably not correct
+    GOSTR34102012_512_GOSTR34112012_512(0xEFEF, SignatureAlgorithm.GOSTR34102001, null),//TODO this is probably not correct
 
     // GREASE constants
-    GREASE_00(0x0A0A),
-    GREASE_01(0x1A1A),
-    GREASE_02(0x2A2A),
-    GREASE_03(0x3A3A),
-    GREASE_04(0x4A4A),
-    GREASE_05(0x5A5A),
-    GREASE_06(0x6A6A),
-    GREASE_07(0x7A7A),
-    GREASE_08(0x8A8A),
-    GREASE_09(0x9A9A),
-    GREASE_10(0xAAAA),
-    GREASE_11(0xBABA),
-    GREASE_12(0xCACA),
-    GREASE_13(0xDADA),
-    GREASE_14(0xEAEA),
-    GREASE_15(0xFAFA);
+    GREASE_00(0x0A0A, null, null),
+    GREASE_01(0x1A1A, null, null),
+    GREASE_02(0x2A2A, null, null),
+    GREASE_03(0x3A3A, null, null),
+    GREASE_04(0x4A4A, null, null),
+    GREASE_05(0x5A5A, null, null),
+    GREASE_06(0x6A6A, null, null),
+    GREASE_07(0x7A7A, null, null),
+    GREASE_08(0x8A8A, null, null),
+    GREASE_09(0x9A9A, null, null),
+    GREASE_10(0xAAAA, null, null),
+    GREASE_11(0xBABA, null, null),
+    GREASE_12(0xCACA, null, null),
+    GREASE_13(0xDADA, null, null),
+    GREASE_14(0xEAEA, null, null),
+    GREASE_15(0xFAFA, null, null);
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -218,33 +218,11 @@ public enum SignatureAndHashAlgorithm {
     }
 
     public SignatureAlgorithm getSignatureAlgorithm() {
-        SignatureAlgorithm bestMatch = null;
-        for (SignatureAlgorithm algo : SignatureAlgorithm.values()) {
-            if (this.name().contains(algo.name())) { // TODO THis might not work
-                if (bestMatch == null || bestMatch.name().length() < algo.name().length()) {
-                    bestMatch = algo;
-                }
-            }
-        }
-        if (bestMatch != null) {
-            return bestMatch;
-        }
-        throw new UnsupportedOperationException("Unknown Signature Algorithm");
+        return signatureAlgorithm;
     }
 
     public HashAlgorithm getHashAlgorithm() {
-        HashAlgorithm bestMatch = null;
-        for (HashAlgorithm algo : HashAlgorithm.values()) {
-            if (this.name().contains(algo.name())) { // TODO THis might not work
-                if (bestMatch == null || bestMatch.name().length() < algo.name().length()) {
-                    bestMatch = algo;
-                }
-            }
-        }
-        if (bestMatch != null) {
-            return bestMatch;
-        }
-        return HashAlgorithm.NONE;
+        return hashAlgorithm;
     }
 
     public boolean suitedForSigningTls13Messages() {
