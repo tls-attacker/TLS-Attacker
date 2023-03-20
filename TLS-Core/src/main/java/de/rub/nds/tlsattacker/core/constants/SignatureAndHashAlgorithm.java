@@ -22,27 +22,27 @@ public enum SignatureAndHashAlgorithm {
     ANONYMOUS_NONE(0x0000, null, null),
     ANONYMOUS_MD5(0x0100, null, HashAlgorithm.MD5),
     ANONYMOUS_SHA1(0x0200, null, HashAlgorithm.SHA1),
-    ANONYMOUS_SHA224(0x0300, null, HashAlgorithm.SHA512_224), //Is this correct?
+    ANONYMOUS_SHA224(0x0300, null, HashAlgorithm.SHA512_224), // Is this correct?
     ANONYMOUS_SHA256(0x0400, null, HashAlgorithm.SHA256),
     ANONYMOUS_SHA384(0x0500, null, HashAlgorithm.SHA384),
     ANONYMOUS_SHA512(0x0600, null, HashAlgorithm.SHA512),
     RSA_NONE(0x0001, SignatureAlgorithm.RSA_PKCS1, null),
-    RSA_MD5(0x0101, SignatureAlgorithm.RSA_PKCS1 , HashAlgorithm.MD5),
-    RSA_SHA1(0x0201,  SignatureAlgorithm.RSA_PKCS1, HashAlgorithm.SHA1),
-    RSA_SHA224(0x0301,  SignatureAlgorithm.RSA_PKCS1, HashAlgorithm.SHA512_224),
-    RSA_SHA256(0x0401,  SignatureAlgorithm.RSA_PKCS1, HashAlgorithm.SHA256),
-    RSA_SHA384(0x0501,  SignatureAlgorithm.RSA_PKCS1, HashAlgorithm.SHA384),
-    RSA_SHA512(0x0601,  SignatureAlgorithm.RSA_PKCS1, HashAlgorithm.SHA512),
-    DSA_NONE(0x0002,  SignatureAlgorithm.DSA, null),
+    RSA_MD5(0x0101, SignatureAlgorithm.RSA_PKCS1, HashAlgorithm.MD5),
+    RSA_SHA1(0x0201, SignatureAlgorithm.RSA_PKCS1, HashAlgorithm.SHA1),
+    RSA_SHA224(0x0301, SignatureAlgorithm.RSA_PKCS1, HashAlgorithm.SHA512_224),
+    RSA_SHA256(0x0401, SignatureAlgorithm.RSA_PKCS1, HashAlgorithm.SHA256),
+    RSA_SHA384(0x0501, SignatureAlgorithm.RSA_PKCS1, HashAlgorithm.SHA384),
+    RSA_SHA512(0x0601, SignatureAlgorithm.RSA_PKCS1, HashAlgorithm.SHA512),
+    DSA_NONE(0x0002, SignatureAlgorithm.DSA, null),
     DSA_MD5(0x0102, SignatureAlgorithm.DSA, HashAlgorithm.MD5),
     DSA_SHA1(0x0202, SignatureAlgorithm.DSA, HashAlgorithm.SHA1),
-    DSA_SHA224(0x0302, SignatureAlgorithm.DSA , HashAlgorithm.SHA512_224),
+    DSA_SHA224(0x0302, SignatureAlgorithm.DSA, HashAlgorithm.SHA512_224),
     DSA_SHA256(0x0402, SignatureAlgorithm.DSA, HashAlgorithm.SHA256),
     DSA_SHA384(0x0502, SignatureAlgorithm.DSA, HashAlgorithm.SHA384),
     DSA_SHA512(0x0602, SignatureAlgorithm.DSA, HashAlgorithm.SHA512),
     ECDSA_NONE(0x0003, SignatureAlgorithm.ECDSA, null),
     ECDSA_MD5(0x0103, SignatureAlgorithm.ECDSA, HashAlgorithm.MD5),
-    ECDSA_SHA1(0x0203, SignatureAlgorithm.ECDSA , HashAlgorithm.SHA1),
+    ECDSA_SHA1(0x0203, SignatureAlgorithm.ECDSA, HashAlgorithm.SHA1),
     ECDSA_SHA224(0x0303, SignatureAlgorithm.ECDSA, HashAlgorithm.SHA512_224),
     ECDSA_SHA256(0x0403, SignatureAlgorithm.ECDSA, HashAlgorithm.SHA256),
     ECDSA_SHA384(0x0503, SignatureAlgorithm.ECDSA, HashAlgorithm.SHA384),
@@ -57,9 +57,14 @@ public enum SignatureAndHashAlgorithm {
     RSA_PSS_PSS_SHA256(0x0809, SignatureAlgorithm.RSA_PSS, HashAlgorithm.SHA256),
     RSA_PSS_PSS_SHA384(0x080a, SignatureAlgorithm.RSA_PSS, HashAlgorithm.SHA384),
     RSA_PSS_PSS_SHA512(0x080b, SignatureAlgorithm.RSA_PSS, HashAlgorithm.SHA512),
-    GOSTR34102001_GOSTR3411(0xEDED, SignatureAlgorithm.GOSTR34102001, null),//TODO this is probably not correct
-    GOSTR34102012_256_GOSTR34112012_256(0xEEEE, SignatureAlgorithm.GOSTR34102012_256, null),//TODO this is probably not correct
-    GOSTR34102012_512_GOSTR34112012_512(0xEFEF, SignatureAlgorithm.GOSTR34102001, null),//TODO this is probably not correct
+    GOSTR34102001_GOSTR3411(
+            0xEDED, SignatureAlgorithm.GOSTR34102001, null), // TODO this is probably not correct
+    GOSTR34102012_256_GOSTR34112012_256(
+            0xEEEE,
+            SignatureAlgorithm.GOSTR34102012_256,
+            null), // TODO this is probably not correct
+    GOSTR34102012_512_GOSTR34112012_512(
+            0xEFEF, SignatureAlgorithm.GOSTR34102001, null), // TODO this is probably not correct
 
     // GREASE constants
     GREASE_00(0x0A0A, null, null),
@@ -141,7 +146,8 @@ public enum SignatureAndHashAlgorithm {
 
     private static final Map<Integer, SignatureAndHashAlgorithm> MAP;
 
-    private SignatureAndHashAlgorithm(int value, SignatureAlgorithm signatureAlgorithm, HashAlgorithm hashAlgorithm) {
+    private SignatureAndHashAlgorithm(
+            int value, SignatureAlgorithm signatureAlgorithm, HashAlgorithm hashAlgorithm) {
         this.value = value;
         this.hashAlgorithm = hashAlgorithm;
         this.signatureAlgorithm = signatureAlgorithm;
@@ -172,8 +178,10 @@ public enum SignatureAndHashAlgorithm {
         }
         ByteArrayInputStream algorithmsStream = new ByteArrayInputStream(signatureAndHashBytes);
         byte[] algoBytes = new byte[HandshakeByteLength.SIGNATURE_HASH_ALGORITHM];
-        while (algorithmsStream.read(algoBytes, 0, HandshakeByteLength.SIGNATURE_HASH_ALGORITHM) != -1) {
-            SignatureAndHashAlgorithm algo = SignatureAndHashAlgorithm.getSignatureAndHashAlgorithm(algoBytes);
+        while (algorithmsStream.read(algoBytes, 0, HandshakeByteLength.SIGNATURE_HASH_ALGORITHM)
+                != -1) {
+            SignatureAndHashAlgorithm algo =
+                    SignatureAndHashAlgorithm.getSignatureAndHashAlgorithm(algoBytes);
             if (algo == null
                     || algo.getSignatureAlgorithm() == null
                     || algo.getHashAlgorithm() == null) {
