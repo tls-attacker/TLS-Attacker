@@ -21,7 +21,6 @@ import jakarta.xml.bind.annotation.XmlSeeAlso;
  * Abstract class for different messages the TLS-Attacker can send. This includes but is not limited
  * to TLS-Messages.
  *
- * @param <Self> The message class itself
  * @param <Context> The type of context this message needs to use, relates to the messages' layer.
  */
 @XmlAccessorType(XmlAccessType.FIELD)
