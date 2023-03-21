@@ -178,13 +178,9 @@ public enum SignatureAndHashAlgorithm {
         }
         ByteArrayInputStream algorithmsStream = new ByteArrayInputStream(signatureAndHashBytes);
         byte[] algoBytes = new byte[HandshakeByteLength.SIGNATURE_HASH_ALGORITHM];
-        while (algorithmsStream.read(algoBytes, 0, HandshakeByteLength.SIGNATURE_HASH_ALGORITHM)
-                != -1) {
-            SignatureAndHashAlgorithm algo =
-                    SignatureAndHashAlgorithm.getSignatureAndHashAlgorithm(algoBytes);
-            if (algo == null
-                    || algo.getSignatureAlgorithm() == null
-                    || algo.getHashAlgorithm() == null) {
+        while (algorithmsStream.read(algoBytes, 0, HandshakeByteLength.SIGNATURE_HASH_ALGORITHM) != -1) {
+            SignatureAndHashAlgorithm algo = SignatureAndHashAlgorithm.getSignatureAndHashAlgorithm(algoBytes);
+            if (algo == null) {
                 LOGGER.warn("Unknown SignatureAndHashAlgorithm: {}", algoBytes);
             } else {
                 algoList.add(algo);
