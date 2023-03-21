@@ -138,7 +138,7 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
 
     private NamedGroup getSuitableNamedGroup() {
         NamedGroup usedGroup = chooser.getSelectedNamedGroup();
-        if (!usedGroup.isCurve() || usedGroup.isGost()) {
+        if (!usedGroup.isEcGroup() || usedGroup.isGost()) {
             usedGroup = NamedGroup.SECP256R1;
             LOGGER.warn(
                     "Selected NamedGroup {} is not suitable for ECDHClientKeyExchange message. Using {} instead.",

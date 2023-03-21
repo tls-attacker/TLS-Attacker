@@ -93,7 +93,7 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
             publicKeyBytes =
                     rfcCurve.computePublicKey(
                             msg.getKeyExchangeComputations().getPrivateKey().getValue());
-        } else if (namedGroup.isCurve()) {
+        } else if (namedGroup.isEcGroup()) {
             Point publicKey =
                     curve.mult(
                             msg.getKeyExchangeComputations().getPrivateKey().getValue(),
@@ -156,7 +156,7 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
                 }
             }
         }
-        if (!namedGroup.isCurve() || namedGroup.isGost()) {
+        if (!namedGroup.isEcGroup() || namedGroup.isGost()) {
             NamedGroup previousNamedGroup = namedGroup;
             namedGroup = NamedGroup.SECP256R1;
             LOGGER.warn(
