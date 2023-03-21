@@ -67,6 +67,8 @@ public class RSAClientKeyExchangePreparator<T extends RSAClientKeyExchangeMessag
             paddedPremasterSecret = new byte[] {0};
         }
         BigInteger biPaddedPremasterSecret = new BigInteger(1, paddedPremasterSecret);
+        LOGGER.debug("Modulus: {}", msg.getComputations().getModulus().getValue());
+        LOGGER.debug("Public Exponent: {}", msg.getComputations().getPublicExponent().getValue());
         BigInteger biEncrypted =
                 biPaddedPremasterSecret.modPow(
                         msg.getComputations().getPublicExponent().getValue().abs(),
