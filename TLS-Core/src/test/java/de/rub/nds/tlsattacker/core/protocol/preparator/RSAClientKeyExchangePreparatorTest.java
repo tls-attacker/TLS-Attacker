@@ -15,9 +15,6 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import org.bouncycastle.crypto.tls.Certificate;
 import org.junit.jupiter.api.Test;
 
 public class RSAClientKeyExchangePreparatorTest
@@ -71,19 +68,5 @@ public class RSAClientKeyExchangePreparatorTest
                         .getValue()[message.getComputations().getPadding().getValue().length + 2]);
         assertNotNull(message.getPublicKeyLength().getValue());
         assertNotNull(message.getPublicKey());
-    }
-
-    private Certificate parseCertificate(int lengthBytes, byte[] bytesToParse) {
-        try {
-            ByteArrayInputStream stream =
-                    new ByteArrayInputStream(
-                            ArrayConverter.concatenate(
-                                    ArrayConverter.intToBytes(
-                                            lengthBytes, HandshakeByteLength.CERTIFICATES_LENGTH),
-                                    bytesToParse));
-            return Certificate.parse(stream);
-        } catch (IOException E) {
-            return null;
-        }
     }
 }

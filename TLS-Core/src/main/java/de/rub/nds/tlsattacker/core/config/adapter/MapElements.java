@@ -20,6 +20,7 @@ class MapElements {
     @XmlAttribute private NamedGroup key;
     @XmlAttribute private BigInteger value;
 
+    @SuppressWarnings("unused")
     private MapElements() {} // Required by JAXB
 
     public MapElements(NamedGroup key, BigInteger value) {

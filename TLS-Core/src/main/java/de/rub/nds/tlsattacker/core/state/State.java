@@ -308,18 +308,6 @@ public class State {
         }
     }
 
-    private void assertWorkflowTraceNotNull(String operationName) {
-        if (workflowTrace != null) {
-            return;
-        }
-
-        StringBuilder err = new StringBuilder("No workflow trace loaded.");
-        if (operationName != null && !operationName.isEmpty()) {
-            err.append(" Operation ").append(operationName).append(" not permitted");
-        }
-        throw new ConfigurationException(err.toString());
-    }
-
     public long getStartTimestamp() {
         return startTimestamp;
     }
