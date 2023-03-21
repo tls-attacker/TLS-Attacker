@@ -107,5 +107,11 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
             entryList.add(entry);
         }
         msg.setCertificateEntryList(entryList);
+        // We parse the certificate contents in reverse order such that the leaf certificate is
+        // parsed last.
+        for (int i = entryList.size() - 1; i >= 0; i--) {
+            CertificateEntryParser parser = new CertificateEntryParser(null, tlsContext);
+            parser.parseX509Certificate(entryList.get(i));
+        }
     }
 }
