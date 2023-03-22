@@ -134,4 +134,44 @@ public enum KeyExchangeAlgorithm {
     public boolean isExport() {
         return this.name().contains("EXPORT");
     }
+
+    public boolean requiresCertificate() {
+        switch (this) {
+            case RSA:
+            case RSA_EXPORT:
+            case DHE_DSS:
+            case DHE_RSA:
+            case DH_DSS:
+            case DH_RSA:
+            case ECDHE_ECDSA:
+            case ECDHE_RSA:
+            case ECDH_RSA:
+            case ECDH_ECDSA:
+            case ECDH_ECNRA:
+            case ECMQV_ECDSA:
+            case ECMQV_ECNRA:
+            case CECPQ1_ECDSA:
+            case VKO_GOST01:
+            case VKO_GOST12:
+            case SRP_SHA_DSS:
+            case SRP_SHA_RSA:
+                return true;
+            case FORTEZZA_KEA: // I dont know if this is correct actually
+            case KRB5:
+            case PSK:
+            case PSK_RSA:
+            case ECDHE_PSK:
+            case DHE_PSK:
+            case ECCPWD:
+            case SRP_SHA:
+            case DH_ANON:
+            case ECDH_ANON:
+            case NULL:
+                return false;
+            default:
+                throw new UnsupportedOperationException(
+                        "Not defined yet! Please ask the developers to add this KEX algorithm");
+
+        }
+    }
 }

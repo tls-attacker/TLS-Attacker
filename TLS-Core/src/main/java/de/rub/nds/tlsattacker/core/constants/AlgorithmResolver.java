@@ -15,19 +15,27 @@ import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/** Resolves crypto algorithms and their properties from a given cipher suite (and TLS version). */
+/**
+ * Resolves crypto algorithms and their properties from a given cipher suite
+ * (and TLS version).
+ */
 public class AlgorithmResolver {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     /**
-     * Returns a PRF algorithm based on the protocol version and the cipher suite. TLS 1.0 and 1.1
-     * used a legacy PRF based on MD5 and SHA-1. TLS 1.2 uses per default SHA256 PRF, but allows for
-     * definition of further PRFs in specific cipher suites (the last part of a cipher suite string
+     * Returns a PRF algorithm based on the protocol version and the cipher suite.
+     * TLS 1.0 and 1.1
+     * used a legacy PRF based on MD5 and SHA-1. TLS 1.2 uses per default SHA256
+     * PRF, but allows for
+     * definition of further PRFs in specific cipher suites (the last part of a
+     * cipher suite string
      * identifies the PRF).
      *
-     * @param protocolVersion The ProtocolVersion for which the PRFAlgorithm should be returned
-     * @param cipherSuite The Cipher suite for which the PRFAlgorithm should be returned
+     * @param protocolVersion The ProtocolVersion for which the PRFAlgorithm should
+     *                        be returned
+     * @param cipherSuite     The Cipher suite for which the PRFAlgorithm should be
+     *                        returned
      * @return The selected PRFAlgorithm
      */
     public static PRFAlgorithm getPRFAlgorithm(
@@ -54,15 +62,22 @@ public class AlgorithmResolver {
     }
 
     /**
-     * Returns a digest algorithm based on the protocol version and the cipher suite. The digest
-     * algorithm is used to compute a message digest over the handshake messages and to compute
-     * valid finished messages. TLS 1.0 and 1.1 used a legacy digest based on MD5 and SHA-1. TLS 1.2
-     * uses per default SHA256 digest algorithm, but allows for definition of further digest
-     * algorithms in specific cipher suites (the last part of a cipher suite string identifies the
+     * Returns a digest algorithm based on the protocol version and the cipher
+     * suite. The digest
+     * algorithm is used to compute a message digest over the handshake messages and
+     * to compute
+     * valid finished messages. TLS 1.0 and 1.1 used a legacy digest based on MD5
+     * and SHA-1. TLS 1.2
+     * uses per default SHA256 digest algorithm, but allows for definition of
+     * further digest
+     * algorithms in specific cipher suites (the last part of a cipher suite string
+     * identifies the
      * digest).
      *
-     * @param protocolVersion The ProtocolVersion for which the DigestAlgorithm should be returned
-     * @param cipherSuite The Cipher suite for which the DigestAlgorithm should be returned
+     * @param protocolVersion The ProtocolVersion for which the DigestAlgorithm
+     *                        should be returned
+     * @param cipherSuite     The Cipher suite for which the DigestAlgorithm should
+     *                        be returned
      * @return The selected DigestAlgorithm
      */
     public static DigestAlgorithm getDigestAlgorithm(
@@ -156,16 +171,13 @@ public class AlgorithmResolver {
         }
         if (cipherSuite == CipherSuite.TLS_FALLBACK_SCSV
                 || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV) {
-            throw new UnsupportedOperationException(
-                    "The CipherSuite:"
-                            + cipherSuite.name()
-                            + " does not specify a KeyExchangeAlgorithm");
+            return null;
         }
         LOGGER.warn(
                 "The key exchange algorithm in "
                         + cipherSuite.toString()
                         + " is not supported yet.");
-        return KeyExchangeAlgorithm.RSA;
+        return null;
     }
 
     /**
@@ -225,10 +237,14 @@ public class AlgorithmResolver {
     }
 
     /**
-     * Depending on the provided cipher suite, the server needs to be initialized with proper public
-     * key(s). Depending on the cipher suite, there are possibly more than one cipher suites needed.
+     * Depending on the provided cipher suite, the server needs to be initialized
+     * with proper public
+     * key(s). Depending on the cipher suite, there are possibly more than one
+     * cipher suites needed.
      *
-     * <p>This function returns a list of public key algorithms needed when running a server with a
+     * <p>
+     * This function returns a list of public key algorithms needed when running a
+     * server with a
      * cipher suite.
      *
      * @param cipherSuite The selected CipherSuite
@@ -330,7 +346,8 @@ public class AlgorithmResolver {
     }
 
     /**
-     * @param cipherSuite The Cipher suite for which the BulkCipherAlgorithm should be returned
+     * @param cipherSuite The Cipher suite for which the BulkCipherAlgorithm should
+     *                    be returned
      * @return The BulkCipherAlgorithm of the Cipher
      */
     public static BulkCipherAlgorithm getBulkCipherAlgorithm(CipherSuite cipherSuite) {
@@ -338,7 +355,8 @@ public class AlgorithmResolver {
     }
 
     /**
-     * @param cipherSuite The Cipher suite for which the CipherType should be selected
+     * @param cipherSuite The Cipher suite for which the CipherType should be
+     *                    selected
      * @return The CipherType of the Cipher suite
      */
     public static CipherType getCipherType(CipherSuite cipherSuite) {
@@ -439,10 +457,12 @@ public class AlgorithmResolver {
     }
 
     /**
-     * Returns the signature algorithm required for the authentication type specified by cipher
+     * Returns the signature algorithm required for the authentication type
+     * specified by cipher
      * suite.
      *
-     * @param cipherSuite The Cipher suite for which the signature algorithm should be returned
+     * @param cipherSuite The Cipher suite for which the signature algorithm should
+     *                    be returned
      * @return The required signature algorithm.
      */
     public static SignatureAlgorithm getRequiredSignatureAlgorithm(CipherSuite cipherSuite) {
@@ -478,5 +498,6 @@ public class AlgorithmResolver {
         }
     }
 
-    private AlgorithmResolver() {}
+    private AlgorithmResolver() {
+    }
 }
