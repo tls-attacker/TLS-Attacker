@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.protocol.crypto.ffdh.FFDHEGroup;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
 import java.math.BigInteger;
@@ -36,17 +35,6 @@ public class DHEServerKeyExchangeHandler<KeyExchangeMessage extends DHEServerKey
         if (message.getKeyExchangeComputations() != null
                 && message.getKeyExchangeComputations().getPrivateKey() != null) {
             adjustServerPrivateKey(message);
-        }
-    }
-
-    protected void adjustSelectedSignatureAndHashAlgorithm(KeyExchangeMessage message) {
-        if (message.getSignatureAndHashAlgorithm() != null
-                && message.getSignatureAndHashAlgorithm().getValue() != null) {
-
-            byte[] sigHashBytes = message.getSignatureAndHashAlgorithm().getValue();
-            SignatureAndHashAlgorithm signatureAndHashAlgorithm =
-                    SignatureAndHashAlgorithm.getSignatureAndHashAlgorithm(sigHashBytes);
-            tlsContext.setSelectedSignatureAndHashAlgorithm(signatureAndHashAlgorithm);
         }
     }
 
