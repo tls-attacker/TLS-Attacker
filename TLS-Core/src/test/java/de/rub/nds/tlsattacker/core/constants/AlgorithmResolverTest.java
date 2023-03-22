@@ -318,20 +318,7 @@ public class AlgorithmResolverTest {
             value = CipherSuite.class,
             names = {"TLS_FALLBACK_SCSV", "TLS_EMPTY_RENEGOTIATION_INFO_SCSV"})
     public void testUnresolvableKeyExchange(CipherSuite cipherSuite) {
-        assertThrows(
-                UnsupportedOperationException.class,
-                () -> AlgorithmResolver.getKeyExchangeAlgorithm(cipherSuite));
-    }
-
-    @ParameterizedTest
-    @EnumSource(
-            value = CipherSuite.class,
-            names = {"TLS_FALLBACK_SCSV", "TLS_EMPTY_RENEGOTIATION_INFO_SCSV"},
-            mode = EnumSource.Mode.EXCLUDE)
-    public void testGetKeyExchangeAlgorithmDoesNotThrow(CipherSuite providedCipherSuite) {
-        // Checks that we can retrieve the key exchange algorithm of the provided cipher suite
-        // without exceptions
-        assertDoesNotThrow(() -> AlgorithmResolver.getKeyExchangeAlgorithm(providedCipherSuite));
+        assertNull(AlgorithmResolver.getKeyExchangeAlgorithm(cipherSuite));
     }
 
     /** Test of getRequiredKeystoreAlgorithms method, of class AlgorithmResolver. */

@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
+import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerKeyExchangeMessage;
 import org.apache.logging.log4j.LogManager;
@@ -23,5 +24,16 @@ public abstract class ServerKeyExchangeHandler<MessageT extends ServerKeyExchang
 
     public ServerKeyExchangeHandler(TlsContext tlsContext) {
         super(tlsContext);
+    }
+
+    protected void adjustSelectedSignatureAndHashAlgorithm(MessageT message) {
+        if (message.getSignatureAndHashAlgorithm() != null
+                && message.getSignatureAndHashAlgorithm().getValue() != null) {
+
+            byte[] sigHashBytes = message.getSignatureAndHashAlgorithm().getValue();
+            SignatureAndHashAlgorithm signatureAndHashAlgorithm =
+                    SignatureAndHashAlgorithm.getSignatureAndHashAlgorithm(sigHashBytes);
+            tlsContext.setSelectedSignatureAndHashAlgorithm(signatureAndHashAlgorithm);
+        }
     }
 }

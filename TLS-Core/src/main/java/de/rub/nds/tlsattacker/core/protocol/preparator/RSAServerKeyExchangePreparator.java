@@ -35,7 +35,7 @@ public class RSAServerKeyExchangePreparator<T extends RSAServerKeyExchangeMessag
         setRsaParams();
         prepareRsaParams();
 
-        selectedSignatureHashAlgo = chooser.getSelectedSigHashAlgorithm();
+        selectedSignatureHashAlgo = chooseSignatureAndHashAlgorithm();
         prepareSignatureAndHashAlgorithm(msg);
         signature = generateSignature(selectedSignatureHashAlgo, generateToBeSigned());
         prepareSignature(msg);

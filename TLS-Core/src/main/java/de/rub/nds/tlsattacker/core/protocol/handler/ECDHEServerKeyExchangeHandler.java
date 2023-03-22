@@ -29,6 +29,8 @@ public class ECDHEServerKeyExchangeHandler<KeyExchangeMessage extends ECDHEServe
     @Override
     public void adjustContext(KeyExchangeMessage message) {
         adjustECParameter(message);
+        adjustSelectedSignatureAndHashAlgorithm(message);
+
         if (message.getKeyExchangeComputations() != null) {
             tlsContext.setServerEphemeralEcPrivateKey(
                     message.getKeyExchangeComputations().getPrivateKey().getValue());

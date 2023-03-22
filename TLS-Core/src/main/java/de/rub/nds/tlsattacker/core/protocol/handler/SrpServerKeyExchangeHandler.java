@@ -29,6 +29,7 @@ public class SrpServerKeyExchangeHandler
         adjustSRPModulus(message);
         adjustSalt(message);
         adjustServerPublicKey(message);
+        adjustSelectedSignatureAndHashAlgorithm(message);
         if (message.getKeyExchangeComputations() != null
                 && message.getKeyExchangeComputations().getPrivateKey() != null) {
             adjustServerPrivateKey(message);

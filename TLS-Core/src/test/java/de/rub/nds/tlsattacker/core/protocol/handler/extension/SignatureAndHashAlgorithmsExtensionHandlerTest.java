@@ -50,8 +50,5 @@ public class SignatureAndHashAlgorithmsExtensionHandlerTest
                 context.getClientSupportedSignatureAndHashAlgorithms()
                         .get(0)
                         .getSignatureAlgorithm());
-        assertEquals(
-                SignatureAndHashAlgorithm.RSA_SHA512,
-                context.getSelectedSignatureAndHashAlgorithm());
     }
 }

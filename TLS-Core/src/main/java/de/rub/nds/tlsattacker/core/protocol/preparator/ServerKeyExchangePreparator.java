@@ -67,7 +67,7 @@ public abstract class ServerKeyExchangePreparator<T extends ServerKeyExchangeMes
                 signHashAlgo = candidateList.get(0);
             }
         } else {
-            signHashAlgo = chooser.getSelectedSigHashAlgorithm();
+            signHashAlgo = chooser.getConfig().getDefaultSelectedSignatureAndHashAlgorithm();
         }
         return signHashAlgo;
     }

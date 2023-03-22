@@ -61,7 +61,7 @@ public class SrpServerKeyExchangePreparator
         prepareSaltLength(msg);
         preparePublicKey(msg);
         preparePublicKeyLength(msg);
-        selectedSignatureHashAlgo = chooser.getSelectedSigHashAlgorithm();
+        selectedSignatureHashAlgo = chooseSignatureAndHashAlgorithm();
         prepareSignatureAndHashAlgorithm(msg);
         prepareClientServerRandom(msg);
         signature = generateSignature(selectedSignatureHashAlgo, generateToBeSigned());

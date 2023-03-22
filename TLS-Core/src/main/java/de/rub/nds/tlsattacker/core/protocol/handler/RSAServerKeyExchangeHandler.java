@@ -25,6 +25,8 @@ public class RSAServerKeyExchangeHandler
                 new BigInteger(1, message.getModulus().getValue()));
         tlsContext.setServerEphemeralRsaExportPublicKey(
                 new BigInteger(1, message.getPublicKey().getValue()));
+        adjustSelectedSignatureAndHashAlgorithm(message);
+
         if (message.getKeyExchangeComputations() != null
                 && message.getKeyExchangeComputations().getPrivateKey() != null) {
             tlsContext.setServerEphemeralRsaExportPrivateKey(
