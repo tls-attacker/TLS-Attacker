@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class RecordCryptoComputations extends ModifiableVariableHolder implements Serializable {
+public class RecordCryptoComputations extends ModifiableVariableHolder {
 
     /** The key used for the symmetric cipher */
     private ModifiableByteArray cipherKey;
