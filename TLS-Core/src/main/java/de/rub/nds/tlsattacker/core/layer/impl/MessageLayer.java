@@ -98,7 +98,7 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
         if (message.getAdjustContext()) {
             handler.adjustContext(message);
         }
-        collectedMessageStream.writeBytes(serializedMessage);
+        collectedMessageStream.writeBytes(message.getCompleteResultingMessage().getValue());
         if (mustFlushCollectedMessagesImmediately(message)) {
             flushCollectedMessages(message.getProtocolMessageType(), collectedMessageStream);
         }
