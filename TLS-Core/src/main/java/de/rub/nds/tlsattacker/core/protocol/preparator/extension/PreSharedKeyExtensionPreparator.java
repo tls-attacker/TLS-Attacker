@@ -33,6 +33,7 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.cryptomator.siv.org.bouncycastle.util.Arrays;
 
 /** RFC draft-ietf-tls-tls13-21 */
 public class PreSharedKeyExtensionPreparator
@@ -193,8 +194,10 @@ public class PreSharedKeyExtensionPreparator
                                         new byte[0],
                                         mac.getMacLength(),
                                         tlsContext.getChooser().getSelectedProtocolVersion());
-
-                        tlsContext.getDigest().setRawBytes(relevantBytes);
+                        byte[] hashBefore = tlsContext.getDigest().getRawBytes();
+                        tlsContext
+                                .getDigest()
+                                .setRawBytes(Arrays.concatenate(hashBefore, relevantBytes));
                         SecretKeySpec keySpec = new SecretKeySpec(binderFinKey, mac.getAlgorithm());
                         mac.init(keySpec);
                         mac.update(
@@ -204,7 +207,7 @@ public class PreSharedKeyExtensionPreparator
                                                 ProtocolVersion.TLS13,
                                                 pskSets.get(x).getCipherSuite()));
                         byte[] binderVal = mac.doFinal();
-                        tlsContext.getDigest().setRawBytes(new byte[0]);
+                        tlsContext.getDigest().setRawBytes(hashBefore);
 
                         LOGGER.debug("Using PSK: {}", psk);
                         LOGGER.debug("Calculated Binder: {}", binderVal);
