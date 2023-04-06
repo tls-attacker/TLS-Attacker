@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.GreaseExtensionMessage;
 import java.io.InputStream;
@@ -22,5 +23,7 @@ public class GreaseExtensionParser extends ExtensionParser<GreaseExtensionMessag
     public void parse(GreaseExtensionMessage msg) {
         msg.setRandomData(parseByteArrayField(getBytesLeft()));
         msg.setData(msg.getRandomData().getValue());
+        ExtensionType greaseType = ExtensionType.getExtensionType(msg.getExtensionType().getValue());
+        msg.setType(greaseType);
     }
 }

@@ -89,6 +89,14 @@ public class GreaseExtensionMessage extends ExtensionMessage<GreaseExtensionMess
     public ExtensionType getType() {
         return type;
     }
+    
+    public void setType(ExtensionType type){
+        if (!type.name().startsWith("GREASE_")) {
+            LOGGER.warn("GreaseExtension message type was set to non Grease extension type");
+        }
+        this.type = type;
+        extensionTypeConstant = type;
+    }
 
     @Override
     public GreaseExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
