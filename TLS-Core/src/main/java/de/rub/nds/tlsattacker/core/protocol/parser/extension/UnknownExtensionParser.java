@@ -26,6 +26,8 @@ public class UnknownExtensionParser extends ExtensionParser<UnknownExtensionMess
         message.setExtensionData(parseByteArrayField(getBytesLeft()));
         LOGGER.debug("ExtensionData: {}", message.getExtensionData().getValue());
         message.setDataConfig(message.getExtensionData().getValue());
+        message.setTypeConfig(message.getExtensionType().getValue());
+        message.setLengthConfig(message.getExtensionLength().getValue());
     }
 
     @Override
