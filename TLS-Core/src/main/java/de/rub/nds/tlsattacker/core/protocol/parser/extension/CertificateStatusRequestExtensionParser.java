@@ -33,19 +33,21 @@ public class CertificateStatusRequestExtensionParser
         super(stream, tlsContext);
         this.selectedVersion = selectedVersion;
     }
-    
+
     public void setHelloRetryRequestHint(boolean helloRetryRequestHint) {
         this.helloRetryRequestHint = helloRetryRequestHint;
     }
-    
-    private boolean isClientHelloAfterHelloRetryRequest(){
-        // last server hello is a HelloRetryRequest and this extension is not part of the HelloRetryRequest
+
+    private boolean isClientHelloAfterHelloRetryRequest() {
+        // last server hello is a HelloRetryRequest and this extension is not part of the
+        // HelloRetryRequest
         // when parsing a new ServerHello the random is handled before the extensions are parsed.
         return !helloRetryRequestHint && isLastServerHelloHRR();
     }
-    
-    private boolean isLastServerHelloHRR(){
-        return Arrays.equals(ServerHelloMessage.getHelloRetryRequestRandom(), getTlsContext().getServerRandom());
+
+    private boolean isLastServerHelloHRR() {
+        return Arrays.equals(
+                ServerHelloMessage.getHelloRetryRequestRandom(), getTlsContext().getServerRandom());
     }
 
     @Override

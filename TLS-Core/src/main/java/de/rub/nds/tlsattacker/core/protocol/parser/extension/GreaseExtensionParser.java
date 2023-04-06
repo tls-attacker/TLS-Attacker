@@ -23,7 +23,10 @@ public class GreaseExtensionParser extends ExtensionParser<GreaseExtensionMessag
     public void parse(GreaseExtensionMessage msg) {
         msg.setRandomData(parseByteArrayField(getBytesLeft()));
         msg.setData(msg.getRandomData().getValue());
-        ExtensionType greaseType = ExtensionType.getExtensionType(msg.getExtensionType().getValue());
-        msg.setType(greaseType);
+        if (msg.getExtensionType() != null) {
+            ExtensionType greaseType =
+                    ExtensionType.getExtensionType(msg.getExtensionType().getValue());
+            msg.setType(greaseType);
+        }
     }
 }
