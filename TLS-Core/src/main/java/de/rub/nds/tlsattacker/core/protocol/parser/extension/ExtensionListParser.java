@@ -56,10 +56,8 @@ public class ExtensionListParser extends Parser<List<ExtensionMessage>> {
                     extension.getParser(tlsContext, new ByteArrayInputStream(extensionPayload));
             if (parser instanceof KeyShareExtensionParser) {
                 ((KeyShareExtensionParser) parser).setHelloRetryRequestHint(helloRetryRequestHint);
-            } else if (parser instanceof CertificateStatusRequestExtensionParser) {
-                ((CertificateStatusRequestExtensionParser) parser)
-                        .setHelloRetryRequestHint(helloRetryRequestHint);
             }
+
             parser.parse(extension);
             extensionList.add(extension);
         }
