@@ -42,6 +42,7 @@ public class NewSessionTicketMessage extends HandshakeMessage<NewSessionTicketMe
     public NewSessionTicketMessage(Config tlsConfig, boolean includeInDigest) {
         super(HandshakeMessageType.NEW_SESSION_TICKET);
         isIncludeInDigestDefault = includeInDigest;
+        this.setIncludeInDigest(includeInDigest);
         ticket = new SessionTicket();
         if (tlsConfig.isAddEarlyDataExtension()) {
             addExtension(new EarlyDataExtensionMessage(true));
