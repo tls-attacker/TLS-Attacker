@@ -106,6 +106,7 @@ public class ResetConnectionAction extends ConnectionBoundAction {
 
         LOGGER.info("Reopening Connection");
         try {
+            tcpContext.getTransportHandler().preInitialize();
             tcpContext.getTransportHandler().initialize();
             asPlanned = true;
         } catch (IOException ex) {
