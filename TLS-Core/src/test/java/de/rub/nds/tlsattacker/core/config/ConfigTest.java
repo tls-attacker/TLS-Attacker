@@ -410,12 +410,11 @@ public class ConfigTest {
         setUpBasicTls13Config(config);
         config.setHighestProtocolVersion(ProtocolVersion.DTLS13);
         config.setSupportedVersions(ProtocolVersion.DTLS13);
-        TransportHandlerType th = TransportHandlerType.UDP;
         config.setDefaultLayerConfiguration(LayerConfiguration.DTLS);
         config.setWorkflowExecutorType(WorkflowExecutorType.DTLS);
         config.setFinishWithCloseNotify(true);
         config.setIgnoreRetransmittedCssInDtls(true);
-        config.setDtlsCookieExchange(false);
+        config.setDtlsCookieExchange(true);
         config.setDefaultClientKeyShareNamedGroups(new LinkedList<>());
         config.getDefaultClientKeyShareNamedGroups().add(NamedGroup.SECP256R1);
         config.setDefaultClientNamedGroups(new LinkedList<>());
@@ -424,13 +423,8 @@ public class ConfigTest {
         config.getDefaultServerNamedGroups().add(NamedGroup.SECP256R1);
         config.setMessageFactoryActionOptions(new LinkedList<>());
         config.getMessageFactoryActionOptions().add(ActionOption.IGNORE_ACK_MESSAGES);
-        // config.setAddCookieExtension(true);
-        // config.setDefaultExtensionCookie(new byte[] {5, 6, 7});
-        // config.setClientAuthentication(true);
-        // config.getDefaultClientConnection().setTransportHandlerType(th);
-        // config.getDefaultServerConnection().setTransportHandlerType(th);
-        // config.setAddConnectionIdExtension(true);
-        // config.setCanSkipMessageSequenceNumber(true);
+        config.setAddCookieExtension(true);
+        config.setDefaultExtensionCookie(new byte[] {5, 6, 7});
 
         ConfigIO.write(config, new File(RESOURCE_CONFIG_DIR, "dtls13.config"));
     }
@@ -449,7 +443,6 @@ public class ConfigTest {
     private void setUpBasicTls13Config(Config config) {
         config.setHighestProtocolVersion(ProtocolVersion.TLS13);
         config.setSupportedVersions(ProtocolVersion.TLS13);
-
         ArrayList<CipherSuite> clientSupportedCipherSuites = new ArrayList<>();
         clientSupportedCipherSuites.add(CipherSuite.TLS_AES_128_GCM_SHA256);
         clientSupportedCipherSuites.add(CipherSuite.TLS_AES_256_GCM_SHA384);
