@@ -19,7 +19,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareE
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
-import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
