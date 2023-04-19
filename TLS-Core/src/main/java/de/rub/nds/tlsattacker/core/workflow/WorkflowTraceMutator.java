@@ -262,7 +262,7 @@ public class WorkflowTraceMutator {
         }
 
         int messageIndex = -1;
-        int actionIndex = trace.getTlsActions().indexOf(action);
+        int actionIndex = WorkflowTraceUtil.indexOfIdenticalAction(trace, action);
         List<ProtocolMessage> messages = new ArrayList<>();
         if (action instanceof SendingAction) {
             if (action instanceof SendAction) {
@@ -288,7 +288,7 @@ public class WorkflowTraceMutator {
                     continue;
                 }
                 if (((HandshakeMessage) message).getHandshakeMessageType() == type) {
-                    messageIndex = messages.indexOf(message);
+                    messageIndex = getIndexOfIdenticalMessage(messages, message);
                     if (messageIndex == 0 && mode == WorkflowTruncationMode.AT) {
                         actionIndex -= 1;
                     }
@@ -296,7 +296,7 @@ public class WorkflowTraceMutator {
                 }
             } else {
                 if (message.getProtocolMessageType() == type) {
-                    messageIndex = messages.indexOf(message);
+                    messageIndex = getIndexOfIdenticalMessage(messages, message);
                     if (messageIndex == 0 && mode == WorkflowTruncationMode.AT) {
                         actionIndex -= 1;
                     }
@@ -393,5 +393,17 @@ public class WorkflowTraceMutator {
     public static void truncateReceivingAfter(
             WorkflowTrace trace, ProtocolMessageType type, Boolean untilLast) {
         truncate(trace, type, WorkflowTruncationMode.AFTER, false, untilLast);
+    }
+
+    private static int getIndexOfIdenticalMessage(
+            List<ProtocolMessage> collection, ProtocolMessage message) {
+        if (collection != null) {
+            for (int i = 0; i < collection.size(); i++) {
+                if (collection.get(i) == message) {
+                    return i;
+                }
+            }
+        }
+        return -1;
     }
 }
