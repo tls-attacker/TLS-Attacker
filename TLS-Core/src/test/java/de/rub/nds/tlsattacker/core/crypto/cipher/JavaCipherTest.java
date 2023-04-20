@@ -31,7 +31,8 @@ public class JavaCipherTest {
                 "(AES|ARIA|CAMELLIA)_(128|256)_(CBC|GCM)",
                 "DES_(EDE_)?CBC",
                 "(IDEA|RC2|RC4)_128",
-                "SEED_CBC"
+                "SEED_CBC",
+                "SM4_(GCM|CCM)"
             },
             mode = EnumSource.Mode.MATCH_ANY)
     public void testInstantiationDoesNotThrow(CipherAlgorithm providedCipherAlgorithm) {
