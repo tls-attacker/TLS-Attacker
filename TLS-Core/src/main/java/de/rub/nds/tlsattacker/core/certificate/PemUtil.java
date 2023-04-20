@@ -10,7 +10,9 @@ package de.rub.nds.tlsattacker.core.certificate;
 
 import java.io.*;
 import java.security.PrivateKey;
+import java.security.Provider;
 import java.security.PublicKey;
+import java.security.Security;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.util.Collection;
@@ -21,6 +23,7 @@ import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.crypto.tls.Certificate;
 import org.bouncycastle.crypto.tls.TlsUtils;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.openssl.PEMKeyPair;
 import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
@@ -91,7 +94,10 @@ public class PemUtil {
 
     public static Certificate readCertificate(InputStream stream)
             throws CertificateException, IOException {
-        CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
+        Security.addProvider(new BouncyCastleProvider());
+        Provider BouncyCastleProvider = Security.getProvider("BC");
+        CertificateFactory certFactory =
+                CertificateFactory.getInstance("X.509", BouncyCastleProvider);
         Collection<? extends java.security.cert.Certificate> certs =
                 certFactory.generateCertificates(stream);
         java.security.cert.Certificate sunCert =
@@ -123,8 +129,10 @@ public class PemUtil {
                 obj = pair.getPrivateKeyInfo();
             } else if (obj instanceof ASN1ObjectIdentifier) {
                 obj = parser.readObject();
-                PEMKeyPair pair = (PEMKeyPair) obj;
-                obj = pair.getPrivateKeyInfo();
+                if (obj instanceof PEMKeyPair) {
+                    PEMKeyPair pair = (PEMKeyPair) obj;
+                    obj = pair.getPrivateKeyInfo();
+                }
             }
             PrivateKeyInfo privKeyInfo = (PrivateKeyInfo) obj;
             JcaPEMKeyConverter converter = new JcaPEMKeyConverter();

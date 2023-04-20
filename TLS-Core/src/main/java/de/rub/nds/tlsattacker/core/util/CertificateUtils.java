@@ -11,26 +11,22 @@ package de.rub.nds.tlsattacker.core.util;
 import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.crypto.keys.*;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.security.KeyFactory;
-import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.PublicKey;
+import java.security.*;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 import java.security.interfaces.*;
 import java.security.spec.ECPrivateKeySpec;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.RSAPrivateKeySpec;
 import javax.crypto.interfaces.DHPrivateKey;
 import javax.crypto.interfaces.DHPublicKey;
-import javax.security.cert.CertificateException;
-import javax.security.cert.X509Certificate;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bouncycastle.asn1.ASN1InputStream;
-import org.bouncycastle.asn1.ASN1Integer;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
-import org.bouncycastle.asn1.DLSequence;
 import org.bouncycastle.asn1.cryptopro.CryptoProObjectIdentifiers;
 import org.bouncycastle.asn1.rosstandart.RosstandartObjectIdentifiers;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
@@ -41,6 +37,7 @@ import org.bouncycastle.crypto.tls.Certificate;
 import org.bouncycastle.crypto.util.PublicKeyFactory;
 import org.bouncycastle.jcajce.provider.asymmetric.ecgost.BCECGOST3410PublicKey;
 import org.bouncycastle.jcajce.provider.asymmetric.ecgost12.BCECGOST3410_2012PublicKey;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.jce.spec.ECNamedCurveSpec;
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
 
@@ -117,36 +114,14 @@ public class CertificateUtils {
      */
     public static PublicKey parsePublicKey(Certificate cert) {
         try {
-            X509Certificate x509Cert =
-                    X509Certificate.getInstance(cert.getCertificateAt(0).getEncoded());
-            PublicKey key = x509Cert.getPublicKey();
-            if (key instanceof RSAPublicKey
-                    || key instanceof ECPublicKey
-                    || key instanceof DSAPublicKey) {
-                return key;
-            } else {
-                // Since java does not support DH natively we can try to
-                // manually
-                // parse this, this may fail
-                ASN1InputStream stream =
-                        new ASN1InputStream(
-                                cert.getCertificateAt(0)
-                                        .getSubjectPublicKeyInfo()
-                                        .toASN1Primitive()
-                                        .getEncoded());
-                DLSequence sequence = (DLSequence) stream.readObject();
-                DLSequence objectAt = (DLSequence) sequence.getObjectAt(0).toASN1Primitive();
-                DLSequence dhparams = (DLSequence) objectAt.getObjectAt(1);
-                ASN1Integer asnModulus = (ASN1Integer) dhparams.getObjectAt(0); // modulus
-                ASN1Integer asnGenerator = (ASN1Integer) dhparams.getObjectAt(1); // generator
-                BigInteger publicKey = new BigInteger(1, x509Cert.getPublicKey().getEncoded());
-                return new CustomDhPublicKey(
-                        asnModulus.getPositiveValue(), asnGenerator.getPositiveValue(), publicKey);
-            }
-        } catch (IOException
-                | CertificateException
-                | IllegalArgumentException
-                | ClassCastException ex) {
+            Security.addProvider(new BouncyCastleProvider());
+            CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509", "BC");
+            ByteArrayInputStream inputStream =
+                    new ByteArrayInputStream(cert.getCertificateAt(0).getEncoded());
+            java.security.cert.X509Certificate x509Cert =
+                    (X509Certificate) certificateFactory.generateCertificate(inputStream);
+            return x509Cert.getPublicKey();
+        } catch (IOException | CertificateException | NoSuchProviderException ex) {
             LOGGER.warn("Could not extract public key from Certificate!");
             LOGGER.debug(ex);
             return null;
