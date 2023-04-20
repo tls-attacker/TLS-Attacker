@@ -19,7 +19,8 @@ public enum SignatureAlgorithm {
     ED448,
     GOSTR34102001("ECGOST3410"),
     GOSTR34102012_256("ECGOST3410-2012-256"),
-    GOSTR34102012_512("ECGOST3410-2012-512");
+    GOSTR34102012_512("ECGOST3410-2012-512"),
+    SM2;
 
     private final String javaName;
 
@@ -52,6 +53,8 @@ public enum SignatureAlgorithm {
             case GOSTR34102012_256:
             case GOSTR34102012_512:
                 return CertificateKeyType.GOST12;
+            case SM2:
+                return CertificateKeyType.SM2;
             default:
                 return null;
         }

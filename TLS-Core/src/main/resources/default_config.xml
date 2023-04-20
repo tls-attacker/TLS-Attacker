@@ -67,6 +67,7 @@
         <defaultClientSupportedSignatureAndHashAlgorithm>GOSTR34102001_GOSTR3411</defaultClientSupportedSignatureAndHashAlgorithm>
         <defaultClientSupportedSignatureAndHashAlgorithm>GOSTR34102012_256_GOSTR34112012_256</defaultClientSupportedSignatureAndHashAlgorithm>
         <defaultClientSupportedSignatureAndHashAlgorithm>GOSTR34102012_512_GOSTR34112012_512</defaultClientSupportedSignatureAndHashAlgorithm>
+        <defaultClientSupportedSignatureAndHashAlgorithm>SM2_SM3</defaultClientSupportedSignatureAndHashAlgorithm>
     </defaultClientSupportedSignatureAndHashAlgorithms>
     <defaultClientSupportedCertificateSignAlgorithms>
         <defaultClientSupportedCertificateSignAlgorithms>RSA_SHA256</defaultClientSupportedCertificateSignAlgorithms>
@@ -78,6 +79,7 @@
         <defaultClientSupportedCertificateSignAlgorithms>RSA_PSS_RSAE_SHA256</defaultClientSupportedCertificateSignAlgorithms>
         <defaultClientSupportedCertificateSignAlgorithms>RSA_PSS_RSAE_SHA384</defaultClientSupportedCertificateSignAlgorithms>
         <defaultClientSupportedCertificateSignAlgorithms>RSA_PSS_RSAE_SHA512</defaultClientSupportedCertificateSignAlgorithms>
+        <defaultClientSupportedCertificateSignAlgorithms>SM2_SM3</defaultClientSupportedCertificateSignAlgorithms>
     </defaultClientSupportedCertificateSignAlgorithms>
     <defaultClientSupportedCipherSuites>
         <defaultClientSupportedCipherSuite>TLS_RSA_WITH_3DES_EDE_CBC_SHA</defaultClientSupportedCipherSuite>
@@ -1072,6 +1074,7 @@
         <defaultServerSupportedSignatureAndHashAlgorithm>GOSTR34102001_GOSTR3411</defaultServerSupportedSignatureAndHashAlgorithm>
         <defaultServerSupportedSignatureAndHashAlgorithm>GOSTR34102012_256_GOSTR34112012_256</defaultServerSupportedSignatureAndHashAlgorithm>
         <defaultServerSupportedSignatureAndHashAlgorithm>GOSTR34102012_512_GOSTR34112012_512</defaultServerSupportedSignatureAndHashAlgorithm>
+        <defaultServerSupportedSignatureAndHashAlgorithm>SM2_SM3</defaultServerSupportedSignatureAndHashAlgorithm>
     </defaultServerSupportedSignatureAndHashAlgorithms>
     <defaultServerSupportedCertificateSignAlgorithms>
         <defaultServerSupportedCertificateSignAlgorithms>RSA_SHA256</defaultServerSupportedCertificateSignAlgorithms>
@@ -1083,6 +1086,7 @@
         <defaultServerSupportedCertificateSignAlgorithms>RSA_PSS_RSAE_SHA256</defaultServerSupportedCertificateSignAlgorithms>
         <defaultServerSupportedCertificateSignAlgorithms>RSA_PSS_RSAE_SHA384</defaultServerSupportedCertificateSignAlgorithms>
         <defaultServerSupportedCertificateSignAlgorithms>RSA_PSS_RSAE_SHA512</defaultServerSupportedCertificateSignAlgorithms>
+        <defaultServerSupportedCertificateSignAlgorithms>SM2_SM3</defaultServerSupportedCertificateSignAlgorithms>
     </defaultServerSupportedCertificateSignAlgorithms>
     <defaultSelectedSignatureAndHashAlgorithm>RSA_SHA1</defaultSelectedSignatureAndHashAlgorithm>
     <defaultSelectedSignatureAlgorithmCert>RSA_SHA1</defaultSelectedSignatureAlgorithmCert>

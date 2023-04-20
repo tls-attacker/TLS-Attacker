@@ -19,5 +19,6 @@ public enum CertificateKeyType {
     GOST12,
     FORTEZZA,
     ECNRA,
+    SM2,
     NONE;
 }

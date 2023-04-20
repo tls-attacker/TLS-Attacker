@@ -5876,6 +5876,7 @@
       <xs:enumeration value="ECDSA_SHA256"/>
       <xs:enumeration value="ECDSA_SHA384"/>
       <xs:enumeration value="ECDSA_SHA512"/>
+      <xs:enumeration value="SM2_SM3"/>
       <xs:enumeration value="ED25519"/>
       <xs:enumeration value="ED448"/>
       <xs:enumeration value="RSA_PSS_RSAE_SHA256"/>
@@ -6174,6 +6175,7 @@
       <xs:enumeration value="GOST12"/>
       <xs:enumeration value="FORTEZZA"/>
       <xs:enumeration value="ECNRA"/>
+      <xs:enumeration value="SM2"/>
       <xs:enumeration value="NONE"/>
     </xs:restriction>
   </xs:simpleType>
