@@ -216,8 +216,14 @@ public class HKDFunction {
             MessageDigest hashFunction = MessageDigest.getInstance(hashAlgorithm);
             hashFunction.update(toHash);
             byte[] hashValue = hashFunction.digest();
-            int outLen =
-                    Mac.getInstance(hkdfAlgorithm.getMacAlgorithm().getJavaName()).getMacLength();
+            int outLen;
+            if (hkdfAlgorithm.getMacAlgorithm().getJavaName().equals("HmacSM3")) {
+                outLen = 32;
+            } else {
+                outLen =
+                        Mac.getInstance(hkdfAlgorithm.getMacAlgorithm().getJavaName())
+                                .getMacLength();
+            }
             return expandLabel(hkdfAlgorithm, prk, labelIn, hashValue, outLen);
         } catch (NoSuchAlgorithmException ex) {
             throw new CryptoException("Could not initialize HKDF", ex);
