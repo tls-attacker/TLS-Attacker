@@ -213,8 +213,14 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                         tlsContext.getChooser().getSelectedCipherSuite());
 
         try {
-            int macLength =
-                    Mac.getInstance(hkdfAlgorithm.getMacAlgorithm().getJavaName()).getMacLength();
+            int macLength;
+            if (hkdfAlgorithm.getMacAlgorithm().getJavaName().equals("HmacSM3")) {
+                macLength = 32;
+            } else {
+                macLength =
+                        Mac.getInstance(hkdfAlgorithm.getMacAlgorithm().getJavaName())
+                                .getMacLength();
+            }
             byte[] psk =
                     (tlsContext.getConfig().isUsePsk() || tlsContext.getPsk() != null)
                             ? tlsContext.getChooser().getPsk()

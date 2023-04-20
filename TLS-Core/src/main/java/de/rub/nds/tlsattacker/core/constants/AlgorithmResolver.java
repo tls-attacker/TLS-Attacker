@@ -77,6 +77,8 @@ public class AlgorithmResolver {
                 || protocolVersion == ProtocolVersion.TLS11
                 || protocolVersion == ProtocolVersion.DTLS10) {
             result = DigestAlgorithm.LEGACY;
+        } else if (cipherSuite.isSM()) {
+            result = DigestAlgorithm.SM3;
         } else if (cipherSuite.usesSHA384()) {
             result = DigestAlgorithm.SHA384;
         } else {
@@ -390,6 +392,8 @@ public class AlgorithmResolver {
                 result = MacAlgorithm.HMAC_SHA384;
             } else if (cipher.contains("SHA512")) {
                 result = MacAlgorithm.HMAC_SHA512;
+            } else if (cipher.contains("SM3")) {
+                result = MacAlgorithm.HMAC_SM3;
             } else if (cipher.endsWith("NULL")) {
                 result = MacAlgorithm.NULL;
             } else if (cipher.endsWith("IMIT")) {
@@ -421,6 +425,8 @@ public class AlgorithmResolver {
             result = HKDFAlgorithm.TLS_HKDF_SHA256;
         } else if (cipher.endsWith("SHA384")) {
             result = HKDFAlgorithm.TLS_HKDF_SHA384;
+        } else if (cipher.endsWith("SM3")) {
+        result = HKDFAlgorithm.TLS_HKDF_SM3;
         }
         if (result != null) {
             LOGGER.debug("Using the following HKDF Algorithm: {}", result);

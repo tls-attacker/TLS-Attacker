@@ -18,7 +18,8 @@ public enum HashAlgorithm {
     SHA512("SHA-512", 256),
     GOSTR3411("GOST3411", 128),
     GOSTR34112012_256("GOST3411-2012-256", 128),
-    GOSTR34112012_512("GOST3411-2012-512", 256);
+    GOSTR34112012_512("GOST3411-2012-512", 256),
+    SM3("SM3", 128);
 
     private final String javaName;
     /**

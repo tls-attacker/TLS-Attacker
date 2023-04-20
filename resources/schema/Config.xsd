@@ -3600,6 +3600,7 @@
       <xs:enumeration value="GOSTR3411"/>
       <xs:enumeration value="GOSTR34112012_256"/>
       <xs:enumeration value="GOSTR34112012_512"/>
+      <xs:enumeration value="SM3"/>
     </xs:restriction>
   </xs:simpleType>
 
@@ -4419,6 +4420,7 @@
       <xs:enumeration value="IMIT_GOST28147"/>
       <xs:enumeration value="HMAC_GOSTR3411"/>
       <xs:enumeration value="HMAC_GOSTR3411_2012_256"/>
+      <xs:enumeration value="HMAC_SM3"/>
     </xs:restriction>
   </xs:simpleType>
 

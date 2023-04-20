@@ -79,8 +79,14 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
                         tlsContext.getChooser().getSelectedProtocolVersion(),
                         tlsContext.getChooser().getSelectedCipherSuite());
         try {
-            int macLength =
-                    Mac.getInstance(hkdfAlgorithm.getMacAlgorithm().getJavaName()).getMacLength();
+            int macLength;
+            if (hkdfAlgorithm.getMacAlgorithm().getJavaName().equals("HmacSM3")) {
+                macLength = 32;
+            } else {
+                macLength =
+                        Mac.getInstance(hkdfAlgorithm.getMacAlgorithm().getJavaName())
+                                .getMacLength();
+            }
             byte[] saltMasterSecret =
                     HKDFunction.deriveSecret(
                             hkdfAlgorithm,
