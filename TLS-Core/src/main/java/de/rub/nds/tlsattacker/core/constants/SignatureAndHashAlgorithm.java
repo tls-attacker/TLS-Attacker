@@ -376,7 +376,7 @@ public enum SignatureAndHashAlgorithm {
             switch (certPublicKeyType) {
                 case ECDH:
                 case ECDSA:
-                    if (sig == SignatureAlgorithm.ECDSA) {
+                    if (sig == SignatureAlgorithm.ECDSA | sig == SignatureAlgorithm.SM2) {
                         found = true;
                         sigHashAlgo = i;
                     }
