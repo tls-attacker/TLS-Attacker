@@ -109,6 +109,7 @@ public class CertificateByteChooser {
         filenames.add("ec_sect193r1_ecdsa_cert.pem");
         filenames.add("ec_secp256r1_ecdsa_cert.pem");
         filenames.add("ec_secp256r1_rsa_cert.pem");
+        filenames.add("ec_sm2p256v1_sm2_cert.pem");
         filenames.add("dh3072_ecdsa_cert.pem");
         filenames.add("dh2048_ecdsa_cert.pem");
         filenames.add("dh1024_ecdsa_cert.pem");
