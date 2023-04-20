@@ -305,6 +305,10 @@ public class AlgorithmResolver {
             return CipherAlgorithm.ARIA_256_GCM;
         } else if (cipher.contains("28147_CNT")) {
             return CipherAlgorithm.GOST_28147_CNT;
+        } else if (cipher.contains("SM4_GCM")) {
+            return CipherAlgorithm.SM4_GCM;
+        } else if (cipher.contains("SM4_CCM")) {
+            return CipherAlgorithm.SM4_CCM;
         } else if (cipher.contains("CHACHA20_POLY1305")) {
             if (cipher.contains("UNOFFICIAL")) {
                 return CipherAlgorithm.UNOFFICIAL_CHACHA20_POLY1305;
@@ -426,7 +430,7 @@ public class AlgorithmResolver {
         } else if (cipher.endsWith("SHA384")) {
             result = HKDFAlgorithm.TLS_HKDF_SHA384;
         } else if (cipher.endsWith("SM3")) {
-        result = HKDFAlgorithm.TLS_HKDF_SM3;
+            result = HKDFAlgorithm.TLS_HKDF_SM3;
         }
         if (result != null) {
             LOGGER.debug("Using the following HKDF Algorithm: {}", result);

@@ -11,9 +11,7 @@ package de.rub.nds.tlsattacker.core.crypto.cipher;
 import de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
+import java.security.*;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -23,6 +21,7 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 class JavaCipher extends BaseCipher {
 
@@ -104,7 +103,8 @@ class JavaCipher extends BaseCipher {
     public byte[] encrypt(byte[] iv, int tagLength, byte[] someBytes) throws CryptoException {
         GCMParameterSpec encryptIv = new GCMParameterSpec(tagLength, iv);
         try {
-            cipher = Cipher.getInstance(algorithm.getJavaName());
+            Security.addProvider(new BouncyCastleProvider());
+            cipher = Cipher.getInstance(algorithm.getJavaName(), "BC");
             String keySpecAlgorithm =
                     BulkCipherAlgorithm.getBulkCipherAlgorithm(algorithm).getJavaName();
             cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key, keySpecAlgorithm), encryptIv);
@@ -118,6 +118,7 @@ class JavaCipher extends BaseCipher {
                 | InvalidAlgorithmParameterException
                 | InvalidKeyException
                 | NoSuchPaddingException
+                | NoSuchProviderException
                 | IllegalArgumentException ex) {
             throw new CryptoException("Could not encrypt data with " + algorithm.getJavaName(), ex);
         }
@@ -129,7 +130,8 @@ class JavaCipher extends BaseCipher {
             throws CryptoException {
         GCMParameterSpec encryptIv = new GCMParameterSpec(tagLength, iv);
         try {
-            cipher = Cipher.getInstance(algorithm.getJavaName());
+            Security.addProvider(new BouncyCastleProvider());
+            cipher = Cipher.getInstance(algorithm.getJavaName(), "BC");
 
             String keySpecAlgorithm =
                     BulkCipherAlgorithm.getBulkCipherAlgorithm(algorithm).getJavaName();
@@ -145,6 +147,7 @@ class JavaCipher extends BaseCipher {
                 | InvalidAlgorithmParameterException
                 | InvalidKeyException
                 | NoSuchPaddingException
+                | NoSuchProviderException
                 | IllegalArgumentException ex) {
             throw new CryptoException("Could not encrypt data with " + algorithm.getJavaName(), ex);
         }
@@ -215,7 +218,8 @@ class JavaCipher extends BaseCipher {
     public byte[] decrypt(byte[] iv, int tagLength, byte[] someBytes) throws CryptoException {
         GCMParameterSpec decryptIv = new GCMParameterSpec(tagLength, iv);
         try {
-            cipher = Cipher.getInstance(algorithm.getJavaName());
+            Security.addProvider(new BouncyCastleProvider());
+            cipher = Cipher.getInstance(algorithm.getJavaName(), "BC");
             String keySpecAlgorithm =
                     BulkCipherAlgorithm.getBulkCipherAlgorithm(algorithm).getJavaName();
             cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key, keySpecAlgorithm), decryptIv);
@@ -232,6 +236,7 @@ class JavaCipher extends BaseCipher {
                 | NoSuchAlgorithmException
                 | InvalidAlgorithmParameterException
                 | InvalidKeyException
+                | NoSuchProviderException
                 | NoSuchPaddingException ex) {
             throw new CryptoException("Could not decrypt data", ex);
         }
@@ -243,7 +248,8 @@ class JavaCipher extends BaseCipher {
             throws CryptoException {
         GCMParameterSpec decryptIv = new GCMParameterSpec(tagLength, iv);
         try {
-            cipher = Cipher.getInstance(algorithm.getJavaName());
+            Security.addProvider(new BouncyCastleProvider());
+            cipher = Cipher.getInstance(algorithm.getJavaName(), "BC");
             String keySpecAlgorithm =
                     BulkCipherAlgorithm.getBulkCipherAlgorithm(algorithm).getJavaName();
             cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key, keySpecAlgorithm), decryptIv);
@@ -262,6 +268,7 @@ class JavaCipher extends BaseCipher {
                 | InvalidAlgorithmParameterException
                 | InvalidKeyException
                 | NoSuchPaddingException
+                | NoSuchProviderException
                 | IllegalArgumentException ex) {
             throw new CryptoException("Could not decrypt data", ex);
         }

@@ -27,7 +27,8 @@ public enum BulkCipherAlgorithm {
     ARIA,
     CHACHA20_POLY1305,
     GOST28147,
-    AES;
+    AES,
+    SM4;
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -65,6 +66,8 @@ public enum BulkCipherAlgorithm {
             return GOST28147;
         } else if (cipher.contains("CHACHA20_POLY1305")) {
             return CHACHA20_POLY1305;
+        } else if (cipher.contains("SM4")) {
+            return SM4;
         }
 
         LOGGER.warn(
@@ -102,6 +105,8 @@ public enum BulkCipherAlgorithm {
             return ARIA;
         } else if (cipher.contains("CHACHA20_POLY1305")) {
             return CHACHA20_POLY1305;
+        } else if (cipher.contains("SM4")) {
+            return SM4;
         }
         throw new UnsupportedOperationException(
                 "The cipher algorithm from " + cipherAlgorithm.name() + " is not supported yet.");
