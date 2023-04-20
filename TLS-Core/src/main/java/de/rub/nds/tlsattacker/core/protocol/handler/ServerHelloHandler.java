@@ -81,6 +81,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                 if (tlsContext.getTalkingConnectionEndType()
                         != tlsContext.getChooser().getConnectionEndType()) {
                     setServerRecordCipher();
+                    setClientRecordCipher();
                 }
             }
             adjustPRF(message);
@@ -183,6 +184,24 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         }
     }
 
+    private void setClientRecordCipher() {
+        tlsContext.setActiveClientKeySetType(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
+        LOGGER.debug("Setting cipher for client to use handshake secrets");
+        KeySet clientKeySet = getTls13KeySet(tlsContext, tlsContext.getActiveClientKeySetType());
+
+        if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.SERVER) {
+            tlsContext
+                    .getRecordLayer()
+                    .updateDecryptionCipher(
+                            RecordCipherFactory.getRecordCipher(tlsContext, clientKeySet, false));
+        } else {
+            tlsContext
+                    .getRecordLayer()
+                    .updateEncryptionCipher(
+                            RecordCipherFactory.getRecordCipher(tlsContext, clientKeySet, true));
+        }
+    }
+
     private KeySet getTls13KeySet(TlsContext tlsContext, Tls13KeySetType keySetType) {
         try {
             LOGGER.debug("Generating new KeySet");
@@ -200,6 +219,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()
                 && !message.isTls13HelloRetryRequest()) {
             setServerRecordCipher();
+            setClientRecordCipher();
         }
     }
 
