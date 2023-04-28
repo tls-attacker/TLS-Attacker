@@ -23,6 +23,7 @@ import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElements;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.*;
+import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.cert.CertificateException;
@@ -195,7 +196,7 @@ public class CertificateKeyPair implements Serializable {
             CertificateKeyType certSignatureType,
             File certFile,
             File privateKeyFile)
-            throws CertificateException, IOException {
+            throws CertificateException, IOException, NoSuchProviderException {
         this.certPublicKeyType = certPublicKeyType;
         this.certSignatureType = certSignatureType;
         Certificate certificate = PemUtil.readCertificate(certFile);

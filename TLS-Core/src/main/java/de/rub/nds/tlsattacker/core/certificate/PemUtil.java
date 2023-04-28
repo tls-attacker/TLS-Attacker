@@ -9,10 +9,9 @@
 package de.rub.nds.tlsattacker.core.certificate;
 
 import java.io.*;
+import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
-import java.security.Provider;
 import java.security.PublicKey;
-import java.security.Security;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.util.Collection;
@@ -23,7 +22,6 @@ import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.crypto.tls.Certificate;
 import org.bouncycastle.crypto.tls.TlsUtils;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.openssl.PEMKeyPair;
 import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
@@ -93,11 +91,8 @@ public class PemUtil {
     }
 
     public static Certificate readCertificate(InputStream stream)
-            throws CertificateException, IOException {
-        Security.addProvider(new BouncyCastleProvider());
-        Provider BouncyCastleProvider = Security.getProvider("BC");
-        CertificateFactory certFactory =
-                CertificateFactory.getInstance("X.509", BouncyCastleProvider);
+            throws CertificateException, IOException, NoSuchProviderException {
+        CertificateFactory certFactory = CertificateFactory.getInstance("X.509", "BC");
         Collection<? extends java.security.cert.Certificate> certs =
                 certFactory.generateCertificates(stream);
         java.security.cert.Certificate sunCert =
@@ -114,7 +109,8 @@ public class PemUtil {
         return tlsCerts;
     }
 
-    public static Certificate readCertificate(File f) throws CertificateException, IOException {
+    public static Certificate readCertificate(File f)
+            throws CertificateException, IOException, NoSuchProviderException {
         try (FileInputStream fis = new FileInputStream(f)) {
             return readCertificate(fis);
         }
