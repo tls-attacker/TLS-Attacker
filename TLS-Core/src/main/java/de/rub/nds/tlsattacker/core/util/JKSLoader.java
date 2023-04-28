@@ -9,14 +9,16 @@
 package de.rub.nds.tlsattacker.core.util;
 
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
+
+import org.bouncycastle.asn1.ASN1Primitive;
+import org.bouncycastle.crypto.tls.TlsUtils;
+import org.bouncycastle.jce.provider.X509CertificateObject;
+
 import java.io.IOException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateParsingException;
-import org.bouncycastle.asn1.ASN1Primitive;
-import org.bouncycastle.crypto.tls.TlsUtils;
-import org.bouncycastle.jce.provider.X509CertificateObject;
 
 public class JKSLoader {
 
@@ -94,7 +96,9 @@ public class JKSLoader {
     }
 
     public static X509CertificateObject loadX509Certificate(KeyStore keyStore, String alias)
-            throws KeyStoreException, CertificateEncodingException, IOException,
+            throws KeyStoreException,
+                    CertificateEncodingException,
+                    IOException,
                     CertificateParsingException {
         return new X509CertificateObject(loadTLSCertificate(keyStore, alias).getCertificateAt(0));
     }

@@ -13,11 +13,13 @@ import de.rub.nds.tlsattacker.core.constants.CertificateType;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerCertificateTypeExtensionMessage;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+
+import org.junit.jupiter.api.Named;
+import org.junit.jupiter.params.provider.Arguments;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
-import org.junit.jupiter.api.Named;
-import org.junit.jupiter.params.provider.Arguments;
 
 public class ServerCertificateTypeExtensionParserTest
         extends AbstractExtensionParserTest<

@@ -10,10 +10,12 @@ package de.rub.nds.tlsattacker.core.protocol.parser.cert;
 
 import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.record.Record;
-import java.io.InputStream;
-import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.io.InputStream;
+import java.util.List;
 
 /**
  * //TODO I am not sure if this implementation is so smart since it extends Parser which is designed

@@ -17,11 +17,14 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.GreaseExtensionHan
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.GreaseExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.GreaseExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.GreaseExtensionSerializer;
+
 import jakarta.xml.bind.annotation.XmlRootElement;
-import java.io.InputStream;
-import java.util.Random;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.io.InputStream;
+import java.util.Random;
 
 @XmlRootElement(name = "GreaseExtension")
 public class GreaseExtensionMessage extends ExtensionMessage<GreaseExtensionMessage> {

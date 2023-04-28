@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
+
 import org.junit.jupiter.api.Test;
 
 public class ApplicationMessagePreparatorTest

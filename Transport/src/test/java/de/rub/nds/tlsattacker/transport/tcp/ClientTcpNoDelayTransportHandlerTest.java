@@ -11,11 +11,12 @@ package de.rub.nds.tlsattacker.transport.tcp;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.junit.jupiter.api.Test;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
-import org.junit.jupiter.api.Test;
 
 public class ClientTcpNoDelayTransportHandlerTest {
 

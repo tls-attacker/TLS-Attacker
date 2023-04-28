@@ -17,11 +17,13 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.CachedInfoExtensio
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.CachedObjectPreparator;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+
+import org.junit.jupiter.api.Named;
+import org.junit.jupiter.params.provider.Arguments;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
-import org.junit.jupiter.api.Named;
-import org.junit.jupiter.params.provider.Arguments;
 
 public class CachedInfoExtensionParserTest
         extends AbstractExtensionParserTest<CachedInfoExtensionMessage, CachedInfoExtensionParser> {

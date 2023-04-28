@@ -15,10 +15,12 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 public class ClientKeyExchangeHandlerTest
         extends AbstractProtocolMessageHandlerTest<

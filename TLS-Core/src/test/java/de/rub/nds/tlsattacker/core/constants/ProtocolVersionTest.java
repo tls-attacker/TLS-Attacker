@@ -10,10 +10,11 @@ package de.rub.nds.tlsattacker.core.constants;
 
 import static org.junit.jupiter.api.Assertions.assertSame;
 
-import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+
+import java.util.List;
 
 public class ProtocolVersionTest {
 

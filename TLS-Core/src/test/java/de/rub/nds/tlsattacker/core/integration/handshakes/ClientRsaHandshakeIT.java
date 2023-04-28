@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.integration.handshakes;
 import de.rub.nds.tls.subject.ConnectionRole;
 import de.rub.nds.tls.subject.TlsImplementationType;
 import de.rub.nds.tlsattacker.util.tests.TestCategories;
+
 import org.junit.jupiter.api.Tag;
 
 @Tag(TestCategories.INTEGRATION_TEST)

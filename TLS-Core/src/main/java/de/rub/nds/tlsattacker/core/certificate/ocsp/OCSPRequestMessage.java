@@ -14,11 +14,13 @@ import de.rub.nds.asn1.Asn1Encodable;
 import de.rub.nds.asn1.encoder.Asn1Encoder;
 import de.rub.nds.asn1.model.*;
 import de.rub.nds.tlsattacker.core.certificate.ObjectIdentifierTranslator;
+
+import org.apache.commons.lang3.NotImplementedException;
+
 import java.math.BigInteger;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
-import org.apache.commons.lang3.NotImplementedException;
 
 public class OCSPRequestMessage {
     // see RFC 6960: TBSRequest -> [2] requestExtensions

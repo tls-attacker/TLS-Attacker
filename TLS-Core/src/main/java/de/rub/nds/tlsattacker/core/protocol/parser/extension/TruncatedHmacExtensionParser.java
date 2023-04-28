@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TruncatedHmacExtensionMessage;
+
 import java.io.InputStream;
 
 public class TruncatedHmacExtensionParser extends ExtensionParser<TruncatedHmacExtensionMessage> {

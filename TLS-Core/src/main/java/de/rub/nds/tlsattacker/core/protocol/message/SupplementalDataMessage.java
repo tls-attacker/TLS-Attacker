@@ -22,7 +22,9 @@ import de.rub.nds.tlsattacker.core.protocol.message.supplementaldata.Supplementa
 import de.rub.nds.tlsattacker.core.protocol.parser.SupplementalDataParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.SupplementalDataPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.SupplementalDataSerializer;
+
 import jakarta.xml.bind.annotation.XmlRootElement;
+
 import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;

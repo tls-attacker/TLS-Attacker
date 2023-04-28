@@ -13,10 +13,12 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.PskEcDhClientKeyExchangeMessage;
-import java.util.List;
-import java.util.stream.Stream;
+
 import org.junit.jupiter.api.Named;
 import org.junit.jupiter.params.provider.Arguments;
+
+import java.util.List;
+import java.util.stream.Stream;
 
 public class PskEcDhClientKeyExchangeParserTest
         extends AbstractHandshakeMessageParserTest<

@@ -16,11 +16,14 @@ import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.state.State;
+
 import jakarta.xml.bind.annotation.XmlRootElement;
-import java.security.NoSuchAlgorithmException;
-import java.util.Objects;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.security.NoSuchAlgorithmException;
+import java.util.Objects;
 
 @XmlRootElement
 public class ChangeCipherSuiteAction extends ConnectionBoundAction {

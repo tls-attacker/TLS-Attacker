@@ -14,10 +14,12 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionM
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.util.LinkedList;
-import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * This handler processes the KeyShare extensions in ClientHello and ServerHello messages, as

@@ -12,9 +12,11 @@ import static de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedSe
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.EncryptedServerNameIndicationExtensionParserTest;
+
+import org.junit.jupiter.params.provider.Arguments;
+
 import java.util.List;
 import java.util.stream.Stream;
-import org.junit.jupiter.params.provider.Arguments;
 
 public class EncryptedServerNameIndicationExtensionSerializerTest
         extends AbstractExtensionMessageSerializerTest<

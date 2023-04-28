@@ -11,11 +11,13 @@ package de.rub.nds.tlsattacker.transport.tcp;
 import static org.junit.jupiter.api.Assertions.*;
 
 import de.rub.nds.tlsattacker.util.FreePortFinder;
-import java.io.IOException;
-import java.net.Socket;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+import java.net.Socket;
 
 public class ServerTcpTransportHandlerTest {
 

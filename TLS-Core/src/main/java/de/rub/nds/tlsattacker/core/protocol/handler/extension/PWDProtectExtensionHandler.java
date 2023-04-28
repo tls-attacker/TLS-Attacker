@@ -16,9 +16,7 @@ import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PWDProtectExtensionMessage;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.math.BigInteger;
-import java.util.Arrays;
-import javax.crypto.IllegalBlockSizeException;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jce.ECNamedCurveTable;
@@ -26,6 +24,11 @@ import org.bouncycastle.math.ec.ECCurve;
 import org.bouncycastle.math.ec.ECPoint;
 import org.cryptomator.siv.SivMode;
 import org.cryptomator.siv.UnauthenticCiphertextException;
+
+import java.math.BigInteger;
+import java.util.Arrays;
+
+import javax.crypto.IllegalBlockSizeException;
 
 public class PWDProtectExtensionHandler extends ExtensionHandler<PWDProtectExtensionMessage> {
 

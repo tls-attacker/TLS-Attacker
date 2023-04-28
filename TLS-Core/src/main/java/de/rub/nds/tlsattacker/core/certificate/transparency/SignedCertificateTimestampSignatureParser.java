@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.certificate.transparency;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.layer.data.Parser;
+
 import java.io.InputStream;
 
 public class SignedCertificateTimestampSignatureParser

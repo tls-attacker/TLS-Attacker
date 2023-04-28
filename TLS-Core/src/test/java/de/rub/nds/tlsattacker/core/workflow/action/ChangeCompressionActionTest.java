@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
+
 import org.junit.jupiter.api.Test;
 
 public class ChangeCompressionActionTest extends AbstractChangeActionTest<ChangeCompressionAction> {

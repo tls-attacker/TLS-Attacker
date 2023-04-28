@@ -9,13 +9,16 @@
 package de.rub.nds.tlsattacker.core.state;
 
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+
 import jakarta.xml.bind.DatatypeConverter;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class Keylogfile {
     private static final Logger LOGGER = LogManager.getLogger();

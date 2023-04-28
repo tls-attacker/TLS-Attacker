@@ -9,6 +9,10 @@
 package de.rub.nds.tlsattacker.transport;
 
 import de.rub.nds.tlsattacker.transport.socket.SocketState;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.ByteArrayOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
@@ -17,8 +21,6 @@ import java.io.OutputStream;
 import java.io.PushbackInputStream;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public abstract class TransportHandler {
 

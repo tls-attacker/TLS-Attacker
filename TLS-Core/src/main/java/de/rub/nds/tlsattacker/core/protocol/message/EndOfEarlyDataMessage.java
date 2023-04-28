@@ -14,7 +14,9 @@ import de.rub.nds.tlsattacker.core.protocol.handler.EndOfEarlyDataHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.EndOfEarlyDataParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.EndOfEarlyDataPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.EndOfEarlyDataSerializer;
+
 import jakarta.xml.bind.annotation.XmlRootElement;
+
 import java.io.InputStream;
 
 /** RFC draft-ietf-tls-tls13-21 */

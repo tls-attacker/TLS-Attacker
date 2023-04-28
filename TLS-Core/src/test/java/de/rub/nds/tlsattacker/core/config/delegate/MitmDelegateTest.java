@@ -11,15 +11,18 @@ package de.rub.nds.tlsattacker.core.config.delegate;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.beust.jcommander.ParameterException;
+
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
-import java.util.ArrayList;
-import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MitmDelegateTest extends AbstractDelegateTest<MitmDelegate> {
 

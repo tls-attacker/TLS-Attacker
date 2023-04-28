@@ -16,13 +16,15 @@ import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.*;
 import de.rub.nds.tlsattacker.util.tests.TestCategories;
-import java.io.ByteArrayInputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Random;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+
+import java.io.ByteArrayInputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Random;
 
 public class ParserSerializerIT extends GenericParserSerializerTest {
 
@@ -32,8 +34,12 @@ public class ParserSerializerIT extends GenericParserSerializerTest {
     @Test
     @Tag(TestCategories.INTEGRATION_TEST)
     public void testParser()
-            throws NoSuchMethodException, InstantiationException, IllegalAccessException,
-                    IllegalAccessException, IllegalArgumentException, IllegalArgumentException,
+            throws NoSuchMethodException,
+                    InstantiationException,
+                    IllegalAccessException,
+                    IllegalAccessException,
+                    IllegalArgumentException,
+                    IllegalArgumentException,
                     InvocationTargetException {
         Random r = new Random(42);
         for (int i = 0; i < 10000; i++) {

@@ -14,16 +14,18 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.util.FixedTimeProvider;
 import de.rub.nds.tlsattacker.util.TimeHelper;
 import de.rub.nds.tlsattacker.util.tests.TestCategories;
-import java.io.IOException;
-import java.security.*;
-import java.security.cert.CertificateException;
-import java.util.Random;
-import java.util.concurrent.TimeUnit;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+import java.security.*;
+import java.security.cert.CertificateException;
+import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 public class BasicTlsClientServerIT {
 
@@ -39,9 +41,16 @@ public class BasicTlsClientServerIT {
     @Test
     @Tag(TestCategories.INTEGRATION_TEST)
     public void testSimpleProxy()
-            throws OperatorCreationException, NoSuchAlgorithmException, UnrecoverableKeyException,
-                    CertificateException, KeyStoreException, IOException, KeyManagementException,
-                    SignatureException, InvalidKeyException, NoSuchProviderException,
+            throws OperatorCreationException,
+                    NoSuchAlgorithmException,
+                    UnrecoverableKeyException,
+                    CertificateException,
+                    KeyStoreException,
+                    IOException,
+                    KeyManagementException,
+                    SignatureException,
+                    InvalidKeyException,
+                    NoSuchProviderException,
                     InterruptedException {
         TimeHelper.setProvider(new FixedTimeProvider(0));
         KeyPair k = KeyStoreGenerator.createRSAKeyPair(1024, random);

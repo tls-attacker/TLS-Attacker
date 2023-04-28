@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.UnknownExtensionMessage;
+
 import org.junit.jupiter.api.Test;
 
 public class UnknownExtensionHandlerTest

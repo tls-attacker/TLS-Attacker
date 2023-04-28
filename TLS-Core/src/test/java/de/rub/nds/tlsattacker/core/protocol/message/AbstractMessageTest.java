@@ -12,10 +12,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
-import java.util.function.BiConsumer;
-import java.util.function.Supplier;
+
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.function.BiConsumer;
+import java.util.function.Supplier;
 
 abstract class AbstractMessageTest<T extends ProtocolMessage> {
 

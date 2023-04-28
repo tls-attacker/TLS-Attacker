@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
 import de.rub.nds.tlsattacker.core.state.SessionTicket;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+
 import org.junit.jupiter.api.Test;
 
 public class SessionTicketTlsExtensionHandlerTest

@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.message.extension.sni;
 
 import de.rub.nds.tlsattacker.core.constants.NameType;
+
 import java.io.Serializable;
 import java.util.Objects;
 

@@ -12,10 +12,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
+
+import org.junit.jupiter.api.Test;
+
 import java.io.ByteArrayInputStream;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import org.junit.jupiter.api.Test;
 
 abstract class AbstractExtensionMessageHandlerTest<
         MT extends ExtensionMessage, HT extends ExtensionHandler<MT>> {

@@ -14,10 +14,12 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.PreSharedKeyExtens
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PSKIdentity;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PskSet;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.util.Arrays;
-import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.Arrays;
+import java.util.List;
 
 /** RFC draft-ietf-tls-tls13-21 */
 public class PreSharedKeyExtensionHandler extends ExtensionHandler<PreSharedKeyExtensionMessage> {

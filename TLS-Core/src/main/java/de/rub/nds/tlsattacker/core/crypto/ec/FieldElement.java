@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.crypto.ec;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
+
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Objects;

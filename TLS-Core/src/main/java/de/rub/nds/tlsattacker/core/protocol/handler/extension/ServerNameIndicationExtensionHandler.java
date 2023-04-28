@@ -13,10 +13,12 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.SNIEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
-import java.util.LinkedList;
-import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.LinkedList;
+import java.util.List;
 
 public class ServerNameIndicationExtensionHandler
         extends ExtensionHandler<ServerNameIndicationExtensionMessage> {

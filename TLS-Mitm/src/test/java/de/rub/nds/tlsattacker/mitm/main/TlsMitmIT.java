@@ -17,6 +17,15 @@ import de.rub.nds.tlsattacker.core.util.KeyStoreGenerator;
 import de.rub.nds.tlsattacker.util.FixedTimeProvider;
 import de.rub.nds.tlsattacker.util.TimeHelper;
 import de.rub.nds.tlsattacker.util.tests.TestCategories;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.bouncycastle.operator.OperatorCreationException;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.KeyManagementException;
@@ -29,13 +38,6 @@ import java.security.SignatureException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.util.Random;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.bouncycastle.operator.OperatorCreationException;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
 
 public class TlsMitmIT {
 
@@ -48,9 +50,16 @@ public class TlsMitmIT {
 
     @BeforeEach
     public void setUp()
-            throws UnrecoverableKeyException, CertificateException, KeyStoreException, IOException,
-                    NoSuchAlgorithmException, SignatureException, InvalidKeyException,
-                    NoSuchProviderException, OperatorCreationException, KeyManagementException {
+            throws UnrecoverableKeyException,
+                    CertificateException,
+                    KeyStoreException,
+                    IOException,
+                    NoSuchAlgorithmException,
+                    SignatureException,
+                    InvalidKeyException,
+                    NoSuchProviderException,
+                    OperatorCreationException,
+                    KeyManagementException {
         startBasicTlsServer();
     }
 
@@ -67,8 +76,12 @@ public class TlsMitmIT {
     @Test
     @Tag(TestCategories.INTEGRATION_TEST)
     public void testSimpleMitmProxyWorkflow()
-            throws InterruptedException, UnrecoverableKeyException, CertificateException,
-                    KeyStoreException, IOException, NoSuchAlgorithmException,
+            throws InterruptedException,
+                    UnrecoverableKeyException,
+                    CertificateException,
+                    KeyStoreException,
+                    IOException,
+                    NoSuchAlgorithmException,
                     KeyManagementException {
         CipherSuite cipherSuite = CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA;
 
@@ -94,9 +107,16 @@ public class TlsMitmIT {
     }
 
     public void startBasicTlsServer()
-            throws UnrecoverableKeyException, CertificateException, KeyStoreException, IOException,
-                    NoSuchAlgorithmException, KeyManagementException, SignatureException,
-                    InvalidKeyException, NoSuchProviderException, OperatorCreationException {
+            throws UnrecoverableKeyException,
+                    CertificateException,
+                    KeyStoreException,
+                    IOException,
+                    NoSuchAlgorithmException,
+                    KeyManagementException,
+                    SignatureException,
+                    InvalidKeyException,
+                    NoSuchProviderException,
+                    OperatorCreationException {
         TimeHelper.setProvider(new FixedTimeProvider(0));
         KeyPair k = KeyStoreGenerator.createRSAKeyPair(1024, random);
         KeyStore ks = KeyStoreGenerator.createKeyStore(k, random);

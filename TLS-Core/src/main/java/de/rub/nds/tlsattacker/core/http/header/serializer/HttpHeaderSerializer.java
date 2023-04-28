@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.http.header.serializer;
 
 import de.rub.nds.tlsattacker.core.http.header.HttpHeader;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
+
 import java.nio.charset.StandardCharsets;
 
 public class HttpHeaderSerializer extends Serializer<HttpHeader> {

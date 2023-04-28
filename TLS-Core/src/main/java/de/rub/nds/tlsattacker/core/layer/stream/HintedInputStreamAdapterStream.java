@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.layer.stream;
 
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
+
 import java.io.IOException;
 import java.io.InputStream;
 

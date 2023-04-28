@@ -13,6 +13,9 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2Message;
+
+import org.junit.jupiter.api.Named;
+
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -20,7 +23,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import org.junit.jupiter.api.Named;
 
 abstract class AbstractHandshakeMessageParserTest<
                 MT extends HandshakeMessage, PT extends HandshakeMessageParser<MT>>

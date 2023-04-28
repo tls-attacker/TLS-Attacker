@@ -16,9 +16,11 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PreSharedKeyExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PSKIdentity;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PskSet;
+
+import org.junit.jupiter.api.Test;
+
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.jupiter.api.Test;
 
 public class PreSharedKeyExtensionHandlerTest
         extends AbstractExtensionMessageHandlerTest<

@@ -19,10 +19,12 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionM
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.KeyShareExtensionSerializer;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+
+import org.junit.jupiter.api.Test;
+
 import java.math.BigInteger;
 import java.util.LinkedList;
 import java.util.List;
-import org.junit.jupiter.api.Test;
 
 public class KeyShareExtensionPreparatorTest
         extends AbstractExtensionMessagePreparatorTest<

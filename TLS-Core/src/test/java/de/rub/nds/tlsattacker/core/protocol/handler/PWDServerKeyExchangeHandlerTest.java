@@ -15,8 +15,10 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.protocol.message.PWDServerKeyExchangeMessage;
-import java.math.BigInteger;
+
 import org.junit.jupiter.api.Test;
+
+import java.math.BigInteger;
 
 public class PWDServerKeyExchangeHandlerTest
         extends AbstractProtocolMessageHandlerTest<

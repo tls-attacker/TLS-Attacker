@@ -18,7 +18,9 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.TokenBindingExtens
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.TokenBindingExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.TokenBindingExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.TokenBindingExtensionSerializer;
+
 import jakarta.xml.bind.annotation.XmlRootElement;
+
 import java.io.InputStream;
 
 /** This extension is defined in draft-ietf-tokbind-negotiation */

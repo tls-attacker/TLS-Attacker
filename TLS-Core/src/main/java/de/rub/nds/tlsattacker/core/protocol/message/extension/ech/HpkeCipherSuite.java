@@ -10,9 +10,11 @@ package de.rub.nds.tlsattacker.core.protocol.message.extension.ech;
 
 import de.rub.nds.tlsattacker.core.constants.hpke.HpkeAeadFunction;
 import de.rub.nds.tlsattacker.core.constants.hpke.HpkeKeyDerivationFunction;
+
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
+
 import java.io.Serializable;
 
 @XmlRootElement

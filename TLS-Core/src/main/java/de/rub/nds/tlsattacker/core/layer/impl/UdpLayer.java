@@ -18,9 +18,11 @@ import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStreamAdapterStream;
 import de.rub.nds.tlsattacker.transport.udp.UdpTransportHandler;
-import java.io.IOException;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.io.IOException;
 
 /**
  * The UDP layer is a wrapper around an underlying UDP socket. It forwards the sockets InputStream
