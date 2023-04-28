@@ -336,7 +336,6 @@ public class CertificateKeyPair implements Serializable {
                 return SignatureAndHashAlgorithm.GOSTR34102012_256_GOSTR34112012_256;
             case "1.2.643.7.1.1.3.3":
                 return SignatureAndHashAlgorithm.GOSTR34102012_512_GOSTR34112012_512;
-                // SM
             case "1.2.156.10197.1.501":
                 return SignatureAndHashAlgorithm.SM2_SM3;
             default:
