@@ -34,11 +34,12 @@ public class CipherWrapper {
             return new StandardizedChaCha20Poly1305Cipher(keySet.getWriteKey(connectionEndType));
         } else if (cipherAlg == CipherAlgorithm.UNOFFICIAL_CHACHA20_POLY1305) {
             return new UnofficialChaCha20Poly1305Cipher(keySet.getWriteKey(connectionEndType));
-        } else if (cipherAlg == CipherAlgorithm.SM4_GCM || cipherAlg == CipherAlgorithm.SM4_CCM) {
-            return new JavaCipher(
-                    cipherAlg,
-                    keySet.getWriteKey(connectionEndType),
-                    AlgorithmResolver.getCipherType(cipherSuite) == CipherType.AEAD);
+            // } else if (cipherAlg == CipherAlgorithm.SM4_GCM || cipherAlg ==
+            // CipherAlgorithm.SM4_CCM) {
+            //    return new JavaCipher(
+            //          cipherAlg,
+            //        keySet.getWriteKey(connectionEndType),
+            //      AlgorithmResolver.getCipherType(cipherSuite) == CipherType.AEAD);
         } else if (cipherAlg.getJavaName() != null) {
             return new JavaCipher(
                     cipherAlg,
