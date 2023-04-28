@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
+
 import org.junit.jupiter.api.Test;
 
 public class ClientHelloHandlerTest

@@ -10,6 +10,10 @@ package de.rub.nds.tlsattacker.core.util;
 
 import de.rub.nds.modifiablevariable.util.BadRandom;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.IOException;
 import java.net.Socket;
 import java.security.*;
@@ -18,9 +22,8 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+
 import javax.net.ssl.*;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class BasicTlsServer extends Thread {
 
@@ -37,8 +40,12 @@ public class BasicTlsServer extends Thread {
     private volatile boolean initialized;
 
     public BasicTlsServer(KeyStore keyStore, String password, String protocol, int port)
-            throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException,
-                    UnrecoverableKeyException, KeyManagementException {
+            throws KeyStoreException,
+                    IOException,
+                    NoSuchAlgorithmException,
+                    CertificateException,
+                    UnrecoverableKeyException,
+                    KeyManagementException {
 
         this.port = port;
 

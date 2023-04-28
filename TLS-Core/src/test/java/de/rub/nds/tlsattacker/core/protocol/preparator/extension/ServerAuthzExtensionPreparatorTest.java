@@ -15,9 +15,11 @@ import de.rub.nds.tlsattacker.core.constants.AuthzDataFormat;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerAuthzExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ServerAuthzExtensionSerializer;
+
+import org.junit.jupiter.api.Test;
+
 import java.util.Arrays;
 import java.util.List;
-import org.junit.jupiter.api.Test;
 
 public class ServerAuthzExtensionPreparatorTest
         extends AbstractExtensionMessagePreparatorTest<

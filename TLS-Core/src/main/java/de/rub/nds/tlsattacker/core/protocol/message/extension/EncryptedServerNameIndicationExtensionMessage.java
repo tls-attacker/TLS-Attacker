@@ -20,7 +20,9 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareE
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.EncryptedServerNameIndicationExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.EncryptedServerNameIndicationExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.EncryptedServerNameIndicationExtensionSerializer;
+
 import jakarta.xml.bind.annotation.XmlRootElement;
+
 import java.io.InputStream;
 
 @XmlRootElement(name = "EncryptedServerNameIndicationExtension")

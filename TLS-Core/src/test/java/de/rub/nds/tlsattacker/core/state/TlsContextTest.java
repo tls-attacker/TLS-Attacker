@@ -24,12 +24,14 @@ import de.rub.nds.tlsattacker.core.record.cipher.CipherState;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordAEADCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.security.Security;
+
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.test.TestRandomData;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.security.Security;
 
 public class TlsContextTest {
 

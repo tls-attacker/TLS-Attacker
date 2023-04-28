@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.util.tests.TestCategories;
+
 import org.junit.jupiter.api.Tag;
 
 @Tag(TestCategories.INTEGRATION_TEST)

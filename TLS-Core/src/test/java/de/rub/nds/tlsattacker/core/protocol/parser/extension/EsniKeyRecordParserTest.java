@@ -22,13 +22,15 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedServerNam
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EsniKeyRecord;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.io.ByteArrayInputStream;
-import java.util.List;
-import java.util.stream.Stream;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+
+import java.io.ByteArrayInputStream;
+import java.util.List;
+import java.util.stream.Stream;
 
 public class EsniKeyRecordParserTest {
 

@@ -10,10 +10,12 @@ package de.rub.nds.tlsattacker.core.http;
 
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.http.header.*;
-import java.io.InputStream;
-import java.nio.charset.Charset;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.io.InputStream;
+import java.nio.charset.Charset;
 
 public class HttpRequestParser extends HttpMessageParser<HttpRequestMessage> {
 

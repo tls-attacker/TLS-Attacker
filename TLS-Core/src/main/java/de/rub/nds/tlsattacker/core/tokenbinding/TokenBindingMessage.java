@@ -16,6 +16,7 @@ import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+
 import java.io.InputStream;
 
 public class TokenBindingMessage<TokenBindingMessage> extends ProtocolMessage {

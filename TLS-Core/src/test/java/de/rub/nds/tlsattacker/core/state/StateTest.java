@@ -20,6 +20,7 @@ import de.rub.nds.tlsattacker.core.exceptions.ContextHandlingException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
+
 import org.junit.jupiter.api.Test;
 
 public class StateTest {

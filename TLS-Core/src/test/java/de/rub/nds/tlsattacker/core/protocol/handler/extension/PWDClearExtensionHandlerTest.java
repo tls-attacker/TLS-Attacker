@@ -12,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PWDClearExtensionMessage;
+
 import org.junit.jupiter.api.Test;
 
 public class PWDClearExtensionHandlerTest

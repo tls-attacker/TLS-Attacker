@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import static org.junit.jupiter.api.Assertions.*;
 
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
+
 import org.junit.jupiter.api.Test;
 
 public class CopyClientRandomActionTest extends AbstractCopyActionTest<CopyClientRandomAction> {

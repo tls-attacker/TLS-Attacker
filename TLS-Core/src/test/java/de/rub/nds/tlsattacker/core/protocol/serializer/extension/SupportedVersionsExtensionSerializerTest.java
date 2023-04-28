@@ -10,9 +10,11 @@ package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SupportedVersionsExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.SupportedVersionsExtensionParserTest;
+
+import org.junit.jupiter.params.provider.Arguments;
+
 import java.util.List;
 import java.util.stream.Stream;
-import org.junit.jupiter.params.provider.Arguments;
 
 public class SupportedVersionsExtensionSerializerTest
         extends AbstractExtensionMessageSerializerTest<

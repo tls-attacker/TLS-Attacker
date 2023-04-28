@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import static de.rub.nds.modifiablevariable.util.ArrayConverter.hexStringToByteArray;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
@@ -17,10 +18,12 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusR
 import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.RequestItemV2;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.ResponderId;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.RequestItemV2Preparator;
-import java.util.List;
-import java.util.stream.Stream;
+
 import org.junit.jupiter.api.Named;
 import org.junit.jupiter.params.provider.Arguments;
+
+import java.util.List;
+import java.util.stream.Stream;
 
 public class CertificateStatusRequestV2ExtensionParserTest
         extends AbstractExtensionParserTest<

@@ -13,11 +13,13 @@ import static org.junit.jupiter.api.Assertions.*;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.TrustedCaIndicationIdentifierType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
-import java.io.ByteArrayInputStream;
-import java.util.stream.Stream;
+
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+
+import java.io.ByteArrayInputStream;
+import java.util.stream.Stream;
 
 public class TrustedAuthorityParserTest {
 

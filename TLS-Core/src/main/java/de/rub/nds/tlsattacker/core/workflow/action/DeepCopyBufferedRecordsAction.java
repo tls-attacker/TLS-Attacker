@@ -12,11 +12,14 @@ import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
+
 import jakarta.xml.bind.annotation.XmlRootElement;
-import java.io.*;
-import java.util.LinkedList;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.io.*;
+import java.util.LinkedList;
 
 @XmlRootElement
 public class DeepCopyBufferedRecordsAction extends CopyContextFieldAction {

@@ -8,10 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.util;
 
-import java.io.*;
-import java.net.Socket;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.io.*;
+import java.net.Socket;
 
 public class ConnectionHandler implements Runnable {
 

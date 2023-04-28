@@ -12,9 +12,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import de.rub.nds.tlsattacker.core.constants.CertificateType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientCertificateTypeExtensionMessage;
+
+import org.junit.jupiter.api.Test;
+
 import java.util.Arrays;
 import java.util.List;
-import org.junit.jupiter.api.Test;
 
 public class ClientCertificateTypeExtensionHandlerTest
         extends AbstractExtensionMessageHandlerTest<

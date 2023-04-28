@@ -13,9 +13,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.crypto.keys.CustomECPrivateKey;
 import de.rub.nds.tlsattacker.core.crypto.keys.CustomEcPublicKey;
+
+import org.junit.jupiter.api.Test;
+
 import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
-import org.junit.jupiter.api.Test;
 
 public class PemUtilTest {
 

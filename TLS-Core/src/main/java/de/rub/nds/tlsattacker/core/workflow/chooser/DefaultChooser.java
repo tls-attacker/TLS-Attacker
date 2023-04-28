@@ -21,10 +21,12 @@ import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
+
+import org.bouncycastle.util.Arrays;
+
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import org.bouncycastle.util.Arrays;
 
 public class DefaultChooser extends Chooser {
 

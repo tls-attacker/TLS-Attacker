@@ -12,10 +12,12 @@ import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ECPointFormatExtensionMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.io.ByteArrayOutputStream;
-import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.io.ByteArrayOutputStream;
+import java.util.List;
 
 public class ECPointFormatExtensionPreparator
         extends ExtensionPreparator<ECPointFormatExtensionMessage> {

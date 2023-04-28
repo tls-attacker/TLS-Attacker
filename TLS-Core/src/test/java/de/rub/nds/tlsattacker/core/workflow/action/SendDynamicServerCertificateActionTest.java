@@ -18,12 +18,15 @@ import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+
 import jakarta.xml.bind.JAXBException;
+
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
 
 public class SendDynamicServerCertificateActionTest
         extends AbstractActionTest<SendDynamicServerCertificateAction> {

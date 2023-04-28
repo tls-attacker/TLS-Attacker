@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.tokenbinding.TokenBindingMessagePreparator;
 import de.rub.nds.tlsattacker.core.tokenbinding.TokenBindingMessageSerializer;
+
 import java.util.Base64;
 
 public class TokenBindingHeaderPreparator extends Preparator<TokenBindingHeader> {

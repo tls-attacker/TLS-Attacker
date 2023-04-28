@@ -16,10 +16,12 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.security.Security;
+
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+
+import java.security.Security;
 
 public class CertificateMessageHandlerTest
         extends AbstractProtocolMessageHandlerTest<CertificateMessage, CertificateMessageHandler> {

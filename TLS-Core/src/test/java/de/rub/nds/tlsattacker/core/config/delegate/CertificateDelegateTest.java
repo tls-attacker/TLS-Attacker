@@ -11,16 +11,12 @@ package de.rub.nds.tlsattacker.core.config.delegate;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.beust.jcommander.ParameterException;
+
 import de.rub.nds.modifiablevariable.util.BadRandom;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.util.KeyStoreGenerator;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.security.*;
-import java.security.cert.CertificateException;
-import java.util.Random;
+
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.operator.OperatorCreationException;
@@ -28,6 +24,13 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.security.*;
+import java.security.cert.CertificateException;
+import java.util.Random;
 
 public class CertificateDelegateTest extends AbstractDelegateTest<CertificateDelegate> {
 
@@ -110,8 +113,13 @@ public class CertificateDelegateTest extends AbstractDelegateTest<CertificateDel
      */
     @Test
     public void testApplyDelegate(@TempDir File tempDir)
-            throws NoSuchAlgorithmException, CertificateException, IOException, InvalidKeyException,
-                    KeyStoreException, NoSuchProviderException, SignatureException,
+            throws NoSuchAlgorithmException,
+                    CertificateException,
+                    IOException,
+                    InvalidKeyException,
+                    KeyStoreException,
+                    NoSuchProviderException,
+                    SignatureException,
                     OperatorCreationException {
         BadRandom random = new BadRandom(new Random(0), null);
         KeyStore store =

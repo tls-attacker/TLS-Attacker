@@ -22,7 +22,9 @@ import de.rub.nds.tlsattacker.core.protocol.message.computations.PWDComputations
 import de.rub.nds.tlsattacker.core.protocol.parser.PWDServerKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.PWDServerKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.PWDServerKeyExchangeSerializer;
+
 import jakarta.xml.bind.annotation.XmlRootElement;
+
 import java.io.InputStream;
 
 @XmlRootElement(name = "PWDServerKeyExchange")

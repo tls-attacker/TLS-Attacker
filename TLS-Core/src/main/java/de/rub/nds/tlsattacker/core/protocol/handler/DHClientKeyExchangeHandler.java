@@ -10,9 +10,11 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
-import java.math.BigInteger;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.math.BigInteger;
 
 /** Handler for DH and DHE ClientKeyExchange messages */
 public class DHClientKeyExchangeHandler<T extends DHClientKeyExchangeMessage<?>>

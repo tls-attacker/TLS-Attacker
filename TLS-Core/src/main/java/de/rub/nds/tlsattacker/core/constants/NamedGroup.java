@@ -10,14 +10,16 @@ package de.rub.nds.tlsattacker.core.constants;
 
 import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
 import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.security.interfaces.ECPrivateKey;
 import java.security.interfaces.ECPublicKey;
 import java.util.*;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public enum NamedGroup {
     SECT163K1(new byte[] {(byte) 0, (byte) 1}, "sect163k1", 163),

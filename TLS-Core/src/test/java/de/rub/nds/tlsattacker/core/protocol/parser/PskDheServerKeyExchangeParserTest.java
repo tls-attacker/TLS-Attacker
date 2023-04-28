@@ -14,11 +14,13 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.PskDheServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerKeyExchangeMessage;
+
+import org.junit.jupiter.api.Named;
+import org.junit.jupiter.params.provider.Arguments;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
-import org.junit.jupiter.api.Named;
-import org.junit.jupiter.params.provider.Arguments;
 
 public class PskDheServerKeyExchangeParserTest
         extends AbstractHandshakeMessageParserTest<

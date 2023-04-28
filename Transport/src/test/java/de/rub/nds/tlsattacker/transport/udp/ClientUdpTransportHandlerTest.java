@@ -13,10 +13,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
+
+import org.junit.jupiter.api.Test;
+
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import org.junit.jupiter.api.Test;
 
 public class ClientUdpTransportHandlerTest {
 

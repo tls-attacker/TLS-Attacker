@@ -10,9 +10,16 @@ package de.rub.nds.tlsattacker.core.config;
 
 import de.rub.nds.tlsattacker.core.config.filter.ConfigDisplayFilter;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceSerializer;
+
 import jakarta.xml.bind.*;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.xml.sax.SAXException;
+
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+
 import javax.xml.XMLConstants;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -20,9 +27,6 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.xml.sax.SAXException;
 
 public class ConfigIO {
 

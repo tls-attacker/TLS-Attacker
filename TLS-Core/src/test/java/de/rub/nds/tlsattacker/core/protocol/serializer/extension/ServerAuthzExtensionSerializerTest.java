@@ -10,9 +10,11 @@ package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerAuthzExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ServerAuthzExtensionParserTest;
+
+import org.junit.jupiter.params.provider.Arguments;
+
 import java.util.List;
 import java.util.stream.Stream;
-import org.junit.jupiter.params.provider.Arguments;
 
 public class ServerAuthzExtensionSerializerTest
         extends AbstractExtensionMessageSerializerTest<

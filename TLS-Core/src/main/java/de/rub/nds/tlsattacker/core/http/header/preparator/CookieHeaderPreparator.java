@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.http.header.preparator;
 import de.rub.nds.tlsattacker.core.http.header.CookieHeader;
 import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
+
 import org.apache.commons.lang3.StringUtils;
 
 public class CookieHeaderPreparator extends Preparator<CookieHeader> {

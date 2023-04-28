@@ -12,14 +12,17 @@ import static java.nio.charset.StandardCharsets.US_ASCII;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
+
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
+
+import org.bouncycastle.util.IPAddress;
+
 import java.net.*;
 import java.util.LinkedList;
 import java.util.List;
-import org.bouncycastle.util.IPAddress;
 
 public class ClientDelegate extends Delegate {
 

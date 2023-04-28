@@ -14,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedMasterSecretExtensionMessage;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+
 import org.junit.jupiter.api.Test;
 
 public class ExtendedMasterSecretExtensionHandlerTest

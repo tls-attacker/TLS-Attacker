@@ -12,8 +12,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.protocol.message.SrpServerKeyExchangeMessage;
-import java.math.BigInteger;
+
 import org.junit.jupiter.api.Test;
+
+import java.math.BigInteger;
 
 public class SrpServerKeyExchangeHandlerTest
         extends AbstractProtocolMessageHandlerTest<

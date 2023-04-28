@@ -11,6 +11,10 @@ package de.rub.nds.tlsattacker.core.certificate.ocsp;
 import static de.rub.nds.tlsattacker.core.certificate.ocsp.OCSPResponseTypes.ACCEPTABLE_RESPONSES;
 
 import com.google.common.io.ByteStreams;
+
+import org.apache.commons.lang3.NotImplementedException;
+import org.bouncycastle.asn1.x509.Certificate;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigInteger;
@@ -18,8 +22,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Base64;
-import org.apache.commons.lang3.NotImplementedException;
-import org.bouncycastle.asn1.x509.Certificate;
 
 public class OCSPRequest {
 

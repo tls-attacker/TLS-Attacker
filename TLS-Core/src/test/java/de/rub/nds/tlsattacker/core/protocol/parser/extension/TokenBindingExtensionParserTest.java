@@ -12,10 +12,12 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TokenBindingExtensionMessage;
-import java.util.List;
-import java.util.stream.Stream;
+
 import org.junit.jupiter.api.Named;
 import org.junit.jupiter.params.provider.Arguments;
+
+import java.util.List;
+import java.util.stream.Stream;
 
 public class TokenBindingExtensionParserTest
         extends AbstractExtensionParserTest<

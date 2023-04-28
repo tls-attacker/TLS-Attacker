@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TokenBindingExtensionMessage;
+
 import java.util.ArrayList;
 
 public class TokenBindingExtensionHandler extends ExtensionHandler<TokenBindingExtensionMessage> {

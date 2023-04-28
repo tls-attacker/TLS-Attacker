@@ -13,8 +13,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CachedInfoExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.CachedInfoExtensionSerializer;
-import java.util.List;
+
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 public class CachedInfoExtensionPreparatorTest
         extends AbstractExtensionMessagePreparatorTest<

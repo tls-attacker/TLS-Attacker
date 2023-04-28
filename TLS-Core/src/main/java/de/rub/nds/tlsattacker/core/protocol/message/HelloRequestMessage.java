@@ -14,7 +14,9 @@ import de.rub.nds.tlsattacker.core.protocol.handler.HelloRequestHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.HelloRequestParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.HelloRequestPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.HelloRequestSerializer;
+
 import jakarta.xml.bind.annotation.XmlRootElement;
+
 import java.io.InputStream;
 
 @XmlRootElement(name = "HelloRequest")

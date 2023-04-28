@@ -12,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.RenegotiationInfoExtensionMessage;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+
 import org.junit.jupiter.api.Test;
 
 public class RenegotiationInfoExtensionHandlerTest

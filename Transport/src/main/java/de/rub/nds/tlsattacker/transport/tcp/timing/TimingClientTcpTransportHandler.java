@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.transport.tcp.timing;
 import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.TimeableTransportHandler;
 import de.rub.nds.tlsattacker.transport.tcp.ClientTcpTransportHandler;
+
 import java.io.IOException;
 
 public class TimingClientTcpTransportHandler extends ClientTcpTransportHandler

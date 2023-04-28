@@ -12,6 +12,7 @@ import static org.junit.Assume.assumeNotNull;
 
 import com.github.dockerjava.api.exception.DockerException;
 import com.github.dockerjava.api.model.Image;
+
 import de.rub.nds.tls.subject.ConnectionRole;
 import de.rub.nds.tls.subject.TlsImplementationType;
 import de.rub.nds.tls.subject.constants.TransportType;
@@ -35,11 +36,7 @@ import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import de.rub.nds.tlsattacker.util.FreePortFinder;
-import java.security.Security;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Stream;
-import java.util.stream.Stream.Builder;
+
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.Assert;
 import org.junit.Assume;
@@ -51,6 +48,12 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+
+import java.security.Security;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Stream;
+import java.util.stream.Stream.Builder;
 
 @TestInstance(Lifecycle.PER_CLASS)
 public abstract class AbstractHandshakeIT {

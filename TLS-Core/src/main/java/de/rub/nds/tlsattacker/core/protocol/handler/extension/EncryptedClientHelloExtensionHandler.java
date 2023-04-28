@@ -24,10 +24,12 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedClientHel
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
 import de.rub.nds.tlsattacker.core.protocol.parser.ClientHelloParser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.io.ByteArrayInputStream;
-import java.util.Arrays;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.io.ByteArrayInputStream;
+import java.util.Arrays;
 
 public class EncryptedClientHelloExtensionHandler
         extends ExtensionHandler<EncryptedClientHelloExtensionMessage> {

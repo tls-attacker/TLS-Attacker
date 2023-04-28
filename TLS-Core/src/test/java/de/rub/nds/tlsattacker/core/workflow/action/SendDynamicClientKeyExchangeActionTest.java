@@ -17,9 +17,11 @@ import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+
+import org.junit.jupiter.api.Test;
+
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.jupiter.api.Test;
 
 public class SendDynamicClientKeyExchangeActionTest
         extends AbstractActionTest<SendDynamicClientKeyExchangeAction> {

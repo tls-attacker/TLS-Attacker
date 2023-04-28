@@ -10,9 +10,11 @@ package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.tlsattacker.core.protocol.message.PskDheServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.PskDheServerKeyExchangeParserTest;
+
+import org.junit.jupiter.params.provider.Arguments;
+
 import java.util.List;
 import java.util.stream.Stream;
-import org.junit.jupiter.params.provider.Arguments;
 
 public class PskDheServerKeyExchangeSerializerTest
         extends AbstractHandshakeMessageSerializerTest<

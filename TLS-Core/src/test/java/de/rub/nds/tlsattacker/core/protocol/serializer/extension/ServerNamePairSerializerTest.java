@@ -14,11 +14,13 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ServerNamePairParserTest;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ServerNamePairPreparator;
-import java.util.stream.Stream;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.stream.Stream;
 
 public class ServerNamePairSerializerTest {
 

@@ -20,13 +20,15 @@ import de.rub.nds.tlsattacker.core.protocol.message.*;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.*;
 import de.rub.nds.tlsattacker.util.tests.TestCategories;
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 public class WorkflowConfigurationFactoryTest {
 

@@ -10,11 +10,13 @@ package de.rub.nds.tlsattacker.core.crypto.ec;
 
 import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
+
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElements;
 import jakarta.xml.bind.annotation.XmlRootElement;
+
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Objects;

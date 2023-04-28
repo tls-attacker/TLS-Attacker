@@ -17,8 +17,10 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.protocol.message.PWDClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.preparator.PWDClientKeyExchangePreparator;
-import java.math.BigInteger;
+
 import org.junit.jupiter.api.Test;
+
+import java.math.BigInteger;
 
 public class PWDClientKeyExchangeHandlerTest
         extends AbstractProtocolMessageHandlerTest<

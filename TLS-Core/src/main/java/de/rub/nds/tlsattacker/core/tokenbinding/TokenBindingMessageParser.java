@@ -10,9 +10,11 @@ package de.rub.nds.tlsattacker.core.tokenbinding;
 
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageParser;
-import java.io.InputStream;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.io.InputStream;
 
 public class TokenBindingMessageParser extends ProtocolMessageParser<TokenBindingMessage> {
 

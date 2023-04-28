@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerCertificateTypeExtensionMessage;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+
 import java.io.InputStream;
 
 public class ServerCertificateTypeExtensionParser

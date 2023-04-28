@@ -22,7 +22,9 @@ import de.rub.nds.tlsattacker.core.protocol.handler.HeartbeatMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.HeartbeatMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.HeartbeatMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.HeartbeatMessageSerializer;
+
 import jakarta.xml.bind.annotation.XmlRootElement;
+
 import java.io.InputStream;
 import java.util.Objects;
 

@@ -24,15 +24,18 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PSKBinderSerial
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PSKIdentitySerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /** RFC draft-ietf-tls-tls13-21 */
 public class PreSharedKeyExtensionPreparator

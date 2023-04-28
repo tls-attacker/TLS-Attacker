@@ -18,7 +18,9 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.ServerAuthzExtensi
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ServerAuthzExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ServerAuthzExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ServerAuthzExtensionSerializer;
+
 import jakarta.xml.bind.annotation.XmlRootElement;
+
 import java.io.InputStream;
 
 /** This extension is defined in RFC5878 */

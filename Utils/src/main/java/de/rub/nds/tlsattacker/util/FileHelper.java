@@ -8,10 +8,11 @@
  */
 package de.rub.nds.tlsattacker.util;
 
-import java.io.*;
-import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 
 public class FileHelper {
 

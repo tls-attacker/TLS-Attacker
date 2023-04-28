@@ -13,11 +13,13 @@ import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class CertificateRequestPreparator
         extends HandshakeMessagePreparator<CertificateRequestMessage> {

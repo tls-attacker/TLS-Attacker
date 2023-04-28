@@ -13,13 +13,15 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
 import de.rub.nds.tlsattacker.util.tests.TestCategories;
-import java.io.ByteArrayInputStream;
-import java.util.Random;
-import java.util.stream.Stream;
+
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+
+import java.io.ByteArrayInputStream;
+import java.util.Random;
+import java.util.stream.Stream;
 
 public class UnknownMessageParserIT {
 

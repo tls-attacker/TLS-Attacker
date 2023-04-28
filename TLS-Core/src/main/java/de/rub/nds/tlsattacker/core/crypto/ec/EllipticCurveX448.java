@@ -9,8 +9,10 @@
 package de.rub.nds.tlsattacker.core.crypto.ec;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import java.math.BigInteger;
+
 import org.apache.commons.lang3.ArrayUtils;
+
+import java.math.BigInteger;
 
 /** X448 */
 public class EllipticCurveX448 extends RFC7748Curve {

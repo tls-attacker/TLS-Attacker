@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.http.header;
 import de.rub.nds.modifiablevariable.util.IllegalStringAdapter;
 import de.rub.nds.tlsattacker.core.http.header.preparator.GenericHttpHeaderPreparator;
 import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
+
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;

@@ -14,6 +14,7 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.KeyExchangeComputations;
+
 import java.util.Objects;
 
 public abstract class ClientKeyExchangeMessage<Self extends ClientKeyExchangeMessage<?>>

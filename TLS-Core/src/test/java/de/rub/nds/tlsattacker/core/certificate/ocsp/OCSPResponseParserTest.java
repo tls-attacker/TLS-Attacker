@@ -11,17 +11,20 @@ package de.rub.nds.tlsattacker.core.certificate.ocsp;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.google.common.io.ByteStreams;
+
 import de.rub.nds.asn1.Asn1Encodable;
 import de.rub.nds.asn1.model.Asn1ObjectIdentifier;
 import de.rub.nds.asn1.model.Asn1PrimitivePrintableString;
 import de.rub.nds.asn1.model.Asn1Sequence;
 import de.rub.nds.asn1.model.Asn1Set;
 import de.rub.nds.asn1.parser.ParserException;
+
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
 
 public class OCSPResponseParserTest {
 

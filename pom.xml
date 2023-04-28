@@ -4,7 +4,7 @@
     <parent>
         <groupId>de.rub.nds</groupId>
         <artifactId>protocol-toolkit-bom</artifactId>
-        <version>3.0.4</version>
+        <version>3.1.0</version>
     </parent>
 
     <groupId>de.rub.nds.tls.attacker</groupId>
@@ -444,7 +444,7 @@
                             <spacesPerTab>4</spacesPerTab>
                         </indent>
                         <googleJavaFormat>
-                            <version>1.15.0</version>
+                            <version>1.16.0</version>
                             <style>AOSP</style>
                         </googleJavaFormat>
                         <licenseHeader>

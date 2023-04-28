@@ -14,8 +14,10 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.protocol.message.PskEcDheServerKeyExchangeMessage;
-import java.math.BigInteger;
+
 import org.junit.jupiter.api.Test;
+
+import java.math.BigInteger;
 
 public class PskEcDheServerKeyExchangeHandlerTest
         extends AbstractProtocolMessageHandlerTest<

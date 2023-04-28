@@ -17,14 +17,16 @@ import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
+
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
 import java.math.BigInteger;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.Security;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
 
 public class ECDHClientKeyExchangePreparatorTest
         extends AbstractProtocolMessagePreparatorTest<
@@ -54,7 +56,8 @@ public class ECDHClientKeyExchangePreparatorTest
     @Test
     @Override
     public void testPrepare()
-            throws NoSuchAlgorithmException, NoSuchProviderException,
+            throws NoSuchAlgorithmException,
+                    NoSuchProviderException,
                     InvalidAlgorithmParameterException {
         // prepare context
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);

@@ -18,7 +18,9 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.HeartbeatExtension
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.HeartbeatExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.HeartbeatExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.HeartbeatExtensionSerializer;
+
 import jakarta.xml.bind.annotation.XmlRootElement;
+
 import java.io.InputStream;
 
 /** This extension is defined in RFC6520 */

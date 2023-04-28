@@ -13,9 +13,11 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.CachedInfoExtensio
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.CachedInfoExtensionParserTest;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.CachedInfoExtensionPreparator;
+
+import org.junit.jupiter.params.provider.Arguments;
+
 import java.util.List;
 import java.util.stream.Stream;
-import org.junit.jupiter.params.provider.Arguments;
 
 public class CachedInfoExtensionSerializerTest
         extends AbstractExtensionMessageSerializerTest<

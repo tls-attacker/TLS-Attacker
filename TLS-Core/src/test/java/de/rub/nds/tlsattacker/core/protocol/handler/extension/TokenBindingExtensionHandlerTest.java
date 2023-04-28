@@ -14,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TokenBindingExtensionMessage;
+
 import org.junit.jupiter.api.Test;
 
 public class TokenBindingExtensionHandlerTest

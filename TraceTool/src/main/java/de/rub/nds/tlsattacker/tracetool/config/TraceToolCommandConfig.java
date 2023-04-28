@@ -9,10 +9,12 @@
 package de.rub.nds.tlsattacker.tracetool.config;
 
 import com.beust.jcommander.ParametersDelegate;
+
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.TLSDelegateConfig;
 import de.rub.nds.tlsattacker.core.config.delegate.*;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

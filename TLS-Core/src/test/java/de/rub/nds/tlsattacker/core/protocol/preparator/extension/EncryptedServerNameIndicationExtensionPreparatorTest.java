@@ -19,15 +19,17 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedServerNam
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.EncryptedServerNameIndicationExtensionSerializer;
+
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.security.Security;
 import java.util.LinkedList;
 import java.util.List;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 
 public class EncryptedServerNameIndicationExtensionPreparatorTest {
 

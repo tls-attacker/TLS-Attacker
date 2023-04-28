@@ -11,11 +11,13 @@ package de.rub.nds.tlsattacker.transport.stream;
 import static org.junit.jupiter.api.Assertions.*;
 
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 
 public class StreamTransportHandlerTest {
 

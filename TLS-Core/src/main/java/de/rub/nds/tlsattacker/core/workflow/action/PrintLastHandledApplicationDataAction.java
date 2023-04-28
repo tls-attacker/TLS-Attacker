@@ -13,11 +13,14 @@ import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
+
 import jakarta.xml.bind.annotation.XmlRootElement;
-import java.nio.charset.Charset;
-import java.util.Objects;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.nio.charset.Charset;
+import java.util.Objects;
 
 /**
  * A simple action to print the last handled application data to console. Per default, this prints

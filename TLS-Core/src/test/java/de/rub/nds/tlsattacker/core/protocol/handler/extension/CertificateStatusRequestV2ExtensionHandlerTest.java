@@ -12,8 +12,10 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusR
 import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.RequestItemV2;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.ResponderId;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.CertificateStatusRequestV2ExtensionParserTest;
-import java.util.List;
+
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 public class CertificateStatusRequestV2ExtensionHandlerTest
         extends AbstractExtensionMessageHandlerTest<
