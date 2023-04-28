@@ -9,12 +9,7 @@
 package de.rub.nds.tlsattacker.core.util;
 
 import de.rub.nds.modifiablevariable.util.BadRandom;
-import java.io.IOException;
-import java.math.BigInteger;
-import java.security.*;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
-import java.util.Date;
+
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.asn1.x500.X500Name;
@@ -33,6 +28,13 @@ import org.bouncycastle.jce.spec.ECNamedCurveParameterSpec;
 import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
+
+import java.io.IOException;
+import java.math.BigInteger;
+import java.security.*;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+import java.util.Date;
 
 /**
  * Implemented based on <a href=
@@ -76,7 +78,8 @@ public class KeyStoreGenerator {
     }
 
     public static KeyPair createSM2KeyPair(int bits, BadRandom random)
-            throws NoSuchAlgorithmException, NoSuchProviderException,
+            throws NoSuchAlgorithmException,
+                    NoSuchProviderException,
                     InvalidAlgorithmParameterException {
         Security.addProvider(new BouncyCastleProvider());
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("EC", "BC");
@@ -86,8 +89,13 @@ public class KeyStoreGenerator {
     }
 
     public static KeyStore createKeyStore(KeyPair keyPair, BadRandom random)
-            throws CertificateException, IOException, InvalidKeyException, KeyStoreException,
-                    NoSuchAlgorithmException, NoSuchProviderException, SignatureException,
+            throws CertificateException,
+                    IOException,
+                    InvalidKeyException,
+                    KeyStoreException,
+                    NoSuchAlgorithmException,
+                    NoSuchProviderException,
+                    SignatureException,
                     OperatorCreationException {
         PublicKey publicKey = keyPair.getPublic();
         PrivateKey privateKey = keyPair.getPrivate();

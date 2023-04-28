@@ -26,10 +26,7 @@ import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.util.FixedTimeProvider;
 import de.rub.nds.tlsattacker.util.TimeHelper;
 import de.rub.nds.tlsattacker.util.tests.TestCategories;
-import java.io.IOException;
-import java.security.*;
-import java.security.cert.CertificateException;
-import java.util.Random;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -37,6 +34,11 @@ import org.bouncycastle.operator.OperatorCreationException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+import java.security.*;
+import java.security.cert.CertificateException;
+import java.util.Random;
 
 public class FindReceivedProtocolMessageActionTest {
 
@@ -55,9 +57,16 @@ public class FindReceivedProtocolMessageActionTest {
     @Test
     @Tag(TestCategories.INTEGRATION_TEST)
     public void testExecute()
-            throws NoSuchAlgorithmException, CertificateException, IOException, KeyStoreException,
-                    SignatureException, InvalidKeyException, NoSuchProviderException,
-                    OperatorCreationException, UnrecoverableKeyException, KeyManagementException {
+            throws NoSuchAlgorithmException,
+                    CertificateException,
+                    IOException,
+                    KeyStoreException,
+                    SignatureException,
+                    InvalidKeyException,
+                    NoSuchProviderException,
+                    OperatorCreationException,
+                    UnrecoverableKeyException,
+                    KeyManagementException {
         Config config = Config.createConfig();
         config.getDefaultClientConnection().setPort(SERVER_PORT);
 

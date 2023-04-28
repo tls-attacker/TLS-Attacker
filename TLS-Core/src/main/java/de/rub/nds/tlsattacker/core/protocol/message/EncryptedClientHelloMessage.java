@@ -20,8 +20,10 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedClientHel
 import de.rub.nds.tlsattacker.core.protocol.parser.EncryptedClientHelloParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.EncryptedClientHelloPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.EncryptedClientHelloSerializer;
+
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlTransient;
+
 import java.io.InputStream;
 
 @XmlRootElement(name = "EncryptedClientHello")

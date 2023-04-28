@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+
 import org.junit.jupiter.api.Test;
 
 public class ChangeCipherSpecHandlerTest

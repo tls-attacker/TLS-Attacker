@@ -8,8 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.message;
 
-import java.util.stream.Stream;
 import org.junit.jupiter.params.provider.Arguments;
+
+import java.util.stream.Stream;
 
 public class PskDheServerKeyExchangeMessageTest
         extends AbstractMessageTest<PskDheServerKeyExchangeMessage> {

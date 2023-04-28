@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
+
 import org.junit.jupiter.api.Test;
 
 public class CertificateVerifyHandlerTest

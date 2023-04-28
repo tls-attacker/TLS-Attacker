@@ -18,9 +18,11 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.util.FixedTimeProvider;
 import de.rub.nds.tlsattacker.util.TimeHelper;
+
+import org.junit.jupiter.api.Test;
+
 import java.util.LinkedList;
 import java.util.List;
-import org.junit.jupiter.api.Test;
 
 public class ServerHelloPreparatorTest
         extends AbstractProtocolMessagePreparatorTest<ServerHelloMessage, ServerHelloPreparator> {

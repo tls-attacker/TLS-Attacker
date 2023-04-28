@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
+
 import java.io.Serializable;
 
 public class PSKBinder extends ModifiableVariableHolder implements Serializable {

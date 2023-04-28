@@ -21,12 +21,15 @@ import de.rub.nds.tlsattacker.core.protocol.handler.CertificateStatusHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.CertificateStatusParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.CertificateStatusPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateStatusSerializer;
+
 import jakarta.xml.bind.annotation.XmlRootElement;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Objects;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 @XmlRootElement(name = "CertificateStatus")
 public class CertificateStatusMessage extends HandshakeMessage<CertificateStatusMessage> {

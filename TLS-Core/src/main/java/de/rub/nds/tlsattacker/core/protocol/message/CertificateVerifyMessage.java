@@ -19,7 +19,9 @@ import de.rub.nds.tlsattacker.core.protocol.handler.CertificateVerifyHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.CertificateVerifyParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.CertificateVerifyPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateVerifySerializer;
+
 import jakarta.xml.bind.annotation.XmlRootElement;
+
 import java.io.InputStream;
 import java.util.Objects;
 

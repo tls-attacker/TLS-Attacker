@@ -12,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EllipticCurvesExtensionMessage;
+
 import org.junit.jupiter.api.Test;
 
 public class EllipticCurvesExtensionHandlerTest

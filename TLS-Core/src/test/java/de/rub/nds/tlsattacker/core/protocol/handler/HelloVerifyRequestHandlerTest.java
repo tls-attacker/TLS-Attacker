@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
+
 import org.junit.jupiter.api.Test;
 
 public class HelloVerifyRequestHandlerTest

@@ -22,7 +22,9 @@ import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
+
 import jakarta.xml.bind.annotation.XmlSeeAlso;
+
 import java.io.InputStream;
 import java.io.Serializable;
 

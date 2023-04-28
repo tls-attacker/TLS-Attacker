@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.impl.RecordLayer;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
+
 import org.junit.jupiter.api.Test;
 
 public class ActivateEncryptionActionTest extends AbstractActionTest<ActivateEncryptionAction> {

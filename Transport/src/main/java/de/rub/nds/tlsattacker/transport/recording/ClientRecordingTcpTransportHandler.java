@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.transport.recording;
 
 import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.transport.tcp.ClientTcpTransportHandler;
+
 import java.io.IOException;
 
 public class ClientRecordingTcpTransportHandler extends ClientTcpTransportHandler {

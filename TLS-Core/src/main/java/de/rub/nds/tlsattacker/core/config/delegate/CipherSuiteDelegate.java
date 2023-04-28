@@ -9,8 +9,10 @@
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
+
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;

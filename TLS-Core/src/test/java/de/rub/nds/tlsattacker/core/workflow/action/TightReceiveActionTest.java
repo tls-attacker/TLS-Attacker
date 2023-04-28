@@ -25,12 +25,15 @@ import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.util.tests.TestCategories;
+
 import jakarta.xml.bind.JAXB;
-import java.io.StringReader;
-import java.io.StringWriter;
+
 import org.junit.After;
 import org.junit.Test;
 import org.junit.jupiter.api.Tag;
+
+import java.io.StringReader;
+import java.io.StringWriter;
 
 public class TightReceiveActionTest {
 

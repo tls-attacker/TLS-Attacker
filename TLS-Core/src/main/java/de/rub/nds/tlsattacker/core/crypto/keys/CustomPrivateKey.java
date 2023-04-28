@@ -11,8 +11,10 @@ package de.rub.nds.tlsattacker.core.crypto.keys;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
+
 import java.security.PrivateKey;
 
 @XmlAccessorType(XmlAccessType.FIELD)

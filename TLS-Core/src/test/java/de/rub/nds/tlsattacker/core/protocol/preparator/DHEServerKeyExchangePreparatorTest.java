@@ -14,10 +14,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
+
+import org.junit.jupiter.api.Test;
+
 import java.math.BigInteger;
 import java.util.LinkedList;
 import java.util.List;
-import org.junit.jupiter.api.Test;
 
 public class DHEServerKeyExchangePreparatorTest
         extends AbstractProtocolMessagePreparatorTest<

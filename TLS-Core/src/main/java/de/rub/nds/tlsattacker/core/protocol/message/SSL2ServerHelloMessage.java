@@ -22,7 +22,9 @@ import de.rub.nds.tlsattacker.core.protocol.handler.SSL2ServerHelloHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.SSL2ServerHelloParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.SSL2ServerHelloPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.SSL2ServerHelloSerializer;
+
 import jakarta.xml.bind.annotation.XmlRootElement;
+
 import java.io.InputStream;
 import java.util.Objects;
 

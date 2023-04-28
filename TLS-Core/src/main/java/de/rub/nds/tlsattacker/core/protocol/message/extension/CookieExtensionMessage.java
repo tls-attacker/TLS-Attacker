@@ -18,7 +18,9 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.CookieExtensionHan
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.CookieExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.CookieExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.CookieExtensionSerializer;
+
 import jakarta.xml.bind.annotation.XmlRootElement;
+
 import java.io.InputStream;
 
 /** The cookie extension used in TLS 1.3 */

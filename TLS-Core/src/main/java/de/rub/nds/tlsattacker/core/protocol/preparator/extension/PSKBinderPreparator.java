@@ -13,10 +13,13 @@ import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PSKBinder;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import java.security.NoSuchAlgorithmException;
-import javax.crypto.Mac;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.security.NoSuchAlgorithmException;
+
+import javax.crypto.Mac;
 
 public class PSKBinderPreparator extends Preparator<PSKBinder> {
 

@@ -8,9 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.crypto.ec;
 
-import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.math.BigInteger;
 
 /** An elliptic curve over a galois field F_p, where p is a prime number. */
 public class EllipticCurveOverFp extends EllipticCurve {

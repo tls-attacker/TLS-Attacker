@@ -18,7 +18,9 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.SRPExtensionHandle
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.SRPExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SRPExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SRPExtensionSerializer;
+
 import jakarta.xml.bind.annotation.XmlRootElement;
+
 import java.io.InputStream;
 
 /** This extension is defined in RFC5054 */

@@ -16,11 +16,13 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedO
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.CachedObjectParserTest;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.CachedObjectPreparator;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.util.stream.Stream;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.stream.Stream;
 
 public class CachedObjectSerializerTest {
 

@@ -10,10 +10,12 @@ package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
-import java.util.List;
-import java.util.stream.Stream;
+
 import org.junit.jupiter.api.Named;
 import org.junit.jupiter.params.provider.Arguments;
+
+import java.util.List;
+import java.util.stream.Stream;
 
 public class ChangeCipherSpecParserTest
         extends AbstractProtocolMessageParserTest<ChangeCipherSpecMessage, ChangeCipherSpecParser> {

@@ -13,10 +13,12 @@ import static org.junit.Assert.assertEquals;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
 import de.rub.nds.tlsattacker.core.state.Context;
-import java.io.ByteArrayInputStream;
-import java.nio.charset.Charset;
+
 import org.junit.Before;
 import org.junit.Test;
+
+import java.io.ByteArrayInputStream;
+import java.nio.charset.Charset;
 
 public class HttpRequestHandlerTest {
 

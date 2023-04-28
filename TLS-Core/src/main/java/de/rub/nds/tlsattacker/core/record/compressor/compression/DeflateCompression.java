@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.record.compressor.compression;
 
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
+
 import java.util.Arrays;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;

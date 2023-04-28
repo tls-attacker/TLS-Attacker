@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.http.header.handler.HttpHeaderHandler;
 import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
+
 import java.io.Serializable;
 
 public abstract class HttpHeader extends ModifiableVariableHolder implements Serializable {

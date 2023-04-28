@@ -99,7 +99,7 @@ pipeline {
                 }
             }
             options {
-                timeout(activity: true, time: 600, unit: 'SECONDS')
+                timeout(activity: true, time: 1800, unit: 'SECONDS')
             }
             steps {
                 withMaven(jdk: env.JDK_TOOL_NAME, maven: env.MAVEN_TOOL_NAME) {

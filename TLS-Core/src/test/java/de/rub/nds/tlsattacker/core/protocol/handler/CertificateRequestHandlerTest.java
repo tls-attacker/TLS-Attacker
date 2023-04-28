@@ -16,8 +16,10 @@ import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAndHashAlgorithmsExtensionMessage;
-import java.util.Objects;
+
 import org.junit.jupiter.api.Test;
+
+import java.util.Objects;
 
 public class CertificateRequestHandlerTest
         extends AbstractProtocolMessageHandlerTest<

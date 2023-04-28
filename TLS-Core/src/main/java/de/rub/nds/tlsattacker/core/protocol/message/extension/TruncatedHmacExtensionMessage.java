@@ -14,7 +14,9 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.TruncatedHmacExten
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.TruncatedHmacExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.TruncatedHmacExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.TruncatedHmacExtensionSerializer;
+
 import jakarta.xml.bind.annotation.XmlRootElement;
+
 import java.io.InputStream;
 
 /**

@@ -10,10 +10,12 @@ package de.rub.nds.tlsattacker.core.crypto;
 
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import java.io.IOException;
-import java.io.InputStream;
+
 import org.bouncycastle.crypto.params.ECDomainParameters;
 import org.bouncycastle.crypto.tls.TlsECCUtils;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 public class ECCUtilsBCWrapper {
 

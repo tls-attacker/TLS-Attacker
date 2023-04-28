@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.serializer.extension.alpn;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.alpn.AlpnEntry;
+
 import java.nio.charset.StandardCharsets;
 
 public class AlpnEntrySerializer extends Serializer<AlpnEntry> {

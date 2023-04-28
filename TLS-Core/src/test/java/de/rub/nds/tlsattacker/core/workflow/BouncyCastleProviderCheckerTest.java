@@ -11,11 +11,12 @@ package de.rub.nds.tlsattacker.core.workflow;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.security.Security;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.security.Security;
 
 public class BouncyCastleProviderCheckerTest {
     @BeforeEach

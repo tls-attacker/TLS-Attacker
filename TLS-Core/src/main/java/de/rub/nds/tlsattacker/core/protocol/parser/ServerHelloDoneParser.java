@@ -10,9 +10,11 @@ package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
-import java.io.InputStream;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.io.InputStream;
 
 public class ServerHelloDoneParser extends HandshakeMessageParser<ServerHelloDoneMessage> {
 

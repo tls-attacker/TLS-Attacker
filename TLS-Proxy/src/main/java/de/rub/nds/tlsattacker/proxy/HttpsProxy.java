@@ -8,6 +8,9 @@
  */
 package de.rub.nds.tlsattacker.proxy;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -19,6 +22,7 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.X509Certificate;
+
 import javax.net.ServerSocketFactory;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
@@ -27,8 +31,6 @@ import javax.net.ssl.SSLServerSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509ExtendedTrustManager;
 import javax.security.cert.CertificateException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class HttpsProxy {
 
@@ -71,8 +73,13 @@ public class HttpsProxy {
     }
 
     public SSLContext createContext()
-            throws KeyStoreException, NoSuchAlgorithmException, FileNotFoundException, IOException,
-                    CertificateException, UnrecoverableKeyException, KeyManagementException,
+            throws KeyStoreException,
+                    NoSuchAlgorithmException,
+                    FileNotFoundException,
+                    IOException,
+                    CertificateException,
+                    UnrecoverableKeyException,
+                    KeyManagementException,
                     java.security.cert.CertificateException {
         SSLContext context = SSLContext.getInstance("TLS");
         KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance("SunX509");
