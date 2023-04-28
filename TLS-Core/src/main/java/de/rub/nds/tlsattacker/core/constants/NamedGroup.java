@@ -50,7 +50,7 @@ public enum NamedGroup {
     BRAINPOOLP512R1(new byte[] {(byte) 0, (byte) 28}, "brainpoolp512r1", 512),
     ECDH_X25519(new byte[] {(byte) 0, (byte) 29}, "ecdh_X25519", 256),
     ECDH_X448(new byte[] {(byte) 0, (byte) 30}, "ecdh_X448", 448),
-    CURVESM2(new byte[] {(byte) 0, (byte) 41}, "sm2p256v1", 256),
+    CURVE_SM2(new byte[] {(byte) 0, (byte) 41}, "sm2p256v1", 256),
     FFDHE2048(new byte[] {(byte) 1, (byte) 0}, "FFDHE2048", 2048),
     FFDHE3072(new byte[] {(byte) 1, (byte) 1}, "FFDHE3072", 3072),
     FFDHE4096(new byte[] {(byte) 1, (byte) 2}, "FFDHE4096", 4096),
@@ -101,7 +101,7 @@ public enum NamedGroup {
                             SECP256R1,
                             SECP384R1,
                             SECP521R1,
-                            CURVESM2));
+                            CURVE_SM2));
 
     private NamedGroup(byte[] value, String javaName, Integer coordinateSizeInBit) {
         this.value = value;
@@ -316,7 +316,7 @@ public enum NamedGroup {
         list.add(SECT571R1);
         list.add(ECDH_X25519);
         list.add(ECDH_X448);
-        list.add(CURVESM2);
+        list.add(CURVE_SM2);
         list.add(BRAINPOOLP256R1);
         list.add(BRAINPOOLP384R1);
         list.add(BRAINPOOLP512R1);

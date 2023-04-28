@@ -791,7 +791,7 @@
         <defaultClientNamedGroup>SECT571R1</defaultClientNamedGroup>
         <defaultClientNamedGroup>ECDH_X25519</defaultClientNamedGroup>
         <defaultClientNamedGroup>ECDH_X448</defaultClientNamedGroup>
-        <defaultClientNamedGroup>CURVESM2</defaultClientNamedGroup>
+        <defaultClientNamedGroup>CURVE_SM2</defaultClientNamedGroup>
         <defaultClientNamedGroup>BRAINPOOLP256R1</defaultClientNamedGroup>
         <defaultClientNamedGroup>BRAINPOOLP384R1</defaultClientNamedGroup>
         <defaultClientNamedGroup>BRAINPOOLP512R1</defaultClientNamedGroup>
@@ -829,7 +829,7 @@
         <defaultServerNamedGroup>SECT571R1</defaultServerNamedGroup>
         <defaultServerNamedGroup>ECDH_X25519</defaultServerNamedGroup>
         <defaultServerNamedGroup>ECDH_X448</defaultServerNamedGroup>
-        <defaultServerNamedGroup>CURVESM2</defaultServerNamedGroup>
+        <defaultServerNamedGroup>CURVE_SM2</defaultServerNamedGroup>
         <defaultServerNamedGroup>BRAINPOOLP256R1</defaultServerNamedGroup>
         <defaultServerNamedGroup>BRAINPOOLP384R1</defaultServerNamedGroup>
         <defaultServerNamedGroup>BRAINPOOLP512R1</defaultServerNamedGroup>

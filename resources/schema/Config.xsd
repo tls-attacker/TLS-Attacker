@@ -3488,7 +3488,7 @@
       <xs:enumeration value="BRAINPOOLP512R1"/>
       <xs:enumeration value="ECDH_X25519"/>
       <xs:enumeration value="ECDH_X448"/>
-      <xs:enumeration value="CURVESM2"/>
+      <xs:enumeration value="CURVE_SM2"/>
       <xs:enumeration value="FFDHE2048"/>
       <xs:enumeration value="FFDHE3072"/>
       <xs:enumeration value="FFDHE4096"/>
