@@ -6176,7 +6176,6 @@
       <xs:enumeration value="GOST12"/>
       <xs:enumeration value="FORTEZZA"/>
       <xs:enumeration value="ECNRA"/>
-      <xs:enumeration value="SM2"/>
       <xs:enumeration value="NONE"/>
     </xs:restriction>
   </xs:simpleType>

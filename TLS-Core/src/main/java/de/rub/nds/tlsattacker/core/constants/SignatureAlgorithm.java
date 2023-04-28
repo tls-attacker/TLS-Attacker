@@ -53,8 +53,6 @@ public enum SignatureAlgorithm {
             case GOSTR34102012_256:
             case GOSTR34102012_512:
                 return CertificateKeyType.GOST12;
-            case SM2:
-                return CertificateKeyType.SM2;
             default:
                 return null;
         }

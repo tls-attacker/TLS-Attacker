@@ -381,7 +381,7 @@ public class CertificateKeyPair implements Serializable {
             case "1.2.643.7.1.1.3.3":
                 return CertificateKeyType.GOST12;
             case "1.2.156.10197.1.501":
-                return CertificateKeyType.SM2;
+                return CertificateKeyType.ECDH;
             default:
                 LOGGER.warn(
                         "Unknown algorithm ID: "
