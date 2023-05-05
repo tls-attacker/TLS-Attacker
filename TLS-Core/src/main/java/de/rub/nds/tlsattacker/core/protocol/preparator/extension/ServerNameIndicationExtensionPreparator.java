@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerNameIndicati
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ServerNamePairSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -39,9 +40,14 @@ public class ServerNameIndicationExtensionPreparator
     public void prepareExtensionContent() {
         LOGGER.debug("Preparing ServerNameIndicationExtensionMessage");
         stream = new ByteArrayOutputStream();
-        prepareEntryList();
-        prepareServerNameListBytes(msg);
-        prepareServerNameListLength(msg);
+        
+        if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
+            prepareEntryList();
+            prepareServerNameListBytes(msg);
+            prepareServerNameListLength(msg);
+        } else {
+            prepareEmptyExtension();
+        }
     }
 
     public void prepareEntryList() {
@@ -58,6 +64,13 @@ public class ServerNameIndicationExtensionPreparator
         for (ServerNamePair pair : msg.getServerNameList()) {
             prepareEntry(chooser, pair);
         }
+    }
+    
+    
+    public void prepareEmptyExtension(){
+        LOGGER.debug("Preparing SNI extension with empty content.");
+        msg.setServerNameList(new LinkedList<>());
+        msg.setServerNameListBytes(new byte[0]);
     }
 
     public void prepareEmptyEntry() {
