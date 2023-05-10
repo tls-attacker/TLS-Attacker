@@ -8,7 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /** Available exchange modes for pre-shared keys (TLS 1.3) */
@@ -33,6 +35,22 @@ public enum PskKeyExchangeMode {
 
     public static PskKeyExchangeMode getExchangeMode(byte value) {
         return MAP.get(value);
+    }
+    
+    public static List<PskKeyExchangeMode> getExchangeModes(byte[] sourceBytes){
+        if (sourceBytes == null || sourceBytes.length == 0) {
+            return new ArrayList<>();
+        }
+        
+        List<PskKeyExchangeMode> modes = new ArrayList<>(sourceBytes.length);
+        for(byte sourceByte: sourceBytes){
+            PskKeyExchangeMode mode = getExchangeMode(sourceByte);
+            if(mode != null){
+                modes.add(mode);
+            }
+        }
+        
+        return modes;
     }
 
     public byte getValue() {
