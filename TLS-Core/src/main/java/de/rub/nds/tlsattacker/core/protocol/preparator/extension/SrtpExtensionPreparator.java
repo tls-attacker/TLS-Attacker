@@ -1,20 +1,21 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.SrtpProtectionProfiles;
+import de.rub.nds.tlsattacker.core.constants.SrtpProtectionProfile;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SrtpExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,37 +25,41 @@ public class SrtpExtensionPreparator extends ExtensionPreparator<SrtpExtensionMe
 
     private final SrtpExtensionMessage msg;
 
-    public SrtpExtensionPreparator(Chooser chooser, SrtpExtensionMessage message,
-        ExtensionSerializer<SrtpExtensionMessage> serializer) {
+    public SrtpExtensionPreparator(
+            Chooser chooser,
+            SrtpExtensionMessage message,
+            ExtensionSerializer<SrtpExtensionMessage> serializer) {
         super(chooser, message, serializer);
         msg = message;
     }
 
     @Override
     public void prepareExtensionContent() {
-        ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
-        for (SrtpProtectionProfiles profile : chooser.getConfig()
-            .getSecureRealTimeTransportProtocolProtectionProfiles()) {
-            byteStream.write(profile.getMinor());
-            byteStream.write(profile.getMajor());
-        }
-        msg.setSrtpProtectionProfiles(byteStream.toByteArray());
-        LOGGER.debug("Prepared the SRTP extension with protection profiles "
-            + ArrayConverter.bytesToHexString(msg.getSrtpProtectionProfiles()));
-        msg.setSrtpProtectionProfilesLength(msg.getSrtpProtectionProfiles().getValue().length);
-        LOGGER.debug("Prepared the SRTP extension with protection profiles length "
-            + msg.getSrtpProtectionProfilesLength().getValue());
-
-        if (chooser.getConfig().getSecureRealTimeTransportProtocolMasterKeyIdentifier().length != 0) {
-            msg.setSrtpMki(chooser.getConfig().getSecureRealTimeTransportProtocolMasterKeyIdentifier());
-            LOGGER.debug("Prepared the SRTP extension with MKI " + ArrayConverter.bytesToHexString(msg.getSrtpMki()));
+        try {
+            ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+            if (chooser.getTalkingConnectionEnd() == ConnectionEndType.CLIENT) {
+                for (SrtpProtectionProfile profile :
+                        chooser.getConfig().getClientSupportedSrtpProtectionProfiles()) {
+                    byteStream.write(profile.getByteValue());
+                }
+            } else {
+                byteStream.write(chooser.getSelectedSrtpProtectionProfile().getByteValue());
+            }
+            msg.setSrtpProtectionProfiles(byteStream.toByteArray());
+            LOGGER.debug(
+                    "ProtectionProfiles: {}",
+                    ArrayConverter.bytesToHexString(msg.getSrtpProtectionProfiles()));
+            msg.setSrtpProtectionProfilesLength(msg.getSrtpProtectionProfiles().getValue().length);
+            LOGGER.debug(
+                    "ProtectionProfile Length: {} ",
+                    msg.getSrtpProtectionProfilesLength().getValue());
+            msg.setSrtpMki(
+                    chooser.getConfig().getSecureRealTimeTransportProtocolMasterKeyIdentifier());
+            LOGGER.debug("MKI: {}", ArrayConverter.bytesToHexString(msg.getSrtpMki()));
             msg.setSrtpMkiLength(msg.getSrtpMki().getValue().length);
-            LOGGER.debug("Prepared the SRTP extension with mki length " + msg.getSrtpMkiLength().getValue());
-        } else {
-            msg.setSrtpMki(chooser.getConfig().getSecureRealTimeTransportProtocolMasterKeyIdentifier());
-            msg.setSrtpMkiLength(0);
-            LOGGER.debug("Prepared the SRTP extension with no MKI, hence the length is 0");
+            LOGGER.debug("MKI Length: {}", msg.getSrtpMkiLength().getValue());
+        } catch (IOException E) {
+            LOGGER.error("Could not write to local stream", E);
         }
     }
-
 }

@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.workflow.chooser;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -25,6 +24,7 @@ import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SSL2CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.SrtpProtectionProfile;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
@@ -273,8 +273,8 @@ public class DefaultChooser extends Chooser {
     }
 
     /**
-     * Additional Check for Extended Random. If extended Random was negotiated, we add the additional bytes to the
-     * Client Random
+     * Additional Check for Extended Random. If extended Random was negotiated, we add the
+     * additional bytes to the Client Random
      */
     @Override
     public byte[] getClientRandom() {
@@ -304,8 +304,8 @@ public class DefaultChooser extends Chooser {
     }
 
     /**
-     * Additional Check for Extended Random. If extended Random was negotiated, we add the additional bytes to the
-     * Server Random
+     * Additional Check for Extended Random. If extended Random was negotiated, we add the
+     * additional bytes to the Server Random
      */
     @Override
     public byte[] getServerRandom() {
@@ -748,7 +748,6 @@ public class DefaultChooser extends Chooser {
         } else {
             return config.getDefaultClientApplicationTrafficSecret();
         }
-
     }
 
     @Override
@@ -794,8 +793,9 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public ConnectionEndType getMyConnectionPeer() {
-        return getConnection().getLocalConnectionEndType() == ConnectionEndType.CLIENT ? ConnectionEndType.SERVER
-            : ConnectionEndType.CLIENT;
+        return getConnection().getLocalConnectionEndType() == ConnectionEndType.CLIENT
+                ? ConnectionEndType.SERVER
+                : ConnectionEndType.CLIENT;
     }
 
     @Override
@@ -1095,7 +1095,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public List<KeyShareStoreEntry> getEsniServerKeyShareEntries() {
-        if (context.getEsniServerKeyShareEntries() != null && context.getEsniServerKeyShareEntries().size() > 0) {
+        if (context.getEsniServerKeyShareEntries() != null
+                && context.getEsniServerKeyShareEntries().size() > 0) {
             return context.getEsniServerKeyShareEntries();
         } else {
             return config.getDefaultEsniServerKeyShareEntries();
@@ -1208,6 +1209,15 @@ public class DefaultChooser extends Chooser {
             return context.getInboundMaxRecordDataSize();
         } else {
             return config.getDefaultMaxRecordData();
+        }
+    }
+
+    @Override
+    public SrtpProtectionProfile getSelectedSrtpProtectionProfile() {
+        if (context.getSelectedSrtpProtectionProfile() != null) {
+            return context.getSelectedSrtpProtectionProfile();
+        } else {
+            return config.getDefaultSelectedSrtpProtectionProfile();
         }
     }
 }
