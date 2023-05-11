@@ -213,14 +213,13 @@ public class CertificateKeyPair implements Serializable {
             gostCurve = null;
         }
     }
-    
-    public static CertificateKeyPair fromCertificate(String certificatePath, String keyPath) throws IOException, CertificateException{
+
+    public static CertificateKeyPair fromCertificate(String certificatePath, String keyPath)
+            throws IOException, CertificateException {
         File certificateFile = new File(certificatePath);
         File keyFile = new File(keyPath);
-        InputStream certInputStream = new FileInputStream(certificateFile);
-        InputStream keyInputStream = new FileInputStream(keyFile);
-        Certificate certificate = PemUtil.readCertificate(certInputStream);
-        PrivateKey privateKey = PemUtil.readPrivateKey(keyInputStream);
+        Certificate certificate = PemUtil.readCertificate(certificateFile);
+        PrivateKey privateKey = PemUtil.readPrivateKey(keyFile);
         return new CertificateKeyPair(certificate, privateKey);
     }
 

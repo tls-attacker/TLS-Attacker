@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.constants;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -72,16 +73,18 @@ public enum ECPointFormat {
         return bytes.toByteArray();
     }
 
-    public static ECPointFormat[] pointFormatsFromByteArray(byte[] sourceBytes)
-            throws IOException, ClassNotFoundException {
+    public static ECPointFormat[] pointFormatsFromByteArray(byte[] sourceBytes) {
         if (sourceBytes == null || sourceBytes.length == 0) {
             return null;
         }
+        List<ECPointFormat> formats = new ArrayList<>(sourceBytes.length);
+        for (byte sourceByte : sourceBytes) {
+            ECPointFormat format = ECPointFormat.getECPointFormat(sourceByte);
+            if (format != null) {
+                formats.add(format);
+            }
+        }
 
-        ByteArrayInputStream in = new ByteArrayInputStream(sourceBytes);
-        ObjectInputStream is = new ObjectInputStream(in);
-        ECPointFormat[] formats = (ECPointFormat[]) is.readObject();
-
-        return formats;
+        return formats.toArray(ECPointFormat[]::new);
     }
 }
