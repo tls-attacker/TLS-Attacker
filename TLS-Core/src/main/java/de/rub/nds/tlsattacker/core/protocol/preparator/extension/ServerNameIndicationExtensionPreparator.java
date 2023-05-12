@@ -40,7 +40,7 @@ public class ServerNameIndicationExtensionPreparator
     public void prepareExtensionContent() {
         LOGGER.debug("Preparing ServerNameIndicationExtensionMessage");
         stream = new ByteArrayOutputStream();
-        
+
         if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
             prepareEntryList();
             prepareServerNameListBytes(msg);
@@ -65,9 +65,8 @@ public class ServerNameIndicationExtensionPreparator
             prepareEntry(chooser, pair);
         }
     }
-    
-    
-    public void prepareEmptyExtension(){
+
+    public void prepareEmptyExtension() {
         LOGGER.debug("Preparing SNI extension with empty content.");
         msg.setServerNameList(new LinkedList<>());
         msg.setServerNameListBytes(new byte[0]);

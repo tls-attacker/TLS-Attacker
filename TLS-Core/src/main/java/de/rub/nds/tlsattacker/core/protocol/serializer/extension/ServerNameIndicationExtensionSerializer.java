@@ -29,11 +29,11 @@ public class ServerNameIndicationExtensionSerializer
     public byte[] serializeExtensionContent() {
         LOGGER.debug("Serializing ServerNameIndicationExtensionMessage");
         // the server may send a completely empty SNI extension.
-        if(msg.getServerNameListBytes().getValue().length > 0){
+        if (msg.getServerNameListBytes().getValue().length > 0) {
             writeServerNameListLength(msg);
             writeServerNameListBytes(msg);
         }
-        return getAlreadySerialized();  
+        return getAlreadySerialized();
     }
 
     private void writeServerNameListLength(ServerNameIndicationExtensionMessage msg) {

@@ -36,20 +36,20 @@ public enum PskKeyExchangeMode {
     public static PskKeyExchangeMode getExchangeMode(byte value) {
         return MAP.get(value);
     }
-    
-    public static List<PskKeyExchangeMode> getExchangeModes(byte[] sourceBytes){
+
+    public static List<PskKeyExchangeMode> getExchangeModes(byte[] sourceBytes) {
         if (sourceBytes == null || sourceBytes.length == 0) {
             return new ArrayList<>();
         }
-        
+
         List<PskKeyExchangeMode> modes = new ArrayList<>(sourceBytes.length);
-        for(byte sourceByte: sourceBytes){
+        for (byte sourceByte : sourceBytes) {
             PskKeyExchangeMode mode = getExchangeMode(sourceByte);
-            if(mode != null){
+            if (mode != null) {
                 modes.add(mode);
             }
         }
-        
+
         return modes;
     }
 
