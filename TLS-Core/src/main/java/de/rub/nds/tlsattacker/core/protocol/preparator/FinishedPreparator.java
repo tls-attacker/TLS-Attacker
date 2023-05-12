@@ -57,8 +57,8 @@ public class FinishedPreparator extends HandshakeMessagePreparator<FinishedMessa
                         AlgorithmResolver.getHKDFAlgorithm(chooser.getSelectedCipherSuite());
                 Mac mac = Mac.getInstance(hkdfAlgorithm.getMacAlgorithm().getJavaName());
                 byte[] finishedKey;
-                LOGGER.debug("Connection End: " + chooser.getConnectionEndType());
-                if (chooser.getConnectionEndType() == ConnectionEndType.SERVER) {
+                LOGGER.debug("Connection End: " + chooser.getTalkingConnectionEnd());
+                if (chooser.getTalkingConnectionEnd() == ConnectionEndType.SERVER) {
                     finishedKey =
                             HKDFunction.expandLabel(
                                     hkdfAlgorithm,
@@ -95,7 +95,7 @@ public class FinishedPreparator extends HandshakeMessagePreparator<FinishedMessa
                     chooser.getContext().getTlsContext().getDigest().getRawBytes();
             final byte[] masterSecret = chooser.getMasterSecret();
             LOGGER.debug("Using MasterSecret: {}", masterSecret);
-            final ConnectionEndType endType = chooser.getConnectionEndType();
+            final ConnectionEndType endType = chooser.getTalkingConnectionEnd();
             return SSLUtils.calculateFinishedData(handshakeMessageContent, masterSecret, endType);
         } else {
             LOGGER.debug("Calculating VerifyData:");
@@ -113,7 +113,7 @@ public class FinishedPreparator extends HandshakeMessagePreparator<FinishedMessa
             LOGGER.debug("Using HandshakeMessage Hash: {}", handshakeMessageHash);
 
             String label;
-            if (chooser.getConnectionEndType() == ConnectionEndType.SERVER) {
+            if (chooser.getTalkingConnectionEnd() == ConnectionEndType.SERVER) {
                 // TODO put this in separate config option
                 label = PseudoRandomFunction.SERVER_FINISHED_LABEL;
             } else {
