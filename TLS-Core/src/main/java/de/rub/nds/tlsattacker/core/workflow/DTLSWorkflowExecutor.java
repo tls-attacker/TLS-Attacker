@@ -116,6 +116,7 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
         }
 
         if (config.isFinishWithCloseNotify()) {
+            LOGGER.info("Closing connections with close notify");
             for (TlsContext context : state.getAllTlsContexts()) {
                 int currentEpoch = context.getRecordLayer().getWriteEpoch();
                 for (int epoch = currentEpoch; epoch >= 0; epoch--) {
