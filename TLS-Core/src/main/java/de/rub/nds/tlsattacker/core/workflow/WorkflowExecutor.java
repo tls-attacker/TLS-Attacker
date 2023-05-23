@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -62,15 +61,13 @@ public abstract class WorkflowExecutor {
     protected final Config config;
 
     /**
-     * Prepare a workflow trace for execution according to the given state and executor type. Try various ways to
-     * initialize a workflow trace and add it to the state. For workflow creation, use the first method which does not
-     * return null, in the following order: state.getWorkflowTrace(), state.config.getWorkflowInput(),
-     * config.getWorkflowTraceType().
+     * Prepare a workflow trace for execution according to the given state and executor type. Try
+     * various ways to initialize a workflow trace and add it to the state. For workflow creation,
+     * use the first method which does not return null, in the following order:
+     * state.getWorkflowTrace(), state.config.getWorkflowInput(), config.getWorkflowTraceType().
      *
-     * @param type
-     *              of the workflow executor (currently only DEFAULT)
-     * @param state
-     *              to work on
+     * @param type of the workflow executor (currently only DEFAULT)
+     * @param state to work on
      */
     public WorkflowExecutor(WorkflowExecutorType type, State state) {
         this.type = type;
@@ -81,8 +78,8 @@ public abstract class WorkflowExecutor {
     public abstract void executeWorkflow() throws WorkflowExecutionException;
 
     /**
-     * Initialize the context's transport handler.Start listening or connect to a server, depending on our connection
-     * end type.
+     * Initialize the context's transport handler.Start listening or connect to a server, depending
+     * on our connection end type.
      *
      * @param context
      */
@@ -92,10 +89,12 @@ public abstract class WorkflowExecutor {
             if (context.getConnection() == null) {
                 throw new ConfigurationException("Connection end not set");
             }
-            context.setTransportHandler(TransportHandlerFactory.createTransportHandler(context.getConnection()));
+            context.setTransportHandler(
+                    TransportHandlerFactory.createTransportHandler(context.getConnection()));
             if (context.getTransportHandler() instanceof ClientTcpTransportHandler) {
                 ((ClientTcpTransportHandler) context.getTransportHandler())
-                    .setRetryFailedSocketInitialization(config.isRetryFailedClientTcpSocketInitialization());
+                        .setRetryFailedSocketInitialization(
+                                config.isRetryFailedClientTcpSocketInitialization());
             }
         }
 
@@ -112,10 +111,13 @@ public abstract class WorkflowExecutor {
                 getAfterTransportInitCallback().apply(state);
             }
         } catch (NullPointerException | NumberFormatException ex) {
-            throw new ConfigurationException("Invalid values in " + context.getConnection().toString(), ex);
+            throw new ConfigurationException(
+                    "Invalid values in " + context.getConnection().toString(), ex);
         } catch (Exception ex) {
             throw new TransportHandlerConnectException(
-                "Unable to initialize the transport handler with: " + context.getConnection().toString(), ex);
+                    "Unable to initialize the transport handler with: "
+                            + context.getConnection().toString(),
+                    ex);
         }
     }
 
@@ -128,14 +130,16 @@ public abstract class WorkflowExecutor {
         if (context.getRecordLayerType() == null) {
             throw new ConfigurationException("No record layer type defined");
         }
-        context.setRecordLayer(RecordLayerFactory.getRecordLayer(context.getRecordLayerType(), context));
+        context.setRecordLayer(
+                RecordLayerFactory.getRecordLayer(context.getRecordLayerType(), context));
     }
 
     public Function<State, Integer> getBeforeTransportPreInitCallback() {
         return beforeTransportPreInitCallback;
     }
 
-    public void setBeforeTransportPreInitCallback(Function<State, Integer> beforeTransportPreInitCallback) {
+    public void setBeforeTransportPreInitCallback(
+            Function<State, Integer> beforeTransportPreInitCallback) {
         this.beforeTransportPreInitCallback = beforeTransportPreInitCallback;
     }
 
@@ -143,7 +147,8 @@ public abstract class WorkflowExecutor {
         return beforeTransportInitCallback;
     }
 
-    public void setBeforeTransportInitCallback(Function<State, Integer> beforeTransportInitCallback) {
+    public void setBeforeTransportInitCallback(
+            Function<State, Integer> beforeTransportInitCallback) {
         this.beforeTransportInitCallback = beforeTransportInitCallback;
     }
 
@@ -167,7 +172,11 @@ public abstract class WorkflowExecutor {
         for (TlsContext ctx : state.getAllTlsContexts()) {
             AliasedConnection con = ctx.getConnection();
             if (con.getLocalConnectionEndType() == ConnectionEndType.SERVER) {
-                LOGGER.info("Waiting for incoming connection on " + con.getHostname() + ":" + con.getPort());
+                LOGGER.info(
+                        "Waiting for incoming connection on "
+                                + con.getHostname()
+                                + ":"
+                                + con.getPort());
             } else {
                 LOGGER.info("Connecting to " + con.getHostname() + ":" + con.getPort());
             }
@@ -193,11 +202,11 @@ public abstract class WorkflowExecutor {
         }
     }
 
-    public void sendCloseNotify() {
+    public void sendCloseNotify(TlsContext context) {
         AlertMessage alertMessage = new AlertMessage();
         alertMessage.setConfig(AlertLevel.FATAL, AlertDescription.CLOSE_NOTIFY);
-        SendAction sendAction =
-            new SendAction(state.getWorkflowTrace().getConnections().get(0).getAlias(), alertMessage);
+        alertMessage.setLevel(AlertLevel.FATAL.getValue());
+        SendAction sendAction = new SendAction(context.getConnection().getAlias(), alertMessage);
         sendAction.getActionOptions().add(ActionOption.MAY_FAIL);
         sendAction.execute(state);
     }
@@ -207,7 +216,8 @@ public abstract class WorkflowExecutor {
             TransportHandler handler = ctx.getTransportHandler();
             if (handler instanceof TcpTransportHandler) {
                 SocketState socketSt =
-                    ((TcpTransportHandler) handler).getSocketState(config.isReceiveFinalTcpSocketStateWithTimeout());
+                        ((TcpTransportHandler) handler)
+                                .getSocketState(config.isReceiveFinalTcpSocketStateWithTimeout());
                 ctx.setFinalSocketState(socketSt);
             } else {
                 ctx.setFinalSocketState(SocketState.UNAVAILABLE);
@@ -215,9 +225,7 @@ public abstract class WorkflowExecutor {
         }
     }
 
-    /**
-     * Check if a at least one TLS context received a fatal alert.
-     */
+    /** Check if a at least one TLS context received a fatal alert. */
     public boolean isReceivedFatalAlert() {
         for (TlsContext ctx : state.getAllTlsContexts()) {
             if (ctx.isReceivedFatalAlert()) {
@@ -227,12 +235,11 @@ public abstract class WorkflowExecutor {
         return false;
     }
 
-    /**
-     * Check if a at least one TLS context received a warning alert.
-     */
+    /** Check if a at least one TLS context received a warning alert. */
     public boolean isReceivedWarningAlert() {
         List<ProtocolMessage> allReceivedMessages =
-            WorkflowTraceUtil.getAllReceivedMessages(state.getWorkflowTrace(), ProtocolMessageType.ALERT);
+                WorkflowTraceUtil.getAllReceivedMessages(
+                        state.getWorkflowTrace(), ProtocolMessageType.ALERT);
         for (ProtocolMessage message : allReceivedMessages) {
             AlertMessage alert = (AlertMessage) message;
             if (alert.getLevel().getValue() == AlertLevel.WARNING.getValue()) {

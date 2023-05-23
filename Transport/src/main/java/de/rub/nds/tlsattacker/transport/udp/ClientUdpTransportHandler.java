@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.transport.udp.stream.UdpOutputStream;
 import java.io.IOException;
 import java.io.PushbackInputStream;
 import java.net.DatagramSocket;
+import java.net.SocketException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -45,6 +46,11 @@ public class ClientUdpTransportHandler extends UdpTransportHandler {
         this.socket = socket;
         this.hostname = hostname;
         this.port = port;
+        try {
+            socket.setSoTimeout((int) timeout);
+        } catch (SocketException e) {
+            throw new RuntimeException("Could not set socket timeout", e);
+        }
         setStreams(
                 new PushbackInputStream(new UdpInputStream(socket, false)),
                 new UdpOutputStream(socket, hostname, port));
