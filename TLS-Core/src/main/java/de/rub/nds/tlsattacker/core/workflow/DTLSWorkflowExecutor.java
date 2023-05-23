@@ -121,7 +121,7 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
                 int currentEpoch = context.getRecordLayer().getWriteEpoch();
                 for (int epoch = currentEpoch; epoch >= 0; epoch--) {
                     context.getRecordLayer().setWriteEpoch(epoch);
-                    sendCloseNotify();
+                    sendCloseNotify(context);
                 }
                 context.getRecordLayer().setWriteEpoch(currentEpoch);
             }
