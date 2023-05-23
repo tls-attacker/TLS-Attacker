@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -70,6 +70,9 @@ public enum SignatureAndHashAlgorithm {
     RSA_PSS_PSS_SHA256(0x0809),
     RSA_PSS_PSS_SHA384(0x080a),
     RSA_PSS_PSS_SHA512(0x080b),
+    ECDSA_BRAINPOOL_P256R1_TLS13_SHA256(0x081A),
+    ECDSA_BRAINPOOL_P384R1_TLS13_SHA384(0x081B),
+    ECDSA_BRAINPOOL_P512R1_TLS13_SHA512(0x081C),
     GOSTR34102001_GOSTR3411(0xEDED),
     GOSTR34102012_256_GOSTR34112012_256(0xEEEE),
     GOSTR34102012_512_GOSTR34112012_512(0xEFEF),
@@ -137,6 +140,9 @@ public enum SignatureAndHashAlgorithm {
         algos.add(SignatureAndHashAlgorithm.RSA_PSS_RSAE_SHA512);
         algos.add(SignatureAndHashAlgorithm.ED448);
         algos.add(SignatureAndHashAlgorithm.ED25519);
+        algos.add(SignatureAndHashAlgorithm.ECDSA_BRAINPOOL_P256R1_TLS13_SHA256);
+        algos.add(SignatureAndHashAlgorithm.ECDSA_BRAINPOOL_P384R1_TLS13_SHA384);
+        algos.add(SignatureAndHashAlgorithm.ECDSA_BRAINPOOL_P512R1_TLS13_SHA512);
         return algos;
     }
 
