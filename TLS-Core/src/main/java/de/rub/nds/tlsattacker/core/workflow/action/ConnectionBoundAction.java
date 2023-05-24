@@ -1,38 +1,35 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlTransient;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlTransient;
 
 /**
- * TLS Action bound to a single connection/TLS context. This should be the default abstract base class for most actions.
- * Provides automatic fallback to default context alias.
+ * TLS Action bound to a single connection/TLS context. This should be the default abstract base
+ * class for most actions. Provides automatic fallback to default context alias.
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class ConnectionBoundAction extends TlsAction {
 
     protected String connectionAlias = null;
 
-    @XmlTransient
-    private final Set<String> aliases = new HashSet<>();
+    @XmlTransient private final Set<String> aliases = new HashSet<>();
 
-    public ConnectionBoundAction() {
-    }
+    public ConnectionBoundAction() {}
 
     public ConnectionBoundAction(String alias) {
         this.connectionAlias = alias;
@@ -76,7 +73,8 @@ public abstract class ConnectionBoundAction extends TlsAction {
     @Override
     public void assertAliasesSetProperly() throws ConfigurationException {
         if ((connectionAlias == null) || (connectionAlias.isEmpty())) {
-            throw new ConfigurationException("connectionAlias empty or null in " + this.getClass().getSimpleName());
+            throw new ConfigurationException(
+                    "connectionAlias empty or null in " + this.getClass().getSimpleName());
         }
     }
 
@@ -140,5 +138,4 @@ public abstract class ConnectionBoundAction extends TlsAction {
         final ConnectionBoundAction other = (ConnectionBoundAction) obj;
         return Objects.equals(this.connectionAlias, other.connectionAlias);
     }
-
 }

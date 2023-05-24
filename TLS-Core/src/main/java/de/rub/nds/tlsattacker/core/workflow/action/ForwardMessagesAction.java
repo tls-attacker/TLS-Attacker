@@ -40,7 +40,7 @@ import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@XmlRootElement
+@XmlRootElement(name = "ForwardMessages")
 public class ForwardMessagesAction extends TlsAction implements ReceivingAction, SendingAction {
 
     private static final Logger LOGGER = LogManager.getLogger();

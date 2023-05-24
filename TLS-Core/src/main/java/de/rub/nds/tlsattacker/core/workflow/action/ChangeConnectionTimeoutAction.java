@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
@@ -16,7 +15,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@XmlRootElement
+@XmlRootElement(name = "ChangeConnectionTimeout")
 public class ChangeConnectionTimeoutAction extends ConnectionBoundAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -29,8 +28,7 @@ public class ChangeConnectionTimeoutAction extends ConnectionBoundAction {
         this.newValue = newValue;
     }
 
-    public ChangeConnectionTimeoutAction() {
-    }
+    public ChangeConnectionTimeoutAction() {}
 
     public void setNewValue(long newValue) {
         this.newValue = newValue;
@@ -53,7 +51,8 @@ public class ChangeConnectionTimeoutAction extends ConnectionBoundAction {
         }
         oldValue = tlsContext.getTransportHandler().getTimeout();
         tlsContext.getTransportHandler().setTimeout(newValue);
-        LOGGER.info("Changed Timeout from " + oldValue == null ? oldValue : null + " to " + newValue);
+        LOGGER.info(
+                "Changed Timeout from " + oldValue == null ? oldValue : null + " to " + newValue);
         setExecuted(true);
     }
 
@@ -95,5 +94,4 @@ public class ChangeConnectionTimeoutAction extends ConnectionBoundAction {
         }
         return true;
     }
-
 }

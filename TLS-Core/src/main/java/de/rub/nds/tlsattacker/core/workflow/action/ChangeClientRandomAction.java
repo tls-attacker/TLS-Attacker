@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -14,19 +13,20 @@ import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.util.Arrays;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@XmlRootElement
+@XmlRootElement(name = "ChangeClientRandom")
 public class ChangeClientRandomAction extends ConnectionBoundAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] newValue = null;
+
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] oldValue = null;
 
@@ -35,8 +35,7 @@ public class ChangeClientRandomAction extends ConnectionBoundAction {
         this.newValue = newValue;
     }
 
-    public ChangeClientRandomAction() {
-    }
+    public ChangeClientRandomAction() {}
 
     public void setNewValue(byte[] newValue) {
         this.newValue = newValue;
@@ -59,8 +58,11 @@ public class ChangeClientRandomAction extends ConnectionBoundAction {
         }
         oldValue = tlsContext.getClientRandom();
         tlsContext.setClientRandom(newValue);
-        LOGGER.info("Changed ClientRandom from " + ArrayConverter.bytesToHexString(oldValue) + " to "
-            + ArrayConverter.bytesToHexString(newValue));
+        LOGGER.info(
+                "Changed ClientRandom from "
+                        + ArrayConverter.bytesToHexString(oldValue)
+                        + " to "
+                        + ArrayConverter.bytesToHexString(newValue));
         setExecuted(true);
     }
 
@@ -100,5 +102,4 @@ public class ChangeClientRandomAction extends ConnectionBoundAction {
     public boolean executedAsPlanned() {
         return isExecuted();
     }
-
 }

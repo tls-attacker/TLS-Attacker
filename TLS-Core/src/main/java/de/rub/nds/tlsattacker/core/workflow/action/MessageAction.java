@@ -1,34 +1,29 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlElementWrapper;
-import jakarta.xml.bind.annotation.XmlElements;
-import jakarta.xml.bind.annotation.XmlTransient;
-
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
-import de.rub.nds.tlsattacker.core.https.HttpsRequestMessage;
-import de.rub.nds.tlsattacker.core.https.HttpsResponseMessage;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.*;
+import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ReceiveMessageHelper;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.SendMessageHelper;
+import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElementRef;
+import jakarta.xml.bind.annotation.XmlElementWrapper;
+import jakarta.xml.bind.annotation.XmlElements;
+import jakarta.xml.bind.annotation.XmlTransient;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public abstract class MessageAction extends ConnectionBoundAction {
 
@@ -37,27 +32,27 @@ public abstract class MessageAction extends ConnectionBoundAction {
         RECEIVING
     }
 
-    @XmlElementWrapper
-    @HoldsModifiableVariable
-    @XmlElementRef
+    @XmlElementWrapper @HoldsModifiableVariable @XmlElementRef
     protected List<ProtocolMessage> messages = new ArrayList<>();
 
     @HoldsModifiableVariable
     @XmlElementWrapper
-    @XmlElements(value = { @XmlElement(type = Record.class, name = "Record"),
-        @XmlElement(type = BlobRecord.class, name = "BlobRecord") })
+    @XmlElements(
+            value = {
+                @XmlElement(type = Record.class, name = "Record"),
+                @XmlElement(type = BlobRecord.class, name = "BlobRecord")
+            })
     protected List<AbstractRecord> records = new ArrayList<>();
 
     @HoldsModifiableVariable
     @XmlElementWrapper
-    @XmlElements(value = { @XmlElement(type = DtlsHandshakeMessageFragment.class, name = "DtlsFragment") })
+    @XmlElements(
+            value = {@XmlElement(type = DtlsHandshakeMessageFragment.class, name = "DtlsFragment")})
     protected List<DtlsHandshakeMessageFragment> fragments = new ArrayList<>();
 
-    @XmlTransient
-    protected ReceiveMessageHelper receiveMessageHelper;
+    @XmlTransient protected ReceiveMessageHelper receiveMessageHelper;
 
-    @XmlTransient
-    protected SendMessageHelper sendMessageHelper;
+    @XmlTransient protected SendMessageHelper sendMessageHelper;
 
     public MessageAction() {
         receiveMessageHelper = new ReceiveMessageHelper();
@@ -217,5 +212,4 @@ public abstract class MessageAction extends ConnectionBoundAction {
     }
 
     public abstract MessageActionDirection getMessageDirection();
-
 }

@@ -1,50 +1,51 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
+import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.https.HttpsRequestMessage;
 import de.rub.nds.tlsattacker.core.https.HttpsResponseMessage;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.*;
+import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
+import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.KeyUpdateMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.TlsMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
+import jakarta.xml.bind.annotation.XmlElementRef;
+import jakarta.xml.bind.annotation.XmlElementWrapper;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlElementRef;
-import jakarta.xml.bind.annotation.XmlElementWrapper;
-import jakarta.xml.bind.annotation.XmlElements;
-import jakarta.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@XmlRootElement
+@XmlRootElement(name = "Receive")
 public class ReceiveAction extends MessageAction implements ReceivingAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    @HoldsModifiableVariable
-    @XmlElementWrapper
-    @XmlElementRef
+    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
     protected List<ProtocolMessage> expectedMessages = new ArrayList<>();
 
     public ReceiveAction() {
@@ -103,7 +104,8 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         }
 
         LOGGER.debug("Receiving Messages...");
-        MessageActionResult result = receiveMessageHelper.receiveMessages(expectedMessages, tlsContext);
+        MessageActionResult result =
+                receiveMessageHelper.receiveMessages(expectedMessages, tlsContext);
         records = new ArrayList<>(result.getRecordList());
         messages = new ArrayList<>(result.getMessageList());
         if (result.getMessageFragmentList() != null) {
@@ -168,12 +170,15 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         return receivedAsPlanned(getMessages(), getExpectedMessages(), getActionOptions());
     }
 
-    public static boolean receivedAsPlanned(List<ProtocolMessage> messages, List<ProtocolMessage> expectedMessages) {
+    public static boolean receivedAsPlanned(
+            List<ProtocolMessage> messages, List<ProtocolMessage> expectedMessages) {
         return receivedAsPlanned(messages, expectedMessages, new HashSet<>());
     }
 
-    public static boolean receivedAsPlanned(List<ProtocolMessage> messages, List<ProtocolMessage> expectedMessages,
-        Set<ActionOption> actionOptions) {
+    public static boolean receivedAsPlanned(
+            List<ProtocolMessage> messages,
+            List<ProtocolMessage> expectedMessages,
+            Set<ActionOption> actionOptions) {
         if (messages == null) {
             return false;
         }
@@ -183,7 +188,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
                 return false;
             } else if (j < messages.size()) {
                 if (!Objects.equals(expectedMessages.get(i).getClass(), messages.get(j).getClass())
-                    && expectedMessages.get(i).isRequired()) {
+                        && expectedMessages.get(i).isRequired()) {
                     if (receivedMessageCanBeIgnored(messages.get(j), actionOptions)) {
                         j++;
                         i--;
@@ -191,7 +196,8 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
                         return false;
                     }
 
-                } else if (Objects.equals(expectedMessages.get(i).getClass(), messages.get(j).getClass())) {
+                } else if (Objects.equals(
+                        expectedMessages.get(i).getClass(), messages.get(j).getClass())) {
                     j++;
                 }
             }
@@ -199,7 +205,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
 
         for (; j < messages.size(); j++) {
             if (!receivedMessageCanBeIgnored(messages.get(j), actionOptions)
-                && !actionOptions.contains(ActionOption.CHECK_ONLY_EXPECTED)) {
+                    && !actionOptions.contains(ActionOption.CHECK_ONLY_EXPECTED)) {
                 return false; // additional messages are not allowed
             }
         }
@@ -324,27 +330,28 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     private void initEmptyLists() {
         if (expectedMessages == null) {
             expectedMessages = new ArrayList<>();
-
         }
     }
 
-    private static boolean receivedMessageCanBeIgnored(ProtocolMessage msg, Set<ActionOption> actionOptions) {
-        if (actionOptions.contains(ActionOption.IGNORE_UNEXPECTED_WARNINGS) && msg instanceof AlertMessage) {
+    private static boolean receivedMessageCanBeIgnored(
+            ProtocolMessage msg, Set<ActionOption> actionOptions) {
+        if (actionOptions.contains(ActionOption.IGNORE_UNEXPECTED_WARNINGS)
+                && msg instanceof AlertMessage) {
             AlertMessage alert = (AlertMessage) msg;
             if (alert.getLevel().getOriginalValue() == AlertLevel.WARNING.getValue()) {
                 return true;
             }
         } else if (actionOptions.contains(ActionOption.IGNORE_UNEXPECTED_NEW_SESSION_TICKETS)
-            && msg instanceof NewSessionTicketMessage) {
+                && msg instanceof NewSessionTicketMessage) {
             return true;
         } else if (actionOptions.contains(ActionOption.IGNORE_UNEXPECTED_KEY_UPDATE_MESSAGES)
-            && msg instanceof KeyUpdateMessage) {
+                && msg instanceof KeyUpdateMessage) {
             return true;
         } else if (actionOptions.contains(ActionOption.IGNORE_UNEXPECTED_APP_DATA)
-            && msg instanceof ApplicationMessage) {
+                && msg instanceof ApplicationMessage) {
             return true;
         } else if (actionOptions.contains(ActionOption.IGNORE_UNEXPECTED_HTTPS_MESSAGES)
-            && (msg instanceof HttpsResponseMessage || msg instanceof HttpsRequestMessage)) {
+                && (msg instanceof HttpsResponseMessage || msg instanceof HttpsRequestMessage)) {
             return true;
         }
 

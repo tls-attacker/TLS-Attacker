@@ -22,7 +22,7 @@ import jakarta.xml.bind.annotation.XmlTransient;
 /**
  * An action that can be used for testing or to provide defaults for the filter/ normalize methods.
  */
-@XmlRootElement
+@XmlRootElement(name = "GeneralAction")
 public class GeneralAction extends TlsAction {
 
     @XmlTransient
