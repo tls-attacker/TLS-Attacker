@@ -8,15 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
@@ -28,6 +19,13 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @XmlRootElement(name = "SendMessagesFromLastFlight")
 public class SendMessagesFromLastFlightAction extends MessageAction implements SendingAction {
@@ -81,8 +79,8 @@ public class SendMessagesFromLastFlightAction extends MessageAction implements S
         }
 
         try {
-            MessageActionResult result = sendMessageHelper.sendMessages(messages, fragments, records, tlsContext,
-                    false);
+            MessageActionResult result =
+                    sendMessageHelper.sendMessages(messages, fragments, records, tlsContext, false);
             messages = new ArrayList<>(result.getMessageList());
             records = new ArrayList<>(result.getRecordList());
             if (result.getMessageFragmentList() != null) {
