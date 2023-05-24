@@ -49,6 +49,10 @@ public class EarlyCcsAction extends TlsAction {
         this.targetOpenssl100 = targetsOpenssl100;
     }
 
+    private EarlyCcsAction() {
+        this.targetOpenssl100 = false;
+    }
+
     /**
      * Sends a ClientKeyExchange message depending on the currently selected cipher suite. Depending
      * on the target version cryptographic material is adjusted.
