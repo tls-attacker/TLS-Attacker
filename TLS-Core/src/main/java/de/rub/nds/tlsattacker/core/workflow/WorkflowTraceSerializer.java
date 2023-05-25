@@ -226,7 +226,7 @@ public class WorkflowTraceSerializer {
                     WorkflowTraceSerializer.class.getResourceAsStream("/" + xsd_source)) {
                 Schema configSchema = sf.newSchema(new StreamSource(schemaInputStream));
                 configSchema.newValidator();
-                unmarshaller.setSchema(configSchema);
+                // unmarshaller.setSchema(configSchema); //TODO Deactivated XSD for now...
             }
             WorkflowTrace wt = (WorkflowTrace) unmarshaller.unmarshal(xsr);
             ModvarHelper helper = new ModvarHelper();

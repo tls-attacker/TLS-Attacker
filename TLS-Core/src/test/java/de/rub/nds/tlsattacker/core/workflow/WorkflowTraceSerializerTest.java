@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.workflow;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -27,15 +26,14 @@ import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import jakarta.xml.bind.JAXBException;
+import java.io.*;
+import java.util.LinkedList;
+import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-
-import java.io.*;
-import java.util.LinkedList;
-import java.util.List;
 
 public class WorkflowTraceSerializerTest {
 
@@ -59,7 +57,8 @@ public class WorkflowTraceSerializerTest {
     @Test
     public void testWriteRead() throws Exception {
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
-        WorkflowTrace trace = factory.createWorkflowTrace(WorkflowTraceType.FULL, RunningModeType.CLIENT);
+        WorkflowTrace trace =
+                factory.createWorkflowTrace(WorkflowTraceType.FULL, RunningModeType.CLIENT);
         // pick random protocol message and initialize a record with modifiable
         // variable
         List<AbstractRecord> records = new LinkedList<>();
@@ -73,10 +72,11 @@ public class WorkflowTraceSerializerTest {
 
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         WorkflowTraceSerializer.write(os, trace);
-        LOGGER.debug(os.toString());
 
-        String serializedWorkflow = os.toString();
+        String serializedWorkflow = new String(os.toByteArray());
+        LOGGER.debug(serializedWorkflow);
 
+        System.out.println("ah:" + serializedWorkflow);
         ByteArrayInputStream bis = new ByteArrayInputStream(serializedWorkflow.getBytes());
         WorkflowTrace wt = WorkflowTraceSerializer.secureRead(bis);
 
@@ -84,7 +84,10 @@ public class WorkflowTraceSerializerTest {
         WorkflowTraceSerializer.write(os, wt);
         LOGGER.debug(os.toString());
 
-        assertArrayEquals(serializedWorkflow.getBytes(), os.toByteArray(), "The serialized workflows have to be equal");
+        assertArrayEquals(
+                serializedWorkflow.getBytes(),
+                os.toByteArray(),
+                "The serialized workflows have to be equal");
     }
 
     @Test
@@ -99,9 +102,10 @@ public class WorkflowTraceSerializerTest {
     }
 
     /**
-     * Verify that serialized/XML with default connection end looks as expected. If there is no custom connection end
-     * defined in the workflow trace, the default connection end from the config should be used. The default connection
-     * end should not appear in the serialized workflow trace.
+     * Verify that serialized/XML with default connection end looks as expected. If there is no
+     * custom connection end defined in the workflow trace, the default connection end from the
+     * config should be used. The default connection end should not appear in the serialized
+     * workflow trace.
      */
     @Test
     public void serializeWithSingleConnectionTest() throws JAXBException, IOException {
@@ -138,7 +142,8 @@ public class WorkflowTraceSerializerTest {
     }
 
     /**
-     * Verify that serialized/XML representation with single custom connection end looks as expected.
+     * Verify that serialized/XML representation with single custom connection end looks as
+     * expected.
      */
     @Test
     public void serializeWithSingleCustomConnectionTest() throws JAXBException, IOException {
