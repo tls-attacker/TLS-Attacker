@@ -1,16 +1,16 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.workflow.task;
 
 import de.rub.nds.tlsattacker.core.exceptions.TransportHandlerConnectException;
 import de.rub.nds.tlsattacker.core.state.State;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import java.util.concurrent.Callable;
@@ -32,13 +32,13 @@ public abstract class TlsTask implements ITask, Callable<ITask> {
 
     private final long additionalTcpTimeout;
 
-    private Function<State, Integer> beforeTransportPreInitCallback = null;
+    private Function<TlsContext, Integer> beforeTransportPreInitCallback = null;
 
-    private Function<State, Integer> beforeTransportInitCallback = null;
+    private Function<TlsContext, Integer> beforeTransportInitCallback = null;
 
-    private Function<State, Integer> afterTransportInitCallback = null;
+    private Function<TlsContext, Integer> afterTransportInitCallback = null;
 
-    private Function<State, Integer> afterExecutionCallback = null;
+    private Function<TlsContext, Integer> afterExecutionCallback = null;
 
     public TlsTask(int reexecutions) {
         this.reexecutions = reexecutions;
@@ -47,8 +47,11 @@ public abstract class TlsTask implements ITask, Callable<ITask> {
         this.additionalTcpTimeout = 5000;
     }
 
-    public TlsTask(int reexecutions, long additionalSleepTime, boolean increasingSleepTimes,
-        long additionalTcpTimeout) {
+    public TlsTask(
+            int reexecutions,
+            long additionalSleepTime,
+            boolean increasingSleepTimes,
+            long additionalTcpTimeout) {
         this.reexecutions = reexecutions;
         this.additionalSleepTime = additionalSleepTime;
         this.increasingSleepTimes = increasingSleepTimes;
@@ -69,7 +72,8 @@ public abstract class TlsTask implements ITask, Callable<ITask> {
                     hasError = false;
                     break;
                 } else {
-                    LOGGER.debug("Could not execute task correctly. Increasing Timeout and reexecuting");
+                    LOGGER.debug(
+                            "Could not execute task correctly. Increasing Timeout and reexecuting");
                     if (increasingSleepTimes) {
                         sleepTime += additionalSleepTime;
                     }
@@ -118,48 +122,55 @@ public abstract class TlsTask implements ITask, Callable<ITask> {
         return reexecutions;
     }
 
-    public Function<State, Integer> getBeforeTransportPreInitCallback() {
+    public Function<TlsContext, Integer> getBeforeTransportPreInitCallback() {
         return beforeTransportPreInitCallback;
     }
 
-    public void setBeforeTransportPreInitCallback(Function<State, Integer> beforeTransportPreInitCallback) {
+    public void setBeforeTransportPreInitCallback(
+            Function<TlsContext, Integer> beforeTransportPreInitCallback) {
         this.beforeTransportPreInitCallback = beforeTransportPreInitCallback;
     }
 
-    public Function<State, Integer> getBeforeTransportInitCallback() {
+    public Function<TlsContext, Integer> getBeforeTransportInitCallback() {
         return beforeTransportInitCallback;
     }
 
-    public void setBeforeTransportInitCallback(Function<State, Integer> beforeTransportInitCallback) {
+    public void setBeforeTransportInitCallback(
+            Function<TlsContext, Integer> beforeTransportInitCallback) {
         this.beforeTransportInitCallback = beforeTransportInitCallback;
     }
 
-    public Function<State, Integer> getAfterTransportInitCallback() {
+    public Function<TlsContext, Integer> getAfterTransportInitCallback() {
         return afterTransportInitCallback;
     }
 
-    public void setAfterTransportInitCallback(Function<State, Integer> afterTransportInitCallback) {
+    public void setAfterTransportInitCallback(
+            Function<TlsContext, Integer> afterTransportInitCallback) {
         this.afterTransportInitCallback = afterTransportInitCallback;
     }
 
-    public Function<State, Integer> getAfterExecutionCallback() {
+    public Function<TlsContext, Integer> getAfterExecutionCallback() {
         return afterExecutionCallback;
     }
 
-    public void setAfterExecutionCallback(Function<State, Integer> afterExecutionCallback) {
+    public void setAfterExecutionCallback(Function<TlsContext, Integer> afterExecutionCallback) {
         this.afterExecutionCallback = afterExecutionCallback;
     }
 
     public WorkflowExecutor getExecutor(State state) {
         WorkflowExecutor executor =
-            WorkflowExecutorFactory.createWorkflowExecutor(state.getConfig().getWorkflowExecutorType(), state);
-        if (beforeTransportPreInitCallback != null && executor.getBeforeTransportPreInitCallback() == null) {
+                WorkflowExecutorFactory.createWorkflowExecutor(
+                        state.getConfig().getWorkflowExecutorType(), state);
+        if (beforeTransportPreInitCallback != null
+                && executor.getBeforeTransportPreInitCallback() == null) {
             executor.setBeforeTransportPreInitCallback(beforeTransportPreInitCallback);
         }
-        if (beforeTransportInitCallback != null && executor.getBeforeTransportInitCallback() == null) {
+        if (beforeTransportInitCallback != null
+                && executor.getBeforeTransportInitCallback() == null) {
             executor.setBeforeTransportInitCallback(beforeTransportInitCallback);
         }
-        if (afterTransportInitCallback != null && executor.getAfterTransportInitCallback() == null) {
+        if (afterTransportInitCallback != null
+                && executor.getAfterTransportInitCallback() == null) {
             executor.setAfterTransportInitCallback(afterTransportInitCallback);
         }
         if (afterExecutionCallback != null && executor.getAfterExecutionCallback() == null) {

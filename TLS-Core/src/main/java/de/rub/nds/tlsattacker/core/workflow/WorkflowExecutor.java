@@ -41,13 +41,13 @@ public abstract class WorkflowExecutor {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private Function<State, Integer> beforeTransportPreInitCallback = null;
+    private Function<TlsContext, Integer> beforeTransportPreInitCallback = null;
 
-    private Function<State, Integer> beforeTransportInitCallback = null;
+    private Function<TlsContext, Integer> beforeTransportInitCallback = null;
 
-    private Function<State, Integer> afterTransportInitCallback = null;
+    private Function<TlsContext, Integer> afterTransportInitCallback = null;
 
-    private Function<State, Integer> afterExecutionCallback = null;
+    private Function<TlsContext, Integer> afterExecutionCallback = null;
 
     static {
         if (!BouncyCastleProviderChecker.isLoaded()) {
@@ -101,21 +101,21 @@ public abstract class WorkflowExecutor {
         try {
             if (getBeforeTransportPreInitCallback() != null) {
                 LOGGER.debug("Executing beforeTransportPreInitCallback");
-                getBeforeTransportPreInitCallback().apply(state);
+                getBeforeTransportPreInitCallback().apply(context);
             }
             LOGGER.debug("Starting pre-initalization of TransportHandler");
             context.getTransportHandler().preInitialize();
             LOGGER.debug("Finished pre-initalization of TransportHandler");
-            
+
             if (getBeforeTransportInitCallback() != null) {
                 LOGGER.debug("Executing beforeTransportInitCallback");
-                getBeforeTransportInitCallback().apply(state);
+                getBeforeTransportInitCallback().apply(context);
             }
             LOGGER.debug("Starting initalization of TransportHandler");
             context.getTransportHandler().initialize();
             if (getAfterTransportInitCallback() != null) {
                 LOGGER.debug("Executing afterTransportInitCallback");
-                getAfterTransportInitCallback().apply(state);
+                getAfterTransportInitCallback().apply(context);
             }
             LOGGER.debug("Finished initalization of TransportHandler");
         } catch (NullPointerException | NumberFormatException ex) {
@@ -142,37 +142,38 @@ public abstract class WorkflowExecutor {
                 RecordLayerFactory.getRecordLayer(context.getRecordLayerType(), context));
     }
 
-    public Function<State, Integer> getBeforeTransportPreInitCallback() {
+    public Function<TlsContext, Integer> getBeforeTransportPreInitCallback() {
         return beforeTransportPreInitCallback;
     }
 
     public void setBeforeTransportPreInitCallback(
-            Function<State, Integer> beforeTransportPreInitCallback) {
+            Function<TlsContext, Integer> beforeTransportPreInitCallback) {
         this.beforeTransportPreInitCallback = beforeTransportPreInitCallback;
     }
 
-    public Function<State, Integer> getBeforeTransportInitCallback() {
+    public Function<TlsContext, Integer> getBeforeTransportInitCallback() {
         return beforeTransportInitCallback;
     }
 
     public void setBeforeTransportInitCallback(
-            Function<State, Integer> beforeTransportInitCallback) {
+            Function<TlsContext, Integer> beforeTransportInitCallback) {
         this.beforeTransportInitCallback = beforeTransportInitCallback;
     }
 
-    public Function<State, Integer> getAfterTransportInitCallback() {
+    public Function<TlsContext, Integer> getAfterTransportInitCallback() {
         return afterTransportInitCallback;
     }
 
-    public void setAfterTransportInitCallback(Function<State, Integer> afterTransportInitCallback) {
+    public void setAfterTransportInitCallback(
+            Function<TlsContext, Integer> afterTransportInitCallback) {
         this.afterTransportInitCallback = afterTransportInitCallback;
     }
 
-    public Function<State, Integer> getAfterExecutionCallback() {
+    public Function<TlsContext, Integer> getAfterExecutionCallback() {
         return afterExecutionCallback;
     }
 
-    public void setAfterExecutionCallback(Function<State, Integer> afterExecutionCallback) {
+    public void setAfterExecutionCallback(Function<TlsContext, Integer> afterExecutionCallback) {
         this.afterExecutionCallback = afterExecutionCallback;
     }
 
