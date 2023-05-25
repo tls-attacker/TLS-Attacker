@@ -67,7 +67,6 @@ import jakarta.xml.bind.annotation.XmlAccessorType;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -479,11 +478,10 @@ public class TlsContext {
     private Chooser chooser;
 
     /** Contains the TLS extensions proposed by the client. */
-    private final EnumSet<ExtensionType> proposedExtensionSet = EnumSet.noneOf(ExtensionType.class);
+    private Set<ExtensionType> proposedExtensionSet = null;
 
     /** Contains the TLS extensions proposed by the server. */
-    private final EnumSet<ExtensionType> negotiatedExtensionSet =
-            EnumSet.noneOf(ExtensionType.class);
+    private Set<ExtensionType> negotiatedExtensionSet = null;
 
     /**
      * The "secure_renegotiation" flag of the Renegotiation Indication Extension as defined in
@@ -1820,6 +1818,9 @@ public class TlsContext {
      * @return true if extension was proposed by client, false otherwise
      */
     public boolean isExtensionProposed(ExtensionType ext) {
+        if (proposedExtensionSet == null) {
+            return false;
+        }
         return proposedExtensionSet.contains(ext);
     }
 
@@ -1828,7 +1829,7 @@ public class TlsContext {
      *
      * @return set of proposed extensions. Not null.
      */
-    public EnumSet<ExtensionType> getProposedExtensions() {
+    public Set<ExtensionType> getProposedExtensions() {
         return proposedExtensionSet;
     }
 
@@ -1838,7 +1839,14 @@ public class TlsContext {
      * @param ext The ExtensionType that is proposed
      */
     public void addProposedExtension(ExtensionType ext) {
+        if (proposedExtensionSet == null) {
+            proposedExtensionSet = new HashSet<>();
+        }
         proposedExtensionSet.add(ext);
+    }
+
+    public void setProposedExtensionSet(Set<ExtensionType> proposedExtensionSet) {
+        this.proposedExtensionSet = proposedExtensionSet;
     }
 
     /**
@@ -1848,6 +1856,9 @@ public class TlsContext {
      * @return true if extension was proposed by server, false otherwise
      */
     public boolean isExtensionNegotiated(ExtensionType ext) {
+        if (negotiatedExtensionSet == null) {
+            return false;
+        }
         return negotiatedExtensionSet.contains(ext);
     }
 
@@ -1857,10 +1868,17 @@ public class TlsContext {
      * @param ext The ExtensionType to add
      */
     public void addNegotiatedExtension(ExtensionType ext) {
+        if (negotiatedExtensionSet == null) {
+            negotiatedExtensionSet = new HashSet<>();
+        }
         negotiatedExtensionSet.add(ext);
     }
 
-    public EnumSet<ExtensionType> getNegotiatedExtensionSet() {
+    public void setNegotiatedExtensionSet(Set<ExtensionType> negotiatedExtensionSet) {
+        this.negotiatedExtensionSet = negotiatedExtensionSet;
+    }
+
+    public Set<ExtensionType> getNegotiatedExtensionSet() {
         return negotiatedExtensionSet;
     }
 
