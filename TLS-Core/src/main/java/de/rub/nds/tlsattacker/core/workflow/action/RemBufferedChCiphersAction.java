@@ -38,7 +38,7 @@ import org.apache.logging.log4j.Logger;
  * prepared from context, but partially rely on config values. Thus preventing us to modify values
  * in context and re-creating a CH for forwarding.
  */
-@XmlRootElement(name = "RemoveBufferedClientHelloCiphers")
+@XmlRootElement(name = "RemBufferedChCiphers")
 public class RemBufferedChCiphersAction extends ConnectionBoundAction {
 
     private static final Logger LOGGER = LogManager.getLogger();

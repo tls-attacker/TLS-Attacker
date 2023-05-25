@@ -253,6 +253,7 @@ public class WorkflowTraceSerializer {
      */
     public static List<WorkflowTrace> secureReadFolder(File f) {
         if (f.isDirectory()) {
+            LOGGER.debug("Reading WorkflowTraces from folder: {}", f.getAbsolutePath());
             ArrayList<WorkflowTrace> list = new ArrayList<>();
             for (File file : f.listFiles()) {
                 if (file.getName().startsWith(".")) {
@@ -261,6 +262,7 @@ public class WorkflowTraceSerializer {
                 }
                 WorkflowTrace trace;
                 try (FileInputStream fis = new FileInputStream(file)) {
+                    LOGGER.error("Reading WorkflowTrace from file: {}", file.getAbsolutePath());
                     trace = WorkflowTraceSerializer.secureRead(fis);
                     trace.setName(file.getAbsolutePath());
                     list.add(trace);

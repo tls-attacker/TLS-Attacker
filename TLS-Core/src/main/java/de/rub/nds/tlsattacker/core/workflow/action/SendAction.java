@@ -21,8 +21,6 @@ import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -35,7 +33,6 @@ import org.apache.logging.log4j.Logger;
 
 /** todo print configured records */
 @XmlRootElement(name = "Send")
-@XmlAccessorType(XmlAccessType.FIELD)
 public class SendAction extends MessageAction implements SendingAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
