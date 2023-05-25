@@ -8,6 +8,15 @@
  */
 package de.rub.nds.tlsattacker.core.workflow;
 
+import de.rub.nds.modifiablevariable.util.ModifiableVariableField;
+import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
+import de.rub.nds.tlsattacker.core.workflow.modifiableVariable.ModvarHelper;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Unmarshaller;
+import jakarta.xml.bind.ValidationEvent;
+import jakarta.xml.bind.ValidationEventHandler;
+import jakarta.xml.bind.util.JAXBSource;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,7 +30,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import javax.xml.XMLConstants;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -34,7 +42,6 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.reflections.Reflections;
@@ -42,16 +49,6 @@ import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 import org.reflections.util.FilterBuilder;
 import org.xml.sax.SAXException;
-
-import de.rub.nds.modifiablevariable.util.ModifiableVariableField;
-import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
-import de.rub.nds.tlsattacker.core.workflow.modifiableVariable.ModvarHelper;
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.JAXBException;
-import jakarta.xml.bind.Unmarshaller;
-import jakarta.xml.bind.ValidationEvent;
-import jakarta.xml.bind.ValidationEventHandler;
-import jakarta.xml.bind.util.JAXBSource;
 
 public class WorkflowTraceSerializer {
 
@@ -67,12 +64,14 @@ public class WorkflowTraceSerializer {
             // TODO it would also be good if we didn't have to hardcode the package name
             // here, but I could not get it work without it. Hours wasted: 3
             String packageName = "de.rub";
-            Reflections reflections = new Reflections(
-                    new ConfigurationBuilder()
-                            .setUrls(ClasspathHelper.forPackage(packageName))
-                            .filterInputsBy(
-                                    new FilterBuilder().includePackage(packageName)));
-            Set<Class<? extends TlsAction>> tlsActionClasses = reflections.getSubTypesOf(TlsAction.class);
+            Reflections reflections =
+                    new Reflections(
+                            new ConfigurationBuilder()
+                                    .setUrls(ClasspathHelper.forPackage(packageName))
+                                    .filterInputsBy(
+                                            new FilterBuilder().includePackage(packageName)));
+            Set<Class<? extends TlsAction>> tlsActionClasses =
+                    reflections.getSubTypesOf(TlsAction.class);
             Set<Class<?>> classes = new HashSet<>();
             classes.add(WorkflowTrace.class);
             classes.addAll(tlsActionClasses);
@@ -93,12 +92,11 @@ public class WorkflowTraceSerializer {
     /**
      * Writes a WorkflowTrace to a File
      *
-     * @param file  File to which the WorkflowTrace should be written
+     * @param file File to which the WorkflowTrace should be written
      * @param trace WorkflowTrace that should be written
      * @throws FileNotFoundException Is thrown if the File cannot be found
-     * @throws JAXBException         Is thrown if the Object cannot be serialized
-     * @throws IOException           Is thrown if the Process doesn't have the
-     *                               rights to write to the File
+     * @throws JAXBException Is thrown if the Object cannot be serialized
+     * @throws IOException Is thrown if the Process doesn't have the rights to write to the File
      */
     public static void write(File file, WorkflowTrace trace)
             throws FileNotFoundException, JAXBException, IOException {
@@ -113,8 +111,7 @@ public class WorkflowTraceSerializer {
      * @param trace WorkflowTrace that should be written
      * @return String containing XML/serialized representation of the WorkflowTrace
      * @throws JAXBException Is thrown if the Object cannot be serialized
-     * @throws IOException   Is thrown if the Process doesn't have the rights to
-     *                       write to the File
+     * @throws IOException Is thrown if the Process doesn't have the rights to write to the File
      */
     public static String write(WorkflowTrace trace) throws JAXBException, IOException {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -123,11 +120,10 @@ public class WorkflowTraceSerializer {
     }
 
     /**
-     * @param outputStream  The OutputStream to which the Trace should be written
-     *                      to.
+     * @param outputStream The OutputStream to which the Trace should be written to.
      * @param workflowTrace The WorkflowTrace that should be written
      * @throws JAXBException JAXBException if the JAXB reports a problem
-     * @throws IOException   If something goes wrong while writing to the stream
+     * @throws IOException If something goes wrong while writing to the stream
      */
     public static void write(OutputStream outputStream, WorkflowTrace workflowTrace)
             throws JAXBException, IOException {
@@ -151,13 +147,11 @@ public class WorkflowTraceSerializer {
     }
 
     /**
-     * @param inputStream The InputStream from which the Parameter should be read.
-     *                    Does NOT perform
-     *                    schema validation
+     * @param inputStream The InputStream from which the Parameter should be read. Does NOT perform
+     *     schema validation
      * @return The deserialized WorkflowTrace
-     * @throws JAXBException      JAXBException if the JAXB reports a problem
-     * @throws IOException        If something goes wrong while writing to the
-     *                            stream
+     * @throws JAXBException JAXBException if the JAXB reports a problem
+     * @throws IOException If something goes wrong while writing to the stream
      * @throws XMLStreamException If there is a Problem with the XML Stream
      */
     public static WorkflowTrace insecureRead(InputStream inputStream)
@@ -207,13 +201,11 @@ public class WorkflowTraceSerializer {
     }
 
     /**
-     * @param inputStream The InputStream from which the Parameter should be read.
-     *                    Does perform
-     *                    schema validation
+     * @param inputStream The InputStream from which the Parameter should be read. Does perform
+     *     schema validation
      * @return The deserialized WorkflowTrace
-     * @throws JAXBException      JAXBException if the JAXB reports a problem
-     * @throws IOException        If something goes wrong while writing to the
-     *                            stream
+     * @throws JAXBException JAXBException if the JAXB reports a problem
+     * @throws IOException If something goes wrong while writing to the stream
      * @throws XMLStreamException If there is a Problem with the XML Stream
      */
     public static WorkflowTrace secureRead(InputStream inputStream)
@@ -231,14 +223,16 @@ public class WorkflowTraceSerializer {
                         }
                     });
 
-            String xsd_source = WorkflowTraceSchemaGenerator.AccumulatingSchemaOutputResolver.mapSystemIds();
+            String xsd_source =
+                    WorkflowTraceSchemaGenerator.AccumulatingSchemaOutputResolver.mapSystemIds();
             XMLInputFactory xif = XMLInputFactory.newFactory();
             xif.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
             xif.setProperty(XMLInputFactory.SUPPORT_DTD, false);
             XMLStreamReader xsr = xif.createXMLStreamReader(inputStream);
 
             SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-            try (InputStream schemaInputStream = WorkflowTraceSerializer.class.getResourceAsStream("/" + xsd_source)) {
+            try (InputStream schemaInputStream =
+                    WorkflowTraceSerializer.class.getResourceAsStream("/" + xsd_source)) {
                 Schema configSchema = sf.newSchema(new StreamSource(schemaInputStream));
                 configSchema.newValidator();
                 // unmarshaller.setSchema(configSchema); //TODO Deactivated XSD for now...
@@ -292,6 +286,5 @@ public class WorkflowTraceSerializer {
         }
     }
 
-    private WorkflowTraceSerializer() {
-    }
+    private WorkflowTraceSerializer() {}
 }
