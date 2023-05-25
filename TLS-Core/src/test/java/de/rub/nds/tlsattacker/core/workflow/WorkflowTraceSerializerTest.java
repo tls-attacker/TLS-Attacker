@@ -74,10 +74,8 @@ public class WorkflowTraceSerializerTest {
         WorkflowTraceSerializer.write(os, trace);
 
         String serializedWorkflow = new String(os.toByteArray());
-        LOGGER.debug(serializedWorkflow);
-
-        System.out.println("ah:" + serializedWorkflow);
-        ByteArrayInputStream bis = new ByteArrayInputStream(serializedWorkflow.getBytes());
+        LOGGER.debug("Serialized WorkflowTrace:\n{}", serializedWorkflow);
+        ByteArrayInputStream bis = new ByteArrayInputStream(os.toByteArray());
         WorkflowTrace wt = WorkflowTraceSerializer.secureRead(bis);
 
         os = new ByteArrayOutputStream();

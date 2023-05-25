@@ -68,8 +68,7 @@ public class WorkflowTrace implements Serializable {
 
         try {
             String origTraceStr = WorkflowTraceSerializer.write(orig);
-            LOGGER.trace("Serialized: {}", origTraceStr);
-            System.out.println("Serialized: " + origTraceStr);
+            LOGGER.trace("Serialized:\n{}", origTraceStr);
             InputStream is =
                     new ByteArrayInputStream(origTraceStr.getBytes(StandardCharsets.UTF_8.name()));
             copy = WorkflowTraceSerializer.insecureRead(is);
