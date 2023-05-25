@@ -105,11 +105,12 @@ public abstract class WorkflowExecutor {
             }
             LOGGER.debug("Starting pre-initalization of TransportHandler");
             context.getTransportHandler().preInitialize();
+            LOGGER.debug("Finished pre-initalization of TransportHandler");
+            
             if (getBeforeTransportInitCallback() != null) {
                 LOGGER.debug("Executing beforeTransportInitCallback");
                 getBeforeTransportInitCallback().apply(state);
             }
-            LOGGER.debug("Finished pre-initalization of TransportHandler");
             LOGGER.debug("Starting initalization of TransportHandler");
             context.getTransportHandler().initialize();
             if (getAfterTransportInitCallback() != null) {
