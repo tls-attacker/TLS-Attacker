@@ -83,7 +83,7 @@ public abstract class WorkflowExecutor {
      *
      * @param context
      */
-    public void initTransportHandler(TlsContext context) {
+    public void setupTransportHandler(TlsContext context) {
 
         if (context.getTransportHandler() == null) {
             if (context.getConnection() == null) {
@@ -100,16 +100,23 @@ public abstract class WorkflowExecutor {
 
         try {
             if (getBeforeTransportPreInitCallback() != null) {
+                LOGGER.debug("Executing beforeTransportPreInitCallback");
                 getBeforeTransportPreInitCallback().apply(state);
             }
+            LOGGER.debug("Starting pre-initalization of TransportHandler");
             context.getTransportHandler().preInitialize();
             if (getBeforeTransportInitCallback() != null) {
+                LOGGER.debug("Executing beforeTransportInitCallback");
                 getBeforeTransportInitCallback().apply(state);
             }
+            LOGGER.debug("Finished pre-initalization of TransportHandler");
+            LOGGER.debug("Starting initalization of TransportHandler");
             context.getTransportHandler().initialize();
             if (getAfterTransportInitCallback() != null) {
+                LOGGER.debug("Executing afterTransportInitCallback");
                 getAfterTransportInitCallback().apply(state);
             }
+            LOGGER.debug("Finished initalization of TransportHandler");
         } catch (NullPointerException | NumberFormatException ex) {
             throw new ConfigurationException(
                     "Invalid values in " + context.getConnection().toString(), ex);
@@ -180,7 +187,7 @@ public abstract class WorkflowExecutor {
             } else {
                 LOGGER.info("Connecting to " + con.getHostname() + ":" + con.getPort());
             }
-            initTransportHandler(ctx);
+            setupTransportHandler(ctx);
             LOGGER.debug("Connection for " + ctx + " initialized");
         }
     }
