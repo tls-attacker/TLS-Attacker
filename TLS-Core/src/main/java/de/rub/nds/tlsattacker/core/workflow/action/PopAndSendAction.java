@@ -30,7 +30,9 @@ public class PopAndSendAction extends MessageAction implements SendingAction {
     private static final Logger LOGGER = LogManager.getLogger();
 
     /** Pop and send message with this index in message buffer. */
-    Integer index = null;
+    private Integer index = null;
+
+    private boolean couldPop = false;
 
     public PopAndSendAction() {
         super();
@@ -56,22 +58,29 @@ public class PopAndSendAction extends MessageAction implements SendingAction {
         LinkedList<ProtocolMessage> messageBuffer = tlsContext.getMessageBuffer();
         if (index != null && index >= 0) {
             if (index >= messageBuffer.size()) {
-                throw new WorkflowExecutionException(
+                LOGGER.warn(
                         "Index out of bounds, "
                                 + "trying to get element "
                                 + index
                                 + "of message buffer with "
                                 + messageBuffer.size()
                                 + "elements.");
+            } else {
+                messages.add(messageBuffer.get(index));
+                messageBuffer.remove(index);
+                tlsContext.getRecordBuffer().remove(index);
+                couldPop = true;
             }
-            messages.add(messageBuffer.get(index));
-            messageBuffer.remove(index);
-            tlsContext.getRecordBuffer().remove(index);
         } else {
-            messages.add(messageBuffer.pop());
-            tlsContext.getRecordBuffer().pop();
+            if (messageBuffer.isEmpty()) {
+                LOGGER.warn("Message buffer is empty, nothing to send");
+                return;
+            } else {
+                messages.add(messageBuffer.pop());
+                tlsContext.getRecordBuffer().pop();
+                couldPop = true;
+            }
         }
-
         String sending = getReadableString(messages);
         if (connectionAlias == null) {
             LOGGER.info("Sending messages: " + sending);
@@ -101,7 +110,7 @@ public class PopAndSendAction extends MessageAction implements SendingAction {
 
     @Override
     public boolean executedAsPlanned() {
-        return isExecuted();
+        return isExecuted() && couldPop;
     }
 
     @Override
@@ -120,6 +129,7 @@ public class PopAndSendAction extends MessageAction implements SendingAction {
         records = new LinkedList<>();
         fragments = new LinkedList<>();
         setExecuted(null);
+        couldPop = false;
     }
 
     @Override
