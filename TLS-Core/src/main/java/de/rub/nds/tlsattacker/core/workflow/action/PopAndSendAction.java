@@ -77,7 +77,6 @@ public class PopAndSendAction extends MessageAction implements SendingAction {
                 return;
             } else {
                 messages.add(messageBuffer.pop());
-                tlsContext.getRecordBuffer().pop();
                 couldPop = true;
             }
         }
