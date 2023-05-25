@@ -9,13 +9,16 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
+import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageHandler;
-import de.rub.nds.tlsattacker.core.protocol.message.*;
+import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
+import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.TlsMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
@@ -168,7 +171,7 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
         TlsContext forwardToCtx = state.getTlsContext(forwardToAlias);
 
         receiveMessages(receiveFromCtx);
-        applyMessages(forwardToCtx);
+        applyMessages(receiveFromCtx, forwardToCtx);
         forwardMessages(forwardToCtx);
     }
 
@@ -190,12 +193,22 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
     }
 
     /** Apply the contents of the messages to the given TLS context. */
-    private void applyMessages(TlsContext ctx) {
+    private void applyMessages(TlsContext sourceContext, TlsContext destinationContext) {
+        // When we forward messages and apply them to the context, we have to pretend we
+        // are the peer of the context
+        AliasedConnection realDestinationConnection = destinationContext.getConnection();
+        destinationContext.setConnection(sourceContext.getConnection());
+
         for (ProtocolMessage msg : receivedMessages) {
-            LOGGER.debug("Applying " + msg.toCompactString() + " to forward context " + ctx);
-            ProtocolMessageHandler<ProtocolMessage> h = msg.getHandler(ctx);
+            LOGGER.debug(
+                    "Applying "
+                            + msg.toCompactString()
+                            + " to forward context "
+                            + destinationContext);
+            ProtocolMessageHandler<ProtocolMessage> h = msg.getHandler(destinationContext);
             h.adjustContext(msg);
         }
+        destinationContext.setConnection(realDestinationConnection);
     }
 
     private void forwardMessages(TlsContext forwardToCtx) {
