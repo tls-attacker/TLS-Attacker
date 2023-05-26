@@ -214,7 +214,7 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
     }
 
     private void forwardMessages(TlsContext forwardToCtx) {
-        LOGGER.info("Forwarding messages (" + forwardToAlias + "): " + getReadableString(messages));
+        LOGGER.info("Forwarding messages (" + forwardToAlias + "): " + getReadableString(receivedMessages));
         try {
             MessageActionResult result =
                     sendMessageHelper.sendMessages(
