@@ -197,7 +197,9 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
         // When we forward messages and apply them to the context, we have to pretend we
         // are the peer of the context
         AliasedConnection realDestinationConnection = destinationContext.getConnection();
-        destinationContext.setConnection(sourceContext.getConnection());
+        // destinationContext.setConnection(sourceContext.getConnection());
+        destinationContext.setTalkingConnectionEndType(
+                realDestinationConnection.getLocalConnectionEndType().getPeer());
 
         for (ProtocolMessage msg : receivedMessages) {
             LOGGER.debug(
@@ -208,7 +210,7 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
             ProtocolMessageHandler<ProtocolMessage> h = msg.getHandler(destinationContext);
             h.adjustContext(msg);
         }
-        destinationContext.setConnection(realDestinationConnection);
+        // destinationContext.setConnection(realDestinationConnection);
     }
 
     private void forwardMessages(TlsContext forwardToCtx) {
@@ -568,5 +570,42 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
     @Override
     public List<HandshakeMessageType> getGoingToSendHandshakeMessageTypes() {
         return this.getGoingToReceiveHandshakeMessageTypes();
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("Forward Messages Action:\n");
+        sb.append("Receive from alias: ").append(receiveFromAlias).append("\n");
+        sb.append("\tExpected:");
+        if ((messages != null)) {
+            for (ProtocolMessage message : messages) {
+                sb.append(message.toCompactString());
+                sb.append(", ");
+            }
+        } else {
+            sb.append(" (no messages set)");
+        }
+        sb.append("\n\tActual:");
+        if ((messages != null) && (!receivedMessages.isEmpty())) {
+            for (ProtocolMessage message : receivedMessages) {
+                sb.append(message.toCompactString());
+                sb.append(", ");
+            }
+        } else {
+            sb.append(" (no messages set)");
+        }
+        sb.append("\n");
+        sb.append("Forwarded to alias: ").append(forwardToAlias).append("\n");
+        if (messages != null) {
+            for (ProtocolMessage message : sendMessages) {
+                sb.append("\t");
+                sb.append(message.toCompactString());
+                sb.append(", ");
+            }
+            sb.append("\n");
+        } else {
+            sb.append("null (no messages set)");
+        }
+        return sb.toString();
     }
 }
