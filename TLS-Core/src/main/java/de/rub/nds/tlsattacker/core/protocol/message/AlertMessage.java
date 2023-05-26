@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -20,27 +19,21 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.AlertHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.TlsMessageHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.util.Objects;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import java.util.Objects;
 
 @XmlRootElement(name = "Alert")
 public class AlertMessage extends TlsMessage {
 
-    /**
-     * config array used to configure alert message
-     */
+    /** config array used to configure alert message */
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] config;
-    /**
-     * alert level
-     */
+    /** alert level */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     ModifiableByte level;
 
-    /**
-     * alert description
-     */
+    /** alert description */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     ModifiableByte description;
 
@@ -137,7 +130,16 @@ public class AlertMessage extends TlsMessage {
                 descriptionString = "" + description.getValue();
             }
         } else {
-            descriptionString = "null";
+            if (config != null && config.length == 2) {
+                AlertDescription desc = AlertDescription.getAlertDescription((byte) config[1]);
+                if (desc != null) {
+                    descriptionString = desc.name();
+                } else {
+                    descriptionString = "" + config[1];
+                }
+            } else {
+                descriptionString = "null";
+            }
         }
         sb.append("Alert(").append(levelString).append(",").append(descriptionString).append(")");
         return sb.toString();
@@ -145,7 +147,8 @@ public class AlertMessage extends TlsMessage {
 
     @Override
     public String toShortString() {
-        AlertDescription alertDescription = AlertDescription.getAlertDescription(description.getValue());
+        AlertDescription alertDescription =
+                AlertDescription.getAlertDescription(description.getValue());
         if (alertDescription == null) {
             return "UKNOWN ALERT";
         }
@@ -162,8 +165,8 @@ public class AlertMessage extends TlsMessage {
         }
         AlertMessage alert = (AlertMessage) obj;
         return (Objects.equals(alert.getLevel().getValue(), this.getLevel().getValue()))
-            && (Objects.equals(alert.getDescription().getValue(), this.getDescription().getValue()));
-
+                && (Objects.equals(
+                        alert.getDescription().getValue(), this.getDescription().getValue()));
     }
 
     @Override
