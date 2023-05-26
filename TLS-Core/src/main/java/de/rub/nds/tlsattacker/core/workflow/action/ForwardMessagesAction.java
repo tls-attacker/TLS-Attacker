@@ -199,7 +199,7 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
         AliasedConnection realDestinationConnection = destinationContext.getConnection();
         // destinationContext.setConnection(sourceContext.getConnection());
         destinationContext.setTalkingConnectionEndType(
-                realDestinationConnection.getLocalConnectionEndType().getPeer());
+                realDestinationConnection.getLocalConnectionEndType());
 
         for (ProtocolMessage msg : receivedMessages) {
             LOGGER.debug(
@@ -214,7 +214,11 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
     }
 
     private void forwardMessages(TlsContext forwardToCtx) {
-        LOGGER.info("Forwarding messages (" + forwardToAlias + "): " + getReadableString(receivedMessages));
+        LOGGER.info(
+                "Forwarding messages ("
+                        + forwardToAlias
+                        + "): "
+                        + getReadableString(receivedMessages));
         try {
             MessageActionResult result =
                     sendMessageHelper.sendMessages(
