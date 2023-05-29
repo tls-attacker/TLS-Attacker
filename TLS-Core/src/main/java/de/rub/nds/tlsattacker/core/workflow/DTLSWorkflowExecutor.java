@@ -63,7 +63,6 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
                     throw new WorkflowExecutionException(
                             "Problem while executing Action:" + action.toString(), ex);
                 } catch (Exception e) {
-                    LOGGER.error("", e);
                     state.setExecutionException(e);
                     throw e;
                 } finally {
