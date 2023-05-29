@@ -197,7 +197,6 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
         // When we forward messages and apply them to the context, we have to pretend we
         // are the peer of the context
         AliasedConnection realDestinationConnection = destinationContext.getConnection();
-        // destinationContext.setConnection(sourceContext.getConnection());
         destinationContext.setTalkingConnectionEndType(
                 realDestinationConnection.getLocalConnectionEndType());
 
@@ -210,7 +209,6 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
             ProtocolMessageHandler<ProtocolMessage> h = msg.getHandler(destinationContext);
             h.adjustContext(msg);
         }
-        // destinationContext.setConnection(realDestinationConnection);
     }
 
     private void forwardMessages(TlsContext forwardToCtx) {
