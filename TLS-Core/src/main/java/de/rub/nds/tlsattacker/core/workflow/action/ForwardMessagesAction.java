@@ -588,7 +588,7 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
             sb.append(" (no messages set)");
         }
         sb.append("\n\tActual:");
-        if ((messages != null) && (!receivedMessages.isEmpty())) {
+        if ((receivedMessages != null) && (!receivedMessages.isEmpty())) {
             for (ProtocolMessage message : receivedMessages) {
                 sb.append(message.toCompactString());
                 sb.append(", ");
