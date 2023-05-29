@@ -208,7 +208,7 @@ public class SendMessageHelper {
             LOGGER.debug("No records specified, nothing to send");
             return;
         }
-        LOGGER.debug("Sending " + records.size() + "records");
+        LOGGER.debug("Sending " + records.size() + " records");
         if (context.getConfig().isCreateIndividualTransportPackets()) {
             for (AbstractRecord record : records) {
                 MessageBytesCollector messageBytesCollector = new MessageBytesCollector();
