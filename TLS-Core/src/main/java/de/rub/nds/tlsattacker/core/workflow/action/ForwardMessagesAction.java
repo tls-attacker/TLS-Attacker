@@ -54,7 +54,7 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
     @XmlElement(name = "to")
     protected String forwardToAlias = null;
 
-    @XmlTransient protected Boolean executedAsPlanned = null;
+    @XmlTransient protected Boolean executedAsPlanned = false;
 
     /** If you want true here, use the more verbose ForwardMessagesWithPrepareAction. */
     @XmlTransient protected Boolean withPrepare = false;
@@ -161,6 +161,7 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
 
     @Override
     public void execute(State state) throws WorkflowExecutionException {
+        executedAsPlanned = true;
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
         }
