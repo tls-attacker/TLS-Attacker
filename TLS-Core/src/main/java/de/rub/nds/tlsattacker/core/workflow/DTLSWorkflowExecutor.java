@@ -18,7 +18,9 @@ import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.SendMessageHelper;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -44,16 +46,11 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
         state.setStartTimestamp(System.currentTimeMillis());
         List<TlsAction> tlsActions = state.getWorkflowTrace().getTlsActions();
         int retransmissions = 0;
-        int retransmissionActionIndex = 0;
-        for (int i = 0; i < tlsActions.size(); i++) {
-            if (i != 0
-                    && !(tlsActions.get(i) instanceof ReceivingAction)
-                    && (tlsActions.get(i - 1) instanceof ReceivingAction)) {
-                retransmissionActionIndex = i;
-            }
-            TlsAction action = tlsActions.get(i);
+        int index = 0;
+        while (index < tlsActions.size()) {
+            TlsAction action = tlsActions.get(index);
             if (!action.isExecuted()) {
-                LOGGER.trace("Executing regular action {} at index {}", action, i);
+                LOGGER.trace("Executing regular action {} at index {}", action, index);
                 try {
                     action.execute(state);
                 } catch (UnsupportedOperationException E) {
@@ -68,23 +65,6 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
                     throw e;
                 } finally {
                     state.setEndTimestamp(System.currentTimeMillis());
-                }
-            } else {
-                LOGGER.trace("Executing retransmission action {} at index {}", action, i);
-                try {
-                    if (action instanceof SendingAction) {
-                        executeRetransmission((SendingAction) action);
-                    } else if (action instanceof ReceivingAction) {
-                        action.reset();
-                        action.execute(state);
-                    }
-                } catch (IOException | PreparationException | WorkflowExecutionException ex) {
-                    LOGGER.debug("Encoundered exception during retransmission", ex);
-                    if (config.isWorkflowExecutorShouldClose()) {
-                        closeConnection();
-                    }
-                    throw new WorkflowExecutionException(
-                            "Problem while executing Action:" + action.toString(), ex);
                 }
             }
 
@@ -113,12 +93,19 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
                     break;
                 } else {
                     LOGGER.trace(
-                            "Stepping back index to perform retransmission. Was: {} will be {}",
-                            i,
-                            retransmissionActionIndex - 1);
-                    i = retransmissionActionIndex - 1;
+                            "Stepping back index to perform retransmission. From index: {}", index);
+                    try {
+                        performRetransmissions(tlsActions, index);
+                    } catch (IOException E) {
+                        LOGGER.warn(
+                                "IOException occured during retransmission. Stopping workflow.", E);
+                        break;
+                    }
+                    action.reset();
                     retransmissions++;
                 }
+            } else {
+                index++;
             }
         }
 
@@ -155,6 +142,62 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
                 }
             }
         }
+    }
+
+    private void performRetransmissions(List<TlsAction> tlsActions, int receiveActionIndex)
+            throws IOException {
+        if (!(tlsActions.get(receiveActionIndex) instanceof ReceivingAction)) {
+            throw new WorkflowExecutionException("Passed index of non receiving action as index");
+        }
+        ReceivingAction receivingAction = (ReceivingAction) tlsActions.get(receiveActionIndex);
+        Set<String> receivingAliases = receivingAction.getAllReceivingAliases();
+        // We will perform retransmissions for all receiving aliases, even if a subset
+        // of those
+        // aliases
+        // actually does not need to have them
+        for (int i = findRetransmissionIndex(tlsActions, receiveActionIndex);
+                i < receiveActionIndex;
+                i++) {
+            TlsAction action = tlsActions.get(i);
+            if (action instanceof SendingAction) {
+                SendingAction sendingAction = (SendingAction) action;
+                if (sendingAction.getAllSendingAliases() != null
+                        && !Collections.disjoint(
+                                receivingAliases, sendingAction.getAllSendingAliases())) {
+                    LOGGER.debug("Performing retransmission for action {}", sendingAction);
+                    executeRetransmission(sendingAction);
+                }
+            }
+        }
+    }
+
+    /**
+     * We need to set the index to the correct value. We have to reexecute all sending actions in
+     * the same context after the last receiving action.
+     *
+     * @param tlsActions The action in the workflow trace
+     * @param index The index of the currently failing receiving action
+     * @return the new index to start retransmissions from
+     */
+    private int findRetransmissionIndex(List<TlsAction> tlsActions, int index) {
+        if (!(tlsActions.get(index) instanceof ReceivingAction)) {
+            throw new WorkflowExecutionException("Passed index of non receiving action as index");
+        }
+        ReceivingAction receivingAction = (ReceivingAction) tlsActions.get(index);
+
+        Set<String> aliases = receivingAction.getAllReceivingAliases();
+        for (int i = index; i >= 0; i--) {
+            TlsAction action = tlsActions.get(i);
+            if (action instanceof ReceivingAction) {
+                for (String alias : action.getAllAliases()) {
+                    if (aliases.contains(alias)) {
+                        return i + 1;
+                    }
+                }
+                return i + 1;
+            }
+        }
+        return 0; // We need to restart from the beginning
     }
 
     private void executeRetransmission(SendingAction action) throws IOException {

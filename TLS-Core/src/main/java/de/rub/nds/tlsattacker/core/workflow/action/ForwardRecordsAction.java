@@ -249,4 +249,9 @@ public class ForwardRecordsAction extends TlsAction implements ReceivingAction, 
     public Set<String> getAllSendingAliases() {
         return new HashSet<>(Collections.singleton(forwardToAlias));
     }
+
+    @Override
+    public Set<String> getAllReceivingAliases() {
+        return new HashSet<>(Collections.singleton(receiveFromAlias));
+    }
 }

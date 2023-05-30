@@ -23,8 +23,11 @@ import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
 import jakarta.xml.bind.annotation.XmlElementRef;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -244,5 +247,10 @@ public class ReceiveTillAction extends MessageAction implements ReceivingAction 
                 add(((HandshakeMessage) waitTillMessage).getHandshakeMessageType());
             }
         };
+    }
+
+    @Override
+    public Set<String> getAllReceivingAliases() {
+        return new HashSet<>(Collections.singleton(connectionAlias));
     }
 }
