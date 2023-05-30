@@ -17,9 +17,12 @@ import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -106,5 +109,10 @@ public class PopAndSendRecordAction extends MessageAction implements SendingActi
     @Override
     public MessageActionDirection getMessageDirection() {
         return MessageActionDirection.SENDING;
+    }
+
+    @Override
+    public Set<String> getAllSendingAliases() {
+        return new HashSet<>(Collections.singleton(connectionAlias));
     }
 }

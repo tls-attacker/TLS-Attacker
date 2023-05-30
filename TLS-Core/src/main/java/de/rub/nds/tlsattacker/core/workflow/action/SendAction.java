@@ -25,9 +25,12 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -255,5 +258,10 @@ public class SendAction extends MessageAction implements SendingAction {
             }
         }
         return handshakeMessageTypes;
+    }
+
+    @Override
+    public Set<String> getAllSendingAliases() {
+        return new HashSet<>(Collections.singleton(connectionAlias));
     }
 }

@@ -36,6 +36,8 @@ import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
@@ -610,5 +612,10 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
             sb.append("null (no messages set)");
         }
         return sb.toString();
+    }
+
+    @Override
+    public Set<String> getAllSendingAliases() {
+        return new HashSet<>(Collections.singleton(forwardToAlias));
     }
 }

@@ -197,9 +197,10 @@ public abstract class WorkflowExecutor {
     public void closeConnection() {
         for (TlsContext ctx : state.getAllTlsContexts()) {
             try {
+                LOGGER.debug("Closing connection for {}", ctx.getConnection().getAlias());
                 ctx.getTransportHandler().closeConnection();
             } catch (IOException ex) {
-                LOGGER.warn("Could not close connection for context " + ctx);
+                LOGGER.warn("Could not close connection for context {}", ctx, ex);
                 LOGGER.debug(ex);
             }
         }
@@ -221,6 +222,7 @@ public abstract class WorkflowExecutor {
     }
 
     public void setFinalSocketState() {
+        LOGGER.debug("Setting final socket state");
         for (TlsContext ctx : state.getAllTlsContexts()) {
             TransportHandler handler = ctx.getTransportHandler();
             if (handler instanceof TcpTransportHandler) {

@@ -33,4 +33,6 @@ public interface SendingAction {
     }
 
     public Set<String> getAllAliases();
+
+    public Set<String> getAllSendingAliases();
 }

@@ -26,6 +26,8 @@ import jakarta.xml.bind.annotation.XmlElements;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
@@ -241,5 +243,10 @@ public class ForwardRecordsAction extends TlsAction implements ReceivingAction, 
     @Override
     public List<DtlsHandshakeMessageFragment> getSendFragments() {
         throw new UnsupportedOperationException("Not supported.");
+    }
+
+    @Override
+    public Set<String> getAllSendingAliases() {
+        return new HashSet<>(Collections.singleton(forwardToAlias));
     }
 }
