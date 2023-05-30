@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.workflow.action.executor;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
@@ -31,18 +30,24 @@ public class SendMessageHelper {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SendMessageHelper() {
-    }
+    public SendMessageHelper() {}
 
-    public MessageActionResult sendMessages(List<ProtocolMessage> messages,
-        List<DtlsHandshakeMessageFragment> fragments, List<AbstractRecord> records, TlsContext context)
-        throws IOException {
+    public MessageActionResult sendMessages(
+            List<ProtocolMessage> messages,
+            List<DtlsHandshakeMessageFragment> fragments,
+            List<AbstractRecord> records,
+            TlsContext context)
+            throws IOException {
         return sendMessages(messages, fragments, records, context, true);
     }
 
-    public MessageActionResult sendMessages(List<ProtocolMessage> messages,
-        List<DtlsHandshakeMessageFragment> fragments, List<AbstractRecord> records, TlsContext context,
-        boolean prepareMessages) throws IOException {
+    public MessageActionResult sendMessages(
+            List<ProtocolMessage> messages,
+            List<DtlsHandshakeMessageFragment> fragments,
+            List<AbstractRecord> records,
+            TlsContext context,
+            boolean prepareMessages)
+            throws IOException {
         List<DtlsHandshakeMessageFragment> fragmentMessages = new LinkedList<>();
         context.setTalkingConnectionEndType(context.getChooser().getConnectionEndType());
         if (fragments == null) {
@@ -70,15 +75,23 @@ public class SendMessageHelper {
             if (protocolMessage instanceof TlsMessage) {
                 TlsMessage tlsMessage = (TlsMessage) protocolMessage;
 
-                if (context.getConfig().isPreserveMessageRecordRelation() && i < preservedRecords.size()) {
+                if (context.getConfig().isPreserveMessageRecordRelation()
+                        && i < preservedRecords.size()) {
                     records.add(preservedRecords.get(i));
                 }
-                if (tlsMessage.getProtocolMessageType() != lastType && lastMessage != null
-                    && context.getConfig().isFlushOnMessageTypeChange()) {
+                if (tlsMessage.getProtocolMessageType() != lastType
+                        && lastMessage != null
+                        && context.getConfig().isFlushOnMessageTypeChange()) {
                     recordPosition =
-                        flushBytesToRecords(messageBytesCollector, lastType, records, recordPosition, context);
+                            flushBytesToRecords(
+                                    messageBytesCollector,
+                                    lastType,
+                                    records,
+                                    recordPosition,
+                                    context);
                     if (lastMessage.getAdjustContext() && lastMessage instanceof TlsMessage) {
-                        TlsMessageHandler<TlsMessage> tlsMessageHandler = lastMessage.getHandler(context);
+                        TlsMessageHandler<TlsMessage> tlsMessageHandler =
+                                lastMessage.getHandler(context);
                         tlsMessageHandler.adjustTlsContextAfterSerialize((TlsMessage) lastMessage);
                     }
                     lastMessage = null;
@@ -99,21 +112,32 @@ public class SendMessageHelper {
 
                         if (handshakeMessage.isDtlsHandshakeMessageFragment()) {
                             messageFragments =
-                                Collections.singletonList((DtlsHandshakeMessageFragment) handshakeMessage);
+                                    Collections.singletonList(
+                                            (DtlsHandshakeMessageFragment) handshakeMessage);
                         } else {
                             messageFragments =
-                                getEnoughFragments(protocolMessageBytes.length, fragmentPosition, fragments, context);
+                                    getEnoughFragments(
+                                            protocolMessageBytes.length,
+                                            fragmentPosition,
+                                            fragments,
+                                            context);
                             messageFragments =
-                                MessageFragmenter.fragmentMessage(handshakeMessage, messageFragments, context);
+                                    MessageFragmenter.fragmentMessage(
+                                            handshakeMessage, messageFragments, context);
                             fragmentPosition += messageFragments.size();
                         }
 
                         for (DtlsHandshakeMessageFragment fragment : messageFragments) {
-                            messageBytesCollector
-                                .appendProtocolMessageBytes(fragment.getCompleteResultingMessage().getValue());
+                            messageBytesCollector.appendProtocolMessageBytes(
+                                    fragment.getCompleteResultingMessage().getValue());
                             fragmentMessages.add(fragment);
                             recordPosition =
-                                flushBytesToRecords(messageBytesCollector, lastType, records, recordPosition, context);
+                                    flushBytesToRecords(
+                                            messageBytesCollector,
+                                            lastType,
+                                            records,
+                                            recordPosition,
+                                            context);
                         }
                     } else {
                         messageBytesCollector.appendProtocolMessageBytes(protocolMessageBytes);
@@ -123,15 +147,21 @@ public class SendMessageHelper {
                 }
             }
             if (context.getConfig().isCreateIndividualRecords()) {
-                recordPosition = flushBytesToRecords(messageBytesCollector, lastType, records, recordPosition, context);
+                recordPosition =
+                        flushBytesToRecords(
+                                messageBytesCollector, lastType, records, recordPosition, context);
                 if (protocolMessage instanceof TlsMessage && protocolMessage.getAdjustContext()) {
-                    TlsMessageHandler<TlsMessage> protocolMessageHandler = protocolMessage.getHandler(context);
-                    protocolMessageHandler.adjustTlsContextAfterSerialize((TlsMessage) protocolMessage);
+                    TlsMessageHandler<TlsMessage> protocolMessageHandler =
+                            protocolMessage.getHandler(context);
+                    protocolMessageHandler.adjustTlsContextAfterSerialize(
+                            (TlsMessage) protocolMessage);
                 }
                 lastMessage = null;
             }
         }
-        recordPosition = flushBytesToRecords(messageBytesCollector, lastType, records, recordPosition, context);
+        recordPosition =
+                flushBytesToRecords(
+                        messageBytesCollector, lastType, records, recordPosition, context);
         if (lastMessage instanceof TlsMessage && lastMessage.getAdjustContext()) {
             TlsMessageHandler<TlsMessage> handler = lastMessage.getHandler(context);
             handler.adjustTlsContextAfterSerialize((TlsMessage) lastMessage);
@@ -143,12 +173,19 @@ public class SendMessageHelper {
         }
 
         if (context.getChooser().getSelectedProtocolVersion().isDTLS()
-            && context.getConfig().isUseAllProvidedDtlsFragments() && fragmentPosition < fragments.size()) {
+                && context.getConfig().isUseAllProvidedDtlsFragments()
+                && fragmentPosition < fragments.size()) {
             int current = 0;
             for (DtlsHandshakeMessageFragment fragment : fragments) {
                 if (current >= fragmentPosition) {
-                    recordPosition = prepareDtlsFragmentAndSend(fragment, messageBytesCollector, lastType, records,
-                        recordPosition, context);
+                    recordPosition =
+                            prepareDtlsFragmentAndSend(
+                                    fragment,
+                                    messageBytesCollector,
+                                    lastType,
+                                    records,
+                                    recordPosition,
+                                    context);
                 }
                 current++;
             }
@@ -169,14 +206,23 @@ public class SendMessageHelper {
         return new MessageActionResult(records, messages, fragmentMessages);
     }
 
-    private int prepareDtlsFragmentAndSend(DtlsHandshakeMessageFragment fragment, MessageBytesCollector collector,
-        ProtocolMessageType lastType, List<AbstractRecord> records, int recordPosition, TlsContext context)
-        throws IOException {
+    private int prepareDtlsFragmentAndSend(
+            DtlsHandshakeMessageFragment fragment,
+            MessageBytesCollector collector,
+            ProtocolMessageType lastType,
+            List<AbstractRecord> records,
+            int recordPosition,
+            TlsContext context)
+            throws IOException {
         UnknownHandshakeMessage unkownHandshakeMessage = new UnknownHandshakeMessage();
         prepareMessage(new UnknownHandshakeMessage(), true, context);
-        List<DtlsHandshakeMessageFragment> messageFragments = MessageFragmenter.fragmentMessage(unkownHandshakeMessage,
-            Collections.singletonList((DtlsHandshakeMessageFragment) fragment), context);
-        collector.appendProtocolMessageBytes(messageFragments.get(0).getCompleteResultingMessage().getValue());
+        List<DtlsHandshakeMessageFragment> messageFragments =
+                MessageFragmenter.fragmentMessage(
+                        unkownHandshakeMessage,
+                        Collections.singletonList((DtlsHandshakeMessageFragment) fragment),
+                        context);
+        collector.appendProtocolMessageBytes(
+                messageFragments.get(0).getCompleteResultingMessage().getValue());
         recordPosition = flushBytesToRecords(collector, lastType, records, recordPosition, context);
         if (context.getConfig().isCreateIndividualTransportPackets()) {
             sendRecords(records, context);
@@ -186,15 +232,20 @@ public class SendMessageHelper {
         return recordPosition;
     }
 
-    private void prepareRecordAndSend(AbstractRecord record, MessageBytesCollector messageBytesCollector,
-        TlsContext context) throws IOException {
+    private void prepareRecordAndSend(
+            AbstractRecord record, MessageBytesCollector messageBytesCollector, TlsContext context)
+            throws IOException {
         if (record.getMaxRecordLengthConfig() == null) {
             record.setMaxRecordLengthConfig(context.getChooser().getOutboundMaxRecordDataSize());
         }
         List<AbstractRecord> emptyRecords = new LinkedList<>();
         emptyRecords.add(record);
-        messageBytesCollector.appendRecordBytes(context.getRecordLayer().prepareRecords(
-            messageBytesCollector.getProtocolMessageBytesStream(), record.getContentMessageType(), emptyRecords));
+        messageBytesCollector.appendRecordBytes(
+                context.getRecordLayer()
+                        .prepareRecords(
+                                messageBytesCollector.getProtocolMessageBytesStream(),
+                                record.getContentMessageType(),
+                                emptyRecords));
         if (context.getConfig().isCreateIndividualTransportPackets()) {
             sendRecords(emptyRecords, context);
         } else {
@@ -229,18 +280,25 @@ public class SendMessageHelper {
         }
     }
 
-    private int flushBytesToRecords(MessageBytesCollector collector, ProtocolMessageType type,
-        List<AbstractRecord> records, int recordPosition, TlsContext context) {
+    private int flushBytesToRecords(
+            MessageBytesCollector collector,
+            ProtocolMessageType type,
+            List<AbstractRecord> records,
+            int recordPosition,
+            TlsContext context) {
         int length = collector.getProtocolMessageBytesStream().length;
-        List<AbstractRecord> toFillList = getEnoughRecords(length, recordPosition, records, context);
+        List<AbstractRecord> toFillList =
+                getEnoughRecords(length, recordPosition, records, context);
         collector.appendRecordBytes(
-            context.getRecordLayer().prepareRecords(collector.getProtocolMessageBytesStream(), type, toFillList));
+                context.getRecordLayer()
+                        .prepareRecords(
+                                collector.getProtocolMessageBytesStream(), type, toFillList));
         collector.flushProtocolMessageBytes();
         return recordPosition + toFillList.size();
     }
 
-    private List<AbstractRecord> getEnoughRecords(int length, int position, List<AbstractRecord> records,
-        TlsContext context) {
+    private List<AbstractRecord> getEnoughRecords(
+            int length, int position, List<AbstractRecord> records, TlsContext context) {
         List<AbstractRecord> toFillList = new LinkedList<>();
         int recordLength = 0;
         while (recordLength < length) {
@@ -249,7 +307,8 @@ public class SendMessageHelper {
                     LOGGER.trace("Creating new Record");
                     records.add(context.getRecordLayer().getFreshRecord());
                     if (context.getConfig().getDefaultMaxRecordData() == 0) {
-                        LOGGER.warn("MaxRecordLength is 0 in config. This is an endless loop. Aborting");
+                        LOGGER.warn(
+                                "MaxRecordLength is 0 in config. This is an endless loop. Aborting");
                         break;
                     }
                 } else {
@@ -259,9 +318,11 @@ public class SendMessageHelper {
             AbstractRecord record = records.get(position);
             toFillList.add(record);
             if (record.getMaxRecordLengthConfig() == null) {
-                record.setMaxRecordLengthConfig(context.getChooser().getOutboundMaxRecordDataSize());
+                record.setMaxRecordLengthConfig(
+                        context.getChooser().getOutboundMaxRecordDataSize());
                 if (context.getChooser().getOutboundMaxRecordDataSize() == 0) {
-                    LOGGER.warn("OutboundMaxRecordDataSize is 0. This is an endless loop. Aborting");
+                    LOGGER.warn(
+                            "OutboundMaxRecordDataSize is 0. This is an endless loop. Aborting");
                     break;
                 }
             }
@@ -271,8 +332,11 @@ public class SendMessageHelper {
         return toFillList;
     }
 
-    private List<DtlsHandshakeMessageFragment> getEnoughFragments(int length, int position,
-        List<DtlsHandshakeMessageFragment> fragments, TlsContext context) {
+    private List<DtlsHandshakeMessageFragment> getEnoughFragments(
+            int length,
+            int position,
+            List<DtlsHandshakeMessageFragment> fragments,
+            TlsContext context) {
         List<DtlsHandshakeMessageFragment> toFillList = new LinkedList<>();
         int fragmentLength = 0;
         while (fragmentLength < length) {
@@ -287,7 +351,8 @@ public class SendMessageHelper {
             DtlsHandshakeMessageFragment fragment = fragments.get(position);
             toFillList.add(fragment);
             if (fragment.getMaxFragmentLengthConfig() == null) {
-                fragment.setMaxFragmentLengthConfig(context.getConfig().getDtlsMaximumFragmentLength());
+                fragment.setMaxFragmentLengthConfig(
+                        context.getConfig().getDtlsMaximumFragmentLength());
             }
             fragmentLength += fragment.getMaxFragmentLengthConfig();
             position++;
@@ -298,10 +363,8 @@ public class SendMessageHelper {
     /**
      * Sends all messageBytes in the MessageByteCollector with the specified TransportHandler
      *
-     * @param  collector
-     *                     MessageBytes to send
-     * @throws IOException
-     *                     Thrown if something goes wrong while sending
+     * @param collector MessageBytes to send
+     * @throws IOException Thrown if something goes wrong while sending
      */
     private void sendData(MessageBytesCollector collector, TlsContext context) throws IOException {
         context.getTransportHandler().sendData(collector.getRecordBytes());
@@ -311,9 +374,8 @@ public class SendMessageHelper {
     /**
      * Prepare message for sending. This method invokes before and after method hooks.
      *
-     * @param  message
-     *                 The Message that should be prepared
-     * @return         message in bytes
+     * @param message The Message that should be prepared
+     * @return message in bytes
      */
     public static byte[] prepareMessage(ProtocolMessage message, TlsContext context) {
         return prepareMessage(message, true, context);
@@ -322,26 +384,27 @@ public class SendMessageHelper {
     /**
      * Prepare message for sending. This method invokes before and after method hooks.
      *
-     * @param  message
-     *                     The message that should be prepared
-     * @param  withPrepare
-     *                     if the prepare function should be called or only the rest
-     * @return             message in bytes
+     * @param message The message that should be prepared
+     * @param withPrepare if the prepare function should be called or only the rest
+     * @return message in bytes
      */
-    public static byte[] prepareMessage(ProtocolMessage message, boolean withPrepare, TlsContext context) {
+    public static byte[] prepareMessage(
+            ProtocolMessage message, boolean withPrepare, TlsContext context) {
         if (withPrepare) {
-            Preparator<ProtocolMessage> preparator = message.getHandler(context).getPreparator(message);
+            Preparator<ProtocolMessage> preparator =
+                    message.getHandler(context).getPreparator(message);
             preparator.prepare();
             preparator.afterPrepare();
-            Serializer<ProtocolMessage> serializer = message.getHandler(context).getSerializer(message);
+            Serializer<ProtocolMessage> serializer =
+                    message.getHandler(context).getSerializer(message);
             byte[] completeMessage = serializer.serialize();
             message.setCompleteResultingMessage(completeMessage);
         }
         try {
             if (message.getAdjustContext()) {
                 if (context.getConfig().getDefaultSelectedProtocolVersion().isDTLS()
-                    && (message instanceof HandshakeMessage)
-                    && !((HandshakeMessage) message).isDtlsHandshakeMessageFragment()) {
+                        && (message instanceof HandshakeMessage)
+                        && !((HandshakeMessage) message).isDtlsHandshakeMessageFragment()) {
                     context.increaseDtlsWriteHandshakeMessageSequence();
                 }
             }

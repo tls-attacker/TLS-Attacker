@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -91,7 +91,7 @@ public class RSAServerKeyExchangePreparator<T extends RSAServerKeyExchangeMessag
     }
 
     protected byte[] generateSignature(SignatureAndHashAlgorithm algorithm) throws CryptoException {
-        return SignatureCalculator.generateSignature(algorithm, chooser, generateToBeSigned());
+        return SignatureCalculator.generateSignature(generateToBeSigned(), algorithm, chooser);
     }
 
     protected void prepareSignatureAndHashAlgorithm(T msg) {
