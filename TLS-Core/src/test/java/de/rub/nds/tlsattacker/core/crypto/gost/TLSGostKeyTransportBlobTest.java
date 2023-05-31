@@ -11,14 +11,12 @@ package de.rub.nds.tlsattacker.core.crypto.gost;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-
+import java.io.IOException;
 import org.bouncycastle.asn1.cryptopro.Gost2814789EncryptedKey;
 import org.bouncycastle.asn1.cryptopro.GostR3410KeyTransport;
 import org.bouncycastle.asn1.cryptopro.GostR3410TransportParameters;
 import org.bouncycastle.asn1.rosstandart.RosstandartObjectIdentifiers;
 import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
 
 public class TLSGostKeyTransportBlobTest {
 

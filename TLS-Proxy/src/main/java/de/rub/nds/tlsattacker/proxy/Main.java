@@ -9,11 +9,9 @@
 package de.rub.nds.tlsattacker.proxy;
 
 import com.beust.jcommander.JCommander;
-
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-
 import java.io.IOException;
 import java.security.Security;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 public class Main {
 

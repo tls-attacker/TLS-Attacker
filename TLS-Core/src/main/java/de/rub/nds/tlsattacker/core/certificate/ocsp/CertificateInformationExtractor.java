@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.certificate.ocsp;
 import static de.rub.nds.tlsattacker.core.certificate.ExtensionObjectIdentifier.*;
 
 import com.google.common.io.ByteStreams;
-
 import de.rub.nds.asn1.Asn1Encodable;
 import de.rub.nds.asn1.model.*;
 import de.rub.nds.asn1.parser.Asn1Parser;
@@ -19,11 +18,6 @@ import de.rub.nds.asn1.translator.ParseOcspTypesContext;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.util.Asn1ToolInitializer;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.bouncycastle.asn1.x509.Certificate;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -33,6 +27,9 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.bouncycastle.asn1.x509.Certificate;
 
 public class CertificateInformationExtractor {
     private static final int X509_EXTENSION_ASN1_EXPLICIT_OFFSET = 3;

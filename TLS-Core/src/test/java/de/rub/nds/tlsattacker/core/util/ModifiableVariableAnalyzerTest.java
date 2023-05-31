@@ -14,12 +14,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import de.rub.nds.modifiablevariable.util.ModifiableVariableAnalyzer;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
-
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-
 import java.lang.reflect.Field;
 import java.util.List;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 public class ModifiableVariableAnalyzerTest {
 

@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import de.rub.nds.tlsattacker.core.protocol.message.HelloRequestMessage;
-
 import org.junit.jupiter.api.Test;
 
 public class HelloRequestPreparatorTest

@@ -14,7 +14,6 @@ import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
-
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 
 public class GOSTClientComputations extends KeyExchangeComputations {

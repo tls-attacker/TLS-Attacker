@@ -16,7 +16,10 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
-
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.security.Security;
+import java.util.Random;
 import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.crypto.tls.ProtocolVersion;
 import org.bouncycastle.crypto.tls.SecurityParameters;
@@ -27,11 +30,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
-import java.security.Security;
-import java.util.Random;
 
 @ExtendWith(MockitoExtension.class)
 public class PseudoRandomFunctionTest {

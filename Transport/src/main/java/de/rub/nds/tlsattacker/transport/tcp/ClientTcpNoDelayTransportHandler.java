@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.transport.tcp;
 
 import de.rub.nds.tlsattacker.transport.Connection;
-
 import java.io.IOException;
 
 public class ClientTcpNoDelayTransportHandler extends ClientTcpTransportHandler {

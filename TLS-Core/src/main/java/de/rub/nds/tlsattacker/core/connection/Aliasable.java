@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.core.connection;
 
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-
 import java.util.Collection;
 import java.util.Set;
 

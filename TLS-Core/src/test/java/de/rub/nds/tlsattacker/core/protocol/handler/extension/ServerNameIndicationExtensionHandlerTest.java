@@ -14,11 +14,9 @@ import de.rub.nds.tlsattacker.core.constants.NameType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.SNIEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
-
-import org.junit.jupiter.api.Test;
-
 import java.util.LinkedList;
 import java.util.List;
+import org.junit.jupiter.api.Test;
 
 public class ServerNameIndicationExtensionHandlerTest
         extends AbstractExtensionMessageHandlerTest<

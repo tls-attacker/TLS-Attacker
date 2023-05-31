@@ -11,9 +11,7 @@ package de.rub.nds.tlsattacker.core.config.delegate;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.beust.jcommander.JCommander;
-
 import de.rub.nds.tlsattacker.core.config.Config;
-
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

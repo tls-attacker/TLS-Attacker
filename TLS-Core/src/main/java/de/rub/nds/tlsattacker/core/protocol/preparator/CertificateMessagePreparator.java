@@ -22,17 +22,15 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.cert.CertificatePairPrepa
 import de.rub.nds.tlsattacker.core.protocol.serializer.cert.CertificatePairSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.bouncycastle.asn1.*;
-import org.bouncycastle.crypto.tls.Certificate;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.bouncycastle.asn1.*;
+import org.bouncycastle.crypto.tls.Certificate;
 
 public class CertificateMessagePreparator extends HandshakeMessagePreparator<CertificateMessage> {
 

@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.http;
 import de.rub.nds.tlsattacker.core.http.header.ContentLengthHeader;
 import de.rub.nds.tlsattacker.core.http.header.HttpHeader;
 import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
-
 import java.nio.charset.StandardCharsets;
 
 public class HttpResponsePreparator extends HttpMessagePreparator<HttpResponseMessage> {

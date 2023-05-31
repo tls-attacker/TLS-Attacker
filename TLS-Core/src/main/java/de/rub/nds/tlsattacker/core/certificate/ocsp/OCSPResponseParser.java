@@ -20,16 +20,14 @@ import de.rub.nds.asn1.translator.ParseOcspTypesContext;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.util.Asn1ToolInitializer;
-
-import org.apache.commons.lang3.NotImplementedException;
-import org.bouncycastle.crypto.tls.Certificate;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.commons.lang3.NotImplementedException;
+import org.bouncycastle.crypto.tls.Certificate;
 
 public class OCSPResponseParser {
 

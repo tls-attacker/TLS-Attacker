@@ -19,10 +19,6 @@ import de.rub.nds.asn1.model.Asn1Set;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.certificate.CrlReason;
 import de.rub.nds.tlsattacker.core.certificate.ObjectIdentifierTranslator;
-
-import org.bouncycastle.crypto.tls.Certificate;
-import org.bouncycastle.util.encoders.Hex;
-
 import java.io.IOException;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
@@ -30,6 +26,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import org.bouncycastle.crypto.tls.Certificate;
+import org.bouncycastle.util.encoders.Hex;
 
 public class OCSPResponse {
     private List<CertificateStatus> certificateStatusList = new LinkedList<>();

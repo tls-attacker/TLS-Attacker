@@ -15,10 +15,8 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SupportedVersionsExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SupportedVersionsExtensionSerializer;
-
-import org.junit.jupiter.api.Test;
-
 import java.util.LinkedList;
+import org.junit.jupiter.api.Test;
 
 public class SupportedVersionsExtensionPreparatorTest
         extends AbstractExtensionMessagePreparatorTest<

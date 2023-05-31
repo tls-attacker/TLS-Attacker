@@ -22,9 +22,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ConnectionIdExt
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ConnectionIdExtensionSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
-
 import jakarta.xml.bind.annotation.XmlRootElement;
-
 import java.io.InputStream;
 
 /** Class representing a Connection ID Extension Message, as defined as in RFC9146 */

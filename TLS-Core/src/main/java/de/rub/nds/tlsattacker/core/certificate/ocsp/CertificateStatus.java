@@ -11,13 +11,11 @@ package de.rub.nds.tlsattacker.core.certificate.ocsp;
 import de.rub.nds.asn1.model.Asn1Sequence;
 import de.rub.nds.tlsattacker.core.certificate.CrlReason;
 import de.rub.nds.tlsattacker.core.certificate.ObjectIdentifierTranslator;
-
-import org.bouncycastle.util.encoders.Hex;
-
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
+import org.bouncycastle.util.encoders.Hex;
 
 public class CertificateStatus {
 

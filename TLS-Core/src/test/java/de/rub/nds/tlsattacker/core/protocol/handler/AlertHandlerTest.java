@@ -16,7 +16,6 @@ import de.rub.nds.tlsattacker.core.constants.AlertDescription;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-
 import org.junit.jupiter.api.Test;
 
 public class AlertHandlerTest

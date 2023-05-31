@@ -20,13 +20,10 @@ import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-
+import java.security.NoSuchAlgorithmException;
+import javax.crypto.Mac;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.security.NoSuchAlgorithmException;
-
-import javax.crypto.Mac;
 
 public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
 

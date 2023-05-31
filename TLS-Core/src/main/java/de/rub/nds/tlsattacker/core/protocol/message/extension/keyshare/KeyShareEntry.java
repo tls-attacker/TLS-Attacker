@@ -13,7 +13,6 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
-
 import java.math.BigInteger;
 
 public class KeyShareEntry extends ModifiableVariableHolder {

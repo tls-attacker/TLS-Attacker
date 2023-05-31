@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.transport.tcp.fragmentation;
 
 import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.tcp.ClientTcpTransportHandler;
-
 import java.io.IOException;
 import java.util.Arrays;
 

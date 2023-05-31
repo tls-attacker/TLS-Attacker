@@ -10,10 +10,9 @@ package de.rub.nds.tlsattacker.core.crypto.ec;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.math.BigInteger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.math.BigInteger;
 
 public class FieldElementFpTest {
 

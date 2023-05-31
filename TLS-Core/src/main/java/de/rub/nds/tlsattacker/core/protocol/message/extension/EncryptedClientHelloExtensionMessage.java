@@ -21,9 +21,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.ech.HpkeCipherSuit
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.EncryptedClientHelloExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.EncryptedClientHelloExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.EncryptedClientHelloExtensionSerializer;
-
 import jakarta.xml.bind.annotation.XmlRootElement;
-
 import java.io.InputStream;
 
 /** The encrypted client hello extension */

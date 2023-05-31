@@ -14,11 +14,9 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.AlpnExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.alpn.AlpnEntry;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-
-import org.junit.jupiter.api.Test;
-
 import java.util.LinkedList;
 import java.util.List;
+import org.junit.jupiter.api.Test;
 
 public class AlpnExtensionHandlerTest
         extends AbstractExtensionMessageHandlerTest<AlpnExtensionMessage, AlpnExtensionHandler> {

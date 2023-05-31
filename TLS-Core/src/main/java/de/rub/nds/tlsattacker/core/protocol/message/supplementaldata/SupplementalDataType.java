@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.core.protocol.message.supplementaldata;
 
 import de.rub.nds.tlsattacker.core.constants.Bits;
-
 import java.util.HashMap;
 import java.util.Map;
 

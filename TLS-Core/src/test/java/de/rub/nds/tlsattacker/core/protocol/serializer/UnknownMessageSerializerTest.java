@@ -10,11 +10,9 @@ package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.UnknownMessageParserTest;
-
-import org.junit.jupiter.params.provider.Arguments;
-
 import java.util.List;
 import java.util.stream.Stream;
+import org.junit.jupiter.params.provider.Arguments;
 
 public class UnknownMessageSerializerTest
         extends AbstractProtocolMessageSerializerTest<UnknownMessage, UnknownMessageSerializer> {

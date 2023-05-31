@@ -12,10 +12,8 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.protocol.message.PskDheServerKeyExchangeMessage;
-
-import org.junit.jupiter.api.Test;
-
 import java.math.BigInteger;
+import org.junit.jupiter.api.Test;
 
 public class PskDheServerKeyExchangeHandlerTest
         extends AbstractProtocolMessageHandlerTest<

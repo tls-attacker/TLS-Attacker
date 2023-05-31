@@ -10,13 +10,12 @@ package de.rub.nds.tlsattacker.transport.tcp.timing;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.jupiter.api.Test;
-
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+import org.junit.jupiter.api.Test;
 
 public class TimingClientTcpTransportHandlerTest {
 

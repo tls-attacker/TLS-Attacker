@@ -15,12 +15,10 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessagePreparator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-
-import org.junit.jupiter.api.Test;
-
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import org.junit.jupiter.api.Test;
 
 abstract class AbstractProtocolMessagePreparatorTest<
         MT extends ProtocolMessage, PT extends ProtocolMessagePreparator<MT>> {

@@ -12,12 +12,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import de.rub.nds.modifiablevariable.util.BadRandom;
-
-import org.junit.jupiter.api.Test;
-
 import java.security.KeyPair;
 import java.security.KeyStore;
 import java.util.Random;
+import org.junit.jupiter.api.Test;
 
 public class KeyStoreGeneratorTest {
 

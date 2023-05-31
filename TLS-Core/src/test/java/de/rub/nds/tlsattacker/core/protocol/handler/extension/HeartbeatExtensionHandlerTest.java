@@ -13,7 +13,6 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.HeartbeatExtensionMessage;
-
 import org.junit.jupiter.api.Test;
 
 public class HeartbeatExtensionHandlerTest

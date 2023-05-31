@@ -15,10 +15,8 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.record.Record;
-
-import org.junit.jupiter.api.Test;
-
 import java.util.LinkedList;
+import org.junit.jupiter.api.Test;
 
 public class CopyBufferedRecordsActionTest
         extends AbstractCopyActionTest<CopyBufferedRecordsAction> {

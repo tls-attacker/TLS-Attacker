@@ -21,9 +21,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.PskEcDheServerKeyExchangeHan
 import de.rub.nds.tlsattacker.core.protocol.parser.PskEcDheServerKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.PskEcDheServerKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.PskEcDheServerKeyExchangeSerializer;
-
 import jakarta.xml.bind.annotation.XmlRootElement;
-
 import java.io.InputStream;
 
 @XmlRootElement(name = "PskEcDheServerKeyExchange")

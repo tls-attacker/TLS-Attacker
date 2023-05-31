@@ -23,14 +23,11 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceSerializer;
 import de.rub.nds.tlsattacker.core.workflow.filter.DefaultFilter;
 import de.rub.nds.tlsattacker.core.workflow.filter.Filter;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-
 import jakarta.xml.bind.JAXBException;
-
-import org.junit.jupiter.api.Test;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import org.junit.jupiter.api.Test;
 
 public class ForwardDataActionTest extends AbstractActionTest<ForwardDataAction> {
 

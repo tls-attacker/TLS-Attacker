@@ -10,9 +10,6 @@ package de.rub.nds.tlsattacker.core.workflow;
 
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.SchemaOutputResolver;
-
-import org.apache.commons.lang3.StringUtils;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -20,9 +17,9 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-
 import javax.xml.transform.Result;
 import javax.xml.transform.stream.StreamResult;
+import org.apache.commons.lang3.StringUtils;
 
 public class WorkflowTraceSchemaGenerator {
 

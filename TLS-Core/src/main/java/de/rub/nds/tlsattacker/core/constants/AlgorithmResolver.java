@@ -8,11 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.util.HashSet;
 import java.util.Set;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /** Resolves crypto algorithms and their properties from a given cipher suite (and TLS version). */
 public class AlgorithmResolver {

@@ -17,11 +17,9 @@ import de.rub.nds.tlsattacker.core.crypto.hpke.HpkeSenderContext;
 import de.rub.nds.tlsattacker.core.crypto.hpke.HpkeUtil;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
-
+import java.math.BigInteger;
 import org.junit.Assert;
 import org.junit.Test;
-
-import java.math.BigInteger;
 
 public class HpkeUtilTest {
 

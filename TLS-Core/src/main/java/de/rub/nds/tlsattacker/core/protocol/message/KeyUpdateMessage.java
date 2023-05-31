@@ -17,14 +17,11 @@ import de.rub.nds.tlsattacker.core.protocol.handler.KeyUpdateHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.KeyUpdateParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.KeyUpdatePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.KeyUpdateSerializer;
-
 import jakarta.xml.bind.annotation.XmlRootElement;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.io.InputStream;
 import java.util.Objects;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @XmlRootElement(name = "KeyUpdate")
 public class KeyUpdateMessage extends HandshakeMessage<KeyUpdateMessage> {

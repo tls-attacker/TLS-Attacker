@@ -21,12 +21,10 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EchConfig;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ech.HpkeCipherSuite;
-
-import org.junit.Test;
-
 import java.io.ByteArrayInputStream;
 import java.util.LinkedList;
 import java.util.List;
+import org.junit.Test;
 
 public class EchConfigParserTest {
 

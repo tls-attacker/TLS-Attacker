@@ -19,7 +19,6 @@ import de.rub.nds.tlsattacker.core.crypto.KeyShareCalculator;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EchConfig;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
-
 import java.util.Objects;
 
 /** Implements a subset of the functionality specified in RFC 9180. Needed in ECH */
