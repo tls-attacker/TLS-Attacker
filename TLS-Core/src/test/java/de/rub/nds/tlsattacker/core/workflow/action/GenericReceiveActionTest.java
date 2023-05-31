@@ -17,7 +17,6 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-
 import org.junit.jupiter.api.Test;
 
 public class GenericReceiveActionTest extends AbstractActionTest<GenericReceiveAction> {

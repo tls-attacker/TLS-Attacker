@@ -9,13 +9,10 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
-
 import jakarta.xml.bind.annotation.XmlRootElement;
-
+import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.util.List;
 
 @XmlRootElement
 public class ForwardMessagesWithPrepareAction extends ForwardMessagesAction {

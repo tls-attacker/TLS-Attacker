@@ -10,11 +10,9 @@ package de.rub.nds.tlsattacker.core.protocol.message.cert;
 
 import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
-
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
 import java.util.List;
 
 @XmlAccessorType(XmlAccessType.FIELD)

@@ -17,14 +17,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.EchConfig;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.EchConfigParser;
 import de.rub.nds.tlsattacker.core.state.State;
-
 import jakarta.xml.bind.annotation.XmlRootElement;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.xbill.DNS.*;
-import org.xbill.DNS.Record;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.UnknownHostException;
@@ -32,6 +25,10 @@ import java.util.Base64;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.xbill.DNS.*;
+import org.xbill.DNS.Record;
 
 @XmlRootElement
 public class EchConfigDnsRequestAction extends TlsAction {

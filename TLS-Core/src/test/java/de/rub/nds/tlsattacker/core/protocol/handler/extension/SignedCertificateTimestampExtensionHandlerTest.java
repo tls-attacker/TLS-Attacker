@@ -12,7 +12,6 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignedCertificateTimestampExtensionMessage;
-
 import org.junit.jupiter.api.Test;
 
 public class SignedCertificateTimestampExtensionHandlerTest

@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.core.layer.data;
 
 import de.rub.nds.tlsattacker.core.layer.context.LayerContext;
-
 import java.io.InputStream;
 
 /**

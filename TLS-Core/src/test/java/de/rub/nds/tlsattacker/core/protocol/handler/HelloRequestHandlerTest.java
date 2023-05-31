@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.HelloRequestMessage;
-
 import org.junit.jupiter.api.Test;
 
 public class HelloRequestHandlerTest

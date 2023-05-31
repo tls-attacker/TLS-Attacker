@@ -22,9 +22,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.NewSessionTicketParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.NewSessionTicketPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.NewSessionTicketSerializer;
 import de.rub.nds.tlsattacker.core.state.SessionTicket;
-
 import jakarta.xml.bind.annotation.XmlRootElement;
-
 import java.io.InputStream;
 import java.util.List;
 import java.util.Objects;

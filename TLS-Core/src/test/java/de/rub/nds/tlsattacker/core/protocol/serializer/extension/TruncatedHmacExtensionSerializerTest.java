@@ -10,10 +10,8 @@ package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TruncatedHmacExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.TruncatedHmacExtensionParserTest;
-
-import org.junit.jupiter.params.provider.Arguments;
-
 import java.util.stream.Stream;
+import org.junit.jupiter.params.provider.Arguments;
 
 public class TruncatedHmacExtensionSerializerTest
         extends AbstractExtensionMessageSerializerTest<

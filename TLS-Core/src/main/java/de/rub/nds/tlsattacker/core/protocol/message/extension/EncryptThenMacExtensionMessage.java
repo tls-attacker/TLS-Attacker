@@ -14,9 +14,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.EncryptThenMacExte
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.EncryptThenMacExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.EncryptThenMacExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.EncryptThenMacExtensionSerializer;
-
 import jakarta.xml.bind.annotation.XmlRootElement;
-
 import java.io.InputStream;
 
 /** RFC7366 */

@@ -8,10 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.crypto.ec;
 
+import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.math.BigInteger;
 
 /** A Montgomery Curve that internally uses a Weierstrass Curve */
 public class SimulatedMontgomeryCurve extends EllipticCurveOverFp {

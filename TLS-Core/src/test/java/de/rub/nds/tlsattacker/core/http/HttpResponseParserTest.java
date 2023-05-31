@@ -14,11 +14,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
-
-import org.junit.jupiter.api.Test;
-
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
+import org.junit.jupiter.api.Test;
 
 public class HttpResponseParserTest {
 

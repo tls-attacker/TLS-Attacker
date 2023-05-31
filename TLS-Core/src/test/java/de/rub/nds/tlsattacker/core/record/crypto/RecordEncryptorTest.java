@@ -20,17 +20,15 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.*;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
-
+import java.math.BigInteger;
+import java.security.NoSuchAlgorithmException;
+import java.security.Security;
+import java.util.Random;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.test.TestRandomData;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.math.BigInteger;
-import java.security.NoSuchAlgorithmException;
-import java.security.Security;
-import java.util.Random;
 
 public class RecordEncryptorTest {
 

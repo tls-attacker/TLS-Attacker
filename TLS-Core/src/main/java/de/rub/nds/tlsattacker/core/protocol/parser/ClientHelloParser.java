@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
-
 import java.io.InputStream;
 
 public class ClientHelloParser extends CoreClientHelloParser<ClientHelloMessage> {

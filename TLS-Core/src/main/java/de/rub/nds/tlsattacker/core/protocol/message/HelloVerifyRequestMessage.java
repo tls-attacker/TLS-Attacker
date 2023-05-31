@@ -19,9 +19,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.HelloVerifyRequestHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.HelloVerifyRequestParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.HelloVerifyRequestPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.HelloVerifyRequestSerializer;
-
 import jakarta.xml.bind.annotation.XmlRootElement;
-
 import java.io.InputStream;
 import java.util.Objects;
 

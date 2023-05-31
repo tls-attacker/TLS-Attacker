@@ -12,7 +12,6 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
-
 import org.junit.jupiter.api.Test;
 
 public class ChangeCipherSuiteActionTest extends AbstractChangeActionTest<ChangeCipherSuiteAction> {

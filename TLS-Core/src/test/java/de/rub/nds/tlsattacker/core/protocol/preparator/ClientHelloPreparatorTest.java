@@ -21,11 +21,9 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSEx
 import de.rub.nds.tlsattacker.core.state.session.TicketSession;
 import de.rub.nds.tlsattacker.util.FixedTimeProvider;
 import de.rub.nds.tlsattacker.util.TimeHelper;
-
-import org.junit.jupiter.api.Test;
-
 import java.util.LinkedList;
 import java.util.List;
+import org.junit.jupiter.api.Test;
 
 public class ClientHelloPreparatorTest
         extends AbstractProtocolMessagePreparatorTest<ClientHelloMessage, ClientHelloPreparator> {

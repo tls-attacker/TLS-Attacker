@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.core.http;
 
 import de.rub.nds.tlsattacker.core.layer.data.Parser;
-
 import java.io.InputStream;
 
 public abstract class HttpMessageParser<Message extends HttpMessage> extends Parser<Message> {

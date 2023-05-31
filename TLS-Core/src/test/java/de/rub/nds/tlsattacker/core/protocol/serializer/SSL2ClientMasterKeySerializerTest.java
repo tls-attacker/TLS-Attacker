@@ -13,13 +13,11 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SSL2CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.SSL2MessageType;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientMasterKeyMessage;
-
-import org.junit.jupiter.params.provider.Arguments;
-
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
+import org.junit.jupiter.params.provider.Arguments;
 
 public class SSL2ClientMasterKeySerializerTest
         extends AbstractProtocolMessageSerializerTest<

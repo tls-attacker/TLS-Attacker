@@ -27,9 +27,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PreSharedKeyExt
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PreSharedKeyExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-
 import jakarta.xml.bind.annotation.XmlRootElement;
-
 import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;

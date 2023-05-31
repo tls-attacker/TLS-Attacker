@@ -18,9 +18,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.MaxFragmentLengthE
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.MaxFragmentLengthExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.MaxFragmentLengthExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.MaxFragmentLengthExtensionSerializer;
-
 import jakarta.xml.bind.annotation.XmlRootElement;
-
 import java.io.InputStream;
 
 /** Maximum Fragment Length Extension described in rfc3546 */

@@ -14,7 +14,6 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-
 import java.io.InputStream;
 
 public class CachedObjectParser extends Parser<CachedObject> {

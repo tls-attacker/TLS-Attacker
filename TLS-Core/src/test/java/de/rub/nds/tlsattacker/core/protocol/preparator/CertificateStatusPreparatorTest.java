@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateStatusMessage;
-
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 

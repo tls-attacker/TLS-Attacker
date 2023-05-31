@@ -13,7 +13,6 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.RecordSizeLimitExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.RecordSizeLimitExtensionSerializer;
-
 import org.junit.jupiter.api.Test;
 
 public class RecordSizeLimitExtensionPreparatorTest

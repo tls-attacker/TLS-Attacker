@@ -16,9 +16,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.SessionTicketTLSExt
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SessionTicketTLSExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SessionTicketTLSExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.SessionTicket;
-
 import jakarta.xml.bind.annotation.XmlRootElement;
-
 import java.io.InputStream;
 
 /** This extension is defined in RFC4507 */

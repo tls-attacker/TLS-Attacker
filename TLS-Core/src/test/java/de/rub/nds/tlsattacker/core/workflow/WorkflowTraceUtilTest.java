@@ -21,19 +21,15 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.HeartbeatExtension
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
-
 import jakarta.xml.bind.JAXBException;
-
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.logging.Level;
+import javax.xml.stream.XMLStreamException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.logging.Level;
-
-import javax.xml.stream.XMLStreamException;
 
 public class WorkflowTraceUtilTest {
 

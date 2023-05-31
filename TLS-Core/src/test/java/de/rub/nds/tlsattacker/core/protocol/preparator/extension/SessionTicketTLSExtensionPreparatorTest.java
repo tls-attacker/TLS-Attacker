@@ -15,7 +15,6 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SessionTicketTLSExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.session.TicketSession;
-
 import org.junit.jupiter.api.Test;
 
 public class SessionTicketTLSExtensionPreparatorTest

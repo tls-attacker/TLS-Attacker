@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
-
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;

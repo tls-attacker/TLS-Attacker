@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.transport.udp.stream;
 
 import de.rub.nds.tlsattacker.transport.udp.ServerUdpTransportHandler;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.DatagramPacket;

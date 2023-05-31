@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
-
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ListDelegateType;
@@ -18,10 +17,8 @@ import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.core.workflow.filter.FilterType;
-
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.EnumSet;
+import org.apache.commons.lang3.StringUtils;
 
 /** Plot a list of supported parameters. */
 public class ListDelegate extends Delegate {

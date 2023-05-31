@@ -16,9 +16,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.computations.EmptyClientComp
 import de.rub.nds.tlsattacker.core.protocol.parser.EmptyClientKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.EmptyClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.EmptyClientKeyExchangeSerializer;
-
 import jakarta.xml.bind.annotation.XmlRootElement;
-
 import java.io.InputStream;
 import java.util.List;
 

@@ -11,13 +11,11 @@ package de.rub.nds.tlsattacker.core.protocol.parser;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
-
-import org.junit.jupiter.api.Named;
-import org.junit.jupiter.params.provider.Arguments;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
+import org.junit.jupiter.api.Named;
+import org.junit.jupiter.params.provider.Arguments;
 
 public class SSL2ClientHelloParserTest
         extends AbstractProtocolMessageParserTest<SSL2ClientHelloMessage, SSL2ClientHelloParser> {

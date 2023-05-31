@@ -8,10 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.message;
 
-import org.junit.jupiter.params.provider.Arguments;
-
 import java.util.function.BiConsumer;
 import java.util.stream.Stream;
+import org.junit.jupiter.params.provider.Arguments;
 
 public class ApplicationMessageTest extends AbstractMessageTest<ApplicationMessage> {
 

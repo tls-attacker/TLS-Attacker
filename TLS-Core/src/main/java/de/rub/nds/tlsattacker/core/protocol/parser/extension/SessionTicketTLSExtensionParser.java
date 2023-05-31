@@ -15,7 +15,6 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
 import de.rub.nds.tlsattacker.core.state.SessionTicket;
 import de.rub.nds.tlsattacker.core.state.parser.SessionTicketParser;
-
 import java.io.InputStream;
 
 public class SessionTicketTLSExtensionParser

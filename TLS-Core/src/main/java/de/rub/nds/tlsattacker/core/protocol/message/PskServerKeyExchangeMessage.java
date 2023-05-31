@@ -21,9 +21,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.computations.PSKPremasterCom
 import de.rub.nds.tlsattacker.core.protocol.parser.PskServerKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.PskServerKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.PskServerKeyExchangeSerializer;
-
 import jakarta.xml.bind.annotation.XmlRootElement;
-
 import java.io.InputStream;
 import java.util.List;
 

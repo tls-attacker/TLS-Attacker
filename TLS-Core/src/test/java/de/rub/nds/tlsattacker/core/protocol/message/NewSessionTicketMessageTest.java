@@ -9,10 +9,8 @@
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.tlsattacker.core.state.SessionTicket;
-
-import org.junit.jupiter.params.provider.Arguments;
-
 import java.util.stream.Stream;
+import org.junit.jupiter.params.provider.Arguments;
 
 public class NewSessionTicketMessageTest extends AbstractMessageTest<NewSessionTicketMessage> {
 

@@ -11,10 +11,8 @@ package de.rub.nds.tlsattacker.core.config.delegate;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.beust.jcommander.ParameterException;
-
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
-
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

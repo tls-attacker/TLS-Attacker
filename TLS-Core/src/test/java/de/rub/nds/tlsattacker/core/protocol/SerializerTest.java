@@ -11,11 +11,9 @@ package de.rub.nds.tlsattacker.core.protocol;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
-
+import java.math.BigInteger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.math.BigInteger;
 
 public class SerializerTest {
 

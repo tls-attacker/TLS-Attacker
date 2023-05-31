@@ -10,11 +10,9 @@ package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.CertificateMessageParserTest;
-
-import org.junit.jupiter.params.provider.Arguments;
-
 import java.util.List;
 import java.util.stream.Stream;
+import org.junit.jupiter.params.provider.Arguments;
 
 public class CertificateMessageSerializerTest
         extends AbstractHandshakeMessageSerializerTest<

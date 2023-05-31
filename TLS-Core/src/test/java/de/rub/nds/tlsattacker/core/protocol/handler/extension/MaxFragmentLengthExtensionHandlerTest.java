@@ -14,7 +14,6 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.MaxFragmentLengthExtensionMessage;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-
 import org.junit.jupiter.api.Test;
 
 public class MaxFragmentLengthExtensionHandlerTest

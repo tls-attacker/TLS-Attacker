@@ -8,11 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.crypto.ec;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.io.Serializable;
 import java.math.BigInteger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * An element of a galois field F_{2^m}.<br>

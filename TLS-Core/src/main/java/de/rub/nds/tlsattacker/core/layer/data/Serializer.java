@@ -9,13 +9,11 @@
 package de.rub.nds.tlsattacker.core.layer.data;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * The Serializer is responsible to write an Object T into a byte[] form. This is comparable to

@@ -9,11 +9,9 @@
 package de.rub.nds.tlsattacker.core.certificate.transparency;
 
 import de.rub.nds.tlsattacker.core.layer.data.Parser;
-
-import org.bouncycastle.crypto.tls.Certificate;
-
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import org.bouncycastle.crypto.tls.Certificate;
 
 public class SignedCertificateTimestampListParser extends Parser<SignedCertificateTimestampList> {
 

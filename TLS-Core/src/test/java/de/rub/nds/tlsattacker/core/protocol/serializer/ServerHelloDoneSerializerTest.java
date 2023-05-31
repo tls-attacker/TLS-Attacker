@@ -10,10 +10,8 @@ package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.ServerHelloDoneParserTest;
-
-import org.junit.jupiter.params.provider.Arguments;
-
 import java.util.stream.Stream;
+import org.junit.jupiter.params.provider.Arguments;
 
 public class ServerHelloDoneSerializerTest
         extends AbstractHandshakeMessageSerializerTest<

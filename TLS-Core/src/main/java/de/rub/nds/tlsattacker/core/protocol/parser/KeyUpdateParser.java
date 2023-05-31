@@ -12,11 +12,9 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.KeyUpdateRequest;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.KeyUpdateMessage;
-
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.io.InputStream;
 
 public class KeyUpdateParser extends HandshakeMessageParser<KeyUpdateMessage> {
     private static final Logger LOGGER = LogManager.getLogger();

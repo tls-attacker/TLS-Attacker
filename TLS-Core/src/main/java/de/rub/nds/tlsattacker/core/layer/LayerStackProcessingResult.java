@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.core.layer;
 
 import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
-
 import java.util.LinkedList;
 import java.util.List;
 

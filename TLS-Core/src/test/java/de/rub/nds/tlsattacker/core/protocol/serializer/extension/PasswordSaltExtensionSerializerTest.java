@@ -10,11 +10,9 @@ package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PasswordSaltExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.PasswordSaltExtensionParserTest;
-
-import org.junit.jupiter.params.provider.Arguments;
-
 import java.util.List;
 import java.util.stream.Stream;
+import org.junit.jupiter.params.provider.Arguments;
 
 public class PasswordSaltExtensionSerializerTest
         extends AbstractExtensionMessageSerializerTest<

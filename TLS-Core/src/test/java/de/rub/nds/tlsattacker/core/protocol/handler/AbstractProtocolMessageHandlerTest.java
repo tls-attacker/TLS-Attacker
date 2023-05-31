@@ -13,12 +13,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageHandler;
-
-import org.junit.jupiter.api.Test;
-
 import java.io.ByteArrayInputStream;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import org.junit.jupiter.api.Test;
 
 abstract class AbstractProtocolMessageHandlerTest<
         MT extends ProtocolMessage<?>, HT extends ProtocolMessageHandler<MT>> {

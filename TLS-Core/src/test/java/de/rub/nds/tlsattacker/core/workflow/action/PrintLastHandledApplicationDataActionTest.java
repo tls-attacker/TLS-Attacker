@@ -12,7 +12,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-
 import org.junit.jupiter.api.Test;
 
 public class PrintLastHandledApplicationDataActionTest

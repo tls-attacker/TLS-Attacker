@@ -11,11 +11,9 @@ package de.rub.nds.tlsattacker.core.protocol.parser.supplementaldata;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.protocol.message.supplementaldata.SupplementalDataEntry;
-
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.io.InputStream;
 
 public class SupplementalDataEntryParser extends Parser<SupplementalDataEntry> {
 

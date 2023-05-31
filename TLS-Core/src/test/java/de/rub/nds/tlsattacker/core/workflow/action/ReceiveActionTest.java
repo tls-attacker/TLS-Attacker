@@ -17,13 +17,10 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-
 import jakarta.xml.bind.JAXB;
-
-import org.junit.jupiter.api.Test;
-
 import java.io.StringReader;
 import java.io.StringWriter;
+import org.junit.jupiter.api.Test;
 
 public class ReceiveActionTest extends AbstractActionTest<ReceiveAction> {
 
