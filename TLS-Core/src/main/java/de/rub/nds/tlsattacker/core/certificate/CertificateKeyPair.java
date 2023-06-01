@@ -597,6 +597,7 @@ public class CertificateKeyPair implements Serializable {
     public boolean isCompatibleWithCipherSuite(Chooser chooser) {
         CipherSuite cipherSuite = chooser.getSelectedCipherSuite();
         if (!cipherSuite.isRealCipherSuite()
+                || cipherSuite == CipherSuite.TLS_NULL_WITH_NULL_NULL
                 || (cipherSuite.isTLS13() && !combinationUnsuitedForTls13(chooser))) {
             return true;
         } else if (cipherSuite.isTLS13() && combinationUnsuitedForTls13(chooser)) {
