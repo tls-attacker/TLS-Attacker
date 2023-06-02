@@ -17,10 +17,8 @@ import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.util.Arrays;
-import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -49,7 +47,10 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
         prepareCompressionMethod();
         if (chooser.getConfig().isRespectClientProposedExtensions()
                 && msg.getExtensions() == null) {
-            autoSelectExtensions();
+            autoSelectExtensions(
+                    chooser.getConfig(),
+                    chooser.getContext().getTlsContext().getProposedExtensions(),
+                    ExtensionType.COOKIE);
         }
         if (!chooser.getConfig().getHighestProtocolVersion().isSSL()
                 || (chooser.getConfig().getHighestProtocolVersion().isSSL()
@@ -60,17 +61,6 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
         if (chooser.getContext().getTlsContext().isSupportsECH()) {
             prepareEchRandom();
         }
-    }
-
-    private void autoSelectExtensions() {
-        msg.setExtensionsBasedOnProposals(
-                chooser.getConfig(), chooser.getContext().getTlsContext().getProposedExtensions());
-        LOGGER.debug(
-                "Automatically selected extensions: {}",
-                msg.getExtensions().stream()
-                        .map(ExtensionMessage::getExtensionTypeConstant)
-                        .map(ExtensionType::name)
-                        .collect(Collectors.joining(",")));
     }
 
     private void prepareCipherSuite() {
