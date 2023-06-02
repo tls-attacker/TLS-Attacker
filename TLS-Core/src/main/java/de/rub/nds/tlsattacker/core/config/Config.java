@@ -170,6 +170,9 @@ public class Config implements Serializable {
     /** If default generated WorkflowTraces should contain client Authentication */
     private Boolean clientAuthentication = false;
 
+    /** If the ServerHello should contain all enabled extensions or only proposed ones */
+    private Boolean respectClientProposedExtensions = false;
+
     /** Which Signature and Hash algorithms we support */
     @XmlElement(name = "defaultClientSupportedSignatureAndHashAlgorithm")
     @XmlElementWrapper
@@ -4198,5 +4201,13 @@ public class Config implements Serializable {
     public void setSendHandshakeMessagesWithinSingleRecord(
             Boolean sendHandshakeMessagesWithinSingleRecord) {
         this.sendHandshakeMessagesWithinSingleRecord = sendHandshakeMessagesWithinSingleRecord;
+    }
+
+    public Boolean isRespectClientProposedExtensions() {
+        return respectClientProposedExtensions;
+    }
+
+    public void setRespectClientProposedExtensions(Boolean respectClientProposedExtensions) {
+        this.respectClientProposedExtensions = respectClientProposedExtensions;
     }
 }
