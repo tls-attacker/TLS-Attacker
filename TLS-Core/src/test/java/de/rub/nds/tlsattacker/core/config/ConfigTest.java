@@ -599,8 +599,6 @@ public class ConfigTest {
         ConfigIO.write(config, new File(RESOURCE_CONFIG_DIR, "tls13_ech.config"));
 
         config.setWorkflowExecutorType(WorkflowExecutorType.THREADED_SERVER);
-
-        ConfigIO.write(config, new File("echServer.config"));
     }
 
     @Test
