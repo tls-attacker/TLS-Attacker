@@ -87,7 +87,9 @@ public class AlgorithmResolver {
     }
 
     public static KeyExchangeAlgorithm getKeyExchangeAlgorithm(CipherSuite cipherSuite) {
-        if (cipherSuite.isTLS13()) {
+        if (cipherSuite.isTLS13()
+                || cipherSuite == CipherSuite.TLS_FALLBACK_SCSV
+                || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV) {
             return null;
         }
         String cipher = cipherSuite.toString().toUpperCase();
@@ -151,13 +153,6 @@ public class AlgorithmResolver {
             return KeyExchangeAlgorithm.ECCPWD;
         } else if (cipher.contains("TLS_GOSTR341094")) {
             return KeyExchangeAlgorithm.VKO_GOST01;
-        }
-        if (cipherSuite == CipherSuite.TLS_FALLBACK_SCSV
-                || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV) {
-            throw new UnsupportedOperationException(
-                    "The CipherSuite:"
-                            + cipherSuite.name()
-                            + " does not specify a KeyExchangeAlgorithm");
         }
         LOGGER.warn(
                 "The key exchange algorithm in "
