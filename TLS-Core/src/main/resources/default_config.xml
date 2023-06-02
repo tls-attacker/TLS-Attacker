@@ -921,7 +921,7 @@
     <cachedInfoExtensionIsClientState>true</cachedInfoExtensionIsClientState>
     <cachedObjectList/>
     <statusRequestV2RequestList/>
-    <workflowTraceType>HANDSHAKE</workflowTraceType>
+    <workflowTraceType>DYNAMIC_HANDSHAKE</workflowTraceType>
     <serverSendsApplicationData>false</serverSendsApplicationData>
     <addExtensionsInSSL>false</addExtensionsInSSL>
     <addECPointFormatExtension>true</addECPointFormatExtension>

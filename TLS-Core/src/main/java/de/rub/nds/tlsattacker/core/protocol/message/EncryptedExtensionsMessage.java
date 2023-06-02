@@ -19,6 +19,8 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.EncryptedExtensionsPrepar
 import de.rub.nds.tlsattacker.core.protocol.serializer.EncryptedExtensionsSerializer;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Objects;
 
 @XmlRootElement(name = "EncryptedExtensions")
@@ -30,9 +32,18 @@ public class EncryptedExtensionsMessage extends HandshakeMessage<EncryptedExtens
 
     public EncryptedExtensionsMessage(Config config) {
         super(HandshakeMessageType.ENCRYPTED_EXTENSIONS);
-        if (config.isAddRecordSizeLimitExtension()) {
-            addExtension(new RecordSizeLimitExtensionMessage());
+        if (!config.isRespectClientProposedExtensions()) {
+            createConfiguredExtensions(config).forEach(this::addExtension);
         }
+    }
+
+    @Override
+    public final List<ExtensionMessage> createConfiguredExtensions(Config config) {
+        List<ExtensionMessage> configuredExtensions = new LinkedList<>();
+        if (config.isAddRecordSizeLimitExtension()) {
+            configuredExtensions.add(new RecordSizeLimitExtensionMessage());
+        }
+        return configuredExtensions;
     }
 
     @Override

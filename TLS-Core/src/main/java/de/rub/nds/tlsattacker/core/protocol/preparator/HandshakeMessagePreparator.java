@@ -9,6 +9,8 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
@@ -29,6 +31,11 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -76,6 +83,41 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage<?>>
             prepareMessageLength(content.length);
             prepareMessageType(message.getHandshakeMessageType());
         }
+    }
+
+    public void autoSelectExtensions(
+            Config tlsConfig, Set<ExtensionType> proposedExtensions, ExtensionType... exceptions) {
+        setExtensionsBasedOnProposals(
+                message.createConfiguredExtensions(tlsConfig), proposedExtensions, exceptions);
+        LOGGER.debug(
+                "Automatically selected extensions for message {}: {}",
+                message.getHandshakeMessageType().name(),
+                message.getExtensions().stream()
+                        .map(ExtensionMessage::getExtensionTypeConstant)
+                        .map(ExtensionType::name)
+                        .collect(Collectors.joining(",")));
+    }
+
+    /**
+     * @param configuredExtensions List of extensions to be added based on config
+     * @param clientProposedExtensions List of types proposed by the client
+     * @param exceptions Extensions to be added even if the client did not propose them (i.e cookie
+     *     extension)
+     */
+    public final void setExtensionsBasedOnProposals(
+            List<ExtensionMessage> configuredExtensions,
+            Set<ExtensionType> clientProposedExtensions,
+            ExtensionType... exceptions) {
+        message.setExtensions(new LinkedList<>());
+        List<ExtensionType> listedExceptions = Arrays.asList(exceptions);
+        configuredExtensions.stream()
+                .filter(
+                        configuredExtension ->
+                                clientProposedExtensions.contains(
+                                                configuredExtension.getExtensionTypeConstant())
+                                        || listedExceptions.contains(
+                                                configuredExtension.getExtensionTypeConstant()))
+                .forEach(message::addExtension);
     }
 
     protected abstract void prepareHandshakeMessageContents();

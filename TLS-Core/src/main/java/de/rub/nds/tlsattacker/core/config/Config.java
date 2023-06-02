@@ -1245,7 +1245,7 @@ public class Config implements Serializable {
         defaultLayerConfiguration = LayerConfiguration.TLS;
         defaultClientConnection = new OutboundConnection("client", 443, "localhost");
         defaultServerConnection = new InboundConnection("server", 443, "localhost");
-        workflowTraceType = WorkflowTraceType.HANDSHAKE;
+        workflowTraceType = WorkflowTraceType.DYNAMIC_HANDSHAKE;
 
         defaultEsniServerKeyShareEntries.add(
                 new KeyShareStoreEntry(

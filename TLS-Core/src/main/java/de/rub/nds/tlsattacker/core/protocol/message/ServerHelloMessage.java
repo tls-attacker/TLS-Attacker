@@ -16,7 +16,6 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
-import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
@@ -34,7 +33,6 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 @XmlRootElement(name = "ServerHello")
 public class ServerHelloMessage extends HelloMessage<ServerHelloMessage> {
@@ -90,11 +88,12 @@ public class ServerHelloMessage extends HelloMessage<ServerHelloMessage> {
     public ServerHelloMessage(Config tlsConfig) {
         super(HandshakeMessageType.SERVER_HELLO);
         if (!tlsConfig.isRespectClientProposedExtensions()) {
-            getConfiguredExtensions(tlsConfig).forEach(this::addExtension);
+            createConfiguredExtensions(tlsConfig).forEach(this::addExtension);
         }
     }
 
-    public final List<ExtensionMessage> getConfiguredExtensions(Config tlsConfig) {
+    @Override
+    public final List<ExtensionMessage> createConfiguredExtensions(Config tlsConfig) {
         List<ExtensionMessage> configuredExtensions = new LinkedList<>();
         if (!tlsConfig.getHighestProtocolVersion().isSSL()
                 || (tlsConfig.getHighestProtocolVersion().isSSL()
@@ -218,19 +217,6 @@ public class ServerHelloMessage extends HelloMessage<ServerHelloMessage> {
             }
         }
         return configuredExtensions;
-    }
-
-    public void setExtensionsBasedOnProposals(
-            Config tlsConfig, Set<ExtensionType> clientProposedExtensions) {
-        setExtensions(new LinkedList<>());
-        getConfiguredExtensions(tlsConfig).stream()
-                .filter(
-                        extension ->
-                                clientProposedExtensions.contains(
-                                                extension.getExtensionTypeConstant())
-                                        || extension.getExtensionTypeConstant()
-                                                == ExtensionType.COOKIE)
-                .forEach(this::addExtension);
     }
 
     public ServerHelloMessage() {

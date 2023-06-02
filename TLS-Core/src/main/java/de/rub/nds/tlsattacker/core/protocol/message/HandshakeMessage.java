@@ -15,6 +15,7 @@ import de.rub.nds.modifiablevariable.bool.ModifiableBoolean;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
@@ -100,6 +101,10 @@ public abstract class HandshakeMessage<Self extends HandshakeMessage<?>>
 
     public final void setExtensions(List<ExtensionMessage> extensions) {
         this.extensions = extensions;
+    }
+
+    public List<ExtensionMessage> createConfiguredExtensions(Config tlsConfig) {
+        return new LinkedList<>();
     }
 
     public final void addExtension(ExtensionMessage extension) {

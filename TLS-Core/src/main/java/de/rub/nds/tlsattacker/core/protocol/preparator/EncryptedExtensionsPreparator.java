@@ -25,6 +25,12 @@ public class EncryptedExtensionsPreparator
     @Override
     public void prepareHandshakeMessageContents() {
         LOGGER.debug("Preparing EncryptedExtensionsMessage");
+        if (chooser.getConfig().isRespectClientProposedExtensions()
+                && message.getExtensions() == null) {
+            autoSelectExtensions(
+                    chooser.getConfig(),
+                    chooser.getContext().getTlsContext().getProposedExtensions());
+        }
         prepareExtensions();
         prepareExtensionLength();
     }
