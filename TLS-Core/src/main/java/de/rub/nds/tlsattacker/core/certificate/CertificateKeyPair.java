@@ -605,9 +605,13 @@ public class CertificateKeyPair implements Serializable {
         }
 
         CertificateKeyType neededKeyType = AlgorithmResolver.getCertificateKeyType(cipherSuite);
-        CertificateKeyType legacyNeededCertSignatureKeyType =
-                AlgorithmResolver.getRequiredSignatureAlgorithm(cipherSuite)
-                        .getRequiredCertificateKeyType();
+        SignatureAlgorithm requiredSignatureAlgorithm =
+                AlgorithmResolver.getRequiredSignatureAlgorithm(cipherSuite);
+        CertificateKeyType legacyNeededCertSignatureKeyType = null;
+        if (requiredSignatureAlgorithm != null) {
+            legacyNeededCertSignatureKeyType =
+                    requiredSignatureAlgorithm.getRequiredCertificateKeyType();
+        }
 
         if (neededKeyType == this.getCertPublicKeyType()
                 || (neededKeyType == CertificateKeyType.ECDSA
@@ -615,6 +619,7 @@ public class CertificateKeyPair implements Serializable {
 
             if (cipherSuite.isEphemeral()
                     || mayUseArbitraryCertSignature(chooser)
+                    || legacyNeededCertSignatureKeyType == null
                     || legacyNeededCertSignatureKeyType == getCertSignatureType()) {
                 return true;
             }

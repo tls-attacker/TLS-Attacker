@@ -11,10 +11,13 @@ package de.rub.nds.tlsattacker.core.certificate;
 import static org.junit.jupiter.api.Assertions.*;
 
 import de.rub.nds.tlsattacker.core.constants.CertificateKeyType;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 public class CertificateKeyPairTest {
 
@@ -70,6 +73,17 @@ public class CertificateKeyPairTest {
                             .getSignatureAlgorithm()
                             .getRequiredCertificateKeyType(),
                     "Signature scheme must match public key type");
+        }
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = CipherSuite.class)
+    public void isCompatibleWithCipherSuiteDoesNotThrow(CipherSuite providedCipherSuite) {
+        tlsContext.setSelectedCipherSuite(providedCipherSuite);
+        for (CertificateKeyPair certKeyPair :
+                CertificateByteChooser.getInstance().getCertificateKeyPairList()) {
+            assertDoesNotThrow(
+                    () -> certKeyPair.isCompatibleWithCipherSuite(tlsContext.getChooser()));
         }
     }
 }
