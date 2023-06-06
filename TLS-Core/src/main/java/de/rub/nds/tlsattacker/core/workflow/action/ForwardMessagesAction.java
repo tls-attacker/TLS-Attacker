@@ -602,8 +602,8 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
         sb.append("\n");
         sb.append("Forwarded to alias: ").append(forwardToAlias).append("\n");
         if (sendMessages != null) {
+            sb.append("\t");
             for (ProtocolMessage message : sendMessages) {
-                sb.append("\t");
                 sb.append(message.toCompactString());
                 sb.append(", ");
             }

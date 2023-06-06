@@ -1,18 +1,16 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
-import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.mlong.ModifiableLong;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
@@ -21,17 +19,15 @@ import de.rub.nds.tlsattacker.core.protocol.handler.NewSessionTicketHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EarlyDataExtensionMessage;
 import de.rub.nds.tlsattacker.core.state.SessionTicket;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.util.List;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import java.util.List;
 
 @XmlRootElement(name = "NewSessionTicket")
 public class NewSessionTicketMessage extends HandshakeMessage {
 
-    @ModifiableVariableProperty()
-    private ModifiableLong ticketLifetimeHint;
+    @ModifiableVariableProperty() private ModifiableLong ticketLifetimeHint;
 
-    @HoldsModifiableVariable
-    private final SessionTicket ticket;
+    @HoldsModifiableVariable private final SessionTicket ticket;
 
     public NewSessionTicketMessage() {
         super(HandshakeMessageType.NEW_SESSION_TICKET);
@@ -67,7 +63,9 @@ public class NewSessionTicketMessage extends HandshakeMessage {
     }
 
     public void setTicketLifetimeHint(long ticketLifetimeHint) {
-        this.ticketLifetimeHint = ModifiableVariableFactory.safelySetValue(this.ticketLifetimeHint, ticketLifetimeHint);
+        this.ticketLifetimeHint =
+                ModifiableVariableFactory.safelySetValue(
+                        this.ticketLifetimeHint, ticketLifetimeHint);
     }
 
     public SessionTicket getTicket() {
@@ -85,7 +83,8 @@ public class NewSessionTicketMessage extends HandshakeMessage {
             sb.append("null");
         }
         sb.append("\n  TicketLength: ");
-        if (getTicket().getIdentityLength() != null && getTicket().getIdentityLength().getValue() != null) {
+        if (getTicket().getIdentityLength() != null
+                && getTicket().getIdentityLength().getValue() != null) {
             sb.append(getTicket().getIdentityLength().getValue());
         } else {
             sb.append("null");

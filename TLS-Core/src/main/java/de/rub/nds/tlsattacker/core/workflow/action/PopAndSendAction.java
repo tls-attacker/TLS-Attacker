@@ -107,7 +107,17 @@ public class PopAndSendAction extends MessageAction implements SendingAction {
 
     @Override
     public String toString() {
-        return "PopAndSendAction(index: " + index + ")";
+        String messageString = getReadableString(messages);
+        return "PopAndSendAction: index: "
+                + index
+                + " message: "
+                + messageString
+                + " exexuted: "
+                + isExecuted()
+                + " couldPop: "
+                + couldPop
+                + " connectionAlias: "
+                + connectionAlias;
     }
 
     @Override

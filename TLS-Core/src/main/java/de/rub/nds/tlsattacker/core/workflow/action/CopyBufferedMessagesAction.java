@@ -35,4 +35,16 @@ public class CopyBufferedMessagesAction extends CopyContextFieldAction {
     public void reset() {
         setExecuted(false);
     }
+
+    @Override
+    public String toString() {
+        return "CopyBufferedMessagesAction:"
+                + "from="
+                + getSrcContextAlias()
+                + " to="
+                + getDstContextAlias()
+                + "(executed="
+                + isExecuted()
+                + ")";
+    }
 }
