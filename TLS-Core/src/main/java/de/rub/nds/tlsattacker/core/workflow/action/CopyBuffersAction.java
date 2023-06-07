@@ -14,8 +14,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "CopyBuffers")
 public class CopyBuffersAction extends CopyContextFieldAction {
 
-    public CopyBuffersAction() {
-    }
+    public CopyBuffersAction() {}
 
     public CopyBuffersAction(String srcConnectionAlias, String dstConnectionAlias) {
         super(srcConnectionAlias, dstConnectionAlias);
@@ -42,5 +41,4 @@ public class CopyBuffersAction extends CopyContextFieldAction {
     public String toString() {
         return "CopyBuffersAction: " + getSrcContextAlias() + " -> " + getDstContextAlias();
     }
-
 }
