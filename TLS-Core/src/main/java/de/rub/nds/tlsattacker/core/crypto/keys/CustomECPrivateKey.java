@@ -19,7 +19,6 @@ import jakarta.xml.bind.annotation.XmlAccessorType;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import java.math.BigInteger;
 import java.security.*;
@@ -75,7 +74,6 @@ public class CustomECPrivateKey extends CustomPrivateKey implements ECPrivateKey
 
     @Override
     public ECParameterSpec getParams() {
-        Security.addProvider(new BouncyCastleProvider());
         try {
             AlgorithmParameters parameters = AlgorithmParameters.getInstance("EC", "BC");
             parameters.init(new ECGenParameterSpec(group.getJavaName()));

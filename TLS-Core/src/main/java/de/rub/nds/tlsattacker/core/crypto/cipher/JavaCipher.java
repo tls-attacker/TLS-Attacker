@@ -14,13 +14,11 @@ import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
-import java.security.Security;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -110,7 +108,6 @@ class JavaCipher extends BaseCipher {
     public byte[] encrypt(byte[] iv, int tagLength, byte[] someBytes) throws CryptoException {
         GCMParameterSpec encryptIv = new GCMParameterSpec(tagLength, iv);
         try {
-            Security.addProvider(new BouncyCastleProvider());
             cipher = Cipher.getInstance(algorithm.getJavaName(), "BC");
             String keySpecAlgorithm =
                     BulkCipherAlgorithm.getBulkCipherAlgorithm(algorithm).getJavaName();
@@ -137,7 +134,6 @@ class JavaCipher extends BaseCipher {
             throws CryptoException {
         GCMParameterSpec encryptIv = new GCMParameterSpec(tagLength, iv);
         try {
-            Security.addProvider(new BouncyCastleProvider());
             cipher = Cipher.getInstance(algorithm.getJavaName(), "BC");
 
             String keySpecAlgorithm =
@@ -225,7 +221,6 @@ class JavaCipher extends BaseCipher {
     public byte[] decrypt(byte[] iv, int tagLength, byte[] someBytes) throws CryptoException {
         GCMParameterSpec decryptIv = new GCMParameterSpec(tagLength, iv);
         try {
-            Security.addProvider(new BouncyCastleProvider());
             cipher = Cipher.getInstance(algorithm.getJavaName(), "BC");
             String keySpecAlgorithm =
                     BulkCipherAlgorithm.getBulkCipherAlgorithm(algorithm).getJavaName();
@@ -255,7 +250,6 @@ class JavaCipher extends BaseCipher {
             throws CryptoException {
         GCMParameterSpec decryptIv = new GCMParameterSpec(tagLength, iv);
         try {
-            Security.addProvider(new BouncyCastleProvider());
             cipher = Cipher.getInstance(algorithm.getJavaName(), "BC");
             String keySpecAlgorithm =
                     BulkCipherAlgorithm.getBulkCipherAlgorithm(algorithm).getJavaName();

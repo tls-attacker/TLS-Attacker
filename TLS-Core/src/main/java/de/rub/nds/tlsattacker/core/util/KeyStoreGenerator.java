@@ -22,7 +22,6 @@ import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder;
 import org.bouncycastle.jcajce.provider.asymmetric.ecgost12.BCECGOST3410_2012PublicKey;
 import org.bouncycastle.jce.ECNamedCurveTable;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.jce.spec.ECNamedCurveGenParameterSpec;
 import org.bouncycastle.jce.spec.ECNamedCurveParameterSpec;
 import org.bouncycastle.operator.ContentSigner;
@@ -81,7 +80,6 @@ public class KeyStoreGenerator {
             throws NoSuchAlgorithmException,
                     NoSuchProviderException,
                     InvalidAlgorithmParameterException {
-        Security.addProvider(new BouncyCastleProvider());
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("EC", "BC");
         keyPairGenerator.initialize(new ECNamedCurveGenParameterSpec("sm2p256v1"), random);
         KeyPair keyPair = keyPairGenerator.generateKeyPair();
