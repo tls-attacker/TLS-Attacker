@@ -84,7 +84,7 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
                 break;
             }
 
-            if (!action.executedAsPlanned()) {
+            if (!action.executedAsPlanned() && action instanceof ReceivingAction) {
                 if (config.isStopTraceAfterUnexpected()) {
                     LOGGER.debug("Skipping all Actions, action did not execute as planned.");
                     break;
@@ -147,14 +147,16 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
     private void performRetransmissions(List<TlsAction> tlsActions, int receiveActionIndex)
             throws IOException {
         if (!(tlsActions.get(receiveActionIndex) instanceof ReceivingAction)) {
-            throw new WorkflowExecutionException("Passed index of non receiving action as index");
+            throw new WorkflowExecutionException(
+                    "Passed index of non receiving action as index. Index: "
+                            + receiveActionIndex
+                            + ", Type: "
+                            + tlsActions.get(receiveActionIndex).getClass().getSimpleName());
         }
         ReceivingAction receivingAction = (ReceivingAction) tlsActions.get(receiveActionIndex);
         Set<String> receivingAliases = receivingAction.getAllReceivingAliases();
         // We will perform retransmissions for all receiving aliases, even if a subset
-        // of those
-        // aliases
-        // actually does not need to have them
+        // of those aliases actually does not need to have them
         for (int i = findRetransmissionIndex(tlsActions, receiveActionIndex);
                 i < receiveActionIndex;
                 i++) {
