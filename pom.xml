@@ -194,7 +194,7 @@
         <dependency>
             <groupId>de.rub.nds</groupId>
             <artifactId>X509Attacker</artifactId>
-            <version>1.3.0-SNAPSHOT</version>
+            <version>1.3.0</version>
         </dependency>
     </dependencies>
     <build>
