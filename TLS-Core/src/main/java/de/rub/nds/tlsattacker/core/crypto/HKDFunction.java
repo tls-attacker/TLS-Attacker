@@ -15,7 +15,6 @@ import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import org.bouncycastle.crypto.digests.SM3Digest;
 import org.bouncycastle.crypto.macs.HMac;
 import org.bouncycastle.crypto.params.KeyParameter;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -77,7 +76,6 @@ public class HKDFunction {
             throws CryptoException {
         try {
             if (hkdfAlgorithm.getMacAlgorithm().getJavaName().equals("HmacSM3")) {
-                Security.addProvider(new BouncyCastleProvider());
                 HMac hmac = new HMac(new SM3Digest());
                 if (salt == null || salt.length == 0) {
                     salt = new byte[hmac.getMacSize()];
@@ -91,7 +89,7 @@ public class HKDFunction {
                 hmac.doFinal(ikm, 0);
                 return ikm;
             } else {
-                Mac mac = Mac.getInstance(hkdfAlgorithm.getMacAlgorithm().getJavaName(), "BC");
+                Mac mac = Mac.getInstance(hkdfAlgorithm.getMacAlgorithm().getJavaName());
                 if (salt == null || salt.length == 0) {
                     salt = new byte[mac.getMacLength()];
                     Arrays.fill(salt, (byte) 0);
@@ -102,7 +100,7 @@ public class HKDFunction {
                 mac.update(ikm);
                 return mac.doFinal();
             }
-        } catch (NoSuchAlgorithmException | InvalidKeyException | NoSuchProviderException ex) {
+        } catch (NoSuchAlgorithmException | InvalidKeyException ex) {
             throw new CryptoException(ex);
         }
     }
