@@ -18,7 +18,6 @@ import org.apache.logging.log4j.Logger;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -108,7 +107,7 @@ class JavaCipher extends BaseCipher {
     public byte[] encrypt(byte[] iv, int tagLength, byte[] someBytes) throws CryptoException {
         GCMParameterSpec encryptIv = new GCMParameterSpec(tagLength, iv);
         try {
-            cipher = Cipher.getInstance(algorithm.getJavaName(), "BC");
+            cipher = Cipher.getInstance(algorithm.getJavaName());
             String keySpecAlgorithm =
                     BulkCipherAlgorithm.getBulkCipherAlgorithm(algorithm).getJavaName();
             cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key, keySpecAlgorithm), encryptIv);
@@ -122,7 +121,6 @@ class JavaCipher extends BaseCipher {
                 | InvalidAlgorithmParameterException
                 | InvalidKeyException
                 | NoSuchPaddingException
-                | NoSuchProviderException
                 | IllegalArgumentException ex) {
             throw new CryptoException("Could not encrypt data with " + algorithm.getJavaName(), ex);
         }
@@ -134,7 +132,7 @@ class JavaCipher extends BaseCipher {
             throws CryptoException {
         GCMParameterSpec encryptIv = new GCMParameterSpec(tagLength, iv);
         try {
-            cipher = Cipher.getInstance(algorithm.getJavaName(), "BC");
+            cipher = Cipher.getInstance(algorithm.getJavaName());
 
             String keySpecAlgorithm =
                     BulkCipherAlgorithm.getBulkCipherAlgorithm(algorithm).getJavaName();
@@ -150,7 +148,6 @@ class JavaCipher extends BaseCipher {
                 | InvalidAlgorithmParameterException
                 | InvalidKeyException
                 | NoSuchPaddingException
-                | NoSuchProviderException
                 | IllegalArgumentException ex) {
             throw new CryptoException("Could not encrypt data with " + algorithm.getJavaName(), ex);
         }
@@ -221,7 +218,7 @@ class JavaCipher extends BaseCipher {
     public byte[] decrypt(byte[] iv, int tagLength, byte[] someBytes) throws CryptoException {
         GCMParameterSpec decryptIv = new GCMParameterSpec(tagLength, iv);
         try {
-            cipher = Cipher.getInstance(algorithm.getJavaName(), "BC");
+            cipher = Cipher.getInstance(algorithm.getJavaName());
             String keySpecAlgorithm =
                     BulkCipherAlgorithm.getBulkCipherAlgorithm(algorithm).getJavaName();
             cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key, keySpecAlgorithm), decryptIv);
@@ -238,7 +235,6 @@ class JavaCipher extends BaseCipher {
                 | NoSuchAlgorithmException
                 | InvalidAlgorithmParameterException
                 | InvalidKeyException
-                | NoSuchProviderException
                 | NoSuchPaddingException ex) {
             throw new CryptoException("Could not decrypt data", ex);
         }
@@ -250,7 +246,7 @@ class JavaCipher extends BaseCipher {
             throws CryptoException {
         GCMParameterSpec decryptIv = new GCMParameterSpec(tagLength, iv);
         try {
-            cipher = Cipher.getInstance(algorithm.getJavaName(), "BC");
+            cipher = Cipher.getInstance(algorithm.getJavaName());
             String keySpecAlgorithm =
                     BulkCipherAlgorithm.getBulkCipherAlgorithm(algorithm).getJavaName();
             cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key, keySpecAlgorithm), decryptIv);
@@ -269,7 +265,6 @@ class JavaCipher extends BaseCipher {
                 | InvalidAlgorithmParameterException
                 | InvalidKeyException
                 | NoSuchPaddingException
-                | NoSuchProviderException
                 | IllegalArgumentException ex) {
             throw new CryptoException("Could not decrypt data", ex);
         }
