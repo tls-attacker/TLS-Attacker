@@ -61,7 +61,6 @@ public class FinishedPreparator extends HandshakeMessagePreparator<FinishedMessa
             try {
                 HKDFAlgorithm hkdfAlgorithm =
                         AlgorithmResolver.getHKDFAlgorithm(chooser.getSelectedCipherSuite());
-                byte[] finishedKey;
                 String javaMacName = hkdfAlgorithm.getMacAlgorithm().getJavaName();
                 boolean isHmacSM3 = javaMacName.equals("HmacSM3");
                 int macLength;
@@ -77,7 +76,7 @@ public class FinishedPreparator extends HandshakeMessagePreparator<FinishedMessa
                 } else {
                     trafficSecret = chooser.getClientHandshakeTrafficSecret();
                 }
-                finishedKey =
+                byte[] finishedKey =
                         HKDFunction.expandLabel(
                                 hkdfAlgorithm,
                                 trafficSecret,

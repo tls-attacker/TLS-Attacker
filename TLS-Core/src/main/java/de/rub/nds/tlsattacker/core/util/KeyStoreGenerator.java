@@ -76,7 +76,7 @@ public class KeyStoreGenerator {
         return keyPairGenerator.generateKeyPair();
     }
 
-    public static KeyPair createSM2KeyPair(int bits, BadRandom random)
+    public static KeyPair createSM2KeyPair(BadRandom random)
             throws NoSuchAlgorithmException,
                     NoSuchProviderException,
                     InvalidAlgorithmParameterException {
