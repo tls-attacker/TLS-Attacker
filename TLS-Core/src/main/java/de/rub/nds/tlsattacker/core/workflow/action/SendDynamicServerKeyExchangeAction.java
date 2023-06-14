@@ -60,7 +60,11 @@ public class SendDynamicServerKeyExchangeAction extends MessageAction implements
                 new WorkflowConfigurationFactory(state.getConfig())
                         .createServerKeyExchangeMessage(
                                 AlgorithmResolver.getKeyExchangeAlgorithm(selectedCipherSuite));
-        if (serverKeyExchangeMessage != null) {
+        if (serverKeyExchangeMessage == null) {
+            LOGGER.debug(
+                    "Skipping DynamicServerKeyExchangeAction as it is not required or dynamic selection failed.");
+            setExecuted(true);
+        } else {
             messages.add(serverKeyExchangeMessage);
 
             String sending = getReadableString(messages);

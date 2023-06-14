@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.tlsattacker.core.protocol.message.EncryptedExtensionsMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import java.util.HashSet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -29,7 +30,8 @@ public class EncryptedExtensionsPreparator
                 && message.getExtensions() == null) {
             autoSelectExtensions(
                     chooser.getConfig(),
-                    chooser.getContext().getTlsContext().getProposedExtensions());
+                    chooser.getContext().getTlsContext().getProposedExtensions(),
+                    new HashSet<>());
         }
         prepareExtensions();
         prepareExtensionLength();

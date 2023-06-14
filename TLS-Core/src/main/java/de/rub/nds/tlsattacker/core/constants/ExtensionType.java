@@ -267,4 +267,22 @@ public enum ExtensionType {
         }
         return false;
     }
+
+    public static List<ExtensionType> getNonTls13Extensions() {
+        List<ExtensionType> list = new LinkedList<>();
+        list.add(EXTENDED_MASTER_SECRET);
+        list.add(EXTENDED_RANDOM);
+        list.add(ENCRYPT_THEN_MAC);
+        list.add(SRP);
+        list.add(TRUNCATED_HMAC);
+        list.add(RENEGOTIATION_INFO);
+        return list;
+    }
+
+    public static List<ExtensionType> getTls13OnlyExtensions() {
+        List<ExtensionType> list = new LinkedList<>();
+        list.add(EARLY_DATA);
+        list.add(KEY_SHARE);
+        return list;
+    }
 }

@@ -86,9 +86,15 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage<?>>
     }
 
     public void autoSelectExtensions(
-            Config tlsConfig, Set<ExtensionType> proposedExtensions, ExtensionType... exceptions) {
+            Config tlsConfig,
+            Set<ExtensionType> proposedExtensions,
+            Set<ExtensionType> forbiddenExtensions,
+            ExtensionType... exceptions) {
         setExtensionsBasedOnProposals(
-                message.createConfiguredExtensions(tlsConfig), proposedExtensions, exceptions);
+                message.createConfiguredExtensions(tlsConfig),
+                proposedExtensions,
+                forbiddenExtensions,
+                exceptions);
         LOGGER.debug(
                 "Automatically selected extensions for message {}: {}",
                 message.getHandshakeMessageType().name(),
@@ -101,22 +107,29 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage<?>>
     /**
      * @param configuredExtensions List of extensions to be added based on config
      * @param clientProposedExtensions List of types proposed by the client
+     * @param forbiddenExtensions List of types that must not be added even if proposed by the
+     *     client (i.e EC point format for RSA key exchange)
      * @param exceptions Extensions to be added even if the client did not propose them (i.e cookie
      *     extension)
      */
     public final void setExtensionsBasedOnProposals(
             List<ExtensionMessage> configuredExtensions,
             Set<ExtensionType> clientProposedExtensions,
+            Set<ExtensionType> forbiddenExtensions,
             ExtensionType... exceptions) {
         message.setExtensions(new LinkedList<>());
         List<ExtensionType> listedExceptions = Arrays.asList(exceptions);
         configuredExtensions.stream()
                 .filter(
                         configuredExtension ->
-                                clientProposedExtensions.contains(
+                                (!forbiddenExtensions.contains(
                                                 configuredExtension.getExtensionTypeConstant())
-                                        || listedExceptions.contains(
-                                                configuredExtension.getExtensionTypeConstant()))
+                                        && (clientProposedExtensions.contains(
+                                                        configuredExtension
+                                                                .getExtensionTypeConstant())
+                                                || listedExceptions.contains(
+                                                        configuredExtension
+                                                                .getExtensionTypeConstant()))))
                 .forEach(message::addExtension);
     }
 
