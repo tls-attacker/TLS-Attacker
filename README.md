@@ -41,7 +41,7 @@ If you want to use this project as a dependency, you do not have to compile it y
 <dependency>
     <groupId>de.rub.nds.tls.attacker</groupId>
     <artifactId>tls-attacker</artifactId>
-    <version>5.2.0</version>
+    <version>5.2.1</version>
     <type>pom</type>
 </dependency>
 ```
