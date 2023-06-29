@@ -84,7 +84,6 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                 if (tlsContext.getTalkingConnectionEndType()
                         != tlsContext.getChooser().getConnectionEndType()) {
                     setServerRecordCipher();
-                    setClientRecordCipher();
                 }
             }
             adjustPRF(message);
