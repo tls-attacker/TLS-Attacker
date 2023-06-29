@@ -183,6 +183,24 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         }
     }
 
+    private void setClientRecordCipher() {
+        tlsContext.setActiveClientKeySetType(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
+        LOGGER.debug("Setting cipher for client to use handshake secrets");
+        KeySet clientKeySet = getTls13KeySet(tlsContext, tlsContext.getActiveClientKeySetType());
+
+        if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.SERVER) {
+            tlsContext
+                    .getRecordLayer()
+                    .updateDecryptionCipher(
+                            RecordCipherFactory.getRecordCipher(tlsContext, clientKeySet, false));
+        } else {
+            tlsContext
+                    .getRecordLayer()
+                    .updateEncryptionCipher(
+                            RecordCipherFactory.getRecordCipher(tlsContext, clientKeySet, true));
+        }
+    }
+
     private KeySet getTls13KeySet(TlsContext tlsContext, Tls13KeySetType keySetType) {
         try {
             LOGGER.debug("Generating new KeySet");
@@ -200,6 +218,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()
                 && !message.isTls13HelloRetryRequest()) {
             setServerRecordCipher();
+            setClientRecordCipher();
         }
     }
 
@@ -213,8 +232,14 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                         tlsContext.getChooser().getSelectedCipherSuite());
 
         try {
-            int macLength =
-                    Mac.getInstance(hkdfAlgorithm.getMacAlgorithm().getJavaName()).getMacLength();
+            int macLength;
+            if (hkdfAlgorithm.getMacAlgorithm().getJavaName().equals("HmacSM3")) {
+                macLength = 32;
+            } else {
+                macLength =
+                        Mac.getInstance(hkdfAlgorithm.getMacAlgorithm().getJavaName())
+                                .getMacLength();
+            }
             byte[] psk =
                     (tlsContext.getConfig().isUsePsk() || tlsContext.getPsk() != null)
                             ? tlsContext.getChooser().getPsk()

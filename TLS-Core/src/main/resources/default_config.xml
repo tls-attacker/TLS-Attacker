@@ -68,6 +68,7 @@
         <defaultClientSupportedSignatureAndHashAlgorithm>GOSTR34102001_GOSTR3411</defaultClientSupportedSignatureAndHashAlgorithm>
         <defaultClientSupportedSignatureAndHashAlgorithm>GOSTR34102012_256_GOSTR34112012_256</defaultClientSupportedSignatureAndHashAlgorithm>
         <defaultClientSupportedSignatureAndHashAlgorithm>GOSTR34102012_512_GOSTR34112012_512</defaultClientSupportedSignatureAndHashAlgorithm>
+        <defaultClientSupportedSignatureAndHashAlgorithm>SM2_SM3</defaultClientSupportedSignatureAndHashAlgorithm>
     </defaultClientSupportedSignatureAndHashAlgorithms>
     <defaultClientSupportedCertificateSignAlgorithms>
         <defaultClientSupportedCertificateSignAlgorithms>RSA_SHA256</defaultClientSupportedCertificateSignAlgorithms>
@@ -79,6 +80,7 @@
         <defaultClientSupportedCertificateSignAlgorithms>RSA_PSS_RSAE_SHA256</defaultClientSupportedCertificateSignAlgorithms>
         <defaultClientSupportedCertificateSignAlgorithms>RSA_PSS_RSAE_SHA384</defaultClientSupportedCertificateSignAlgorithms>
         <defaultClientSupportedCertificateSignAlgorithms>RSA_PSS_RSAE_SHA512</defaultClientSupportedCertificateSignAlgorithms>
+        <defaultClientSupportedCertificateSignAlgorithms>SM2_SM3</defaultClientSupportedCertificateSignAlgorithms>
     </defaultClientSupportedCertificateSignAlgorithms>
     <defaultClientSupportedCipherSuites>
         <defaultClientSupportedCipherSuite>TLS_RSA_WITH_3DES_EDE_CBC_SHA</defaultClientSupportedCipherSuite>
@@ -412,6 +414,8 @@
         <defaultClientSupportedCipherSuite>TLS_RSA_EXPORT_WITH_RC2_CBC_40_MD5</defaultClientSupportedCipherSuite>
         <defaultClientSupportedCipherSuite>TLS_DHE_RSA_EXPORT_WITH_DES40_CBC_SHA</defaultClientSupportedCipherSuite>
         <defaultClientSupportedCipherSuite>TLS_DHE_DSS_EXPORT_WITH_DES40_CBC_SHA</defaultClientSupportedCipherSuite>
+        <defaultClientSupportedCipherSuite>TLS_SM4_GCM_SM3</defaultClientSupportedCipherSuite>
+        <defaultClientSupportedCipherSuite>TLS_SM4_CCM_SM3</defaultClientSupportedCipherSuite>
         <defaultClientSupportedCipherSuite>TLS_NULL_WITH_NULL_NULL</defaultClientSupportedCipherSuite>
     </defaultClientSupportedCipherSuites>
     <defaultServerSupportedCipherSuites>
@@ -746,6 +750,8 @@
         <defaultServerSupportedCipherSuite>TLS_RSA_EXPORT_WITH_RC2_CBC_40_MD5</defaultServerSupportedCipherSuite>
         <defaultServerSupportedCipherSuite>TLS_DHE_RSA_EXPORT_WITH_DES40_CBC_SHA</defaultServerSupportedCipherSuite>
         <defaultServerSupportedCipherSuite>TLS_DHE_DSS_EXPORT_WITH_DES40_CBC_SHA</defaultServerSupportedCipherSuite>
+        <defaultServerSupportedCipherSuite>TLS_SM4_GCM_SM3</defaultServerSupportedCipherSuite>
+        <defaultServerSupportedCipherSuite>TLS_SM4_CCM_SM3</defaultServerSupportedCipherSuite>
         <defaultServerSupportedCipherSuite>TLS_NULL_WITH_NULL_NULL</defaultServerSupportedCipherSuite>
     </defaultServerSupportedCipherSuites>
     <defaultServerSupportedSSL2CipherSuites>
@@ -786,6 +792,7 @@
         <defaultClientNamedGroup>SECT571R1</defaultClientNamedGroup>
         <defaultClientNamedGroup>ECDH_X25519</defaultClientNamedGroup>
         <defaultClientNamedGroup>ECDH_X448</defaultClientNamedGroup>
+        <defaultClientNamedGroup>CURVE_SM2</defaultClientNamedGroup>
         <defaultClientNamedGroup>BRAINPOOLP256R1</defaultClientNamedGroup>
         <defaultClientNamedGroup>BRAINPOOLP384R1</defaultClientNamedGroup>
         <defaultClientNamedGroup>BRAINPOOLP512R1</defaultClientNamedGroup>
@@ -823,6 +830,7 @@
         <defaultServerNamedGroup>SECT571R1</defaultServerNamedGroup>
         <defaultServerNamedGroup>ECDH_X25519</defaultServerNamedGroup>
         <defaultServerNamedGroup>ECDH_X448</defaultServerNamedGroup>
+        <defaultServerNamedGroup>CURVE_SM2</defaultServerNamedGroup>
         <defaultServerNamedGroup>BRAINPOOLP256R1</defaultServerNamedGroup>
         <defaultServerNamedGroup>BRAINPOOLP384R1</defaultServerNamedGroup>
         <defaultServerNamedGroup>BRAINPOOLP512R1</defaultServerNamedGroup>
@@ -1069,6 +1077,7 @@
         <defaultServerSupportedSignatureAndHashAlgorithm>GOSTR34102001_GOSTR3411</defaultServerSupportedSignatureAndHashAlgorithm>
         <defaultServerSupportedSignatureAndHashAlgorithm>GOSTR34102012_256_GOSTR34112012_256</defaultServerSupportedSignatureAndHashAlgorithm>
         <defaultServerSupportedSignatureAndHashAlgorithm>GOSTR34102012_512_GOSTR34112012_512</defaultServerSupportedSignatureAndHashAlgorithm>
+        <defaultServerSupportedSignatureAndHashAlgorithm>SM2_SM3</defaultServerSupportedSignatureAndHashAlgorithm>
     </defaultServerSupportedSignatureAndHashAlgorithms>
     <defaultServerSupportedCertificateSignAlgorithms>
         <defaultServerSupportedCertificateSignAlgorithms>RSA_SHA256</defaultServerSupportedCertificateSignAlgorithms>
@@ -1080,6 +1089,7 @@
         <defaultServerSupportedCertificateSignAlgorithms>RSA_PSS_RSAE_SHA256</defaultServerSupportedCertificateSignAlgorithms>
         <defaultServerSupportedCertificateSignAlgorithms>RSA_PSS_RSAE_SHA384</defaultServerSupportedCertificateSignAlgorithms>
         <defaultServerSupportedCertificateSignAlgorithms>RSA_PSS_RSAE_SHA512</defaultServerSupportedCertificateSignAlgorithms>
+        <defaultServerSupportedCertificateSignAlgorithms>SM2_SM3</defaultServerSupportedCertificateSignAlgorithms>
     </defaultServerSupportedCertificateSignAlgorithms>
     <defaultSelectedSignatureAndHashAlgorithm>RSA_SHA1</defaultSelectedSignatureAndHashAlgorithm>
     <defaultSelectedSignatureAlgorithmCert>RSA_SHA1</defaultSelectedSignatureAlgorithmCert>

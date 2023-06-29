@@ -27,6 +27,7 @@ import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder;
 import org.bouncycastle.jcajce.provider.asymmetric.ecgost12.BCECGOST3410_2012PublicKey;
 import org.bouncycastle.jce.ECNamedCurveTable;
+import org.bouncycastle.jce.spec.ECNamedCurveGenParameterSpec;
 import org.bouncycastle.jce.spec.ECNamedCurveParameterSpec;
 import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.OperatorCreationException;
@@ -71,6 +72,16 @@ public class KeyStoreGenerator {
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("ECGOST3410-2012");
         keyPairGenerator.initialize(spec, random);
         return keyPairGenerator.generateKeyPair();
+    }
+
+    public static KeyPair createSM2KeyPair(BadRandom random)
+            throws NoSuchAlgorithmException,
+                    NoSuchProviderException,
+                    InvalidAlgorithmParameterException {
+        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("EC", "BC");
+        keyPairGenerator.initialize(new ECNamedCurveGenParameterSpec("sm2p256v1"), random);
+        KeyPair keyPair = keyPairGenerator.generateKeyPair();
+        return keyPair;
     }
 
     public static KeyStore createKeyStore(KeyPair keyPair, BadRandom random)
@@ -143,6 +154,8 @@ public class KeyStoreGenerator {
                 return "SHA256withDSA";
             case "ECGOST3410":
                 return "GOST3411WITHECGOST3410";
+            case "SM2":
+                return "SM3withSM2";
             case "ECGOST3410-2012":
                 BigInteger x =
                         ((BCECGOST3410_2012PublicKey) keyPair.getPublic())

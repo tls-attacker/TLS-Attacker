@@ -23,6 +23,7 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.security.NoSuchProviderException;
 import java.security.Security;
 import java.security.cert.CertificateException;
 import org.bouncycastle.crypto.tls.Certificate;
@@ -144,7 +145,8 @@ public class EmptyClientKeyExchangePreparatorTest
     }
 
     @Test
-    public void testPrepareHandshakeMessageContentsDH() throws CertificateException, IOException {
+    public void testPrepareHandshakeMessageContentsDH()
+            throws CertificateException, IOException, NoSuchProviderException {
         // prepare message params
         context.setSelectedCipherSuite(CipherSuite.TLS_DH_RSA_WITH_AES_256_CBC_SHA);
         context.setServerDhPublicKey(DH_SERVER_PUBLIC_KEY);
@@ -177,7 +179,7 @@ public class EmptyClientKeyExchangePreparatorTest
 
     @Test
     public void testPrepareHandshakeMessageContentsECDSA()
-            throws CertificateException, IOException {
+            throws CertificateException, IOException, NoSuchProviderException {
         // prepare message params
         context.setSelectedCipherSuite(CipherSuite.TLS_ECDH_RSA_WITH_AES_128_CBC_SHA256);
 

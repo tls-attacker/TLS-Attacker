@@ -1193,9 +1193,11 @@ public class WorkflowConfigurationFactory {
         if (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
             if (config.getHighestProtocolVersion().isTLS13()) {
                 List<ProtocolMessage> tls13Messages = new LinkedList<>();
-                ChangeCipherSpecMessage ccs = new ChangeCipherSpecMessage();
-                ccs.setRequired(false);
-                tls13Messages.add(ccs);
+                if (Objects.equals(config.getTls13BackwardsCompatibilityMode(), Boolean.TRUE)) {
+                    ChangeCipherSpecMessage ccs = new ChangeCipherSpecMessage();
+                    ccs.setRequired(false);
+                    tls13Messages.add(ccs);
+                }
                 if (Objects.equals(config.isClientAuthentication(), Boolean.TRUE)) {
                     tls13Messages.add(new CertificateMessage());
                     tls13Messages.add(new CertificateVerifyMessage());

@@ -86,6 +86,7 @@ public class KeyShareCalculator {
                 case SECT409R1:
                 case SECT571K1:
                 case SECT571R1:
+                case CURVE_SM2:
                     Point sharedPoint = curve.mult(privateKey, publicPoint);
                     int elementLength =
                             ArrayConverter.bigIntegerToByteArray(

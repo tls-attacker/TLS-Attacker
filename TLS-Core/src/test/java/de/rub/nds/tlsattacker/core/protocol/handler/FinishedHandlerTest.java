@@ -81,7 +81,8 @@ public class FinishedHandlerTest
         assertArrayEquals(null, context.getLastClientVerifyData());
         assertEquals(
                 Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS, context.getActiveServerKeySetType());
-        assertEquals(Tls13KeySetType.NONE, context.getActiveClientKeySetType());
+        assertEquals(
+                Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS, context.getActiveClientKeySetType());
 
         assertArrayEquals(
                 ArrayConverter.hexStringToByteArray(
@@ -109,8 +110,7 @@ public class FinishedHandlerTest
 
         handler.adjustContext(message);
 
-        assertEquals(
-                Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS, context.getActiveClientKeySetType());
+        assertEquals(Tls13KeySetType.NONE, context.getActiveClientKeySetType());
         assertEquals(Tls13KeySetType.NONE, context.getActiveServerKeySetType());
         assertArrayEquals(new byte[] {0, 1, 2, 3, 4}, context.getLastServerVerifyData());
         assertArrayEquals(null, context.getLastClientVerifyData());
@@ -132,8 +132,7 @@ public class FinishedHandlerTest
 
         handler.adjustContext(message);
 
-        assertEquals(
-                Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS, context.getActiveClientKeySetType());
+        assertEquals(Tls13KeySetType.NONE, context.getActiveClientKeySetType());
         assertEquals(Tls13KeySetType.NONE, context.getActiveServerKeySetType());
         assertArrayEquals(new byte[] {0, 1, 2, 3, 4}, context.getLastClientVerifyData());
         assertArrayEquals(null, context.getLastServerVerifyData());
@@ -281,8 +280,7 @@ public class FinishedHandlerTest
 
         handler.adjustContext(message);
 
-        assertEquals(
-                Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS, context.getActiveClientKeySetType());
+        assertEquals(Tls13KeySetType.NONE, context.getActiveClientKeySetType());
         assertEquals(Tls13KeySetType.NONE, context.getActiveServerKeySetType());
         assertArrayEquals(new byte[] {0, 1, 2, 3, 4}, context.getLastServerVerifyData());
         assertArrayEquals(null, context.getLastClientVerifyData());

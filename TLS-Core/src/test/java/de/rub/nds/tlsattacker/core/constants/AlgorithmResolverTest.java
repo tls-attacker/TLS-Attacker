@@ -577,5 +577,8 @@ public class AlgorithmResolverTest {
         assertSame(
                 HKDFAlgorithm.TLS_HKDF_SHA256,
                 AlgorithmResolver.getHKDFAlgorithm(CipherSuite.TLS_AES_128_GCM_SHA256));
+        assertSame(
+                HKDFAlgorithm.TLS_HKDF_SM3,
+                AlgorithmResolver.getHKDFAlgorithm(CipherSuite.TLS_SM4_GCM_SM3));
     }
 }

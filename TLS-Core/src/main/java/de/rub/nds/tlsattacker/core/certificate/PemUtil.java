@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.certificate;
 
 import java.io.*;
+import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.cert.CertificateException;
@@ -90,8 +91,8 @@ public class PemUtil {
     }
 
     public static Certificate readCertificate(InputStream stream)
-            throws CertificateException, IOException {
-        CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
+            throws CertificateException, IOException, NoSuchProviderException {
+        CertificateFactory certFactory = CertificateFactory.getInstance("X.509", "BC");
         Collection<? extends java.security.cert.Certificate> certs =
                 certFactory.generateCertificates(stream);
         java.security.cert.Certificate sunCert =
@@ -108,7 +109,8 @@ public class PemUtil {
         return tlsCerts;
     }
 
-    public static Certificate readCertificate(File f) throws CertificateException, IOException {
+    public static Certificate readCertificate(File f)
+            throws CertificateException, IOException, NoSuchProviderException {
         try (FileInputStream fis = new FileInputStream(f)) {
             return readCertificate(fis);
         }
@@ -123,8 +125,10 @@ public class PemUtil {
                 obj = pair.getPrivateKeyInfo();
             } else if (obj instanceof ASN1ObjectIdentifier) {
                 obj = parser.readObject();
-                PEMKeyPair pair = (PEMKeyPair) obj;
-                obj = pair.getPrivateKeyInfo();
+                if (obj instanceof PEMKeyPair) {
+                    PEMKeyPair pair = (PEMKeyPair) obj;
+                    obj = pair.getPrivateKeyInfo();
+                }
             }
             PrivateKeyInfo privKeyInfo = (PrivateKeyInfo) obj;
             JcaPEMKeyConverter converter = new JcaPEMKeyConverter();

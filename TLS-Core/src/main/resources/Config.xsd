@@ -3489,6 +3489,7 @@
       <xs:enumeration value="BRAINPOOLP512R1"/>
       <xs:enumeration value="ECDH_X25519"/>
       <xs:enumeration value="ECDH_X448"/>
+      <xs:enumeration value="CURVE_SM2"/>
       <xs:enumeration value="FFDHE2048"/>
       <xs:enumeration value="FFDHE3072"/>
       <xs:enumeration value="FFDHE4096"/>
@@ -3545,6 +3546,7 @@
       <xs:enumeration value="ECDSA_SHA256"/>
       <xs:enumeration value="ECDSA_SHA384"/>
       <xs:enumeration value="ECDSA_SHA512"/>
+      <xs:enumeration value="SM2_SM3"/>
       <xs:enumeration value="ED25519"/>
       <xs:enumeration value="ED448"/>
       <xs:enumeration value="RSA_PSS_RSAE_SHA256"/>
@@ -3601,6 +3603,7 @@
       <xs:enumeration value="GOSTR3411"/>
       <xs:enumeration value="GOSTR34112012_256"/>
       <xs:enumeration value="GOSTR34112012_512"/>
+      <xs:enumeration value="SM3"/>
     </xs:restriction>
   </xs:simpleType>
 
@@ -4045,6 +4048,8 @@
       <xs:enumeration value="TLS_ECCPWD_WITH_AES_256_GCM_SHA384"/>
       <xs:enumeration value="TLS_ECCPWD_WITH_AES_128_CCM_SHA256"/>
       <xs:enumeration value="TLS_ECCPWD_WITH_AES_256_CCM_SHA384"/>
+      <xs:enumeration value="TLS_SM4_GCM_SM3"/>
+      <xs:enumeration value="TLS_SM4_CCM_SM3"/>
       <xs:enumeration value="UNOFFICIAL_TLS_RSA_WITH_CHACHA20_POLY1305"/>
       <xs:enumeration value="UNOFFICIAL_TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256"/>
       <xs:enumeration value="UNOFFICIAL_TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256"/>
@@ -4401,6 +4406,8 @@
       <xs:enumeration value="FORTEZZA_CBC"/>
       <xs:enumeration value="AES_128_CTR"/>
       <xs:enumeration value="AES_256_CTR"/>
+      <xs:enumeration value="SM4_GCM"/>
+      <xs:enumeration value="SM4_CCM"/>
     </xs:restriction>
   </xs:simpleType>
 
@@ -4418,6 +4425,7 @@
       <xs:enumeration value="IMIT_GOST28147"/>
       <xs:enumeration value="HMAC_GOSTR3411"/>
       <xs:enumeration value="HMAC_GOSTR3411_2012_256"/>
+      <xs:enumeration value="HMAC_SM3"/>
     </xs:restriction>
   </xs:simpleType>
 
