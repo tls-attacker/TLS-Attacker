@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -18,11 +18,13 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.util.Arrays;
 
 public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMessage> {
 
@@ -47,6 +49,10 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
 
         prepareCipherSuite();
         prepareCompressionMethod();
+        if (chooser.getConfig().isRespectClientProposedExtensions()
+                && msg.getExtensions() == null) {
+            selectExtensions();
+        }
         if (!chooser.getConfig().getHighestProtocolVersion().isSSL()
                 || (chooser.getConfig().getHighestProtocolVersion().isSSL()
                         && chooser.getConfig().isAddExtensionsInSSL())) {
@@ -56,6 +62,36 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
         if (chooser.getContext().getTlsContext().isSupportsECH()) {
             prepareEchRandom();
         }
+    }
+
+    private void selectExtensions() {
+        List<ExtensionType> permittedUnproposedExtensionTypes = new LinkedList<>();
+        Set<ExtensionType> forbiddenExtensionTypes = new HashSet<>();
+        if (chooser.getClientSupportedCipherSuites()
+                .contains(CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV)) {
+            permittedUnproposedExtensionTypes.add(ExtensionType.RENEGOTIATION_INFO);
+        }
+
+        CipherSuite selectedCipherSuite =
+                CipherSuite.getCipherSuite(msg.getSelectedCipherSuite().getValue());
+        if (selectedCipherSuite != null
+                && AlgorithmResolver.getKeyExchangeAlgorithm(selectedCipherSuite) != null
+                && !AlgorithmResolver.getKeyExchangeAlgorithm(selectedCipherSuite).isEC()) {
+            forbiddenExtensionTypes.add(ExtensionType.EC_POINT_FORMATS);
+        }
+
+        if (selectedCipherSuite != null && selectedCipherSuite.isTLS13()) {
+            forbiddenExtensionTypes.addAll(ExtensionType.getNonTls13Extensions());
+        } else {
+            forbiddenExtensionTypes.addAll(ExtensionType.getTls13OnlyExtensions());
+        }
+
+        permittedUnproposedExtensionTypes.add(ExtensionType.COOKIE);
+        autoSelectExtensions(
+                chooser.getConfig(),
+                chooser.getContext().getTlsContext().getProposedExtensions(),
+                forbiddenExtensionTypes,
+                permittedUnproposedExtensionTypes.toArray(ExtensionType[]::new));
     }
 
     private void prepareCipherSuite() {

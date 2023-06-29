@@ -1,18 +1,17 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
 package de.rub.nds.tlsattacker.core.constants;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.util.HashSet;
 import java.util.Set;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /** Resolves crypto algorithms and their properties from a given cipher suite (and TLS version). */
 public class AlgorithmResolver {
@@ -90,7 +89,9 @@ public class AlgorithmResolver {
     }
 
     public static KeyExchangeAlgorithm getKeyExchangeAlgorithm(CipherSuite cipherSuite) {
-        if (cipherSuite.isTLS13()) {
+        if (cipherSuite.isTLS13()
+                || cipherSuite == CipherSuite.TLS_FALLBACK_SCSV
+                || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV) {
             return null;
         }
         String cipher = cipherSuite.toString().toUpperCase();
@@ -154,13 +155,6 @@ public class AlgorithmResolver {
             return KeyExchangeAlgorithm.ECCPWD;
         } else if (cipher.contains("TLS_GOSTR341094")) {
             return KeyExchangeAlgorithm.VKO_GOST01;
-        }
-        if (cipherSuite == CipherSuite.TLS_FALLBACK_SCSV
-                || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV) {
-            throw new UnsupportedOperationException(
-                    "The CipherSuite:"
-                            + cipherSuite.name()
-                            + " does not specify a KeyExchangeAlgorithm");
         }
         LOGGER.warn(
                 "The key exchange algorithm in "

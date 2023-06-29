@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -17,21 +17,11 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.util.CertificateUtils;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElements;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.bouncycastle.asn1.ASN1ObjectIdentifier;
-import org.bouncycastle.asn1.ASN1Sequence;
-import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
-import org.bouncycastle.asn1.x9.ECNamedCurveTable;
-import org.bouncycastle.crypto.tls.Certificate;
-
 import java.io.*;
 import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
@@ -39,6 +29,13 @@ import java.security.PublicKey;
 import java.security.cert.CertificateException;
 import java.util.Arrays;
 import java.util.Objects;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+import org.bouncycastle.asn1.ASN1Sequence;
+import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
+import org.bouncycastle.asn1.x9.ECNamedCurveTable;
+import org.bouncycastle.crypto.tls.Certificate;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class CertificateKeyPair implements Serializable {
@@ -606,6 +603,7 @@ public class CertificateKeyPair implements Serializable {
     public boolean isCompatibleWithCipherSuite(Chooser chooser) {
         CipherSuite cipherSuite = chooser.getSelectedCipherSuite();
         if (!cipherSuite.isRealCipherSuite()
+                || cipherSuite == CipherSuite.TLS_NULL_WITH_NULL_NULL
                 || (cipherSuite.isTLS13() && !combinationUnsuitedForTls13(chooser))) {
             return true;
         } else if (cipherSuite.isTLS13() && combinationUnsuitedForTls13(chooser)) {
@@ -613,9 +611,13 @@ public class CertificateKeyPair implements Serializable {
         }
 
         CertificateKeyType neededKeyType = AlgorithmResolver.getCertificateKeyType(cipherSuite);
-        CertificateKeyType legacyNeededCertSignatureKeyType =
-                AlgorithmResolver.getRequiredSignatureAlgorithm(cipherSuite)
-                        .getRequiredCertificateKeyType();
+        SignatureAlgorithm requiredSignatureAlgorithm =
+                AlgorithmResolver.getRequiredSignatureAlgorithm(cipherSuite);
+        CertificateKeyType legacyNeededCertSignatureKeyType = null;
+        if (requiredSignatureAlgorithm != null) {
+            legacyNeededCertSignatureKeyType =
+                    requiredSignatureAlgorithm.getRequiredCertificateKeyType();
+        }
 
         if (neededKeyType == this.getCertPublicKeyType()
                 || (neededKeyType == CertificateKeyType.ECDSA
@@ -623,6 +625,7 @@ public class CertificateKeyPair implements Serializable {
 
             if (cipherSuite.isEphemeral()
                     || mayUseArbitraryCertSignature(chooser)
+                    || legacyNeededCertSignatureKeyType == null
                     || legacyNeededCertSignatureKeyType == getCertSignatureType()) {
                 return true;
             }

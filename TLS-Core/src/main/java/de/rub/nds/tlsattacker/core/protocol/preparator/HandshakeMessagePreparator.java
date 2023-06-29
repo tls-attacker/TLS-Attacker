@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -9,6 +9,8 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
@@ -27,12 +29,15 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PreSharedKeyExt
 import de.rub.nds.tlsattacker.core.protocol.serializer.HandshakeMessageSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @param <T> The HandshakeMessage that should be prepared
@@ -78,6 +83,54 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage<?>>
             prepareMessageLength(content.length);
             prepareMessageType(message.getHandshakeMessageType());
         }
+    }
+
+    public void autoSelectExtensions(
+            Config tlsConfig,
+            Set<ExtensionType> proposedExtensions,
+            Set<ExtensionType> forbiddenExtensions,
+            ExtensionType... exceptions) {
+        setExtensionsBasedOnProposals(
+                message.createConfiguredExtensions(tlsConfig),
+                proposedExtensions,
+                forbiddenExtensions,
+                exceptions);
+        LOGGER.debug(
+                "Automatically selected extensions for message {}: {}",
+                message.getHandshakeMessageType().name(),
+                message.getExtensions().stream()
+                        .map(ExtensionMessage::getExtensionTypeConstant)
+                        .map(ExtensionType::name)
+                        .collect(Collectors.joining(",")));
+    }
+
+    /**
+     * @param configuredExtensions List of extensions to be added based on config
+     * @param clientProposedExtensions List of types proposed by the client
+     * @param forbiddenExtensions List of types that must not be added even if proposed by the
+     *     client (i.e EC point format for RSA key exchange)
+     * @param exceptions Extensions to be added even if the client did not propose them (i.e cookie
+     *     extension)
+     */
+    public final void setExtensionsBasedOnProposals(
+            List<ExtensionMessage> configuredExtensions,
+            Set<ExtensionType> clientProposedExtensions,
+            Set<ExtensionType> forbiddenExtensions,
+            ExtensionType... exceptions) {
+        message.setExtensions(new LinkedList<>());
+        List<ExtensionType> listedExceptions = Arrays.asList(exceptions);
+        configuredExtensions.stream()
+                .filter(
+                        configuredExtension ->
+                                (!forbiddenExtensions.contains(
+                                                configuredExtension.getExtensionTypeConstant())
+                                        && (clientProposedExtensions.contains(
+                                                        configuredExtension
+                                                                .getExtensionTypeConstant())
+                                                || listedExceptions.contains(
+                                                        configuredExtension
+                                                                .getExtensionTypeConstant()))))
+                .forEach(message::addExtension);
     }
 
     protected abstract void prepareHandshakeMessageContents();

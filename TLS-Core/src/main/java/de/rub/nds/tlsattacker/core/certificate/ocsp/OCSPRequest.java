@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -11,10 +11,6 @@ package de.rub.nds.tlsattacker.core.certificate.ocsp;
 import static de.rub.nds.tlsattacker.core.certificate.ocsp.OCSPResponseTypes.ACCEPTABLE_RESPONSES;
 
 import com.google.common.io.ByteStreams;
-
-import org.apache.commons.lang3.NotImplementedException;
-import org.bouncycastle.asn1.x509.Certificate;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigInteger;
@@ -22,6 +18,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Base64;
+import org.apache.commons.lang3.NotImplementedException;
+import org.bouncycastle.asn1.x509.Certificate;
 
 public class OCSPRequest {
 

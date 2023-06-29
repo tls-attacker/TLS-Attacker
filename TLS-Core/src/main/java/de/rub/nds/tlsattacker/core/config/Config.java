@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -35,7 +35,6 @@ import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.core.workflow.filter.FilterType;
-
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
@@ -43,11 +42,6 @@ import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.bouncycastle.crypto.tls.Certificate;
-
 import java.io.*;
 import java.lang.reflect.Field;
 import java.math.BigInteger;
@@ -57,6 +51,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.bouncycastle.crypto.tls.Certificate;
 
 @SuppressWarnings("SpellCheckingInspection")
 @XmlRootElement(name = "config")
@@ -172,6 +169,9 @@ public class Config implements Serializable {
 
     /** If default generated WorkflowTraces should contain client Authentication */
     private Boolean clientAuthentication = false;
+
+    /** If the ServerHello should contain all enabled extensions or only proposed ones */
+    private Boolean respectClientProposedExtensions = false;
 
     /** Which Signature and Hash algorithms we support */
     @XmlElement(name = "defaultClientSupportedSignatureAndHashAlgorithm")
@@ -1245,7 +1245,7 @@ public class Config implements Serializable {
         defaultLayerConfiguration = LayerConfiguration.TLS;
         defaultClientConnection = new OutboundConnection("client", 443, "localhost");
         defaultServerConnection = new InboundConnection("server", 443, "localhost");
-        workflowTraceType = WorkflowTraceType.HANDSHAKE;
+        workflowTraceType = WorkflowTraceType.DYNAMIC_HANDSHAKE;
 
         defaultEsniServerKeyShareEntries.add(
                 new KeyShareStoreEntry(
@@ -4201,5 +4201,13 @@ public class Config implements Serializable {
     public void setSendHandshakeMessagesWithinSingleRecord(
             Boolean sendHandshakeMessagesWithinSingleRecord) {
         this.sendHandshakeMessagesWithinSingleRecord = sendHandshakeMessagesWithinSingleRecord;
+    }
+
+    public Boolean isRespectClientProposedExtensions() {
+        return respectClientProposedExtensions;
+    }
+
+    public void setRespectClientProposedExtensions(Boolean respectClientProposedExtensions) {
+        this.respectClientProposedExtensions = respectClientProposedExtensions;
     }
 }

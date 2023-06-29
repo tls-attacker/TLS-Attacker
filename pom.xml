@@ -4,12 +4,12 @@
     <parent>
         <groupId>de.rub.nds</groupId>
         <artifactId>protocol-toolkit-bom</artifactId>
-        <version>3.1.0</version>
+        <version>3.3.0</version>
     </parent>
 
     <groupId>de.rub.nds.tls.attacker</groupId>
     <artifactId>tls-attacker</artifactId>
-    <version>5.1.7-SNAPSHOT</version>
+    <version>5.2.2-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>TLS-Attacker</name>
@@ -41,10 +41,10 @@
         <developer>
             <id>ic0ns</id>
             <name>Robert Merget</name>
-            <email>robert.merget@rub.de</email>
+            <email>robert.merget@tii.ae</email>
             <url>https://github.com/ic0ns/</url>
-            <organization>NDS</organization>
-            <organizationUrl>https://informatik.rub.de/nds/</organizationUrl>
+            <organization>TII</organization>
+            <organizationUrl>https://www.tii.ae/</organizationUrl>
             <roles>
                 <role>Team lead</role>
             </roles>

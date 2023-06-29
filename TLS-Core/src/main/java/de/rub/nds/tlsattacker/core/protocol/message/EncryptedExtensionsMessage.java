@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -17,10 +17,10 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.RecordSizeLimitExt
 import de.rub.nds.tlsattacker.core.protocol.parser.EncryptedExtensionsParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.EncryptedExtensionsPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.EncryptedExtensionsSerializer;
-
 import jakarta.xml.bind.annotation.XmlRootElement;
-
 import java.io.InputStream;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Objects;
 
 @XmlRootElement(name = "EncryptedExtensions")
@@ -32,9 +32,18 @@ public class EncryptedExtensionsMessage extends HandshakeMessage<EncryptedExtens
 
     public EncryptedExtensionsMessage(Config config) {
         super(HandshakeMessageType.ENCRYPTED_EXTENSIONS);
-        if (config.isAddRecordSizeLimitExtension()) {
-            addExtension(new RecordSizeLimitExtensionMessage());
+        if (!config.isRespectClientProposedExtensions()) {
+            createConfiguredExtensions(config).forEach(this::addExtension);
         }
+    }
+
+    @Override
+    public final List<ExtensionMessage> createConfiguredExtensions(Config config) {
+        List<ExtensionMessage> configuredExtensions = new LinkedList<>();
+        if (config.isAddRecordSizeLimitExtension()) {
+            configuredExtensions.add(new RecordSizeLimitExtensionMessage());
+        }
+        return configuredExtensions;
     }
 
     @Override
