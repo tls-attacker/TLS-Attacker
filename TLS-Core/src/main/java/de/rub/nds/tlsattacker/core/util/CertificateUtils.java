@@ -122,7 +122,7 @@ public class CertificateUtils {
             CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509", "BC");
             ByteArrayInputStream inputStream =
                     new ByteArrayInputStream(cert.getCertificateAt(0).getEncoded());
-            java.security.cert.X509Certificate x509Cert =
+            X509Certificate x509Cert =
                     (X509Certificate) certificateFactory.generateCertificate(inputStream);
             return x509Cert.getPublicKey();
         } catch (IOException | CertificateException | NoSuchProviderException ex) {
