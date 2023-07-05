@@ -22,6 +22,7 @@ import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.X509v1CertificateBuilder;
 import org.bouncycastle.cert.jcajce.JcaX509v1CertificateBuilder;
 import org.bouncycastle.crypto.tls.Certificate;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
@@ -42,6 +43,7 @@ public class CertificateAdapterTest {
     @BeforeAll
     public static void setUpClass()
             throws NoSuchAlgorithmException, OperatorCreationException, IOException {
+        Security.addProvider(new BouncyCastleProvider());
 
         // Generate 2048 Bit RSA Keypair
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
