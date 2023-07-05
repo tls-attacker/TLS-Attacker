@@ -15,12 +15,20 @@ import de.rub.nds.tlsattacker.core.crypto.keys.CustomECPrivateKey;
 import de.rub.nds.tlsattacker.core.crypto.keys.CustomEcPublicKey;
 import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
+import java.security.Security;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 public class PemUtilTest {
 
     private static final String SECRET =
             "45920025678221661724778903394380424235512150060610104911582497586860611281771";
+
+    @BeforeAll
+    public static void setUpClass() {
+        Security.addProvider(new BouncyCastleProvider());
+    }
 
     /** Test of writePrivateKey method, of class PemUtil. */
     @Test
