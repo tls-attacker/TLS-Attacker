@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /** Available exchange modes for pre-shared keys (TLS 1.3) */
 public enum PskKeyExchangeMode {
@@ -21,6 +23,8 @@ public enum PskKeyExchangeMode {
     private byte value;
 
     private static final Map<Byte, PskKeyExchangeMode> MAP;
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private PskKeyExchangeMode(byte value) {
         this.value = value;
@@ -47,6 +51,8 @@ public enum PskKeyExchangeMode {
             PskKeyExchangeMode mode = getExchangeMode(sourceByte);
             if (mode != null) {
                 modes.add(mode);
+            } else {
+                LOGGER.warn("Ignoring unknown PskKeyExchangeMode {}", sourceByte);
             }
         }
 

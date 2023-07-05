@@ -41,7 +41,7 @@ public class GreaseExtensionMessage extends ExtensionMessage<GreaseExtensionMess
 
     public GreaseExtensionMessage(ExtensionType type, byte[] data) {
         super(type);
-        if (!type.name().startsWith("GREASE_")) {
+        if (!type.isGrease()) {
             LOGGER.warn("GreaseExtension message inizialized with non Grease extension type");
         }
         this.data = data;
@@ -50,7 +50,7 @@ public class GreaseExtensionMessage extends ExtensionMessage<GreaseExtensionMess
 
     public GreaseExtensionMessage(ExtensionType type, int length) {
         super(type);
-        if (!type.name().startsWith("GREASE_")) {
+        if (!type.isGrease()) {
             LOGGER.warn("GreaseExtension message inizialized with non Grease extension type");
         }
 
@@ -91,7 +91,7 @@ public class GreaseExtensionMessage extends ExtensionMessage<GreaseExtensionMess
     }
 
     public void setType(ExtensionType type) {
-        if (!type.name().startsWith("GREASE_")) {
+        if (!type.isGrease()) {
             LOGGER.warn("GreaseExtension message type was set to non Grease extension type");
         }
         this.type = type;
