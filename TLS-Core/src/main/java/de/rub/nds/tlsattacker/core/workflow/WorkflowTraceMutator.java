@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -262,7 +262,7 @@ public class WorkflowTraceMutator {
         }
 
         int messageIndex = -1;
-        int actionIndex = trace.getTlsActions().indexOf(action);
+        int actionIndex = WorkflowTraceUtil.indexOfIdenticalAction(trace, action);
         List<ProtocolMessage> messages = new ArrayList<>();
         if (action instanceof SendingAction) {
             if (action instanceof SendAction) {
@@ -288,7 +288,7 @@ public class WorkflowTraceMutator {
                     continue;
                 }
                 if (((HandshakeMessage) message).getHandshakeMessageType() == type) {
-                    messageIndex = messages.indexOf(message);
+                    messageIndex = getIndexOfIdenticalMessage(messages, message);
                     if (messageIndex == 0 && mode == WorkflowTruncationMode.AT) {
                         actionIndex -= 1;
                     }
@@ -296,7 +296,7 @@ public class WorkflowTraceMutator {
                 }
             } else {
                 if (message.getProtocolMessageType() == type) {
-                    messageIndex = messages.indexOf(message);
+                    messageIndex = getIndexOfIdenticalMessage(messages, message);
                     if (messageIndex == 0 && mode == WorkflowTruncationMode.AT) {
                         actionIndex -= 1;
                     }
@@ -393,5 +393,17 @@ public class WorkflowTraceMutator {
     public static void truncateReceivingAfter(
             WorkflowTrace trace, ProtocolMessageType type, Boolean untilLast) {
         truncate(trace, type, WorkflowTruncationMode.AFTER, false, untilLast);
+    }
+
+    private static int getIndexOfIdenticalMessage(
+            List<ProtocolMessage> collection, ProtocolMessage message) {
+        if (collection != null) {
+            for (int i = 0; i < collection.size(); i++) {
+                if (collection.get(i) == message) {
+                    return i;
+                }
+            }
+        }
+        return -1;
     }
 }

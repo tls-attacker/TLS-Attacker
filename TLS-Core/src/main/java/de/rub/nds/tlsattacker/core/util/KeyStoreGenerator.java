@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -27,6 +27,7 @@ import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder;
 import org.bouncycastle.jcajce.provider.asymmetric.ecgost12.BCECGOST3410_2012PublicKey;
 import org.bouncycastle.jce.ECNamedCurveTable;
+import org.bouncycastle.jce.spec.ECNamedCurveGenParameterSpec;
 import org.bouncycastle.jce.spec.ECNamedCurveParameterSpec;
 import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.OperatorCreationException;
@@ -73,9 +74,24 @@ public class KeyStoreGenerator {
         return keyPairGenerator.generateKeyPair();
     }
 
+    public static KeyPair createSM2KeyPair(BadRandom random)
+            throws NoSuchAlgorithmException,
+                    NoSuchProviderException,
+                    InvalidAlgorithmParameterException {
+        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("EC", "BC");
+        keyPairGenerator.initialize(new ECNamedCurveGenParameterSpec("sm2p256v1"), random);
+        KeyPair keyPair = keyPairGenerator.generateKeyPair();
+        return keyPair;
+    }
+
     public static KeyStore createKeyStore(KeyPair keyPair, BadRandom random)
-            throws CertificateException, IOException, InvalidKeyException, KeyStoreException,
-                    NoSuchAlgorithmException, NoSuchProviderException, SignatureException,
+            throws CertificateException,
+                    IOException,
+                    InvalidKeyException,
+                    KeyStoreException,
+                    NoSuchAlgorithmException,
+                    NoSuchProviderException,
+                    SignatureException,
                     OperatorCreationException {
         PublicKey publicKey = keyPair.getPublic();
         PrivateKey privateKey = keyPair.getPrivate();
@@ -138,6 +154,8 @@ public class KeyStoreGenerator {
                 return "SHA256withDSA";
             case "ECGOST3410":
                 return "GOST3411WITHECGOST3410";
+            case "SM2":
+                return "SM3withSM2";
             case "ECGOST3410-2012":
                 BigInteger x =
                         ((BCECGOST3410_2012PublicKey) keyPair.getPublic())

@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -300,7 +300,9 @@ public class AlgorithmResolverTest {
                 Arguments.of(
                         CipherSuite.UNOFFICIAL_TLS_ECDH_anon_EXPORT_WITH_RC4_40_SHA,
                         KeyExchangeAlgorithm.ECDH_ANON),
-                Arguments.of(CipherSuite.TLS_AES_128_GCM_SHA256, null));
+                Arguments.of(CipherSuite.TLS_AES_128_GCM_SHA256, null),
+                Arguments.of(CipherSuite.TLS_FALLBACK_SCSV, null),
+                Arguments.of(CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV, null));
     }
 
     /** Test of getKeyExchangeAlgorithm method, of class AlgorithmResolver. */
@@ -314,20 +316,7 @@ public class AlgorithmResolverTest {
     }
 
     @ParameterizedTest
-    @EnumSource(
-            value = CipherSuite.class,
-            names = {"TLS_FALLBACK_SCSV", "TLS_EMPTY_RENEGOTIATION_INFO_SCSV"})
-    public void testUnresolvableKeyExchange(CipherSuite cipherSuite) {
-        assertThrows(
-                UnsupportedOperationException.class,
-                () -> AlgorithmResolver.getKeyExchangeAlgorithm(cipherSuite));
-    }
-
-    @ParameterizedTest
-    @EnumSource(
-            value = CipherSuite.class,
-            names = {"TLS_FALLBACK_SCSV", "TLS_EMPTY_RENEGOTIATION_INFO_SCSV"},
-            mode = EnumSource.Mode.EXCLUDE)
+    @EnumSource(value = CipherSuite.class)
     public void testGetKeyExchangeAlgorithmDoesNotThrow(CipherSuite providedCipherSuite) {
         // Checks that we can retrieve the key exchange algorithm of the provided cipher suite
         // without exceptions
@@ -588,5 +577,8 @@ public class AlgorithmResolverTest {
         assertSame(
                 HKDFAlgorithm.TLS_HKDF_SHA256,
                 AlgorithmResolver.getHKDFAlgorithm(CipherSuite.TLS_AES_128_GCM_SHA256));
+        assertSame(
+                HKDFAlgorithm.TLS_HKDF_SM3,
+                AlgorithmResolver.getHKDFAlgorithm(CipherSuite.TLS_SM4_GCM_SM3));
     }
 }

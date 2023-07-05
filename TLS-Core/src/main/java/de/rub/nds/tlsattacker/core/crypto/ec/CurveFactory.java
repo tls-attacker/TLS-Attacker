@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -89,6 +89,8 @@ public class CurveFactory {
                 return new EllipticCurveX25519();
             case ECDH_X448:
                 return new EllipticCurveX448();
+            case CURVE_SM2:
+                return new EllipticCurveSM2();
             default:
                 throw new UnsupportedOperationException(
                         "The provided group '" + name + "' is not supported by this method.");

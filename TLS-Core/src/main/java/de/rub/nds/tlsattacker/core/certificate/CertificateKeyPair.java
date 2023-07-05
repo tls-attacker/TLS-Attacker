@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -23,6 +23,7 @@ import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElements;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.*;
+import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.cert.CertificateException;
@@ -195,7 +196,7 @@ public class CertificateKeyPair implements Serializable {
             CertificateKeyType certSignatureType,
             File certFile,
             File privateKeyFile)
-            throws CertificateException, IOException {
+            throws CertificateException, IOException, NoSuchProviderException {
         this.certPublicKeyType = certPublicKeyType;
         this.certSignatureType = certSignatureType;
         Certificate certificate = PemUtil.readCertificate(certFile);
@@ -215,7 +216,7 @@ public class CertificateKeyPair implements Serializable {
     }
 
     public static CertificateKeyPair fromCertificate(String certificatePath, String keyPath)
-            throws IOException, CertificateException {
+            throws IOException, CertificateException, NoSuchProviderException {
         File certificateFile = new File(certificatePath);
         File keyFile = new File(keyPath);
         Certificate certificate = PemUtil.readCertificate(certificateFile);
@@ -233,6 +234,7 @@ public class CertificateKeyPair implements Serializable {
             case "1.2.840.113549.1.1.1":
                 return CertificateKeyType.RSA;
             case "1.2.840.10045.2.1":
+            case "1.2.156.10197.1.301":
                 return CertificateKeyType.ECDH;
             case "1.2.840.10045.4.1":
             case "1.2.840.10045.4.2":
@@ -344,6 +346,8 @@ public class CertificateKeyPair implements Serializable {
                 return SignatureAndHashAlgorithm.GOSTR34102012_256_GOSTR34112012_256;
             case "1.2.643.7.1.1.3.3":
                 return SignatureAndHashAlgorithm.GOSTR34102012_512_GOSTR34112012_512;
+            case "1.2.156.10197.1.501":
+                return SignatureAndHashAlgorithm.SM2_SM3;
             default:
                 LOGGER.warn("Unknown algorithm ID: " + algorithmOid + " using \"ANONYMOUS_NONE\"");
                 return SignatureAndHashAlgorithm.ANONYMOUS_NONE;
@@ -385,6 +389,8 @@ public class CertificateKeyPair implements Serializable {
             case "1.2.643.7.1.1.3.2":
             case "1.2.643.7.1.1.3.3":
                 return CertificateKeyType.GOST12;
+            case "1.2.156.10197.1.501":
+                return CertificateKeyType.ECDH;
             default:
                 LOGGER.warn(
                         "Unknown algorithm ID: "
@@ -606,6 +612,7 @@ public class CertificateKeyPair implements Serializable {
     public boolean isCompatibleWithCipherSuite(Chooser chooser) {
         CipherSuite cipherSuite = chooser.getSelectedCipherSuite();
         if (!cipherSuite.isRealCipherSuite()
+                || cipherSuite == CipherSuite.TLS_NULL_WITH_NULL_NULL
                 || (cipherSuite.isTLS13() && !combinationUnsuitedForTls13(chooser))) {
             return true;
         } else if (cipherSuite.isTLS13() && combinationUnsuitedForTls13(chooser)) {
@@ -613,9 +620,13 @@ public class CertificateKeyPair implements Serializable {
         }
 
         CertificateKeyType neededKeyType = AlgorithmResolver.getCertificateKeyType(cipherSuite);
-        CertificateKeyType legacyNeededCertSignatureKeyType =
-                AlgorithmResolver.getRequiredSignatureAlgorithm(cipherSuite)
-                        .getRequiredCertificateKeyType();
+        SignatureAlgorithm requiredSignatureAlgorithm =
+                AlgorithmResolver.getRequiredSignatureAlgorithm(cipherSuite);
+        CertificateKeyType legacyNeededCertSignatureKeyType = null;
+        if (requiredSignatureAlgorithm != null) {
+            legacyNeededCertSignatureKeyType =
+                    requiredSignatureAlgorithm.getRequiredCertificateKeyType();
+        }
 
         if (neededKeyType == this.getCertPublicKeyType()
                 || (neededKeyType == CertificateKeyType.ECDSA
@@ -623,6 +634,7 @@ public class CertificateKeyPair implements Serializable {
 
             if (cipherSuite.isEphemeral()
                     || mayUseArbitraryCertSignature(chooser)
+                    || legacyNeededCertSignatureKeyType == null
                     || legacyNeededCertSignatureKeyType == getCertSignatureType()) {
                 return true;
             }

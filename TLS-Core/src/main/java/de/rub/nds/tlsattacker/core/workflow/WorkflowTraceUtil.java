@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -403,26 +403,14 @@ public class WorkflowTraceUtil {
             HandshakeMessageType type, WorkflowTrace trace) {
         TlsAction receiving = getFirstReceivingActionForMessage(type, trace);
         TlsAction sending = getFirstSendingActionForMessage(type, trace);
-        if (receiving == null && sending == null) return null;
-        else if (receiving == null) return sending;
-        else if (sending == null) return receiving;
-
-        return trace.getTlsActions().indexOf(receiving) < trace.getTlsActions().indexOf(sending)
-                ? receiving
-                : sending;
+        return getEarlierAction(trace, receiving, sending);
     }
 
     public static TlsAction getFirstActionForMessage(
             ProtocolMessageType type, WorkflowTrace trace) {
         TlsAction receiving = getFirstReceivingActionForMessage(type, trace);
         TlsAction sending = getFirstSendingActionForMessage(type, trace);
-        if (receiving == null && sending == null) return null;
-        else if (receiving == null) return sending;
-        else if (sending == null) return receiving;
-
-        return trace.getTlsActions().indexOf(receiving) < trace.getTlsActions().indexOf(sending)
-                ? receiving
-                : sending;
+        return getEarlierAction(trace, receiving, sending);
     }
 
     public static TlsAction getFirstSendingActionForMessage(
@@ -461,25 +449,49 @@ public class WorkflowTraceUtil {
             HandshakeMessageType type, WorkflowTrace trace) {
         TlsAction receiving = getLastReceivingActionForMessage(type, trace);
         TlsAction sending = getLastSendingActionForMessage(type, trace);
-        if (receiving == null && sending == null) return null;
-        else if (receiving == null) return sending;
-        else if (sending == null) return receiving;
 
-        return trace.getTlsActions().indexOf(receiving) > trace.getTlsActions().indexOf(sending)
-                ? receiving
-                : sending;
+        return getLaterAction(trace, receiving, sending);
     }
 
     public static TlsAction getLastActionForMessage(ProtocolMessageType type, WorkflowTrace trace) {
         TlsAction receiving = getLastReceivingActionForMessage(type, trace);
         TlsAction sending = getLastSendingActionForMessage(type, trace);
-        if (receiving == null && sending == null) return null;
-        else if (receiving == null) return sending;
-        else if (sending == null) return receiving;
 
-        return trace.getTlsActions().indexOf(receiving) > trace.getTlsActions().indexOf(sending)
-                ? receiving
-                : sending;
+        return getLaterAction(trace, receiving, sending);
+    }
+
+    public static TlsAction getLaterAction(
+            WorkflowTrace trace, TlsAction action1, TlsAction action2) {
+        if ((action1 == null && action2 == null)
+                || (!containsIdenticalAction(trace, action1)
+                        && !containsIdenticalAction(trace, action2))) {
+            return null;
+        } else if (action1 == null || !containsIdenticalAction(trace, action1)) {
+            return action2;
+        } else if (action2 == null || !containsIdenticalAction(trace, action2)) {
+            return action1;
+        }
+
+        return indexOfIdenticalAction(trace, action1) > indexOfIdenticalAction(trace, action2)
+                ? action1
+                : action2;
+    }
+
+    public static TlsAction getEarlierAction(
+            WorkflowTrace trace, TlsAction action1, TlsAction action2) {
+        if ((action1 == null && action2 == null)
+                || (!containsIdenticalAction(trace, action1)
+                        && !containsIdenticalAction(trace, action2))) {
+            return null;
+        } else if (action1 == null || !containsIdenticalAction(trace, action1)) {
+            return action2;
+        } else if (action2 == null || !containsIdenticalAction(trace, action2)) {
+            return action1;
+        }
+
+        return indexOfIdenticalAction(trace, action1) < indexOfIdenticalAction(trace, action2)
+                ? action1
+                : action2;
     }
 
     public static TlsAction getLastSendingActionForMessage(
@@ -528,6 +540,7 @@ public class WorkflowTraceUtil {
         for (TlsAction action : trace.getTlsActions()) {
             if (action instanceof MessageAction
                     && action instanceof ReceivingAction
+                    && ((MessageAction) action).getLayerStackProcessingResult() != null
                     && ((MessageAction) action).getLayerStackProcessingResult().hasUnreadBytes()) {
                 messageActionsWithUnreadBytes.add((MessageAction) action);
             }
@@ -536,7 +549,25 @@ public class WorkflowTraceUtil {
     }
 
     public static boolean hasUnreadBytes(@Nonnull WorkflowTrace trace) {
-        return (getMessageActionsWithUnreadBytes(trace).isEmpty());
+        return !(getMessageActionsWithUnreadBytes(trace).isEmpty());
+    }
+
+    public static int indexOfIdenticalAction(WorkflowTrace trace, TlsAction action) {
+        if (trace.getTlsActions() != null) {
+            for (int i = 0; i < trace.getTlsActions().size(); i++) {
+                if (trace.getTlsActions().get(i) == action) {
+                    return i;
+                }
+            }
+        }
+        return -1;
+    }
+
+    public static boolean containsIdenticalAction(WorkflowTrace trace, TlsAction action) {
+        if (trace.getTlsActions() != null) {
+            return trace.getTlsActions().stream().anyMatch(listed -> listed == action);
+        }
+        return false;
     }
 
     private WorkflowTraceUtil() {}

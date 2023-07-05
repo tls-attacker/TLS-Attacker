@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -41,15 +41,15 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
                 if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.SERVER) {
                     adjustApplicationTrafficSecrets();
                     setServerRecordCipher(Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS);
+                    if (!tlsContext.isExtensionNegotiated(ExtensionType.EARLY_DATA)) {
+                        setClientRecordCipher(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
+                    }
                 } else {
                     setClientRecordCipher(Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS);
                 }
             } else if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT
                     || !tlsContext.isExtensionNegotiated(ExtensionType.EARLY_DATA)) {
-                setClientRecordCipher(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
-
                 if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
-
                     NewSessionTicketHandler ticketHandler = new NewSessionTicketHandler(tlsContext);
                     if (tlsContext.getPskSets() != null) {
                         for (PskSet pskSet : tlsContext.getPskSets()) {
@@ -79,8 +79,14 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
                         tlsContext.getChooser().getSelectedProtocolVersion(),
                         tlsContext.getChooser().getSelectedCipherSuite());
         try {
-            int macLength =
-                    Mac.getInstance(hkdfAlgorithm.getMacAlgorithm().getJavaName()).getMacLength();
+            int macLength;
+            if (hkdfAlgorithm.getMacAlgorithm().getJavaName().equals("HmacSM3")) {
+                macLength = 32;
+            } else {
+                macLength =
+                        Mac.getInstance(hkdfAlgorithm.getMacAlgorithm().getJavaName())
+                                .getMacLength();
+            }
             byte[] saltMasterSecret =
                     HKDFunction.deriveSecret(
                             hkdfAlgorithm,

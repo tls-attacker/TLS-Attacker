@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -91,8 +91,11 @@ public class TestCertificates {
      */
     public static KeyStore keyStoreFromRsaPem(
             byte[] rawPemCert, byte[] rawPemKey, String keyAlias, String keyPass)
-            throws IOException, NoSuchAlgorithmException, InvalidKeySpecException,
-                    CertificateException, KeyStoreException {
+            throws IOException,
+                    NoSuchAlgorithmException,
+                    InvalidKeySpecException,
+                    CertificateException,
+                    KeyStoreException {
         Security.addProvider(new BouncyCastleProvider());
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
 
@@ -122,8 +125,11 @@ public class TestCertificates {
     }
 
     public static KeyStore keyStoreFromRsaPem(byte[] rawPemCert, byte[] rawPemKey)
-            throws IOException, NoSuchAlgorithmException, InvalidKeySpecException,
-                    CertificateException, KeyStoreException {
+            throws IOException,
+                    NoSuchAlgorithmException,
+                    InvalidKeySpecException,
+                    CertificateException,
+                    KeyStoreException {
 
         return keyStoreFromRsaPem(rawPemCert, rawPemKey, keyStoreAlias, keyStorePass);
     }

@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -50,14 +50,14 @@ public class PskDheServerKeyExchangePreparator
     protected void setComputedPskDhModulus(PskDheServerKeyExchangeMessage msg) {
         msg.getComputations().setModulus(chooser.getPSKModulus());
         LOGGER.debug(
-                "Modulus used for Computations: "
+                "Modulus used for Computations: 0x"
                         + msg.getComputations().getModulus().getValue().toString(16));
     }
 
     protected void setComputedPskDhGenerator(PskDheServerKeyExchangeMessage msg) {
         msg.getComputations().setGenerator(chooser.getPSKGenerator());
         LOGGER.debug(
-                "Generator used for Computations: "
+                "Generator used for Computations: 0x"
                         + msg.getComputations().getGenerator().getValue().toString(16));
     }
 

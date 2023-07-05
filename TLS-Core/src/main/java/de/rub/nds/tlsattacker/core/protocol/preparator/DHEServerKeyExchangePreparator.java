@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -74,10 +74,11 @@ public class DHEServerKeyExchangePreparator<T extends DHEServerKeyExchangeMessag
     protected void setDheExportParams() {
         msg.prepareComputations();
         msg.getComputations().setGenerator(chooser.getConfig().getDefaultServerDhExportGenerator());
-        LOGGER.debug("Generator: " + msg.getComputations().getGenerator().getValue().toString(16));
+        LOGGER.debug(
+                "Generator: 0x" + msg.getComputations().getGenerator().getValue().toString(16));
         msg.getComputations().setModulus(chooser.getConfig().getDefaultServerDhExportModulus());
         LOGGER.debug(
-                "Modulus used for Computations: "
+                "Modulus used for Computations: 0x"
                         + msg.getComputations().getModulus().getValue().toString(16));
         msg.getComputations()
                 .setPrivateKey(chooser.getConfig().getDefaultServerDhExportPrivateKey());
@@ -165,14 +166,14 @@ public class DHEServerKeyExchangePreparator<T extends DHEServerKeyExchangeMessag
     protected void setComputedModulus(T msg) {
         msg.getComputations().setModulus(chooser.getServerDhModulus());
         LOGGER.debug(
-                "Modulus used for Computations: "
+                "Modulus used for Computations: 0x"
                         + msg.getComputations().getModulus().getValue().toString(16));
     }
 
     protected void setComputedGenerator(T msg) {
         msg.getComputations().setGenerator(chooser.getServerDhGenerator());
         LOGGER.debug(
-                "Generator used for Computations: "
+                "Generator used for Computations: 0x"
                         + msg.getComputations().getGenerator().getValue().toString(16));
     }
 

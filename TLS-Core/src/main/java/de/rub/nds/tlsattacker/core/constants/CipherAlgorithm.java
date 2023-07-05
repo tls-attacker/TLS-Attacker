@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -37,7 +37,9 @@ public enum CipherAlgorithm {
     GOST_28147_CNT(32, 8, 0, 8, "GOST28147/ECB/NoPadding"),
     FORTEZZA_CBC(0, 0, 0, 0), // TODO
     AES_128_CTR(16, 16, 0, 0, "AES/CTR/NoPadding"),
-    AES_256_CTR(32, 16, 0, 0, "AES/CTR/NoPadding");
+    AES_256_CTR(32, 16, 0, 0, "AES/CTR/NoPadding"),
+    SM4_GCM(16, 4, 8, 16, "SM4/GCM/NoPadding"),
+    SM4_CCM(16, 4, 8, 16, "SM4/CCM/NoPadding");
 
     CipherAlgorithm(
             int keySize,
