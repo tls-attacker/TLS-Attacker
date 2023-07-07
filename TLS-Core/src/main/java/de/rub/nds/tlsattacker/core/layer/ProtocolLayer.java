@@ -21,6 +21,8 @@ import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -277,5 +279,16 @@ public abstract class ProtocolLayer<
             return false;
         }
         return true;
+    }
+
+    public List<Container> getUnprocessedConfiguredContainers() {
+        if (getLayerConfiguration().getContainerList() == null) {
+            return new LinkedList<>();
+        } else if (producedDataContainers == null) {
+            return new LinkedList<>(getLayerConfiguration().getContainerList());
+        }
+        return getLayerConfiguration().getContainerList().stream()
+                .filter(Predicate.not(producedDataContainers::contains))
+                .collect(Collectors.toList());
     }
 }

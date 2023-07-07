@@ -41,7 +41,7 @@ public class HttpLayer extends ProtocolLayer<HttpLayerHint, HttpMessage> {
     public LayerProcessingResult sendConfiguration() throws IOException {
         LayerConfiguration<HttpMessage> configuration = getLayerConfiguration();
         if (configuration != null && configuration.getContainerList() != null) {
-            for (HttpMessage httpMsg : configuration.getContainerList()) {
+            for (HttpMessage httpMsg : getUnprocessedConfiguredContainers()) {
                 if (!prepareDataContainer(httpMsg, context)) {
                     continue;
                 }

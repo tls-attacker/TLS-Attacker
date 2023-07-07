@@ -66,7 +66,7 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
         ProtocolMessageType runningProtocolMessageType = null;
         ByteArrayOutputStream collectedMessageStream = new ByteArrayOutputStream();
         if (configuration != null && configuration.getContainerList() != null) {
-            for (ProtocolMessage message : configuration.getContainerList()) {
+            for (ProtocolMessage message : getUnprocessedConfiguredContainers()) {
                 if (containerAlreadyUsedByHigherLayer(message)
                         || !prepareDataContainer(message, context)) {
                     continue;
@@ -175,7 +175,7 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
     public ApplicationMessage getConfiguredApplicationMessage(
             LayerConfiguration<ProtocolMessage> configuration) {
         if (configuration != null && configuration.getContainerList() != null) {
-            for (ProtocolMessage configuredMessage : configuration.getContainerList()) {
+            for (ProtocolMessage configuredMessage : getUnprocessedConfiguredContainers()) {
                 if (configuredMessage.getProtocolMessageType()
                         == ProtocolMessageType.APPLICATION_DATA) {
                     return (ApplicationMessage) configuredMessage;
@@ -224,7 +224,6 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
 
     public void readMessageForHint(RecordLayerHint hint) {
         switch (hint.getType()) {
-                // use correct parser for the message
             case ALERT:
                 readAlertProtocolData();
                 break;

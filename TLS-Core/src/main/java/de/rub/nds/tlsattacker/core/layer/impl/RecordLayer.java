@@ -82,8 +82,8 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
     public LayerProcessingResult sendConfiguration() throws IOException {
         LayerConfiguration<Record> configuration = getLayerConfiguration();
         if (configuration != null && configuration.getContainerList() != null) {
-            for (Record record : configuration.getContainerList()) {
-                if (containerAlreadyUsedByHigherLayer(record) || skipEmptyRecords(record)) {
+            for (Record record : getUnprocessedConfiguredContainers()) {
+                if (skipEmptyRecords(record)) {
                     continue;
                 }
                 ProtocolMessageType contentType = record.getContentMessageType();
@@ -147,7 +147,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
                         context.getConfig().isCreateRecordsDynamically());
         List<Record> records = new LinkedList<>();
 
-        List<Record> givenRecords = getLayerConfiguration().getContainerList();
+        List<Record> givenRecords = getUnprocessedConfiguredContainers();
 
         // if we are given records we should assign messages to them
         if (getLayerConfiguration().getContainerList() != null && givenRecords.size() > 0) {

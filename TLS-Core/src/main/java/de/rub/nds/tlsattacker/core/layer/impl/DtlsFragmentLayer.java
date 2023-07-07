@@ -69,7 +69,7 @@ public class DtlsFragmentLayer
     public LayerProcessingResult sendConfiguration() throws IOException {
         LayerConfiguration<DtlsHandshakeMessageFragment> configuration = getLayerConfiguration();
         if (configuration != null && configuration.getContainerList() != null) {
-            for (DtlsHandshakeMessageFragment fragment : configuration.getContainerList()) {
+            for (DtlsHandshakeMessageFragment fragment : getUnprocessedConfiguredContainers()) {
                 if (containerAlreadyUsedByHigherLayer(fragment) && skipEmptyFragments(fragment)) {
                     continue;
                 }
@@ -110,11 +110,11 @@ public class DtlsFragmentLayer
             // produce enough fragments from the given data
             List<DtlsHandshakeMessageFragment> fragments = new LinkedList<>();
             if (getLayerConfiguration().getContainerList() == null
-                    || getLayerConfiguration().getContainerList().size() == 0) {
+                    || getUnprocessedConfiguredContainers().isEmpty()) {
                 fragments = getEnoughFragments(context, data.length);
             } else {
                 // use the provided fragments
-                fragments.add(getLayerConfiguration().getContainerList().remove(0));
+                fragments.add(getUnprocessedConfiguredContainers().get(0));
                 if (context.getConfig().isCreateFragmentsDynamically()) {
                     fragments.addAll(
                             getEnoughFragments(
