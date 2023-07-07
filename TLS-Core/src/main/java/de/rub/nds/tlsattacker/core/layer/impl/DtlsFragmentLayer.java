@@ -114,12 +114,16 @@ public class DtlsFragmentLayer
                 fragments = getEnoughFragments(context, data.length);
             } else {
                 // use the provided fragments
-                fragments.add(getUnprocessedConfiguredContainers().get(0));
-                if (context.getConfig().isCreateFragmentsDynamically()) {
-                    fragments.addAll(
-                            getEnoughFragments(
-                                    context,
-                                    data.length - fragments.get(0).getMaxFragmentLengthConfig()));
+                int dataToBeSent = data.length;
+                List<DtlsHandshakeMessageFragment> givenFragments =
+                        getUnprocessedConfiguredContainers();
+                while (dataToBeSent > 0 && givenFragments.size() > 0) {
+                    DtlsHandshakeMessageFragment nextFragment = givenFragments.remove(0);
+                    fragments.add(nextFragment);
+                    dataToBeSent -= nextFragment.getMaxFragmentLengthConfig();
+                }
+                if (dataToBeSent > 0 && context.getConfig().isCreateFragmentsDynamically()) {
+                    fragments.addAll(getEnoughFragments(context, dataToBeSent));
                 }
             }
             fragments =
