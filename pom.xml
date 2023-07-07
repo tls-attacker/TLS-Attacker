@@ -9,7 +9,7 @@
 
     <groupId>de.rub.nds.tls.attacker</groupId>
     <artifactId>tls-attacker</artifactId>
-    <version>5.2.2-SNAPSHOT</version>
+    <version>5.3.0</version>
     <packaging>pom</packaging>
 
     <name>TLS-Attacker</name>
@@ -87,7 +87,7 @@
     <scm>
         <connection>scm:git:https://github.com/tls-attacker/TLS-Attacker.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/tls-attacker/TLS-Attacker-Development.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>v5.3.0</tag>
         <url>https://github.com/tls-attacker/TLS-Attacker</url>
     </scm>
 
