@@ -197,11 +197,7 @@
 
   <xs:element name="asciiAction" type="asciiAction"/>
 
-  <xs:element name="asn1Any" type="asn1Any"/>
-
-  <xs:element name="asn1Boolean" type="asn1Boolean"/>
-
-  <xs:element name="asn1Choice" type="asn1Choice"/>
+  <xs:element name="asn1BitString" type="asn1BitString"/>
 
   <xs:element name="asn1Container" type="asn1Container"/>
 
@@ -209,29 +205,15 @@
 
   <xs:element name="asn1Integer" type="asn1Integer"/>
 
-  <xs:element name="asn1Null" type="asn1Null"/>
-
   <xs:element name="asn1ObjectIdentifier" type="asn1ObjectIdentifier"/>
 
-  <xs:element name="asn1PrimitiveBitString" type="asn1PrimitiveBitString"/>
-
-  <xs:element name="asn1PrimitiveGeneralizedTime" type="asn1PrimitiveGeneralizedTime"/>
-
-  <xs:element name="asn1PrimitiveIa5String" type="asn1PrimitiveIa5String"/>
-
-  <xs:element name="asn1PrimitiveOctetString" type="asn1PrimitiveOctetString"/>
-
-  <xs:element name="asn1PrimitivePrintableString" type="asn1PrimitivePrintableString"/>
-
-  <xs:element name="asn1PrimitiveT61String" type="asn1PrimitiveT61String"/>
-
-  <xs:element name="asn1PrimitiveUtcTime" type="asn1PrimitiveUtcTime"/>
-
-  <xs:element name="asn1PrimitiveUtf8String" type="asn1PrimitiveUtf8String"/>
+  <xs:element name="asn1OctetString" type="asn1OctetString"/>
 
   <xs:element name="asn1Sequence" type="asn1Sequence"/>
 
   <xs:element name="asn1Set" type="asn1Set"/>
+
+  <xs:element name="attributeTypeAndValue" type="attributeTypeAndValue"/>
 
   <xs:element name="bigIntegerAddModification" type="bigIntegerAddModification"/>
 
@@ -431,8 +413,6 @@
 
   <xs:element name="publicKeyBitString" type="publicKeyBitString"/>
 
-  <xs:element name="publicKeyContent" type="publicKeyContent"/>
-
   <xs:element name="receiveAction" type="receiveAction"/>
 
   <xs:element name="receiveAsciiAction" type="receiveAsciiAction"/>
@@ -448,8 +428,6 @@
   <xs:element name="renegotiationAction" type="renegotiationAction"/>
 
   <xs:element name="resetConnectionAction" type="resetConnectionAction"/>
-
-  <xs:element name="selectableChoice" type="selectableChoice"/>
 
   <xs:element name="sendAction" type="sendAction"/>
 
@@ -477,13 +455,9 @@
 
   <xs:element name="tightReceiveAction" type="tightReceiveAction"/>
 
-  <xs:element name="time" type="time"/>
-
   <xs:element name="userMappingExtensionMessage" type="userMappingExtensionMessage"/>
 
   <xs:element name="validity" type="validity"/>
-
-  <xs:element name="version" type="version"/>
 
   <xs:element name="waitAction" type="waitAction"/>
 
@@ -503,9 +477,9 @@
 
   <xs:element name="x509Ed448PublicKey" type="x509Ed448PublicKey"/>
 
-  <xs:element name="x509RsaPublicKey" type="x509RsaPublicKey"/>
+  <xs:element name="x509Explicit" type="x509Explicit"/>
 
-  <xs:element name="x509RsaPublicKeyContentSequence" type="x509RsaPublicKeyContentSequence"/>
+  <xs:element name="x509RsaPublicKey" type="x509RsaPublicKey"/>
 
   <xs:element name="x509X25519PublicKey" type="x509X25519PublicKey"/>
 
@@ -2314,7 +2288,7 @@
         <xs:sequence>
           <xs:element ref="tbsCertificate" minOccurs="0"/>
           <xs:element name="signatureAlgorithmIdentifier" type="certificateSignatureAlgorithmIdentifier" minOccurs="0"/>
-          <xs:element name="signature" type="asn1PrimitiveBitString" minOccurs="0"/>
+          <xs:element name="signature" type="asn1BitString" minOccurs="0"/>
           <xs:element name="signatureComputations" type="signatureComputations" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
@@ -2334,35 +2308,6 @@
       <xs:extension base="asn1Field">
         <xs:sequence>
           <xs:element name="encodedChildren" type="modifiableByteArray" minOccurs="0"/>
-          <xs:element name="children" minOccurs="0">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:choice minOccurs="0" maxOccurs="unbounded">
-                  <xs:element name="Asn1Any" type="asn1Any"/>
-                  <xs:element name="Asn1Boolean" type="asn1Boolean"/>
-                  <xs:element name="Asn1Choice" type="asn1Choice"/>
-                  <xs:element name="Asn1Container" type="asn1Container"/>
-                  <xs:element name="Asn1Enumerated" type="asn1Enumerated"/>
-                  <xs:element name="Asn1Explicit" type="asn1Explicit"/>
-                  <xs:element name="Asn1Field" type="asn1Field"/>
-                  <xs:element name="Asn1Integer" type="asn1Integer"/>
-                  <xs:element name="Asn1Null" type="asn1Null"/>
-                  <xs:element name="Asn1ObjectIdentifier" type="asn1ObjectIdentifier"/>
-                  <xs:element name="Asn1PrimitiveBitString" type="asn1PrimitiveBitString"/>
-                  <xs:element name="Asn1PrimitiveGeneralizedTime" type="asn1PrimitiveGeneralizedTime"/>
-                  <xs:element name="Asn1PrimitiveIa5String" type="asn1PrimitiveIa5String"/>
-                  <xs:element name="Asn1PrimitiveOctetString" type="asn1PrimitiveOctetString"/>
-                  <xs:element name="Asn1PrimitivePrintableString" type="asn1PrimitivePrintableString"/>
-                  <xs:element name="Asn1PrimitiveT61String" type="asn1PrimitiveT61String"/>
-                  <xs:element name="Asn1PrimitiveUtcTime" type="asn1PrimitiveUtcTime"/>
-                  <xs:element name="Asn1PrimitiveUtf8String" type="asn1PrimitiveUtf8String"/>
-                  <xs:element name="Asn1Sequence" type="asn1Sequence"/>
-                  <xs:element name="Asn1Set" type="asn1Set"/>
-                  <xs:element name="Asn1UnknownField" type="asn1UnknownField"/>
-                </xs:choice>
-              </xs:sequence>
-            </xs:complexType>
-          </xs:element>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -2377,6 +2322,7 @@
       <xs:element name="content" type="modifiableByteArray" minOccurs="0"/>
       <xs:element name="tagOctets" type="modifiableByteArray" minOccurs="0"/>
       <xs:element name="lengthOctets" type="modifiableByteArray" minOccurs="0"/>
+      <xs:element name="tagNumberConfig" type="xs:int" minOccurs="0"/>
     </xs:sequence>
     <xs:attribute name="identifier" type="xs:string"/>
   </xs:complexType>
@@ -2385,22 +2331,22 @@
     <xs:complexContent>
       <xs:extension base="asn1Sequence">
         <xs:sequence>
-          <xs:element ref="version" minOccurs="0"/>
+          <xs:element name="version" type="x509Explicit" minOccurs="0"/>
           <xs:element name="serialNumber" type="asn1Integer" minOccurs="0"/>
           <xs:element name="signature" type="certificateSignatureAlgorithmIdentifier" minOccurs="0"/>
           <xs:element name="issuer" type="name" minOccurs="0"/>
           <xs:element ref="validity" minOccurs="0"/>
           <xs:element name="subject" type="name" minOccurs="0"/>
           <xs:element ref="subjectPublicKeyInfo" minOccurs="0"/>
-          <xs:element name="issuerUniqueID" type="asn1PrimitiveBitString" minOccurs="0"/>
-          <xs:element name="subjectUniqueID" type="asn1PrimitiveBitString" minOccurs="0"/>
-          <xs:element name="extensionExplicit" type="asn1Explicit" minOccurs="0"/>
+          <xs:element name="issuerUniqueId" type="asn1BitString" minOccurs="0"/>
+          <xs:element name="subjectUniqueId" type="asn1BitString" minOccurs="0"/>
+          <xs:element name="explicitExtensions" type="x509Explicit" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="version">
+  <xs:complexType name="x509Explicit">
     <xs:complexContent>
       <xs:extension base="asn1Explicit">
         <xs:sequence/>
@@ -2408,29 +2354,11 @@
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="asn1Explicit">
-    <xs:complexContent>
-      <xs:extension base="asn1Container">
-        <xs:sequence>
-          <xs:any processContents="lax" namespace="##other"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="asn1Any">
-    <xs:sequence>
-      <xs:any processContents="lax" namespace="##other"/>
-      <xs:element name="optional" type="xs:boolean"/>
-    </xs:sequence>
-    <xs:attribute name="identifier" type="xs:string"/>
-  </xs:complexType>
-
-  <xs:complexType name="asn1Boolean">
+  <xs:complexType name="asn1Explicit" abstract="true">
     <xs:complexContent>
       <xs:extension base="asn1Field">
         <xs:sequence>
-          <xs:element name="value" type="modifiableBoolean" minOccurs="0"/>
+          <xs:any processContents="lax" namespace="##other"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -2480,157 +2408,11 @@
     </xs:sequence>
   </xs:complexType>
 
-  <xs:complexType name="asn1Choice" abstract="true">
-    <xs:sequence>
-      <xs:any processContents="lax" namespace="##other"/>
-      <xs:element name="choiceList" minOccurs="0">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element ref="selectableChoice" minOccurs="0" maxOccurs="unbounded"/>
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
-    </xs:sequence>
-    <xs:attribute name="identifier" type="xs:string"/>
-  </xs:complexType>
-
-  <xs:complexType name="selectableChoice" final="extension restriction">
-    <xs:sequence>
-      <xs:any processContents="lax" namespace="##other"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="asn1Enumerated">
-    <xs:complexContent>
-      <xs:extension base="asn1Field">
-        <xs:sequence/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
   <xs:complexType name="asn1Integer">
     <xs:complexContent>
       <xs:extension base="asn1Field">
         <xs:sequence>
           <xs:element name="value" type="modifiableBigInteger" minOccurs="0"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="asn1Null">
-    <xs:complexContent>
-      <xs:extension base="asn1Field">
-        <xs:sequence/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="asn1ObjectIdentifier">
-    <xs:complexContent>
-      <xs:extension base="asn1Field">
-        <xs:sequence>
-          <xs:element name="value" type="modifiableString" minOccurs="0"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="asn1PrimitiveBitString">
-    <xs:complexContent>
-      <xs:extension base="asn1Field">
-        <xs:sequence>
-          <xs:element name="unusedBits" type="modifiableByte" minOccurs="0"/>
-          <xs:element name="usedBits" type="modifiableByteArray" minOccurs="0"/>
-          <xs:element name="padding" type="modifiableByte" minOccurs="0"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="asn1PrimitiveGeneralizedTime">
-    <xs:complexContent>
-      <xs:extension base="asn1Field">
-        <xs:sequence>
-          <xs:element name="value" type="modifiableString" minOccurs="0"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="asn1PrimitiveIa5String">
-    <xs:complexContent>
-      <xs:extension base="asn1Field">
-        <xs:sequence>
-          <xs:element name="value" type="modifiableString" minOccurs="0"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="asn1PrimitiveOctetString">
-    <xs:complexContent>
-      <xs:extension base="asn1Field">
-        <xs:sequence>
-          <xs:element name="value" type="modifiableByteArray" minOccurs="0"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="asn1PrimitivePrintableString">
-    <xs:complexContent>
-      <xs:extension base="asn1Field">
-        <xs:sequence>
-          <xs:element name="value" type="modifiableString" minOccurs="0"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="asn1PrimitiveT61String">
-    <xs:complexContent>
-      <xs:extension base="asn1Field">
-        <xs:sequence>
-          <xs:element name="value" type="modifiableString" minOccurs="0"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="asn1PrimitiveUtcTime">
-    <xs:complexContent>
-      <xs:extension base="asn1Field">
-        <xs:sequence>
-          <xs:element name="value" type="modifiableString" minOccurs="0"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="asn1PrimitiveUtf8String">
-    <xs:complexContent>
-      <xs:extension base="asn1Field">
-        <xs:sequence>
-          <xs:element name="value" type="modifiableString" minOccurs="0"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="asn1Set" abstract="true">
-    <xs:complexContent>
-      <xs:extension base="asn1Container">
-        <xs:sequence/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="asn1UnknownField">
-    <xs:complexContent>
-      <xs:extension base="asn1Field">
-        <xs:sequence>
-          <xs:element name="contentConfig" type="xs:base64Binary" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -2649,7 +2431,17 @@
       <xs:extension base="asn1Sequence">
         <xs:sequence>
           <xs:element name="algorithm" type="asn1ObjectIdentifier" minOccurs="0"/>
-          <xs:element name="parameters" type="asn1Any" minOccurs="0"/>
+          <xs:any processContents="lax" namespace="##other"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="asn1ObjectIdentifier">
+    <xs:complexContent>
+      <xs:extension base="asn1Field">
+        <xs:sequence>
+          <xs:element name="value" type="modifiableString" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -2669,7 +2461,30 @@
   <xs:complexType name="relativeDistinguishedName">
     <xs:complexContent>
       <xs:extension base="asn1Set">
+        <xs:sequence>
+          <xs:element name="attributeTypeAndValueList" type="attributeTypeAndValue" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="asn1Set" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="asn1Container">
         <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="attributeTypeAndValue">
+    <xs:complexContent>
+      <xs:extension base="asn1Sequence">
+        <xs:sequence>
+          <xs:element name="type" type="asn1ObjectIdentifier" minOccurs="0"/>
+          <xs:any processContents="lax" namespace="##other"/>
+          <xs:element name="attributeTypeConfig" type="x500AttributeType" minOccurs="0"/>
+          <xs:element name="valueConfig" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
@@ -2693,6 +2508,13 @@
     </xs:complexContent>
   </xs:complexType>
 
+  <xs:complexType name="asn1Choice" abstract="true">
+    <xs:sequence>
+      <xs:element name="identifier" type="xs:string" minOccurs="0"/>
+      <xs:element name="optional" type="xs:boolean"/>
+    </xs:sequence>
+  </xs:complexType>
+
   <xs:complexType name="subjectPublicKeyInfo">
     <xs:complexContent>
       <xs:extension base="asn1Sequence">
@@ -2714,9 +2536,21 @@
 
   <xs:complexType name="publicKeyBitString">
     <xs:complexContent>
-      <xs:extension base="asn1PrimitiveBitString">
+      <xs:extension base="asn1BitString">
         <xs:sequence>
           <xs:any processContents="lax" namespace="##other"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="asn1BitString">
+    <xs:complexContent>
+      <xs:extension base="asn1Field">
+        <xs:sequence>
+          <xs:element name="unusedBits" type="modifiableByte" minOccurs="0"/>
+          <xs:element name="usedBits" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="padding" type="modifiableByte" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -3977,6 +3811,9 @@
       <xs:element name="subjectDhModulus" type="xs:integer" minOccurs="0"/>
       <xs:element name="subjectDhPrivateKey" type="xs:integer" minOccurs="0"/>
       <xs:element name="subjectDhPublicKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="subjectDsaGeneratorG" type="xs:integer" minOccurs="0"/>
+      <xs:element name="subjectDsaPrimeDivisorQ" type="xs:integer" minOccurs="0"/>
+      <xs:element name="subjectDsaPrimeModulusP" type="xs:integer" minOccurs="0"/>
       <xs:element name="subjectDsaPrivateKey" type="xs:integer" minOccurs="0"/>
       <xs:element name="subjectDsaPublicKeyY" type="xs:integer" minOccurs="0"/>
       <xs:element name="subjectEcPrivateKey" type="xs:integer" minOccurs="0"/>
@@ -3987,6 +3824,7 @@
       <xs:element name="subjectRsaPrivateKey" type="xs:integer" minOccurs="0"/>
       <xs:element name="subjectRsaPublicExponent" type="xs:integer" minOccurs="0"/>
       <xs:element name="subjectSignatureAlgorithm" type="x509SignatureAlgorithm" minOccurs="0"/>
+      <xs:element name="subjectUniqueId" type="xs:base64Binary" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
 
@@ -4045,6 +3883,8 @@
       <xs:element name="defaultIssuerEcPrivateKey" type="xs:integer" minOccurs="0"/>
       <xs:element name="includeDhValidationParameters" type="xs:boolean" minOccurs="0"/>
       <xs:element name="defaultSubjectNamedCurve" type="x509NamedCurve" minOccurs="0"/>
+      <xs:element name="dhValidationParameterPgenCounter" type="xs:integer" minOccurs="0"/>
+      <xs:element name="dhValidationParameterSeed" type="xs:base64Binary" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
 
@@ -5676,22 +5516,6 @@
 
   <xs:complexType name="x509RsaPublicKey">
     <xs:complexContent>
-      <xs:extension base="publicKeyContent">
-        <xs:sequence>
-          <xs:element name="rsaPublicKeyContentSequence" type="x509RsaPublicKeyContentSequence" minOccurs="0"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="publicKeyContent" abstract="true">
-    <xs:sequence>
-      <xs:element name="identifier" type="xs:string" minOccurs="0"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="x509RsaPublicKeyContentSequence">
-    <xs:complexContent>
       <xs:extension base="asn1Sequence">
         <xs:sequence>
           <xs:element name="modulus" type="asn1Integer" minOccurs="0"/>
@@ -5703,32 +5527,37 @@
 
   <xs:complexType name="x509DhPublicKey">
     <xs:complexContent>
-      <xs:extension base="publicKeyContent">
-        <xs:sequence>
-          <xs:element name="publicKey" type="asn1Integer" minOccurs="0"/>
-        </xs:sequence>
+      <xs:extension base="asn1Integer">
+        <xs:sequence/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
 
   <xs:complexType name="x509DsaPublicKey">
     <xs:complexContent>
-      <xs:extension base="publicKeyContent">
-        <xs:sequence>
-          <xs:element name="publicKeyY" type="asn1Integer" minOccurs="0"/>
-        </xs:sequence>
+      <xs:extension base="asn1Integer">
+        <xs:sequence/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
 
   <xs:complexType name="x509EcdhEcdsaPublicKey">
     <xs:complexContent>
-      <xs:extension base="publicKeyContent">
+      <xs:extension base="asn1OctetString">
         <xs:sequence>
           <xs:element name="xCoordinate" type="modifiableBigInteger" minOccurs="0"/>
           <xs:element name="yCoordinate" type="modifiableBigInteger" minOccurs="0"/>
           <xs:element name="formatByte" type="modifiableByte" minOccurs="0"/>
-          <xs:element name="pointOctets" type="modifiableByteArray" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="asn1OctetString">
+    <xs:complexContent>
+      <xs:extension base="asn1Field">
+        <xs:sequence>
+          <xs:element name="value" type="modifiableByteArray" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -5736,7 +5565,7 @@
 
   <xs:complexType name="x509Ed25519PublicKey">
     <xs:complexContent>
-      <xs:extension base="publicKeyContent">
+      <xs:extension base="asn1OctetString">
         <xs:sequence/>
       </xs:extension>
     </xs:complexContent>
@@ -5744,7 +5573,7 @@
 
   <xs:complexType name="x509Ed448PublicKey">
     <xs:complexContent>
-      <xs:extension base="publicKeyContent">
+      <xs:extension base="asn1OctetString">
         <xs:sequence/>
       </xs:extension>
     </xs:complexContent>
@@ -5752,7 +5581,7 @@
 
   <xs:complexType name="x509X25519PublicKey">
     <xs:complexContent>
-      <xs:extension base="publicKeyContent">
+      <xs:extension base="asn1OctetString">
         <xs:sequence/>
       </xs:extension>
     </xs:complexContent>
@@ -5760,7 +5589,7 @@
 
   <xs:complexType name="x509X448PublicKey">
     <xs:complexContent>
-      <xs:extension base="publicKeyContent">
+      <xs:extension base="asn1OctetString">
         <xs:sequence/>
       </xs:extension>
     </xs:complexContent>
@@ -6322,10 +6151,22 @@
     </xs:restriction>
   </xs:simpleType>
 
+  <xs:simpleType name="x500AttributeType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="COMMON_NAME"/>
+      <xs:enumeration value="COUNTRY_NAME"/>
+      <xs:enumeration value="LOCALITY"/>
+      <xs:enumeration value="STATE_OR_PROVINCE_NAME"/>
+      <xs:enumeration value="ORGANISATION_NAME"/>
+      <xs:enumeration value="ORGANISATION_UNIT_NAME"/>
+    </xs:restriction>
+  </xs:simpleType>
+
   <xs:simpleType name="nameType">
     <xs:restriction base="xs:string">
       <xs:enumeration value="SUBJECT"/>
       <xs:enumeration value="ISSUER"/>
+      <xs:enumeration value="GENERAL_NAME"/>
     </xs:restriction>
   </xs:simpleType>
 
@@ -6848,17 +6689,6 @@
       <xs:enumeration value="X448"/>
       <xs:enumeration value="ED25519"/>
       <xs:enumeration value="ED448"/>
-    </xs:restriction>
-  </xs:simpleType>
-
-  <xs:simpleType name="x500AttributeType">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="COMMON_NAME"/>
-      <xs:enumeration value="COUNTRY_NAME"/>
-      <xs:enumeration value="LOCALITY"/>
-      <xs:enumeration value="STATE_OR_PROVINCE_NAME"/>
-      <xs:enumeration value="ORGANISATION_NAME"/>
-      <xs:enumeration value="ORGANISATION_UNIT_NAME"/>
     </xs:restriction>
   </xs:simpleType>
 
