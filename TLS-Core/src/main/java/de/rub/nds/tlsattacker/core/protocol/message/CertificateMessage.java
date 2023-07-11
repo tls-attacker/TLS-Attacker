@@ -21,7 +21,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificateEntry;
 import de.rub.nds.tlsattacker.core.protocol.parser.CertificateMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.CertificateMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateMessageSerializer;
-import de.rub.nds.x509attacker.x509.base.X509Certificate;
+import de.rub.nds.x509attacker.x509.model.X509Certificate;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlRootElement;

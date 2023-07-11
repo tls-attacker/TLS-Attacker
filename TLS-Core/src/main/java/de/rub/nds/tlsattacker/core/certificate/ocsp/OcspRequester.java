@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.certificate.ocsp;
 
-import de.rub.nds.x509attacker.x509.base.X509Certificate;
+import de.rub.nds.x509attacker.x509.model.X509Certificate;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -33,7 +33,7 @@ public class OcspRequester {
     private OcspResponse performRequest(OcspRequestMessage requestMessage, String requestMethod) {
         try {
 
-            byte[] encodedRequest = requestMessage.getSerializer().serialize();
+            byte[] encodedRequest = new byte[0]; // TODO requestMessage.getSerializer().serialize();
             HttpURLConnection httpCon = null;
             if (requestMethod.equals("POST")) {
                 httpCon = (HttpURLConnection) serverUrl.openConnection();
@@ -58,7 +58,7 @@ public class OcspRequester {
             OcspResponse ocspResponse;
             if (status == 200) {
                 ocspResponse = new OcspResponse("ocspResponse");
-                ocspResponse.getParser(new OcspChooser()).parse(httpCon.getInputStream());
+                // TODO ocspResponse.getParser().parse(httpCon.getInputStream());
             } else {
                 throw new RuntimeException(
                         "Response not successful: Received status code " + status);

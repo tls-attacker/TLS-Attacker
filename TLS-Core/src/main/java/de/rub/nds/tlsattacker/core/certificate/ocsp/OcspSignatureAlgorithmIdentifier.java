@@ -8,10 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.certificate.ocsp;
 
-import de.rub.nds.asn1.handler.EmptyHandler;
-import de.rub.nds.asn1.handler.Handler;
 import de.rub.nds.x509attacker.chooser.X509Chooser;
-import de.rub.nds.x509attacker.x509.base.AlgorithmIdentifier;
+import de.rub.nds.x509attacker.x509.handler.X509Handler;
+import de.rub.nds.x509attacker.x509.model.AlgorithmIdentifier;
+import de.rub.nds.x509attacker.x509.parser.X509Parser;
+import de.rub.nds.x509attacker.x509.preparator.X509Preparator;
 
 public class OcspSignatureAlgorithmIdentifier extends AlgorithmIdentifier {
 
@@ -20,7 +21,20 @@ public class OcspSignatureAlgorithmIdentifier extends AlgorithmIdentifier {
     }
 
     @Override
-    public Handler getHandler(X509Chooser chooser) {
-        return new EmptyHandler(chooser);
+    public X509Handler getHandler(X509Chooser chooser) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getHandler'");
+    }
+
+    @Override
+    public X509Parser getParser(X509Chooser chooser) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getParser'");
+    }
+
+    @Override
+    public X509Preparator getPreparator(X509Chooser chooser) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getPreparator'");
     }
 }

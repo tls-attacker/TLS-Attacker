@@ -16,9 +16,10 @@ import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.x509attacker.chooser.X509Chooser;
 import de.rub.nds.x509attacker.context.X509Context;
-import de.rub.nds.x509attacker.x509.base.X509Certificate;
+import de.rub.nds.x509attacker.x509.model.X509Certificate;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.util.LinkedList;
 import java.util.List;
@@ -59,7 +60,7 @@ public class CertificateEntry extends ModifiableVariableHolder {
             x509certificate = new X509Certificate("certificate");
             x509certificate
                     .getParser(chooser)
-                    .parse(new ByteArrayInputStream(x509CerticiateConfig));
+                    .parse(new BufferedInputStream(new ByteArrayInputStream(x509CerticiateConfig)));
         } catch (Exception E) {
             LOGGER.warn("Could not parse a valid certificate from provided certificate bytes");
             x509certificate = null;

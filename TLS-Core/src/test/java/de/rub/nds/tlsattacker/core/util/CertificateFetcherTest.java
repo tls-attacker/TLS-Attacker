@@ -20,7 +20,6 @@ import de.rub.nds.tlsattacker.util.TimeHelper;
 import de.rub.nds.tlsattacker.util.tests.TestCategories;
 import de.rub.nds.x509attacker.filesystem.CertificateIo;
 import de.rub.nds.x509attacker.x509.X509CertificateChain;
-import de.rub.nds.x509attacker.x509.base.publickey.PublicKeyContent;
 import java.security.KeyPair;
 import java.security.KeyStore;
 import java.security.Security;
@@ -31,7 +30,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 public class CertificateFetcherTest {
 
@@ -40,7 +44,7 @@ public class CertificateFetcherTest {
     private static final int SERVER_PORT = 4999;
 
     private static BasicTlsServer tlsServer;
-    private static PublicKeyContent expectedPublicKey;
+    private static PublicKeyContainer expectedPublicKey;
     private static X509CertificateChain expectedCertificate;
 
     @BeforeAll
@@ -55,7 +59,7 @@ public class CertificateFetcherTest {
 
         expectedCertificate =
                 CertificateIo.convert(keyStore.getCertificate(KeyStoreGenerator.ALIAS));
-        expectedPublicKey = expectedCertificate.getLeaf().getPublicKey();
+        expectedPublicKey = expectedCertificate.getLeaf().getPublicKeyContainer();
 
         tlsServer = new BasicTlsServer(keyStore, KeyStoreGenerator.PASSWORD, "TLS", SERVER_PORT);
 
@@ -109,7 +113,7 @@ public class CertificateFetcherTest {
                 expectedCertificate.getCertificateList().size(),
                 fetchedChain.getCertificateList().size());
         Assertions.assertArrayEquals(
-                expectedCertificate.getLeaf().getSerializer().serialize(),
-                fetchedChain.getLeaf().getSerializer().serialize());
+                expectedCertificate.getLeaf().getSerializer(null).serialize(),
+                fetchedChain.getLeaf().getSerializer(null).serialize());
     }
 }

@@ -8,25 +8,23 @@
  */
 package de.rub.nds.tlsattacker.core.certificate.ocsp;
 
-import de.rub.nds.asn1.handler.EmptyHandler;
-import de.rub.nds.asn1.handler.Handler;
 import de.rub.nds.asn1.model.Asn1Integer;
-import de.rub.nds.asn1.model.Asn1PrimitiveOctetString;
+import de.rub.nds.asn1.model.Asn1OctetString;
 import de.rub.nds.asn1.model.Asn1Sequence;
-import de.rub.nds.x509attacker.x509.base.AlgorithmIdentifier;
+import de.rub.nds.x509attacker.x509.model.AlgorithmIdentifier;
 
-public class OcspCertId extends Asn1Sequence<OcspChooser> {
+public class OcspCertId extends Asn1Sequence {
 
     private AlgorithmIdentifier algorithmIdentifier;
-    private Asn1PrimitiveOctetString issuerNameHash;
-    private Asn1PrimitiveOctetString issuerKeyHash;
+    private Asn1OctetString issuerNameHash;
+    private Asn1OctetString issuerKeyHash;
     private Asn1Integer serialNumber;
 
     public OcspCertId(String identifier) {
         super(identifier);
         algorithmIdentifier = new OcspHashAlgorithmIdentifier("hashAlgorithm");
-        issuerNameHash = new Asn1PrimitiveOctetString("issuerNameHash");
-        issuerKeyHash = new Asn1PrimitiveOctetString("issuerKeyHash");
+        issuerNameHash = new Asn1OctetString("issuerNameHash");
+        issuerKeyHash = new Asn1OctetString("issuerKeyHash");
         serialNumber = new Asn1Integer("serialNumber");
     }
 
@@ -38,19 +36,19 @@ public class OcspCertId extends Asn1Sequence<OcspChooser> {
         this.algorithmIdentifier = algorithmIdentifier;
     }
 
-    public Asn1PrimitiveOctetString getIssuerNameHash() {
+    public Asn1OctetString getIssuerNameHash() {
         return issuerNameHash;
     }
 
-    public void setIssuerNameHash(Asn1PrimitiveOctetString issuerNameHash) {
+    public void setIssuerNameHash(Asn1OctetString issuerNameHash) {
         this.issuerNameHash = issuerNameHash;
     }
 
-    public Asn1PrimitiveOctetString getIssuerKeyHash() {
+    public Asn1OctetString getIssuerKeyHash() {
         return issuerKeyHash;
     }
 
-    public void setIssuerKeyHash(Asn1PrimitiveOctetString issuerKeyHash) {
+    public void setIssuerKeyHash(Asn1OctetString issuerKeyHash) {
         this.issuerKeyHash = issuerKeyHash;
     }
 
@@ -60,10 +58,5 @@ public class OcspCertId extends Asn1Sequence<OcspChooser> {
 
     public void setSerialNumber(Asn1Integer serialNumber) {
         this.serialNumber = serialNumber;
-    }
-
-    @Override
-    public Handler getHandler(OcspChooser chooser) {
-        return new EmptyHandler(chooser);
     }
 }

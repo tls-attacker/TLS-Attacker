@@ -8,8 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.certificate.transparency;
 
-import de.rub.nds.asn1.parser.ParserException;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.protocol.exception.ParserException;
 
 public enum SignedCertificateTimestampEntryType {
     X509ChainEntry,

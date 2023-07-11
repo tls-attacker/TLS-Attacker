@@ -21,7 +21,8 @@ import de.rub.nds.x509attacker.context.X509Context;
 import de.rub.nds.x509attacker.filesystem.CertificateBytes;
 import de.rub.nds.x509attacker.filesystem.CertificateIo;
 import de.rub.nds.x509attacker.x509.X509CertificateChain;
-import de.rub.nds.x509attacker.x509.base.X509Certificate;
+import de.rub.nds.x509attacker.x509.model.X509Certificate;
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -38,18 +39,30 @@ public class EmptyClientKeyExchangePreparatorTest
                 EmptyClientKeyExchangePreparator<EmptyClientKeyExchangeMessage>> {
 
     /*
-     * In case you need to re-create the certificates or PMS parameters, follow these instructions (execute them in the
-     * OpenSSL ./demos/certs/ folder and execute `bash cert.sh` beforehand to generate the CA). 0) run `bash cert.sh` to
-     * create the DH keys and cert along with the CA 1) create EC key params: openssl genpkey -genparam -algorithm EC
-     * -pkeyopt ec_paramgen_curve:P-256 -out ecp.pem 2) create and extract EC client keys: openssl genpkey -paramfile
-     * ecp.pem -out ec_client_keys.pem openssl pkey -in ec_client_keys.pem -out ec_client_privkey.pem openssl pkey -in
-     * ec_client_keys.pem -pubout -out ec_client_pubkey.pem 3) create and sign client cert: CN="Test Client DH Cert"
-     * openssl req -config ca.cnf -new -key ec_client_keys.pem -out ec_client_req.pem openssl x509 -req -in
-     * ec_client_req.pem -CA root.pem -days 3600 -force_pubkey ec_client_pubkey.pem -extfile ca.cnf -extensions dh_cert
-     * -CAcreateserial -out ec_client.crt 4) create and extract EC server keys: openssl genpkey -paramfile ecp.pem -out
-     * ec_server_keys.pem openssl pkey -in ec_server_keys.pem -out ec_server_privkey.pem openssl pkey -in
-     * ec_server_keys.pem -pubout -out ec_server_pubkey.pem 5) derive the EC shared secret: openssl pkeyutl -derive
-     * -inkey ec_client_privkey.pem -peerkey ec_server_pubkey.pem -hexdump To get the actual key values that are needed
+     * In case you need to re-create the certificates or PMS parameters, follow
+     * these instructions (execute them in the
+     * OpenSSL ./demos/certs/ folder and execute `bash cert.sh` beforehand to
+     * generate the CA). 0) run `bash cert.sh` to
+     * create the DH keys and cert along with the CA 1) create EC key params:
+     * openssl genpkey -genparam -algorithm EC
+     * -pkeyopt ec_paramgen_curve:P-256 -out ecp.pem 2) create and extract EC client
+     * keys: openssl genpkey -paramfile
+     * ecp.pem -out ec_client_keys.pem openssl pkey -in ec_client_keys.pem -out
+     * ec_client_privkey.pem openssl pkey -in
+     * ec_client_keys.pem -pubout -out ec_client_pubkey.pem 3) create and sign
+     * client cert: CN="Test Client DH Cert"
+     * openssl req -config ca.cnf -new -key ec_client_keys.pem -out
+     * ec_client_req.pem openssl x509 -req -in
+     * ec_client_req.pem -CA root.pem -days 3600 -force_pubkey ec_client_pubkey.pem
+     * -extfile ca.cnf -extensions dh_cert
+     * -CAcreateserial -out ec_client.crt 4) create and extract EC server keys:
+     * openssl genpkey -paramfile ecp.pem -out
+     * ec_server_keys.pem openssl pkey -in ec_server_keys.pem -out
+     * ec_server_privkey.pem openssl pkey -in
+     * ec_server_keys.pem -pubout -out ec_server_pubkey.pem 5) derive the EC shared
+     * secret: openssl pkeyutl -derive
+     * -inkey ec_client_privkey.pem -peerkey ec_server_pubkey.pem -hexdump To get
+     * the actual key values that are needed
      * here, you can use this OpenSSL command: openssl pkey -in <file> -noout -text
      */
     private final String RANDOM = "AABBCCDDEEFF";
@@ -159,10 +172,15 @@ public class EmptyClientKeyExchangePreparatorTest
                 CertificateIo.readPemCertificateByteList(
                         new ByteArrayInputStream(DH_CLIENT_CERT.getBytes()));
         for (CertificateBytes certificateBytes : byteList) {
+            System.out.println(
+                    "Trying to parse: "
+                            + ArrayConverter.bytesToHexString(certificateBytes.getBytes()));
             X509Certificate x509Certificate = new X509Certificate("x509Certificate");
             x509Certificate
                     .getParser(context.getClientX509Context().getChooser())
-                    .parse(new ByteArrayInputStream(certificateBytes.getBytes()));
+                    .parse(
+                            new BufferedInputStream(
+                                    new ByteArrayInputStream(certificateBytes.getBytes())));
             clientCertificateChain.addCertificate(x509Certificate);
         }
         context.getServerX509Context()

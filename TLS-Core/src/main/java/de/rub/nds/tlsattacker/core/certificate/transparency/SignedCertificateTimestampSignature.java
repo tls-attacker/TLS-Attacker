@@ -8,23 +8,27 @@
  */
 package de.rub.nds.tlsattacker.core.certificate.transparency;
 
-import de.rub.nds.asn1.parser.ParserException;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.protocol.exception.ParserException;
 import de.rub.nds.tlsattacker.core.certificate.ExtensionObjectIdentifier;
 import de.rub.nds.tlsattacker.core.certificate.transparency.logs.CtLog;
 import de.rub.nds.tlsattacker.core.constants.CertificateTransparencyLength;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.security.*;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.asn1.ASN1Object;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
-import org.bouncycastle.asn1.x509.*;
 import org.bouncycastle.asn1.x509.Certificate;
+import org.bouncycastle.asn1.x509.Extension;
+import org.bouncycastle.asn1.x509.Extensions;
+import org.bouncycastle.asn1.x509.TBSCertificate;
+import org.bouncycastle.asn1.x509.V3TBSCertificateGenerator;
 
 public class SignedCertificateTimestampSignature {
 

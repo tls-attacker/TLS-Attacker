@@ -25,7 +25,7 @@ import de.rub.nds.x509attacker.constants.X509PublicKeyType;
 import de.rub.nds.x509attacker.filesystem.CertificateBytes;
 import de.rub.nds.x509attacker.x509.X509CertificateChain;
 import de.rub.nds.x509attacker.x509.X509CertificateChainBuidler;
-import de.rub.nds.x509attacker.x509.base.X509Certificate;
+import de.rub.nds.x509attacker.x509.model.X509Certificate;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.LinkedList;

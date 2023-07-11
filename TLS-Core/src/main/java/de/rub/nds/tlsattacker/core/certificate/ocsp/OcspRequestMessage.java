@@ -8,11 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.certificate.ocsp;
 
-import de.rub.nds.asn1.handler.EmptyHandler;
-import de.rub.nds.asn1.handler.Handler;
-import de.rub.nds.asn1.model.*;
+import de.rub.nds.asn1.model.Asn1Sequence;
 
-public class OcspRequestMessage extends Asn1Sequence<OcspChooser> {
+public class OcspRequestMessage extends Asn1Sequence {
 
     private OcspTbsRequest tbsRequest;
     private OcspSignature optinalSignature;
@@ -21,8 +19,6 @@ public class OcspRequestMessage extends Asn1Sequence<OcspChooser> {
         super("OCSPRequest");
         tbsRequest = new OcspTbsRequest("TBSRequest");
         optinalSignature = new OcspSignature("optinalSignature");
-        addChild(tbsRequest);
-        addChild(optinalSignature);
     }
 
     public OcspTbsRequest getTbsRequest() {
@@ -41,8 +37,7 @@ public class OcspRequestMessage extends Asn1Sequence<OcspChooser> {
         this.optinalSignature = optinalSignature;
     }
 
-    @Override
-    public Handler getHandler(OcspChooser chooser) {
-        return new EmptyHandler(chooser);
+    public Object getSerializer() {
+        return null;
     }
 }

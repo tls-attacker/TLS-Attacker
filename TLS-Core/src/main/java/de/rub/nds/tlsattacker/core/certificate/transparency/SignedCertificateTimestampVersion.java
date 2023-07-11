@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.certificate.transparency;
 
-import de.rub.nds.asn1.parser.ParserException;
+import de.rub.nds.protocol.exception.ParserException;
 
 public enum SignedCertificateTimestampVersion {
     V1;

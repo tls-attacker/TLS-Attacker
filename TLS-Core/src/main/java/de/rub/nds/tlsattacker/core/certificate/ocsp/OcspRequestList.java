@@ -8,12 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.certificate.ocsp;
 
-import de.rub.nds.asn1.handler.EmptyHandler;
-import de.rub.nds.asn1.handler.Handler;
 import de.rub.nds.asn1.model.Asn1Sequence;
 import java.util.List;
 
-public class OcspRequestList extends Asn1Sequence<OcspChooser> {
+public class OcspRequestList extends Asn1Sequence {
 
     private List<OcspRequest> requestList;
 
@@ -27,10 +25,5 @@ public class OcspRequestList extends Asn1Sequence<OcspChooser> {
 
     public void setRequestList(List<OcspRequest> requestList) {
         this.requestList = requestList;
-    }
-
-    @Override
-    public Handler getHandler(OcspChooser chooser) {
-        return new EmptyHandler(chooser);
     }
 }

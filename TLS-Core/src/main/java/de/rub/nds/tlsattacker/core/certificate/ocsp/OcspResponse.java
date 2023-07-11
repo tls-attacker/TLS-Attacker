@@ -8,12 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.certificate.ocsp;
 
-import de.rub.nds.asn1.handler.EmptyHandler;
-import de.rub.nds.asn1.handler.Handler;
 import de.rub.nds.asn1.model.Asn1Enumerated;
 import de.rub.nds.asn1.model.Asn1Sequence;
 
-public class OcspResponse extends Asn1Sequence<OcspChooser> {
+public class OcspResponse extends Asn1Sequence {
 
     private Asn1Enumerated responseStatus;
 
@@ -37,10 +35,5 @@ public class OcspResponse extends Asn1Sequence<OcspChooser> {
 
     public void setResponseBytes(OcspResponseBytes responseBytes) {
         this.responseBytes = responseBytes;
-    }
-
-    @Override
-    public Handler getHandler(OcspChooser chooser) {
-        return new EmptyHandler(chooser);
     }
 }

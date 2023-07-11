@@ -8,13 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.certificate.ocsp;
 
-import de.rub.nds.asn1.handler.EmptyHandler;
-import de.rub.nds.asn1.handler.Handler;
 import de.rub.nds.asn1.model.Asn1Sequence;
-import de.rub.nds.x509attacker.x509.base.Version;
-import de.rub.nds.x509attacker.x509.extensions.GeneralName;
+import de.rub.nds.x509attacker.x509.model.GeneralName;
+import de.rub.nds.x509attacker.x509.model.Version;
 
-public class OcspTbsRequest extends Asn1Sequence<OcspChooser> {
+public class OcspTbsRequest extends Asn1Sequence {
 
     private Version version; // Explicit, DEFAULT v1
 
@@ -30,10 +28,6 @@ public class OcspTbsRequest extends Asn1Sequence<OcspChooser> {
         requestorName = new GeneralName("requestorName");
         requestList = new OcspRequestList("requestList");
         requestExtensions = new OcspRequestExtensions("requestExtensions");
-        // addChild(version); //TODO This should be a version
-        // addChild(requestorName); //TODO This should be a requestorName
-        addChild(requestList);
-        addChild(requestExtensions);
     }
 
     public Version getVersion() {
@@ -66,10 +60,5 @@ public class OcspTbsRequest extends Asn1Sequence<OcspChooser> {
 
     public void setRequestExtensions(OcspRequestExtensions requestExtensions) {
         this.requestExtensions = requestExtensions;
-    }
-
-    @Override
-    public Handler<OcspChooser> getHandler(OcspChooser chooser) {
-        return new EmptyHandler(chooser);
     }
 }

@@ -12,7 +12,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.x509attacker.x509.X509CertificateChain;
 import de.rub.nds.x509attacker.x509.X509CertificateChainBuidler;
-import de.rub.nds.x509attacker.x509.base.X509Certificate;
+import de.rub.nds.x509attacker.x509.model.X509Certificate;
 import org.junit.jupiter.api.Test;
 
 public class DefaultCertificateConfigCreationTest {
@@ -24,7 +24,7 @@ public class DefaultCertificateConfigCreationTest {
         X509CertificateChain buildChain = builder.buildChain(config.getCertificateChainConfig());
         for (X509Certificate certificate : buildChain.getCertificateList()) {
             System.out.println(
-                    ArrayConverter.bytesToHexString(certificate.getSerializer().serialize()));
+                    ArrayConverter.bytesToHexString(certificate.getSerializer(null).serialize()));
         }
     }
 }

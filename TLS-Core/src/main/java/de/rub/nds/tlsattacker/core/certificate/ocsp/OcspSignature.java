@@ -8,23 +8,21 @@
  */
 package de.rub.nds.tlsattacker.core.certificate.ocsp;
 
-import de.rub.nds.asn1.handler.EmptyHandler;
-import de.rub.nds.asn1.handler.Handler;
-import de.rub.nds.asn1.model.Asn1PrimitiveBitString;
+import de.rub.nds.asn1.model.Asn1BitString;
 import de.rub.nds.asn1.model.Asn1Sequence;
 
-public class OcspSignature extends Asn1Sequence<OcspChooser> {
+public class OcspSignature extends Asn1Sequence {
 
     private OcspSignatureAlgorithmIdentifier signatureAlgorithm;
 
-    private Asn1PrimitiveBitString signature;
+    private Asn1BitString signature;
 
     private OcspCertificates certs;
 
     public OcspSignature(String identifier) {
         super(identifier);
         signatureAlgorithm = new OcspSignatureAlgorithmIdentifier("signatureAlgorithm");
-        signature = new Asn1PrimitiveBitString("signature");
+        signature = new Asn1BitString("signature");
         certs = new OcspCertificates("certs");
     }
 
@@ -36,11 +34,11 @@ public class OcspSignature extends Asn1Sequence<OcspChooser> {
         this.signatureAlgorithm = signatureAlgorithm;
     }
 
-    public Asn1PrimitiveBitString getSignature() {
+    public Asn1BitString getSignature() {
         return signature;
     }
 
-    public void setSignature(Asn1PrimitiveBitString signature) {
+    public void setSignature(Asn1BitString signature) {
         this.signature = signature;
     }
 
@@ -50,10 +48,5 @@ public class OcspSignature extends Asn1Sequence<OcspChooser> {
 
     public void setCerts(OcspCertificates certs) {
         this.certs = certs;
-    }
-
-    @Override
-    public Handler getHandler(OcspChooser chooser) {
-        return new EmptyHandler(chooser);
     }
 }
