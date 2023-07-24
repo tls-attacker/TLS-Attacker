@@ -331,8 +331,12 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
             handler.adjustContext(handshakeMessage);
             addProducedContainer(handshakeMessage);
         } catch (RuntimeException ex) {
+            LOGGER.warn(
+                    "Failed to parse HandshakeMessage using assumed type {}",
+                    HandshakeMessageType.getMessageType(type));
             // not being able to handle the handshake message results in an UnknownMessageContainer
             UnknownHandshakeMessage message = new UnknownHandshakeMessage();
+            message.setAssumedType(type);
             message.setData(payload);
             addProducedContainer(message);
         }
