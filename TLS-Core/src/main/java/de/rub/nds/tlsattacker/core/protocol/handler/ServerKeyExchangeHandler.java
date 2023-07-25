@@ -20,6 +20,7 @@ import org.apache.logging.log4j.Logger;
 public abstract class ServerKeyExchangeHandler<MessageT extends ServerKeyExchangeMessage>
         extends HandshakeMessageHandler<MessageT> {
 
+    @SuppressWarnings("unused")
     private static final Logger LOGGER = LogManager.getLogger();
 
     public ServerKeyExchangeHandler(TlsContext tlsContext) {

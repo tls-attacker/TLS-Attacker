@@ -18,7 +18,6 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.EncryptedServerNameIndicationExtensionSerializer;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.security.Security;
@@ -75,8 +74,6 @@ public class EncryptedServerNameIndicationExtensionPreparatorTest {
 
         EncryptedServerNameIndicationExtensionMessage msg =
                 new EncryptedServerNameIndicationExtensionMessage();
-        EncryptedServerNameIndicationExtensionSerializer serializer =
-                new EncryptedServerNameIndicationExtensionSerializer(msg);
         EncryptedServerNameIndicationExtensionPreparator preparator =
                 new EncryptedServerNameIndicationExtensionPreparator(context.getChooser(), msg);
 

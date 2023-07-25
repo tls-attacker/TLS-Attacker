@@ -21,7 +21,6 @@ public class SignedCertificateTimestampExtensionHandlerTest
 
     private final int lengthFirstPackage = 0;
     private final byte[] firstTimestamp = new byte[0];
-    private final byte[] firstExpectedBytes = ArrayConverter.hexStringToByteArray("00120000");
     private final byte[] secondTimestamp =
             ArrayConverter.hexStringToByteArray(
                     "00ef007500ee4bbdb775ce60"

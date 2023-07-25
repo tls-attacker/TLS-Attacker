@@ -209,7 +209,7 @@ public class EncryptedServerNameIndicationExtensionPreparator
         List<NamedGroup> implementedNamedGroups = NamedGroup.getImplemented();
         List<NamedGroup> clientSupportedNamedGroups =
                 chooser.getConfig().getClientSupportedEsniNamedGroups();
-        List<NamedGroup> serverSupportedNamedGroups = new LinkedList();
+        List<NamedGroup> serverSupportedNamedGroups = new LinkedList<>();
         for (KeyShareStoreEntry entry : chooser.getEsniServerKeyShareEntries()) {
             serverSupportedNamedGroups.add(entry.getGroup());
         }

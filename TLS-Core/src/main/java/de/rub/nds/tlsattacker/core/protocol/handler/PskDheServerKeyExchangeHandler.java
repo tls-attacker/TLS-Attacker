@@ -16,6 +16,7 @@ import org.apache.logging.log4j.Logger;
 public class PskDheServerKeyExchangeHandler
         extends DHEServerKeyExchangeHandler<PskDheServerKeyExchangeMessage> {
 
+    @SuppressWarnings("unused")
     private static final Logger LOGGER = LogManager.getLogger();
 
     public PskDheServerKeyExchangeHandler(TlsContext tlsContext) {
