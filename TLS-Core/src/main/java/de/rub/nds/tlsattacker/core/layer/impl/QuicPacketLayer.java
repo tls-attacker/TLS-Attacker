@@ -230,18 +230,22 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
             // the quic version needs to be parsed to determine the packet type as the version
             // negotiation packet can only be identified by the version being 0
             byte[] versionBytes = new byte[] {};
-            QuicVersion quicVersion;
             QuicPacketType packetType;
             if (QuicPacketType.isLongHeaderPacket(firstByte)) {
                 versionBytes = dataStream.readNBytes(QuicPacketByteLength.QUIC_VERSION_LENGTH);
-                quicVersion = QuicVersion.getFromVersionBytes(versionBytes);
+                QuicVersion quicVersion = QuicVersion.getFromVersionBytes(versionBytes);
                 if (quicVersion == QuicVersion.NULL_VERSION) {
                     packetType = QuicPacketType.VERSION_NEGOTIATION;
+                } else if (quicVersion != context.getQuicVersion()) {
+                    LOGGER.error("Illegal response packet, ignoring it.");
+                    packetType = QuicPacketType.UNKNOWN;
                 } else {
-                    packetType = QuicPacketType.getPacketTypeFromFirstByte(firstByte);
+                    packetType = QuicPacketType.getPacketTypeFromFirstByte(quicVersion, firstByte);
                 }
             } else {
-                packetType = QuicPacketType.getPacketTypeFromFirstByte(firstByte);
+                packetType =
+                        QuicPacketType.getPacketTypeFromFirstByte(
+                                context.getQuicVersion(), firstByte);
             }
 
             LOGGER.debug("Read {}", packetType);
