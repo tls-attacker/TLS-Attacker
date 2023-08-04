@@ -21,7 +21,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@XmlRootElement
+@XmlRootElement(name = "GenericReceive")
 public class GenericReceiveAction extends MessageAction implements ReceivingAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -90,5 +90,10 @@ public class GenericReceiveAction extends MessageAction implements ReceivingActi
     @Override
     public List<HttpMessage> getReceivedHttpMessages() {
         return httpMessages;
+    }
+
+    @Override
+    public Set<String> getAllReceivingAliases() {
+        return new HashSet<>(Collections.singleton(connectionAlias));
     }
 }

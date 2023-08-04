@@ -14,7 +14,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /** Copy the PreMasterSecret from srcContext, to dstContext. */
-@XmlRootElement
+@XmlRootElement(name = "CopyPreMasterSecret")
 public class CopyPreMasterSecretAction extends CopyContextFieldAction {
 
     private static final Logger LOGGER = LogManager.getLogger();

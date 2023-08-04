@@ -24,7 +24,7 @@ import org.apache.logging.log4j.Logger;
  * the raw byte values of the application data as a hex string. An charset for simple encoding can
  * be given to get readable output
  */
-@XmlRootElement
+@XmlRootElement(name = "PrintLastHandledApplicationData")
 public class PrintLastHandledApplicationDataAction extends ConnectionBoundAction {
 
     private static final Logger LOGGER = LogManager.getLogger();

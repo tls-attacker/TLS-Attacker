@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@XmlRootElement
+@XmlRootElement(name = "BufferedGenericReceive")
 public class BufferedGenericReceiveAction extends GenericReceiveAction {
 
     private static final Logger LOGGER = LogManager.getLogger();

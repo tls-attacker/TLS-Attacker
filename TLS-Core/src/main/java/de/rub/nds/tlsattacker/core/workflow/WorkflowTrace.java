@@ -63,7 +63,7 @@ public class WorkflowTrace implements Serializable {
                     new ByteArrayInputStream(origTraceStr.getBytes(StandardCharsets.UTF_8.name()));
             copy = WorkflowTraceSerializer.insecureRead(is);
         } catch (JAXBException | IOException | XMLStreamException ex) {
-            throw new ConfigurationException("Could not copy workflow trace: " + ex);
+            throw new ConfigurationException("Could not copy workflow trace: ", ex);
         }
 
         List<TlsAction> copiedActions = copy.getTlsActions();
@@ -85,134 +85,7 @@ public class WorkflowTrace implements Serializable {
     private List<AliasedConnection> connections = new ArrayList<>();
 
     @HoldsModifiableVariable
-    @XmlElements(
-            value = {
-                @XmlElement(type = ActivateDecryptionAction.class, name = "ActivateDecryption"),
-                @XmlElement(type = ActivateEncryptionAction.class, name = "ActivateEncryption"),
-                @XmlElement(
-                        type = ApplyBufferedMessagesAction.class,
-                        name = "ApplyBufferedMessages"),
-                @XmlElement(
-                        type = BufferedGenericReceiveAction.class,
-                        name = "BufferedGenericReceive"),
-                @XmlElement(type = BufferedSendAction.class, name = "BufferedSend"),
-                @XmlElement(type = ChangeCipherSuiteAction.class, name = "ChangeCipherSuite"),
-                @XmlElement(type = ChangeClientRandomAction.class, name = "ChangeClientRandom"),
-                @XmlElement(type = ChangeCompressionAction.class, name = "ChangeCompression"),
-                @XmlElement(type = ChangeContextValueAction.class, name = "ChangeContextValue"),
-                @XmlElement(type = ChangeMasterSecretAction.class, name = "ChangeMasterSecret"),
-                @XmlElement(
-                        type = ChangePreMasterSecretAction.class,
-                        name = "ChangePreMasterSecret"),
-                @XmlElement(
-                        type = ChangeServerRsaParametersAction.class,
-                        name = "ChangeServerRsaParameters"),
-                @XmlElement(
-                        type = ChangeDefaultPreMasterSecretAction.class,
-                        name = "ChangeDefaultPreMasterSecret"),
-                @XmlElement(
-                        type = ChangeProtocolVersionAction.class,
-                        name = "ChangeProtocolVersion"),
-                @XmlElement(type = ChangeServerRandomAction.class, name = "ChangeServerRandom"),
-                @XmlElement(
-                        type = ChangeConnectionTimeoutAction.class,
-                        name = "ChangeConnectionTimeout"),
-                @XmlElement(type = ChangeReadEpochAction.class, name = "ChangeReadEpoch"),
-                @XmlElement(
-                        type = ChangeReadSequenceNumberAction.class,
-                        name = "ChangeReadSequenceNumber"),
-                @XmlElement(
-                        type = ChangeReadMessageSequenceAction.class,
-                        name = "ChangeReadMessageSequence"),
-                @XmlElement(type = ChangeWriteEpochAction.class, name = "ChangeWriteEpoch"),
-                @XmlElement(
-                        type = ChangeWriteSequenceNumberAction.class,
-                        name = "ChangeWriteSequenceNumber"),
-                @XmlElement(
-                        type = ChangeWriteMessageSequenceAction.class,
-                        name = "ChangeWriteMessageSequence"),
-                @XmlElement(type = ClearBuffersAction.class, name = "ClearBuffers"),
-                @XmlElement(type = ClearDigestAction.class, name = "ClearDigest"),
-                @XmlElement(type = ConnectionBoundAction.class, name = "ConnectionBound"),
-                @XmlElement(type = CopyBufferedMessagesAction.class, name = "CopyBufferedMessages"),
-                @XmlElement(type = CopyBufferedRecordsAction.class, name = "CopyBufferedRecords"),
-                @XmlElement(type = CopyBuffersAction.class, name = "CopyBuffers"),
-                @XmlElement(type = CopyClientRandomAction.class, name = "CopyClientRandom"),
-                @XmlElement(type = CopyContextFieldAction.class, name = "CopyContextField"),
-                @XmlElement(type = CopyPreMasterSecretAction.class, name = "CopyPreMasterSecret"),
-                @XmlElement(type = CopyServerRandomAction.class, name = "CopyServerRandom"),
-                @XmlElement(type = DeactivateDecryptionAction.class, name = "DeactivateDecryption"),
-                @XmlElement(type = DeactivateEncryptionAction.class, name = "DeactivateEncryption"),
-                @XmlElement(
-                        type = DeepCopyBufferedMessagesAction.class,
-                        name = "DeepCopyBufferedMessages"),
-                @XmlElement(
-                        type = DeepCopyBufferedRecordsAction.class,
-                        name = "DeepCopyBufferedRecords"),
-                @XmlElement(type = DeepCopyBuffersAction.class, name = "DeepCopyBuffers"),
-                @XmlElement(type = EsniKeyDnsRequestAction.class, name = "EsniKeyDnsRequest"),
-                @XmlElement(type = EchConfigDnsRequestAction.class, name = "EchConfigDnsRequest"),
-                @XmlElement(
-                        type = FindReceivedProtocolMessageAction.class,
-                        name = "FindReceivedProtocolMessage"),
-                @XmlElement(type = ForwardMessagesAction.class, name = "ForwardMessages"),
-                @XmlElement(
-                        type = ForwardMessagesWithPrepareAction.class,
-                        name = "ForwardMessagesWithPrepare"),
-                @XmlElement(type = ForwardDataAction.class, name = "ForwardData"),
-                @XmlElement(type = GenericReceiveAction.class, name = "GenericReceive"),
-                @XmlElement(type = ReceiveTillAction.class, name = "ReceiveTill"),
-                @XmlElement(type = TightReceiveAction.class, name = "TightReceive"),
-                @XmlElement(type = MultiReceiveAction.class, name = "MultiReceive"),
-                @XmlElement(type = PopAndSendAction.class, name = "PopAndSend"),
-                @XmlElement(type = PopAndSendMessageAction.class, name = "PopAndSendMessage"),
-                @XmlElement(type = PopAndSendRecordAction.class, name = "PopAndSendRecord"),
-                @XmlElement(type = PopBuffersAction.class, name = "PopBuffers"),
-                @XmlElement(type = PopBufferedMessageAction.class, name = "PopBufferedMessage"),
-                @XmlElement(type = PopBufferedRecordAction.class, name = "PopBufferedRecord"),
-                @XmlElement(
-                        type = PrintLastHandledApplicationDataAction.class,
-                        name = "PrintLastHandledApplicationData"),
-                @XmlElement(
-                        type = PrintProposedExtensionsAction.class,
-                        name = "PrintProposedExtensions"),
-                @XmlElement(type = PrintSecretsAction.class, name = "PrintSecrets"),
-                @XmlElement(type = ReceiveAction.class, name = "Receive"),
-                @XmlElement(type = RemBufferedChCiphersAction.class, name = "RemBufferedChCiphers"),
-                @XmlElement(
-                        type = RemBufferedChExtensionsAction.class,
-                        name = "RemBufferedChExtensions"),
-                @XmlElement(type = RenegotiationAction.class, name = "Renegotiation"),
-                @XmlElement(
-                        type = ResetRecordCipherListsAction.class,
-                        name = "ResetRecordCipherLists"),
-                @XmlElement(type = ResetConnectionAction.class, name = "ResetConnection"),
-                @XmlElement(type = SendAction.class, name = "Send"),
-                @XmlElement(
-                        type = SendDynamicClientKeyExchangeAction.class,
-                        name = "SendDynamicClientKeyExchange"),
-                @XmlElement(
-                        type = SendDynamicServerKeyExchangeAction.class,
-                        name = "SendDynamicServerKeyExchange"),
-                @XmlElement(
-                        type = SendDynamicServerCertificateAction.class,
-                        name = "SendDynamicCertificate"),
-                @XmlElement(type = SendRaccoonCkeAction.class, name = "SendRaccoonCke"),
-                @XmlElement(
-                        type = SendMessagesFromLastFlightAction.class,
-                        name = "SendMessagesFromLastFlight"),
-                @XmlElement(
-                        type = SendRecordsFromLastFlightAction.class,
-                        name = "SendRecordsFromLastFlight"),
-                @XmlElement(
-                        type = SetEncryptChangeCipherSpecConfigAction.class,
-                        name = "SetEncryptChangeCipherSpecConfig"),
-                @XmlElement(type = WaitAction.class, name = "Wait"),
-                @XmlElement(type = FlushSessionCacheAction.class, name = "FlushSessionCache"),
-                @XmlElement(type = SendAsciiAction.class, name = "SendAscii"),
-                @XmlElement(type = ReceiveAsciiAction.class, name = "ReceiveAscii"),
-                @XmlElement(type = GenericReceiveAsciiAction.class, name = "GenericReceiveAscii"),
-            })
+    @XmlAnyElement(lax = true)
     private List<TlsAction> tlsActions = new ArrayList<>();
 
     private String name = null;

@@ -43,11 +43,11 @@ public abstract class WorkflowExecutor {
         }
     }
 
-    private Function<State, Integer> beforeTransportPreInitCallback = null;
+    private Function<TlsContext, Integer> beforeTransportPreInitCallback = null;
 
-    private Function<State, Integer> beforeTransportInitCallback = null;
+    private Function<TlsContext, Integer> beforeTransportInitCallback = null;
 
-    private Function<State, Integer> afterTransportInitCallback = null;
+    private Function<TlsContext, Integer> afterTransportInitCallback = null;
 
     private Function<State, Integer> afterExecutionCallback = null;
 
@@ -103,16 +103,24 @@ public abstract class WorkflowExecutor {
 
         try {
             if (getBeforeTransportPreInitCallback() != null) {
-                getBeforeTransportPreInitCallback().apply(state);
+                LOGGER.debug("Executing beforeTransportPreInitCallback");
+                getBeforeTransportPreInitCallback().apply(context);
             }
+            LOGGER.debug("Starting pre-initalization of TransportHandler");
             context.getTransportHandler().preInitialize();
+            LOGGER.debug("Finished pre-initalization of TransportHandler");
+
             if (getBeforeTransportInitCallback() != null) {
-                getBeforeTransportInitCallback().apply(state);
+                LOGGER.debug("Executing beforeTransportInitCallback");
+                getBeforeTransportInitCallback().apply(context);
             }
+            LOGGER.debug("Starting initalization of TransportHandler");
             context.getTransportHandler().initialize();
             if (getAfterTransportInitCallback() != null) {
-                getAfterTransportInitCallback().apply(state);
+                LOGGER.debug("Executing afterTransportInitCallback");
+                getAfterTransportInitCallback().apply(context);
             }
+            LOGGER.debug("Finished initalization of TransportHandler");
         } catch (NullPointerException | NumberFormatException ex) {
             throw new ConfigurationException(
                     "Invalid values in " + context.getConnection().toString(), ex);
@@ -151,7 +159,7 @@ public abstract class WorkflowExecutor {
         }
     }
 
-    public Function<State, Integer> getBeforeTransportPreInitCallback() {
+    public Function<TlsContext, Integer> getBeforeTransportPreInitCallback() {
         return beforeTransportPreInitCallback;
     }
 
@@ -169,28 +177,29 @@ public abstract class WorkflowExecutor {
         this.beforeTransportInitCallback = beforeTransportInitCallback;
     }
 
-    public Function<State, Integer> getAfterTransportInitCallback() {
+    public Function<TlsContext, Integer> getAfterTransportInitCallback() {
         return afterTransportInitCallback;
     }
 
-    public void setAfterTransportInitCallback(Function<State, Integer> afterTransportInitCallback) {
+    public void setAfterTransportInitCallback(
+            Function<TlsContext, Integer> afterTransportInitCallback) {
         this.afterTransportInitCallback = afterTransportInitCallback;
     }
 
-    public Function<State, Integer> getAfterExecutionCallback() {
+    public Function<TlsContext, Integer> getAfterExecutionCallback() {
         return afterExecutionCallback;
     }
 
-    public void setAfterExecutionCallback(Function<State, Integer> afterExecutionCallback) {
+    public void setAfterExecutionCallback(Function<TlsContext, Integer> afterExecutionCallback) {
         this.afterExecutionCallback = afterExecutionCallback;
     }
 
     public void closeConnection() {
         for (Context context : state.getAllContexts()) {
             try {
-                context.getTransportHandler().closeConnection();
+                ctx.getTransportHandler().closeConnection();
             } catch (IOException ex) {
-                LOGGER.warn("Could not close connection for context " + context);
+                LOGGER.warn("Could not close connection for context " + ctx);
                 LOGGER.debug(ex);
             }
         }
@@ -203,12 +212,11 @@ public abstract class WorkflowExecutor {
         }
     }
 
-    public void sendCloseNotify() {
+    public void sendCloseNotify(TlsContext context) {
         AlertMessage alertMessage = new AlertMessage();
         alertMessage.setConfig(AlertLevel.FATAL, AlertDescription.CLOSE_NOTIFY);
-        SendAction sendAction =
-                new SendAction(
-                        state.getWorkflowTrace().getConnections().get(0).getAlias(), alertMessage);
+        alertMessage.setLevel(AlertLevel.FATAL.getValue());
+        SendAction sendAction = new SendAction(context.getConnection().getAlias(), alertMessage);
         sendAction.getActionOptions().add(ActionOption.MAY_FAIL);
         sendAction.execute(state);
     }

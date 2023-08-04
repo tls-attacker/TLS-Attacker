@@ -8,14 +8,24 @@
  */
 package de.rub.nds.tlsattacker.core.workflow;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.protocol.message.*;
+import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptThenMacExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.HeartbeatExtensionMessage;
 import de.rub.nds.tlsattacker.core.record.Record;
@@ -257,7 +267,7 @@ public class WorkflowTraceUtilTest {
                 WorkflowTraceUtil.getFirstSendExtension(ExtensionType.ENCRYPT_THEN_MAC, trace));
     }
 
-    private void pwf(String pre, WorkflowTrace trace) {
+    private void printWorkflowTrace(String pre, WorkflowTrace trace) {
         LOGGER.info(pre);
         try {
             LOGGER.info(WorkflowTraceSerializer.write(trace));
@@ -433,7 +443,7 @@ public class WorkflowTraceUtilTest {
             trace = WorkflowTraceSerializer.secureRead(is);
         }
         assertNotNull(trace);
-        pwf("after load:", trace);
+        printWorkflowTrace("after load:", trace);
 
         WorkflowTraceNormalizer n = new WorkflowTraceNormalizer();
         n.normalize(trace, config);

@@ -12,12 +12,15 @@ import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.impl.RecordLayer;
 import de.rub.nds.tlsattacker.core.state.State;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  * This action removes the most recent ciphers from the encryptor and decryptor. The most-recent
  * cipher used to encrypt and decrypt records will thus be an older one with its state (if
  * applicable) kept in place
  */
+@XmlRootElement(name = "ResetRecordCipherLists")
 public class ResetRecordCipherListsAction extends ConnectionBoundAction {
 
     private final int toRemoveEncryptor;

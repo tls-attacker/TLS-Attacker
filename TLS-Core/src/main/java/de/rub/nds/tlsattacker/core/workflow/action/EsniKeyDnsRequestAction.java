@@ -27,7 +27,7 @@ import org.apache.logging.log4j.Logger;
 import org.xbill.DNS.*;
 import org.xbill.DNS.Record;
 
-@XmlRootElement
+@XmlRootElement(name = "EsniKeyDnsRequest")
 public class EsniKeyDnsRequestAction extends TlsAction {
 
     private static final Logger LOGGER = LogManager.getLogger();

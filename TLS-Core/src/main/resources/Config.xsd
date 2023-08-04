@@ -478,13 +478,21 @@
       </xs:element>
       <xs:element name="defaultSelectedAlpnProtocol" type="xs:string" minOccurs="0"/>
       <xs:element name="secureRemotePasswordExtensionIdentifier" type="xs:string" minOccurs="0"/>
-      <xs:element name="secureRealTimeTransportProtocolProtectionProfiles" minOccurs="0">
+      <xs:element name="clientSupportedSrtpProtectionProfiles" minOccurs="0">
         <xs:complexType>
           <xs:sequence>
-            <xs:element name="secureRealTimeTransportProtocolProtectionProfile" type="srtpProtectionProfiles" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="clientSupportedSrtpProtectionProfiles" type="srtpProtectionProfile" minOccurs="0" maxOccurs="unbounded"/>
           </xs:sequence>
         </xs:complexType>
       </xs:element>
+      <xs:element name="serverSupportedSrtpProtectionProfiles" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="serverSupportedSrtpProtectionProfiles" type="srtpProtectionProfile" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="defaultSelectedSrtpProtectionProfile" type="srtpProtectionProfile" minOccurs="0"/>
       <xs:element name="secureRealTimeTransportProtocolMasterKeyIdentifier" type="xs:string" minOccurs="0"/>
       <xs:element name="userMappingExtensionHintType" type="userMappingExtensionHintType" minOccurs="0"/>
       <xs:element name="certificateTypeDesiredTypes" minOccurs="0">
@@ -4519,7 +4527,7 @@
     </xs:restriction>
   </xs:simpleType>
 
-  <xs:simpleType name="srtpProtectionProfiles">
+  <xs:simpleType name="srtpProtectionProfile">
     <xs:restriction base="xs:string">
       <xs:enumeration value="SRTP_AES128_CM_HMAC_SHA1_80"/>
       <xs:enumeration value="SRTP_AES128_CM_HMAC_SHA1_32"/>
@@ -4994,4 +5002,3 @@
     </xs:sequence>
   </xs:complexType>
 </xs:schema>
-

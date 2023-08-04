@@ -14,13 +14,14 @@ import de.rub.nds.tlsattacker.core.layer.context.TcpContext;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
 import de.rub.nds.tlsattacker.core.state.State;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.IOException;
 import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@XmlRootElement
+@XmlRootElement(name = "ResetConnection")
 public class ResetConnectionAction extends ConnectionBoundAction {
 
     private static final Logger LOGGER = LogManager.getLogger();

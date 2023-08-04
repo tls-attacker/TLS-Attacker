@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.state.State;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElements;
 import jakarta.xml.bind.annotation.XmlRootElement;
@@ -39,7 +40,7 @@ import org.apache.logging.log4j.Logger;
  * prepared from context, but partially rely on config values. Thus preventing us to modify values
  * in context and re-creating a CH for forwarding.
  */
-@XmlRootElement
+@XmlRootElement(name = "RemBufferedChExtensions")
 public class RemBufferedChExtensionsAction extends ConnectionBoundAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -114,7 +115,8 @@ public class RemBufferedChExtensionsAction extends ConnectionBoundAction {
                     newExtensionBytes.write(ext.getExtensionBytes().getValue());
                 }
             } catch (IOException ex) {
-                throw new ActionExecutionException("Could not write ExtensionBytes to byte[]", ex);
+                throw new WorkflowExecutionException(
+                        "Could not write ExtensionBytes to byte[]", ex);
             }
         }
         ch.setExtensionBytes(newExtensionBytes.toByteArray());

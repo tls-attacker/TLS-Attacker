@@ -128,7 +128,16 @@ public class AlertMessage extends ProtocolMessage {
                 descriptionString = "" + description.getValue();
             }
         } else {
-            descriptionString = "null";
+            if (config != null && config.length == 2) {
+                AlertDescription desc = AlertDescription.getAlertDescription((byte) config[1]);
+                if (desc != null) {
+                    descriptionString = desc.name();
+                } else {
+                    descriptionString = "" + config[1];
+                }
+            } else {
+                descriptionString = "null";
+            }
         }
         sb.append("Alert(").append(levelString).append(",").append(descriptionString).append(")");
         return sb.toString();

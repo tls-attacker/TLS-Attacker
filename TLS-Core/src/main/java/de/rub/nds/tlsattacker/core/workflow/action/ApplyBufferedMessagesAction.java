@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.state.State;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.List;
+import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,7 +25,7 @@ import org.apache.logging.log4j.Logger;
  * <p>Call adjustContext() for each message in the context. Does not remove the messages from buffer
  * after execution.
  */
-@XmlRootElement
+@XmlRootElement(name = "ApplyBufferedMessages")
 public class ApplyBufferedMessagesAction extends ConnectionBoundAction {
 
     private static final Logger LOGGER = LogManager.getLogger();

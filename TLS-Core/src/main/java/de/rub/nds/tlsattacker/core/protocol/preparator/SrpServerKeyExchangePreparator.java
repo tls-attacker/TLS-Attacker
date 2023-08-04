@@ -128,7 +128,7 @@ public class SrpServerKeyExchangePreparator
         try {
             dig = MessageDigest.getInstance("SHA-1");
         } catch (NoSuchAlgorithmException ex) {
-            LOGGER.warn(ex);
+            throw new WorkflowExecutionException("Could not find SHA-1 Algorithm", ex);
         }
         dig.update(toHash);
         return dig.digest();
@@ -269,7 +269,7 @@ public class SrpServerKeyExchangePreparator
 
     private void prepareSignature(SrpServerKeyExchangeMessage msg) {
         msg.setSignature(signature);
-        LOGGER.debug("signature: {}", msg.getSignature().getValue());
+        LOGGER.debug("Signature: {}", msg.getSignature().getValue());
     }
 
     private void prepareSignatureLength(SrpServerKeyExchangeMessage msg) {

@@ -15,7 +15,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@XmlRootElement
+@XmlRootElement(name = "Renegotiation")
 public class RenegotiationAction extends ConnectionBoundAction {
 
     private static final Logger LOGGER = LogManager.getLogger();

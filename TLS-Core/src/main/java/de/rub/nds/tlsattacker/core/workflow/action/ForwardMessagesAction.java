@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
+import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
@@ -32,6 +33,8 @@ import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -40,7 +43,7 @@ import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@XmlRootElement
+@XmlRootElement(name = "ForwardMessages")
 public class ForwardMessagesAction extends TlsAction implements ReceivingAction, SendingAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -51,7 +54,7 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
     @XmlElement(name = "to")
     protected String forwardToAlias = null;
 
-    @XmlTransient protected Boolean executedAsPlanned = null;
+    @XmlTransient protected Boolean executedAsPlanned = false;
 
     /** If you want true here, use the more verbose ForwardMessagesWithPrepareAction. */
     @XmlTransient protected Boolean withPrepare = false;
@@ -122,6 +125,7 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
 
     @Override
     public void execute(State state) throws ActionExecutionException {
+        executedAsPlanned = true;
         if (isExecuted()) {
             throw new ActionExecutionException("Action already executed!");
         }
@@ -132,7 +136,7 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
         TlsContext forwardToCtx = state.getContext(forwardToAlias).getTlsContext();
 
         receiveMessages(receiveFromCtx);
-        applyMessages(forwardToCtx);
+        applyMessages(receiveFromCtx, forwardToCtx);
         forwardMessages(forwardToCtx);
         setExecuted(true);
     }
@@ -172,21 +176,31 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
         executedAsPlanned = checkMessageListsEquals(messages, receivedMessages);
     }
 
-    /**
-     * Apply the contents of the messages to the given TLS context.
-     *
-     * @param ctx
-     */
-    private void applyMessages(TlsContext ctx) {
+    /** Apply the contents of the messages to the given TLS context. */
+    private void applyMessages(TlsContext sourceContext, TlsContext destinationContext) {
+        // When we forward messages and apply them to the context, we have to pretend we
+        // are the peer of the context
+        AliasedConnection realDestinationConnection = destinationContext.getConnection();
+        destinationContext.setTalkingConnectionEndType(
+                realDestinationConnection.getLocalConnectionEndType());
+
         for (ProtocolMessage msg : receivedMessages) {
-            LOGGER.debug("Applying " + msg.toCompactString() + " to forward context " + ctx);
-            Handler h = msg.getHandler(ctx);
+            LOGGER.debug(
+                    "Applying "
+                            + msg.toCompactString()
+                            + " to forward context "
+                            + destinationContext);
+            ProtocolMessageHandler<ProtocolMessage> h = msg.getHandler(destinationContext);
             h.adjustContext(msg);
         }
     }
 
     private void forwardMessages(TlsContext forwardToCtx) {
-        LOGGER.info("Forwarding messages (" + forwardToAlias + "): " + getReadableString(messages));
+        LOGGER.info(
+                "Forwarding messages ("
+                        + forwardToAlias
+                        + "): "
+                        + getReadableString(receivedMessages));
         try {
             LayerStack layerStack = forwardToCtx.getLayerStack();
 
@@ -574,5 +588,51 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
     public List<HttpMessage> getReceivedHttpMessages() {
         // ForwardMessages should not interfere with messages above TLS
         return new LinkedList<>();
+    }
+    
+    public String toString() {
+        StringBuilder sb = new StringBuilder("Forward Messages Action:\n");
+        sb.append("Receive from alias: ").append(receiveFromAlias).append("\n");
+        sb.append("\tExpected:");
+        if ((messages != null)) {
+            for (ProtocolMessage message : messages) {
+                sb.append(message.toCompactString());
+                sb.append(", ");
+            }
+        } else {
+            sb.append(" (no messages set)");
+        }
+        sb.append("\n\tActual:");
+        if ((receivedMessages != null) && (!receivedMessages.isEmpty())) {
+            for (ProtocolMessage message : receivedMessages) {
+                sb.append(message.toCompactString());
+                sb.append(", ");
+            }
+        } else {
+            sb.append(" (no messages set)");
+        }
+        sb.append("\n");
+        sb.append("Forwarded to alias: ").append(forwardToAlias).append("\n");
+        if (sendMessages != null) {
+            sb.append("\t");
+            for (ProtocolMessage message : sendMessages) {
+                sb.append(message.toCompactString());
+                sb.append(", ");
+            }
+            sb.append("\n");
+        } else {
+            sb.append("null (no messages set)");
+        }
+        return sb.toString();
+    }
+
+    @Override
+    public Set<String> getAllSendingAliases() {
+        return new HashSet<>(Collections.singleton(forwardToAlias));
+    }
+
+    @Override
+    public Set<String> getAllReceivingAliases() {
+        return new HashSet<>(Collections.singleton(receiveFromAlias));
     }
 }

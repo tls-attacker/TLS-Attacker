@@ -14,16 +14,61 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.*;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.constants.RunningModeType;
+import de.rub.nds.tlsattacker.core.https.HttpsRequestMessage;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.HelloRequestMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.UnknownHandshakeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
+import de.rub.nds.tlsattacker.core.record.AbstractRecord;
+import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.workflow.action.*;
+import de.rub.nds.tlsattacker.core.workflow.action.ChangeCipherSuiteAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ChangeClientRandomAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ChangeCompressionAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ChangeMasterSecretAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ChangePreMasterSecretAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ChangeProtocolVersionAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ChangeServerRandomAction;
+import de.rub.nds.tlsattacker.core.workflow.action.DeactivateEncryptionAction;
+import de.rub.nds.tlsattacker.core.workflow.action.GenericReceiveAction;
+import de.rub.nds.tlsattacker.core.workflow.action.RenegotiationAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ResetConnectionAction;
+import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
+import de.rub.nds.tlsattacker.core.workflow.action.WaitAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import jakarta.xml.bind.JAXBException;
 import java.io.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -92,12 +137,11 @@ public class SerializationFullTest {
         messages.add(new UnknownHandshakeMessage());
         messages.add(new UnknownMessage(ProtocolMessageType.UNKNOWN));
         messages.add(new ServerHelloMessage());
-        // TODO: readd this test when https works again
-        /*
-         * HttpsRequestMessage message = new HttpsRequestMessage(); message.setRequestPath("someString");
-         * message.getRequestPath().setModification(new StringExplicitValueModification("replacedString"));
-         * messages.add(message);
-         */
+        HttpsRequestMessage message = new HttpsRequestMessage();
+        message.setRequestPath("someString");
+        message.getRequestPath()
+                .setModification(new StringExplicitValueModification("replacedString"));
+        messages.add(message);
         SendAction action = new SendAction(messages);
         List<Record> records = new LinkedList<>();
         records.add(new Record());
@@ -117,8 +161,7 @@ public class SerializationFullTest {
             LOGGER.info(builder.toString());
         }
 
-        try (FileInputStream fis = new FileInputStream(f)) {
-            assertDoesNotThrow(() -> WorkflowTraceSerializer.secureRead(fis));
-        }
+        FileInputStream fis = new FileInputStream(f);
+        assertDoesNotThrow(() -> WorkflowTraceSerializer.secureRead(fis));
     }
 }

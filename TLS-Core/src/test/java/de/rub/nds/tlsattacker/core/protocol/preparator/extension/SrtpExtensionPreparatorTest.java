@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.constants.SrtpProtectionProfiles;
+import de.rub.nds.tlsattacker.core.constants.SrtpProtectionProfile;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SrtpExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SrtpExtensionSerializer;
 import java.util.Arrays;
@@ -33,14 +33,14 @@ public class SrtpExtensionPreparatorTest
     @Test
     @Override
     public void testPrepare() {
-        List<SrtpProtectionProfiles> profiles =
+        List<SrtpProtectionProfile> profiles =
                 Arrays.asList(
-                        SrtpProtectionProfiles.SRTP_AES128_CM_HMAC_SHA1_80,
-                        SrtpProtectionProfiles.SRTP_AES128_CM_HMAC_SHA1_32,
-                        SrtpProtectionProfiles.SRTP_NULL_HMAC_SHA1_80,
-                        SrtpProtectionProfiles.SRTP_NULL_HMAC_SHA1_32);
+                        SrtpProtectionProfile.SRTP_AES128_CM_HMAC_SHA1_80,
+                        SrtpProtectionProfile.SRTP_AES128_CM_HMAC_SHA1_32,
+                        SrtpProtectionProfile.SRTP_NULL_HMAC_SHA1_80,
+                        SrtpProtectionProfile.SRTP_NULL_HMAC_SHA1_32);
         byte[] mki = new byte[0];
-        context.getConfig().setSecureRealTimeTransportProtocolProtectionProfiles(profiles);
+        context.getConfig().setClientSupportedSrtpProtectionProfiles(profiles);
         context.getConfig().setSecureRealTimeTransportProtocolMasterKeyIdentifier(mki);
 
         preparator.prepare();

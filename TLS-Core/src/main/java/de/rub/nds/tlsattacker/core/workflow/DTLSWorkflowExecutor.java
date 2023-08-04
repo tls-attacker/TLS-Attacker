@@ -19,7 +19,9 @@ import de.rub.nds.tlsattacker.core.workflow.action.SendingAction;
 import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -55,6 +57,7 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
             TlsAction action = tlsActions.get(i);
 
             if (!action.isExecuted()) {
+                LOGGER.trace("Executing regular action {} at index {}", action, index);
                 try {
                     this.executeAction(action, state);
                 } catch (SkipActionException ex) {
@@ -89,16 +92,28 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
                 break;
             }
 
-            if (!action.executedAsPlanned()) {
+            if (!action.executedAsPlanned() && action instanceof ReceivingAction) {
                 if (config.isStopTraceAfterUnexpected()) {
                     LOGGER.debug("Skipping all Actions, action did not execute as planned.");
                     break;
                 } else if (retransmissions == config.getMaxDtlsRetransmissions()) {
+                    LOGGER.debug("Hit max retransmissions, stopping workflow");
                     break;
                 } else {
-                    i = retransmissionActionIndex - 1;
+                    LOGGER.trace(
+                            "Stepping back index to perform retransmission. From index: {}", index);
+                    try {
+                        performRetransmissions(tlsActions, index);
+                    } catch (IOException E) {
+                        LOGGER.warn(
+                                "IOException occured during retransmission. Stopping workflow.", E);
+                        break;
+                    }
+                    action.reset();
                     retransmissions++;
                 }
+            } else {
+                index++;
             }
         }
 
@@ -117,21 +132,26 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
 
         closeConnection();
         if (config.isResetWorkflowTracesBeforeSaving()) {
+            LOGGER.debug("Resetting WorkflowTrace");
             state.getWorkflowTrace().reset();
         }
 
-        try {
-            if (getAfterExecutionCallback() != null) {
-                getAfterExecutionCallback().apply(state);
+        if (getAfterExecutionCallback() != null) {
+            LOGGER.debug("Executing AfterExecutionCallback");
+            for (TlsContext context : state.getAllTlsContexts()) {
+                try {
+                    getAfterExecutionCallback().apply(context);
+                } catch (Exception ex) {
+                    LOGGER.trace("Error during AfterExecutionCallback", ex);
+                }
             }
-        } catch (Exception ex) {
-            LOGGER.trace("Error during AfterExecutionCallback", ex);
         }
     }
 
     private void executeRetransmission(SendingAction action) {
         LOGGER.info("Executing retransmission of last sent flight");
-        for (String alias : action.getAllAliases()) {
+        for (String alias : action.getAllSendingAliases()) {
+            LOGGER.debug("Retransmitting records for alias {}", alias);
             state.getTlsContext(alias).getRecordLayer().reencrypt(action.getSendRecords());
             state.getTlsContext(alias)
                     .getRecordLayer()

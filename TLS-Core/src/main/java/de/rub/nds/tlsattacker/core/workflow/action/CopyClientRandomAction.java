@@ -14,7 +14,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /** Copy client random from one context to another. */
-@XmlRootElement
+@XmlRootElement(name = "CopyClientRandom")
 public class CopyClientRandomAction extends CopyContextFieldAction {
 
     private static final Logger LOGGER = LogManager.getLogger();

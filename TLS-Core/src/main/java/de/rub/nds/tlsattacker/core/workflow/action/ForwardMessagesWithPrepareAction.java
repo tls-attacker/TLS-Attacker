@@ -14,7 +14,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@XmlRootElement
+@XmlRootElement(name = "ForwardMessagesWithPrepare")
 public class ForwardMessagesWithPrepareAction extends ForwardMessagesAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -24,6 +24,14 @@ public class ForwardMessagesWithPrepareAction extends ForwardMessagesAction {
     }
 
     protected ForwardMessagesWithPrepareAction(String receiveFromAlias, String forwardToAlias) {
+        super(receiveFromAlias, forwardToAlias);
+        withPrepare = true;
+    }
+
+    /** Allow to pass a fake ReceiveMessageHelper helper for testing. */
+    protected ForwardMessagesWithPrepareAction(
+            String receiveFromAlias,
+            String forwardToAlias) {
         super(receiveFromAlias, forwardToAlias);
         withPrepare = true;
     }

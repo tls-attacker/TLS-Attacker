@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.modifiablevariable.util.ModifiableVariableField;
+import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import de.rub.nds.tlsattacker.core.workflow.modifiableVariable.ModvarHelper;
 import de.rub.nds.x509attacker.x509.model.publickey.X509DhPublicKey;
 import de.rub.nds.x509attacker.x509.model.publickey.X509DsaPublicKey;
@@ -34,7 +35,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.xml.XMLConstants;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -49,6 +52,10 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.reflections.Reflections;
+import org.reflections.util.ClasspathHelper;
+import org.reflections.util.ConfigurationBuilder;
+import org.reflections.util.FilterBuilder;
 import org.xml.sax.SAXException;
 
 public class WorkflowTraceSerializer {
@@ -58,21 +65,36 @@ public class WorkflowTraceSerializer {
     /** context initialization is expensive, we need to do that only once */
     private static JAXBContext context;
 
-    static synchronized JAXBContext getJAXBContext() throws JAXBException, IOException {
+    public static synchronized JAXBContext getJAXBContext() throws JAXBException, IOException {
         if (context == null) {
-            context =
-                    JAXBContext.newInstance(
-                            WorkflowTrace.class,
-                            X509RsaPublicKey.class,
-                            X509DhPublicKey.class,
-                            X509DsaPublicKey.class,
-                            X509EcdhEcdsaPublicKey.class,
-                            X509Ed25519PublicKey.class,
-                            X509Ed448PublicKey.class,
-                            X509X25519PublicKey.class,
-                            X509X448PublicKey.class);
+            // TODO we could do this scanning during building and then just collect the
+            // results
+            // TODO it would also be good if we didn't have to hardcode the package name
+            // here, but I could not get it work without it. Hours wasted: 3
+            String packageName = "de.rub";
+            Reflections reflections =
+                    new Reflections(
+                            new ConfigurationBuilder()
+                                    .setUrls(ClasspathHelper.forPackage(packageName))
+                                    .filterInputsBy(
+                                            new FilterBuilder().includePackage(packageName)));
+            Set<Class<? extends TlsAction>> tlsActionClasses =
+                    reflections.getSubTypesOf(TlsAction.class);
+            Set<Class<?>> classes = new HashSet<>();
+            classes.add(WorkflowTrace.class);
+            classes.addAll(tlsActionClasses);
+            LOGGER.debug("Registering TlsActions in JAXBContext:");
+            for (Class tempClass : classes) {
+                LOGGER.debug(tempClass.getName());
+            }
+            context = JAXBContext.newInstance(classes.toArray(new Class[classes.size()]));
         }
         return context;
+    }
+
+    public static synchronized void setJAXBContext(JAXBContext context)
+            throws JAXBException, IOException {
+        WorkflowTraceSerializer.context = context;
     }
 
     /**
@@ -128,7 +150,7 @@ public class WorkflowTraceSerializer {
                             .replaceAll("\r?\n", System.lineSeparator())
                             .getBytes(StandardCharsets.UTF_8));
         } catch (TransformerException E) {
-            throw new RuntimeException(E);
+            throw new JAXBException(E);
         }
     }
 
@@ -221,7 +243,7 @@ public class WorkflowTraceSerializer {
                     WorkflowTraceSerializer.class.getResourceAsStream("/" + xsd_source)) {
                 Schema configSchema = sf.newSchema(new StreamSource(schemaInputStream));
                 configSchema.newValidator();
-                unmarshaller.setSchema(configSchema);
+                // unmarshaller.setSchema(configSchema); //TODO Deactivated XSD for now...
             }
             WorkflowTrace wt = (WorkflowTrace) unmarshaller.unmarshal(xsr);
             ModvarHelper helper = new ModvarHelper();
@@ -248,6 +270,7 @@ public class WorkflowTraceSerializer {
      */
     public static List<WorkflowTrace> secureReadFolder(File f) {
         if (f.isDirectory()) {
+            LOGGER.debug("Reading WorkflowTraces from folder: {}", f.getAbsolutePath());
             ArrayList<WorkflowTrace> list = new ArrayList<>();
             for (File file : f.listFiles()) {
                 if (file.getName().startsWith(".")) {
@@ -256,6 +279,7 @@ public class WorkflowTraceSerializer {
                 }
                 WorkflowTrace trace;
                 try (FileInputStream fis = new FileInputStream(file)) {
+                    LOGGER.error("Reading WorkflowTrace from file: {}", file.getAbsolutePath());
                     trace = WorkflowTraceSerializer.secureRead(fis);
                     trace.setName(file.getAbsolutePath());
                     list.add(trace);

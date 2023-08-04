@@ -85,6 +85,18 @@ public enum KeyExchangeAlgorithm {
         }
     }
 
+    public boolean isKeyExchangeEcdhe() {
+        switch (this) {
+            case ECDHE_ECDSA:
+            case ECDHE_PSK:
+            case ECDHE_RSA:
+            case ECDH_ANON:
+                return true;
+            default:
+                return false;
+        }
+    }
+
     public boolean isKeyExchangeEcdh() {
         switch (this) {
             case ECDHE_ECDSA:

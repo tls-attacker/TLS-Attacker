@@ -22,13 +22,15 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@XmlRootElement
+@XmlRootElement(name = "PopAndSend")
 public class PopAndSendAction extends MessageAction implements SendingAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     /** Pop and send message with this index in message buffer. */
-    Integer index = null;
+    private Integer index = null;
+
+    private boolean couldPop = false;
 
     public PopAndSendAction() {
         super();
@@ -54,13 +56,8 @@ public class PopAndSendAction extends MessageAction implements SendingAction {
         LinkedList<ProtocolMessage> messageBuffer = tlsContext.getMessageBuffer();
         if (index != null && index >= 0) {
             if (index >= messageBuffer.size()) {
-                throw new ActionExecutionException(
-                        "Index out of bounds, "
-                                + "trying to get element "
-                                + index
-                                + "of message buffer with "
-                                + messageBuffer.size()
-                                + "elements.");
+                throw new WorkflowExecutionException("Index out of bounds, " + "trying to get element " + index
+                    + "of message buffer with " + messageBuffer.size() + "elements.");
             }
             messages.add(messageBuffer.get(index));
             messageBuffer.remove(index);
@@ -69,7 +66,6 @@ public class PopAndSendAction extends MessageAction implements SendingAction {
             messages.add(messageBuffer.pop());
             tlsContext.getRecordBuffer().pop();
         }
-
         String sending = getReadableString(messages);
         if (connectionAlias == null) {
             LOGGER.info("Sending messages: " + sending);
@@ -88,12 +84,22 @@ public class PopAndSendAction extends MessageAction implements SendingAction {
 
     @Override
     public String toString() {
-        return "PopAndSendAction(index: " + index + ")";
+        String messageString = getReadableString(messages);
+        return "PopAndSendAction: index: "
+                + index
+                + " message: "
+                + messageString
+                + " exexuted: "
+                + isExecuted()
+                + " couldPop: "
+                + couldPop
+                + " connectionAlias: "
+                + connectionAlias;
     }
 
     @Override
     public boolean executedAsPlanned() {
-        return isExecuted();
+        return isExecuted() && couldPop;
     }
 
     @Override
@@ -112,6 +118,7 @@ public class PopAndSendAction extends MessageAction implements SendingAction {
         records = new LinkedList<>();
         fragments = new LinkedList<>();
         setExecuted(null);
+        couldPop = false;
     }
 
     @Override
@@ -127,5 +134,15 @@ public class PopAndSendAction extends MessageAction implements SendingAction {
     @Override
     public List<DtlsHandshakeMessageFragment> getSendFragments() {
         return fragments;
+    }
+
+    @Override
+    public MessageActionDirection getMessageDirection() {
+        return MessageActionDirection.SENDING;
+    }
+
+    @Override
+    public Set<String> getAllSendingAliases() {
+        return new HashSet<>(Collections.singleton(connectionAlias));
     }
 }

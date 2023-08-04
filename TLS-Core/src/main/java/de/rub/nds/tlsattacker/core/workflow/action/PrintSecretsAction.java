@@ -8,20 +8,22 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.state.State;
 import jakarta.xml.bind.annotation.XmlRootElement;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
-@XmlRootElement
+@XmlRootElement(name = "PrintSecrets")
 public class PrintSecretsAction extends ConnectionBoundAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public PrintSecretsAction() {}
+    public PrintSecretsAction() {
+    }
 
     public PrintSecretsAction(String connectionAlias) {
         super(connectionAlias);
@@ -40,11 +42,10 @@ public class PrintSecretsAction extends ConnectionBoundAction {
 
         sb.append("\n  (RSA Key Exchange) ");
         if (ctx.getChooser()
-                        .getContext()
-                        .getTlsContext()
-                        .getServerX509Context()
-                        .getSubjectRsaPublicExponent()
-                == null) {
+                .getContext()
+                .getTlsContext()
+                .getServerX509Context()
+                .getSubjectRsaPublicExponent() == null) {
             sb.append("\n  ServerRsaPublicKey (chooser): null");
         } else {
             sb.append("\n  ServerRsaPublicKey (chooser): ");
@@ -56,11 +57,10 @@ public class PrintSecretsAction extends ConnectionBoundAction {
                             .getSubjectRsaPublicExponent());
         }
         if (ctx.getChooser()
-                        .getContext()
-                        .getTlsContext()
-                        .getServerX509Context()
-                        .getSubjectRsaModulus()
-                == null) {
+                .getContext()
+                .getTlsContext()
+                .getServerX509Context()
+                .getSubjectRsaModulus() == null) {
             sb.append("\n  ServerRsaModulus(chooser): null");
         } else {
             sb.append("\n  ServerRsaModulus (chooser): ");
@@ -93,7 +93,7 @@ public class PrintSecretsAction extends ConnectionBoundAction {
                     .append(toIndentedString(ctx.getLastServerVerifyData()));
         }
 
-        LOGGER.info(sb.append("\n").toString());
+        CONSOLE.info(sb.append("\n").toString());
     }
 
     private String toIndentedString(byte[] bytes) {
@@ -106,5 +106,6 @@ public class PrintSecretsAction extends ConnectionBoundAction {
     }
 
     @Override
-    public void reset() {}
+    public void reset() {
+    }
 }

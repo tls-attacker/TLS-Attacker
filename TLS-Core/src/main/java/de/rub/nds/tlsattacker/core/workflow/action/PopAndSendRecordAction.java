@@ -18,13 +18,15 @@ import de.rub.nds.tlsattacker.core.record.serializer.RecordSerializer;
 import de.rub.nds.tlsattacker.core.state.State;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@XmlRootElement
+@XmlRootElement(name = "PopAndSendRecord")
 public class PopAndSendRecordAction extends MessageAction implements SendingAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -103,5 +105,15 @@ public class PopAndSendRecordAction extends MessageAction implements SendingActi
     @Override
     public List<DtlsHandshakeMessageFragment> getSendFragments() {
         return fragments;
+    }
+
+    @Override
+    public MessageActionDirection getMessageDirection() {
+        return MessageActionDirection.SENDING;
+    }
+
+    @Override
+    public Set<String> getAllSendingAliases() {
+        return new HashSet<>(Collections.singleton(connectionAlias));
     }
 }

@@ -22,7 +22,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@XmlRootElement
+@XmlRootElement(name = "PopAndSendMessage")
 public class PopAndSendMessageAction extends MessageAction implements SendingAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -107,5 +107,15 @@ public class PopAndSendMessageAction extends MessageAction implements SendingAct
     @Override
     public List<DtlsHandshakeMessageFragment> getSendFragments() {
         return fragments;
+    }
+
+    @Override
+    public MessageActionDirection getMessageDirection() {
+        return MessageActionDirection.SENDING;
+    }
+
+    @Override
+    public Set<String> getAllSendingAliases() {
+        return new HashSet<>(Collections.singleton(connectionAlias));
     }
 }

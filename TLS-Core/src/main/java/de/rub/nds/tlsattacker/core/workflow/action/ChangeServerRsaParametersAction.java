@@ -15,6 +15,7 @@ import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+@XmlRootElement(name = "ChangeServerRsaParameters")
 public class ChangeServerRsaParametersAction extends ConnectionBoundAction {
 
     private static final Logger LOGGER = LogManager.getLogger();

@@ -33,7 +33,13 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
+@XmlRootElement(name = "MessageAction")
 public abstract class MessageAction extends ConnectionBoundAction {
+
+    public enum MessageActionDirection {
+        SENDING,
+        RECEIVING
+    }
 
     @XmlElementWrapper @HoldsModifiableVariable @XmlElementRef
     protected List<ProtocolMessage> messages = new ArrayList<>();
@@ -462,4 +468,5 @@ public abstract class MessageAction extends ConnectionBoundAction {
     public void setHttpMessages(List<HttpMessage> httpMessages) {
         this.httpMessages = httpMessages;
     }
+    public abstract MessageActionDirection getMessageDirection();
 }

@@ -10,8 +10,10 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 /** Specifies whether a CCS is sent encrypted if encryption is active */
+@XmlRootElement(name = "SetEncryptChangeCipherSpecConfig")
 public class SetEncryptChangeCipherSpecConfigAction extends ConnectionBoundAction {
 
     boolean setting = false;

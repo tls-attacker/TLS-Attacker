@@ -1024,12 +1024,19 @@
     </defaultProposedAlpnProtocols>
     <defaultSelectedAlpnProtocol>h2</defaultSelectedAlpnProtocol>
     <secureRemotePasswordExtensionIdentifier>55 73 65 72 4E 61 6D 65</secureRemotePasswordExtensionIdentifier>
-    <secureRealTimeTransportProtocolProtectionProfiles>
-        <secureRealTimeTransportProtocolProtectionProfile>SRTP_AES128_CM_HMAC_SHA1_80</secureRealTimeTransportProtocolProtectionProfile>
-        <secureRealTimeTransportProtocolProtectionProfile>SRTP_AES128_CM_HMAC_SHA1_32</secureRealTimeTransportProtocolProtectionProfile>
-        <secureRealTimeTransportProtocolProtectionProfile>SRTP_NULL_HMAC_SHA1_80</secureRealTimeTransportProtocolProtectionProfile>
-        <secureRealTimeTransportProtocolProtectionProfile>SRTP_NULL_HMAC_SHA1_32</secureRealTimeTransportProtocolProtectionProfile>
-    </secureRealTimeTransportProtocolProtectionProfiles>
+    <clientSupportedSrtpProtectionProfiles>
+        <clientSupportedSrtpProtectionProfiles>SRTP_AES128_CM_HMAC_SHA1_80</clientSupportedSrtpProtectionProfiles>
+        <clientSupportedSrtpProtectionProfiles>SRTP_AES128_CM_HMAC_SHA1_32</clientSupportedSrtpProtectionProfiles>
+        <clientSupportedSrtpProtectionProfiles>SRTP_NULL_HMAC_SHA1_80</clientSupportedSrtpProtectionProfiles>
+        <clientSupportedSrtpProtectionProfiles>SRTP_NULL_HMAC_SHA1_32</clientSupportedSrtpProtectionProfiles>
+    </clientSupportedSrtpProtectionProfiles>
+    <serverSupportedSrtpProtectionProfiles>
+        <serverSupportedSrtpProtectionProfiles>SRTP_AES128_CM_HMAC_SHA1_80</serverSupportedSrtpProtectionProfiles>
+        <serverSupportedSrtpProtectionProfiles>SRTP_AES128_CM_HMAC_SHA1_32</serverSupportedSrtpProtectionProfiles>
+        <serverSupportedSrtpProtectionProfiles>SRTP_NULL_HMAC_SHA1_80</serverSupportedSrtpProtectionProfiles>
+        <serverSupportedSrtpProtectionProfiles>SRTP_NULL_HMAC_SHA1_32</serverSupportedSrtpProtectionProfiles>
+    </serverSupportedSrtpProtectionProfiles>
+    <defaultSelectedSrtpProtectionProfile>SRTP_AES128_CM_HMAC_SHA1_80</defaultSelectedSrtpProtectionProfile>
     <secureRealTimeTransportProtocolMasterKeyIdentifier></secureRealTimeTransportProtocolMasterKeyIdentifier>
     <userMappingExtensionHintType>UPN_DOMAIN_HINT</userMappingExtensionHintType>
     <certificateTypeDesiredTypes>

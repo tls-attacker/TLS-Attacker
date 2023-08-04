@@ -24,7 +24,7 @@ import org.apache.logging.log4j.Logger;
  * stored in "found" field. Prints "Found Type.name (Type.value)" for the first message found and
  * quits. Prints nothing if no message of given type was received.
  */
-@XmlRootElement
+@XmlRootElement(name = "FindReceivedProtocolMessage")
 public class FindReceivedProtocolMessageAction extends ConnectionBoundAction {
 
     private static final Logger LOGGER = LogManager.getLogger();

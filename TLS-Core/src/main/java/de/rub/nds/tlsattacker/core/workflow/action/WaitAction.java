@@ -16,7 +16,7 @@ import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@XmlRootElement
+@XmlRootElement(name = "Wait")
 public class WaitAction extends TlsAction {
 
     private static final Logger LOGGER = LogManager.getLogger();

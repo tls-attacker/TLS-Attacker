@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.state.State;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElements;
 import jakarta.xml.bind.annotation.XmlRootElement;
@@ -38,7 +39,7 @@ import org.apache.logging.log4j.Logger;
  * prepared from context, but partially rely on config values. Thus preventing us to modify values
  * in context and re-creating a CH for forwarding.
  */
-@XmlRootElement
+@XmlRootElement(name = "RemBufferedChCiphers")
 public class RemBufferedChCiphersAction extends ConnectionBoundAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -107,7 +108,7 @@ public class RemBufferedChCiphersAction extends ConnectionBoundAction {
                 try {
                     newCiphersBytes.write(cs.getByteValue());
                 } catch (IOException ex) {
-                    throw new ActionExecutionException(
+                    throw new WorkflowExecutionException(
                             "Could not write CipherSuite value to byte[]", ex);
                 }
             }

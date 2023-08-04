@@ -24,15 +24,24 @@ public class SrtpExtensionHandler extends ExtensionHandler<SrtpExtensionMessage>
 
     @Override
     public void adjustTLSExtensionContext(SrtpExtensionMessage message) {
-        tlsContext.setSecureRealTimeTransportProtocolProtectionProfiles(
-                SrtpProtectionProfiles.getProfilesAsArrayList(
-                        message.getSrtpProtectionProfiles().getValue()));
-        LOGGER.debug(
-                "Adjusted the TLS context secure realtime transport protocol protection profiles to {}",
-                message.getSrtpProtectionProfiles());
-        tlsContext.setSecureRealTimeProtocolMasterKeyIdentifier(message.getSrtpMki().getValue());
-        LOGGER.debug(
-                "Adjusted the TLS context secure realtime transport protocol master key identifier to {}",
-                message.getSrtpMki());
+        if (context.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
+            context.setClientSupportedSrtpProtectionProfiles(
+                    SrtpProtectionProfile.getProfilesAsArrayList(
+                            message.getSrtpProtectionProfiles().getValue()));
+            LOGGER.debug(
+                    "Adjusted the TLS context secure realtime transport protocol protection profiles to "
+                            + ArrayConverter.bytesToHexString(message.getSrtpProtectionProfiles()));
+            context.setSecureRealTimeProtocolMasterKeyIdentifier(message.getSrtpMki().getValue());
+            LOGGER.debug(
+                    "Adjusted the TLS context secure realtime transport protocol master key identifier to "
+                            + ArrayConverter.bytesToHexString(message.getSrtpMki()));
+        } else {
+            context.setSelectedSrtpProtectionProfile(
+                    SrtpProtectionProfile.getProfileByType(
+                            message.getSrtpProtectionProfiles().getValue()));
+            LOGGER.debug(
+                    "Server selected the SRTP protection profile: {}",
+                    context.getSelectedSrtpProtectionProfile().name());
+        }
     }
 }

@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement
+@XmlRootElement(name = "ChangeWriteSequenceNumber")
 public class ChangeWriteSequenceNumberAction extends ChangeSequenceNumberAction {
 
     public ChangeWriteSequenceNumberAction() {}

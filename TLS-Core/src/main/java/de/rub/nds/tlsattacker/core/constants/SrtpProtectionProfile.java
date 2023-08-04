@@ -17,24 +17,24 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /** RFC5764 */
-public enum SrtpProtectionProfiles {
+public enum SrtpProtectionProfile {
     SRTP_AES128_CM_HMAC_SHA1_80(new byte[] {0x00, 0x01}),
     SRTP_AES128_CM_HMAC_SHA1_32(new byte[] {0x00, 0x02}),
     SRTP_NULL_HMAC_SHA1_80(new byte[] {0x00, 0x05}),
     SRTP_NULL_HMAC_SHA1_32(new byte[] {0x00, 0x06});
 
     private final byte[] srtpProtectionProfiles;
-    private static final Map<Integer, SrtpProtectionProfiles> MAP;
+    private static final Map<Integer, SrtpProtectionProfile> MAP;
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private SrtpProtectionProfiles(byte[] value) {
+    private SrtpProtectionProfile(byte[] value) {
         this.srtpProtectionProfiles = value;
     }
 
     static {
         MAP = new HashMap<>();
-        for (SrtpProtectionProfiles c : SrtpProtectionProfiles.values()) {
+        for (SrtpProtectionProfile c : SrtpProtectionProfile.values()) {
             MAP.put(ArrayConverter.bytesToInt(c.srtpProtectionProfiles), c);
         }
     }
@@ -43,17 +43,17 @@ public enum SrtpProtectionProfiles {
         return srtpProtectionProfiles;
     }
 
-    public static SrtpProtectionProfiles getProfileByType(byte[] value) {
+    public static SrtpProtectionProfile getProfileByType(byte[] value) {
         return MAP.get(ArrayConverter.bytesToInt(value));
     }
 
-    public static List<SrtpProtectionProfiles> getProfilesAsArrayList(byte[] value) {
-        List<SrtpProtectionProfiles> profileList = new ArrayList<>();
+    public static List<SrtpProtectionProfile> getProfilesAsArrayList(byte[] value) {
+        List<SrtpProtectionProfile> profileList = new ArrayList<>();
 
         for (int i = 0; i < value.length; i += 2) {
             if (i + 1 < value.length) {
                 profileList.add(
-                        SrtpProtectionProfiles.getProfileByType(
+                        SrtpProtectionProfile.getProfileByType(
                                 new byte[] {value[i], value[i + 1]}));
             } else {
                 LOGGER.warn(
@@ -62,13 +62,5 @@ public enum SrtpProtectionProfiles {
         }
 
         return profileList;
-    }
-
-    public byte getMinor() {
-        return srtpProtectionProfiles[0];
-    }
-
-    public byte getMajor() {
-        return srtpProtectionProfiles[1];
     }
 }

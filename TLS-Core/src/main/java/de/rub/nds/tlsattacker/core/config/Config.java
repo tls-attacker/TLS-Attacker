@@ -329,13 +329,18 @@ public class Config implements Serializable {
     private byte[] secureRemotePasswordExtensionIdentifier =
             "UserName".getBytes(Charset.forName("UTF-8"));
 
-    /**
-     * Default SRTP extension protection profiles The list contains every protection profile as in
-     * RFC 5764
-     */
-    @XmlElement(name = "secureRealTimeTransportProtocolProtectionProfile")
+    /** Default SRTP extension protection profiles. */
+    @XmlElement(name = "clientSupportedSrtpProtectionProfiles")
     @XmlElementWrapper
-    private List<SrtpProtectionProfiles> secureRealTimeTransportProtocolProtectionProfiles;
+    private List<SrtpProtectionProfile> clientSupportedSrtpProtectionProfiles;
+
+    /** SRTP extension protection profiles supported by the server. */
+    @XmlElement(name = "serverSupportedSrtpProtectionProfiles")
+    @XmlElementWrapper
+    private List<SrtpProtectionProfile> serverSupportedSrtpProtectionProfiles;
+
+    private SrtpProtectionProfile defaultSelectedSrtpProtectionProfile =
+            SrtpProtectionProfile.SRTP_AES128_CM_HMAC_SHA1_80;
 
     /** Default SRTP extension master key identifier */
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
@@ -1248,15 +1253,21 @@ public class Config implements Serializable {
                 curve.mult(defaultTokenBindingEcPrivateKey, curve.getBasePoint());
         this.defaultServerPWDProtectPublicKey =
                 curve.mult(defaultServerPWDProtectPrivateKey, curve.getBasePoint());
-        secureRealTimeTransportProtocolProtectionProfiles = new LinkedList<>();
-        secureRealTimeTransportProtocolProtectionProfiles.add(
-                SrtpProtectionProfiles.SRTP_AES128_CM_HMAC_SHA1_80);
-        secureRealTimeTransportProtocolProtectionProfiles.add(
-                SrtpProtectionProfiles.SRTP_AES128_CM_HMAC_SHA1_32);
-        secureRealTimeTransportProtocolProtectionProfiles.add(
-                SrtpProtectionProfiles.SRTP_NULL_HMAC_SHA1_80);
-        secureRealTimeTransportProtocolProtectionProfiles.add(
-                SrtpProtectionProfiles.SRTP_NULL_HMAC_SHA1_32);
+        clientSupportedSrtpProtectionProfiles = new LinkedList<>();
+        clientSupportedSrtpProtectionProfiles.add(
+                SrtpProtectionProfile.SRTP_AES128_CM_HMAC_SHA1_80);
+        clientSupportedSrtpProtectionProfiles.add(
+                SrtpProtectionProfile.SRTP_AES128_CM_HMAC_SHA1_32);
+        clientSupportedSrtpProtectionProfiles.add(SrtpProtectionProfile.SRTP_NULL_HMAC_SHA1_80);
+        clientSupportedSrtpProtectionProfiles.add(SrtpProtectionProfile.SRTP_NULL_HMAC_SHA1_32);
+
+        serverSupportedSrtpProtectionProfiles = new LinkedList<>();
+        serverSupportedSrtpProtectionProfiles.add(
+                SrtpProtectionProfile.SRTP_AES128_CM_HMAC_SHA1_80);
+        serverSupportedSrtpProtectionProfiles.add(
+                SrtpProtectionProfile.SRTP_AES128_CM_HMAC_SHA1_32);
+        serverSupportedSrtpProtectionProfiles.add(SrtpProtectionProfile.SRTP_NULL_HMAC_SHA1_80);
+        serverSupportedSrtpProtectionProfiles.add(SrtpProtectionProfile.SRTP_NULL_HMAC_SHA1_32);
         certificateTypeDesiredTypes = new LinkedList<>();
         certificateTypeDesiredTypes.add(CertificateType.OPEN_PGP);
         certificateTypeDesiredTypes.add(CertificateType.X509);
@@ -2704,13 +2715,13 @@ public class Config implements Serializable {
         this.secureRemotePasswordExtensionIdentifier = secureRemotePasswordExtensionIdentifier;
     }
 
-    public List<SrtpProtectionProfiles> getSecureRealTimeTransportProtocolProtectionProfiles() {
-        return secureRealTimeTransportProtocolProtectionProfiles;
+    public List<SrtpProtectionProfile> getClientSupportedSrtpProtectionProfiles() {
+        return clientSupportedSrtpProtectionProfiles;
     }
 
-    public void setSecureRealTimeTransportProtocolProtectionProfiles(
-            List<SrtpProtectionProfiles> secureRealTimeTransportProtocolProtectionProfiles) {
-        this.secureRealTimeTransportProtocolProtectionProfiles =
+    public void setClientSupportedSrtpProtectionProfiles(
+            List<SrtpProtectionProfile> secureRealTimeTransportProtocolProtectionProfiles) {
+        this.clientSupportedSrtpProtectionProfiles =
                 secureRealTimeTransportProtocolProtectionProfiles;
     }
 
@@ -3985,5 +3996,14 @@ public class Config implements Serializable {
             defaultKeySharePrivateMap.remove(group);
         }
         defaultKeySharePrivateMap.put(group, privateKey);
+    }
+
+    public SrtpProtectionProfile getDefaultSelectedSrtpProtectionProfile() {
+        return defaultSelectedSrtpProtectionProfile;
+    }
+
+    public void setDefaultSelectedSrtpProtectionProfile(
+            SrtpProtectionProfile defaultSelectedSrtpProtectionProfile) {
+        this.defaultSelectedSrtpProtectionProfile = defaultSelectedSrtpProtectionProfile;
     }
 }

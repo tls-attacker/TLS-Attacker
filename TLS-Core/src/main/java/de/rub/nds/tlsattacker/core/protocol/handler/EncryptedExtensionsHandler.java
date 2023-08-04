@@ -13,6 +13,11 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.data.Handler;
 import de.rub.nds.tlsattacker.core.protocol.message.EncryptedExtensionsMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.parser.EncryptedExtensionsParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.EncryptedExtensionsPreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.EncryptedExtensionsSerializer;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.util.HashSet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

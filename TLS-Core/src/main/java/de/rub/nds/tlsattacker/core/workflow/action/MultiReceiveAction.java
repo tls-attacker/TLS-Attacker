@@ -21,7 +21,7 @@ import java.util.Objects;
  * This action allows the declaration of multiple actions, the right one will selected at runtime.
  * The usage of two actions with the same Messages is forbidden.
  */
-@XmlRootElement
+@XmlRootElement(name = "MultiReceive")
 public class MultiReceiveAction extends GenericReceiveAction {
 
     private List<ReceiveAction> expectedActionCandidates;
@@ -33,6 +33,13 @@ public class MultiReceiveAction extends GenericReceiveAction {
     }
 
     public MultiReceiveAction(ReceiveAction... receiveActions) {
+        this.expectedActionCandidates = Arrays.asList(receiveActions);
+        super.messages = null;
+        super.records = null;
+    }
+
+    public MultiReceiveAction(String connectionAlias, ReceiveAction... receiveActions) {
+        super(connectionAlias);
         this.expectedActionCandidates = Arrays.asList(receiveActions);
         super.messages = null;
         super.records = null;
