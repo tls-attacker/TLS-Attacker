@@ -468,5 +468,6 @@ public abstract class MessageAction extends ConnectionBoundAction {
     public void setHttpMessages(List<HttpMessage> httpMessages) {
         this.httpMessages = httpMessages;
     }
+
     public abstract MessageActionDirection getMessageDirection();
 }

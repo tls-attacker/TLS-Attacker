@@ -181,8 +181,7 @@ public abstract class WorkflowExecutor {
         return afterTransportInitCallback;
     }
 
-    public void setAfterTransportInitCallback(
-            Function<State, Integer> afterTransportInitCallback) {
+    public void setAfterTransportInitCallback(Function<State, Integer> afterTransportInitCallback) {
         this.afterTransportInitCallback = afterTransportInitCallback;
     }
 

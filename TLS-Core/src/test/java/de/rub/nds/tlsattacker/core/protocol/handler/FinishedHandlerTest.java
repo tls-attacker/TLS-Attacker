@@ -29,7 +29,6 @@ public class FinishedHandlerTest
         super(FinishedMessage::new, FinishedHandler::new);
     }
 
-
     /** Test of adjustContext method, of class FinishedHandler. */
     @Test
     @Override

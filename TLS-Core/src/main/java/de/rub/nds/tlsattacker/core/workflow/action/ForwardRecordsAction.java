@@ -8,18 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import java.io.IOException;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
@@ -42,6 +30,16 @@ import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlElements;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlTransient;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @XmlRootElement(name = "ForwardRecords")
 public class ForwardRecordsAction extends TlsAction implements ReceivingAction, SendingAction {
@@ -263,7 +261,7 @@ public class ForwardRecordsAction extends TlsAction implements ReceivingAction, 
         // ForwardMessages should not interfere with messages above TLS
         return new LinkedList<>();
     }
-    
+
     public Set<String> getAllSendingAliases() {
         return new HashSet<>(Collections.singleton(forwardToAlias));
     }
