@@ -28,14 +28,6 @@ public class ForwardMessagesWithPrepareAction extends ForwardMessagesAction {
         withPrepare = true;
     }
 
-    /** Allow to pass a fake ReceiveMessageHelper helper for testing. */
-    protected ForwardMessagesWithPrepareAction(
-            String receiveFromAlias,
-            String forwardToAlias) {
-        super(receiveFromAlias, forwardToAlias);
-        withPrepare = true;
-    }
-
     public ForwardMessagesWithPrepareAction(
             String receiveFromAlias, String forwardToAlias, List<ProtocolMessage> messages) {
         super(receiveFromAlias, forwardToAlias, messages);

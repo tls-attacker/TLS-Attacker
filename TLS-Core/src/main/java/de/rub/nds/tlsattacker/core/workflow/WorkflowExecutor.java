@@ -43,11 +43,11 @@ public abstract class WorkflowExecutor {
         }
     }
 
-    private Function<TlsContext, Integer> beforeTransportPreInitCallback = null;
+    private Function<State, Integer> beforeTransportPreInitCallback = null;
 
-    private Function<TlsContext, Integer> beforeTransportInitCallback = null;
+    private Function<State, Integer> beforeTransportInitCallback = null;
 
-    private Function<TlsContext, Integer> afterTransportInitCallback = null;
+    private Function<State, Integer> afterTransportInitCallback = null;
 
     private Function<State, Integer> afterExecutionCallback = null;
 
@@ -159,7 +159,7 @@ public abstract class WorkflowExecutor {
         }
     }
 
-    public Function<TlsContext, Integer> getBeforeTransportPreInitCallback() {
+    public Function<State, Integer> getBeforeTransportPreInitCallback() {
         return beforeTransportPreInitCallback;
     }
 
@@ -177,20 +177,20 @@ public abstract class WorkflowExecutor {
         this.beforeTransportInitCallback = beforeTransportInitCallback;
     }
 
-    public Function<TlsContext, Integer> getAfterTransportInitCallback() {
+    public Function<State, Integer> getAfterTransportInitCallback() {
         return afterTransportInitCallback;
     }
 
     public void setAfterTransportInitCallback(
-            Function<TlsContext, Integer> afterTransportInitCallback) {
+            Function<State, Integer> afterTransportInitCallback) {
         this.afterTransportInitCallback = afterTransportInitCallback;
     }
 
-    public Function<TlsContext, Integer> getAfterExecutionCallback() {
+    public Function<State, Integer> getAfterExecutionCallback() {
         return afterExecutionCallback;
     }
 
-    public void setAfterExecutionCallback(Function<TlsContext, Integer> afterExecutionCallback) {
+    public void setAfterExecutionCallback(Function<State, Integer> afterExecutionCallback) {
         this.afterExecutionCallback = afterExecutionCallback;
     }
 
