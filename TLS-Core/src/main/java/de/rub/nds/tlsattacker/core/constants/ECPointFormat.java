@@ -9,10 +9,13 @@
 package de.rub.nds.tlsattacker.core.constants;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public enum ECPointFormat {
     UNCOMPRESSED((byte) 0),
@@ -22,6 +25,8 @@ public enum ECPointFormat {
     private byte value;
 
     private static final Map<Byte, ECPointFormat> MAP;
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private ECPointFormat(byte value) {
         this.value = value;
@@ -72,16 +77,20 @@ public enum ECPointFormat {
         return bytes.toByteArray();
     }
 
-    public static ECPointFormat[] pointFormatsFromByteArray(byte[] sourceBytes)
-            throws IOException, ClassNotFoundException {
+    public static ECPointFormat[] pointFormatsFromByteArray(byte[] sourceBytes) {
         if (sourceBytes == null || sourceBytes.length == 0) {
             return null;
         }
+        List<ECPointFormat> formats = new ArrayList<>(sourceBytes.length);
+        for (byte sourceByte : sourceBytes) {
+            ECPointFormat format = ECPointFormat.getECPointFormat(sourceByte);
+            if (format != null) {
+                formats.add(format);
+            } else {
+                LOGGER.warn("Ignoring unknown ECPointFormat {}", sourceByte);
+            }
+        }
 
-        ByteArrayInputStream in = new ByteArrayInputStream(sourceBytes);
-        ObjectInputStream is = new ObjectInputStream(in);
-        ECPointFormat[] formats = (ECPointFormat[]) is.readObject();
-
-        return formats;
+        return formats.toArray(ECPointFormat[]::new);
     }
 }

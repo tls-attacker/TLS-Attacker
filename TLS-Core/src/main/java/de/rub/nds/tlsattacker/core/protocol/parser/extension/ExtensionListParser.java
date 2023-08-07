@@ -57,6 +57,7 @@ public class ExtensionListParser extends Parser<List<ExtensionMessage>> {
             if (parser instanceof KeyShareExtensionParser) {
                 ((KeyShareExtensionParser) parser).setHelloRetryRequestHint(helloRetryRequestHint);
             }
+
             parser.parse(extension);
             extensionList.add(extension);
         }

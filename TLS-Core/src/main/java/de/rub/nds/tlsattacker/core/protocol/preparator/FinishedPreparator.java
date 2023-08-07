@@ -66,9 +66,9 @@ public class FinishedPreparator extends HandshakeMessagePreparator<FinishedMessa
                 } else {
                     macLength = Mac.getInstance(javaMacName).getMacLength();
                 }
-                LOGGER.debug("Connection End: " + chooser.getConnectionEndType());
+                LOGGER.debug("Connection End: " + chooser.getTalkingConnectionEnd());
                 byte[] trafficSecret;
-                if (chooser.getConnectionEndType() == ConnectionEndType.SERVER) {
+                if (chooser.getTalkingConnectionEnd() == ConnectionEndType.SERVER) {
                     trafficSecret = chooser.getServerHandshakeTrafficSecret();
                 } else {
                     trafficSecret = chooser.getClientHandshakeTrafficSecret();
@@ -120,7 +120,7 @@ public class FinishedPreparator extends HandshakeMessagePreparator<FinishedMessa
                     chooser.getContext().getTlsContext().getDigest().getRawBytes();
             final byte[] masterSecret = chooser.getMasterSecret();
             LOGGER.debug("Using MasterSecret: {}", masterSecret);
-            final ConnectionEndType endType = chooser.getConnectionEndType();
+            final ConnectionEndType endType = chooser.getTalkingConnectionEnd();
             return SSLUtils.calculateFinishedData(handshakeMessageContent, masterSecret, endType);
         } else {
             LOGGER.debug("Calculating VerifyData:");
@@ -138,7 +138,7 @@ public class FinishedPreparator extends HandshakeMessagePreparator<FinishedMessa
             LOGGER.debug("Using HandshakeMessage Hash: {}", handshakeMessageHash);
 
             String label;
-            if (chooser.getConnectionEndType() == ConnectionEndType.SERVER) {
+            if (chooser.getTalkingConnectionEnd() == ConnectionEndType.SERVER) {
                 // TODO put this in separate config option
                 label = PseudoRandomFunction.SERVER_FINISHED_LABEL;
             } else {

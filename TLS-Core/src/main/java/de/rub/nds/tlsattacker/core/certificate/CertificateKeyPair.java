@@ -215,7 +215,16 @@ public class CertificateKeyPair implements Serializable {
         }
     }
 
-    private CertificateKeyType getPublicKeyType(Certificate cert) {
+    public static CertificateKeyPair fromCertificate(String certificatePath, String keyPath)
+            throws IOException, CertificateException, NoSuchProviderException {
+        File certificateFile = new File(certificatePath);
+        File keyFile = new File(keyPath);
+        Certificate certificate = PemUtil.readCertificate(certificateFile);
+        PrivateKey privateKey = PemUtil.readPrivateKey(keyFile);
+        return new CertificateKeyPair(certificate, privateKey);
+    }
+
+    public static CertificateKeyType getPublicKeyType(Certificate cert) {
         if (cert.isEmpty()) {
             throw new IllegalArgumentException("Empty CertChain provided!");
         }
@@ -288,7 +297,7 @@ public class CertificateKeyPair implements Serializable {
         }
     }
 
-    private SignatureAndHashAlgorithm getSignatureAndHashAlgorithmFromCert(Certificate cert) {
+    public static SignatureAndHashAlgorithm getSignatureAndHashAlgorithmFromCert(Certificate cert) {
         if (cert.isEmpty()) {
             throw new IllegalArgumentException("Empty CertChain provided!");
         }
@@ -355,7 +364,7 @@ public class CertificateKeyPair implements Serializable {
         }
     }
 
-    private CertificateKeyType getSignatureType(Certificate cert) {
+    public static CertificateKeyType getSignatureType(Certificate cert) {
         if (cert.isEmpty()) {
             throw new IllegalArgumentException("Empty CertChain provided!");
         }

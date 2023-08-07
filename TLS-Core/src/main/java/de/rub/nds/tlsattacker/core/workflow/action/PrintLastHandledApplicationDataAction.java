@@ -8,8 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
-
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -62,9 +60,9 @@ public class PrintLastHandledApplicationDataAction extends ConnectionBoundAction
             } else {
                 lastHandledApplicationData = ArrayConverter.bytesToHexString(rawBytes);
             }
-            CONSOLE.info("Last handled application data: " + lastHandledApplicationData);
+            LOGGER.info("Last handled application data: " + lastHandledApplicationData);
         } else {
-            CONSOLE.info("Did not receive application data yet");
+            LOGGER.info("Did not receive application data yet");
         }
         setExecuted(true);
     }
