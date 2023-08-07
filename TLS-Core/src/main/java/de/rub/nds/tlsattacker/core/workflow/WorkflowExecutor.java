@@ -12,8 +12,15 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.AlertDescription;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.exceptions.*;
+import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
+import de.rub.nds.tlsattacker.core.exceptions.BouncyCastleNotLoadedException;
+import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
+import de.rub.nds.tlsattacker.core.exceptions.SkipActionException;
+import de.rub.nds.tlsattacker.core.exceptions.TransportHandlerConnectException;
+import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.layer.LayerStackFactory;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.state.Context;
@@ -43,13 +50,13 @@ public abstract class WorkflowExecutor {
         }
     }
 
-    private Function<State, Integer> beforeTransportPreInitCallback = null;
+    private Function<Context, Integer> beforeTransportPreInitCallback = null;
 
-    private Function<State, Integer> beforeTransportInitCallback = null;
+    private Function<Context, Integer> beforeTransportInitCallback = null;
 
-    private Function<State, Integer> afterTransportInitCallback = null;
+    private Function<Context, Integer> afterTransportInitCallback = null;
 
-    private Function<State, Integer> afterExecutionCallback = null;
+    private Function<Context, Integer> afterExecutionCallback = null;
 
     protected final WorkflowExecutorType type;
 
@@ -159,46 +166,49 @@ public abstract class WorkflowExecutor {
         }
     }
 
-    public Function<State, Integer> getBeforeTransportPreInitCallback() {
+    public Function<Context, Integer> getBeforeTransportPreInitCallback() {
         return beforeTransportPreInitCallback;
     }
 
     public void setBeforeTransportPreInitCallback(
-            Function<State, Integer> beforeTransportPreInitCallback) {
+            Function<Context, Integer> beforeTransportPreInitCallback) {
         this.beforeTransportPreInitCallback = beforeTransportPreInitCallback;
     }
 
-    public Function<State, Integer> getBeforeTransportInitCallback() {
+    public Function<Context, Integer> getBeforeTransportInitCallback() {
         return beforeTransportInitCallback;
     }
 
     public void setBeforeTransportInitCallback(
-            Function<State, Integer> beforeTransportInitCallback) {
+            Function<Context, Integer> beforeTransportInitCallback) {
         this.beforeTransportInitCallback = beforeTransportInitCallback;
     }
 
-    public Function<State, Integer> getAfterTransportInitCallback() {
+    public Function<Context, Integer> getAfterTransportInitCallback() {
         return afterTransportInitCallback;
     }
 
-    public void setAfterTransportInitCallback(Function<State, Integer> afterTransportInitCallback) {
+    public void setAfterTransportInitCallback(
+            Function<Context, Integer> afterTransportInitCallback) {
         this.afterTransportInitCallback = afterTransportInitCallback;
     }
 
-    public Function<State, Integer> getAfterExecutionCallback() {
+    public Function<Context, Integer> getAfterExecutionCallback() {
         return afterExecutionCallback;
     }
 
-    public void setAfterExecutionCallback(Function<State, Integer> afterExecutionCallback) {
+    public void setAfterExecutionCallback(Function<Context, Integer> afterExecutionCallback) {
         this.afterExecutionCallback = afterExecutionCallback;
     }
 
     public void closeConnection() {
         for (Context context : state.getAllContexts()) {
             try {
-                ctx.getTransportHandler().closeConnection();
+                context.getTransportHandler().closeConnection();
             } catch (IOException ex) {
-                LOGGER.warn("Could not close connection for context " + ctx);
+                LOGGER.warn(
+                        "Could not close connection for context: {}",
+                        context.getConnection().getAlias());
                 LOGGER.debug(ex);
             }
         }

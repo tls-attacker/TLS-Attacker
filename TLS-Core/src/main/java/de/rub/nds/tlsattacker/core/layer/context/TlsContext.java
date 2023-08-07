@@ -12,9 +12,30 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.BadRandom;
 import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.*;
+import de.rub.nds.tlsattacker.core.constants.AuthzDataFormat;
+import de.rub.nds.tlsattacker.core.constants.CertificateStatusRequestType;
+import de.rub.nds.tlsattacker.core.constants.CertificateType;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
+import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
+import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
+import de.rub.nds.tlsattacker.core.constants.EsniDnsKeyRecordVersion;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
+import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
+import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
+import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.constants.PskKeyExchangeMode;
+import de.rub.nds.tlsattacker.core.constants.SSL2CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.SrtpProtectionProfile;
+import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
+import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
+import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
+import de.rub.nds.tlsattacker.core.constants.UserMappingExtensionHintType;
 import de.rub.nds.tlsattacker.core.crypto.MessageDigestCollector;
-import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.layer.impl.DtlsFragmentLayer;
 import de.rub.nds.tlsattacker.core.layer.impl.RecordLayer;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
@@ -45,7 +66,14 @@ import de.rub.nds.x509attacker.x509.X509CertificateChain;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import java.math.BigInteger;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -210,11 +238,13 @@ public class TlsContext extends LayerContext {
     /** This is the user identifier of the SRP extension */
     private byte[] secureRemotePasswordExtensionIdentifier;
 
-    /** These are the protection profiles of the SRTP extension */
-    private List<SrtpProtectionProfiles> secureRealTimeTransportProtocolProtectionProfiles;
-
     /** This is the master key identifier of the SRTP extension */
     private byte[] secureRealTimeProtocolMasterKeyIdentifier;
+
+    /** These are the protection profiles supported by the client */
+    private List<SrtpProtectionProfile> clientSupportedSrtpProtectionProfiles;
+
+    private SrtpProtectionProfile selectedSrtpProtectionProfile;
 
     /** User mapping extension hint type */
     private UserMappingExtensionHintType userMappingExtensionHintType;
@@ -491,14 +521,6 @@ public class TlsContext extends LayerContext {
     private X509Context clientX509Context;
     private X509Context serverX509Context;
 
-    public TlsContext() {
-        this(new Context(new Config()));
-    }
-
-    public TlsContext(Config config) {
-        this(new Context(config));
-    }
-
     /**
      * This constructor assumes that the config holds exactly one connection end. This is usually
      * used when working with the default connection end in single context scenarios.
@@ -510,12 +532,25 @@ public class TlsContext extends LayerContext {
         clientX509Context = new X509Context();
         serverX509Context = new X509Context();
         context.setTlsContext(this);
-        RunningModeType mode = getConfig().getDefaultRunningMode();
-        if (null == mode) {
-            throw new ConfigurationException("Cannot create connection, running mode not set");
-        } else {
-            init();
-        }
+        init();
+    }
+
+    public List<SrtpProtectionProfile> getClientSupportedSrtpProtectionProfiles() {
+        return this.clientSupportedSrtpProtectionProfiles;
+    }
+
+    public void setClientSupportedSrtpProtectionProfiles(
+            List<SrtpProtectionProfile> clientSupportedSrtpProtectionProfiles) {
+        this.clientSupportedSrtpProtectionProfiles = clientSupportedSrtpProtectionProfiles;
+    }
+
+    public SrtpProtectionProfile getSelectedSrtpProtectionProfile() {
+        return this.selectedSrtpProtectionProfile;
+    }
+
+    public void setSelectedSrtpProtectionProfile(
+            SrtpProtectionProfile selectedSrtpProtectionProfile) {
+        this.selectedSrtpProtectionProfile = selectedSrtpProtectionProfile;
     }
 
     public X509Context getTalkingX509Context() {
@@ -1400,16 +1435,6 @@ public class TlsContext extends LayerContext {
     public void setSecureRemotePasswordExtensionIdentifier(
             byte[] secureRemotePasswordExtensionIdentifier) {
         this.secureRemotePasswordExtensionIdentifier = secureRemotePasswordExtensionIdentifier;
-    }
-
-    public List<SrtpProtectionProfiles> getSecureRealTimeTransportProtocolProtectionProfiles() {
-        return secureRealTimeTransportProtocolProtectionProfiles;
-    }
-
-    public void setSecureRealTimeTransportProtocolProtectionProfiles(
-            List<SrtpProtectionProfiles> secureRealTimeTransportProtocolProtectionProfiles) {
-        this.secureRealTimeTransportProtocolProtectionProfiles =
-                secureRealTimeTransportProtocolProtectionProfiles;
     }
 
     public byte[] getSecureRealTimeProtocolMasterKeyIdentifier() {

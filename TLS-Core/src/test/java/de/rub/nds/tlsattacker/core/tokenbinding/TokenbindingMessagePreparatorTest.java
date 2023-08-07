@@ -12,8 +12,11 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.state.Context;
+import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayInputStream;
 import java.math.BigInteger;
@@ -44,8 +47,9 @@ public class TokenbindingMessagePreparatorTest {
 
     @BeforeEach
     public void setUp() {
-        config = Config.createConfig();
-        TlsContext context = new TlsContext(config);
+        config = new Config();
+        TlsContext context =
+                new Context(new State(config), new InboundConnection()).getTlsContext();
         Chooser chooser = context.getChooser();
         message = new TokenBindingMessage();
         preparator = new TokenBindingMessagePreparator(chooser, message);

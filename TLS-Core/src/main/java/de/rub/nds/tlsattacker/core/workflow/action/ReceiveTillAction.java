@@ -11,16 +11,12 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.http.HttpMessage;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.TlsMessage;
 import de.rub.nds.tlsattacker.core.record.Record;
-import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
 import jakarta.xml.bind.annotation.XmlElementRef;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
@@ -39,9 +35,6 @@ public class ReceiveTillAction extends CommonReceiveAction implements ReceivingA
     private static final Logger LOGGER = LogManager.getLogger();
 
     @HoldsModifiableVariable @XmlElementRef protected ProtocolMessage waitTillMessage;
-    private static final Logger LOGGER = LogManager.getLogger();
-
-    @HoldsModifiableVariable @XmlElementRef protected TlsMessage waitTillMessage;
 
     public ReceiveTillAction() {
         super();
@@ -55,34 +48,6 @@ public class ReceiveTillAction extends CommonReceiveAction implements ReceivingA
     public ReceiveTillAction(String connectionAliasAlias, ProtocolMessage waitTillMessage) {
         super(connectionAliasAlias);
         this.waitTillMessage = waitTillMessage;
-    }
-
-    @Override
-    public void execute(State state) throws WorkflowExecutionException {
-        TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
-
-        if (isExecuted()) {
-            throw new WorkflowExecutionException("Action already executed!");
-        }
-
-        LOGGER.debug("Receiving Messages...");
-        MessageActionResult result =
-                receiveMessageHelper.receiveMessagesTill(waitTillMessage, tlsContext);
-        records = new ArrayList<>(result.getRecordList());
-        messages = new ArrayList<>(result.getMessageList());
-        if (result.getMessageFragmentList() != null) {
-            fragments = new ArrayList<>(result.getMessageFragmentList());
-        }
-        setExecuted(true);
-
-        String expected = getReadableString(waitTillMessage);
-        LOGGER.debug("Receive message we waited for:" + expected);
-        String received = getReadableString(messages);
-        if (hasDefaultAlias()) {
-            LOGGER.info("Received Messages: " + received);
-        } else {
-            LOGGER.info("Received Messages (" + getConnectionAlias() + "): " + received);
-        }
     }
 
     @Override
@@ -266,5 +231,10 @@ public class ReceiveTillAction extends CommonReceiveAction implements ReceivingA
 
     public Set<String> getAllReceivingAliases() {
         return new HashSet<>(Collections.singleton(connectionAlias));
+    }
+
+    @Override
+    public MessageActionDirection getMessageDirection() {
+        return MessageActionDirection.RECEIVING;
     }
 }

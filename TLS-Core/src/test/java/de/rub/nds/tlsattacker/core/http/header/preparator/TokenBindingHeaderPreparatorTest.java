@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.core.http.header.TokenBindingHeader;
 import de.rub.nds.tlsattacker.core.layer.constant.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
 import de.rub.nds.tlsattacker.core.state.Context;
+import de.rub.nds.tlsattacker.core.state.State;
 import java.math.BigInteger;
 import java.security.Security;
 import java.util.ArrayList;
@@ -35,7 +36,7 @@ public class TokenBindingHeaderPreparatorTest {
         Security.addProvider(new BouncyCastleProvider());
         Config config = new Config();
         config.setDefaultLayerConfiguration(LayerConfiguration.HTTPS);
-        Context outerContext = new Context(config);
+        Context outerContext = new State(config).getContext();
         HttpContext context = outerContext.getHttpContext();
 
         List<TokenBindingKeyParameters> keyParameters = new ArrayList<>();

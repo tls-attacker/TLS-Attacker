@@ -144,30 +144,6 @@ public class FinishedHandlerTest
     }
 
     @Test
-    public void testAdjustTLSContextTls13ClientInbound() {
-        FinishedMessage message = new FinishedMessage();
-        context.setRecordLayer(RecordLayerFactory.getRecordLayer(RecordLayerType.RECORD, context));
-        context.setTalkingConnectionEndType(ConnectionEndType.CLIENT);
-        context.setConnection(new InboundConnection());
-        context.setSelectedProtocolVersion(ProtocolVersion.TLS13);
-        context.setHandshakeSecret(new byte[] {0, 1, 2, 3, 4});
-        context.setSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
-        message.setVerifyData(new byte[] {0, 1, 2, 3, 4});
-
-        handler.adjustTLSContext(message);
-
-        assertEquals(
-                Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS, context.getActiveClientKeySetType());
-        assertEquals(Tls13KeySetType.NONE, context.getActiveServerKeySetType());
-        assertArrayEquals(new byte[] {0, 1, 2, 3, 4}, context.getLastClientVerifyData());
-        assertArrayEquals(null, context.getLastServerVerifyData());
-
-        assertArrayEquals(null, context.getClientApplicationTrafficSecret());
-        assertArrayEquals(null, context.getServerApplicationTrafficSecret());
-        assertArrayEquals(null, context.getMasterSecret());
-    }
-
-    @Test
     public void testadjustContextTls13ClientInbound() {
         FinishedMessage message = new FinishedMessage();
         context.setTalkingConnectionEndType(ConnectionEndType.CLIENT);

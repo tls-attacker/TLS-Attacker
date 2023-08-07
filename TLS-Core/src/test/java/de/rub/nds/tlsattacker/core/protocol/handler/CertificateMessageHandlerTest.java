@@ -13,10 +13,13 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificateEntry;
+import de.rub.nds.tlsattacker.core.state.Context;
+import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.security.Security;
 import java.util.LinkedList;
@@ -57,7 +60,8 @@ public class CertificateMessageHandlerTest
             handler.adjustContext(message);
             assertNotNull(context.getClientCertificateChain());
             assertNull(context.getServerCertificateChain());
-            context = new TlsContext();
+            context =
+                    new Context(new State(new Config()), new OutboundConnection()).getTlsContext();
             context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
             context.setSelectedProtocolVersion(version);
             handler = new CertificateMessageHandler(context);

@@ -8,8 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
+import de.rub.nds.tlsattacker.core.state.Context;
+import de.rub.nds.tlsattacker.core.state.State;
 import org.junit.jupiter.api.Test;
 
 public class CertificateVerifyHandlerTest
@@ -25,7 +28,10 @@ public class CertificateVerifyHandlerTest
     @Override
     public void testadjustContext() {
         CertificateVerifyMessage message = new CertificateVerifyMessage();
-        message.getPreparator(new TlsContext()).prepare();
+        message.getPreparator(
+                        new Context(new State(new Config()), new OutboundConnection())
+                                .getTlsContext())
+                .prepare();
         handler.adjustContext(message);
     }
 }

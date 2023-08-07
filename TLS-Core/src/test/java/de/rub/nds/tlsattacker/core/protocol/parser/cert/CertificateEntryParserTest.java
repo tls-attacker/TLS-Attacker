@@ -12,9 +12,13 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificateEntry;
+import de.rub.nds.tlsattacker.core.state.Context;
+import de.rub.nds.tlsattacker.core.state.State;
 import java.io.ByteArrayInputStream;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -50,7 +54,8 @@ public class CertificateEntryParserTest {
             byte[] expectedCertificate,
             int expectedExtensionLength,
             byte[] expectedExtension) {
-        TlsContext tlsContext = new TlsContext();
+        TlsContext tlsContext =
+                new Context(new State(new Config()), new InboundConnection()).getTlsContext();
         tlsContext.setSelectedProtocolVersion(ProtocolVersion.TLS13);
         CertificateEntryParser parser =
                 new CertificateEntryParser(new ByteArrayInputStream(providedCertPair), tlsContext);

@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
+import de.rub.nds.protocol.exception.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
@@ -17,8 +18,11 @@ import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -56,8 +60,13 @@ public class PopAndSendAction extends MessageAction implements SendingAction {
         LinkedList<ProtocolMessage> messageBuffer = tlsContext.getMessageBuffer();
         if (index != null && index >= 0) {
             if (index >= messageBuffer.size()) {
-                throw new WorkflowExecutionException("Index out of bounds, " + "trying to get element " + index
-                    + "of message buffer with " + messageBuffer.size() + "elements.");
+                throw new WorkflowExecutionException(
+                        "Index out of bounds, "
+                                + "trying to get element "
+                                + index
+                                + "of message buffer with "
+                                + messageBuffer.size()
+                                + "elements.");
             }
             messages.add(messageBuffer.get(index));
             messageBuffer.remove(index);

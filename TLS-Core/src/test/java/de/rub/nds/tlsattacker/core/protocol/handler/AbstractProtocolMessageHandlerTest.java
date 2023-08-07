@@ -10,9 +10,13 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.core.state.Context;
+import de.rub.nds.tlsattacker.core.state.State;
 import java.io.ByteArrayInputStream;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -29,7 +33,17 @@ abstract class AbstractProtocolMessageHandlerTest<
 
     AbstractProtocolMessageHandlerTest(
             Supplier<MT> messageConstructor, Function<TlsContext, HT> handlerConstructor) {
-        this.context = new TlsContext();
+        this.context =
+                new Context(new State(new Config()), new OutboundConnection()).getTlsContext();
+        this.messageConstructor = messageConstructor;
+        this.handler = handlerConstructor.apply(context);
+    }
+
+    AbstractProtocolMessageHandlerTest(
+            Supplier<MT> messageConstructor,
+            Function<TlsContext, HT> handlerConstructor,
+            TlsContext context) {
+        this.context = context;
         this.messageConstructor = messageConstructor;
         this.handler = handlerConstructor.apply(context);
     }

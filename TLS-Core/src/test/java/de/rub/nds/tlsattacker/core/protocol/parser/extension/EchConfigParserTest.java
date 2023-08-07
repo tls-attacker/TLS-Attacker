@@ -13,14 +13,16 @@ import static org.junit.Assert.assertEquals;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.constants.hpke.HpkeAeadFunction;
 import de.rub.nds.tlsattacker.core.constants.hpke.HpkeKeyDerivationFunction;
 import de.rub.nds.tlsattacker.core.constants.hpke.HpkeKeyEncapsulationMechanism;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EchConfig;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ech.HpkeCipherSuite;
+import de.rub.nds.tlsattacker.core.state.Context;
+import de.rub.nds.tlsattacker.core.state.State;
 import java.io.ByteArrayInputStream;
 import java.util.LinkedList;
 import java.util.List;
@@ -37,7 +39,9 @@ public class EchConfigParserTest {
                 ArrayConverter.hexStringToByteArray(
                         "0046FE0D0042B800200020AB31C5831D3BA3B6902FFA9CDC8CA22F318F74CFDB0795374910A28FAD9630540004000100010013636C6F7564666C6172652D65736E692E636F6D0000");
         EchConfigParser parser =
-                new EchConfigParser(new ByteArrayInputStream(recordBytes), new TlsContext());
+                new EchConfigParser(
+                        new ByteArrayInputStream(recordBytes),
+                        new Context(new State(config), new InboundConnection()).getTlsContext());
         List<EchConfig> echConfigs = new LinkedList<>();
         parser.parse(echConfigs);
         EchConfig echConfig = echConfigs.get(0);

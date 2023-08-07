@@ -8,14 +8,18 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CachedInfoExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.CachedObjectPreparator;
+import de.rub.nds.tlsattacker.core.state.Context;
+import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.Arrays;
 import java.util.List;
@@ -87,7 +91,11 @@ public class CachedInfoExtensionParserTest
             CachedObject actualObject = actual.get(i);
 
             CachedObjectPreparator preparator =
-                    new CachedObjectPreparator(new TlsContext().getChooser(), expectedObject);
+                    new CachedObjectPreparator(
+                            new Context(new State(config), new InboundConnection())
+                                    .getTlsContext()
+                                    .getChooser(),
+                            expectedObject);
             preparator.prepare();
 
             assertEquals(

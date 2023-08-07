@@ -9,8 +9,8 @@
 package de.rub.nds.tlsattacker.core.workflow.task;
 
 import de.rub.nds.tlsattacker.core.exceptions.TransportHandlerConnectException;
+import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import java.util.concurrent.Callable;
@@ -32,13 +32,13 @@ public abstract class TlsTask implements ITask, Callable<ITask> {
 
     private final long additionalTcpTimeout;
 
-    private Function<TlsContext, Integer> beforeTransportPreInitCallback = null;
+    private Function<Context, Integer> beforeTransportPreInitCallback = null;
 
-    private Function<TlsContext, Integer> beforeTransportInitCallback = null;
+    private Function<Context, Integer> beforeTransportInitCallback = null;
 
-    private Function<TlsContext, Integer> afterTransportInitCallback = null;
+    private Function<Context, Integer> afterTransportInitCallback = null;
 
-    private Function<TlsContext, Integer> afterExecutionCallback = null;
+    private Function<Context, Integer> afterExecutionCallback = null;
 
     public TlsTask(int reexecutions) {
         this.reexecutions = reexecutions;
@@ -122,38 +122,38 @@ public abstract class TlsTask implements ITask, Callable<ITask> {
         return reexecutions;
     }
 
-    public Function<TlsContext, Integer> getBeforeTransportPreInitCallback() {
+    public Function<Context, Integer> getBeforeTransportPreInitCallback() {
         return beforeTransportPreInitCallback;
     }
 
     public void setBeforeTransportPreInitCallback(
-            Function<State, Integer> beforeTransportPreInitCallback) {
+            Function<Context, Integer> beforeTransportPreInitCallback) {
         this.beforeTransportPreInitCallback = beforeTransportPreInitCallback;
     }
 
-    public Function<TlsContext, Integer> getBeforeTransportInitCallback() {
+    public Function<Context, Integer> getBeforeTransportInitCallback() {
         return beforeTransportInitCallback;
     }
 
     public void setBeforeTransportInitCallback(
-            Function<State, Integer> beforeTransportInitCallback) {
+            Function<Context, Integer> beforeTransportInitCallback) {
         this.beforeTransportInitCallback = beforeTransportInitCallback;
     }
 
-    public Function<TlsContext, Integer> getAfterTransportInitCallback() {
+    public Function<Context, Integer> getAfterTransportInitCallback() {
         return afterTransportInitCallback;
     }
 
     public void setAfterTransportInitCallback(
-            Function<TlsContext, Integer> afterTransportInitCallback) {
+            Function<Context, Integer> afterTransportInitCallback) {
         this.afterTransportInitCallback = afterTransportInitCallback;
     }
 
-    public Function<TlsContext, Integer> getAfterExecutionCallback() {
+    public Function<Context, Integer> getAfterExecutionCallback() {
         return afterExecutionCallback;
     }
 
-    public void setAfterExecutionCallback(Function<TlsContext, Integer> afterExecutionCallback) {
+    public void setAfterExecutionCallback(Function<Context, Integer> afterExecutionCallback) {
         this.afterExecutionCallback = afterExecutionCallback;
     }
 

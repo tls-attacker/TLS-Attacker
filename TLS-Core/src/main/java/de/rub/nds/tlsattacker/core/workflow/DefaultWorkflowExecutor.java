@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.tlsattacker.core.exceptions.SkipActionException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceivingAction;
 import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
@@ -79,8 +80,8 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
         }
 
         if (config.isFinishWithCloseNotify()) {
-            for (TlsContext context : state.getAllTlsContexts()) {
-                sendCloseNotify(context);
+            for (Context context : state.getAllContexts()) {
+                sendCloseNotify(context.getTlsContext());
             }
         }
 
@@ -99,7 +100,7 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
         if (config.isResetWorkflowTracesBeforeSaving()) {
             state.getWorkflowTrace().reset();
         }
-        for (TlsContext context : state.getAllTlsContexts()) {
+        for (Context context : state.getAllContexts()) {
             try {
                 if (getAfterExecutionCallback() != null) {
                     getAfterExecutionCallback().apply(context);

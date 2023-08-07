@@ -8,9 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
-import de.rub.nds.tlsattacker.core.constants.SrtpProtectionProfiles;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.SrtpProtectionProfile;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SrtpExtensionMessage;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,24 +26,25 @@ public class SrtpExtensionHandler extends ExtensionHandler<SrtpExtensionMessage>
 
     @Override
     public void adjustTLSExtensionContext(SrtpExtensionMessage message) {
-        if (context.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
-            context.setClientSupportedSrtpProtectionProfiles(
+        if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
+            tlsContext.setClientSupportedSrtpProtectionProfiles(
                     SrtpProtectionProfile.getProfilesAsArrayList(
                             message.getSrtpProtectionProfiles().getValue()));
             LOGGER.debug(
                     "Adjusted the TLS context secure realtime transport protocol protection profiles to "
                             + ArrayConverter.bytesToHexString(message.getSrtpProtectionProfiles()));
-            context.setSecureRealTimeProtocolMasterKeyIdentifier(message.getSrtpMki().getValue());
+            tlsContext.setSecureRealTimeProtocolMasterKeyIdentifier(
+                    message.getSrtpMki().getValue());
             LOGGER.debug(
                     "Adjusted the TLS context secure realtime transport protocol master key identifier to "
                             + ArrayConverter.bytesToHexString(message.getSrtpMki()));
         } else {
-            context.setSelectedSrtpProtectionProfile(
+            tlsContext.setSelectedSrtpProtectionProfile(
                     SrtpProtectionProfile.getProfileByType(
                             message.getSrtpProtectionProfiles().getValue()));
             LOGGER.debug(
                     "Server selected the SRTP protection profile: {}",
-                    context.getSelectedSrtpProtectionProfile().name());
+                    tlsContext.getSelectedSrtpProtectionProfile().name());
         }
     }
 }

@@ -15,11 +15,15 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.http.HttpMessage;
-import de.rub.nds.tlsattacker.core.layer.*;
+import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.LayerStack;
+import de.rub.nds.tlsattacker.core.layer.LayerStackProcessingResult;
+import de.rub.nds.tlsattacker.core.layer.SpecificReceiveLayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.SpecificSendLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.layer.data.Handler;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.record.Record;
@@ -190,7 +194,7 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
                             + msg.toCompactString()
                             + " to forward context "
                             + destinationContext);
-            ProtocolMessageHandler<ProtocolMessage> h = msg.getHandler(destinationContext);
+            ProtocolMessageHandler h = msg.getHandler(destinationContext);
             h.adjustContext(msg);
         }
     }
@@ -589,7 +593,7 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
         // ForwardMessages should not interfere with messages above TLS
         return new LinkedList<>();
     }
-    
+
     public String toString() {
         StringBuilder sb = new StringBuilder("Forward Messages Action:\n");
         sb.append("Receive from alias: ").append(receiveFromAlias).append("\n");

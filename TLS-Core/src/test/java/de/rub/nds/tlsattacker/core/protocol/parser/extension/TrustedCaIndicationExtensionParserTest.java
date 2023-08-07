@@ -8,14 +8,18 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TrustedCaIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.TrustedAuthorityPreparator;
+import de.rub.nds.tlsattacker.core.state.Context;
+import de.rub.nds.tlsattacker.core.state.State;
 import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Named;
@@ -59,7 +63,11 @@ public class TrustedCaIndicationExtensionParserTest
         // noinspection unchecked
         for (TrustedAuthority ta : (List<TrustedAuthority>) expectedMessageSpecificValues.get(1)) {
             TrustedAuthorityPreparator preparator =
-                    new TrustedAuthorityPreparator(new TlsContext().getChooser(), ta);
+                    new TrustedAuthorityPreparator(
+                            new Context(new State(config), new InboundConnection())
+                                    .getTlsContext()
+                                    .getChooser(),
+                            ta);
             preparator.prepare();
         }
 

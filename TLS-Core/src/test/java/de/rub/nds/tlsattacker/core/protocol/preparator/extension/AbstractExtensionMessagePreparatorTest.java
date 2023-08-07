@@ -11,9 +11,12 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
+import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -43,7 +46,8 @@ abstract class AbstractExtensionMessagePreparatorTest<
             Function<Config, MT> messageConstructorWithConfig,
             Function<MT, ST> serializerConstructor,
             TriFunction<Chooser, MT, ST, PT> preparatorConstructorWithSerializer) {
-        this.context = new TlsContext();
+        this.context =
+                new Context(new State(new Config()), new InboundConnection()).getTlsContext();
         this.messageConstructor = messageConstructor;
         this.messageConstructorWithConfig = messageConstructorWithConfig;
         this.serializerConstructor = serializerConstructor;
@@ -56,7 +60,8 @@ abstract class AbstractExtensionMessagePreparatorTest<
             Supplier<MT> messageConstructor,
             Function<MT, ST> serializerConstructor,
             BiFunction<Chooser, MT, PT> preparatorConstructor) {
-        this.context = new TlsContext();
+        this.context =
+                new Context(new State(new Config()), new InboundConnection()).getTlsContext();
         this.messageConstructor = messageConstructor;
         this.messageConstructorWithConfig = null;
         this.serializerConstructor = serializerConstructor;
@@ -69,7 +74,8 @@ abstract class AbstractExtensionMessagePreparatorTest<
             Supplier<MT> messageConstructor,
             Function<MT, ST> serializerConstructor,
             TriFunction<Chooser, MT, ST, PT> preparatorConstructorWithConfig) {
-        this.context = new TlsContext();
+        this.context =
+                new Context(new State(new Config()), new InboundConnection()).getTlsContext();
         this.messageConstructor = messageConstructor;
         this.messageConstructorWithConfig = null;
         this.serializerConstructor = serializerConstructor;

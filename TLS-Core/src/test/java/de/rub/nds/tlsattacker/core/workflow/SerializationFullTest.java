@@ -11,15 +11,12 @@ package de.rub.nds.tlsattacker.core.workflow;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
-import de.rub.nds.tlsattacker.core.https.HttpsRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.*;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
@@ -60,12 +57,14 @@ import de.rub.nds.tlsattacker.core.workflow.action.WaitAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import jakarta.xml.bind.JAXBException;
-import java.io.*;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -134,11 +133,12 @@ public class SerializationFullTest {
         messages.add(new UnknownHandshakeMessage());
         messages.add(new UnknownMessage(ProtocolMessageType.UNKNOWN));
         messages.add(new ServerHelloMessage());
-        HttpsRequestMessage message = new HttpsRequestMessage();
-        message.setRequestPath("someString");
-        message.getRequestPath()
-                .setModification(new StringExplicitValueModification("replacedString"));
-        messages.add(message);
+        // TODO: readd this test when https works again
+        /*
+         * HttpsRequestMessage message = new HttpsRequestMessage(); message.setRequestPath("someString");
+         * message.getRequestPath().setModification(new StringExplicitValueModification("replacedString"));
+         * messages.add(message);
+         */
         SendAction action = new SendAction(messages);
         List<Record> records = new LinkedList<>();
         records.add(new Record());

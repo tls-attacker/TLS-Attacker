@@ -242,4 +242,9 @@ public class SendDynamicServerKeyExchangeAction extends MessageAction implements
     public Set<String> getAllSendingAliases() {
         return new HashSet<>(Collections.singleton(connectionAlias));
     }
+
+    @Override
+    public MessageActionDirection getMessageDirection() {
+        return MessageActionDirection.SENDING;
+    }
 }

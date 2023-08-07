@@ -13,7 +13,10 @@ import de.rub.nds.protocol.constants.HashAlgorithm;
 import de.rub.nds.protocol.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import java.io.ByteArrayInputStream;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -65,15 +68,10 @@ public enum SignatureAndHashAlgorithm {
             null), // TODO this is probably not correct
     GOSTR34102012_512_GOSTR34112012_512(
             0xEFEF, SignatureAlgorithm.GOSTR34102001, null), // TODO this is probably not correct
-    RSA_PSS_PSS_SHA256(0x0809),
-    RSA_PSS_PSS_SHA384(0x080a),
-    RSA_PSS_PSS_SHA512(0x080b),
-    ECDSA_BRAINPOOL_P256R1_TLS13_SHA256(0x081A),
-    ECDSA_BRAINPOOL_P384R1_TLS13_SHA384(0x081B),
-    ECDSA_BRAINPOOL_P512R1_TLS13_SHA512(0x081C),
-    GOSTR34102001_GOSTR3411(0xEDED),
-    GOSTR34102012_256_GOSTR34112012_256(0xEEEE),
-    GOSTR34102012_512_GOSTR34112012_512(0xEFEF),
+
+    ECDSA_BRAINPOOL_P256R1_TLS13_SHA256(0x081A, SignatureAlgorithm.ECDSA, HashAlgorithm.SHA256),
+    ECDSA_BRAINPOOL_P384R1_TLS13_SHA384(0x081B, SignatureAlgorithm.ECDSA, HashAlgorithm.SHA384),
+    ECDSA_BRAINPOOL_P512R1_TLS13_SHA512(0x081C, SignatureAlgorithm.ECDSA, HashAlgorithm.SHA512),
 
     // GREASE constants
     GREASE_00(0x0A0A, null, null),

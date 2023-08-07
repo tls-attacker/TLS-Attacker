@@ -32,9 +32,6 @@ public class PopBufferedMessageAction extends ConnectionBoundAction {
 
     @Override
     public void execute(State state) throws ActionExecutionException {
-        TlsContext ctx = state.getContext(getConnectionAlias()).getTlsContext();
-        ctx.getMessageBuffer().pop();
-    public void execute(State state) throws WorkflowExecutionException {
         TlsContext context = state.getTlsContext(getConnectionAlias());
         if (context.getMessageBuffer().isEmpty()) {
             LOGGER.warn("Could not pop message from buffer, buffer is empty");

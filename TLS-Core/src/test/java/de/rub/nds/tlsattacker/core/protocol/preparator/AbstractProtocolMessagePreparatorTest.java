@@ -11,9 +11,12 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessagePreparator;
+import de.rub.nds.tlsattacker.core.state.Context;
+import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -36,7 +39,8 @@ abstract class AbstractProtocolMessagePreparatorTest<
             Supplier<MT> messageConstructor,
             Function<Config, MT> messageConstructorWithConfig,
             BiFunction<Chooser, MT, PT> preparatorConstructor) {
-        this.context = new TlsContext();
+        this.context =
+                new Context(new State(new Config()), new OutboundConnection()).getTlsContext();
         this.messageConstructor = messageConstructor;
         this.messageConstructorWithConfig = messageConstructorWithConfig;
         this.preparatorConstructor = preparatorConstructor;
@@ -45,7 +49,8 @@ abstract class AbstractProtocolMessagePreparatorTest<
 
     AbstractProtocolMessagePreparatorTest(
             Supplier<MT> messageConstructor, BiFunction<Chooser, MT, PT> preparatorConstructor) {
-        this.context = new TlsContext();
+        this.context =
+                new Context(new State(new Config()), new OutboundConnection()).getTlsContext();
         this.messageConstructor = messageConstructor;
         this.messageConstructorWithConfig = null;
         this.preparatorConstructor = preparatorConstructor;

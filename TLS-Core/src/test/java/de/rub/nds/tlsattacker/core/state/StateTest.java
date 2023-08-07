@@ -126,7 +126,8 @@ public class StateTest {
     public void dynamicallyChangingValidTlsContextSucceeds() {
         State state = new State();
         TlsContext origCtx = state.getTlsContext();
-        TlsContext newCtx = new TlsContext();
+        TlsContext newCtx =
+                new Context(new State(new Config()), new InboundConnection()).getTlsContext();
         newCtx.setConnection(origCtx.getConnection());
         origCtx.setSelectedCipherSuite(CipherSuite.TLS_FALLBACK_SCSV);
         newCtx.setSelectedCipherSuite(CipherSuite.TLS_AES_128_CCM_SHA256);
@@ -147,7 +148,8 @@ public class StateTest {
         trace.addConnection(new InboundConnection(conAlias2));
         State state = new State(trace);
         TlsContext origCtx1 = state.getContext(conAlias1).getTlsContext();
-        TlsContext newCtx = new TlsContext();
+        TlsContext newCtx =
+                new Context(new State(new Config()), new InboundConnection()).getTlsContext();
         newCtx.setConnection(origCtx1.getConnection());
         origCtx1.setSelectedCipherSuite(CipherSuite.TLS_FALLBACK_SCSV);
         newCtx.setSelectedCipherSuite(CipherSuite.TLS_AES_128_CCM_SHA256);
@@ -165,8 +167,8 @@ public class StateTest {
     @Test
     public void replacingTlsContextWithBadAliasFails() {
         State state = new State();
-        TlsContext origCtx = state.getTlsContext();
-        TlsContext newCtx = new TlsContext();
+        TlsContext newCtx =
+                new Context(new State(new Config()), new InboundConnection()).getTlsContext();
         newCtx.setConnection(new InboundConnection("NewAlias"));
 
         ConfigurationException exception =
@@ -180,7 +182,8 @@ public class StateTest {
     public void replacingTlsContextWithBadConnectionFails() {
         State state = new State();
         TlsContext origCtx = state.getTlsContext();
-        TlsContext newCtx = new TlsContext();
+        TlsContext newCtx =
+                new Context(new State(new Config()), new InboundConnection()).getTlsContext();
         newCtx.setConnection(new InboundConnection(origCtx.getConnection().getAlias(), 87311));
 
         ContextHandlingException exception =

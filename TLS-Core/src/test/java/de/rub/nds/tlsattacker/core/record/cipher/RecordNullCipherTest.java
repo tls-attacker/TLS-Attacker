@@ -10,9 +10,13 @@ package de.rub.nds.tlsattacker.core.record.cipher;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
+import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.state.Context;
+import de.rub.nds.tlsattacker.core.state.State;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -24,7 +28,8 @@ public class RecordNullCipherTest {
 
     @BeforeEach
     public void setUp() {
-        TlsContext ctx = new TlsContext();
+        TlsContext ctx =
+                new Context(new State(new Config()), new InboundConnection()).getTlsContext();
         recordCipher = RecordCipherFactory.getNullCipher(ctx);
         data = new byte[] {1, 2};
         record = new Record();

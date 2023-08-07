@@ -11,8 +11,6 @@ package de.rub.nds.tlsattacker.core.state;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.constants.ChooserType;
-import de.rub.nds.tlsattacker.core.constants.RunningModeType;
-import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.layer.LayerStack;
 import de.rub.nds.tlsattacker.core.layer.LayerStackFactory;
 import de.rub.nds.tlsattacker.core.layer.constant.LayerConfiguration;
@@ -59,36 +57,19 @@ public class Context {
     /** The end point of the connection that this context represents. */
     private AliasedConnection connection;
 
-    public Context(Config config) {
+    /** The state which this context belongs to */
+    private State state;
+
+    public Context(State state, AliasedConnection connection) {
+        this.state = state;
         this.chooser = ChooserFactory.getChooser(ChooserType.DEFAULT, this, config);
-        this.config = config;
-        RunningModeType mode = config.getDefaultRunningMode();
-        if (null == mode) {
-            throw new ConfigurationException("Cannot create connection, running mode not set");
-        } else {
-            switch (mode) {
-                case CLIENT:
-                    this.connection = config.getDefaultClientConnection();
-                    break;
-                case SERVER:
-                    this.connection = config.getDefaultServerConnection();
-                    break;
-                default:
-                    throw new ConfigurationException(
-                            "Cannot create connection for unknown running mode "
-                                    + "'"
-                                    + mode
-                                    + "'");
-            }
-        }
+        this.config = state.getConfig();
+        this.connection = connection;
         prepareWithLayers(config.getDefaultLayerConfiguration());
     }
 
-    public Context(Config config, AliasedConnection connection) {
-        this.chooser = ChooserFactory.getChooser(ChooserType.DEFAULT, this, config);
-        this.config = config;
-        this.connection = connection;
-        prepareWithLayers(config.getDefaultLayerConfiguration());
+    public State getState() {
+        return state;
     }
 
     public TcpContext getTcpContext() {

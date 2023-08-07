@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.layer.impl;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.layer.SpecificSendLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
@@ -18,6 +19,8 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2Message;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
+import de.rub.nds.tlsattacker.core.state.Context;
+import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -45,8 +48,7 @@ public class SSL2LayerTest extends TestCase {
         config = new Config();
         config.setDefaultLayerConfiguration(LayerConfiguration.SSL2);
         config.setHighestProtocolVersion(ProtocolVersion.SSL2);
-
-        tlsContext = new TlsContext(config);
+        tlsContext = new Context(new State(config), new OutboundConnection()).getTlsContext();
         transportHandler = new FakeTransportHandler(null);
         tlsContext.setTransportHandler(transportHandler);
 

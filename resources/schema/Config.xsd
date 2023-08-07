@@ -3972,6 +3972,9 @@
       <xs:enumeration value="GOSTR34102001_GOSTR3411"/>
       <xs:enumeration value="GOSTR34102012_256_GOSTR34112012_256"/>
       <xs:enumeration value="GOSTR34102012_512_GOSTR34112012_512"/>
+      <xs:enumeration value="ECDSA_BRAINPOOL_P256R1_TLS13_SHA256"/>
+      <xs:enumeration value="ECDSA_BRAINPOOL_P384R1_TLS13_SHA384"/>
+      <xs:enumeration value="ECDSA_BRAINPOOL_P512R1_TLS13_SHA512"/>
       <xs:enumeration value="GREASE_00"/>
       <xs:enumeration value="GREASE_01"/>
       <xs:enumeration value="GREASE_02"/>
@@ -5002,3 +5005,4 @@
     </xs:sequence>
   </xs:complexType>
 </xs:schema>
+

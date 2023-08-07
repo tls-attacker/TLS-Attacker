@@ -40,7 +40,7 @@ public class SrtpExtensionHandlerTest
         SrtpExtensionMessage msg = new SrtpExtensionMessage();
         msg.setSrtpProtectionProfiles(profilesAsBytes);
         msg.setSrtpMki(mki);
-        handler.adjustTLSContext(msg);
+        handler.adjustContext(msg);
         assertEquals(context.getClientSupportedSrtpProtectionProfiles(), profiles);
         assertArrayEquals(mki, context.getSecureRealTimeProtocolMasterKeyIdentifier());
     }
