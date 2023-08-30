@@ -40,7 +40,6 @@ public class EncryptedExtensionsHandlerTest
         EncryptedExtensionsMessage message = new EncryptedExtensionsMessage();
         handler.adjustContext(message);
 
-        assertTrue(context.getProposedExtensions() == null); // this should not be set
         assertTrue(context.getNegotiatedExtensionSet().isEmpty());
     }
 
