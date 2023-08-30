@@ -102,6 +102,6 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
 
     private void prepareKeyShareLength() {
         entry.setPublicKeyLength(entry.getPublicKey().getValue().length);
-        LOGGER.debug("KeyShareLength: " + entry.getPublicKeyLength().getValue());
+        LOGGER.debug("KeyShareLength: {}", entry.getPublicKeyLength().getValue());
     }
 }
