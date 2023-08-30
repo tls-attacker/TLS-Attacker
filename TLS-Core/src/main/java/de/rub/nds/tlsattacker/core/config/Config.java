@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -182,6 +182,9 @@ public class Config implements Serializable {
 
     /** If default generated WorkflowTraces should contain client Authentication */
     private Boolean clientAuthentication = false;
+
+    /** If the ServerHello should contain all enabled extensions or only proposed ones */
+    private Boolean respectClientProposedExtensions = false;
 
     /** Which Signature and Hash algorithms we support */
     @XmlElement(name = "defaultClientSupportedSignatureAndHashAlgorithm")
@@ -1200,7 +1203,7 @@ public class Config implements Serializable {
         defaultLayerConfiguration = LayerConfiguration.TLS;
         defaultClientConnection = new OutboundConnection("client", 443, "localhost");
         defaultServerConnection = new InboundConnection("server", 443, "localhost");
-        workflowTraceType = WorkflowTraceType.HANDSHAKE;
+        workflowTraceType = WorkflowTraceType.DYNAMIC_HANDSHAKE;
 
         defaultEsniServerKeyShareEntries.add(
                 new KeyShareStoreEntry(
@@ -4005,5 +4008,11 @@ public class Config implements Serializable {
     public void setDefaultSelectedSrtpProtectionProfile(
             SrtpProtectionProfile defaultSelectedSrtpProtectionProfile) {
         this.defaultSelectedSrtpProtectionProfile = defaultSelectedSrtpProtectionProfile;
+    public Boolean isRespectClientProposedExtensions() {
+        return respectClientProposedExtensions;
+    }
+
+    public void setRespectClientProposedExtensions(Boolean respectClientProposedExtensions) {
+        this.respectClientProposedExtensions = respectClientProposedExtensions;
     }
 }

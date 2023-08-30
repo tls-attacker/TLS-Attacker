@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -27,7 +27,8 @@ public enum BulkCipherAlgorithm {
     ARIA,
     CHACHA20_POLY1305,
     GOST28147,
-    AES;
+    AES,
+    SM4;
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -65,6 +66,8 @@ public enum BulkCipherAlgorithm {
             return GOST28147;
         } else if (cipher.contains("CHACHA20_POLY1305")) {
             return CHACHA20_POLY1305;
+        } else if (cipher.contains("SM4")) {
+            return SM4;
         }
 
         LOGGER.warn(
@@ -102,6 +105,8 @@ public enum BulkCipherAlgorithm {
             return ARIA;
         } else if (cipher.contains("CHACHA20_POLY1305")) {
             return CHACHA20_POLY1305;
+        } else if (cipher.contains("SM4")) {
+            return SM4;
         }
         throw new UnsupportedOperationException(
                 "The cipher algorithm from " + cipherAlgorithm.name() + " is not supported yet.");

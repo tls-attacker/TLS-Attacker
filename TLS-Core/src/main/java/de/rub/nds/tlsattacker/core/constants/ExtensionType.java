@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -267,5 +267,23 @@ public enum ExtensionType {
             default:
                 return false;
         }
+    }
+
+    public static List<ExtensionType> getNonTls13Extensions() {
+        List<ExtensionType> list = new LinkedList<>();
+        list.add(EXTENDED_MASTER_SECRET);
+        list.add(EXTENDED_RANDOM);
+        list.add(ENCRYPT_THEN_MAC);
+        list.add(SRP);
+        list.add(TRUNCATED_HMAC);
+        list.add(RENEGOTIATION_INFO);
+        return list;
+    }
+
+    public static List<ExtensionType> getTls13OnlyExtensions() {
+        List<ExtensionType> list = new LinkedList<>();
+        list.add(EARLY_DATA);
+        list.add(KEY_SHARE);
+        return list;
     }
 }

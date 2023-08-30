@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.certificatestatus.CertificateStatusObject;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.CertificateStatusGenericParser;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
@@ -33,7 +34,10 @@ public class CertificateStatusRequestExtensionParser
 
     @Override
     public void parse(CertificateStatusRequestExtensionMessage msg) {
-        if (!selectedVersion.isTLS13()) {
+        if (!selectedVersion.isTLS13()
+                || this.getTlsContext()
+                        .getTalkingConnectionEndType()
+                        .equals(ConnectionEndType.CLIENT)) {
             msg.setCertificateStatusRequestType(
                     parseIntField(ExtensionByteLength.CERTIFICATE_STATUS_REQUEST_STATUS_TYPE));
             LOGGER.debug(
@@ -67,10 +71,13 @@ public class CertificateStatusRequestExtensionParser
                 new CertificateStatusGenericParser(
                         new ByteArrayInputStream(
                                 parseByteArrayField(msg.getExtensionLength().getValue())));
-        CertificateStatusObject certificateStatus = new CertificateStatusObject();
-        certificateStatusGenericParser.parse(certificateStatus);
-        msg.setCertificateStatusType(certificateStatus.getType());
-        msg.setOcspResponseLength(certificateStatus.getLength());
-        msg.setOcspResponseBytes(certificateStatus.getOcspResponse());
+        // RFC 8446, sect 4.4.2.1 explicitly allows empty extensions for a Certificate Request
+        if (certificateStatusGenericParser.getBytesLeft() > 0) {
+            CertificateStatusObject certificateStatus = new CertificateStatusObject();
+            certificateStatusGenericParser.parse(certificateStatus);
+            msg.setCertificateStatusType(certificateStatus.getType());
+            msg.setOcspResponseLength(certificateStatus.getLength());
+            msg.setOcspResponseBytes(certificateStatus.getOcspResponse());
+        }
     }
 }

@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -37,8 +37,12 @@ public class ParserSerializerIT extends GenericParserSerializerTest {
     @Test
     @Tag(TestCategories.INTEGRATION_TEST)
     public void testParser()
-            throws NoSuchMethodException, InstantiationException, IllegalAccessException,
-                    IllegalAccessException, IllegalArgumentException, IllegalArgumentException,
+            throws NoSuchMethodException,
+                    InstantiationException,
+                    IllegalAccessException,
+                    IllegalAccessException,
+                    IllegalArgumentException,
+                    IllegalArgumentException,
                     InvocationTargetException {
         Random r = new Random(42);
         for (int i = 0; i < 10000; i++) {

@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -67,7 +67,7 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
         ProtocolMessageType runningProtocolMessageType = null;
         ByteArrayOutputStream collectedMessageStream = new ByteArrayOutputStream();
         if (configuration != null && configuration.getContainerList() != null) {
-            for (ProtocolMessage message : configuration.getContainerList()) {
+            for (ProtocolMessage message : getUnprocessedConfiguredContainers()) {
                 if (containerAlreadyUsedByHigherLayer(message)
                         || !prepareDataContainer(message, context)) {
                     continue;
@@ -178,7 +178,7 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
     public ApplicationMessage getConfiguredApplicationMessage(
             LayerConfiguration<ProtocolMessage> configuration) {
         if (configuration != null && configuration.getContainerList() != null) {
-            for (ProtocolMessage configuredMessage : configuration.getContainerList()) {
+            for (ProtocolMessage configuredMessage : getUnprocessedConfiguredContainers()) {
                 if (configuredMessage.getProtocolMessageType()
                         == ProtocolMessageType.APPLICATION_DATA) {
                     return (ApplicationMessage) configuredMessage;
@@ -227,7 +227,6 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
 
     public void readMessageForHint(RecordLayerHint hint) {
         switch (hint.getType()) {
-                // use correct parser for the message
             case ALERT:
                 readAlertProtocolData();
                 break;
@@ -336,9 +335,12 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
             handler.adjustContext(handshakeMessage);
             addProducedContainer(handshakeMessage);
         } catch (RuntimeException ex) {
-            LOGGER.error("Could not adjust context", ex);
+            LOGGER.warn(
+                    "Failed to parse HandshakeMessage using assumed type {}",
+                    HandshakeMessageType.getMessageType(type));
             // not being able to handle the handshake message results in an UnknownMessageContainer
             UnknownHandshakeMessage message = new UnknownHandshakeMessage();
+            message.setAssumedType(type);
             message.setData(payload);
             addProducedContainer(message);
         }

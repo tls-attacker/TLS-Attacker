@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -378,6 +378,8 @@ public enum CipherSuite {
     TLS_ECCPWD_WITH_AES_256_GCM_SHA384(0xC0B1),
     TLS_ECCPWD_WITH_AES_128_CCM_SHA256(0xC0B2),
     TLS_ECCPWD_WITH_AES_256_CCM_SHA384(0xC0B3),
+    TLS_SM4_GCM_SM3(0xC6),
+    TLS_SM4_CCM_SM3(0xC7),
     // *************************************************************************
     // Unofficial cipher suites draft-mavrogiannopoulos-chacha-tls-01
     // These cipher suite are from a Draft and also don't have a mac algorithm
@@ -1048,6 +1050,8 @@ public enum CipherSuite {
         list.add(TLS_RSA_EXPORT_WITH_RC2_CBC_40_MD5);
         list.add(TLS_DHE_RSA_EXPORT_WITH_DES40_CBC_SHA);
         list.add(TLS_DHE_DSS_EXPORT_WITH_DES40_CBC_SHA);
+        list.add(TLS_SM4_GCM_SM3);
+        list.add(TLS_SM4_CCM_SM3);
         list.add(TLS_NULL_WITH_NULL_NULL);
         return list;
     }
@@ -1069,6 +1073,8 @@ public enum CipherSuite {
         list.add(CipherSuite.TLS_CHACHA20_POLY1305_SHA256);
         list.add(CipherSuite.TLS_AES_128_CCM_SHA256);
         list.add(CipherSuite.TLS_AES_128_CCM_8_SHA256);
+        list.add(TLS_SM4_GCM_SM3);
+        list.add(TLS_SM4_CCM_SM3);
         return list;
     }
 
@@ -1079,6 +1085,8 @@ public enum CipherSuite {
         list.add(CipherSuite.TLS_CHACHA20_POLY1305_SHA256);
         list.add(CipherSuite.TLS_AES_128_CCM_SHA256);
         list.add(CipherSuite.TLS_AES_128_CCM_8_SHA256);
+        list.add(TLS_SM4_GCM_SM3);
+        list.add(TLS_SM4_CCM_SM3);
         return list;
     }
 
@@ -1098,7 +1106,8 @@ public enum CipherSuite {
      * @return True if the Ciphersuite is supported in TLS 1.3
      */
     public boolean isTLS13() {
-        return this.getByteValue()[0] == (byte) 0x13 && this.getByteValue()[1] != (byte) 0x00;
+        return (this.getByteValue()[0] == (byte) 0x13 && this.getByteValue()[1] != (byte) 0x00)
+                || this.isSM();
     }
 
     public boolean isImplemented() {
@@ -1147,6 +1156,10 @@ public enum CipherSuite {
 
     public boolean isGOST() {
         return this.name().contains("GOST");
+    }
+
+    public boolean isSM() {
+        return this.name().contains("SM");
     }
 
     // Note: We don't consider DES as weak for these purposes.

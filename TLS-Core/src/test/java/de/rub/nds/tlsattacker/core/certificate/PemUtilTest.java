@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -14,20 +14,27 @@ import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.Security;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 public class PemUtilTest {
 
-    private static final String SECRET =
-            "45920025678221661724778903394380424235512150060610104911582497586860611281771";
+    private static final String SECRET = "45920025678221661724778903394380424235512150060610104911582497586860611281771";
+
+    @BeforeAll
+    public static void setUpClass() {
+        Security.addProvider(new BouncyCastleProvider());
+    }
 
     /** Test of writePrivateKey method, of class PemUtil. */
     @Test
     public void testWritePrivateKey() {
         BigInteger secret = new BigInteger(SECRET);
         PrivateKey key = Mockito.mock(PrivateKey.class);
-        Mockito.when(key.getEncoded()).thenReturn(new byte[] {1, 2, 3});
+        Mockito.when(key.getEncoded()).thenReturn(new byte[] { 1, 2, 3 });
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PemUtil.writePrivateKey(key.getEncoded(), baos);
         String result = baos.toString();
@@ -39,7 +46,7 @@ public class PemUtilTest {
     @Test
     public void testWritePublicKey() {
         PublicKey key = Mockito.mock(PublicKey.class);
-        Mockito.when(key.getEncoded()).thenReturn(new byte[] {1, 2, 3});
+        Mockito.when(key.getEncoded()).thenReturn(new byte[] { 1, 2, 3 });
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PemUtil.writePublicKey(key, baos);
         String result = baos.toString();

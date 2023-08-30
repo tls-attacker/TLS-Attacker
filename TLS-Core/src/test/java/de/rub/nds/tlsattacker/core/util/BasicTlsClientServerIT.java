@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -39,9 +39,16 @@ public class BasicTlsClientServerIT {
     @Test
     @Tag(TestCategories.INTEGRATION_TEST)
     public void testSimpleProxy()
-            throws OperatorCreationException, NoSuchAlgorithmException, UnrecoverableKeyException,
-                    CertificateException, KeyStoreException, IOException, KeyManagementException,
-                    SignatureException, InvalidKeyException, NoSuchProviderException,
+            throws OperatorCreationException,
+                    NoSuchAlgorithmException,
+                    UnrecoverableKeyException,
+                    CertificateException,
+                    KeyStoreException,
+                    IOException,
+                    KeyManagementException,
+                    SignatureException,
+                    InvalidKeyException,
+                    NoSuchProviderException,
                     InterruptedException {
         TimeHelper.setProvider(new FixedTimeProvider(0));
         KeyPair k = KeyStoreGenerator.createRSAKeyPair(1024, random);

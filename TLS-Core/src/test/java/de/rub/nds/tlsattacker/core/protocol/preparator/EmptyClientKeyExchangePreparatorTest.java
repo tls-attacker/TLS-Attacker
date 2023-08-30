@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -26,6 +26,7 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.security.NoSuchProviderException;
 import java.security.Security;
 import java.security.cert.CertificateException;
 import java.util.List;
@@ -158,7 +159,8 @@ public class EmptyClientKeyExchangePreparatorTest
     }
 
     @Test
-    public void testPrepareHandshakeMessageContentsDH() throws CertificateException, IOException {
+    public void testPrepareHandshakeMessageContentsDH()
+            throws CertificateException, IOException, NoSuchProviderException {
         // prepare message params
         context.setSelectedCipherSuite(CipherSuite.TLS_DH_RSA_WITH_AES_256_CBC_SHA);
         context.getServerX509Context().setSubjectDhPublicKey(DH_SERVER_PUBLIC_KEY);
@@ -207,7 +209,7 @@ public class EmptyClientKeyExchangePreparatorTest
 
     @Test
     public void testPrepareHandshakeMessageContentsECDSA()
-            throws CertificateException, IOException {
+            throws CertificateException, IOException, NoSuchProviderException {
         // prepare message params
         context.setSelectedCipherSuite(CipherSuite.TLS_ECDH_RSA_WITH_AES_128_CBC_SHA256);
 

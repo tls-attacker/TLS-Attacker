@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -45,8 +45,12 @@ public class BasicTlsClient extends Thread {
 
     public BasicTlsClient(
             String serverHost, int serverPort, ProtocolVersion version, CipherSuite cipherSuite)
-            throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException,
-                    UnrecoverableKeyException, KeyManagementException {
+            throws KeyStoreException,
+                    IOException,
+                    NoSuchAlgorithmException,
+                    CertificateException,
+                    UnrecoverableKeyException,
+                    KeyManagementException {
         this.cipherSuite = cipherSuite;
         this.serverHost = serverHost;
         this.serverPort = serverPort;
@@ -56,8 +60,12 @@ public class BasicTlsClient extends Thread {
     }
 
     public BasicTlsClient()
-            throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException,
-                    UnrecoverableKeyException, KeyManagementException {
+            throws KeyStoreException,
+                    IOException,
+                    NoSuchAlgorithmException,
+                    CertificateException,
+                    UnrecoverableKeyException,
+                    KeyManagementException {
         this("127.0.0.1", 4433, ProtocolVersion.TLS12, CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
     }
 

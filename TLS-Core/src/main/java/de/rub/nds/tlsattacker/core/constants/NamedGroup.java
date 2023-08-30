@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -69,6 +69,7 @@ public enum NamedGroup {
     BRAINPOOLP512R1(new byte[] {(byte) 0, (byte) 28}, NamedEllipticCurveParameters.BRAINPOOLP512R1),
     ECDH_X25519(new byte[] {(byte) 0, (byte) 29}, NamedEllipticCurveParameters.CURVE_X25519),
     ECDH_X448(new byte[] {(byte) 0, (byte) 30}, NamedEllipticCurveParameters.CURVE_X448),
+    CURVE_SM2(new byte[] {(byte) 0, (byte) 41}, NamedEllipticCurveParameters.CURVE_SM2),
     FFDHE2048(new byte[] {(byte) 1, (byte) 0}, new GroupFFDHE2048()),
     FFDHE3072(new byte[] {(byte) 1, (byte) 1}, new GroupFFDHE3072()),
     FFDHE4096(new byte[] {(byte) 1, (byte) 2}, new GroupFFDHE4096()),
@@ -114,7 +115,8 @@ public enum NamedGroup {
                             FFDHE8192,
                             SECP256R1,
                             SECP384R1,
-                            SECP521R1));
+                            SECP521R1,
+                            CURVE_SM2));
 
     private NamedGroup(byte[] value, GroupParameters group) {
         this.value = value;
@@ -510,6 +512,7 @@ public enum NamedGroup {
         list.add(SECT571R1);
         list.add(ECDH_X25519);
         list.add(ECDH_X448);
+        list.add(CURVE_SM2);
         list.add(BRAINPOOLP256R1);
         list.add(BRAINPOOLP384R1);
         list.add(BRAINPOOLP512R1);

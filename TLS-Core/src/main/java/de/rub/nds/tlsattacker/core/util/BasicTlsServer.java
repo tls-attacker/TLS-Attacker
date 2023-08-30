@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -37,8 +37,12 @@ public class BasicTlsServer extends Thread {
     private volatile boolean initialized;
 
     public BasicTlsServer(KeyStore keyStore, String password, String protocol, int port)
-            throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException,
-                    UnrecoverableKeyException, KeyManagementException {
+            throws KeyStoreException,
+                    IOException,
+                    NoSuchAlgorithmException,
+                    CertificateException,
+                    UnrecoverableKeyException,
+                    KeyManagementException {
 
         this.port = port;
 
