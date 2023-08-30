@@ -3080,6 +3080,7 @@
       <xs:extension base="handshakeMessage">
         <xs:sequence>
           <xs:element name="dataConfig" type="xs:base64Binary" minOccurs="0"/>
+          <xs:element name="assumedType" type="modifiableByte" minOccurs="0"/>
           <xs:element name="data" type="modifiableByteArray" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
