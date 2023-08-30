@@ -20,7 +20,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bouncycastle.jcajce.spec.SM2ParameterSpec;
 
 public enum SignatureAndHashAlgorithm {
     ANONYMOUS_NONE(0x0000, null, null),
