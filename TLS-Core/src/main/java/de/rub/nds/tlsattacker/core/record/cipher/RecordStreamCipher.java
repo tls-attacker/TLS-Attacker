@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.crypto.cipher.CipherWrapper;
 import de.rub.nds.tlsattacker.core.crypto.mac.MacWrapper;
 import de.rub.nds.tlsattacker.core.crypto.mac.WrappedMac;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
+import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.record.Record;
@@ -143,21 +144,34 @@ public class RecordStreamCipher extends RecordCipher {
         computations.setPlainRecordBytes(plainData);
         plainData = computations.getPlainRecordBytes().getValue();
         PlaintextParser parser = new PlaintextParser(plainData);
-        byte[] cleanBytes = parser.parseByteArrayField(plainData.length - readMac.getMacLength());
-        record.setCleanProtocolMessageBytes(cleanBytes);
-        record.getComputations().setAuthenticatedNonMetaData(cleanBytes);
-        record.getComputations()
-                .setAuthenticatedMetaData(
-                        collectAdditionalAuthenticatedData(record, getState().getVersion()));
-        byte[] hmac = parser.parseByteArrayField(readMac.getMacLength());
-        record.getComputations().setMac(hmac);
-        byte[] calculatedHmac =
-                calculateMac(
-                        ArrayConverter.concatenate(
-                                record.getComputations().getAuthenticatedMetaData().getValue(),
-                                record.getComputations().getAuthenticatedNonMetaData().getValue()),
-                        getTalkingConnectionEndType());
-        record.getComputations().setMacValid(Arrays.equals(hmac, calculatedHmac));
+        try {
+
+            byte[] cleanBytes =
+                    parser.parseByteArrayField(plainData.length - readMac.getMacLength());
+            record.setCleanProtocolMessageBytes(cleanBytes);
+            record.getComputations().setAuthenticatedNonMetaData(cleanBytes);
+            record.getComputations()
+                    .setAuthenticatedMetaData(
+                            collectAdditionalAuthenticatedData(record, getState().getVersion()));
+            byte[] hmac = parser.parseByteArrayField(readMac.getMacLength());
+            record.getComputations().setMac(hmac);
+            byte[] calculatedHmac =
+                    calculateMac(
+                            ArrayConverter.concatenate(
+                                    record.getComputations().getAuthenticatedMetaData().getValue(),
+                                    record.getComputations()
+                                            .getAuthenticatedNonMetaData()
+                                            .getValue()),
+                            getTalkingConnectionEndType());
+            record.getComputations().setMacValid(Arrays.equals(hmac, calculatedHmac));
+        } catch (ParserException e) {
+            LOGGER.warn("Could not find all components (ciphertext, tag) in record.");
+            LOGGER.warn(
+                    "This is probably us having the wrong keys. Depending on the application this may be fine.");
+            LOGGER.warn("Setting clean bytes to protocol message bytes.");
+            record.setCleanProtocolMessageBytes(record.getProtocolMessageBytes());
+            record.getComputations().setMacValid(false);
+        }
     }
 
     class PlaintextParser extends Parser<Object> {

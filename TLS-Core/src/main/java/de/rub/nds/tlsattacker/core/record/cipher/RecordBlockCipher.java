@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.record.cipher;
 
+import de.rub.nds.asn1.parser.ParserException;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.crypto.cipher.CipherWrapper;
@@ -292,112 +293,127 @@ public final class RecordBlockCipher extends RecordCipher {
 
         byte[] plaintext = record.getProtocolMessageBytes().getValue();
         PlaintextParser parser = new PlaintextParser(plaintext);
-
-        byte[] iv;
-        if (useExplicitIv) {
-            LOGGER.debug("Using explicit IV");
-            iv = parser.parseByteArrayField(getState().getCipherAlg().getNonceBytesFromHandshake());
-        } else {
-            LOGGER.debug("Using implicit IV");
-            iv = decryptCipher.getIv();
-        }
-        LOGGER.debug("Using IV: {}", iv);
-        record.getComputations().setCbcInitialisationVector(iv);
-
-        if (getState().isEncryptThenMac()) {
-            int macLength = readMac.getMacLength();
-            int toParseCiphertextLength = parser.getBytesLeft() - macLength;
-            if (toParseCiphertextLength < 0) {
-                throw new CryptoException("Record too small");
-            }
-            byte[] ciphertext = parser.parseByteArrayField(toParseCiphertextLength);
-            computations.setCiphertext(ciphertext);
-
-            byte[] hmac = parser.parseByteArrayField(macLength);
-            computations.setMac(hmac);
-
-            byte[] plainData = decryptCipher.decrypt(iv, ciphertext);
-            computations.setPlainRecordBytes(plainData);
-            plainData = computations.getPlainRecordBytes().getValue();
-
-            LOGGER.debug("Decrypted plaintext: {}", plainData);
-            parser = new PlaintextParser(plainData);
-            byte[] cleanProtocolBytes =
-                    parser.parseByteArrayField(
-                            plainData.length - (plainData[plainData.length - 1] + 1));
-            if (getState().getVersion().isDTLS()
-                    && record.getContentMessageType() == ProtocolMessageType.TLS12_CID) {
-                parseEncapsulatedRecordBytes(cleanProtocolBytes, record);
-            } else {
-                record.setCleanProtocolMessageBytes(cleanProtocolBytes);
-            }
+        try {
+            byte[] iv;
             if (useExplicitIv) {
-                computations.setAuthenticatedNonMetaData(
-                        ArrayConverter.concatenate(
-                                record.getComputations().getCbcInitialisationVector().getValue(),
-                                record.getComputations().getCiphertext().getValue()));
+                LOGGER.debug("Using explicit IV");
+                iv =
+                        parser.parseByteArrayField(
+                                getState().getCipherAlg().getNonceBytesFromHandshake());
             } else {
-                computations.setAuthenticatedNonMetaData(
-                        record.getComputations().getCiphertext().getValue());
+                LOGGER.debug("Using implicit IV");
+                iv = decryptCipher.getIv();
             }
-            computations.setAuthenticatedMetaData(
-                    collectAdditionalAuthenticatedData(record, getState().getVersion()));
+            LOGGER.debug("Using IV: {}", iv);
+            record.getComputations().setCbcInitialisationVector(iv);
 
-            byte[] padding = parser.parseByteArrayField(plainData[plainData.length - 1] + 1);
-            computations.setPadding(padding);
-            computations.setPaddingValid(isPaddingValid(padding));
+            if (getState().isEncryptThenMac()) {
+                int macLength = readMac.getMacLength();
+                int toParseCiphertextLength = parser.getBytesLeft() - macLength;
+                if (toParseCiphertextLength < 0) {
+                    throw new CryptoException("Record too small");
+                }
+                byte[] ciphertext = parser.parseByteArrayField(toParseCiphertextLength);
+                computations.setCiphertext(ciphertext);
 
-            byte[] calculatedHMAC =
-                    calculateMac(
+                byte[] hmac = parser.parseByteArrayField(macLength);
+                computations.setMac(hmac);
+
+                byte[] plainData = decryptCipher.decrypt(iv, ciphertext);
+                computations.setPlainRecordBytes(plainData);
+                plainData = computations.getPlainRecordBytes().getValue();
+
+                LOGGER.debug("Decrypted plaintext: {}", plainData);
+                parser = new PlaintextParser(plainData);
+                byte[] cleanProtocolBytes =
+                        parser.parseByteArrayField(
+                                plainData.length - (plainData[plainData.length - 1] + 1));
+                if (getState().getVersion().isDTLS()
+                        && record.getContentMessageType() == ProtocolMessageType.TLS12_CID) {
+                    parseEncapsulatedRecordBytes(cleanProtocolBytes, record);
+                } else {
+                    record.setCleanProtocolMessageBytes(cleanProtocolBytes);
+                }
+                if (useExplicitIv) {
+                    computations.setAuthenticatedNonMetaData(
                             ArrayConverter.concatenate(
-                                    computations.getAuthenticatedMetaData().getValue(),
-                                    computations.getAuthenticatedNonMetaData().getValue()),
-                            getLocalConnectionEndType().getPeer());
-            computations.setMacValid(
-                    Arrays.equals(calculatedHMAC, computations.getMac().getValue()));
-        } else {
-            byte[] ciphertext = parser.parseByteArrayField(parser.getBytesLeft());
-            computations.setCiphertext(ciphertext);
-            ciphertext = computations.getCiphertext().getValue();
+                                    record.getComputations()
+                                            .getCbcInitialisationVector()
+                                            .getValue(),
+                                    record.getComputations().getCiphertext().getValue()));
+                } else {
+                    computations.setAuthenticatedNonMetaData(
+                            record.getComputations().getCiphertext().getValue());
+                }
+                computations.setAuthenticatedMetaData(
+                        collectAdditionalAuthenticatedData(record, getState().getVersion()));
 
-            byte[] plainData = decryptCipher.decrypt(iv, ciphertext);
+                byte[] padding = parser.parseByteArrayField(plainData[plainData.length - 1] + 1);
+                computations.setPadding(padding);
+                computations.setPaddingValid(isPaddingValid(padding));
 
-            computations.setPlainRecordBytes(plainData);
-            plainData = computations.getPlainRecordBytes().getValue();
-
-            parser = new PlaintextParser(plainData);
-
-            byte[] cleanProtocolBytes =
-                    parser.parseByteArrayField(
-                            plainData.length
-                                    - readMac.getMacLength()
-                                    - (plainData[plainData.length - 1] + 1));
-            if (getState().getVersion().isDTLS()
-                    && record.getContentMessageType() == ProtocolMessageType.TLS12_CID) {
-                parseEncapsulatedRecordBytes(cleanProtocolBytes, record);
+                byte[] calculatedHMAC =
+                        calculateMac(
+                                ArrayConverter.concatenate(
+                                        computations.getAuthenticatedMetaData().getValue(),
+                                        computations.getAuthenticatedNonMetaData().getValue()),
+                                getLocalConnectionEndType().getPeer());
+                computations.setMacValid(
+                        Arrays.equals(calculatedHMAC, computations.getMac().getValue()));
             } else {
-                record.setCleanProtocolMessageBytes(cleanProtocolBytes);
+                byte[] ciphertext = parser.parseByteArrayField(parser.getBytesLeft());
+                computations.setCiphertext(ciphertext);
+                ciphertext = computations.getCiphertext().getValue();
+
+                byte[] plainData = decryptCipher.decrypt(iv, ciphertext);
+
+                computations.setPlainRecordBytes(plainData);
+                plainData = computations.getPlainRecordBytes().getValue();
+
+                parser = new PlaintextParser(plainData);
+
+                byte[] cleanProtocolBytes =
+                        parser.parseByteArrayField(
+                                plainData.length
+                                        - readMac.getMacLength()
+                                        - (plainData[plainData.length - 1] + 1));
+                if (getState().getVersion().isDTLS()
+                        && record.getContentMessageType() == ProtocolMessageType.TLS12_CID) {
+                    parseEncapsulatedRecordBytes(cleanProtocolBytes, record);
+                } else {
+                    record.setCleanProtocolMessageBytes(cleanProtocolBytes);
+                }
+
+                byte[] hmac = parser.parseByteArrayField(readMac.getMacLength());
+                record.getComputations().setMac(hmac);
+
+                byte[] padding = parser.parseByteArrayField(plainData[plainData.length - 1] + 1);
+                computations.setPadding(padding);
+
+                computations.setAuthenticatedNonMetaData(cleanProtocolBytes);
+                computations.setAuthenticatedMetaData(
+                        collectAdditionalAuthenticatedData(record, getState().getVersion()));
+
+                computations.setPaddingValid(isPaddingValid(padding));
+                byte[] calculatedHMAC =
+                        calculateMac(
+                                ArrayConverter.concatenate(
+                                        computations.getAuthenticatedMetaData().getValue(),
+                                        computations.getAuthenticatedNonMetaData().getValue()),
+                                getLocalConnectionEndType().getPeer());
+                computations.setMacValid(
+                        Arrays.equals(calculatedHMAC, computations.getMac().getValue()));
             }
+        } catch (ParserException e) {
+            LOGGER.warn(
+                    "Could not find all components (plaintext, mac, padding) in plaintext record.");
+            LOGGER.warn(
+                    "This is probably us having the wrong keys. Depending on the application this may be fine.");
+            LOGGER.warn("Setting clean bytes to protocol message bytes.");
+            record.setCleanProtocolMessageBytes(record.getProtocolMessageBytes());
 
-            byte[] hmac = parser.parseByteArrayField(readMac.getMacLength());
-            record.getComputations().setMac(hmac);
-
-            byte[] padding = parser.parseByteArrayField(plainData[plainData.length - 1] + 1);
-            computations.setPadding(padding);
-
-            computations.setAuthenticatedNonMetaData(cleanProtocolBytes);
-            computations.setAuthenticatedMetaData(
-                    collectAdditionalAuthenticatedData(record, getState().getVersion()));
-
-            computations.setPaddingValid(isPaddingValid(padding));
-            byte[] calculatedHMAC =
-                    calculateMac(
-                            ArrayConverter.concatenate(
-                                    computations.getAuthenticatedMetaData().getValue(),
-                                    computations.getAuthenticatedNonMetaData().getValue()),
-                            getLocalConnectionEndType().getPeer());
-            computations.setMacValid(
-                    Arrays.equals(calculatedHMAC, computations.getMac().getValue()));
+            computations.setMacValid(false);
+            computations.setPaddingValid(false);
         }
     }
 
