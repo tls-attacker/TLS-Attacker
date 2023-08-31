@@ -22,7 +22,9 @@ import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
+import de.rub.nds.tlsattacker.core.util.SuppressingTrueBooleanAdapter;
 import jakarta.xml.bind.annotation.XmlSeeAlso;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.InputStream;
 import java.io.Serializable;
 
@@ -91,10 +93,22 @@ public abstract class ExtensionMessage<Self extends ExtensionMessage<?>>
 
     @ModifiableVariableProperty private ModifiableByteArray extensionContent;
 
+    @XmlJavaTypeAdapter(SuppressingTrueBooleanAdapter.class)
+    private Boolean shouldPrepare = null;
+
     public ExtensionMessage() {}
 
     public ExtensionMessage(ExtensionType type) {
         this.extensionTypeConstant = type;
+    }
+
+    @Override
+    public boolean shouldPrepare() {
+        return shouldPrepare;
+    }
+
+    public void setShouldPrepare(boolean shouldPrepare) {
+        this.shouldPrepare = shouldPrepare;
     }
 
     public ModifiableByteArray getExtensionType() {

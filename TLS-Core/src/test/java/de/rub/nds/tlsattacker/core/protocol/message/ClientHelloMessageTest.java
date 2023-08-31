@@ -77,7 +77,7 @@ public class ClientHelloMessageTest extends AbstractMessageTest<ClientHelloMessa
 
     @Test
     public void testClientHelloSerialization() throws JAXBException {
-        ClientHelloMessage cl = new ClientHelloMessage(Config.createConfig());
+        ClientHelloMessage cl = new ClientHelloMessage(new Config());
         cl.setCipherSuiteLength(3);
         cl.getCipherSuiteLength().setModification(new IntegerAddModification(2));
         try {

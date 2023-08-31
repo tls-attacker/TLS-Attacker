@@ -13,9 +13,12 @@ import de.rub.nds.tlsattacker.core.layer.context.LayerContext;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.util.SuppressingTrueBooleanAdapter;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlSeeAlso;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import java.util.Objects;
 
 /**
  * Abstract class for different messages the TLS-Attacker can send. This includes but is not limited
@@ -29,5 +32,17 @@ import jakarta.xml.bind.annotation.XmlSeeAlso;
 public abstract class Message<Self extends Message<?, ?>, Context extends LayerContext>
         extends ModifiableVariableHolder implements DataContainer<Self, Context> {
 
+    @XmlJavaTypeAdapter(SuppressingTrueBooleanAdapter.class)
+    private Boolean shouldPrepare = null;
+
     public abstract String toShortString();
+
+    @Override
+    public boolean shouldPrepare() {
+        return !Objects.equals(shouldPrepare, Boolean.FALSE);
+    }
+
+    public void setShouldPrepare(boolean shouldPrepare) {
+        this.shouldPrepare = shouldPrepare;
+    }
 }

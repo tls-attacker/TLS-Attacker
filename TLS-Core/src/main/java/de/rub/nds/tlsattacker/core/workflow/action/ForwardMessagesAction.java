@@ -189,6 +189,9 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
     private void forwardMessages(TlsContext forwardToCtx) {
         LOGGER.info("Forwarding messages (" + forwardToAlias + "): " + getReadableString(messages));
         try {
+            for (Message message : receivedMessages) {
+                message.setShouldPrepare(false);
+            }
             LayerStack layerStack = forwardToCtx.getLayerStack();
 
             LayerConfiguration dtlsConfiguration =

@@ -31,6 +31,8 @@ public interface DataContainer<
         return true;
     }
 
+    public boolean shouldPrepare();
+
     public default String toCompactString() {
         return toString();
     }
