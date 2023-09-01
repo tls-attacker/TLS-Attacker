@@ -283,7 +283,7 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
      * @throws IOException
      */
     private void readHandshakeProtocolData() {
-        byte[] readBytes = new byte[0];
+        ByteArrayOutputStream readBytesStream = new ByteArrayOutputStream();
         byte type;
         int length;
         byte[] payload;
@@ -292,7 +292,7 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
         try {
             handshakeStream = getLowerLayer().getDataStream();
             type = handshakeStream.readByte();
-            readBytes = ArrayConverter.concatenate(readBytes, new byte[] {type});
+            readBytesStream.write(new byte[] {type});
             handshakeMessage =
                     MessageFactory.generateHandshakeMessage(
                             HandshakeMessageType.getMessageType(type), context);
@@ -300,16 +300,18 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
             byte[] lengthBytes =
                     handshakeStream.readChunk(HandshakeByteLength.MESSAGE_LENGTH_FIELD);
             length = ArrayConverter.bytesToInt(lengthBytes);
-            readBytes = ArrayConverter.concatenate(readBytes, lengthBytes);
+            readBytesStream.write(lengthBytes);
             handshakeMessage.setLength(length);
             payload = handshakeStream.readChunk(length);
-            readBytes = ArrayConverter.concatenate(readBytes, payload);
+            readBytesStream.write(payload);
 
         } catch (IOException ex) {
             LOGGER.error("Could not parse message header. Setting bytes as unread: ", ex);
             // not being able to parse the header leaves us with unreadable bytes
             // append instead of replace because we can read multiple messages in one read action
-            setUnreadBytes(ArrayConverter.concatenate(this.getUnreadBytes(), readBytes));
+            setUnreadBytes(
+                    ArrayConverter.concatenate(
+                            this.getUnreadBytes(), readBytesStream.toByteArray()));
             return;
         }
         HandshakeMessageHandler handler = handshakeMessage.getHandler(context);
