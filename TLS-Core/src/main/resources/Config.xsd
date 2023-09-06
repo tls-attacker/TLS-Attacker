@@ -3735,6 +3735,7 @@
       <xs:enumeration value="SHA384_WITH_RSA_ENCRYPTION"/>
       <xs:enumeration value="SHA512_WITH_RSA_ENCRYPTION"/>
       <xs:enumeration value="SHA224_WITH_RSA_ENCRYPTION"/>
+      <xs:enumeration value="RSASSA_PSS"/>
       <xs:enumeration value="DSA_WITH_SHA1"/>
       <xs:enumeration value="DSA_WITH_SHA224"/>
       <xs:enumeration value="DSA_WITH_SHA256"/>
