@@ -28,7 +28,6 @@ import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.layer.constant.LayerConfiguration;
-import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
@@ -344,7 +343,7 @@ public abstract class AbstractHandshakeIT {
     protected void setCallbacks(WorkflowExecutor executor) {
         if (dockerConnectionRole == ConnectionRole.CLIENT) {
             executor.setBeforeTransportInitCallback(
-                    (Context context) -> {
+                    (State state) -> {
                         dockerInstance.start();
                         return 0;
                     });

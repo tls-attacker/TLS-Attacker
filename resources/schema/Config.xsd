@@ -3351,6 +3351,7 @@
       <xs:extension base="handshakeMessage">
         <xs:sequence>
           <xs:element name="dataConfig" type="xs:base64Binary" minOccurs="0"/>
+          <xs:element name="assumedType" type="modifiableByte" minOccurs="0"/>
           <xs:element name="data" type="modifiableByteArray" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
@@ -3963,6 +3964,7 @@
       <xs:enumeration value="ECDSA_SHA256"/>
       <xs:enumeration value="ECDSA_SHA384"/>
       <xs:enumeration value="ECDSA_SHA512"/>
+      <xs:enumeration value="SM2_SM3"/>
       <xs:enumeration value="ED25519"/>
       <xs:enumeration value="ED448"/>
       <xs:enumeration value="RSA_PSS_RSAE_SHA256"/>
@@ -4450,6 +4452,7 @@
       <xs:enumeration value="BRAINPOOLP512R1"/>
       <xs:enumeration value="ECDH_X25519"/>
       <xs:enumeration value="ECDH_X448"/>
+      <xs:enumeration value="CURVE_SM2"/>
       <xs:enumeration value="FFDHE2048"/>
       <xs:enumeration value="FFDHE3072"/>
       <xs:enumeration value="FFDHE4096"/>
@@ -5012,3 +5015,4 @@
     </xs:sequence>
   </xs:complexType>
 </xs:schema>
+

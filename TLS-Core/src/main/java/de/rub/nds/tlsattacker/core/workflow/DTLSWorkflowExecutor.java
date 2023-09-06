@@ -131,12 +131,10 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
 
         if (getAfterExecutionCallback() != null) {
             LOGGER.debug("Executing AfterExecutionCallback");
-            for (Context context : state.getAllContexts()) {
-                try {
-                    getAfterExecutionCallback().apply(context);
-                } catch (Exception ex) {
-                    LOGGER.trace("Error during AfterExecutionCallback", ex);
-                }
+            try {
+                getAfterExecutionCallback().apply(state);
+            } catch (Exception ex) {
+                LOGGER.trace("Error during AfterExecutionCallback", ex);
             }
         }
     }

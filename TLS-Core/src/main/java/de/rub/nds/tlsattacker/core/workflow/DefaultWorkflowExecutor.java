@@ -100,14 +100,12 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
         if (config.isResetWorkflowTracesBeforeSaving()) {
             state.getWorkflowTrace().reset();
         }
-        for (Context context : state.getAllContexts()) {
-            try {
-                if (getAfterExecutionCallback() != null) {
-                    getAfterExecutionCallback().apply(context);
-                }
-            } catch (Exception ex) {
-                LOGGER.trace("Error during AfterExecutionCallback", ex);
+        try {
+            if (getAfterExecutionCallback() != null) {
+                getAfterExecutionCallback().apply(state);
             }
+        } catch (Exception ex) {
+            LOGGER.trace("Error during AfterExecutionCallback", ex);
         }
     }
 }

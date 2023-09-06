@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.workflow;
 
-import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.task.ITask;
 import de.rub.nds.tlsattacker.core.workflow.task.StateExecutionTask;
@@ -41,13 +40,13 @@ public class ParallelExecutor {
 
     private final int reexecutions;
 
-    private Function<Context, Integer> defaultBeforeTransportPreInitCallback = null;
+    private Function<State, Integer> defaultBeforeTransportPreInitCallback = null;
 
-    private Function<Context, Integer> defaultBeforeTransportInitCallback = null;
+    private Function<State, Integer> defaultBeforeTransportInitCallback = null;
 
-    private Function<Context, Integer> defaultAfterTransportInitCallback = null;
+    private Function<State, Integer> defaultAfterTransportInitCallback = null;
 
-    private Function<Context, Integer> defaultAfterExecutionCallback = null;
+    private Function<State, Integer> defaultAfterExecutionCallback = null;
 
     public ParallelExecutor(int size, int reexecutions, ThreadPoolExecutor executorService) {
         this.executorService = executorService;
@@ -214,39 +213,39 @@ public class ParallelExecutor {
         this.timeoutAction = timeoutAction;
     }
 
-    public Function<Context, Integer> getDefaultBeforeTransportPreInitCallback() {
+    public Function<State, Integer> getDefaultBeforeTransportPreInitCallback() {
         return defaultBeforeTransportPreInitCallback;
     }
 
     public void setDefaultBeforeTransportPreInitCallback(
-            Function<Context, Integer> defaultBeforeTransportPreInitCallback) {
+            Function<State, Integer> defaultBeforeTransportPreInitCallback) {
         this.defaultBeforeTransportPreInitCallback = defaultBeforeTransportPreInitCallback;
     }
 
-    public Function<Context, Integer> getDefaultBeforeTransportInitCallback() {
+    public Function<State, Integer> getDefaultBeforeTransportInitCallback() {
         return defaultBeforeTransportInitCallback;
     }
 
     public void setDefaultBeforeTransportInitCallback(
-            Function<Context, Integer> defaultBeforeTransportInitCallback) {
+            Function<State, Integer> defaultBeforeTransportInitCallback) {
         this.defaultBeforeTransportInitCallback = defaultBeforeTransportInitCallback;
     }
 
-    public Function<Context, Integer> getDefaultAfterTransportInitCallback() {
+    public Function<State, Integer> getDefaultAfterTransportInitCallback() {
         return defaultAfterTransportInitCallback;
     }
 
     public void setDefaultAfterTransportInitCallback(
-            Function<Context, Integer> defaultAfterTransportInitCallback) {
+            Function<State, Integer> defaultAfterTransportInitCallback) {
         this.defaultAfterTransportInitCallback = defaultAfterTransportInitCallback;
     }
 
-    public Function<Context, Integer> getDefaultAfterExecutionCallback() {
+    public Function<State, Integer> getDefaultAfterExecutionCallback() {
         return defaultAfterExecutionCallback;
     }
 
     public void setDefaultAfterExecutionCallback(
-            Function<Context, Integer> defaultAfterExecutionCallback) {
+            Function<State, Integer> defaultAfterExecutionCallback) {
         this.defaultAfterExecutionCallback = defaultAfterExecutionCallback;
     }
 }
