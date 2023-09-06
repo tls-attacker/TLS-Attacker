@@ -487,12 +487,73 @@
 
   <xs:element name="x509Explicit" type="x509Explicit"/>
 
-  <xs:complexType name="forwardDataAction">
+  <xs:complexType name="workflowTrace">
+    <xs:sequence>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="AliasedConnection" type="aliasedConnection"/>
+        <xs:element name="InboundConnection" type="inboundConnection"/>
+        <xs:element name="OutboundConnection" type="outboundConnection"/>
+      </xs:choice>
+      <xs:any processContents="lax" namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="name" type="xs:string" minOccurs="0"/>
+      <xs:element name="description" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="aliasedConnection" abstract="true">
+    <xs:sequence>
+      <xs:element name="alias" type="xs:string" minOccurs="0"/>
+      <xs:element name="ip" type="xs:string" minOccurs="0"/>
+      <xs:element name="port" type="xs:int" minOccurs="0"/>
+      <xs:element name="hostname" type="xs:string" minOccurs="0"/>
+      <xs:element name="proxyDataPort" type="xs:int" minOccurs="0"/>
+      <xs:element name="proxyDataHostname" type="xs:string" minOccurs="0"/>
+      <xs:element name="proxyControlPort" type="xs:int" minOccurs="0"/>
+      <xs:element name="proxyControlHostname" type="xs:string" minOccurs="0"/>
+      <xs:element name="timeout" type="xs:int" minOccurs="0"/>
+      <xs:element name="firstTimeout" type="xs:int" minOccurs="0"/>
+      <xs:element name="connectionTimeout" type="xs:int" minOccurs="0"/>
+      <xs:element name="transportHandlerType" type="transportHandlerType" minOccurs="0"/>
+      <xs:element name="sourcePort" type="xs:int" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="inboundConnection">
+    <xs:complexContent>
+      <xs:extension base="aliasedConnection">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="outboundConnection">
+    <xs:complexContent>
+      <xs:extension base="aliasedConnection">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="forwardRecordsAction">
     <xs:complexContent>
       <xs:extension base="tlsAction">
         <xs:sequence>
           <xs:element name="from" type="xs:string" minOccurs="0"/>
           <xs:element name="to" type="xs:string" minOccurs="0"/>
+          <xs:element name="receivedRecords" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Record" type="record" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="sendRecords" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Record" type="record" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -511,136 +572,23 @@
     </xs:sequence>
   </xs:complexType>
 
-  <xs:complexType name="setEncryptChangeCipherSpecConfigAction">
-    <xs:complexContent>
-      <xs:extension base="connectionBoundAction">
-        <xs:sequence>
-          <xs:element name="setting" type="xs:boolean"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="connectionBoundAction" abstract="true">
-    <xs:complexContent>
-      <xs:extension base="tlsAction">
-        <xs:sequence>
-          <xs:element name="connectionAlias" type="xs:string" minOccurs="0"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="popAndSendMessageAction">
-    <xs:complexContent>
-      <xs:extension base="messageAction">
-        <xs:sequence/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="messageAction" abstract="true">
-    <xs:complexContent>
-      <xs:extension base="connectionBoundAction">
-        <xs:sequence>
-          <xs:element name="messages" minOccurs="0">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:choice minOccurs="0" maxOccurs="unbounded">
-                  <xs:element ref="Certificate"/>
-                  <xs:element ref="DtlsHandshakeMessageFragment"/>
-                  <xs:element ref="CertificateVerify"/>
-                  <xs:element ref="CertificateRequest"/>
-                  <xs:element ref="ClientHello"/>
-                  <xs:element ref="HelloVerifyRequest"/>
-                  <xs:element ref="DHClientKeyExchange"/>
-                  <xs:element ref="DHEServerKeyExchange"/>
-                  <xs:element ref="ECDHClientKeyExchange"/>
-                  <xs:element ref="ECDHEServerKeyExchange"/>
-                  <xs:element ref="PskClientKeyExchange"/>
-                  <xs:element ref="Finished"/>
-                  <xs:element ref="RSAClientKeyExchange"/>
-                  <xs:element ref="GOSTClientKeyExchange"/>
-                  <xs:element ref="ServerHelloDone"/>
-                  <xs:element ref="ServerHello"/>
-                  <xs:element ref="Alert"/>
-                  <xs:element ref="NewSessionTicket"/>
-                  <xs:element ref="KeyUpdate"/>
-                  <xs:element ref="Application"/>
-                  <xs:element ref="ChangeCipherSpec"/>
-                  <xs:element ref="SSL2ClientHello"/>
-                  <xs:element ref="SSL2ClientMasterKey"/>
-                  <xs:element ref="SSL2ServerHello"/>
-                  <xs:element ref="SSL2ServerVerify"/>
-                  <xs:element ref="UnknownSSL2Message"/>
-                  <xs:element ref="UnknownMessage"/>
-                  <xs:element ref="UnknownHandshakeMessage"/>
-                  <xs:element ref="HelloRequest"/>
-                  <xs:element ref="Heartbeat"/>
-                  <xs:element ref="SupplementalData"/>
-                  <xs:element ref="EncryptedExtensions"/>
-                  <xs:element ref="PskDhClientKeyExchange"/>
-                  <xs:element ref="PskDheServerKeyExchange"/>
-                  <xs:element ref="PskEcDhClientKeyExchange"/>
-                  <xs:element ref="PskEcDheServerKeyExchange"/>
-                  <xs:element ref="PskRsaClientKeyExchange"/>
-                  <xs:element ref="SrpClientKeyExchange"/>
-                  <xs:element ref="SrpServerKeyExchange"/>
-                  <xs:element ref="EndOfEarlyData"/>
-                  <xs:element ref="PWDServerKeyExchange"/>
-                  <xs:element ref="RSAServerKeyExchange"/>
-                  <xs:element ref="PWDClientKeyExchange"/>
-                  <xs:element ref="PskServerKeyExchange"/>
-                  <xs:element ref="CertificateStatus"/>
-                  <xs:element ref="EmptyClientKeyExchange"/>
-                  <xs:element ref="EncryptedClientHello"/>
-                </xs:choice>
-              </xs:sequence>
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="httpMessages" minOccurs="0">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="HttpMessage" type="httpMessage" minOccurs="0" maxOccurs="unbounded"/>
-              </xs:sequence>
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="records" minOccurs="0">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="Record" type="record" minOccurs="0" maxOccurs="unbounded"/>
-              </xs:sequence>
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="fragments" minOccurs="0">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="DtlsFragment" type="dtlsHandshakeMessageFragment" minOccurs="0" maxOccurs="unbounded"/>
-              </xs:sequence>
-            </xs:complexType>
-          </xs:element>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="protocolMessage" abstract="true">
-    <xs:complexContent>
-      <xs:extension base="message">
-        <xs:sequence>
-          <xs:element name="completeResultingMessage" type="modifiableByteArray" minOccurs="0"/>
-          <xs:element name="required" type="modifiableBoolean" minOccurs="0"/>
-          <xs:element name="goingToBeSent" type="modifiableBoolean" minOccurs="0"/>
-          <xs:element name="adjustContext" type="modifiableBoolean" minOccurs="0"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="message" abstract="true">
+  <xs:complexType name="record">
     <xs:complexContent>
       <xs:extension base="modifiableVariableHolder">
-        <xs:sequence/>
+        <xs:sequence>
+          <xs:element name="cleanProtocolMessageBytes" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="completeRecordBytes" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="computations" type="recordCryptoComputations" minOccurs="0"/>
+          <xs:element name="connectionId" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="contentMessageType" type="protocolMessageType" minOccurs="0"/>
+          <xs:element name="contentType" type="modifiableByte" minOccurs="0"/>
+          <xs:element name="epoch" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="length" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="maxRecordLengthConfig" type="xs:int" minOccurs="0"/>
+          <xs:element name="protocolMessageBytes" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="protocolVersion" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="sequenceNumber" type="modifiableBigInteger" minOccurs="0"/>
+        </xs:sequence>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
@@ -949,6 +897,345 @@
     </xs:sequence>
   </xs:complexType>
 
+  <xs:complexType name="recordCryptoComputations">
+    <xs:complexContent>
+      <xs:extension base="modifiableVariableHolder">
+        <xs:sequence>
+          <xs:element name="additionalPaddingLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="aeadSalt" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="authenticatedMetaData" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="authenticatedNonMetaData" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="authenticationTag" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="authenticationTagValid" type="xs:boolean" minOccurs="0"/>
+          <xs:element name="cbcInitialisationVector" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="cipherKey" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="ciphertext" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="explicitNonce" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="gcmNonce" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="mac" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="macKey" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="macValid" type="xs:boolean" minOccurs="0"/>
+          <xs:element name="padding" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="paddingValid" type="xs:boolean" minOccurs="0"/>
+          <xs:element name="plainRecordBytes" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="usedTls13KeySetType" type="tls13KeySetType" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="modifiableInteger">
+    <xs:sequence>
+      <xs:choice minOccurs="0">
+        <xs:element name="BigIntegerXorModification" type="bigIntegerXorModification"/>
+        <xs:element name="BigIntegerSubtractModification" type="bigIntegerSubtractModification"/>
+        <xs:element name="BigIntegerShiftRightModification" type="bigIntegerShiftRightModification"/>
+        <xs:element name="BigIntegerShiftLeftModification" type="bigIntegerShiftLeftModification"/>
+        <xs:element name="BigIntegerExplicitValueModification" type="bigIntegerExplicitValueModification"/>
+        <xs:element name="BigIntegerAddModification" type="bigIntegerAddModification"/>
+        <xs:element name="BigIntegerInteractiveModification" type="bigIntegerInteractiveModification"/>
+        <xs:element name="BigIntegerMultiplyModification" type="bigIntegerMultiplyModification"/>
+        <xs:element name="BooleanToggleModification" type="booleanToggleModification"/>
+        <xs:element name="BooleanExplicitValueModification" type="booleanExplicitValueModification"/>
+        <xs:element name="ByteArrayXorModification" type="byteArrayXorModification"/>
+        <xs:element name="ByteArrayShuffleModification" type="byteArrayShuffleModification"/>
+        <xs:element name="ByteArrayPayloadModification" type="byteArrayPayloadModification"/>
+        <xs:element name="ByteArrayInsertModification" type="byteArrayInsertModification"/>
+        <xs:element name="ByteArrayExplicitValueModification" type="byteArrayExplicitValueModification"/>
+        <xs:element name="ByteArrayDuplicateModification" type="byteArrayDuplicateModification"/>
+        <xs:element name="ByteArrayDeleteModification" type="byteArrayDeleteModification"/>
+        <xs:element name="IntegerXorModification" type="integerXorModification"/>
+        <xs:element name="IntegerSubtractModification" type="integerSubtractModification"/>
+        <xs:element name="IntegerShiftRightModification" type="integerShiftRightModification"/>
+        <xs:element name="IntegerShiftLeftModification" type="integerShiftLeftModification"/>
+        <xs:element name="IntegerExplicitValueModification" type="integerExplicitValueModification"/>
+        <xs:element name="IntegerAddModification" type="integerAddModification"/>
+        <xs:element name="LongXorModification" type="longXorModification"/>
+        <xs:element name="LongSubtractModification" type="longSubtractModification"/>
+        <xs:element name="LongExplicitValueModification" type="longExplicitValueModification"/>
+        <xs:element name="LongAddModification" type="longAddModification"/>
+        <xs:element name="ByteXorModification" type="byteXorModification"/>
+        <xs:element name="ByteSubtractModification" type="byteSubtractModification"/>
+        <xs:element name="ByteAddModification" type="byteAddModification"/>
+        <xs:element name="ByteExplicitValueModification" type="byteExplicitValueModification"/>
+        <xs:element name="StringPrependValueModification" type="stringPrependValueModification"/>
+        <xs:element name="StringAppendValueModification" type="stringAppendValueModification"/>
+        <xs:element name="StringExplicitValueModification" type="stringExplicitValueModification"/>
+      </xs:choice>
+      <xs:element name="createRandomModification" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="assertEquals" type="xs:anyType" minOccurs="0"/>
+      <xs:element name="originalValue" type="xs:int" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="modifiableByte">
+    <xs:sequence>
+      <xs:choice minOccurs="0">
+        <xs:element name="BigIntegerXorModification" type="bigIntegerXorModification"/>
+        <xs:element name="BigIntegerSubtractModification" type="bigIntegerSubtractModification"/>
+        <xs:element name="BigIntegerShiftRightModification" type="bigIntegerShiftRightModification"/>
+        <xs:element name="BigIntegerShiftLeftModification" type="bigIntegerShiftLeftModification"/>
+        <xs:element name="BigIntegerExplicitValueModification" type="bigIntegerExplicitValueModification"/>
+        <xs:element name="BigIntegerAddModification" type="bigIntegerAddModification"/>
+        <xs:element name="BigIntegerInteractiveModification" type="bigIntegerInteractiveModification"/>
+        <xs:element name="BigIntegerMultiplyModification" type="bigIntegerMultiplyModification"/>
+        <xs:element name="BooleanToggleModification" type="booleanToggleModification"/>
+        <xs:element name="BooleanExplicitValueModification" type="booleanExplicitValueModification"/>
+        <xs:element name="ByteArrayXorModification" type="byteArrayXorModification"/>
+        <xs:element name="ByteArrayShuffleModification" type="byteArrayShuffleModification"/>
+        <xs:element name="ByteArrayPayloadModification" type="byteArrayPayloadModification"/>
+        <xs:element name="ByteArrayInsertModification" type="byteArrayInsertModification"/>
+        <xs:element name="ByteArrayExplicitValueModification" type="byteArrayExplicitValueModification"/>
+        <xs:element name="ByteArrayDuplicateModification" type="byteArrayDuplicateModification"/>
+        <xs:element name="ByteArrayDeleteModification" type="byteArrayDeleteModification"/>
+        <xs:element name="IntegerXorModification" type="integerXorModification"/>
+        <xs:element name="IntegerSubtractModification" type="integerSubtractModification"/>
+        <xs:element name="IntegerShiftRightModification" type="integerShiftRightModification"/>
+        <xs:element name="IntegerShiftLeftModification" type="integerShiftLeftModification"/>
+        <xs:element name="IntegerExplicitValueModification" type="integerExplicitValueModification"/>
+        <xs:element name="IntegerAddModification" type="integerAddModification"/>
+        <xs:element name="LongXorModification" type="longXorModification"/>
+        <xs:element name="LongSubtractModification" type="longSubtractModification"/>
+        <xs:element name="LongExplicitValueModification" type="longExplicitValueModification"/>
+        <xs:element name="LongAddModification" type="longAddModification"/>
+        <xs:element name="ByteXorModification" type="byteXorModification"/>
+        <xs:element name="ByteSubtractModification" type="byteSubtractModification"/>
+        <xs:element name="ByteAddModification" type="byteAddModification"/>
+        <xs:element name="ByteExplicitValueModification" type="byteExplicitValueModification"/>
+        <xs:element name="StringPrependValueModification" type="stringPrependValueModification"/>
+        <xs:element name="StringAppendValueModification" type="stringAppendValueModification"/>
+        <xs:element name="StringExplicitValueModification" type="stringExplicitValueModification"/>
+      </xs:choice>
+      <xs:element name="createRandomModification" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="assertEquals" type="xs:anyType" minOccurs="0"/>
+      <xs:element name="originalValue" type="xs:byte" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="modifiableBigInteger">
+    <xs:sequence>
+      <xs:choice minOccurs="0">
+        <xs:element name="BigIntegerXorModification" type="bigIntegerXorModification"/>
+        <xs:element name="BigIntegerSubtractModification" type="bigIntegerSubtractModification"/>
+        <xs:element name="BigIntegerShiftRightModification" type="bigIntegerShiftRightModification"/>
+        <xs:element name="BigIntegerShiftLeftModification" type="bigIntegerShiftLeftModification"/>
+        <xs:element name="BigIntegerExplicitValueModification" type="bigIntegerExplicitValueModification"/>
+        <xs:element name="BigIntegerAddModification" type="bigIntegerAddModification"/>
+        <xs:element name="BigIntegerInteractiveModification" type="bigIntegerInteractiveModification"/>
+        <xs:element name="BigIntegerMultiplyModification" type="bigIntegerMultiplyModification"/>
+        <xs:element name="BooleanToggleModification" type="booleanToggleModification"/>
+        <xs:element name="BooleanExplicitValueModification" type="booleanExplicitValueModification"/>
+        <xs:element name="ByteArrayXorModification" type="byteArrayXorModification"/>
+        <xs:element name="ByteArrayShuffleModification" type="byteArrayShuffleModification"/>
+        <xs:element name="ByteArrayPayloadModification" type="byteArrayPayloadModification"/>
+        <xs:element name="ByteArrayInsertModification" type="byteArrayInsertModification"/>
+        <xs:element name="ByteArrayExplicitValueModification" type="byteArrayExplicitValueModification"/>
+        <xs:element name="ByteArrayDuplicateModification" type="byteArrayDuplicateModification"/>
+        <xs:element name="ByteArrayDeleteModification" type="byteArrayDeleteModification"/>
+        <xs:element name="IntegerXorModification" type="integerXorModification"/>
+        <xs:element name="IntegerSubtractModification" type="integerSubtractModification"/>
+        <xs:element name="IntegerShiftRightModification" type="integerShiftRightModification"/>
+        <xs:element name="IntegerShiftLeftModification" type="integerShiftLeftModification"/>
+        <xs:element name="IntegerExplicitValueModification" type="integerExplicitValueModification"/>
+        <xs:element name="IntegerAddModification" type="integerAddModification"/>
+        <xs:element name="LongXorModification" type="longXorModification"/>
+        <xs:element name="LongSubtractModification" type="longSubtractModification"/>
+        <xs:element name="LongExplicitValueModification" type="longExplicitValueModification"/>
+        <xs:element name="LongAddModification" type="longAddModification"/>
+        <xs:element name="ByteXorModification" type="byteXorModification"/>
+        <xs:element name="ByteSubtractModification" type="byteSubtractModification"/>
+        <xs:element name="ByteAddModification" type="byteAddModification"/>
+        <xs:element name="ByteExplicitValueModification" type="byteExplicitValueModification"/>
+        <xs:element name="StringPrependValueModification" type="stringPrependValueModification"/>
+        <xs:element name="StringAppendValueModification" type="stringAppendValueModification"/>
+        <xs:element name="StringExplicitValueModification" type="stringExplicitValueModification"/>
+      </xs:choice>
+      <xs:element name="createRandomModification" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="assertEquals" type="xs:anyType" minOccurs="0"/>
+      <xs:element name="originalValue" type="xs:integer" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="receiveTillAction">
+    <xs:complexContent>
+      <xs:extension base="commonReceiveAction">
+        <xs:choice>
+          <xs:element ref="Certificate"/>
+          <xs:element ref="DtlsHandshakeMessageFragment"/>
+          <xs:element ref="CertificateVerify"/>
+          <xs:element ref="CertificateRequest"/>
+          <xs:element ref="ClientHello"/>
+          <xs:element ref="HelloVerifyRequest"/>
+          <xs:element ref="DHClientKeyExchange"/>
+          <xs:element ref="DHEServerKeyExchange"/>
+          <xs:element ref="ECDHClientKeyExchange"/>
+          <xs:element ref="ECDHEServerKeyExchange"/>
+          <xs:element ref="PskClientKeyExchange"/>
+          <xs:element ref="Finished"/>
+          <xs:element ref="RSAClientKeyExchange"/>
+          <xs:element ref="GOSTClientKeyExchange"/>
+          <xs:element ref="ServerHelloDone"/>
+          <xs:element ref="ServerHello"/>
+          <xs:element ref="Alert"/>
+          <xs:element ref="NewSessionTicket"/>
+          <xs:element ref="KeyUpdate"/>
+          <xs:element ref="Application"/>
+          <xs:element ref="ChangeCipherSpec"/>
+          <xs:element ref="SSL2ClientHello"/>
+          <xs:element ref="SSL2ClientMasterKey"/>
+          <xs:element ref="SSL2ServerHello"/>
+          <xs:element ref="SSL2ServerVerify"/>
+          <xs:element ref="UnknownSSL2Message"/>
+          <xs:element ref="UnknownMessage"/>
+          <xs:element ref="UnknownHandshakeMessage"/>
+          <xs:element ref="HelloRequest"/>
+          <xs:element ref="Heartbeat"/>
+          <xs:element ref="SupplementalData"/>
+          <xs:element ref="EncryptedExtensions"/>
+          <xs:element ref="PskDhClientKeyExchange"/>
+          <xs:element ref="PskDheServerKeyExchange"/>
+          <xs:element ref="PskEcDhClientKeyExchange"/>
+          <xs:element ref="PskEcDheServerKeyExchange"/>
+          <xs:element ref="PskRsaClientKeyExchange"/>
+          <xs:element ref="SrpClientKeyExchange"/>
+          <xs:element ref="SrpServerKeyExchange"/>
+          <xs:element ref="EndOfEarlyData"/>
+          <xs:element ref="PWDServerKeyExchange"/>
+          <xs:element ref="RSAServerKeyExchange"/>
+          <xs:element ref="PWDClientKeyExchange"/>
+          <xs:element ref="PskServerKeyExchange"/>
+          <xs:element ref="CertificateStatus"/>
+          <xs:element ref="EmptyClientKeyExchange"/>
+          <xs:element ref="EncryptedClientHello"/>
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="commonReceiveAction" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="messageAction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="messageAction" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="connectionBoundAction">
+        <xs:sequence>
+          <xs:element name="messages" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:choice minOccurs="0" maxOccurs="unbounded">
+                  <xs:element ref="Certificate"/>
+                  <xs:element ref="DtlsHandshakeMessageFragment"/>
+                  <xs:element ref="CertificateVerify"/>
+                  <xs:element ref="CertificateRequest"/>
+                  <xs:element ref="ClientHello"/>
+                  <xs:element ref="HelloVerifyRequest"/>
+                  <xs:element ref="DHClientKeyExchange"/>
+                  <xs:element ref="DHEServerKeyExchange"/>
+                  <xs:element ref="ECDHClientKeyExchange"/>
+                  <xs:element ref="ECDHEServerKeyExchange"/>
+                  <xs:element ref="PskClientKeyExchange"/>
+                  <xs:element ref="Finished"/>
+                  <xs:element ref="RSAClientKeyExchange"/>
+                  <xs:element ref="GOSTClientKeyExchange"/>
+                  <xs:element ref="ServerHelloDone"/>
+                  <xs:element ref="ServerHello"/>
+                  <xs:element ref="Alert"/>
+                  <xs:element ref="NewSessionTicket"/>
+                  <xs:element ref="KeyUpdate"/>
+                  <xs:element ref="Application"/>
+                  <xs:element ref="ChangeCipherSpec"/>
+                  <xs:element ref="SSL2ClientHello"/>
+                  <xs:element ref="SSL2ClientMasterKey"/>
+                  <xs:element ref="SSL2ServerHello"/>
+                  <xs:element ref="SSL2ServerVerify"/>
+                  <xs:element ref="UnknownSSL2Message"/>
+                  <xs:element ref="UnknownMessage"/>
+                  <xs:element ref="UnknownHandshakeMessage"/>
+                  <xs:element ref="HelloRequest"/>
+                  <xs:element ref="Heartbeat"/>
+                  <xs:element ref="SupplementalData"/>
+                  <xs:element ref="EncryptedExtensions"/>
+                  <xs:element ref="PskDhClientKeyExchange"/>
+                  <xs:element ref="PskDheServerKeyExchange"/>
+                  <xs:element ref="PskEcDhClientKeyExchange"/>
+                  <xs:element ref="PskEcDheServerKeyExchange"/>
+                  <xs:element ref="PskRsaClientKeyExchange"/>
+                  <xs:element ref="SrpClientKeyExchange"/>
+                  <xs:element ref="SrpServerKeyExchange"/>
+                  <xs:element ref="EndOfEarlyData"/>
+                  <xs:element ref="PWDServerKeyExchange"/>
+                  <xs:element ref="RSAServerKeyExchange"/>
+                  <xs:element ref="PWDClientKeyExchange"/>
+                  <xs:element ref="PskServerKeyExchange"/>
+                  <xs:element ref="CertificateStatus"/>
+                  <xs:element ref="EmptyClientKeyExchange"/>
+                  <xs:element ref="EncryptedClientHello"/>
+                </xs:choice>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="httpMessages" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="HttpMessage" type="httpMessage" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="records" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Record" type="record" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="fragments" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="DtlsFragment" type="dtlsHandshakeMessageFragment" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="connectionBoundAction" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="tlsAction">
+        <xs:sequence>
+          <xs:element name="connectionAlias" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="protocolMessage" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="message">
+        <xs:sequence>
+          <xs:element name="completeResultingMessage" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="required" type="modifiableBoolean" minOccurs="0"/>
+          <xs:element name="goingToBeSent" type="modifiableBoolean" minOccurs="0"/>
+          <xs:element name="adjustContext" type="modifiableBoolean" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="message" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="modifiableVariableHolder">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
   <xs:complexType name="modifiableBoolean">
     <xs:sequence>
       <xs:choice minOccurs="0">
@@ -1106,50 +1393,6 @@
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="modifiableInteger">
-    <xs:sequence>
-      <xs:choice minOccurs="0">
-        <xs:element name="BigIntegerXorModification" type="bigIntegerXorModification"/>
-        <xs:element name="BigIntegerSubtractModification" type="bigIntegerSubtractModification"/>
-        <xs:element name="BigIntegerShiftRightModification" type="bigIntegerShiftRightModification"/>
-        <xs:element name="BigIntegerShiftLeftModification" type="bigIntegerShiftLeftModification"/>
-        <xs:element name="BigIntegerExplicitValueModification" type="bigIntegerExplicitValueModification"/>
-        <xs:element name="BigIntegerAddModification" type="bigIntegerAddModification"/>
-        <xs:element name="BigIntegerInteractiveModification" type="bigIntegerInteractiveModification"/>
-        <xs:element name="BigIntegerMultiplyModification" type="bigIntegerMultiplyModification"/>
-        <xs:element name="BooleanToggleModification" type="booleanToggleModification"/>
-        <xs:element name="BooleanExplicitValueModification" type="booleanExplicitValueModification"/>
-        <xs:element name="ByteArrayXorModification" type="byteArrayXorModification"/>
-        <xs:element name="ByteArrayShuffleModification" type="byteArrayShuffleModification"/>
-        <xs:element name="ByteArrayPayloadModification" type="byteArrayPayloadModification"/>
-        <xs:element name="ByteArrayInsertModification" type="byteArrayInsertModification"/>
-        <xs:element name="ByteArrayExplicitValueModification" type="byteArrayExplicitValueModification"/>
-        <xs:element name="ByteArrayDuplicateModification" type="byteArrayDuplicateModification"/>
-        <xs:element name="ByteArrayDeleteModification" type="byteArrayDeleteModification"/>
-        <xs:element name="IntegerXorModification" type="integerXorModification"/>
-        <xs:element name="IntegerSubtractModification" type="integerSubtractModification"/>
-        <xs:element name="IntegerShiftRightModification" type="integerShiftRightModification"/>
-        <xs:element name="IntegerShiftLeftModification" type="integerShiftLeftModification"/>
-        <xs:element name="IntegerExplicitValueModification" type="integerExplicitValueModification"/>
-        <xs:element name="IntegerAddModification" type="integerAddModification"/>
-        <xs:element name="LongXorModification" type="longXorModification"/>
-        <xs:element name="LongSubtractModification" type="longSubtractModification"/>
-        <xs:element name="LongExplicitValueModification" type="longExplicitValueModification"/>
-        <xs:element name="LongAddModification" type="longAddModification"/>
-        <xs:element name="ByteXorModification" type="byteXorModification"/>
-        <xs:element name="ByteSubtractModification" type="byteSubtractModification"/>
-        <xs:element name="ByteAddModification" type="byteAddModification"/>
-        <xs:element name="ByteExplicitValueModification" type="byteExplicitValueModification"/>
-        <xs:element name="StringPrependValueModification" type="stringPrependValueModification"/>
-        <xs:element name="StringAppendValueModification" type="stringAppendValueModification"/>
-        <xs:element name="StringExplicitValueModification" type="stringExplicitValueModification"/>
-      </xs:choice>
-      <xs:element name="createRandomModification" type="xs:boolean" minOccurs="0"/>
-      <xs:element name="assertEquals" type="xs:anyType" minOccurs="0"/>
-      <xs:element name="originalValue" type="xs:int" minOccurs="0"/>
-    </xs:sequence>
-  </xs:complexType>
-
   <xs:complexType name="dateHeader">
     <xs:complexContent>
       <xs:extension base="httpHeader">
@@ -1214,50 +1457,6 @@
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="modifiableByte">
-    <xs:sequence>
-      <xs:choice minOccurs="0">
-        <xs:element name="BigIntegerXorModification" type="bigIntegerXorModification"/>
-        <xs:element name="BigIntegerSubtractModification" type="bigIntegerSubtractModification"/>
-        <xs:element name="BigIntegerShiftRightModification" type="bigIntegerShiftRightModification"/>
-        <xs:element name="BigIntegerShiftLeftModification" type="bigIntegerShiftLeftModification"/>
-        <xs:element name="BigIntegerExplicitValueModification" type="bigIntegerExplicitValueModification"/>
-        <xs:element name="BigIntegerAddModification" type="bigIntegerAddModification"/>
-        <xs:element name="BigIntegerInteractiveModification" type="bigIntegerInteractiveModification"/>
-        <xs:element name="BigIntegerMultiplyModification" type="bigIntegerMultiplyModification"/>
-        <xs:element name="BooleanToggleModification" type="booleanToggleModification"/>
-        <xs:element name="BooleanExplicitValueModification" type="booleanExplicitValueModification"/>
-        <xs:element name="ByteArrayXorModification" type="byteArrayXorModification"/>
-        <xs:element name="ByteArrayShuffleModification" type="byteArrayShuffleModification"/>
-        <xs:element name="ByteArrayPayloadModification" type="byteArrayPayloadModification"/>
-        <xs:element name="ByteArrayInsertModification" type="byteArrayInsertModification"/>
-        <xs:element name="ByteArrayExplicitValueModification" type="byteArrayExplicitValueModification"/>
-        <xs:element name="ByteArrayDuplicateModification" type="byteArrayDuplicateModification"/>
-        <xs:element name="ByteArrayDeleteModification" type="byteArrayDeleteModification"/>
-        <xs:element name="IntegerXorModification" type="integerXorModification"/>
-        <xs:element name="IntegerSubtractModification" type="integerSubtractModification"/>
-        <xs:element name="IntegerShiftRightModification" type="integerShiftRightModification"/>
-        <xs:element name="IntegerShiftLeftModification" type="integerShiftLeftModification"/>
-        <xs:element name="IntegerExplicitValueModification" type="integerExplicitValueModification"/>
-        <xs:element name="IntegerAddModification" type="integerAddModification"/>
-        <xs:element name="LongXorModification" type="longXorModification"/>
-        <xs:element name="LongSubtractModification" type="longSubtractModification"/>
-        <xs:element name="LongExplicitValueModification" type="longExplicitValueModification"/>
-        <xs:element name="LongAddModification" type="longAddModification"/>
-        <xs:element name="ByteXorModification" type="byteXorModification"/>
-        <xs:element name="ByteSubtractModification" type="byteSubtractModification"/>
-        <xs:element name="ByteAddModification" type="byteAddModification"/>
-        <xs:element name="ByteExplicitValueModification" type="byteExplicitValueModification"/>
-        <xs:element name="StringPrependValueModification" type="stringPrependValueModification"/>
-        <xs:element name="StringAppendValueModification" type="stringAppendValueModification"/>
-        <xs:element name="StringExplicitValueModification" type="stringExplicitValueModification"/>
-      </xs:choice>
-      <xs:element name="createRandomModification" type="xs:boolean" minOccurs="0"/>
-      <xs:element name="assertEquals" type="xs:anyType" minOccurs="0"/>
-      <xs:element name="originalValue" type="xs:byte" minOccurs="0"/>
-    </xs:sequence>
   </xs:complexType>
 
   <xs:complexType name="signatureComputations" abstract="true">
@@ -2223,50 +2422,6 @@
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="modifiableBigInteger">
-    <xs:sequence>
-      <xs:choice minOccurs="0">
-        <xs:element name="BigIntegerXorModification" type="bigIntegerXorModification"/>
-        <xs:element name="BigIntegerSubtractModification" type="bigIntegerSubtractModification"/>
-        <xs:element name="BigIntegerShiftRightModification" type="bigIntegerShiftRightModification"/>
-        <xs:element name="BigIntegerShiftLeftModification" type="bigIntegerShiftLeftModification"/>
-        <xs:element name="BigIntegerExplicitValueModification" type="bigIntegerExplicitValueModification"/>
-        <xs:element name="BigIntegerAddModification" type="bigIntegerAddModification"/>
-        <xs:element name="BigIntegerInteractiveModification" type="bigIntegerInteractiveModification"/>
-        <xs:element name="BigIntegerMultiplyModification" type="bigIntegerMultiplyModification"/>
-        <xs:element name="BooleanToggleModification" type="booleanToggleModification"/>
-        <xs:element name="BooleanExplicitValueModification" type="booleanExplicitValueModification"/>
-        <xs:element name="ByteArrayXorModification" type="byteArrayXorModification"/>
-        <xs:element name="ByteArrayShuffleModification" type="byteArrayShuffleModification"/>
-        <xs:element name="ByteArrayPayloadModification" type="byteArrayPayloadModification"/>
-        <xs:element name="ByteArrayInsertModification" type="byteArrayInsertModification"/>
-        <xs:element name="ByteArrayExplicitValueModification" type="byteArrayExplicitValueModification"/>
-        <xs:element name="ByteArrayDuplicateModification" type="byteArrayDuplicateModification"/>
-        <xs:element name="ByteArrayDeleteModification" type="byteArrayDeleteModification"/>
-        <xs:element name="IntegerXorModification" type="integerXorModification"/>
-        <xs:element name="IntegerSubtractModification" type="integerSubtractModification"/>
-        <xs:element name="IntegerShiftRightModification" type="integerShiftRightModification"/>
-        <xs:element name="IntegerShiftLeftModification" type="integerShiftLeftModification"/>
-        <xs:element name="IntegerExplicitValueModification" type="integerExplicitValueModification"/>
-        <xs:element name="IntegerAddModification" type="integerAddModification"/>
-        <xs:element name="LongXorModification" type="longXorModification"/>
-        <xs:element name="LongSubtractModification" type="longSubtractModification"/>
-        <xs:element name="LongExplicitValueModification" type="longExplicitValueModification"/>
-        <xs:element name="LongAddModification" type="longAddModification"/>
-        <xs:element name="ByteXorModification" type="byteXorModification"/>
-        <xs:element name="ByteSubtractModification" type="byteSubtractModification"/>
-        <xs:element name="ByteAddModification" type="byteAddModification"/>
-        <xs:element name="ByteExplicitValueModification" type="byteExplicitValueModification"/>
-        <xs:element name="StringPrependValueModification" type="stringPrependValueModification"/>
-        <xs:element name="StringAppendValueModification" type="stringAppendValueModification"/>
-        <xs:element name="StringExplicitValueModification" type="stringExplicitValueModification"/>
-      </xs:choice>
-      <xs:element name="createRandomModification" type="xs:boolean" minOccurs="0"/>
-      <xs:element name="assertEquals" type="xs:anyType" minOccurs="0"/>
-      <xs:element name="originalValue" type="xs:integer" minOccurs="0"/>
-    </xs:sequence>
   </xs:complexType>
 
   <xs:complexType name="asn1Integer">
@@ -3262,55 +3417,7 @@
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="record">
-    <xs:complexContent>
-      <xs:extension base="modifiableVariableHolder">
-        <xs:sequence>
-          <xs:element name="cleanProtocolMessageBytes" type="modifiableByteArray" minOccurs="0"/>
-          <xs:element name="completeRecordBytes" type="modifiableByteArray" minOccurs="0"/>
-          <xs:element name="computations" type="recordCryptoComputations" minOccurs="0"/>
-          <xs:element name="connectionId" type="modifiableByteArray" minOccurs="0"/>
-          <xs:element name="contentMessageType" type="protocolMessageType" minOccurs="0"/>
-          <xs:element name="contentType" type="modifiableByte" minOccurs="0"/>
-          <xs:element name="epoch" type="modifiableInteger" minOccurs="0"/>
-          <xs:element name="length" type="modifiableInteger" minOccurs="0"/>
-          <xs:element name="maxRecordLengthConfig" type="xs:int" minOccurs="0"/>
-          <xs:element name="protocolMessageBytes" type="modifiableByteArray" minOccurs="0"/>
-          <xs:element name="protocolVersion" type="modifiableByteArray" minOccurs="0"/>
-          <xs:element name="sequenceNumber" type="modifiableBigInteger" minOccurs="0"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="recordCryptoComputations">
-    <xs:complexContent>
-      <xs:extension base="modifiableVariableHolder">
-        <xs:sequence>
-          <xs:element name="additionalPaddingLength" type="modifiableInteger" minOccurs="0"/>
-          <xs:element name="aeadSalt" type="modifiableByteArray" minOccurs="0"/>
-          <xs:element name="authenticatedMetaData" type="modifiableByteArray" minOccurs="0"/>
-          <xs:element name="authenticatedNonMetaData" type="modifiableByteArray" minOccurs="0"/>
-          <xs:element name="authenticationTag" type="modifiableByteArray" minOccurs="0"/>
-          <xs:element name="authenticationTagValid" type="xs:boolean" minOccurs="0"/>
-          <xs:element name="cbcInitialisationVector" type="modifiableByteArray" minOccurs="0"/>
-          <xs:element name="cipherKey" type="modifiableByteArray" minOccurs="0"/>
-          <xs:element name="ciphertext" type="modifiableByteArray" minOccurs="0"/>
-          <xs:element name="explicitNonce" type="modifiableByteArray" minOccurs="0"/>
-          <xs:element name="gcmNonce" type="modifiableByteArray" minOccurs="0"/>
-          <xs:element name="mac" type="modifiableByteArray" minOccurs="0"/>
-          <xs:element name="macKey" type="modifiableByteArray" minOccurs="0"/>
-          <xs:element name="macValid" type="xs:boolean" minOccurs="0"/>
-          <xs:element name="padding" type="modifiableByteArray" minOccurs="0"/>
-          <xs:element name="paddingValid" type="xs:boolean" minOccurs="0"/>
-          <xs:element name="plainRecordBytes" type="modifiableByteArray" minOccurs="0"/>
-          <xs:element name="usedTls13KeySetType" type="tls13KeySetType" minOccurs="0"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="genericReceiveAsciiAction">
+  <xs:complexType name="sendAsciiAction">
     <xs:complexContent>
       <xs:extension base="asciiAction">
         <xs:sequence/>
@@ -3329,20 +3436,224 @@
     </xs:complexContent>
   </xs:complexType>
 
+  <xs:complexType name="resetConnectionAction">
+    <xs:complexContent>
+      <xs:extension base="connectionBoundAction">
+        <xs:sequence>
+          <xs:element name="asPlanned" type="xs:boolean" minOccurs="0"/>
+          <xs:element name="resetContext" type="xs:boolean" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="popBufferedMessageAction">
+    <xs:complexContent>
+      <xs:extension base="connectionBoundAction">
+        <xs:sequence>
+          <xs:element name="couldPop" type="xs:boolean"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="copyServerRandomAction">
+    <xs:complexContent>
+      <xs:extension base="copyContextFieldAction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="copyContextFieldAction" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="tlsAction">
+        <xs:sequence>
+          <xs:element name="from" type="xs:string" minOccurs="0"/>
+          <xs:element name="to" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="sendAction">
+    <xs:complexContent>
+      <xs:extension base="messageAction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="changeClientRandomAction">
+    <xs:complexContent>
+      <xs:extension base="connectionBoundAction">
+        <xs:sequence>
+          <xs:element name="newValue" type="xs:string" minOccurs="0"/>
+          <xs:element name="oldValue" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="clearBuffersAction">
+    <xs:complexContent>
+      <xs:extension base="connectionBoundAction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="popAndSendAction">
+    <xs:complexContent>
+      <xs:extension base="messageAction">
+        <xs:sequence>
+          <xs:element name="index" type="xs:int" minOccurs="0"/>
+          <xs:element name="couldPop" type="xs:boolean"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="applyBufferedMessagesAction">
+    <xs:complexContent>
+      <xs:extension base="connectionBoundAction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="copyBufferedRecordsAction">
+    <xs:complexContent>
+      <xs:extension base="copyContextFieldAction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="changeEpochAction" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="connectionBoundAction">
+        <xs:sequence>
+          <xs:element name="epoch" type="xs:int" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="copyBufferedMessagesAction">
+    <xs:complexContent>
+      <xs:extension base="copyContextFieldAction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="generalAction">
+    <xs:complexContent>
+      <xs:extension base="tlsAction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="receiveAsciiAction">
+    <xs:complexContent>
+      <xs:extension base="asciiAction">
+        <xs:sequence>
+          <xs:element name="receivedAsciiString" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="deepCopyBufferedRecordsAction">
+    <xs:complexContent>
+      <xs:extension base="copyContextFieldAction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="renegotiationAction">
+    <xs:complexContent>
+      <xs:extension base="connectionBoundAction">
+        <xs:sequence>
+          <xs:element name="resetLastVerifyData" type="xs:boolean"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="popBuffersAction">
+    <xs:complexContent>
+      <xs:extension base="connectionBoundAction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="earlyCcsAction">
+    <xs:complexContent>
+      <xs:extension base="tlsAction">
+        <xs:sequence>
+          <xs:element name="targetOpenssl100" type="xs:boolean" minOccurs="0"/>
+          <xs:element name="executedAsPlanned" type="xs:boolean"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="printSecretsAction">
+    <xs:complexContent>
+      <xs:extension base="connectionBoundAction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="bufferedSendAction">
+    <xs:complexContent>
+      <xs:extension base="messageAction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="deepCopyBuffersAction">
+    <xs:complexContent>
+      <xs:extension base="copyContextFieldAction">
+        <xs:sequence>
+          <xs:element name="state" type="state" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="state">
+    <xs:sequence>
+      <xs:element name="endTimestamp" type="xs:long"/>
+      <xs:element name="executionException" type="throwable" minOccurs="0"/>
+      <xs:element name="runningMode" type="runningModeType" minOccurs="0"/>
+      <xs:element name="startTimestamp" type="xs:long"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="throwable">
+    <xs:sequence>
+      <xs:element name="stackTrace" type="stackTraceElement" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="stackTraceElement" final="extension restriction">
+    <xs:sequence/>
+  </xs:complexType>
+
   <xs:complexType name="popAndSendRecordAction">
     <xs:complexContent>
       <xs:extension base="messageAction">
         <xs:sequence>
           <xs:element name="asPlanned" type="xs:boolean" minOccurs="0"/>
         </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="genericReceiveAction">
-    <xs:complexContent>
-      <xs:extension base="messageAction">
-        <xs:sequence/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
@@ -3365,28 +3676,116 @@
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="changeWriteMessageSequenceAction">
+  <xs:complexType name="waitAction">
     <xs:complexContent>
-      <xs:extension base="changeMessageSequenceAction">
-        <xs:sequence/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="changeMessageSequenceAction" abstract="true">
-    <xs:complexContent>
-      <xs:extension base="connectionBoundAction">
+      <xs:extension base="tlsAction">
         <xs:sequence>
-          <xs:element name="messageSequence" type="xs:int" minOccurs="0"/>
+          <xs:element name="asPlanned" type="xs:boolean" minOccurs="0"/>
+          <xs:element name="time" type="xs:long" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="generalAction">
+  <xs:complexType name="changeProtocolVersionAction">
     <xs:complexContent>
-      <xs:extension base="tlsAction">
+      <xs:extension base="connectionBoundAction">
+        <xs:sequence>
+          <xs:element name="newValue" type="protocolVersion" minOccurs="0"/>
+          <xs:element name="oldValue" type="protocolVersion" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="multiReceiveAction">
+    <xs:complexContent>
+      <xs:extension base="genericReceiveAction">
+        <xs:sequence>
+          <xs:element name="expectedActionCandidates" type="receiveAction" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="genericReceiveAction">
+    <xs:complexContent>
+      <xs:extension base="messageAction">
         <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="receiveAction">
+    <xs:complexContent>
+      <xs:extension base="commonReceiveAction">
+        <xs:sequence>
+          <xs:element name="expectedMessages" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:choice minOccurs="0" maxOccurs="unbounded">
+                  <xs:element ref="Certificate"/>
+                  <xs:element ref="DtlsHandshakeMessageFragment"/>
+                  <xs:element ref="CertificateVerify"/>
+                  <xs:element ref="CertificateRequest"/>
+                  <xs:element ref="ClientHello"/>
+                  <xs:element ref="HelloVerifyRequest"/>
+                  <xs:element ref="DHClientKeyExchange"/>
+                  <xs:element ref="DHEServerKeyExchange"/>
+                  <xs:element ref="ECDHClientKeyExchange"/>
+                  <xs:element ref="ECDHEServerKeyExchange"/>
+                  <xs:element ref="PskClientKeyExchange"/>
+                  <xs:element ref="Finished"/>
+                  <xs:element ref="RSAClientKeyExchange"/>
+                  <xs:element ref="GOSTClientKeyExchange"/>
+                  <xs:element ref="ServerHelloDone"/>
+                  <xs:element ref="ServerHello"/>
+                  <xs:element ref="Alert"/>
+                  <xs:element ref="NewSessionTicket"/>
+                  <xs:element ref="KeyUpdate"/>
+                  <xs:element ref="Application"/>
+                  <xs:element ref="ChangeCipherSpec"/>
+                  <xs:element ref="SSL2ClientHello"/>
+                  <xs:element ref="SSL2ClientMasterKey"/>
+                  <xs:element ref="SSL2ServerHello"/>
+                  <xs:element ref="SSL2ServerVerify"/>
+                  <xs:element ref="UnknownSSL2Message"/>
+                  <xs:element ref="UnknownMessage"/>
+                  <xs:element ref="UnknownHandshakeMessage"/>
+                  <xs:element ref="HelloRequest"/>
+                  <xs:element ref="Heartbeat"/>
+                  <xs:element ref="SupplementalData"/>
+                  <xs:element ref="EncryptedExtensions"/>
+                  <xs:element ref="PskDhClientKeyExchange"/>
+                  <xs:element ref="PskDheServerKeyExchange"/>
+                  <xs:element ref="PskEcDhClientKeyExchange"/>
+                  <xs:element ref="PskEcDheServerKeyExchange"/>
+                  <xs:element ref="PskRsaClientKeyExchange"/>
+                  <xs:element ref="SrpClientKeyExchange"/>
+                  <xs:element ref="SrpServerKeyExchange"/>
+                  <xs:element ref="EndOfEarlyData"/>
+                  <xs:element ref="PWDServerKeyExchange"/>
+                  <xs:element ref="RSAServerKeyExchange"/>
+                  <xs:element ref="PWDClientKeyExchange"/>
+                  <xs:element ref="PskServerKeyExchange"/>
+                  <xs:element ref="CertificateStatus"/>
+                  <xs:element ref="EmptyClientKeyExchange"/>
+                  <xs:element ref="EncryptedClientHello"/>
+                </xs:choice>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="expectedHttpMessages" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:choice minOccurs="0" maxOccurs="unbounded">
+                  <xs:element ref="httpRequestMessage"/>
+                  <xs:element ref="httpResponseMessage"/>
+                </xs:choice>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
@@ -3402,13 +3801,116 @@
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="changeServerRsaParametersAction">
+  <xs:complexType name="activateDecryptionAction">
+    <xs:complexContent>
+      <xs:extension base="activateCryptoAction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="activateCryptoAction" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="connectionBoundAction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="esniKeyDnsRequestAction">
+    <xs:complexContent>
+      <xs:extension base="tlsAction">
+        <xs:sequence>
+          <xs:element name="extensions" type="extensionMessage" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="forwardDataAction">
+    <xs:complexContent>
+      <xs:extension base="tlsAction">
+        <xs:sequence>
+          <xs:element name="from" type="xs:string" minOccurs="0"/>
+          <xs:element name="to" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="changePreMasterSecretAction">
     <xs:complexContent>
       <xs:extension base="connectionBoundAction">
         <xs:sequence>
-          <xs:element name="modulus" type="xs:integer" minOccurs="0"/>
-          <xs:element name="publicExponent" type="xs:integer" minOccurs="0"/>
-          <xs:element name="privateExponent" type="xs:integer" minOccurs="0"/>
+          <xs:element name="newValue" type="xs:string" minOccurs="0"/>
+          <xs:element name="oldValue" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="deactivateCryptoAction" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="connectionBoundAction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="tightReceiveAction">
+    <xs:complexContent>
+      <xs:extension base="receiveAction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="changeReadEpochAction">
+    <xs:complexContent>
+      <xs:extension base="changeEpochAction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="flushSessionCacheAction">
+    <xs:complexContent>
+      <xs:extension base="tlsAction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="deactivateDecryptionAction">
+    <xs:complexContent>
+      <xs:extension base="deactivateCryptoAction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="sendDynamicClientKeyExchangeAction">
+    <xs:complexContent>
+      <xs:extension base="messageAction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="sendDynamicServerCertificateAction">
+    <xs:complexContent>
+      <xs:extension base="messageAction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="printLastHandledApplicationDataAction">
+    <xs:complexContent>
+      <xs:extension base="connectionBoundAction">
+        <xs:sequence>
+          <xs:element name="lastHandledApplicationData" type="xs:string" minOccurs="0"/>
+          <xs:element name="stringEncoding" type="xs:string" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -3640,135 +4142,39 @@
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="resetConnectionAction">
+  <xs:complexType name="activateEncryptionAction">
     <xs:complexContent>
-      <xs:extension base="connectionBoundAction">
-        <xs:sequence>
-          <xs:element name="asPlanned" type="xs:boolean" minOccurs="0"/>
-          <xs:element name="resetContext" type="xs:boolean" minOccurs="0"/>
-        </xs:sequence>
+      <xs:extension base="activateCryptoAction">
+        <xs:sequence/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="sendDynamicServerCertificateAction">
+  <xs:complexType name="changeWriteEpochAction">
+    <xs:complexContent>
+      <xs:extension base="changeEpochAction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="sendMessagesFromLastFlightAction">
     <xs:complexContent>
       <xs:extension base="messageAction">
-        <xs:sequence/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="deactivateDecryptionAction">
-    <xs:complexContent>
-      <xs:extension base="deactivateCryptoAction">
-        <xs:sequence/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="deactivateCryptoAction" abstract="true">
-    <xs:complexContent>
-      <xs:extension base="connectionBoundAction">
-        <xs:sequence/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="changePreMasterSecretAction">
-    <xs:complexContent>
-      <xs:extension base="connectionBoundAction">
         <xs:sequence>
-          <xs:element name="newValue" type="xs:string" minOccurs="0"/>
-          <xs:element name="oldValue" type="xs:string" minOccurs="0"/>
+          <xs:element name="depth" type="xs:int"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="copyBuffersAction">
-    <xs:complexContent>
-      <xs:extension base="copyContextFieldAction">
-        <xs:sequence/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="copyContextFieldAction" abstract="true">
+  <xs:complexType name="echConfigDnsRequestAction">
     <xs:complexContent>
       <xs:extension base="tlsAction">
         <xs:sequence>
-          <xs:element name="from" type="xs:string" minOccurs="0"/>
-          <xs:element name="to" type="xs:string" minOccurs="0"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="remBufferedChCiphersAction">
-    <xs:complexContent>
-      <xs:extension base="connectionBoundAction">
-        <xs:sequence>
-          <xs:element name="suite" type="cipherSuite" minOccurs="0" maxOccurs="unbounded"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="clearBuffersAction">
-    <xs:complexContent>
-      <xs:extension base="connectionBoundAction">
-        <xs:sequence/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="changeProtocolVersionAction">
-    <xs:complexContent>
-      <xs:extension base="connectionBoundAction">
-        <xs:sequence>
-          <xs:element name="newValue" type="protocolVersion" minOccurs="0"/>
-          <xs:element name="oldValue" type="protocolVersion" minOccurs="0"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="deepCopyBufferedRecordsAction">
-    <xs:complexContent>
-      <xs:extension base="copyContextFieldAction">
-        <xs:sequence/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="changeServerRandomAction">
-    <xs:complexContent>
-      <xs:extension base="connectionBoundAction">
-        <xs:sequence>
-          <xs:element name="newValue" type="xs:string" minOccurs="0"/>
-          <xs:element name="oldValue" type="xs:string" minOccurs="0"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="changeContextValueAction">
-    <xs:complexContent>
-      <xs:extension base="connectionBoundAction">
-        <xs:sequence>
-          <xs:element name="newValue" type="xs:anyType" minOccurs="0"/>
-          <xs:element name="newValueList" minOccurs="0">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="newValue" type="xs:anyType" minOccurs="0" maxOccurs="unbounded"/>
-              </xs:sequence>
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="oldValue" type="xs:anyType" minOccurs="0"/>
-          <xs:element name="oldValueList" type="xs:anyType" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
-          <xs:element name="fieldName" type="xs:string" minOccurs="0"/>
-          <xs:element name="usesList" type="xs:boolean" minOccurs="0"/>
+          <xs:element name="extensions" type="extensionMessage" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="tlsContext" type="tlsContext" minOccurs="0"/>
+          <xs:element name="tlsConfig" type="config" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -4186,24 +4592,6 @@
 
   <xs:complexType name="abstractInstant" abstract="true">
     <xs:sequence/>
-  </xs:complexType>
-
-  <xs:complexType name="aliasedConnection" abstract="true">
-    <xs:sequence>
-      <xs:element name="alias" type="xs:string" minOccurs="0"/>
-      <xs:element name="ip" type="xs:string" minOccurs="0"/>
-      <xs:element name="port" type="xs:int" minOccurs="0"/>
-      <xs:element name="hostname" type="xs:string" minOccurs="0"/>
-      <xs:element name="proxyDataPort" type="xs:int" minOccurs="0"/>
-      <xs:element name="proxyDataHostname" type="xs:string" minOccurs="0"/>
-      <xs:element name="proxyControlPort" type="xs:int" minOccurs="0"/>
-      <xs:element name="proxyControlHostname" type="xs:string" minOccurs="0"/>
-      <xs:element name="timeout" type="xs:int" minOccurs="0"/>
-      <xs:element name="firstTimeout" type="xs:int" minOccurs="0"/>
-      <xs:element name="connectionTimeout" type="xs:int" minOccurs="0"/>
-      <xs:element name="transportHandlerType" type="transportHandlerType" minOccurs="0"/>
-      <xs:element name="sourcePort" type="xs:int" minOccurs="0"/>
-    </xs:sequence>
   </xs:complexType>
 
   <xs:complexType name="context">
@@ -4782,22 +5170,6 @@
     </xs:sequence>
   </xs:complexType>
 
-  <xs:complexType name="outboundConnection">
-    <xs:complexContent>
-      <xs:extension base="aliasedConnection">
-        <xs:sequence/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="inboundConnection">
-    <xs:complexContent>
-      <xs:extension base="aliasedConnection">
-        <xs:sequence/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
   <xs:complexType name="mapElements">
     <xs:sequence/>
     <xs:attribute name="key" type="namedGroup"/>
@@ -4837,34 +5209,18 @@
     <xs:sequence/>
   </xs:complexType>
 
-  <xs:complexType name="state">
-    <xs:sequence>
-      <xs:element name="endTimestamp" type="xs:long"/>
-      <xs:element name="executionException" type="throwable" minOccurs="0"/>
-      <xs:element name="runningMode" type="runningModeType" minOccurs="0"/>
-      <xs:element name="startTimestamp" type="xs:long"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="throwable">
-    <xs:sequence>
-      <xs:element name="stackTrace" type="stackTraceElement" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="stackTraceElement" final="extension restriction">
-    <xs:sequence/>
-  </xs:complexType>
-
-  <xs:complexType name="sendDynamicClientKeyExchangeAction">
+  <xs:complexType name="changeCipherSuiteAction">
     <xs:complexContent>
-      <xs:extension base="messageAction">
-        <xs:sequence/>
+      <xs:extension base="connectionBoundAction">
+        <xs:sequence>
+          <xs:element name="newValue" type="cipherSuite" minOccurs="0"/>
+          <xs:element name="oldValue" type="cipherSuite" minOccurs="0"/>
+        </xs:sequence>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="popBuffersAction">
+  <xs:complexType name="clearDigestAction">
     <xs:complexContent>
       <xs:extension base="connectionBoundAction">
         <xs:sequence/>
@@ -4872,140 +5228,63 @@
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="esniKeyDnsRequestAction">
+  <xs:complexType name="changeServerRsaParametersAction">
     <xs:complexContent>
-      <xs:extension base="tlsAction">
+      <xs:extension base="connectionBoundAction">
         <xs:sequence>
-          <xs:element name="extensions" type="extensionMessage" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="modulus" type="xs:integer" minOccurs="0"/>
+          <xs:element name="publicExponent" type="xs:integer" minOccurs="0"/>
+          <xs:element name="privateExponent" type="xs:integer" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="multiReceiveAction">
+  <xs:complexType name="changeContextValueAction">
     <xs:complexContent>
-      <xs:extension base="genericReceiveAction">
+      <xs:extension base="connectionBoundAction">
         <xs:sequence>
-          <xs:element name="expectedActionCandidates" type="receiveAction" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="receiveAction">
-    <xs:complexContent>
-      <xs:extension base="commonReceiveAction">
-        <xs:sequence>
-          <xs:element name="expectedMessages" minOccurs="0">
+          <xs:element name="newValue" type="xs:anyType" minOccurs="0"/>
+          <xs:element name="newValueList" minOccurs="0">
             <xs:complexType>
               <xs:sequence>
-                <xs:choice minOccurs="0" maxOccurs="unbounded">
-                  <xs:element ref="Certificate"/>
-                  <xs:element ref="DtlsHandshakeMessageFragment"/>
-                  <xs:element ref="CertificateVerify"/>
-                  <xs:element ref="CertificateRequest"/>
-                  <xs:element ref="ClientHello"/>
-                  <xs:element ref="HelloVerifyRequest"/>
-                  <xs:element ref="DHClientKeyExchange"/>
-                  <xs:element ref="DHEServerKeyExchange"/>
-                  <xs:element ref="ECDHClientKeyExchange"/>
-                  <xs:element ref="ECDHEServerKeyExchange"/>
-                  <xs:element ref="PskClientKeyExchange"/>
-                  <xs:element ref="Finished"/>
-                  <xs:element ref="RSAClientKeyExchange"/>
-                  <xs:element ref="GOSTClientKeyExchange"/>
-                  <xs:element ref="ServerHelloDone"/>
-                  <xs:element ref="ServerHello"/>
-                  <xs:element ref="Alert"/>
-                  <xs:element ref="NewSessionTicket"/>
-                  <xs:element ref="KeyUpdate"/>
-                  <xs:element ref="Application"/>
-                  <xs:element ref="ChangeCipherSpec"/>
-                  <xs:element ref="SSL2ClientHello"/>
-                  <xs:element ref="SSL2ClientMasterKey"/>
-                  <xs:element ref="SSL2ServerHello"/>
-                  <xs:element ref="SSL2ServerVerify"/>
-                  <xs:element ref="UnknownSSL2Message"/>
-                  <xs:element ref="UnknownMessage"/>
-                  <xs:element ref="UnknownHandshakeMessage"/>
-                  <xs:element ref="HelloRequest"/>
-                  <xs:element ref="Heartbeat"/>
-                  <xs:element ref="SupplementalData"/>
-                  <xs:element ref="EncryptedExtensions"/>
-                  <xs:element ref="PskDhClientKeyExchange"/>
-                  <xs:element ref="PskDheServerKeyExchange"/>
-                  <xs:element ref="PskEcDhClientKeyExchange"/>
-                  <xs:element ref="PskEcDheServerKeyExchange"/>
-                  <xs:element ref="PskRsaClientKeyExchange"/>
-                  <xs:element ref="SrpClientKeyExchange"/>
-                  <xs:element ref="SrpServerKeyExchange"/>
-                  <xs:element ref="EndOfEarlyData"/>
-                  <xs:element ref="PWDServerKeyExchange"/>
-                  <xs:element ref="RSAServerKeyExchange"/>
-                  <xs:element ref="PWDClientKeyExchange"/>
-                  <xs:element ref="PskServerKeyExchange"/>
-                  <xs:element ref="CertificateStatus"/>
-                  <xs:element ref="EmptyClientKeyExchange"/>
-                  <xs:element ref="EncryptedClientHello"/>
-                </xs:choice>
+                <xs:element name="newValue" type="xs:anyType" minOccurs="0" maxOccurs="unbounded"/>
               </xs:sequence>
             </xs:complexType>
           </xs:element>
-          <xs:element name="expectedHttpMessages" minOccurs="0">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:choice minOccurs="0" maxOccurs="unbounded">
-                  <xs:element ref="httpRequestMessage"/>
-                  <xs:element ref="httpResponseMessage"/>
-                </xs:choice>
-              </xs:sequence>
-            </xs:complexType>
-          </xs:element>
+          <xs:element name="oldValue" type="xs:anyType" minOccurs="0"/>
+          <xs:element name="oldValueList" type="xs:anyType" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="fieldName" type="xs:string" minOccurs="0"/>
+          <xs:element name="usesList" type="xs:boolean" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="commonReceiveAction" abstract="true">
+  <xs:complexType name="deepCopyBufferedMessagesAction">
     <xs:complexContent>
-      <xs:extension base="messageAction">
+      <xs:extension base="copyContextFieldAction">
         <xs:sequence/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="remBufferedChExtensionsAction">
+  <xs:complexType name="changeCompressionAction">
     <xs:complexContent>
       <xs:extension base="connectionBoundAction">
         <xs:sequence>
-          <xs:element name="type" type="extensionType" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="newValue" type="compressionMethod" minOccurs="0"/>
+          <xs:element name="oldValue" type="compressionMethod" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="activateEncryptionAction">
-    <xs:complexContent>
-      <xs:extension base="activateCryptoAction">
-        <xs:sequence/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="activateCryptoAction" abstract="true">
+  <xs:complexType name="setEncryptChangeCipherSpecConfigAction">
     <xs:complexContent>
       <xs:extension base="connectionBoundAction">
-        <xs:sequence/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="earlyCcsAction">
-    <xs:complexContent>
-      <xs:extension base="tlsAction">
         <xs:sequence>
-          <xs:element name="targetOpenssl100" type="xs:boolean" minOccurs="0"/>
-          <xs:element name="executedAsPlanned" type="xs:boolean"/>
+          <xs:element name="setting" type="xs:boolean"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -5015,6 +5294,51 @@
     <xs:complexContent>
       <xs:extension base="copyContextFieldAction">
         <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="popAndSendMessageAction">
+    <xs:complexContent>
+      <xs:extension base="messageAction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="changeReadMessageSequenceAction">
+    <xs:complexContent>
+      <xs:extension base="changeMessageSequenceAction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="changeMessageSequenceAction" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="connectionBoundAction">
+        <xs:sequence>
+          <xs:element name="messageSequence" type="xs:int" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="genericReceiveAsciiAction">
+    <xs:complexContent>
+      <xs:extension base="asciiAction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="findReceivedProtocolMessageAction">
+    <xs:complexContent>
+      <xs:extension base="connectionBoundAction">
+        <xs:sequence>
+          <xs:element name="protocolMessageType" type="protocolMessageType" minOccurs="0"/>
+          <xs:element name="found" type="xs:boolean" minOccurs="0"/>
+        </xs:sequence>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
@@ -5037,11 +5361,92 @@
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="renegotiationAction">
+  <xs:complexType name="printProposedExtensionsAction">
+    <xs:complexContent>
+      <xs:extension base="connectionBoundAction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="changeWriteMessageSequenceAction">
+    <xs:complexContent>
+      <xs:extension base="changeMessageSequenceAction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="remBufferedChCiphersAction">
     <xs:complexContent>
       <xs:extension base="connectionBoundAction">
         <xs:sequence>
-          <xs:element name="resetLastVerifyData" type="xs:boolean"/>
+          <xs:element name="suite" type="cipherSuite" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="bufferedGenericReceiveAction">
+    <xs:complexContent>
+      <xs:extension base="genericReceiveAction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="changeServerRandomAction">
+    <xs:complexContent>
+      <xs:extension base="connectionBoundAction">
+        <xs:sequence>
+          <xs:element name="newValue" type="xs:string" minOccurs="0"/>
+          <xs:element name="oldValue" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="sendRaccoonCkeAction">
+    <xs:complexContent>
+      <xs:extension base="messageAction">
+        <xs:sequence>
+          <xs:element name="withNullByte" type="xs:boolean"/>
+          <xs:element name="initialSecret" type="xs:integer" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="popBufferedRecordAction">
+    <xs:complexContent>
+      <xs:extension base="connectionBoundAction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="copyPreMasterSecretAction">
+    <xs:complexContent>
+      <xs:extension base="copyContextFieldAction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="deactivateEncryptionAction">
+    <xs:complexContent>
+      <xs:extension base="deactivateCryptoAction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="resetRecordCipherListsAction">
+    <xs:complexContent>
+      <xs:extension base="connectionBoundAction">
+        <xs:sequence>
+          <xs:element name="toRemoveEncryptor" type="xs:int"/>
+          <xs:element name="toRemoveDecryptor" type="xs:int"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -5066,274 +5471,6 @@
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="bufferedGenericReceiveAction">
-    <xs:complexContent>
-      <xs:extension base="genericReceiveAction">
-        <xs:sequence/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="changeCompressionAction">
-    <xs:complexContent>
-      <xs:extension base="connectionBoundAction">
-        <xs:sequence>
-          <xs:element name="newValue" type="compressionMethod" minOccurs="0"/>
-          <xs:element name="oldValue" type="compressionMethod" minOccurs="0"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="copyBufferedRecordsAction">
-    <xs:complexContent>
-      <xs:extension base="copyContextFieldAction">
-        <xs:sequence/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="popAndSendAction">
-    <xs:complexContent>
-      <xs:extension base="messageAction">
-        <xs:sequence>
-          <xs:element name="index" type="xs:int" minOccurs="0"/>
-          <xs:element name="couldPop" type="xs:boolean"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="changeReadEpochAction">
-    <xs:complexContent>
-      <xs:extension base="changeEpochAction">
-        <xs:sequence/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="changeEpochAction" abstract="true">
-    <xs:complexContent>
-      <xs:extension base="connectionBoundAction">
-        <xs:sequence>
-          <xs:element name="epoch" type="xs:int" minOccurs="0"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="receiveTillAction">
-    <xs:complexContent>
-      <xs:extension base="commonReceiveAction">
-        <xs:choice>
-          <xs:element ref="Certificate"/>
-          <xs:element ref="DtlsHandshakeMessageFragment"/>
-          <xs:element ref="CertificateVerify"/>
-          <xs:element ref="CertificateRequest"/>
-          <xs:element ref="ClientHello"/>
-          <xs:element ref="HelloVerifyRequest"/>
-          <xs:element ref="DHClientKeyExchange"/>
-          <xs:element ref="DHEServerKeyExchange"/>
-          <xs:element ref="ECDHClientKeyExchange"/>
-          <xs:element ref="ECDHEServerKeyExchange"/>
-          <xs:element ref="PskClientKeyExchange"/>
-          <xs:element ref="Finished"/>
-          <xs:element ref="RSAClientKeyExchange"/>
-          <xs:element ref="GOSTClientKeyExchange"/>
-          <xs:element ref="ServerHelloDone"/>
-          <xs:element ref="ServerHello"/>
-          <xs:element ref="Alert"/>
-          <xs:element ref="NewSessionTicket"/>
-          <xs:element ref="KeyUpdate"/>
-          <xs:element ref="Application"/>
-          <xs:element ref="ChangeCipherSpec"/>
-          <xs:element ref="SSL2ClientHello"/>
-          <xs:element ref="SSL2ClientMasterKey"/>
-          <xs:element ref="SSL2ServerHello"/>
-          <xs:element ref="SSL2ServerVerify"/>
-          <xs:element ref="UnknownSSL2Message"/>
-          <xs:element ref="UnknownMessage"/>
-          <xs:element ref="UnknownHandshakeMessage"/>
-          <xs:element ref="HelloRequest"/>
-          <xs:element ref="Heartbeat"/>
-          <xs:element ref="SupplementalData"/>
-          <xs:element ref="EncryptedExtensions"/>
-          <xs:element ref="PskDhClientKeyExchange"/>
-          <xs:element ref="PskDheServerKeyExchange"/>
-          <xs:element ref="PskEcDhClientKeyExchange"/>
-          <xs:element ref="PskEcDheServerKeyExchange"/>
-          <xs:element ref="PskRsaClientKeyExchange"/>
-          <xs:element ref="SrpClientKeyExchange"/>
-          <xs:element ref="SrpServerKeyExchange"/>
-          <xs:element ref="EndOfEarlyData"/>
-          <xs:element ref="PWDServerKeyExchange"/>
-          <xs:element ref="RSAServerKeyExchange"/>
-          <xs:element ref="PWDClientKeyExchange"/>
-          <xs:element ref="PskServerKeyExchange"/>
-          <xs:element ref="CertificateStatus"/>
-          <xs:element ref="EmptyClientKeyExchange"/>
-          <xs:element ref="EncryptedClientHello"/>
-        </xs:choice>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="findReceivedProtocolMessageAction">
-    <xs:complexContent>
-      <xs:extension base="connectionBoundAction">
-        <xs:sequence>
-          <xs:element name="protocolMessageType" type="protocolMessageType" minOccurs="0"/>
-          <xs:element name="found" type="xs:boolean" minOccurs="0"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="flushSessionCacheAction">
-    <xs:complexContent>
-      <xs:extension base="tlsAction">
-        <xs:sequence/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="copyPreMasterSecretAction">
-    <xs:complexContent>
-      <xs:extension base="copyContextFieldAction">
-        <xs:sequence/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="clearDigestAction">
-    <xs:complexContent>
-      <xs:extension base="connectionBoundAction">
-        <xs:sequence/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="printSecretsAction">
-    <xs:complexContent>
-      <xs:extension base="connectionBoundAction">
-        <xs:sequence/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="printLastHandledApplicationDataAction">
-    <xs:complexContent>
-      <xs:extension base="connectionBoundAction">
-        <xs:sequence>
-          <xs:element name="lastHandledApplicationData" type="xs:string" minOccurs="0"/>
-          <xs:element name="stringEncoding" type="xs:string" minOccurs="0"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="popBufferedRecordAction">
-    <xs:complexContent>
-      <xs:extension base="connectionBoundAction">
-        <xs:sequence/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="applyBufferedMessagesAction">
-    <xs:complexContent>
-      <xs:extension base="connectionBoundAction">
-        <xs:sequence/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="copyBufferedMessagesAction">
-    <xs:complexContent>
-      <xs:extension base="copyContextFieldAction">
-        <xs:sequence/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="copyServerRandomAction">
-    <xs:complexContent>
-      <xs:extension base="copyContextFieldAction">
-        <xs:sequence/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="activateDecryptionAction">
-    <xs:complexContent>
-      <xs:extension base="activateCryptoAction">
-        <xs:sequence/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="changeCipherSuiteAction">
-    <xs:complexContent>
-      <xs:extension base="connectionBoundAction">
-        <xs:sequence>
-          <xs:element name="newValue" type="cipherSuite" minOccurs="0"/>
-          <xs:element name="oldValue" type="cipherSuite" minOccurs="0"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="bufferedSendAction">
-    <xs:complexContent>
-      <xs:extension base="messageAction">
-        <xs:sequence/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="receiveAsciiAction">
-    <xs:complexContent>
-      <xs:extension base="asciiAction">
-        <xs:sequence>
-          <xs:element name="receivedAsciiString" type="xs:string" minOccurs="0"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="echConfigDnsRequestAction">
-    <xs:complexContent>
-      <xs:extension base="tlsAction">
-        <xs:sequence>
-          <xs:element name="extensions" type="extensionMessage" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
-          <xs:element name="tlsContext" type="tlsContext" minOccurs="0"/>
-          <xs:element name="tlsConfig" type="config" minOccurs="0"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="workflowTrace">
-    <xs:sequence>
-      <xs:choice minOccurs="0" maxOccurs="unbounded">
-        <xs:element name="AliasedConnection" type="aliasedConnection"/>
-        <xs:element name="InboundConnection" type="inboundConnection"/>
-        <xs:element name="OutboundConnection" type="outboundConnection"/>
-      </xs:choice>
-      <xs:any processContents="lax" namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
-      <xs:element name="name" type="xs:string" minOccurs="0"/>
-      <xs:element name="description" type="xs:string" minOccurs="0"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="deepCopyBufferedMessagesAction">
-    <xs:complexContent>
-      <xs:extension base="copyContextFieldAction">
-        <xs:sequence/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
   <xs:complexType name="changeConnectionTimeoutAction">
     <xs:complexContent>
       <xs:extension base="connectionBoundAction">
@@ -5345,160 +5482,59 @@
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="changeWriteEpochAction">
-    <xs:complexContent>
-      <xs:extension base="changeEpochAction">
-        <xs:sequence/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="sendAsciiAction">
-    <xs:complexContent>
-      <xs:extension base="asciiAction">
-        <xs:sequence/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="deactivateEncryptionAction">
-    <xs:complexContent>
-      <xs:extension base="deactivateCryptoAction">
-        <xs:sequence/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="tightReceiveAction">
-    <xs:complexContent>
-      <xs:extension base="receiveAction">
-        <xs:sequence/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="resetRecordCipherListsAction">
+  <xs:complexType name="remBufferedChExtensionsAction">
     <xs:complexContent>
       <xs:extension base="connectionBoundAction">
         <xs:sequence>
-          <xs:element name="toRemoveEncryptor" type="xs:int"/>
-          <xs:element name="toRemoveDecryptor" type="xs:int"/>
+          <xs:element name="type" type="extensionType" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="changeClientRandomAction">
-    <xs:complexContent>
-      <xs:extension base="connectionBoundAction">
-        <xs:sequence>
-          <xs:element name="newValue" type="xs:string" minOccurs="0"/>
-          <xs:element name="oldValue" type="xs:string" minOccurs="0"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="sendMessagesFromLastFlightAction">
-    <xs:complexContent>
-      <xs:extension base="messageAction">
-        <xs:sequence>
-          <xs:element name="depth" type="xs:int"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="sendAction">
-    <xs:complexContent>
-      <xs:extension base="messageAction">
-        <xs:sequence/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="waitAction">
-    <xs:complexContent>
-      <xs:extension base="tlsAction">
-        <xs:sequence>
-          <xs:element name="asPlanned" type="xs:boolean" minOccurs="0"/>
-          <xs:element name="time" type="xs:long" minOccurs="0"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="printProposedExtensionsAction">
-    <xs:complexContent>
-      <xs:extension base="connectionBoundAction">
-        <xs:sequence/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="forwardRecordsAction">
-    <xs:complexContent>
-      <xs:extension base="tlsAction">
-        <xs:sequence>
-          <xs:element name="from" type="xs:string" minOccurs="0"/>
-          <xs:element name="to" type="xs:string" minOccurs="0"/>
-          <xs:element name="receivedRecords" minOccurs="0">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="Record" type="record" minOccurs="0" maxOccurs="unbounded"/>
-              </xs:sequence>
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="sendRecords" minOccurs="0">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="Record" type="record" minOccurs="0" maxOccurs="unbounded"/>
-              </xs:sequence>
-            </xs:complexType>
-          </xs:element>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="deepCopyBuffersAction">
+  <xs:complexType name="copyBuffersAction">
     <xs:complexContent>
       <xs:extension base="copyContextFieldAction">
-        <xs:sequence>
-          <xs:element name="state" type="state" minOccurs="0"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="changeReadMessageSequenceAction">
-    <xs:complexContent>
-      <xs:extension base="changeMessageSequenceAction">
         <xs:sequence/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="popBufferedMessageAction">
-    <xs:complexContent>
-      <xs:extension base="connectionBoundAction">
-        <xs:sequence>
-          <xs:element name="couldPop" type="xs:boolean"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
+  <xs:simpleType name="transportHandlerType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="TCP"/>
+      <xs:enumeration value="EAP_TLS"/>
+      <xs:enumeration value="UDP"/>
+      <xs:enumeration value="STREAM"/>
+      <xs:enumeration value="TCP_TIMING"/>
+      <xs:enumeration value="UDP_TIMING"/>
+      <xs:enumeration value="UDP_PROXY"/>
+      <xs:enumeration value="TCP_PROXY_TIMING"/>
+      <xs:enumeration value="TCP_NO_DELAY"/>
+      <xs:enumeration value="TCP_FRAGMENTATION"/>
+    </xs:restriction>
+  </xs:simpleType>
 
-  <xs:complexType name="sendRaccoonCkeAction">
-    <xs:complexContent>
-      <xs:extension base="messageAction">
-        <xs:sequence>
-          <xs:element name="withNullByte" type="xs:boolean"/>
-          <xs:element name="initialSecret" type="xs:integer" minOccurs="0"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
+  <xs:simpleType name="tls13KeySetType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="NONE"/>
+      <xs:enumeration value="EARLY_TRAFFIC_SECRETS"/>
+      <xs:enumeration value="HANDSHAKE_TRAFFIC_SECRETS"/>
+      <xs:enumeration value="APPLICATION_TRAFFIC_SECRETS"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="protocolMessageType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="UNKNOWN"/>
+      <xs:enumeration value="CHANGE_CIPHER_SPEC"/>
+      <xs:enumeration value="ALERT"/>
+      <xs:enumeration value="HANDSHAKE"/>
+      <xs:enumeration value="APPLICATION_DATA"/>
+      <xs:enumeration value="HEARTBEAT"/>
+      <xs:enumeration value="TLS12_CID"/>
+    </xs:restriction>
+  </xs:simpleType>
 
   <xs:simpleType name="actionOption">
     <xs:restriction base="xs:string">
@@ -6137,24 +6173,11 @@
     </xs:restriction>
   </xs:simpleType>
 
-  <xs:simpleType name="protocolMessageType">
+  <xs:simpleType name="runningModeType">
     <xs:restriction base="xs:string">
-      <xs:enumeration value="UNKNOWN"/>
-      <xs:enumeration value="CHANGE_CIPHER_SPEC"/>
-      <xs:enumeration value="ALERT"/>
-      <xs:enumeration value="HANDSHAKE"/>
-      <xs:enumeration value="APPLICATION_DATA"/>
-      <xs:enumeration value="HEARTBEAT"/>
-      <xs:enumeration value="TLS12_CID"/>
-    </xs:restriction>
-  </xs:simpleType>
-
-  <xs:simpleType name="tls13KeySetType">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="NONE"/>
-      <xs:enumeration value="EARLY_TRAFFIC_SECRETS"/>
-      <xs:enumeration value="HANDSHAKE_TRAFFIC_SECRETS"/>
-      <xs:enumeration value="APPLICATION_TRAFFIC_SECRETS"/>
+      <xs:enumeration value="CLIENT"/>
+      <xs:enumeration value="SERVER"/>
+      <xs:enumeration value="MITM"/>
     </xs:restriction>
   </xs:simpleType>
 
@@ -6590,21 +6613,6 @@
     </xs:restriction>
   </xs:simpleType>
 
-  <xs:simpleType name="transportHandlerType">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="TCP"/>
-      <xs:enumeration value="EAP_TLS"/>
-      <xs:enumeration value="UDP"/>
-      <xs:enumeration value="STREAM"/>
-      <xs:enumeration value="TCP_TIMING"/>
-      <xs:enumeration value="UDP_TIMING"/>
-      <xs:enumeration value="UDP_PROXY"/>
-      <xs:enumeration value="TCP_PROXY_TIMING"/>
-      <xs:enumeration value="TCP_NO_DELAY"/>
-      <xs:enumeration value="TCP_FRAGMENTATION"/>
-    </xs:restriction>
-  </xs:simpleType>
-
   <xs:simpleType name="layerConfiguration">
     <xs:restriction base="xs:string">
       <xs:enumeration value="TLS"/>
@@ -6621,14 +6629,6 @@
     <xs:restriction base="xs:string">
       <xs:enumeration value="DEFAULT"/>
       <xs:enumeration value="DISCARD_RECORDS"/>
-    </xs:restriction>
-  </xs:simpleType>
-
-  <xs:simpleType name="runningModeType">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="CLIENT"/>
-      <xs:enumeration value="SERVER"/>
-      <xs:enumeration value="MITM"/>
     </xs:restriction>
   </xs:simpleType>
 
