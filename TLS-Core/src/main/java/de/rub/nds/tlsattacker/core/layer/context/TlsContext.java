@@ -58,7 +58,6 @@ import de.rub.nds.tlsattacker.core.state.session.IdSession;
 import de.rub.nds.tlsattacker.core.state.session.Session;
 import de.rub.nds.tlsattacker.core.state.session.TicketSession;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.x509attacker.constants.X509NamedCurve;
 import de.rub.nds.x509attacker.context.X509Context;
@@ -429,8 +428,6 @@ public class TlsContext extends LayerContext {
 
     private LinkedList<DtlsHandshakeMessageFragment> fragmentBuffer;
 
-    private Chooser chooser;
-
     /** Contains the TLS extensions proposed by the client. */
     private final EnumSet<ExtensionType> proposedExtensionSet = EnumSet.noneOf(ExtensionType.class);
 
@@ -610,12 +607,7 @@ public class TlsContext extends LayerContext {
     }
 
     public Chooser getChooser() {
-        if (chooser == null) {
-            chooser =
-                    ChooserFactory.getChooser(
-                            getConfig().getChooserType(), this.getContext(), getConfig());
-        }
-        return chooser;
+        return getContext().getChooser();
     }
 
     public CertificateType getSelectedClientCertificateType() {
@@ -1793,7 +1785,7 @@ public class TlsContext extends LayerContext {
     }
 
     public Tls13KeySetType getActiveKeySetTypeRead() {
-        if (chooser.getConnectionEndType() == ConnectionEndType.SERVER) {
+        if (getChooser().getConnectionEndType() == ConnectionEndType.SERVER) {
             return activeClientKeySetType;
         } else {
             return activeServerKeySetType;
@@ -1801,7 +1793,7 @@ public class TlsContext extends LayerContext {
     }
 
     public Tls13KeySetType getActiveKeySetTypeWrite() {
-        if (chooser.getConnectionEndType() == ConnectionEndType.SERVER) {
+        if (getChooser().getConnectionEndType() == ConnectionEndType.SERVER) {
             return activeServerKeySetType;
         } else {
             return activeClientKeySetType;

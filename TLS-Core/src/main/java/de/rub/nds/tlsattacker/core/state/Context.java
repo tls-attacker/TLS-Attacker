@@ -62,8 +62,8 @@ public class Context {
 
     public Context(State state, AliasedConnection connection) {
         this.state = state;
-        this.chooser = ChooserFactory.getChooser(ChooserType.DEFAULT, this, config);
         this.config = state.getConfig();
+        this.chooser = ChooserFactory.getChooser(ChooserType.DEFAULT, this, config);
         this.connection = connection;
         prepareWithLayers(config.getDefaultLayerConfiguration());
     }
