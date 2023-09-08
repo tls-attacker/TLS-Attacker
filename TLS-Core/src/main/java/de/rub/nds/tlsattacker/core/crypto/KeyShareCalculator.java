@@ -14,7 +14,7 @@ import de.rub.nds.protocol.crypto.ec.EllipticCurve;
 import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.protocol.crypto.ec.PointFormatter;
 import de.rub.nds.protocol.crypto.ec.RFC7748Curve;
-import de.rub.nds.protocol.crypto.ffdh.FFDHEGroup;
+import de.rub.nds.protocol.crypto.ffdh.FFDHGroup;
 import de.rub.nds.tlsattacker.core.constants.Bits;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
@@ -42,11 +42,13 @@ public class KeyShareCalculator {
                 return rfcCurve.computePublicKey(privateKey);
             }
         } else if (group.isDhGroup()) {
-            FFDHEGroup ffdheGroup = (FFDHEGroup) group.getGroupParameters();
+            FFDHGroup ffdheGroup = (FFDHGroup) group.getGroupParameters();
             BigInteger publicKey =
-                    ffdheGroup.getG().modPow(privateKey.abs(), ffdheGroup.getP().abs());
+                    ffdheGroup
+                            .getGenerator()
+                            .modPow(privateKey.abs(), ffdheGroup.getModulus().abs());
             return ArrayConverter.bigIntegerToNullPaddedByteArray(
-                    publicKey, ffdheGroup.getP().bitLength() / Bits.IN_A_BYTE);
+                    publicKey, ffdheGroup.getModulus().bitLength() / Bits.IN_A_BYTE);
         } else {
             LOGGER.warn("Cannot create Public Key for group {}", group.name());
             return new byte[0];
@@ -80,7 +82,7 @@ public class KeyShareCalculator {
             throw new IllegalArgumentException(
                     "Cannot compute dh shared secret for non ffdhe group");
         }
-        BigInteger modulus = ((FFDHEGroup) group.getGroupParameters()).getP();
+        BigInteger modulus = ((FFDHGroup) group.getGroupParameters()).getModulus();
         return ArrayConverter.bigIntegerToNullPaddedByteArray(
                 publicKey.modPow(privateKey, modulus), group.getGroupParameters().getElementSize());
     }
