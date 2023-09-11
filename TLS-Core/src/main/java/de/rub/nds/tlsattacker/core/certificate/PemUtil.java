@@ -8,7 +8,17 @@
  */
 package de.rub.nds.tlsattacker.core.certificate;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -41,8 +51,8 @@ public class PemUtil {
     public static void writePrivateKey(PrivateKey key, File targetFile) {
         try (FileOutputStream fos = new FileOutputStream(targetFile)) {
             writePrivateKey(key, fos);
-        } catch (IOException ex) {
-            LOGGER.warn(ex);
+        } throw new RuntimeException(ex);) {
+            throw new RuntimeException(ex);
         }
     }
 
@@ -58,7 +68,7 @@ public class PemUtil {
         try (FileOutputStream fos = new FileOutputStream(targetFile)) {
             writePublicKey(key, fos);
         } catch (IOException ex) {
-            LOGGER.warn(ex);
+            throw new RuntimeException(ex);
         }
     }
 
@@ -76,7 +86,7 @@ public class PemUtil {
                 PemWriter pemWriter = new PemWriter(writer)) {
             pemWriter.writeObject(pemObject);
         } catch (IOException ex) {
-            LOGGER.warn(ex);
+            throw new RuntimeException(ex);
         }
     }
 
@@ -88,7 +98,7 @@ public class PemUtil {
                 pemWriter.writeObject(pemObject);
             }
         } catch (IOException ex) {
-            LOGGER.warn(ex);
+            throw new RuntimeException(ex);
         }
     }
 
