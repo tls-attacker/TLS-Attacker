@@ -51,7 +51,7 @@ public class PemUtil {
     public static void writePrivateKey(PrivateKey key, File targetFile) {
         try (FileOutputStream fos = new FileOutputStream(targetFile)) {
             writePrivateKey(key, fos);
-        } throw new RuntimeException(ex);) {
+        } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
     }
