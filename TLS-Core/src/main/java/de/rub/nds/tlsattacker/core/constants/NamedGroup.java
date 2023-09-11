@@ -13,12 +13,12 @@ import de.rub.nds.protocol.constants.EcCurveEquationType;
 import de.rub.nds.protocol.constants.GroupParameters;
 import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
 import de.rub.nds.protocol.crypto.ec.EllipticCurve;
-import de.rub.nds.protocol.crypto.ffdh.FFDHEGroup;
-import de.rub.nds.protocol.crypto.ffdh.GroupFFDHE2048;
-import de.rub.nds.protocol.crypto.ffdh.GroupFFDHE3072;
-import de.rub.nds.protocol.crypto.ffdh.GroupFFDHE4096;
-import de.rub.nds.protocol.crypto.ffdh.GroupFFDHE6144;
-import de.rub.nds.protocol.crypto.ffdh.GroupFFDHE8192;
+import de.rub.nds.protocol.crypto.ffdh.FFDHGroup;
+import de.rub.nds.protocol.crypto.ffdh.GroupFFDH2048;
+import de.rub.nds.protocol.crypto.ffdh.GroupFFDH3072;
+import de.rub.nds.protocol.crypto.ffdh.GroupFFDH4096;
+import de.rub.nds.protocol.crypto.ffdh.GroupFFDH6144;
+import de.rub.nds.protocol.crypto.ffdh.GroupFFDH8192;
 import de.rub.nds.x509attacker.constants.X509NamedCurve;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -70,11 +70,11 @@ public enum NamedGroup {
     ECDH_X25519(new byte[] {(byte) 0, (byte) 29}, NamedEllipticCurveParameters.CURVE_X25519),
     ECDH_X448(new byte[] {(byte) 0, (byte) 30}, NamedEllipticCurveParameters.CURVE_X448),
     CURVE_SM2(new byte[] {(byte) 0, (byte) 41}, NamedEllipticCurveParameters.CURVE_SM2),
-    FFDHE2048(new byte[] {(byte) 1, (byte) 0}, new GroupFFDHE2048()),
-    FFDHE3072(new byte[] {(byte) 1, (byte) 1}, new GroupFFDHE3072()),
-    FFDHE4096(new byte[] {(byte) 1, (byte) 2}, new GroupFFDHE4096()),
-    FFDHE6144(new byte[] {(byte) 1, (byte) 3}, new GroupFFDHE6144()),
-    FFDHE8192(new byte[] {(byte) 1, (byte) 4}, new GroupFFDHE8192()),
+    FFDHE2048(new byte[] {(byte) 1, (byte) 0}, new GroupFFDH2048()),
+    FFDHE3072(new byte[] {(byte) 1, (byte) 1}, new GroupFFDH3072()),
+    FFDHE4096(new byte[] {(byte) 1, (byte) 2}, new GroupFFDH4096()),
+    FFDHE6144(new byte[] {(byte) 1, (byte) 3}, new GroupFFDH6144()),
+    FFDHE8192(new byte[] {(byte) 1, (byte) 4}, new GroupFFDH8192()),
     EXPLICIT_PRIME(new byte[] {(byte) 0xFF, (byte) 1}, null),
     // GREASE constants
     EXPLICIT_CHAR2(new byte[] {(byte) 0xFF, (byte) 2}, null),
@@ -476,7 +476,7 @@ public enum NamedGroup {
     }
 
     public boolean isDhGroup() {
-        return groupParameters instanceof FFDHEGroup;
+        return groupParameters instanceof FFDHGroup;
     }
 
     public boolean isGrease() {

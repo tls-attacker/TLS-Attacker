@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import de.rub.nds.protocol.crypto.ffdh.FFDHEGroup;
+import de.rub.nds.protocol.crypto.ffdh.FFDHGroup;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
@@ -64,13 +64,13 @@ public class DHEServerKeyExchangeHandlerTest
     @EnumSource(value = NamedGroup.class, names = "^FFDHE[0-9]*", mode = EnumSource.Mode.MATCH_ANY)
     public void testadjustContextWithFFDHEGroup(NamedGroup providedNamedGroup) {
         DHEServerKeyExchangeMessage message = new DHEServerKeyExchangeMessage();
-        FFDHEGroup group = (FFDHEGroup) providedNamedGroup.getGroupParameters();
-        message.setModulus(group.getP().toByteArray());
-        message.setGenerator(group.getG().toByteArray());
+        FFDHGroup group = (FFDHGroup) providedNamedGroup.getGroupParameters();
+        message.setModulus(group.getModulus().toByteArray());
+        message.setGenerator(group.getGenerator().toByteArray());
         message.setPublicKey(new byte[] {1, 2, 3});
         handler.adjustContext(message);
-        assertEquals(group.getG(), context.getServerEphemeralDhGenerator());
-        assertEquals(group.getP(), context.getServerEphemeralDhModulus());
+        assertEquals(group.getGenerator(), context.getServerEphemeralDhGenerator());
+        assertEquals(group.getModulus(), context.getServerEphemeralDhModulus());
         assertArrayEquals(
                 new byte[] {1, 2, 3}, context.getServerEphemeralDhPublicKey().toByteArray());
         assertEquals(context.getSelectedGroup(), providedNamedGroup);

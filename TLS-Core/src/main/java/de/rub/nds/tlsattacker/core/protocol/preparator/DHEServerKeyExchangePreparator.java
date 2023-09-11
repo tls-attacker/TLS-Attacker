@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.protocol.crypto.ffdh.FFDHEGroup;
+import de.rub.nds.protocol.crypto.ffdh.FFDHGroup;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
@@ -53,12 +53,12 @@ public class DHEServerKeyExchangePreparator<T extends DHEServerKeyExchangeMessag
 
     protected void setDheParams() {
         msg.prepareKeyExchangeComputations();
-        NamedGroup ffdheGroup = getMatchingNamedGroup();
-        if (ffdheGroup == null) {
+        NamedGroup ffdhGroup = getMatchingNamedGroup();
+        if (ffdhGroup == null) {
             setComputedGenerator(msg);
             setComputedModulus(msg);
         } else {
-            setNamedGroupParameters(msg, ffdheGroup);
+            setNamedGroupParameters(msg, ffdhGroup);
         }
         setComputedPrivateKey(msg);
     }
@@ -196,9 +196,9 @@ public class DHEServerKeyExchangePreparator<T extends DHEServerKeyExchangeMessag
     private void setNamedGroupParameters(T msg, NamedGroup chosenGroup) {
         LOGGER.debug(
                 "Negotiating NamedGroup {} for Server Key Exchange message", chosenGroup.name());
-        FFDHEGroup ffdheGroup = (FFDHEGroup) chosenGroup.getGroupParameters();
-        msg.getKeyExchangeComputations().setGenerator(ffdheGroup.getG());
-        msg.getKeyExchangeComputations().setModulus(ffdheGroup.getP());
+        FFDHGroup ffdhGroup = (FFDHGroup) chosenGroup.getGroupParameters();
+        msg.getKeyExchangeComputations().setGenerator(ffdhGroup.getGenerator());
+        msg.getKeyExchangeComputations().setModulus(ffdhGroup.getModulus());
     }
 
     private NamedGroup getMatchingNamedGroup() {

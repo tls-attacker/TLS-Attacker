@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.crypto.ffdh;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import de.rub.nds.protocol.crypto.ffdh.FFDHEGroup;
+import de.rub.nds.protocol.crypto.ffdh.FFDHGroup;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.util.tests.TestCategories;
 import java.math.BigInteger;
@@ -20,15 +20,15 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
-public class FFDHEGroupTest {
+public class FFDHGroupTest {
 
     @ParameterizedTest
     @EnumSource(value = NamedGroup.class, names = "^FFDHE[0-9]*", mode = EnumSource.Mode.MATCH_ANY)
     @Tag(TestCategories.SLOW_TEST)
     public void test(NamedGroup providedNamedGroup) {
-        FFDHEGroup group = (FFDHEGroup) providedNamedGroup.getGroupParameters();
-        BigInteger p = group.getP();
-        BigInteger g = group.getG();
+        FFDHGroup group = (FFDHGroup) providedNamedGroup.getGroupParameters();
+        BigInteger p = group.getModulus();
+        BigInteger g = group.getGenerator();
 
         assertTrue(p.isProbablePrime(32));
         BigInteger q = p.subtract(BigInteger.ONE).divide(BigInteger.TWO);
@@ -38,9 +38,9 @@ public class FFDHEGroupTest {
 
     @Test
     public void groupFFDHE2048Test() {
-        FFDHEGroup group = (FFDHEGroup) NamedGroup.FFDHE2048.getGroupParameters();
-        assertEquals(BigInteger.TWO, group.getG());
-        BigInteger q = group.getP().subtract(BigInteger.ONE).divide(BigInteger.TWO);
+        FFDHGroup group = (FFDHGroup) NamedGroup.FFDHE2048.getGroupParameters();
+        assertEquals(BigInteger.TWO, group.getGenerator());
+        BigInteger q = group.getModulus().subtract(BigInteger.ONE).divide(BigInteger.TWO);
         assertEquals(
                 q,
                 new BigInteger(
@@ -50,9 +50,9 @@ public class FFDHEGroupTest {
 
     @Test
     public void groupFFDHE3072Test() {
-        FFDHEGroup group = (FFDHEGroup) NamedGroup.FFDHE3072.getGroupParameters();
-        assertEquals(BigInteger.TWO, group.getG());
-        BigInteger q = group.getP().subtract(BigInteger.ONE).divide(BigInteger.TWO);
+        FFDHGroup group = (FFDHGroup) NamedGroup.FFDHE3072.getGroupParameters();
+        assertEquals(BigInteger.TWO, group.getGenerator());
+        BigInteger q = group.getModulus().subtract(BigInteger.ONE).divide(BigInteger.TWO);
         assertEquals(
                 q,
                 new BigInteger(
@@ -62,9 +62,9 @@ public class FFDHEGroupTest {
 
     @Test
     public void groupFFDHE4096Test() {
-        FFDHEGroup group = (FFDHEGroup) NamedGroup.FFDHE4096.getGroupParameters();
-        assertEquals(BigInteger.TWO, group.getG());
-        BigInteger q = group.getP().subtract(BigInteger.ONE).divide(BigInteger.TWO);
+        FFDHGroup group = (FFDHGroup) NamedGroup.FFDHE4096.getGroupParameters();
+        assertEquals(BigInteger.TWO, group.getGenerator());
+        BigInteger q = group.getModulus().subtract(BigInteger.ONE).divide(BigInteger.TWO);
         assertEquals(
                 q,
                 new BigInteger(
@@ -74,9 +74,9 @@ public class FFDHEGroupTest {
 
     @Test
     public void groupFFDHE6144Test() {
-        FFDHEGroup group = (FFDHEGroup) NamedGroup.FFDHE6144.getGroupParameters();
-        assertEquals(BigInteger.TWO, group.getG());
-        BigInteger q = group.getP().subtract(BigInteger.ONE).divide(BigInteger.TWO);
+        FFDHGroup group = (FFDHGroup) NamedGroup.FFDHE6144.getGroupParameters();
+        assertEquals(BigInteger.TWO, group.getGenerator());
+        BigInteger q = group.getModulus().subtract(BigInteger.ONE).divide(BigInteger.TWO);
         assertEquals(
                 q,
                 new BigInteger(
@@ -86,9 +86,9 @@ public class FFDHEGroupTest {
 
     @Test
     public void groupFFDHE8192Test() {
-        FFDHEGroup group = (FFDHEGroup) NamedGroup.FFDHE8192.getGroupParameters();
-        assertEquals(BigInteger.TWO, group.getG());
-        BigInteger q = group.getP().subtract(BigInteger.ONE).divide(BigInteger.TWO);
+        FFDHGroup group = (FFDHGroup) NamedGroup.FFDHE8192.getGroupParameters();
+        assertEquals(BigInteger.TWO, group.getGenerator());
+        BigInteger q = group.getModulus().subtract(BigInteger.ONE).divide(BigInteger.TWO);
         assertEquals(
                 q,
                 new BigInteger(
