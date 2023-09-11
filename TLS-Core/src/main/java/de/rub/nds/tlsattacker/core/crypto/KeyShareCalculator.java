@@ -84,7 +84,8 @@ public class KeyShareCalculator {
         }
         BigInteger modulus = ((FFDHGroup) group.getGroupParameters()).getModulus();
         return ArrayConverter.bigIntegerToNullPaddedByteArray(
-                publicKey.modPow(privateKey, modulus), group.getGroupParameters().getElementSize());
+                publicKey.modPow(privateKey, modulus),
+                group.getGroupParameters().getElementSizeBits());
     }
 
     public static byte[] computeEcSharedSecret(

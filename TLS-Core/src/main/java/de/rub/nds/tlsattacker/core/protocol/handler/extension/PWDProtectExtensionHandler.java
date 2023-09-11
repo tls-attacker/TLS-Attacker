@@ -47,9 +47,9 @@ public class PWDProtectExtensionHandler extends ExtensionHandler<PWDProtectExten
         // decrypt protected username
         EllipticCurve curve = parameters.getCurve();
         HKDFAlgorithm hkdfAlgorithm;
-        if (parameters.getElementSize() <= 256) {
+        if (parameters.getElementSizeBits() <= 256) {
             hkdfAlgorithm = HKDFAlgorithm.TLS_HKDF_SHA256;
-        } else if (parameters.getElementSize() <= 384) {
+        } else if (parameters.getElementSizeBits() <= 384) {
             hkdfAlgorithm = HKDFAlgorithm.TLS_HKDF_SHA384;
         } else {
             LOGGER.warn("Missing HKDF algorithm for curves larger than 384 bits");
@@ -61,7 +61,8 @@ public class PWDProtectExtensionHandler extends ExtensionHandler<PWDProtectExten
         BigInteger clientPublicKeyX =
                 new BigInteger(
                         1,
-                        Arrays.copyOfRange(protectedUsername, 0, parameters.getElementSize() / 8));
+                        Arrays.copyOfRange(
+                                protectedUsername, 0, parameters.getElementSizeBits() / 8));
         // y^2 = (x^3 + x*val + b) mod p
         Point clientPublicKey = curve.createAPointOnCurve(clientPublicKeyX);
         BigInteger sharedSecret =
@@ -80,14 +81,14 @@ public class PWDProtectExtensionHandler extends ExtensionHandler<PWDProtectExten
                                     null,
                                     ArrayConverter.bigIntegerToByteArray(sharedSecret)),
                             new byte[0],
-                            parameters.getElementSize() / Bits.IN_A_BYTE);
+                            parameters.getElementSizeBits() / Bits.IN_A_BYTE);
 
             byte[] ctrKey = Arrays.copyOfRange(key, 0, key.length / 2);
             byte[] macKey = Arrays.copyOfRange(key, key.length / 2, key.length);
             byte[] encryptedUsername =
                     Arrays.copyOfRange(
                             protectedUsername,
-                            parameters.getElementSize() / Bits.IN_A_BYTE,
+                            parameters.getElementSizeBits() / Bits.IN_A_BYTE,
                             protectedUsername.length);
             SivMode aesSIV = new SivMode();
             String username = new String(aesSIV.decrypt(ctrKey, macKey, encryptedUsername));
