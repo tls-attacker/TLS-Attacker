@@ -24,7 +24,7 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.x509attacker.constants.X509PublicKeyType;
 import de.rub.nds.x509attacker.filesystem.CertificateBytes;
 import de.rub.nds.x509attacker.x509.X509CertificateChain;
-import de.rub.nds.x509attacker.x509.X509CertificateChainBuidler;
+import de.rub.nds.x509attacker.x509.X509CertificateChainBuilder;
 import de.rub.nds.x509attacker.x509.model.X509Certificate;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -129,7 +129,7 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
                         // There is no certificate list in the message, this means we need to auto
                         // create one
                         LOGGER.debug("Building new certificate chain");
-                        X509CertificateChainBuidler builder = new X509CertificateChainBuidler();
+                        X509CertificateChainBuilder builder = new X509CertificateChainBuilder();
                         X509CertificateChain chain =
                                 builder.buildChain(chooser.getConfig().getCertificateChainConfig());
 
