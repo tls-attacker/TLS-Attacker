@@ -18,7 +18,7 @@ import java.util.List;
 
 public interface SendingAction {
 
-    public abstract List<ProtocolMessage> getSendMessages();
+    public abstract List<ProtocolMessage<?>> getSendMessages();
 
     public abstract List<Record> getSendRecords();
 

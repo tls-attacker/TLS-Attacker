@@ -91,7 +91,7 @@ public class PopAndSendRecordAction extends MessageAction implements SendingActi
     }
 
     @Override
-    public List<ProtocolMessage> getSendMessages() {
+    public List<ProtocolMessage<?>> getSendMessages() {
         return messages;
     }
 

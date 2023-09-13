@@ -174,15 +174,15 @@ public abstract class TlsAction implements Serializable, Aliasable {
         this.actionOptions.add(option);
     }
 
-    public List<LayerConfiguration> sortLayerConfigurations(
-            LayerStack layerStack, LayerConfiguration... unsortedLayerConfigurations) {
+    public List<LayerConfiguration<?>> sortLayerConfigurations(
+            LayerStack layerStack, LayerConfiguration<?>... unsortedLayerConfigurations) {
         return sortLayerConfigurations(
                 layerStack, new LinkedList<>(Arrays.asList(unsortedLayerConfigurations)));
     }
 
-    public List<LayerConfiguration> sortLayerConfigurations(
-            LayerStack layerStack, List<LayerConfiguration> unsortedLayerConfigurations) {
-        List<LayerConfiguration> sortedLayerConfigurations = new LinkedList<>();
+    public List<LayerConfiguration<?>> sortLayerConfigurations(
+            LayerStack layerStack, List<LayerConfiguration<?>> unsortedLayerConfigurations) {
+        List<LayerConfiguration<?>> sortedLayerConfigurations = new LinkedList<>();
         // iterate over all layers in the stack and assign the correct configuration
         // reset configurations to only assign a configuration to the upper most layer
         for (LayerType layerType : layerStack.getLayersInStack()) {
@@ -196,7 +196,7 @@ public abstract class TlsAction implements Serializable, Aliasable {
                                 + "to current LayerStack. LayerType not implemented for TLSAction.");
                 continue;
             }
-            Optional<LayerConfiguration> layerConfiguration = Optional.empty();
+            Optional<LayerConfiguration<?>> layerConfiguration = Optional.empty();
             if (layer == ImplementedLayers.MESSAGE
                     || layer == ImplementedLayers.RECORD
                     || layer == ImplementedLayers.DTLS_FRAGMENT

@@ -42,11 +42,11 @@ public class ApplyBufferedMessagesAction extends ConnectionBoundAction {
         if (isExecuted()) {
             throw new ActionExecutionException("Action already executed!");
         }
-        List<ProtocolMessage> messages = ctx.getMessageBuffer();
+        List<ProtocolMessage<?>> messages = ctx.getMessageBuffer();
         if (messages.isEmpty()) {
             LOGGER.debug("Empty buffer, no messages to apply");
         } else {
-            for (ProtocolMessage msg : messages) {
+            for (ProtocolMessage<?> msg : messages) {
                 LOGGER.debug("Applying buffered " + msg.toCompactString() + " to context " + ctx);
                 ProtocolMessageHandler h = msg.getHandler(ctx);
                 h.adjustContext(msg);

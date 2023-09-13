@@ -105,10 +105,10 @@ public class TlsAttackerSocket {
                 new ReceiveAction(
                         state.getContext().getConnection().getAlias(), new ApplicationMessage());
         action.execute(state);
-        List<ProtocolMessage> receivedMessages = action.getReceivedMessages();
+        List<ProtocolMessage<?>> receivedMessages = action.getReceivedMessages();
 
         List<ApplicationMessage> receivedAppMessages = new LinkedList<>();
-        for (ProtocolMessage message : receivedMessages) {
+        for (ProtocolMessage<?> message : receivedMessages) {
             if (message instanceof ApplicationMessage) {
                 receivedAppMessages.add((ApplicationMessage) message);
             }

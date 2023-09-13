@@ -12,11 +12,11 @@ import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.http.HttpMessage;
+import de.rub.nds.tlsattacker.core.layer.GenericReceiveLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerStack;
 import de.rub.nds.tlsattacker.core.layer.LayerStackProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
-import de.rub.nds.tlsattacker.core.layer.ReceiveTillLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.SpecificSendLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
@@ -99,16 +99,19 @@ public class ForwardRecordsAction extends TlsAction implements ReceivingAction, 
                 receivingLayerStack.receiveData(
                         buildLayerConfiguration(receivingLayerStack, false));
         receivedRecords =
-                receiveResult.getResultForLayer(ImplementedLayers.RECORD).getUsedContainers();
+                (List<Record>)
+                        receiveResult
+                                .getResultForLayer(ImplementedLayers.RECORD)
+                                .getUsedContainers();
         LOGGER.info("Records received (" + receiveFromAlias + "): " + receivedRecords.size());
         executedAsPlanned = true;
     }
 
-    private List<LayerConfiguration> buildLayerConfiguration(
+    private List<LayerConfiguration<?>> buildLayerConfiguration(
             LayerStack layerStack, boolean sending) {
         RecordLayer recordLayer = (RecordLayer) layerStack.getLayer(RecordLayer.class);
-        List<ProtocolLayer> layerList = layerStack.getLayerList();
-        List<LayerConfiguration> configList = new LinkedList<>();
+        List<ProtocolLayer<?, ?>> layerList = layerStack.getLayerList();
+        List<LayerConfiguration<?>> configList = new LinkedList<>();
         layerList.forEach(
                 layer -> {
                     if (layer != recordLayer) {
@@ -116,12 +119,11 @@ public class ForwardRecordsAction extends TlsAction implements ReceivingAction, 
                     } else {
                         if (sending) {
                             configList.add(
-                                    new SpecificSendLayerConfiguration(
+                                    new SpecificSendLayerConfiguration<>(
                                             ImplementedLayers.RECORD, receivedRecords));
                         } else {
                             configList.add(
-                                    new ReceiveTillLayerConfiguration(
-                                            ImplementedLayers.RECORD, new Record()));
+                                    new GenericReceiveLayerConfiguration(ImplementedLayers.RECORD));
                         }
                     }
                 });
@@ -240,7 +242,7 @@ public class ForwardRecordsAction extends TlsAction implements ReceivingAction, 
     }
 
     @Override
-    public List<ProtocolMessage> getSendMessages() {
+    public List<ProtocolMessage<?>> getSendMessages() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -250,12 +252,12 @@ public class ForwardRecordsAction extends TlsAction implements ReceivingAction, 
     }
 
     @Override
-    public List<ProtocolMessage> getReceivedMessages() {
+    public List<ProtocolMessage<?>> getReceivedMessages() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public List<HttpMessage> getReceivedHttpMessages() {
+    public List<HttpMessage<?>> getReceivedHttpMessages() {
         // ForwardMessages should not interfere with messages above TLS
         return new LinkedList<>();
     }

@@ -51,7 +51,7 @@ public class PopAndSendAction extends MessageAction implements SendingAction {
             throw new ActionExecutionException("Action already executed!");
         }
 
-        LinkedList<ProtocolMessage> messageBuffer = tlsContext.getMessageBuffer();
+        LinkedList<ProtocolMessage<?>> messageBuffer = tlsContext.getMessageBuffer();
         if (index != null && index >= 0) {
             if (index >= messageBuffer.size()) {
                 throw new ActionExecutionException(
@@ -63,8 +63,8 @@ public class PopAndSendAction extends MessageAction implements SendingAction {
                                 + "elements.");
             }
             messages.add(messageBuffer.get(index));
-            messageBuffer.remove(index);
-            tlsContext.getRecordBuffer().remove(index);
+            messageBuffer.remove((int) index);
+            tlsContext.getRecordBuffer().remove((int) index);
         } else {
             messages.add(messageBuffer.pop());
             tlsContext.getRecordBuffer().pop();
@@ -115,7 +115,7 @@ public class PopAndSendAction extends MessageAction implements SendingAction {
     }
 
     @Override
-    public List<ProtocolMessage> getSendMessages() {
+    public List<ProtocolMessage<?>> getSendMessages() {
         return messages;
     }
 

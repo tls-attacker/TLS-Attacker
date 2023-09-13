@@ -14,7 +14,12 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.http.HttpMessage;
-import de.rub.nds.tlsattacker.core.layer.*;
+import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.LayerStack;
+import de.rub.nds.tlsattacker.core.layer.LayerStackProcessingResult;
+import de.rub.nds.tlsattacker.core.layer.Message;
+import de.rub.nds.tlsattacker.core.layer.SpecificReceiveLayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.SpecificSendLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
@@ -57,7 +62,7 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
     @XmlTransient protected Boolean withPrepare = false;
 
     @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
-    protected List<ProtocolMessage> receivedMessages;
+    protected List<ProtocolMessage<?>> receivedMessages;
 
     @HoldsModifiableVariable
     @XmlElementWrapper
@@ -71,7 +76,7 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
     protected List<DtlsHandshakeMessageFragment> receivedFragments;
 
     @XmlElementWrapper @HoldsModifiableVariable @XmlElementRef
-    protected List<ProtocolMessage> messages;
+    protected List<ProtocolMessage<?>> messages;
 
     @HoldsModifiableVariable
     @XmlElementWrapper
@@ -85,7 +90,7 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
     protected List<DtlsHandshakeMessageFragment> fragments;
 
     @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
-    protected List<ProtocolMessage> sendMessages;
+    protected List<ProtocolMessage<?>> sendMessages;
 
     @HoldsModifiableVariable
     @XmlElementWrapper
@@ -101,14 +106,14 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
     public ForwardMessagesAction() {}
 
     public ForwardMessagesAction(
-            String receiveFromAlias, String forwardToAlias, List<ProtocolMessage> messages) {
+            String receiveFromAlias, String forwardToAlias, List<ProtocolMessage<?>> messages) {
         this.messages = messages;
         this.receiveFromAlias = receiveFromAlias;
         this.forwardToAlias = forwardToAlias;
     }
 
     public ForwardMessagesAction(
-            String receiveFromAlias, String forwardToAlias, ProtocolMessage... messages) {
+            String receiveFromAlias, String forwardToAlias, ProtocolMessage<?>... messages) {
         this(receiveFromAlias, forwardToAlias, new ArrayList<>(Arrays.asList(messages)));
     }
 
@@ -141,30 +146,30 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
         LOGGER.debug("Receiving Messages...");
         LayerStack layerStack = receiveFromContext.getLayerStack();
 
-        LayerConfiguration messageConfiguration =
-                new SpecificReceiveLayerConfiguration(ImplementedLayers.MESSAGE, messages);
+        LayerConfiguration<?> messageConfiguration =
+                new SpecificReceiveLayerConfiguration<>(ImplementedLayers.MESSAGE, messages);
 
-        List<LayerConfiguration> layerConfigurationList =
+        List<LayerConfiguration<?>> layerConfigurationList =
                 sortLayerConfigurations(layerStack, messageConfiguration);
         LayerStackProcessingResult processingResult;
         processingResult = layerStack.receiveData(layerConfigurationList);
         receivedMessages =
-                new ArrayList<>(
+                (List<ProtocolMessage<?>>)
                         processingResult
                                 .getResultForLayer(ImplementedLayers.MESSAGE)
-                                .getUsedContainers());
+                                .getUsedContainers();
         if (receiveFromContext.getChooser().getSelectedProtocolVersion().isDTLS()) {
             receivedFragments =
-                    new ArrayList<>(
+                    (List<DtlsHandshakeMessageFragment>)
                             processingResult
                                     .getResultForLayer(ImplementedLayers.DTLS_FRAGMENT)
-                                    .getUsedContainers());
+                                    .getUsedContainers();
         }
         receivedRecords =
-                new ArrayList<>(
+                (List<Record>)
                         processingResult
                                 .getResultForLayer(ImplementedLayers.RECORD)
-                                .getUsedContainers());
+                                .getUsedContainers();
         String expected = getReadableString(receivedMessages);
         LOGGER.debug("Receive Expected (" + receiveFromAlias + "): " + expected);
         String received = getReadableString(receivedMessages);
@@ -179,7 +184,7 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
      * @param ctx
      */
     private void applyMessages(TlsContext ctx) {
-        for (ProtocolMessage msg : receivedMessages) {
+        for (ProtocolMessage<?> msg : receivedMessages) {
             LOGGER.debug("Applying " + msg.toCompactString() + " to forward context " + ctx);
             ProtocolMessageHandler h = msg.getHandler(ctx);
             h.adjustContext(msg);
@@ -189,21 +194,21 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
     private void forwardMessages(TlsContext forwardToCtx) {
         LOGGER.info("Forwarding messages (" + forwardToAlias + "): " + getReadableString(messages));
         try {
-            for (Message message : receivedMessages) {
+            for (Message<?, ?> message : receivedMessages) {
                 message.setShouldPrepare(false);
             }
             LayerStack layerStack = forwardToCtx.getLayerStack();
 
-            LayerConfiguration dtlsConfiguration =
+            LayerConfiguration<?> dtlsConfiguration =
                     new SpecificSendLayerConfiguration<>(
                             ImplementedLayers.DTLS_FRAGMENT, receivedFragments);
-            LayerConfiguration messageConfiguration =
+            LayerConfiguration<?> messageConfiguration =
                     new SpecificSendLayerConfiguration<>(
                             ImplementedLayers.MESSAGE, receivedMessages);
-            LayerConfiguration recordConfiguration =
+            LayerConfiguration<?> recordConfiguration =
                     new SpecificSendLayerConfiguration<>(ImplementedLayers.RECORD, receivedRecords);
 
-            List<LayerConfiguration> layerConfigurationList =
+            List<LayerConfiguration<?>> layerConfigurationList =
                     sortLayerConfigurations(
                             layerStack,
                             dtlsConfiguration,
@@ -213,22 +218,22 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
                     layerStack.sendData(layerConfigurationList);
 
             sendMessages =
-                    new ArrayList<>(
+                    (List<ProtocolMessage<?>>)
                             processingResult
                                     .getResultForLayer(ImplementedLayers.MESSAGE)
-                                    .getUsedContainers());
+                                    .getUsedContainers();
             if (forwardToCtx.getChooser().getSelectedProtocolVersion().isDTLS()) {
                 sendFragments =
-                        new ArrayList<>(
+                        (List<DtlsHandshakeMessageFragment>)
                                 processingResult
                                         .getResultForLayer(ImplementedLayers.DTLS_FRAGMENT)
-                                        .getUsedContainers());
+                                        .getUsedContainers();
             }
             sendRecords =
-                    new ArrayList<>(
+                    (List<Record>)
                             processingResult
                                     .getResultForLayer(ImplementedLayers.RECORD)
-                                    .getUsedContainers());
+                                    .getUsedContainers();
 
             executedAsPlanned = checkMessageListsEquals(sendMessages, receivedMessages);
 
@@ -251,7 +256,7 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
     // TODO: yes, the correct way would be implement equals() for all
     // ProtocolMessages...
     private boolean checkMessageListsEquals(
-            List<ProtocolMessage> expectedMessages, List<ProtocolMessage> actualMessages) {
+            List<ProtocolMessage<?>> expectedMessages, List<ProtocolMessage<?>> actualMessages) {
         boolean actualEmpty = true;
         boolean expectedEmpty = true;
         if (actualMessages != null && !actualMessages.isEmpty()) {
@@ -266,7 +271,13 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
         if (actualEmpty != expectedEmpty) {
             return false;
         }
-        if (actualMessages.size() != expectedMessages.size()) {
+        if (actualMessages == null && expectedMessages == null) {
+            return true;
+        }
+        if (actualMessages == null || expectedMessages == null) {
+            return false;
+        }
+        if (actualEmpty && actualMessages.size() != expectedMessages.size()) {
             return false;
         } else {
             for (int i = 0; i < actualMessages.size(); i++) {
@@ -296,7 +307,7 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
     }
 
     @Override
-    public List<ProtocolMessage> getReceivedMessages() {
+    public List<ProtocolMessage<?>> getReceivedMessages() {
         return receivedMessages;
     }
 
@@ -311,7 +322,7 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
     }
 
     @Override
-    public List<ProtocolMessage> getSendMessages() {
+    public List<ProtocolMessage<?>> getSendMessages() {
         return sendMessages;
     }
 
@@ -325,16 +336,16 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
         return sendFragments;
     }
 
-    public List<ProtocolMessage> getMessages() {
+    public List<ProtocolMessage<?>> getMessages() {
         return messages;
     }
 
-    public void setMessages(List<ProtocolMessage> messages) {
+    public void setMessages(List<ProtocolMessage<?>> messages) {
         this.messages = messages;
     }
 
-    public void setMessages(ProtocolMessage... messages) {
-        this.messages = new ArrayList(Arrays.asList(messages));
+    public void setMessages(ProtocolMessage<?>... messages) {
+        this.messages = new ArrayList<>(Arrays.asList(messages));
     }
 
     @Override
@@ -428,16 +439,16 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
         }
     }
 
-    public String getReadableString(List<ProtocolMessage> messages) {
+    public String getReadableString(List<ProtocolMessage<?>> messages) {
         return getReadableString(messages, false);
     }
 
-    public String getReadableString(List<ProtocolMessage> messages, Boolean verbose) {
+    public String getReadableString(List<ProtocolMessage<?>> messages, Boolean verbose) {
         StringBuilder builder = new StringBuilder();
         if (messages == null) {
             return builder.toString();
         }
-        for (ProtocolMessage message : messages) {
+        for (ProtocolMessage<?> message : messages) {
             if (verbose) {
                 builder.append(message.toString());
             } else {
@@ -542,7 +553,7 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
         }
 
         List<ProtocolMessageType> types = new ArrayList<>();
-        for (ProtocolMessage msg : messages) {
+        for (ProtocolMessage<?> msg : messages) {
             types.add(msg.getProtocolMessageType());
         }
         return types;
@@ -555,11 +566,11 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
         }
 
         List<HandshakeMessageType> types = new ArrayList<>();
-        for (ProtocolMessage msg : messages) {
+        for (ProtocolMessage<?> msg : messages) {
             if (!(msg instanceof HandshakeMessage)) {
                 continue;
             }
-            types.add(((HandshakeMessage) msg).getHandshakeMessageType());
+            types.add(((HandshakeMessage<?>) msg).getHandshakeMessageType());
         }
         return types;
     }
@@ -575,7 +586,7 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
     }
 
     @Override
-    public List<HttpMessage> getReceivedHttpMessages() {
+    public List<HttpMessage<?>> getReceivedHttpMessages() {
         // ForwardMessages should not interfere with messages above TLS
         return new LinkedList<>();
     }

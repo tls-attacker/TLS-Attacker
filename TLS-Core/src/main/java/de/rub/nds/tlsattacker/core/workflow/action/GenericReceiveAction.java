@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.http.HttpMessage;
+import de.rub.nds.tlsattacker.core.layer.GenericReceiveLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
@@ -41,7 +42,11 @@ public class GenericReceiveAction extends MessageAction implements ReceivingActi
         }
         LOGGER.debug("Receiving Messages...");
         TlsContext ctx = state.getContext(getConnectionAlias()).getTlsContext();
-        receive(ctx, null, null, null, null);
+
+        receive(
+                ctx,
+                new GenericReceiveLayerConfiguration(
+                        ctx.getLayerStack().getHighestLayer().getLayerType()));
 
         setExecuted(true);
         String received = getReadableString(messages);
@@ -73,7 +78,7 @@ public class GenericReceiveAction extends MessageAction implements ReceivingActi
     }
 
     @Override
-    public List<ProtocolMessage> getReceivedMessages() {
+    public List<ProtocolMessage<?>> getReceivedMessages() {
         return messages;
     }
 
@@ -88,7 +93,7 @@ public class GenericReceiveAction extends MessageAction implements ReceivingActi
     }
 
     @Override
-    public List<HttpMessage> getReceivedHttpMessages() {
+    public List<HttpMessage<?>> getReceivedHttpMessages() {
         return httpMessages;
     }
 }

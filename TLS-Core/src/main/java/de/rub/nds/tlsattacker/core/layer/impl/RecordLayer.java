@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
+import de.rub.nds.tlsattacker.core.exceptions.TimeoutException;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
@@ -270,6 +271,9 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
             } else {
                 nextInputStream = tempStream;
             }
+        } catch (TimeoutException e) {
+            LOGGER.warn(e);
+            setReachedTimeout(true);
         } catch (EndOfStreamException ex) {
             setUnreadBytes(parser.getAlreadyParsed());
             LOGGER.debug("Reached end of stream, cannot parse more records", ex);
@@ -387,6 +391,11 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
 
     @Override
     public LayerProcessingResult receiveData() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        try {
+            receiveMoreDataForHint(null);
+        } catch (Exception E) {
+            LOGGER.error(E);
+        }
+        return getLayerResult();
     }
 }

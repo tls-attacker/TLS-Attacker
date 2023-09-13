@@ -47,6 +47,8 @@ public abstract class ProtocolLayer<
 
     private List<Container> producedDataContainers;
 
+    private boolean reachedTimeout = false;
+
     protected HintedInputStream currentInputStream = null;
 
     protected HintedInputStream nextInputStream = null;
@@ -123,6 +125,7 @@ public abstract class ProtocolLayer<
         layerConfiguration = null;
         currentInputStream = null;
         nextInputStream = null;
+        reachedTimeout = false;
     }
 
     protected void addProducedContainer(Container container) {
@@ -193,13 +196,17 @@ public abstract class ProtocolLayer<
      * @return true if more data is available in any receive buffer
      */
     public boolean isDataBuffered() {
+        LOGGER.debug("Checking if data is buffered: " + getLayerType());
         try {
             if ((currentInputStream != null && currentInputStream.available() > 0)
                     || nextInputStream != null && nextInputStream.available() > 0) {
+                LOGGER.debug("Data buffered in current stream");
                 return true;
             } else if (getLowerLayer() != null) {
+                LOGGER.debug("Checking if lower layer has data buffered");
                 return getLowerLayer().isDataBuffered();
             }
+            LOGGER.debug("apparently not?");
             return false;
         } catch (IOException e) {
             // with exceptions on reading our inputStreams we can not read more data
@@ -209,17 +216,14 @@ public abstract class ProtocolLayer<
     }
 
     public boolean shouldContinueProcessing() {
+        LOGGER.debug(
+                "Deciding if we should continue...: " + layerConfiguration + " type: " + layerType);
         if (layerConfiguration != null) {
-            if (layerConfiguration instanceof GenericReceiveLayerConfiguration) {
-                return true;
-            } else {
-                return layerConfiguration.successRequiresMoreContainers(
-                                getLayerResult().getUsedContainers())
-                        || (isDataBuffered()
-                                && ((ReceiveLayerConfiguration) layerConfiguration)
-                                        .isProcessTrailingContainers());
-            }
+            return layerConfiguration.shouldContinueProcessing(
+                    getLayerResult().getUsedContainers(), reachedTimeout, isDataBuffered());
+
         } else {
+            LOGGER.debug("Lets check if data is buffered");
             return isDataBuffered();
         }
     }
@@ -295,5 +299,13 @@ public abstract class ProtocolLayer<
         return getLayerConfiguration().getContainerList().stream()
                 .filter(Predicate.not(producedDataContainers::contains))
                 .collect(Collectors.toList());
+    }
+
+    public void setReachedTimeout(boolean reachedTimeout) {
+        this.reachedTimeout = reachedTimeout;
+    }
+
+    public boolean hasReachedTimeout() {
+        return reachedTimeout;
     }
 }

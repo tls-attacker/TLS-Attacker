@@ -44,7 +44,7 @@ public class BufferedSendAction extends MessageAction implements SendingAction {
         if (isExecuted()) {
             throw new ActionExecutionException("Action already executed!");
         }
-        messages = new ArrayList<ProtocolMessage>(tlsContext.getMessageBuffer());
+        messages = new ArrayList<ProtocolMessage<?>>(tlsContext.getMessageBuffer());
         tlsContext.setMessageBuffer(new LinkedList<>());
         String sending = getReadableString(messages);
         if (connectionAlias.equals(AliasedConnection.DEFAULT_CONNECTION_ALIAS)) {
@@ -66,7 +66,7 @@ public class BufferedSendAction extends MessageAction implements SendingAction {
     public String toString() {
         StringBuilder sb = new StringBuilder("BufferedSend Action:\n");
         sb.append("Messages:\n");
-        for (ProtocolMessage message : messages) {
+        for (ProtocolMessage<?> message : messages) {
             sb.append(message.toCompactString());
             sb.append(", ");
         }
@@ -97,7 +97,7 @@ public class BufferedSendAction extends MessageAction implements SendingAction {
     }
 
     @Override
-    public List<ProtocolMessage> getSendMessages() {
+    public List<ProtocolMessage<?>> getSendMessages() {
         return messages;
     }
 

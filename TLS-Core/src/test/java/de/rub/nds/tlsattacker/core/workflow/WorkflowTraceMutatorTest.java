@@ -41,32 +41,22 @@ public class WorkflowTraceMutatorTest {
         config = Config.createConfig();
         trace = new WorkflowTrace();
 
-        rcvHeartbeat = new ReceiveAction();
-        rcvAlertMessage = new ReceiveAction();
-        rcvServerHello = new ReceiveAction();
-        rcvFinishedMessage = new ReceiveAction();
+        rcvHeartbeat = new ReceiveAction(new HeartbeatMessage());
+        rcvAlertMessage = new ReceiveAction(new AlertMessage());
+        rcvServerHello = new ReceiveAction(new ServerHelloMessage());
+        rcvFinishedMessage = new ReceiveAction(new FinishedMessage());
 
-        rcvHeartbeat.setExpectedMessages(new HeartbeatMessage());
-        rcvAlertMessage.setExpectedMessages(new AlertMessage());
-        rcvServerHello.setExpectedMessages(new ServerHelloMessage());
-        rcvFinishedMessage.setExpectedMessages(new FinishedMessage());
-
-        sHeartbeat = new SendAction();
-        sAlertMessage = new SendAction();
-        sClientHello = new SendAction();
-        sFinishedMessage = new SendAction();
-
-        sHeartbeat.setMessages(new HeartbeatMessage());
-        sAlertMessage.setMessages(new AlertMessage());
-        sClientHello.setMessages(new ClientHelloMessage());
-        sFinishedMessage.setMessages(new FinishedMessage());
+        sHeartbeat = new SendAction(new HeartbeatMessage());
+        sAlertMessage = new SendAction(new AlertMessage());
+        sClientHello = new SendAction(new ClientHelloMessage());
+        sFinishedMessage = new SendAction(new FinishedMessage());
     }
 
     @Test
     public void testReplaceSendingMessageProtocolMessage() {
         trace.addTlsAction(sClientHello);
 
-        ProtocolMessage replaceMsg = new FinishedMessage();
+        ProtocolMessage<?> replaceMsg = new FinishedMessage();
         WorkflowTraceMutator.replaceSendingMessage(
                 trace, ProtocolMessageType.HANDSHAKE, replaceMsg);
 

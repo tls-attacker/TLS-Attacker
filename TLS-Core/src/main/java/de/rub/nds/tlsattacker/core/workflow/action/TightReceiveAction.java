@@ -8,56 +8,39 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.List;
-import java.util.Set;
 
 @XmlRootElement
-public class TightReceiveAction extends ReceiveAction {
+public class TightReceiveAction extends CommonReceiveAction {
 
     public TightReceiveAction() {}
 
-    public TightReceiveAction(List<ProtocolMessage> expectedMessages) {
+    public TightReceiveAction(List<ProtocolMessage<?>> expectedMessages) {
         super(expectedMessages);
     }
 
-    public TightReceiveAction(ProtocolMessage... expectedMessages) {
+    public TightReceiveAction(ProtocolMessage<?>... expectedMessages) {
         super(expectedMessages);
-    }
-
-    public TightReceiveAction(Set<ActionOption> myActionOptions, List<ProtocolMessage> messages) {
-        super(myActionOptions, messages);
-    }
-
-    public TightReceiveAction(Set<ActionOption> actionOptions, ProtocolMessage... messages) {
-        super(actionOptions, messages);
-    }
-
-    public TightReceiveAction(ActionOption actionOption, List<ProtocolMessage> messages) {
-        super(actionOption, messages);
-    }
-
-    public TightReceiveAction(ActionOption actionOption, ProtocolMessage... messages) {
-        super(actionOption, messages);
     }
 
     public TightReceiveAction(String connectionAlias) {
         super(connectionAlias);
     }
 
-    public TightReceiveAction(String connectionAliasAlias, List<ProtocolMessage> messages) {
+    public TightReceiveAction(String connectionAliasAlias, List<ProtocolMessage<?>> messages) {
         super(connectionAliasAlias, messages);
     }
 
-    public TightReceiveAction(String connectionAliasAlias, ProtocolMessage... messages) {
+    public TightReceiveAction(String connectionAliasAlias, ProtocolMessage<?>... messages) {
         super(connectionAliasAlias, messages);
     }
 
     @Override
-    protected void distinctReceive(TlsContext tlsContext) {
-        tightReceive(tlsContext, getExpectedMessages());
+    protected List<LayerConfiguration<?>> createConfigurationList() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'createConfigurationList'");
     }
 }

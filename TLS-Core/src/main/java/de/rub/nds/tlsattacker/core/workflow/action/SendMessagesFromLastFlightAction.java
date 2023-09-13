@@ -148,7 +148,7 @@ public class SendMessagesFromLastFlightAction extends MessageAction implements S
     }
 
     @Override
-    public List<ProtocolMessage> getSendMessages() {
+    public List<ProtocolMessage<?>> getSendMessages() {
         return messages;
     }
 

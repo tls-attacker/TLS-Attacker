@@ -30,7 +30,11 @@ public class TightReceiveLayerConfiguration<Container extends DataContainer>
     }
 
     @Override
-    public boolean isProcessTrailingContainers() {
-        return false;
+    public boolean shouldContinueProcessing(
+            List<Container> list, boolean receivedTimeout, boolean dataLeftToProcess) {
+        if (receivedTimeout) {
+            return false;
+        }
+        return !evaluateReceivedContainers(list, true);
     }
 }

@@ -13,8 +13,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class UdpInputStream extends InputStream {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private static final int BUFFER_SIZE = 16384;
 
@@ -69,6 +73,7 @@ public class UdpInputStream extends InputStream {
 
     @Override
     public int available() throws IOException {
+        LOGGER.debug("Checking if data is available");
         if (packetSize - index == 0) {
             receive();
         }

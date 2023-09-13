@@ -40,7 +40,7 @@ public class SendAction extends MessageAction implements SendingAction {
         super();
     }
 
-    public SendAction(ActionOption option, List<ProtocolMessage> messages) {
+    public SendAction(ActionOption option, List<ProtocolMessage<?>> messages) {
         super(messages);
 
         if (option != null) {
@@ -48,19 +48,19 @@ public class SendAction extends MessageAction implements SendingAction {
         }
     }
 
-    public SendAction(List<ProtocolMessage> messages) {
+    public SendAction(List<ProtocolMessage<?>> messages) {
         this((ActionOption) null, messages);
     }
 
-    public SendAction(HttpMessage... httpMessage) {
+    public SendAction(HttpMessage<?>... httpMessage) {
         this.setHttpMessages(new ArrayList<>(Arrays.asList(httpMessage)));
     }
 
-    public SendAction(ActionOption option, ProtocolMessage... messages) {
+    public SendAction(ActionOption option, ProtocolMessage<?>... messages) {
         this(option, new ArrayList<>(Arrays.asList(messages)));
     }
 
-    public SendAction(ProtocolMessage... messages) {
+    public SendAction(ProtocolMessage<?>... messages) {
         this(new ArrayList<>(Arrays.asList(messages)));
     }
 
@@ -68,11 +68,11 @@ public class SendAction extends MessageAction implements SendingAction {
         super(connectionAlias);
     }
 
-    public SendAction(String connectionAlias, List<ProtocolMessage> messages) {
+    public SendAction(String connectionAlias, List<ProtocolMessage<?>> messages) {
         super(connectionAlias, messages);
     }
 
-    public SendAction(String connectionAlias, ProtocolMessage... messages) {
+    public SendAction(String connectionAlias, ProtocolMessage<?>... messages) {
         super(connectionAlias, new ArrayList<>(Arrays.asList(messages)));
     }
 
@@ -113,7 +113,7 @@ public class SendAction extends MessageAction implements SendingAction {
         }
         sb.append("\tMessages:");
         if (messages != null) {
-            for (ProtocolMessage message : messages) {
+            for (ProtocolMessage<?> message : messages) {
                 sb.append(message.toCompactString());
                 sb.append(", ");
             }
@@ -129,7 +129,7 @@ public class SendAction extends MessageAction implements SendingAction {
         StringBuilder sb = new StringBuilder(super.toCompactString());
         if ((messages != null) && (!messages.isEmpty())) {
             sb.append(" (");
-            for (ProtocolMessage message : messages) {
+            for (ProtocolMessage<?> message : messages) {
                 sb.append(message.toCompactString());
                 sb.append(",");
             }
@@ -159,7 +159,7 @@ public class SendAction extends MessageAction implements SendingAction {
     public void reset() {
         List<ModifiableVariableHolder> holders = new LinkedList<>();
         if (messages != null) {
-            for (ProtocolMessage message : messages) {
+            for (ProtocolMessage<?> message : messages) {
                 holders.addAll(message.getAllModifiableVariableHolders());
             }
         }
@@ -174,7 +174,7 @@ public class SendAction extends MessageAction implements SendingAction {
             }
         }
         if (getHttpMessages() != null) {
-            for (HttpMessage msg : getHttpMessages()) {
+            for (HttpMessage<?> msg : getHttpMessages()) {
                 holders.addAll(msg.getAllModifiableVariableHolders());
             }
         }
@@ -185,7 +185,7 @@ public class SendAction extends MessageAction implements SendingAction {
     }
 
     @Override
-    public List<ProtocolMessage> getSendMessages() {
+    public List<ProtocolMessage<?>> getSendMessages() {
         return messages;
     }
 
@@ -235,7 +235,7 @@ public class SendAction extends MessageAction implements SendingAction {
     @Override
     public List<ProtocolMessageType> getGoingToSendProtocolMessageTypes() {
         List<ProtocolMessageType> protocolMessageTypes = new ArrayList<>();
-        for (ProtocolMessage msg : messages) {
+        for (ProtocolMessage<?> msg : messages) {
             protocolMessageTypes.add(msg.getProtocolMessageType());
         }
         return protocolMessageTypes;
@@ -244,9 +244,9 @@ public class SendAction extends MessageAction implements SendingAction {
     @Override
     public List<HandshakeMessageType> getGoingToSendHandshakeMessageTypes() {
         List<HandshakeMessageType> handshakeMessageTypes = new ArrayList<>();
-        for (ProtocolMessage msg : messages) {
+        for (ProtocolMessage<?> msg : messages) {
             if (msg instanceof HandshakeMessage) {
-                handshakeMessageTypes.add(((HandshakeMessage) msg).getHandshakeMessageType());
+                handshakeMessageTypes.add(((HandshakeMessage<?>) msg).getHandshakeMessageType());
             }
         }
         return handshakeMessageTypes;

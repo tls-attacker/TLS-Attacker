@@ -28,6 +28,4 @@ public abstract class ReceiveLayerConfiguration<Container extends DataContainer>
     public ReceiveLayerConfiguration(LayerType layerType, Container... containers) {
         super(layerType, containers);
     }
-
-    public abstract boolean isProcessTrailingContainers();
 }

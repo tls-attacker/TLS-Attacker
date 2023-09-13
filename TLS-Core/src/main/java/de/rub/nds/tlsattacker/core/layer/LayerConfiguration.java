@@ -47,18 +47,8 @@ public abstract class LayerConfiguration<Container extends DataContainer> {
      */
     public abstract boolean executedAsPlanned(List<Container> list);
 
-    /**
-     * Determines if the LayerConfiguration, based on the current list of DataContainers, can
-     * possibly still be satisfied
-     *
-     * @param list The list of DataContainers
-     * @return The evaluation result based on the current DataContainers
-     */
-    public abstract boolean failedEarly(List<Container> list);
-
-    public boolean successRequiresMoreContainers(List<Container> list) {
-        return !failedEarly(list) && !executedAsPlanned(list);
-    }
+    public abstract boolean shouldContinueProcessing(
+            List<Container> list, boolean receivedTimeout, boolean dataLeftToProcess);
 
     public LayerType getLayerType() {
         return layerType;

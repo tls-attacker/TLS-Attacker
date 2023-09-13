@@ -17,7 +17,7 @@ import java.util.List;
  *
  * @param <T>
  */
-public class LayerProcessingResult<T extends DataContainer> {
+public class LayerProcessingResult<T extends DataContainer<?, ?>> {
 
     /** List of containers that were sent or received */
     private List<T> usedContainers;

@@ -40,7 +40,8 @@ public class SpecificSendLayerConfiguration<Container extends DataContainer>
     }
 
     @Override
-    public boolean failedEarly(List<Container> list) {
-        return false;
+    public boolean shouldContinueProcessing(
+            List<Container> list, boolean receivedTimeout, boolean dataLeftToProcess) {
+        throw new UnsupportedOperationException("This api does not make sense for send layers");
     }
 }

@@ -215,6 +215,7 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
             } while (shouldContinueProcessing());
         } catch (TimeoutException ex) {
             LOGGER.debug(ex);
+            setReachedTimeout(true);
         } catch (EndOfStreamException ex) {
             LOGGER.debug("Reached end of stream, cannot parse more messages", ex);
         }
@@ -262,7 +263,7 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
 
     private void readCcsProtocolData(Integer epoch) {
         ChangeCipherSpecMessage message = new ChangeCipherSpecMessage();
-        if (context.getSelectedProtocolVersion().isDTLS()) {
+        if (context.getChooser().getSelectedProtocolVersion().isDTLS()) {
             if (context.getDtlsReceivedChangeCipherSpecEpochs().contains(epoch)
                     && context.getConfig().isIgnoreRetransmittedCcsInDtls()) {
                 message.setAdjustContext(false);

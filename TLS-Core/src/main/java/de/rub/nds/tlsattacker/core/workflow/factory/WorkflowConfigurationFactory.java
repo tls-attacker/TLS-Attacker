@@ -227,7 +227,7 @@ public class WorkflowConfigurationFactory {
         trace.removeTlsAction(trace.getTlsActions().size() - 1);
 
         CipherSuite selectedCipherSuite = config.getDefaultSelectedCipherSuite();
-        List<ProtocolMessage> messages = new LinkedList<>();
+        List<ProtocolMessage<?>> messages = new LinkedList<>();
         messages.add(new ServerHelloMessage(config));
         if (config.getHighestProtocolVersion().isTLS13()) {
             if (Objects.equals(config.getTls13BackwardsCompatibilityMode(), Boolean.TRUE)
@@ -280,7 +280,7 @@ public class WorkflowConfigurationFactory {
     public WorkflowTrace createHandshakeWorkflow(AliasedConnection connection) {
         WorkflowTrace workflowTrace = createHelloWorkflow(connection);
 
-        List<ProtocolMessage> messages = new LinkedList<>();
+        List<ProtocolMessage<?>> messages = new LinkedList<>();
         if (config.getHighestProtocolVersion().isTLS13()) {
             if (Objects.equals(config.getTls13BackwardsCompatibilityMode(), Boolean.TRUE)
                     || connection.getLocalConnectionEndType() == ConnectionEndType.SERVER) {
@@ -694,9 +694,9 @@ public class WorkflowConfigurationFactory {
         WorkflowTrace trace =
                 factory.createTlsEntryWorkflowTrace(config.getDefaultClientConnection());
 
-        List<ProtocolMessage> clientHelloMessages = new LinkedList<>();
-        List<ProtocolMessage> serverMessages = new LinkedList<>();
-        List<ProtocolMessage> clientMessages = new LinkedList<>();
+        List<ProtocolMessage<?>> clientHelloMessages = new LinkedList<>();
+        List<ProtocolMessage<?>> serverMessages = new LinkedList<>();
+        List<ProtocolMessage<?>> clientMessages = new LinkedList<>();
 
         ClientHelloMessage clientHello;
         ApplicationMessage earlyDataMsg;
@@ -1038,18 +1038,18 @@ public class WorkflowConfigurationFactory {
         return null;
     }
 
-    public void addClientKeyExchangeMessage(List<ProtocolMessage> messages) {
+    public void addClientKeyExchangeMessage(List<ProtocolMessage<?>> messages) {
         CipherSuite cs = config.getDefaultSelectedCipherSuite();
-        ClientKeyExchangeMessage message =
+        ClientKeyExchangeMessage<?> message =
                 createClientKeyExchangeMessage(AlgorithmResolver.getKeyExchangeAlgorithm(cs));
         if (message != null) {
             messages.add(message);
         }
     }
 
-    public void addServerKeyExchangeMessage(List<ProtocolMessage> messages) {
+    public void addServerKeyExchangeMessage(List<ProtocolMessage<?>> messages) {
         CipherSuite cs = config.getDefaultSelectedCipherSuite();
-        ServerKeyExchangeMessage message =
+        ServerKeyExchangeMessage<?> message =
                 createServerKeyExchangeMessage(AlgorithmResolver.getKeyExchangeAlgorithm(cs));
         if (message != null) {
             messages.add(message);
@@ -1143,7 +1143,7 @@ public class WorkflowConfigurationFactory {
             return trace;
         } else {
             if (config.getHighestProtocolVersion().isTLS13()) {
-                List<ProtocolMessage> tls13Messages = new LinkedList<>();
+                List<ProtocolMessage<?>> tls13Messages = new LinkedList<>();
                 tls13Messages.add(new ServerHelloMessage(config));
                 if (Objects.equals(config.getTls13BackwardsCompatibilityMode(), Boolean.TRUE)) {
                     ChangeCipherSpecMessage ccs = new ChangeCipherSpecMessage();
@@ -1192,7 +1192,7 @@ public class WorkflowConfigurationFactory {
         WorkflowTrace trace = createDynamicHelloWorkflow(connection);
         if (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
             if (config.getHighestProtocolVersion().isTLS13()) {
-                List<ProtocolMessage> tls13Messages = new LinkedList<>();
+                List<ProtocolMessage<?>> tls13Messages = new LinkedList<>();
                 if (Objects.equals(config.getTls13BackwardsCompatibilityMode(), Boolean.TRUE)) {
                     ChangeCipherSpecMessage ccs = new ChangeCipherSpecMessage();
                     ccs.setRequired(false);

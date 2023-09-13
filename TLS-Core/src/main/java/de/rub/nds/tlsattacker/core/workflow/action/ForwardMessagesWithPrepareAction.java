@@ -29,13 +29,13 @@ public class ForwardMessagesWithPrepareAction extends ForwardMessagesAction {
     }
 
     public ForwardMessagesWithPrepareAction(
-            String receiveFromAlias, String forwardToAlias, List<ProtocolMessage> messages) {
+            String receiveFromAlias, String forwardToAlias, List<ProtocolMessage<?>> messages) {
         super(receiveFromAlias, forwardToAlias, messages);
         withPrepare = true;
     }
 
     public ForwardMessagesWithPrepareAction(
-            String receiveFromAlias, String forwardToAlias, ProtocolMessage... messages) {
+            String receiveFromAlias, String forwardToAlias, ProtocolMessage<?>... messages) {
         super(receiveFromAlias, forwardToAlias, messages);
         withPrepare = true;
     }

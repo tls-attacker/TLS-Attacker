@@ -80,7 +80,7 @@ public class LayerStack {
      *     contain any messages the peer sends back.
      * @throws IOException If any layer fails to send its data.
      */
-    public LayerStackProcessingResult sendData(List<LayerConfiguration> layerConfigurationList)
+    public LayerStackProcessingResult sendData(List<LayerConfiguration<?>> layerConfigurationList)
             throws IOException {
         LOGGER.debug("Sending Data");
         if (getLayerList().size() != layerConfigurationList.size()) {
@@ -93,18 +93,18 @@ public class LayerStack {
 
         // Prepare layer configuration and clear previous executions
         for (int i = 0; i < getLayerList().size(); i++) {
-            ProtocolLayer layer = getLayerList().get(i);
+            ProtocolLayer<?, ?> layer = getLayerList().get(i);
             layer.clear();
             layer.setLayerConfiguration(layerConfigurationList.get(i));
         }
         context.setTalkingConnectionEndType(context.getConnection().getLocalConnectionEndType());
         // Send data
-        for (ProtocolLayer layer : getLayerList()) {
+        for (ProtocolLayer<?, ?> layer : getLayerList()) {
             layer.sendConfiguration();
         }
 
         // Gather results
-        List<LayerProcessingResult> resultList = new LinkedList<>();
+        List<LayerProcessingResult<?>> resultList = new LinkedList<>();
         getLayerList()
                 .forEach(
                         layer -> {
@@ -123,7 +123,8 @@ public class LayerStack {
      *     contain any messages the peer sends back. If any layer fails to receive the specified
      *     data.
      */
-    public LayerStackProcessingResult receiveData(List<LayerConfiguration> layerConfigurationList) {
+    public LayerStackProcessingResult receiveData(
+            List<LayerConfiguration<?>> layerConfigurationList) {
         LOGGER.debug("Receiving Data");
         if (getLayerList().size() != layerConfigurationList.size()) {
             throw new RuntimeException(
@@ -134,16 +135,19 @@ public class LayerStack {
         }
         // Prepare layer configuration and clear previous executions
         for (int i = 0; i < getLayerList().size(); i++) {
-            ProtocolLayer layer = getLayerList().get(i);
+            ProtocolLayer<?, ?> layer = getLayerList().get(i);
             layer.clear();
             layer.setLayerConfiguration(layerConfigurationList.get(i));
         }
         context.setTalkingConnectionEndType(
                 context.getConnection().getLocalConnectionEndType().getPeer());
         getLayerList().get(0).receiveData();
+        LOGGER.debug(
+                "Top layer finished receiving - checking if other layers need further execution");
         // reverse order
+
         for (int i = getLayerList().size() - 1; i >= 0; i--) {
-            ProtocolLayer layer = getLayerList().get(i);
+            ProtocolLayer<?, ?> layer = getLayerList().get(i);
             if (layer.getLayerConfiguration() != null && !layer.executedAsPlanned()) {
                 try {
                     layer.receiveData();
@@ -167,7 +171,7 @@ public class LayerStack {
      */
     public LayerStackProcessingResult gatherResults() {
         // Gather results
-        List<LayerProcessingResult> resultList = new LinkedList<>();
+        List<LayerProcessingResult<?>> resultList = new LinkedList<>();
         getLayerList().forEach(tempLayer -> resultList.add(tempLayer.getLayerResult()));
         return new LayerStackProcessingResult(resultList);
     }
@@ -178,7 +182,7 @@ public class LayerStack {
     }
 
     /** Returns the layer list. */
-    public List<ProtocolLayer> getLayerList() {
+    public List<ProtocolLayer<?, ?>> getLayerList() {
         return Collections.unmodifiableList(layerList);
     }
 }

@@ -28,16 +28,15 @@ public class ReceiveActionTest extends AbstractActionTest<ReceiveAction> {
     private final AlertMessage alertMessage;
 
     public ReceiveActionTest() {
-        super(new ReceiveAction(), ReceiveAction.class);
+        super(new ReceiveAction(new AlertMessage()), ReceiveAction.class);
         context = state.getTlsContext();
         context.setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
         context.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
 
-        alertMessage = new AlertMessage();
+        alertMessage = (AlertMessage) action.getMessages().get(0);
         alertMessage.setConfig(AlertLevel.FATAL, AlertDescription.DECRYPT_ERROR);
         alertMessage.setDescription(AlertDescription.DECODE_ERROR.getValue());
         alertMessage.setLevel(AlertLevel.FATAL.getValue());
-        action.setExpectedMessages(alertMessage);
     }
 
     /**

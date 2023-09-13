@@ -140,7 +140,7 @@ public class SendDynamicServerCertificateAction extends MessageAction implements
     }
 
     @Override
-    public List<ProtocolMessage> getSendMessages() {
+    public List<ProtocolMessage<?>> getSendMessages() {
         return messages;
     }
 

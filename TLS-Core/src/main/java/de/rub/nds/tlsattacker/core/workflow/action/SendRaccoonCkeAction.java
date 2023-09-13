@@ -243,7 +243,7 @@ public class SendRaccoonCkeAction extends MessageAction implements SendingAction
     }
 
     @Override
-    public List<ProtocolMessage> getSendMessages() {
+    public List<ProtocolMessage<?>> getSendMessages() {
         return messages;
     }
 

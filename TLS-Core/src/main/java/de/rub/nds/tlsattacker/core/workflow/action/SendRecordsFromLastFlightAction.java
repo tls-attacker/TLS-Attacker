@@ -143,7 +143,7 @@ public class SendRecordsFromLastFlightAction extends MessageAction implements Se
     }
 
     @Override
-    public List<ProtocolMessage> getSendMessages() {
+    public List<ProtocolMessage<?>> getSendMessages() {
         throw new UnsupportedOperationException("Not supported.");
     }
 
