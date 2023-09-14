@@ -203,12 +203,12 @@ public class ReceiveAction extends CommonReceiveAction {
             throw new WorkflowExecutionException(
                     "ReceiveAction illegally configured. Missing Configuration");
         }
-        if (expectedMessages == null) {
+        if (expectedMessages != null) {
             configurations.add(
                     new SpecificReceiveLayerConfiguration<>(
                             ImplementedLayers.MESSAGE, expectedMessages));
         }
-        if (expectedMessages == null) {
+        if (expectedHttpMessages != null) {
             configurations.add(
                     new SpecificReceiveLayerConfiguration<>(
                             ImplementedLayers.HTTP, expectedHttpMessages));

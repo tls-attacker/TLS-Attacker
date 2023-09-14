@@ -20,10 +20,6 @@ import java.util.List;
 public class SpecificReceiveLayerConfiguration<Container extends DataContainer>
         extends ReceiveLayerConfiguration<Container> {
 
-    private List<DataContainerFilter> containerFilterList;
-
-    private boolean allowTrailingContainers = false;
-
     public SpecificReceiveLayerConfiguration(LayerType layerType, List<Container> containerList) {
         super(layerType, containerList);
     }
@@ -99,14 +95,6 @@ public class SpecificReceiveLayerConfiguration<Container extends DataContainer>
             }
         }
         return false;
-    }
-
-    public List<DataContainerFilter> getContainerFilterList() {
-        return containerFilterList;
-    }
-
-    public void setContainerFilterList(List<DataContainerFilter> containerFilterList) {
-        this.containerFilterList = containerFilterList;
     }
 
     @Override

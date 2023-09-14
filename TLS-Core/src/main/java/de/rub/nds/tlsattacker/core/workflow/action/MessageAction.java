@@ -15,7 +15,6 @@ import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerStack;
 import de.rub.nds.tlsattacker.core.layer.LayerStackProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.ReceiveTillLayerConfiguration;
-import de.rub.nds.tlsattacker.core.layer.SpecificReceiveLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.SpecificSendLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.TightReceiveLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
@@ -295,7 +294,7 @@ public abstract class MessageAction extends ConnectionBoundAction {
     protected void receive(TlsContext tlsContext, LayerConfiguration<?>... layerConfigurations) {
         LayerStack layerStack = tlsContext.getLayerStack();
 
-        getReceiveResult(layerStack, Arrays.asList(layerConfigurations));
+        getReceiveResult(layerStack, new ArrayList<>(Arrays.asList(layerConfigurations)));
     }
 
     protected void receiveTill(TlsContext tlsContext, ProtocolMessage<?> protocolMessageToReceive) {
@@ -326,6 +325,10 @@ public abstract class MessageAction extends ConnectionBoundAction {
     private void getReceiveResult(
             LayerStack layerStack, List<LayerConfiguration<?>> layerConfigurationList) {
         LayerStackProcessingResult processingResult;
+        for (LayerConfiguration<?> layerConfiguration : layerConfigurationList) {
+            applyActionOptionFilters(layerConfiguration);
+        }
+        sortLayerConfigurations(layerStack, layerConfigurationList);
         processingResult = layerStack.receiveData(layerConfigurationList);
         setContainers(processingResult);
         setLayerStackProcessingResult(processingResult);
@@ -392,7 +395,6 @@ public abstract class MessageAction extends ConnectionBoundAction {
         if (getActionOptions().contains(ActionOption.IGNORE_UNEXPECTED_WARNINGS)) {
             containerFilters.add(new WarningAlertFilter());
         }
-        ((SpecificReceiveLayerConfiguration<?>) messageConfiguration)
-                .setContainerFilterList(containerFilters);
+        messageConfiguration.setContainerFilterList(containerFilters);
     }
 }

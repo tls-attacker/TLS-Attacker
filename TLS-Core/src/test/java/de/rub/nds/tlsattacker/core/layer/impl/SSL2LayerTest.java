@@ -55,11 +55,11 @@ public class SSL2LayerTest extends TestCase {
     }
 
     public void testSendConfiguration() throws IOException {
-        ArrayList<SSL2Message> ssl2HandshakeMessages = new ArrayList<>();
+        ArrayList<SSL2Message<?>> ssl2HandshakeMessages = new ArrayList<>();
         ssl2HandshakeMessages.add(new SSL2ClientHelloMessage());
         ssl2HandshakeMessages.add(new SSL2ServerHelloMessage());
 
-        SpecificSendLayerConfiguration<SSL2Message> layerConfiguration;
+        SpecificSendLayerConfiguration<SSL2Message<?>> layerConfiguration;
 
         for (int i = 0; i < ssl2HandshakeMessages.size(); i++) {
             layerConfiguration =

@@ -4851,8 +4851,18 @@
 
   <xs:complexType name="tightReceiveAction">
     <xs:complexContent>
-      <xs:extension base="receiveAction">
+      <xs:extension base="commonReceiveAction">
         <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="multiReceiveAction">
+    <xs:complexContent>
+      <xs:extension base="genericReceiveAction">
+        <xs:sequence>
+          <xs:element name="expectedActionCandidates" type="receiveAction" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
@@ -4926,16 +4936,6 @@
               </xs:sequence>
             </xs:complexType>
           </xs:element>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="multiReceiveAction">
-    <xs:complexContent>
-      <xs:extension base="genericReceiveAction">
-        <xs:sequence>
-          <xs:element name="expectedActionCandidates" type="receiveAction" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>

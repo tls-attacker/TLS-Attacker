@@ -21,6 +21,8 @@ import java.util.List;
  */
 public abstract class LayerConfiguration<Container extends DataContainer> {
 
+    private List<DataContainerFilter> containerFilterList;
+
     private final List<Container> containerList;
 
     private final LayerType layerType;
@@ -52,5 +54,13 @@ public abstract class LayerConfiguration<Container extends DataContainer> {
 
     public LayerType getLayerType() {
         return layerType;
+    }
+
+    public List<DataContainerFilter> getContainerFilterList() {
+        return containerFilterList;
+    }
+
+    public void setContainerFilterList(List<DataContainerFilter> containerFilterList) {
+        this.containerFilterList = containerFilterList;
     }
 }

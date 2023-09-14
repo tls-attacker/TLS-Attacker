@@ -57,7 +57,7 @@ public class GenericReceiveAction extends MessageAction implements ReceivingActi
     public String toString() {
         StringBuilder sb = new StringBuilder("Receive Action:\n");
         sb.append("\tActual:");
-        for (ProtocolMessage message : messages) {
+        for (ProtocolMessage<?> message : messages) {
             sb.append(message.toCompactString());
             sb.append(", ");
         }

@@ -90,8 +90,8 @@ public class XmlSerialisationTest {
                     "Extension failed: " + extension.getClass().getName(),
                     ((MessageAction) newWorkflowTrace.getTlsActions().get(0)).getMessages().size()
                             == 1);
-            HandshakeMessage handshakeMessage =
-                    (HandshakeMessage)
+            HandshakeMessage<?> handshakeMessage =
+                    (HandshakeMessage<?>)
                             (((MessageAction) newWorkflowTrace.getTlsActions().get(0))
                                     .getMessages()
                                     .get(0));
@@ -111,7 +111,7 @@ public class XmlSerialisationTest {
                                     .size()
                             == 1);
             handshakeMessage =
-                    (HandshakeMessage)
+                    (HandshakeMessage<?>)
                             (((ReceiveAction) newWorkflowTrace.getTlsActions().get(1))
                                     .getExpectedMessages()
                                     .get(0));

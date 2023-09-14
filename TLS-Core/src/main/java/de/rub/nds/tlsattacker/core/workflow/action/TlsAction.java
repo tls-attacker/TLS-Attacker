@@ -212,7 +212,7 @@ public abstract class TlsAction implements Serializable, Aliasable {
                 unsortedLayerConfigurations.remove(layerConfiguration.get());
             } else {
                 sortedLayerConfigurations.add(
-                        new SpecificReceiveLayerConfiguration(layerType, new LinkedList<>()));
+                        new SpecificReceiveLayerConfiguration<>(layerType, new LinkedList<>()));
             }
         }
         return sortedLayerConfigurations;

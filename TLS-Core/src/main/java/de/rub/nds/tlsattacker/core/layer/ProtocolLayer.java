@@ -79,22 +79,22 @@ public abstract class ProtocolLayer<
         this.lowerLayer = lowerLayer;
     }
 
-    public abstract LayerProcessingResult sendConfiguration() throws IOException;
+    public abstract LayerProcessingResult<Container> sendConfiguration() throws IOException;
 
-    public abstract LayerProcessingResult sendData(Hint hint, byte[] additionalData)
+    public abstract LayerProcessingResult<Container> sendData(Hint hint, byte[] additionalData)
             throws IOException;
 
     public LayerConfiguration<Container> getLayerConfiguration() {
         return layerConfiguration;
     }
 
-    public void setLayerConfiguration(LayerConfiguration layerConfiguration) {
+    public void setLayerConfiguration(LayerConfiguration<Container> layerConfiguration) {
         this.layerConfiguration = layerConfiguration;
     }
 
     public LayerProcessingResult<Container> getLayerResult() {
         boolean isExecutedAsPlanned = executedAsPlanned();
-        return new LayerProcessingResult(
+        return new LayerProcessingResult<>(
                 producedDataContainers, getLayerType(), isExecutedAsPlanned, getUnreadBytes());
     }
 
@@ -147,7 +147,7 @@ public abstract class ProtocolLayer<
      *
      * @return LayerProcessingResult Contains information about the execution of the receive action.
      */
-    public abstract LayerProcessingResult receiveData();
+    public abstract LayerProcessingResult<Container> receiveData();
 
     /**
      * Tries to fill up the current Stream with more data, if instead unprocessable data (for the
