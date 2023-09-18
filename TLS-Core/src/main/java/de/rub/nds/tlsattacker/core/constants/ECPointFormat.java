@@ -20,8 +20,8 @@ import org.apache.logging.log4j.Logger;
 
 public enum ECPointFormat {
     UNCOMPRESSED((byte) 0, PointFormat.UNCOMPRESSED),
-    ANSIX962_COMPRESSED_PRIME((byte) 1, PointFormat.ANSIX962_COMPRESSED_PRIME),
-    ANSIX962_COMPRESSED_CHAR2((byte) 2, PointFormat.ANSIX962_COMPRESSED_CHAR2);
+    ANSIX962_COMPRESSED_PRIME((byte) 1, PointFormat.COMPRESSED),
+    ANSIX962_COMPRESSED_CHAR2((byte) 2, PointFormat.COMPRESSED);
 
     private byte value;
     private PointFormat format;
