@@ -19,16 +19,16 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.EncryptedServerNameIndicationExtensionPreparator;
 
 /**
- * @param <HsMessage> The ProtocolMessage that should be handled
+ * @param <HandshakeMessageT> The ProtocolMessage that should be handled
  */
-public abstract class HandshakeMessageHandler<HsMessage extends HandshakeMessage>
-        extends ProtocolMessageHandler<HsMessage> {
+public abstract class HandshakeMessageHandler<HandshakeMessageT extends HandshakeMessage>
+        extends ProtocolMessageHandler<HandshakeMessageT> {
 
     public HandshakeMessageHandler(TlsContext tlsContext) {
         super(tlsContext);
     }
 
-    protected void adjustExtensions(HsMessage message) {
+    protected void adjustExtensions(HandshakeMessageT message) {
         LOGGER.debug("Adjusting context for extensions");
         if (message.getExtensions() != null) {
             for (ExtensionMessage extension : message.getExtensions()) {
@@ -40,7 +40,7 @@ public abstract class HandshakeMessageHandler<HsMessage extends HandshakeMessage
 
     // TODO This should not be here?!?!!?
     @Override
-    public void prepareAfterParse(HsMessage message) {
+    public void prepareAfterParse(HandshakeMessageT message) {
         super.prepareAfterParse(message);
 
         if (message.getExtensions() != null) {
