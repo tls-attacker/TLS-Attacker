@@ -158,7 +158,6 @@ public class CertificateDelegate extends Delegate {
             KeyStore store = KeystoreHandler.loadKeyStore(keystore, password);
             Certificate cert = JKSLoader.loadTLSCertificate(store, alias);
             privateKey = (PrivateKey) store.getKey(alias, password.toCharArray());
-            // CertificateUtils.parseCustomPrivateKey(privateKey).adjustInConfig(config, type);
             List<CertificateBytes> byteList = new LinkedList<>();
             for (org.bouncycastle.asn1.x509.Certificate tempCert : cert.getCertificateList()) {
                 byteList.add(new CertificateBytes(tempCert.getEncoded()));
