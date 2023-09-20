@@ -283,7 +283,6 @@ public class Config implements Serializable {
     private NamedGroup defaultSelectedNamedGroup = NamedGroup.SECP256R1;
 
     @XmlElement(nillable = true)
-    // @XmlElementWrapper
     @XmlJavaTypeAdapter(MapAdapter.class)
     private Map<NamedGroup, BigInteger> defaultKeySharePrivateMap;
 
