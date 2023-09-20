@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.SrtpProtectionProfile;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SrtpExtensionMessage;
@@ -31,13 +30,13 @@ public class SrtpExtensionHandler extends ExtensionHandler<SrtpExtensionMessage>
                     SrtpProtectionProfile.getProfilesAsArrayList(
                             message.getSrtpProtectionProfiles().getValue()));
             LOGGER.debug(
-                    "Adjusted the TLS context secure realtime transport protocol protection profiles to "
-                            + ArrayConverter.bytesToHexString(message.getSrtpProtectionProfiles()));
+                    "Adjusted the TLS context secure realtime transport protocol protection profiles to {}",
+                    message.getSrtpProtectionProfiles());
             tlsContext.setSecureRealTimeProtocolMasterKeyIdentifier(
                     message.getSrtpMki().getValue());
             LOGGER.debug(
-                    "Adjusted the TLS context secure realtime transport protocol master key identifier to "
-                            + ArrayConverter.bytesToHexString(message.getSrtpMki()));
+                    "Adjusted the TLS context secure realtime transport protocol master key identifier to {}",
+                    message.getSrtpMki());
         } else {
             tlsContext.setSelectedSrtpProtectionProfile(
                     SrtpProtectionProfile.getProfileByType(
