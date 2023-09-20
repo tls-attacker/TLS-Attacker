@@ -16,8 +16,8 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public abstract class ExtensionHandler<Extension extends ExtensionMessage>
-        extends Handler<Extension> {
+public abstract class ExtensionHandler<ExtensionT extends ExtensionMessage>
+        extends Handler<ExtensionT> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -33,12 +33,12 @@ public abstract class ExtensionHandler<Extension extends ExtensionMessage>
      * @param message The message for which the Context should be adjusted
      */
     @Override
-    public final void adjustContext(Extension message) {
+    public final void adjustContext(ExtensionT message) {
         markExtensionInContext(message);
         adjustTLSExtensionContext(message);
     }
 
-    public abstract void adjustTLSExtensionContext(Extension message);
+    public abstract void adjustTLSExtensionContext(ExtensionT message);
 
     /**
      * Tell the context that the extension was proposed/negotiated. Makes the extension type
@@ -46,7 +46,7 @@ public abstract class ExtensionHandler<Extension extends ExtensionMessage>
      *
      * @param message
      */
-    private void markExtensionInContext(Extension message) {
+    private void markExtensionInContext(ExtensionT message) {
         ExtensionType extType = message.getExtensionTypeConstant();
         ConnectionEndType talkingConEndType = tlsContext.getTalkingConnectionEndType();
         if (talkingConEndType == ConnectionEndType.CLIENT) {
