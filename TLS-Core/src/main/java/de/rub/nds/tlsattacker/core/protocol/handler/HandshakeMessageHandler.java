@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.data.Handler;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageHandler;
@@ -45,10 +44,6 @@ public abstract class HandshakeMessageHandler<HandshakeMessageT extends Handshak
 
         if (message.getExtensions() != null) {
             for (ExtensionMessage extensionMessage : message.getExtensions()) {
-                HandshakeMessageType handshakeMessageType = message.getHandshakeMessageType();
-
-                Handler extensionHandler = extensionMessage.getHandler(tlsContext);
-
                 if (extensionMessage instanceof EncryptedServerNameIndicationExtensionMessage) {
                     EncryptedServerNameIndicationExtensionPreparator preparator =
                             (EncryptedServerNameIndicationExtensionPreparator)
