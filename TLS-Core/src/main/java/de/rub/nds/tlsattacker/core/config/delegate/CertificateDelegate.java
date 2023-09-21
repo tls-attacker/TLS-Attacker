@@ -12,7 +12,6 @@ import static org.apache.commons.lang3.StringUtils.join;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
-import de.rub.nds.tlsattacker.core.certificate.PemUtil;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.util.JKSLoader;
@@ -20,10 +19,15 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.util.KeystoreHandler;
 import de.rub.nds.x509attacker.filesystem.CertificateBytes;
 import de.rub.nds.x509attacker.filesystem.CertificateIo;
+import de.rub.nds.x509attacker.signatureengine.keyparsers.PemUtil;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.security.*;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -105,12 +109,8 @@ public class CertificateDelegate extends Delegate {
         PrivateKey privateKey = null;
         if (key != null) {
             LOGGER.debug("Loading private key");
-            try {
-                privateKey = PemUtil.readPrivateKey(new File(key));
-                adjustPrivateKey(config, privateKey);
-            } catch (IOException ex) {
-                LOGGER.warn("Could not read private key", ex);
-            }
+            privateKey = PemUtil.readPrivateKey(new File(key));
+            adjustPrivateKey(config, privateKey);
         }
         if (certificate != null) {
             if (privateKey == null) {
@@ -158,7 +158,6 @@ public class CertificateDelegate extends Delegate {
             KeyStore store = KeystoreHandler.loadKeyStore(keystore, password);
             Certificate cert = JKSLoader.loadTLSCertificate(store, alias);
             privateKey = (PrivateKey) store.getKey(alias, password.toCharArray());
-            // CertificateUtils.parseCustomPrivateKey(privateKey).adjustInConfig(config, type);
             List<CertificateBytes> byteList = new LinkedList<>();
             for (org.bouncycastle.asn1.x509.Certificate tempCert : cert.getCertificateList()) {
                 byteList.add(new CertificateBytes(tempCert.getEncoded()));

@@ -182,7 +182,8 @@ public enum KeyExchangeAlgorithm {
                 return false;
             default:
                 throw new UnsupportedOperationException(
-                        "Not defined yet! Please ask the developers to add this KEX algorithm");
+                        this.name()
+                                + " not defined yet! Please ask the developers to add this KEX algorithm");
         }
     }
 }

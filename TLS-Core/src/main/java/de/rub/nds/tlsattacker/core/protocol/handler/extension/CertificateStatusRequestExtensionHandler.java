@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
-import static de.rub.nds.modifiablevariable.util.ArrayConverter.bytesToHexString;
 import static de.rub.nds.tlsattacker.transport.ConnectionEndType.CLIENT;
 
 import de.rub.nds.tlsattacker.core.constants.CertificateStatusRequestType;
@@ -33,22 +32,18 @@ public class CertificateStatusRequestExtensionHandler
                     CertificateStatusRequestType.getCertificateStatusRequestType(
                             message.getCertificateStatusRequestType().getValue()));
             LOGGER.debug(
-                    "Adjusted the Certificate Status Request Type in the TLSContext to "
-                            + tlsContext.getCertificateStatusRequestExtensionRequestType());
+                    "Adjusted the Certificate Status Request Type in the TLSContext to {}",
+                    tlsContext.getCertificateStatusRequestExtensionRequestType());
             tlsContext.setCertificateStatusRequestExtensionRequestExtension(
                     message.getRequestExtension().getValue());
             LOGGER.debug(
-                    "Adjusted the Certificate Status Request Request Extension to "
-                            + bytesToHexString(
-                                    tlsContext
-                                            .getCertificateStatusRequestExtensionRequestExtension()));
+                    "Adjusted the Certificate Status Request Request Extension to {}",
+                    tlsContext.getCertificateStatusRequestExtensionRequestExtension());
             tlsContext.setCertificateStatusRequestExtensionResponderIDList(
                     message.getResponderIDList().getValue());
             LOGGER.debug(
-                    "Adjusted the Certificate Status Request Responder ID List to "
-                            + bytesToHexString(
-                                    tlsContext
-                                            .getCertificateStatusRequestExtensionResponderIDList()));
+                    "Adjusted the Certificate Status Request Responder ID List to {}",
+                    tlsContext.getCertificateStatusRequestExtensionResponderIDList());
         }
     }
 }

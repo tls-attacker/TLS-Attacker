@@ -86,6 +86,7 @@
             <defaultSubjectNamedCurve>SECP256R1</defaultSubjectNamedCurve>
             <dhValidationParameterPgenCounter>1</dhValidationParameterPgenCounter>
             <dhValidationParameterSeed>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</dhValidationParameterSeed>
+            <defaultEcPointFormat>UNCOMPRESSED</defaultEcPointFormat>
         </certificateConfig>
         <certificateConfig>
             <signatureAlgorithm>SHA256_WITH_RSA_ENCRYPTION</signatureAlgorithm>
@@ -163,6 +164,7 @@
             <defaultSubjectNamedCurve>SECP256R1</defaultSubjectNamedCurve>
             <dhValidationParameterPgenCounter>1</dhValidationParameterPgenCounter>
             <dhValidationParameterSeed>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</dhValidationParameterSeed>
+            <defaultEcPointFormat>UNCOMPRESSED</defaultEcPointFormat>
         </certificateConfig>
     </certificateChainConfig>
     <outputFilters>

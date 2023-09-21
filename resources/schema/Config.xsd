@@ -945,6 +945,7 @@
       <xs:element name="defaultSubjectNamedCurve" type="x509NamedCurve" minOccurs="0"/>
       <xs:element name="dhValidationParameterPgenCounter" type="xs:integer" minOccurs="0"/>
       <xs:element name="dhValidationParameterSeed" type="xs:base64Binary" minOccurs="0"/>
+      <xs:element name="defaultEcPointFormat" type="pointFormat" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
 
@@ -3846,6 +3847,13 @@
       <xs:enumeration value="BRAINPOOLP384T1"/>
       <xs:enumeration value="BRAINPOOLP512R1"/>
       <xs:enumeration value="BRAINPOOLP512T1"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="pointFormat">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="UNCOMPRESSED"/>
+      <xs:enumeration value="COMPRESSED"/>
     </xs:restriction>
   </xs:simpleType>
 

@@ -168,14 +168,17 @@ public abstract class ExtensionMessage extends ModifiableVariableHolder
     }
 
     @Override
-    public abstract ExtensionHandler<?> getHandler(TlsContext context);
+    public abstract ExtensionHandler<? extends ExtensionMessage> getHandler(TlsContext context);
 
     @Override
-    public abstract ExtensionParser<?> getParser(TlsContext context, InputStream stream);
+    public abstract ExtensionParser<? extends ExtensionMessage> getParser(
+            TlsContext context, InputStream stream);
 
     @Override
-    public abstract ExtensionPreparator<?> getPreparator(TlsContext context);
+    public abstract ExtensionPreparator<? extends ExtensionMessage> getPreparator(
+            TlsContext context);
 
     @Override
-    public abstract ExtensionSerializer<?> getSerializer(TlsContext context);
+    public abstract ExtensionSerializer<? extends ExtensionMessage> getSerializer(
+            TlsContext context);
 }
