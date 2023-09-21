@@ -11,23 +11,22 @@ package de.rub.nds.tlsattacker.core.constants;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public enum MaxFragmentLength {
-    TWO_9((byte) 1),
-    TWO_10((byte) 2),
-    TWO_11((byte) 3),
-    TWO_12((byte) 4);
-
-    private static final Logger LOGGER = LogManager.getLogger();
+    TWO_9((byte) 1, 512),
+    TWO_10((byte) 2, 1024),
+    TWO_11((byte) 3, 2048),
+    TWO_12((byte) 4, 4096);
 
     private byte value;
 
+    private int lengthValue;
+
     private static final Map<Byte, MaxFragmentLength> MAP;
 
-    private MaxFragmentLength(byte value) {
+    private MaxFragmentLength(byte value, int lengthValue) {
         this.value = value;
+        this.lengthValue = lengthValue;
     }
 
     static {
@@ -58,19 +57,7 @@ public enum MaxFragmentLength {
         return c;
     }
 
-    public Integer getReceiveLimit() {
-        switch (this) {
-            case TWO_9:
-                return 512;
-            case TWO_10:
-                return 1024;
-            case TWO_11:
-                return 2048;
-            case TWO_12:
-                return 4096;
-            default:
-                LOGGER.warn("Unknown MaxFragmentLength encountered. Using 1024.");
-                return 1024;
-        }
+    public int getReceiveLimit() {
+        return lengthValue;
     }
 }
