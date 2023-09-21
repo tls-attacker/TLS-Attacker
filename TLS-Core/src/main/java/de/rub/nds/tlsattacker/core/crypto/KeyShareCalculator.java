@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.crypto;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.protocol.constants.EcCurveEquationType;
 import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
 import de.rub.nds.protocol.crypto.ec.EllipticCurve;
 import de.rub.nds.protocol.crypto.ec.Point;
@@ -119,9 +120,14 @@ public class KeyShareCalculator {
         NamedEllipticCurveParameters parameters =
                 (NamedEllipticCurveParameters) group.getGroupParameters();
         EllipticCurve curve = parameters.getCurve();
-        if (group == NamedGroup.ECDH_X25519 || group == NamedGroup.ECDH_X448) {
-            RFC7748Curve rfcCurve = (RFC7748Curve) curve;
-            return rfcCurve.computeSharedSecretFromDecodedPoint(privateKey, publicKey);
+        if (parameters.getEquationType() == EcCurveEquationType.MONTGOMERY) {
+            if (curve instanceof RFC7748Curve) {
+                RFC7748Curve rfcCurve = (RFC7748Curve) curve;
+                return rfcCurve.computeSharedSecretFromDecodedPoint(privateKey, publicKey);
+            } else {
+                throw new UnsupportedOperationException(
+                        "Cannot compute shared secret for non RFC7748 curve. Not implemented yet");
+            }
         }
         Point sharedPoint = curve.mult(privateKey, publicKey);
         int elementLength = parameters.getElementSizeBytes();
