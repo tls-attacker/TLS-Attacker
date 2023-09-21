@@ -81,6 +81,15 @@ public class KeyShareCalculator {
         }
     }
 
+    /**
+     * Computes the shared secret for a DH key exchange. Leading zero bytes of the shared secret are
+     * maintained.
+     *
+     * @param group The group that should be used
+     * @param privateKey The private key that should be used
+     * @param publicKey The public key that should be used.
+     * @return The shared secret with leading zero bytes.
+     */
     public static byte[] computeDhSharedSecret(
             NamedGroup group, BigInteger privateKey, BigInteger publicKey) {
         if (!group.isDhGroup()) {
@@ -90,9 +99,18 @@ public class KeyShareCalculator {
         BigInteger modulus = ((FFDHGroup) group.getGroupParameters()).getModulus();
         return ArrayConverter.bigIntegerToNullPaddedByteArray(
                 publicKey.modPow(privateKey, modulus),
-                group.getGroupParameters().getElementSizeBits());
+                group.getGroupParameters().getElementSizeBytes());
     }
 
+    /**
+     * Computes the shared secret for an ECDH key exchange. Leading zero bytes of the shared secret
+     * are maintained.
+     *
+     * @param group The group that should be used
+     * @param privateKey The private key that should be used
+     * @param publicKey The public key that should be used.
+     * @return The shared secret with leading zero bytes.
+     */
     public static byte[] computeEcSharedSecret(
             NamedGroup group, BigInteger privateKey, Point publicKey) {
         if (!group.isEcGroup()) {
@@ -106,8 +124,7 @@ public class KeyShareCalculator {
             return rfcCurve.computeSharedSecretFromDecodedPoint(privateKey, publicKey);
         }
         Point sharedPoint = curve.mult(privateKey, publicKey);
-        int elementLength =
-                ArrayConverter.bigIntegerToByteArray(sharedPoint.getFieldX().getModulus()).length;
+        int elementLength = parameters.getElementSizeBytes();
         return ArrayConverter.bigIntegerToNullPaddedByteArray(
                 sharedPoint.getFieldX().getData(), elementLength);
     }
