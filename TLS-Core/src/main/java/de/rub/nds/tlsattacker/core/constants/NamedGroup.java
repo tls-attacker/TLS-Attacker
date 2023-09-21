@@ -12,7 +12,6 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.protocol.constants.EcCurveEquationType;
 import de.rub.nds.protocol.constants.GroupParameters;
 import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
-import de.rub.nds.protocol.crypto.ec.EllipticCurve;
 import de.rub.nds.protocol.crypto.ffdh.FFDHGroup;
 import de.rub.nds.protocol.crypto.ffdh.GroupFFDH2048;
 import de.rub.nds.protocol.crypto.ffdh.GroupFFDH3072;
@@ -24,8 +23,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.security.interfaces.ECPrivateKey;
-import java.security.interfaces.ECPublicKey;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -132,64 +129,6 @@ public enum NamedGroup {
 
     public static NamedGroup getNamedGroup(byte[] value) {
         return MAP.get(ByteBuffer.wrap(value));
-    }
-
-    public static NamedGroup getNamedGroup(ECPublicKey publicKey) {
-        for (NamedGroup group : getImplemented()) {
-            // TODO: X25519 and X448 not supported for classic java curves
-            if (group.isCurve() && group.isShortWeierstrass()) {
-                try {
-                    EllipticCurve curve =
-                            ((NamedEllipticCurveParameters) group.getGroupParameters()).getCurve();
-                    if (publicKey
-                                    .getParams()
-                                    .getGenerator()
-                                    .getAffineX()
-                                    .equals(curve.getBasePoint().getFieldX().getData())
-                            && publicKey
-                                    .getParams()
-                                    .getGenerator()
-                                    .getAffineY()
-                                    .equals(curve.getBasePoint().getFieldY().getData())) {
-                        return group;
-                    }
-                } catch (UnsupportedOperationException e) {
-                    LOGGER.debug("Could not test " + group.name() + " not completely integrated");
-                }
-            }
-        }
-        return null;
-    }
-
-    public static NamedGroup getNamedGroup(ECPrivateKey privateKey) {
-        for (NamedGroup group : getImplemented()) {
-            // TODO: X25519 and X448 not supported for classic java curves
-            if (group.isCurve() && group.isShortWeierstrass()) {
-                try {
-                    EllipticCurve tlsAttackerCurve =
-                            ((NamedEllipticCurveParameters) group.getGroupParameters()).getCurve();
-                    if (privateKey
-                                    .getParams()
-                                    .getGenerator()
-                                    .getAffineX()
-                                    .equals(tlsAttackerCurve.getBasePoint().getFieldX().getData())
-                            && privateKey
-                                    .getParams()
-                                    .getGenerator()
-                                    .getAffineY()
-                                    .equals(
-                                            tlsAttackerCurve
-                                                    .getBasePoint()
-                                                    .getFieldY()
-                                                    .getData())) {
-                        return group;
-                    }
-                } catch (UnsupportedOperationException e) {
-                    LOGGER.debug("Could not test " + group.name() + " not completely integrated");
-                }
-            }
-        }
-        return null;
     }
 
     public X509NamedCurve convertToX509() {
