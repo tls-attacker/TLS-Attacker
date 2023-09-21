@@ -28,10 +28,13 @@ public class KeyShareCalculator {
 
     public static byte[] createPublicKey(
             NamedGroup group, BigInteger privateKey, ECPointFormat pointFormat) {
-        if (group.isCurve()) {
+        if (group.isGrease()) {
+            return new byte[0];
+        }
+        if (group.isEcGroup()) {
             EllipticCurve curve =
                     ((NamedEllipticCurveParameters) group.getGroupParameters()).getCurve();
-            if (group.isShortWeierstrass() || group.isGrease()) {
+            if (group.isShortWeierstrass()) {
                 Point publicKey = curve.mult(privateKey, curve.getBasePoint());
                 return PointFormatter.formatToByteArray(
                         (NamedEllipticCurveParameters) (group.getGroupParameters()),
@@ -57,7 +60,9 @@ public class KeyShareCalculator {
 
     public static byte[] computeSharedSecret(
             NamedGroup group, BigInteger privateKey, byte[] publicKey) {
-
+        if (group.isGrease()) {
+            return new byte[0];
+        }
         if (group.isDhGroup()) {
             return computeDhSharedSecret(group, privateKey, new BigInteger(1, publicKey));
         } else if (group.isEcGroup()) {
