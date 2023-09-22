@@ -11,11 +11,8 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.data.Handler;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageHandler;
-import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.EncryptedServerNameIndicationExtensionPreparator;
 
 /**
  * @param <HandshakeMessageT> The ProtocolMessage that should be handled
@@ -33,28 +30,6 @@ public abstract class HandshakeMessageHandler<HandshakeMessageT extends Handshak
             for (ExtensionMessage extension : message.getExtensions()) {
                 Handler handler = extension.getHandler(tlsContext);
                 handler.adjustContext(extension);
-            }
-        }
-    }
-
-    // TODO This should not be here?!?!!?
-    @Override
-    public void prepareAfterParse(HandshakeMessageT message) {
-        super.prepareAfterParse(message);
-
-        if (message.getExtensions() != null) {
-            for (ExtensionMessage extensionMessage : message.getExtensions()) {
-                if (extensionMessage instanceof EncryptedServerNameIndicationExtensionMessage) {
-                    EncryptedServerNameIndicationExtensionPreparator preparator =
-                            (EncryptedServerNameIndicationExtensionPreparator)
-                                    ((EncryptedServerNameIndicationExtensionMessage)
-                                                    extensionMessage)
-                                            .getPreparator(tlsContext);
-                    if (message instanceof ClientHelloMessage) {
-                        preparator.setClientHelloMessage((ClientHelloMessage) message);
-                    }
-                    preparator.prepareAfterParse();
-                }
             }
         }
     }

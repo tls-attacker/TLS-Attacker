@@ -26,15 +26,6 @@ public abstract class ProtocolMessageHandler<MessageT extends ProtocolMessage>
         this.tlsContext = tlsContext;
     }
 
-    /**
-     * Performs additional preparations after parsing the message (e.g. ESNI decryption/parsing).
-     *
-     * @param message
-     */
-    public void prepareAfterParse(MessageT message) {
-        // TODO This should not be here
-    }
-
     public void updateDigest(MessageT message, boolean goingToBeSent) {
         if (!(message instanceof HandshakeMessage)) {
             return;
