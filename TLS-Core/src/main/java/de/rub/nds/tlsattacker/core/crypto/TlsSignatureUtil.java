@@ -10,8 +10,10 @@ package de.rub.nds.tlsattacker.core.crypto;
 
 import de.rub.nds.protocol.constants.HashAlgorithm;
 import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
+import de.rub.nds.protocol.crypto.key.DsaPrivateKey;
 import de.rub.nds.protocol.crypto.key.EcdsaPrivateKey;
 import de.rub.nds.protocol.crypto.key.RsaPrivateKey;
+import de.rub.nds.protocol.crypto.signature.DsaSignatureComputations;
 import de.rub.nds.protocol.crypto.signature.EcdsaSignatureComputations;
 import de.rub.nds.protocol.crypto.signature.RsaPkcs1SignatureComputations;
 import de.rub.nds.protocol.crypto.signature.SignatureCalculator;
@@ -19,6 +21,7 @@ import de.rub.nds.protocol.crypto.signature.SignatureComputations;
 import de.rub.nds.protocol.crypto.signature.SignatureVerificationComputations;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import de.rub.nds.x509attacker.chooser.X509Chooser;
 import java.math.BigInteger;
 
 public class TlsSignatureUtil {
@@ -40,7 +43,7 @@ public class TlsSignatureUtil {
                         chooser,
                         algorithm.getHashAlgorithm(),
                         toBeHasedAndSigned,
-                        (EcdsaSignatureComputations) computations);
+                        (DsaSignatureComputations) computations);
                 break;
             case ECDSA:
                 computeEcdsaSignature(
@@ -109,18 +112,18 @@ public class TlsSignatureUtil {
             Chooser chooser,
             HashAlgorithm algorithm,
             byte[] toBeHasedAndSigned,
-            EcdsaSignatureComputations computations) {
-        BigInteger nonce;
-        BigInteger privateKey =
-                chooser.getContext()
-                        .getTlsContext()
-                        .getTalkingX509Context()
-                        .getChooser()
-                        .getSubjectDsaPrivateKey();
-        nonce = chooser.getConfig().getDefaultEcdsaNonce();
-        calculator.computeEcdsaSignature(
+            DsaSignatureComputations computations) {
+
+        X509Chooser x509chooser =
+                chooser.getContext().getTlsContext().getTalkingX509Context().getChooser();
+        BigInteger privateKey = x509chooser.getSubjectDsaPrivateKey();
+        BigInteger primeModulusP = x509chooser.getDsaPrimeP();
+        BigInteger primeQ = x509chooser.getDsaPrimeQ();
+        BigInteger generator = x509chooser.getDsaGenerator();
+        BigInteger nonce = chooser.getConfig().getDefaultDsaNonce();
+        calculator.computeDsaSignature(
                 computations,
-                new EcdsaPrivateKey(privateKey, nonce, NamedEllipticCurveParameters.SECP112R1),
+                new DsaPrivateKey(primeQ, privateKey, nonce, generator, primeModulusP),
                 toBeHasedAndSigned,
                 algorithm);
     }
