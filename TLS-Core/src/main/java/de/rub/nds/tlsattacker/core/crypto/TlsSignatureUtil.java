@@ -39,6 +39,11 @@ public class TlsSignatureUtil {
             SignatureComputations computations) {
         switch (algorithm.getSignatureAlgorithm()) {
             case DSA:
+                if (!(computations instanceof DsaSignatureComputations)) {
+                    throw new IllegalArgumentException(
+                            "Computations must be of type DsaSignatureComputations for "
+                                    + algorithm);
+                }
                 computeDsaSignature(
                         chooser,
                         algorithm.getHashAlgorithm(),
@@ -46,6 +51,11 @@ public class TlsSignatureUtil {
                         (DsaSignatureComputations) computations);
                 break;
             case ECDSA:
+                if (!(computations instanceof EcdsaSignatureComputations)) {
+                    throw new IllegalArgumentException(
+                            "Computations must be of type EcdsaSignatureComputations for "
+                                    + algorithm);
+                }
                 computeEcdsaSignature(
                         chooser,
                         algorithm.getHashAlgorithm(),
@@ -59,6 +69,11 @@ public class TlsSignatureUtil {
                 throw new UnsupportedOperationException(
                         "Not implemented yet: " + algorithm.getSignatureAlgorithm());
             case RSA_PKCS1:
+                if (!(computations instanceof EcdsaSignatureComputations)) {
+                    throw new IllegalArgumentException(
+                            "Computations must be of type RsaPkcs1SignatureComputations for "
+                                    + algorithm);
+                }
                 computeRsaPkcs1Signature(
                         chooser,
                         algorithm.getHashAlgorithm(),
@@ -66,7 +81,8 @@ public class TlsSignatureUtil {
                         (RsaPkcs1SignatureComputations) computations);
                 break;
             default:
-                throw new UnsupportedOperationException("Not implemented");
+                throw new UnsupportedOperationException(
+                        "Not implemented: " + algorithm.getSignatureAlgorithm());
         }
     }
 
