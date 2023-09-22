@@ -99,10 +99,10 @@ public abstract class GOSTClientKeyExchangePreparator
                 TLSGostKeyTransportBlob transportBlob =
                         TLSGostKeyTransportBlob.getInstance(msg.getKeyTransportBlob().getValue());
                 LOGGER.debug(
-                        "Received GOST key blob: " + ASN1Dump.dumpAsString(transportBlob, true));
+                        "Received GOST key blob: {}", ASN1Dump.dumpAsString(transportBlob, true));
                 TLSGostKeyTransportBlob.getInstance(msg.getKeyTransportBlob().getValue());
                 LOGGER.debug(
-                        "Received GOST key blob: " + ASN1Dump.dumpAsString(transportBlob, true));
+                        "Received GOST key blob: {}", ASN1Dump.dumpAsString(transportBlob, true));
 
                 GostR3410KeyTransport keyBlob = transportBlob.getKeyBlob();
                 if (!Arrays.equals(
@@ -173,9 +173,9 @@ public abstract class GOSTClientKeyExchangePreparator
     private void preparePms() {
         byte[] pms = chooser.getContext().getTlsContext().getPreMasterSecret();
         if (pms != null) {
-            LOGGER.debug("Using preset PreMasterSecret from context.");
+            LOGGER.debug("Using preset PreMasterSecret from context");
         } else {
-            LOGGER.debug("Generating random PreMasterSecret.");
+            LOGGER.debug("Generating random PreMasterSecret");
             pms = new byte[32];
             chooser.getContext().getTlsContext().getRandom().nextBytes(pms);
         }
@@ -187,7 +187,7 @@ public abstract class GOSTClientKeyExchangePreparator
         EllipticCurve curve =
                 ((NamedEllipticCurveParameters) chooser.getSelectedGostCurve().getGroupParameters())
                         .getCurve();
-        LOGGER.debug("Using key from context.");
+        LOGGER.debug("Using key from context");
         msg.getComputations().setPrivateKey(chooser.getClientEphemeralEcPrivateKey());
         Point publicKey =
                 curve.mult(msg.getComputations().getPrivateKey().getValue(), curve.getBasePoint());
@@ -217,12 +217,8 @@ public abstract class GOSTClientKeyExchangePreparator
             } catch (IndexOutOfBoundsException ex) {
                 // TODO this is not so nice, but its honestly not worth fixing as gost is not used
                 // and this can only
-                // TODO this is not so nice, but its honestly not worth fixing as gost is not used
-                // and this can only
                 // happen
                 // during fuzzing
-                LOGGER.warn(
-                        "IndexOutOfBounds within GOST code. We catch this and return an empty byte array");
                 LOGGER.warn(
                         "IndexOutOfBounds within GOST code. We catch this and return an empty byte array");
                 result = new byte[0];
@@ -299,7 +295,7 @@ public abstract class GOSTClientKeyExchangePreparator
             DERSequence proxyKeyBlobs = (DERSequence) DERSequence.getInstance(getProxyKeyBlobs());
             TLSGostKeyTransportBlob blob = new TLSGostKeyTransportBlob(transport, proxyKeyBlobs);
             msg.setKeyTransportBlob(blob.getEncoded());
-            LOGGER.debug("GOST key blob: " + ASN1Dump.dumpAsString(blob, true));
+            LOGGER.debug("GOST key blob: {}", ASN1Dump.dumpAsString(blob, true));
         } catch (Exception e) {
             msg.setKeyTransportBlob(new byte[0]);
             LOGGER.warn("Could not compute correct GOST key blob: using byte[0]");
