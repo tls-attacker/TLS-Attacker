@@ -160,7 +160,7 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
             NamedGroup previousNamedGroup = namedGroup;
             namedGroup = NamedGroup.SECP256R1;
             LOGGER.warn(
-                    "NamedGroup {} is not suitable for ECDHEServerKeyExchange message. Using {} instead.",
+                    "NamedGroup {} is not suitable for ECDHEServerKeyExchange message. Using {} instead",
                     previousNamedGroup,
                     namedGroup);
         }
@@ -181,11 +181,11 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
                     ecParams.write(msg.getNamedGroup().getValue());
                 } catch (IOException ex) {
                     throw new PreparationException(
-                            "Failed to add named group to ECDHEServerKeyExchange signature.", ex);
+                            "Failed to add named group to ECDHEServerKeyExchange signature", ex);
                 }
                 break;
             default:
-                throw new UnsupportedOperationException("Unsupported curve type");
+                throw new UnsupportedOperationException("Unsupported curve type: " + curveType);
         }
 
         ecParams.write(msg.getPublicKeyLength().getValue());
@@ -193,7 +193,7 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
             ecParams.write(msg.getPublicKey().getValue());
         } catch (IOException ex) {
             throw new PreparationException(
-                    "Failed to add serializedPublicKey to ECDHEServerKeyExchange signature.", ex);
+                    "Failed to add serializedPublicKey to ECDHEServerKeyExchange signature", ex);
         }
 
         return ArrayConverter.concatenate(
@@ -224,12 +224,12 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
 
     protected void prepareSignatureLength(T msg) {
         msg.setSignatureLength(msg.getSignature().getValue().length);
-        LOGGER.debug("SignatureLength: " + msg.getSignatureLength().getValue());
+        LOGGER.debug("SignatureLength: {}", msg.getSignatureLength().getValue());
     }
 
     protected void prepareSerializedPublicKeyLength(T msg) {
         msg.setPublicKeyLength(msg.getPublicKey().getValue().length);
-        LOGGER.debug("SerializedPublicKeyLength: " + msg.getPublicKeyLength().getValue());
+        LOGGER.debug("SerializedPublicKeyLength: {}", msg.getPublicKeyLength().getValue());
     }
 
     protected void prepareCurveType(T msg) {
