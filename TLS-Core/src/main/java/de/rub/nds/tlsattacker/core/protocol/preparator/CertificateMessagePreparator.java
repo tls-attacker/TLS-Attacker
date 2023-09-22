@@ -187,6 +187,6 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
 
     private void prepareRequestContextLength(CertificateMessage msg) {
         msg.setRequestContextLength(msg.getRequestContext().getValue().length);
-        LOGGER.debug("RequestContextLength: " + msg.getRequestContextLength().getValue());
+        LOGGER.debug("RequestContextLength: {}", msg.getRequestContextLength().getValue());
     }
 }
