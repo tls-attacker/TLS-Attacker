@@ -76,12 +76,12 @@ public class DHClientKeyExchangePreparator<T extends DHClientKeyExchangeMessage>
 
     protected void setComputationGenerator(T msg) {
         msg.getComputations().setGenerator(chooser.getDhKeyExchangeGenerator());
-        LOGGER.debug("Generator: " + msg.getComputations().getGenerator().getValue());
+        LOGGER.debug("Generator: {}", msg.getComputations().getGenerator().getValue());
     }
 
     protected void setComputationModulus(T msg) {
         msg.getComputations().setModulus(chooser.getDhKeyExchangeModulus());
-        LOGGER.debug("Modulus: " + msg.getComputations().getModulus().getValue());
+        LOGGER.debug("Modulus: {}", msg.getComputations().getModulus().getValue());
     }
 
     protected void preparePremasterSecret(T msg) {
@@ -97,7 +97,7 @@ public class DHClientKeyExchangePreparator<T extends DHClientKeyExchangeMessage>
 
     protected void preparePublicKeyLength(T msg) {
         msg.setPublicKeyLength(msg.getPublicKey().getValue().length);
-        LOGGER.debug("PublicKeyLength: " + msg.getPublicKeyLength().getValue());
+        LOGGER.debug("PublicKeyLength: {}", msg.getPublicKeyLength().getValue());
     }
 
     protected void prepareClientServerRandom(T msg) {
@@ -105,9 +105,7 @@ public class DHClientKeyExchangePreparator<T extends DHClientKeyExchangeMessage>
         msg.getComputations().setClientServerRandom(random);
         random = msg.getComputations().getClientServerRandom().getValue();
         LOGGER.debug(
-                "ClientServerRandom: "
-                        + ArrayConverter.bytesToHexString(
-                                msg.getComputations().getClientServerRandom().getValue()));
+                "ClientServerRandom: {}", msg.getComputations().getClientServerRandom().getValue());
     }
 
     @Override
@@ -129,15 +127,15 @@ public class DHClientKeyExchangePreparator<T extends DHClientKeyExchangeMessage>
     protected void setComputationPrivateKey(T msg) {
         msg.getComputations().setPrivateKey(chooser.getDhKeyExchangePrivateKey());
         LOGGER.debug(
-                "Computation PrivateKey: "
-                        + msg.getComputations().getPrivateKey().getValue().toString());
+                "Computation PrivateKey: {}",
+                msg.getComputations().getPrivateKey().getValue().toString());
     }
 
     protected void setComputationPublicKey(T msg) {
         msg.getComputations().setPublicKey(chooser.getDhKeyExchangePeerPublicKey());
 
         LOGGER.debug(
-                "Computation (peer) PublicKey: "
-                        + msg.getComputations().getPublicKey().getValue().toString());
+                "Computation (peer) PublicKey: {}",
+                msg.getComputations().getPublicKey().getValue().toString());
     }
 }
