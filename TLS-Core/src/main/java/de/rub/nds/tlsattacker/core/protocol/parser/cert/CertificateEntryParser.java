@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.cert;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.data.Parser;
@@ -55,7 +54,7 @@ public class CertificateEntryParser extends Parser<CertificateEntry> {
      */
     private void parseCertificateLength(CertificateEntry pair) {
         pair.setCertificateLength(parseIntField(HandshakeByteLength.CERTIFICATE_LENGTH));
-        LOGGER.debug("CertificateLength: " + pair.getCertificateLength().getValue());
+        LOGGER.debug("CertificateLength: {}", pair.getCertificateLength().getValue());
     }
 
     /**
@@ -64,9 +63,7 @@ public class CertificateEntryParser extends Parser<CertificateEntry> {
      */
     private void parseCertificateBytes(CertificateEntry pair) {
         pair.setCertificateBytes(parseByteArrayField(pair.getCertificateLength().getValue()));
-        LOGGER.debug(
-                "Certificate: "
-                        + ArrayConverter.bytesToHexString(pair.getCertificateBytes().getValue()));
+        LOGGER.debug("Certificate: {}", pair.getCertificateBytes().getValue());
     }
 
     /**
@@ -75,7 +72,7 @@ public class CertificateEntryParser extends Parser<CertificateEntry> {
      */
     private void parseExtensionsLength(CertificateEntry pair) {
         pair.setExtensionsLength(parseIntField(HandshakeByteLength.EXTENSION_LENGTH));
-        LOGGER.debug("ExtensionsLength: " + pair.getExtensionsLength().getValue());
+        LOGGER.debug("ExtensionsLength: {}", pair.getExtensionsLength().getValue());
     }
 
     /**
@@ -83,9 +80,7 @@ public class CertificateEntryParser extends Parser<CertificateEntry> {
      */
     private void parseExtensionBytes(CertificateEntry pair) {
         pair.setExtensionBytes(parseByteArrayField(pair.getExtensionsLength().getValue()));
-        LOGGER.debug(
-                "Extensions: "
-                        + ArrayConverter.bytesToHexString(pair.getCertificateBytes().getValue()));
+        LOGGER.debug("Extensions: {}", pair.getCertificateBytes().getValue());
     }
 
     private void parseExtensions(CertificateEntry pair) {
