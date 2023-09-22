@@ -56,7 +56,8 @@ public class TlsSignatureUtil {
             case ED448:
             case GOSTR34102001:
             case GOSTR34102012_256:
-
+                throw new UnsupportedOperationException(
+                        "Not implemented yet: " + algorithm.getSignatureAlgorithm());
             case RSA_PKCS1:
                 computeRsaPkcs1Signature(
                         chooser,
