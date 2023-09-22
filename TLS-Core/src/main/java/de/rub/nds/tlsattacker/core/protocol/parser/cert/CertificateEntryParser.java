@@ -45,8 +45,6 @@ public class CertificateEntryParser extends Parser<CertificateEntry> {
         if (context.getChooser().getSelectedProtocolVersion().isTLS13()) {
             parseExtensionsLength(entry);
             parseExtensionBytes(entry);
-        }
-        if (context.getChooser().getSelectedProtocolVersion().isTLS13()) {
             parseExtensions(entry);
         }
     }
