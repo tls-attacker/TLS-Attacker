@@ -73,7 +73,7 @@ public class PWDClientKeyExchangePreparator
                         .getCurve();
         byte[] premasterSecret =
                 generatePremasterSecret(
-                        chooser.getContext().getTlsContext().getPWDPE(),
+                        chooser.getContext().getTlsContext().getPwdPasswordElement(),
                         chooser.getContext().getTlsContext().getServerPWDPrivate(),
                         curve);
         preparePremasterSecret(msg, premasterSecret);

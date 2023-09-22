@@ -36,7 +36,8 @@ public class PWDServerKeyExchangeHandler
                         message.getElement().getValue()));
         tlsContext.setServerPWDScalar(new BigInteger(1, message.getScalar().getValue()));
         if (message.getKeyExchangeComputations() != null) {
-            tlsContext.setPWDPE(message.getKeyExchangeComputations().getPasswordElement());
+            tlsContext.setPwdPasswordElement(
+                    message.getKeyExchangeComputations().getPasswordElement());
             tlsContext.setServerPWDPrivate(
                     message.getKeyExchangeComputations().getPrivateKeyScalar());
         }
