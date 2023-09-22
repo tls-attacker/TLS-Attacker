@@ -179,7 +179,7 @@ public class SSLUtils {
      */
     public static byte[] getPad1(MacAlgorithm macAlgorithm) {
         if (null == macAlgorithm) {
-            throw new IllegalArgumentException("Null MAC");
+            throw new IllegalArgumentException("MAC Algorithm must not be null");
         } else {
             switch (macAlgorithm) {
                 case SSLMAC_MD5:
@@ -201,7 +201,7 @@ public class SSLUtils {
      */
     public static byte[] getPad2(MacAlgorithm macAlgorithm) {
         if (null == macAlgorithm) {
-            throw new IllegalArgumentException("Null MAC");
+            throw new IllegalArgumentException("MAC Algorithm must not be null");
         } else {
             switch (macAlgorithm) {
                 case SSLMAC_MD5:
@@ -217,7 +217,7 @@ public class SSLUtils {
 
     private static String getHashAlgorithm(MacAlgorithm macAlgorithm) {
         if (null == macAlgorithm) {
-            throw new IllegalArgumentException("Null MAC");
+            throw new IllegalArgumentException("MAC Algorithm must not be null");
         } else {
             switch (macAlgorithm) {
                 case SSLMAC_MD5:
