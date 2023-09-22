@@ -101,17 +101,14 @@ public class RSAClientKeyExchangePreparator<T extends RSAClientKeyExchangeMessag
     protected void preparePadding(T msg) {
         msg.getComputations().setPadding(padding);
         LOGGER.debug(
-                "Padding: "
-                        + ArrayConverter.bytesToHexString(
-                                msg.getComputations().getPadding().getValue()));
+                "Padding: {}", msg.getComputations().getPadding().getValue());
     }
 
     protected void preparePremasterSecret(T msg) {
         msg.getComputations().setPremasterSecret(premasterSecret);
         LOGGER.debug(
-                "PremasterSecret: "
-                        + ArrayConverter.bytesToHexString(
-                                msg.getComputations().getPremasterSecret().getValue()));
+                "PremasterSecret: {}"
+                                msg.getComputations().getPremasterSecret().getValue());
     }
 
     protected void preparePlainPaddedPremasterSecret(T msg) {
@@ -123,9 +120,8 @@ public class RSAClientKeyExchangePreparator<T extends RSAClientKeyExchangeMessag
                                 new byte[] {0x00},
                                 msg.getComputations().getPremasterSecret().getValue()));
         LOGGER.debug(
-                "PlainPaddedPremasterSecret: "
-                        + ArrayConverter.bytesToHexString(
-                                msg.getComputations().getPlainPaddedPremasterSecret().getValue()));
+                "PlainPaddedPremasterSecret: {}",
+                msg.getComputations().getPlainPaddedPremasterSecret().getValue());
     }
 
     protected void prepareClientServerRandom(T msg) {
@@ -133,23 +129,21 @@ public class RSAClientKeyExchangePreparator<T extends RSAClientKeyExchangeMessag
                 ArrayConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom());
         msg.getComputations().setClientServerRandom(clientServerRandom);
         LOGGER.debug(
-                "ClientServerRandom: "
-                        + ArrayConverter.bytesToHexString(
-                                msg.getComputations().getClientServerRandom().getValue()));
+                "ClientServerRandom: {}", msg.getComputations().getClientServerRandom().getValue());
     }
 
     protected void prepareSerializedPublicKey(T msg) {
         msg.setPublicKey(encrypted);
         LOGGER.debug(
-                "SerializedPublicKey (encrypted premaster secret): "
-                        + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
+                "SerializedPublicKey (encrypted premaster secret): {}",
+                msg.getPublicKey().getValue());
     }
 
     protected void prepareSerializedPublicKeyLength(T msg) {
         msg.setPublicKeyLength(msg.getPublicKey().getValue().length);
         LOGGER.debug(
-                "SerializedPublicKeyLength (encrypted premaster secret length): "
-                        + msg.getPublicKeyLength().getValue());
+                "SerializedPublicKeyLength (encrypted premaster secret length): {}",
+                msg.getPublicKeyLength().getValue());
     }
 
     public byte[] decryptPremasterSecret() {
@@ -157,7 +151,7 @@ public class RSAClientKeyExchangePreparator<T extends RSAClientKeyExchangeMessag
                 new BigInteger(1, msg.getPublicKey().getValue());
         BigInteger serverPrivateKey = chooser.getServerX509Chooser().getConfig().getRsaPrivateKey();
         if (chooser.getServerX509Chooser().getSubjectRsaModulus().equals(BigInteger.ZERO)) {
-            LOGGER.warn("RSA Modulus is Zero, returning new byte[0] as decryptedPremasterSecret");
+            LOGGER.warn("RSA modulus is zero, returning new byte[0] as decryptedPremasterSecret");
             return new byte[0];
         }
         // Make sure that the private key is not negative
