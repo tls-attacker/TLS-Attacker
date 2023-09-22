@@ -69,8 +69,6 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
         if (namedGroup == null) {
             LOGGER.warn(
                     "Could not deserialize group from computations. Using default group instead");
-            LOGGER.warn(
-                    "Could not deserialize group from computations. Using default group instead");
             namedGroup = chooser.getConfig().getDefaultSelectedNamedGroup();
         }
         ECPointFormat pointFormat = selectPointFormat(msg);
