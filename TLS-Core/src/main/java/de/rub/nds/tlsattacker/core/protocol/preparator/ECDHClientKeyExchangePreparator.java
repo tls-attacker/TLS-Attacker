@@ -72,7 +72,7 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
 
     protected void prepareSerializedPublicKeyLength(T msg) {
         msg.setPublicKeyLength(msg.getPublicKey().getValue().length);
-        LOGGER.debug("SerializedPublicKeyLength: " + msg.getPublicKeyLength().getValue());
+        LOGGER.debug("SerializedPublicKeyLength: {}", msg.getPublicKeyLength().getValue());
     }
 
     protected void preparePremasterSecret(T msg) {
@@ -92,7 +92,7 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
         msg.prepareComputations();
         prepareClientServerRandom(msg);
         NamedGroup usedGroup = getSuitableNamedGroup();
-        LOGGER.debug("PMS used Group: " + usedGroup.name());
+        LOGGER.debug("PMS used Group: {}", usedGroup.name());
         if (msg.getComputations().getPrivateKey() == null) {
             setComputationPrivateKey(msg);
         }
@@ -108,9 +108,9 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
 
     private void setSerializedPublicKey() {
         NamedGroup usedGroup = getSuitableNamedGroup();
-        LOGGER.debug("PublicKey used Group: " + usedGroup.name());
+        LOGGER.debug("PublicKey used Group: {}", usedGroup.name());
         ECPointFormat pointFormat = chooser.getConfig().getDefaultSelectedPointFormat();
-        LOGGER.debug("EC Point format: " + pointFormat.name());
+        LOGGER.debug("EC Point format: {}", pointFormat.name());
         setComputationPrivateKey(msg);
         byte[] publicKeyBytes;
         BigInteger privateKey = msg.getComputations().getPrivateKey().getValue();
@@ -152,7 +152,6 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
         LOGGER.debug("Preparing client key");
         msg.getComputations().setPrivateKey(chooser.getEcKeyExchangePrivateKey());
         LOGGER.debug(
-                "Computation PrivateKey: "
-                        + msg.getComputations().getPrivateKey().getValue().toString());
+                "Computation PrivateKey: {}", msg.getComputations().getPrivateKey().getValue());
     }
 }

@@ -67,17 +67,13 @@ public class DHEServerKeyExchangePreparator<T extends DHEServerKeyExchangeMessag
         msg.prepareKeyExchangeComputations();
         msg.getKeyExchangeComputations()
                 .setGenerator(chooser.getConfig().getDefaultServerDhExportGenerator());
-        LOGGER.debug(
-                "Generator: 0x"
-                        + msg.getKeyExchangeComputations().getGenerator().getValue().toString(16));
+        LOGGER.debug("Generator: {}", msg.getKeyExchangeComputations().getGenerator().getValue());
         msg.getKeyExchangeComputations()
                 .setModulus(chooser.getConfig().getDefaultServerDhExportModulus());
-        LOGGER.debug(
-                "Modulus used for Computations: 0x"
-                        + msg.getKeyExchangeComputations().getModulus().getValue().toString(16));
+        LOGGER.debug("Modulus: {}", msg.getKeyExchangeComputations().getModulus().getValue());
         msg.getKeyExchangeComputations()
                 .setPrivateKey(chooser.getConfig().getDefaultServerDhExportPrivateKey());
-        LOGGER.debug("PrivateKey: " + msg.getKeyExchangeComputations().getPrivateKey().getValue());
+        LOGGER.debug("PrivateKey: {}", msg.getKeyExchangeComputations().getPrivateKey().getValue());
     }
 
     protected void prepareDheParams() {
@@ -120,12 +116,12 @@ public class DHEServerKeyExchangePreparator<T extends DHEServerKeyExchangeMessag
 
     protected void prepareGeneratorLength(T msg) {
         msg.setGeneratorLength(msg.getGenerator().getValue().length);
-        LOGGER.debug("Generator Length: " + msg.getGeneratorLength().getValue());
+        LOGGER.debug("Generator Length: {}", msg.getGeneratorLength().getValue());
     }
 
     protected void prepareModulusLength(T msg) {
         msg.setModulusLength(msg.getModulus().getValue().length);
-        LOGGER.debug("Modulus Length: " + msg.getModulusLength().getValue());
+        LOGGER.debug("Modulus Length: {}", msg.getModulusLength().getValue());
     }
 
     protected void preparePublicKey(T msg) {
@@ -146,26 +142,26 @@ public class DHEServerKeyExchangePreparator<T extends DHEServerKeyExchangeMessag
 
     protected void preparePublicKeyLength(T msg) {
         msg.setPublicKeyLength(msg.getPublicKey().getValue().length);
-        LOGGER.debug("PublicKeyLength: " + msg.getPublicKeyLength().getValue());
+        LOGGER.debug("PublicKeyLength: {}", msg.getPublicKeyLength().getValue());
     }
 
     protected void setComputedPrivateKey(T msg) {
         msg.getKeyExchangeComputations().setPrivateKey(chooser.getServerEphemeralDhPrivateKey());
-        LOGGER.debug("PrivateKey: " + msg.getKeyExchangeComputations().getPrivateKey().getValue());
+        LOGGER.debug("PrivateKey: {}", msg.getKeyExchangeComputations().getPrivateKey().getValue());
     }
 
     protected void setComputedModulus(T msg) {
         msg.getKeyExchangeComputations().setModulus(chooser.getServerEphemeralDhModulus());
         LOGGER.debug(
-                "Modulus used for Computations: 0x"
-                        + msg.getKeyExchangeComputations().getModulus().getValue().toString(16));
+                "Modulus used for Computations: {}",
+                msg.getKeyExchangeComputations().getModulus().getValue().toString(16));
     }
 
     protected void setComputedGenerator(T msg) {
         msg.getKeyExchangeComputations().setGenerator(chooser.getServerEphemeralDhGenerator());
         LOGGER.debug(
-                "Generator used for Computations: 0x"
-                        + msg.getKeyExchangeComputations().getGenerator().getValue().toString(16));
+                "Generator used for Computations: {}",
+                msg.getKeyExchangeComputations().getGenerator().getValue().toString(16));
     }
 
     protected void prepareSignatureAndHashAlgorithm(T msg) {
@@ -185,12 +181,12 @@ public class DHEServerKeyExchangePreparator<T extends DHEServerKeyExchangeMessag
 
     protected void prepareSignature(T msg) {
         msg.setSignature(signature);
-        LOGGER.debug("signature: {}", msg.getSignature().getValue());
+        LOGGER.debug("Signature: {}", msg.getSignature().getValue());
     }
 
     protected void prepareSignatureLength(T msg) {
         msg.setSignatureLength(msg.getSignature().getValue().length);
-        LOGGER.debug("SignatureLength: " + msg.getSignatureLength().getValue());
+        LOGGER.debug("SignatureLength: {}", msg.getSignatureLength().getValue());
     }
 
     private void setNamedGroupParameters(T msg, NamedGroup chosenGroup) {
