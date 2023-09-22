@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.core.crypto;
 
 import de.rub.nds.protocol.constants.HashAlgorithm;
-import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
 import de.rub.nds.protocol.crypto.key.DsaPrivateKey;
 import de.rub.nds.protocol.crypto.key.EcdsaPrivateKey;
 import de.rub.nds.protocol.crypto.key.RsaPrivateKey;
@@ -69,7 +68,7 @@ public class TlsSignatureUtil {
                 throw new UnsupportedOperationException(
                         "Not implemented yet: " + algorithm.getSignatureAlgorithm());
             case RSA_PKCS1:
-                if (!(computations instanceof EcdsaSignatureComputations)) {
+                if (!(computations instanceof RsaPkcs1SignatureComputations)) {
                     throw new IllegalArgumentException(
                             "Computations must be of type RsaPkcs1SignatureComputations for "
                                     + algorithm);
@@ -120,7 +119,15 @@ public class TlsSignatureUtil {
         nonce = chooser.getConfig().getDefaultEcdsaNonce();
         calculator.computeEcdsaSignature(
                 computations,
-                new EcdsaPrivateKey(privateKey, nonce, NamedEllipticCurveParameters.SECP112R1),
+                new EcdsaPrivateKey(
+                        privateKey,
+                        nonce,
+                        chooser.getContext()
+                                .getTlsContext()
+                                .getTalkingX509Context()
+                                .getChooser()
+                                .getSubjectNamedCurve()
+                                .getParameters()),
                 toBeHasedAndSigned,
                 algorithm);
     }
