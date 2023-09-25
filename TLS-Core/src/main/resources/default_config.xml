@@ -847,7 +847,10 @@
     <defaultAdditionalPadding>0</defaultAdditionalPadding>
     <defaultSniHostnames>
         <defaultSniHostname>
+            <serverName/>
             <serverNameConfig>ZXhhbXBsZS5jb20=</serverNameConfig>
+            <serverNameLength/>
+            <serverNameType/>
             <serverNameTypeConfig>0</serverNameTypeConfig>
         </defaultSniHostname>
     </defaultSniHostnames>
@@ -887,6 +890,20 @@
     <defaultProposedAlpnProtocols>
         <defaultProposedAlpnProtocol>h2</defaultProposedAlpnProtocol>
     </defaultProposedAlpnProtocols>
+    <defaultQuicTransportParameters>
+        <ackDelayExponent>0</ackDelayExponent>
+        <disableActiveMigration>false</disableActiveMigration>
+        <initialMaxData>2149983648</initialMaxData>
+        <initialMaxStreamDataBidiLocal>2149983648</initialMaxStreamDataBidiLocal>
+        <initialMaxStreamDataBidiRemote>2149983648</initialMaxStreamDataBidiRemote>
+        <initialMaxStreamDataUni>2149983648</initialMaxStreamDataUni>
+        <initialMaxStreamsBidi>2147745792</initialMaxStreamsBidi>
+        <initialMaxStreamsUni>2147745792</initialMaxStreamsUni>
+        <maxAckDelay>2000</maxAckDelay>
+        <maxIdleTimeout>60000</maxIdleTimeout>
+        <maxUdpPayloadSize>65527</maxUdpPayloadSize>
+    </defaultQuicTransportParameters>
+    <echoQuic>false</echoQuic>
     <defaultSelectedAlpnProtocol>h2</defaultSelectedAlpnProtocol>
     <secureRemotePasswordExtensionIdentifier>55 73 65 72 4E 61 6D 65</secureRemotePasswordExtensionIdentifier>
     <secureRealTimeTransportProtocolProtectionProfiles>
@@ -953,6 +970,7 @@
     <addExtendedMasterSecretExtension>false</addExtendedMasterSecretExtension>
     <addSessionTicketTLSExtension>false</addSessionTicketTLSExtension>
     <addExtendedRandomExtension>false</addExtendedRandomExtension>
+    <addQuicTransportParametersExtension>false</addQuicTransportParametersExtension>
     <addSignedCertificateTimestampExtension>false</addSignedCertificateTimestampExtension>
     <addRenegotiationInfoExtension>true</addRenegotiationInfoExtension>
     <addTokenBindingExtension>false</addTokenBindingExtension>
@@ -1042,7 +1060,11 @@
     <finishWithCloseNotify>false</finishWithCloseNotify>
     <ignoreRetransmittedCcsInDtls>false</ignoreRetransmittedCcsInDtls>
     <addRetransmissionsToWorkflowTraceInDtls>false</addRetransmissionsToWorkflowTraceInDtls>
-    <maxDtlsRetransmissions>3</maxDtlsRetransmissions>
+    <maxUDPRetransmissions>3</maxUDPRetransmissions>
+    <expectHandshakeDoneQuicFrame>false</expectHandshakeDoneQuicFrame>
+    <isQuic>false</isQuic>
+    <quicRetryFlowRequired>false</quicRetryFlowRequired>
+    <quicVersion>00 00 00 01</quicVersion>
     <stopActionsAfterWarning>false</stopActionsAfterWarning>
     <defaultSelectedCipherSuite>TLS_RSA_WITH_AES_128_CBC_SHA</defaultSelectedCipherSuite>
     <defaultSelectedServerCertificateType>X509</defaultSelectedServerCertificateType>

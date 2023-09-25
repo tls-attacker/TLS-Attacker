@@ -96,13 +96,13 @@ public class SrpClientKeyExchangePreparator
         if (modulus.compareTo(BigInteger.ZERO) == 1) {
 
             BigInteger u = calculateU(clientPublicKey, serverPublicKey, modulus);
-            LOGGER.debug("Intermediate Value U {}", ArrayConverter.bigIntegerToByteArray(u));
+            LOGGER.debug("Intermediate Value U{}", ArrayConverter.bigIntegerToByteArray(u));
             BigInteger k = calculateSRP6Multiplier(modulus, generator);
             BigInteger x = calculateX(salt, identity, password);
-            LOGGER.debug("Intermediate Value X {}", ArrayConverter.bigIntegerToByteArray(x));
+            LOGGER.debug("Intermediate Value X{}", ArrayConverter.bigIntegerToByteArray(x));
             BigInteger helpValue1 = generator.modPow(x, modulus);
             LOGGER.debug(
-                    "Intermediate Value V {}", ArrayConverter.bigIntegerToByteArray(helpValue1));
+                    "Intermediate Value V{}", ArrayConverter.bigIntegerToByteArray(helpValue1));
             BigInteger helpValue2 = k.multiply(helpValue1);
             BigInteger helpValue3 = helpValue2.mod(modulus);
             // helpValue1 = helpValue2.subtract(serverPublicKey);
@@ -132,18 +132,18 @@ public class SrpClientKeyExchangePreparator
             byte[] password) {
         // PremasterSecret: (ClientPublicKey * v^u) ^ServerPrivatKey % modulus
         BigInteger u = calculateU(clientPublicKey, serverPublicKey, modulus);
-        LOGGER.debug("Intermediate Value U {}", () -> ArrayConverter.bigIntegerToByteArray(u));
+        LOGGER.debug("Intermediate Value U{}", () -> ArrayConverter.bigIntegerToByteArray(u));
         BigInteger x = calculateX(salt, identity, password);
-        LOGGER.debug("Intermediate Value X {}", () -> ArrayConverter.bigIntegerToByteArray(x));
+        LOGGER.debug("Intermediate Value X{}", () -> ArrayConverter.bigIntegerToByteArray(x));
         BigInteger v = calculateV(x, generator, modulus);
-        LOGGER.debug("Intermediate Value V {}", () -> ArrayConverter.bigIntegerToByteArray(v));
+        LOGGER.debug("Intermediate Value V{}", () -> ArrayConverter.bigIntegerToByteArray(v));
         BigInteger helpValue1 = v.modPow(u, modulus);
-        LOGGER.debug("v^u {}", ArrayConverter.bigIntegerToByteArray(helpValue1));
+        LOGGER.debug("v^u{}", ArrayConverter.bigIntegerToByteArray(helpValue1));
         BigInteger helpValue2 = clientPublicKey.multiply(helpValue1);
         BigInteger helpValue3 = helpValue2.mod(modulus);
-        LOGGER.debug("A * v^u {}", () -> ArrayConverter.bigIntegerToByteArray(helpValue3));
+        LOGGER.debug("A * v^u{}", () -> ArrayConverter.bigIntegerToByteArray(helpValue3));
         helpValue1 = helpValue3.modPow(serverPrivateKey, modulus);
-        LOGGER.debug("PremasterSecret {}", ArrayConverter.bigIntegerToByteArray(helpValue1));
+        LOGGER.debug("PremasterSecret{}", ArrayConverter.bigIntegerToByteArray(helpValue1));
         return ArrayConverter.bigIntegerToByteArray(helpValue1);
     }
 
@@ -156,11 +156,11 @@ public class SrpClientKeyExchangePreparator
             BigInteger clientPublic, BigInteger serverPublic, BigInteger modulus) {
         byte[] paddedClientPublic = calculatePadding(modulus, clientPublic);
         LOGGER.debug(
-                "ClientPublic Key: {}", () -> ArrayConverter.bigIntegerToByteArray(clientPublic));
+                "ClientPublic Key:{}", () -> ArrayConverter.bigIntegerToByteArray(clientPublic));
         LOGGER.debug("PaddedClientPublic. {}", paddedClientPublic);
         byte[] paddedServerPublic = calculatePadding(modulus, serverPublic);
         LOGGER.debug(
-                "ServerPublic Key: {}", () -> ArrayConverter.bigIntegerToByteArray(serverPublic));
+                "ServerPublic Key:{}", () -> ArrayConverter.bigIntegerToByteArray(serverPublic));
         LOGGER.debug("PaddedServerPublic. {}", paddedServerPublic);
         byte[] hashInput = ArrayConverter.concatenate(paddedClientPublic, paddedServerPublic);
         LOGGER.debug("HashInput for u: {}", hashInput);

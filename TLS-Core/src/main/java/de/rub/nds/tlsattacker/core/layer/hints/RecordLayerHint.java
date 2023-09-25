@@ -91,4 +91,18 @@ public class RecordLayerHint implements LayerProcessingHint {
     public Integer getMessageSequence() {
         return messageSequence;
     }
+
+    @Override
+    public String toString() {
+        return "RecordLayerHint{"
+                + "type="
+                + type
+                + ", epoch="
+                + epoch
+                + ", sequenceNumber="
+                + sequenceNumber
+                + ", messageSequence="
+                + messageSequence
+                + '}';
+    }
 }

@@ -13,15 +13,18 @@ import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
+import de.rub.nds.tlsattacker.core.layer.constant.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PskSet;
+import de.rub.nds.tlsattacker.core.quic.packet.QuicPacketCryptoComputations;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.security.NoSuchAlgorithmException;
 import javax.crypto.Mac;
+import javax.crypto.NoSuchPaddingException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -43,6 +46,17 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
                     setServerRecordCipher(Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS);
                     if (!tlsContext.isExtensionNegotiated(ExtensionType.EARLY_DATA)) {
                         setClientRecordCipher(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
+                    }
+                    if (tlsContext.getConfig().getDefaultLayerConfiguration()
+                            == LayerConfiguration.QUIC) {
+                        try {
+                            QuicPacketCryptoComputations.calculateApplicationSecrets(
+                                    tlsContext.getContext().getQuicContext());
+                        } catch (NoSuchAlgorithmException
+                                | NoSuchPaddingException
+                                | CryptoException e) {
+                            LOGGER.error("Could not initialize application secrets: ", e);
+                        }
                     }
                 } else {
                     setClientRecordCipher(Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS);
@@ -156,16 +170,21 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
         LOGGER.debug("Setting cipher for server to use " + keySetType);
         KeySet serverKeySet = getKeySet(tlsContext, tlsContext.getActiveServerKeySetType());
 
-        if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
-            tlsContext
-                    .getRecordLayer()
-                    .updateDecryptionCipher(
-                            RecordCipherFactory.getRecordCipher(tlsContext, serverKeySet, false));
-        } else {
-            tlsContext
-                    .getRecordLayer()
-                    .updateEncryptionCipher(
-                            RecordCipherFactory.getRecordCipher(tlsContext, serverKeySet, true));
+        if (tlsContext.getRecordLayer() != null) {
+            if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
+                tlsContext
+                        .getRecordLayer()
+                        .updateDecryptionCipher(
+                                RecordCipherFactory.getRecordCipher(
+                                        tlsContext, serverKeySet, false));
+
+            } else {
+                tlsContext
+                        .getRecordLayer()
+                        .updateEncryptionCipher(
+                                RecordCipherFactory.getRecordCipher(
+                                        tlsContext, serverKeySet, true));
+            }
         }
     }
 
@@ -174,16 +193,21 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
         LOGGER.debug("Setting cipher for client to use " + keySetType);
         KeySet clientKeySet = getKeySet(tlsContext, tlsContext.getActiveClientKeySetType());
 
-        if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.SERVER) {
-            tlsContext
-                    .getRecordLayer()
-                    .updateDecryptionCipher(
-                            RecordCipherFactory.getRecordCipher(tlsContext, clientKeySet, false));
-        } else {
-            tlsContext
-                    .getRecordLayer()
-                    .updateEncryptionCipher(
-                            RecordCipherFactory.getRecordCipher(tlsContext, clientKeySet, true));
+        if (tlsContext.getRecordLayer() != null) {
+
+            if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.SERVER) {
+                tlsContext
+                        .getRecordLayer()
+                        .updateDecryptionCipher(
+                                RecordCipherFactory.getRecordCipher(
+                                        tlsContext, clientKeySet, false));
+            } else {
+                tlsContext
+                        .getRecordLayer()
+                        .updateEncryptionCipher(
+                                RecordCipherFactory.getRecordCipher(
+                                        tlsContext, clientKeySet, true));
+            }
         }
     }
 }

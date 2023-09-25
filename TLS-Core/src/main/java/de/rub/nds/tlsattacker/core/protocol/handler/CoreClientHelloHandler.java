@@ -210,14 +210,16 @@ public abstract class CoreClientHelloHandler<T extends CoreClientHelloMessage<?>
                                         tlsContext.getChooser().getEarlyDataCipherSuite(),
                                         tlsContext.getReadConnectionId()));
             } else {
-                tlsContext
-                        .getRecordLayer()
-                        .updateEncryptionCipher(
-                                RecordCipherFactory.getRecordCipher(
-                                        tlsContext,
-                                        clientKeySet,
-                                        tlsContext.getChooser().getEarlyDataCipherSuite(),
-                                        tlsContext.getWriteConnectionId()));
+                if (tlsContext.getRecordLayer() != null) {
+                    tlsContext
+                            .getRecordLayer()
+                            .updateEncryptionCipher(
+                                    RecordCipherFactory.getRecordCipher(
+                                            tlsContext,
+                                            clientKeySet,
+                                            tlsContext.getChooser().getEarlyDataCipherSuite(),
+                                            tlsContext.getWriteConnectionId()));
+                }
             }
         } catch (NoSuchAlgorithmException ex) {
             LOGGER.error("Unable to generate KeySet - unknown algorithm");

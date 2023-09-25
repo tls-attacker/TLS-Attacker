@@ -92,6 +92,7 @@ Test a MITM workflow trace
         <firstTimeout>1000</firstTimeout>
         <connectionTimeout>8000</connectionTimeout>
         <transportHandlerType>TCP</transportHandlerType>
+        <useIpv6>false</useIpv6>
     </InboundConnection>
     <OutboundConnection>
         <alias>client</alias>
@@ -102,6 +103,7 @@ Test a MITM workflow trace
         <firstTimeout>1000</firstTimeout>
         <connectionTimeout>8000</connectionTimeout>
         <transportHandlerType>TCP</transportHandlerType>
+        <useIpv6>false</useIpv6>
     </OutboundConnection>
     <Receive>
         <actionOptions/>
@@ -110,10 +112,14 @@ Test a MITM workflow trace
         <httpMessages/>
         <records/>
         <fragments/>
+        <quicFrames/>
+        <quicPackets/>
         <expectedMessages>
             <ClientHello/>
         </expectedMessages>
         <expectedHttpMessages/>
+        <expectedQuicFrames/>
+        <expectedQuicPackets/>
     </Receive>
     <Send>
         <actionOptions/>
@@ -128,6 +134,8 @@ Test a MITM workflow trace
         <httpMessages/>
         <records/>
         <fragments/>
+        <quicFrames/>
+        <quicPackets/>
     </Send>
     <Receive>
         <actionOptions/>
@@ -136,12 +144,16 @@ Test a MITM workflow trace
         <httpMessages/>
         <records/>
         <fragments/>
+        <quicFrames/>
+        <quicPackets/>
         <expectedMessages>
             <RSAClientKeyExchange/>
             <ChangeCipherSpec/>
             <Finished/>
         </expectedMessages>
         <expectedHttpMessages/>
+        <expectedQuicFrames/>
+        <expectedQuicPackets/>
     </Receive>
     <Send>
         <actionOptions/>
@@ -153,6 +165,8 @@ Test a MITM workflow trace
         <httpMessages/>
         <records/>
         <fragments/>
+        <quicFrames/>
+        <quicPackets/>
     </Send>
     <Send>
         <actionOptions/>
@@ -163,6 +177,8 @@ Test a MITM workflow trace
         <httpMessages/>
         <records/>
         <fragments/>
+        <quicFrames/>
+        <quicPackets/>
     </Send>
     <Receive>
         <actionOptions/>
@@ -171,6 +187,8 @@ Test a MITM workflow trace
         <httpMessages/>
         <records/>
         <fragments/>
+        <quicFrames/>
+        <quicPackets/>
         <expectedMessages>
             <ServerHello>
                 <autoSetHelloRetryModeInKeyShare>true</autoSetHelloRetryModeInKeyShare>
@@ -179,6 +197,8 @@ Test a MITM workflow trace
             <ServerHelloDone/>
         </expectedMessages>
         <expectedHttpMessages/>
+        <expectedQuicFrames/>
+        <expectedQuicPackets/>
     </Receive>
     <Send>
         <actionOptions/>
@@ -191,6 +211,8 @@ Test a MITM workflow trace
         <httpMessages/>
         <records/>
         <fragments/>
+        <quicFrames/>
+        <quicPackets/>
     </Send>
     <Receive>
         <actionOptions/>
@@ -199,11 +221,15 @@ Test a MITM workflow trace
         <httpMessages/>
         <records/>
         <fragments/>
+        <quicFrames/>
+        <quicPackets/>
         <expectedMessages>
             <ChangeCipherSpec/>
             <Finished/>
         </expectedMessages>
         <expectedHttpMessages/>
+        <expectedQuicFrames/>
+        <expectedQuicPackets/>
     </Receive>
     <PrintLastHandledApplicationData>
         <actionOptions/>

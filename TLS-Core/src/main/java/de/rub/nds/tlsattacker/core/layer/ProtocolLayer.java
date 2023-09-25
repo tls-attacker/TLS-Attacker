@@ -19,6 +19,7 @@ import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Predicate;
@@ -243,6 +244,28 @@ public abstract class ProtocolLayer<
             return;
         }
 
+        Parser parser = container.getParser(context, inputStream);
+
+        try {
+            parser.parse(container);
+            Preparator preparator = container.getPreparator(context);
+            preparator.prepareAfterParse(false); // TODO REMOVE THIS CLIENTMODE FLAG
+            Handler handler = container.getHandler(context);
+            handler.adjustContext(container);
+            addProducedContainer(container);
+        } catch (RuntimeException ex) {
+            setUnreadBytes(parser.getAlreadyParsed());
+        }
+    }
+
+    /**
+     * Parses and handles content from a container.
+     *
+     * @param container The container to handle.
+     * @param context The context of the connection. Keeps parsed and handled values.
+     */
+    protected void readDataContainer(
+            Container container, LayerContext context, InputStream inputStream) {
         Parser parser = container.getParser(context, inputStream);
 
         try {

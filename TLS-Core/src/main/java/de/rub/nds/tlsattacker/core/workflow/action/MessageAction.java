@@ -12,7 +12,9 @@ import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.core.http.HttpMessage;
 import de.rub.nds.tlsattacker.core.layer.*;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
+import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.layer.impl.DataContainerFilters.GenericDataContainerFilter;
 import de.rub.nds.tlsattacker.core.layer.impl.DataContainerFilters.Tls.WarningAlertFilter;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
@@ -20,6 +22,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.KeyUpdateMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
+import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
+import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import jakarta.xml.bind.annotation.XmlElement;
@@ -32,6 +36,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public abstract class MessageAction extends ConnectionBoundAction {
 
@@ -54,12 +61,41 @@ public abstract class MessageAction extends ConnectionBoundAction {
             value = {@XmlElement(type = DtlsHandshakeMessageFragment.class, name = "DtlsFragment")})
     protected List<DtlsHandshakeMessageFragment> fragments = new ArrayList<>();
 
+    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
+    protected List<QuicFrame> quicFrames = new ArrayList<>();
+
+    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
+    protected List<QuicPacket> quicPackets = new ArrayList<>();
+
     @XmlTransient private LayerStackProcessingResult layerStackProcessingResult;
 
     public MessageAction() {}
 
+    public MessageAction(
+            List<ProtocolMessage> messages,
+            List<QuicFrame> quicFrames,
+            List<QuicPacket> quicPackets) {
+        if (messages != null) {
+            this.messages = messages;
+        }
+        if (quicFrames != null) {
+            this.quicFrames = quicFrames;
+        }
+        if (quicPackets != null) {
+            this.quicPackets = quicPackets;
+        }
+    }
+
     public MessageAction(List<ProtocolMessage> messages) {
         this.messages = new ArrayList<>(messages);
+    }
+
+    public MessageAction(QuicFrame... quicFrames) {
+        this.quicFrames = new ArrayList<>(Arrays.asList(quicFrames));
+    }
+
+    public MessageAction(QuicPacket... quicPackets) {
+        this.quicPackets = new ArrayList<>(Arrays.asList(quicPackets));
     }
 
     public MessageAction(ProtocolMessage... messages) {
@@ -79,15 +115,33 @@ public abstract class MessageAction extends ConnectionBoundAction {
         this(connectionAlias, new ArrayList<>(Arrays.asList(messages)));
     }
 
-    public String getReadableString(ProtocolMessage... messages) {
-        return getReadableString(Arrays.asList(messages));
+    protected String getReadableStringFromContainerList(
+            List<? extends DataContainer>... containerLists) {
+        StringBuilder sb = new StringBuilder();
+        String string =
+                Stream.of(containerLists)
+                        .filter(Objects::nonNull)
+                        .flatMap(List::stream)
+                        .filter(Objects::nonNull)
+                        .map(DataContainer::toCompactString)
+                        .collect(Collectors.joining(", "));
+        if (!string.isEmpty()) {
+            sb.append(" (").append(string).append(")");
+        } else {
+            sb.append(" (no messages/frames/packets)");
+        }
+        return sb.toString();
     }
 
-    public String getReadableString(List<ProtocolMessage> messages) {
-        return getReadableString(messages, false);
+    public String getReadableStringFromMessages(ProtocolMessage... messages) {
+        return getReadableStringFromMessages(Arrays.asList(messages));
     }
 
-    public String getReadableString(List<ProtocolMessage> messages, Boolean verbose) {
+    public String getReadableStringFromMessages(List<ProtocolMessage> messages) {
+        return getReadableStringFromMessages(messages, false);
+    }
+
+    public String getReadableStringFromMessages(List<ProtocolMessage> messages, Boolean verbose) {
         StringBuilder builder = new StringBuilder();
         if (messages == null) {
             return builder.toString();
@@ -99,6 +153,33 @@ public abstract class MessageAction extends ConnectionBoundAction {
                 builder.append(message.toCompactString());
             }
             if (!message.isRequired()) {
+                builder.append("*");
+            }
+            builder.append(", ");
+        }
+        return builder.toString();
+    }
+
+    public String getReadableStringFromQuicFrames(QuicFrame... frames) {
+        return getReadableStringFromQuicFrames(Arrays.asList(frames));
+    }
+
+    public String getReadableStringFromQuicFrames(List<QuicFrame> messages) {
+        return getReadableStringFromQuicFrames(messages, false);
+    }
+
+    public String getReadableStringFromQuicFrames(List<QuicFrame> quicFrames, Boolean verbose) {
+        StringBuilder builder = new StringBuilder();
+        if (quicFrames == null) {
+            return builder.toString();
+        }
+        for (QuicFrame quicFrame : quicFrames) {
+            if (verbose) {
+                builder.append(quicFrame.toString());
+            } else {
+                builder.append(quicFrame.toCompactString());
+            }
+            if (!quicFrame.isRequired()) {
                 builder.append("*");
             }
             builder.append(", ");
@@ -128,6 +209,30 @@ public abstract class MessageAction extends ConnectionBoundAction {
 
     public void setRecords(Record... records) {
         this.records = new ArrayList<>(Arrays.asList(records));
+    }
+
+    public List<QuicFrame> getQuicFrames() {
+        return quicFrames;
+    }
+
+    public void setQuicFrames(List<QuicFrame> quicFrames) {
+        this.quicFrames = quicFrames;
+    }
+
+    public void setQuicFrames(QuicFrame... frames) {
+        this.quicFrames = new ArrayList<>(Arrays.asList(frames));
+    }
+
+    public List<QuicPacket> getQuicPackets() {
+        return quicPackets;
+    }
+
+    public void setQuicPackets(List<QuicPacket> quicPackets) {
+        this.quicPackets = quicPackets;
+    }
+
+    public void setPackets(QuicPacket... packets) {
+        this.quicPackets = new ArrayList<>(Arrays.asList(packets));
     }
 
     public List<DtlsHandshakeMessageFragment> getFragments() {
@@ -183,6 +288,12 @@ public abstract class MessageAction extends ConnectionBoundAction {
         if (httpMessages == null || httpMessages.isEmpty()) {
             httpMessages = null;
         }
+        if (quicFrames == null || quicFrames.isEmpty()) {
+            quicFrames = null;
+        }
+        if (quicPackets == null || quicPackets.isEmpty()) {
+            quicPackets = null;
+        }
     }
 
     private void initEmptyLists() {
@@ -197,6 +308,12 @@ public abstract class MessageAction extends ConnectionBoundAction {
         }
         if (httpMessages == null) {
             httpMessages = new ArrayList<>();
+        }
+        if (quicFrames == null) {
+            quicFrames = new ArrayList<>();
+        }
+        if (quicPackets == null) {
+            quicPackets = new ArrayList<>();
         }
     }
 
@@ -213,6 +330,8 @@ public abstract class MessageAction extends ConnectionBoundAction {
             List<ProtocolMessage> protocolMessagesToSend,
             List<DtlsHandshakeMessageFragment> fragmentsToSend,
             List<Record> recordsToSend,
+            List<QuicFrame> framesToSend,
+            List<QuicPacket> packetsToSend,
             List<HttpMessage> httpMessagesToSend)
             throws IOException {
         LayerStack layerStack = tlsContext.getLayerStack();
@@ -229,6 +348,10 @@ public abstract class MessageAction extends ConnectionBoundAction {
                 new SpecificSendLayerConfiguration<>(ImplementedLayers.RECORD, recordsToSend);
         LayerConfiguration httpConfiguration =
                 new SpecificSendLayerConfiguration<>(ImplementedLayers.HTTP, httpMessagesToSend);
+        LayerConfiguration quicFrameConfiguration =
+                new SpecificSendLayerConfiguration(ImplementedLayers.QUICFRAME, framesToSend);
+        LayerConfiguration quicPacketConfiguration =
+                new SpecificSendLayerConfiguration(ImplementedLayers.QUICPACKET, packetsToSend);
 
         checkLayerConsistency(layerStack, httpMessagesToSend);
 
@@ -239,6 +362,8 @@ public abstract class MessageAction extends ConnectionBoundAction {
                         messageConfiguration,
                         recordConfiguration,
                         ssl2Configuration,
+                        quicFrameConfiguration,
+                        quicPacketConfiguration,
                         httpConfiguration);
         LayerStackProcessingResult processingResult = layerStack.sendData(layerConfigurationList);
         setContainers(processingResult);
@@ -273,88 +398,63 @@ public abstract class MessageAction extends ConnectionBoundAction {
             List<ProtocolMessage> protocolMessagesToReceive,
             List<DtlsHandshakeMessageFragment> fragmentsToReceive,
             List<Record> recordsToReceive,
+            List<QuicFrame> framesToReceive,
+            List<QuicPacket> packetsToReceive,
             List<HttpMessage> httpMessagesToReceive) {
         LayerStack layerStack = tlsContext.getLayerStack();
 
         List<LayerConfiguration> layerConfigurationList;
-        if (protocolMessagesToReceive == null
-                && fragmentsToReceive == null
-                && recordsToReceive == null
-                && httpMessagesToReceive == null) {
-            layerConfigurationList = getGenericReceiveConfigurations(layerStack);
-        } else {
-            layerConfigurationList =
-                    getSpecificReceiveConfigurations(
-                            fragmentsToReceive,
-                            protocolMessagesToReceive,
-                            recordsToReceive,
-                            httpMessagesToReceive,
-                            layerStack);
-        }
+        layerConfigurationList =
+                sortLayerConfigurations(
+                        layerStack,
+                        getReceiveConfiguration(
+                                ImplementedLayers.DTLS_FRAGMENT, fragmentsToReceive),
+                        getReceiveConfiguration(
+                                ImplementedLayers.MESSAGE, protocolMessagesToReceive),
+                        getReceiveConfiguration(ImplementedLayers.SSL2, protocolMessagesToReceive),
+                        getReceiveConfiguration(ImplementedLayers.RECORD, recordsToReceive),
+                        getReceiveConfiguration(ImplementedLayers.HTTP, httpMessagesToReceive),
+                        getReceiveConfiguration(ImplementedLayers.QUICFRAME, framesToReceive),
+                        getReceiveConfiguration(ImplementedLayers.QUICPACKET, packetsToReceive));
 
         getReceiveResult(layerStack, layerConfigurationList);
     }
 
-    private List<LayerConfiguration> getGenericReceiveConfigurations(LayerStack layerStack) {
+    protected void receiveQuic(
+            TlsContext tlsContext,
+            List<QuicFrame> framesToReceive,
+            List<QuicPacket> packetsToReceive) {
+        LayerStack layerStack = tlsContext.getLayerStack();
+
         List<LayerConfiguration> layerConfigurationList;
-        LayerConfiguration dtlsConfiguration =
-                new GenericReceiveLayerConfiguration(ImplementedLayers.DTLS_FRAGMENT);
-        LayerConfiguration messageConfiguration =
-                new GenericReceiveLayerConfiguration(ImplementedLayers.MESSAGE);
-        LayerConfiguration ssl2Configuration =
-                new GenericReceiveLayerConfiguration(ImplementedLayers.HTTP);
-        LayerConfiguration recordConfiguration =
-                new GenericReceiveLayerConfiguration(ImplementedLayers.RECORD);
-        LayerConfiguration httpConfiguration =
-                new GenericReceiveLayerConfiguration(ImplementedLayers.HTTP);
+
         layerConfigurationList =
                 sortLayerConfigurations(
                         layerStack,
-                        dtlsConfiguration,
-                        messageConfiguration,
-                        recordConfiguration,
-                        ssl2Configuration,
-                        httpConfiguration);
-        return layerConfigurationList;
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        getReceiveConfiguration(ImplementedLayers.QUICFRAME, framesToReceive),
+                        getReceiveConfiguration(ImplementedLayers.QUICPACKET, packetsToReceive));
+
+        getReceiveResult(layerStack, layerConfigurationList);
     }
 
-    private List<LayerConfiguration> getSpecificReceiveConfigurations(
-            List<DtlsHandshakeMessageFragment> fragmentsToReceive,
-            List<ProtocolMessage> protocolMessagesToReceive,
-            List<Record> recordsToReceive,
-            List<HttpMessage> httpMessagesToReceive,
-            LayerStack layerStack) {
-        List<LayerConfiguration> layerConfigurationList;
-        LayerConfiguration dtlsConfiguration =
-                new SpecificReceiveLayerConfiguration(
-                        ImplementedLayers.DTLS_FRAGMENT, fragmentsToReceive);
-        LayerConfiguration messageConfiguration =
-                new SpecificReceiveLayerConfiguration<>(
-                        ImplementedLayers.MESSAGE, protocolMessagesToReceive);
-        LayerConfiguration ssl2Configuration =
-                new SpecificReceiveLayerConfiguration<>(
-                        ImplementedLayers.SSL2, protocolMessagesToReceive);
-        LayerConfiguration recordConfiguration =
-                new SpecificReceiveLayerConfiguration<>(ImplementedLayers.RECORD, recordsToReceive);
-        if (recordsToReceive == null || recordsToReceive.isEmpty()) {
-            // always allow (trailing) records when no records were set
-            // a ReceiveAction actually intended to expect no records is pointless
-            ((SpecificReceiveLayerConfiguration) recordConfiguration)
-                    .setAllowTrailingContainers(true);
+    private ReceiveLayerConfiguration getReceiveConfiguration(
+            LayerType layerType, List<? extends DataContainer> containersToReceive) {
+        if (containersToReceive == null || containersToReceive.isEmpty()) {
+            return new GenericReceiveLayerConfiguration(layerType);
+        } else {
+            if (layerType == ImplementedLayers.MESSAGE) {
+                return (ReceiveLayerConfiguration)
+                        applyMessageFilters(
+                                new SpecificReceiveLayerConfiguration<>(
+                                        layerType, containersToReceive));
+            }
+            return new SpecificReceiveLayerConfiguration<>(layerType, containersToReceive);
         }
-        LayerConfiguration httpConfiguration =
-                new SpecificReceiveLayerConfiguration<>(
-                        ImplementedLayers.HTTP, httpMessagesToReceive);
-        applyActionOptionFilters(messageConfiguration);
-        layerConfigurationList =
-                sortLayerConfigurations(
-                        layerStack,
-                        dtlsConfiguration,
-                        messageConfiguration,
-                        recordConfiguration,
-                        ssl2Configuration,
-                        httpConfiguration);
-        return layerConfigurationList;
     }
 
     protected void receiveTill(TlsContext tlsContext, ProtocolMessage protocolMessageToReceive) {
@@ -366,6 +466,34 @@ public abstract class MessageAction extends ConnectionBoundAction {
 
         List<LayerConfiguration> layerConfigurationList =
                 sortLayerConfigurations(layerStack, messageConfiguration);
+        getReceiveResult(layerStack, layerConfigurationList);
+    }
+
+    protected void receiveTillQuic(
+            TlsContext tlsContext,
+            List<QuicFrame> framesToReceive,
+            List<QuicPacket> packetsToReceive,
+            int maxNumberOfQuicPacketsToReceive) {
+        LayerStack layerStack = tlsContext.getLayerStack();
+
+        List<LayerConfiguration> layerConfigurationList =
+                sortLayerConfigurations(
+                        layerStack,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        new ReceiveTillLayerConfiguration(
+                                ImplementedLayers.QUICFRAME,
+                                false,
+                                maxNumberOfQuicPacketsToReceive,
+                                framesToReceive),
+                        new ReceiveTillLayerConfiguration(
+                                ImplementedLayers.QUICPACKET,
+                                false,
+                                maxNumberOfQuicPacketsToReceive,
+                                packetsToReceive));
         getReceiveResult(layerStack, layerConfigurationList);
     }
 
@@ -426,6 +554,20 @@ public abstract class MessageAction extends ConnectionBoundAction {
                                     .getResultForLayer(ImplementedLayers.HTTP)
                                     .getUsedContainers());
         }
+        if (processingResults.getResultForLayer(ImplementedLayers.QUICFRAME) != null) {
+            quicFrames =
+                    new ArrayList<>(
+                            processingResults
+                                    .getResultForLayer(ImplementedLayers.QUICFRAME)
+                                    .getUsedContainers());
+        }
+        if (processingResults.getResultForLayer(ImplementedLayers.QUICPACKET) != null) {
+            quicPackets =
+                    new ArrayList<>(
+                            processingResults
+                                    .getResultForLayer(ImplementedLayers.QUICPACKET)
+                                    .getUsedContainers());
+        }
     }
 
     public LayerStackProcessingResult getLayerStackProcessingResult() {
@@ -437,7 +579,7 @@ public abstract class MessageAction extends ConnectionBoundAction {
         this.layerStackProcessingResult = layerStackProcessingResult;
     }
 
-    private void applyActionOptionFilters(LayerConfiguration messageConfiguration) {
+    private LayerConfiguration applyMessageFilters(LayerConfiguration messageLayerConfiguration) {
         List<DataContainerFilter> containerFilters = new LinkedList<>();
         if (getActionOptions().contains(ActionOption.IGNORE_UNEXPECTED_APP_DATA)) {
             containerFilters.add(new GenericDataContainerFilter(ApplicationMessage.class));
@@ -451,8 +593,9 @@ public abstract class MessageAction extends ConnectionBoundAction {
         if (getActionOptions().contains(ActionOption.IGNORE_UNEXPECTED_WARNINGS)) {
             containerFilters.add(new WarningAlertFilter());
         }
-        ((SpecificReceiveLayerConfiguration) messageConfiguration)
+        ((SpecificReceiveLayerConfiguration) messageLayerConfiguration)
                 .setContainerFilterList(containerFilters);
+        return messageLayerConfiguration;
     }
 
     public List<HttpMessage> getHttpMessages() {
@@ -461,5 +604,54 @@ public abstract class MessageAction extends ConnectionBoundAction {
 
     public void setHttpMessages(List<HttpMessage> httpMessages) {
         this.httpMessages = httpMessages;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        MessageAction that = (MessageAction) o;
+
+        if (!Objects.equals(messages, that.messages)) {
+            return false;
+        }
+        if (!Objects.equals(httpMessages, that.httpMessages)) {
+            return false;
+        }
+        if (!Objects.equals(records, that.records)) {
+            return false;
+        }
+        if (!Objects.equals(fragments, that.fragments)) {
+            return false;
+        }
+        if (!Objects.equals(quicFrames, that.quicFrames)) {
+            return false;
+        }
+        if (!Objects.equals(quicPackets, that.quicPackets)) {
+            return false;
+        }
+        return Objects.equals(layerStackProcessingResult, that.layerStackProcessingResult);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (messages != null ? messages.hashCode() : 0);
+        result = 31 * result + (httpMessages != null ? httpMessages.hashCode() : 0);
+        result = 31 * result + (records != null ? records.hashCode() : 0);
+        result = 31 * result + (fragments != null ? fragments.hashCode() : 0);
+        result = 31 * result + (quicFrames != null ? quicFrames.hashCode() : 0);
+        result = 31 * result + (quicPackets != null ? quicPackets.hashCode() : 0);
+        result =
+                31 * result
+                        + (layerStackProcessingResult != null
+                                ? layerStackProcessingResult.hashCode()
+                                : 0);
+        return result;
     }
 }

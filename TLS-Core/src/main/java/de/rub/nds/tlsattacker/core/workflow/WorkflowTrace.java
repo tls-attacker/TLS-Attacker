@@ -162,6 +162,7 @@ public class WorkflowTrace implements Serializable {
                 @XmlElement(type = ForwardDataAction.class, name = "ForwardData"),
                 @XmlElement(type = GenericReceiveAction.class, name = "GenericReceive"),
                 @XmlElement(type = ReceiveTillAction.class, name = "ReceiveTill"),
+                @XmlElement(type = ReceiveQuicTillAction.class, name = "ReceiveQuicFramesTill"),
                 @XmlElement(type = TightReceiveAction.class, name = "TightReceive"),
                 @XmlElement(type = MultiReceiveAction.class, name = "MultiReceive"),
                 @XmlElement(type = PopAndSendAction.class, name = "PopAndSend"),
@@ -212,6 +213,7 @@ public class WorkflowTrace implements Serializable {
                 @XmlElement(type = SendAsciiAction.class, name = "SendAscii"),
                 @XmlElement(type = ReceiveAsciiAction.class, name = "ReceiveAscii"),
                 @XmlElement(type = GenericReceiveAsciiAction.class, name = "GenericReceiveAscii"),
+                @XmlElement(type = QuicPathChallengeAction.class, name = "QuicPathChallenge"),
             })
     private List<TlsAction> tlsActions = new ArrayList<>();
 

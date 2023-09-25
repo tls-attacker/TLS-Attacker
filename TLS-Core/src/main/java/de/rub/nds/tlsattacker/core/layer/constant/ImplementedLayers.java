@@ -17,7 +17,9 @@ public enum ImplementedLayers implements LayerType {
     MESSAGE,
     DTLS_FRAGMENT,
     HTTP,
-    SSL2;
+    SSL2,
+    QUICPACKET,
+    QUICFRAME;
 
     @Override
     public String getName() {

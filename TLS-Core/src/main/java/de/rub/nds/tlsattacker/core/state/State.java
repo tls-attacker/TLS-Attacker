@@ -142,6 +142,7 @@ public class State {
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
         trace = factory.createWorkflowTrace(config.getWorkflowTraceType(), runningMode);
         LOGGER.debug("Created new " + config.getWorkflowTraceType() + " workflow trace");
+        LOGGER.debug("Workflow trace: " + trace.toString());
 
         if (trace == null) {
             throw new ConfigurationException("Could not load workflow trace");

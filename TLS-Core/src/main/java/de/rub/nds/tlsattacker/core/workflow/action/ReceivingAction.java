@@ -19,19 +19,19 @@ import java.util.List;
 
 public interface ReceivingAction {
 
-    public abstract List<ProtocolMessage> getReceivedMessages();
+    List<ProtocolMessage> getReceivedMessages();
 
-    public abstract List<Record> getReceivedRecords();
+    List<Record> getReceivedRecords();
 
-    public abstract List<DtlsHandshakeMessageFragment> getReceivedFragments();
+    List<DtlsHandshakeMessageFragment> getReceivedFragments();
 
-    public abstract List<HttpMessage> getReceivedHttpMessages();
+    List<HttpMessage> getReceivedHttpMessages();
 
-    public default List<ProtocolMessageType> getGoingToReceiveProtocolMessageTypes() {
+    default List<ProtocolMessageType> getGoingToReceiveProtocolMessageTypes() {
         return new ArrayList<>();
     }
 
-    public default List<HandshakeMessageType> getGoingToReceiveHandshakeMessageTypes() {
+    default List<HandshakeMessageType> getGoingToReceiveHandshakeMessageTypes() {
         return new ArrayList<>();
     }
 }

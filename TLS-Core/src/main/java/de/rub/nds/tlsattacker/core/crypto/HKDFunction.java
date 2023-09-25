@@ -60,6 +60,18 @@ public class HKDFunction {
 
     public static final String TRAFFICUPD = "traffic upd";
 
+    public static final String CLIENT_IN = "client in";
+
+    public static final String SERVER_IN = "server in";
+
+    public static final String QUIC_KU = "quic ku";
+
+    public static final String QUIC_KEY = "quic key";
+
+    public static final String QUIC_IV = "quic iv";
+
+    public static final String QUIC_HP = "quic hp";
+
     /**
      * Computes HKDF-Extract output as defined in RFC 5869
      *

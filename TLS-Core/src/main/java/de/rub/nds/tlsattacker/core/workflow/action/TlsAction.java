@@ -31,6 +31,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import org.apache.logging.log4j.LogManager;
@@ -201,9 +202,12 @@ public abstract class TlsAction implements Serializable, Aliasable {
                     || layer == ImplementedLayers.RECORD
                     || layer == ImplementedLayers.DTLS_FRAGMENT
                     || layer == ImplementedLayers.HTTP
-                    || layer == ImplementedLayers.SSL2) {
+                    || layer == ImplementedLayers.SSL2
+                    || layer == ImplementedLayers.QUICFRAME
+                    || layer == ImplementedLayers.QUICPACKET) {
                 layerConfiguration =
                         unsortedLayerConfigurations.stream()
+                                .filter(Objects::nonNull)
                                 .filter(layerConfig -> layerConfig.getLayerType().equals(layer))
                                 .findFirst();
             }
