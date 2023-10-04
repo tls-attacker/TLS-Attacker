@@ -77,13 +77,13 @@ public class BasicTlsClient extends Thread {
     public void run() {
         SSLSocket socket = null;
         try {
-            LOGGER.info("Connecting to " + serverPrettyName);
+            LOGGER.info("Connecting to {}", serverPrettyName);
             if (retryConnect) {
                 while (true) {
                     try {
                         socket = getFreshSocket(tlsVersion);
                     } catch (ConnectException x) {
-                        LOGGER.info("retry: connect to " + serverPrettyName);
+                        LOGGER.info("retry: connect to {}", serverPrettyName);
                         TimeUnit.MILLISECONDS.sleep(retryTimeout);
                         continue;
                     }
@@ -94,9 +94,9 @@ public class BasicTlsClient extends Thread {
             }
 
             socket.getSession().invalidate();
-            LOGGER.info("Closing session with " + serverPrettyName);
+            LOGGER.info("Closing session with {}", serverPrettyName);
             socket.close();
-            LOGGER.info("Closed (" + serverPrettyName + ")");
+            LOGGER.info("Closed ({})", serverPrettyName);
         } catch (Exception ex) {
             LOGGER.error(ex);
         } finally {

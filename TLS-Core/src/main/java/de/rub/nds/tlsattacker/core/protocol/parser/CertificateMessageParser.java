@@ -57,7 +57,7 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
     private void parseRequestContextLength(CertificateMessage msg) {
         msg.setRequestContextLength(
                 parseIntField(HandshakeByteLength.CERTIFICATE_REQUEST_CONTEXT_LENGTH));
-        LOGGER.debug("RequestContextLength: " + msg.getRequestContextLength());
+        LOGGER.debug("RequestContextLength: {}", msg.getRequestContextLength());
     }
 
     /**
@@ -77,7 +77,7 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
      */
     private void parseCertificatesListLength(CertificateMessage msg) {
         msg.setCertificatesListLength(parseIntField(HandshakeByteLength.CERTIFICATES_LENGTH));
-        LOGGER.debug("CertificatesListLength: " + msg.getCertificatesListLength());
+        LOGGER.debug("CertificatesListLength: {}", msg.getCertificatesListLength());
     }
 
     /**

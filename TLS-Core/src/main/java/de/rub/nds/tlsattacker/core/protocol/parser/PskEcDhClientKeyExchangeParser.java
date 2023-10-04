@@ -45,7 +45,7 @@ public class PskEcDhClientKeyExchangeParser
      */
     private void parsePskIdentityLength(PskEcDhClientKeyExchangeMessage msg) {
         msg.setIdentityLength(parseIntField(HandshakeByteLength.PSK_IDENTITY_LENGTH));
-        LOGGER.debug("PSK-IdentityLength: " + msg.getIdentityLength().getValue());
+        LOGGER.debug("PSK-IdentityLength: {}", msg.getIdentityLength().getValue());
     }
 
     /**
@@ -58,3 +58,4 @@ public class PskEcDhClientKeyExchangeParser
         LOGGER.debug("SerializedPSK-Identity: {}", msg.getIdentity().getValue());
     }
 }
+grep "\bLOGGER\.(debug|info|warn|error)\([^;]*\s*\+\s*[^;]*;[^\n]*$" * -R -E

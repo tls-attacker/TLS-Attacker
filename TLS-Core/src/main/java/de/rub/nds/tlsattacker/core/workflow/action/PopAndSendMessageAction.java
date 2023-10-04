@@ -49,9 +49,9 @@ public class PopAndSendMessageAction extends MessageAction implements SendingAct
 
         String sending = getReadableString(messages);
         if (connectionAlias == null) {
-            LOGGER.info("Sending messages: " + sending);
+            LOGGER.info("Sending messages: {}", sending);
         } else {
-            LOGGER.info("Sending messages (" + connectionAlias + "): " + sending);
+            LOGGER.info("Sending messages ({}): {}", connectionAlias, sending);
         }
 
         try {

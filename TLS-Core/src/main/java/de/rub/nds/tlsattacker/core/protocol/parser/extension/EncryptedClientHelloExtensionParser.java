@@ -62,7 +62,7 @@ public class EncryptedClientHelloExtensionParser
         EchClientHelloType echClientHelloType =
                 EchClientHelloType.getEnumByByte(echClientHelloTypeBytes);
         msg.setEchClientHelloType(echClientHelloType);
-        LOGGER.info("EchClientHelloType: " + echClientHelloType);
+        LOGGER.info("EchClientHelloType: {}", echClientHelloType);
     }
 
     private void parseHpkeCipherSuite(EncryptedClientHelloExtensionMessage msg) {
@@ -85,7 +85,7 @@ public class EncryptedClientHelloExtensionParser
     private void parseConfigId(EncryptedClientHelloExtensionMessage msg) {
         int configId = this.parseIntField(ExtensionByteLength.ECH_CONFIG_ID);
         msg.setConfigId(configId);
-        LOGGER.debug("Config ID: " + msg.getConfigId());
+        LOGGER.debug("Config ID: {}", msg.getConfigId());
     }
 
     private void parseEnc(EncryptedClientHelloExtensionMessage msg) {
@@ -93,7 +93,7 @@ public class EncryptedClientHelloExtensionParser
         msg.setEncLength(encLen);
         byte[] enc = this.parseByteArrayField(encLen);
         msg.setEnc(enc);
-        LOGGER.debug("Enc: " + msg.getEnc());
+        LOGGER.debug("Enc: {}", msg.getEnc());
     }
 
     private void parsePayload(EncryptedClientHelloExtensionMessage msg) {
@@ -101,7 +101,7 @@ public class EncryptedClientHelloExtensionParser
         msg.setPayloadLength(payloadLen);
         byte[] payload = this.parseByteArrayField(payloadLen);
         msg.setPayload(payload);
-        LOGGER.debug("Payload: " + msg.getPayload());
+        LOGGER.debug("Payload: {}", msg.getPayload());
     }
 
     private void parseAcceptConfirmation(EncryptedClientHelloExtensionMessage msg) {

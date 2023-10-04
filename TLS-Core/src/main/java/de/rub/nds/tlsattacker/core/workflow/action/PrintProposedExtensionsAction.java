@@ -30,7 +30,7 @@ public class PrintProposedExtensionsAction extends ConnectionBoundAction {
     @Override
     public void execute(State state) throws ActionExecutionException {
         TlsContext ctx = state.getContext(connectionAlias).getTlsContext();
-        LOGGER.info("Proposed extensions: " + ctx.getProposedExtensions());
+        LOGGER.info("Proposed extensions: {}", ctx.getProposedExtensions());
     }
 
     @Override

@@ -198,7 +198,7 @@ public class CyclicParserSerializerTest {
         try {
             preparator.prepare();
         } catch (UnsupportedOperationException e) {
-            LOGGER.info("Preparator for test " + testName + " is not yet supported");
+            LOGGER.info("Preparator for test {} is not yet supported", testName);
             throw new TestAbortedException(
                     "Preparator for test " + testName + " is not yet supported");
         }
@@ -225,7 +225,7 @@ public class CyclicParserSerializerTest {
         try {
             parser.parse(message);
         } catch (UnsupportedOperationException e) {
-            LOGGER.info("Parser for test " + testName + " is not yet supported");
+            LOGGER.info("Parser for test {} is not yet supported", testName);
             throw new TestAbortedException("Parser for test " + testName + " is not yet supported");
         } catch (EndOfStreamException eos) {
             LOGGER.info("EOS");
@@ -304,7 +304,7 @@ public class CyclicParserSerializerTest {
                 }
             }
         }
-        LOGGER.warn("Could not find Constructor: " + someClass.getSimpleName());
+        LOGGER.warn("Could not find Constructor: {}", someClass.getSimpleName());
         return null;
     }
 
@@ -314,7 +314,7 @@ public class CyclicParserSerializerTest {
                 return c;
             }
         }
-        LOGGER.warn("Could not find Constructor: " + someClass.getSimpleName());
+        LOGGER.warn("Could not find Constructor: {}", someClass.getSimpleName());
         return null;
     }
 }

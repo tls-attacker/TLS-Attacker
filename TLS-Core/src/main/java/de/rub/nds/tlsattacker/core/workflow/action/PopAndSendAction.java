@@ -61,8 +61,7 @@ public class PopAndSendAction extends MessageAction implements SendingAction {
         if (index != null && index >= 0) {
             if (index >= messageBuffer.size()) {
                 throw new WorkflowExecutionException(
-                        "Index out of bounds, "
-                                + "trying to get element "
+                        "Index out of bounds, trying to get element "
                                 + index
                                 + "of message buffer with "
                                 + messageBuffer.size()
@@ -77,9 +76,9 @@ public class PopAndSendAction extends MessageAction implements SendingAction {
         }
         String sending = getReadableString(messages);
         if (connectionAlias == null) {
-            LOGGER.info("Sending messages: " + sending);
+            LOGGER.info("Sending messages: {}", sending);
         } else {
-            LOGGER.info("Sending messages (" + connectionAlias + "): " + sending);
+            LOGGER.info("Sending messages ({}): {}", connectionAlias, sending);
         }
 
         try {

@@ -153,7 +153,7 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
 
     private void setServerRecordCipher(Tls13KeySetType keySetType) {
         tlsContext.setActiveServerKeySetType(keySetType);
-        LOGGER.debug("Setting cipher for server to use " + keySetType);
+        LOGGER.debug("Setting cipher for server to use {}", keySetType);
         KeySet serverKeySet = getKeySet(tlsContext, tlsContext.getActiveServerKeySetType());
 
         if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
@@ -171,7 +171,7 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
 
     private void setClientRecordCipher(Tls13KeySetType keySetType) {
         tlsContext.setActiveClientKeySetType(keySetType);
-        LOGGER.debug("Setting cipher for client to use " + keySetType);
+        LOGGER.debug("Setting cipher for client to use {}", keySetType);
         KeySet clientKeySet = getKeySet(tlsContext, tlsContext.getActiveClientKeySetType());
 
         if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.SERVER) {

@@ -372,10 +372,10 @@ public class WorkflowTrace implements Serializable {
         for (TlsAction action : tlsActions) {
             if (!action.executedAsPlanned()
                     && !action.getActionOptions().contains(ActionOption.MAY_FAIL)) {
-                LOGGER.debug("Action " + action.toCompactString() + " did not execute as planned");
+                LOGGER.debug("Action {} did not execute as planned", action.toCompactString());
                 return false;
             } else {
-                LOGGER.debug("Action " + action.toCompactString() + " executed as planned");
+                LOGGER.debug("Action {} executed as planned", action.toCompactString());
             }
         }
         return true;

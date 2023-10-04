@@ -100,15 +100,12 @@ public class RSAClientKeyExchangePreparator<T extends RSAClientKeyExchangeMessag
 
     protected void preparePadding(T msg) {
         msg.getComputations().setPadding(padding);
-        LOGGER.debug(
-                "Padding: {}", msg.getComputations().getPadding().getValue());
+        LOGGER.debug("Padding: {}", msg.getComputations().getPadding().getValue());
     }
 
     protected void preparePremasterSecret(T msg) {
         msg.getComputations().setPremasterSecret(premasterSecret);
-        LOGGER.debug(
-                "PremasterSecret: {}"
-                                msg.getComputations().getPremasterSecret().getValue());
+        LOGGER.debug("PremasterSecret: {}", msg.getComputations().getPremasterSecret().getValue());
     }
 
     protected void preparePlainPaddedPremasterSecret(T msg) {

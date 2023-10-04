@@ -156,11 +156,10 @@ public abstract class WorkflowExecutor {
                 | PreparationException
                 | ActionExecutionException ex) {
             state.setExecutionException(ex);
-            LOGGER.warn("Not fatal error during action execution, skipping action: " + action, ex);
+            LOGGER.warn("Not fatal error during action execution, skipping action: {}", action, ex);
             throw new SkipActionException(ex);
         } catch (Exception ex) {
-            LOGGER.error(
-                    "Unexpected fatal error during action execution, stopping execution: ", ex);
+            LOGGER.error("Unexpected fatal error during action execution, stopping execution", ex);
             state.setExecutionException(ex);
             throw new WorkflowExecutionException(ex);
         } finally {

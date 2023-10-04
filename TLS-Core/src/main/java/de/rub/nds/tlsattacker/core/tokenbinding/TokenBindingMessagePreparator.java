@@ -50,7 +50,7 @@ public class TokenBindingMessagePreparator extends ProtocolMessagePreparator<Tok
                 == TokenBindingKeyParameters.ECDSAP256) {
             EllipticCurve curve = new EllipticCurveSECP256R1();
             BigInteger privateKey = chooser.getConfig().getDefaultTokenBindingEcPrivateKey();
-            LOGGER.debug("Using private Key:" + privateKey);
+            LOGGER.debug("Using private Key: {}", privateKey);
             Point publicKey = curve.mult(privateKey, curve.getBasePoint());
 
             message.setPoint(PointFormatter.toRawFormat(publicKey));

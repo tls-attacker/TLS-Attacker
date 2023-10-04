@@ -41,7 +41,7 @@ public class WaitAction extends TlsAction {
         if (isExecuted()) {
             throw new ActionExecutionException("Action already executed!");
         }
-        LOGGER.info("Waiting " + time + "ms...");
+        LOGGER.info("Waiting {} ms...", time);
         try {
             Thread.sleep(time);
             asPlanned = true;

@@ -45,7 +45,7 @@ public abstract class ProtocolMessageHandler<MessageT extends ProtocolMessage>
         } else {
             tlsContext.getDigest().append(message.getCompleteResultingMessage().getValue());
         }
-        LOGGER.debug("Included in digest: " + message.toCompactString());
+        LOGGER.debug("Included in digest: {}", message.toCompactString());
     }
 
     public void adjustContextAfterSerialize(MessageT message) {}

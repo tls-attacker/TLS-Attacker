@@ -54,12 +54,12 @@ public abstract class CommonReceiveAction extends MessageAction {
         setExecuted(true);
 
         String expected = getReadableString(getExpectedMessages());
-        LOGGER.debug("Receive Expected:" + expected);
+        LOGGER.debug("Receive Expected: {}", expected);
         String received = getReadableString(messages);
         if (hasDefaultAlias()) {
-            LOGGER.info("Received Messages: " + received);
+            LOGGER.info("Received Messages: {}", received);
         } else {
-            LOGGER.info("Received Messages (" + getConnectionAlias() + "): " + received);
+            LOGGER.info("Received Messages ({}): {}", getConnectionAlias(), received);
         }
     }
 

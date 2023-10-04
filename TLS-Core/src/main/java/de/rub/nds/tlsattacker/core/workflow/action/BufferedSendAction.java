@@ -51,9 +51,9 @@ public class BufferedSendAction extends MessageAction implements SendingAction {
         tlsContext.setMessageBuffer(new LinkedList<>());
         String sending = getReadableString(messages);
         if (connectionAlias.equals(AliasedConnection.DEFAULT_CONNECTION_ALIAS)) {
-            LOGGER.info("Sending messages: " + sending);
+            LOGGER.info("Sending messages: {}", sending);
         } else {
-            LOGGER.info("Sending messages (" + connectionAlias + "): " + sending);
+            LOGGER.info("Sending messages ({}): {}", connectionAlias, sending);
         }
 
         try {

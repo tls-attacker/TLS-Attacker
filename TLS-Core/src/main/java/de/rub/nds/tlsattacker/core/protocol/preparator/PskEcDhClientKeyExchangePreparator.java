@@ -17,7 +17,6 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -51,20 +50,20 @@ public class PskEcDhClientKeyExchangePreparator
             outputStream.write(
                     ArrayConverter.intToBytes(
                             premasterSecret.length, HandshakeByteLength.PSK_LENGTH));
-            LOGGER.debug("PremasterSecret: dhValue Length: " + premasterSecret.length);
+            LOGGER.debug("PremasterSecret: dhValue Length: {}", premasterSecret.length);
             outputStream.write(premasterSecret);
-            LOGGER.debug("PremasterSecret: dhValue" + Arrays.toString(premasterSecret));
+            LOGGER.debug("PremasterSecret: dhValue {}", premasterSecret);
             outputStream.write(
                     ArrayConverter.intToBytes(
                             chooser.getConfig().getDefaultPSKKey().length,
                             HandshakeByteLength.PSK_LENGTH));
             outputStream.write(chooser.getConfig().getDefaultPSKKey());
         } catch (IOException ex) {
-            LOGGER.warn("Encountered exception while writing to ByteArrayOutputStream.");
+            LOGGER.warn("Encountered exception while writing to ByteArrayOutputStream");
             LOGGER.debug(ex);
         }
         byte[] tempPremasterSecret = outputStream.toByteArray();
-        LOGGER.debug("PSK PremasterSecret: " + Arrays.toString(tempPremasterSecret));
+        LOGGER.debug("PSK PremasterSecret: {}", tempPremasterSecret);
         return tempPremasterSecret;
     }
 }

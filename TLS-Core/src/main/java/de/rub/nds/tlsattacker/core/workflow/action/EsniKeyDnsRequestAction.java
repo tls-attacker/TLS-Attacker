@@ -65,7 +65,7 @@ public class EsniKeyDnsRequestAction extends TlsAction {
         Message message = Message.newQuery(record);
         Message answer;
 
-        LOGGER.debug("Sending DNS request to get ESNI Resource Record for: " + hostname);
+        LOGGER.debug("Sending DNS request to get ESNI Resource Record for: {}", hostname);
         // send Message and read answer
         try {
             answer = resolver.send(message);
@@ -87,7 +87,7 @@ public class EsniKeyDnsRequestAction extends TlsAction {
         }
 
         if (esniKeyRecords.isEmpty()) {
-            LOGGER.warn("No ESNI DNS Resource Record available for " + hostname);
+            LOGGER.warn("No ESNI DNS Resource Record available for {}", hostname);
             setExecuted(true);
             return;
         }
@@ -99,14 +99,13 @@ public class EsniKeyDnsRequestAction extends TlsAction {
             esniKeyRecordBytes = Base64.getMimeDecoder().decode(esniKeyRecordStr);
         } catch (IllegalArgumentException e) {
             LOGGER.warn(
-                    "Failed to base64 decode Resource Record for"
-                            + hostname
-                            + ". Resource Record: "
-                            + esniKeyRecordStr);
+                    "Failed to base64 decode Resource Record for {}. Resource Record: {}",
+                    hostname,
+                    esniKeyRecordStr);
             setExecuted(true);
             return;
         }
-        LOGGER.debug("esniKeyRecordStr :" + esniKeyRecordStr);
+        LOGGER.debug("esniKeyRecordStr: {}", esniKeyRecordStr);
         LOGGER.debug("esniKeyRecordBytes: {}", esniKeyRecordBytes);
 
         EsniKeyRecordParser esniKeyParser =

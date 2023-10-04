@@ -59,13 +59,12 @@ public class BasicTlsServer extends Thread {
         cipherSuites = sslContext.getServerSocketFactory().getSupportedCipherSuites();
 
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Provider: " + sslContext.getProvider());
+            LOGGER.debug("Provider: {}", sslContext.getProvider());
             LOGGER.debug(
-                    "Supported cipher suites ("
-                            + sslContext.getServerSocketFactory().getSupportedCipherSuites().length
-                            + ")");
+                    "Supported cipher suites ({})",
+                    sslContext.getServerSocketFactory().getSupportedCipherSuites().length);
             for (String c : sslContext.getServerSocketFactory().getSupportedCipherSuites()) {
-                LOGGER.debug(" " + c);
+                LOGGER.debug(" {}", c);
             }
         }
     }
@@ -77,7 +76,7 @@ public class BasicTlsServer extends Thread {
             closed = false;
             while (!shutdown) {
                 try {
-                    LOGGER.info("Listening on port " + port + "...\n");
+                    LOGGER.info("Listening on port {}...\n", port);
                     final Socket socket = serverSocket.accept();
                     ConnectionHandler ch = new ConnectionHandler(socket);
                     Thread t = new Thread(ch);

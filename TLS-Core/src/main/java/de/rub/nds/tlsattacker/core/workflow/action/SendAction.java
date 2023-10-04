@@ -89,9 +89,9 @@ public class SendAction extends MessageAction implements SendingAction {
 
         String sending = getReadableString(messages);
         if (hasDefaultAlias()) {
-            LOGGER.info("Sending messages: " + sending);
+            LOGGER.info("Sending messages: {}", sending);
         } else {
-            LOGGER.info("Sending messages (" + connectionAlias + "): " + sending);
+            LOGGER.info("Sending messages ({}): {}", connectionAlias, sending);
         }
 
         try {

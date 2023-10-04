@@ -53,9 +53,9 @@ public class PopAndSendRecordAction extends MessageAction implements SendingActi
         Record record = tlsContext.getRecordBuffer().pop();
         String sending = record.getContentMessageType().name();
         if (connectionAlias == null) {
-            LOGGER.info("Sending record: " + sending);
+            LOGGER.info("Sending record: {}", sending);
         } else {
-            LOGGER.info("Sending record(" + connectionAlias + "): " + sending);
+            LOGGER.info("Sending record({}): {}", connectionAlias, sending);
         }
         RecordSerializer s = record.getRecordSerializer();
         try {

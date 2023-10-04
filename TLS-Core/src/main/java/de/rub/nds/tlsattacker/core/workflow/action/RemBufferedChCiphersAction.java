@@ -89,12 +89,12 @@ public class RemBufferedChCiphersAction extends ConnectionBoundAction {
         String msgName = ch.toCompactString();
 
         if (ch.getCipherSuites() == null) {
-            LOGGER.debug("No cipher suites found in " + msgName + ". Nothing to do.");
+            LOGGER.debug("No cipher suites found in {}. Nothing to do.", msgName);
             return;
         }
 
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Original cipher suites in " + msgName + ":\n" + summarizeCiphers(ch));
+            LOGGER.debug("Original cipher suites in {}:\n{}", msgName, summarizeCiphers(ch));
         }
 
         byte[] ciphersBytes = ch.getCipherSuites().getValue();
@@ -103,7 +103,7 @@ public class RemBufferedChCiphersAction extends ConnectionBoundAction {
         ByteArrayOutputStream newCiphersBytes = new ByteArrayOutputStream();
         CipherSuite type;
         for (CipherSuite cs : ciphers) {
-            LOGGER.debug("cipher.name, cipher.val = " + cs.name() + ", " + cs.getValue());
+            LOGGER.debug("cipher.name, cipher.val = {}, {}", cs.name(), cs.getValue());
             if (!removeCiphers.contains(cs)) {
                 try {
                     newCiphersBytes.write(cs.getByteValue());
@@ -121,7 +121,7 @@ public class RemBufferedChCiphersAction extends ConnectionBoundAction {
         ch.setCipherSuiteLength(newSuitesLength);
 
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Modified cipher suites in " + msgName + ":\n" + summarizeCiphers(ch));
+            LOGGER.debug("Modified cipher suites in {}:\n{}", msgName, summarizeCiphers(ch));
         }
     }
 
