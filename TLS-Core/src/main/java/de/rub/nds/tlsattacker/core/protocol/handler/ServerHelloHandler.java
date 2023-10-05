@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
 import de.rub.nds.protocol.crypto.CyclicGroup;
 import de.rub.nds.protocol.crypto.ec.EllipticCurve;
 import de.rub.nds.protocol.crypto.ec.Point;
@@ -581,14 +580,12 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
             if (tlsContext.getChooser().getSelectedCipherSuite().isPWD()) {
                 publicPoint =
                         PointFormatter.fromRawFormat(
-                                (NamedEllipticCurveParameters)
-                                        selectedKeyShareStore.getGroup().getGroupParameters(),
+                                selectedKeyShareStore.getGroup().getGroupParameters(),
                                 selectedKeyShareStore.getPublicKey());
             } else {
                 publicPoint =
                         PointFormatter.formatFromByteArray(
-                                (NamedEllipticCurveParameters)
-                                        selectedKeyShareStore.getGroup().getGroupParameters(),
+                                selectedKeyShareStore.getGroup().getGroupParameters(),
                                 selectedKeyShareStore.getPublicKey());
             }
             tlsContext.setServerEphemeralEcPublicKey(publicPoint);
