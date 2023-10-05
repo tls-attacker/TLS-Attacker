@@ -190,8 +190,8 @@ public class WorkflowTraceSerializer {
                     trace.setName(file.getAbsolutePath());
                     list.add(trace);
                 } catch (JAXBException | IOException | XMLStreamException ex) {
-                    LOGGER.warn("Could not read " + file.getAbsolutePath() + " from Folder.");
-                    LOGGER.debug(ex.getLocalizedMessage(), ex);
+                    LOGGER.warn("Could not read {} from folder", file.getAbsolutePath());
+                    LOGGER.debug(ex);
                 }
             }
             return list;

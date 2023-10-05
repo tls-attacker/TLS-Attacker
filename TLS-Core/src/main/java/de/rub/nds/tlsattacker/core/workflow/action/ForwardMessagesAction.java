@@ -174,9 +174,9 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
                                 .getResultForLayer(ImplementedLayers.RECORD)
                                 .getUsedContainers());
         String expected = getReadableString(receivedMessages);
-        LOGGER.debug("Receive Expected (" + receiveFromAlias + "): " + expected);
+        LOGGER.debug("Receive Expected ({}): {}", receiveFromAlias, expected);
         String received = getReadableString(receivedMessages);
-        LOGGER.info("Received Messages (" + receiveFromAlias + "): " + received);
+        LOGGER.info("Received Messages ({}): {}", receiveFromAlias, received);
         executedAsPlanned = checkMessageListsEquals(messages, receivedMessages);
     }
 

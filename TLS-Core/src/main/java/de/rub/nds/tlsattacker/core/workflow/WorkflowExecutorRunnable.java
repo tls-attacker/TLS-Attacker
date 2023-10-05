@@ -53,7 +53,7 @@ public class WorkflowExecutorRunnable implements Runnable {
     }
 
     protected void runInternal() {
-        LOGGER.info("Spawning workflow on socket " + socket);
+        LOGGER.info("Spawning workflow on socket {}", socket);
         // Currently, WorkflowTraces cannot be copied with external modules
         // if they define custom actions. This is because copying relies
         // on serialization, and actions from other packages are unknown
@@ -73,10 +73,10 @@ public class WorkflowExecutorRunnable implements Runnable {
         initConnectionForState(state);
         TlsContext serverCtx = state.getInboundContexts().get(0).getTlsContext();
 
-        LOGGER.info("Exectuting workflow for " + socket + " (" + serverCtx + ")");
+        LOGGER.info("Exectuting workflow for {} ({})", socket, serverCtx);
         WorkflowExecutor workflowExecutor = new DefaultWorkflowExecutor(state);
         workflowExecutor.executeWorkflow();
-        LOGGER.info("Workflow execution done on " + socket + " (" + serverCtx + ")");
+        LOGGER.info("Workflow execution done on {} ({})", socket, serverCtx);
     }
 
     protected void initConnectionForState(State state) {

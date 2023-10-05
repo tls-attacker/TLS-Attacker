@@ -87,10 +87,10 @@ public class ContextContainer {
         knownAliases.add(alias);
 
         if (con.getLocalConnectionEndType() == ConnectionEndType.SERVER) {
-            LOGGER.debug("Adding context " + alias + " to inboundContexts");
+            LOGGER.debug("Adding context {} to inboundContexts", alias);
             inboundContexts.add(context);
         } else {
-            LOGGER.debug("Adding context " + alias + " to outboundContexts");
+            LOGGER.debug("Adding context {} to outboundContexts", alias);
             outboundContexts.add(context);
         }
     }
@@ -138,7 +138,7 @@ public class ContextContainer {
             contexts.remove(alias);
             knownAliases.remove(alias);
         } else {
-            LOGGER.debug("No context with alias " + alias + " found, nothing to remove");
+            LOGGER.debug("No context with alias {} found, nothing to remove", alias);
         }
     }
 

@@ -122,7 +122,7 @@ public class ClientDelegate extends Delegate {
             InetAddress inetAddress = InetAddress.getByName(host);
             return inetAddress.getHostAddress();
         } catch (UnknownHostException ex) {
-            LOGGER.warn("Could not resolve host \"" + host + "\" returning anyways", ex);
+            LOGGER.warn("Could not resolve host \"{}\" returning anyways", host, ex);
             return host;
         }
     }
@@ -131,7 +131,7 @@ public class ClientDelegate extends Delegate {
         try {
             return InetAddress.getByName(ip).getCanonicalHostName();
         } catch (UnknownHostException ex) {
-            LOGGER.warn("Could not perform reverse DNS for \"" + ip + "\"", ex);
+            LOGGER.warn("Could not perform reverse DNS for \"{}\"", ip, ex);
             return ip;
         }
     }

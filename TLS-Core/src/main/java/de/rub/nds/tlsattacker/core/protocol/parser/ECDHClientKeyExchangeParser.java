@@ -49,7 +49,7 @@ public class ECDHClientKeyExchangeParser<T extends ECDHClientKeyExchangeMessage>
      */
     private void parseSerializedPublicKeyLength(ECDHClientKeyExchangeMessage msg) {
         msg.setPublicKeyLength(parseIntField(HandshakeByteLength.ECDH_PARAM_LENGTH));
-        LOGGER.debug("SerializedPublicKeyLength: " + msg.getPublicKeyLength().getValue());
+        LOGGER.debug("SerializedPublicKeyLength: {}", msg.getPublicKeyLength().getValue());
     }
 
     /**

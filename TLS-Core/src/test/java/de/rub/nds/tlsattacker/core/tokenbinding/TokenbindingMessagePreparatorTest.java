@@ -92,10 +92,10 @@ public class TokenbindingMessagePreparatorTest {
         System.arraycopy(message.getPoint().getValue(), 32, yBytes, 0, 32);
         LOGGER.debug("Y: {}", yBytes);
         BigInteger intX = new BigInteger(xBytes);
-        LOGGER.debug("intx: " + intX);
+        LOGGER.debug("intx: {}", intX);
 
         ASN1Integer x = new ASN1Integer(xBytes);
-        LOGGER.debug("xasn1:" + x.getPositiveValue());
+        LOGGER.debug("xasn1: {}", x.getPositiveValue());
 
         // ekm
         // with
@@ -108,8 +108,8 @@ public class TokenbindingMessagePreparatorTest {
         System.arraycopy(message.getSignature().getValue(), 32, sBytes, 0, 32);
         LOGGER.debug("r: {}", rBytes);
         LOGGER.debug("s: {}", sBytes);
-        LOGGER.debug("r:" + new ASN1Integer(rBytes).getPositiveValue());
-        LOGGER.debug("s:" + new ASN1Integer(sBytes).getPositiveValue());
+        LOGGER.debug("r: {}", new ASN1Integer(rBytes).getPositiveValue());
+        LOGGER.debug("s: {}", new ASN1Integer(sBytes).getPositiveValue());
         // decodeASN1(parsedMessage.getSignature().getValue());
     }
 }

@@ -69,9 +69,9 @@ public class SendRecordsFromLastFlightAction extends MessageAction implements Se
 
         String sending = getReadableString(messages);
         if (hasDefaultAlias()) {
-            LOGGER.info("Executing retransmissions: " + sending);
+            LOGGER.info("Executing retransmissions: {}", sending);
         } else {
-            LOGGER.info("Executing retransmissions (" + connectionAlias + "): " + sending);
+            LOGGER.info("Executing retransmissions ({}): {}", connectionAlias, sending);
         }
 
         try {

@@ -29,7 +29,7 @@ public class SSL2ServerHelloHandler extends ProtocolMessageHandler<SSL2ServerHel
     }
 
     private X509CertificateChain parseCertificate(int lengthBytes, byte[] bytesToParse) {
-        LOGGER.debug("SSL2 lengthBytes:" + lengthBytes);
+        LOGGER.debug("SSL2 lengthBytes: {}", lengthBytes);
         LOGGER.debug("SSL2 bytesToParse: {}", bytesToParse);
 
         try {

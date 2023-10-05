@@ -47,7 +47,7 @@ public class ApplyBufferedMessagesAction extends ConnectionBoundAction {
             LOGGER.debug("Empty buffer, no messages to apply");
         } else {
             for (ProtocolMessage msg : messages) {
-                LOGGER.debug("Applying buffered " + msg.toCompactString() + " to context " + ctx);
+                LOGGER.debug("Applying buffered {} to context {}", msg.toCompactString(), ctx);
                 ProtocolMessageHandler h = msg.getHandler(ctx);
                 h.adjustContext(msg);
             }

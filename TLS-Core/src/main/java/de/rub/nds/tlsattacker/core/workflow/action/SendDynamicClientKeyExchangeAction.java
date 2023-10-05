@@ -65,9 +65,9 @@ public class SendDynamicClientKeyExchangeAction extends MessageAction implements
 
             String sending = getReadableString(messages);
             if (hasDefaultAlias()) {
-                LOGGER.info("Sending Dynamic Key Exchange: " + sending);
+                LOGGER.info("Sending Dynamic Key Exchange: {}", sending);
             } else {
-                LOGGER.info("Sending Dynamic Key Exchange (" + connectionAlias + "): " + sending);
+                LOGGER.info("Sending Dynamic Key Exchange ({}): ", connectionAlias, sending);
             }
 
             try {

@@ -60,7 +60,7 @@ public class PrintLastHandledApplicationDataAction extends ConnectionBoundAction
             } else {
                 lastHandledApplicationData = ArrayConverter.bytesToHexString(rawBytes);
             }
-            LOGGER.info("Last handled application data: " + lastHandledApplicationData);
+            LOGGER.info("Last handled application data: {}", lastHandledApplicationData);
         } else {
             LOGGER.info("Did not receive application data yet");
         }

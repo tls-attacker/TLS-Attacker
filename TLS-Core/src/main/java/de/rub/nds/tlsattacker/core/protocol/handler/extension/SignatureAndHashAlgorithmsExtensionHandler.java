@@ -30,6 +30,6 @@ public class SignatureAndHashAlgorithmsExtensionHandler
         List<SignatureAndHashAlgorithm> algoList =
                 SignatureAndHashAlgorithm.getSignatureAndHashAlgorithms(algoBytes);
         tlsContext.setClientSupportedSignatureAndHashAlgorithms(algoList);
-        LOGGER.debug("Client supported signatureAndHashAlgorithms: " + algoList);
+        LOGGER.debug("Client supported signatureAndHashAlgorithms: {}", algoList);
     }
 }

@@ -51,10 +51,10 @@ public abstract class ExtensionHandler<ExtensionT extends ExtensionMessage>
         ConnectionEndType talkingConEndType = tlsContext.getTalkingConnectionEndType();
         if (talkingConEndType == ConnectionEndType.CLIENT) {
             tlsContext.addProposedExtension(extType);
-            LOGGER.debug("Marked extension '" + extType.name() + "' as proposed");
+            LOGGER.debug("Marked extension '{}' as proposed", extType.name());
         } else if (talkingConEndType == ConnectionEndType.SERVER) {
             tlsContext.addNegotiatedExtension(extType);
-            LOGGER.debug("Marked extension '" + extType.name() + "' as negotiated");
+            LOGGER.debug("Marked extension '{}' as negotiated", extType.name());
         }
     }
 }

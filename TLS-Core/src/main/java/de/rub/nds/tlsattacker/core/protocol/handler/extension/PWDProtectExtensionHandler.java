@@ -12,7 +12,6 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
 import de.rub.nds.protocol.crypto.ec.EllipticCurve;
 import de.rub.nds.protocol.crypto.ec.Point;
-import de.rub.nds.tlsattacker.core.constants.Bits;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
@@ -61,8 +60,7 @@ public class PWDProtectExtensionHandler extends ExtensionHandler<PWDProtectExten
         BigInteger clientPublicKeyX =
                 new BigInteger(
                         1,
-                        Arrays.copyOfRange(
-                                protectedUsername, 0, parameters.getElementSizeBits() / 8));
+                        Arrays.copyOfRange(protectedUsername, 0, parameters.getElementSizeBytes()));
         // y^2 = (x^3 + x*val + b) mod p
         Point clientPublicKey = curve.createAPointOnCurve(clientPublicKeyX);
         BigInteger sharedSecret =
@@ -81,14 +79,14 @@ public class PWDProtectExtensionHandler extends ExtensionHandler<PWDProtectExten
                                     null,
                                     ArrayConverter.bigIntegerToByteArray(sharedSecret)),
                             new byte[0],
-                            parameters.getElementSizeBits() / Bits.IN_A_BYTE);
+                            parameters.getElementSizeBytes());
 
             byte[] ctrKey = Arrays.copyOfRange(key, 0, key.length / 2);
             byte[] macKey = Arrays.copyOfRange(key, key.length / 2, key.length);
             byte[] encryptedUsername =
                     Arrays.copyOfRange(
                             protectedUsername,
-                            parameters.getElementSizeBits() / Bits.IN_A_BYTE,
+                            parameters.getElementSizeBytes(),
                             protectedUsername.length);
             SivMode aesSIV = new SivMode();
             String username = new String(aesSIV.decrypt(ctrKey, macKey, encryptedUsername));

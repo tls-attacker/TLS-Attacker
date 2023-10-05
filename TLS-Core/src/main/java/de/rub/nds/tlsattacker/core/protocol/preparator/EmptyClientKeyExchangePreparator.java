@@ -101,9 +101,8 @@ public class EmptyClientKeyExchangePreparator<T extends EmptyClientKeyExchangeMe
                 computeEcKeyExchangePms();
             } else {
                 LOGGER.warn(
-                        "KEX with "
-                                + certificateKeyType.name()
-                                + " not Implemented. Using new byte[0] as PMS");
+                        "KEX with {} not Implemented. Using new byte[0] as PMS",
+                        certificateKeyType.name());
                 premasterSecret = new byte[0];
             }
         } else {

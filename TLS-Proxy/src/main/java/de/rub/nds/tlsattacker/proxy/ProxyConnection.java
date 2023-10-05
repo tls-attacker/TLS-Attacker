@@ -40,7 +40,7 @@ public class ProxyConnection implements Runnable {
         } else {
             config = Config.createConfig();
         }
-        System.out.println("Accepted a connection!");
+        LOGGER.info("Accepted a connection!");
     }
 
     @Override
@@ -50,22 +50,19 @@ public class ProxyConnection implements Runnable {
                 if (incomingSocket.getInputStream().available() > 0) {
                     if (!initialized) {
 
-                        System.out.println("Received data");
                         InputStream inputStream = incomingSocket.getInputStream();
                         if (inputStream.read() != 5) {
                             throw new Exception("Connection is not Socks5 - only socks5 supported");
                         }
                         int length = inputStream.read();
-                        System.out.println("Read:" + length);
                         for (int i = 0; i < length; i++) {
                             System.out.println("Reading authentication method");
                             inputStream.read();
                         }
-                        System.out.println("Sending answer");
                         incomingSocket.getOutputStream().write(new byte[] {0x05, 0x00});
                         incomingSocket.getOutputStream().flush();
                         String line = "";
-                        LOGGER.info("Received: " + line);
+                        LOGGER.info("Received: {}", line);
                         String[] parsed = line.split(" ");
                         if (parsed.length >= 3) {
                             String method = parsed[0];

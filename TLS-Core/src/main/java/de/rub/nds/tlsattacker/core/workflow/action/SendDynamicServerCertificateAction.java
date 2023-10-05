@@ -60,9 +60,9 @@ public class SendDynamicServerCertificateAction extends MessageAction implements
 
             String sending = getReadableString(messages);
             if (hasDefaultAlias()) {
-                LOGGER.info("Sending Dynamic Certificate: " + sending);
+                LOGGER.info("Sending Dynamic Certificate: {}", sending);
             } else {
-                LOGGER.info("Sending Dynamic Certificate (" + connectionAlias + "): " + sending);
+                LOGGER.info("Sending Dynamic Certificate ({}): {}", connectionAlias, sending);
             }
 
             try {

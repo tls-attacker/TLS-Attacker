@@ -55,8 +55,8 @@ public class StatePlaintextParser extends Parser<StatePlaintext> {
     private void parseCompressionMethod(StatePlaintext statePlaintext) {
         statePlaintext.setCompressionMethod(parseByteField(HandshakeByteLength.COMPRESSION));
         LOGGER.debug(
-                "Parsed compression method from state "
-                        + statePlaintext.getCompressionMethod().getValue());
+                "Parsed compression method from state {}",
+                statePlaintext.getCompressionMethod().getValue());
     }
 
     private void parseMasterSecret(StatePlaintext statePlaintext) {
@@ -69,12 +69,12 @@ public class StatePlaintextParser extends Parser<StatePlaintext> {
         statePlaintext.setClientAuthenticationType(
                 parseByteField(HandshakeByteLength.CLIENT_AUTHENTICATION_TYPE));
         LOGGER.debug(
-                "Parsed client authentication type from state "
-                        + statePlaintext.getClientAuthenticationType().getValue());
+                "Parsed client authentication type from state {}",
+                statePlaintext.getClientAuthenticationType().getValue());
     }
 
     private void parseTimestamp(StatePlaintext statePlaintext) {
         statePlaintext.setTimestamp(parseIntField(HandshakeByteLength.UNIX_TIME));
-        LOGGER.debug("Parsed time stamp from state " + statePlaintext.getTimestamp());
+        LOGGER.debug("Parsed time stamp from state {}", statePlaintext.getTimestamp());
     }
 }

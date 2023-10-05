@@ -35,14 +35,13 @@ public class RecordSizeLimitExtensionHandler
         Integer recordSizeLimit = ArrayConverter.bytesToInt(recordSizeLimitBytes);
         if (recordSizeLimit < RecordSizeLimit.MIN_RECORD_SIZE_LIMIT) {
             LOGGER.warn(
-                    "RecordSizeLimit is smaller than allowed ("
-                            + recordSizeLimit
-                            + "), resuming anyway");
+                    "RecordSizeLimit is smaller than allowed ({}), resuming anyway",
+                    recordSizeLimit);
         }
 
         if (tlsContext.getTalkingConnectionEndType()
                 == tlsContext.getChooser().getMyConnectionPeer()) {
-            LOGGER.debug("Setting OutboundRecordSizeLimit: " + recordSizeLimit);
+            LOGGER.debug("Setting OutboundRecordSizeLimit: {}", recordSizeLimit);
             tlsContext.setOutboundRecordSizeLimit(recordSizeLimit);
             tlsContext.setPeerReceiveLimit(recordSizeLimit);
         }

@@ -1838,12 +1838,12 @@ public class TlsContext extends LayerContext {
         return serverPWDSalt;
     }
 
-    public Point getPWDPE() {
+    public Point getPwdPasswordElement() {
         return pwdPasswordElement;
     }
 
-    public void setPWDPE(Point pwdpe) {
-        this.pwdPasswordElement = pwdpe;
+    public void setPwdPasswordElement(Point pwdPasswordElement) {
+        this.pwdPasswordElement = pwdPasswordElement;
     }
 
     public BigInteger getClientPWDPrivate() {

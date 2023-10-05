@@ -65,16 +65,16 @@ public class SendDynamicServerKeyExchangeAction extends MessageAction implements
                                 AlgorithmResolver.getKeyExchangeAlgorithm(selectedCipherSuite));
         if (serverKeyExchangeMessage == null) {
             LOGGER.debug(
-                    "Skipping DynamicServerKeyExchangeAction as it is not required or dynamic selection failed.");
+                    "Skipping DynamicServerKeyExchangeAction as it is not required or dynamic selection failed");
             setExecuted(true);
         } else {
             messages.add(serverKeyExchangeMessage);
 
             String sending = getReadableString(messages);
             if (hasDefaultAlias()) {
-                LOGGER.info("Sending Dynamic Key Exchange: " + sending);
+                LOGGER.info("Sending Dynamic Key Exchange: {}", sending);
             } else {
-                LOGGER.info("Sending Dynamic Key Exchange (" + connectionAlias + "): " + sending);
+                LOGGER.info("Sending Dynamic Key Exchange ({}): {}", connectionAlias, sending);
             }
 
             try {

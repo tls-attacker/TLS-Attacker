@@ -400,14 +400,16 @@ public enum NamedGroup {
     }
 
     public boolean isShortWeierstrass() {
-        if (this.getGroupParameters() instanceof NamedEllipticCurveParameters) {
-            return ((NamedEllipticCurveParameters) groupParameters).getEquationType()
-                    == EcCurveEquationType.SHORT_WEIERSTRASS;
-        } else if (this.getGroupParameters() instanceof FfdhGroupParameters) {
-            return false;
+        if (this.isEcGroup()) {
+            if (this.getGroupParameters() instanceof NamedEllipticCurveParameters) {
+                return ((NamedEllipticCurveParameters) groupParameters).getEquationType()
+                        == EcCurveEquationType.SHORT_WEIERSTRASS;
+            } else {
+                throw new UnsupportedOperationException(
+                        "Unknown group parameters: " + groupParameters.getClass().getSimpleName());
+            }
         } else {
-            throw new UnsupportedOperationException(
-                    "Unknown group parameters: " + groupParameters.getClass().getSimpleName());
+            return false;
         }
     }
 

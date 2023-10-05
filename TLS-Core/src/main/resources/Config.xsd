@@ -648,6 +648,7 @@
       <xs:element name="defaultServerEphemeralDhPublicKey" type="xs:integer" minOccurs="0"/>
       <xs:element name="defaultClientEphemeralDhPublicKey" type="xs:integer" minOccurs="0"/>
       <xs:element name="defaultEcdsaNonce" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultDsaNonce" type="xs:integer" minOccurs="0"/>
       <xs:element name="defaultSelectedGostCurve" type="gostCurve" minOccurs="0"/>
       <xs:element name="defaultApplicationMessageData" type="xs:string" minOccurs="0"/>
       <xs:element name="clientCertificateTypes" minOccurs="0">

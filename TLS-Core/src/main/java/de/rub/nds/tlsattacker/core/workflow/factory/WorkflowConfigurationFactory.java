@@ -587,7 +587,7 @@ public class WorkflowConfigurationFactory {
         // mitm -> server
         String mitmToServerAlias = outboundConnection.getAlias();
 
-        LOGGER.debug("Building mitm trace for: " + inboundConnection + ", " + outboundConnection);
+        LOGGER.debug("Building mitm trace for: {}, {}", inboundConnection, outboundConnection);
 
         WorkflowTrace clientToMitmHandshake = createHandshakeWorkflow(inboundConnection);
         WorkflowTrace mitmToServerHandshake = createHandshakeWorkflow(outboundConnection);
@@ -648,7 +648,7 @@ public class WorkflowConfigurationFactory {
         // mitm -> server
         String mitmToServerAlias = outboundConnection.getAlias();
 
-        LOGGER.debug("Building mitm trace for: " + inboundConnection + ", " + outboundConnection);
+        LOGGER.debug("Building mitm trace for: {}, {}", inboundConnection, outboundConnection);
 
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
         WorkflowTrace trace =

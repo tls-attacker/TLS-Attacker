@@ -102,7 +102,7 @@ public class ForwardRecordsAction extends TlsAction implements ReceivingAction, 
                         buildLayerConfiguration(receivingLayerStack, false));
         receivedRecords =
                 receiveResult.getResultForLayer(ImplementedLayers.RECORD).getUsedContainers();
-        LOGGER.info("Records received (" + receiveFromAlias + "): " + receivedRecords.size());
+        LOGGER.info("Records received ({}): {}", receiveFromAlias, receivedRecords.size());
         executedAsPlanned = true;
     }
 
@@ -131,7 +131,7 @@ public class ForwardRecordsAction extends TlsAction implements ReceivingAction, 
     }
 
     private void forwardRecords(TlsContext forwardToCtx) {
-        LOGGER.info("Forwarding " + receivedRecords.size() + " records to " + forwardToAlias);
+        LOGGER.info("Forwarding {} records to {}", receivedRecords.size(), forwardToAlias);
         try {
             LayerStack sendingLayerStack = forwardToCtx.getLayerStack();
             sendingLayerStack.sendData(buildLayerConfiguration(sendingLayerStack, true));

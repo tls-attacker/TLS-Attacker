@@ -12,6 +12,11 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import java.math.BigInteger;
 
+/**
+ * These computations are used for empty client key exchange messages which are sent if client
+ * authentication is used and the public key from the certificate can be used as a static dh key.
+ * Either for ECDH or DH.
+ */
 public class EmptyClientComputations extends KeyExchangeComputations {
 
     private ModifiableBigInteger dhModulus;
