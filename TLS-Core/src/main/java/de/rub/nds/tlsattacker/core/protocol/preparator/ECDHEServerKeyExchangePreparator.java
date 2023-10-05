@@ -87,7 +87,7 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
 
         // Compute publicKey
         EllipticCurve curve =
-                ((NamedEllipticCurveParameters) namedGroup.getGroupParameters()).getCurve();
+                ((NamedEllipticCurveParameters) namedGroup.getGroupParameters()).getGroup();
         LOGGER.debug("NamedGroup: {} ", namedGroup.name());
         byte[] publicKeyBytes;
         if (!namedGroup.isShortWeierstrass()) {

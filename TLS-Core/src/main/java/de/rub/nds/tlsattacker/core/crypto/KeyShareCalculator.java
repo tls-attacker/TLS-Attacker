@@ -10,12 +10,12 @@ package de.rub.nds.tlsattacker.core.crypto;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.protocol.constants.EcCurveEquationType;
+import de.rub.nds.protocol.constants.FfdhGroupParameters;
 import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
 import de.rub.nds.protocol.crypto.ec.EllipticCurve;
 import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.protocol.crypto.ec.PointFormatter;
 import de.rub.nds.protocol.crypto.ec.RFC7748Curve;
-import de.rub.nds.protocol.crypto.ffdh.FFDHGroup;
 import de.rub.nds.tlsattacker.core.constants.Bits;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
@@ -34,7 +34,7 @@ public class KeyShareCalculator {
         }
         if (group.isEcGroup()) {
             EllipticCurve curve =
-                    ((NamedEllipticCurveParameters) group.getGroupParameters()).getCurve();
+                    ((NamedEllipticCurveParameters) group.getGroupParameters()).getGroup();
             if (group.isShortWeierstrass()) {
                 Point publicKey = curve.mult(privateKey, curve.getBasePoint());
                 return PointFormatter.formatToByteArray(
@@ -46,7 +46,7 @@ public class KeyShareCalculator {
                 return rfcCurve.computePublicKey(privateKey);
             }
         } else if (group.isDhGroup()) {
-            FFDHGroup ffdheGroup = (FFDHGroup) group.getGroupParameters();
+            FfdhGroupParameters ffdheGroup = (FfdhGroupParameters) group.getGroupParameters();
             BigInteger publicKey =
                     ffdheGroup
                             .getGenerator()
@@ -97,7 +97,7 @@ public class KeyShareCalculator {
             throw new IllegalArgumentException(
                     "Cannot compute dh shared secret for non ffdhe group");
         }
-        BigInteger modulus = ((FFDHGroup) group.getGroupParameters()).getModulus();
+        BigInteger modulus = ((FfdhGroupParameters) group.getGroupParameters()).getModulus();
         return ArrayConverter.bigIntegerToNullPaddedByteArray(
                 publicKey.modPow(privateKey, modulus),
                 group.getGroupParameters().getElementSizeBytes());
@@ -119,7 +119,7 @@ public class KeyShareCalculator {
         }
         NamedEllipticCurveParameters parameters =
                 (NamedEllipticCurveParameters) group.getGroupParameters();
-        EllipticCurve curve = parameters.getCurve();
+        EllipticCurve curve = parameters.getGroup();
         if (parameters.getEquationType() == EcCurveEquationType.MONTGOMERY) {
             if (curve instanceof RFC7748Curve) {
                 RFC7748Curve rfcCurve = (RFC7748Curve) curve;

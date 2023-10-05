@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.protocol.crypto.ffdh.FFDHGroup;
+import de.rub.nds.protocol.constants.FfdhGroupParameters;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
@@ -66,7 +66,7 @@ public class DHEServerKeyExchangeHandler<KeyExchangeMessage extends DHEServerKey
         BigInteger serverDhModulus = tlsContext.getServerEphemeralDhModulus();
         for (NamedGroup group : NamedGroup.getImplemented()) {
             if (group.isDhGroup()) {
-                FFDHGroup ffdhGroup = (FFDHGroup) group.getGroupParameters();
+                FfdhGroupParameters ffdhGroup = (FfdhGroupParameters) group.getGroupParameters();
                 if (serverDhGenerator.equals(ffdhGroup.getGenerator())
                         && serverDhModulus.equals(ffdhGroup.getModulus())) {
                     tlsContext.setSelectedGroup(group);

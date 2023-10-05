@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import de.rub.nds.protocol.crypto.ffdh.FFDHGroup;
+import de.rub.nds.protocol.constants.FfdhGroupParameters;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
@@ -64,7 +64,7 @@ public class DHEServerKeyExchangeHandlerTest
     @EnumSource(value = NamedGroup.class, names = "^FFDHE[0-9]*", mode = EnumSource.Mode.MATCH_ANY)
     public void testadjustContextWithFFDHEGroup(NamedGroup providedNamedGroup) {
         DHEServerKeyExchangeMessage message = new DHEServerKeyExchangeMessage();
-        FFDHGroup group = (FFDHGroup) providedNamedGroup.getGroupParameters();
+        FfdhGroupParameters group = (FfdhGroupParameters) providedNamedGroup.getGroupParameters();
         message.setModulus(group.getModulus().toByteArray());
         message.setGenerator(group.getGenerator().toByteArray());
         message.setPublicKey(new byte[] {1, 2, 3});

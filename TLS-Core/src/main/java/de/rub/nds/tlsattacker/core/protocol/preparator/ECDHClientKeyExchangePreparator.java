@@ -97,7 +97,7 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
             setComputationPrivateKey(msg);
         }
         EllipticCurve curve =
-                ((NamedEllipticCurveParameters) usedGroup.getGroupParameters()).getCurve();
+                ((NamedEllipticCurveParameters) usedGroup.getGroupParameters()).getGroup();
         Point publicKey = chooser.getEcKeyExchangePeerPublicKey();
 
         premasterSecret =
@@ -115,7 +115,7 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
         byte[] publicKeyBytes;
         BigInteger privateKey = msg.getComputations().getPrivateKey().getValue();
         EllipticCurve curve =
-                ((NamedEllipticCurveParameters) usedGroup.getGroupParameters()).getCurve();
+                ((NamedEllipticCurveParameters) usedGroup.getGroupParameters()).getGroup();
         if (usedGroup == NamedGroup.ECDH_X25519 || usedGroup == NamedGroup.ECDH_X448) {
             RFC7748Curve rfcCurve = (RFC7748Curve) curve;
             publicKeyBytes = rfcCurve.computePublicKey(privateKey);

@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.protocol.crypto.ffdh.FFDHGroup;
+import de.rub.nds.protocol.constants.FfdhGroupParameters;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
@@ -196,7 +196,7 @@ public class DHEServerKeyExchangePreparator<T extends DHEServerKeyExchangeMessag
     private void setNamedGroupParameters(T msg, NamedGroup chosenGroup) {
         LOGGER.debug(
                 "Negotiating NamedGroup {} for Server Key Exchange message", chosenGroup.name());
-        FFDHGroup ffdhGroup = (FFDHGroup) chosenGroup.getGroupParameters();
+        FfdhGroupParameters ffdhGroup = (FfdhGroupParameters) chosenGroup.getGroupParameters();
         msg.getKeyExchangeComputations().setGenerator(ffdhGroup.getGenerator());
         msg.getKeyExchangeComputations().setModulus(ffdhGroup.getModulus());
     }

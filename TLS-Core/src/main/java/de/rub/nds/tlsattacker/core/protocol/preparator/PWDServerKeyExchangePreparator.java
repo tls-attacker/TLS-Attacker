@@ -49,7 +49,7 @@ public class PWDServerKeyExchangePreparator
         prepareCurveType(msg);
         NamedGroup group = selectNamedGroup(msg);
         EllipticCurve curve =
-                ((NamedEllipticCurveParameters) group.getGroupParameters()).getCurve();
+                ((NamedEllipticCurveParameters) group.getGroupParameters()).getGroup();
         msg.setNamedGroup(group.getValue());
         prepareSalt(msg);
         prepareSaltLength(msg);
@@ -65,7 +65,7 @@ public class PWDServerKeyExchangePreparator
     protected void preparePasswordElement(PWDServerKeyExchangeMessage msg) throws CryptoException {
         NamedGroup group = selectNamedGroup(msg);
         EllipticCurve curve =
-                ((NamedEllipticCurveParameters) group.getGroupParameters()).getCurve();
+                ((NamedEllipticCurveParameters) group.getGroupParameters()).getGroup();
         Point passwordElement = PWDComputations.computePasswordElement(chooser, curve);
         msg.getKeyExchangeComputations().setPasswordElement(passwordElement);
 
@@ -85,7 +85,7 @@ public class PWDServerKeyExchangePreparator
                 NamedGroup group = chooser.getClientSupportedNamedGroups().get(i);
                 if (group.isShortWeierstrass()) {
                     EllipticCurve curve =
-                            ((NamedEllipticCurveParameters) group.getGroupParameters()).getCurve();
+                            ((NamedEllipticCurveParameters) group.getGroupParameters()).getGroup();
                     if (curve instanceof EllipticCurveOverFp) {
                         clientSet.add(group);
                     }
@@ -95,7 +95,7 @@ public class PWDServerKeyExchangePreparator
                 NamedGroup group = chooser.getConfig().getDefaultServerNamedGroups().get(i);
                 if (group.isShortWeierstrass()) {
                     EllipticCurve curve =
-                            ((NamedEllipticCurveParameters) group.getGroupParameters()).getCurve();
+                            ((NamedEllipticCurveParameters) group.getGroupParameters()).getGroup();
                     if (curve instanceof EllipticCurveOverFp) {
                         serverSet.add(group);
                     }
@@ -163,7 +163,7 @@ public class PWDServerKeyExchangePreparator
     protected void prepareScalarElement(PWDServerKeyExchangeMessage msg) {
         EllipticCurve curve =
                 ((NamedEllipticCurveParameters) selectNamedGroup(msg).getGroupParameters())
-                        .getCurve();
+                        .getGroup();
         PWDComputations.PWDKeyMaterial keyMaterial =
                 PWDComputations.generateKeyMaterial(
                         curve, msg.getKeyExchangeComputations().getPasswordElement(), chooser);

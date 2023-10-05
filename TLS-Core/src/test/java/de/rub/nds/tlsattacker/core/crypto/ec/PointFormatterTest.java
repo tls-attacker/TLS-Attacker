@@ -38,7 +38,7 @@ public class PointFormatterTest {
             for (NamedGroup group : NamedGroup.getImplemented()) {
                 if (group.isShortWeierstrass()) {
                     EllipticCurve curve =
-                            ((NamedEllipticCurveParameters) group.getGroupParameters()).getCurve();
+                            ((NamedEllipticCurveParameters) group.getGroupParameters()).getGroup();
                     Point point =
                             curve.getPoint(
                                     new BigInteger(i, new Random(i)),
@@ -70,7 +70,7 @@ public class PointFormatterTest {
             for (NamedGroup group : NamedGroup.getImplemented()) {
                 if (group.isShortWeierstrass()) {
                     EllipticCurve curve =
-                            ((NamedEllipticCurveParameters) group.getGroupParameters()).getCurve();
+                            ((NamedEllipticCurveParameters) group.getGroupParameters()).getGroup();
                     BigInteger scalar = new BigInteger(i, new Random(i));
                     Point point = curve.mult(scalar, curve.getBasePoint());
                     ECPointFormat format;
@@ -131,7 +131,7 @@ public class PointFormatterTest {
         byte[] expectedCompressedBasePointBytes =
                 ArrayConverter.hexStringToByteArray(expectedCompressedBasePoint);
         EllipticCurve curve =
-                ((NamedEllipticCurveParameters) providedNamedGroup.getGroupParameters()).getCurve();
+                ((NamedEllipticCurveParameters) providedNamedGroup.getGroupParameters()).getGroup();
         ECPointFormat pointFormat =
                 curve instanceof EllipticCurveOverFp
                         ? ECPointFormat.ANSIX962_COMPRESSED_PRIME

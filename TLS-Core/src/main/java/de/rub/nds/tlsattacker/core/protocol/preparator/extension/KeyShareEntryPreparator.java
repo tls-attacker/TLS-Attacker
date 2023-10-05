@@ -56,7 +56,7 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
         LOGGER.info("Using curve: " + entry.getGroupConfig());
         EllipticCurve curve =
                 ((NamedEllipticCurveParameters) entry.getGroupConfig().getGroupParameters())
-                        .getCurve();
+                        .getGroup();
         Point passwordElement = PWDComputations.computePasswordElement(chooser, curve);
         PWDComputations.PWDKeyMaterial keyMaterial =
                 PWDComputations.generateKeyMaterial(curve, passwordElement, chooser);

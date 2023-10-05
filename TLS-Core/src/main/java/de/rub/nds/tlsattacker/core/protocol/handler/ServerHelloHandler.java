@@ -316,7 +316,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         Chooser chooser = tlsContext.getChooser();
         EllipticCurve curve =
                 ((NamedEllipticCurveParameters) keyShare.getGroup().getGroupParameters())
-                        .getCurve();
+                        .getGroup();
         DragonFlyKeyShareEntryParser parser =
                 new DragonFlyKeyShareEntryParser(
                         new ByteArrayInputStream(keyShare.getPublicKey()), keyShare.getGroup());

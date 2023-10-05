@@ -48,7 +48,7 @@ public class EllipticCurveTest {
     @Tag(TestCategories.SLOW_TEST)
     public void test(NamedGroup providedNamedGroup) {
         EllipticCurve curve =
-                ((NamedEllipticCurveParameters) providedNamedGroup.getGroupParameters()).getCurve();
+                ((NamedEllipticCurveParameters) providedNamedGroup.getGroupParameters()).getGroup();
         Point basePoint = curve.getBasePoint();
         BigInteger basePointOrder = curve.getBasePointOrder();
 

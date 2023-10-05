@@ -45,7 +45,7 @@ public class PWDProtectExtensionHandler extends ExtensionHandler<PWDProtectExten
                 (NamedEllipticCurveParameters)
                         tlsContext.getConfig().getDefaultPWDProtectGroup().getGroupParameters();
         // decrypt protected username
-        EllipticCurve curve = parameters.getCurve();
+        EllipticCurve curve = parameters.getGroup();
         HKDFAlgorithm hkdfAlgorithm;
         if (parameters.getElementSizeBits() <= 256) {
             hkdfAlgorithm = HKDFAlgorithm.TLS_HKDF_SHA256;

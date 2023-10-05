@@ -54,7 +54,7 @@ public class PWDProtectExtensionPreparator extends ExtensionPreparator<PWDProtec
         EllipticCurve curve =
                 ((NamedEllipticCurveParameters)
                                 config.getDefaultPWDProtectGroup().getGroupParameters())
-                        .getCurve();
+                        .getGroup();
         Point generator = curve.getBasePoint();
         Point serverPublicKey = config.getDefaultServerPWDProtectPublicKey();
 

@@ -155,7 +155,7 @@ public abstract class GOSTClientKeyExchangePreparator
             throws GeneralSecurityException {
         EllipticCurve curve =
                 ((NamedEllipticCurveParameters) chooser.getSelectedGostCurve().getGroupParameters())
-                        .getCurve();
+                        .getGroup();
         Point sharedPoint = curve.mult(privateKey, publicKey);
         if (sharedPoint == null) {
             LOGGER.warn("GOST shared point is null - using base point instead");
@@ -186,7 +186,7 @@ public abstract class GOSTClientKeyExchangePreparator
     private void prepareEphemeralKey() {
         EllipticCurve curve =
                 ((NamedEllipticCurveParameters) chooser.getSelectedGostCurve().getGroupParameters())
-                        .getCurve();
+                        .getGroup();
         LOGGER.debug("Using key from context.");
         msg.getComputations().setPrivateKey(chooser.getClientEphemeralEcPrivateKey());
         Point publicKey =

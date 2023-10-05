@@ -10,14 +10,14 @@ package de.rub.nds.tlsattacker.core.constants;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.protocol.constants.EcCurveEquationType;
+import de.rub.nds.protocol.constants.FfdhGroupParameters;
 import de.rub.nds.protocol.constants.GroupParameters;
 import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
-import de.rub.nds.protocol.crypto.ffdh.FFDHGroup;
-import de.rub.nds.protocol.crypto.ffdh.GroupFFDH2048;
-import de.rub.nds.protocol.crypto.ffdh.GroupFFDH3072;
-import de.rub.nds.protocol.crypto.ffdh.GroupFFDH4096;
-import de.rub.nds.protocol.crypto.ffdh.GroupFFDH6144;
-import de.rub.nds.protocol.crypto.ffdh.GroupFFDH8192;
+import de.rub.nds.protocol.crypto.ffdh.Rfc7919Group2048;
+import de.rub.nds.protocol.crypto.ffdh.Rfc7919Group3072;
+import de.rub.nds.protocol.crypto.ffdh.Rfc7919Group4096;
+import de.rub.nds.protocol.crypto.ffdh.Rfc7919Group6144;
+import de.rub.nds.protocol.crypto.ffdh.Rfc7919Group8192;
 import de.rub.nds.x509attacker.constants.X509NamedCurve;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -67,11 +67,11 @@ public enum NamedGroup {
     ECDH_X25519(new byte[] {(byte) 0, (byte) 29}, NamedEllipticCurveParameters.CURVE_X25519),
     ECDH_X448(new byte[] {(byte) 0, (byte) 30}, NamedEllipticCurveParameters.CURVE_X448),
     CURVE_SM2(new byte[] {(byte) 0, (byte) 41}, NamedEllipticCurveParameters.CURVE_SM2),
-    FFDHE2048(new byte[] {(byte) 1, (byte) 0}, new GroupFFDH2048()),
-    FFDHE3072(new byte[] {(byte) 1, (byte) 1}, new GroupFFDH3072()),
-    FFDHE4096(new byte[] {(byte) 1, (byte) 2}, new GroupFFDH4096()),
-    FFDHE6144(new byte[] {(byte) 1, (byte) 3}, new GroupFFDH6144()),
-    FFDHE8192(new byte[] {(byte) 1, (byte) 4}, new GroupFFDH8192()),
+    FFDHE2048(new byte[] {(byte) 1, (byte) 0}, new Rfc7919Group2048()),
+    FFDHE3072(new byte[] {(byte) 1, (byte) 1}, new Rfc7919Group3072()),
+    FFDHE4096(new byte[] {(byte) 1, (byte) 2}, new Rfc7919Group4096()),
+    FFDHE6144(new byte[] {(byte) 1, (byte) 3}, new Rfc7919Group6144()),
+    FFDHE8192(new byte[] {(byte) 1, (byte) 4}, new Rfc7919Group8192()),
     EXPLICIT_PRIME(new byte[] {(byte) 0xFF, (byte) 1}, null),
     // GREASE constants
     EXPLICIT_CHAR2(new byte[] {(byte) 0xFF, (byte) 2}, null),
@@ -403,6 +403,8 @@ public enum NamedGroup {
         if (this.getGroupParameters() instanceof NamedEllipticCurveParameters) {
             return ((NamedEllipticCurveParameters) groupParameters).getEquationType()
                     == EcCurveEquationType.SHORT_WEIERSTRASS;
+        } else if (this.getGroupParameters() instanceof FfdhGroupParameters) {
+            return false;
         } else {
             throw new UnsupportedOperationException(
                     "Unknown group parameters: " + groupParameters.getClass().getSimpleName());
@@ -411,7 +413,7 @@ public enum NamedGroup {
 
     @Deprecated
     public boolean isCurve() {
-        return groupParameters instanceof NamedEllipticCurveParameters;
+        return groupParameters.getGroup() != null;
     }
 
     public boolean isEcGroup() {
@@ -419,7 +421,7 @@ public enum NamedGroup {
     }
 
     public boolean isDhGroup() {
-        return groupParameters instanceof FFDHGroup;
+        return groupParameters instanceof FfdhGroupParameters;
     }
 
     public boolean isGrease() {

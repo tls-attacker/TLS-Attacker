@@ -1285,7 +1285,7 @@ public class Config implements Serializable {
         defaultClientSupportedPointFormats = new LinkedList<>();
         defaultServerSupportedPointFormats.add(ECPointFormat.UNCOMPRESSED);
         defaultClientSupportedPointFormats.add(ECPointFormat.UNCOMPRESSED);
-        EllipticCurve curve = NamedEllipticCurveParameters.SECP256R1.getCurve();
+        EllipticCurve curve = NamedEllipticCurveParameters.SECP256R1.getGroup();
         defaultClientEphemeralEcPublicKey =
                 curve.mult(defaultClientEphemeralEcPrivateKey, curve.getBasePoint());
         defaultServerEphemeralEcPublicKey =

@@ -47,7 +47,7 @@ public class PWDClientKeyExchangePreparator
         EllipticCurve curve =
                 ((NamedEllipticCurveParameters)
                                 chooser.getSelectedNamedGroup().getGroupParameters())
-                        .getCurve();
+                        .getGroup();
 
         try {
             preparePasswordElement(msg);
@@ -70,7 +70,7 @@ public class PWDClientKeyExchangePreparator
         EllipticCurve curve =
                 ((NamedEllipticCurveParameters)
                                 chooser.getSelectedNamedGroup().getGroupParameters())
-                        .getCurve();
+                        .getGroup();
         byte[] premasterSecret =
                 generatePremasterSecret(
                         chooser.getContext().getTlsContext().getPWDPE(),
@@ -84,7 +84,7 @@ public class PWDClientKeyExchangePreparator
         EllipticCurve curve =
                 ((NamedEllipticCurveParameters)
                                 chooser.getSelectedNamedGroup().getGroupParameters())
-                        .getCurve();
+                        .getGroup();
         Point passwordElement = PWDComputations.computePasswordElement(chooser, curve);
         msg.getComputations().setPasswordElement(passwordElement);
 
@@ -141,7 +141,7 @@ public class PWDClientKeyExchangePreparator
         EllipticCurve curve =
                 ((NamedEllipticCurveParameters)
                                 chooser.getSelectedNamedGroup().getGroupParameters())
-                        .getCurve();
+                        .getGroup();
         PWDComputations.PWDKeyMaterial keyMaterial =
                 PWDComputations.generateKeyMaterial(
                         curve, msg.getComputations().getPasswordElement(), chooser);

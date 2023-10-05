@@ -130,7 +130,7 @@ public class EmptyClientKeyExchangePreparator<T extends EmptyClientKeyExchangeMe
         NamedGroup usedGroup = chooser.getSelectedNamedGroup();
         LOGGER.debug("PMS used Group: " + usedGroup.name());
         EllipticCurve curve =
-                ((NamedEllipticCurveParameters) usedGroup.getGroupParameters()).getCurve();
+                ((NamedEllipticCurveParameters) usedGroup.getGroupParameters()).getGroup();
         Point publicKey = chooser.getEcKeyExchangePeerPublicKey();
         msg.getComputations().setEcPublicKeyX(publicKey.getFieldX().getData());
         msg.getComputations().setEcPublicKeyY(publicKey.getFieldY().getData());
