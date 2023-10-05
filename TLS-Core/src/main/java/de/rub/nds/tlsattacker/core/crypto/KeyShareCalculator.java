@@ -12,11 +12,12 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.protocol.constants.EcCurveEquationType;
 import de.rub.nds.protocol.constants.FfdhGroupParameters;
 import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
+import de.rub.nds.protocol.crypto.CyclicGroup;
 import de.rub.nds.protocol.crypto.ec.EllipticCurve;
 import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.protocol.crypto.ec.PointFormatter;
 import de.rub.nds.protocol.crypto.ec.RFC7748Curve;
-import de.rub.nds.tlsattacker.core.constants.Bits;
+import de.rub.nds.protocol.crypto.ffdh.FfdhGroup;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import java.math.BigInteger;
@@ -28,33 +29,29 @@ public class KeyShareCalculator {
     private static final Logger LOGGER = LogManager.getLogger();
 
     public static byte[] createPublicKey(
-            NamedGroup group, BigInteger privateKey, ECPointFormat pointFormat) {
-        if (group.isGrease()) {
+            NamedGroup namedGroup, BigInteger privateKey, ECPointFormat pointFormat) {
+        if (namedGroup.isGrease()) {
             return new byte[0];
         }
-        if (group.isEcGroup()) {
-            EllipticCurve curve =
-                    ((NamedEllipticCurveParameters) group.getGroupParameters()).getGroup();
-            if (group.isShortWeierstrass()) {
-                Point publicKey = curve.mult(privateKey, curve.getBasePoint());
+        CyclicGroup<?> group = namedGroup.getGroupParameters().getGroup();
+
+        if (namedGroup.isEcGroup()) {
+            if (namedGroup.isShortWeierstrass()) {
+                Point publicKey = (Point) group.nTimesGroupOperationOnGenerator(privateKey);
                 return PointFormatter.formatToByteArray(
-                        (NamedEllipticCurveParameters) (group.getGroupParameters()),
+                        (NamedEllipticCurveParameters) (namedGroup.getGroupParameters()),
                         publicKey,
                         pointFormat.getFormat());
             } else {
-                RFC7748Curve rfcCurve = (RFC7748Curve) curve;
+                RFC7748Curve rfcCurve = (RFC7748Curve) group;
                 return rfcCurve.computePublicKey(privateKey);
             }
-        } else if (group.isDhGroup()) {
-            FfdhGroupParameters ffdheGroup = (FfdhGroupParameters) group.getGroupParameters();
-            BigInteger publicKey =
-                    ffdheGroup
-                            .getGenerator()
-                            .modPow(privateKey.abs(), ffdheGroup.getModulus().abs());
+        } else if (namedGroup.isDhGroup()) {
+            BigInteger publicKey = (BigInteger) group.nTimesGroupOperationOnGenerator(privateKey);
             return ArrayConverter.bigIntegerToNullPaddedByteArray(
-                    publicKey, ffdheGroup.getModulus().bitLength() / Bits.IN_A_BYTE);
+                    publicKey, ((FfdhGroup) group).getParameters().getElementSizeBytes());
         } else {
-            LOGGER.warn("Cannot create Public Key for group {}", group.name());
+            LOGGER.warn("Cannot create Public Key for group {}", namedGroup.name());
             return new byte[0];
         }
     }
