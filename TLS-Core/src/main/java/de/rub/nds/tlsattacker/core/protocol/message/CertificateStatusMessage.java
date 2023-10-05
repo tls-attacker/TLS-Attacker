@@ -64,7 +64,7 @@ public class CertificateStatusMessage extends HandshakeMessage {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("CertificateStatusMessage"); // TODO improve
+        builder.append("CertificateStatusMessage");
         return builder.toString();
     }
 
