@@ -9,8 +9,10 @@
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
+import de.rub.nds.protocol.constants.GroupParameters;
+import de.rub.nds.protocol.crypto.CyclicGroup;
 import de.rub.nds.protocol.crypto.ec.EllipticCurve;
+import de.rub.nds.protocol.crypto.ec.EllipticCurveSECP256R1;
 import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
@@ -40,11 +42,10 @@ public class PWDProtectExtensionHandler extends ExtensionHandler<PWDProtectExten
             tlsContext.setClientPWDUsername(tlsContext.getConfig().getDefaultClientPWDUsername());
             return;
         }
-        NamedEllipticCurveParameters parameters =
-                (NamedEllipticCurveParameters)
-                        tlsContext.getConfig().getDefaultPWDProtectGroup().getGroupParameters();
+        GroupParameters<?> parameters =
+                tlsContext.getConfig().getDefaultPWDProtectGroup().getGroupParameters();
         // decrypt protected username
-        EllipticCurve curve = parameters.getGroup();
+        CyclicGroup<?> group = parameters.getGroup();
         HKDFAlgorithm hkdfAlgorithm;
         if (parameters.getElementSizeBits() <= 256) {
             hkdfAlgorithm = HKDFAlgorithm.TLS_HKDF_SHA256;
@@ -62,6 +63,15 @@ public class PWDProtectExtensionHandler extends ExtensionHandler<PWDProtectExten
                         1,
                         Arrays.copyOfRange(protectedUsername, 0, parameters.getElementSizeBytes()));
         // y^2 = (x^3 + x*val + b) mod p
+        EllipticCurve curve;
+        if (group instanceof EllipticCurve) {
+            curve = (EllipticCurve) group;
+        } else {
+            LOGGER.warn(
+                    "Original group is not an EllipticCurve ({}), using SecP256R1Curve",
+                    parameters);
+            curve = new EllipticCurveSECP256R1();
+        }
         Point clientPublicKey = curve.createAPointOnCurve(clientPublicKeyX);
         BigInteger sharedSecret =
                 curve.mult(
