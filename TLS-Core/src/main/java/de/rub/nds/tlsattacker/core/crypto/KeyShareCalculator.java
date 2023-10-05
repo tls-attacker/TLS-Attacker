@@ -9,9 +9,7 @@
 package de.rub.nds.tlsattacker.core.crypto;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.protocol.constants.EcCurveEquationType;
-import de.rub.nds.protocol.constants.FfdhGroupParameters;
-import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
+import de.rub.nds.protocol.constants.GroupParameters;
 import de.rub.nds.protocol.crypto.CyclicGroup;
 import de.rub.nds.protocol.crypto.ec.EllipticCurve;
 import de.rub.nds.protocol.crypto.ec.Point;
@@ -39,9 +37,7 @@ public class KeyShareCalculator {
             if (namedGroup.isShortWeierstrass()) {
                 Point publicKey = (Point) group.nTimesGroupOperationOnGenerator(privateKey);
                 return PointFormatter.formatToByteArray(
-                        (NamedEllipticCurveParameters) (namedGroup.getGroupParameters()),
-                        publicKey,
-                        pointFormat.getFormat());
+                        namedGroup.getGroupParameters(), publicKey, pointFormat.getFormat());
             } else {
                 RFC7748Curve rfcCurve = (RFC7748Curve) group;
                 return rfcCurve.computePublicKey(privateKey);
@@ -64,11 +60,7 @@ public class KeyShareCalculator {
         if (group.isDhGroup()) {
             return computeDhSharedSecret(group, privateKey, new BigInteger(1, publicKey));
         } else if (group.isEcGroup()) {
-
-            NamedEllipticCurveParameters parameters =
-                    (NamedEllipticCurveParameters) group.getGroupParameters();
-            Point point;
-            point = PointFormatter.formatFromByteArray(parameters, publicKey);
+            Point point = PointFormatter.formatFromByteArray(group.getGroupParameters(), publicKey);
 
             return computeEcSharedSecret(group, privateKey, point);
         } else {
@@ -94,39 +86,40 @@ public class KeyShareCalculator {
             throw new IllegalArgumentException(
                     "Cannot compute dh shared secret for non ffdhe group");
         }
-        BigInteger modulus = ((FfdhGroupParameters) group.getGroupParameters()).getModulus();
+        CyclicGroup<?> cyclicGroup = group.getGroupParameters().getGroup();
+        BigInteger sharedSecret;
+        if (cyclicGroup instanceof FfdhGroup) {
+            sharedSecret = ((FfdhGroup) cyclicGroup).nTimesGroupOperation(publicKey, privateKey);
+        } else {
+            throw new IllegalArgumentException(
+                    "Cannot compute dh shared secret for non ffdhe group");
+        }
         return ArrayConverter.bigIntegerToNullPaddedByteArray(
-                publicKey.modPow(privateKey, modulus),
-                group.getGroupParameters().getElementSizeBytes());
+                sharedSecret, group.getGroupParameters().getElementSizeBytes());
     }
 
     /**
      * Computes the shared secret for an ECDH key exchange. Leading zero bytes of the shared secret
      * are maintained.
      *
-     * @param group The group that should be used
+     * @param namedGroup The group that should be used
      * @param privateKey The private key that should be used
      * @param publicKey The public key that should be used.
      * @return The shared secret with leading zero bytes.
      */
     public static byte[] computeEcSharedSecret(
-            NamedGroup group, BigInteger privateKey, Point publicKey) {
-        if (!group.isEcGroup()) {
+            NamedGroup namedGroup, BigInteger privateKey, Point publicKey) {
+        if (!(namedGroup.getGroupParameters().getGroup() instanceof EllipticCurve)) {
             throw new IllegalArgumentException("Cannot compute ec shared secret for non ec group");
         }
-        NamedEllipticCurveParameters parameters =
-                (NamedEllipticCurveParameters) group.getGroupParameters();
-        EllipticCurve curve = parameters.getGroup();
-        if (parameters.getEquationType() == EcCurveEquationType.MONTGOMERY) {
-            if (curve instanceof RFC7748Curve) {
-                RFC7748Curve rfcCurve = (RFC7748Curve) curve;
-                return rfcCurve.computeSharedSecretFromDecodedPoint(privateKey, publicKey);
-            } else {
-                throw new UnsupportedOperationException(
-                        "Cannot compute shared secret for non RFC7748 curve. Not implemented yet");
-            }
+        GroupParameters<?> parameters = namedGroup.getGroupParameters();
+        EllipticCurve curve = (EllipticCurve) parameters.getGroup();
+        if (curve instanceof RFC7748Curve) {
+            RFC7748Curve rfcCurve = (RFC7748Curve) curve;
+            return rfcCurve.computeSharedSecretFromDecodedPoint(privateKey, publicKey);
         }
-        Point sharedPoint = curve.mult(privateKey, publicKey);
+
+        Point sharedPoint = curve.nTimesGroupOperation(publicKey, privateKey);
         int elementLength = parameters.getElementSizeBytes();
         return ArrayConverter.bigIntegerToNullPaddedByteArray(
                 sharedPoint.getFieldX().getData(), elementLength);
