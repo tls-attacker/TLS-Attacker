@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
+import de.rub.nds.protocol.crypto.CyclicGroup;
 import de.rub.nds.protocol.crypto.ec.EllipticCurve;
 import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.protocol.crypto.ec.PointFormatter;
@@ -314,9 +315,12 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 
     private byte[] computeSharedPWDSecret(KeyShareStoreEntry keyShare) throws CryptoException {
         Chooser chooser = tlsContext.getChooser();
-        EllipticCurve curve =
-                ((NamedEllipticCurveParameters) keyShare.getGroup().getGroupParameters())
-                        .getGroup();
+        CyclicGroup<?> group = keyShare.getGroup().getGroupParameters().getGroup();
+        if (group instanceof EllipticCurve) {
+            LOGGER.warn("Cannot compute sharedPwdSecret for non-EC group. Returning new byte[]");
+        }
+
+        EllipticCurve curve = (EllipticCurve) group;
         DragonFlyKeyShareEntryParser parser =
                 new DragonFlyKeyShareEntryParser(
                         new ByteArrayInputStream(keyShare.getPublicKey()), keyShare.getGroup());
@@ -325,7 +329,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         int curveSize = curve.getModulus().bitLength();
         Point keySharePoint =
                 PointFormatter.fromRawFormat(
-                        (NamedEllipticCurveParameters) keyShare.getGroup().getGroupParameters(),
+                        keyShare.getGroup().getGroupParameters(),
                         dragonFlyKeyShareEntry.getRawPublicKey());
 
         BigInteger scalar = dragonFlyKeyShareEntry.getScalar();
