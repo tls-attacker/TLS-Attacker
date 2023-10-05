@@ -13,6 +13,7 @@ import de.rub.nds.protocol.constants.EcCurveEquationType;
 import de.rub.nds.protocol.constants.FfdhGroupParameters;
 import de.rub.nds.protocol.constants.GroupParameters;
 import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
+import de.rub.nds.protocol.crypto.ec.EllipticCurve;
 import de.rub.nds.protocol.crypto.ffdh.Rfc7919Group2048;
 import de.rub.nds.protocol.crypto.ffdh.Rfc7919Group3072;
 import de.rub.nds.protocol.crypto.ffdh.Rfc7919Group4096;
@@ -96,7 +97,7 @@ public enum NamedGroup {
 
     private byte[] value;
 
-    private GroupParameters groupParameters;
+    private GroupParameters<?> groupParameters;
 
     private static final Map<ByteBuffer, NamedGroup> MAP;
 
@@ -115,7 +116,7 @@ public enum NamedGroup {
                             SECP521R1,
                             CURVE_SM2));
 
-    private NamedGroup(byte[] value, GroupParameters group) {
+    private NamedGroup(byte[] value, GroupParameters<?> group) {
         this.value = value;
         this.groupParameters = group;
     }
@@ -330,7 +331,7 @@ public enum NamedGroup {
         }
     }
 
-    public static NamedGroup convert(GroupParameters parameters) {
+    public static NamedGroup convert(GroupParameters<?> parameters) {
         for (NamedGroup group : NamedGroup.values()) {
             if (group.getGroupParameters() == parameters) {
                 return group;
@@ -343,7 +344,7 @@ public enum NamedGroup {
         return value;
     }
 
-    public GroupParameters getGroupParameters() {
+    public GroupParameters<?> getGroupParameters() {
         return groupParameters;
     }
 
@@ -419,7 +420,7 @@ public enum NamedGroup {
     }
 
     public boolean isEcGroup() {
-        return groupParameters instanceof NamedEllipticCurveParameters;
+        return groupParameters.getGroup() instanceof EllipticCurve;
     }
 
     public boolean isDhGroup() {
