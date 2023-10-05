@@ -59,7 +59,6 @@ import de.rub.nds.tlsattacker.core.state.session.Session;
 import de.rub.nds.tlsattacker.core.state.session.TicketSession;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import de.rub.nds.x509attacker.constants.X509NamedCurve;
 import de.rub.nds.x509attacker.context.X509Context;
 import de.rub.nds.x509attacker.x509.X509CertificateChain;
 import jakarta.xml.bind.annotation.XmlAccessType;
@@ -297,14 +296,6 @@ public class TlsContext extends LayerContext {
     private byte[] pskIdentityHint;
 
     private NamedGroup selectedGroup;
-
-    private X509NamedCurve serverEcCertificateCurve;
-
-    private X509NamedCurve serverEcCertificateSignatureCurve;
-
-    private X509NamedCurve clientEcCertificateCurve;
-
-    private X509NamedCurve clientEcCertificateSignatureCurve;
 
     /** This is only the 'ephemeral' key */
     private Point clientEphemeralEcPublicKey;
@@ -2141,40 +2132,6 @@ public class TlsContext extends LayerContext {
 
     public void setReadConnectionId(byte[] readConnectionID) {
         this.readConnectionID = readConnectionID;
-    }
-
-    public X509NamedCurve getServerEcCertificateCurve() {
-        return serverEcCertificateCurve;
-    }
-
-    public void setServerEcCertificateCurve(X509NamedCurve serverEcCertificateCurve) {
-        this.serverEcCertificateCurve = serverEcCertificateCurve;
-    }
-
-    public X509NamedCurve getServerEcCertificateSignatureCurve() {
-        return serverEcCertificateSignatureCurve;
-    }
-
-    public void setServerEcCertificateSignatureCurve(
-            X509NamedCurve serverEcCertificateSignatureCurve) {
-        this.serverEcCertificateSignatureCurve = serverEcCertificateSignatureCurve;
-    }
-
-    public X509NamedCurve getClientEcCertificateCurve() {
-        return clientEcCertificateCurve;
-    }
-
-    public void setClientEcCertificateCurve(X509NamedCurve clientEcCertificateCurve) {
-        this.clientEcCertificateCurve = clientEcCertificateCurve;
-    }
-
-    public X509NamedCurve getClientEcCertificateSignatureCurve() {
-        return clientEcCertificateSignatureCurve;
-    }
-
-    public void setClientEcCertificateSignatureCurve(
-            X509NamedCurve clientEcCertificateSignatureCurve) {
-        this.clientEcCertificateSignatureCurve = clientEcCertificateSignatureCurve;
     }
 
     public BigInteger getServerEphemeralDhGenerator() {
