@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
 import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.protocol.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
@@ -39,9 +38,7 @@ public class ECDHClientKeyExchangeHandler<KeyExchangeMessage extends ECDHClientK
         NamedGroup usedGroup = tlsContext.getChooser().getSelectedNamedGroup();
         LOGGER.debug("Adjusting EC Point");
         Point publicKey =
-                PointFormatter.formatFromByteArray(
-                        (NamedEllipticCurveParameters) usedGroup.getGroupParameters(),
-                        serializedPoint);
+                PointFormatter.formatFromByteArray(usedGroup.getGroupParameters(), serializedPoint);
         tlsContext.setClientEphemeralEcPublicKey(publicKey);
     }
 }
