@@ -414,6 +414,20 @@ public enum NamedGroup {
         }
     }
 
+    public boolean isMontgomery() {
+        if (this.isEcGroup()) {
+            if (this.getGroupParameters() instanceof NamedEllipticCurveParameters) {
+                return ((NamedEllipticCurveParameters) groupParameters).getEquationType()
+                        == EcCurveEquationType.MONTGOMERY;
+            } else {
+                throw new UnsupportedOperationException(
+                        "Unknown group parameters: " + groupParameters.getClass().getSimpleName());
+            }
+        } else {
+            return false;
+        }
+    }
+
     @Deprecated
     public boolean isCurve() {
         return groupParameters.getGroup() != null;
