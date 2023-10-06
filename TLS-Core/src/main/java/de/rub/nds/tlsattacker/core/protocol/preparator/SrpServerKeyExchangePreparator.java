@@ -9,14 +9,12 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.protocol.exception.WorkflowExecutionException;
+import de.rub.nds.protocol.crypto.hash.HashCalculator;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.protocol.message.SrpServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -105,11 +103,11 @@ public class SrpServerKeyExchangePreparator
                 ArrayConverter.concatenate(
                         identity, ArrayConverter.hexStringToByteArray("3A"), password);
         LOGGER.debug("HashInput for hashInput1: {}", hashInput1);
-        byte[] hashOutput1 = shaSum(hashInput1);
+        byte[] hashOutput1 = HashCalculator.computeSha1(hashInput1);
         LOGGER.debug("HashValue for hashInput1: {}", hashOutput1);
         byte[] hashInput2 = ArrayConverter.concatenate(salt, hashOutput1);
         LOGGER.debug("HashInput for hashInput2: {}", hashInput2);
-        byte[] hashOutput2 = shaSum(hashInput2);
+        byte[] hashOutput2 = HashCalculator.computeSha1(hashInput2);
         LOGGER.debug("HashValue for hashInput2: {}", hashOutput2);
         return new BigInteger(1, hashOutput2);
     }
@@ -120,19 +118,8 @@ public class SrpServerKeyExchangePreparator
                 ArrayConverter.concatenate(
                         ArrayConverter.bigIntegerToByteArray(modulus), paddedGenerator);
         LOGGER.debug("HashInput SRP6Multi: {}", hashInput);
-        byte[] hashOutput = shaSum(hashInput);
+        byte[] hashOutput = HashCalculator.computeSha1(hashInput);
         return new BigInteger(1, hashOutput);
-    }
-
-    public byte[] shaSum(byte[] toHash) {
-        MessageDigest dig = null;
-        try {
-            dig = MessageDigest.getInstance("SHA-1");
-        } catch (NoSuchAlgorithmException ex) {
-            throw new WorkflowExecutionException("Could not find SHA-1 Algorithm", ex);
-        }
-        dig.update(toHash);
-        return dig.digest();
     }
 
     private byte[] calculatePadding(BigInteger modulus, BigInteger toPad) {
@@ -196,12 +183,12 @@ public class SrpServerKeyExchangePreparator
 
     private void prepareSaltLength(SrpServerKeyExchangeMessage msg) {
         msg.setSaltLength(msg.getSalt().getValue().length);
-        LOGGER.debug("Salt Length: " + msg.getSaltLength().getValue());
+        LOGGER.debug("Salt Length: {}", msg.getSaltLength().getValue());
     }
 
     private void prepareModulusLength(SrpServerKeyExchangeMessage msg) {
         msg.setModulusLength(msg.getModulus().getValue().length);
-        LOGGER.debug("Modulus Length: " + msg.getModulusLength().getValue());
+        LOGGER.debug("Modulus Length: {}", msg.getModulusLength().getValue());
     }
 
     private void preparePublicKey(SrpServerKeyExchangeMessage msg) {
@@ -216,40 +203,40 @@ public class SrpServerKeyExchangePreparator
 
     private void setComputedPrivateKey(SrpServerKeyExchangeMessage msg) {
         msg.getKeyExchangeComputations().setPrivateKey(chooser.getSRPServerPrivateKey());
-        LOGGER.debug("PrivateKey: " + msg.getKeyExchangeComputations().getPrivateKey().getValue());
+        LOGGER.debug("PrivateKey: {}", msg.getKeyExchangeComputations().getPrivateKey().getValue());
     }
 
     private void setComputedModulus(SrpServerKeyExchangeMessage msg) {
         msg.getKeyExchangeComputations().setModulus(chooser.getSRPModulus());
         LOGGER.debug(
-                "Modulus used for Computations: 0x"
-                        + msg.getKeyExchangeComputations().getModulus().getValue().toString(16));
+                "Modulus used for Computations: {}",
+                msg.getKeyExchangeComputations().getModulus().getValue().toString(16));
     }
 
     private void setSRPIdentity(SrpServerKeyExchangeMessage msg) {
         msg.getKeyExchangeComputations().setSRPIdentity(chooser.getSRPIdentity());
         LOGGER.debug(
-                "SRP Identity used for Computations: "
-                        + msg.getKeyExchangeComputations().getSRPIdentity());
+                "SRP Identity used for Computations: {}",
+                msg.getKeyExchangeComputations().getSRPIdentity());
     }
 
     private void setSRPPassword(SrpServerKeyExchangeMessage msg) {
         msg.getKeyExchangeComputations().setSRPPassword(chooser.getSRPPassword());
         LOGGER.debug(
-                "SRP Password used for Computations: "
-                        + msg.getKeyExchangeComputations().getSRPPassword());
+                "SRP Password used for Computations: {}",
+                msg.getKeyExchangeComputations().getSRPPassword());
     }
 
     private void setComputedSalt(SrpServerKeyExchangeMessage msg) {
         msg.getKeyExchangeComputations().setSalt(chooser.getSRPServerSalt());
-        LOGGER.debug("Salt used for Computations: " + msg.getKeyExchangeComputations().getSalt());
+        LOGGER.debug("Salt used for Computations: {}", msg.getKeyExchangeComputations().getSalt());
     }
 
     private void setComputedGenerator(SrpServerKeyExchangeMessage msg) {
         msg.getKeyExchangeComputations().setGenerator(chooser.getSRPGenerator());
         LOGGER.debug(
-                "Generator used for Computations: 0x"
-                        + msg.getKeyExchangeComputations().getGenerator().getValue().toString(16));
+                "Generator used for Computations: {}",
+                msg.getKeyExchangeComputations().getGenerator().getValue().toString(16));
     }
 
     private void prepareSignatureAndHashAlgorithm(SrpServerKeyExchangeMessage msg) {
@@ -275,6 +262,6 @@ public class SrpServerKeyExchangePreparator
 
     private void prepareSignatureLength(SrpServerKeyExchangeMessage msg) {
         msg.setSignatureLength(msg.getSignature().getValue().length);
-        LOGGER.debug("SignatureLength: " + msg.getSignatureLength().getValue());
+        LOGGER.debug("SignatureLength: {}", msg.getSignatureLength().getValue());
     }
 }
