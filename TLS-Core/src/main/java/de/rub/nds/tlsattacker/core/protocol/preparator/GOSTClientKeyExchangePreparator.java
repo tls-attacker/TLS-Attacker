@@ -9,8 +9,9 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
+import de.rub.nds.protocol.crypto.CyclicGroup;
 import de.rub.nds.protocol.crypto.ec.EllipticCurve;
+import de.rub.nds.protocol.crypto.ec.EllipticCurveSECP256R1;
 import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.protocol.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
@@ -153,9 +154,15 @@ public abstract class GOSTClientKeyExchangePreparator
 
     private void prepareKek(BigInteger privateKey, Point publicKey)
             throws GeneralSecurityException {
-        EllipticCurve curve =
-                ((NamedEllipticCurveParameters) chooser.getSelectedGostCurve().getGroupParameters())
-                        .getGroup();
+        CyclicGroup<?> group = chooser.getSelectedGostCurve().getGroupParameters().getGroup();
+        EllipticCurve curve;
+        if (group instanceof EllipticCurve) {
+            curve = (EllipticCurve) group;
+        } else {
+            LOGGER.warn("Selected group is not an EllipticCurve. Using SECP256R1");
+            curve = new EllipticCurveSECP256R1();
+        }
+
         Point sharedPoint = curve.mult(privateKey, publicKey);
         if (sharedPoint == null) {
             LOGGER.warn("GOST shared point is null - using base point instead");
@@ -184,9 +191,14 @@ public abstract class GOSTClientKeyExchangePreparator
     }
 
     private void prepareEphemeralKey() {
-        EllipticCurve curve =
-                ((NamedEllipticCurveParameters) chooser.getSelectedGostCurve().getGroupParameters())
-                        .getGroup();
+        CyclicGroup<?> group = chooser.getSelectedGostCurve().getGroupParameters().getGroup();
+        EllipticCurve curve;
+        if (group instanceof EllipticCurve) {
+            curve = (EllipticCurve) group;
+        } else {
+            LOGGER.warn("Selected group is not an EllipticCurve. Using SECP256R1");
+            curve = new EllipticCurveSECP256R1();
+        }
         LOGGER.debug("Using key from context");
         msg.getComputations().setPrivateKey(chooser.getClientEphemeralEcPrivateKey());
         Point publicKey =
@@ -273,8 +285,7 @@ public abstract class GOSTClientKeyExchangePreparator
                     Point.createPoint(
                             msg.getComputations().getClientPublicKeyX().getValue(),
                             msg.getComputations().getClientPublicKeyY().getValue(),
-                            (NamedEllipticCurveParameters)
-                                    chooser.getSelectedGostCurve().getGroupParameters());
+                            chooser.getSelectedGostCurve().getGroupParameters());
             SubjectPublicKeyInfo ephemeralKey =
                     SubjectPublicKeyInfo.getInstance(
                             GOSTUtils.generatePublicKey(chooser.getSelectedGostCurve(), ecPoint)
