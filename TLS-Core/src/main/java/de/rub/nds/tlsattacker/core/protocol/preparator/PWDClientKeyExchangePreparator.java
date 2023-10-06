@@ -9,8 +9,9 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
+import de.rub.nds.protocol.crypto.CyclicGroup;
 import de.rub.nds.protocol.crypto.ec.EllipticCurve;
+import de.rub.nds.protocol.crypto.ec.EllipticCurveSECP256R1;
 import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.protocol.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
@@ -44,11 +45,14 @@ public class PWDClientKeyExchangePreparator
     public void prepareHandshakeMessageContents() {
         LOGGER.debug("Preparing PWDClientKeyExchangeMessage");
         msg.prepareComputations();
-        EllipticCurve curve =
-                ((NamedEllipticCurveParameters)
-                                chooser.getSelectedNamedGroup().getGroupParameters())
-                        .getGroup();
-
+        CyclicGroup<?> group = chooser.getSelectedNamedGroup().getGroupParameters().getGroup();
+        EllipticCurve curve;
+        if (group instanceof EllipticCurve) {
+            curve = (EllipticCurve) group;
+        } else {
+            LOGGER.warn("Selected group is not an EllipticCurve. Using SECP256R1");
+            curve = new EllipticCurveSECP256R1();
+        }
         try {
             preparePasswordElement(msg);
         } catch (CryptoException e) {
@@ -67,10 +71,14 @@ public class PWDClientKeyExchangePreparator
     @Override
     public void prepareAfterParse() {
         msg.prepareComputations();
-        EllipticCurve curve =
-                ((NamedEllipticCurveParameters)
-                                chooser.getSelectedNamedGroup().getGroupParameters())
-                        .getGroup();
+        CyclicGroup<?> group = chooser.getSelectedNamedGroup().getGroupParameters().getGroup();
+        EllipticCurve curve;
+        if (group instanceof EllipticCurve) {
+            curve = (EllipticCurve) group;
+        } else {
+            LOGGER.warn("Selected group is not an EllipticCurve. Using SECP256R1");
+            curve = new EllipticCurveSECP256R1();
+        }
         byte[] premasterSecret =
                 generatePremasterSecret(
                         chooser.getContext().getTlsContext().getPwdPasswordElement(),
@@ -81,10 +89,14 @@ public class PWDClientKeyExchangePreparator
     }
 
     protected void preparePasswordElement(PWDClientKeyExchangeMessage msg) throws CryptoException {
-        EllipticCurve curve =
-                ((NamedEllipticCurveParameters)
-                                chooser.getSelectedNamedGroup().getGroupParameters())
-                        .getGroup();
+        CyclicGroup<?> group = chooser.getSelectedNamedGroup().getGroupParameters().getGroup();
+        EllipticCurve curve;
+        if (group instanceof EllipticCurve) {
+            curve = (EllipticCurve) group;
+        } else {
+            LOGGER.warn("Selected group is not an EllipticCurve. Using SECP256R1");
+            curve = new EllipticCurveSECP256R1();
+        }
         Point passwordElement = PWDComputations.computePasswordElement(chooser, curve);
         msg.getComputations().setPasswordElement(passwordElement);
 
@@ -138,10 +150,14 @@ public class PWDClientKeyExchangePreparator
     }
 
     protected void prepareScalarElement(PWDClientKeyExchangeMessage msg) {
-        EllipticCurve curve =
-                ((NamedEllipticCurveParameters)
-                                chooser.getSelectedNamedGroup().getGroupParameters())
-                        .getGroup();
+        CyclicGroup<?> group = chooser.getSelectedNamedGroup().getGroupParameters().getGroup();
+        EllipticCurve curve;
+        if (group instanceof EllipticCurve) {
+            curve = (EllipticCurve) group;
+        } else {
+            LOGGER.warn("Selected group is not an EllipticCurve. Using SECP256R1");
+            curve = new EllipticCurveSECP256R1();
+        }
         PWDComputations.PWDKeyMaterial keyMaterial =
                 PWDComputations.generateKeyMaterial(
                         curve, msg.getComputations().getPasswordElement(), chooser);
@@ -171,10 +187,7 @@ public class PWDClientKeyExchangePreparator
     protected void prepareElement(PWDClientKeyExchangeMessage msg, Point element) {
         byte[] serializedElement =
                 PointFormatter.formatToByteArray(
-                        (NamedEllipticCurveParameters)
-                                chooser.getConfig()
-                                        .getDefaultSelectedNamedGroup()
-                                        .getGroupParameters(),
+                        chooser.getConfig().getDefaultSelectedNamedGroup().getGroupParameters(),
                         element,
                         chooser.getConfig().getDefaultSelectedPointFormat().getFormat());
         msg.setElement(serializedElement);
@@ -197,8 +210,7 @@ public class PWDClientKeyExchangePreparator
             // TODO: wrong group
             peerElement =
                     PointFormatter.formatFromByteArray(
-                            (NamedEllipticCurveParameters)
-                                    chooser.getSelectedNamedGroup().getGroupParameters(),
+                            chooser.getSelectedNamedGroup().getGroupParameters(),
                             msg.getElement().getValue());
             peerScalar = new BigInteger(1, msg.getScalar().getValue());
         }
