@@ -9,8 +9,9 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
+import de.rub.nds.protocol.crypto.CyclicGroup;
 import de.rub.nds.protocol.crypto.ec.EllipticCurve;
+import de.rub.nds.protocol.crypto.ec.EllipticCurveSECP256R1;
 import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.protocol.crypto.ec.PointFormatter;
 import de.rub.nds.protocol.crypto.ec.RFC7748Curve;
@@ -84,11 +85,18 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
         }
 
         // Compute publicKey
-        EllipticCurve curve =
-                ((NamedEllipticCurveParameters) namedGroup.getGroupParameters()).getGroup();
+        CyclicGroup<?> group = namedGroup.getGroupParameters().getGroup();
+        EllipticCurve curve;
+        if (group instanceof EllipticCurve) {
+            curve = (EllipticCurve) group;
+        } else {
+            LOGGER.warn("Selected group is not an EllipticCurve. Using SECP256R1");
+            curve = new EllipticCurveSECP256R1();
+        }
+
         LOGGER.debug("NamedGroup: {} ", namedGroup.name());
         byte[] publicKeyBytes;
-        if (!namedGroup.isShortWeierstrass()) {
+        if (namedGroup.isMontgomery()) {
             RFC7748Curve rfcCurve = (RFC7748Curve) curve;
             publicKeyBytes =
                     rfcCurve.computePublicKey(
@@ -100,9 +108,7 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
                             curve.getBasePoint());
             publicKeyBytes =
                     PointFormatter.formatToByteArray(
-                            (NamedEllipticCurveParameters) (namedGroup.getGroupParameters()),
-                            publicKey,
-                            pointFormat.getFormat());
+                            (namedGroup.getGroupParameters()), publicKey, pointFormat.getFormat());
         } else {
             LOGGER.warn(
                     "Could not set public key. The selected curve is probably not a real curve. Using empty public key instead");
