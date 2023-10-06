@@ -9,8 +9,9 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
+import de.rub.nds.protocol.crypto.CyclicGroup;
 import de.rub.nds.protocol.crypto.ec.EllipticCurve;
+import de.rub.nds.protocol.crypto.ec.EllipticCurveSECP256R1;
 import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.protocol.crypto.ec.PointFormatter;
 import de.rub.nds.protocol.crypto.ec.RFC7748Curve;
@@ -96,9 +97,15 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
         if (msg.getComputations().getPrivateKey() == null) {
             setComputationPrivateKey(msg);
         }
-        EllipticCurve curve =
-                ((NamedEllipticCurveParameters) usedGroup.getGroupParameters()).getGroup();
+        CyclicGroup<?> group = usedGroup.getGroupParameters().getGroup();
         Point publicKey = chooser.getEcKeyExchangePeerPublicKey();
+        EllipticCurve curve;
+        if (group instanceof EllipticCurve) {
+            curve = (EllipticCurve) group;
+        } else {
+            LOGGER.warn("Selected group is not an EllipticCurve. Using SECP256R1");
+            curve = new EllipticCurveSECP256R1();
+        }
 
         premasterSecret =
                 computePremasterSecret(
@@ -108,15 +115,24 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
 
     private void setSerializedPublicKey() {
         NamedGroup usedGroup = getSuitableNamedGroup();
+
+        CyclicGroup<?> group = usedGroup.getGroupParameters().getGroup();
+        EllipticCurve curve;
+        if (group instanceof EllipticCurve) {
+            curve = (EllipticCurve) group;
+        } else {
+            LOGGER.warn("Selected group is not an EllipticCurve. Using SECP256R1");
+            curve = new EllipticCurveSECP256R1();
+        }
+
         LOGGER.debug("PublicKey used Group: {}", usedGroup.name());
         ECPointFormat pointFormat = chooser.getConfig().getDefaultSelectedPointFormat();
         LOGGER.debug("EC Point format: {}", pointFormat.name());
         setComputationPrivateKey(msg);
         byte[] publicKeyBytes;
         BigInteger privateKey = msg.getComputations().getPrivateKey().getValue();
-        EllipticCurve curve =
-                ((NamedEllipticCurveParameters) usedGroup.getGroupParameters()).getGroup();
-        if (usedGroup == NamedGroup.ECDH_X25519 || usedGroup == NamedGroup.ECDH_X448) {
+
+        if (curve instanceof RFC7748Curve) {
             RFC7748Curve rfcCurve = (RFC7748Curve) curve;
             publicKeyBytes = rfcCurve.computePublicKey(privateKey);
         } else {
@@ -129,9 +145,7 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
                             msg.getComputations().getPublicKeyY().getValue());
             publicKeyBytes =
                     PointFormatter.formatToByteArray(
-                            (NamedEllipticCurveParameters) usedGroup.getGroupParameters(),
-                            publicKey,
-                            pointFormat.getFormat());
+                            usedGroup.getGroupParameters(), publicKey, pointFormat.getFormat());
         }
         msg.setPublicKey(publicKeyBytes);
     }
