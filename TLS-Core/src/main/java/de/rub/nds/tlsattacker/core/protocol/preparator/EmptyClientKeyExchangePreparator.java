@@ -9,8 +9,9 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
+import de.rub.nds.protocol.crypto.CyclicGroup;
 import de.rub.nds.protocol.crypto.ec.EllipticCurve;
+import de.rub.nds.protocol.crypto.ec.EllipticCurveSECP256R1;
 import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
@@ -128,8 +129,15 @@ public class EmptyClientKeyExchangePreparator<T extends EmptyClientKeyExchangeMe
     public void computeEcKeyExchangePms() {
         NamedGroup usedGroup = chooser.getSelectedNamedGroup();
         LOGGER.debug("PMS used Group: " + usedGroup.name());
-        EllipticCurve curve =
-                ((NamedEllipticCurveParameters) usedGroup.getGroupParameters()).getGroup();
+        CyclicGroup<?> group = usedGroup.getGroupParameters().getGroup();
+        EllipticCurve curve;
+        if (group instanceof EllipticCurve) {
+            curve = (EllipticCurve) group;
+        } else {
+            LOGGER.warn("Selected group is not an EllipticCurve. Using SECP256R1");
+            curve = new EllipticCurveSECP256R1();
+        }
+
         Point publicKey = chooser.getEcKeyExchangePeerPublicKey();
         msg.getComputations().setEcPublicKeyX(publicKey.getFieldX().getData());
         msg.getComputations().setEcPublicKeyY(publicKey.getFieldY().getData());
