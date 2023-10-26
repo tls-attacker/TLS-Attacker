@@ -92,7 +92,7 @@ public class RequestConnectionIdMessage extends HandshakeMessage<RequestConnecti
         StringBuilder sb = new StringBuilder();
         sb.append("RequestConnectionId:");
         sb.append("\n  NumberOfConnectionIds: ");
-        if (numberOfConnectionIds != null && numberOfConnectionIds.getOriginalValue() != null) {
+        if (numberOfConnectionIds != null && numberOfConnectionIds.getValue() != null) {
             sb.append(numberOfConnectionIds.getValue());
         } else {
             sb.append("null");
