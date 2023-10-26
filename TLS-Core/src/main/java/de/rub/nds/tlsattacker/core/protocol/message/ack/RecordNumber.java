@@ -70,16 +70,28 @@ public class RecordNumber extends ModifiableVariableHolder {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        RecordNumber that = (RecordNumber) o;
-        return Objects.equals(epoch, that.epoch)
-                && Objects.equals(sequenceNumber, that.sequenceNumber);
+    public int hashCode() {
+        int hash = 7;
+        hash = 97 * hash + Objects.hashCode(this.epoch);
+        hash = 97 * hash + Objects.hashCode(this.sequenceNumber);
+        return hash;
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(epoch, sequenceNumber);
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final RecordNumber other = (RecordNumber) obj;
+        if (!Objects.equals(this.epoch, other.epoch)) {
+            return false;
+        }
+        return Objects.equals(this.sequenceNumber, other.sequenceNumber);
     }
 }

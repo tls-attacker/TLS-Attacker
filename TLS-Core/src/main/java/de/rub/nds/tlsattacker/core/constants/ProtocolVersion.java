@@ -218,7 +218,6 @@ public enum ProtocolVersion {
                 || this == ProtocolVersion.TLS12
                 || this == ProtocolVersion.DTLS10
                 || this == ProtocolVersion.DTLS12
-                || this == ProtocolVersion.DTLS13
                 || this == DTLS10_DRAFT;
     }
 

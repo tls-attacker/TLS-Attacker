@@ -21,6 +21,7 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.AckSerializer;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Objects;
 
 @XmlRootElement(name = "ACK")
 public class AckMessage extends ProtocolMessage<AckMessage> {
@@ -98,5 +99,31 @@ public class AckMessage extends ProtocolMessage<AckMessage> {
     @Override
     public ProtocolMessageParser<AckMessage> getParser(TlsContext tlsContext, InputStream stream) {
         return new AckParser(stream);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 61 * hash + Objects.hashCode(this.recordNumbers);
+        hash = 61 * hash + Objects.hashCode(this.recordNumberLength);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final AckMessage other = (AckMessage) obj;
+        if (!Objects.equals(this.recordNumbers, other.recordNumbers)) {
+            return false;
+        }
+        return Objects.equals(this.recordNumberLength, other.recordNumberLength);
     }
 }

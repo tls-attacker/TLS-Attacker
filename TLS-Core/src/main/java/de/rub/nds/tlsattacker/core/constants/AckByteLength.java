@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.core.constants;
 
 public class AckByteLength {
 
-    /** length of the length field for the record numbers */
     public static final int RECORD_NUMBERS_LENGTH = 2;
 
     public static final int RECORD_NUMBER = 16;

@@ -41,7 +41,7 @@ public class AckPreperator extends ProtocolMessagePreparator<AckMessage> {
     private void prepareRecordNumbersLength() {
         message.setRecordNumberLength(
                 message.getRecordNumbers().size() * AckByteLength.RECORD_NUMBER);
-        LOGGER.debug("RecordNumbers Length: " + message.getRecordNumberLength());
+        LOGGER.debug("RecordNumbersLength: " + message.getRecordNumberLength().getValue());
     }
 
     private void prepareRecordNumbers() {
@@ -52,7 +52,6 @@ public class AckPreperator extends ProtocolMessagePreparator<AckMessage> {
             message.getRecordNumbers().addAll(tlsContext.getDtlsAcknowledgedRecords());
             tlsContext.getDtlsAcknowledgedRecords().clear();
         }
-
         LOGGER.debug("RecordNumbers: ");
         for (RecordNumber recordNumber : message.getRecordNumbers()) {
             LOGGER.debug(

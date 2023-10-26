@@ -34,10 +34,11 @@ public class AckParser extends ProtocolMessageParser<AckMessage> {
     }
 
     private void parseRecordNumbers(AckMessage ackMessage) {
-        int recordNumberLength = ackMessage.getRecordNumberLength().getValue();
         ackMessage.setRecordNumbers(new LinkedList<>());
         LOGGER.debug("RecordNumbers: ");
-        for (int i = 0; i < recordNumberLength; i += AckByteLength.RECORD_NUMBER) {
+        for (int i = 0;
+                i < ackMessage.getRecordNumberLength().getValue();
+                i += AckByteLength.RECORD_NUMBER) {
             RecordNumber recordNumber = new RecordNumber();
             recordNumber.setEpoch(parseBigIntField(RecordNumberByteLength.EPOCH));
             recordNumber.setSequenceNumber(

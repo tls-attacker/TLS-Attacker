@@ -38,7 +38,7 @@ public class AckSerializer extends ProtocolMessageSerializer<AckMessage> {
     }
 
     private void writeRecordNumbers() {
-        LOGGER.debug("RecordNumbers:");
+        LOGGER.debug("RecordNumbers: ");
         for (RecordNumber recordNumber : message.getRecordNumbers()) {
             appendBigInteger(recordNumber.getEpoch().getValue(), RecordNumberByteLength.EPOCH);
             appendBigInteger(

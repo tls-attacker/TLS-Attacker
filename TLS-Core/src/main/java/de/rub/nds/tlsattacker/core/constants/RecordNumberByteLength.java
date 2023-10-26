@@ -13,4 +13,6 @@ public class RecordNumberByteLength {
     public static final int EPOCH = 8;
 
     public static final int SEQUENCE_NUMBER = 8;
+
+    private RecordNumberByteLength() {}
 }
