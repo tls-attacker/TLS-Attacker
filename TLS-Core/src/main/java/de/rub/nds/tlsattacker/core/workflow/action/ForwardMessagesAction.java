@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -21,6 +21,8 @@ import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
+import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
+import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
 import jakarta.xml.bind.annotation.XmlElement;
@@ -320,6 +322,16 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
     @Override
     public List<DtlsHandshakeMessageFragment> getSendFragments() {
         return sendFragments;
+    }
+
+    @Override
+    public List<QuicPacket> getSendQuicPackets() {
+        return List.of();
+    }
+
+    @Override
+    public List<QuicFrame> getSendQuicFrames() {
+        return List.of();
     }
 
     public List<ProtocolMessage> getMessages() {

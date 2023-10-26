@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -69,7 +69,7 @@ public class DtlsFragmentLayer
     public LayerProcessingResult sendConfiguration() throws IOException {
         LayerConfiguration<DtlsHandshakeMessageFragment> configuration = getLayerConfiguration();
         if (configuration != null && configuration.getContainerList() != null) {
-            for (DtlsHandshakeMessageFragment fragment : configuration.getContainerList()) {
+            for (DtlsHandshakeMessageFragment fragment : getUnprocessedConfiguredContainers()) {
                 if (containerAlreadyUsedByHigherLayer(fragment) && skipEmptyFragments(fragment)) {
                     continue;
                 }
@@ -110,16 +110,20 @@ public class DtlsFragmentLayer
             // produce enough fragments from the given data
             List<DtlsHandshakeMessageFragment> fragments = new LinkedList<>();
             if (getLayerConfiguration().getContainerList() == null
-                    || getLayerConfiguration().getContainerList().size() == 0) {
+                    || getUnprocessedConfiguredContainers().isEmpty()) {
                 fragments = getEnoughFragments(context, data.length);
             } else {
                 // use the provided fragments
-                fragments.add(getLayerConfiguration().getContainerList().remove(0));
-                if (context.getConfig().isCreateFragmentsDynamically()) {
-                    fragments.addAll(
-                            getEnoughFragments(
-                                    context,
-                                    data.length - fragments.get(0).getMaxFragmentLengthConfig()));
+                int dataToBeSent = data.length;
+                List<DtlsHandshakeMessageFragment> givenFragments =
+                        getUnprocessedConfiguredContainers();
+                while (dataToBeSent > 0 && givenFragments.size() > 0) {
+                    DtlsHandshakeMessageFragment nextFragment = givenFragments.remove(0);
+                    fragments.add(nextFragment);
+                    dataToBeSent -= nextFragment.getMaxFragmentLengthConfig();
+                }
+                if (dataToBeSent > 0 && context.getConfig().isCreateFragmentsDynamically()) {
+                    fragments.addAll(getEnoughFragments(context, dataToBeSent));
                 }
             }
             fragments =

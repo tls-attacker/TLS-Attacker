@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -11,6 +11,8 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
+import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.*;
@@ -43,6 +45,56 @@ public class MessageActionFactory {
             action = new SendAction(protocolMessages);
         } else {
             action = new ReceiveAction(getFactoryReceiveActionOptions(tlsConfig), protocolMessages);
+        }
+        action.setConnectionAlias(connection.getAlias());
+        return action;
+    }
+
+    public static MessageAction createQuicAction(
+            Config tlsConfig,
+            AliasedConnection connection,
+            ConnectionEndType sendingConnectionEnd,
+            QuicFrame... quicFrames) {
+        MessageAction action;
+        if (connection.getLocalConnectionEndType() == sendingConnectionEnd) {
+            action = new SendAction(quicFrames);
+        } else {
+            action = new ReceiveQuicAction(quicFrames);
+            action.setActionOptions(getFactoryReceiveActionOptions(tlsConfig));
+        }
+        action.setConnectionAlias(connection.getAlias());
+        return action;
+    }
+
+    public static MessageAction createQuicAction(
+            Config tlsConfig,
+            AliasedConnection connection,
+            ConnectionEndType sendingConnectionEnd,
+            QuicPacket... quicPackets) {
+        MessageAction action;
+        if (connection.getLocalConnectionEndType() == sendingConnectionEnd) {
+            action = new SendAction(quicPackets);
+        } else {
+            action = new ReceiveQuicAction(quicPackets);
+            action.setActionOptions(getFactoryReceiveActionOptions(tlsConfig));
+        }
+        action.setConnectionAlias(connection.getAlias());
+        return action;
+    }
+
+    public static MessageAction createQuicAction(
+            Config tlsConfig,
+            AliasedConnection connection,
+            ConnectionEndType sendingConnectionEnd,
+            List<QuicFrame> quicFrames,
+            List<QuicPacket> quicPackets) {
+        MessageAction action;
+        if (connection.getLocalConnectionEndType() == sendingConnectionEnd) {
+            action = new SendAction(null, quicFrames, quicPackets);
+        } else {
+            action =
+                    new ReceiveQuicAction(
+                            getFactoryReceiveActionOptions(tlsConfig), quicFrames, quicPackets);
         }
         action.setConnectionAlias(connection.getAlias());
         return action;

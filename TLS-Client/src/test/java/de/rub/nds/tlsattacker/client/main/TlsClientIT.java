@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -73,9 +73,16 @@ public class TlsClientIT {
             names = {"SSL3", "TLS10", "TLS11", "TLS12"})
     @Tag(TestCategories.INTEGRATION_TEST)
     public void testTlsClientWithRsaForProtocolVersion(ProtocolVersion protocolVersion)
-            throws UnrecoverableKeyException, CertificateException, KeyStoreException, IOException,
-                    NoSuchAlgorithmException, SignatureException, InvalidKeyException,
-                    NoSuchProviderException, OperatorCreationException, KeyManagementException {
+            throws UnrecoverableKeyException,
+                    CertificateException,
+                    KeyStoreException,
+                    IOException,
+                    NoSuchAlgorithmException,
+                    SignatureException,
+                    InvalidKeyException,
+                    NoSuchProviderException,
+                    OperatorCreationException,
+                    KeyManagementException {
         startBasicTlsServer(PublicKeyAlgorithm.RSA);
         assumeTrue(
                 tlsServer.getEnabledProtocolVersions().contains(protocolVersion),
@@ -104,9 +111,16 @@ public class TlsClientIT {
             names = {"SSL3", "TLS10", "TLS11", "TLS12"})
     @Tag(TestCategories.INTEGRATION_TEST)
     public void testTlsClientWithEcForProtocolVersion(ProtocolVersion protocolVersion)
-            throws OperatorCreationException, UnrecoverableKeyException, CertificateException,
-                    KeyStoreException, IOException, NoSuchAlgorithmException, SignatureException,
-                    InvalidKeyException, NoSuchProviderException, KeyManagementException {
+            throws OperatorCreationException,
+                    UnrecoverableKeyException,
+                    CertificateException,
+                    KeyStoreException,
+                    IOException,
+                    NoSuchAlgorithmException,
+                    SignatureException,
+                    InvalidKeyException,
+                    NoSuchProviderException,
+                    KeyManagementException {
         startBasicTlsServer(PublicKeyAlgorithm.EC);
         assumeTrue(
                 tlsServer.getEnabledProtocolVersions().contains(protocolVersion),
@@ -130,9 +144,16 @@ public class TlsClientIT {
     }
 
     public void startBasicTlsServer(PublicKeyAlgorithm algorithm)
-            throws UnrecoverableKeyException, CertificateException, KeyStoreException, IOException,
-                    NoSuchAlgorithmException, KeyManagementException, SignatureException,
-                    InvalidKeyException, NoSuchProviderException, OperatorCreationException {
+            throws UnrecoverableKeyException,
+                    CertificateException,
+                    KeyStoreException,
+                    IOException,
+                    NoSuchAlgorithmException,
+                    KeyManagementException,
+                    SignatureException,
+                    InvalidKeyException,
+                    NoSuchProviderException,
+                    OperatorCreationException {
         TimeHelper.setProvider(new FixedTimeProvider(0));
         KeyPair k = null;
         switch (algorithm) {

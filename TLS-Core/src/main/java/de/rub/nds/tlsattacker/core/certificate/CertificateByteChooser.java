@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -109,6 +109,7 @@ public class CertificateByteChooser {
         filenames.add("ec_sect193r1_ecdsa_cert.pem");
         filenames.add("ec_secp256r1_ecdsa_cert.pem");
         filenames.add("ec_secp256r1_rsa_cert.pem");
+        filenames.add("ec_sm2p256v1_sm2_cert.pem");
         filenames.add("dh3072_ecdsa_cert.pem");
         filenames.add("dh2048_ecdsa_cert.pem");
         filenames.add("dh1024_ecdsa_cert.pem");

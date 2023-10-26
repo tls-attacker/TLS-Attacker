@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -17,6 +17,8 @@ import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
+import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
+import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
@@ -26,11 +28,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/** todo print configured records */
 @XmlRootElement
 public class SendAction extends MessageAction implements SendingAction {
 
@@ -40,24 +40,49 @@ public class SendAction extends MessageAction implements SendingAction {
         super();
     }
 
-    public SendAction(ActionOption option, List<ProtocolMessage> messages) {
-        super(messages);
+    public SendAction(
+            List<ProtocolMessage> messages,
+            List<QuicFrame> quicFrames,
+            List<QuicPacket> quicPackets) {
+        super(messages, quicFrames, quicPackets);
+    }
 
+    public SendAction(
+            ActionOption option,
+            List<ProtocolMessage> messages,
+            List<QuicFrame> quicFrames,
+            List<QuicPacket> quicPackets) {
+        super(messages, quicFrames, quicPackets);
         if (option != null) {
             this.addActionOption(option);
         }
     }
 
-    public SendAction(List<ProtocolMessage> messages) {
-        this((ActionOption) null, messages);
-    }
-
-    public SendAction(HttpMessage... httpMessage) {
-        this.setHttpMessages(new ArrayList<>(Arrays.asList(httpMessage)));
+    public SendAction(ActionOption option, List<ProtocolMessage> messages) {
+        super(messages);
+        if (option != null) {
+            this.addActionOption(option);
+        }
     }
 
     public SendAction(ActionOption option, ProtocolMessage... messages) {
         this(option, new ArrayList<>(Arrays.asList(messages)));
+    }
+
+    public SendAction(List<ProtocolMessage> messages) {
+        super(messages);
+    }
+
+    public SendAction(QuicPacket... quicPackets) {
+        super(quicPackets);
+    }
+
+    public SendAction(QuicFrame... quicFrames) {
+        super(quicFrames);
+    }
+
+    public SendAction(HttpMessage... httpMessage) {
+        this.setHttpMessages(new ArrayList<>(Arrays.asList(httpMessage)));
     }
 
     public SendAction(ProtocolMessage... messages) {
@@ -84,7 +109,8 @@ public class SendAction extends MessageAction implements SendingAction {
             throw new ActionExecutionException("Action already executed!");
         }
 
-        String sending = getReadableString(messages);
+        String sending =
+                getReadableStringFromContainerList(messages, httpMessages, quicPackets, quicFrames);
         if (hasDefaultAlias()) {
             LOGGER.info("Sending messages: " + sending);
         } else {
@@ -92,7 +118,7 @@ public class SendAction extends MessageAction implements SendingAction {
         }
 
         try {
-            send(tlsContext, messages, fragments, records, httpMessages);
+            send(tlsContext, messages, fragments, records, quicFrames, quicPackets, httpMessages);
             setExecuted(true);
         } catch (IOException e) {
             if (!getActionOptions().contains(ActionOption.MAY_FAIL)) {
@@ -105,39 +131,18 @@ public class SendAction extends MessageAction implements SendingAction {
 
     @Override
     public String toString() {
-        StringBuilder sb;
-        if (isExecuted()) {
-            sb = new StringBuilder("Send Action:\n");
-        } else {
-            sb = new StringBuilder("Send Action: (not executed)\n");
-        }
-        sb.append("\tMessages:");
-        if (messages != null) {
-            for (ProtocolMessage message : messages) {
-                sb.append(message.toCompactString());
-                sb.append(", ");
-            }
-            sb.append("\n");
-        } else {
-            sb.append("null (no messages set)");
-        }
-        return sb.toString();
+        return "SendAction: "
+                + (isExecuted() ? "\n" : "(not executed)\n")
+                + "\tMessages: "
+                + getReadableStringFromContainerList(
+                        messages, httpMessages, quicPackets, quicFrames);
     }
 
     @Override
     public String toCompactString() {
-        StringBuilder sb = new StringBuilder(super.toCompactString());
-        if ((messages != null) && (!messages.isEmpty())) {
-            sb.append(" (");
-            for (ProtocolMessage message : messages) {
-                sb.append(message.toCompactString());
-                sb.append(",");
-            }
-            sb.deleteCharAt(sb.lastIndexOf(",")).append(")");
-        } else {
-            sb.append(" (no messages set)");
-        }
-        return sb.toString();
+        return super.toCompactString()
+                + getReadableStringFromContainerList(
+                        messages, httpMessages, quicPackets, quicFrames);
     }
 
     @Override
@@ -178,6 +183,17 @@ public class SendAction extends MessageAction implements SendingAction {
                 holders.addAll(msg.getAllModifiableVariableHolders());
             }
         }
+        if (getQuicFrames() != null) {
+            for (QuicFrame frames : getQuicFrames()) {
+                holders.addAll(frames.getAllModifiableVariableHolders());
+            }
+        }
+        if (getQuicPackets() != null) {
+            for (QuicPacket packets : getQuicPackets()) {
+                holders.addAll(packets.getAllModifiableVariableHolders());
+            }
+        }
+
         for (ModifiableVariableHolder holder : holders) {
             holder.reset();
         }
@@ -200,36 +216,13 @@ public class SendAction extends MessageAction implements SendingAction {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final SendAction other = (SendAction) obj;
-        if (!Objects.equals(this.messages, other.messages)) {
-            return false;
-        }
-        if (!Objects.equals(this.records, other.records)) {
-            return false;
-        }
-        if (!Objects.equals(this.fragments, other.fragments)) {
-            return false;
-        }
-        return super.equals(obj);
+    public List<QuicPacket> getSendQuicPackets() {
+        return quicPackets;
     }
 
     @Override
-    public int hashCode() {
-        int hash = super.hashCode();
-        hash = 67 * hash + Objects.hashCode(this.messages);
-        hash = 67 * hash + Objects.hashCode(this.records);
-        hash = 67 * hash + Objects.hashCode(this.fragments);
-        return hash;
+    public List<QuicFrame> getSendQuicFrames() {
+        return quicFrames;
     }
 
     @Override

@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -19,6 +19,7 @@ import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.quic.QuicTransportParametersExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
@@ -74,6 +75,7 @@ import java.io.Serializable;
     SRPExtensionMessage.class,
     CachedInfoExtensionMessage.class,
     ConnectionIdExtensionMessage.class,
+    QuicTransportParametersExtensionMessage.class,
     EncryptedClientHelloExtensionMessage.class
 })
 public abstract class ExtensionMessage<Self extends ExtensionMessage<?>>

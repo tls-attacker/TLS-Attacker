@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -22,6 +22,9 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bouncycastle.crypto.digests.SM3Digest;
+import org.bouncycastle.crypto.macs.HMac;
+import org.bouncycastle.crypto.params.KeyParameter;
 
 public class FinishedPreparator extends HandshakeMessagePreparator<FinishedMessage> {
 
@@ -52,39 +55,60 @@ public class FinishedPreparator extends HandshakeMessagePreparator<FinishedMessa
             try {
                 HKDFAlgorithm hkdfAlgorithm =
                         AlgorithmResolver.getHKDFAlgorithm(chooser.getSelectedCipherSuite());
-                Mac mac = Mac.getInstance(hkdfAlgorithm.getMacAlgorithm().getJavaName());
-                byte[] finishedKey;
-                LOGGER.debug("Connection End: " + chooser.getConnectionEndType());
-                if (chooser.getConnectionEndType() == ConnectionEndType.SERVER) {
-                    finishedKey =
-                            HKDFunction.expandLabel(
-                                    hkdfAlgorithm,
-                                    chooser.getServerHandshakeTrafficSecret(),
-                                    HKDFunction.FINISHED,
-                                    new byte[0],
-                                    mac.getMacLength(),
-                                    chooser.getSelectedProtocolVersion());
+                String javaMacName = hkdfAlgorithm.getMacAlgorithm().getJavaName();
+                boolean isHmacSM3 = javaMacName.equals("HmacSM3");
+                int macLength;
+                if (isHmacSM3) {
+                    macLength = 32;
                 } else {
-                    finishedKey =
-                            HKDFunction.expandLabel(
-                                    hkdfAlgorithm,
-                                    chooser.getClientHandshakeTrafficSecret(),
-                                    HKDFunction.FINISHED,
-                                    new byte[0],
-                                    mac.getMacLength(),
-                                    chooser.getSelectedProtocolVersion());
+                    macLength = Mac.getInstance(javaMacName).getMacLength();
                 }
+                LOGGER.debug("Connection End: " + chooser.getTalkingConnectionEnd());
+                byte[] trafficSecret;
+                if (chooser.getTalkingConnectionEnd() == ConnectionEndType.SERVER) {
+                    trafficSecret = chooser.getServerHandshakeTrafficSecret();
+                } else {
+                    trafficSecret = chooser.getClientHandshakeTrafficSecret();
+                }
+                byte[] finishedKey =
+                        HKDFunction.expandLabel(
+                                hkdfAlgorithm,
+                                trafficSecret,
+                                HKDFunction.FINISHED,
+                                new byte[0],
+                                macLength,
+                                chooser.getSelectedProtocolVersion());
                 LOGGER.debug("Finished key: {}", finishedKey);
-                SecretKeySpec keySpec = new SecretKeySpec(finishedKey, mac.getAlgorithm());
-                mac.init(keySpec);
-                mac.update(
-                        chooser.getContext()
-                                .getTlsContext()
-                                .getDigest()
-                                .digest(
-                                        chooser.getSelectedProtocolVersion(),
-                                        chooser.getSelectedCipherSuite()));
-                return mac.doFinal();
+                SecretKeySpec keySpec = new SecretKeySpec(finishedKey, javaMacName);
+                byte[] result;
+                if (isHmacSM3) {
+                    HMac hmac = new HMac(new SM3Digest());
+                    KeyParameter keyParameter = new KeyParameter(keySpec.getEncoded());
+                    hmac.init(keyParameter);
+                    hmac.update(
+                            chooser.getContext()
+                                    .getTlsContext()
+                                    .getDigest()
+                                    .digest(
+                                            chooser.getSelectedProtocolVersion(),
+                                            chooser.getSelectedCipherSuite()),
+                            0,
+                            32);
+                    result = new byte[hmac.getMacSize()];
+                    hmac.doFinal(result, 0);
+                } else {
+                    Mac mac = Mac.getInstance(javaMacName);
+                    mac.init(keySpec);
+                    mac.update(
+                            chooser.getContext()
+                                    .getTlsContext()
+                                    .getDigest()
+                                    .digest(
+                                            chooser.getSelectedProtocolVersion(),
+                                            chooser.getSelectedCipherSuite()));
+                    result = mac.doFinal();
+                }
+                return result;
             } catch (NoSuchAlgorithmException | InvalidKeyException ex) {
                 throw new CryptoException(ex);
             }
@@ -94,7 +118,7 @@ public class FinishedPreparator extends HandshakeMessagePreparator<FinishedMessa
                     chooser.getContext().getTlsContext().getDigest().getRawBytes();
             final byte[] masterSecret = chooser.getMasterSecret();
             LOGGER.debug("Using MasterSecret: {}", masterSecret);
-            final ConnectionEndType endType = chooser.getConnectionEndType();
+            final ConnectionEndType endType = chooser.getTalkingConnectionEnd();
             return SSLUtils.calculateFinishedData(handshakeMessageContent, masterSecret, endType);
         } else {
             LOGGER.debug("Calculating VerifyData:");
@@ -112,7 +136,7 @@ public class FinishedPreparator extends HandshakeMessagePreparator<FinishedMessa
             LOGGER.debug("Using HandshakeMessage Hash: {}", handshakeMessageHash);
 
             String label;
-            if (chooser.getConnectionEndType() == ConnectionEndType.SERVER) {
+            if (chooser.getTalkingConnectionEnd() == ConnectionEndType.SERVER) {
                 // TODO put this in separate config option
                 label = PseudoRandomFunction.SERVER_FINISHED_LABEL;
             } else {

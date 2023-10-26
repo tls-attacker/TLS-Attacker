@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -61,7 +61,9 @@ public class SignatureCalculatorTest {
 
     @Test
     public void testRsaSignature()
-            throws NoSuchAlgorithmException, CryptoException, InvalidKeyException,
+            throws NoSuchAlgorithmException,
+                    CryptoException,
+                    InvalidKeyException,
                     SignatureException {
         SignatureAndHashAlgorithm algorithm = SignatureAndHashAlgorithm.RSA_SHA1;
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
@@ -81,7 +83,9 @@ public class SignatureCalculatorTest {
 
     @Test
     public void testRsaSsl3Signature()
-            throws NoSuchAlgorithmException, CryptoException, InvalidKeyException,
+            throws NoSuchAlgorithmException,
+                    CryptoException,
+                    InvalidKeyException,
                     SignatureException {
         SignatureAndHashAlgorithm algorithm = SignatureAndHashAlgorithm.RSA_NONE;
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
@@ -102,7 +106,9 @@ public class SignatureCalculatorTest {
 
     @Test
     public void testDsaSignature()
-            throws NoSuchAlgorithmException, CryptoException, InvalidKeyException,
+            throws NoSuchAlgorithmException,
+                    CryptoException,
+                    InvalidKeyException,
                     SignatureException {
         SignatureAndHashAlgorithm algorithm = SignatureAndHashAlgorithm.DSA_SHA1;
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("DSA");
@@ -124,7 +130,9 @@ public class SignatureCalculatorTest {
 
     @Test
     public void testEcdsaSignature()
-            throws NoSuchAlgorithmException, CryptoException, InvalidKeyException,
+            throws NoSuchAlgorithmException,
+                    CryptoException,
+                    InvalidKeyException,
                     SignatureException {
         SignatureAndHashAlgorithm algorithm = SignatureAndHashAlgorithm.ECDSA_SHA1;
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("ECDSA");
@@ -145,7 +153,9 @@ public class SignatureCalculatorTest {
 
     @Test
     public void testEcdsaSsl3Signature()
-            throws NoSuchAlgorithmException, CryptoException, InvalidKeyException,
+            throws NoSuchAlgorithmException,
+                    CryptoException,
+                    InvalidKeyException,
                     SignatureException {
         SignatureAndHashAlgorithm algorithm = SignatureAndHashAlgorithm.ECDSA_SHA1;
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("ECDSA");
@@ -166,8 +176,11 @@ public class SignatureCalculatorTest {
 
     @Test
     public void testGost01Signature()
-            throws NoSuchAlgorithmException, CryptoException, InvalidKeyException,
-                    SignatureException, InvalidAlgorithmParameterException {
+            throws NoSuchAlgorithmException,
+                    CryptoException,
+                    InvalidKeyException,
+                    SignatureException,
+                    InvalidAlgorithmParameterException {
         SignatureAndHashAlgorithm algorithm = SignatureAndHashAlgorithm.GOSTR34102001_GOSTR3411;
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("ECGOST3410");
         keyPairGenerator.initialize(
@@ -187,8 +200,11 @@ public class SignatureCalculatorTest {
 
     @Test
     public void testGost12Signature()
-            throws NoSuchAlgorithmException, CryptoException, InvalidKeyException,
-                    SignatureException, InvalidAlgorithmParameterException {
+            throws NoSuchAlgorithmException,
+                    CryptoException,
+                    InvalidKeyException,
+                    SignatureException,
+                    InvalidAlgorithmParameterException {
         SignatureAndHashAlgorithm algorithm =
                 SignatureAndHashAlgorithm.GOSTR34102012_512_GOSTR34112012_512;
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("ECGOST3410-2012");

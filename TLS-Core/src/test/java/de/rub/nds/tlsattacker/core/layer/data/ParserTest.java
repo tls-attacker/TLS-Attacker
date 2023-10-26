@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -152,6 +152,52 @@ public class ParserTest {
         byte[] bytesToParse = "This is a test\t\nabc".getBytes(Charset.defaultCharset());
         parser = new ParserImpl(bytesToParse);
         assertEquals("This is a test\t\n", parser.parseStringTill((byte) 0x0A));
+    }
+
+    @Test
+    public void testParseVariableLengthInteger() {
+        // 1 byte length min
+        byte[] bytesToParse = new byte[] {0b00000000};
+        parser = new ParserImpl(bytesToParse);
+        assertEquals(0, parser.parseVariableLengthInteger());
+        // 1 byte length max
+        bytesToParse = new byte[] {0b00111111};
+        parser = new ParserImpl(bytesToParse);
+        assertEquals(63, parser.parseVariableLengthInteger());
+        // 2 byte length min
+        bytesToParse = new byte[] {(byte) 0b01000000, 0x00};
+        parser = new ParserImpl(bytesToParse);
+        assertEquals(0, parser.parseVariableLengthInteger());
+        // 2 byte length max
+        bytesToParse = new byte[] {(byte) 0b01111111, (byte) 0xff};
+        parser = new ParserImpl(bytesToParse);
+        assertEquals(16383, parser.parseVariableLengthInteger());
+        // 4 byte length min
+        bytesToParse = new byte[] {(byte) 0b10000000, 0x00, 0x00, 0x00};
+        parser = new ParserImpl(bytesToParse);
+        assertEquals(0, parser.parseVariableLengthInteger());
+        // 4 byte length max
+        bytesToParse = new byte[] {(byte) 0b10111111, (byte) 0xff, (byte) 0xff, (byte) 0xff};
+        parser = new ParserImpl(bytesToParse);
+        assertEquals(1073741823, parser.parseVariableLengthInteger());
+        // 8 byte length min
+        bytesToParse = new byte[] {(byte) 0b11000000, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+        parser = new ParserImpl(bytesToParse);
+        assertEquals(0, parser.parseVariableLengthInteger());
+        // 8 byte length max
+        bytesToParse =
+                new byte[] {
+                    (byte) 0xff,
+                    (byte) 0xff,
+                    (byte) 0xff,
+                    (byte) 0xff,
+                    (byte) 0xff,
+                    (byte) 0xff,
+                    (byte) 0xff,
+                    (byte) 0xff
+                };
+        parser = new ParserImpl(bytesToParse);
+        assertEquals(4611686018427387903L, parser.parseVariableLengthInteger());
     }
 
     public static class ParserImpl extends Parser<Object> {

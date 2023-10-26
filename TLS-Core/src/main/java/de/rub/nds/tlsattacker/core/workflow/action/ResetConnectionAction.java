@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -12,8 +12,12 @@ import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.layer.context.TcpContext;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.impl.QuicFrameLayer;
+import de.rub.nds.tlsattacker.core.layer.impl.QuicPacketLayer;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
+import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
+import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.IOException;
 import java.util.Objects;
@@ -29,10 +33,17 @@ public class ResetConnectionAction extends ConnectionBoundAction {
 
     private Boolean resetContext = true;
 
+    private Boolean switchToIpv6 = false;
+
     public ResetConnectionAction() {}
 
     public ResetConnectionAction(boolean resetContext) {
         this.resetContext = resetContext;
+    }
+
+    public ResetConnectionAction(boolean resetContext, boolean switchToIpv6) {
+        this.resetContext = resetContext;
+        this.switchToIpv6 = switchToIpv6;
     }
 
     public ResetConnectionAction(String connectionAlias) {
@@ -44,8 +55,9 @@ public class ResetConnectionAction extends ConnectionBoundAction {
         if (isExecuted()) {
             throw new ActionExecutionException("Action already executed!");
         }
-        TlsContext tlsContext = state.getContext(getConnectionAlias()).getTlsContext();
-        TcpContext tcpContext = state.getContext(getConnectionAlias()).getTcpContext();
+        Context context = state.getContext(getConnectionAlias());
+        TlsContext tlsContext = context.getTlsContext();
+        TcpContext tcpContext = context.getTcpContext();
 
         if (isExecuted()) {
             throw new ActionExecutionException("Action already executed!");
@@ -102,10 +114,21 @@ public class ResetConnectionAction extends ConnectionBoundAction {
                 tlsContext.getDtlsFragmentLayer().setReadHandshakeMessageSequence(0);
                 tlsContext.getDtlsFragmentLayer().setWriteHandshakeMessageSequence(0);
             }
+            if (context.getConfig().getQuic()) {
+                QuicContext quicContext = context.getQuicContext();
+                quicContext.reset();
+                ((QuicPacketLayer) context.getLayerStack().getLayer(QuicPacketLayer.class))
+                        .clearReceivedPacketBuffer();
+                ((QuicFrameLayer) context.getLayerStack().getLayer(QuicFrameLayer.class))
+                        .clearCryptoFrameBuffer();
+            }
         }
 
         LOGGER.info("Reopening Connection");
         try {
+            if (switchToIpv6) {
+                tcpContext.getTransportHandler().setUseIpv6(true);
+            }
             tcpContext.getTransportHandler().preInitialize();
             tcpContext.getTransportHandler().initialize();
             asPlanned = true;
@@ -115,6 +138,16 @@ public class ResetConnectionAction extends ConnectionBoundAction {
         }
 
         setExecuted(true);
+    }
+
+    @Override
+    public String toString() {
+        return "RestConnectionAction: "
+                + (isExecuted() ? "\n" : "(not executed)\n")
+                + "\tReset context: "
+                + resetContext
+                + "\n\tSwitch to ipv6: "
+                + switchToIpv6;
     }
 
     @Override

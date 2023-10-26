@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -22,7 +22,8 @@ public enum MacAlgorithm {
     HMAC_SHA512("HmacSHA512", 64, 64),
     IMIT_GOST28147("GOST28147MAC", 4, 32),
     HMAC_GOSTR3411("HmacGOST3411", 32, 32),
-    HMAC_GOSTR3411_2012_256("HmacGOST3411-2012-256", 32, 32);
+    HMAC_GOSTR3411_2012_256("HmacGOST3411-2012-256", 32, 32),
+    HMAC_SM3("HmacSM3", 32, 32);
 
     private final int size;
     private final int keySize;

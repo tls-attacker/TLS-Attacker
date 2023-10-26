@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -28,13 +28,13 @@ public abstract class TransportHandler {
 
     protected long firstTimeout;
 
-    private boolean firstReceived;
+    protected boolean firstReceived;
 
     protected OutputStream outStream;
 
     protected PushbackInputStream inStream;
 
-    private boolean initialized = false;
+    protected boolean initialized = false;
 
     private final ConnectionEndType connectionEndType;
 
@@ -42,10 +42,13 @@ public abstract class TransportHandler {
 
     protected boolean resetClientSourcePort = true;
 
+    protected boolean useIpv6 = false;
+
     public TransportHandler(Connection con) {
         this.firstTimeout = con.getFirstTimeout();
         this.connectionEndType = con.getLocalConnectionEndType();
         this.timeout = con.getTimeout();
+        this.useIpv6 = con.getUseIpv6();
     }
 
     public TransportHandler(long firstTimeout, long timeout, ConnectionEndType type) {
@@ -172,5 +175,13 @@ public abstract class TransportHandler {
 
     public void setResetClientSourcePort(boolean resetClientSourcePort) {
         this.resetClientSourcePort = resetClientSourcePort;
+    }
+
+    public boolean isUseIpv6() {
+        return useIpv6;
+    }
+
+    public void setUseIpv6(boolean useIpv6) {
+        this.useIpv6 = useIpv6;
     }
 }

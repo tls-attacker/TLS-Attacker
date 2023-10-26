@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -15,8 +15,7 @@ import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
-import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
-import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStreamAdapterStream;
+import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerInputStream;
 import de.rub.nds.tlsattacker.transport.udp.UdpTransportHandler;
 import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
@@ -42,7 +41,7 @@ public class UdpLayer
     public LayerProcessingResult sendConfiguration() throws IOException {
         LayerConfiguration<DataContainer> configuration = getLayerConfiguration();
         if (configuration != null && configuration.getContainerList() != null) {
-            for (DataContainer container : configuration.getContainerList()) {
+            for (DataContainer container : getUnprocessedConfiguredContainers()) {
                 // TODO Send container data
             }
         }
@@ -60,14 +59,12 @@ public class UdpLayer
 
     @Override
     public void receiveMoreDataForHint(LayerProcessingHint hint) throws IOException {
-        // There is nothing we can do here to fill up our stream, either there is data in it
-        // or not
-    }
-
-    @Override
-    public HintedInputStream getDataStream() {
-        getTransportHandler().setTimeout(getTransportHandler().getTimeout());
-        return new HintedInputStreamAdapterStream(null, getTransportHandler().getInputStream());
+        if (currentInputStream == null) {
+            currentInputStream = new HintedLayerInputStream(null, this);
+            currentInputStream.extendStream(getTransportHandler().fetchData());
+        } else {
+            currentInputStream.extendStream(getTransportHandler().fetchData());
+        }
     }
 
     /** Returns the InputStream associated with the UDP socket. */

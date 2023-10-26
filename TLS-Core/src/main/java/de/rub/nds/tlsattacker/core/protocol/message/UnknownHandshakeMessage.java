@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
@@ -27,6 +28,9 @@ import java.util.Objects;
 public class UnknownHandshakeMessage extends HandshakeMessage<UnknownHandshakeMessage> {
 
     private byte[] dataConfig;
+
+    // the type used for a failed parsing attempt (if the type was known)
+    private ModifiableByte assumedType;
 
     @ModifiableVariableProperty private ModifiableByteArray data;
 
@@ -88,8 +92,25 @@ public class UnknownHandshakeMessage extends HandshakeMessage<UnknownHandshakeMe
     }
 
     @Override
+    public String toCompactString() {
+        if (assumedType == null
+                || assumedType.getValue() == HandshakeMessageType.UNKNOWN.getValue()) {
+            return super.toCompactString();
+        } else {
+            HandshakeMessageType assumedHandshakeType =
+                    HandshakeMessageType.getMessageType(assumedType.getValue());
+            return super.toCompactString() + "(" + assumedHandshakeType + "?)";
+        }
+    }
+
+    @Override
     public String toShortString() {
-        return "HS(?)";
+        if (assumedType != null
+                || assumedType.getValue() == HandshakeMessageType.UNKNOWN.getValue()) {
+            return "HS(?)";
+        } else {
+            return "HS(" + assumedType.getValue() + "?)";
+        }
     }
 
     @Override
@@ -116,5 +137,18 @@ public class UnknownHandshakeMessage extends HandshakeMessage<UnknownHandshakeMe
             return false;
         }
         return Objects.equals(this.data, other.data);
+    }
+
+    public void setAssumedType(ModifiableByte assumedType) {
+        this.assumedType = assumedType;
+    }
+
+    public void setAssumedType(byte assumedType) {
+        this.assumedType =
+                ModifiableVariableFactory.safelySetValue(this.getAssumedType(), assumedType);
+    }
+
+    public ModifiableByte getAssumedType() {
+        return assumedType;
     }
 }

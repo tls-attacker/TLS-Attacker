@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -77,6 +77,8 @@ public class AlgorithmResolver {
                 || protocolVersion == ProtocolVersion.TLS11
                 || protocolVersion == ProtocolVersion.DTLS10) {
             result = DigestAlgorithm.LEGACY;
+        } else if (cipherSuite.isSM()) {
+            result = DigestAlgorithm.SM3;
         } else if (cipherSuite.usesSHA384()) {
             result = DigestAlgorithm.SHA384;
         } else {
@@ -87,7 +89,9 @@ public class AlgorithmResolver {
     }
 
     public static KeyExchangeAlgorithm getKeyExchangeAlgorithm(CipherSuite cipherSuite) {
-        if (cipherSuite.isTLS13()) {
+        if (cipherSuite.isTLS13()
+                || cipherSuite == CipherSuite.TLS_FALLBACK_SCSV
+                || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV) {
             return null;
         }
         String cipher = cipherSuite.toString().toUpperCase();
@@ -151,13 +155,6 @@ public class AlgorithmResolver {
             return KeyExchangeAlgorithm.ECCPWD;
         } else if (cipher.contains("TLS_GOSTR341094")) {
             return KeyExchangeAlgorithm.VKO_GOST01;
-        }
-        if (cipherSuite == CipherSuite.TLS_FALLBACK_SCSV
-                || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV) {
-            throw new UnsupportedOperationException(
-                    "The CipherSuite:"
-                            + cipherSuite.name()
-                            + " does not specify a KeyExchangeAlgorithm");
         }
         LOGGER.warn(
                 "The key exchange algorithm in "
@@ -303,6 +300,10 @@ public class AlgorithmResolver {
             return CipherAlgorithm.ARIA_256_GCM;
         } else if (cipher.contains("28147_CNT")) {
             return CipherAlgorithm.GOST_28147_CNT;
+        } else if (cipher.contains("SM4_GCM")) {
+            return CipherAlgorithm.SM4_GCM;
+        } else if (cipher.contains("SM4_CCM")) {
+            return CipherAlgorithm.SM4_CCM;
         } else if (cipher.contains("CHACHA20_POLY1305")) {
             if (cipher.contains("UNOFFICIAL")) {
                 return CipherAlgorithm.UNOFFICIAL_CHACHA20_POLY1305;
@@ -391,6 +392,8 @@ public class AlgorithmResolver {
                 result = MacAlgorithm.HMAC_SHA384;
             } else if (cipher.contains("SHA512")) {
                 result = MacAlgorithm.HMAC_SHA512;
+            } else if (cipher.contains("SM3")) {
+                result = MacAlgorithm.HMAC_SM3;
             } else if (cipher.endsWith("NULL")) {
                 result = MacAlgorithm.NULL;
             } else if (cipher.endsWith("IMIT")) {
@@ -422,6 +425,8 @@ public class AlgorithmResolver {
             result = HKDFAlgorithm.TLS_HKDF_SHA256;
         } else if (cipher.endsWith("SHA384")) {
             result = HKDFAlgorithm.TLS_HKDF_SHA384;
+        } else if (cipher.endsWith("SM3")) {
+            result = HKDFAlgorithm.TLS_HKDF_SM3;
         }
         if (result != null) {
             LOGGER.debug("Using the following HKDF Algorithm: {}", result);

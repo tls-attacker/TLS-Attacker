@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -48,6 +48,8 @@ public class SignatureCalculator {
             case GOSTR34102012_256:
             case GOSTR34102012_512:
                 return generateGost12Signature(chooser, toBeSigned, algorithm);
+            case SM2:
+                return generateSM2Signature(chooser, toBeSigned, algorithm);
             default:
                 throw new UnsupportedOperationException(
                         "Unknown SignatureAlgorithm:" + algorithm.getSignatureAlgorithm().name());
@@ -168,6 +170,18 @@ public class SignatureCalculator {
         BCECGOST3410_2012PrivateKey privateKey = KeyGenerator.getGost12PrivateKey(chooser);
         return generateSignature(
                 privateKey,
+                toBeSigned,
+                algorithm,
+                chooser.getContext().getTlsContext().getBadSecureRandom(),
+                chooser);
+    }
+
+    public static byte[] generateSM2Signature(
+            Chooser chooser, byte[] toBeSigned, SignatureAndHashAlgorithm algorithm)
+            throws CryptoException {
+        ECPrivateKey key = KeyGenerator.getECPrivateKey(chooser);
+        return generateSignature(
+                key,
                 toBeSigned,
                 algorithm,
                 chooser.getContext().getTlsContext().getBadSecureRandom(),

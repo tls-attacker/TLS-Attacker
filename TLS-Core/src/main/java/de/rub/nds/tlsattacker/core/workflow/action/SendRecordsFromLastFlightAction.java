@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -13,6 +13,8 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
+import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
+import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
@@ -62,7 +64,7 @@ public class SendRecordsFromLastFlightAction extends MessageAction implements Se
             records = new ArrayList<>(sendActions.get(ownIndex - i).getSendRecords());
         }
 
-        String sending = getReadableString(messages);
+        String sending = getReadableStringFromMessages(messages);
         if (hasDefaultAlias()) {
             LOGGER.info("Executing retransmissions: " + sending);
         } else {
@@ -71,7 +73,14 @@ public class SendRecordsFromLastFlightAction extends MessageAction implements Se
 
         try {
             tlsContext.getRecordLayer().reencrypt(records);
-            send(tlsContext, new ArrayList<>(), new ArrayList<>(), records, httpMessages);
+            send(
+                    tlsContext,
+                    new ArrayList<>(),
+                    new ArrayList<>(),
+                    records,
+                    quicFrames,
+                    quicPackets,
+                    httpMessages);
             setExecuted(true);
         } catch (IOException e) {
             tlsContext.setReceivedTransportHandlerException(true);
@@ -125,6 +134,12 @@ public class SendRecordsFromLastFlightAction extends MessageAction implements Se
         if (!Objects.equals(this.fragments, other.fragments)) {
             return false;
         }
+        if (!Objects.equals(this.quicPackets, other.quicPackets)) {
+            return false;
+        }
+        if (!Objects.equals(this.quicFrames, other.quicFrames)) {
+            return false;
+        }
         return super.equals(obj);
     }
 
@@ -134,6 +149,8 @@ public class SendRecordsFromLastFlightAction extends MessageAction implements Se
         hash = 67 * hash + Objects.hashCode(this.messages);
         hash = 67 * hash + Objects.hashCode(this.records);
         hash = 67 * hash + Objects.hashCode(this.fragments);
+        hash = 67 * hash + Objects.hashCode(this.quicPackets);
+        hash = 67 * hash + Objects.hashCode(this.quicFrames);
         return hash;
     }
 
@@ -155,5 +172,15 @@ public class SendRecordsFromLastFlightAction extends MessageAction implements Se
     @Override
     public List<DtlsHandshakeMessageFragment> getSendFragments() {
         throw new UnsupportedOperationException("Not supported.");
+    }
+
+    @Override
+    public List<QuicPacket> getSendQuicPackets() {
+        return quicPackets;
+    }
+
+    @Override
+    public List<QuicFrame> getSendQuicFrames() {
+        return quicFrames;
     }
 }

@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -16,10 +16,7 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import java.math.BigInteger;
-import java.security.AlgorithmParameters;
-import java.security.KeyFactory;
-import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
+import java.security.*;
 import java.security.interfaces.ECPrivateKey;
 import java.security.spec.*;
 import java.util.Objects;
@@ -75,11 +72,13 @@ public class CustomECPrivateKey extends CustomPrivateKey implements ECPrivateKey
     @Override
     public ECParameterSpec getParams() {
         try {
-            AlgorithmParameters parameters = AlgorithmParameters.getInstance("EC");
+            AlgorithmParameters parameters = AlgorithmParameters.getInstance("EC", "BC");
             parameters.init(new ECGenParameterSpec(group.getJavaName()));
             ECParameterSpec ecParameters = parameters.getParameterSpec(ECParameterSpec.class);
             return ecParameters;
-        } catch (NoSuchAlgorithmException | InvalidParameterSpecException ex) {
+        } catch (NoSuchAlgorithmException
+                | InvalidParameterSpecException
+                | NoSuchProviderException ex) {
             throw new UnsupportedOperationException("Could not generate ECParameterSpec", ex);
         }
     }

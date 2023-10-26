@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -22,6 +22,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bouncycastle.jcajce.spec.SM2ParameterSpec;
 
 /**
  * Construction of a hash and signature algorithm. Very confusing, consists of two bytes, the first
@@ -56,6 +57,7 @@ public enum SignatureAndHashAlgorithm {
     ECDSA_SHA256(0x0403),
     ECDSA_SHA384(0x0503),
     ECDSA_SHA512(0x0603),
+    SM2_SM3(0x0708),
     ED25519(0x0807),
     ED448(0x0808),
     /* RSASSA-PSS algorithms with public key OID rsaEncryption */
@@ -114,6 +116,7 @@ public enum SignatureAndHashAlgorithm {
         algoList.add(GOSTR34102001_GOSTR3411);
         algoList.add(GOSTR34102012_256_GOSTR34112012_256);
         algoList.add(GOSTR34102012_512_GOSTR34112012_512);
+        algoList.add(SM2_SM3);
         return algoList;
     }
 
@@ -133,6 +136,7 @@ public enum SignatureAndHashAlgorithm {
         algos.add(SignatureAndHashAlgorithm.RSA_PSS_RSAE_SHA512);
         algos.add(SignatureAndHashAlgorithm.ED448);
         algos.add(SignatureAndHashAlgorithm.ED25519);
+        algos.add(SM2_SM3);
         return algos;
     }
 
@@ -300,6 +304,9 @@ public enum SignatureAndHashAlgorithm {
                     new PSSParameterSpec(
                             hashName, "MGF1", new MGF1ParameterSpec(hashName), saltLength, 1));
         }
+        if (this.getSignatureAlgorithm().toString().contains("SM2")) {
+            signature.setParameter(new SM2ParameterSpec("TLSv1.3+GM+Cipher+Suite".getBytes()));
+        }
     }
 
     public boolean suitedForSigningTls13Messages() {
@@ -315,6 +322,7 @@ public enum SignatureAndHashAlgorithm {
             case RSA_PSS_RSAE_SHA512:
             case ED25519:
             case ED448:
+            case SM2_SM3:
                 return true;
 
             default:
@@ -329,6 +337,7 @@ public enum SignatureAndHashAlgorithm {
             case RSA_SHA512:
             case RSA_SHA1:
             case ECDSA_SHA1:
+            case SM2_SM3:
                 return true;
 
             default:
@@ -366,6 +375,10 @@ public enum SignatureAndHashAlgorithm {
 
             switch (certPublicKeyType) {
                 case ECDH:
+                    if (sig == SignatureAlgorithm.SM2) {
+                        found = true;
+                        sigHashAlgo = i;
+                    }
                 case ECDSA:
                     if (sig == SignatureAlgorithm.ECDSA) {
                         found = true;

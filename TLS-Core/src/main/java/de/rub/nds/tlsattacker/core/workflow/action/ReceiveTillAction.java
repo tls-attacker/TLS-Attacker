@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -20,14 +20,13 @@ import de.rub.nds.tlsattacker.core.record.Record;
 import jakarta.xml.bind.annotation.XmlElementRef;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @XmlRootElement
-public class ReceiveTillAction extends CommonReceiveAction implements ReceivingAction {
+public class ReceiveTillAction extends ReceiveAction implements ReceivingAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -106,18 +105,6 @@ public class ReceiveTillAction extends CommonReceiveAction implements ReceivingA
         return waitTillMessage;
     }
 
-    void setReceivedMessages(List<ProtocolMessage> receivedMessages) {
-        this.messages = receivedMessages;
-    }
-
-    void setReceivedRecords(List<Record> receivedRecords) {
-        this.records = receivedRecords;
-    }
-
-    void setReceivedFragments(List<DtlsHandshakeMessageFragment> fragments) {
-        this.fragments = fragments;
-    }
-
     public void setWaitTillMessage(ProtocolMessage waitTillMessage) {
         this.waitTillMessage = waitTillMessage;
     }
@@ -127,6 +114,8 @@ public class ReceiveTillAction extends CommonReceiveAction implements ReceivingA
         messages = null;
         records = null;
         fragments = null;
+        quicFrames = null;
+        quicPackets = null;
         setExecuted(null);
     }
 
@@ -213,12 +202,14 @@ public class ReceiveTillAction extends CommonReceiveAction implements ReceivingA
 
     @Override
     protected void distinctReceive(TlsContext tlsContext) {
-        receiveTill(tlsContext, waitTillMessage);
+        if (waitTillMessage != null) {
+            receiveTill(tlsContext, waitTillMessage);
+        }
     }
 
     @Override
     public List<ProtocolMessage> getExpectedMessages() {
-        return Arrays.asList(waitTillMessage);
+        return new ArrayList<>(List.of(waitTillMessage));
     }
 
     @Override

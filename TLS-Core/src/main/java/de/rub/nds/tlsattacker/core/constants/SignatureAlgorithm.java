@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -19,7 +19,8 @@ public enum SignatureAlgorithm {
     ED448,
     GOSTR34102001("ECGOST3410"),
     GOSTR34102012_256("ECGOST3410-2012-256"),
-    GOSTR34102012_512("ECGOST3410-2012-512");
+    GOSTR34102012_512("ECGOST3410-2012-512"),
+    SM2;
 
     private final String javaName;
 

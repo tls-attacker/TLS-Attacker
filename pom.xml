@@ -4,12 +4,12 @@
     <parent>
         <groupId>de.rub.nds</groupId>
         <artifactId>protocol-toolkit-bom</artifactId>
-        <version>3.0.4</version>
+        <version>3.5.6</version>
     </parent>
 
     <groupId>de.rub.nds.tls.attacker</groupId>
     <artifactId>tls-attacker</artifactId>
-    <version>5.1.7-SNAPSHOT</version>
+    <version>5.3.2-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>TLS-Attacker</name>
@@ -41,10 +41,10 @@
         <developer>
             <id>ic0ns</id>
             <name>Robert Merget</name>
-            <email>robert.merget@rub.de</email>
+            <email>robert.merget@tii.ae</email>
             <url>https://github.com/ic0ns/</url>
-            <organization>NDS</organization>
-            <organizationUrl>https://informatik.rub.de/nds/</organizationUrl>
+            <organization>TII</organization>
+            <organizationUrl>https://www.tii.ae/</organizationUrl>
             <roles>
                 <role>Team lead</role>
             </roles>
@@ -216,7 +216,7 @@
         <dependency>
             <groupId>org.cryptomator</groupId>
             <artifactId>siv-mode</artifactId>
-            <version>1.4.4</version>
+            <version>1.5.0</version>
         </dependency>
         <dependency>
             <groupId>org.glassfish.jaxb</groupId>
@@ -444,7 +444,7 @@
                             <spacesPerTab>4</spacesPerTab>
                         </indent>
                         <googleJavaFormat>
-                            <version>1.15.0</version>
+                            <version>1.16.0</version>
                             <style>AOSP</style>
                         </googleJavaFormat>
                         <licenseHeader>

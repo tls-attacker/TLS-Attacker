@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -13,10 +13,12 @@ import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
+import de.rub.nds.tlsattacker.core.layer.constant.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ack.RecordNumber;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PskSet;
+import de.rub.nds.tlsattacker.core.quic.packet.QuicPacketCryptoComputations;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
@@ -25,6 +27,7 @@ import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
 import java.util.LinkedList;
 import javax.crypto.Mac;
+import javax.crypto.NoSuchPaddingException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -47,6 +50,17 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
                     if (!tlsContext.isExtensionNegotiated(ExtensionType.EARLY_DATA)) {
                         setClientRecordCipher(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
                     }
+                    if (tlsContext.getConfig().getDefaultLayerConfiguration()
+                            == LayerConfiguration.QUIC) {
+                        try {
+                            QuicPacketCryptoComputations.calculateApplicationSecrets(
+                                    tlsContext.getContext().getQuicContext());
+                        } catch (NoSuchAlgorithmException
+                                | NoSuchPaddingException
+                                | CryptoException e) {
+                            LOGGER.error("Could not initialize application secrets: ", e);
+                        }
+                    }
                 } else {
                     acknowledgeFinished(message);
                     setClientRecordCipher(Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS);
@@ -57,7 +71,6 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
                 setClientRecordCipher(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
 
                 if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
-
                     NewSessionTicketHandler ticketHandler = new NewSessionTicketHandler(tlsContext);
                     if (tlsContext.getPskSets() != null) {
                         for (PskSet pskSet : tlsContext.getPskSets()) {
@@ -99,8 +112,14 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
                         tlsContext.getChooser().getSelectedProtocolVersion(),
                         tlsContext.getChooser().getSelectedCipherSuite());
         try {
-            int macLength =
-                    Mac.getInstance(hkdfAlgorithm.getMacAlgorithm().getJavaName()).getMacLength();
+            int macLength;
+            if (hkdfAlgorithm.getMacAlgorithm().getJavaName().equals("HmacSM3")) {
+                macLength = 32;
+            } else {
+                macLength =
+                        Mac.getInstance(hkdfAlgorithm.getMacAlgorithm().getJavaName())
+                                .getMacLength();
+            }
             byte[] saltMasterSecret =
                     HKDFunction.deriveSecret(
                             hkdfAlgorithm,
@@ -173,16 +192,21 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
         LOGGER.debug("Setting cipher for server to use " + keySetType);
         KeySet serverKeySet = getKeySet(tlsContext, tlsContext.getActiveServerKeySetType());
 
-        if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
-            tlsContext
-                    .getRecordLayer()
-                    .updateDecryptionCipher(
-                            RecordCipherFactory.getRecordCipher(tlsContext, serverKeySet, false));
-        } else {
-            tlsContext
-                    .getRecordLayer()
-                    .updateEncryptionCipher(
-                            RecordCipherFactory.getRecordCipher(tlsContext, serverKeySet, true));
+        if (tlsContext.getRecordLayer() != null) {
+            if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
+                tlsContext
+                        .getRecordLayer()
+                        .updateDecryptionCipher(
+                                RecordCipherFactory.getRecordCipher(
+                                        tlsContext, serverKeySet, false));
+
+            } else {
+                tlsContext
+                        .getRecordLayer()
+                        .updateEncryptionCipher(
+                                RecordCipherFactory.getRecordCipher(
+                                        tlsContext, serverKeySet, true));
+            }
         }
     }
 

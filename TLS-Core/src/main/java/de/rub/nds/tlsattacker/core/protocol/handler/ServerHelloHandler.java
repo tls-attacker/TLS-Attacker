@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -20,6 +20,7 @@ import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.crypto.hpke.HpkeUtil;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
+import de.rub.nds.tlsattacker.core.layer.constant.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
@@ -28,6 +29,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedClientHel
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.DragonFlyKeyShareEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.keyshare.DragonFlyKeyShareEntryParser;
+import de.rub.nds.tlsattacker.core.quic.packet.QuicPacketCryptoComputations;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
@@ -40,6 +42,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import javax.crypto.Mac;
+import javax.crypto.NoSuchPaddingException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -82,6 +85,17 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                 if (tlsContext.getTalkingConnectionEndType()
                         != tlsContext.getChooser().getConnectionEndType()) {
                     setServerRecordCipher();
+                }
+                if (tlsContext.getConfig().getDefaultLayerConfiguration()
+                        == LayerConfiguration.QUIC) {
+                    try {
+                        QuicPacketCryptoComputations.calculateHandshakeSecrets(
+                                tlsContext.getContext().getQuicContext());
+                    } catch (NoSuchAlgorithmException
+                            | NoSuchPaddingException
+                            | CryptoException e) {
+                        LOGGER.error("Could not initialize handshake secrets: ", e);
+                    }
                 }
             }
             adjustPRF(message);
@@ -170,27 +184,52 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         tlsContext.setActiveServerKeySetType(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
         LOGGER.debug("Setting cipher for server to use handshake secrets");
         KeySet serverKeySet = getTls13KeySet(tlsContext, tlsContext.getActiveServerKeySetType());
+        if (tlsContext.getRecordLayer() != null) {
+            if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
+                // DTLS 1.3: skip epoch 1 if no early data was sent
+                if (tlsContext.getChooser().getSelectedProtocolVersion() == ProtocolVersion.DTLS13
+                        && tlsContext.getRecordLayer().getDecryptor().isEpochZero()) {
+                    tlsContext.getRecordLayer().updateDecryptionCipher(null);
+                }
+                tlsContext
+                        .getRecordLayer()
+                        .updateDecryptionCipher(
+                                RecordCipherFactory.getRecordCipher(
+                                        tlsContext, serverKeySet, false));
+            } else {
+                // DTLS 1.3: skip epoch 1 if no early data was sent
+                if (tlsContext.getChooser().getSelectedProtocolVersion() == ProtocolVersion.DTLS13
+                        && tlsContext.getRecordLayer().getEncryptor().isEpochZero()) {
+                    tlsContext.getRecordLayer().updateEncryptionCipher(null);
+                }
+                tlsContext
+                        .getRecordLayer()
+                        .updateEncryptionCipher(
+                                RecordCipherFactory.getRecordCipher(
+                                        tlsContext, serverKeySet, true));
+            }
+        }
+    }
 
-        if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
-            // DTLS 1.3: skip epoch 1 if no early data was sent
-            if (tlsContext.getChooser().getSelectedProtocolVersion() == ProtocolVersion.DTLS13
-                    && tlsContext.getRecordLayer().getDecryptor().isEpochZero()) {
-                tlsContext.getRecordLayer().updateDecryptionCipher(null);
+    private void setClientRecordCipher() {
+        tlsContext.setActiveClientKeySetType(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
+        LOGGER.debug("Setting cipher for client to use handshake secrets");
+        KeySet clientKeySet = getTls13KeySet(tlsContext, tlsContext.getActiveClientKeySetType());
+
+        if (tlsContext.getRecordLayer() != null) {
+            if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.SERVER) {
+                tlsContext
+                        .getRecordLayer()
+                        .updateDecryptionCipher(
+                                RecordCipherFactory.getRecordCipher(
+                                        tlsContext, clientKeySet, false));
+            } else {
+                tlsContext
+                        .getRecordLayer()
+                        .updateEncryptionCipher(
+                                RecordCipherFactory.getRecordCipher(
+                                        tlsContext, clientKeySet, true));
             }
-            tlsContext
-                    .getRecordLayer()
-                    .updateDecryptionCipher(
-                            RecordCipherFactory.getRecordCipher(tlsContext, serverKeySet, false));
-        } else {
-            // DTLS 1.3: skip epoch 1 if no early data was sent
-            if (tlsContext.getChooser().getSelectedProtocolVersion() == ProtocolVersion.DTLS13
-                    && tlsContext.getRecordLayer().getEncryptor().isEpochZero()) {
-                tlsContext.getRecordLayer().updateEncryptionCipher(null);
-            }
-            tlsContext
-                    .getRecordLayer()
-                    .updateEncryptionCipher(
-                            RecordCipherFactory.getRecordCipher(tlsContext, serverKeySet, true));
         }
     }
 
@@ -211,6 +250,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         if ((tlsContext.getChooser().getSelectedProtocolVersion().is13())
                 && !message.hasTls13HelloRetryRequestRandom()) {
             setServerRecordCipher();
+            setClientRecordCipher();
         }
     }
 
@@ -224,8 +264,14 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                         tlsContext.getChooser().getSelectedCipherSuite());
 
         try {
-            int macLength =
-                    Mac.getInstance(hkdfAlgorithm.getMacAlgorithm().getJavaName()).getMacLength();
+            int macLength;
+            if (hkdfAlgorithm.getMacAlgorithm().getJavaName().equals("HmacSM3")) {
+                macLength = 32;
+            } else {
+                macLength =
+                        Mac.getInstance(hkdfAlgorithm.getMacAlgorithm().getJavaName())
+                                .getMacLength();
+            }
             byte[] psk =
                     (tlsContext.getConfig().isUsePsk() || tlsContext.getPsk() != null)
                             ? tlsContext.getChooser().getPsk()

@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -28,9 +28,11 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedO
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PskSet;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.quic.QuicTransportParameters;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.RequestItemV2;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
+import de.rub.nds.tlsattacker.core.quic.constants.QuicVersion;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
@@ -170,6 +172,9 @@ public class Config implements Serializable {
     /** If default generated WorkflowTraces should contain client Authentication */
     private Boolean clientAuthentication = false;
 
+    /** If the ServerHello should contain all enabled extensions or only proposed ones */
+    private Boolean respectClientProposedExtensions = false;
+
     /** Which Signature and Hash algorithms we support */
     @XmlElement(name = "defaultClientSupportedSignatureAndHashAlgorithm")
     @XmlElementWrapper
@@ -305,6 +310,13 @@ public class Config implements Serializable {
     @XmlElementWrapper
     @XmlJavaTypeAdapter(IllegalStringAdapter.class)
     private List<String> defaultProposedAlpnProtocols;
+
+    /** Default QuicTransportParameters */
+    @XmlElement(name = "defaultQuicTransportParameters")
+    private QuicTransportParameters defaultQuicTransportParameters;
+
+    /** If true tries to decrypt the initial QUIC packets with own keys */
+    private Boolean echoQuic = false;
 
     @XmlJavaTypeAdapter(IllegalStringAdapter.class)
     private String defaultSelectedAlpnProtocol = AlpnProtocol.HTTP_2.getConstant();
@@ -449,6 +461,9 @@ public class Config implements Serializable {
 
     /** If we generate ClientHello with extended Random Extension */
     private Boolean addExtendedRandomExtension = false;
+
+    /** If we generate ClientHello with QuicTransportParameters Extension */
+    private Boolean addQuicTransportParametersExtension = false;
 
     /** If we generate ClientHello with SignedCertificateTimestamp extension */
     private Boolean addSignedCertificateTimestampExtension = false;
@@ -760,8 +775,20 @@ public class Config implements Serializable {
     /** If retransmissions are received in DTLS should they included to the workflow trace */
     private Boolean addRetransmissionsToWorkflowTraceInDtls = false;
 
-    /** How many retransmissions in DTLS should be executed during the handshake */
-    private Integer maxDtlsRetransmissions = 3;
+    /**
+     * How many retransmissions should be executed during the handshake for UDP based protocols e.g.
+     * DTLS or QUIC
+     */
+    private Integer maxUDPRetransmissions = 3;
+
+    private Boolean expectHandshakeDoneQuicFrame = false;
+
+    private Boolean isQuic = false;
+
+    private Boolean quicRetryFlowRequired = false;
+
+    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
+    private byte[] quicVersion = QuicVersion.VERSION_1.getByteValue();
 
     private Boolean stopActionsAfterWarning = false;
 
@@ -1250,7 +1277,7 @@ public class Config implements Serializable {
         defaultLayerConfiguration = LayerConfiguration.TLS;
         defaultClientConnection = new OutboundConnection("client", 443, "localhost");
         defaultServerConnection = new InboundConnection("server", 443, "localhost");
-        workflowTraceType = WorkflowTraceType.HANDSHAKE;
+        workflowTraceType = WorkflowTraceType.DYNAMIC_HANDSHAKE;
 
         defaultEsniServerKeyShareEntries.add(
                 new KeyShareStoreEntry(
@@ -1381,6 +1408,8 @@ public class Config implements Serializable {
 
         defaultProposedAlpnProtocols = new LinkedList<>();
         defaultProposedAlpnProtocols.add(AlpnProtocol.HTTP_2.getConstant());
+
+        defaultQuicTransportParameters = QuicTransportParameters.getDefaultParameters();
     }
 
     public String getDefaultSelectedAlpnProtocol() {
@@ -1405,6 +1434,22 @@ public class Config implements Serializable {
 
     public void setStopActionsAfterWarning(Boolean stopActionsAfterWarning) {
         this.stopActionsAfterWarning = stopActionsAfterWarning;
+    }
+
+    public Boolean getExpectHandshakeDoneQuicFrame() {
+        return expectHandshakeDoneQuicFrame;
+    }
+
+    public void setExpectHandshakeDoneQuicFrame(Boolean expectHandshakeDoneQuicFrame) {
+        this.expectHandshakeDoneQuicFrame = expectHandshakeDoneQuicFrame;
+    }
+
+    public byte[] getQuicVersion() {
+        return quicVersion;
+    }
+
+    public void setQuicVersion(byte[] quicVersion) {
+        this.quicVersion = quicVersion;
     }
 
     public Boolean isAcceptOnlyFittingDtlsFragments() {
@@ -2069,6 +2114,14 @@ public class Config implements Serializable {
     public void setDefaultSelectedCompressionMethod(
             CompressionMethod defaultSelectedCompressionMethod) {
         this.defaultSelectedCompressionMethod = defaultSelectedCompressionMethod;
+    }
+
+    public Boolean isAddQuicTransportParametersExtension() {
+        return this.addQuicTransportParametersExtension;
+    }
+
+    public void setQuicTransportParametersExtension(Boolean addQuicTransportParameterExtension) {
+        this.addQuicTransportParametersExtension = addQuicTransportParameterExtension;
     }
 
     public Boolean isAddExtendedRandomExtension() {
@@ -3290,12 +3343,12 @@ public class Config implements Serializable {
         this.addRetransmissionsToWorkflowTraceInDtls = addRetransmissionsToWorkflowTrace;
     }
 
-    public int getMaxDtlsRetransmissions() {
-        return maxDtlsRetransmissions;
+    public int getMaxUDPRetransmissions() {
+        return maxUDPRetransmissions;
     }
 
-    public void setMaxDtlsRetransmissions(int maxRetransmissions) {
-        this.maxDtlsRetransmissions = maxRetransmissions;
+    public void setMaxUDPRetransmissions(int maxRetransmissions) {
+        this.maxUDPRetransmissions = maxRetransmissions;
     }
 
     public List<FilterType> getOutputFilters() {
@@ -3508,6 +3561,23 @@ public class Config implements Serializable {
 
     public void setDefaultProposedAlpnProtocols(String... alpnAnnouncedProtocols) {
         this.defaultProposedAlpnProtocols = new ArrayList(Arrays.asList(alpnAnnouncedProtocols));
+    }
+
+    public QuicTransportParameters getDefaultQuicTransportParameters() {
+        return defaultQuicTransportParameters;
+    }
+
+    public void setDefaultQuicTransportParameters(
+            QuicTransportParameters defaultQuicTransportParameters) {
+        this.defaultQuicTransportParameters = defaultQuicTransportParameters;
+    }
+
+    public Boolean isEchoQuic() {
+        return echoQuic;
+    }
+
+    public void setEchoQuic(Boolean echoQuic) {
+        this.echoQuic = echoQuic;
     }
 
     public NamedGroup getDefaultEcCertificateCurve() {
@@ -4239,5 +4309,29 @@ public class Config implements Serializable {
 
     public void setRetransmitAcknowledgedRecords(Boolean retransmitAcknowledgedRecords) {
         this.retransmitAcknowledgedRecords = retransmitAcknowledgedRecords;
+    }
+
+    public Boolean isRespectClientProposedExtensions() {
+        return respectClientProposedExtensions;
+    }
+
+    public void setRespectClientProposedExtensions(Boolean respectClientProposedExtensions) {
+        this.respectClientProposedExtensions = respectClientProposedExtensions;
+    }
+
+    public Boolean getQuic() {
+        return isQuic;
+    }
+
+    public void setQuic(Boolean quic) {
+        isQuic = quic;
+    }
+
+    public Boolean getQuicRetryFlowRequired() {
+        return quicRetryFlowRequired;
+    }
+
+    public void setQuicRetryFlowRequired(Boolean quicRetryFlowRequired) {
+        this.quicRetryFlowRequired = quicRetryFlowRequired;
     }
 }

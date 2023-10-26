@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -48,9 +48,16 @@ public class TlsMitmIT {
 
     @BeforeEach
     public void setUp()
-            throws UnrecoverableKeyException, CertificateException, KeyStoreException, IOException,
-                    NoSuchAlgorithmException, SignatureException, InvalidKeyException,
-                    NoSuchProviderException, OperatorCreationException, KeyManagementException {
+            throws UnrecoverableKeyException,
+                    CertificateException,
+                    KeyStoreException,
+                    IOException,
+                    NoSuchAlgorithmException,
+                    SignatureException,
+                    InvalidKeyException,
+                    NoSuchProviderException,
+                    OperatorCreationException,
+                    KeyManagementException {
         startBasicTlsServer();
     }
 
@@ -67,8 +74,12 @@ public class TlsMitmIT {
     @Test
     @Tag(TestCategories.INTEGRATION_TEST)
     public void testSimpleMitmProxyWorkflow()
-            throws InterruptedException, UnrecoverableKeyException, CertificateException,
-                    KeyStoreException, IOException, NoSuchAlgorithmException,
+            throws InterruptedException,
+                    UnrecoverableKeyException,
+                    CertificateException,
+                    KeyStoreException,
+                    IOException,
+                    NoSuchAlgorithmException,
                     KeyManagementException {
         CipherSuite cipherSuite = CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA;
 
@@ -94,9 +105,16 @@ public class TlsMitmIT {
     }
 
     public void startBasicTlsServer()
-            throws UnrecoverableKeyException, CertificateException, KeyStoreException, IOException,
-                    NoSuchAlgorithmException, KeyManagementException, SignatureException,
-                    InvalidKeyException, NoSuchProviderException, OperatorCreationException {
+            throws UnrecoverableKeyException,
+                    CertificateException,
+                    KeyStoreException,
+                    IOException,
+                    NoSuchAlgorithmException,
+                    KeyManagementException,
+                    SignatureException,
+                    InvalidKeyException,
+                    NoSuchProviderException,
+                    OperatorCreationException {
         TimeHelper.setProvider(new FixedTimeProvider(0));
         KeyPair k = KeyStoreGenerator.createRSAKeyPair(1024, random);
         KeyStore ks = KeyStoreGenerator.createKeyStore(k, random);

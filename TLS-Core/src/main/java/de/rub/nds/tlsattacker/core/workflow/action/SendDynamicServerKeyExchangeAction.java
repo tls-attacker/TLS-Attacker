@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -19,6 +19,8 @@ import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
+import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
@@ -60,10 +62,14 @@ public class SendDynamicServerKeyExchangeAction extends MessageAction implements
                 new WorkflowConfigurationFactory(state.getConfig())
                         .createServerKeyExchangeMessage(
                                 AlgorithmResolver.getKeyExchangeAlgorithm(selectedCipherSuite));
-        if (serverKeyExchangeMessage != null) {
+        if (serverKeyExchangeMessage == null) {
+            LOGGER.debug(
+                    "Skipping DynamicServerKeyExchangeAction as it is not required or dynamic selection failed.");
+            setExecuted(true);
+        } else {
             messages.add(serverKeyExchangeMessage);
 
-            String sending = getReadableString(messages);
+            String sending = getReadableStringFromMessages(messages);
             if (hasDefaultAlias()) {
                 LOGGER.info("Sending Dynamic Key Exchange: " + sending);
             } else {
@@ -71,7 +77,14 @@ public class SendDynamicServerKeyExchangeAction extends MessageAction implements
             }
 
             try {
-                send(tlsContext, messages, fragments, records, httpMessages);
+                send(
+                        tlsContext,
+                        messages,
+                        fragments,
+                        records,
+                        quicFrames,
+                        quicPackets,
+                        httpMessages);
                 setExecuted(true);
             } catch (IOException e) {
                 tlsContext.setReceivedTransportHandlerException(true);
@@ -185,6 +198,16 @@ public class SendDynamicServerKeyExchangeAction extends MessageAction implements
     }
 
     @Override
+    public List<QuicPacket> getSendQuicPackets() {
+        return quicPackets;
+    }
+
+    @Override
+    public List<QuicFrame> getSendQuicFrames() {
+        return quicFrames;
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if (this == obj) {
             return true;
@@ -205,6 +228,12 @@ public class SendDynamicServerKeyExchangeAction extends MessageAction implements
         if (!Objects.equals(this.fragments, other.fragments)) {
             return false;
         }
+        if (!Objects.equals(this.quicPackets, other.quicPackets)) {
+            return false;
+        }
+        if (!Objects.equals(this.quicFrames, other.quicFrames)) {
+            return false;
+        }
         return super.equals(obj);
     }
 
@@ -214,6 +243,8 @@ public class SendDynamicServerKeyExchangeAction extends MessageAction implements
         hash = 67 * hash + Objects.hashCode(this.messages);
         hash = 67 * hash + Objects.hashCode(this.records);
         hash = 67 * hash + Objects.hashCode(this.fragments);
+        hash = 67 * hash + Objects.hashCode(this.quicPackets);
+        hash = 67 * hash + Objects.hashCode(this.quicFrames);
         return hash;
     }
 

@@ -22,6 +22,7 @@
         <firstTimeout>1000</firstTimeout>
         <connectionTimeout>8000</connectionTimeout>
         <transportHandlerType>TCP</transportHandlerType>
+        <useIpv6>false</useIpv6>
     </OutboundConnection>
     <Send>
         <actionOptions/>
@@ -32,6 +33,8 @@
         <httpMessages/>
         <records/>
         <fragments/>
+        <quicFrames/>
+        <quicPackets/>
     </Send>
 </workflowTrace>
 

@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -542,7 +542,7 @@ public class TlsContext extends LayerContext {
         }
     }
 
-    private void init() {
+    public void init() {
         digest = new MessageDigestCollector();
         sessionList = new LinkedList<>();
         if (getConfig().isStealthMode()) {
@@ -565,6 +565,10 @@ public class TlsContext extends LayerContext {
                             getConfig().getChooserType(), this.getContext(), getConfig());
         }
         return chooser;
+    }
+
+    public void setChooser(Chooser chooser) {
+        this.chooser = chooser;
     }
 
     public CertificateType getSelectedClientCertificateType() {
@@ -1338,6 +1342,10 @@ public class TlsContext extends LayerContext {
 
     public MessageDigestCollector getDigest() {
         return digest;
+    }
+
+    public void setDigest(MessageDigestCollector digest) {
+        this.digest = digest;
     }
 
     public byte[] getDtlsCookie() {

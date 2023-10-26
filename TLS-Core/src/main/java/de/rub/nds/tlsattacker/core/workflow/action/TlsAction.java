@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -31,6 +31,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import org.apache.logging.log4j.LogManager;
@@ -201,9 +202,12 @@ public abstract class TlsAction implements Serializable, Aliasable {
                     || layer == ImplementedLayers.RECORD
                     || layer == ImplementedLayers.DTLS_FRAGMENT
                     || layer == ImplementedLayers.HTTP
-                    || layer == ImplementedLayers.SSL2) {
+                    || layer == ImplementedLayers.SSL2
+                    || layer == ImplementedLayers.QUICFRAME
+                    || layer == ImplementedLayers.QUICPACKET) {
                 layerConfiguration =
                         unsortedLayerConfigurations.stream()
+                                .filter(Objects::nonNull)
                                 .filter(layerConfig -> layerConfig.getLayerType().equals(layer))
                                 .findFirst();
             }

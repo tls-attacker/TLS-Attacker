@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -30,6 +30,12 @@ public abstract class Parser<T> {
     private static final Logger LOGGER = LogManager.getLogger();
 
     private final InputStream stream;
+
+    /**
+     * quicBuffer is used as a helper to construct the original QuicHeader for PacketDecryption.
+     * there might be a nicer solution.
+     */
+    protected ByteArrayOutputStream quicBuffer = new ByteArrayOutputStream();
 
     /** Not so nice... */
     private final ByteArrayOutputStream outputStream;
@@ -180,5 +186,26 @@ public abstract class Parser<T> {
      */
     protected InputStream getStream() {
         return stream;
+    }
+
+    /**
+     * Parses the VariableLengthInteger from the InputStream
+     *
+     * @return [0] the Integer Value [1] the size in bytes of the encoded Integer Value (Used for
+     *     Packet Decryption)
+     */
+    protected long parseVariableLengthInteger() {
+        byte b = parseByteField(1);
+        quicBuffer.write(b);
+        long v = b;
+        byte prefix = (byte) ((v & 0xff) >> 6);
+        byte length = (byte) ((1 & 0xff) << prefix);
+        v = (byte) v & 0x3f;
+        for (int i = 0; i < length - 1; i++) {
+            b = parseByteField(1);
+            quicBuffer.write(b);
+            v = (v << 8) + (b & 0xff);
+        }
+        return v;
     }
 }

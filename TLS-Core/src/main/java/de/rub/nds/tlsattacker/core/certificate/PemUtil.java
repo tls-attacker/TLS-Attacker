@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -9,8 +9,10 @@
 package de.rub.nds.tlsattacker.core.certificate;
 
 import java.io.*;
+import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.Security;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.util.Collection;
@@ -21,6 +23,7 @@ import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.crypto.tls.Certificate;
 import org.bouncycastle.crypto.tls.TlsUtils;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.openssl.PEMKeyPair;
 import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
@@ -90,10 +93,17 @@ public class PemUtil {
     }
 
     public static Certificate readCertificate(InputStream stream)
-            throws CertificateException, IOException {
-        CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
-        Collection<? extends java.security.cert.Certificate> certs =
-                certFactory.generateCertificates(stream);
+            throws CertificateException, IOException, NoSuchProviderException {
+        Collection<? extends java.security.cert.Certificate> certs;
+        byte[] bytes = stream.readAllBytes();
+        try {
+            CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
+            certs = certFactory.generateCertificates(new ByteArrayInputStream(bytes));
+        } catch (CertificateException Ex) {
+            Security.addProvider(new BouncyCastleProvider());
+            CertificateFactory certFactory = CertificateFactory.getInstance("X.509", "BC");
+            certs = certFactory.generateCertificates(new ByteArrayInputStream(bytes));
+        }
         java.security.cert.Certificate sunCert =
                 (java.security.cert.Certificate) certs.toArray()[0];
         byte[] certBytes = sunCert.getEncoded();
@@ -108,7 +118,8 @@ public class PemUtil {
         return tlsCerts;
     }
 
-    public static Certificate readCertificate(File f) throws CertificateException, IOException {
+    public static Certificate readCertificate(File f)
+            throws CertificateException, IOException, NoSuchProviderException {
         try (FileInputStream fis = new FileInputStream(f)) {
             return readCertificate(fis);
         }
@@ -123,8 +134,10 @@ public class PemUtil {
                 obj = pair.getPrivateKeyInfo();
             } else if (obj instanceof ASN1ObjectIdentifier) {
                 obj = parser.readObject();
-                PEMKeyPair pair = (PEMKeyPair) obj;
-                obj = pair.getPrivateKeyInfo();
+                if (obj instanceof PEMKeyPair) {
+                    PEMKeyPair pair = (PEMKeyPair) obj;
+                    obj = pair.getPrivateKeyInfo();
+                }
             }
             PrivateKeyInfo privKeyInfo = (PrivateKeyInfo) obj;
             JcaPEMKeyConverter converter = new JcaPEMKeyConverter();

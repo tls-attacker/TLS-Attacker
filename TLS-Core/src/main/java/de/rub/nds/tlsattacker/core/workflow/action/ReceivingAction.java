@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -19,19 +19,19 @@ import java.util.List;
 
 public interface ReceivingAction {
 
-    public abstract List<ProtocolMessage> getReceivedMessages();
+    List<ProtocolMessage> getReceivedMessages();
 
-    public abstract List<Record> getReceivedRecords();
+    List<Record> getReceivedRecords();
 
-    public abstract List<DtlsHandshakeMessageFragment> getReceivedFragments();
+    List<DtlsHandshakeMessageFragment> getReceivedFragments();
 
-    public abstract List<HttpMessage> getReceivedHttpMessages();
+    List<HttpMessage> getReceivedHttpMessages();
 
-    public default List<ProtocolMessageType> getGoingToReceiveProtocolMessageTypes() {
+    default List<ProtocolMessageType> getGoingToReceiveProtocolMessageTypes() {
         return new ArrayList<>();
     }
 
-    public default List<HandshakeMessageType> getGoingToReceiveHandshakeMessageTypes() {
+    default List<HandshakeMessageType> getGoingToReceiveHandshakeMessageTypes() {
         return new ArrayList<>();
     }
 }

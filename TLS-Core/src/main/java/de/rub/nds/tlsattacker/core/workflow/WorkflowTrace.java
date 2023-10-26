@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -169,6 +169,7 @@ public class WorkflowTrace implements Serializable {
                 @XmlElement(type = ForwardDataAction.class, name = "ForwardData"),
                 @XmlElement(type = GenericReceiveAction.class, name = "GenericReceive"),
                 @XmlElement(type = ReceiveTillAction.class, name = "ReceiveTill"),
+                @XmlElement(type = ReceiveQuicTillAction.class, name = "ReceiveQuicFramesTill"),
                 @XmlElement(type = TightReceiveAction.class, name = "TightReceive"),
                 @XmlElement(type = MultiReceiveAction.class, name = "MultiReceive"),
                 @XmlElement(type = PopAndSendAction.class, name = "PopAndSend"),
@@ -219,6 +220,7 @@ public class WorkflowTrace implements Serializable {
                 @XmlElement(type = SendAsciiAction.class, name = "SendAscii"),
                 @XmlElement(type = ReceiveAsciiAction.class, name = "ReceiveAscii"),
                 @XmlElement(type = GenericReceiveAsciiAction.class, name = "GenericReceiveAscii"),
+                @XmlElement(type = QuicPathChallengeAction.class, name = "QuicPathChallenge"),
             })
     private List<TlsAction> tlsActions = new ArrayList<>();
 

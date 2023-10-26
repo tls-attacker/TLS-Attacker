@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -11,12 +11,16 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.http.HttpMessage;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.*;
+import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
+import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import jakarta.xml.bind.annotation.XmlElementRef;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
@@ -31,7 +35,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @XmlRootElement
-public class ReceiveAction extends CommonReceiveAction implements ReceivingAction {
+public class ReceiveAction extends MessageAction implements ReceivingAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -41,8 +45,30 @@ public class ReceiveAction extends CommonReceiveAction implements ReceivingActio
     @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
     protected List<HttpMessage> expectedHttpMessages = new ArrayList<>();
 
+    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
+    protected List<QuicFrame> expectedQuicFrames = new ArrayList<>();
+
+    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
+    protected List<QuicPacket> expectedQuicPackets = new ArrayList<>();
+
     public ReceiveAction() {
         super();
+    }
+
+    public ReceiveAction(
+            List<ProtocolMessage> messages,
+            List<QuicFrame> quicFrames,
+            List<QuicPacket> quicPackets) {
+        super(messages, quicFrames, quicPackets);
+    }
+
+    public ReceiveAction(
+            Set<ActionOption> actionOptions,
+            List<ProtocolMessage> messages,
+            List<QuicFrame> quicFrames,
+            List<QuicPacket> quicPackets) {
+        super(messages, quicFrames, quicPackets);
+        setActionOptions(actionOptions);
     }
 
     public ReceiveAction(List<ProtocolMessage> expectedMessages) {
@@ -53,6 +79,30 @@ public class ReceiveAction extends CommonReceiveAction implements ReceivingActio
     public ReceiveAction(ProtocolMessage... expectedMessages) {
         super();
         this.expectedMessages = new ArrayList(Arrays.asList(expectedMessages));
+    }
+
+    public ReceiveAction(QuicFrame... expectedQuicFrames) {
+        super();
+        this.expectedQuicFrames = new ArrayList(Arrays.asList(expectedQuicFrames));
+    }
+
+    public ReceiveAction(QuicPacket... expectedQuicPackets) {
+        super();
+        this.expectedQuicPackets = new ArrayList(Arrays.asList(expectedQuicPackets));
+    }
+
+    public ReceiveAction(ActionOption actionOption, QuicFrame... expectedQuicFrames) {
+        this(expectedQuicFrames);
+        if (actionOption != null) {
+            this.addActionOption(actionOption);
+        }
+    }
+
+    public ReceiveAction(ActionOption actionOption, QuicPacket... expectedQuicPackets) {
+        this(expectedQuicPackets);
+        if (actionOption != null) {
+            this.addActionOption(actionOption);
+        }
     }
 
     public ReceiveAction(
@@ -99,45 +149,63 @@ public class ReceiveAction extends CommonReceiveAction implements ReceivingActio
     }
 
     @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder("Receive Action:\n");
+    public void execute(State state) throws ActionExecutionException {
+        TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
 
-        sb.append("\tExpected:");
-        if ((expectedMessages != null)) {
-            for (ProtocolMessage message : expectedMessages) {
-                sb.append(message.toCompactString());
-                sb.append(", ");
-            }
-        } else {
-            sb.append(" (no messages set)");
+        if (isExecuted()) {
+            throw new ActionExecutionException("Action already executed!");
         }
-        sb.append("\n\tActual:");
-        if ((messages != null) && (!messages.isEmpty())) {
-            for (ProtocolMessage message : messages) {
-                sb.append(message.toCompactString());
-                sb.append(", ");
-            }
+
+        LOGGER.debug("Receiving...");
+        distinctReceive(tlsContext);
+
+        setExecuted(true);
+
+        String expected =
+                getReadableStringFromContainerList(
+                        expectedMessages,
+                        expectedHttpMessages,
+                        expectedQuicPackets,
+                        expectedQuicFrames);
+        LOGGER.debug("Receive Expected:" + expected);
+        String received =
+                getReadableStringFromContainerList(messages, httpMessages, quicPackets, quicFrames);
+        if (hasDefaultAlias()) {
+            LOGGER.info("Received Containers: " + received);
         } else {
-            sb.append(" (no messages set)");
+            LOGGER.info("Received Containers (" + getConnectionAlias() + "): " + received);
         }
-        sb.append("\n");
-        return sb.toString();
+    }
+
+    @Override
+    public String toString() {
+        String string =
+                getClass().getSimpleName()
+                        + ": "
+                        + (isExecuted() ? "\n" : "(not executed)\n")
+                        + "\tExpected: "
+                        + getReadableStringFromContainerList(
+                                expectedMessages,
+                                expectedHttpMessages,
+                                expectedQuicPackets,
+                                expectedQuicFrames);
+        if (isExecuted()) {
+            string +=
+                    "\n\tActual:"
+                            + getReadableStringFromContainerList(
+                                    messages, httpMessages, quicPackets, quicFrames);
+        }
+        return string;
     }
 
     @Override
     public String toCompactString() {
-        StringBuilder sb = new StringBuilder(super.toCompactString());
-        if ((expectedMessages != null) && (!expectedMessages.isEmpty())) {
-            sb.append(" (");
-            for (ProtocolMessage message : expectedMessages) {
-                sb.append(message.toCompactString());
-                sb.append(",");
-            }
-            sb.deleteCharAt(sb.lastIndexOf(",")).append(")");
-        } else {
-            sb.append(" (no messages set)");
-        }
-        return sb.toString();
+        return super.toCompactString()
+                + getReadableStringFromContainerList(
+                        expectedMessages,
+                        expectedHttpMessages,
+                        expectedQuicPackets,
+                        expectedQuicFrames);
     }
 
     @Override
@@ -146,6 +214,9 @@ public class ReceiveAction extends CommonReceiveAction implements ReceivingActio
             for (LayerProcessingResult result :
                     getLayerStackProcessingResult().getLayerProcessingResultList()) {
                 if (!result.isExecutedAsPlanned()) {
+                    LOGGER.error(
+                            "ReceiveAction failed: Layer {}, did not execute as planned",
+                            result.getLayerType());
                     return false;
                 }
             }
@@ -155,51 +226,13 @@ public class ReceiveAction extends CommonReceiveAction implements ReceivingActio
     }
 
     @Override
-    public List<ProtocolMessage> getExpectedMessages() {
-        return expectedMessages;
-    }
-
-    void setReceivedMessages(List<ProtocolMessage> receivedMessages) {
-        this.messages = receivedMessages;
-    }
-
-    void setReceivedRecords(List<Record> receivedRecords) {
-        this.records = receivedRecords;
-    }
-
-    void setReceivedFragments(List<DtlsHandshakeMessageFragment> fragments) {
-        this.fragments = fragments;
-    }
-
-    public void setExpectedMessages(List<ProtocolMessage> expectedMessages) {
-        this.expectedMessages = expectedMessages;
-    }
-
-    public void setExpectedMessages(ProtocolMessage... expectedMessages) {
-        this.expectedMessages = new ArrayList(Arrays.asList(expectedMessages));
-    }
-
-    @Override
     public void reset() {
         messages = null;
         records = null;
         fragments = null;
-        setExecuted(false);
-    }
-
-    @Override
-    public List<ProtocolMessage> getReceivedMessages() {
-        return messages;
-    }
-
-    @Override
-    public List<Record> getReceivedRecords() {
-        return records;
-    }
-
-    @Override
-    public List<DtlsHandshakeMessageFragment> getReceivedFragments() {
-        return fragments;
+        quicFrames = null;
+        quicPackets = null;
+        setExecuted(null);
     }
 
     @Override
@@ -236,6 +269,12 @@ public class ReceiveAction extends CommonReceiveAction implements ReceivingActio
         if (!Objects.equals(this.fragments, other.fragments)) {
             return false;
         }
+        if (!Objects.equals(this.quicFrames, other.quicFrames)) {
+            return false;
+        }
+        if (!Objects.equals(this.quicPackets, other.quicPackets)) {
+            return false;
+        }
         return super.equals(obj);
     }
 
@@ -270,6 +309,12 @@ public class ReceiveAction extends CommonReceiveAction implements ReceivingActio
         if (expectedHttpMessages == null || expectedHttpMessages.isEmpty()) {
             expectedHttpMessages = null;
         }
+        if (expectedQuicFrames == null || expectedQuicFrames.isEmpty()) {
+            expectedQuicFrames = null;
+        }
+        if (expectedQuicPackets == null || expectedQuicPackets.isEmpty()) {
+            expectedQuicPackets = null;
+        }
     }
 
     private void initEmptyLists() {
@@ -278,6 +323,12 @@ public class ReceiveAction extends CommonReceiveAction implements ReceivingActio
         }
         if (expectedHttpMessages == null) {
             expectedHttpMessages = new ArrayList<>();
+        }
+        if (expectedQuicFrames == null) {
+            expectedQuicFrames = new ArrayList<>();
+        }
+        if (expectedQuicPackets == null) {
+            expectedQuicPackets = new ArrayList<>();
         }
     }
 
@@ -301,13 +352,78 @@ public class ReceiveAction extends CommonReceiveAction implements ReceivingActio
         return handshakeMessageTypes;
     }
 
-    @Override
     protected void distinctReceive(TlsContext tlsContext) {
-        receive(tlsContext, expectedMessages, fragments, records, httpMessages);
+        receive(
+                tlsContext,
+                expectedMessages,
+                fragments,
+                records,
+                expectedQuicFrames,
+                expectedQuicPackets,
+                httpMessages);
+    }
+
+    public List<ProtocolMessage> getExpectedMessages() {
+        return expectedMessages;
+    }
+
+    public void setExpectedMessages(List<ProtocolMessage> expectedMessages) {
+        this.expectedMessages = expectedMessages;
+    }
+
+    public void setExpectedMessages(ProtocolMessage... expectedMessages) {
+        this.expectedMessages = new ArrayList(Arrays.asList(expectedMessages));
+    }
+
+    public List<HttpMessage> getExpectedHttpMessages() {
+        return expectedHttpMessages;
+    }
+
+    public void setExpectedHttpMessages(List<HttpMessage> expectedHttpMessages) {
+        this.expectedHttpMessages = expectedHttpMessages;
+    }
+
+    public List<QuicFrame> getExpectedQuicFrames() {
+        return expectedQuicFrames;
+    }
+
+    public void setExpectedQuicFrames(List<QuicFrame> expectedQuicFrames) {
+        this.expectedQuicFrames = expectedQuicFrames;
+    }
+
+    public List<QuicPacket> getExpectedQuicPackets() {
+        return expectedQuicPackets;
+    }
+
+    public void setExpectedQuicPackets(List<QuicPacket> expectedQuicPackets) {
+        this.expectedQuicPackets = expectedQuicPackets;
+    }
+
+    @Override
+    public List<ProtocolMessage> getReceivedMessages() {
+        return getMessages();
+    }
+
+    @Override
+    public List<Record> getReceivedRecords() {
+        return getRecords();
+    }
+
+    @Override
+    public List<DtlsHandshakeMessageFragment> getReceivedFragments() {
+        return getFragments();
     }
 
     @Override
     public List<HttpMessage> getReceivedHttpMessages() {
-        return httpMessages;
+        return getHttpMessages();
+    }
+
+    public void setReceivedMessages(List<ProtocolMessage> messages) {
+        setMessages(messages);
+    }
+
+    public void setReceivedRecords(List<Record> records) {
+        setRecords(records);
     }
 }

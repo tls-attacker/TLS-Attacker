@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -41,7 +41,7 @@ public class GreaseExtensionMessage extends ExtensionMessage<GreaseExtensionMess
 
     public GreaseExtensionMessage(ExtensionType type, byte[] data) {
         super(type);
-        if (!type.name().startsWith("GREASE_")) {
+        if (!type.isGrease()) {
             LOGGER.warn("GreaseExtension message inizialized with non Grease extension type");
         }
         this.data = data;
@@ -50,7 +50,7 @@ public class GreaseExtensionMessage extends ExtensionMessage<GreaseExtensionMess
 
     public GreaseExtensionMessage(ExtensionType type, int length) {
         super(type);
-        if (!type.name().startsWith("GREASE_")) {
+        if (!type.isGrease()) {
             LOGGER.warn("GreaseExtension message inizialized with non Grease extension type");
         }
 
@@ -88,6 +88,14 @@ public class GreaseExtensionMessage extends ExtensionMessage<GreaseExtensionMess
 
     public ExtensionType getType() {
         return type;
+    }
+
+    public void setType(ExtensionType type) {
+        if (!type.isGrease()) {
+            LOGGER.warn("GreaseExtension message type was set to non Grease extension type");
+        }
+        this.type = type;
+        extensionTypeConstant = type;
     }
 
     @Override

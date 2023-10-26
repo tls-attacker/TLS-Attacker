@@ -1,7 +1,7 @@
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -38,13 +38,18 @@ public class ServerNameIndicationExtensionParser
             pairList = new LinkedList<>();
             ByteArrayInputStream innerStream =
                     new ByteArrayInputStream(msg.getServerNameListBytes().getValue());
-            while (innerStream.available() > 0) {
-                ServerNamePairParser parser = new ServerNamePairParser(innerStream);
-                ServerNamePair pair = new ServerNamePair();
-                parser.parse(pair);
-                pairList.add(pair);
+            try {
+                while (innerStream.available() > 0) {
+                    ServerNamePairParser parser = new ServerNamePairParser(innerStream);
+                    ServerNamePair pair = new ServerNamePair();
+                    parser.parse(pair);
+                    pairList.add(pair);
+                }
+                parseServerNameList(msg);
+            } catch (Exception e) {
+                // dirty fix for broken SNIs we send
+                LOGGER.warn("Could not parse ServerNamePairs");
             }
-            parseServerNameList(msg);
         } else {
             LOGGER.debug("Received empty SNI Extension");
         }
