@@ -545,6 +545,9 @@ public class Config implements Serializable {
     private byte[] defaultConnectionId = {0x01, 0x02, 0x03};
 
     private Integer defaultNumberOfRequestedConnectionIds = 3;
+    
+    /** Usage in der NewConnectionId message */
+    private ConnectionIdUsage defaultUsageofSentConnectionIds = ConnectionIdUsage.CID_SPARE;
 
     /** If we generate a ClientHello / ServerHello with DTLS 1.2 ConnectionID extension */
     private Boolean addConnectionIdExtension = false;
@@ -4261,6 +4264,14 @@ public class Config implements Serializable {
         this.defaultNumberOfRequestedConnectionIds = defaultNumberOfRequestedConnectionIds;
     }
 
+    public ConnectionIdUsage getDefaultUsageofSentConnectionIds() {
+        return defaultUsageofSentConnectionIds;
+    }
+
+    public void setDefaultUsageofSentConnectionIds(ConnectionIdUsage defaultUsageofSentConnectionIds) {
+        this.defaultUsageofSentConnectionIds = defaultUsageofSentConnectionIds;
+    }
+    
     public Boolean isAddConnectionIdExtension() {
         return addConnectionIdExtension;
     }

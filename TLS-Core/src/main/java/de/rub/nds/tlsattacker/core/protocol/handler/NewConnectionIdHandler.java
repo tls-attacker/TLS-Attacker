@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ConnectionIdUsage;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.NewConnectionIdMessage;
@@ -37,11 +36,9 @@ public class NewConnectionIdHandler extends HandshakeMessageHandler<NewConnectio
                             message.getConnectionIds().get(i).getConnectionId().getValue(), true);
                 }
                 LOGGER.debug(
-                        "Set WriteConnectionId in Context to "
-                                + ArrayConverter.bytesToHexString(
-                                        tlsContext.getWriteConnectionId()));
+                        "Adjust WriteConnectionIds in Context");
             } else {
-                LOGGER.debug("Did not adjust WriteConnectionId in Context.");
+                LOGGER.debug("Did not adjust WriteConnectionIds in Context");
             }
         }
     }

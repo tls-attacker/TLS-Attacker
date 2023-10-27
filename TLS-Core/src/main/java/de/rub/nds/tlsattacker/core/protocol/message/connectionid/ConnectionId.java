@@ -65,20 +65,29 @@ public class ConnectionId extends ModifiableVariableHolder {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        ConnectionId that = (ConnectionId) o;
-
-        if (!Objects.equals(connectionId, that.connectionId)) return false;
-        return Objects.equals(length, that.length);
+    public int hashCode() {
+        int hash = 3;
+        hash = 47 * hash + Objects.hashCode(this.connectionId);
+        hash = 47 * hash + Objects.hashCode(this.length);
+        return hash;
     }
 
     @Override
-    public int hashCode() {
-        int result = connectionId != null ? connectionId.hashCode() : 0;
-        result = 31 * result + (length != null ? length.hashCode() : 0);
-        return result;
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final ConnectionId other = (ConnectionId) obj;
+        if (!Objects.equals(this.connectionId, other.connectionId)) {
+            return false;
+        }
+        return Objects.equals(this.length, other.length);
     }
+
 }

@@ -51,7 +51,6 @@ public class NewConnectionIdParser extends HandshakeMessageParser<NewConnectionI
             cid.setConnectionId(parseByteArrayField(cid.getLength().getValue()));
             message.getConnectionIds().add(cid);
             i += cid.getLength().getValue();
-
             LOGGER.debug(" - " + ArrayConverter.bytesToHexString(cid.getConnectionId().getValue()));
         }
     }

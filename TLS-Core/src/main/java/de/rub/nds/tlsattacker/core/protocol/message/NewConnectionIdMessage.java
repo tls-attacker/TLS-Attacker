@@ -35,7 +35,8 @@ public class NewConnectionIdMessage extends HandshakeMessage<NewConnectionIdMess
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger connectionIdsLength;
 
-    @HoldsModifiableVariable private List<ConnectionId> connectionIds;
+    @HoldsModifiableVariable 
+    private List<ConnectionId> connectionIds;
 
     public NewConnectionIdMessage() {
         super(HandshakeMessageType.NEW_CONNECTION_ID);
@@ -93,10 +94,10 @@ public class NewConnectionIdMessage extends HandshakeMessage<NewConnectionIdMess
 
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 67 * hash + Objects.hashCode(this.usage);
-        hash = 67 * hash + Objects.hashCode(this.connectionIdsLength);
-        hash = 67 * hash + Objects.hashCode(this.connectionIds);
+        int hash = 5;
+        hash = 79 * hash + Objects.hashCode(this.usage);
+        hash = 79 * hash + Objects.hashCode(this.connectionIdsLength);
+        hash = 79 * hash + Objects.hashCode(this.connectionIds);
         return hash;
     }
 
@@ -112,9 +113,13 @@ public class NewConnectionIdMessage extends HandshakeMessage<NewConnectionIdMess
             return false;
         }
         final NewConnectionIdMessage other = (NewConnectionIdMessage) obj;
-        return Objects.equals(this.usage, other.usage)
-                && Objects.equals(this.connectionIdsLength, other.connectionIdsLength)
-                && Objects.equals(this.connectionIds, other.connectionIds);
+        if (this.usage != other.usage) {
+            return false;
+        }
+        if (!Objects.equals(this.connectionIdsLength, other.connectionIdsLength)) {
+            return false;
+        }
+        return Objects.equals(this.connectionIds, other.connectionIds);
     }
 
     @Override

@@ -506,9 +506,11 @@ public class TlsContext extends LayerContext {
     private Integer outboundRecordSizeLimit;
 
     private List<byte[]> writeConnectionIds = new ArrayList<>();
+    
     private int writeConnectionIdIndex = 0;
 
     private List<byte[]> readConnectionIDs = new ArrayList<>();
+    
     private int readConnectionIdIndex = 0;
 
     private Integer numberOfRequestedConnectionIds;

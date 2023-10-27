@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.tlsattacker.core.constants.ConnectionIdUsage;
+import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.NewConnectionIdMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.connectionid.ConnectionId;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
@@ -32,20 +33,19 @@ public class NewConnectionIdPreparator extends HandshakeMessagePreparator<NewCon
     }
 
     private void prepareUsage() {
-        message.setUsage(ConnectionIdUsage.CID_SPARE);
+        message.setUsage(chooser.getConfig().getDefaultUsageofSentConnectionIds());
         LOGGER.debug("Usage: " + message.getUsage());
     }
 
     private void prepareConnectionIds() {
-        int numCids = chooser.getNumberOfRequestedConnectionIds();
         message.setConnectionIds(new LinkedList<>());
         int length = 0;
-        for (int i = 0; i < numCids; i++) {
+        for (int i = 0; i < chooser.getNumberOfRequestedConnectionIds(); i++) {
             ConnectionId cid = new ConnectionId(chooser.getConfig().getDefaultConnectionId());
             message.getConnectionIds().add(cid);
-            length += cid.getLength().getValue();
+            length += cid.getLength().getValue() + HandshakeByteLength.CONNECTION_ID_LENGTH;
         }
         message.setConnectionIdsLength(length);
-        LOGGER.debug("Number of Connection IDs: " + numCids);
+        LOGGER.debug("Number of Connection IDs: " + chooser.getNumberOfRequestedConnectionIds());
     }
 }

@@ -18,19 +18,19 @@ import org.apache.logging.log4j.Logger;
 public class NewConnectionIdSerializer extends HandshakeMessageSerializer<NewConnectionIdMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
+    
     private final NewConnectionIdMessage msg;
 
     public NewConnectionIdSerializer(NewConnectionIdMessage message) {
         super(message);
-
         this.msg = message;
     }
 
     @Override
     public byte[] serializeHandshakeMessageContent() {
         LOGGER.debug("Serializing NewConnectionId");
-        serializeCidsLength(msg);
-        serializeCids(msg);
+        serializeConnectionIdsLength(msg);
+        serializeConnectionIds(msg);
         serializeUsage(msg);
         return getAlreadySerialized();
     }
@@ -40,20 +40,18 @@ public class NewConnectionIdSerializer extends HandshakeMessageSerializer<NewCon
         LOGGER.debug("Usage: " + msg.getUsage().getValue());
     }
 
-    private void serializeCids(NewConnectionIdMessage msg) {
+    private void serializeConnectionIds(NewConnectionIdMessage msg) {
         LOGGER.debug("ConnectionIds: ");
         for (ConnectionId connectionId : message.getConnectionIds()) {
             appendInt(
                     connectionId.getLength().getValue(), HandshakeByteLength.CONNECTION_ID_LENGTH);
             appendBytes(connectionId.getConnectionId().getValue());
-            LOGGER.debug(
-                    " - "
-                            + ArrayConverter.bytesToHexString(
+            LOGGER.debug(" - " + ArrayConverter.bytesToHexString(
                                     connectionId.getConnectionId().getValue()));
         }
     }
 
-    private void serializeCidsLength(NewConnectionIdMessage msg) {
+    private void serializeConnectionIdsLength(NewConnectionIdMessage msg) {
         appendInt(
                 msg.getConnectionIdsLength().getValue(),
                 HandshakeByteLength.NEW_CONNECTION_ID_CIDS_LENGTH);
