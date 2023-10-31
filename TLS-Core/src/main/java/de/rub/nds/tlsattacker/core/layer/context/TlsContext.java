@@ -2426,7 +2426,11 @@ public class TlsContext extends LayerContext {
     }
 
     public byte[] getWriteConnectionId() {
-        return writeConnectionIds.get(writeConnectionIdIndex);
+        if (writeConnectionIdIndex < writeConnectionIds.size()) {
+            return writeConnectionIds.get(writeConnectionIdIndex);
+        } else {
+            return null;
+        }
     }
 
     public void setWriteConnectionId(byte[] writeConnectionId) {
@@ -2434,7 +2438,11 @@ public class TlsContext extends LayerContext {
     }
 
     public byte[] getReadConnectionId() {
-        return readConnectionIDs.get(readConnectionIdIndex);
+        if (readConnectionIdIndex < readConnectionIDs.size()) {
+            return readConnectionIDs.get(readConnectionIdIndex);
+        } else {
+            return null;
+        }
     }
 
     public void setReadConnectionId(byte[] readConnectionID) {

@@ -34,7 +34,7 @@ public class RecordParser extends Parser<Record> {
     @Override
     public void parse(Record record) {
         LOGGER.debug("Parsing Record");
-        boolean isContentType = !parseContentType(record);
+        boolean isContentType = parseContentType(record);
         if (!isContentType) {
             record.setProtocolVersion(ProtocolVersion.DTLS13.getValue());
             parseDtls13Header(record);
