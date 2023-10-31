@@ -3313,7 +3313,6 @@
           <xs:element name="maxRecordLengthConfig" type="xs:int" minOccurs="0"/>
           <xs:element name="protocolMessageBytes" type="modifiableByteArray" minOccurs="0"/>
           <xs:element name="protocolVersion" type="modifiableByteArray" minOccurs="0"/>
-          <xs:element name="recordNumber" type="recordNumber" minOccurs="0"/>
           <xs:element name="sequenceNumber" type="modifiableBigInteger" minOccurs="0"/>
           <xs:element name="unifiedHeader" type="modifiableByte" minOccurs="0"/>
         </xs:sequence>
@@ -3583,6 +3582,7 @@
           <xs:element name="added" type="extensionType" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
           <xs:element name="removed" type="extensionType" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
           <xs:element name="replaced" type="extensionType" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="replace" type="xs:boolean"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -4227,6 +4227,7 @@
       <xs:element name="sendHandshakeMessagesWithinSingleRecord" type="xs:boolean" minOccurs="0"/>
       <xs:element name="defaultConnectionId" type="xs:string" minOccurs="0"/>
       <xs:element name="defaultNumberOfRequestedConnectionIds" type="xs:int" minOccurs="0"/>
+      <xs:element name="defaultUsageofSentConnectionIds" type="connectionIdUsage" minOccurs="0"/>
       <xs:element name="addConnectionIdExtension" type="xs:boolean" minOccurs="0"/>
       <xs:element name="pskKeyExchangeModes" minOccurs="0">
         <xs:complexType>
@@ -4523,12 +4524,12 @@
       <xs:element name="addEncryptedClientHelloExtension" type="xs:boolean" minOccurs="0"/>
       <xs:element name="defaultMaxEchAlpnPadding" type="xs:int" minOccurs="0"/>
       <xs:element name="acceptOnlyFittingDtlsFragments" type="xs:boolean" minOccurs="0"/>
-      <xs:element name="canSkipMessageSequenceNumber" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="skipMessageSequenceNumber" type="xs:boolean" minOccurs="0"/>
       <xs:element name="acceptContentRewritingDtlsFragments" type="xs:boolean" minOccurs="0"/>
       <xs:element name="writeKeylogFile" type="xs:boolean" minOccurs="0"/>
       <xs:element name="keylogFilePath" type="xs:string" minOccurs="0"/>
       <xs:element name="dtls13HeaderSeqNumSizeLong" type="xs:boolean" minOccurs="0"/>
-      <xs:element name="retransmitAcknowledgedRecords" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="retransmitAcknowledgedRecordsInDtls13" type="xs:boolean" minOccurs="0"/>
     </xs:all>
   </xs:complexType>
 

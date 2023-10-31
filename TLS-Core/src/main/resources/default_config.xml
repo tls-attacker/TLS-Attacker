@@ -994,6 +994,7 @@
     <sendHandshakeMessagesWithinSingleRecord>false</sendHandshakeMessagesWithinSingleRecord>
     <defaultConnectionId>01 02 03</defaultConnectionId>
     <defaultNumberOfRequestedConnectionIds>3</defaultNumberOfRequestedConnectionIds>
+    <defaultUsageofSentConnectionIds>CID_SPARE</defaultUsageofSentConnectionIds>
     <addConnectionIdExtension>false</addConnectionIdExtension>
     <pskKeyExchangeModes>
         <pskKeyExchangeMode>PSK_KE</pskKeyExchangeMode>
@@ -1305,9 +1306,9 @@
     <addEncryptedClientHelloExtension>false</addEncryptedClientHelloExtension>
     <defaultMaxEchAlpnPadding>25</defaultMaxEchAlpnPadding>
     <acceptOnlyFittingDtlsFragments>false</acceptOnlyFittingDtlsFragments>
-    <canSkipMessageSequenceNumber>false</canSkipMessageSequenceNumber>
+    <skipMessageSequenceNumber>false</skipMessageSequenceNumber>
     <acceptContentRewritingDtlsFragments>true</acceptContentRewritingDtlsFragments>
     <writeKeylogFile>false</writeKeylogFile>
     <dtls13HeaderSeqNumSizeLong>true</dtls13HeaderSeqNumSizeLong>
-    <retransmitAcknowledgedRecords>false</retransmitAcknowledgedRecords>
+    <retransmitAcknowledgedRecordsInDtls13>false</retransmitAcknowledgedRecordsInDtls13>
 </config>
