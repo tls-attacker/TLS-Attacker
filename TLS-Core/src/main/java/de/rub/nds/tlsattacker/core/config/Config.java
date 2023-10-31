@@ -545,7 +545,7 @@ public class Config implements Serializable {
     private byte[] defaultConnectionId = {0x01, 0x02, 0x03};
 
     private Integer defaultNumberOfRequestedConnectionIds = 3;
-    
+
     /** Usage in der NewConnectionId message */
     private ConnectionIdUsage defaultUsageofSentConnectionIds = ConnectionIdUsage.CID_SPARE;
 
@@ -1264,7 +1264,7 @@ public class Config implements Serializable {
 
     private Boolean acceptOnlyFittingDtlsFragments = false;
 
-    private Boolean canSkipMessageSequenceNumber = false;
+    private Boolean skipMessageSequenceNumber = false;
 
     private Boolean acceptContentRewritingDtlsFragments = true;
 
@@ -1274,7 +1274,7 @@ public class Config implements Serializable {
 
     private Boolean dtls13HeaderSeqNumSizeLong = true;
 
-    private Boolean retransmitAcknowledgedRecords = false;
+    private Boolean retransmitAcknowledgedRecordsInDtls13 = false;
 
     public Config() {
         defaultLayerConfiguration = LayerConfiguration.TLS;
@@ -1464,11 +1464,11 @@ public class Config implements Serializable {
     }
 
     public Boolean isCanSkipMessageSequenceNumber() {
-        return canSkipMessageSequenceNumber;
+        return skipMessageSequenceNumber;
     }
 
-    public void setCanSkipMessageSequenceNumber(Boolean canSkipMessageSequenceNumber) {
-        this.canSkipMessageSequenceNumber = canSkipMessageSequenceNumber;
+    public void setCanSkipMessageSequenceNumber(Boolean skipMessageSequenceNumber) {
+        this.skipMessageSequenceNumber = skipMessageSequenceNumber;
     }
 
     public Boolean isAcceptContentRewritingDtlsFragments() {
@@ -4268,10 +4268,11 @@ public class Config implements Serializable {
         return defaultUsageofSentConnectionIds;
     }
 
-    public void setDefaultUsageofSentConnectionIds(ConnectionIdUsage defaultUsageofSentConnectionIds) {
+    public void setDefaultUsageofSentConnectionIds(
+            ConnectionIdUsage defaultUsageofSentConnectionIds) {
         this.defaultUsageofSentConnectionIds = defaultUsageofSentConnectionIds;
     }
-    
+
     public Boolean isAddConnectionIdExtension() {
         return addConnectionIdExtension;
     }
@@ -4314,12 +4315,13 @@ public class Config implements Serializable {
         this.dtls13HeaderSeqNumSizeLong = dtls13HeaderSeqNumSizeLong;
     }
 
-    public Boolean getRetransmitAcknowledgedRecords() {
-        return retransmitAcknowledgedRecords;
+    public Boolean getRetransmitAcknowledgedRecordsInDtls13() {
+        return retransmitAcknowledgedRecordsInDtls13;
     }
 
-    public void setRetransmitAcknowledgedRecords(Boolean retransmitAcknowledgedRecords) {
-        this.retransmitAcknowledgedRecords = retransmitAcknowledgedRecords;
+    public void setRetransmitAcknowledgedRecordsInDtls13(
+            Boolean retransmitAcknowledgedRecordsInDtls13) {
+        this.retransmitAcknowledgedRecordsInDtls13 = retransmitAcknowledgedRecordsInDtls13;
     }
 
     public Boolean isRespectClientProposedExtensions() {

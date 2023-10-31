@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.tlsattacker.core.constants.ConnectionIdUsage;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.NewConnectionIdMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.connectionid.ConnectionId;

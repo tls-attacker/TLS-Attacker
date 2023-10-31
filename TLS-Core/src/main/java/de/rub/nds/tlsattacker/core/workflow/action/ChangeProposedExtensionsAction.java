@@ -24,7 +24,6 @@ import de.rub.nds.tlsattacker.core.state.State;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -115,27 +114,5 @@ public class ChangeProposedExtensionsAction extends ConnectionBoundAction {
     @Override
     public boolean executedAsPlanned() {
         return isExecuted();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-
-        ChangeProposedExtensionsAction that = (ChangeProposedExtensionsAction) o;
-
-        if (!Objects.equals(added, that.added)) return false;
-        if (!Objects.equals(removed, that.removed)) return false;
-        return Objects.equals(replaced, that.replaced);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (added != null ? added.hashCode() : 0);
-        result = 31 * result + (removed != null ? removed.hashCode() : 0);
-        result = 31 * result + (replaced != null ? replaced.hashCode() : 0);
-        return result;
     }
 }

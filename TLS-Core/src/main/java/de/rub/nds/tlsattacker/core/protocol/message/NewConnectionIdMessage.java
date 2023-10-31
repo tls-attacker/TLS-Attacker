@@ -35,8 +35,7 @@ public class NewConnectionIdMessage extends HandshakeMessage<NewConnectionIdMess
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger connectionIdsLength;
 
-    @HoldsModifiableVariable 
-    private List<ConnectionId> connectionIds;
+    @HoldsModifiableVariable private List<ConnectionId> connectionIds;
 
     public NewConnectionIdMessage() {
         super(HandshakeMessageType.NEW_CONNECTION_ID);

@@ -105,33 +105,31 @@ public abstract class RecordCipher {
                                     RecordByteLength.RECORD_LENGTH));
                 }
                 return stream.toByteArray();
-            } else if (protocolVersion == ProtocolVersion.DTLS13) {
+            } else if (protocolVersion.isDTLS13()) {
                 byte firstByte = record.getUnifiedHeader().getValue();
                 stream.write(firstByte);
-                // parse first byte
                 boolean isConnectionIdPresent = (firstByte & 0x10) == 0x10;
-                boolean sequenceNumberLength = (firstByte & 0x08) == 0x08;
-                boolean isLengthPresent = (firstByte & 0x04) == 0x04;
-
                 if (isConnectionIdPresent) {
                     stream.write(record.getConnectionId().getValue());
                 }
                 byte[] sequenceNumberBytes =
                         ArrayConverter.longToUint48Bytes(
                                 record.getSequenceNumber().getValue().longValue());
-                if (sequenceNumberLength == false) { // 8 bit sequence number
-                    stream.write(
-                            sequenceNumberBytes,
-                            sequenceNumberBytes.length
-                                    - RecordByteLength.DTLS13_CIPHERTEXT_SEQUENCE_NUMBER_SHORT,
-                            RecordByteLength.DTLS13_CIPHERTEXT_SEQUENCE_NUMBER_SHORT);
-                } else { // 16 bit sequence number
+                boolean isSequenceNumberLengthLong = (firstByte & 0x08) == 0x08;
+                if (isSequenceNumberLengthLong) {
                     stream.write(
                             sequenceNumberBytes,
                             sequenceNumberBytes.length
                                     - RecordByteLength.DTLS13_CIPHERTEXT_SEQUENCE_NUMBER_LONG,
                             RecordByteLength.DTLS13_CIPHERTEXT_SEQUENCE_NUMBER_LONG);
+                } else {
+                    stream.write(
+                            sequenceNumberBytes,
+                            sequenceNumberBytes.length
+                                    - RecordByteLength.DTLS13_CIPHERTEXT_SEQUENCE_NUMBER_SHORT,
+                            RecordByteLength.DTLS13_CIPHERTEXT_SEQUENCE_NUMBER_SHORT);
                 }
+                boolean isLengthPresent = (firstByte & 0x04) == 0x04;
                 if (isLengthPresent) {
                     if (record.getLength() != null && record.getLength().getValue() != null) {
                         stream.write(

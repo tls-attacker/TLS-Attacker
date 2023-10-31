@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.workflow;
 
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.SkipActionException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.layer.SpecificSendLayerConfiguration;
@@ -21,6 +20,7 @@ import de.rub.nds.tlsattacker.core.workflow.action.SendingAction;
 import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
@@ -104,8 +104,10 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
                 }
             } else {
                 if (action instanceof ReceivingAction
-                        && state.getTlsContext().getChooser().getSelectedProtocolVersion()
-                                == ProtocolVersion.DTLS13) {
+                        && state.getTlsContext()
+                                .getChooser()
+                                .getSelectedProtocolVersion()
+                                .isDTLS13()) {
                     LOGGER.debug("Clearing received ACKs");
                     if (state.getTlsContext().getDtlsReceivedAcknowledgedRecords() != null) {
                         state.getTlsContext().getDtlsReceivedAcknowledgedRecords().clear();
@@ -119,13 +121,9 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
             for (int epoch = currentEpoch; epoch >= 0; epoch--) {
                 state.getTlsContext().getRecordLayer().setWriteEpoch(epoch);
                 if (state.getTlsContext().getRecordLayer().getEncryptor().getRecordCipher(epoch)
-                                == state.getTlsContext()
-                                        .getRecordLayer()
-                                        .getEncryptor()
-                                        .getRecordCipher(0)
-                        && epoch != 0) {
+                        == null) {
                     LOGGER.debug(
-                            "Not sending a close notify for epoch "
+                            "Not sending a Close Notify for epoch "
                                     + epoch
                                     + ". No cipher available.");
                     continue;
@@ -154,7 +152,7 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
     private void executeRetransmission(SendingAction action) {
         LOGGER.info("Executing retransmission of last sent flight");
         List<Record> recordsToRetransmit =
-                config.getRetransmitAcknowledgedRecords()
+                config.getRetransmitAcknowledgedRecordsInDtls13()
                         ? action.getSendRecords()
                         : filterRecordsBasedOnAcks(action.getSendRecords());
         state.getTlsContext()
@@ -175,7 +173,13 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
             return sendRecords;
         }
         return sendRecords.stream()
-                .filter((r) -> !acks.contains(r.getRecordNumber()))
+                .filter(
+                        (record) ->
+                                !acks.contains(
+                                        new RecordNumber(
+                                                BigInteger.valueOf(
+                                                        sendRecords.get(0).getEpoch().getValue()),
+                                                record.getSequenceNumber().getValue())))
                 .collect(Collectors.toList());
     }
 }

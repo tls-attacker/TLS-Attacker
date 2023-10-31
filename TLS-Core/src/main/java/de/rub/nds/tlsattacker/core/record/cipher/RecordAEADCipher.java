@@ -148,9 +148,7 @@ public class RecordAEADCipher extends RecordCipher {
             }
             record.getComputations().setPadding(new byte[additionalPadding]);
             record.getComputations().setPlainRecordBytes(encapsulateRecordBytes(record));
-            if (getState().getVersion().isTLS13()) {
-                record.setContentType(ProtocolMessageType.APPLICATION_DATA.getValue());
-            }
+            record.setContentType(ProtocolMessageType.APPLICATION_DATA.getValue());
             // For TLS1.3 we need the length beforehand to compute the
             // authenticatedMetaData
             record.setLength(
@@ -320,14 +318,14 @@ public class RecordAEADCipher extends RecordCipher {
                         .getDtls13Mask(
                                 getState().getKeySet().getReadSnKey(getLocalConnectionEndType()),
                                 record.getProtocolMessageBytes().getValue());
-        byte[] encSequenceNumber = record.getEncryptedSequenceNumber().getValue();
-        if (mask.length < encSequenceNumber.length) {
+        byte[] encryptedSequenceNumber = record.getEncryptedSequenceNumber().getValue();
+        if (mask.length < encryptedSequenceNumber.length) {
             throw new CryptoException(
                     "Mask does not have enough bytes for decrypting the sequence number.");
         }
-        byte[] sequenceNumber = new byte[encSequenceNumber.length];
+        byte[] sequenceNumber = new byte[encryptedSequenceNumber.length];
         for (int i = 0; i < sequenceNumber.length; i++) {
-            sequenceNumber[i] = (byte) (encSequenceNumber[i] ^ mask[i]);
+            sequenceNumber[i] = (byte) (encryptedSequenceNumber[i] ^ mask[i]);
         }
         record.setSequenceNumber(new BigInteger(sequenceNumber));
         LOGGER.debug("Decrypted Sequence Number: " + record.getSequenceNumber().getValue());
@@ -351,18 +349,13 @@ public class RecordAEADCipher extends RecordCipher {
                 tlsContext.getConfig().getDtls13HeaderSeqNumSizeLong()
                         ? RecordByteLength.DTLS13_CIPHERTEXT_SEQUENCE_NUMBER_LONG
                         : RecordByteLength.DTLS13_CIPHERTEXT_SEQUENCE_NUMBER_SHORT;
-        byte[] encSequenceNumber = new byte[length];
+        byte[] encryptedSequenceNumber = new byte[length];
         for (int i = 0; i < length; i++) {
-            encSequenceNumber[i] = (byte) (sequenceNumber[i] ^ mask[i]);
+            encryptedSequenceNumber[i] = (byte) (sequenceNumber[i] ^ mask[i]);
         }
-        record.setEncryptedSequenceNumber(encSequenceNumber);
+        record.setEncryptedSequenceNumber(encryptedSequenceNumber);
         LOGGER.debug(
-                "Encrypted Sequence Number: "
-                        + ArrayConverter.bytesToHexString(
-                                record.getEncryptedSequenceNumber().getValue())
-                        + " (unencrypted: "
-                        + ArrayConverter.bytesToHexString(sequenceNumber)
-                        + ")");
+                "Encrypted Sequence Number: " + record.getEncryptedSequenceNumber().getValue());
     }
 
     public byte[] preprocessIv(long sequenceNumber, byte[] iv) {

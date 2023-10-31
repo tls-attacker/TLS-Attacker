@@ -186,8 +186,8 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         KeySet serverKeySet = getTls13KeySet(tlsContext, tlsContext.getActiveServerKeySetType());
         if (tlsContext.getRecordLayer() != null) {
             if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
-                // DTLS 1.3: skip epoch 1 if no early data was sent
-                if (tlsContext.getChooser().getSelectedProtocolVersion() == ProtocolVersion.DTLS13
+                // in DTLS 1.3 epoch 1 is only used for early data, if it was not used, skip it
+                if (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS13()
                         && tlsContext.getRecordLayer().getDecryptor().isEpochZero()) {
                     tlsContext.getRecordLayer().updateDecryptionCipher(null);
                 }
@@ -197,8 +197,8 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                                 RecordCipherFactory.getRecordCipher(
                                         tlsContext, serverKeySet, false));
             } else {
-                // DTLS 1.3: skip epoch 1 if no early data was sent
-                if (tlsContext.getChooser().getSelectedProtocolVersion() == ProtocolVersion.DTLS13
+                // in DTLS 1.3 epoch 1 is only used for early data, if it was not used, skip it
+                if (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS13()
                         && tlsContext.getRecordLayer().getEncryptor().isEpochZero()) {
                     tlsContext.getRecordLayer().updateEncryptionCipher(null);
                 }
@@ -567,7 +567,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         if (tlsContext.getTalkingConnectionEndType()
                 == tlsContext.getChooser().getMyConnectionPeer()) {
             // for TLS 1.3, this is handled in encrypted extensions
-            if (!(tlsContext.getChooser().getSelectedProtocolVersion().is13())) {
+            if (!tlsContext.getChooser().getSelectedProtocolVersion().is13()) {
                 if (tlsContext.isExtensionNegotiated(ExtensionType.MAX_FRAGMENT_LENGTH)
                         && tlsContext.isExtensionNegotiated(ExtensionType.RECORD_SIZE_LIMIT)) {
                     // this is supposed to result in a fatal error, just warning for now

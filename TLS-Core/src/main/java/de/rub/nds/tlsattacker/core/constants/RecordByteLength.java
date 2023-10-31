@@ -26,7 +26,10 @@ public class RecordByteLength {
     /** sequence number for DTLS */
     public static final int DTLS_SEQUENCE_NUMBER = 6;
 
+    /** sequence number for DTLS 1.3 */
     public static final int DTLS13_CIPHERTEXT_SEQUENCE_NUMBER_SHORT = 1;
+
+    /** sequence number for DTLS 1.3 */
     public static final int DTLS13_CIPHERTEXT_SEQUENCE_NUMBER_LONG = 2;
 
     private RecordByteLength() {}

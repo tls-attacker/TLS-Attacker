@@ -12,11 +12,11 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 
 public class ChangeReadConnectionIdAction extends ChangeConnectionIdAction {
 
+    public ChangeReadConnectionIdAction() {}
+
     public ChangeReadConnectionIdAction(byte[] connectionId) {
         super(connectionId);
     }
-
-    public ChangeReadConnectionIdAction() {}
 
     @Override
     protected void changeConnectionId(TlsContext tlsContext) {

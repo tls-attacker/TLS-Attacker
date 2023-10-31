@@ -156,7 +156,7 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
         ProtocolVersion ourVersion = chooser.getConfig().getHighestProtocolVersion();
         if (chooser.getConfig().getHighestProtocolVersion().isTLS13()) {
             ourVersion = ProtocolVersion.TLS12;
-        } else if (chooser.getConfig().getHighestProtocolVersion() == ProtocolVersion.DTLS13) {
+        } else if (chooser.getConfig().getHighestProtocolVersion().isDTLS13()) {
             ourVersion = ProtocolVersion.DTLS12;
         }
 

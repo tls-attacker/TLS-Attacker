@@ -20,7 +20,6 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.data.*;
 import de.rub.nds.tlsattacker.core.protocol.*;
-import de.rub.nds.tlsattacker.core.protocol.message.ack.RecordNumber;
 import de.rub.nds.tlsattacker.core.record.compressor.RecordCompressor;
 import de.rub.nds.tlsattacker.core.record.crypto.Encryptor;
 import de.rub.nds.tlsattacker.core.record.parser.RecordParser;
@@ -75,17 +74,16 @@ public class Record extends ModifiableVariableHolder implements DataContainer<Re
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COUNT)
     private ModifiableBigInteger sequenceNumber;
 
+    /** The encrypted sequence number for DTLS 1.3 */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COUNT)
     private ModifiableByteArray encryptedSequenceNumber;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.NONE)
     private ModifiableByteArray connectionId;
 
+    /** DTLS 1.3 unified header */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.KEY_MATERIAL)
     private ModifiableByte unifiedHeader;
-
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COUNT)
-    private RecordNumber recordNumber;
 
     private RecordCryptoComputations computations;
 
@@ -319,7 +317,6 @@ public class Record extends ModifiableVariableHolder implements DataContainer<Re
         hash = 29 * hash + Objects.hashCode(this.connectionId);
         hash = 29 * hash + Objects.hashCode(this.computations);
         hash = 29 * hash + Objects.hashCode(this.unifiedHeader);
-        hash = 29 * hash + Objects.hashCode(this.recordNumber);
         return hash;
     }
 
@@ -362,9 +359,6 @@ public class Record extends ModifiableVariableHolder implements DataContainer<Re
         if (!Objects.equals(this.unifiedHeader, other.unifiedHeader)) {
             return false;
         }
-        if (!Objects.equals(this.recordNumber, other.recordNumber)) {
-            return false;
-        }
         return true;
     }
 
@@ -404,18 +398,5 @@ public class Record extends ModifiableVariableHolder implements DataContainer<Re
         throw new UnsupportedOperationException(
                 "Not supported yet."); // To change body of generated methods, choose
         // Tools | Templates.
-    }
-
-    public RecordNumber getRecordNumber() {
-        if (recordNumber == null) {
-            if (this.epoch != null && this.sequenceNumber != null) {
-                recordNumber = new RecordNumber(this);
-            }
-        }
-        return recordNumber;
-    }
-
-    public void setRecordNumber(RecordNumber recordNumber) {
-        this.recordNumber = recordNumber;
     }
 }

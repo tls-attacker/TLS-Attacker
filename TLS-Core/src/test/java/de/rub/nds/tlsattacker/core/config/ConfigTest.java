@@ -413,17 +413,16 @@ public class ConfigTest {
         config.setWorkflowExecutorType(WorkflowExecutorType.DTLS);
         config.setFinishWithCloseNotify(true);
         config.setIgnoreRetransmittedCssInDtls(true);
-        config.setDtlsCookieExchange(true);
-        config.setDefaultClientKeyShareNamedGroups(new LinkedList<>());
         config.getDefaultClientKeyShareNamedGroups().add(NamedGroup.SECP256R1);
-        config.setDefaultClientNamedGroups(new LinkedList<>());
         config.getDefaultClientNamedGroups().add(NamedGroup.SECP256R1);
-        config.setDefaultServerNamedGroups(new LinkedList<>());
         config.getDefaultServerNamedGroups().add(NamedGroup.SECP256R1);
         config.setMessageFactoryActionOptions(new LinkedList<>());
         config.getMessageFactoryActionOptions().add(ActionOption.IGNORE_ACK_MESSAGES);
+        config.setDtlsCookieExchange(true);
         config.setAddCookieExtension(true);
-        config.setDefaultExtensionCookie(new byte[] {5, 6, 7});
+        config.setDefaultExtensionCookie(
+                ArrayConverter.hexStringToByteArray(
+                        "00112233445566778899AABBCCDDEEFFFFEEDDCCBBAA99887766554433221100"));
 
         ConfigIO.write(config, new File(RESOURCE_CONFIG_DIR, "dtls13.config"));
     }

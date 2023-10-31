@@ -30,11 +30,8 @@ public abstract class RecordCryptoUnit {
     }
 
     /**
-     * Tries to guess the correct epoch based on the given epoch bits. Sets the full epoch value of
-     * the record, if found.
-     *
-     * @param epochBits least 2 significant epoch bits
-     * @return the RecordCipher of the guessed epoch
+     * Tries to guess the correct epoch based on the given epoch bits (DTLS 1.3). Sets the full
+     * epoch value of the record, if found.
      */
     public RecordCipher getRecordCipherForEpochBits(int epochBits, Record record) {
         for (int i = recordCipherList.size() - 1; i >= 0; i--) {
@@ -43,10 +40,11 @@ public abstract class RecordCryptoUnit {
                 return recordCipherList.get(i);
             }
         }
+        LOGGER.warn("Got no RecordCipher for epoch bits: " + epochBits);
         return null;
     }
 
-    /** Return true, if we are still in epoch 0 and no early data was sent yet. */
+    /** Return true, if we are still in epoch 0. */
     public boolean isEpochZero() {
         return recordCipherList.size() == 1;
     }
@@ -55,7 +53,7 @@ public abstract class RecordCryptoUnit {
         if (recordCipherList.size() > epoch && recordCipherList.get(epoch) != null) {
             return recordCipherList.get(epoch);
         } else {
-            LOGGER.warn("Got no RecordCipher for epoch: " + epoch + " using epoch 0 cipher");
+            LOGGER.warn("Got no RecordCipher for epoch: " + epoch + ". Using epoch 0 cipher");
             return recordCipherList.get(0);
         }
     }

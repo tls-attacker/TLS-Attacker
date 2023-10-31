@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol;
 
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.data.Handler;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
@@ -43,9 +44,8 @@ public abstract class ProtocolMessageHandler<MessageT extends ProtocolMessage>
             return;
         }
 
-        // DTLS 1.0 and 1.2 include fragment offsets in the digest, DTLS 1.3 does not
-        if (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS()
-                && !tlsContext.getChooser().getSelectedProtocolVersion().is13()) {
+        ProtocolVersion version = tlsContext.getChooser().getSelectedProtocolVersion();
+        if (version.isDTLS() && !version.is13()) {
             DtlsHandshakeMessageFragment fragment =
                     tlsContext
                             .getDtlsFragmentLayer()

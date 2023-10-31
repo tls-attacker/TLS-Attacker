@@ -21,7 +21,6 @@ import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.state.State;
 import jakarta.xml.bind.annotation.XmlRootElement;
-import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -32,21 +31,13 @@ public abstract class ChangeConnectionIdAction extends ConnectionBoundAction {
 
     protected byte[] connectionId = null;
 
-    protected abstract void changeConnectionId(TlsContext tlsContext);
+    public ChangeConnectionIdAction() {}
 
     public ChangeConnectionIdAction(byte[] connectionId) {
         this.connectionId = connectionId;
     }
 
-    public ChangeConnectionIdAction() {}
-
-    public byte[] getConnectionId() {
-        return connectionId;
-    }
-
-    public void setConnectionId(byte[] connectionId) {
-        this.connectionId = connectionId;
-    }
+    protected abstract void changeConnectionId(TlsContext tlsContext);
 
     @Override
     public void execute(State state) throws ActionExecutionException {
@@ -67,23 +58,5 @@ public abstract class ChangeConnectionIdAction extends ConnectionBoundAction {
     @Override
     public boolean executedAsPlanned() {
         return isExecuted();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-
-        ChangeConnectionIdAction that = (ChangeConnectionIdAction) o;
-
-        return Arrays.equals(connectionId, that.connectionId);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + Arrays.hashCode(connectionId);
-        return result;
     }
 }

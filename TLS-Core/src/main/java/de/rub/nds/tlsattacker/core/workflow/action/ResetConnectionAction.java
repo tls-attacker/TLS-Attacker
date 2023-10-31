@@ -114,6 +114,7 @@ public class ResetConnectionAction extends ConnectionBoundAction {
                 tlsContext.getDtlsFragmentLayer().setReadHandshakeMessageSequence(0);
                 tlsContext.getDtlsFragmentLayer().setWriteHandshakeMessageSequence(0);
             }
+            LOGGER.info("Resetting QUIC settings");
             if (context.getConfig().getQuic()) {
                 QuicContext quicContext = context.getQuicContext();
                 quicContext.reset();
@@ -129,7 +130,6 @@ public class ResetConnectionAction extends ConnectionBoundAction {
             if (switchToIpv6) {
                 tcpContext.getTransportHandler().setUseIpv6(true);
             }
-            tcpContext.getTransportHandler().preInitialize();
             tcpContext.getTransportHandler().initialize();
             asPlanned = true;
         } catch (IOException ex) {

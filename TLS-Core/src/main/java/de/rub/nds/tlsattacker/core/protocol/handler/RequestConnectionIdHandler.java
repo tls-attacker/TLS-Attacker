@@ -13,10 +13,11 @@ import de.rub.nds.tlsattacker.core.protocol.message.RequestConnectionIdMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class RequestConnectionIdHandler extends HandshakeMessageHandler<RequestConnectionIdMessage> {
-    
+public class RequestConnectionIdHandler
+        extends HandshakeMessageHandler<RequestConnectionIdMessage> {
+
     private static final Logger LOGGER = LogManager.getLogger();
-        
+
     public RequestConnectionIdHandler(TlsContext tlsContext) {
         super(tlsContext);
     }

@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.record.cipher.RecordAEADCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
@@ -42,14 +43,14 @@ public class RecordDecryptor extends Decryptor {
         if (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS()
                 && record.getEpoch() != null
                 && record.getEpoch().getValue() != null) {
-            if (tlsContext.getChooser().getSelectedProtocolVersion() == ProtocolVersion.DTLS13
+            // After handshake DTLS 1.3 epochs must be guessed based on the last 2 bits
+            if (tlsContext.getChooser().getSelectedProtocolVersion().isDTLS13()
                     && tlsContext.getReadEpoch() > 3
                     && record.getUnifiedHeader() != null) {
-                // after handshake dtls 1.3 epochs must be guessed based on the last 2 bits
                 recordCipher = getRecordCipherForEpochBits(record.getEpoch().getValue(), record);
                 if (recordCipher == null) {
                     LOGGER.warn(
-                            "No RecordCipher found, for epoch bits: "
+                            "Got no RecordCipher for epoch bits: "
                                     + record.getEpoch().getValue()
                                     + ". Using most recent cipher instead.");
                     recordCipher = getRecordMostRecentCipher();
@@ -57,12 +58,13 @@ public class RecordDecryptor extends Decryptor {
             } else {
                 recordCipher = getRecordCipher(record.getEpoch().getValue());
             }
-            // decrypt encrypted record sequence numbers in DTLS 1.3
-            if (record.getEncryptedSequenceNumber() != null) {
+            // Decrypt encrypted record sequence numbers in DTLS 1.3
+            if (record.getEncryptedSequenceNumber() != null
+                    && recordCipher instanceof RecordAEADCipher) {
                 try {
                     recordCipher.decryptDtls13SequenceNumber(record);
                 } catch (CryptoException ex) {
-                    throw new ParserException(ex);
+                    LOGGER.error("Could not decryot DTLS 1.3 Record Sequence Number: " + ex);
                 }
             }
         } else {

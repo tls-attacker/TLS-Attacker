@@ -294,25 +294,17 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
     }
 
     public void updateEncryptionCipher(RecordCipher encryptionCipher) {
-        if (encryptionCipher == null) {
-            LOGGER.debug("Skipped writeEpoch " + readEpoch);
-        } else {
-            LOGGER.debug(
-                    "Activating new EncryptionCipher ({})",
-                    encryptionCipher.getClass().getSimpleName());
-        }
+        LOGGER.debug(
+                "Activating new EncryptionCipher ({})",
+                encryptionCipher.getClass().getSimpleName());
         encryptor.addNewRecordCipher(encryptionCipher);
         writeEpoch++;
     }
 
     public void updateDecryptionCipher(RecordCipher decryptionCipher) {
-        if (decryptionCipher == null) {
-            LOGGER.debug("Skipped readEpoch " + readEpoch);
-        } else {
-            LOGGER.debug(
-                    "Activating new DecryptionCipher ({})",
-                    decryptionCipher.getClass().getSimpleName());
-        }
+        LOGGER.debug(
+                "Activating new DecryptionCipher ({})",
+                decryptionCipher.getClass().getSimpleName());
         decryptor.addNewRecordCipher(decryptionCipher);
         readEpoch++;
     }

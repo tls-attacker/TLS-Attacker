@@ -269,26 +269,25 @@ public abstract class ChaCha20Poly1305Cipher extends BaseCipher implements Dtls1
 
     @Override
     public byte[] getDtls13Mask(byte[] key, byte[] ciphertext) throws CryptoException {
-
         if (ciphertext.length < 16) {
             throw new CryptoException("Ciphertext is too short. Can not be processed.");
         }
 
         try {
-            Cipher chachaCipher = Cipher.getInstance("ChaCha20");
+            Cipher recordNumberCipher = Cipher.getInstance("ChaCha20");
 
-            byte[] block_counter = new byte[4];
-            System.arraycopy(ciphertext, 0, block_counter, 0, block_counter.length);
+            byte[] counter = new byte[4];
+            System.arraycopy(ciphertext, 0, counter, 0, counter.length);
             byte[] nonce = new byte[12];
-            System.arraycopy(ciphertext, block_counter.length, nonce, 0, nonce.length);
+            System.arraycopy(ciphertext, counter.length, nonce, 0, nonce.length);
 
             ChaCha20ParameterSpec parameterSpec =
-                    new ChaCha20ParameterSpec(nonce, new BigInteger(block_counter).intValue());
+                    new ChaCha20ParameterSpec(nonce, new BigInteger(counter).intValue());
             SecretKeySpec keySpec = new SecretKeySpec(key, "ChaCha20");
-            chachaCipher.init(Cipher.ENCRYPT_MODE, keySpec, parameterSpec);
+            recordNumberCipher.init(Cipher.ENCRYPT_MODE, keySpec, parameterSpec);
 
             byte[] toEncrypt = new byte[64];
-            return chachaCipher.doFinal(toEncrypt);
+            return recordNumberCipher.doFinal(toEncrypt);
         } catch (NoSuchAlgorithmException
                 | NoSuchPaddingException
                 | InvalidAlgorithmParameterException

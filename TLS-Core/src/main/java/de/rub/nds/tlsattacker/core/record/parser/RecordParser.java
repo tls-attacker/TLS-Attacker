@@ -34,10 +34,10 @@ public class RecordParser extends Parser<Record> {
     @Override
     public void parse(Record record) {
         LOGGER.debug("Parsing Record");
-        boolean isDtls13Header = parseContentType(record);
-        if (isDtls13Header) {
+        boolean isContentType = !parseContentType(record);
+        if (!isContentType) {
             record.setProtocolVersion(ProtocolVersion.DTLS13.getValue());
-            parseDtls13Header(record, record.getUnifiedHeader().getValue());
+            parseDtls13Header(record);
         } else {
             ProtocolMessageType protocolMessageType =
                     ProtocolMessageType.getContentType(record.getContentType().getValue());
@@ -89,34 +89,31 @@ public class RecordParser extends Parser<Record> {
         if ((firstByte & 0xE0) == 0x20) {
             record.setUnifiedHeader(firstByte);
             LOGGER.debug("UnifiedHeader: 00" + Integer.toBinaryString(firstByte));
-            return true;
+            return false;
         } else {
             record.setContentType(firstByte);
             LOGGER.debug("ContentType: " + record.getContentType().getValue());
-            return false;
+            return true;
         }
     }
 
-    private void parseDtls13Header(Record record, byte firstByte) {
-        boolean isConnectionIdPresent = (firstByte & 0x10) == 0x10;
-        boolean sequenceNumberLength = (firstByte & 0x08) == 0x08;
-        boolean isLengthPresent = (firstByte & 0x04) == 0x04;
-        int lowerEpoch = firstByte & 0x03;
+    private void parseDtls13Header(Record record) {
+        byte header = record.getUnifiedHeader().getValue();
+        int lowerEpoch = header & 0x03;
         record.setEpoch(lowerEpoch);
-        LOGGER.debug("Epoch (lower 2 bits): " + lowerEpoch);
-
+        boolean isConnectionIdPresent = (header & 0x10) == 0x10;
         if (isConnectionIdPresent) {
             parseConnectionId(record);
         }
-        if (sequenceNumberLength == false) { // 8 bit sequence number
-            record.setEncryptedSequenceNumber(
-                    parseByteArrayField(RecordByteLength.DTLS13_CIPHERTEXT_SEQUENCE_NUMBER_SHORT));
-        } else { // 16 bit sequence number
+        boolean isSequenceNumberLengthLong = (header & 0x08) == 0x08;
+        if (isSequenceNumberLengthLong) {
             record.setEncryptedSequenceNumber(
                     parseByteArrayField(RecordByteLength.DTLS13_CIPHERTEXT_SEQUENCE_NUMBER_LONG));
+        } else {
+            record.setEncryptedSequenceNumber(
+                    parseByteArrayField(RecordByteLength.DTLS13_CIPHERTEXT_SEQUENCE_NUMBER_SHORT));
         }
-        LOGGER.debug(
-                "Encrypted SequenceNumber: {}", record.getEncryptedSequenceNumber().getValue());
+        boolean isLengthPresent = (header & 0x04) == 0x04;
         if (isLengthPresent) {
             parseLength(record);
         }
@@ -133,7 +130,7 @@ public class RecordParser extends Parser<Record> {
     }
 
     private void parseProtocolMessageBytes(Record record) {
-        // if length is not set, entire rest of the record is protocol message (DTLS 1.3 header)
+        // if length is not set, entire rest of the record is protocol message (DTLS 1.3)
         if (record.getLength().getValue() != null) {
             record.setProtocolMessageBytes(parseByteArrayField(record.getLength().getValue()));
         } else {

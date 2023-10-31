@@ -37,9 +37,7 @@ public class RecordSerializer extends Serializer<Record> {
                 writeEpoch(record);
                 writeSequenceNumber(record);
             }
-            if (record.getConnectionId() != null
-                    && record.getConnectionId().getValue() != null
-                    && record.getConnectionId().getValue().length > 0) {
+            if (record.getConnectionId() != null) {
                 writeConnectionId(record);
             }
             writeLength(record);
@@ -50,9 +48,7 @@ public class RecordSerializer extends Serializer<Record> {
 
     private void writeDtls13Header(Record record) {
         writeUnifiedHeader(record);
-        if (record.getConnectionId() != null
-                && record.getConnectionId().getValue() != null
-                && record.getConnectionId().getValue().length > 0) {
+        if (record.getConnectionId() != null) {
             writeConnectionId(record);
         }
         writeEncryptedSequenceNumber(record);

@@ -73,6 +73,7 @@ public class HKDFunction {
     public static final String QUIC_IV = "quic iv";
 
     public static final String QUIC_HP = "quic hp";
+
     public static final String SN_KEY = "sn";
 
     /**
@@ -198,7 +199,7 @@ public class HKDFunction {
         String label;
         if (protocolVersion.isTLS13()) {
             label = "tls13 " + labelIn;
-        } else if (protocolVersion == ProtocolVersion.DTLS13) {
+        } else if (protocolVersion.isDTLS13()) {
             label = "dtls13" + labelIn;
         } else {
             throw new NotImplementedException(
@@ -224,6 +225,7 @@ public class HKDFunction {
      * @param prk The prk
      * @param labelIn The label input
      * @param toHash The data to hash
+     * @param protocolVersion The protocol version
      * @return The derivedSecret
      * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
@@ -278,6 +280,7 @@ public class HKDFunction {
      * @param labelIn The InputLabel
      * @param hashValue The hash value
      * @param outLen The output length
+     * @param protocolVersion The protocol version
      * @return The expanded Label bytes
      * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */

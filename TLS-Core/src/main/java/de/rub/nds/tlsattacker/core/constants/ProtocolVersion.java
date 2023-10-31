@@ -198,6 +198,10 @@ public enum ProtocolVersion {
         return this == TLS13 || this.getMajor() == 0x7F;
     }
 
+    public boolean isDTLS13() {
+        return this == DTLS13;
+    }
+
     public boolean is13() {
         return isTLS13() || this == DTLS13;
     }

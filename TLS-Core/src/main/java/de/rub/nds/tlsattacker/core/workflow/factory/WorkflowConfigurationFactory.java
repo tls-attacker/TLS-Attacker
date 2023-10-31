@@ -197,39 +197,6 @@ public class WorkflowConfigurationFactory {
                             ConnectionEndType.CLIENT,
                             new EncryptedClientHelloMessage(config)));
         } else {
-            ClientHelloMessage clientHello = new ClientHelloMessage(config);
-            // remove cookie extension in first message
-            if (clientHello.containsExtension(ExtensionType.COOKIE)) {
-                clientHello
-                        .getExtensions()
-                        .remove(clientHello.getExtension(CookieExtensionMessage.class));
-            }
-            workflowTrace.addTlsAction(
-                    MessageActionFactory.createTLSAction(
-                            config, connection, ConnectionEndType.CLIENT, clientHello));
-        }
-
-        if ((config.getHighestProtocolVersion().isDTLS() && config.isDtlsCookieExchange())
-                || (config.getHighestProtocolVersion().is13() && config.isAddCookieExtension())) {
-            if (config.getHighestProtocolVersion().isDTLS()
-                    && config.getHighestProtocolVersion() != ProtocolVersion.DTLS13) {
-                // DTLS 1.0-1.2 => HelloVerifyRequest
-                workflowTrace.addTlsAction(
-                        MessageActionFactory.createTLSAction(
-                                config,
-                                connection,
-                                ConnectionEndType.SERVER,
-                                new HelloVerifyRequestMessage()));
-            } else {
-                // (D)TLS 1.3 cookie extension => HelloRetryRequest
-                workflowTrace.addTlsAction(
-                        MessageActionFactory.createTLSAction(
-                                config,
-                                connection,
-                                ConnectionEndType.SERVER,
-                                new ServerHelloMessage(config, true)));
-            }
-            // second ClientHello after cookie exchange
             workflowTrace.addTlsAction(
                     MessageActionFactory.createTLSAction(
                             config,
@@ -238,16 +205,34 @@ public class WorkflowConfigurationFactory {
                             new ClientHelloMessage(config)));
         }
 
-        // no cookie exchange in second server hello message
-        ServerHelloMessage serverHello = new ServerHelloMessage(config);
-        if (serverHello.containsExtension(ExtensionType.COOKIE)) {
-            serverHello
-                    .getExtensions()
-                    .remove(serverHello.getExtension(CookieExtensionMessage.class));
+        if (config.getHighestProtocolVersion().isDTLS() && config.isDtlsCookieExchange()) {
+            if (config.getHighestProtocolVersion().isDTLS13()) {
+                ServerHelloMessage serverHelloMessage = new ServerHelloMessage(config, true);
+                serverHelloMessage.addExtension(new CookieExtensionMessage());
+                workflowTrace.addTlsAction(
+                        MessageActionFactory.createTLSAction(
+                                config, connection, ConnectionEndType.SERVER, serverHelloMessage));
+            } else {
+                workflowTrace.addTlsAction(
+                        MessageActionFactory.createTLSAction(
+                                config,
+                                connection,
+                                ConnectionEndType.SERVER,
+                                new HelloVerifyRequestMessage()));
+            }
+            ClientHelloMessage clientHelloMessage = new ClientHelloMessage(config);
+            clientHelloMessage.addExtension(new CookieExtensionMessage());
+            workflowTrace.addTlsAction(
+                    MessageActionFactory.createTLSAction(
+                            config, connection, ConnectionEndType.CLIENT, clientHelloMessage));
         }
+
         workflowTrace.addTlsAction(
                 MessageActionFactory.createTLSAction(
-                        config, connection, ConnectionEndType.SERVER, serverHello));
+                        config,
+                        connection,
+                        ConnectionEndType.SERVER,
+                        new ServerHelloMessage(config)));
 
         return workflowTrace;
     }
@@ -273,16 +258,9 @@ public class WorkflowConfigurationFactory {
 
         CipherSuite selectedCipherSuite = config.getDefaultSelectedCipherSuite();
         List<ProtocolMessage> messages = new LinkedList<>();
-        // no cookie exchange in second server hello message
-        ServerHelloMessage serverHello = new ServerHelloMessage(config);
-        if (serverHello.containsExtension(ExtensionType.COOKIE)) {
-            serverHello
-                    .getExtensions()
-                    .remove(serverHello.getExtension(CookieExtensionMessage.class));
-        }
-        messages.add(serverHello);
+        messages.add(new ServerHelloMessage(config));
         if (config.getHighestProtocolVersion().is13()) {
-            if (config.getHighestProtocolVersion() != ProtocolVersion.DTLS13
+            if (!config.getHighestProtocolVersion().isDTLS13()
                     && (Objects.equals(config.getTls13BackwardsCompatibilityMode(), Boolean.TRUE)
                             || connection.getLocalConnectionEndType()
                                     == ConnectionEndType.CLIENT)) {
@@ -336,7 +314,7 @@ public class WorkflowConfigurationFactory {
 
         List<ProtocolMessage> messages = new LinkedList<>();
         if (config.getHighestProtocolVersion().is13()) {
-            if (config.getHighestProtocolVersion() != ProtocolVersion.DTLS13
+            if (!config.getHighestProtocolVersion().isDTLS13()
                     && (Objects.equals(config.getTls13BackwardsCompatibilityMode(), Boolean.TRUE)
                             || connection.getLocalConnectionEndType()
                                     == ConnectionEndType.SERVER)) {
@@ -371,7 +349,7 @@ public class WorkflowConfigurationFactory {
                             new ChangeCipherSpecMessage(),
                             new FinishedMessage()));
         }
-        if (config.getHighestProtocolVersion() == ProtocolVersion.DTLS13) {
+        if (config.getHighestProtocolVersion().isDTLS13()) {
             workflowTrace.addTlsAction(
                     MessageActionFactory.createTLSAction(
                             config, connection, ConnectionEndType.SERVER, new AckMessage()));
@@ -767,12 +745,6 @@ public class WorkflowConfigurationFactory {
 
         if (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
             clientHello = new ClientHelloMessage(config);
-            // remove cookie extension in first message
-            if (clientHello.containsExtension(ExtensionType.COOKIE)) {
-                clientHello
-                        .getExtensions()
-                        .remove(clientHello.getExtension(CookieExtensionMessage.class));
-            }
             earlyDataMsg = new ApplicationMessage();
             earlyDataMsg.setDataConfig(config.getEarlyData());
         } else {
@@ -783,7 +755,7 @@ public class WorkflowConfigurationFactory {
         if (zeroRtt) {
             if ((Objects.equals(config.getTls13BackwardsCompatibilityMode(), Boolean.TRUE)
                             || connection.getLocalConnectionEndType() == ConnectionEndType.SERVER)
-                    && config.getHighestProtocolVersion() != ProtocolVersion.DTLS13) {
+                    && !config.getHighestProtocolVersion().isDTLS13()) {
                 clientHelloMessages.add(ccsClient);
             }
             clientHelloMessages.add(earlyDataMsg);
@@ -793,48 +765,37 @@ public class WorkflowConfigurationFactory {
                 MessageActionFactory.createTLSAction(
                         config, connection, ConnectionEndType.CLIENT, clientHelloMessages));
 
-        if (config.isAddCookieExtension()) {
+        if (config.getHighestProtocolVersion().isDTLS() && config.isDtlsCookieExchange()) {
+            ServerHelloMessage serverHelloMessage = new ServerHelloMessage(config, true);
+            serverHelloMessage.addExtension(new CookieExtensionMessage());
             trace.addTlsAction(
                     MessageActionFactory.createTLSAction(
-                            config,
-                            connection,
-                            ConnectionEndType.SERVER,
-                            new ServerHelloMessage(config, true)));
+                            config, connection, ConnectionEndType.SERVER, serverHelloMessage));
+            ClientHelloMessage clientHelloMessage = new ClientHelloMessage(config);
+            clientHelloMessage.addExtension(new CookieExtensionMessage());
             trace.addTlsAction(
                     MessageActionFactory.createTLSAction(
-                            config,
-                            connection,
-                            ConnectionEndType.CLIENT,
-                            new ClientHelloMessage(config)));
+                            config, connection, ConnectionEndType.CLIENT, clientHelloMessage));
         }
-        // no cookie exchange in second server hello message
         ServerHelloMessage serverHello = new ServerHelloMessage(config);
-        if (serverHello.containsExtension(ExtensionType.COOKIE)) {
-            serverHello
-                    .getExtensions()
-                    .remove(serverHello.getExtension(CookieExtensionMessage.class));
-        }
-        trace.addTlsAction(
-                MessageActionFactory.createTLSAction(
-                        config, connection, ConnectionEndType.SERVER, serverHello));
-
+        serverMessages.add(serverHello);
         EncryptedExtensionsMessage encExtMsg = new EncryptedExtensionsMessage(config);
-        FinishedMessage serverFin = new FinishedMessage();
         if (zeroRtt) {
             encExtMsg.addExtension(new EarlyDataExtensionMessage());
         }
+        serverMessages.add(encExtMsg);
         if ((Objects.equals(config.getTls13BackwardsCompatibilityMode(), Boolean.TRUE)
                         || connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT)
-                && config.getHighestProtocolVersion() != ProtocolVersion.DTLS13) {
+                && !config.getHighestProtocolVersion().isDTLS13()) {
             serverMessages.add(ccsServer);
         }
         if (!zeroRtt
                 && (Objects.equals(config.getTls13BackwardsCompatibilityMode(), Boolean.TRUE)
                         || connection.getLocalConnectionEndType() == ConnectionEndType.SERVER)
-                && config.getHighestProtocolVersion() != ProtocolVersion.DTLS13) {
+                && !config.getHighestProtocolVersion().isDTLS13()) {
             clientMessages.add(ccsClient);
         }
-        serverMessages.add(encExtMsg);
+        FinishedMessage serverFin = new FinishedMessage();
         serverMessages.add(serverFin);
 
         MessageAction serverMsgsAction =
@@ -852,7 +813,7 @@ public class WorkflowConfigurationFactory {
                 MessageActionFactory.createTLSAction(
                         config, connection, ConnectionEndType.CLIENT, clientMessages));
 
-        if (config.getHighestProtocolVersion() == ProtocolVersion.DTLS13) {
+        if (config.getHighestProtocolVersion().isDTLS13()) {
             trace.addTlsAction(
                     MessageActionFactory.createTLSAction(
                             config, connection, ConnectionEndType.SERVER, new AckMessage()));
@@ -916,9 +877,7 @@ public class WorkflowConfigurationFactory {
         if (config.getHighestProtocolVersion().isDTLS() && config.isFinishWithCloseNotify()) {
             AlertMessage alert = new AlertMessage();
             alert.setConfig(AlertLevel.WARNING, AlertDescription.CLOSE_NOTIFY);
-            SendAction sendAction = new SendAction(alert);
-            sendAction.getActionOptions().add(ActionOption.MAY_FAIL);
-            trace.addTlsAction(sendAction);
+            trace.addTlsAction(new SendAction(alert));
         }
         if (config.getQuic()) {
             trace.addTlsAction(
@@ -1226,44 +1185,33 @@ public class WorkflowConfigurationFactory {
     public WorkflowTrace createDynamicHelloWorkflow(AliasedConnection connection) {
         WorkflowTrace trace = createTlsEntryWorkflowTrace(connection);
 
-        ClientHelloMessage clientHello = new ClientHelloMessage(config);
-        // remove cookie extension in first message
-        if (clientHello.containsExtension(ExtensionType.COOKIE)) {
-            clientHello
-                    .getExtensions()
-                    .remove(clientHello.getExtension(CookieExtensionMessage.class));
-        }
         trace.addTlsAction(
                 MessageActionFactory.createTLSAction(
-                        config, connection, ConnectionEndType.CLIENT, clientHello));
+                        config,
+                        connection,
+                        ConnectionEndType.CLIENT,
+                        new ClientHelloMessage(config)));
 
-        if ((config.getHighestProtocolVersion().isDTLS() && config.isDtlsCookieExchange())
-                || (config.getHighestProtocolVersion().is13() && config.isAddCookieExtension())) {
-            if (config.getHighestProtocolVersion().isDTLS()
-                    && config.getHighestProtocolVersion() != ProtocolVersion.DTLS13) {
-                // DTLS 1.0-1.2 => HelloVerifyRequest
+        if ((config.getHighestProtocolVersion().isDTLS() && config.isDtlsCookieExchange())) {
+            if (config.getHighestProtocolVersion().isDTLS13()) {
+                ServerHelloMessage serverHelloMessage = new ServerHelloMessage(config, true);
+                serverHelloMessage.addExtension(new CookieExtensionMessage());
+                trace.addTlsAction(
+                        MessageActionFactory.createTLSAction(
+                                config, connection, ConnectionEndType.SERVER, serverHelloMessage));
+            } else {
                 trace.addTlsAction(
                         MessageActionFactory.createTLSAction(
                                 config,
                                 connection,
                                 ConnectionEndType.SERVER,
                                 new HelloVerifyRequestMessage()));
-            } else {
-                // (D)TLS 1.3 cookie extension => HelloRetryRequest
-                trace.addTlsAction(
-                        MessageActionFactory.createTLSAction(
-                                config,
-                                connection,
-                                ConnectionEndType.SERVER,
-                                new ServerHelloMessage(config, true)));
             }
-            // second ClientHello after cookie exchange
+            ClientHelloMessage clientHelloMessage = new ClientHelloMessage(config);
+            clientHelloMessage.addExtension(new CookieExtensionMessage());
             trace.addTlsAction(
                     MessageActionFactory.createTLSAction(
-                            config,
-                            connection,
-                            ConnectionEndType.CLIENT,
-                            new ClientHelloMessage(config)));
+                            config, connection, ConnectionEndType.CLIENT, clientHelloMessage));
         }
 
         if (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
@@ -1276,17 +1224,9 @@ public class WorkflowConfigurationFactory {
         } else {
             if (config.getHighestProtocolVersion().is13()) {
                 List<ProtocolMessage> tls13Messages = new LinkedList<>();
-                // no cookie exchange in second server hello message
-                ServerHelloMessage serverHello = new ServerHelloMessage(config);
-                if (serverHello.containsExtension(ExtensionType.COOKIE)) {
-                    serverHello
-                            .getExtensions()
-                            .remove(serverHello.getExtension(CookieExtensionMessage.class));
-                }
-                tls13Messages.add(serverHello);
-                if (config.getHighestProtocolVersion() != ProtocolVersion.DTLS13
-                        && Objects.equals(
-                                config.getTls13BackwardsCompatibilityMode(), Boolean.TRUE)) {
+                tls13Messages.add(new ServerHelloMessage(config));
+                if (Objects.equals(config.getTls13BackwardsCompatibilityMode(), Boolean.TRUE)
+                        && !config.getHighestProtocolVersion().isDTLS13()) {
                     ChangeCipherSpecMessage ccs = new ChangeCipherSpecMessage();
                     ccs.setRequired(false);
                     tls13Messages.add(ccs);
@@ -1335,7 +1275,7 @@ public class WorkflowConfigurationFactory {
             if (config.getHighestProtocolVersion().is13()) {
                 List<ProtocolMessage> tls13Messages = new LinkedList<>();
                 if (Objects.equals(config.getTls13BackwardsCompatibilityMode(), Boolean.TRUE)
-                        && config.getHighestProtocolVersion() != ProtocolVersion.DTLS13) {
+                        && !config.getHighestProtocolVersion().isDTLS13()) {
                     ChangeCipherSpecMessage ccs = new ChangeCipherSpecMessage();
                     ccs.setRequired(false);
                     tls13Messages.add(ccs);
@@ -1348,8 +1288,8 @@ public class WorkflowConfigurationFactory {
                 trace.addTlsAction(
                         MessageActionFactory.createTLSAction(
                                 config, connection, ConnectionEndType.CLIENT, tls13Messages));
-                if (config.getHighestProtocolVersion() == ProtocolVersion.DTLS13) {
-                    trace.addTlsAction(new ReceiveTillAction(new AckMessage()));
+                if (config.getHighestProtocolVersion().isDTLS13()) {
+                    trace.addTlsAction(new ReceiveAction(new AckMessage()));
                 }
             } else {
                 if (Objects.equals(config.isClientAuthentication(), Boolean.TRUE)) {
@@ -1366,12 +1306,12 @@ public class WorkflowConfigurationFactory {
             return trace;
         } else {
             trace.addTlsAction(new ReceiveTillAction(new FinishedMessage()));
-            if (!(config.getHighestProtocolVersion().is13())) {
+            if (config.getHighestProtocolVersion().is13()
+                    && config.getHighestProtocolVersion() == ProtocolVersion.DTLS13) {
+                trace.addTlsAction(new SendAction(new AckMessage()));
+            } else {
                 trace.addTlsAction(
                         new SendAction(new ChangeCipherSpecMessage(), new FinishedMessage()));
-            }
-            if (config.getHighestProtocolVersion() == ProtocolVersion.DTLS13) {
-                trace.addTlsAction(new SendAction(new AckMessage()));
             }
             return trace;
         }

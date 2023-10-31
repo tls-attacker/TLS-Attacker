@@ -18,7 +18,7 @@ import org.apache.logging.log4j.Logger;
 public class NewConnectionIdSerializer extends HandshakeMessageSerializer<NewConnectionIdMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    
+
     private final NewConnectionIdMessage msg;
 
     public NewConnectionIdSerializer(NewConnectionIdMessage message) {
@@ -46,7 +46,9 @@ public class NewConnectionIdSerializer extends HandshakeMessageSerializer<NewCon
             appendInt(
                     connectionId.getLength().getValue(), HandshakeByteLength.CONNECTION_ID_LENGTH);
             appendBytes(connectionId.getConnectionId().getValue());
-            LOGGER.debug(" - " + ArrayConverter.bytesToHexString(
+            LOGGER.debug(
+                    " - "
+                            + ArrayConverter.bytesToHexString(
                                     connectionId.getConnectionId().getValue()));
         }
     }

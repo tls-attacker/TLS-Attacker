@@ -94,26 +94,37 @@ public class ServerHelloMessage extends HelloMessage<ServerHelloMessage> {
         }
     }
 
+    public ServerHelloMessage(Config tlsConfig, boolean isHelloRetryRequest) {
+        super(HandshakeMessageType.SERVER_HELLO);
+        this.isHelloRetryRequest = isHelloRetryRequest;
+        if (!tlsConfig.isRespectClientProposedExtensions()) {
+            createConfiguredExtensions(tlsConfig).forEach(this::addExtension);
+        }
+    }
+
+    public ServerHelloMessage() {
+        super(HandshakeMessageType.SERVER_HELLO);
+    }
+
     @Override
     public final List<ExtensionMessage> createConfiguredExtensions(Config tlsConfig) {
         List<ExtensionMessage> configuredExtensions = new LinkedList<>();
         if (!tlsConfig.getHighestProtocolVersion().isSSL()
                 || (tlsConfig.getHighestProtocolVersion().isSSL()
                         && tlsConfig.isAddExtensionsInSSL())) {
-
             if (tlsConfig.isAddHeartbeatExtension()) {
                 configuredExtensions.add(new HeartbeatExtensionMessage());
             }
             if (tlsConfig.isAddECPointFormatExtension()
                     && !tlsConfig.getHighestProtocolVersion().is13()) {
-                addExtension(new ECPointFormatExtensionMessage());
+                configuredExtensions.add(new ECPointFormatExtensionMessage());
             }
             if (tlsConfig.isAddMaxFragmentLengthExtension()) {
                 configuredExtensions.add(new MaxFragmentLengthExtensionMessage());
             }
             if (tlsConfig.isAddRecordSizeLimitExtension()
                     && !tlsConfig.getHighestProtocolVersion().is13()) {
-                addExtension(new RecordSizeLimitExtensionMessage());
+                configuredExtensions.add(new RecordSizeLimitExtensionMessage());
             }
             if (tlsConfig.isAddServerNameIndicationExtension()
                     && !tlsConfig.isAddEncryptedClientHelloExtension()
@@ -130,7 +141,6 @@ public class ServerHelloMessage extends HelloMessage<ServerHelloMessage> {
                 extension.getServerNameList().add(pair);
                 configuredExtensions.add(extension);
             }
-
             if (tlsConfig.isAddKeyShareExtension()) {
                 configuredExtensions.add(new KeyShareExtensionMessage(tlsConfig));
             }
@@ -220,18 +230,6 @@ public class ServerHelloMessage extends HelloMessage<ServerHelloMessage> {
             }
         }
         return configuredExtensions;
-    }
-
-    public ServerHelloMessage(Config tlsConfig, boolean isHelloRetryRequest) {
-        super(HandshakeMessageType.SERVER_HELLO);
-        setHelloRetryRequest(isHelloRetryRequest);
-        if (!tlsConfig.isRespectClientProposedExtensions()) {
-            createConfiguredExtensions(tlsConfig).forEach(this::addExtension);
-        }
-    }
-
-    public ServerHelloMessage() {
-        super(HandshakeMessageType.SERVER_HELLO);
     }
 
     public Boolean isHelloRetryRequest() {

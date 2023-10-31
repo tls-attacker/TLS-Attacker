@@ -89,5 +89,4 @@ public class ConnectionId extends ModifiableVariableHolder {
         }
         return Objects.equals(this.length, other.length);
     }
-
 }

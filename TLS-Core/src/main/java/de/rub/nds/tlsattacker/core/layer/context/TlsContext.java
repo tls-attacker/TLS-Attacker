@@ -506,11 +506,11 @@ public class TlsContext extends LayerContext {
     private Integer outboundRecordSizeLimit;
 
     private List<byte[]> writeConnectionIds = new ArrayList<>();
-    
+
     private int writeConnectionIdIndex = 0;
 
     private List<byte[]> readConnectionIDs = new ArrayList<>();
-    
+
     private int readConnectionIdIndex = 0;
 
     private Integer numberOfRequestedConnectionIds;
@@ -2426,11 +2426,7 @@ public class TlsContext extends LayerContext {
     }
 
     public byte[] getWriteConnectionId() {
-        if (writeConnectionIdIndex < writeConnectionIds.size()) {
-            return writeConnectionIds.get(writeConnectionIdIndex);
-        } else {
-            return null;
-        }
+        return writeConnectionIds.get(writeConnectionIdIndex);
     }
 
     public void setWriteConnectionId(byte[] writeConnectionId) {
@@ -2438,11 +2434,7 @@ public class TlsContext extends LayerContext {
     }
 
     public byte[] getReadConnectionId() {
-        if (readConnectionIdIndex < readConnectionIDs.size()) {
-            return readConnectionIDs.get(readConnectionIdIndex);
-        } else {
-            return null;
-        }
+        return readConnectionIDs.get(readConnectionIdIndex);
     }
 
     public void setReadConnectionId(byte[] readConnectionID) {

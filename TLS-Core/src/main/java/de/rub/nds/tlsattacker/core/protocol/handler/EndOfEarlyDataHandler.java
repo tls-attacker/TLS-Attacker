@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
@@ -34,14 +33,6 @@ public class EndOfEarlyDataHandler extends HandshakeMessageHandler<EndOfEarlyDat
     @Override
     public void adjustContext(EndOfEarlyDataMessage message) {
         if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.SERVER) {
-            adjustClientCipherAfterEarly();
-        }
-    }
-
-    @Override
-    public void adjustContextAfterSerialize(EndOfEarlyDataMessage message) {
-        super.adjustContextAfterSerialize(message);
-        if (tlsContext.isExtensionNegotiated(ExtensionType.EARLY_DATA)) {
             adjustClientCipherAfterEarly();
         }
     }

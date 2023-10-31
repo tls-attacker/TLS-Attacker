@@ -67,9 +67,7 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
                 }
             } else if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.SERVER
                     && !tlsContext.isExtensionNegotiated(ExtensionType.EARLY_DATA)) {
-
                 setClientRecordCipher(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
-
                 if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
                     NewSessionTicketHandler ticketHandler = new NewSessionTicketHandler(tlsContext);
                     if (tlsContext.getPskSets() != null) {
@@ -94,11 +92,11 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
     private void acknowledgeFinished(FinishedMessage message) {
         tlsContext.setDtlsAcknowledgedRecords(new LinkedList<>());
         int epoch = tlsContext.getReadEpoch();
-        long finalSeqNum = tlsContext.getReadSequenceNumber(epoch);
+        long readSequenceNumber = tlsContext.getReadSequenceNumber(epoch);
         // acknowledge all records of the given epoch
-        for (long seqNum = 0; seqNum <= finalSeqNum; seqNum++) {
+        for (long sequenceNumber = 0; sequenceNumber <= readSequenceNumber; sequenceNumber++) {
             RecordNumber recordNumber =
-                    new RecordNumber(BigInteger.valueOf(epoch), BigInteger.valueOf(seqNum));
+                    new RecordNumber(BigInteger.valueOf(epoch), BigInteger.valueOf(sequenceNumber));
             tlsContext.getDtlsAcknowledgedRecords().add(recordNumber);
         }
     }
@@ -218,8 +216,7 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
         if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.SERVER) {
             // in DTLS 1.3 epoch 1 is only used for early data, if it was not used, skip it
             if (keySetType == Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS
-                    && tlsContext.getChooser().getSelectedProtocolVersion()
-                            == ProtocolVersion.DTLS13
+                    && tlsContext.getChooser().getSelectedProtocolVersion().isDTLS13()
                     && tlsContext.getRecordLayer().getDecryptor().isEpochZero()) {
                 tlsContext.getRecordLayer().updateDecryptionCipher(null);
             }
@@ -230,8 +227,7 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
         } else {
             // in DTLS 1.3 epoch 1 is only used for early data, if it was not used, skip it
             if (keySetType == Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS
-                    && tlsContext.getChooser().getSelectedProtocolVersion()
-                            == ProtocolVersion.DTLS13
+                    && tlsContext.getChooser().getSelectedProtocolVersion().isDTLS13()
                     && tlsContext.getRecordLayer().getEncryptor().isEpochZero()) {
                 tlsContext.getRecordLayer().updateEncryptionCipher(null);
             }
