@@ -221,7 +221,9 @@ public class WorkflowConfigurationFactory {
                                 new HelloVerifyRequestMessage()));
             }
             ClientHelloMessage clientHelloMessage = new ClientHelloMessage(config);
-            clientHelloMessage.addExtension(new CookieExtensionMessage());
+            if (config.getHighestProtocolVersion().isDTLS13()) {
+                clientHelloMessage.addExtension(new CookieExtensionMessage());
+            }
             workflowTrace.addTlsAction(
                     MessageActionFactory.createTLSAction(
                             config, connection, ConnectionEndType.CLIENT, clientHelloMessage));
@@ -1208,7 +1210,9 @@ public class WorkflowConfigurationFactory {
                                 new HelloVerifyRequestMessage()));
             }
             ClientHelloMessage clientHelloMessage = new ClientHelloMessage(config);
-            clientHelloMessage.addExtension(new CookieExtensionMessage());
+            if (config.getHighestProtocolVersion().isDTLS13()) {
+                clientHelloMessage.addExtension(new CookieExtensionMessage());
+            }
             trace.addTlsAction(
                     MessageActionFactory.createTLSAction(
                             config, connection, ConnectionEndType.CLIENT, clientHelloMessage));
