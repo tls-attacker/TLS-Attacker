@@ -744,6 +744,7 @@ public class WorkflowConfigurationFactory {
 
         ClientHelloMessage clientHello;
         ApplicationMessage earlyDataMsg;
+        FinishedMessage serverFin = new FinishedMessage();
 
         if (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
             clientHello = new ClientHelloMessage(config);
@@ -785,7 +786,6 @@ public class WorkflowConfigurationFactory {
         if (zeroRtt) {
             encExtMsg.addExtension(new EarlyDataExtensionMessage());
         }
-        serverMessages.add(encExtMsg);
         if ((Objects.equals(config.getTls13BackwardsCompatibilityMode(), Boolean.TRUE)
                         || connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT)
                 && !config.getHighestProtocolVersion().isDTLS13()) {
@@ -797,7 +797,7 @@ public class WorkflowConfigurationFactory {
                 && !config.getHighestProtocolVersion().isDTLS13()) {
             clientMessages.add(ccsClient);
         }
-        FinishedMessage serverFin = new FinishedMessage();
+        serverMessages.add(encExtMsg);
         serverMessages.add(serverFin);
 
         MessageAction serverMsgsAction =
