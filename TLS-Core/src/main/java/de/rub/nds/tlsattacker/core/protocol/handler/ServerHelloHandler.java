@@ -454,20 +454,17 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         // digest clientHello and serverHello
         MessageDigestCollector echDigest = new MessageDigestCollector();
 
-        LOGGER.debug("ClientHelloInner: " + ArrayConverter.bytesToHexString(lastClientHello));
-        LOGGER.debug("ServerHello: " + ArrayConverter.bytesToHexString(serverHello));
+        LOGGER.debug("ClientHelloInner: {}", lastClientHello);
+        LOGGER.debug("ServerHello: {}", serverHello);
         echDigest.append(lastClientHello);
         echDigest.append(serverHello);
-        LOGGER.debug(
-                "Complete resulting digest: "
-                        + ArrayConverter.bytesToHexString(echDigest.getRawBytes()));
+        LOGGER.debug("Complete resulting digest: {}", echDigest.getRawBytes());
 
         Chooser chooser = tlsContext.getChooser();
         byte[] transcriptEchConf =
                 echDigest.digest(
                         chooser.getSelectedProtocolVersion(), chooser.getSelectedCipherSuite());
-        LOGGER.debug(
-                "Transcript Ech Config: " + ArrayConverter.bytesToHexString(transcriptEchConf));
+        LOGGER.debug("Transcript Ech Config: {}", transcriptEchConf);
         return transcriptEchConf;
     }
 
@@ -484,15 +481,11 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
             byte[] extract =
                     HKDFunction.extract(
                             hkdfAlgorithm, null, innerClientHello.getRandom().getValue());
-            LOGGER.debug("Extract: " + ArrayConverter.bytesToHexString(extract));
+            LOGGER.debug("Extract: {}", extract);
             byte[] acceptConfirmationClient =
                     HKDFunction.expandLabel(hkdfAlgorithm, extract, label, transcriptEchConf, 8);
-            LOGGER.debug(
-                    "Accept Confirmation Calculated: "
-                            + ArrayConverter.bytesToHexString(acceptConfirmationClient));
-            LOGGER.debug(
-                    "Accept Confirmation Received: "
-                            + ArrayConverter.bytesToHexString(acceptConfirmationServer));
+            LOGGER.debug("Accept Confirmation Calculated: {}", acceptConfirmationClient);
+            LOGGER.debug("Accept Confirmation Received: {}", acceptConfirmationServer);
             if (Arrays.equals(acceptConfirmationClient, acceptConfirmationServer)) {
                 // mark ECH support in context
                 tlsContext.setSupportsECH(true);

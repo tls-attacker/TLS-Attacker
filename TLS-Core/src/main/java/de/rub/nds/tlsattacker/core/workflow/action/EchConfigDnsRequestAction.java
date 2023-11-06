@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.SvcbType;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
@@ -188,8 +187,8 @@ public class EchConfigDnsRequestAction extends TlsAction {
                             + echConfigsStr);
             return echConfigs;
         }
-        LOGGER.debug("echConfigStr :" + echConfigsStr);
-        LOGGER.debug("echConfigBytes: " + ArrayConverter.bytesToHexString(echConfigBytes));
+        LOGGER.debug("echConfigStr: {}", echConfigsStr);
+        LOGGER.debug("echConfigBytes: {}", echConfigBytes);
 
         EchConfigParser echConfigParser =
                 new EchConfigParser(new ByteArrayInputStream(echConfigBytes), tlsContext);

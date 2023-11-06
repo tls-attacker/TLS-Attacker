@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
@@ -81,15 +80,13 @@ public abstract class CoreClientHelloHandler<T extends CoreClientHelloMessage<?>
     private void adjustDTLSCookie(T message) {
         byte[] dtlsCookie = message.getCookie().getValue();
         tlsContext.setDtlsCookie(dtlsCookie);
-        LOGGER.debug(
-                "Set DTLS Cookie in Context to " + ArrayConverter.bytesToHexString(dtlsCookie));
+        LOGGER.debug("Set DTLS Cookie in Context to {}", dtlsCookie);
     }
 
     private void adjustSessionID(T message) {
         byte[] sessionId = message.getSessionId().getValue();
         tlsContext.setClientSessionId(sessionId);
-        LOGGER.debug(
-                "Set SessionId in Context to " + ArrayConverter.bytesToHexString(sessionId, false));
+        LOGGER.debug("Set SessionId in Context to {}", sessionId);
     }
 
     private void adjustProtocolVersion(T message) {
@@ -100,17 +97,14 @@ public abstract class CoreClientHelloHandler<T extends CoreClientHelloMessage<?>
             LOGGER.debug("Set HighestClientProtocolVersion in Context to " + version.name());
         } else {
             LOGGER.warn(
-                    "Did not Adjust ProtocolVersion since version is undefined "
-                            + ArrayConverter.bytesToHexString(
-                                    message.getProtocolVersion().getValue()));
+                    "Did not Adjust ProtocolVersion since version is undefined {}",
+                    message.getProtocolVersion().getValue());
         }
     }
 
     private void adjustRandomContext(T message) {
         tlsContext.setClientRandom(message.getRandom().getValue());
-        LOGGER.debug(
-                "Set ClientRandom in Context to "
-                        + ArrayConverter.bytesToHexString(tlsContext.getClientRandom()));
+        LOGGER.debug("Set ClientRandom in Context to {}", tlsContext.getClientRandom());
     }
 
     private List<CompressionMethod> convertCompressionMethods(byte[] bytesToConvert) {
@@ -128,10 +122,7 @@ public abstract class CoreClientHelloHandler<T extends CoreClientHelloMessage<?>
 
     private List<CipherSuite> convertCipherSuites(byte[] bytesToConvert) {
         if (bytesToConvert.length % 2 != 0) {
-            LOGGER.warn(
-                    "Cannot convert:"
-                            + ArrayConverter.bytesToHexString(bytesToConvert, false)
-                            + " to a List<CipherSuite>");
+            LOGGER.warn("Cannot convert: {} to a List<CipherSuite>", bytesToConvert);
             return null;
         }
         List<CipherSuite> list = new LinkedList<>();
@@ -142,10 +133,7 @@ public abstract class CoreClientHelloHandler<T extends CoreClientHelloMessage<?>
             copied[1] = bytesToConvert[i + 1];
             CipherSuite suite = CipherSuite.getCipherSuite(copied);
             if (suite == null) {
-                LOGGER.warn(
-                        "Cannot convert:"
-                                + ArrayConverter.bytesToHexString(copied)
-                                + " to a CipherSuite");
+                LOGGER.warn("Cannot convert {} to a CipherSuite", copied);
             } else {
                 list.add(suite);
             }
@@ -186,7 +174,7 @@ public abstract class CoreClientHelloHandler<T extends CoreClientHelloMessage<?>
                         HKDFunction.CLIENT_EARLY_TRAFFIC_SECRET,
                         tlsContext.getDigest().getRawBytes());
         tlsContext.setClientEarlyTrafficSecret(earlyTrafficSecret);
-        LOGGER.debug("EarlyTrafficSecret: " + ArrayConverter.bytesToHexString(earlyTrafficSecret));
+        LOGGER.debug("EarlyTrafficSecret: {}", earlyTrafficSecret);
     }
 
     private void setClientRecordCipherEarly() throws CryptoException {

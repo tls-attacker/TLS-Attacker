@@ -708,10 +708,10 @@
       <xs:element name="defaultAlertDescription" type="alertDescription" minOccurs="0"/>
       <xs:element name="defaultAlertLevel" type="alertLevel" minOccurs="0"/>
       <xs:element name="defaultEcCertificateCurve" type="namedGroup" minOccurs="0"/>
-      <xs:element name="defaultClientEcPublicKey" type="point" minOccurs="0"/>
-      <xs:element name="defaultServerEcPublicKey" type="point" minOccurs="0"/>
       <xs:element name="defaultServerEcPrivateKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultServerEcPublicKey" type="point" minOccurs="0"/>
       <xs:element name="defaultClientEcPrivateKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultClientEcPublicKey" type="point" minOccurs="0"/>
       <xs:element name="defaultServerRSAModulus" type="xs:integer" minOccurs="0"/>
       <xs:element name="defaultClientRSAModulus" type="xs:integer" minOccurs="0"/>
       <xs:element name="defaultServerRSAPublicKey" type="xs:integer" minOccurs="0"/>
@@ -773,8 +773,8 @@
       <xs:element name="tls13BackwardsCompatibilityMode" type="xs:boolean" minOccurs="0"/>
       <xs:element name="defaultClientPWDUsername" type="xs:string" minOccurs="0"/>
       <xs:element name="defaultPWDProtectGroup" type="namedGroup" minOccurs="0"/>
-      <xs:element name="defaultServerPWDProtectPublicKey" type="point" minOccurs="0"/>
       <xs:element name="defaultServerPWDProtectPrivateKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultServerPWDProtectPublicKey" type="point" minOccurs="0"/>
       <xs:element name="defaultServerPWDProtectRandomSecret" type="xs:integer" minOccurs="0"/>
       <xs:element name="defaultPWDPassword" type="xs:string" minOccurs="0"/>
       <xs:element name="defaultPWDIterations" type="xs:int" minOccurs="0"/>

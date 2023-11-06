@@ -8,8 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import static de.rub.nds.modifiablevariable.util.ArrayConverter.bytesToHexString;
-
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.RenegotiationInfoExtensionMessage;
@@ -31,7 +29,7 @@ public class RenegotiationInfoExtensionParser
         msg.setRenegotiationInfoLength(parseIntField(ExtensionByteLength.RENEGOTIATION_INFO));
         msg.setRenegotiationInfo(parseByteArrayField(msg.getRenegotiationInfoLength().getValue()));
         LOGGER.debug(
-                "The RenegotiationInfoExtensionParser parsed the value "
-                        + bytesToHexString(msg.getRenegotiationInfo()));
+                "The RenegotiationInfoExtensionParser parsed the value {}",
+                msg.getRenegotiationInfo());
     }
 }

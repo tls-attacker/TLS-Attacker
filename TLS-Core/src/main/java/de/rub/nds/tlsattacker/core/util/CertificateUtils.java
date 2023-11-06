@@ -41,7 +41,6 @@ import org.bouncycastle.crypto.tls.Certificate;
 import org.bouncycastle.crypto.util.PublicKeyFactory;
 import org.bouncycastle.jcajce.provider.asymmetric.ecgost.BCECGOST3410PublicKey;
 import org.bouncycastle.jcajce.provider.asymmetric.ecgost12.BCECGOST3410_2012PublicKey;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.jce.spec.ECNamedCurveSpec;
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
 
@@ -118,7 +117,7 @@ public class CertificateUtils {
      */
     public static PublicKey parsePublicKey(Certificate cert) {
         try {
-            Security.addProvider(new BouncyCastleProvider());
+            ProviderUtil.addBouncyCastleProvider();
             CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509", "BC");
             ByteArrayInputStream inputStream =
                     new ByteArrayInputStream(cert.getCertificateAt(0).getEncoded());

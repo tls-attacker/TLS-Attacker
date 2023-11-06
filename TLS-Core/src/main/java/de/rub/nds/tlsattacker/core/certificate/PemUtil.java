@@ -8,11 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.certificate;
 
+import de.rub.nds.tlsattacker.core.util.ProviderUtil;
 import java.io.*;
 import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
-import java.security.Security;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.util.Collection;
@@ -23,7 +23,6 @@ import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.crypto.tls.Certificate;
 import org.bouncycastle.crypto.tls.TlsUtils;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.openssl.PEMKeyPair;
 import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
@@ -100,7 +99,7 @@ public class PemUtil {
             CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
             certs = certFactory.generateCertificates(new ByteArrayInputStream(bytes));
         } catch (CertificateException Ex) {
-            Security.addProvider(new BouncyCastleProvider());
+            ProviderUtil.addBouncyCastleProvider();
             CertificateFactory certFactory = CertificateFactory.getInstance("X.509", "BC");
             certs = certFactory.generateCertificates(new ByteArrayInputStream(bytes));
         }

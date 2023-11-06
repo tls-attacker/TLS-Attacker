@@ -17,8 +17,6 @@ import de.rub.nds.tlsattacker.core.certificate.CertificateKeyPair;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.*;
-import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
-import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.crypto.keys.CustomRSAPrivateKey;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
@@ -906,13 +904,25 @@ public class Config implements Serializable {
 
     private NamedGroup defaultEcCertificateCurve = NamedGroup.SECP256R1;
 
-    private Point defaultClientEcPublicKey;
-
-    private Point defaultServerEcPublicKey;
-
     private BigInteger defaultServerEcPrivateKey = new BigInteger("3");
 
+    private Point defaultServerEcPublicKey =
+            Point.createPoint(
+                    new BigInteger(
+                            "42877656971275811310262564894490210024759287182177196162425349131675946712428"),
+                    new BigInteger(
+                            "61154801112014214504178281461992570017247172004704277041681093927569603776562"),
+                    defaultSelectedNamedGroup);
+
     private BigInteger defaultClientEcPrivateKey = new BigInteger("3");
+
+    private Point defaultClientEcPublicKey =
+            Point.createPoint(
+                    new BigInteger(
+                            "42877656971275811310262564894490210024759287182177196162425349131675946712428"),
+                    new BigInteger(
+                            "61154801112014214504178281461992570017247172004704277041681093927569603776562"),
+                    defaultSelectedNamedGroup);
 
     private BigInteger defaultServerRSAModulus =
             new BigInteger(
@@ -1038,7 +1048,13 @@ public class Config implements Serializable {
 
     private TokenBindingType defaultTokenBindingType = TokenBindingType.PROVIDED_TOKEN_BINDING;
 
-    private Point defaultTokenBindingECPublicKey = null;
+    private Point defaultTokenBindingECPublicKey =
+            Point.createPoint(
+                    new BigInteger(
+                            "42877656971275811310262564894490210024759287182177196162425349131675946712428"),
+                    new BigInteger(
+                            "61154801112014214504178281461992570017247172004704277041681093927569603776562"),
+                    defaultSelectedNamedGroup);
 
     private BigInteger defaultTokenBindingRsaPublicKey = new BigInteger("65537");
 
@@ -1132,11 +1148,17 @@ public class Config implements Serializable {
     /** Group used to encrypt the username in TLS_ECCPWD */
     private NamedGroup defaultPWDProtectGroup = NamedGroup.SECP256R1;
 
-    private Point defaultServerPWDProtectPublicKey;
-
     private BigInteger defaultServerPWDProtectPrivateKey =
             new BigInteger(
                     "191991257030464195512760799659436374116556484140110877679395918219072292938297573720808302564562486757422301181089761");
+
+    private Point defaultServerPWDProtectPublicKey =
+            Point.createPoint(
+                    new BigInteger(
+                            "18331185786522319349444255540874590232255475110717040504630785378857839293510"),
+                    new BigInteger(
+                            "77016287303447444409379355974404854219241223376914775755121063765271326101171"),
+                    defaultSelectedNamedGroup);
 
     private BigInteger defaultServerPWDProtectRandomSecret =
             new BigInteger(
@@ -1313,14 +1335,6 @@ public class Config implements Serializable {
         defaultClientSupportedPointFormats = new LinkedList<>();
         defaultServerSupportedPointFormats.add(ECPointFormat.UNCOMPRESSED);
         defaultClientSupportedPointFormats.add(ECPointFormat.UNCOMPRESSED);
-        EllipticCurve curve = CurveFactory.getCurve(defaultSelectedNamedGroup);
-        defaultClientEcPublicKey = curve.mult(defaultClientEcPrivateKey, curve.getBasePoint());
-        defaultServerEcPublicKey = curve.mult(defaultServerEcPrivateKey, curve.getBasePoint());
-        EllipticCurve secp256R1Curve = CurveFactory.getCurve(NamedGroup.SECP256R1);
-        defaultTokenBindingECPublicKey =
-                secp256R1Curve.mult(defaultTokenBindingEcPrivateKey, secp256R1Curve.getBasePoint());
-        this.defaultServerPWDProtectPublicKey =
-                curve.mult(defaultServerPWDProtectPrivateKey, curve.getBasePoint());
         secureRealTimeTransportProtocolProtectionProfiles = new LinkedList<>();
         secureRealTimeTransportProtocolProtectionProfiles.add(
                 SrtpProtectionProfiles.SRTP_AES128_CM_HMAC_SHA1_80);

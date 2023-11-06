@@ -131,9 +131,7 @@ public class EncryptedClientHelloPreparator
         byte[] paddingBytes = new byte[padding];
         msg.setEncodedClientHelloInnerPadding(paddingBytes);
 
-        LOGGER.debug(
-                "Encoded ClientHello inner: "
-                        + ArrayConverter.bytesToHexString(clientHelloInnerValue));
+        LOGGER.debug("Encoded ClientHello inner: {}", clientHelloInnerValue);
         LOGGER.debug("Padding length: " + padding);
     }
 
@@ -142,13 +140,11 @@ public class EncryptedClientHelloPreparator
 
         // log own private and public key
         LOGGER.debug(
-                "ClientPrivateKey: "
-                        + ArrayConverter.bytesToHexString(
-                                chooser.getEchClientKeyShareEntry().getPrivateKey().toByteArray()));
+                "ClientPrivateKey: {}",
+                chooser.getEchClientKeyShareEntry().getPrivateKey().toByteArray());
         LOGGER.debug(
-                "ClientPublicKey: "
-                        + ArrayConverter.bytesToHexString(
-                                chooser.getEchClientKeyShareEntry().getPublicKey().getValue()));
+                "ClientPublicKey: {}",
+                chooser.getEchClientKeyShareEntry().getPublicKey().getValue());
 
         HpkeUtil hpkeUtil =
                 new HpkeUtil(
@@ -161,7 +157,7 @@ public class EncryptedClientHelloPreparator
                         "tls ech".getBytes(),
                         new byte[] {0x00},
                         chooser.getEchConfig().getEchConfigBytes());
-        LOGGER.debug("Info: " + ArrayConverter.bytesToHexString(info));
+        LOGGER.debug("Info: {}", info);
         try {
             this.hpkeSenderContext =
                     hpkeUtil.setupBaseSender(
@@ -171,7 +167,7 @@ public class EncryptedClientHelloPreparator
         } catch (CryptoException e) {
             LOGGER.error("Could not create Hpke Context in EncryptedClientHello");
         }
-        LOGGER.debug("Enc: " + ArrayConverter.bytesToHexString(hpkeUtil.getPublicKeySender()));
+        LOGGER.debug("Enc: {}", hpkeUtil.getPublicKeySender());
     }
 
     private void prepareClientHelloOuterAAD() {
@@ -255,15 +251,15 @@ public class EncryptedClientHelloPreparator
         byte[] aad =
                 msg.getSerializer(chooser.getContext().getTlsContext())
                         .serializeHandshakeMessageContent();
-        LOGGER.debug("AAD: " + ArrayConverter.bytesToHexString(aad));
+        LOGGER.debug("AAD: {}", aad);
 
         byte[] plaintext =
                 ArrayConverter.concatenate(
                         clientHelloInnerValue, msg.getEncodedClientHelloInnerPadding().getValue());
-        LOGGER.debug("plaintext: " + ArrayConverter.bytesToHexString(plaintext));
+        LOGGER.debug("plaintext: {}", plaintext);
         try {
             byte[] payload = hpkeSenderContext.seal(aad, plaintext);
-            LOGGER.debug("payload: " + ArrayConverter.bytesToHexString(payload));
+            LOGGER.debug("payload: {}", payload);
 
             EncryptedClientHelloExtensionMessage outerExtensionMessage =
                     msg.getEncryptedClientHelloExtensionMessage();

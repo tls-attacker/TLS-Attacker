@@ -416,7 +416,7 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
     public void passToHigherLayer(ApplicationMessage receivedAppData, LayerProcessingHint hint) {
         LOGGER.debug(
                 "Passing the following Application Data to higher layer: {}",
-                ArrayConverter.bytesToHexString(receivedAppData.getData().getValue()));
+                receivedAppData.getData().getValue());
         if (currentInputStream == null) {
             currentInputStream = new HintedLayerInputStream(hint, this);
         } else {
