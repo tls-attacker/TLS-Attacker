@@ -10,25 +10,26 @@ package de.rub.nds.tlsattacker.core.crypto.ec;
 
 import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.util.EnumMap;
 import java.util.Map;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class CurveFactory {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private static final Map<NamedGroup, EllipticCurve> curveCache = new EnumMap<>(NamedGroup.class);
-    private static final Map<GOSTCurve, EllipticCurve> gostCurveCache = new EnumMap<>(GOSTCurve.class);
+    private static final Map<NamedGroup, EllipticCurve> curveCache =
+            new EnumMap<>(NamedGroup.class);
+    private static final Map<GOSTCurve, EllipticCurve> gostCurveCache =
+            new EnumMap<>(GOSTCurve.class);
 
     public static EllipticCurve getCurve(NamedGroup name) {
         return curveCache.computeIfAbsent(name, CurveFactory::getCurveUncached);
     }
+
     public static EllipticCurve getCurve(GOSTCurve name) {
         return gostCurveCache.computeIfAbsent(name, CurveFactory::getCurveUncached);
     }
-
 
     /**
      * Returns a named elliptic curve.
