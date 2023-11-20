@@ -30,8 +30,6 @@ public class StateTest {
         assertNotNull(s.getConfig());
         assertNotNull(s.getWorkflowTrace());
         assertNotNull(s.getContext());
-        // TODO: assertThat(workflowTrace.getType(),
-        // isEqual(config.getWorkflowTraceType());
     }
 
     @Test
