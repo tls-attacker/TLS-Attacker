@@ -541,6 +541,14 @@ public class TlsContext extends LayerContext {
         this.selectedSrtpProtectionProfile = selectedSrtpProtectionProfile;
     }
 
+    public void resetTalkingX509Context() {
+        if (getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
+            clientX509Context = new X509Context();
+        } else {
+            serverX509Context = new X509Context();
+        }
+    }
+
     public X509Context getTalkingX509Context() {
         if (getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
             return clientX509Context;

@@ -96,6 +96,7 @@ public class CertificateEntryParser extends Parser<CertificateEntry> {
 
     public void parseX509Certificate(CertificateEntry entry) {
         try {
+            this.context.resetTalkingX509Context();
             X509Context x509context = this.context.getTalkingX509Context();
             X509Certificate x509Certificate = new X509Certificate("certificate");
             X509Chooser x509Chooser = x509context.getChooser();
