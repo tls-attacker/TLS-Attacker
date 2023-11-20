@@ -19,8 +19,8 @@ public class MapAdapter extends XmlAdapter<MapElements[], Map<NamedGroup, BigInt
     public MapAdapter() {}
 
     public MapElements[] marshal(Map<NamedGroup, BigInteger> arg0) throws Exception {
-        if (arg0 == null) {
-            return new MapElements[0];
+        if (arg0 == null || arg0.isEmpty()) {
+            return null;
         }
         MapElements[] mapElements = new MapElements[arg0.size()];
         int i = 0;
