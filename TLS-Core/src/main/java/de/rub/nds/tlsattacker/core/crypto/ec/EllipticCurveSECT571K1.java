@@ -12,7 +12,7 @@ import java.math.BigInteger;
 
 @SuppressWarnings("SpellCheckingInspection")
 public class EllipticCurveSECT571K1 extends EllipticCurveOverF2m {
-    public EllipticCurveSECT571K1() {
+    EllipticCurveSECT571K1() {
         super(
                 BigInteger.ZERO,
                 BigInteger.ONE,
