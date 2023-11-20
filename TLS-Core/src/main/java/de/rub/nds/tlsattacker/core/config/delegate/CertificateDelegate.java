@@ -17,6 +17,8 @@ import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.util.JKSLoader;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.util.KeystoreHandler;
+import de.rub.nds.x509attacker.config.X509CertificateConfig;
+import de.rub.nds.x509attacker.constants.X509NamedCurve;
 import de.rub.nds.x509attacker.filesystem.CertificateBytes;
 import de.rub.nds.x509attacker.filesystem.CertificateIo;
 import de.rub.nds.x509attacker.signatureengine.keyparsers.PemUtil;
@@ -29,11 +31,15 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+import java.security.interfaces.DSAPrivateKey;
+import java.security.interfaces.ECPrivateKey;
+import java.security.interfaces.RSAPrivateKey;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import javax.crypto.interfaces.DHPrivateKey;
 import org.bouncycastle.crypto.tls.Certificate;
 
 public class CertificateDelegate extends Delegate {
@@ -173,5 +179,29 @@ public class CertificateDelegate extends Delegate {
         }
     }
 
-    private void adjustPrivateKey(Config config, PrivateKey privateKey) {}
+    private void adjustPrivateKey(X509CertificateConfig config, PrivateKey privateKey) {
+        if (privateKey instanceof RSAPrivateKey) {
+            RSAPrivateKey rsaKey = (RSAPrivateKey) privateKey;
+            config.setRsaPrivateKey(rsaKey.getPrivateExponent());
+            config.setRsaModulus(rsaKey.getModulus());
+        } else if (privateKey instanceof DSAPrivateKey) {
+            DSAPrivateKey dsaKey = (DSAPrivateKey) privateKey;
+            config.setDsaGenerator(dsaKey.getParams().getG());
+            config.setDsaPrimeP(dsaKey.getParams().getP());
+            config.setDsaPrimeQ(dsaKey.getParams().getQ());
+            config.setDsaPrivateKey(dsaKey.getX());
+        } else if (privateKey instanceof DHPrivateKey) {
+            DHPrivateKey dhKey = (DHPrivateKey) privateKey;
+            config.setDhPrivateKey(dhKey.getX());
+            config.setDhModulus(dhKey.getParams().getP());
+            config.setDhGenerator(dhKey.getParams().getG());
+        } else if (privateKey instanceof ECPrivateKey) {
+            ECPrivateKey ecKey = (ECPrivateKey) privateKey;
+            config.setEcPrivateKey(ecKey.getS());
+            config.setDefaultSubjectNamedCurve(X509NamedCurve.getX509NamedCurve(ecKey));
+        } else {
+            throw new UnsupportedOperationException(
+                    "This private key is not supporter:" + key.toString());
+        }
+    }
 }
