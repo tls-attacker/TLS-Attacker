@@ -271,7 +271,7 @@ public class WorkflowTraceSerializer {
                 }
                 WorkflowTrace trace;
                 try (FileInputStream fis = new FileInputStream(file)) {
-                    LOGGER.error("Reading WorkflowTrace from file: {}", file.getAbsolutePath());
+                    LOGGER.debug("Reading WorkflowTrace from file: {}", file.getAbsolutePath());
                     trace = WorkflowTraceSerializer.secureRead(fis);
                     trace.setName(file.getAbsolutePath());
                     list.add(trace);
