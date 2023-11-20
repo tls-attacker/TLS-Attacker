@@ -116,7 +116,7 @@ public class CertificateDelegate extends Delegate {
         if (key != null) {
             LOGGER.debug("Loading private key");
             privateKey = PemUtil.readPrivateKey(new File(key));
-            adjustPrivateKey(config, privateKey);
+            adjustPrivateKey(config.getCertificateChainConfig().get(0), privateKey);
         }
         if (certificate != null) {
             if (privateKey == null) {
@@ -168,8 +168,9 @@ public class CertificateDelegate extends Delegate {
             for (org.bouncycastle.asn1.x509.Certificate tempCert : cert.getCertificateList()) {
                 byteList.add(new CertificateBytes(tempCert.getEncoded()));
             }
+
             config.setDefaultExplicitCertificateChain(byteList);
-            adjustPrivateKey(config, privateKey);
+            adjustPrivateKey(config.getCertificateChainConfig().get(0), privateKey);
         } catch (UnrecoverableKeyException
                 | KeyStoreException
                 | IOException
