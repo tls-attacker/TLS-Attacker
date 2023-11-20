@@ -34,7 +34,6 @@ import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import jakarta.xml.bind.JAXBException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.logging.Level;
 import javax.xml.stream.XMLStreamException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -268,12 +267,11 @@ public class WorkflowTraceUtilTest {
     }
 
     private void printWorkflowTrace(String pre, WorkflowTrace trace) {
-        LOGGER.info(pre);
+        LOGGER.debug(pre);
         try {
-            LOGGER.info(WorkflowTraceSerializer.write(trace));
+            LOGGER.debug(WorkflowTraceSerializer.write(trace));
         } catch (JAXBException | IOException ex) {
-            java.util.logging.Logger.getLogger(WorkflowTraceUtilTest.class.getName())
-                    .log(Level.SEVERE, null, ex);
+            LOGGER.error(ex);
         }
     }
 
@@ -448,8 +446,8 @@ public class WorkflowTraceUtilTest {
         WorkflowTraceNormalizer n = new WorkflowTraceNormalizer();
         n.normalize(trace, config);
         String actual = WorkflowTraceSerializer.write(trace);
-        LOGGER.info(actual);
+        LOGGER.debug(actual);
         actual = WorkflowTraceSerializer.write(trace);
-        LOGGER.info(actual);
+        LOGGER.debug(actual);
     }
 }
