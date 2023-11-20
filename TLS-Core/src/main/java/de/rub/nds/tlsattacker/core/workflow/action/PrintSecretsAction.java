@@ -29,71 +29,72 @@ public class PrintSecretsAction extends ConnectionBoundAction {
 
     @Override
     public void execute(State state) throws ActionExecutionException {
-        TlsContext ctx = state.getContext(connectionAlias).getTlsContext();
-        StringBuilder sb = new StringBuilder("\n\nContext: " + ctx);
-        sb.append("\n  (Record Layer) ");
-        if (ctx.getSelectedCipherSuite() == null) {
-            sb.append("\n  CipherSuite: null");
+        TlsContext context = state.getContext(connectionAlias).getTlsContext();
+        StringBuilder builder = new StringBuilder("\n\nContext: " + context);
+        builder.append("\n  (Record Layer) ");
+        if (context.getSelectedCipherSuite() == null) {
+            builder.append("\n  CipherSuite: null");
         } else {
-            sb.append("\n  CipherSuite: ").append(ctx.getSelectedCipherSuite().name());
+            builder.append("\n  CipherSuite: ").append(context.getSelectedCipherSuite().name());
         }
 
-        sb.append("\n  (RSA Key Exchange) ");
-        if (ctx.getChooser()
+        builder.append("\n  (RSA Key Exchange) ");
+        if (context.getChooser()
                         .getContext()
                         .getTlsContext()
                         .getServerX509Context()
                         .getSubjectRsaPublicExponent()
                 == null) {
-            sb.append("\n  ServerRsaPublicKey (chooser): null");
+            builder.append("\n  ServerRsaPublicKey (chooser): null");
         } else {
-            sb.append("\n  ServerRsaPublicKey (chooser): ");
-            sb.append(
-                    ctx.getChooser()
+            builder.append("\n  ServerRsaPublicKey (chooser): ");
+            builder.append(
+                    context.getChooser()
                             .getContext()
                             .getTlsContext()
                             .getServerX509Context()
                             .getSubjectRsaPublicExponent());
         }
-        if (ctx.getChooser()
+        if (context.getChooser()
                         .getContext()
                         .getTlsContext()
                         .getServerX509Context()
                         .getSubjectRsaModulus()
                 == null) {
-            sb.append("\n  ServerRsaModulus(chooser): null");
+            builder.append("\n  ServerRsaModulus(chooser): null");
         } else {
-            sb.append("\n  ServerRsaModulus (chooser): ");
-            sb.append(
+            builder.append("\n  ServerRsaModulus (chooser): ");
+            builder.append(
                     toIndentedString(
                             ArrayConverter.bigIntegerToByteArray(
-                                    ctx.getChooser()
+                                    context.getChooser()
                                             .getContext()
                                             .getTlsContext()
                                             .getServerX509Context()
                                             .getSubjectRsaModulus())));
         }
 
-        sb.append("\n\n  (Handshake) ");
-        sb.append("\n  Client Random: ").append(toIndentedString(ctx.getClientRandom()));
-        sb.append("\n  Server Random: ").append(toIndentedString(ctx.getServerRandom()));
-        sb.append("\n  PreMasterSecret: ").append(toIndentedString(ctx.getPreMasterSecret()));
-        sb.append("\n  MasterSecret: ").append(toIndentedString(ctx.getMasterSecret()));
+        builder.append("\n\n  (Handshake) ");
+        builder.append("\n  Client Random: ").append(toIndentedString(context.getClientRandom()));
+        builder.append("\n  Server Random: ").append(toIndentedString(context.getServerRandom()));
+        builder.append("\n  PreMasterSecret: ")
+                .append(toIndentedString(context.getPreMasterSecret()));
+        builder.append("\n  MasterSecret: ").append(toIndentedString(context.getMasterSecret()));
 
-        if (ctx.getLastClientVerifyData() == null) {
-            sb.append("\n  LastClientVerifyData: null");
+        if (context.getLastClientVerifyData() == null) {
+            builder.append("\n  LastClientVerifyData: null");
         } else {
-            sb.append("\n  LastClientVerifyData: ")
-                    .append(toIndentedString(ctx.getLastClientVerifyData()));
+            builder.append("\n  LastClientVerifyData: ")
+                    .append(toIndentedString(context.getLastClientVerifyData()));
         }
-        if (ctx.getLastServerVerifyData() == null) {
-            sb.append("\n  LastServerVerifyData: null");
+        if (context.getLastServerVerifyData() == null) {
+            builder.append("\n  LastServerVerifyData: null");
         } else {
-            sb.append("\n  LastServerVerifyData: ")
-                    .append(toIndentedString(ctx.getLastServerVerifyData()));
+            builder.append("\n  LastServerVerifyData: ")
+                    .append(toIndentedString(context.getLastServerVerifyData()));
         }
 
-        LOGGER.info(sb.append("\n").toString());
+        LOGGER.info(builder.append("\n").toString());
     }
 
     private String toIndentedString(byte[] bytes) {
