@@ -113,14 +113,14 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
                 if (chooser.getConfig().getDefaultExplicitCertificateChain() == null) {
                     if (entryList == null) {
                         if (chooser.getConfig().getAutoAdjustCertificate()) {
-                            X509PublicKeyType certificateKeyType =
-                                    AlgorithmResolver.getCertificateKeyType(
+                            X509PublicKeyType[] certificateKeyTypes =
+                                    AlgorithmResolver.getSuiteableLeafCertificateKeyType(
                                             chooser.getSelectedCipherSuite());
-                            if (certificateKeyType != null) {
+                            if (certificateKeyTypes != null) {
                                 chooser.getConfig()
                                         .getCertificateChainConfig()
                                         .get(0)
-                                        .setPublicKeyType(certificateKeyType);
+                                        .setPublicKeyType(certificateKeyTypes[0]);
                             } else {
                                 LOGGER.warn(
                                         "Could not adjust public key in certificate to fit cipher suite");

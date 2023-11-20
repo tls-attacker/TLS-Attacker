@@ -166,12 +166,12 @@ public class AlgorithmResolver {
     }
 
     /**
-     * Returns the certificate type required for the cipher suite
+     * Returns the certificate types that can be used with the cipher suite
      *
      * @param suite
      * @return
      */
-    public static X509PublicKeyType getCertificateKeyType(CipherSuite suite) {
+    public static X509PublicKeyType[] getSuiteableLeafCertificateKeyType(CipherSuite suite) {
         KeyExchangeAlgorithm keyExchangeAlgorithm = getKeyExchangeAlgorithm(suite);
         switch (keyExchangeAlgorithm) {
             case DHE_RSA:
@@ -180,26 +180,28 @@ public class AlgorithmResolver {
             case RSA_EXPORT:
             case SRP_SHA_RSA:
             case PSK_RSA:
-                return X509PublicKeyType.RSA;
+                return new X509PublicKeyType[] {X509PublicKeyType.RSA};
             case DH_RSA:
             case DH_DSS:
-                return X509PublicKeyType.DH;
+                return new X509PublicKeyType[] {X509PublicKeyType.DH};
             case ECDH_ECDSA:
-                return X509PublicKeyType.ECDH_ECDSA;
+                return new X509PublicKeyType[] {
+                    X509PublicKeyType.ECDH_ECDSA, X509PublicKeyType.ECDH_ONLY
+                };
             case ECDH_RSA:
-                return X509PublicKeyType.ECDH_ONLY;
+                return new X509PublicKeyType[] {X509PublicKeyType.ECDH_ONLY};
             case ECDHE_ECDSA:
             case ECMQV_ECDSA:
             case CECPQ1_ECDSA:
-                return X509PublicKeyType.ECDH_ECDSA;
+                return new X509PublicKeyType[] {X509PublicKeyType.ECDH_ECDSA};
             case DHE_DSS:
             case SRP_SHA_DSS:
-                return X509PublicKeyType.DSA;
+                return new X509PublicKeyType[] {X509PublicKeyType.DSA};
             case VKO_GOST01:
-                return X509PublicKeyType.GOST_R3411_2001;
+                return new X509PublicKeyType[] {X509PublicKeyType.GOST_R3411_2001};
             case VKO_GOST12:
                 // TODO Not correct
-                return X509PublicKeyType.GOST_R3411_94;
+                return new X509PublicKeyType[] {X509PublicKeyType.GOST_R3411_94};
             case DHE_PSK:
             case DH_ANON:
             case ECCPWD:
@@ -214,7 +216,7 @@ public class AlgorithmResolver {
             case ECMQV_ECNRA:
                 throw new UnsupportedOperationException("Not Implemented");
             case FORTEZZA_KEA:
-                return X509PublicKeyType.KEA;
+                return new X509PublicKeyType[] {X509PublicKeyType.KEA};
             default:
                 throw new UnsupportedOperationException(
                         "Unsupported KeyExchange Algorithm: " + keyExchangeAlgorithm);
