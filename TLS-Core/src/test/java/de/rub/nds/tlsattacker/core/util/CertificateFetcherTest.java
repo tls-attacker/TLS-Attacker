@@ -25,10 +25,8 @@ import java.security.KeyStore;
 import java.security.Security;
 import java.security.cert.CertificateParsingException;
 import java.util.Random;
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.config.Configurator;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
@@ -84,7 +82,6 @@ public class CertificateFetcherTest {
         ClientDelegate clientDelegate = new ClientDelegate();
         clientDelegate.setHost("localhost:" + SERVER_PORT);
         clientDelegate.applyDelegate(config);
-        Configurator.setAllLevels("", Level.ALL);
     }
 
     @Test
