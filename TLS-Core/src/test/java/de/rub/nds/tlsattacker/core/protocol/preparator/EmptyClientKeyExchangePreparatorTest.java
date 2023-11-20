@@ -30,6 +30,8 @@ import java.security.NoSuchProviderException;
 import java.security.Security;
 import java.security.cert.CertificateException;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -129,6 +131,8 @@ public class EmptyClientKeyExchangePreparatorTest
             ArrayConverter.hexStringToByteArray(
                     "26d7439f907fbd24408203579f7c712b04ee2aa55e62734adda2ecb904c6da0a");
 
+    private static final Logger LOGGER = LogManager.getLogger();
+
     @BeforeAll
     public static void setUpClass() {
         Security.addProvider(new BouncyCastleProvider());
@@ -174,9 +178,7 @@ public class EmptyClientKeyExchangePreparatorTest
                 CertificateIo.readPemCertificateByteList(
                         new ByteArrayInputStream(DH_CLIENT_CERT.getBytes()));
         for (CertificateBytes certificateBytes : byteList) {
-            System.out.println(
-                    "Trying to parse: "
-                            + ArrayConverter.bytesToHexString(certificateBytes.getBytes()));
+            LOGGER.debug("Trying to parse: {}", certificateBytes.getBytes());
             X509Certificate x509Certificate = new X509Certificate("x509Certificate");
             x509Certificate
                     .getParser(context.getClientX509Context().getChooser())
