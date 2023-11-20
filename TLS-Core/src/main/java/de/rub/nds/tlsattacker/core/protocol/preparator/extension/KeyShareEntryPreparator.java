@@ -53,7 +53,7 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
     }
 
     private void preparePWDKeyShare() throws CryptoException {
-        LOGGER.info("Using curve: " + entry.getGroupConfig());
+        LOGGER.debug("Using curve: {}", entry.getGroupConfig());
         EllipticCurve curve =
                 ((NamedEllipticCurveParameters) entry.getGroupConfig().getGroupParameters())
                         .getGroup();
