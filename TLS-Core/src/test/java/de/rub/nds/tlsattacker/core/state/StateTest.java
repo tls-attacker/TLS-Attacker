@@ -26,10 +26,10 @@ public class StateTest {
 
     @Test
     public void emptyInitUsesWorkflowTraceTypeFromConfig() {
-        State s = new State();
-        assertNotNull(s.getConfig());
-        assertNotNull(s.getWorkflowTrace());
-        assertNotNull(s.getContext());
+        State state = new State();
+        assertNotNull(state.getConfig());
+        assertNotNull(state.getWorkflowTrace());
+        assertNotNull(state.getContext());
     }
 
     @Test
@@ -48,14 +48,12 @@ public class StateTest {
         Config config = Config.createConfig();
         config.setWorkflowTraceType(WorkflowTraceType.SHORT_HELLO);
         config.setDefaultApplicationMessageData(expected);
-        State s = new State(config);
-        assertNotNull(s.getConfig());
-        assertEquals(s.getConfig(), config);
-        assertNotNull(s.getWorkflowTrace());
-        assertNotNull(s.getContext());
+        State state = new State(config);
+        assertNotNull(state.getConfig());
+        assertEquals(state.getConfig(), config);
+        assertNotNull(state.getWorkflowTrace());
+        assertNotNull(state.getContext());
         assertEquals(config.getDefaultApplicationMessageData(), expected);
-        // TODO: assertThat(workflowTrace.getType(),
-        // isEqual(WorkflowTraceType.SHORT_HELLO));
     }
 
     @Test
@@ -98,10 +96,10 @@ public class StateTest {
         WorkflowTrace trace = new WorkflowTrace();
         trace.addConnection(new OutboundConnection("conEnd1"));
         trace.addConnection(new InboundConnection("conEnd2"));
-        State s = new State(trace);
+        State state = new State(trace);
 
         ConfigurationException exception =
-                assertThrows(ConfigurationException.class, s::getTlsContext);
+                assertThrows(ConfigurationException.class, state::getTlsContext);
         assertEquals(
                 "getContext requires an alias if multiple contexts are defined",
                 exception.getMessage());
@@ -109,7 +107,7 @@ public class StateTest {
 
     @Test
     public void settingSingleContextWorkflowWithUnsupportedModeFails() {
-        Config config = Config.createConfig();
+        Config config = new Config();
         config.setDefaultRunningMode(RunningModeType.MITM);
         config.setWorkflowTraceType(WorkflowTraceType.HELLO);
 
@@ -123,16 +121,16 @@ public class StateTest {
     @Test
     public void dynamicallyChangingValidTlsContextSucceeds() {
         State state = new State();
-        TlsContext origCtx = state.getTlsContext();
-        TlsContext newCtx =
+        TlsContext originalContext = state.getTlsContext();
+        TlsContext newContext =
                 new Context(new State(new Config()), new InboundConnection()).getTlsContext();
-        newCtx.setConnection(origCtx.getConnection());
-        origCtx.setSelectedCipherSuite(CipherSuite.TLS_FALLBACK_SCSV);
-        newCtx.setSelectedCipherSuite(CipherSuite.TLS_AES_128_CCM_SHA256);
+        newContext.setConnection(originalContext.getConnection());
+        originalContext.setSelectedCipherSuite(CipherSuite.TLS_FALLBACK_SCSV);
+        newContext.setSelectedCipherSuite(CipherSuite.TLS_AES_128_CCM_SHA256);
 
         assertSame(CipherSuite.TLS_FALLBACK_SCSV, state.getTlsContext().getSelectedCipherSuite());
-        state.replaceContext(newCtx.getContext());
-        assertNotSame(state.getTlsContext(), origCtx);
+        state.replaceContext(newContext.getContext());
+        assertNotSame(state.getTlsContext(), originalContext);
         assertSame(
                 CipherSuite.TLS_AES_128_CCM_SHA256, state.getTlsContext().getSelectedCipherSuite());
     }
@@ -140,54 +138,55 @@ public class StateTest {
     @Test
     public void changingValidTlsContextInMultiContextStateSucceeds() {
         WorkflowTrace trace = new WorkflowTrace();
-        String conAlias1 = "con1";
-        String conAlias2 = "con2";
-        trace.addConnection(new OutboundConnection(conAlias1));
-        trace.addConnection(new InboundConnection(conAlias2));
+        String connectionAlias1 = "con1";
+        String connectionAlias2 = "con2";
+        trace.addConnection(new OutboundConnection(connectionAlias1));
+        trace.addConnection(new InboundConnection(connectionAlias2));
         State state = new State(trace);
-        TlsContext origCtx1 = state.getContext(conAlias1).getTlsContext();
-        TlsContext newCtx =
+        TlsContext origContext = state.getContext(connectionAlias1).getTlsContext();
+        TlsContext newContext =
                 new Context(new State(new Config()), new InboundConnection()).getTlsContext();
-        newCtx.setConnection(origCtx1.getConnection());
-        origCtx1.setSelectedCipherSuite(CipherSuite.TLS_FALLBACK_SCSV);
-        newCtx.setSelectedCipherSuite(CipherSuite.TLS_AES_128_CCM_SHA256);
+        newContext.setConnection(origContext.getConnection());
+        origContext.setSelectedCipherSuite(CipherSuite.TLS_FALLBACK_SCSV);
+        newContext.setSelectedCipherSuite(CipherSuite.TLS_AES_128_CCM_SHA256);
 
         assertSame(
                 CipherSuite.TLS_FALLBACK_SCSV,
-                state.getTlsContext(conAlias1).getSelectedCipherSuite());
-        state.replaceContext(newCtx.getContext());
-        assertNotSame(state.getTlsContext(conAlias1), origCtx1);
+                state.getTlsContext(connectionAlias1).getSelectedCipherSuite());
+        state.replaceContext(newContext.getContext());
+        assertNotSame(state.getTlsContext(connectionAlias1), origContext);
         assertSame(
                 CipherSuite.TLS_AES_128_CCM_SHA256,
-                state.getTlsContext(conAlias1).getSelectedCipherSuite());
+                state.getTlsContext(connectionAlias1).getSelectedCipherSuite());
     }
 
     @Test
     public void replacingTlsContextWithBadAliasFails() {
         State state = new State();
-        TlsContext newCtx =
+        TlsContext newContext =
                 new Context(new State(new Config()), new InboundConnection()).getTlsContext();
-        newCtx.setConnection(new InboundConnection("NewAlias"));
+        newContext.setConnection(new InboundConnection("NewAlias"));
 
         ConfigurationException exception =
                 assertThrows(
                         ConfigurationException.class,
-                        () -> state.replaceContext(newCtx.getContext()));
+                        () -> state.replaceContext(newContext.getContext()));
         assertTrue(exception.getMessage().startsWith("No Context to replace for alias"));
     }
 
     @Test
     public void replacingTlsContextWithBadConnectionFails() {
         State state = new State();
-        TlsContext origCtx = state.getTlsContext();
-        TlsContext newCtx =
+        TlsContext origContext = state.getTlsContext();
+        TlsContext newContext =
                 new Context(new State(new Config()), new InboundConnection()).getTlsContext();
-        newCtx.setConnection(new InboundConnection(origCtx.getConnection().getAlias(), 87311));
+        newContext.setConnection(
+                new InboundConnection(origContext.getConnection().getAlias(), 87311));
 
         ContextHandlingException exception =
                 assertThrows(
                         ContextHandlingException.class,
-                        () -> state.replaceContext(newCtx.getContext()));
+                        () -> state.replaceContext(newContext.getContext()));
         assertEquals(
                 "Cannot replace Context because the new Context defines another connection.",
                 exception.getMessage());
