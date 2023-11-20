@@ -129,7 +129,6 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
 
     @Override
     public void execute(State state) throws ActionExecutionException {
-        executedAsPlanned = true;
         if (isExecuted()) {
             throw new ActionExecutionException("Action already executed!");
         }
