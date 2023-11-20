@@ -8,14 +8,17 @@
  */
 package de.rub.nds.tlsattacker.core.certificate;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.x509attacker.x509.X509CertificateChain;
 import de.rub.nds.x509attacker.x509.X509CertificateChainBuilder;
 import de.rub.nds.x509attacker.x509.model.X509Certificate;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
 public class DefaultCertificateConfigCreationTest {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     @Test
     public void testDefaultCertificateCreation() throws Exception {
@@ -23,8 +26,7 @@ public class DefaultCertificateConfigCreationTest {
         X509CertificateChainBuilder builder = new X509CertificateChainBuilder();
         X509CertificateChain buildChain = builder.buildChain(config.getCertificateChainConfig());
         for (X509Certificate certificate : buildChain.getCertificateList()) {
-            System.out.println(
-                    ArrayConverter.bytesToHexString(certificate.getSerializer(null).serialize()));
+            LOGGER.debug("Certificate: {}", certificate.getSerializer(null).serialize());
         }
     }
 }
