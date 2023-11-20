@@ -82,7 +82,7 @@ public class TokenBindingMessagePreparator extends ProtocolMessagePreparator<Tok
 
         SignatureCalculator calculator = new SignatureCalculator();
         calculator.computeRawEcdsaSignature(
-                (EcdsaSignatureComputations)
+                (EcdsaSignatureComputations) // This is safe since we hardcode ECDSA
                         message.getSignatureComputations(SignatureAlgorithm.ECDSA),
                 new EcdsaPrivateKey(
                         chooser.getConfig().getDefaultTokenBindingEcPrivateKey(),
