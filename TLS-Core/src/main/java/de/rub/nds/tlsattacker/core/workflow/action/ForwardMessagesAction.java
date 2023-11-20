@@ -179,7 +179,12 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
         executedAsPlanned = checkMessageListsEquals(messages, receivedMessages);
     }
 
-    /** Apply the contents of the messages to the given TLS context. */
+    /**
+     * Apply the contents of the messages to the given TLS context.
+     *
+     * @param sourceContext The context from which the messages were received.
+     * @param destinationContext The context to which the messages are forwarded.
+     */
     private void applyMessages(TlsContext sourceContext, TlsContext destinationContext) {
         // When we forward messages and apply them to the context, we have to pretend we
         // are the peer of the context
