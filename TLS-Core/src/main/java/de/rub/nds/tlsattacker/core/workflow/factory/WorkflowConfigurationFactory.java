@@ -853,10 +853,9 @@ public class WorkflowConfigurationFactory {
         }
 
         LOGGER.info(
-                "Building synchronizing proxy trace for:\n"
-                        + inboundConnection.toCompactString()
-                        + ", "
-                        + outboundConnection.toCompactString());
+                "Building synchronizing proxy trace for:\n{}, {}",
+                inboundConnection.toCompactString(),
+                outboundConnection.toCompactString());
 
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
         WorkflowTrace trace =
@@ -975,15 +974,13 @@ public class WorkflowConfigurationFactory {
                     return new PWDClientKeyExchangeMessage();
                 default:
                     LOGGER.warn(
-                            "Unsupported key exchange algorithm: "
-                                    + algorithm
-                                    + ", not creating ClientKeyExchange Message");
+                            "Unsupported key exchange algorithm: {}, not creating ClientKeyExchange Message",
+                            algorithm);
             }
         } else {
             LOGGER.warn(
-                    "Unsupported key exchange algorithm: "
-                            + algorithm
-                            + ", not creating ClientKeyExchange Message");
+                    "Unsupported key exchange algorithm: {}, not creating ClientKeyExchange Message",
+                    algorithm);
         }
         return null;
     }
@@ -1016,18 +1013,10 @@ public class WorkflowConfigurationFactory {
                 case ECCPWD:
                     return new PWDServerKeyExchangeMessage();
                 case RSA_EXPORT:
-                    // only send rsa server key exchange message if public key size is bigger than
-                    // 512 bits
-                    if (config.getDefaultExplicitCertificateChain() != null) {
-                        // Parse explicit certificate to check size
-                    } else {
-                        // Check config for key and size
-                    }
-                    if (1 == 1) {
-                        return null;
-                    } else {
-                        return new RSAServerKeyExchangeMessage();
-                    }
+                    // TODO We are always adding the server rsa cke message, even though it should
+                    // only be added when our certificate public key is too big.
+                    return new RSAServerKeyExchangeMessage();
+
                 default:
                     LOGGER.warn(
                             "Unsupported key exchange algorithm: "
