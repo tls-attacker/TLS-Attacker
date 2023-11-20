@@ -44,28 +44,35 @@ public class TokenBindingMessagePreparator extends ProtocolMessagePreparator<Tok
     protected void prepareProtocolMessageContents() {
         message.setTokenbindingType(
                 chooser.getConfig().getDefaultTokenBindingType().getTokenBindingTypeValue());
-        message.setKeyParameter(
-                chooser.getConfig().getDefaultTokenBindingKeyParameters().get(0).getValue());
-        if (chooser.getConfig().getDefaultTokenBindingKeyParameters().get(0)
-                == TokenBindingKeyParameters.ECDSAP256) {
-            EllipticCurve curve = new EllipticCurveSECP256R1();
-            BigInteger privateKey = chooser.getConfig().getDefaultTokenBindingEcPrivateKey();
-            LOGGER.debug("Using private Key: {}", privateKey);
-            Point publicKey = curve.mult(privateKey, curve.getBasePoint());
+        if (chooser.getConfig().getDefaultTokenBindingKeyParameters().size() > 0) {
+            message.setKeyParameter(
+                    chooser.getConfig().getDefaultTokenBindingKeyParameters().get(0).getValue());
+            if (chooser.getConfig().getDefaultTokenBindingKeyParameters().get(0)
+                    == TokenBindingKeyParameters.ECDSAP256) {
+                EllipticCurve curve = new EllipticCurveSECP256R1();
+                BigInteger privateKey = chooser.getConfig().getDefaultTokenBindingEcPrivateKey();
+                LOGGER.debug("Using private Key: {}", privateKey);
+                Point publicKey = curve.mult(privateKey, curve.getBasePoint());
 
-            message.setPoint(PointFormatter.toRawFormat(publicKey));
-            message.setPointLength(message.getPoint().getValue().length);
+                message.setPoint(PointFormatter.toRawFormat(publicKey));
+                message.setPointLength(message.getPoint().getValue().length);
 
-            byte[] signature =
-                    generateSignature(SignatureAndHashAlgorithm.ECDSA_SHA256, generateToBeSigned());
-            message.setSignature(signature);
+                byte[] signature =
+                        generateSignature(
+                                SignatureAndHashAlgorithm.ECDSA_SHA256, generateToBeSigned());
+                message.setSignature(signature);
+            } else {
+                message.setModulus(
+                        chooser.getConfig().getDefaultTokenBindingRsaModulus().toByteArray());
+                message.setModulusLength(message.getModulus().getValue().length);
+                message.setPublicExponent(
+                        chooser.getConfig().getDefaultTokenBindingRsaPublicKey().toByteArray());
+                message.setPublicExponentLength(message.getPublicExponent().getValue().length);
+                message.setSignature(new byte[0]);
+            }
         } else {
-            message.setModulus(
-                    chooser.getConfig().getDefaultTokenBindingRsaModulus().toByteArray());
-            message.setModulusLength(message.getModulus().getValue().length);
-            message.setPublicExponent(
-                    chooser.getConfig().getDefaultTokenBindingRsaPublicKey().toByteArray());
-            message.setPublicExponentLength(message.getPublicExponent().getValue().length);
+            // We do not have key paraeters.
+            message.setKeyParameter((byte) 0);
             message.setSignature(new byte[0]);
         }
         TokenBindingMessageSerializer serializer = new TokenBindingMessageSerializer(message);
