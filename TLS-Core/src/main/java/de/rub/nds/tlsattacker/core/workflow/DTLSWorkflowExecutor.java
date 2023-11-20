@@ -152,9 +152,8 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
         Set<String> receivingAliases = receivingAction.getAllReceivingAliases();
         // We will perform retransmissions for all receiving aliases, even if a subset
         // of those aliases actually does not need to have them
-        for (int i = findRetransmissionIndex(tlsActions, receiveActionIndex);
-                i < receiveActionIndex;
-                i++) {
+        int retransmissionIndex = findRetransmissionIndex(tlsActions, receiveActionIndex);
+        for (int i = retransmissionIndex; i < receiveActionIndex; i++) {
             TlsAction action = tlsActions.get(i);
             if (action instanceof SendingAction) {
                 SendingAction sendingAction = (SendingAction) action;
