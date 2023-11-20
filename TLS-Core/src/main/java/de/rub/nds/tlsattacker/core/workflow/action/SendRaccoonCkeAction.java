@@ -114,13 +114,16 @@ public class SendRaccoonCkeAction extends MessageAction implements SendingAction
 
         DHClientKeyExchangeMessage cke = new DHClientKeyExchangeMessage();
         Chooser chooser = state.getContext().getChooser();
-        byte[] clientPublicKey = // TODO might be wrong key depending on CS
-                getClientPublicKey(
-                        chooser.getServerEphemeralDhGenerator(),
-                        chooser.getServerEphemeralDhModulus(),
-                        chooser.getServerEphemeralDhPublicKey(),
-                        initialSecret,
-                        withNullByte);
+        byte[] clientPublicKey;
+        if (chooser.getSelectedCipherSuite()) {
+            byte[] clientPublicKey = // TODO might be wrong key depending on CS
+                    getClientPublicKey(
+                            chooser.getServerEphemeralDhGenerator(),
+                            chooser.getServerEphemeralDhModulus(),
+                            chooser.getServerEphemeralDhPublicKey(),
+                            initialSecret,
+                            withNullByte);
+        }
         cke.setPublicKey(Modifiable.explicit(clientPublicKey));
         return cke;
     }
