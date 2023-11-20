@@ -998,7 +998,6 @@
         </defaultSniHostname>
     </defaultSniHostnames>
     <defaultSelectedNamedGroup>SECP256R1</defaultSelectedNamedGroup>
-    <defaultKeySharePrivateMap/>
     <defaultClientKeyShareNamedGroups>
         <defaultClientKeyShareNamedGroup>ECDH_X25519</defaultClientKeyShareNamedGroup>
     </defaultClientKeyShareNamedGroups>
