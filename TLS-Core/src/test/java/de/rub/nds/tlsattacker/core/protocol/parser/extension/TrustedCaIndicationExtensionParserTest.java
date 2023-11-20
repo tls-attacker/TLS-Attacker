@@ -61,13 +61,14 @@ public class TrustedCaIndicationExtensionParserTest
     protected void assertExtensionMessageSpecific(
             List<Object> providedAdditionalValues, List<Object> expectedMessageSpecificValues) {
         // noinspection unchecked
-        for (TrustedAuthority ta : (List<TrustedAuthority>) expectedMessageSpecificValues.get(1)) {
+        for (TrustedAuthority trustedAuthority :
+                (List<TrustedAuthority>) expectedMessageSpecificValues.get(1)) {
             TrustedAuthorityPreparator preparator =
                     new TrustedAuthorityPreparator(
                             new Context(new State(config), new InboundConnection())
                                     .getTlsContext()
                                     .getChooser(),
-                            ta);
+                            trustedAuthority);
             preparator.prepare();
         }
 
