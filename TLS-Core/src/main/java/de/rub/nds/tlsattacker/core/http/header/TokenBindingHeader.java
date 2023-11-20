@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.http.header;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.core.http.header.preparator.TokenBindingHeaderPreparator;
+import de.rub.nds.tlsattacker.core.http.header.serializer.HttpHeaderSerializer;
 import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
 import de.rub.nds.tlsattacker.core.layer.data.Handler;
 import de.rub.nds.tlsattacker.core.layer.data.Parser;
@@ -40,19 +41,16 @@ public class TokenBindingHeader extends HttpHeader {
 
     @Override
     public Parser<?> getParser(HttpContext context, InputStream stream) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getParser'");
+        return null; // TODO Parser is not used
     }
 
     @Override
     public Serializer<?> getSerializer(HttpContext context) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getSerializer'");
+        return new HttpHeaderSerializer(this);
     }
 
     @Override
     public Handler<?> getHandler(HttpContext context) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getHandler'");
+        return null;
     }
 }
