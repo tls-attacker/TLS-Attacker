@@ -282,7 +282,7 @@ public class Config implements Serializable {
     /** Key type for KeyShareExtension */
     private NamedGroup defaultSelectedNamedGroup = NamedGroup.SECP256R1;
 
-    @XmlElement(nillable = true)
+    @XmlElement
     @XmlJavaTypeAdapter(MapAdapter.class)
     private Map<NamedGroup, BigInteger> defaultKeySharePrivateMap;
 
