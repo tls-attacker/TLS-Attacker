@@ -352,8 +352,6 @@ public class Record extends ModifiableVariableHolder implements DataContainer<Tl
 
     @Override
     public Handler<Record> getHandler(TlsContext tlsContext) {
-        throw new UnsupportedOperationException(
-                "Not supported yet."); // To change body of generated methods, choose
-        // Tools | Templates.
+        return null; // TODO
     }
 }
