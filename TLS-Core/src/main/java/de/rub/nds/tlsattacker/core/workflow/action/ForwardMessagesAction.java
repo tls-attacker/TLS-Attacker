@@ -194,10 +194,7 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
 
         for (ProtocolMessage msg : receivedMessages) {
             LOGGER.debug(
-                    "Applying "
-                            + msg.toCompactString()
-                            + " to forward context "
-                            + destinationContext);
+                    "Applying {} to forward context {}", msg.toCompactString(), destinationContext);
             ProtocolMessageHandler h = msg.getHandler(destinationContext);
             h.adjustContext(msg);
         }
@@ -205,10 +202,9 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
 
     private void forwardMessages(TlsContext forwardToCtx) {
         LOGGER.info(
-                "Forwarding messages ("
-                        + forwardToAlias
-                        + "): "
-                        + getReadableString(receivedMessages));
+                "Forwarding messages ({}): {}",
+                forwardToAlias,
+                getReadableString(receivedMessages));
         try {
             LayerStack layerStack = forwardToCtx.getLayerStack();
 
