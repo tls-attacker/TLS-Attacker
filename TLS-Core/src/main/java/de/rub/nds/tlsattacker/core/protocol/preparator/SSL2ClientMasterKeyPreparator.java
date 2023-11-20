@@ -47,12 +47,10 @@ public class SSL2ClientMasterKeyPreparator
         prepareKeyArg(message);
         prepareKeyArgLength(message);
 
-        LOGGER.debug(
-                "RSA Modulus: " + chooser.getServerX509Chooser().getSubjectRsaModulus().toString());
+        LOGGER.debug("RSA Modulus: {}", chooser.getServerX509Chooser().getSubjectRsaModulus());
 
         prepareRSACiphertext(message);
 
-        final int lengthFieldLength = 2;
         int length = SSL2ByteLength.MESSAGE_TYPE;
         length += message.getCipherKind().getValue().length;
         length += message.getClearKeyData().getValue().length + SSL2ByteLength.CLEAR_KEY_LENGTH;
