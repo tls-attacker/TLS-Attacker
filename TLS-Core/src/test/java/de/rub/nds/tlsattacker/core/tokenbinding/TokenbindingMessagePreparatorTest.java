@@ -97,11 +97,6 @@ public class TokenbindingMessagePreparatorTest {
         ASN1Integer x = new ASN1Integer(xBytes);
         LOGGER.debug("xasn1: {}", x.getPositiveValue());
 
-        // ekm
-        // with
-        // blablub
-        // ours byte[] signedContent =
-        // ArrayConverter.hexStringToByteArray("00022054736C9903E145286A925F9F2C064603D3211BCF0D81EDB6FEB6E9ACCAB4B7");
         byte[] rBytes = new byte[32];
         System.arraycopy(message.getSignature().getValue(), 0, rBytes, 0, 32);
         byte[] sBytes = new byte[32];
@@ -110,6 +105,5 @@ public class TokenbindingMessagePreparatorTest {
         LOGGER.debug("s: {}", sBytes);
         LOGGER.debug("r: {}", new ASN1Integer(rBytes).getPositiveValue());
         LOGGER.debug("s: {}", new ASN1Integer(sBytes).getPositiveValue());
-        // decodeASN1(parsedMessage.getSignature().getValue());
     }
 }
