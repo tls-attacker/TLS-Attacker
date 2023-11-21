@@ -1005,7 +1005,7 @@ public class Config implements Serializable {
                     "42877656971275811310262564894490210024759287182177196162425349131675946712428"),
             new BigInteger(
                     "61154801112014214504178281461992570017247172004704277041681093927569603776562"),
-            defaultSelectedNamedGroup);
+            defaultSelectedNamedGroup.getGroupParameters());
 
     private BigInteger defaultTokenBindingRsaPublicKey = new BigInteger("65537");
 
@@ -1101,7 +1101,7 @@ public class Config implements Serializable {
                     "18331185786522319349444255540874590232255475110717040504630785378857839293510"),
             new BigInteger(
                     "77016287303447444409379355974404854219241223376914775755121063765271326101171"),
-            defaultSelectedNamedGroup);
+            defaultSelectedNamedGroup.getGroupParameters());
 
     private BigInteger defaultServerPWDProtectRandomSecret = new BigInteger(
             "1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111");
