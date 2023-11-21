@@ -95,9 +95,7 @@ public class CertificateFetcherTest {
             actual = null;
         }
         assertNotNull(actual);
-        // assertArrayEquals(
-        //        expectedPublicKey, actual.getSerializer().serialize());
-        // TODO replace with correct value comparision
+        assertEquals(expectedPublicKey, actual);
     }
 
     @Test
