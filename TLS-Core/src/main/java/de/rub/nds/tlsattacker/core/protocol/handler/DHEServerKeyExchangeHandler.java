@@ -41,24 +41,24 @@ public class DHEServerKeyExchangeHandler<KeyExchangeMessage extends DHEServerKey
     protected void adjustDhGenerator(KeyExchangeMessage message) {
         tlsContext.setServerEphemeralDhGenerator(
                 new BigInteger(1, message.getGenerator().getValue()));
-        LOGGER.debug("Dh Generator: " + tlsContext.getServerEphemeralDhGenerator());
+        LOGGER.debug("Dh Generator: {}", tlsContext.getServerEphemeralDhGenerator());
     }
 
     protected void adjustDhModulus(KeyExchangeMessage message) {
         tlsContext.setServerEphemeralDhModulus(new BigInteger(1, message.getModulus().getValue()));
-        LOGGER.debug("Dh Modulus: " + tlsContext.getServerEphemeralDhModulus());
+        LOGGER.debug("Dh Modulus: {}", tlsContext.getServerEphemeralDhModulus());
     }
 
     protected void adjustServerPublicKey(KeyExchangeMessage message) {
         tlsContext.setServerEphemeralDhPublicKey(
                 new BigInteger(1, message.getPublicKey().getValue()));
-        LOGGER.debug("Server PublicKey: " + tlsContext.getServerEphemeralDhPublicKey());
+        LOGGER.debug("Server PublicKey: {}", tlsContext.getServerEphemeralDhPublicKey());
     }
 
     protected void adjustServerPrivateKey(KeyExchangeMessage message) {
         tlsContext.setServerEphemeralDhPrivateKey(
                 message.getKeyExchangeComputations().getPrivateKey().getValue());
-        LOGGER.debug("Server PrivateKey: " + tlsContext.getServerEphemeralDhPrivateKey());
+        LOGGER.debug("Server PrivateKey: {}", tlsContext.getServerEphemeralDhPrivateKey());
     }
 
     private void recognizeNamedGroup() {
