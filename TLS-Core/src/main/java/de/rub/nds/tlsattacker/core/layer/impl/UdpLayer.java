@@ -15,8 +15,7 @@ import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
-import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
-import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStreamAdapterStream;
+import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerInputStream;
 import de.rub.nds.tlsattacker.transport.udp.UdpTransportHandler;
 import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
@@ -60,14 +59,12 @@ public class UdpLayer
 
     @Override
     public void receiveMoreDataForHint(LayerProcessingHint hint) throws IOException {
-        // There is nothing we can do here to fill up our stream, either there is data in it
-        // or not
-    }
-
-    @Override
-    public HintedInputStream getDataStream() {
-        getTransportHandler().setTimeout(getTransportHandler().getTimeout());
-        return new HintedInputStreamAdapterStream(null, getTransportHandler().getInputStream());
+        if (currentInputStream == null) {
+            currentInputStream = new HintedLayerInputStream(null, this);
+            currentInputStream.extendStream(getTransportHandler().fetchData());
+        } else {
+            currentInputStream.extendStream(getTransportHandler().fetchData());
+        }
     }
 
     /** Returns the InputStream associated with the UDP socket. */

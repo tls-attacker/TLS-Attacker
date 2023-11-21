@@ -39,7 +39,7 @@ public class TlsClient {
                 commander.usage();
                 return;
             }
-            ListDelegate list = (ListDelegate) config.getDelegate(ListDelegate.class);
+            ListDelegate list = config.getDelegate(ListDelegate.class);
             if (list.isSet()) {
                 list.plotListing();
                 return;

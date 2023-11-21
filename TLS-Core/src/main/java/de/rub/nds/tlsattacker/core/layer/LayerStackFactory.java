@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.layer.context.TcpContext;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.impl.*;
 import de.rub.nds.tlsattacker.core.state.Context;
+import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
 
 /**
  * Creates a layerStack based on pre-defined configurations. E.g., to send TLS messages with
@@ -28,10 +29,10 @@ public class LayerStackFactory {
         TlsContext tlsContext = context.getTlsContext();
         TcpContext tcpContext = context.getTcpContext();
         HttpContext httpContext = context.getHttpContext();
+        QuicContext quicContext = context.getQuicContext();
 
         switch (type) {
             case OPEN_VPN:
-            case QUIC:
             case STARTTLS:
                 throw new UnsupportedOperationException("Not implemented yet");
             case DTLS:
@@ -40,6 +41,13 @@ public class LayerStackFactory {
                         new MessageLayer(tlsContext),
                         new DtlsFragmentLayer(tlsContext),
                         new RecordLayer(tlsContext),
+                        new UdpLayer(tlsContext));
+            case QUIC:
+                return new LayerStack(
+                        context,
+                        new MessageLayer(tlsContext),
+                        new QuicFrameLayer(quicContext),
+                        new QuicPacketLayer(quicContext),
                         new UdpLayer(tlsContext));
             case TLS:
                 layerStack =

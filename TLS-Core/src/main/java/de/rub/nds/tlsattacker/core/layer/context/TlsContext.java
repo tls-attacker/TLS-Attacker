@@ -589,7 +589,7 @@ public class TlsContext extends LayerContext {
         this.serverX509Context = serverX509Context;
     }
 
-    private void init() {
+    public void init() {
         digest = new MessageDigestCollector();
         sessionList = new LinkedList<>();
         if (getConfig().isStealthMode()) {
@@ -607,6 +607,10 @@ public class TlsContext extends LayerContext {
 
     public Chooser getChooser() {
         return getContext().getChooser();
+    }
+
+    public void setChooser(Chooser chooser) {
+        this.chooser = chooser;
     }
 
     public CertificateType getSelectedClientCertificateType() {
@@ -1236,6 +1240,10 @@ public class TlsContext extends LayerContext {
 
     public MessageDigestCollector getDigest() {
         return digest;
+    }
+
+    public void setDigest(MessageDigestCollector digest) {
+        this.digest = digest;
     }
 
     public byte[] getDtlsCookie() {

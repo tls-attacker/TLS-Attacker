@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
@@ -63,9 +62,7 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage>
 
     private void prepareMessageContent(byte[] content) {
         message.setMessageContent(content);
-        LOGGER.debug(
-                "Handshake message content: "
-                        + ArrayConverter.bytesToHexString(message.getMessageContent().getValue()));
+        LOGGER.debug("Handshake message content: {}", message.getMessageContent().getValue());
     }
 
     @Override
@@ -157,9 +154,7 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage>
             }
         }
         message.setExtensionBytes(stream.toByteArray());
-        LOGGER.debug(
-                "ExtensionBytes: "
-                        + ArrayConverter.bytesToHexString(message.getExtensionBytes().getValue()));
+        LOGGER.debug("ExtensionBytes: {}", message.getExtensionBytes().getValue());
     }
 
     protected void afterPrepareExtensions() {
@@ -206,9 +201,7 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage>
         }
         message.setExtensionBytes(stream.toByteArray());
         prepareEncapsulatingFields();
-        LOGGER.debug(
-                "ExtensionBytes: "
-                        + ArrayConverter.bytesToHexString(message.getExtensionBytes().getValue()));
+        LOGGER.debug("ExtensionBytes: {}", message.getExtensionBytes().getValue());
     }
 
     protected void prepareExtensionLength() {

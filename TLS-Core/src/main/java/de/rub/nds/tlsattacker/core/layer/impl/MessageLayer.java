@@ -23,6 +23,7 @@ import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
+import de.rub.nds.tlsattacker.core.layer.hints.QuicFrameLayerHint;
 import de.rub.nds.tlsattacker.core.layer.hints.RecordLayerHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerInputStream;
@@ -74,7 +75,8 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
                 }
                 if (!message.isHandshakeMessage()) {
                     // only handshake messages may share a record
-                    flushCollectedMessages(runningProtocolMessageType, collectedMessageStream);
+                    flushCollectedMessages(
+                            runningProtocolMessageType, collectedMessageStream, false);
                 }
                 runningProtocolMessageType = message.getProtocolMessageType();
                 processMessage(message, collectedMessageStream);
@@ -82,7 +84,7 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
             }
         }
         // hand remaining serialized to record layer
-        flushCollectedMessages(runningProtocolMessageType, collectedMessageStream);
+        flushCollectedMessages(runningProtocolMessageType, collectedMessageStream, false);
         return getLayerResult();
     }
 
@@ -100,7 +102,11 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
         }
         collectedMessageStream.writeBytes(message.getCompleteResultingMessage().getValue());
         if (mustFlushCollectedMessagesImmediately(message)) {
-            flushCollectedMessages(message.getProtocolMessageType(), collectedMessageStream);
+            boolean isFirstMessage =
+                    (message.getClass() == ClientHelloMessage.class
+                            || message.getClass() == ServerHelloMessage.class);
+            flushCollectedMessages(
+                    message.getProtocolMessageType(), collectedMessageStream, isFirstMessage);
         }
         if (message.getAdjustContext()) {
             handler.adjustContextAfterSerialize(message);
@@ -108,13 +114,22 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
     }
 
     private void flushCollectedMessages(
-            ProtocolMessageType runningProtocolMessageType, ByteArrayOutputStream byteStream)
+            ProtocolMessageType runningProtocolMessageType,
+            ByteArrayOutputStream byteStream,
+            boolean isFirstMessage)
             throws IOException {
         if (byteStream.size() > 0) {
-            getLowerLayer()
-                    .sendData(
-                            new RecordLayerHint(runningProtocolMessageType),
-                            byteStream.toByteArray());
+            if (context.getLayerStack().getLayer(QuicFrameLayer.class) != null) {
+                getLowerLayer()
+                        .sendData(
+                                new QuicFrameLayerHint(runningProtocolMessageType, isFirstMessage),
+                                byteStream.toByteArray());
+            } else {
+                getLowerLayer()
+                        .sendData(
+                                new RecordLayerHint(runningProtocolMessageType),
+                                byteStream.toByteArray());
+            }
             byteStream.reset();
         }
     }
@@ -168,9 +183,18 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
                     "Found Application message with pre configured content while sending HTTP message. Configured content will be replaced.");
         }
         applicationMessage.setDataConfig(additionalData);
-        getLowerLayer()
-                .sendData(
-                        new RecordLayerHint(ProtocolMessageType.APPLICATION_DATA), additionalData);
+        if (context.getLayerStack().getLayer(QuicFrameLayer.class) != null) {
+            getLowerLayer()
+                    .sendData(
+                            new QuicFrameLayerHint(ProtocolMessageType.APPLICATION_DATA),
+                            additionalData);
+        } else {
+            getLowerLayer()
+                    .sendData(
+                            new RecordLayerHint(ProtocolMessageType.APPLICATION_DATA),
+                            additionalData);
+        }
+
         addProducedContainer(applicationMessage);
         return getLayerResult();
     }
@@ -398,7 +422,7 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
     public void passToHigherLayer(ApplicationMessage receivedAppData, LayerProcessingHint hint) {
         LOGGER.debug(
                 "Passing the following Application Data to higher layer: {}",
-                ArrayConverter.bytesToHexString(receivedAppData.getData().getValue()));
+                receivedAppData.getData().getValue());
         if (currentInputStream == null) {
             currentInputStream = new HintedLayerInputStream(hint, this);
         } else {

@@ -19,6 +19,7 @@ import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.quic.QuicTransportParametersExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
@@ -73,6 +74,7 @@ import java.io.InputStream;
     SRPExtensionMessage.class,
     CachedInfoExtensionMessage.class,
     ConnectionIdExtensionMessage.class,
+    QuicTransportParametersExtensionMessage.class,
     EncryptedClientHelloExtensionMessage.class
 })
 public abstract class ExtensionMessage extends ModifiableVariableHolder

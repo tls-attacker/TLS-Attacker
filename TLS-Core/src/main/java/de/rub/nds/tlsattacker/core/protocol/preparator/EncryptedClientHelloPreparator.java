@@ -251,7 +251,7 @@ public class EncryptedClientHelloPreparator
         byte[] aad =
                 msg.getSerializer(chooser.getContext().getTlsContext())
                         .serializeHandshakeMessageContent();
-        LOGGER.debug("AAD: " + ArrayConverter.bytesToHexString(aad));
+        LOGGER.debug("AAD: {}", aad);
 
         byte[] plaintext =
                 ArrayConverter.concatenate(

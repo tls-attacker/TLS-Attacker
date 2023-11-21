@@ -28,13 +28,13 @@ public abstract class TransportHandler {
 
     protected long firstTimeout;
 
-    private boolean firstReceived;
+    protected boolean firstReceived;
 
     protected OutputStream outStream;
 
     protected PushbackInputStream inStream;
 
-    private boolean initialized = false;
+    protected boolean initialized = false;
 
     private final ConnectionEndType connectionEndType;
 
@@ -42,10 +42,13 @@ public abstract class TransportHandler {
 
     protected boolean resetClientSourcePort = true;
 
+    protected boolean useIpv6 = false;
+
     public TransportHandler(Connection con) {
         this.firstTimeout = con.getFirstTimeout();
         this.connectionEndType = con.getLocalConnectionEndType();
         this.timeout = con.getTimeout();
+        this.useIpv6 = con.getUseIpv6();
     }
 
     public TransportHandler(long firstTimeout, long timeout, ConnectionEndType type) {
@@ -172,5 +175,13 @@ public abstract class TransportHandler {
 
     public void setResetClientSourcePort(boolean resetClientSourcePort) {
         this.resetClientSourcePort = resetClientSourcePort;
+    }
+
+    public boolean isUseIpv6() {
+        return useIpv6;
+    }
+
+    public void setUseIpv6(boolean useIpv6) {
+        this.useIpv6 = useIpv6;
     }
 }

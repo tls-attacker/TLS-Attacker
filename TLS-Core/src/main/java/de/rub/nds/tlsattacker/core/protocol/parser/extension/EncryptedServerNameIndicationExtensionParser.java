@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
@@ -51,14 +50,13 @@ public class EncryptedServerNameIndicationExtensionParser
     private void parseNonce(EncryptedServerNameIndicationExtensionMessage msg) {
         byte[] nonce = parseByteArrayField(ExtensionByteLength.NONCE);
         msg.setServerNonce(nonce);
-        LOGGER.info("Received Nonce: " + ArrayConverter.bytesToHexString(nonce));
+        LOGGER.info("Received Nonce: {}", nonce);
     }
 
     private void parseCipherSuite(EncryptedServerNameIndicationExtensionMessage msg) {
         byte[] cipherSuite = parseByteArrayField(HandshakeByteLength.CIPHER_SUITE);
         msg.setCipherSuite(cipherSuite);
-        LOGGER.debug(
-                "cipherSuite: " + ArrayConverter.bytesToHexString(msg.getCipherSuite().getValue()));
+        LOGGER.debug("cipherSuite: {}", msg.getCipherSuite().getValue());
     }
 
     private void parseKeyShareEntry(EncryptedServerNameIndicationExtensionMessage msg) {
@@ -71,15 +69,13 @@ public class EncryptedServerNameIndicationExtensionParser
     private void parseRecordDigestLength(EncryptedServerNameIndicationExtensionMessage msg) {
         int digestLen = parseIntField(ExtensionByteLength.RECORD_DIGEST_LENGTH);
         msg.setRecordDigestLength(digestLen);
-        LOGGER.debug("recordDigestLength: " + msg.getRecordDigestLength().getValue());
+        LOGGER.debug("recordDigestLength: {}", msg.getRecordDigestLength().getValue());
     }
 
     private void parseRecordDigest(EncryptedServerNameIndicationExtensionMessage msg) {
         byte[] recordDigest = parseByteArrayField(msg.getRecordDigestLength().getValue());
         msg.setRecordDigest(recordDigest);
-        LOGGER.debug(
-                "recordDigest: "
-                        + ArrayConverter.bytesToHexString(msg.getRecordDigest().getValue()));
+        LOGGER.debug("recordDigest: {}", msg.getRecordDigest().getValue());
     }
 
     private void parseEncryptedSniLength(EncryptedServerNameIndicationExtensionMessage msg) {
@@ -91,8 +87,6 @@ public class EncryptedServerNameIndicationExtensionParser
     private void parseEncryptedSni(EncryptedServerNameIndicationExtensionMessage msg) {
         byte[] encryptedSni = parseByteArrayField(msg.getEncryptedSniLength().getOriginalValue());
         msg.setEncryptedSni(encryptedSni);
-        LOGGER.debug(
-                "encryptedSni: "
-                        + ArrayConverter.bytesToHexString(msg.getEncryptedSni().getValue()));
+        LOGGER.debug("encryptedSni: {}", msg.getEncryptedSni().getValue());
     }
 }

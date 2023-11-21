@@ -10,33 +10,43 @@ package de.rub.nds.tlsattacker.transport.udp;
 
 import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import de.rub.nds.tlsattacker.transport.udp.stream.UdpInputStream;
-import de.rub.nds.tlsattacker.transport.udp.stream.UdpOutputStream;
 import java.io.IOException;
-import java.io.PushbackInputStream;
+import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.SocketException;
+import java.net.Inet4Address;
+import java.net.Inet6Address;
+import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class ClientUdpTransportHandler extends UdpTransportHandler {
 
+    private static final int RECEIVE_BUFFER_SIZE = 16384;
+
     private static final Logger LOGGER = LogManager.getLogger();
 
-    protected final String hostname;
+    protected String ipv4;
+
+    protected String ipv6;
+
+    protected String hostname;
 
     protected Integer sourcePort;
 
-    public ClientUdpTransportHandler(Connection connection) {
-        super(connection.getFirstTimeout(), connection.getTimeout(), ConnectionEndType.CLIENT);
-        this.hostname = connection.getHostname();
-        this.port = connection.getPort();
-        this.sourcePort = connection.getSourcePort();
+    private final byte[] dataBuffer = new byte[RECEIVE_BUFFER_SIZE];
+
+    public ClientUdpTransportHandler(Connection con) {
+        super(con);
+        this.ipv4 = con.getIp();
+        this.ipv6 = con.getIpv6();
+        this.hostname = con.getHostname();
+        this.port = con.getPort();
+        this.sourcePort = con.getSourcePort();
     }
 
-    public ClientUdpTransportHandler(long firstTimeout, long timeout, String hostname, int port) {
+    public ClientUdpTransportHandler(long firstTimeout, long timeout, String ipv4, int port) {
         super(firstTimeout, timeout, ConnectionEndType.CLIENT);
-        this.hostname = hostname;
+        this.ipv4 = ipv4;
         this.port = port;
     }
 
@@ -57,6 +67,46 @@ public class ClientUdpTransportHandler extends UdpTransportHandler {
     }
 
     @Override
+    public void sendData(byte[] data) throws IOException {
+        DatagramPacket packet;
+        if (socket.isConnected()) {
+            packet = new DatagramPacket(data, data.length);
+        } else {
+            if (useIpv6) {
+                if (ipv6 != null) {
+                    packet =
+                            new DatagramPacket(
+                                    data, data.length, Inet6Address.getByName(ipv6), port);
+                } else {
+                    throw new IOException("No IPv6 address set");
+                }
+            } else {
+                if (ipv4 != null) {
+                    packet =
+                            new DatagramPacket(
+                                    data, data.length, Inet4Address.getByName(ipv4), port);
+                } else {
+                    throw new IOException("No IPv4 address set");
+                }
+            }
+        }
+        socket.send(packet);
+    }
+
+    @Override
+    public byte[] fetchData() throws IOException {
+        if (firstReceived) {
+            setTimeout(firstTimeout);
+        } else {
+            setTimeout(timeout);
+        }
+        firstReceived = false;
+        DatagramPacket packet = new DatagramPacket(dataBuffer, RECEIVE_BUFFER_SIZE);
+        socket.receive(packet);
+        return Arrays.copyOfRange(packet.getData(), 0, packet.getLength());
+    }
+
+    @Override
     public void preInitialize() throws IOException {
         // Nothing to do here
     }
@@ -71,9 +121,7 @@ public class ClientUdpTransportHandler extends UdpTransportHandler {
         }
         socket.setSoTimeout((int) timeout);
         cachedSocketState = null;
-        setStreams(
-                new PushbackInputStream(new UdpInputStream(socket, true)),
-                new UdpOutputStream(socket, hostname, port));
+        this.initialized = true;
     }
 
     @Override

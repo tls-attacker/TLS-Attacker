@@ -30,6 +30,7 @@ import de.rub.nds.tlsattacker.core.crypto.MessageDigestCollector;
 import de.rub.nds.tlsattacker.core.crypto.hpke.HpkeUtil;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
+import de.rub.nds.tlsattacker.core.layer.constant.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
@@ -38,6 +39,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedClientHel
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.DragonFlyKeyShareEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.keyshare.DragonFlyKeyShareEntryParser;
+import de.rub.nds.tlsattacker.core.quic.packet.QuicPacketCryptoComputations;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
@@ -50,6 +52,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import javax.crypto.Mac;
+import javax.crypto.NoSuchPaddingException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -91,6 +94,17 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                 if (tlsContext.getTalkingConnectionEndType()
                         != tlsContext.getChooser().getConnectionEndType()) {
                     setServerRecordCipher();
+                }
+                if (tlsContext.getConfig().getDefaultLayerConfiguration()
+                        == LayerConfiguration.QUIC) {
+                    try {
+                        QuicPacketCryptoComputations.calculateHandshakeSecrets(
+                                tlsContext.getContext().getQuicContext());
+                    } catch (NoSuchAlgorithmException
+                            | NoSuchPaddingException
+                            | CryptoException e) {
+                        LOGGER.error("Could not initialize handshake secrets: ", e);
+                    }
                 }
             }
             adjustPRF(message);
@@ -179,17 +193,20 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         tlsContext.setActiveServerKeySetType(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
         LOGGER.debug("Setting cipher for server to use handshake secrets");
         KeySet serverKeySet = getTls13KeySet(tlsContext, tlsContext.getActiveServerKeySetType());
-
-        if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
-            tlsContext
-                    .getRecordLayer()
-                    .updateDecryptionCipher(
-                            RecordCipherFactory.getRecordCipher(tlsContext, serverKeySet, false));
-        } else {
-            tlsContext
-                    .getRecordLayer()
-                    .updateEncryptionCipher(
-                            RecordCipherFactory.getRecordCipher(tlsContext, serverKeySet, true));
+        if (tlsContext.getRecordLayer() != null) {
+            if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
+                tlsContext
+                        .getRecordLayer()
+                        .updateDecryptionCipher(
+                                RecordCipherFactory.getRecordCipher(
+                                        tlsContext, serverKeySet, false));
+            } else {
+                tlsContext
+                        .getRecordLayer()
+                        .updateEncryptionCipher(
+                                RecordCipherFactory.getRecordCipher(
+                                        tlsContext, serverKeySet, true));
+            }
         }
     }
 
@@ -198,16 +215,20 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         LOGGER.debug("Setting cipher for client to use handshake secrets");
         KeySet clientKeySet = getTls13KeySet(tlsContext, tlsContext.getActiveClientKeySetType());
 
-        if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.SERVER) {
-            tlsContext
-                    .getRecordLayer()
-                    .updateDecryptionCipher(
-                            RecordCipherFactory.getRecordCipher(tlsContext, clientKeySet, false));
-        } else {
-            tlsContext
-                    .getRecordLayer()
-                    .updateEncryptionCipher(
-                            RecordCipherFactory.getRecordCipher(tlsContext, clientKeySet, true));
+        if (tlsContext.getRecordLayer() != null) {
+            if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.SERVER) {
+                tlsContext
+                        .getRecordLayer()
+                        .updateDecryptionCipher(
+                                RecordCipherFactory.getRecordCipher(
+                                        tlsContext, clientKeySet, false));
+            } else {
+                tlsContext
+                        .getRecordLayer()
+                        .updateEncryptionCipher(
+                                RecordCipherFactory.getRecordCipher(
+                                        tlsContext, clientKeySet, true));
+            }
         }
     }
 
@@ -453,20 +474,17 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         // digest clientHello and serverHello
         MessageDigestCollector echDigest = new MessageDigestCollector();
 
-        LOGGER.debug("ClientHelloInner: " + ArrayConverter.bytesToHexString(lastClientHello));
-        LOGGER.debug("ServerHello: " + ArrayConverter.bytesToHexString(serverHello));
+        LOGGER.debug("ClientHelloInner: {}", lastClientHello);
+        LOGGER.debug("ServerHello: {}", serverHello);
         echDigest.append(lastClientHello);
         echDigest.append(serverHello);
-        LOGGER.debug(
-                "Complete resulting digest: "
-                        + ArrayConverter.bytesToHexString(echDigest.getRawBytes()));
+        LOGGER.debug("Complete resulting digest: {}", echDigest.getRawBytes());
 
         Chooser chooser = tlsContext.getChooser();
         byte[] transcriptEchConf =
                 echDigest.digest(
                         chooser.getSelectedProtocolVersion(), chooser.getSelectedCipherSuite());
-        LOGGER.debug(
-                "Transcript Ech Config: " + ArrayConverter.bytesToHexString(transcriptEchConf));
+        LOGGER.debug("Transcript Ech Config: {}", transcriptEchConf);
         return transcriptEchConf;
     }
 
@@ -483,15 +501,11 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
             byte[] extract =
                     HKDFunction.extract(
                             hkdfAlgorithm, null, innerClientHello.getRandom().getValue());
-            LOGGER.debug("Extract: " + ArrayConverter.bytesToHexString(extract));
+            LOGGER.debug("Extract: {}", extract);
             byte[] acceptConfirmationClient =
                     HKDFunction.expandLabel(hkdfAlgorithm, extract, label, transcriptEchConf, 8);
-            LOGGER.debug(
-                    "Accept Confirmation Calculated: "
-                            + ArrayConverter.bytesToHexString(acceptConfirmationClient));
-            LOGGER.debug(
-                    "Accept Confirmation Received: "
-                            + ArrayConverter.bytesToHexString(acceptConfirmationServer));
+            LOGGER.debug("Accept Confirmation Calculated: {}", acceptConfirmationClient);
+            LOGGER.debug("Accept Confirmation Received: {}", acceptConfirmationServer);
             if (Arrays.equals(acceptConfirmationClient, acceptConfirmationServer)) {
                 // mark ECH support in context
                 tlsContext.setSupportsECH(true);

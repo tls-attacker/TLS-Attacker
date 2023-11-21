@@ -10,10 +10,7 @@ package de.rub.nds.tlsattacker.transport.udp;
 
 import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import de.rub.nds.tlsattacker.transport.udp.stream.UdpInputStream;
-import de.rub.nds.tlsattacker.transport.udp.stream.UdpOutputStream;
 import java.io.IOException;
-import java.io.PushbackInputStream;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 
@@ -49,34 +46,12 @@ public class ServerUdpTransportHandler extends UdpTransportHandler {
         if (socket == null) {
             throw new IOException("TransportHandler not preInitalized");
         }
-        waitOnReceive();
-    }
-
-    /*
-     * Provides a routine equivalent to TCP's accept method. Blocks until a client
-     * "connects", meaning that data is
-     * available to be read.
-     */
-    private void waitOnReceive() throws IOException {
-        while (inStream.available() == 0) {
-            try {
-                Thread.sleep(1);
-            } catch (InterruptedException e) {
-            }
-        }
+        this.initialized = true;
     }
 
     @Override
     public void preInitialize() throws IOException {
         socket = new DatagramSocket(port);
-        setStreams(
-                new PushbackInputStream(new UdpInputStream(socket, true)),
-                new UdpOutputStream(socket));
-        try {
-            socket.setSoTimeout((int) timeout);
-        } catch (SocketException e) {
-            throw new RuntimeException("Could not set socket timeout", e);
-        }
         cachedSocketState = null;
     }
 

@@ -8,15 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
-import de.rub.nds.tlsattacker.core.layer.context.TcpContext;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
-import de.rub.nds.tlsattacker.core.record.Record;
-import de.rub.nds.tlsattacker.core.record.serializer.RecordSerializer;
-import de.rub.nds.tlsattacker.core.state.State;
-import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
@@ -24,8 +15,21 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
+import de.rub.nds.tlsattacker.core.layer.context.TcpContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
+import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
+import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
+import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.record.serializer.RecordSerializer;
+import de.rub.nds.tlsattacker.core.state.State;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "PopAndSendRecord")
 public class PopAndSendRecordAction extends MessageAction implements SendingAction {
@@ -89,6 +93,8 @@ public class PopAndSendRecordAction extends MessageAction implements SendingActi
         messages = new LinkedList<>();
         records = new LinkedList<>();
         fragments = new LinkedList<>();
+        quicPackets = new LinkedList<>();
+        quicFrames = new LinkedList<>();
         setExecuted(null);
         asPlanned = null;
     }
@@ -116,5 +122,14 @@ public class PopAndSendRecordAction extends MessageAction implements SendingActi
     @Override
     public Set<String> getAllSendingAliases() {
         return new HashSet<>(Collections.singleton(connectionAlias));
+    }
+
+    public List<QuicPacket> getSendQuicPackets() {
+        return quicPackets;
+    }
+
+    @Override
+    public List<QuicFrame> getSendQuicFrames() {
+        return quicFrames;
     }
 }

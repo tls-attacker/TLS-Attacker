@@ -8,16 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
-import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
-import de.rub.nds.tlsattacker.core.record.Record;
-import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
-import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,8 +16,22 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
+import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
+import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
+import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
+import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.state.State;
+import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "SendMessagesFromLastFlight")
 public class SendMessagesFromLastFlightAction extends MessageAction implements SendingAction {
@@ -73,7 +77,7 @@ public class SendMessagesFromLastFlightAction extends MessageAction implements S
                 ((HandshakeMessage) message).setIncludeInDigest(false);
             }
         }
-        String sending = getReadableString(messages);
+        String sending = getReadableStringFromMessages(messages);
         if (hasDefaultAlias()) {
             LOGGER.info("Executing retransmissions: {}", sending);
         } else {
@@ -81,7 +85,7 @@ public class SendMessagesFromLastFlightAction extends MessageAction implements S
         }
 
         try {
-            send(tlsContext, messages, fragments, records, httpMessages);
+            send(tlsContext, messages, fragments, records, quicFrames, quicPackets, httpMessages);
             setExecuted(true);
         } catch (IOException e) {
             tlsContext.setReceivedTransportHandlerException(true);
@@ -106,6 +110,16 @@ public class SendMessagesFromLastFlightAction extends MessageAction implements S
         if (getFragments() != null) {
             for (DtlsHandshakeMessageFragment fragment : getFragments()) {
                 holders.addAll(fragment.getAllModifiableVariableHolders());
+            }
+        }
+        if (getQuicPackets() != null) {
+            for (QuicPacket packet : getQuicPackets()) {
+                holders.addAll(packet.getAllModifiableVariableHolders());
+            }
+        }
+        if (getQuicFrames() != null) {
+            for (QuicFrame frame : getQuicFrames()) {
+                holders.addAll(frame.getAllModifiableVariableHolders());
             }
         }
         for (ModifiableVariableHolder holder : holders) {
@@ -135,6 +149,12 @@ public class SendMessagesFromLastFlightAction extends MessageAction implements S
         if (!Objects.equals(this.fragments, other.fragments)) {
             return false;
         }
+        if (!Objects.equals(this.quicPackets, other.quicPackets)) {
+            return false;
+        }
+        if (!Objects.equals(this.quicFrames, other.quicFrames)) {
+            return false;
+        }
         return super.equals(obj);
     }
 
@@ -144,6 +164,8 @@ public class SendMessagesFromLastFlightAction extends MessageAction implements S
         hash = 67 * hash + Objects.hashCode(this.messages);
         hash = 67 * hash + Objects.hashCode(this.records);
         hash = 67 * hash + Objects.hashCode(this.fragments);
+        hash = 67 * hash + Objects.hashCode(this.quicPackets);
+        hash = 67 * hash + Objects.hashCode(this.quicFrames);
         return hash;
     }
 
@@ -175,5 +197,14 @@ public class SendMessagesFromLastFlightAction extends MessageAction implements S
     @Override
     public Set<String> getAllSendingAliases() {
         return new HashSet<>(Collections.singleton(connectionAlias));
+    }
+
+    public List<QuicPacket> getSendQuicPackets() {
+        return quicPackets;
+    }
+
+    @Override
+    public List<QuicFrame> getSendQuicFrames() {
+        return quicFrames;
     }
 }

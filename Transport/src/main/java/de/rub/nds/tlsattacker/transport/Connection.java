@@ -20,6 +20,7 @@ public abstract class Connection implements Serializable {
 
     protected Integer port = null;
     protected String ip = null;
+    protected String ipv6 = null;
     protected String hostname = null;
     protected Integer proxyDataPort = null;
     protected String proxyDataHostname = null;
@@ -30,6 +31,7 @@ public abstract class Connection implements Serializable {
     protected Integer firstTimeout = null;
     protected Integer connectionTimeout = null;
     protected Integer sourcePort = null;
+    protected Boolean useIpv6 = null;
 
     public Connection() {}
 
@@ -45,6 +47,7 @@ public abstract class Connection implements Serializable {
     public Connection(Connection other) {
         port = other.port;
         ip = other.ip;
+        ipv6 = other.ipv6;
         hostname = other.hostname;
         proxyDataPort = other.proxyDataPort;
         proxyDataHostname = other.proxyDataHostname;
@@ -55,6 +58,7 @@ public abstract class Connection implements Serializable {
         firstTimeout = other.firstTimeout;
         connectionTimeout = other.connectionTimeout;
         sourcePort = other.sourcePort;
+        useIpv6 = other.useIpv6;
     }
 
     public String getIp() {
@@ -63,6 +67,14 @@ public abstract class Connection implements Serializable {
 
     public void setIp(String ip) {
         this.ip = ip;
+    }
+
+    public String getIpv6() {
+        return ipv6;
+    }
+
+    public void setIpv6(String ipv6) {
+        this.ipv6 = ipv6;
     }
 
     public Integer getPort() {
@@ -153,6 +165,14 @@ public abstract class Connection implements Serializable {
         this.sourcePort = sourcePort;
     }
 
+    public Boolean getUseIpv6() {
+        return useIpv6;
+    }
+
+    public void setUseIpv6(Boolean useIpv6) {
+        this.useIpv6 = useIpv6;
+    }
+
     /**
      * Get the connection end type of the connection end. This must be implemented by all children.
      *
@@ -161,64 +181,78 @@ public abstract class Connection implements Serializable {
     public abstract ConnectionEndType getLocalConnectionEndType();
 
     @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 83 * hash + Objects.hashCode(this.port);
-        hash = 83 * hash + Objects.hashCode(this.ip);
-        hash = 83 * hash + Objects.hashCode(this.hostname);
-        hash = 83 * hash + Objects.hashCode(this.proxyDataPort);
-        hash = 83 * hash + Objects.hashCode(this.proxyDataHostname);
-        hash = 83 * hash + Objects.hashCode(this.proxyControlPort);
-        hash = 83 * hash + Objects.hashCode(this.proxyControlHostname);
-        hash = 83 * hash + Objects.hashCode(this.transportHandlerType);
-        hash = 83 * hash + Objects.hashCode(this.timeout);
-        return hash;
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        Connection that = (Connection) o;
+
+        if (!Objects.equals(port, that.port)) {
+            return false;
+        }
+        if (!Objects.equals(ip, that.ip)) {
+            return false;
+        }
+        if (!Objects.equals(hostname, that.hostname)) {
+            return false;
+        }
+        if (!Objects.equals(proxyDataPort, that.proxyDataPort)) {
+            return false;
+        }
+        if (!Objects.equals(proxyDataHostname, that.proxyDataHostname)) {
+            return false;
+        }
+        if (!Objects.equals(proxyControlPort, that.proxyControlPort)) {
+            return false;
+        }
+        if (!Objects.equals(proxyControlHostname, that.proxyControlHostname)) {
+            return false;
+        }
+        if (transportHandlerType != that.transportHandlerType) {
+            return false;
+        }
+        if (!Objects.equals(timeout, that.timeout)) {
+            return false;
+        }
+        if (!Objects.equals(firstTimeout, that.firstTimeout)) {
+            return false;
+        }
+        if (!Objects.equals(connectionTimeout, that.connectionTimeout)) {
+            return false;
+        }
+        if (!Objects.equals(sourcePort, that.sourcePort)) {
+            return false;
+        }
+        return Objects.equals(useIpv6, that.useIpv6);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Connection other = (Connection) obj;
-        if (!Objects.equals(this.ip, other.ip)) {
-            return false;
-        }
-        if (!Objects.equals(this.hostname, other.hostname)) {
-            return false;
-        }
-        if (!Objects.equals(this.proxyDataHostname, other.proxyDataHostname)) {
-            return false;
-        }
-        if (!Objects.equals(this.proxyControlHostname, other.proxyControlHostname)) {
-            return false;
-        }
-        if (!Objects.equals(this.port, other.port)) {
-            return false;
-        }
-        if (!Objects.equals(this.proxyDataPort, other.proxyDataPort)) {
-            return false;
-        }
-        if (!Objects.equals(this.proxyControlPort, other.proxyControlPort)) {
-            return false;
-        }
-        if (this.transportHandlerType != other.transportHandlerType) {
-            return false;
-        }
-        if (!Objects.equals(this.timeout, other.timeout)) {
-            return false;
-        }
-        return true;
+    public int hashCode() {
+        int result = port != null ? port.hashCode() : 0;
+        result = 31 * result + (ip != null ? ip.hashCode() : 0);
+        result = 31 * result + (ipv6 != null ? ipv6.hashCode() : 0);
+        result = 31 * result + (hostname != null ? hostname.hashCode() : 0);
+        result = 31 * result + (proxyDataPort != null ? proxyDataPort.hashCode() : 0);
+        result = 31 * result + (proxyDataHostname != null ? proxyDataHostname.hashCode() : 0);
+        result = 31 * result + (proxyControlPort != null ? proxyControlPort.hashCode() : 0);
+        result = 31 * result + (proxyControlHostname != null ? proxyControlHostname.hashCode() : 0);
+        result = 31 * result + (transportHandlerType != null ? transportHandlerType.hashCode() : 0);
+        result = 31 * result + (timeout != null ? timeout.hashCode() : 0);
+        result = 31 * result + (firstTimeout != null ? firstTimeout.hashCode() : 0);
+        result = 31 * result + (connectionTimeout != null ? connectionTimeout.hashCode() : 0);
+        result = 31 * result + (sourcePort != null ? sourcePort.hashCode() : 0);
+        result = 31 * result + (useIpv6 != null ? useIpv6.hashCode() : 0);
+        return result;
     }
 
     protected void addProperties(StringBuilder sb) {
         sb.append("host=").append(hostname);
+        sb.append(" ip=").append(ip);
+        sb.append(" ipv6=").append(ipv6);
         sb.append(" port=").append(port);
         sb.append(" proxyDataHost=").append(proxyDataHostname);
         sb.append(" proxyDataPort=").append(proxyDataPort);
@@ -227,6 +261,9 @@ public abstract class Connection implements Serializable {
         sb.append(" type=").append(transportHandlerType);
         sb.append(" firstTimeout=").append(firstTimeout);
         sb.append(" timeout=").append(timeout);
+        sb.append(" connectionTimeout=").append(connectionTimeout);
+        sb.append(" sourcePort=").append(sourcePort);
+        sb.append(" useIpv6=").append(useIpv6);
     }
 
     protected void addCompactProperties(StringBuilder sb) {

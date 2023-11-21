@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.CoreClientHelloMessage;
@@ -71,9 +70,7 @@ public abstract class CoreClientHelloParser<T extends CoreClientHelloMessage>
      */
     private void parseCipherSuites(T msg) {
         msg.setCipherSuites(parseByteArrayField(msg.getCipherSuiteLength().getValue()));
-        LOGGER.debug(
-                "CipherSuites: "
-                        + ArrayConverter.bytesToHexString(msg.getCipherSuites().getValue()));
+        LOGGER.debug("CipherSuites: {}", msg.getCipherSuites().getValue());
     }
 
     /**
@@ -93,8 +90,6 @@ public abstract class CoreClientHelloParser<T extends CoreClientHelloMessage>
      */
     private void parseCompressions(T msg) {
         msg.setCompressions(parseByteArrayField(msg.getCompressionLength().getValue()));
-        LOGGER.debug(
-                "Compressions: "
-                        + ArrayConverter.bytesToHexString(msg.getCompressions().getValue()));
+        LOGGER.debug("Compressions: {}", msg.getCompressions().getValue());
     }
 }

@@ -12,6 +12,8 @@ import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
+import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
+import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
@@ -47,7 +49,7 @@ public class PopAndSendMessageAction extends MessageAction implements SendingAct
         }
         messages.add(tlsContext.getMessageBuffer().pop());
 
-        String sending = getReadableString(messages);
+        String sending = getReadableStringFromMessages(messages);
         if (connectionAlias == null) {
             LOGGER.info("Sending messages: {}", sending);
         } else {
@@ -55,7 +57,7 @@ public class PopAndSendMessageAction extends MessageAction implements SendingAct
         }
 
         try {
-            send(tlsContext, messages, fragments, records, httpMessages);
+            send(tlsContext, messages, fragments, records, quicFrames, quicPackets, httpMessages);
             setExecuted(true);
         } catch (IOException e) {
             LOGGER.debug(e);
@@ -120,5 +122,14 @@ public class PopAndSendMessageAction extends MessageAction implements SendingAct
     @Override
     public Set<String> getAllSendingAliases() {
         return new HashSet<>(Collections.singleton(connectionAlias));
+    }
+    
+    public List<QuicPacket> getSendQuicPackets() {
+        return quicPackets;
+    }
+
+    @Override
+    public List<QuicFrame> getSendQuicFrames() {
+        return quicFrames;
     }
 }

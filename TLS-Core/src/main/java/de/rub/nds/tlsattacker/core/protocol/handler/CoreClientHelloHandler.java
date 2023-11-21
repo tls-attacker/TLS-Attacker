@@ -134,7 +134,7 @@ public abstract class CoreClientHelloHandler<Message extends CoreClientHelloMess
             copied[1] = bytesToConvert[i + 1];
             CipherSuite suite = CipherSuite.getCipherSuite(copied);
             if (suite == null) {
-                LOGGER.warn("Cannot convert: {} to a CipherSuite", copied);
+                LOGGER.warn("Cannot convert {} to a CipherSuite", copied);
             } else {
                 list.add(suite);
             }
@@ -199,14 +199,16 @@ public abstract class CoreClientHelloHandler<Message extends CoreClientHelloMess
                                         tlsContext.getChooser().getEarlyDataCipherSuite(),
                                         tlsContext.getReadConnectionId()));
             } else {
-                tlsContext
-                        .getRecordLayer()
-                        .updateEncryptionCipher(
-                                RecordCipherFactory.getRecordCipher(
-                                        tlsContext,
-                                        clientKeySet,
-                                        tlsContext.getChooser().getEarlyDataCipherSuite(),
-                                        tlsContext.getWriteConnectionId()));
+                if (tlsContext.getRecordLayer() != null) {
+                    tlsContext
+                            .getRecordLayer()
+                            .updateEncryptionCipher(
+                                    RecordCipherFactory.getRecordCipher(
+                                            tlsContext,
+                                            clientKeySet,
+                                            tlsContext.getChooser().getEarlyDataCipherSuite(),
+                                            tlsContext.getWriteConnectionId()));
+                }
             }
         } catch (NoSuchAlgorithmException ex) {
             LOGGER.error("Unable to generate KeySet - unknown algorithm");

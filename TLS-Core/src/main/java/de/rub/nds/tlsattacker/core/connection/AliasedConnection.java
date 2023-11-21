@@ -22,6 +22,7 @@ import java.util.Set;
         propOrder = {
             "alias",
             "ip",
+            "ipv6",
             "port",
             "hostname",
             "proxyDataPort",
@@ -32,7 +33,8 @@ import java.util.Set;
             "firstTimeout",
             "connectionTimeout",
             "transportHandlerType",
-            "sourcePort"
+            "sourcePort",
+            "useIpv6"
         })
 public abstract class AliasedConnection extends Connection implements Aliasable {
 
@@ -206,6 +208,12 @@ public abstract class AliasedConnection extends Connection implements Aliasable 
                         "Attempt to set default port "
                                 + "failed. Port must be in interval [0,65535], but is "
                                 + port);
+            }
+        }
+        if (useIpv6 == null) {
+            useIpv6 = defaultCon.getUseIpv6();
+            if (useIpv6 == null) {
+                useIpv6 = false;
             }
         }
     }

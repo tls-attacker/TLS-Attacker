@@ -10,12 +10,14 @@ package de.rub.nds.tlsattacker.core.layer;
 
 import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
+import de.rub.nds.tlsattacker.core.layer.impl.QuicFrameLayer;
 import de.rub.nds.tlsattacker.core.state.Context;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -140,7 +142,41 @@ public class LayerStack {
         }
         context.setTalkingConnectionEndType(
                 context.getConnection().getLocalConnectionEndType().getPeer());
-        getLayerList().get(0).receiveData();
+        // only call receive on top layer if the configuration defines expected containers
+        // enables receive actions that only expect containers on lower levels (like quic frames
+        // that do not contain tls messages)
+        ProtocolLayer topLayer = getLayerList().get(0);
+        if (!(topLayer.getLayerConfiguration() instanceof SpecificReceiveLayerConfiguration
+                && topLayer.getLayerConfiguration().getContainerList().isEmpty())) {
+            topLayer.receiveData();
+        }
+        // for quic frame specific actions like the ReceiveQuicTillAction receive data until
+        // configuration is satisfied
+        // if maxNumberOfQuicPacketsToReceive is set in layer config the receive function is only
+        // called that many times
+        // for each receiveData call on the frame layer exactly one packet is processed on the
+        // packet layer
+        Optional<ProtocolLayer> quicFrameLayer =
+                getLayerList().stream().filter(x -> x instanceof QuicFrameLayer).findFirst();
+        if (quicFrameLayer.isPresent()
+                && quicFrameLayer.get().getLayerConfiguration()
+                        instanceof ReceiveTillLayerConfiguration) {
+            int remainingTries =
+                    ((ReceiveTillLayerConfiguration<?>)
+                                    quicFrameLayer.get().getLayerConfiguration())
+                            .getMaxNumberOfQuicPacketsToReceive();
+            if (remainingTries > 0) {
+                while (remainingTries > 0 && quicFrameLayer.get().shouldContinueProcessing()) {
+                    quicFrameLayer.get().receiveData();
+                    remainingTries--;
+                }
+            } else {
+                while (quicFrameLayer.get().shouldContinueProcessing()) {
+                    quicFrameLayer.get().receiveData();
+                }
+            }
+        }
+
         // reverse order
         for (int i = getLayerList().size() - 1; i >= 0; i--) {
             ProtocolLayer layer = getLayerList().get(i);
@@ -156,6 +192,7 @@ public class LayerStack {
                 }
             }
         }
+
         return gatherResults();
     }
 

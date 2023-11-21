@@ -48,8 +48,6 @@ public abstract class UdpTransportHandler extends TransportHandler {
     @Override
     public void closeConnection() throws IOException {
         socket.close();
-        inStream.close();
-        outStream.close();
     }
 
     @Override

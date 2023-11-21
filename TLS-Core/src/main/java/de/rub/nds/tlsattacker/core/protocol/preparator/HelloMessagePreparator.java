@@ -54,7 +54,7 @@ public abstract class HelloMessagePreparator<T extends HelloMessage>
             }
         }
         msg.setRandom(random);
-        LOGGER.debug("Random: " + ArrayConverter.bytesToHexString(msg.getRandom().getValue()));
+        LOGGER.debug("Random: {}", msg.getRandom().getValue());
     }
 
     protected void prepareSessionIDLength() {

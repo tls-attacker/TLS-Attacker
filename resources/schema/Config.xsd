@@ -123,6 +123,8 @@
 
   <xs:element name="PskServerKeyExchange" type="pskServerKeyExchangeMessage"/>
 
+  <xs:element name="QuicTransportParametersExtension" type="quicTransportParametersExtensionMessage"/>
+
   <xs:element name="RSAClientKeyExchange" type="rsaClientKeyExchangeMessage"/>
 
   <xs:element name="RSAServerKeyExchange" type="rsaServerKeyExchangeMessage"/>
@@ -477,6 +479,8 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
+      <xs:element name="defaultQuicTransportParameters" type="quicTransportParameters" minOccurs="0"/>
+      <xs:element name="echoQuic" type="xs:boolean" minOccurs="0"/>
       <xs:element name="defaultSelectedAlpnProtocol" type="xs:string" minOccurs="0"/>
       <xs:element name="secureRemotePasswordExtensionIdentifier" type="xs:string" minOccurs="0"/>
       <xs:element name="clientSupportedSrtpProtectionProfiles" minOccurs="0">
@@ -579,6 +583,7 @@
       <xs:element name="addExtendedMasterSecretExtension" type="xs:boolean" minOccurs="0"/>
       <xs:element name="addSessionTicketTLSExtension" type="xs:boolean" minOccurs="0"/>
       <xs:element name="addExtendedRandomExtension" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="addQuicTransportParametersExtension" type="xs:boolean" minOccurs="0"/>
       <xs:element name="addSignedCertificateTimestampExtension" type="xs:boolean" minOccurs="0"/>
       <xs:element name="addRenegotiationInfoExtension" type="xs:boolean" minOccurs="0"/>
       <xs:element name="addTokenBindingExtension" type="xs:boolean" minOccurs="0"/>
@@ -677,7 +682,11 @@
       <xs:element name="finishWithCloseNotify" type="xs:boolean" minOccurs="0"/>
       <xs:element name="ignoreRetransmittedCcsInDtls" type="xs:boolean" minOccurs="0"/>
       <xs:element name="addRetransmissionsToWorkflowTraceInDtls" type="xs:boolean" minOccurs="0"/>
-      <xs:element name="maxDtlsRetransmissions" type="xs:int" minOccurs="0"/>
+      <xs:element name="maxUDPRetransmissions" type="xs:int" minOccurs="0"/>
+      <xs:element name="expectHandshakeDoneQuicFrame" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="isQuic" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="quicRetryFlowRequired" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="quicVersion" type="xs:string" minOccurs="0"/>
       <xs:element name="stopActionsAfterWarning" type="xs:boolean" minOccurs="0"/>
       <xs:element name="defaultSelectedCipherSuite" type="cipherSuite" minOccurs="0"/>
       <xs:element name="defaultSelectedServerCertificateType" type="certificateType" minOccurs="0"/>
@@ -752,13 +761,16 @@
       <xs:element name="defaultAlertDescription" type="alertDescription" minOccurs="0"/>
       <xs:element name="defaultAlertLevel" type="alertLevel" minOccurs="0"/>
       <xs:element name="defaultEcCertificateCurve" type="namedGroup" minOccurs="0"/>
-      <xs:element name="defaultClientEphemeralEcPublicKey" type="point" minOccurs="0"/>
-      <xs:element name="defaultServerEphemeralEcPublicKey" type="point" minOccurs="0"/>
-      <xs:element name="defaultServerEphemeralEcPrivateKey" type="xs:integer" minOccurs="0"/>
-      <xs:element name="defaultClientEphemeralEcPrivateKey" type="xs:integer" minOccurs="0"/>
-      <xs:element name="defaultServerEphemeralRsaExportModulus" type="xs:integer" minOccurs="0"/>
-      <xs:element name="defaultServerEphemeralRsaExportPublicKey" type="xs:integer" minOccurs="0"/>
-      <xs:element name="defaultServerEphemeralRsaExportPrivateKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultServerEcPrivateKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultServerEcPublicKey" type="point" minOccurs="0"/>
+      <xs:element name="defaultClientEcPrivateKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultClientEcPublicKey" type="point" minOccurs="0"/>
+      <xs:element name="defaultServerRSAModulus" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultClientRSAModulus" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultServerRSAPublicKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultClientRSAPublicKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultServerRSAPrivateKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultClientRSAPrivateKey" type="xs:integer" minOccurs="0"/>
       <xs:element name="defaultPSKKey" type="xs:string" minOccurs="0"/>
       <xs:element name="defaultPSKIdentity" type="xs:string" minOccurs="0"/>
       <xs:element name="defaultPSKIdentityHint" type="xs:string" minOccurs="0"/>
@@ -808,8 +820,8 @@
       <xs:element name="tls13BackwardsCompatibilityMode" type="xs:boolean" minOccurs="0"/>
       <xs:element name="defaultClientPWDUsername" type="xs:string" minOccurs="0"/>
       <xs:element name="defaultPWDProtectGroup" type="namedGroup" minOccurs="0"/>
-      <xs:element name="defaultServerPWDProtectPublicKey" type="point" minOccurs="0"/>
       <xs:element name="defaultServerPWDProtectPrivateKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultServerPWDProtectPublicKey" type="point" minOccurs="0"/>
       <xs:element name="defaultServerPWDProtectRandomSecret" type="xs:integer" minOccurs="0"/>
       <xs:element name="defaultPWDPassword" type="xs:string" minOccurs="0"/>
       <xs:element name="defaultPWDIterations" type="xs:int" minOccurs="0"/>
@@ -1034,6 +1046,7 @@
     <xs:sequence>
       <xs:element name="alias" type="xs:string" minOccurs="0"/>
       <xs:element name="ip" type="xs:string" minOccurs="0"/>
+      <xs:element name="ipv6" type="xs:string" minOccurs="0"/>
       <xs:element name="port" type="xs:int" minOccurs="0"/>
       <xs:element name="hostname" type="xs:string" minOccurs="0"/>
       <xs:element name="proxyDataPort" type="xs:int" minOccurs="0"/>
@@ -1045,6 +1058,7 @@
       <xs:element name="connectionTimeout" type="xs:int" minOccurs="0"/>
       <xs:element name="transportHandlerType" type="transportHandlerType" minOccurs="0"/>
       <xs:element name="sourcePort" type="xs:int" minOccurs="0"/>
+      <xs:element name="useIpv6" type="xs:boolean" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
 
@@ -1473,6 +1487,56 @@
       <xs:element name="group" type="namedGroup" minOccurs="0"/>
       <xs:element name="publicKey" type="xs:string" minOccurs="0"/>
     </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="quicTransportParameters">
+    <xs:sequence>
+      <xs:element name="ackDelayExponent" type="xs:long" minOccurs="0"/>
+      <xs:element name="activeConnectionIdLimit" type="xs:long" minOccurs="0"/>
+      <xs:element name="disableActiveMigration" type="xs:boolean"/>
+      <xs:element name="extraEntries" type="quicTransportParameterEntry" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="initialMaxData" type="xs:long" minOccurs="0"/>
+      <xs:element name="initialMaxStreamDataBidiLocal" type="xs:long" minOccurs="0"/>
+      <xs:element name="initialMaxStreamDataBidiRemote" type="xs:long" minOccurs="0"/>
+      <xs:element name="initialMaxStreamDataUni" type="xs:long" minOccurs="0"/>
+      <xs:element name="initialMaxStreamsBidi" type="xs:long" minOccurs="0"/>
+      <xs:element name="initialMaxStreamsUni" type="xs:long" minOccurs="0"/>
+      <xs:element name="initialSourceConnectionId" type="xs:base64Binary" minOccurs="0"/>
+      <xs:element name="maxAckDelay" type="xs:long" minOccurs="0"/>
+      <xs:element name="maxIdleTimeout" type="xs:long" minOccurs="0"/>
+      <xs:element name="maxUdpPayloadSize" type="xs:long" minOccurs="0"/>
+      <xs:element name="originalDestinationConnectionId" type="xs:base64Binary" minOccurs="0"/>
+      <xs:element name="preferredAddress" type="preferredAddress" minOccurs="0"/>
+      <xs:element name="retrySourceConnectionId" type="xs:base64Binary" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="quicTransportParameterEntry">
+    <xs:complexContent>
+      <xs:extension base="modifiableVariableHolder">
+        <xs:sequence>
+          <xs:element name="entryLength" type="modifiableByte" minOccurs="0"/>
+          <xs:element name="entryType" type="quicTransportParameterEntryTypes" minOccurs="0"/>
+          <xs:element name="entryValue" type="modifiableByteArray" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="preferredAddress">
+    <xs:sequence>
+      <xs:element name="connectionId" type="xs:base64Binary" minOccurs="0"/>
+      <xs:element name="connectionIdLength" type="xs:int"/>
+      <xs:element name="ipv4Address" type="inetAddress" minOccurs="0"/>
+      <xs:element name="ipv4Port" type="xs:int"/>
+      <xs:element name="ipv6Address" type="inetAddress" minOccurs="0"/>
+      <xs:element name="ipv6Port" type="xs:int"/>
+      <xs:element name="statelessResetToken" type="xs:base64Binary" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="inetAddress">
+    <xs:sequence/>
   </xs:complexType>
 
   <xs:complexType name="trustedAuthority">
@@ -2336,6 +2400,7 @@
                   <xs:element ref="userMappingExtensionMessage"/>
                   <xs:element ref="SRPExtension"/>
                   <xs:element ref="ConnectionIdExtension"/>
+                  <xs:element ref="QuicTransportParametersExtension"/>
                   <xs:element ref="EncryptedClientHelloExtension"/>
                 </xs:choice>
               </xs:sequence>
@@ -3691,6 +3756,19 @@
     </xs:complexContent>
   </xs:complexType>
 
+  <xs:complexType name="quicTransportParametersExtensionMessage">
+    <xs:complexContent>
+      <xs:extension base="extensionMessage">
+        <xs:sequence>
+          <xs:element name="parameterExtensions" type="modifiableByteArray" minOccurs="0"/>
+          <xs:element name="parameterExtensionsLength" type="modifiableInteger" minOccurs="0"/>
+          <xs:element name="quicTransportParameters" type="quicTransportParameters" minOccurs="0"/>
+          <xs:element name="transportParameterEntries" type="quicTransportParameterEntry" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
   <xs:complexType name="encryptedClientHelloExtensionMessage">
     <xs:complexContent>
       <xs:extension base="extensionMessage">
@@ -4547,7 +4625,33 @@
     </xs:restriction>
   </xs:simpleType>
 
-  <xs:simpleType name="srtpProtectionProfile">
+  <xs:simpleType name="quicTransportParameterEntryTypes">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="ORIGINAL_DESTINATION_CONNECTION_ID"/>
+      <xs:enumeration value="MAX_IDLE_TIMEOUT"/>
+      <xs:enumeration value="STATELESS_RESET_TOKEN"/>
+      <xs:enumeration value="MAX_UDP_PAYLOAD_SIZE"/>
+      <xs:enumeration value="INITIAL_MAX_DATA"/>
+      <xs:enumeration value="INITIAL_MAX_STREAM_DATA_BIDI_LOCAL"/>
+      <xs:enumeration value="INITIAL_MAX_STREAM_DATA_BIDI_REMOTE"/>
+      <xs:enumeration value="INITIAL_MAX_STREAM_DATA_UNI"/>
+      <xs:enumeration value="INITIAL_MAX_STREAMS_BIDI"/>
+      <xs:enumeration value="INITIAL_MAX_STREAMS_UNI"/>
+      <xs:enumeration value="ACK_DELAY_EXPONENT"/>
+      <xs:enumeration value="MAX_ACK_DELAY"/>
+      <xs:enumeration value="DISABLE_ACTIVE_MIGRATION"/>
+      <xs:enumeration value="PREFERRED_ADDRESS"/>
+      <xs:enumeration value="ACTIVE_CONNECTION_ID_LIMIT"/>
+      <xs:enumeration value="INITIAL_SOURCE_CONNECTION_ID"/>
+      <xs:enumeration value="RETRY_SOURCE_CONNECTION_ID"/>
+      <xs:enumeration value="MAX_DATAGRAM_FRAME_SIZE"/>
+      <xs:enumeration value="GOOGLE"/>
+      <xs:enumeration value="PROVISIONAL_PARAMETERS"/>
+      <xs:enumeration value="UNKNOWN"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="srtpProtectionProfiles">
     <xs:restriction base="xs:string">
       <xs:enumeration value="SRTP_AES128_CM_HMAC_SHA1_80"/>
       <xs:enumeration value="SRTP_AES128_CM_HMAC_SHA1_32"/>
@@ -4604,6 +4708,10 @@
       <xs:enumeration value="FULL_ZERO_RTT"/>
       <xs:enumeration value="FALSE_START"/>
       <xs:enumeration value="RSA_SYNC_PROXY"/>
+      <xs:enumeration value="QUIC_VERSION_NEGOTIATION"/>
+      <xs:enumeration value="QUIC_RETRY_HANDSHAKE"/>
+      <xs:enumeration value="QUIC_PORT_CONNECTION_MIGRATION"/>
+      <xs:enumeration value="QUIC_IPV6_CONNECTION_MIGRATION"/>
     </xs:restriction>
   </xs:simpleType>
 
@@ -4666,6 +4774,7 @@
       <xs:enumeration value="DEFAULT"/>
       <xs:enumeration value="THREADED_SERVER"/>
       <xs:enumeration value="DTLS"/>
+      <xs:enumeration value="QUIC"/>
     </xs:restriction>
   </xs:simpleType>
 
@@ -4888,9 +4997,10 @@
       <xs:enumeration value="POST_HANDSHAKE_AUTH"/>
       <xs:enumeration value="SIGNATURE_ALGORITHMS_CERT"/>
       <xs:enumeration value="KEY_SHARE"/>
-      <xs:enumeration value="CONNECTION_ID"/>
       <xs:enumeration value="RENEGOTIATION_INFO"/>
       <xs:enumeration value="ENCRYPTED_SERVER_NAME_INDICATION"/>
+      <xs:enumeration value="QUIC_TRANSPORT_PARAMETERS"/>
+      <xs:enumeration value="CONNECTION_ID"/>
       <xs:enumeration value="ENCRYPTED_CLIENT_HELLO_DRAFT_07"/>
       <xs:enumeration value="ENCRYPTED_CLIENT_HELLO_DRAFT_08"/>
       <xs:enumeration value="ENCRYPTED_CLIENT_HELLO_DRAFT_09"/>

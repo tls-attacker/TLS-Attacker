@@ -284,14 +284,12 @@ public class EncryptedServerNameIndicationExtensionPreparator
         }
         recordDigest = messageDigest.digest(record);
         msg.setRecordDigest(recordDigest);
-        LOGGER.debug(
-                "RecordDigest: "
-                        + ArrayConverter.bytesToHexString(msg.getRecordDigest().getValue()));
+        LOGGER.debug("RecordDigest: {}", msg.getRecordDigest().getValue());
     }
 
     private void prepareRecordDigestLength(EncryptedServerNameIndicationExtensionMessage msg) {
         msg.setRecordDigestLength(msg.getRecordDigest().getValue().length);
-        LOGGER.debug("RecordDigestLength: " + msg.getRecordDigestLength().getValue());
+        LOGGER.debug("RecordDigestLength: {}", msg.getRecordDigestLength().getValue());
     }
 
     private void prepareClientRandom(EncryptedServerNameIndicationExtensionMessage msg) {
@@ -340,9 +338,8 @@ public class EncryptedServerNameIndicationExtensionPreparator
                 KeyShareCalculator.computeSharedSecret(group, clientPrivateKey, serverPublicKey);
         msg.getEncryptedSniComputation().setEsniSharedSecret(esniSharedSecret);
         LOGGER.debug(
-                "esniSharedSecret: {}"
-                        + ArrayConverter.bytesToHexString(
-                                msg.getEncryptedSniComputation().getEsniSharedSecret().getValue()));
+                "EsniSharedSecret: {}",
+                msg.getEncryptedSniComputation().getEsniSharedSecret().getValue());
     }
 
     private void prepareEsniServerSharedSecret(EncryptedServerNameIndicationExtensionMessage msg) {
@@ -367,11 +364,7 @@ public class EncryptedServerNameIndicationExtensionPreparator
 
         msg.getEncryptedSniComputation().setEsniSharedSecret(esniSharedSecret);
         LOGGER.debug(
-                "esniSharedSecret: "
-                        + ArrayConverter.bytesToHexString(
-                                msg.getEncryptedSniComputation().getEsniSharedSecret().getValue()));
-        LOGGER.debug(
-                "esniSharedSecret: {}",
+                "EsniSharedSecret: {}",
                 msg.getEncryptedSniComputation().getEsniSharedSecret().getValue());
     }
 
@@ -387,9 +380,8 @@ public class EncryptedServerNameIndicationExtensionPreparator
         }
         msg.getEncryptedSniComputation().setEsniMasterSecret(esniMasterSecret);
         LOGGER.debug(
-                "esniMasterSecret: "
-                        + ArrayConverter.bytesToHexString(
-                                msg.getEncryptedSniComputation().getEsniMasterSecret().getValue()));
+                "esniMasterSecret: {}",
+                msg.getEncryptedSniComputation().getEsniMasterSecret().getValue());
     }
 
     private void prepareEsniKey(EncryptedServerNameIndicationExtensionMessage msg) {

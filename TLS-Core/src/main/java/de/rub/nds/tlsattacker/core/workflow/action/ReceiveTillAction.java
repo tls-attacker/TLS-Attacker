@@ -109,18 +109,6 @@ public class ReceiveTillAction extends CommonReceiveAction implements ReceivingA
         return waitTillMessage;
     }
 
-    void setReceivedMessages(List<ProtocolMessage> receivedMessages) {
-        this.messages = receivedMessages;
-    }
-
-    void setReceivedRecords(List<Record> receivedRecords) {
-        this.records = receivedRecords;
-    }
-
-    void setReceivedFragments(List<DtlsHandshakeMessageFragment> fragments) {
-        this.fragments = fragments;
-    }
-
     public void setWaitTillMessage(ProtocolMessage waitTillMessage) {
         this.waitTillMessage = waitTillMessage;
     }
@@ -130,6 +118,8 @@ public class ReceiveTillAction extends CommonReceiveAction implements ReceivingA
         messages = null;
         records = null;
         fragments = null;
+        quicFrames = null;
+        quicPackets = null;
         setExecuted(null);
     }
 
@@ -216,12 +206,14 @@ public class ReceiveTillAction extends CommonReceiveAction implements ReceivingA
 
     @Override
     protected void distinctReceive(TlsContext tlsContext) {
-        receiveTill(tlsContext, waitTillMessage);
+        if (waitTillMessage != null) {
+            receiveTill(tlsContext, waitTillMessage);
+        }
     }
 
     @Override
     public List<ProtocolMessage> getExpectedMessages() {
-        return Arrays.asList(waitTillMessage);
+        return new ArrayList<>(List.of(waitTillMessage));
     }
 
     @Override

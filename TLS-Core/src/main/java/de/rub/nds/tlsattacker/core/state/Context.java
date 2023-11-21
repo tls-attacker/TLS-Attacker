@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.core.layer.constant.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
 import de.rub.nds.tlsattacker.core.layer.context.TcpContext;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -49,6 +50,8 @@ public class Context {
     private HttpContext httpContext;
 
     private TlsContext tlsContext;
+
+    private QuicContext quicContext;
 
     private LayerStack layerStack;
 
@@ -172,7 +175,16 @@ public class Context {
         tlsContext = new TlsContext(this);
         httpContext = new HttpContext(this);
         tcpContext = new TcpContext(this);
+        quicContext = new QuicContext(this);
         layerStack = LayerStackFactory.createLayerStack(type, this);
         this.setLayerStack(layerStack);
+    }
+
+    public QuicContext getQuicContext() {
+        return quicContext;
+    }
+
+    public void setQuicContext(QuicContext quicContext) {
+        this.quicContext = quicContext;
     }
 }
