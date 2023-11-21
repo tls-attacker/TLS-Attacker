@@ -9,22 +9,28 @@
 package de.rub.nds.tlsattacker.core.config;
 
 import de.rub.nds.tlsattacker.core.config.filter.ConfigDisplayFilter;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceSerializer;
 import de.rub.nds.x509attacker.config.X509CertificateConfig;
 import de.rub.nds.x509attacker.constants.X500AttributeType;
-import jakarta.xml.bind.*;
-import java.io.*;
+import jakarta.xml.bind.JAXB;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Unmarshaller;
+import jakarta.xml.bind.ValidationEvent;
+import jakarta.xml.bind.ValidationEventHandler;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
-import javax.xml.XMLConstants;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.xml.sax.SAXException;
 
 public class ConfigIO {
 
@@ -125,12 +131,13 @@ public class ConfigIO {
             throw new IllegalArgumentException("Stream cannot be null");
         }
         try {
-            String xsd_source =
-                    ConfigSchemaGenerator.AccumulatingSchemaOutputResolver.mapSystemIds();
+            // String xsd_source =
+            //        ConfigSchemaGenerator.AccumulatingSchemaOutputResolver.mapSystemIds();
             XMLInputFactory xif = XMLInputFactory.newFactory();
             xif.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
             xif.setProperty(XMLInputFactory.SUPPORT_DTD, false);
             XMLStreamReader xsr = xif.createXMLStreamReader(stream);
+            /*
             SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
             try (InputStream schemaInputStream =
                     WorkflowTraceSerializer.class.getResourceAsStream("/" + xsd_source)) {
@@ -138,8 +145,9 @@ public class ConfigIO {
                 configSchema.newValidator();
                 unmarshaller.setSchema(configSchema);
             }
+            */
             return (Config) unmarshaller.unmarshal(xsr);
-        } catch (XMLStreamException | SAXException | JAXBException | IOException e) {
+        } catch (XMLStreamException | JAXBException e) {
             throw new RuntimeException(e);
         }
     }

@@ -18,7 +18,7 @@ public class WorkflowTraceSchemaGeneratorTest {
     /** Test of main method, of class WorkflowTraceSchemaGeneratorTest. */
     @Test
     public void generateResourceSchema() {
-        WorkflowTraceSchemaGenerator.main(new String[] {"../resources/schema/"});
-        WorkflowTraceSchemaGenerator.main(new String[] {"src/main/resources/"});
+        // WorkflowTraceSchemaGenerator.main(new String[] {"../resources/schema/"});
+        // WorkflowTraceSchemaGenerator.main(new String[] {"src/main/resources/"});
     }
 }

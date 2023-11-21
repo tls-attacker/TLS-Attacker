@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import javax.xml.XMLConstants;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -39,16 +38,12 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.reflections.Reflections;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 import org.reflections.util.FilterBuilder;
-import org.xml.sax.SAXException;
 
 public class WorkflowTraceSerializer {
 
@@ -223,20 +218,21 @@ public class WorkflowTraceSerializer {
                         }
                     });
 
-            String xsd_source =
-                    WorkflowTraceSchemaGenerator.AccumulatingSchemaOutputResolver.mapSystemIds();
+            // String xsd_source =
+            //        WorkflowTraceSchemaGenerator.AccumulatingSchemaOutputResolver.mapSystemIds();
             XMLInputFactory xif = XMLInputFactory.newFactory();
             xif.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
             xif.setProperty(XMLInputFactory.SUPPORT_DTD, false);
             XMLStreamReader xsr = xif.createXMLStreamReader(inputStream);
-
+            /* Deactivated Schema validation
             SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
             try (InputStream schemaInputStream =
                     WorkflowTraceSerializer.class.getResourceAsStream("/" + xsd_source)) {
                 Schema configSchema = sf.newSchema(new StreamSource(schemaInputStream));
                 configSchema.newValidator();
-                // unmarshaller.setSchema(configSchema); //TODO Deactivated XSD for now...
+                unmarshaller.setSchema(configSchema);
             }
+             */
             WorkflowTrace wt = (WorkflowTrace) unmarshaller.unmarshal(xsr);
             ModvarHelper helper = new ModvarHelper();
             List<ModifiableVariableField> allSentFields = helper.getAllSentFields(wt);
@@ -249,7 +245,7 @@ public class WorkflowTraceSerializer {
                 }
             }
             return wt;
-        } catch (IllegalArgumentException | IllegalAccessException | SAXException ex) {
+        } catch (IllegalArgumentException | IllegalAccessException ex) {
             throw new RuntimeException(ex);
         }
     }
