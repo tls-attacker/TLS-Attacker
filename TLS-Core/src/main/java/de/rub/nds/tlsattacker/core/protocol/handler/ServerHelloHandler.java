@@ -315,8 +315,9 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
     private byte[] computeSharedPWDSecret(KeyShareStoreEntry keyShare) throws CryptoException {
         Chooser chooser = tlsContext.getChooser();
         CyclicGroup<?> group = keyShare.getGroup().getGroupParameters().getGroup();
-        if (group instanceof EllipticCurve) {
+        if (!(group instanceof EllipticCurve)) {
             LOGGER.warn("Cannot compute sharedPwdSecret for non-EC group. Returning new byte[]");
+            return new byte[0];
         }
 
         EllipticCurve curve = (EllipticCurve) group;
