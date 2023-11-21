@@ -128,7 +128,7 @@ public class EmptyClientKeyExchangePreparator<T extends EmptyClientKeyExchangeMe
 
     public void computeEcKeyExchangePms() {
         NamedGroup usedGroup = chooser.getSelectedNamedGroup();
-        LOGGER.debug("PMS used Group: " + usedGroup.name());
+        LOGGER.debug("PMS used Group: {}", usedGroup.name());
         CyclicGroup<?> group = usedGroup.getGroupParameters().getGroup();
         EllipticCurve curve;
         if (group instanceof EllipticCurve) {
