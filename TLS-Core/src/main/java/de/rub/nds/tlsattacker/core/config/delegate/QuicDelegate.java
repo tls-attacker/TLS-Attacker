@@ -12,9 +12,9 @@ import com.beust.jcommander.Parameter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.AlpnProtocol;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
-import de.rub.nds.tlsattacker.core.constants.NameType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.constants.SniType;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.layer.constant.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
@@ -65,7 +65,7 @@ public class QuicDelegate extends Delegate {
 
             // Extensions
             config.setAddServerNameIndicationExtension(true);
-            config.setSniType(NameType.HOST_NAME);
+            config.setSniType(SniType.HOST_NAME);
             config.setAddECPointFormatExtension(false);
             config.setAddSupportedVersionsExtension(true);
             config.setAddEllipticCurveExtension(true);

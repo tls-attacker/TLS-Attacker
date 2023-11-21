@@ -12,7 +12,6 @@ import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.IOException;
 import java.net.DatagramSocket;
-import java.net.SocketException;
 
 public class ServerUdpTransportHandler extends UdpTransportHandler {
 
@@ -24,20 +23,6 @@ public class ServerUdpTransportHandler extends UdpTransportHandler {
     public ServerUdpTransportHandler(long firstTimeout, long timeout, int port) {
         super(firstTimeout, timeout, ConnectionEndType.SERVER);
         this.port = port;
-    }
-
-    public ServerUdpTransportHandler(long firstTimeout, long timeout, DatagramSocket socket) {
-        super(firstTimeout, timeout, ConnectionEndType.SERVER);
-        this.socket = socket;
-        try {
-            socket.setSoTimeout((int) timeout);
-        } catch (SocketException e) {
-            throw new RuntimeException("Could not set socket timeout", e);
-        }
-        setStreams(
-                new PushbackInputStream(new UdpInputStream(socket, true)),
-                new UdpOutputStream(socket));
-        cachedSocketState = null;
     }
 
     @Override

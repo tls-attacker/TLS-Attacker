@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public abstract class QuicFrameHandler<T extends QuicFrame<T>> implements Handler<T> {
+public abstract class QuicFrameHandler<T extends QuicFrame> extends Handler<T> {
 
     protected static final Logger LOGGER = LogManager.getLogger();
 

@@ -25,7 +25,7 @@ import java.io.InputStream;
  * path validation during connection migration.
  */
 @XmlRootElement
-public class PathChallengeFrame extends QuicFrame<PathChallengeFrame> {
+public class PathChallengeFrame extends QuicFrame {
 
     @ModifiableVariableProperty protected ModifiableByteArray data;
 

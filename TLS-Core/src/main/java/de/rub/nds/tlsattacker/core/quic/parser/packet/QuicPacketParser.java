@@ -17,7 +17,7 @@ import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public abstract class QuicPacketParser<T extends QuicPacket<T>> extends Parser<T> {
+public abstract class QuicPacketParser<T extends QuicPacket> extends Parser<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 

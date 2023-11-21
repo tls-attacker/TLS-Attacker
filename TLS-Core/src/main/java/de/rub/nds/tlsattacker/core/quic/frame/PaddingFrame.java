@@ -23,7 +23,7 @@ import java.io.InputStream;
  * or to provide protection against traffic analysis for protected packets.
  */
 @XmlRootElement
-public class PaddingFrame extends QuicFrame<PaddingFrame> {
+public class PaddingFrame extends QuicFrame {
 
     private int length;
 

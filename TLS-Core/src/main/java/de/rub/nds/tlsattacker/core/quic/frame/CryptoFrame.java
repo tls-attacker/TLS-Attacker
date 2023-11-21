@@ -23,7 +23,7 @@ import java.io.InputStream;
 import java.util.Arrays;
 
 @XmlRootElement
-public class CryptoFrame extends QuicFrame<CryptoFrame> {
+public class CryptoFrame extends QuicFrame {
 
     /**
      * A variable-length integer specifying the byte offset in the stream for the data in this

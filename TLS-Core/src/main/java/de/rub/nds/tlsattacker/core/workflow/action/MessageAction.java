@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.layer.GenericReceiveLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerStack;
 import de.rub.nds.tlsattacker.core.layer.LayerStackProcessingResult;
+import de.rub.nds.tlsattacker.core.layer.ReceiveLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.ReceiveTillLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.SpecificReceiveLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.SpecificSendLayerConfiguration;
@@ -458,7 +459,7 @@ public abstract class MessageAction extends ConnectionBoundAction {
     }
 
     private ReceiveLayerConfiguration getReceiveConfiguration(
-            LayerType layerType, List<? extends DataContainer> containersToReceive) {
+            LayerType layerType, List<? extends DataContainer<?>> containersToReceive) {
         if (containersToReceive == null || containersToReceive.isEmpty()) {
             return new GenericReceiveLayerConfiguration(layerType);
         } else {
@@ -622,6 +623,7 @@ public abstract class MessageAction extends ConnectionBoundAction {
     }
 
     public abstract MessageActionDirection getMessageDirection();
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

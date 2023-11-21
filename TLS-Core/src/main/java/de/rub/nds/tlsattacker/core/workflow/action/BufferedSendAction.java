@@ -125,7 +125,7 @@ public class BufferedSendAction extends MessageAction implements SendingAction {
     public Set<String> getAllSendingAliases() {
         return new HashSet<>(Collections.singleton(connectionAlias));
     }
-    
+
     public List<QuicPacket> getSendQuicPackets() {
         return quicPackets;
     }

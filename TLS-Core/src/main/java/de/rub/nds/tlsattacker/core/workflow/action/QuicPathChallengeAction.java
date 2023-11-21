@@ -8,31 +8,43 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
-import de.rub.nds.tlsattacker.core.quic.frame.PathChallengeFrame;
-import de.rub.nds.tlsattacker.core.quic.frame.PathResponseFrame;
-import de.rub.nds.tlsattacker.core.state.State;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlTransient;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
+import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
+import de.rub.nds.tlsattacker.core.quic.frame.PathChallengeFrame;
+import de.rub.nds.tlsattacker.core.quic.frame.PathResponseFrame;
+import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
+import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
+import de.rub.nds.tlsattacker.core.state.State;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElementRef;
+import jakarta.xml.bind.annotation.XmlElementWrapper;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlTransient;
 
 /**
  * Action to solve path challenge after connection migration by client. Handles variable number of
  * path challenges as servers can decide how many path challenges to send.
  */
 @XmlRootElement
-public class QuicPathChallengeAction extends MessageAction {
+public class QuicPathChallengeAction extends TlsAction {
 
-    @XmlTransient boolean executedAsPlanned = false;
+    @XmlTransient protected boolean executedAsPlanned = false;
 
-    @XmlTransient List<MessageAction> executedActions = new ArrayList<>();
+    @XmlTransient protected List<MessageAction> executedActions = new ArrayList<>();
 
-    @XmlTransient int pathChallengeCounter = 0;
+    @XmlTransient protected int pathChallengeCounter = 0;
 
-    @XmlElement Boolean requireAtLeastOnePathChallenge = false;
+    @XmlElement protected Boolean requireAtLeastOnePathChallenge = false;
+
+        @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
+    protected List<QuicFrame> quicFrames = new ArrayList<>();
+
+    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
+    protected List<QuicPacket> quicPackets = new ArrayList<>();
 
     public QuicPathChallengeAction() {
         super();
@@ -67,7 +79,6 @@ public class QuicPathChallengeAction extends MessageAction {
 
     private MessageAction executeAction(State state, MessageAction action)
             throws ActionExecutionException {
-        action.setConnectionAlias(getConnectionAlias());
         action.execute(state);
         quicFrames.addAll(action.getQuicFrames());
         quicPackets.addAll(action.getQuicPackets());

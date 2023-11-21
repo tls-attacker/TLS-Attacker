@@ -12,13 +12,13 @@ import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
 import java.io.InputStream;
 
-public abstract class QuicFrameParser<T extends QuicFrame<T>> extends Parser<T> {
+public abstract class QuicFrameParser<T extends QuicFrame> extends Parser<T> {
 
     public QuicFrameParser(InputStream stream) {
         super(stream);
     }
 
-    public void parseFrameType(QuicFrame<T> frame) {
+    public void parseFrameType(QuicFrame frame) {
         frame.setFrameType((byte) parseVariableLengthInteger());
     }
 }

@@ -12,32 +12,38 @@ import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
+import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.state.State;
 import java.util.List;
 
-public abstract class CommonReceiveQuicFramesAction extends MessageAction {
+public abstract class CommonReceiveAction extends MessageAction {
 
-    public CommonReceiveQuicFramesAction() {
+    public CommonReceiveAction() {
         super();
     }
 
-    public CommonReceiveQuicFramesAction(List<ProtocolMessage> messages) {
+    public CommonReceiveAction(List<ProtocolMessage> messages) {
         super(messages);
     }
 
-    public CommonReceiveQuicFramesAction(ProtocolMessage... messages) {
+    public CommonReceiveAction(ProtocolMessage... messages) {
         super(messages);
     }
 
-    public CommonReceiveQuicFramesAction(String connectionAlias) {
+    public CommonReceiveAction(List<ProtocolMessage> messages, List<QuicFrame> quicFrames, List<QuicPacket> quicPackets) {
+        super(messages, quicFrames, quicPackets);
+    }
+
+
+    public CommonReceiveAction(String connectionAlias) {
         super(connectionAlias);
     }
 
-    public CommonReceiveQuicFramesAction(String connectionAlias, List<ProtocolMessage> messages) {
+    public CommonReceiveAction(String connectionAlias, List<ProtocolMessage> messages) {
         super(connectionAlias, messages);
     }
 
-    public CommonReceiveQuicFramesAction(String connectionAlias, ProtocolMessage... messages) {
+    public CommonReceiveAction(String connectionAlias, ProtocolMessage... messages) {
         super(connectionAlias, messages);
     }
 

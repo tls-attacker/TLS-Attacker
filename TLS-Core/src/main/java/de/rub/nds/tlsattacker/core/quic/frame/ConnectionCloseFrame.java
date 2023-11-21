@@ -25,7 +25,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 @XmlRootElement
-public class ConnectionCloseFrame extends QuicFrame<ConnectionCloseFrame> {
+public class ConnectionCloseFrame extends QuicFrame {
 
     /**
      * A variable-length integer that indicates the reason for closing this connection. A

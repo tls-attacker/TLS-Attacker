@@ -609,10 +609,6 @@ public class TlsContext extends LayerContext {
         return getContext().getChooser();
     }
 
-    public void setChooser(Chooser chooser) {
-        this.chooser = chooser;
-    }
-
     public CertificateType getSelectedClientCertificateType() {
         return selectedClientCertificateType;
     }

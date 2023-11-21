@@ -16,11 +16,11 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
+import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
 import de.rub.nds.tlsattacker.core.record.Record;
 import jakarta.xml.bind.annotation.XmlElementRef;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -228,5 +228,10 @@ public class ReceiveTillAction extends CommonReceiveAction implements ReceivingA
     @Override
     public MessageActionDirection getMessageDirection() {
         return MessageActionDirection.RECEIVING;
+    }
+
+    @Override
+    public List<QuicFrame> getExpectedQuicFrames() {
+        return null;
     }
 }

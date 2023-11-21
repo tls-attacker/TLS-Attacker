@@ -95,7 +95,7 @@ public class PopAndSendAction extends MessageAction implements SendingAction {
 
     @Override
     public String toString() {
-        String messageString = getReadableString(messages);
+        String messageString = getReadableStringFromMessages(messages);
         return "PopAndSendAction: index: "
                 + index
                 + " message: "
@@ -158,7 +158,7 @@ public class PopAndSendAction extends MessageAction implements SendingAction {
     public Set<String> getAllSendingAliases() {
         return new HashSet<>(Collections.singleton(connectionAlias));
     }
-    
+
     public List<QuicPacket> getSendQuicPackets() {
         return quicPackets;
     }

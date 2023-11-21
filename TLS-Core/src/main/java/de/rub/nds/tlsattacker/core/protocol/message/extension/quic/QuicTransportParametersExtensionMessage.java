@@ -38,8 +38,7 @@ import java.util.stream.Collectors;
 import org.bouncycastle.util.Arrays;
 
 @XmlRootElement(name = "QuicTransportParametersExtension")
-public class QuicTransportParametersExtensionMessage
-        extends ExtensionMessage<QuicTransportParametersExtensionMessage> {
+public class QuicTransportParametersExtensionMessage extends ExtensionMessage {
 
     @ModifiableVariableProperty private ModifiableInteger parameterExtensionsLength;
     @ModifiableVariableProperty private ModifiableByteArray parameterExtensions;

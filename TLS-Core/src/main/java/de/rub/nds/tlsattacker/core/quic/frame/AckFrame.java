@@ -21,7 +21,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
 @XmlRootElement
-public class AckFrame extends QuicFrame<AckFrame> {
+public class AckFrame extends QuicFrame {
 
     /**
      * A variable-length integer representing the largest packet number the peer is acknowledging;

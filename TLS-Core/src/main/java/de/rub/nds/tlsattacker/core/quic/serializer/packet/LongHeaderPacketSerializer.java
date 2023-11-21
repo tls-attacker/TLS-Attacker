@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.quic.serializer.packet;
 
 import de.rub.nds.tlsattacker.core.quic.packet.LongHeaderPacket;
 
-public abstract class LongHeaderPacketSerializer<T extends LongHeaderPacket<T>>
+public abstract class LongHeaderPacketSerializer<T extends LongHeaderPacket>
         extends QuicPacketSerializer<T> {
 
     public LongHeaderPacketSerializer(T packet) {

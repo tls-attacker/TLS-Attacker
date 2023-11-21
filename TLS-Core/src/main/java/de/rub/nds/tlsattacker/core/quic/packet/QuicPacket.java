@@ -40,8 +40,8 @@ import org.apache.logging.log4j.Logger;
     VersionNegotiationPacket.class,
     RetryPacket.class
 })
-public abstract class QuicPacket<T extends DataContainer<T, QuicContext>>
-        extends ModifiableVariableHolder implements DataContainer<T, QuicContext> {
+public abstract class QuicPacket extends ModifiableVariableHolder
+        implements DataContainer<QuicContext> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -352,14 +352,14 @@ public abstract class QuicPacket<T extends DataContainer<T, QuicContext>>
     }
 
     @Override
-    public abstract Handler<T> getHandler(QuicContext context);
+    public abstract Handler<?> getHandler(QuicContext context);
 
     @Override
-    public abstract Serializer<T> getSerializer(QuicContext context);
+    public abstract Serializer<?> getSerializer(QuicContext context);
 
     @Override
-    public abstract Preparator<T> getPreparator(QuicContext context);
+    public abstract Preparator<?> getPreparator(QuicContext context);
 
     @Override
-    public abstract Parser<T> getParser(QuicContext context, InputStream stream);
+    public abstract Parser<?> getParser(QuicContext context, InputStream stream);
 }

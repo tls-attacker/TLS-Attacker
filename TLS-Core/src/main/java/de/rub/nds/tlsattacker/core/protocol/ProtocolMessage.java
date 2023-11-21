@@ -18,7 +18,6 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.*;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlSeeAlso;
 import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.InputStream;
 import java.lang.reflect.Field;
@@ -26,58 +25,6 @@ import java.util.List;
 import java.util.Random;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlSeeAlso({
-    ProtocolMessage.class,
-    CertificateMessage.class,
-    CertificateVerifyMessage.class,
-    CertificateRequestMessage.class,
-    ClientHelloMessage.class,
-    HelloVerifyRequestMessage.class,
-    DHClientKeyExchangeMessage.class,
-    DHEServerKeyExchangeMessage.class,
-    ECDHClientKeyExchangeMessage.class,
-    ECDHEServerKeyExchangeMessage.class,
-    PskClientKeyExchangeMessage.class,
-    FinishedMessage.class,
-    RSAClientKeyExchangeMessage.class,
-    GOSTClientKeyExchangeMessage.class,
-    ServerHelloDoneMessage.class,
-    ServerHelloMessage.class,
-    AlertMessage.class,
-    NewSessionTicketMessage.class,
-    KeyUpdateMessage.class,
-    ApplicationMessage.class,
-    ChangeCipherSpecMessage.class,
-    SSL2ClientHelloMessage.class,
-    SSL2ClientMasterKeyMessage.class,
-    SSL2Message.class,
-    SSL2ServerHelloMessage.class,
-    SSL2ServerVerifyMessage.class,
-    UnknownSSL2Message.class,
-    UnknownMessage.class,
-    UnknownHandshakeMessage.class,
-    HelloRequestMessage.class,
-    HeartbeatMessage.class,
-    SupplementalDataMessage.class,
-    EncryptedExtensionsMessage.class,
-    PskClientKeyExchangeMessage.class,
-    PskDhClientKeyExchangeMessage.class,
-    PskDheServerKeyExchangeMessage.class,
-    PskEcDhClientKeyExchangeMessage.class,
-    PskEcDheServerKeyExchangeMessage.class,
-    PskRsaClientKeyExchangeMessage.class,
-    SrpClientKeyExchangeMessage.class,
-    SrpServerKeyExchangeMessage.class,
-    EndOfEarlyDataMessage.class,
-    DtlsHandshakeMessageFragment.class,
-    PWDServerKeyExchangeMessage.class,
-    RSAServerKeyExchangeMessage.class,
-    PWDClientKeyExchangeMessage.class,
-    PskServerKeyExchangeMessage.class,
-    CertificateStatusMessage.class,
-    EmptyClientKeyExchangeMessage.class,
-    EncryptedClientHelloMessage.class
-})
 public abstract class ProtocolMessage extends Message<TlsContext> {
 
     @XmlTransient protected boolean goingToBeSentDefault = true;

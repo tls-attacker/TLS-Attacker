@@ -123,7 +123,7 @@ public class PopAndSendMessageAction extends MessageAction implements SendingAct
     public Set<String> getAllSendingAliases() {
         return new HashSet<>(Collections.singleton(connectionAlias));
     }
-    
+
     public List<QuicPacket> getSendQuicPackets() {
         return quicPackets;
     }

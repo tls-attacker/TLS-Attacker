@@ -19,7 +19,7 @@ import java.io.InputStream;
 
 /** Frame only consists of the frame type. */
 @XmlRootElement
-public class HandshakeDoneFrame extends QuicFrame<HandshakeDoneFrame> {
+public class HandshakeDoneFrame extends QuicFrame {
 
     public HandshakeDoneFrame() {
         super(QuicFrameType.HANDSHAKE_DONE_FRAME);

@@ -16,7 +16,7 @@ import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public abstract class LongHeaderPacketParser<T extends LongHeaderPacket<T>>
+public abstract class LongHeaderPacketParser<T extends LongHeaderPacket>
         extends QuicPacketParser<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();

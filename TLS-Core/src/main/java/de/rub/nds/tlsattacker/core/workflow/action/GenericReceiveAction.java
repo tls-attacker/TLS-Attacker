@@ -48,7 +48,7 @@ public class GenericReceiveAction extends MessageAction implements ReceivingActi
 
         setExecuted(true);
         String received = getReadableStringFromMessages(messages);
-        LOGGER.info("Received Messages ({}): {}",ctx, received);
+        LOGGER.info("Received Messages ({}): {}", ctx, received);
     }
 
     @Override

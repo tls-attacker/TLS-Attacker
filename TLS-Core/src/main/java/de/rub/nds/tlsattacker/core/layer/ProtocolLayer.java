@@ -271,7 +271,7 @@ public abstract class ProtocolLayer<
         try {
             parser.parse(container);
             Preparator preparator = container.getPreparator(context);
-            preparator.prepareAfterParse(false); // TODO REMOVE THIS CLIENTMODE FLAG
+            preparator.prepareAfterParse();
             Handler handler = container.getHandler(context);
             handler.adjustContext(container);
             addProducedContainer(container);

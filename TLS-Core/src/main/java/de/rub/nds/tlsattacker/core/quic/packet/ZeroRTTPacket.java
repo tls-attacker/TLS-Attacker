@@ -19,7 +19,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
 @XmlRootElement
-public class ZeroRTTPacket extends LongHeaderPacket<ZeroRTTPacket> {
+public class ZeroRTTPacket extends LongHeaderPacket {
 
     public ZeroRTTPacket() {
         super(QuicPacketType.ZERO_RTT_PACKET);

@@ -40,7 +40,7 @@ import org.apache.logging.log4j.Logger;
     RetryPacket.class,
     ZeroRTTPacket.class
 })
-public abstract class LongHeaderPacket<T extends QuicPacket<T>> extends QuicPacket<T> {
+public abstract class LongHeaderPacket extends QuicPacket {
 
     private static final Logger LOGGER = LogManager.getLogger();
 

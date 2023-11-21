@@ -20,7 +20,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
 @XmlRootElement
-public class PingFrame extends QuicFrame<PingFrame> {
+public class PingFrame extends QuicFrame {
 
     public PingFrame() {
         super(QuicFrameType.PING_FRAME);

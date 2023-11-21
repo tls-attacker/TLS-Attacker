@@ -36,8 +36,8 @@ import java.io.InputStream;
     PingFrame.class
 })
 @XmlRootElement
-public abstract class QuicFrame<T extends QuicFrame<T>> extends ModifiableVariableHolder
-        implements DataContainer<T, QuicContext> {
+public abstract class QuicFrame extends ModifiableVariableHolder
+        implements DataContainer<QuicContext> {
 
     @ModifiableVariableProperty ModifiableByte frameType;
 
@@ -65,14 +65,14 @@ public abstract class QuicFrame<T extends QuicFrame<T>> extends ModifiableVariab
     }
 
     @Override
-    public abstract QuicFrameHandler<T> getHandler(QuicContext context);
+    public abstract QuicFrameHandler getHandler(QuicContext context);
 
     @Override
-    public abstract QuicFrameSerializer<T> getSerializer(QuicContext context);
+    public abstract QuicFrameSerializer getSerializer(QuicContext context);
 
     @Override
-    public abstract QuicFramePreparator<T> getPreparator(QuicContext context);
+    public abstract QuicFramePreparator getPreparator(QuicContext context);
 
     @Override
-    public abstract QuicFrameParser<T> getParser(QuicContext context, InputStream stream);
+    public abstract QuicFrameParser getParser(QuicContext context, InputStream stream);
 }

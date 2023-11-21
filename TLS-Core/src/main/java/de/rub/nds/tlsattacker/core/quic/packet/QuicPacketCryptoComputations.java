@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.quic.packet;
 
-import de.rub.nds.asn1.model.ModifiableVariableHolder;
+import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;

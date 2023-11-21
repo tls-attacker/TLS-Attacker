@@ -50,22 +50,6 @@ public class ClientUdpTransportHandler extends UdpTransportHandler {
         this.port = port;
     }
 
-    public ClientUdpTransportHandler(
-            long firstTimeout, long timeout, DatagramSocket socket, String hostname, int port) {
-        super(firstTimeout, timeout, ConnectionEndType.CLIENT);
-        this.socket = socket;
-        this.hostname = hostname;
-        this.port = port;
-        try {
-            socket.setSoTimeout((int) timeout);
-        } catch (SocketException e) {
-            throw new RuntimeException("Could not set socket timeout", e);
-        }
-        setStreams(
-                new PushbackInputStream(new UdpInputStream(socket, false)),
-                new UdpOutputStream(socket, hostname, port));
-    }
-
     @Override
     public void sendData(byte[] data) throws IOException {
         DatagramPacket packet;
