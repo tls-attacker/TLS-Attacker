@@ -13,7 +13,7 @@ import java.math.BigInteger;
 @SuppressWarnings("SpellCheckingInspection")
 public class EllipticCurveGost2012SetC512 extends EllipticCurveOverF2m {
 
-    public EllipticCurveGost2012SetC512() {
+    EllipticCurveGost2012SetC512() {
         super(
                 new BigInteger(
                         "DC9203E514A721875485A529D2C722FB187BC8980EB866644DE41C68E143064546E861C0E2C9EDD92ADE71F46FCF50FF2AD97F951FDA9F2A2EB6546F39689BD3",

@@ -13,7 +13,7 @@ import java.math.BigInteger;
 public class EllipticCurveGost2012SetA256 extends EllipticCurveOverF2m {
 
     @SuppressWarnings("SpellCheckingInspection")
-    public EllipticCurveGost2012SetA256() {
+    EllipticCurveGost2012SetA256() {
         super(
                 new BigInteger(
                         "C2173F1513981673AF4892C23035A27CE25E2013BF95AA33B22C656F277E7335", 16),
