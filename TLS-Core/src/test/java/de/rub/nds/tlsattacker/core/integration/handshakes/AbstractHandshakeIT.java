@@ -237,7 +237,7 @@ public abstract class AbstractHandshakeIT {
                         WorkflowExecutorFactory.createWorkflowExecutor(
                                 config.getWorkflowExecutorType(), state);
                 setCallbacks(executor);
-            } else {
+            } else if (state.getWorkflowTrace().executedAsPlanned()) {
                 return;
             }
         }
