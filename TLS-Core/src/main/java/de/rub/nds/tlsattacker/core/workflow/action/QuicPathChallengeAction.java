@@ -8,10 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.quic.frame.PathChallengeFrame;
@@ -24,6 +20,9 @@ import jakarta.xml.bind.annotation.XmlElementRef;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlTransient;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Action to solve path challenge after connection migration by client. Handles variable number of
@@ -40,7 +39,7 @@ public class QuicPathChallengeAction extends TlsAction {
 
     @XmlElement protected Boolean requireAtLeastOnePathChallenge = false;
 
-        @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
+    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
     protected List<QuicFrame> quicFrames = new ArrayList<>();
 
     @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef

@@ -30,10 +30,12 @@ public abstract class CommonReceiveAction extends MessageAction {
         super(messages);
     }
 
-    public CommonReceiveAction(List<ProtocolMessage> messages, List<QuicFrame> quicFrames, List<QuicPacket> quicPackets) {
+    public CommonReceiveAction(
+            List<ProtocolMessage> messages,
+            List<QuicFrame> quicFrames,
+            List<QuicPacket> quicPackets) {
         super(messages, quicFrames, quicPackets);
     }
-
 
     public CommonReceiveAction(String connectionAlias) {
         super(connectionAlias);
