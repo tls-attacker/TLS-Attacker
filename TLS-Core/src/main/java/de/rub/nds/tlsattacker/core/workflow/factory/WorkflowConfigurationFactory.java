@@ -1290,8 +1290,7 @@ public class WorkflowConfigurationFactory {
         trace.addTlsAction(
                 MessageActionFactory.createQuicAction(
                         config, connection, ConnectionEndType.CLIENT, new PingFrame()));
-        MessageAction pathChallengeAction = new QuicPathChallengeAction();
-        pathChallengeAction.setConnectionAlias(connection.getAlias());
+        TlsAction pathChallengeAction = new QuicPathChallengeAction(connection.getAlias());
         trace.addTlsAction(pathChallengeAction);
         trace.addTlsAction(
                 MessageActionFactory.createQuicAction(

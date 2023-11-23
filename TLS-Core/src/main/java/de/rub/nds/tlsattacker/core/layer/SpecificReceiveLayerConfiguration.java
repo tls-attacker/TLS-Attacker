@@ -17,7 +17,7 @@ import java.util.List;
  * ReceiveConfiguration that receives a specific list of DataContainers. Any additional received
  * containers are marked as such.
  */
-public class SpecificReceiveLayerConfiguration<Container extends DataContainer>
+public class SpecificReceiveLayerConfiguration<Container extends DataContainer<?>>
         extends ReceiveLayerConfiguration<Container> {
 
     private List<DataContainerFilter> containerFilterList;

@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
  * path challenges as servers can decide how many path challenges to send.
  */
 @XmlRootElement
-public class QuicPathChallengeAction extends TlsAction {
+public class QuicPathChallengeAction extends ConnectionBoundAction {
 
     @XmlTransient protected boolean executedAsPlanned = false;
 
@@ -44,6 +44,10 @@ public class QuicPathChallengeAction extends TlsAction {
 
     @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
     protected List<QuicPacket> quicPackets = new ArrayList<>();
+
+    public QuicPathChallengeAction(String connectionAlias) {
+        super(connectionAlias);
+    }
 
     public QuicPathChallengeAction() {
         super();

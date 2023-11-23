@@ -89,6 +89,7 @@ import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -283,7 +284,7 @@ public class Config implements Serializable {
 
     @XmlElement
     @XmlJavaTypeAdapter(MapAdapter.class)
-    private Map<NamedGroup, BigInteger> defaultKeySharePrivateMap;
+    private Map<NamedGroup, BigInteger> defaultKeySharePrivateMap = new HashMap<>();
 
     @XmlElement(name = "defaultClientKeyShareNamedGroup")
     @XmlElementWrapper
@@ -914,7 +915,7 @@ public class Config implements Serializable {
 
     private NamedGroup defaultEcCertificateCurve = NamedGroup.SECP256R1;
 
-    private Point defaultClientEcPublicKey =
+    private Point defaultClientEphemeralEcPublicKey =
             Point.createPoint(
                     new BigInteger(
                             "42877656971275811310262564894490210024759287182177196162425349131675946712428"),
@@ -922,7 +923,7 @@ public class Config implements Serializable {
                             "61154801112014214504178281461992570017247172004704277041681093927569603776562"),
                     defaultSelectedNamedGroup.getGroupParameters());
 
-    private Point defaultServerEcPublicKey =
+    private Point defaultServerEphemeralEcPublicKey =
             Point.createPoint(
                     new BigInteger(
                             "42877656971275811310262564894490210024759287182177196162425349131675946712428"),
@@ -1298,6 +1299,53 @@ public class Config implements Serializable {
         defaultClientConnection = new OutboundConnection("client", 443, "localhost");
         defaultServerConnection = new InboundConnection("server", 443, "localhost");
         workflowTraceType = WorkflowTraceType.DYNAMIC_HANDSHAKE;
+        clientSupportedSrtpProtectionProfiles = new LinkedList<>();
+        clientSupportedSrtpProtectionProfiles.add(
+                SrtpProtectionProfile.SRTP_AES128_CM_HMAC_SHA1_80);
+        clientSupportedSrtpProtectionProfiles.add(
+                SrtpProtectionProfile.SRTP_AES128_CM_HMAC_SHA1_32);
+        clientSupportedSrtpProtectionProfiles.add(SrtpProtectionProfile.SRTP_NULL_HMAC_SHA1_32);
+        clientSupportedSrtpProtectionProfiles.add(SrtpProtectionProfile.SRTP_NULL_HMAC_SHA1_80);
+        clientSupportedSrtpProtectionProfiles.add(
+                SrtpProtectionProfile.DOUBLE_AEAD_AES_128_GCM_AEAD_AES_128_GCM);
+        clientSupportedSrtpProtectionProfiles.add(
+                SrtpProtectionProfile.DOUBLE_AEAD_AES_256_GCM_AEAD_AES_256_GCM);
+        clientSupportedSrtpProtectionProfiles.add(SrtpProtectionProfile.SRTP_AEAD_AES_128_GCM);
+        clientSupportedSrtpProtectionProfiles.add(SrtpProtectionProfile.SRTP_AEAD_AES_256_GCM);
+        clientSupportedSrtpProtectionProfiles.add(SrtpProtectionProfile.SRTP_AEAD_ARIA_128_GCM);
+        clientSupportedSrtpProtectionProfiles.add(SrtpProtectionProfile.SRTP_AEAD_ARIA_256_GCM);
+        clientSupportedSrtpProtectionProfiles.add(
+                SrtpProtectionProfile.SRTP_ARIA_128_CTR_HMAC_SHA1_32);
+        clientSupportedSrtpProtectionProfiles.add(
+                SrtpProtectionProfile.SRTP_ARIA_128_CTR_HMAC_SHA1_80);
+        clientSupportedSrtpProtectionProfiles.add(
+                SrtpProtectionProfile.SRTP_ARIA_256_CTR_HMAC_SHA1_32);
+        clientSupportedSrtpProtectionProfiles.add(
+                SrtpProtectionProfile.SRTP_ARIA_256_CTR_HMAC_SHA1_80);
+
+        serverSupportedSrtpProtectionProfiles = new LinkedList<>();
+        serverSupportedSrtpProtectionProfiles.add(
+                SrtpProtectionProfile.SRTP_AES128_CM_HMAC_SHA1_80);
+        serverSupportedSrtpProtectionProfiles.add(
+                SrtpProtectionProfile.SRTP_AES128_CM_HMAC_SHA1_32);
+        serverSupportedSrtpProtectionProfiles.add(SrtpProtectionProfile.SRTP_NULL_HMAC_SHA1_32);
+        serverSupportedSrtpProtectionProfiles.add(SrtpProtectionProfile.SRTP_NULL_HMAC_SHA1_80);
+        serverSupportedSrtpProtectionProfiles.add(
+                SrtpProtectionProfile.DOUBLE_AEAD_AES_128_GCM_AEAD_AES_128_GCM);
+        serverSupportedSrtpProtectionProfiles.add(
+                SrtpProtectionProfile.DOUBLE_AEAD_AES_256_GCM_AEAD_AES_256_GCM);
+        serverSupportedSrtpProtectionProfiles.add(SrtpProtectionProfile.SRTP_AEAD_AES_128_GCM);
+        serverSupportedSrtpProtectionProfiles.add(SrtpProtectionProfile.SRTP_AEAD_AES_256_GCM);
+        serverSupportedSrtpProtectionProfiles.add(SrtpProtectionProfile.SRTP_AEAD_ARIA_128_GCM);
+        serverSupportedSrtpProtectionProfiles.add(SrtpProtectionProfile.SRTP_AEAD_ARIA_256_GCM);
+        serverSupportedSrtpProtectionProfiles.add(
+                SrtpProtectionProfile.SRTP_ARIA_128_CTR_HMAC_SHA1_32);
+        serverSupportedSrtpProtectionProfiles.add(
+                SrtpProtectionProfile.SRTP_ARIA_128_CTR_HMAC_SHA1_80);
+        serverSupportedSrtpProtectionProfiles.add(
+                SrtpProtectionProfile.SRTP_ARIA_256_CTR_HMAC_SHA1_32);
+        serverSupportedSrtpProtectionProfiles.add(
+                SrtpProtectionProfile.SRTP_ARIA_256_CTR_HMAC_SHA1_80);
 
         defaultEsniServerKeyShareEntries.add(
                 new KeyShareStoreEntry(
@@ -1389,6 +1437,22 @@ public class Config implements Serializable {
         defaultPskSets = new LinkedList<>();
         defaultProposedAlpnProtocols = new LinkedList<>();
         defaultProposedAlpnProtocols.add(AlpnProtocol.HTTP_2.getConstant());
+    }
+
+    public Point getDefaultClientEphemeralEcPublicKey() {
+        return defaultClientEphemeralEcPublicKey;
+    }
+
+    public void setDefaultClientEphemeralEcPublicKey(Point defaultClientEcPublicKey) {
+        this.defaultClientEphemeralEcPublicKey = defaultClientEcPublicKey;
+    }
+
+    public Point getDefaultServerEphemeralEcPublicKey() {
+        return defaultServerEphemeralEcPublicKey;
+    }
+
+    public void setDefaultServerEphemeralEcPublicKey(Point defaultServerEcPublicKey) {
+        this.defaultServerEphemeralEcPublicKey = defaultServerEcPublicKey;
     }
 
     public Boolean getAutoAdjustCertificate() {

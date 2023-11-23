@@ -212,11 +212,6 @@ public class ReceiveTillAction extends CommonReceiveAction implements ReceivingA
     }
 
     @Override
-    public List<ProtocolMessage> getExpectedMessages() {
-        return new ArrayList<>(List.of(waitTillMessage));
-    }
-
-    @Override
     public List<HttpMessage> getReceivedHttpMessages() {
         return httpMessages;
     }

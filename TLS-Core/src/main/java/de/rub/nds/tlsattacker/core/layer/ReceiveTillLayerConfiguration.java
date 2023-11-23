@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ReceiveTillLayerConfiguration<Container extends DataContainer>
+public class ReceiveTillLayerConfiguration<Container extends DataContainer<?>>
         extends ReceiveLayerConfiguration<Container> {
 
     private boolean processTrailingContainers = true;

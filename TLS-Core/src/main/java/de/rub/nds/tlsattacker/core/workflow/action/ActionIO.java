@@ -8,11 +8,15 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
+import de.rub.nds.tlsattacker.core.layer.Message;
+import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Marshaller;
 import jakarta.xml.bind.Unmarshaller;
 import java.io.*;
+import java.util.HashSet;
 import java.util.Set;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -20,6 +24,9 @@ import javax.xml.stream.XMLStreamReader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.reflections.Reflections;
+import org.reflections.util.ClasspathHelper;
+import org.reflections.util.ConfigurationBuilder;
+import org.reflections.util.FilterBuilder;
 
 public class ActionIO {
 
@@ -29,11 +36,27 @@ public class ActionIO {
 
     private static synchronized JAXBContext getJAXBContext() throws JAXBException {
         if (context == null) {
+            String packageName = "de.rub";
             Reflections reflections =
-                    new Reflections("de.rub.nds.tlsattacker.core.workflow.action");
-            Set<Class<? extends TlsAction>> classes = reflections.getSubTypesOf(TlsAction.class);
-            Class<? extends TlsAction>[] classesArray = classes.toArray(new Class[classes.size()]);
-            context = JAXBContext.newInstance(classesArray);
+                    new Reflections(
+                            new ConfigurationBuilder()
+                                    .setUrls(ClasspathHelper.forPackage(packageName))
+                                    .filterInputsBy(
+                                            new FilterBuilder().includePackage(packageName)));
+            Set<Class<? extends TlsAction>> tlsActionClasses =
+                    reflections.getSubTypesOf(TlsAction.class);
+            Set<Class<?>> classes = new HashSet<>();
+            classes.add(WorkflowTrace.class);
+            classes.addAll(tlsActionClasses);
+
+            Set<Class<? extends Message>> messageClasses = reflections.getSubTypesOf(Message.class);
+            classes.addAll(messageClasses);
+            classes.add(Record.class);
+            LOGGER.debug("Registering Classes in JAXBContext of ActionIO:");
+            for (Class tempClass : classes) {
+                LOGGER.debug(tempClass.getName());
+            }
+            context = JAXBContext.newInstance(classes.toArray(new Class[classes.size()]));
         }
         return context;
     }

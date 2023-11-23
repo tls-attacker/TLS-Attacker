@@ -22,6 +22,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
+import de.rub.nds.tlsattacker.core.util.ProviderUtil;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,7 +52,7 @@ public class SSL2LayerTest extends TestCase {
         tlsContext = new Context(new State(config), new OutboundConnection()).getTlsContext();
         transportHandler = new FakeTransportHandler(null);
         tlsContext.setTransportHandler(transportHandler);
-
+        ProviderUtil.addBouncyCastleProvider();
         messageByteList.add(clientHello);
         messageByteList.add(serverHello);
     }

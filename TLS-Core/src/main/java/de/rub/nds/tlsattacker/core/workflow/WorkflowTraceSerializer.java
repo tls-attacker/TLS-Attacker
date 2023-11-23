@@ -9,6 +9,8 @@
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.modifiablevariable.util.ModifiableVariableField;
+import de.rub.nds.tlsattacker.core.layer.Message;
+import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import de.rub.nds.tlsattacker.core.workflow.modifiableVariable.ModvarHelper;
 import jakarta.xml.bind.JAXBContext;
@@ -70,7 +72,11 @@ public class WorkflowTraceSerializer {
             Set<Class<?>> classes = new HashSet<>();
             classes.add(WorkflowTrace.class);
             classes.addAll(tlsActionClasses);
-            LOGGER.debug("Registering TlsActions in JAXBContext:");
+
+            Set<Class<? extends Message>> messageClasses = reflections.getSubTypesOf(Message.class);
+            classes.addAll(messageClasses);
+            classes.add(Record.class);
+            LOGGER.debug("Registering Classes in JAXBContext of WorkflowTraceSerializer:");
             for (Class tempClass : classes) {
                 LOGGER.debug(tempClass.getName());
             }

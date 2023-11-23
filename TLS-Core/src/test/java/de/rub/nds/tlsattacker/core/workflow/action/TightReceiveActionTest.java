@@ -26,8 +26,11 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.util.tests.TestCategories;
 import jakarta.xml.bind.JAXB;
+import jakarta.xml.bind.JAXBException;
+import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import javax.xml.stream.XMLStreamException;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.jupiter.api.Tag;
@@ -152,20 +155,23 @@ public class TightReceiveActionTest {
 
     @Test
     @Tag(TestCategories.INTEGRATION_TEST)
-    public void marshalingEmptyActionYieldsMinimalOutput() {
+    public void marshalingEmptyActionYieldsMinimalOutput()
+            throws JAXBException, IOException, XMLStreamException {
         ActionTestUtils.marshalingEmptyActionYieldsMinimalOutput(TightReceiveAction.class);
     }
 
     @Test
     @Tag(TestCategories.INTEGRATION_TEST)
-    public void marshalingAndUnmarshalingEmptyObjectYieldsEqualObject() {
+    public void marshalingAndUnmarshalingEmptyObjectYieldsEqualObject()
+            throws JAXBException, IOException, XMLStreamException {
         ActionTestUtils.marshalingAndUnmarshalingEmptyObjectYieldsEqualObject(
                 TightReceiveAction.class);
     }
 
     @Test
     @Tag(TestCategories.INTEGRATION_TEST)
-    public void marshalingAndUnmarshalingFilledObjectYieldsEqualObject() {
+    public void marshalingAndUnmarshalingFilledObjectYieldsEqualObject()
+            throws JAXBException, IOException, XMLStreamException {
         ActionTestUtils.marshalingAndUnmarshalingFilledObjectYieldsEqualObject(action);
     }
 }

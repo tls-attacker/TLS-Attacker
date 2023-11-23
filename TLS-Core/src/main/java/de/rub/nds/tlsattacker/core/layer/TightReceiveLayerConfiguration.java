@@ -18,7 +18,7 @@ import java.util.List;
  *
  * @param <Container>
  */
-public class TightReceiveLayerConfiguration<Container extends DataContainer>
+public class TightReceiveLayerConfiguration<Container extends DataContainer<?>>
         extends SpecificReceiveLayerConfiguration<Container> {
 
     public TightReceiveLayerConfiguration(LayerType layerType, List<Container> containerList) {

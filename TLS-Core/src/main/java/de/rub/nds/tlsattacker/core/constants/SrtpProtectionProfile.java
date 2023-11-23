@@ -20,8 +20,19 @@ import org.apache.logging.log4j.Logger;
 public enum SrtpProtectionProfile {
     SRTP_AES128_CM_HMAC_SHA1_80(new byte[] {0x00, 0x01}),
     SRTP_AES128_CM_HMAC_SHA1_32(new byte[] {0x00, 0x02}),
+
     SRTP_NULL_HMAC_SHA1_80(new byte[] {0x00, 0x05}),
-    SRTP_NULL_HMAC_SHA1_32(new byte[] {0x00, 0x06});
+    SRTP_NULL_HMAC_SHA1_32(new byte[] {0x00, 0x06}),
+    SRTP_AEAD_AES_128_GCM(new byte[] {0x00, 0x07}),
+    SRTP_AEAD_AES_256_GCM(new byte[] {0x00, 0x08}),
+    DOUBLE_AEAD_AES_128_GCM_AEAD_AES_128_GCM(new byte[] {0x00, 0x09}),
+    DOUBLE_AEAD_AES_256_GCM_AEAD_AES_256_GCM(new byte[] {0x00, 0x0A}),
+    SRTP_ARIA_128_CTR_HMAC_SHA1_80(new byte[] {0x00, 0x0B}),
+    SRTP_ARIA_128_CTR_HMAC_SHA1_32(new byte[] {0x00, 0x0C}),
+    SRTP_ARIA_256_CTR_HMAC_SHA1_80(new byte[] {0x00, 0x0D}),
+    SRTP_ARIA_256_CTR_HMAC_SHA1_32(new byte[] {0x00, 0x0E}),
+    SRTP_AEAD_ARIA_128_GCM(new byte[] {0x00, 0x0F}),
+    SRTP_AEAD_ARIA_256_GCM(new byte[] {0x00, 0x10});
 
     private final byte[] srtpProtectionProfiles;
     private static final Map<Integer, SrtpProtectionProfile> MAP;

@@ -15,12 +15,12 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.unittest.helper.DefaultNormalizeFilter;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceSerializer;
-import jakarta.xml.bind.JAXB;
 import jakarta.xml.bind.JAXBException;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
+import javax.xml.stream.XMLStreamException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -98,7 +98,7 @@ public class ActionTestUtils {
                             + "</workflowTrace>"
                             + System.lineSeparator();
 
-            Config config = Config.createConfig();
+            Config config = new Config();
             // We don't need to keep user settings. Skip for better performance.
             config.setFiltersKeepUserSettings(false);
             DefaultNormalizeFilter.normalizeAndFilter(trace, config);
@@ -128,10 +128,13 @@ public class ActionTestUtils {
      *
      * @param <T>
      * @param actionClass the Class to test
+     * @throws XMLStreamException
+     * @throws IOException
+     * @throws JAXBException
      * @see #marshalingAndUnmarshalingEmptyObjectYieldsEqualObject(Class, Logger)
      */
     public static <T extends TlsAction> void marshalingAndUnmarshalingEmptyObjectYieldsEqualObject(
-            Class<T> actionClass) {
+            Class<T> actionClass) throws JAXBException, IOException, XMLStreamException {
         marshalingAndUnmarshalingEmptyObjectYieldsEqualObject(
                 actionClass, LogManager.getLogger(actionClass));
     }
@@ -150,18 +153,21 @@ public class ActionTestUtils {
      * @param <T>
      * @param actionClass the Class to test
      * @param logger to which messages are written to
+     * @throws IOException
+     * @throws JAXBException
+     * @throws XMLStreamException
      * @see #marshalingEmptyActionYieldsMinimalOutput(Class)
      */
     public static <T extends TlsAction> void marshalingAndUnmarshalingEmptyObjectYieldsEqualObject(
-            Class<T> actionClass, Logger logger) {
+            Class<T> actionClass, Logger logger)
+            throws JAXBException, IOException, XMLStreamException {
         try {
             T action = actionClass.getDeclaredConstructor().newInstance();
-            StringWriter writer = new StringWriter();
 
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             action.filter();
-            JAXB.marshal(action, writer);
-            TlsAction actual =
-                    JAXB.unmarshal(new StringReader(writer.getBuffer().toString()), actionClass);
+            ActionIO.write(outputStream, action);
+            TlsAction actual = ActionIO.read(new ByteArrayInputStream(outputStream.toByteArray()));
             action.normalize();
             actual.normalize();
 
@@ -185,10 +191,13 @@ public class ActionTestUtils {
      *
      * @param <T>
      * @param action an instance of the TlsAction class under test, filled with custom values
+     * @throws XMLStreamException
+     * @throws IOException
+     * @throws JAXBException
      * @see #marshalingAndUnmarshalingFilledObjectYieldsEqualObject(TlsAction, Logger)
      */
     public static <T extends TlsAction> void marshalingAndUnmarshalingFilledObjectYieldsEqualObject(
-            T action) {
+            T action) throws JAXBException, IOException, XMLStreamException {
         marshalingAndUnmarshalingFilledObjectYieldsEqualObject(
                 action, LogManager.getLogger(action.getClass().getName()));
     }
@@ -205,18 +214,19 @@ public class ActionTestUtils {
      * <p>
      *
      * @param <T>
-     * @param action an instance of the TlsAction class under test, filled with custom values
+     * @param action an instance of the TlsAction class under test, filled with custom va
+     * @throws XMLStreamException
+     * @throws IOException
+     * @throws JAXBExceptionlues
      * @param logger the logger to which messages are logged
      * @see #marshalingAndUnmarshalingFilledObjectYieldsEqualObject(TlsAction)
      */
     public static <T extends TlsAction> void marshalingAndUnmarshalingFilledObjectYieldsEqualObject(
-            T action, Logger logger) {
-        StringWriter writer = new StringWriter();
-
+            T action, Logger logger) throws JAXBException, IOException, XMLStreamException {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         action.filter();
-        JAXB.marshal(action, writer);
-        TlsAction actual =
-                JAXB.unmarshal(new StringReader(writer.getBuffer().toString()), action.getClass());
+        ActionIO.write(outputStream, action);
+        TlsAction actual = ActionIO.read(new ByteArrayInputStream(outputStream.toByteArray()));
         action.normalize();
         actual.normalize();
 

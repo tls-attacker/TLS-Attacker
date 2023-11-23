@@ -38,7 +38,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @XmlRootElement(name = "Receive")
-public class ReceiveAction extends CommonReceiveAction implements ReceivingAction {
+public class ReceiveAction extends CommonQuicReceiveAction implements ReceivingAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -56,13 +56,6 @@ public class ReceiveAction extends CommonReceiveAction implements ReceivingActio
 
     public ReceiveAction() {
         super();
-    }
-
-    public ReceiveAction(
-            List<ProtocolMessage> messages,
-            List<QuicFrame> quicFrames,
-            List<QuicPacket> quicPackets) {
-        super(messages, quicFrames, quicPackets);
     }
 
     public ReceiveAction(

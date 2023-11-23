@@ -17,9 +17,11 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import jakarta.xml.bind.JAXB;
-import java.io.StringReader;
-import java.io.StringWriter;
+import jakarta.xml.bind.JAXBException;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import javax.xml.stream.XMLStreamException;
 import org.junit.jupiter.api.Test;
 
 public class ReceiveActionTest extends AbstractActionTest<ReceiveAction> {
@@ -54,13 +56,11 @@ public class ReceiveActionTest extends AbstractActionTest<ReceiveAction> {
     }
 
     @Test
-    public void testJAXB() {
-        StringWriter writer = new StringWriter();
+    public void testJAXB() throws JAXBException, IOException, XMLStreamException {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         action.filter();
-        JAXB.marshal(action, writer);
-        TlsAction action2 =
-                JAXB.unmarshal(
-                        new StringReader(writer.getBuffer().toString()), ReceiveAction.class);
+        ActionIO.write(outputStream, action);
+        TlsAction action2 = ActionIO.read(new ByteArrayInputStream(outputStream.toByteArray()));
         action.normalize();
         action2.normalize();
         assertEquals(action, action2);
