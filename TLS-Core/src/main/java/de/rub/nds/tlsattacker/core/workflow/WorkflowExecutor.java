@@ -89,7 +89,7 @@ public abstract class WorkflowExecutor {
      * Initialize the context's transport handler.Start listening or connect to a server, depending
      * on our connection end type.
      *
-     * @param context
+     * @param state
      */
     public void initTransportHandler(State state) {
         // Check if we need to create transport handlers

@@ -28,8 +28,6 @@ import org.apache.logging.log4j.Logger;
  * 1-RTT keys are available, a sender switches to sending packets using the short header (Section
  * 17.3). The long form allows for special packets -- such as the Version Negotiation packet -- to
  * be represented in this uniform fixed-length packet format.
- *
- * @param <T>
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlSeeAlso({
