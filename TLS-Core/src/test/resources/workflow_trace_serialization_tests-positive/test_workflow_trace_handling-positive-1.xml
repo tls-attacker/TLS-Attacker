@@ -19,7 +19,6 @@
         <port>443</port>
         <hostname>localhost</hostname>
         <timeout>1000</timeout>
-        <firstTimeout>1000</firstTimeout>
         <connectionTimeout>8000</connectionTimeout>
         <transportHandlerType>TCP</transportHandlerType>
         <useIpv6>false</useIpv6>

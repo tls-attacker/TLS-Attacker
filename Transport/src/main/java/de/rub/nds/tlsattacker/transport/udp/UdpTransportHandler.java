@@ -30,7 +30,7 @@ public abstract class UdpTransportHandler extends TransportHandler {
     }
 
     public UdpTransportHandler(long firstTimeout, long timeout, ConnectionEndType type) {
-        super(firstTimeout, timeout, type);
+        super(timeout, type);
     }
 
     @Override

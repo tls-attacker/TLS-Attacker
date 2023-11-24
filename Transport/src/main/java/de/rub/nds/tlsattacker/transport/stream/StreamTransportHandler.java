@@ -26,12 +26,11 @@ public class StreamTransportHandler extends TransportHandler {
     private boolean closed = false;
 
     public StreamTransportHandler(
-            long firstTimeout,
             long timeout,
             ConnectionEndType type,
             InputStream inputStream,
             OutputStream outputStream) {
-        super(firstTimeout, timeout, type);
+        super(timeout, type);
         this.inputStream = inputStream;
         this.outputStream = outputStream;
         timeoutableInputStream = new TimeoutableInputStream(inputStream, timeout);

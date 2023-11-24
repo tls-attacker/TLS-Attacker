@@ -237,7 +237,7 @@ public abstract class AbstractHandshakeIT {
                         WorkflowExecutorFactory.createWorkflowExecutor(
                                 config.getWorkflowExecutorType(), state);
                 setCallbacks(executor);
-            } else {
+            } else if (state.getWorkflowTrace().executedAsPlanned()) {
                 return;
             }
         }
@@ -413,11 +413,12 @@ public abstract class AbstractHandshakeIT {
             config.getDefaultClientConnection().setHostname("localhost");
             config.getDefaultClientConnection()
                     .setPort(((DockerTlsServerInstance) dockerInstance).getPort());
+            config.getDefaultClientConnection().setTimeout(3000);
         } else {
             config.setDefaultRunningMode(RunningModeType.SERVER);
             config.getDefaultServerConnection().setHostname("server-handshake-test-host");
             config.getDefaultServerConnection().setPort(PORT);
-            config.getDefaultServerConnection().setTimeout(1000);
+            config.getDefaultServerConnection().setTimeout(3000);
         }
     }
 
