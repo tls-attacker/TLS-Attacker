@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.quic.packet;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
@@ -17,7 +18,6 @@ import de.rub.nds.tlsattacker.core.layer.data.Handler;
 import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
-import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.quic.constants.MiscRfcConstants;
 import de.rub.nds.tlsattacker.core.quic.constants.QuicCryptoSecrets;
 import de.rub.nds.tlsattacker.core.quic.constants.QuicPacketType;

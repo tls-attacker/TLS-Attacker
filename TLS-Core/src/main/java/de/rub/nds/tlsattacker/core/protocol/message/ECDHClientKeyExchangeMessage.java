@@ -9,8 +9,8 @@
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
+import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.ECDHClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.ECDHClientComputations;
 import de.rub.nds.tlsattacker.core.protocol.parser.ECDHClientKeyExchangeParser;

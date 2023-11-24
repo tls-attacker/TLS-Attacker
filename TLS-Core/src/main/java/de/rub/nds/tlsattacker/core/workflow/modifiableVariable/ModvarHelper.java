@@ -9,13 +9,13 @@
 package de.rub.nds.tlsattacker.core.workflow.modifiableVariable;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
+import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.modifiablevariable.util.ModifiableVariableAnalyzer;
 import de.rub.nds.modifiablevariable.util.ModifiableVariableField;
 import de.rub.nds.modifiablevariable.util.ModifiableVariableListHolder;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.modifiablevariable.util.ReflectionHelper;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceUtil;

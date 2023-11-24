@@ -15,14 +15,13 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.layer.Message;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.protocol.message.*;
+import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
+import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.InputStream;
-import java.lang.reflect.Field;
 import java.util.List;
-import java.util.Random;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class ProtocolMessage extends Message<TlsContext> {
@@ -80,19 +79,6 @@ public abstract class ProtocolMessage extends Message<TlsContext> {
 
     public void setGoingToBeSent(ModifiableBoolean goingToBeSent) {
         this.goingToBeSent = goingToBeSent;
-    }
-
-    @Override
-    public List<ModifiableVariableHolder> getAllModifiableVariableHolders() {
-        List<ModifiableVariableHolder> holders = super.getAllModifiableVariableHolders();
-        return holders;
-    }
-
-    @Override
-    public Field getRandomModifiableVariableField(Random random) {
-        List<Field> fields = getAllModifiableVariableFields();
-        int randomField = random.nextInt(fields.size());
-        return fields.get(randomField);
     }
 
     public ModifiableByteArray getCompleteResultingMessage() {

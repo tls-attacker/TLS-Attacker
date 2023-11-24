@@ -9,11 +9,11 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.ModifiableVariable;
+import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.Modifiable;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
@@ -235,9 +235,9 @@ public class SendRaccoonCkeAction extends MessageAction implements SendingAction
             for (Field f : fields) {
                 f.setAccessible(true);
 
-                ModifiableVariable mv = null;
+                ModifiableVariable<?> mv = null;
                 try {
-                    mv = (ModifiableVariable) f.get(holder);
+                    mv = (ModifiableVariable<?>) f.get(holder);
                 } catch (IllegalArgumentException | IllegalAccessException ex) {
                     LOGGER.warn("Could not retrieve ModifiableVariables");
                     LOGGER.debug(ex);

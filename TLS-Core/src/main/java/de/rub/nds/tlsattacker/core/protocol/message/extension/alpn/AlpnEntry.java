@@ -9,10 +9,10 @@
 package de.rub.nds.tlsattacker.core.protocol.message.extension.alpn;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.modifiablevariable.util.IllegalStringAdapter;
-import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;

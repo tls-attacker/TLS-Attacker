@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.record;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
@@ -18,8 +19,8 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.layer.data.*;
-import de.rub.nds.tlsattacker.core.protocol.*;
+import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
+import de.rub.nds.tlsattacker.core.layer.data.Handler;
 import de.rub.nds.tlsattacker.core.record.compressor.RecordCompressor;
 import de.rub.nds.tlsattacker.core.record.crypto.Encryptor;
 import de.rub.nds.tlsattacker.core.record.parser.RecordParser;
