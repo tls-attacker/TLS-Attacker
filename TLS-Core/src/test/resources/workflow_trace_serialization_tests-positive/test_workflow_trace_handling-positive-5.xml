@@ -20,7 +20,6 @@ Test custom connection in workflow trace
         <port>443</port>
         <hostname>localhost</hostname>
         <timeout>44</timeout>
-        <firstTimeout>1000</firstTimeout>
         <connectionTimeout>8000</connectionTimeout>
         <transportHandlerType>TCP</transportHandlerType>
         <useIpv6>false</useIpv6>

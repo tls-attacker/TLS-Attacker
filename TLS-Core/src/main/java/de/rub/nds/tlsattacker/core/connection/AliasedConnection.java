@@ -30,7 +30,6 @@ import java.util.Set;
             "proxyControlPort",
             "proxyControlHostname",
             "timeout",
-            "firstTimeout",
             "connectionTimeout",
             "transportHandlerType",
             "sourcePort",
@@ -174,12 +173,6 @@ public abstract class AliasedConnection extends Connection implements Aliasable 
                 timeout = DEFAULT_TIMEOUT;
             }
         }
-        if (firstTimeout == null) {
-            firstTimeout = defaultCon.getFirstTimeout();
-            if (firstTimeout == null) {
-                firstTimeout = DEFAULT_FIRST_TIMEOUT;
-            }
-        }
         if (connectionTimeout == null) {
             connectionTimeout = defaultCon.getConnectionTimeout();
             if (connectionTimeout == null) {
@@ -229,10 +222,6 @@ public abstract class AliasedConnection extends Connection implements Aliasable 
         if (Objects.equals(timeout, defaultCon.getTimeout())
                 || Objects.equals(timeout, DEFAULT_TIMEOUT)) {
             timeout = null;
-        }
-        if (Objects.equals(firstTimeout, defaultCon.getTimeout())
-                || Objects.equals(firstTimeout, DEFAULT_FIRST_TIMEOUT)) {
-            firstTimeout = null;
         }
         if (hostname.equals(defaultCon.getHostname())
                 || Objects.equals(hostname, DEFAULT_HOSTNAME)) {

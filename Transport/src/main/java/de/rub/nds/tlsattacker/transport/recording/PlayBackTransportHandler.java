@@ -29,7 +29,7 @@ public class PlayBackTransportHandler extends TransportHandler {
     private boolean closed = false;
 
     PlayBackTransportHandler(Recording recording) {
-        super(0, 0, ConnectionEndType.SERVER);
+        super(0, ConnectionEndType.SERVER);
         this.recording = recording;
         linesToSend = recording.getReceivedLines();
     }

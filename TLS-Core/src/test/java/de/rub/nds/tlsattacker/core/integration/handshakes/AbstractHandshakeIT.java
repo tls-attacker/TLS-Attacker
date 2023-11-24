@@ -413,13 +413,11 @@ public abstract class AbstractHandshakeIT {
             config.getDefaultClientConnection().setHostname("localhost");
             config.getDefaultClientConnection()
                     .setPort(((DockerTlsServerInstance) dockerInstance).getPort());
-            config.getDefaultClientConnection().setFirstTimeout(3000);
             config.getDefaultClientConnection().setTimeout(3000);
         } else {
             config.setDefaultRunningMode(RunningModeType.SERVER);
             config.getDefaultServerConnection().setHostname("server-handshake-test-host");
             config.getDefaultServerConnection().setPort(PORT);
-            config.getDefaultServerConnection().setFirstTimeout(3000);
             config.getDefaultServerConnection().setTimeout(3000);
         }
     }
