@@ -182,7 +182,7 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
         ReceivingAction receivingAction = (ReceivingAction) tlsActions.get(index);
 
         Set<String> aliases = receivingAction.getAllReceivingAliases();
-        for (int i = index; i >= 0; i--) {
+        for (int i = index - 1; i >= 0; i--) {
             TlsAction action = tlsActions.get(i);
             if (action instanceof ReceivingAction) {
                 for (String alias : action.getAllAliases()) {
