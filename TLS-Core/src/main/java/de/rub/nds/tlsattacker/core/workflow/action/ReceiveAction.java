@@ -210,7 +210,7 @@ public class ReceiveAction extends CommonQuicReceiveAction implements ReceivingA
             for (LayerProcessingResult result :
                     getLayerStackProcessingResult().getLayerProcessingResultList()) {
                 if (!result.isExecutedAsPlanned()) {
-                    LOGGER.error(
+                    LOGGER.warn(
                             "ReceiveAction failed: Layer {}, did not execute as planned",
                             result.getLayerType());
                     return false;
