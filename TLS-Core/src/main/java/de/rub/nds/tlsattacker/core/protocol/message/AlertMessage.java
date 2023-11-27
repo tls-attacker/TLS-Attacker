@@ -162,9 +162,23 @@ public class AlertMessage extends ProtocolMessage {
             return true;
         }
         AlertMessage alert = (AlertMessage) obj;
-        return (Objects.equals(alert.getLevel().getValue(), this.getLevel().getValue()))
-                && (Objects.equals(
+        if (alert.getLevel() != null
+                && alert.getDescription() != null
+                && this.getLevel() != null
+                && this.getDescription() != null) {
+
+            return (Objects.equals(alert.getLevel().getValue(), this.getLevel().getValue()))
+                    && (Objects.equals(
+                            alert.getDescription().getValue(), this.getDescription().getValue()));
+        } else {
+            // If level is null we do not compare the values
+            if (this.getLevel() == null || alert.getLevel() == null) {
+                return (Objects.equals(
                         alert.getDescription().getValue(), this.getDescription().getValue()));
+            } else {
+                return (Objects.equals(alert.getLevel().getValue(), this.getLevel().getValue()));
+            }
+        }
     }
 
     @Override

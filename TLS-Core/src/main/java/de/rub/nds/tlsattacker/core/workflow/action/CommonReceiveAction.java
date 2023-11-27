@@ -9,9 +9,8 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
+import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
 import de.rub.nds.tlsattacker.core.state.State;
 import java.util.List;
 
@@ -21,24 +20,8 @@ public abstract class CommonReceiveAction extends MessageAction {
         super();
     }
 
-    public CommonReceiveAction(List<ProtocolMessage> messages) {
-        super(messages);
-    }
-
-    public CommonReceiveAction(ProtocolMessage... messages) {
-        super(messages);
-    }
-
     public CommonReceiveAction(String connectionAlias) {
         super(connectionAlias);
-    }
-
-    public CommonReceiveAction(String connectionAlias, List<ProtocolMessage> messages) {
-        super(connectionAlias, messages);
-    }
-
-    public CommonReceiveAction(String connectionAlias, ProtocolMessage... messages) {
-        super(connectionAlias, messages);
     }
 
     @Override
@@ -49,14 +32,14 @@ public abstract class CommonReceiveAction extends MessageAction {
             throw new ActionExecutionException("Action already executed!");
         }
 
-        LOGGER.debug("Receiving Frames...");
-        distinctReceive(tlsContext);
-
+        LOGGER.debug("Receiving... (" + this.getClass().getSimpleName() + ")");
+        List<LayerConfiguration> layerConfigurations = createLayerConfiguration(tlsContext);
+        getReceiveResult(tlsContext.getLayerStack(), layerConfigurations);
         setExecuted(true);
 
-        String expected = getReadableStringFromQuicFrames(getExpectedQuicFrames());
+        String expected = getReadableString(layerConfigurations);
         LOGGER.debug("Receive Expected: {}", expected);
-        String received = getReadableStringFromQuicFrames(quicFrames);
+        String received = getReadableString(getLayerStackProcessingResult());
         if (hasDefaultAlias()) {
             LOGGER.info("Received Messages: {}", received);
         } else {
@@ -64,7 +47,5 @@ public abstract class CommonReceiveAction extends MessageAction {
         }
     }
 
-    protected abstract void distinctReceive(TlsContext tlsContext);
-
-    public abstract List<QuicFrame> getExpectedQuicFrames();
+    protected abstract List<LayerConfiguration> createLayerConfiguration(TlsContext tlsContext);
 }

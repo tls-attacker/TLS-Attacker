@@ -38,7 +38,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @XmlRootElement(name = "Receive")
-public class ReceiveAction extends CommonQuicReceiveAction implements ReceivingAction {
+public class ReceiveAction extends CommonReceiveAction implements ReceivingAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -153,7 +153,14 @@ public class ReceiveAction extends CommonQuicReceiveAction implements ReceivingA
         }
 
         LOGGER.debug("Receiving...");
-        distinctReceive(tlsContext);
+        receive(
+                tlsContext,
+                expectedMessages,
+                fragments,
+                records,
+                expectedQuicFrames,
+                expectedQuicPackets,
+                httpMessages);
 
         setExecuted(true);
 
@@ -346,17 +353,6 @@ public class ReceiveAction extends CommonQuicReceiveAction implements ReceivingA
             }
         }
         return handshakeMessageTypes;
-    }
-
-    protected void distinctReceive(TlsContext tlsContext) {
-        receive(
-                tlsContext,
-                expectedMessages,
-                fragments,
-                records,
-                expectedQuicFrames,
-                expectedQuicPackets,
-                httpMessages);
     }
 
     public List<ProtocolMessage> getExpectedMessages() {

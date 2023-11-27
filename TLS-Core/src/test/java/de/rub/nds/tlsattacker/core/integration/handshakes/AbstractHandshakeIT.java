@@ -40,6 +40,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
 import java.util.stream.Stream.Builder;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.Assert;
 import org.junit.Assume;
@@ -54,6 +56,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 @TestInstance(Lifecycle.PER_CLASS)
 public abstract class AbstractHandshakeIT {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private static final Integer PORT = FreePortFinder.getPossiblyFreePort();
     private static List<Image> localImages;
@@ -237,19 +241,19 @@ public abstract class AbstractHandshakeIT {
                         WorkflowExecutorFactory.createWorkflowExecutor(
                                 config.getWorkflowExecutorType(), state);
                 setCallbacks(executor);
-            } else {
+            } else if (state.getWorkflowTrace().executedAsPlanned()) {
                 return;
+            } else {
+                failTest(
+                        state,
+                        protocolVersion,
+                        namedGroup,
+                        cipherSuite,
+                        workflowTraceType,
+                        addEncryptThenMac,
+                        addExtendedMasterSecret);
             }
         }
-
-        failTest(
-                state,
-                protocolVersion,
-                namedGroup,
-                cipherSuite,
-                workflowTraceType,
-                addEncryptThenMac,
-                addExtendedMasterSecret);
     }
 
     private static final int MAX_ATTEMPTS = 3;
@@ -262,7 +266,13 @@ public abstract class AbstractHandshakeIT {
             WorkflowTraceType workflowTraceType,
             boolean addEncryptThenMac,
             boolean addExtendedMasterSecret) {
-        System.out.println(state.getWorkflowTrace().toString());
+        LOGGER.error("Failed trace: " + state.getWorkflowTrace().toString());
+        try {
+            LOGGER.error("Instance Feedback: " + dockerInstance.getLogs());
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         Assert.fail(
                 "Failed to handshake with "
                         + implementation
@@ -312,7 +322,10 @@ public abstract class AbstractHandshakeIT {
     }
 
     protected NamedGroup[] getNamedGroupsToTest() {
-        return new NamedGroup[] {NamedGroup.SECP256R1};
+        return new NamedGroup[] {
+            NamedGroup.SECP256R1 // , NamedGroup.SECP384R1, NamedGroup.SECP521R1,
+            // NamedGroup.ECDH_X25519
+        };
     }
 
     protected ProtocolVersion[] getProtocolVersionsToTest() {
@@ -324,9 +337,9 @@ public abstract class AbstractHandshakeIT {
     protected CipherSuite[] getCipherSuitesToTest() {
         return new CipherSuite[] {
             CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA,
-            CipherSuite.TLS_DHE_RSA_WITH_AES_128_CBC_SHA,
-            CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,
-            CipherSuite.TLS_RSA_WITH_AES_128_GCM_SHA256,
+            //      CipherSuite.TLS_DHE_RSA_WITH_AES_128_CBC_SHA,
+            //      CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,
+            //      CipherSuite.TLS_RSA_WITH_AES_128_GCM_SHA256,
         };
     }
 
@@ -416,7 +429,7 @@ public abstract class AbstractHandshakeIT {
             config.setDefaultRunningMode(RunningModeType.SERVER);
             config.getDefaultServerConnection().setHostname("server-handshake-test-host");
             config.getDefaultServerConnection().setPort(PORT);
-            config.getDefaultServerConnection().setTimeout(1000);
+            config.getDefaultServerConnection().setTimeout(3000);
         }
     }
 

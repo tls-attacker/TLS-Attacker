@@ -101,4 +101,14 @@ public class ReceiveTillLayerConfiguration<Container extends DataContainer<?>>
     public int getMaxNumberOfQuicPacketsToReceive() {
         return maxNumberOfQuicPacketsToReceive;
     }
+
+    @Override
+    public String toCompactString() {
+        return "("
+                + getLayerType().getName()
+                + ") ReceiveTill:"
+                + getContainerList().stream()
+                        .map(DataContainer::toCompactString)
+                        .collect(Collectors.joining(","));
+    }
 }

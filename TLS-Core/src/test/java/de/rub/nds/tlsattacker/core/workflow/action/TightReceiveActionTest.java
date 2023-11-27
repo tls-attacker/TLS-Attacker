@@ -25,11 +25,10 @@ import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.util.tests.TestCategories;
-import jakarta.xml.bind.JAXB;
 import jakarta.xml.bind.JAXBException;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
 import javax.xml.stream.XMLStreamException;
 import org.junit.After;
 import org.junit.Test;
@@ -69,9 +68,9 @@ public class TightReceiveActionTest {
 
         action.execute(state);
         assertTrue(action.executedAsPlanned());
-        assertEquals(1, action.getReceivedMessages().size());
+        assertEquals(1, action.getMessages().size());
         AlertMessage expectedAlert = getAlertMessage();
-        assertEquals(expectedAlert, action.getReceivedMessages().get(0));
+        assertEquals(expectedAlert, action.getMessages().get(0));
     }
 
     private AlertMessage getAlertMessage() {
@@ -118,9 +117,9 @@ public class TightReceiveActionTest {
     private void testAction() throws WorkflowExecutionException {
         action.execute(state);
         assertTrue(action.executedAsPlanned());
-        assertEquals(2, action.getReceivedMessages().size());
-        assertTrue(action.getReceivedMessages().get(0) instanceof ServerHelloMessage);
-        assertTrue(action.getReceivedMessages().get(1) instanceof CertificateMessage);
+        assertEquals(2, action.getMessages().size());
+        assertTrue(action.getMessages().get(0) instanceof ServerHelloMessage);
+        assertTrue(action.getMessages().get(1) instanceof CertificateMessage);
         assertTrue(action.isExecuted());
     }
 
@@ -139,15 +138,13 @@ public class TightReceiveActionTest {
     }
 
     @Test
-    public void testJAXB() {
+    public void testJAXB() throws JAXBException, IOException, XMLStreamException {
         action = new TightReceiveAction(getAlertMessage());
         prepareTrace();
-        StringWriter writer = new StringWriter();
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         action.filter();
-        JAXB.marshal(action, writer);
-        TlsAction action2 =
-                JAXB.unmarshal(
-                        new StringReader(writer.getBuffer().toString()), TightReceiveAction.class);
+        ActionIO.write(outputStream, action);
+        TlsAction action2 = ActionIO.read(new ByteArrayInputStream(outputStream.toByteArray()));
         action.normalize();
         action2.normalize();
         assertThat(action, equalTo(action2));
@@ -172,6 +169,7 @@ public class TightReceiveActionTest {
     @Tag(TestCategories.INTEGRATION_TEST)
     public void marshalingAndUnmarshalingFilledObjectYieldsEqualObject()
             throws JAXBException, IOException, XMLStreamException {
-        ActionTestUtils.marshalingAndUnmarshalingFilledObjectYieldsEqualObject(action);
+        ActionTestUtils.marshalingAndUnmarshalingFilledObjectYieldsEqualObject(
+                new TightReceiveAction(new AlertMessage()));
     }
 }

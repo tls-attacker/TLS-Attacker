@@ -12,10 +12,6 @@ import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
-import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
-import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
-import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import jakarta.xml.bind.annotation.XmlRootElement;
@@ -24,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -84,36 +79,11 @@ public class BufferedSendAction extends MessageAction implements SendingAction {
     }
 
     @Override
-    public void setRecords(List<Record> records) {
-        this.records = records;
-    }
-
-    @Override
-    public void setFragments(List<DtlsHandshakeMessageFragment> fragments) {
-        this.fragments = fragments;
-    }
-
-    @Override
     public void reset() {
         messages = new LinkedList<>();
         records = new LinkedList<>();
         fragments = new LinkedList<>();
         setExecuted(null);
-    }
-
-    @Override
-    public List<ProtocolMessage> getSendMessages() {
-        return messages;
-    }
-
-    @Override
-    public List<Record> getSendRecords() {
-        return records;
-    }
-
-    @Override
-    public List<DtlsHandshakeMessageFragment> getSendFragments() {
-        return fragments;
     }
 
     @Override
@@ -124,14 +94,5 @@ public class BufferedSendAction extends MessageAction implements SendingAction {
     @Override
     public Set<String> getAllSendingAliases() {
         return new HashSet<>(Collections.singleton(connectionAlias));
-    }
-
-    public List<QuicPacket> getSendQuicPackets() {
-        return quicPackets;
-    }
-
-    @Override
-    public List<QuicFrame> getSendQuicFrames() {
-        return quicFrames;
     }
 }

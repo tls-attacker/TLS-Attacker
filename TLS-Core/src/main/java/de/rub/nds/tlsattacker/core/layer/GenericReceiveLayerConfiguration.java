@@ -34,4 +34,9 @@ public class GenericReceiveLayerConfiguration extends ReceiveLayerConfiguration<
     public boolean failedEarly(List<DataContainer<?>> list) {
         return false;
     }
+
+    @Override
+    public String toCompactString() {
+        return "(" + getLayerType().getName() + ") GenericReceive";
+    }
 }
