@@ -8,24 +8,19 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
+import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import jakarta.xml.bind.annotation.XmlRootElement;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.Set;
+import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @XmlRootElement(name = "BufferedSend")
-public class BufferedSendAction extends MessageAction implements SendingAction {
+public class BufferedSendAction extends CommonSendAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -39,34 +34,15 @@ public class BufferedSendAction extends MessageAction implements SendingAction {
 
     @Override
     public void execute(State state) throws ActionExecutionException {
-        TlsContext tlsContext = state.getContext(connectionAlias).getTlsContext();
-
-        if (isExecuted()) {
-            throw new ActionExecutionException("Action already executed!");
-        }
-        messages = new ArrayList<ProtocolMessage>(tlsContext.getMessageBuffer());
-        tlsContext.setMessageBuffer(new LinkedList<>());
-        String sending = getReadableStringFromMessages(messages);
-        if (connectionAlias.equals(AliasedConnection.DEFAULT_CONNECTION_ALIAS)) {
-            LOGGER.info("Sending messages: {}", sending);
-        } else {
-            LOGGER.info("Sending messages ({}): {}", connectionAlias, sending);
-        }
-
-        try {
-            send(tlsContext, messages, fragments, records, quicFrames, quicPackets, httpMessages);
-            setExecuted(true);
-        } catch (IOException e) {
-            LOGGER.debug(e);
-            setExecuted(getActionOptions().contains(ActionOption.MAY_FAIL));
-        }
+        super.execute(state);
+        state.getTlsContext(getConnectionAlias()).setMessageBuffer(new LinkedList<>());
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("BufferedSend Action:\n");
         sb.append("Messages:\n");
-        for (ProtocolMessage message : messages) {
+        for (ProtocolMessage message : getSendMessages()) {
             sb.append(message.toCompactString());
             sb.append(", ");
         }
@@ -74,25 +50,8 @@ public class BufferedSendAction extends MessageAction implements SendingAction {
     }
 
     @Override
-    public boolean executedAsPlanned() {
-        return isExecuted();
-    }
-
-    @Override
-    public void reset() {
-        messages = new LinkedList<>();
-        records = new LinkedList<>();
-        fragments = new LinkedList<>();
-        setExecuted(null);
-    }
-
-    @Override
-    public MessageActionDirection getMessageDirection() {
-        return MessageActionDirection.SENDING;
-    }
-
-    @Override
-    public Set<String> getAllSendingAliases() {
-        return new HashSet<>(Collections.singleton(connectionAlias));
+    protected List<LayerConfiguration> createLayerConfiguration(TlsContext tlsContext) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'createLayerConfiguration'");
     }
 }

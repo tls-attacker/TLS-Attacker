@@ -9,28 +9,21 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
+import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.context.TcpContext;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
-import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
-import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.serializer.RecordSerializer;
 import de.rub.nds.tlsattacker.core.state.State;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @XmlRootElement(name = "PopAndSendRecord")
-public class PopAndSendRecordAction extends MessageAction implements SendingAction {
+public class PopAndSendRecordAction extends CommonSendAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
     private Boolean asPlanned = null;
@@ -45,7 +38,9 @@ public class PopAndSendRecordAction extends MessageAction implements SendingActi
 
     @Override
     public void execute(State state) throws ActionExecutionException {
-        TlsContext tlsContext = state.getContext(connectionAlias).getTlsContext();
+        TlsContext tlsContext =
+                state.getContext(connectionAlias)
+                        .getTlsContext(); // TODO this assumes that TLS is ran on top of TCP
         TcpContext tcpContext = state.getContext(connectionAlias).getTcpContext();
 
         if (isExecuted()) {
@@ -78,56 +73,18 @@ public class PopAndSendRecordAction extends MessageAction implements SendingActi
 
     @Override
     public boolean executedAsPlanned() {
-        return isExecuted() && Objects.equals(asPlanned, Boolean.TRUE);
-    }
-
-    @Override
-    public void setRecords(List<Record> records) {
-        this.records = records;
+        return super.executedAsPlanned() && Objects.equals(asPlanned, Boolean.TRUE);
     }
 
     @Override
     public void reset() {
-        messages = new LinkedList<>();
-        records = new LinkedList<>();
-        fragments = new LinkedList<>();
-        quicPackets = new LinkedList<>();
-        quicFrames = new LinkedList<>();
-        setExecuted(null);
+        super.reset();
         asPlanned = null;
     }
 
     @Override
-    public List<ProtocolMessage> getSendMessages() {
-        return messages;
-    }
-
-    @Override
-    public List<Record> getSendRecords() {
-        return records;
-    }
-
-    @Override
-    public List<DtlsHandshakeMessageFragment> getSendFragments() {
-        return fragments;
-    }
-
-    @Override
-    public MessageActionDirection getMessageDirection() {
-        return MessageActionDirection.SENDING;
-    }
-
-    @Override
-    public Set<String> getAllSendingAliases() {
-        return new HashSet<>(Collections.singleton(connectionAlias));
-    }
-
-    public List<QuicPacket> getSendQuicPackets() {
-        return quicPackets;
-    }
-
-    @Override
-    public List<QuicFrame> getSendQuicFrames() {
-        return quicFrames;
+    protected List<LayerConfiguration> createLayerConfiguration(TlsContext tlsContext) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'createLayerConfiguration'");
     }
 }

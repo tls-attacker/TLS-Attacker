@@ -9,28 +9,17 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.http.HttpMessage;
+import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
-import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
-import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
-import de.rub.nds.tlsattacker.core.record.Record;
 import jakarta.xml.bind.annotation.XmlElementRef;
 import jakarta.xml.bind.annotation.XmlRootElement;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
-import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @XmlRootElement(name = "ReceiveTill")
-public class ReceiveTillAction extends CommonReceiveAction implements ReceivingAction {
+public class ReceiveTillAction extends CommonReceiveAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -62,8 +51,8 @@ public class ReceiveTillAction extends CommonReceiveAction implements ReceivingA
             sb.append(" (no messages set)");
         }
         sb.append("\n\tActual:");
-        if ((messages != null) && (!messages.isEmpty())) {
-            for (ProtocolMessage message : messages) {
+        if ((getReceivedMessages() != null) && (!getReceivedMessages().isEmpty())) {
+            for (ProtocolMessage message : getReceivedMessages()) {
                 sb.append(message.toCompactString());
                 sb.append(", ");
             }
@@ -92,11 +81,11 @@ public class ReceiveTillAction extends CommonReceiveAction implements ReceivingA
 
     @Override
     public boolean executedAsPlanned() {
-        if (messages == null) {
+        if (getReceivedMessages() == null) {
             return false;
         }
 
-        for (ProtocolMessage message : messages) {
+        for (ProtocolMessage message : getReceivedMessages()) {
             if (message.getClass().equals(waitTillMessage.getClass())) {
                 return true;
             }
@@ -114,119 +103,7 @@ public class ReceiveTillAction extends CommonReceiveAction implements ReceivingA
     }
 
     @Override
-    public void reset() {
-        messages = null;
-        records = null;
-        fragments = null;
-        quicFrames = null;
-        quicPackets = null;
-        setExecuted(null);
-    }
-
-    @Override
-    public List<ProtocolMessage> getReceivedMessages() {
-        return messages;
-    }
-
-    @Override
-    public List<Record> getReceivedRecords() {
-        return records;
-    }
-
-    @Override
-    public List<DtlsHandshakeMessageFragment> getReceivedFragments() {
-        return fragments;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = super.hashCode();
-        hash = 67 * hash + Objects.hashCode(this.waitTillMessage);
-        hash = 67 * hash + Objects.hashCode(this.messages);
-        hash = 67 * hash + Objects.hashCode(this.records);
-        hash = 67 * hash + Objects.hashCode(this.fragments);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final ReceiveTillAction other = (ReceiveTillAction) obj;
-        return Objects.equals(this.waitTillMessage, other.waitTillMessage);
-    }
-
-    @Override
-    public void normalize() {
-        super.normalize();
-    }
-
-    @Override
-    public void normalize(TlsAction defaultAction) {
-        super.normalize(defaultAction);
-    }
-
-    @Override
-    public void filter() {
-        super.filter();
-    }
-
-    @Override
-    public void filter(TlsAction defaultCon) {
-        super.filter(defaultCon);
-    }
-
-    @Override
-    public List<ProtocolMessageType> getGoingToReceiveProtocolMessageTypes() {
-        return new ArrayList<ProtocolMessageType>() {
-            {
-                add(waitTillMessage.getProtocolMessageType());
-            }
-        };
-    }
-
-    @Override
-    public List<HandshakeMessageType> getGoingToReceiveHandshakeMessageTypes() {
-        if (!waitTillMessage.isHandshakeMessage()) {
-            return new ArrayList<>();
-        }
-        return new ArrayList<HandshakeMessageType>() {
-            {
-                add(((HandshakeMessage) waitTillMessage).getHandshakeMessageType());
-            }
-        };
-    }
-
-    @Override
-    protected void distinctReceive(TlsContext tlsContext) {
-        if (waitTillMessage != null) {
-            receiveTill(tlsContext, waitTillMessage);
-        }
-    }
-
-    @Override
-    public List<HttpMessage> getReceivedHttpMessages() {
-        return httpMessages;
-    }
-
-    public Set<String> getAllReceivingAliases() {
-        return new HashSet<>(Collections.singleton(connectionAlias));
-    }
-
-    @Override
-    public MessageActionDirection getMessageDirection() {
-        return MessageActionDirection.RECEIVING;
-    }
-
-    @Override
-    public List<QuicFrame> getExpectedQuicFrames() {
-        return null;
+    protected List<LayerConfiguration> createLayerConfiguration(TlsContext tlsContext) {
+        return createReceiveTillConfiguration(tlsContext, waitTillMessage);
     }
 }

@@ -11,34 +11,28 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.http.HttpMessage;
-import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
+import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.*;
-import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
-import de.rub.nds.tlsattacker.core.record.Record;
-import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import jakarta.xml.bind.annotation.XmlElementRef;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @XmlRootElement(name = "Receive")
-public class ReceiveAction extends CommonReceiveAction implements ReceivingAction {
+public class ReceiveAction extends CommonReceiveAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -60,11 +54,14 @@ public class ReceiveAction extends CommonReceiveAction implements ReceivingActio
 
     public ReceiveAction(
             Set<ActionOption> actionOptions,
-            List<ProtocolMessage> messages,
-            List<QuicFrame> quicFrames,
+            List<ProtocolMessage> expectedMessages,
+            List<QuicFrame> expectedQuicFrames,
             List<QuicPacket> quicPackets) {
-        super(messages, quicFrames, quicPackets);
+        super();
         setActionOptions(actionOptions);
+        this.expectedMessages = expectedMessages;
+        this.expectedQuicFrames = expectedQuicFrames;
+        this.expectedQuicPackets = quicPackets;
     }
 
     public ReceiveAction(List<ProtocolMessage> expectedMessages) {
@@ -145,42 +142,6 @@ public class ReceiveAction extends CommonReceiveAction implements ReceivingActio
     }
 
     @Override
-    public void execute(State state) throws ActionExecutionException {
-        TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
-
-        if (isExecuted()) {
-            throw new ActionExecutionException("Action already executed!");
-        }
-
-        LOGGER.debug("Receiving...");
-        receive(
-                tlsContext,
-                expectedMessages,
-                fragments,
-                records,
-                expectedQuicFrames,
-                expectedQuicPackets,
-                httpMessages);
-
-        setExecuted(true);
-
-        String expected =
-                getReadableStringFromContainerList(
-                        expectedMessages,
-                        expectedHttpMessages,
-                        expectedQuicPackets,
-                        expectedQuicFrames);
-        LOGGER.debug("Receive Expected:" + expected);
-        String received =
-                getReadableStringFromContainerList(messages, httpMessages, quicPackets, quicFrames);
-        if (hasDefaultAlias()) {
-            LOGGER.info("Received Containers: " + received);
-        } else {
-            LOGGER.info("Received Containers (" + getConnectionAlias() + "): " + received);
-        }
-    }
-
-    @Override
     public String toString() {
         String string =
                 getClass().getSimpleName()
@@ -203,139 +164,9 @@ public class ReceiveAction extends CommonReceiveAction implements ReceivingActio
 
     @Override
     public String toCompactString() {
-        return super.toCompactString()
-                + getReadableStringFromContainerList(
-                        expectedMessages,
-                        expectedHttpMessages,
-                        expectedQuicPackets,
-                        expectedQuicFrames);
+        return getReadableStringFromConfiguration(asd);
     }
 
-    @Override
-    public boolean executedAsPlanned() {
-        if (getLayerStackProcessingResult() != null) {
-            for (LayerProcessingResult result :
-                    getLayerStackProcessingResult().getLayerProcessingResultList()) {
-                if (!result.isExecutedAsPlanned()) {
-                    LOGGER.warn(
-                            "ReceiveAction failed: Layer {}, did not execute as planned",
-                            result.getLayerType());
-                    return false;
-                }
-            }
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public void reset() {
-        messages = null;
-        records = null;
-        fragments = null;
-        quicFrames = null;
-        quicPackets = null;
-        setExecuted(null);
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = super.hashCode();
-        hash = 67 * hash + Objects.hashCode(this.expectedMessages);
-        hash = 67 * hash + Objects.hashCode(this.messages);
-        hash = 67 * hash + Objects.hashCode(this.records);
-        hash = 67 * hash + Objects.hashCode(this.fragments);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final ReceiveAction other = (ReceiveAction) obj;
-        if (!Objects.equals(this.expectedMessages, other.expectedMessages)) {
-            return false;
-        }
-        if (!Objects.equals(this.messages, other.messages)) {
-            return false;
-        }
-        if (!Objects.equals(this.records, other.records)) {
-            return false;
-        }
-        if (!Objects.equals(this.fragments, other.fragments)) {
-            return false;
-        }
-        if (!Objects.equals(this.quicFrames, other.quicFrames)) {
-            return false;
-        }
-        if (!Objects.equals(this.quicPackets, other.quicPackets)) {
-            return false;
-        }
-        return super.equals(obj);
-    }
-
-    @Override
-    public void normalize() {
-        super.normalize();
-        initEmptyLists();
-    }
-
-    @Override
-    public void normalize(TlsAction defaultAction) {
-        super.normalize(defaultAction);
-        initEmptyLists();
-    }
-
-    @Override
-    public void filter() {
-        super.filter();
-        filterEmptyLists();
-    }
-
-    @Override
-    public void filter(TlsAction defaultCon) {
-        super.filter(defaultCon);
-        filterEmptyLists();
-    }
-
-    private void filterEmptyLists() {
-        if (expectedMessages == null || expectedMessages.isEmpty()) {
-            expectedMessages = null;
-        }
-        if (expectedHttpMessages == null || expectedHttpMessages.isEmpty()) {
-            expectedHttpMessages = null;
-        }
-        if (expectedQuicFrames == null || expectedQuicFrames.isEmpty()) {
-            expectedQuicFrames = null;
-        }
-        if (expectedQuicPackets == null || expectedQuicPackets.isEmpty()) {
-            expectedQuicPackets = null;
-        }
-    }
-
-    private void initEmptyLists() {
-        if (expectedMessages == null) {
-            expectedMessages = new ArrayList<>();
-        }
-        if (expectedHttpMessages == null) {
-            expectedHttpMessages = new ArrayList<>();
-        }
-        if (expectedQuicFrames == null) {
-            expectedQuicFrames = new ArrayList<>();
-        }
-        if (expectedQuicPackets == null) {
-            expectedQuicPackets = new ArrayList<>();
-        }
-    }
-
-    @Override
     public List<ProtocolMessageType> getGoingToReceiveProtocolMessageTypes() {
         List<ProtocolMessageType> protocolMessageTypes = new ArrayList<>();
         for (ProtocolMessage msg : expectedMessages) {
@@ -344,7 +175,6 @@ public class ReceiveAction extends CommonReceiveAction implements ReceivingActio
         return protocolMessageTypes;
     }
 
-    @Override
     public List<HandshakeMessageType> getGoingToReceiveHandshakeMessageTypes() {
         List<HandshakeMessageType> handshakeMessageTypes = new ArrayList<>();
         for (ProtocolMessage msg : expectedMessages) {
@@ -392,39 +222,14 @@ public class ReceiveAction extends CommonReceiveAction implements ReceivingActio
     }
 
     @Override
-    public List<ProtocolMessage> getReceivedMessages() {
-        return getMessages();
-    }
-
-    @Override
-    public List<Record> getReceivedRecords() {
-        return getRecords();
-    }
-
-    @Override
-    public List<DtlsHandshakeMessageFragment> getReceivedFragments() {
-        return getFragments();
-    }
-
-    @Override
-    public List<HttpMessage> getReceivedHttpMessages() {
-        return getHttpMessages();
-    }
-
-    public void setReceivedMessages(List<ProtocolMessage> messages) {
-        setMessages(messages);
-    }
-
-    public void setReceivedRecords(List<Record> records) {
-        setRecords(records);
-    }
-
-    public Set<String> getAllReceivingAliases() {
-        return new HashSet<>(Collections.singleton(connectionAlias));
-    }
-
-    @Override
-    public MessageActionDirection getMessageDirection() {
-        return MessageActionDirection.RECEIVING;
+    protected List<LayerConfiguration> createLayerConfiguration(TlsContext tlsContext) {
+        return createReceivLayerConfiguration(
+                tlsContext,
+                expectedMessages,
+                null, // TODO Currently not supported
+                null, // TODO Currently not supported
+                expectedQuicFrames,
+                expectedQuicPackets,
+                expectedHttpMessages);
     }
 }

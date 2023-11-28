@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
+import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
@@ -22,67 +23,78 @@ import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
+import jakarta.xml.bind.annotation.XmlElementRef;
+import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /** todo print configured records */
 @XmlRootElement(name = "Send")
-public class SendAction extends MessageAction implements SendingAction {
+public class SendAction extends CommonSendAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SendAction() {
-        super();
-    }
+    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
+    protected List<ProtocolMessage> configuredMessages = new ArrayList<>();
+
+    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
+    protected List<HttpMessage> configuredHttpMessages = new ArrayList<>();
+
+    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
+    protected List<QuicFrame> configuredQuicFrames = new ArrayList<>();
+
+    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
+    protected List<QuicPacket> configuredQuicPackets = new ArrayList<>();
+
+    public SendAction() {}
 
     public SendAction(
-            List<ProtocolMessage> messages,
-            List<QuicFrame> quicFrames,
-            List<QuicPacket> quicPackets) {
-        super(messages, quicFrames, quicPackets);
+            List<ProtocolMessage> configuredMessages,
+            List<QuicFrame> configuredQuicFrames,
+            List<QuicPacket> configuredQuicPackets) {
+        this.configuredMessages = configuredMessages;
+        this.configuredQuicFrames = configuredQuicFrames;
+        this.configuredQuicPackets = configuredQuicPackets;
     }
 
     public SendAction(
             ActionOption option,
-            List<ProtocolMessage> messages,
-            List<QuicFrame> quicFrames,
-            List<QuicPacket> quicPackets) {
-        super(messages, quicFrames, quicPackets);
+            List<ProtocolMessage> configuredMessages,
+            List<QuicFrame> configuredQuicFrames,
+            List<QuicPacket> configuredQuicPackets) {
+        this(configuredMessages, configuredQuicFrames, configuredQuicPackets);
         if (option != null) {
             this.addActionOption(option);
         }
     }
 
-    public SendAction(ActionOption option, List<ProtocolMessage> messages) {
-        super(messages);
+    public SendAction(ActionOption option, List<ProtocolMessage> configuredMessages) {
+        this(configuredMessages);
         if (option != null) {
             this.addActionOption(option);
         }
     }
 
-    public SendAction(ActionOption option, ProtocolMessage... messages) {
-        this(option, new ArrayList<>(Arrays.asList(messages)));
+    public SendAction(ActionOption option, ProtocolMessage... configuredMessages) {
+        this(option, new ArrayList<>(Arrays.asList(configuredMessages)));
     }
 
-    public SendAction(List<ProtocolMessage> messages) {
-        super(messages);
+    public SendAction(List<ProtocolMessage> configuredMessages) {
+        this.configuredMessages = configuredMessages;
     }
 
-    public SendAction(QuicPacket... quicPackets) {
-        super(quicPackets);
+    public SendAction(QuicPacket... configuredQuicPackets) {
+        this.configuredQuicPackets = new ArrayList<>(Arrays.asList(configuredQuicPackets));
     }
 
-    public SendAction(QuicFrame... quicFrames) {
-        super(quicFrames);
+    public SendAction(QuicFrame... configuredQuicFrames) {
+        this.configuredQuicFrames = new ArrayList<>(Arrays.asList(configuredQuicFrames));
     }
 
     public SendAction(HttpMessage... httpMessage) {
@@ -205,31 +217,6 @@ public class SendAction extends MessageAction implements SendingAction {
     }
 
     @Override
-    public List<ProtocolMessage> getSendMessages() {
-        return messages;
-    }
-
-    @Override
-    public List<Record> getSendRecords() {
-        return records;
-    }
-
-    @Override
-    public List<DtlsHandshakeMessageFragment> getSendFragments() {
-        return fragments;
-    }
-
-    @Override
-    public List<QuicPacket> getSendQuicPackets() {
-        return quicPackets;
-    }
-
-    @Override
-    public List<QuicFrame> getSendQuicFrames() {
-        return quicFrames;
-    }
-
-    @Override
     public List<ProtocolMessageType> getGoingToSendProtocolMessageTypes() {
         List<ProtocolMessageType> protocolMessageTypes = new ArrayList<>();
         for (ProtocolMessage msg : messages) {
@@ -247,15 +234,5 @@ public class SendAction extends MessageAction implements SendingAction {
             }
         }
         return handshakeMessageTypes;
-    }
-
-    @Override
-    public Set<String> getAllSendingAliases() {
-        return new HashSet<>(Collections.singleton(connectionAlias));
-    }
-
-    @Override
-    public MessageActionDirection getMessageDirection() {
-        return MessageActionDirection.SENDING;
     }
 }

@@ -9,10 +9,8 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.state.State;
 import jakarta.xml.bind.annotation.XmlRootElement;
-import java.util.ArrayList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -33,9 +31,9 @@ public class BufferedGenericReceiveAction extends GenericReceiveAction {
     public void execute(State state) {
         super.execute(state);
         TlsContext tlsContext = state.getContext(getConnectionAlias()).getTlsContext();
-        tlsContext.getMessageBuffer().addAll(new ArrayList<ProtocolMessage>(messages));
-        tlsContext.getRecordBuffer().addAll(records);
-        LOGGER.debug("New message buffer size: {}", messages.size());
-        LOGGER.debug("New record buffer size: {}", records.size());
+        tlsContext.getMessageBuffer().addAll(getReceivedMessages());
+        tlsContext.getRecordBuffer().addAll(getReceivedRecords());
+        LOGGER.debug("New message buffer size: {}", tlsContext.getMessageBuffer().size());
+        LOGGER.debug("New record buffer size: {}", tlsContext.getRecordBuffer().size());
     }
 }

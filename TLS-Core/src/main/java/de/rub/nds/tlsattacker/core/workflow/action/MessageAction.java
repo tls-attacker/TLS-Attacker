@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.core.http.HttpMessage;
 import de.rub.nds.tlsattacker.core.layer.DataContainerFilter;
 import de.rub.nds.tlsattacker.core.layer.GenericReceiveLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.LayerStack;
 import de.rub.nds.tlsattacker.core.layer.LayerStackProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.ReceiveLayerConfiguration;
@@ -34,11 +35,12 @@ import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
+import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.StringJoiner;
 
 @XmlRootElement(name = "MessageAction")
 public abstract class MessageAction extends ConnectionBoundAction {
@@ -48,7 +50,8 @@ public abstract class MessageAction extends ConnectionBoundAction {
         RECEIVING
     }
 
-    @XmlTransient private LayerStackProcessingResult layerStackProcessingResult;
+    @XmlElement(name = "result")
+    private LayerStackProcessingResult layerStackProcessingResult;
 
     public MessageAction() {}
 
@@ -56,10 +59,30 @@ public abstract class MessageAction extends ConnectionBoundAction {
         super(connectionAlias);
     }
 
-    protected String getReadableString(List<LayerConfiguration> configurations) {
+    protected String getReadableStringFromConfiguration(List<LayerConfiguration> configurations) {
         StringBuilder sb = new StringBuilder();
         for (LayerConfiguration configuration : configurations) {
             sb.append(configuration.toCompactString());
+            sb.append(System.lineSeparator());
+        }
+        sb.trimToSize();
+        return sb.toString();
+    }
+
+    protected String getReadableStringFromDataContainers(List<DataContainer<?>> containerList) {
+        StringBuilder sb = new StringBuilder();
+        StringJoiner joiner = new StringJoiner(", ");
+        for (DataContainer container : containerList) {
+            joiner.add(container.toCompactString());
+        }
+        sb.trimToSize();
+        return sb.toString();
+    }
+
+    protected String getReadableString(LayerStackProcessingResult processingResult) {
+        StringBuilder sb = new StringBuilder();
+        for (LayerProcessingResult result : processingResult.getLayerProcessingResultList()) {
+            sb.append(result.toCompactString());
             sb.append(System.lineSeparator());
         }
         sb.trimToSize();
@@ -81,8 +104,7 @@ public abstract class MessageAction extends ConnectionBoundAction {
             List<Record> recordsToSend,
             List<QuicFrame> framesToSend,
             List<QuicPacket> packetsToSend,
-            List<HttpMessage> httpMessagesToSend)
-            throws IOException {
+            List<HttpMessage> httpMessagesToSend) {
         LayerStack layerStack = tlsContext.getLayerStack();
 
         LayerConfiguration dtlsConfiguration =
@@ -184,6 +206,16 @@ public abstract class MessageAction extends ConnectionBoundAction {
     }
 
     protected List<LayerConfiguration> createReceiveTillConfiguration(
+            TlsContext tlsContext, List<QuicFrame> quicFrame, List<QuicPacket> quicPacket) {
+        LayerStack layerStack = tlsContext.getLayerStack();
+
+        LayerConfiguration messageConfiguration =
+                new ReceiveTillLayerConfiguration(ImplementedLayers.QUICFRAME, quicFrame);
+
+        return sortLayerConfigurations(layerStack, messageConfiguration);
+    }
+
+    protected List<LayerConfiguration> createReceiveTillConfiguration(
             TlsContext tlsContext, ProtocolMessage protocolMessageToReceive) {
         LayerStack layerStack = tlsContext.getLayerStack();
 
@@ -209,10 +241,15 @@ public abstract class MessageAction extends ConnectionBoundAction {
 
     protected LayerStackProcessingResult getReceiveResult(
             LayerStack layerStack, List<LayerConfiguration> layerConfigurationList) {
-        LayerStackProcessingResult processingResult =
-                layerStack.receiveData(layerConfigurationList);
-        setLayerStackProcessingResult(processingResult);
-        return processingResult;
+        layerStackProcessingResult = layerStack.receiveData(layerConfigurationList);
+        return layerStackProcessingResult;
+    }
+
+    protected LayerStackProcessingResult getSendResult(
+            LayerStack layerStack, List<LayerConfiguration> layerConfigurationList)
+            throws IOException {
+        layerStackProcessingResult = layerStack.sendData(layerConfigurationList);
+        return layerStackProcessingResult;
     }
 
     public LayerStackProcessingResult getLayerStackProcessingResult() {
@@ -239,4 +276,28 @@ public abstract class MessageAction extends ConnectionBoundAction {
     }
 
     public abstract MessageActionDirection getMessageDirection();
+
+    @Override
+    public void reset() {
+        layerStackProcessingResult = null;
+        setExecuted(null);
+    }
+
+    public List<DataContainer<?>> getDataContainersForLayer(LayerType type) {
+        if (getLayerStackProcessingResult() == null) {
+            return null;
+        } else {
+            for (LayerProcessingResult<?> result :
+                    getLayerStackProcessingResult().getLayerProcessingResultList()) {
+                if (result.getLayerType() == type) {
+                    return (List<DataContainer<?>>) result.getUsedContainers();
+                }
+            }
+            return new LinkedList<>();
+        }
+    }
+
+    void setLayerStackProcessingResult(LayerStackProcessingResult layerStackProcessingResult) {
+        this.layerStackProcessingResult = layerStackProcessingResult;
+    }
 }

@@ -8,10 +8,14 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
+import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
+import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
+import jakarta.xml.bind.annotation.XmlElementRef;
+import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,9 +25,15 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @XmlRootElement
-public class ReceiveQuicAction extends ReceiveAction {
+public class ReceiveQuicAction extends CommonReceiveAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
+
+    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
+    protected List<QuicFrame> expectedQuicFrames = null;
+
+    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
+    protected List<QuicPacket> expectedQuicPackets = null;
 
     public ReceiveQuicAction() {
         super();
@@ -31,12 +41,12 @@ public class ReceiveQuicAction extends ReceiveAction {
 
     public ReceiveQuicAction(QuicFrame... expectedQuicFrames) {
         super();
-        this.expectedQuicFrames = new ArrayList(Arrays.asList(expectedQuicFrames));
+        this.expectedQuicFrames = new ArrayList<>(Arrays.asList(expectedQuicFrames));
     }
 
     public ReceiveQuicAction(QuicPacket... expectedQuicPackets) {
         super();
-        this.expectedQuicPackets = new ArrayList(Arrays.asList(expectedQuicPackets));
+        this.expectedQuicPackets = new ArrayList<>(Arrays.asList(expectedQuicPackets));
     }
 
     public ReceiveQuicAction(ActionOption actionOption, QuicFrame... expectedQuicFrames) {
@@ -74,7 +84,8 @@ public class ReceiveQuicAction extends ReceiveAction {
     }
 
     @Override
-    protected void distinctReceive(TlsContext tlsContext) {
-        receiveQuic(tlsContext, expectedQuicFrames, expectedQuicPackets);
+    protected List<LayerConfiguration> createLayerConfiguration(TlsContext tlsContext) {
+        return createReceivLayerConfiguration(
+                tlsContext, null, null, null, expectedQuicFrames, expectedQuicPackets, null);
     }
 }

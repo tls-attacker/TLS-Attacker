@@ -27,22 +27,15 @@ public class MultiReceiveAction extends GenericReceiveAction {
     private List<ReceiveAction> expectedActionCandidates;
     @XmlTransient private ReceiveAction selectedAction;
 
-    public MultiReceiveAction() {
-        super.messages = null;
-        super.records = null;
-    }
+    public MultiReceiveAction() {}
 
     public MultiReceiveAction(ReceiveAction... receiveActions) {
         this.expectedActionCandidates = Arrays.asList(receiveActions);
-        super.messages = null;
-        super.records = null;
     }
 
     public MultiReceiveAction(String connectionAlias, ReceiveAction... receiveActions) {
         super(connectionAlias);
         this.expectedActionCandidates = Arrays.asList(receiveActions);
-        super.messages = null;
-        super.records = null;
     }
 
     @Override
@@ -64,8 +57,6 @@ public class MultiReceiveAction extends GenericReceiveAction {
                 break;
             }
         }
-        selectedAction.setReceivedMessages(super.getReceivedMessages());
-        selectedAction.setReceivedRecords(super.getReceivedRecords());
         selectedAction.setExecuted(super.isExecuted());
     }
 
@@ -93,7 +84,7 @@ public class MultiReceiveAction extends GenericReceiveAction {
     }
 
     private boolean compareExpectedActionsWithReceivedActions2(ReceiveAction actionCandidate) {
-        actionCandidate.setReceivedMessages(super.getReceivedMessages());
+        actionCandidate.setLayerStackProcessingResult(super.getLayerStackProcessingResult());
         return actionCandidate.executedAsPlanned();
     }
 }

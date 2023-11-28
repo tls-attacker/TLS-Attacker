@@ -13,6 +13,8 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.http.HttpMessage;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
+import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
+import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.record.Record;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +29,10 @@ public interface ReceivingAction {
     List<DtlsHandshakeMessageFragment> getReceivedFragments();
 
     List<HttpMessage> getReceivedHttpMessages();
+
+    List<QuicFrame> getReceivedQuicFrames();
+
+    List<QuicPacket> getReceivedQuicPackets();
 
     default List<ProtocolMessageType> getGoingToReceiveProtocolMessageTypes() {
         return new ArrayList<>();
