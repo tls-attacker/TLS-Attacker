@@ -142,7 +142,7 @@ public class SerializationFullTest {
         SendAction action = new SendAction(messages);
         List<Record> records = new LinkedList<>();
         records.add(new Record());
-        action.setRecords(records);
+        action.setConfiguredRecords(records);
         trace.addTlsAction(action);
 
         File f = new File(tempDir, "serializationFullTest.xml");

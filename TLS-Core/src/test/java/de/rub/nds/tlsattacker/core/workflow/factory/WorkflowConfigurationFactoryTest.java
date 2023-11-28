@@ -51,12 +51,12 @@ public class WorkflowConfigurationFactoryTest {
                             .equals(right.getMessageActions().get(i).getClass())) {
                 return false;
             }
-            for (int j = 0; j < leftMessageAction.getMessages().size(); j++) {
+            for (int j = 0; j < leftMessageAction.getExpectedMessages().size(); j++) {
                 if (!leftMessageAction
-                        .getMessages()
+                        .getExpectedMessages()
                         .get(j)
                         .getClass()
-                        .equals(rightMessageAction.getMessages().get(j).getClass())) {
+                        .equals(rightMessageAction.getExpectedMessages().get(j).getClass())) {
                     return false;
                 }
             }
@@ -70,7 +70,7 @@ public class WorkflowConfigurationFactoryTest {
                         != rightReceiveAction.getExpectedMessages().size()) {
                     return false;
                 }
-                for (int j = 0; j < leftReceiveAction.getMessages().size(); j++) {
+                for (int j = 0; j < leftReceiveAction.getExpectedMessages().size(); j++) {
                     if (!leftReceiveAction
                             .getExpectedMessages()
                             .get(j)
@@ -128,8 +128,8 @@ public class WorkflowConfigurationFactoryTest {
                     assertNotNull(((ReceiveAction) action).getExpectedMessages());
                     assertFalse(((ReceiveAction) action).getExpectedMessages().isEmpty());
                 } else {
-                    assertNotNull(action.getMessages());
-                    assertFalse(action.getMessages().isEmpty());
+                    assertNotNull(action.getExpectedMessages());
+                    assertFalse(action.getExpectedMessages().isEmpty());
                 }
             }
             for (WorkflowTrace trace : list) {
@@ -171,11 +171,11 @@ public class WorkflowConfigurationFactoryTest {
 
         lastAction = (ReceiveAction) helloWorkflow.getLastMessageAction();
 
-        assertEquals(1, firstAction.getMessages().size());
+        assertEquals(1, firstAction.getExpectedMessages().size());
         assertTrue(lastAction.getExpectedMessages().size() >= 1);
 
         assertEquals(
-                firstAction.getMessages().get(0).getClass(),
+                firstAction.getExpectedMessages().get(0).getClass(),
                 de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage.class);
         assertEquals(
                 lastAction.getExpectedMessages().get(0).getClass(),
@@ -190,7 +190,7 @@ public class WorkflowConfigurationFactoryTest {
                         WorkflowTraceType.HELLO, RunningModeType.CLIENT);
 
         firstAction = helloWorkflow.getMessageActions().get(0);
-        clientHelloMessage = (ClientHelloMessage) firstAction.getMessages().get(0);
+        clientHelloMessage = (ClientHelloMessage) firstAction.getExpectedMessages().get(0);
 
         assertTrue(helloWorkflow.getMessageActions().size() >= 4);
         assertNotNull(helloWorkflow.getMessageActions().get(1));
@@ -202,7 +202,8 @@ public class WorkflowConfigurationFactoryTest {
         assertEquals(
                 HelloVerifyRequestMessage.class,
                 ((ReceiveAction) messageAction1).getExpectedMessages().get(0).getClass());
-        assertEquals(ClientHelloMessage.class, messageAction2.getMessages().get(0).getClass());
+        assertEquals(
+                ClientHelloMessage.class, messageAction2.getExpectedMessages().get(0).getClass());
 
         // if (highestProtocolVersion != TLS13)
         lastAction = (ReceiveAction) helloWorkflow.getLastMessageAction();
@@ -249,7 +250,10 @@ public class WorkflowConfigurationFactoryTest {
 
         assertEquals(
                 FinishedMessage.class,
-                lastAction.getMessages().get(lastAction.getMessages().size() - 1).getClass());
+                lastAction
+                        .getExpectedMessages()
+                        .get(lastAction.getExpectedMessages().size() - 1)
+                        .getClass());
 
         // Variants
         // if(config.isClientAuthentication())
@@ -259,10 +263,12 @@ public class WorkflowConfigurationFactoryTest {
                 workflowConfigurationFactory.createWorkflowTrace(
                         WorkflowTraceType.HANDSHAKE, RunningModeType.CLIENT);
         lastAction = handshakeWorkflow.getLastMessageAction();
-        assertEquals(ChangeCipherSpecMessage.class, lastAction.getMessages().get(0).getClass());
-        assertEquals(CertificateMessage.class, lastAction.getMessages().get(1).getClass());
-        assertEquals(CertificateVerifyMessage.class, lastAction.getMessages().get(2).getClass());
-        assertEquals(FinishedMessage.class, lastAction.getMessages().get(3).getClass());
+        assertEquals(
+                ChangeCipherSpecMessage.class, lastAction.getExpectedMessages().get(0).getClass());
+        assertEquals(CertificateMessage.class, lastAction.getExpectedMessages().get(1).getClass());
+        assertEquals(
+                CertificateVerifyMessage.class, lastAction.getExpectedMessages().get(2).getClass());
+        assertEquals(FinishedMessage.class, lastAction.getExpectedMessages().get(3).getClass());
 
         // ! TLS13 config.setHighestProtocolVersion(ProtocolVersion.TLS13);
         config.setHighestProtocolVersion(ProtocolVersion.DTLS10);
@@ -276,24 +282,25 @@ public class WorkflowConfigurationFactoryTest {
 
         messageAction4 = handshakeWorkflow.getMessageActions().get(4);
 
-        assertEquals(CertificateMessage.class, messageAction4.getMessages().get(0).getClass());
+        assertEquals(
+                CertificateMessage.class, messageAction4.getExpectedMessages().get(0).getClass());
         assertEquals(
                 CertificateVerifyMessage.class,
                 messageAction4
-                        .getMessages()
-                        .get(messageAction4.getMessages().size() - 3)
+                        .getExpectedMessages()
+                        .get(messageAction4.getExpectedMessages().size() - 3)
                         .getClass());
         assertEquals(
                 ChangeCipherSpecMessage.class,
                 messageAction4
-                        .getMessages()
-                        .get(messageAction4.getMessages().size() - 2)
+                        .getExpectedMessages()
+                        .get(messageAction4.getExpectedMessages().size() - 2)
                         .getClass());
         assertEquals(
                 FinishedMessage.class,
                 messageAction4
-                        .getMessages()
-                        .get(messageAction4.getMessages().size() - 1)
+                        .getExpectedMessages()
+                        .get(messageAction4.getExpectedMessages().size() - 1)
                         .getClass());
 
         receiveAction = (ReceiveAction) handshakeWorkflow.getLastMessageAction();
@@ -325,7 +332,8 @@ public class WorkflowConfigurationFactoryTest {
 
         messageAction3 = fullWorkflow.getMessageActions().get(3);
 
-        assertEquals(ApplicationMessage.class, messageAction3.getMessages().get(0).getClass());
+        assertEquals(
+                ApplicationMessage.class, messageAction3.getExpectedMessages().get(0).getClass());
 
         // Invariants
         config.setServerSendsApplicationData(true);
@@ -345,8 +353,10 @@ public class WorkflowConfigurationFactoryTest {
         assertEquals(
                 ApplicationMessage.class,
                 ((ReceiveAction) messageAction3).getExpectedMessages().get(0).getClass());
-        assertEquals(ApplicationMessage.class, messageAction4.getMessages().get(0).getClass());
-        assertEquals(HeartbeatMessage.class, messageAction4.getMessages().get(1).getClass());
+        assertEquals(
+                ApplicationMessage.class, messageAction4.getExpectedMessages().get(0).getClass());
+        assertEquals(
+                HeartbeatMessage.class, messageAction4.getExpectedMessages().get(1).getClass());
         assertEquals(ReceiveAction.class, messageAction5.getClass());
         assertEquals(
                 HeartbeatMessage.class,

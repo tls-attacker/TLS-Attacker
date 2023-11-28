@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.http.HttpMessage;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
-import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
@@ -20,6 +19,8 @@ import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
+import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
+import de.rub.nds.tlsattacker.core.workflow.container.ActionHelperUtil;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -34,6 +35,14 @@ public abstract class CommonReceiveAction extends MessageAction implements Recei
 
     public CommonReceiveAction(String connectionAlias) {
         super(connectionAlias);
+    }
+
+    public CommonReceiveAction(Set<ActionOption> actionOptions, String connectionAlias) {
+        super(actionOptions, connectionAlias);
+    }
+
+    public CommonReceiveAction(Set<ActionOption> actionOptions) {
+        super(actionOptions);
     }
 
     @Override
@@ -73,42 +82,54 @@ public abstract class CommonReceiveAction extends MessageAction implements Recei
 
     @Override
     public List<ProtocolMessage> getReceivedMessages() {
-        return getDataContainersForLayer(ImplementedLayers.MESSAGE).stream()
+        return ActionHelperUtil.getDataContainersForLayer(
+                        ImplementedLayers.MESSAGE, getLayerStackProcessingResult())
+                .stream()
                 .map(container -> (ProtocolMessage) container)
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<Record> getReceivedRecords() {
-        return getDataContainersForLayer(ImplementedLayers.RECORD).stream()
+        return ActionHelperUtil.getDataContainersForLayer(
+                        ImplementedLayers.RECORD, getLayerStackProcessingResult())
+                .stream()
                 .map(container -> (Record) container)
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<DtlsHandshakeMessageFragment> getReceivedFragments() {
-        return getDataContainersForLayer(ImplementedLayers.DTLS_FRAGMENT).stream()
+        return ActionHelperUtil.getDataContainersForLayer(
+                        ImplementedLayers.DTLS_FRAGMENT, getLayerStackProcessingResult())
+                .stream()
                 .map(container -> (DtlsHandshakeMessageFragment) container)
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<HttpMessage> getReceivedHttpMessages() {
-        return getDataContainersForLayer(ImplementedLayers.HTTP).stream()
+        return ActionHelperUtil.getDataContainersForLayer(
+                        ImplementedLayers.HTTP, getLayerStackProcessingResult())
+                .stream()
                 .map(container -> (HttpMessage) container)
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<QuicFrame> getReceivedQuicFrames() {
-        return getDataContainersForLayer(ImplementedLayers.QUICFRAME).stream()
+        return ActionHelperUtil.getDataContainersForLayer(
+                        ImplementedLayers.QUICFRAME, getLayerStackProcessingResult())
+                .stream()
                 .map(container -> (QuicFrame) container)
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<QuicPacket> getReceivedQuicPackets() {
-        return getDataContainersForLayer(ImplementedLayers.QUICPACKET).stream()
+        return ActionHelperUtil.getDataContainersForLayer(
+                        ImplementedLayers.QUICPACKET, getLayerStackProcessingResult())
+                .stream()
                 .map(container -> (QuicPacket) container)
                 .collect(Collectors.toList());
     }
@@ -116,17 +137,7 @@ public abstract class CommonReceiveAction extends MessageAction implements Recei
     @Override
     public boolean executedAsPlanned() {
         if (getLayerStackProcessingResult() != null) {
-            for (LayerProcessingResult result :
-                    getLayerStackProcessingResult().getLayerProcessingResultList()) {
-                if (!result.isExecutedAsPlanned()) {
-                    LOGGER.warn(
-                            "{} failed: Layer {}, did not execute as planned",
-                            this.getClass().getSimpleName(),
-                            result.getLayerType());
-                    return false;
-                }
-            }
-            return true;
+            return getLayerStackProcessingResult().executedAsPlanned();
         }
         return false;
     }

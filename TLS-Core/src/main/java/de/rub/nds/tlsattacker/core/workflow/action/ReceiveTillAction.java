@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.workflow.container.ActionHelperUtil;
 import jakarta.xml.bind.annotation.XmlElementRef;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.List;
@@ -104,6 +105,6 @@ public class ReceiveTillAction extends CommonReceiveAction {
 
     @Override
     protected List<LayerConfiguration> createLayerConfiguration(TlsContext tlsContext) {
-        return createReceiveTillConfiguration(tlsContext, waitTillMessage);
+        return ActionHelperUtil.createReceiveTillConfiguration(tlsContext, waitTillMessage);
     }
 }

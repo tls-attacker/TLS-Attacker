@@ -15,8 +15,13 @@ import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
-import de.rub.nds.tlsattacker.core.workflow.action.*;
+import de.rub.nds.tlsattacker.core.workflow.action.ChangeCipherSuiteAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ChangeClientRandomAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
+import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
+import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import java.util.LinkedList;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -199,10 +204,10 @@ public class WorkflowTraceTest {
     @Test
     public void testGetFirstReceivedMessage() {
         SendAction sClientHello = new SendAction();
-        sClientHello.setMessages(new ClientHelloMessage());
+        sClientHello.setConfiguredMessages(List.of(new ClientHelloMessage()));
 
         SendAction sHeartbeat = new SendAction();
-        sHeartbeat.setMessages(new HeartbeatMessage());
+        sHeartbeat.setConfiguredMessages(List.of(new HeartbeatMessage()));
 
         AlertMessage am = new AlertMessage();
         ServerHelloMessage shm = new ServerHelloMessage();
@@ -210,8 +215,8 @@ public class WorkflowTraceTest {
         ReceiveAction rca = new ReceiveAction();
         ReceiveAction sha = new ReceiveAction();
 
-        rca.setMessages(am);
-        sha.setMessages(shm);
+        rca.setExpectedMessages(am);
+        sha.setExpectedMessages(shm);
 
         trace.addTlsActions(sClientHello, rca, sHeartbeat, sha);
         assertEquals(am, trace.getFirstReceivedMessage(AlertMessage.class));
@@ -221,10 +226,10 @@ public class WorkflowTraceTest {
     @Test
     public void testGetFirstSendMessage() {
         ReceiveAction rcvAlertMessage = new ReceiveAction();
-        rcvAlertMessage.setMessages(new AlertMessage());
+        rcvAlertMessage.setExpectedMessages(new AlertMessage());
 
         ReceiveAction rcvServerHello = new ReceiveAction();
-        rcvServerHello.setMessages(new ServerHelloMessage());
+        rcvServerHello.setExpectedMessages(new ServerHelloMessage());
 
         ClientHelloMessage ch = new ClientHelloMessage(config);
         HeartbeatMessage hb = new HeartbeatMessage();

@@ -341,7 +341,7 @@ public class WorkflowConfigurationFactory {
                             new FinishedMessage()));
         }
         if (config.getExpectHandshakeDoneQuicFrame()) {
-            workflowTrace.addTlsAction(new ReceiveQuicTillAction(5, new HandshakeDoneFrame()));
+            workflowTrace.addTlsAction(new ReceiveQuicTillAction(new HandshakeDoneFrame()));
         }
 
         return workflowTrace;
@@ -584,14 +584,12 @@ public class WorkflowConfigurationFactory {
     public void appendHttpMessages(AliasedConnection connection, WorkflowTrace trace) {
         MessageAction action =
                 MessageActionFactory.createTLSAction(
-                        config, connection, ConnectionEndType.CLIENT, new ApplicationMessage());
+                        config, connection, ConnectionEndType.CLIENT, new HttpRequestMessage());
         trace.addTlsAction(action);
-        action.getHttpMessages().add(new HttpRequestMessage(config));
         action =
                 MessageActionFactory.createTLSAction(
-                        config, connection, ConnectionEndType.SERVER, new ApplicationMessage());
+                        config, connection, ConnectionEndType.SERVER, new HttpResponseMessage());
         trace.addTlsAction(action);
-        action.getHttpMessages().add(new HttpResponseMessage());
     }
 
     private WorkflowTrace createSimpleMitmProxyWorkflow() {

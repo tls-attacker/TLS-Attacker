@@ -14,12 +14,15 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.http.HttpMessage;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.*;
+import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
+import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
+import de.rub.nds.tlsattacker.core.workflow.container.ActionHelperUtil;
 import jakarta.xml.bind.annotation.XmlElementRef;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlRootElement;
@@ -37,16 +40,22 @@ public class ReceiveAction extends CommonReceiveAction {
     private static final Logger LOGGER = LogManager.getLogger();
 
     @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
-    protected List<ProtocolMessage> expectedMessages = new ArrayList<>();
+    protected List<ProtocolMessage> expectedMessages;
 
     @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
-    protected List<HttpMessage> expectedHttpMessages = new ArrayList<>();
+    protected List<Record> expectedRecords;
 
     @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
-    protected List<QuicFrame> expectedQuicFrames = new ArrayList<>();
+    protected List<DtlsHandshakeMessageFragment> expectedDtlsFragments;
 
     @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
-    protected List<QuicPacket> expectedQuicPackets = new ArrayList<>();
+    protected List<HttpMessage> expectedHttpMessages;
+
+    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
+    protected List<QuicFrame> expectedQuicFrames;
+
+    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
+    protected List<QuicPacket> expectedQuicPackets;
 
     public ReceiveAction() {
         super();
@@ -148,23 +157,30 @@ public class ReceiveAction extends CommonReceiveAction {
                         + ": "
                         + (isExecuted() ? "\n" : "(not executed)\n")
                         + "\tExpected: "
-                        + getReadableStringFromContainerList(
-                                expectedMessages,
-                                expectedHttpMessages,
-                                expectedQuicPackets,
-                                expectedQuicFrames);
+                        + getReadableStringFromDataContainers(
+                                (List<DataContainer<?>>) (List<?>) expectedMessages,
+                                (List<DataContainer<?>>) (List<?>) expectedHttpMessages,
+                                (List<DataContainer<?>>) (List<?>) expectedQuicPackets,
+                                (List<DataContainer<?>>) (List<?>) expectedQuicFrames);
         if (isExecuted()) {
             string +=
                     "\n\tActual:"
-                            + getReadableStringFromContainerList(
-                                    messages, httpMessages, quicPackets, quicFrames);
+                            + getReadableStringFromDataContainers(
+                                    (List<DataContainer<?>>) (List<?>) expectedMessages,
+                                    (List<DataContainer<?>>) (List<?>) expectedHttpMessages,
+                                    (List<DataContainer<?>>) (List<?>) expectedQuicPackets,
+                                    (List<DataContainer<?>>) (List<?>) expectedQuicFrames);
         }
         return string;
     }
 
     @Override
     public String toCompactString() {
-        return getReadableStringFromConfiguration(asd);
+        return getReadableStringFromDataContainers(
+                (List<DataContainer<?>>) (List<?>) expectedMessages,
+                (List<DataContainer<?>>) (List<?>) expectedHttpMessages,
+                (List<DataContainer<?>>) (List<?>) expectedQuicPackets,
+                (List<DataContainer<?>>) (List<?>) expectedQuicFrames);
     }
 
     public List<ProtocolMessageType> getGoingToReceiveProtocolMessageTypes() {
@@ -221,13 +237,29 @@ public class ReceiveAction extends CommonReceiveAction {
         this.expectedQuicPackets = expectedQuicPackets;
     }
 
+    public List<Record> getExpectedRecords() {
+        return expectedRecords;
+    }
+
+    public void setExpectedRecords(List<Record> expectedRecords) {
+        this.expectedRecords = expectedRecords;
+    }
+
+    public List<DtlsHandshakeMessageFragment> getExpectedDtlsFragments() {
+        return expectedDtlsFragments;
+    }
+
+    public void setExpectedDtlsFragments(List<DtlsHandshakeMessageFragment> expectedDtlsFragments) {
+        this.expectedDtlsFragments = expectedDtlsFragments;
+    }
+
     @Override
     protected List<LayerConfiguration> createLayerConfiguration(TlsContext tlsContext) {
-        return createReceivLayerConfiguration(
+        return ActionHelperUtil.createReceivLayerConfiguration(
                 tlsContext,
                 expectedMessages,
-                null, // TODO Currently not supported
-                null, // TODO Currently not supported
+                expectedDtlsFragments,
+                expectedRecords,
                 expectedQuicFrames,
                 expectedQuicPackets,
                 expectedHttpMessages);

@@ -19,6 +19,7 @@ import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
+import de.rub.nds.tlsattacker.core.workflow.container.ActionHelperUtil;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
@@ -34,6 +35,10 @@ public abstract class CommonSendAction extends MessageAction implements SendingA
 
     public CommonSendAction(String connectionAlias) {
         super(connectionAlias);
+    }
+
+    public CommonSendAction(Set<ActionOption> actionOptions, String connectionAlias) {
+        super(actionOptions, connectionAlias);
     }
 
     @Override
@@ -54,13 +59,17 @@ public abstract class CommonSendAction extends MessageAction implements SendingA
             throw new ActionExecutionException("Action already executed!");
         }
         List<LayerConfiguration> layerConfigurations = createLayerConfiguration(tlsContext);
-        String sending = getReadableStringFromConfiguration(layerConfigurations);
-        if (hasDefaultAlias()) {
-            LOGGER.info("Sending messages: {}", sending);
+        if (layerConfigurations == null) {
+            LOGGER.info("Not sending messages");
         } else {
-            LOGGER.info("Sending messages ({}): {}", connectionAlias, sending);
-        }
 
+            String sending = getReadableStringFromConfiguration(layerConfigurations);
+            if (hasDefaultAlias()) {
+                LOGGER.info("Sending messages: {}", sending);
+            } else {
+                LOGGER.info("Sending messages ({}): {}", connectionAlias, sending);
+            }
+        }
         try {
             getSendResult(tlsContext.getLayerStack(), layerConfigurations);
             setExecuted(true);
@@ -77,7 +86,8 @@ public abstract class CommonSendAction extends MessageAction implements SendingA
      * Create a layer configuration for the send action. This function takes the tls context as
      * input as the configuration can depend on the current state of the connection. Note that this
      * function may change the context, and therefore, calling it twice in a row may lead to
-     * distinct configurations.
+     * distinct configurations. If an action does not wish to send messages, it can return null
+     * here.
      *
      * @param tlsContext The current TLS context.
      * @return A list of layer configurations that should be executed.
@@ -86,41 +96,54 @@ public abstract class CommonSendAction extends MessageAction implements SendingA
 
     @Override
     public final List<DtlsHandshakeMessageFragment> getSendFragments() {
-        return getDataContainersForLayer(ImplementedLayers.DTLS_FRAGMENT).stream()
+        return ActionHelperUtil.getDataContainersForLayer(
+                        ImplementedLayers.DTLS_FRAGMENT, getLayerStackProcessingResult())
+                .stream()
                 .map(container -> (DtlsHandshakeMessageFragment) container)
                 .collect(Collectors.toList());
     }
 
     @Override
     public final List<ProtocolMessage> getSendMessages() {
-        return getDataContainersForLayer(ImplementedLayers.MESSAGE).stream()
+        return ActionHelperUtil.getDataContainersForLayer(
+                        ImplementedLayers.MESSAGE, getLayerStackProcessingResult())
+                .stream()
                 .map(container -> (ProtocolMessage) container)
                 .collect(Collectors.toList());
     }
 
     @Override
     public final List<QuicFrame> getSendQuicFrames() {
-        return getDataContainersForLayer(ImplementedLayers.QUICFRAME).stream()
+        return ActionHelperUtil.getDataContainersForLayer(
+                        ImplementedLayers.QUICFRAME, getLayerStackProcessingResult())
+                .stream()
                 .map(container -> (QuicFrame) container)
                 .collect(Collectors.toList());
     }
 
     @Override
     public final List<QuicPacket> getSendQuicPackets() {
-        return getDataContainersForLayer(ImplementedLayers.QUICPACKET).stream()
+        return ActionHelperUtil.getDataContainersForLayer(
+                        ImplementedLayers.QUICPACKET, getLayerStackProcessingResult())
+                .stream()
                 .map(container -> (QuicPacket) container)
                 .collect(Collectors.toList());
     }
 
     @Override
     public final List<Record> getSendRecords() {
-        return getDataContainersForLayer(ImplementedLayers.RECORD).stream()
+        return ActionHelperUtil.getDataContainersForLayer(
+                        ImplementedLayers.RECORD, getLayerStackProcessingResult())
+                .stream()
                 .map(container -> (Record) container)
                 .collect(Collectors.toList());
     }
 
     @Override
     public boolean executedAsPlanned() {
-        return isExecuted();
+        if (getLayerStackProcessingResult() != null) {
+            return getLayerStackProcessingResult().executedAsPlanned();
+        }
+        return false;
     }
 }

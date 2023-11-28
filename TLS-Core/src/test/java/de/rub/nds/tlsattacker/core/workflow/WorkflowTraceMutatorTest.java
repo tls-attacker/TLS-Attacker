@@ -38,7 +38,7 @@ public class WorkflowTraceMutatorTest {
 
     @BeforeEach
     public void setUp() {
-        config = Config.createConfig();
+        config = new Config();
         trace = new WorkflowTrace();
 
         rcvHeartbeat = new ReceiveAction();
@@ -56,10 +56,10 @@ public class WorkflowTraceMutatorTest {
         sClientHello = new SendAction();
         sFinishedMessage = new SendAction();
 
-        sHeartbeat.setMessages(new HeartbeatMessage());
-        sAlertMessage.setMessages(new AlertMessage());
-        sClientHello.setMessages(new ClientHelloMessage());
-        sFinishedMessage.setMessages(new FinishedMessage());
+        sHeartbeat.setConfiguredMessages(List.of(new HeartbeatMessage()));
+        sAlertMessage.setConfiguredMessages(List.of(new AlertMessage()));
+        sClientHello.setConfiguredMessages(List.of(new ClientHelloMessage()));
+        sFinishedMessage.setConfiguredMessages(List.of(new FinishedMessage()));
     }
 
     @Test

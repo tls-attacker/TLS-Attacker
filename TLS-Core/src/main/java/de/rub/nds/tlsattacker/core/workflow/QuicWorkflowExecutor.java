@@ -145,11 +145,11 @@ public class QuicWorkflowExecutor extends WorkflowExecutor {
                 new ConnectionCloseFrame(QuicTransportErrorCodes.NO_ERROR.getValue());
         SendAction sendAction =
                 new SendAction(state.getWorkflowTrace().getConnections().get(0).getAlias());
-        sendAction.setQuicFrames(frame);
+        sendAction.setConfiguredQuicFrames(List.of(frame));
         if (handshakeComplete) {
-            sendAction.setPackets(new OneRTTPacket());
+            sendAction.setConfiguredQuicPackets(List.of(new OneRTTPacket()));
         } else {
-            sendAction.setPackets(new InitialPacket());
+            sendAction.setConfiguredQuicPackets(List.of(new InitialPacket()));
         }
 
         sendAction.getActionOptions().add(ActionOption.MAY_FAIL);

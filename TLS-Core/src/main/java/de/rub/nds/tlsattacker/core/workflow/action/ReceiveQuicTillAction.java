@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
+import de.rub.nds.tlsattacker.core.workflow.container.ActionHelperUtil;
 import jakarta.xml.bind.annotation.XmlElementRef;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlRootElement;
@@ -50,20 +51,20 @@ public class ReceiveQuicTillAction extends CommonReceiveAction {
     }
 
     public ReceiveQuicTillAction(ActionOption actionOption, QuicFrame... expectedQuicFrames) {
-        super(actionOption);
+        super(Set.of(actionOption));
         this.expectedQuicFrames = new ArrayList<>(Arrays.asList(expectedQuicFrames));
     }
 
     public ReceiveQuicTillAction(ActionOption actionOption, QuicPacket... expectedQuicPackets) {
-        super(actionOption);
-        this.expectedQuicPackets = expectedQuicPackets;
+        super(Set.of(actionOption));
+        this.expectedQuicPackets = new ArrayList<>(Arrays.asList(expectedQuicPackets));
     }
 
     public ReceiveQuicTillAction(
             ActionOption actionOption,
             List<QuicFrame> expectedQuicFrames,
             List<QuicPacket> expectedQuicPackets) {
-        super(actionOption);
+        super(Set.of(actionOption));
         this.expectedQuicFrames = expectedQuicFrames;
         this.expectedQuicPackets = expectedQuicPackets;
     }
@@ -72,13 +73,14 @@ public class ReceiveQuicTillAction extends CommonReceiveAction {
             Set<ActionOption> actionOptions,
             List<QuicFrame> expectedQuicFrames,
             List<QuicPacket> expectedQuicPackets) {
-        super(actionOptions, expectedQuicFrames, expectedQuicPackets);
+        super(actionOptions);
         this.expectedQuicFrames = expectedQuicFrames;
         this.expectedQuicPackets = expectedQuicPackets;
     }
 
     @Override
     protected List<LayerConfiguration> createLayerConfiguration(TlsContext tlsContext) {
-        return createReceiveTillConfiguration(tlsContext, expectedQuicFrames, expectedQuicPackets);
+        return ActionHelperUtil.createReceiveTillConfiguration(
+                tlsContext, expectedQuicFrames, expectedQuicPackets);
     }
 }

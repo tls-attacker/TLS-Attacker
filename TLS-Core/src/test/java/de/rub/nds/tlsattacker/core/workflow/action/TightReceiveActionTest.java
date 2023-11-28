@@ -68,9 +68,9 @@ public class TightReceiveActionTest {
 
         action.execute(state);
         assertTrue(action.executedAsPlanned());
-        assertEquals(1, action.getMessages().size());
+        assertEquals(1, action.getReceivedMessages().size());
         AlertMessage expectedAlert = getAlertMessage();
-        assertEquals(expectedAlert, action.getMessages().get(0));
+        assertEquals(expectedAlert, action.getReceivedMessages().get(0));
     }
 
     private AlertMessage getAlertMessage() {
@@ -117,9 +117,9 @@ public class TightReceiveActionTest {
     private void testAction() throws WorkflowExecutionException {
         action.execute(state);
         assertTrue(action.executedAsPlanned());
-        assertEquals(2, action.getMessages().size());
-        assertTrue(action.getMessages().get(0) instanceof ServerHelloMessage);
-        assertTrue(action.getMessages().get(1) instanceof CertificateMessage);
+        assertEquals(2, action.getReceivedMessages().size());
+        assertTrue(action.getReceivedMessages().get(0) instanceof ServerHelloMessage);
+        assertTrue(action.getReceivedMessages().get(1) instanceof CertificateMessage);
         assertTrue(action.isExecuted());
     }
 

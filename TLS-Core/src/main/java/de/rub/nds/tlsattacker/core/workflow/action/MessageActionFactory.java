@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
+import de.rub.nds.tlsattacker.core.http.HttpMessage;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
@@ -33,6 +34,18 @@ public class MessageActionFactory {
                 connection,
                 sendingConnectionEndType,
                 new ArrayList<>(Arrays.asList(protocolMessages)));
+    }
+
+    public static MessageAction createTLSAction(
+            Config tlsConfig,
+            AliasedConnection connection,
+            ConnectionEndType sendingConnectionEndType,
+            HttpMessage... httpMessages) {
+        return createTLSAction(
+                tlsConfig,
+                connection,
+                sendingConnectionEndType,
+                new ArrayList<>(Arrays.asList(httpMessages)));
     }
 
     public static MessageAction createTLSAction(

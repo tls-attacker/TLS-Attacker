@@ -11,12 +11,16 @@ package de.rub.nds.tlsattacker.core.layer;
 import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Wrapper class for {@link LayerProcessingResult}. Makes results of multiple layers available for a
  * {@link LayerStack}.
  */
 public class LayerStackProcessingResult {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final List<LayerProcessingResult> layerProcessingResultList;
 
@@ -56,5 +60,18 @@ public class LayerStackProcessingResult {
 
     public List<LayerType> getLayersWithUnreadBytes() {
         return layersWithUnreadBytes;
+    }
+
+    public boolean executedAsPlanned() {
+        for (LayerProcessingResult<?> result : layerProcessingResultList) {
+            if (!result.isExecutedAsPlanned()) {
+                LOGGER.warn(
+                        "{} failed: Layer {}, did not execute as planned",
+                        this.getClass().getSimpleName(),
+                        result.getLayerType());
+                return false;
+            }
+        }
+        return true;
     }
 }

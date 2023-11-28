@@ -96,17 +96,17 @@ public class WorkflowTraceUtilTest {
         recWithLength = new Record();
         recWithLength.setLength(42);
 
-        rcvHeartbeat.setMessages(new HeartbeatMessage());
-        rcvAlertMessage.setMessages(new AlertMessage());
-        rcvServerHello.setMessages(new ServerHelloMessage());
-        rcvFinishedMessage.setMessages(new FinishedMessage());
-        rcvMultipleProtocolMessages.setMessages(
+        rcvHeartbeat.setExpectedMessages(new HeartbeatMessage());
+        rcvAlertMessage.setExpectedMessages(new AlertMessage());
+        rcvServerHello.setExpectedMessages(new ServerHelloMessage());
+        rcvFinishedMessage.setExpectedMessages(new FinishedMessage());
+        rcvMultipleProtocolMessages.setExpectedMessages(
                 new HeartbeatMessage(), new HeartbeatMessage(), msgHeartbeatMessageWithLength);
-        rcvMultipleHandshakeMessages.setMessages(
+        rcvMultipleHandshakeMessages.setExpectedMessages(
                 new ServerHelloMessage(),
                 new HeartbeatMessage(),
                 msgServerHelloMessageWithCipherSuite);
-        rcvMultipleRecords.setRecords(new Record(), new Record(), recWithLength);
+        rcvMultipleRecords.setExpectedRecords(new Record(), new Record(), recWithLength);
 
         sHeartbeat = new SendAction();
         sAlertMessage = new SendAction();
@@ -115,12 +115,12 @@ public class WorkflowTraceUtilTest {
         sHeartbeatExtension = new SendAction();
         sEncryptThenMacExtension = new SendAction();
 
-        sHeartbeat.setMessages(new HeartbeatMessage());
-        sAlertMessage.setMessages(new AlertMessage());
-        sClientHello.setMessages(new ClientHelloMessage());
-        sFinishedMessage.setMessages(new FinishedMessage());
-        sHeartbeatExtension.setMessages(msgServerHelloWithHeartbeatExtension);
-        sEncryptThenMacExtension.setMessages(msgServerHelloWithEncryptThenMacExtension);
+        sHeartbeat.setConfiguredMessages(new HeartbeatMessage());
+        sAlertMessage.setConfiguredMessages(new AlertMessage());
+        sClientHello.setConfiguredMessages(new ClientHelloMessage());
+        sFinishedMessage.setConfiguredMessages(new FinishedMessage());
+        sHeartbeatExtension.setConfiguredMessages(msgServerHelloWithHeartbeatExtension);
+        sEncryptThenMacExtension.setConfiguredMessages(msgServerHelloWithEncryptThenMacExtension);
     }
 
     @Test
@@ -130,13 +130,13 @@ public class WorkflowTraceUtilTest {
         trace.addTlsAction(rcvMultipleProtocolMessages);
 
         assertNotSame(
-                rcvMultipleProtocolMessages.getMessages().get(0),
+                rcvMultipleProtocolMessages.getExpectedMessages().get(0),
                 WorkflowTraceUtil.getLastReceivedMessage(ProtocolMessageType.HEARTBEAT, trace));
         assertNotSame(
-                rcvMultipleProtocolMessages.getMessages().get(1),
+                rcvMultipleProtocolMessages.getExpectedMessages().get(1),
                 WorkflowTraceUtil.getLastReceivedMessage(ProtocolMessageType.HEARTBEAT, trace));
         assertSame(
-                rcvMultipleProtocolMessages.getMessages().get(2),
+                rcvMultipleProtocolMessages.getExpectedMessages().get(2),
                 WorkflowTraceUtil.getLastReceivedMessage(ProtocolMessageType.HEARTBEAT, trace));
 
         assertNull(
@@ -145,13 +145,13 @@ public class WorkflowTraceUtilTest {
         trace.addTlsAction(rcvMultipleHandshakeMessages);
 
         assertNotSame(
-                rcvMultipleHandshakeMessages.getMessages().get(0),
+                rcvMultipleHandshakeMessages.getExpectedMessages().get(0),
                 WorkflowTraceUtil.getLastReceivedMessage(HandshakeMessageType.SERVER_HELLO, trace));
         assertNotSame(
-                rcvMultipleHandshakeMessages.getMessages().get(1),
+                rcvMultipleHandshakeMessages.getExpectedMessages().get(1),
                 WorkflowTraceUtil.getLastReceivedMessage(HandshakeMessageType.SERVER_HELLO, trace));
         assertSame(
-                rcvMultipleHandshakeMessages.getMessages().get(2),
+                rcvMultipleHandshakeMessages.getExpectedMessages().get(2),
                 WorkflowTraceUtil.getLastReceivedMessage(HandshakeMessageType.SERVER_HELLO, trace));
     }
 

@@ -86,7 +86,7 @@ public class ForwardMessagesActionTest extends AbstractActionTest<ForwardMessage
     @Test
     @Override
     public void testExecute() throws Exception {
-        action.setMessages(alert);
+        action.setExpectedMessages(List.of(alert));
         super.testExecute();
     }
 
@@ -178,7 +178,7 @@ public class ForwardMessagesActionTest extends AbstractActionTest<ForwardMessage
         initContexts();
 
         ForwardMessagesAction action = new ForwardMessagesAction(ctx1Alias, ctx2Alias);
-        action.setMessages(new ApplicationMessage());
+        action.setExpectedMessages(List.of(new ApplicationMessage()));
 
         action.execute(state);
         assertTrue(action.isExecuted());

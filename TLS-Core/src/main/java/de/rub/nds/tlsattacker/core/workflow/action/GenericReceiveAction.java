@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.container.ActionHelperUtil;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -35,6 +36,7 @@ public class GenericReceiveAction extends CommonReceiveAction {
 
     @Override
     protected List<LayerConfiguration> createLayerConfiguration(TlsContext tlsContext) {
-        return createReceivLayerConfiguration(tlsContext, null, null, null, null, null, null);
+        return ActionHelperUtil.createReceivLayerConfiguration(
+                tlsContext, null, null, null, null, null, null);
     }
 }

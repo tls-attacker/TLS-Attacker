@@ -21,8 +21,6 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import jakarta.xml.bind.JAXBException;
 import java.io.IOException;
 import java.security.Security;
-import java.util.ArrayList;
-import java.util.List;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
@@ -74,15 +72,6 @@ public class SendDynamicServerCertificateActionTest
         assertEquals(
                 "SendDynamicServerCertificateAction [server] (CERTIFICATE)",
                 action.toCompactString());
-    }
-
-    @Test
-    public void testSetRecords() {
-        // check if set records are correct in out case: empty list
-        action.execute(state);
-        List<Record> testRecords = new ArrayList<>();
-        action.setRecords(testRecords);
-        assertEquals(testRecords, action.getSendRecords());
     }
 
     @Test

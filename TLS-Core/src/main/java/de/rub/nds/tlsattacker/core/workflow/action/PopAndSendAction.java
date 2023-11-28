@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.state.State;
+import de.rub.nds.tlsattacker.core.workflow.container.ActionHelperUtil;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.LinkedList;
 import java.util.List;
@@ -58,7 +59,8 @@ public class PopAndSendAction extends CommonSendAction {
     public String toString() {
         String messageString =
                 getReadableStringFromDataContainers(
-                        getDataContainersForLayer(ImplementedLayers.MESSAGE));
+                        ActionHelperUtil.getDataContainersForLayer(
+                                ImplementedLayers.MESSAGE, getLayerStackProcessingResult()));
         return "PopAndSendAction: index: "
                 + index
                 + " message: "
@@ -102,6 +104,7 @@ public class PopAndSendAction extends CommonSendAction {
             messages.add(messageBuffer.pop());
             tlsContext.getRecordBuffer().pop();
         }
-        return createSendConfiguration(tlsContext, messages, null, null, null, null, null);
+        return ActionHelperUtil.createSendConfiguration(
+                tlsContext, messages, null, null, null, null, null);
     }
 }
