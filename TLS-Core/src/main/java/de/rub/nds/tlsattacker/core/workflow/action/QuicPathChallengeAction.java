@@ -40,10 +40,16 @@ public class QuicPathChallengeAction extends ConnectionBoundAction {
     @XmlElement protected Boolean requireAtLeastOnePathChallenge = false;
 
     @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
-    protected List<QuicFrame> quicFrames = new ArrayList<>();
+    protected List<QuicFrame> sendQuicFrames = new ArrayList<>();
 
     @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
-    protected List<QuicPacket> quicPackets = new ArrayList<>();
+    protected List<QuicPacket> sendQuicPackets = new ArrayList<>();
+
+    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
+    protected List<QuicFrame> receivedQuicFrames = new ArrayList<>();
+
+    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
+    protected List<QuicPacket> receivedQuicPackets = new ArrayList<>();
 
     public QuicPathChallengeAction(String connectionAlias) {
         super(connectionAlias);
@@ -83,8 +89,13 @@ public class QuicPathChallengeAction extends ConnectionBoundAction {
     private MessageAction executeAction(State state, MessageAction action)
             throws ActionExecutionException {
         action.execute(state);
-        quicFrames.addAll(action.getQuicFrames());
-        quicPackets.addAll(action.getQuicPackets());
+        if (action instanceof SendAction) {
+            sendQuicFrames.addAll(((SendAction) action).getSendQuicFrames());
+            sendQuicPackets.addAll(((SendAction) action).getSendQuicPackets());
+        } else {
+            receivedQuicFrames.addAll(((ReceiveAction) action).getReceivedQuicFrames());
+            receivedQuicPackets.addAll(((ReceiveAction) action).getReceivedQuicPackets());
+        }
         executedActions.add(action);
         return action;
     }
@@ -113,10 +124,34 @@ public class QuicPathChallengeAction extends ConnectionBoundAction {
     }
 
     @Override
-    public void reset() {}
+    public void reset() {
+        executedAsPlanned = false;
+        executedActions = null;
+        pathChallengeCounter = 0;
+        sendQuicFrames = null;
+        sendQuicPackets = null;
+        receivedQuicFrames = null;
+        receivedQuicPackets = null;
+    }
 
     @Override
     public boolean executedAsPlanned() {
         return executedAsPlanned;
+    }
+
+    public List<QuicFrame> getSendQuicFrames() {
+        return sendQuicFrames;
+    }
+
+    public List<QuicPacket> getSendQuicPackets() {
+        return sendQuicPackets;
+    }
+
+    public List<QuicFrame> getReceivedQuicFrames() {
+        return receivedQuicFrames;
+    }
+
+    public List<QuicPacket> getReceivedQuicPackets() {
+        return receivedQuicPackets;
     }
 }

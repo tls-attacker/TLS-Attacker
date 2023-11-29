@@ -34,6 +34,7 @@ import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import jakarta.xml.bind.JAXBException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import javax.xml.stream.XMLStreamException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -106,7 +107,7 @@ public class WorkflowTraceUtilTest {
                 new ServerHelloMessage(),
                 new HeartbeatMessage(),
                 msgServerHelloMessageWithCipherSuite);
-        rcvMultipleRecords.setExpectedRecords(new Record(), new Record(), recWithLength);
+        rcvMultipleRecords.setExpectedRecords(List.of(new Record(), new Record(), recWithLength));
 
         sHeartbeat = new SendAction();
         sAlertMessage = new SendAction();
@@ -234,13 +235,13 @@ public class WorkflowTraceUtilTest {
         trace.addTlsAction(rcvMultipleRecords);
 
         assertNotSame(
-                rcvMultipleRecords.getRecords().get(0),
+                rcvMultipleRecords.getReceivedRecords().get(0),
                 WorkflowTraceUtil.getLastReceivedRecord(trace));
         assertNotSame(
-                rcvMultipleRecords.getRecords().get(1),
+                rcvMultipleRecords.getReceivedRecords().get(1),
                 WorkflowTraceUtil.getLastReceivedRecord(trace));
         assertSame(
-                rcvMultipleRecords.getRecords().get(2),
+                rcvMultipleRecords.getReceivedRecords().get(2),
                 WorkflowTraceUtil.getLastReceivedRecord(trace));
     }
 

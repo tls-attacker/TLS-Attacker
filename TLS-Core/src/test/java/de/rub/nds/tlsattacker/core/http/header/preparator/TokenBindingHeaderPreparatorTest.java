@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.http.header.TokenBindingHeader;
-import de.rub.nds.tlsattacker.core.layer.constant.LayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.constant.StackConfiguration;
 import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -35,7 +35,7 @@ public class TokenBindingHeaderPreparatorTest {
     public void setUp() throws Exception {
         Security.addProvider(new BouncyCastleProvider());
         Config config = new Config();
-        config.setDefaultLayerConfiguration(LayerConfiguration.HTTPS);
+        config.setDefaultLayerConfiguration(StackConfiguration.HTTPS);
         Context outerContext = new State(config).getContext();
         HttpContext context = outerContext.getHttpContext();
 

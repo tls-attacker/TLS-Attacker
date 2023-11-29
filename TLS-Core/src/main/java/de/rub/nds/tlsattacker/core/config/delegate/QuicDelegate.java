@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SniType;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.core.layer.constant.LayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.constant.StackConfiguration;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import java.util.ArrayList;
@@ -46,7 +46,7 @@ public class QuicDelegate extends Delegate {
             config.getDefaultClientConnection().setTransportHandlerType(TransportHandlerType.UDP);
             config.getDefaultServerConnection().setTransportHandlerType(TransportHandlerType.UDP);
 
-            config.setDefaultLayerConfiguration(LayerConfiguration.QUIC);
+            config.setDefaultLayerConfiguration(StackConfiguration.QUIC);
             config.setWorkflowExecutorType(WorkflowExecutorType.QUIC);
 
             // Protocol Version

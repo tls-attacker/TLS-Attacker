@@ -20,21 +20,8 @@ import de.rub.nds.tlsattacker.core.quic.preparator.frame.QuicFramePreparator;
 import de.rub.nds.tlsattacker.core.quic.serializer.frame.QuicFrameSerializer;
 import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
 import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlSeeAlso;
 import java.io.InputStream;
 
-@XmlSeeAlso({
-    AckFrame.class,
-    ConnectionCloseFrame.class,
-    CryptoFrame.class,
-    HandshakeDoneFrame.class,
-    NewConnectionIdFrame.class,
-    NewTokenFrame.class,
-    PaddingFrame.class,
-    PathChallengeFrame.class,
-    PathResponseFrame.class,
-    PingFrame.class
-})
 @XmlRootElement
 public abstract class QuicFrame extends ModifiableVariableHolder
         implements DataContainer<QuicContext> {

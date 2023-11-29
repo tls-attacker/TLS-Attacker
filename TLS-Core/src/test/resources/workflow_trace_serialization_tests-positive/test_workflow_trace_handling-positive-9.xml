@@ -24,11 +24,11 @@ Test a MITM workflow trace
     </Receive>
     <Send>
         <connectionAlias>server</connectionAlias>
-        <messages>
+        <configuredMessages>
             <ServerHello/>
             <Certificate/>
             <ServerHelloDone/>
-        </messages>
+        </configuredMessages>
     </Send>
     <Receive>
         <connectionAlias>server</connectionAlias>
@@ -40,16 +40,16 @@ Test a MITM workflow trace
     </Receive>
     <Send>
         <connectionAlias>server</connectionAlias>
-        <messages>
+        <configuredMessages>
             <ChangeCipherSpec/>
             <Finished/>
-        </messages>
+        </configuredMessages>
     </Send>
     <Send>
         <connectionAlias>client</connectionAlias>
-        <messages>
+        <configuredMessages>
             <ClientHello/>
-        </messages>
+        </configuredMessages>
     </Send>
     <Receive>
         <connectionAlias>client</connectionAlias>
@@ -61,11 +61,11 @@ Test a MITM workflow trace
     </Receive>
     <Send>
         <connectionAlias>client</connectionAlias>
-        <messages>
+        <configuredMessages>
             <RSAClientKeyExchange/>
             <ChangeCipherSpec/>
             <Finished/>
-        </messages>
+        </configuredMessages>
     </Send>
     <Receive>
         <connectionAlias>client</connectionAlias>

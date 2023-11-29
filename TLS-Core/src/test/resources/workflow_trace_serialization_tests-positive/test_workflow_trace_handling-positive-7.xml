@@ -13,9 +13,9 @@ true for default and custom connections.
         <timeout>44</timeout>
     </OutboundConnection>
     <Send>
-        <messages>
+        <configuredMessages>
             <ClientHello/>
-        </messages>
+        </configuredMessages>
     </Send>
 </workflowTrace>
 
@@ -35,14 +35,14 @@ true for default and custom connections.
     <Send>
         <actionOptions/>
         <connectionAlias>custom</connectionAlias>
-        <messages>
+        <configuredMessages>
             <ClientHello/>
-        </messages>
-        <httpMessages/>
-        <records/>
-        <fragments/>
-        <quicFrames/>
-        <quicPackets/>
+        </configuredMessages>
+        <configuredHttpMessages/>
+        <configuredRecords/>
+        <configuredFragments/>
+        <configuredQuicFrames/>
+        <configuredQuicPackets/>
     </Send>
 </workflowTrace>
 
@@ -54,8 +54,8 @@ true for default and custom connections.
     </OutboundConnection>
     <Send>
         <actionOptions/>
-        <messages>
+        <configuredMessages>
             <ClientHello/>
-        </messages>
+        </configuredMessages>
     </Send>
 </workflowTrace>

@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.printer.LogPrinter;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
@@ -62,12 +63,15 @@ public abstract class CommonSendAction extends MessageAction implements SendingA
         if (layerConfigurations == null) {
             LOGGER.info("Not sending messages");
         } else {
-
-            String sending = getReadableStringFromConfiguration(layerConfigurations);
             if (hasDefaultAlias()) {
-                LOGGER.info("Sending messages: {}", sending);
+                LOGGER.info(
+                        "Sending messages: {}",
+                        LogPrinter.toHumanReadableOneLine(layerConfigurations));
             } else {
-                LOGGER.info("Sending messages ({}): {}", connectionAlias, sending);
+                LOGGER.info(
+                        "Sending messages ({}): {}",
+                        connectionAlias,
+                        LogPrinter.toHumanReadableOneLine(layerConfigurations));
             }
         }
         try {
@@ -96,6 +100,9 @@ public abstract class CommonSendAction extends MessageAction implements SendingA
 
     @Override
     public final List<DtlsHandshakeMessageFragment> getSendFragments() {
+        if (getLayerStackProcessingResult() == null) {
+            return null;
+        }
         return ActionHelperUtil.getDataContainersForLayer(
                         ImplementedLayers.DTLS_FRAGMENT, getLayerStackProcessingResult())
                 .stream()
@@ -105,6 +112,9 @@ public abstract class CommonSendAction extends MessageAction implements SendingA
 
     @Override
     public final List<ProtocolMessage> getSendMessages() {
+        if (getLayerStackProcessingResult() == null) {
+            return null;
+        }
         return ActionHelperUtil.getDataContainersForLayer(
                         ImplementedLayers.MESSAGE, getLayerStackProcessingResult())
                 .stream()
@@ -114,6 +124,9 @@ public abstract class CommonSendAction extends MessageAction implements SendingA
 
     @Override
     public final List<QuicFrame> getSendQuicFrames() {
+        if (getLayerStackProcessingResult() == null) {
+            return null;
+        }
         return ActionHelperUtil.getDataContainersForLayer(
                         ImplementedLayers.QUICFRAME, getLayerStackProcessingResult())
                 .stream()
@@ -123,6 +136,9 @@ public abstract class CommonSendAction extends MessageAction implements SendingA
 
     @Override
     public final List<QuicPacket> getSendQuicPackets() {
+        if (getLayerStackProcessingResult() == null) {
+            return null;
+        }
         return ActionHelperUtil.getDataContainersForLayer(
                         ImplementedLayers.QUICPACKET, getLayerStackProcessingResult())
                 .stream()
@@ -132,6 +148,9 @@ public abstract class CommonSendAction extends MessageAction implements SendingA
 
     @Override
     public final List<Record> getSendRecords() {
+        if (getLayerStackProcessingResult() == null) {
+            return null;
+        }
         return ActionHelperUtil.getDataContainersForLayer(
                         ImplementedLayers.RECORD, getLayerStackProcessingResult())
                 .stream()

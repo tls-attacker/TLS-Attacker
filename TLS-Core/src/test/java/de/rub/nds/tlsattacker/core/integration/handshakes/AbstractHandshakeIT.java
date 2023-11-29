@@ -27,7 +27,7 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
-import de.rub.nds.tlsattacker.core.layer.constant.LayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.constant.StackConfiguration;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
@@ -375,7 +375,7 @@ public abstract class AbstractHandshakeIT {
             config.getDefaultClientConnection().setTransportHandlerType(TransportHandlerType.UDP);
             config.getDefaultServerConnection().setTransportHandlerType(TransportHandlerType.UDP);
             config.setWorkflowExecutorType(WorkflowExecutorType.DTLS);
-            config.setDefaultLayerConfiguration(LayerConfiguration.DTLS);
+            config.setDefaultLayerConfiguration(StackConfiguration.DTLS);
             config.setFinishWithCloseNotify(true);
             config.setIgnoreRetransmittedCssInDtls(true);
             config.setAddRetransmissionsToWorkflowTraceInDtls(false);

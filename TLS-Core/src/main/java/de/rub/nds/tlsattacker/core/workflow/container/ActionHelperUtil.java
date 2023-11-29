@@ -67,6 +67,7 @@ public class ActionHelperUtil {
 
     public static List<LayerConfiguration> createReceivLayerConfiguration(
             TlsContext tlsContext,
+            Set<ActionOption> actionOptions,
             List<ProtocolMessage> protocolMessagesToReceive,
             List<DtlsHandshakeMessageFragment> fragmentsToReceive,
             List<Record> recordsToReceive,
@@ -80,20 +81,28 @@ public class ActionHelperUtil {
                 sortLayerConfigurations(
                         layerStack,
                         createReceiveConfiguration(
-                                ImplementedLayers.DTLS_FRAGMENT, fragmentsToReceive),
+                                ImplementedLayers.DTLS_FRAGMENT, fragmentsToReceive, actionOptions),
                         createReceiveConfiguration(
-                                ImplementedLayers.MESSAGE, protocolMessagesToReceive),
+                                ImplementedLayers.MESSAGE,
+                                protocolMessagesToReceive,
+                                actionOptions),
                         createReceiveConfiguration(
-                                ImplementedLayers.SSL2, protocolMessagesToReceive),
-                        createReceiveConfiguration(ImplementedLayers.RECORD, recordsToReceive),
-                        createReceiveConfiguration(ImplementedLayers.HTTP, httpMessagesToReceive),
-                        createReceiveConfiguration(ImplementedLayers.QUICFRAME, framesToReceive),
-                        createReceiveConfiguration(ImplementedLayers.QUICPACKET, packetsToReceive));
+                                ImplementedLayers.SSL2, protocolMessagesToReceive, actionOptions),
+                        createReceiveConfiguration(
+                                ImplementedLayers.RECORD, recordsToReceive, actionOptions),
+                        createReceiveConfiguration(
+                                ImplementedLayers.HTTP, httpMessagesToReceive, actionOptions),
+                        createReceiveConfiguration(
+                                ImplementedLayers.QUICFRAME, framesToReceive, actionOptions),
+                        createReceiveConfiguration(
+                                ImplementedLayers.QUICPACKET, packetsToReceive, actionOptions));
         return layerConfigurationList;
     }
 
     public static ReceiveLayerConfiguration createReceiveConfiguration(
-            LayerType layerType, List<? extends DataContainer<?>> containersToReceive) {
+            LayerType layerType,
+            List<? extends DataContainer<?>> containersToReceive,
+            Set<ActionOption> actionOptions) {
         if (containersToReceive == null || containersToReceive.isEmpty()) {
             return new GenericReceiveLayerConfiguration(layerType);
         } else {
@@ -101,7 +110,8 @@ public class ActionHelperUtil {
                 return (ReceiveLayerConfiguration)
                         ActionHelperUtil.applyMessageFilters(
                                 new SpecificReceiveLayerConfiguration<>(
-                                        layerType, containersToReceive));
+                                        layerType, containersToReceive),
+                                actionOptions);
             }
             return new SpecificReceiveLayerConfiguration<>(layerType, containersToReceive);
         }
@@ -167,8 +177,6 @@ public class ActionHelperUtil {
                 new SpecificSendLayerConfiguration(ImplementedLayers.QUICFRAME, framesToSend);
         LayerConfiguration quicPacketConfiguration =
                 new SpecificSendLayerConfiguration(ImplementedLayers.QUICPACKET, packetsToSend);
-
-        checkLayerConsistency(layerStack, httpMessagesToSend);
 
         List<LayerConfiguration> layerConfigurationList =
                 sortLayerConfigurations(

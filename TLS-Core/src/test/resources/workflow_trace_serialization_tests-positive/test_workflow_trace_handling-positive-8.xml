@@ -11,9 +11,9 @@ if there is only one connection defined in the workflow trace.
         <alias>client</alias>
     </OutboundConnection>
     <Send>
-        <messages>
+        <configuredMessages>
             <ClientHello/>
-        </messages>
+        </configuredMessages>
     </Send>
 </workflowTrace>
 
@@ -33,14 +33,14 @@ if there is only one connection defined in the workflow trace.
     <Send>
         <actionOptions/>
         <connectionAlias>client</connectionAlias>
-        <messages>
+        <configuredMessages>
             <ClientHello/>
-        </messages>
-        <httpMessages/>
-        <records/>
-        <fragments/>
-        <quicFrames/>
-        <quicPackets/>
+        </configuredMessages>
+        <configuredHttpMessages/>
+        <configuredRecords/>
+        <configuredFragments/>
+        <configuredQuicFrames/>
+        <configuredQuicPackets/>
     </Send>
 </workflowTrace>
 
@@ -51,8 +51,8 @@ if there is only one connection defined in the workflow trace.
     </OutboundConnection>
     <Send>
         <actionOptions/>
-        <messages>
+        <configuredMessages>
             <ClientHello/>
-        </messages>
+        </configuredMessages>
     </Send>
 </workflowTrace>

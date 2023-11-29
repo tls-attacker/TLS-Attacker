@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.LayerStackProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.record.Record;
 import jakarta.xml.bind.annotation.XmlElementRef;
@@ -100,8 +101,15 @@ public class ForwardRecordsAction extends CommonForwardAction {
     }
 
     @Override
-    protected List<LayerConfiguration> createLayerConfiguration(TlsContext tlsContext) {
+    protected List<LayerConfiguration> createReceiveConfiguration(TlsContext tlsContext) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'createLayerConfiguration'");
+    }
+
+    @Override
+    protected List<LayerConfiguration> createSendConfiguration(
+            TlsContext tlsContext, LayerStackProcessingResult receivedResult) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'createSendConfiguration'");
     }
 }

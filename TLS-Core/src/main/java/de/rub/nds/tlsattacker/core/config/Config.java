@@ -54,7 +54,7 @@ import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingType;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.constants.UserMappingExtensionHintType;
-import de.rub.nds.tlsattacker.core.layer.constant.LayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.constant.StackConfiguration;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EchConfig;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
@@ -136,7 +136,7 @@ public class Config implements Serializable {
 
     private Boolean respectPeerRecordSizeLimitations = true;
 
-    private LayerConfiguration defaultLayerConfiguration;
+    private StackConfiguration defaultLayerConfiguration;
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultHandshakeSecret = new byte[32];
@@ -1295,7 +1295,7 @@ public class Config implements Serializable {
 
         certificateChainConfig.add(caConfig);
         certificateChainConfig.add(leafConfig);
-        defaultLayerConfiguration = LayerConfiguration.TLS;
+        defaultLayerConfiguration = StackConfiguration.TLS;
         defaultClientConnection = new OutboundConnection("client", 443, "localhost");
         defaultServerConnection = new InboundConnection("server", 443, "localhost");
         workflowTraceType = WorkflowTraceType.DYNAMIC_HANDSHAKE;
@@ -3957,11 +3957,11 @@ public class Config implements Serializable {
         this.defaultMaxEchAlpnPadding = defaultMaxEchAlpnPadding;
     }
 
-    public LayerConfiguration getDefaultLayerConfiguration() {
+    public StackConfiguration getDefaultLayerConfiguration() {
         return defaultLayerConfiguration;
     }
 
-    public void setDefaultLayerConfiguration(LayerConfiguration defaultLayerConfiguration) {
+    public void setDefaultLayerConfiguration(StackConfiguration defaultLayerConfiguration) {
         this.defaultLayerConfiguration = defaultLayerConfiguration;
     }
 

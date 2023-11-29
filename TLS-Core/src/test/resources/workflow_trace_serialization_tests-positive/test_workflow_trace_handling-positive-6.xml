@@ -30,14 +30,14 @@
     <Send>
         <actionOptions/>
         <connectionAlias>client</connectionAlias>
-        <messages>
+        <configuredMessages>
             <ClientHello/>
-        </messages>
-        <httpMessages/>
-        <records/>
-        <fragments/>
-        <quicFrames/>
-        <quicPackets/>
+        </configuredMessages>
+        <configuredHttpMessages/>
+        <configuredRecords/>
+        <configuredFragments/>
+        <configuredQuicFrames/>
+        <configuredQuicPackets/>
     </Send>
 </workflowTrace>
 
@@ -48,8 +48,8 @@
     </OutboundConnection>
     <Send>
         <actionOptions/>
-        <messages>
+        <configuredMessages>
             <ClientHello/>
-        </messages>
+        </configuredMessages>
     </Send>
 </workflowTrace>

@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.http.HttpMessage;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
+import de.rub.nds.tlsattacker.core.printer.LogPrinter;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
@@ -108,6 +109,26 @@ public class ReceiveAction extends CommonReceiveAction {
     }
 
     public ReceiveAction(
+            ActionOption actionOption,
+            List<QuicFrame> expectedQuicFrames,
+            List<QuicPacket> expectedQuicPackets) {
+        this.expectedQuicFrames = expectedQuicFrames;
+        this.expectedQuicPackets = expectedQuicPackets;
+        if (actionOption != null) {
+            this.addActionOption(actionOption);
+        }
+    }
+
+    public ReceiveAction(
+            Set<ActionOption> actionOptions,
+            List<QuicFrame> expectedQuicFrames,
+            List<QuicPacket> expectedQuicPackets) {
+        this.expectedQuicFrames = expectedQuicFrames;
+        this.expectedQuicPackets = expectedQuicPackets;
+        this.setActionOptions(actionOptions);
+    }
+
+    public ReceiveAction(
             List<ProtocolMessage> expectedMessages, List<HttpMessage> expectedHttpMessages) {
         this(expectedMessages);
         this.expectedHttpMessages = expectedHttpMessages;
@@ -157,7 +178,7 @@ public class ReceiveAction extends CommonReceiveAction {
                         + ": "
                         + (isExecuted() ? "\n" : "(not executed)\n")
                         + "\tExpected: "
-                        + getReadableStringFromDataContainers(
+                        + LogPrinter.toHumanReadableMultiLineContainerListArray(
                                 (List<DataContainer<?>>) (List<?>) expectedMessages,
                                 (List<DataContainer<?>>) (List<?>) expectedHttpMessages,
                                 (List<DataContainer<?>>) (List<?>) expectedQuicPackets,
@@ -165,7 +186,7 @@ public class ReceiveAction extends CommonReceiveAction {
         if (isExecuted()) {
             string +=
                     "\n\tActual:"
-                            + getReadableStringFromDataContainers(
+                            + LogPrinter.toHumanReadableMultiLineContainerListArray(
                                     (List<DataContainer<?>>) (List<?>) expectedMessages,
                                     (List<DataContainer<?>>) (List<?>) expectedHttpMessages,
                                     (List<DataContainer<?>>) (List<?>) expectedQuicPackets,
@@ -176,7 +197,7 @@ public class ReceiveAction extends CommonReceiveAction {
 
     @Override
     public String toCompactString() {
-        return getReadableStringFromDataContainers(
+        return LogPrinter.toHumanReadableMultiLineContainerListArray(
                 (List<DataContainer<?>>) (List<?>) expectedMessages,
                 (List<DataContainer<?>>) (List<?>) expectedHttpMessages,
                 (List<DataContainer<?>>) (List<?>) expectedQuicPackets,
@@ -257,6 +278,7 @@ public class ReceiveAction extends CommonReceiveAction {
     protected List<LayerConfiguration> createLayerConfiguration(TlsContext tlsContext) {
         return ActionHelperUtil.createReceivLayerConfiguration(
                 tlsContext,
+                getActionOptions(),
                 expectedMessages,
                 expectedDtlsFragments,
                 expectedRecords,

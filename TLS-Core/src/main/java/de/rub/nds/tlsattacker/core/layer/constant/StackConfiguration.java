@@ -13,12 +13,11 @@ package de.rub.nds.tlsattacker.core.layer.constant;
  * Fragmentation-, and Message- Layer to the LayerStack. Custom LayerStack have to be created
  * manually.
  */
-public enum LayerConfiguration {
+public enum StackConfiguration {
     TLS,
     DTLS,
     QUIC,
     OPEN_VPN,
-
     STARTTLS,
     HTTPS,
     SSL2;

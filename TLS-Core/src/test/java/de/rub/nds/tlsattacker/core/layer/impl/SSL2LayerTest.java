@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.layer.SpecificSendLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
-import de.rub.nds.tlsattacker.core.layer.constant.LayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.constant.StackConfiguration;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2Message;
@@ -47,7 +47,7 @@ public class SSL2LayerTest extends TestCase {
 
     public void setUp() throws IOException {
         config = new Config();
-        config.setDefaultLayerConfiguration(LayerConfiguration.SSL2);
+        config.setDefaultLayerConfiguration(StackConfiguration.SSL2);
         config.setHighestProtocolVersion(ProtocolVersion.SSL2);
         tlsContext = new Context(new State(config), new OutboundConnection()).getTlsContext();
         transportHandler = new FakeTransportHandler(null);

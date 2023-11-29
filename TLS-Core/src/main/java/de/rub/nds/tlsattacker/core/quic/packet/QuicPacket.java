@@ -24,22 +24,12 @@ import de.rub.nds.tlsattacker.core.quic.constants.QuicPacketType;
 import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlSeeAlso;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlSeeAlso({
-    QuicPacket.class,
-    LongHeaderPacket.class,
-    InitialPacket.class,
-    HandshakePacket.class,
-    OneRTTPacket.class,
-    VersionNegotiationPacket.class,
-    RetryPacket.class
-})
 public abstract class QuicPacket extends ModifiableVariableHolder
         implements DataContainer<QuicContext> {
 

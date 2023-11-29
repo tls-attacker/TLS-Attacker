@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.printer.LogPrinter;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.container.ActionHelperUtil;
@@ -58,7 +59,7 @@ public class PopAndSendAction extends CommonSendAction {
     @Override
     public String toString() {
         String messageString =
-                getReadableStringFromDataContainers(
+                LogPrinter.toHumanReadableContainerList(
                         ActionHelperUtil.getDataContainersForLayer(
                                 ImplementedLayers.MESSAGE, getLayerStackProcessingResult()));
         return "PopAndSendAction: index: "

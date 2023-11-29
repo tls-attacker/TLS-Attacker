@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.constants.ChooserType;
 import de.rub.nds.tlsattacker.core.layer.LayerStack;
 import de.rub.nds.tlsattacker.core.layer.LayerStackFactory;
-import de.rub.nds.tlsattacker.core.layer.constant.LayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.constant.StackConfiguration;
 import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
 import de.rub.nds.tlsattacker.core.layer.context.TcpContext;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
@@ -171,7 +171,7 @@ public class Context {
         this.tlsContext = tlsContext;
     }
 
-    public void prepareWithLayers(LayerConfiguration type) {
+    public void prepareWithLayers(StackConfiguration type) {
         tlsContext = new TlsContext(this);
         httpContext = new HttpContext(this);
         tcpContext = new TcpContext(this);

@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.core.http.HttpMessage;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.printer.LogPrinter;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
@@ -57,14 +58,18 @@ public abstract class CommonReceiveAction extends MessageAction implements Recei
         List<LayerConfiguration> layerConfigurations = createLayerConfiguration(tlsContext);
         getReceiveResult(tlsContext.getLayerStack(), layerConfigurations);
         setExecuted(true);
+        LOGGER.debug(
+                "Receive Expected: {}", LogPrinter.toHumanReadableOneLine(layerConfigurations));
 
-        String expected = getReadableStringFromConfiguration(layerConfigurations);
-        LOGGER.debug("Receive Expected: {}", expected);
-        String received = getReadableString(getLayerStackProcessingResult());
         if (hasDefaultAlias()) {
-            LOGGER.info("Received Messages: {}", received);
+            LOGGER.info(
+                    "Received Messages: {}",
+                    LogPrinter.toHumanReadableMultiLine(getLayerStackProcessingResult()));
         } else {
-            LOGGER.info("Received Messages ({}): {}", getConnectionAlias(), received);
+            LOGGER.info(
+                    "Received Messages ({}): {}",
+                    getConnectionAlias(),
+                    LogPrinter.toHumanReadableMultiLine(getLayerStackProcessingResult()));
         }
     }
 
@@ -82,6 +87,9 @@ public abstract class CommonReceiveAction extends MessageAction implements Recei
 
     @Override
     public List<ProtocolMessage> getReceivedMessages() {
+        if (getLayerStackProcessingResult() == null) {
+            return null;
+        }
         return ActionHelperUtil.getDataContainersForLayer(
                         ImplementedLayers.MESSAGE, getLayerStackProcessingResult())
                 .stream()
@@ -91,6 +99,9 @@ public abstract class CommonReceiveAction extends MessageAction implements Recei
 
     @Override
     public List<Record> getReceivedRecords() {
+        if (getLayerStackProcessingResult() == null) {
+            return null;
+        }
         return ActionHelperUtil.getDataContainersForLayer(
                         ImplementedLayers.RECORD, getLayerStackProcessingResult())
                 .stream()
@@ -100,6 +111,9 @@ public abstract class CommonReceiveAction extends MessageAction implements Recei
 
     @Override
     public List<DtlsHandshakeMessageFragment> getReceivedFragments() {
+        if (getLayerStackProcessingResult() == null) {
+            return null;
+        }
         return ActionHelperUtil.getDataContainersForLayer(
                         ImplementedLayers.DTLS_FRAGMENT, getLayerStackProcessingResult())
                 .stream()
@@ -109,6 +123,9 @@ public abstract class CommonReceiveAction extends MessageAction implements Recei
 
     @Override
     public List<HttpMessage> getReceivedHttpMessages() {
+        if (getLayerStackProcessingResult() == null) {
+            return null;
+        }
         return ActionHelperUtil.getDataContainersForLayer(
                         ImplementedLayers.HTTP, getLayerStackProcessingResult())
                 .stream()
@@ -118,6 +135,9 @@ public abstract class CommonReceiveAction extends MessageAction implements Recei
 
     @Override
     public List<QuicFrame> getReceivedQuicFrames() {
+        if (getLayerStackProcessingResult() == null) {
+            return null;
+        }
         return ActionHelperUtil.getDataContainersForLayer(
                         ImplementedLayers.QUICFRAME, getLayerStackProcessingResult())
                 .stream()
@@ -127,6 +147,9 @@ public abstract class CommonReceiveAction extends MessageAction implements Recei
 
     @Override
     public List<QuicPacket> getReceivedQuicPackets() {
+        if (getLayerStackProcessingResult() == null) {
+            return null;
+        }
         return ActionHelperUtil.getDataContainersForLayer(
                         ImplementedLayers.QUICPACKET, getLayerStackProcessingResult())
                 .stream()

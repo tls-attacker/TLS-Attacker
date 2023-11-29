@@ -30,7 +30,7 @@ import de.rub.nds.tlsattacker.core.crypto.MessageDigestCollector;
 import de.rub.nds.tlsattacker.core.crypto.hpke.HpkeUtil;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import de.rub.nds.tlsattacker.core.layer.constant.LayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.constant.StackConfiguration;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
@@ -96,7 +96,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                     setServerRecordCipher();
                 }
                 if (tlsContext.getConfig().getDefaultLayerConfiguration()
-                        == LayerConfiguration.QUIC) {
+                        == StackConfiguration.QUIC) {
                     try {
                         QuicPacketCryptoComputations.calculateHandshakeSecrets(
                                 tlsContext.getContext().getQuicContext());

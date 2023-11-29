@@ -583,11 +583,11 @@ public class WorkflowConfigurationFactory {
 
     public void appendHttpMessages(AliasedConnection connection, WorkflowTrace trace) {
         MessageAction action =
-                MessageActionFactory.createTLSAction(
+                MessageActionFactory.createHttpAction(
                         config, connection, ConnectionEndType.CLIENT, new HttpRequestMessage());
         trace.addTlsAction(action);
         action =
-                MessageActionFactory.createTLSAction(
+                MessageActionFactory.createHttpAction(
                         config, connection, ConnectionEndType.SERVER, new HttpResponseMessage());
         trace.addTlsAction(action);
     }
@@ -1273,7 +1273,7 @@ public class WorkflowConfigurationFactory {
                         connection,
                         ConnectionEndType.CLIENT,
                         new ClientHelloMessage(config)));
-        trace.addTlsAction(new ReceiveQuicAction(new VersionNegotiationPacket()));
+        trace.addTlsAction(new ReceiveAction(new VersionNegotiationPacket()));
         return trace;
     }
 

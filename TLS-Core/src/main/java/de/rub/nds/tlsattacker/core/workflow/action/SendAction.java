@@ -15,6 +15,8 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.http.HttpMessage;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
+import de.rub.nds.tlsattacker.core.printer.LogPrinter;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
@@ -182,25 +184,25 @@ public class SendAction extends CommonSendAction {
         return "SendAction: "
                 + (isExecuted() ? "\n" : "(not executed)\n")
                 + "\tMessages: "
-                + getReadableStringFromDataContainers(
-                        configuredHttpMessages,
-                        configuredMessages,
-                        configuredDtlsHandshakeMessageFragment,
-                        configuredRecords,
-                        configuredQuicPackets,
-                        configuredQuicFrames);
+                + LogPrinter.toHumanReadableMultiLineContainerListArray(
+                        (List<DataContainer<?>>) (List<?>) configuredHttpMessages,
+                        (List<DataContainer<?>>) (List<?>) configuredMessages,
+                        (List<DataContainer<?>>) (List<?>) configuredDtlsHandshakeMessageFragment,
+                        (List<DataContainer<?>>) (List<?>) configuredRecords,
+                        (List<DataContainer<?>>) (List<?>) configuredQuicPackets,
+                        (List<DataContainer<?>>) (List<?>) configuredQuicFrames);
     }
 
     @Override
     public String toCompactString() {
         return super.toCompactString()
-                + getReadableStringFromDataContainers(
-                        configuredHttpMessages,
-                        configuredMessages,
-                        configuredDtlsHandshakeMessageFragment,
-                        configuredRecords,
-                        configuredQuicPackets,
-                        configuredQuicFrames);
+                + LogPrinter.toHumanReadableMultiLineContainerListArray(
+                        (List<DataContainer<?>>) (List<?>) configuredHttpMessages,
+                        (List<DataContainer<?>>) (List<?>) configuredMessages,
+                        (List<DataContainer<?>>) (List<?>) configuredDtlsHandshakeMessageFragment,
+                        (List<DataContainer<?>>) (List<?>) configuredRecords,
+                        (List<DataContainer<?>>) (List<?>) configuredQuicPackets,
+                        (List<DataContainer<?>>) (List<?>) configuredQuicFrames);
     }
 
     @Override

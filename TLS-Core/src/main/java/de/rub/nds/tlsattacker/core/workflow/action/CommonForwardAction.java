@@ -15,13 +15,13 @@ import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerStackProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.printer.LogPrinter;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.core.workflow.container.ActionHelperUtil;
 import jakarta.xml.bind.annotation.XmlElement;
 import java.io.IOException;
@@ -82,27 +82,38 @@ public abstract class CommonForwardAction extends TlsAction
 
         assertAliasesSetProperly();
 
-        TlsContext receiveFromCtx = state.getTlsContext(receiveFromAlias);
-        TlsContext forwardToCtx = state.getTlsContext(forwardToAlias);
+        TlsContext receiveFromContext = state.getTlsContext(receiveFromAlias);
+        TlsContext forwardToContext = state.getTlsContext(forwardToAlias);
 
-        List<LayerConfiguration> layerConfigurations = createLayerConfiguration(receiveFromCtx);
-        if (layerConfigurations == null) {
+        List<LayerConfiguration> layerConfigurationList =
+                createReceiveConfiguration(receiveFromContext);
+        if (layerConfigurationList == null) {
             LOGGER.info("Not receiving messages");
         } else {
-            String receivingMessageString = getReadableStringFromConfiguration(layerConfigurations);
-            LOGGER.info("Receiving messages ({}): {}", receiveFromAlias, receivingMessageString);
+            LOGGER.info(
+                    "Receiving messages ({}): {}",
+                    receiveFromAlias,
+                    LogPrinter.toHumanReadableOneLine(layerConfigurationList));
         }
-        try {
 
-            getSendResult(tlsContext.getLayerStack(), layerConfigurations);
-            setExecuted(true);
+        layerConfigurationList = createSendConfiguration(forwardToContext, layerStackReceiveResult);
+
+        try {
+            layerStackReceiveResult =
+                    receiveFromContext.getLayerStack().sendData(layerConfigurationList);
         } catch (IOException e) {
-            if (!getActionOptions().contains(ActionOption.MAY_FAIL)) {
-                tlsContext.setReceivedTransportHandlerException(true);
-                LOGGER.debug(e);
-            }
-            setExecuted(getActionOptions().contains(ActionOption.MAY_FAIL));
+            forwardToContext.setReceivedTransportHandlerException(true);
+            LOGGER.debug(e);
         }
+
+        try {
+            layerStackSendResult =
+                    forwardToContext.getLayerStack().sendData(layerConfigurationList);
+        } catch (IOException e) {
+            forwardToContext.setReceivedTransportHandlerException(true);
+            LOGGER.debug(e);
+        }
+        setExecuted(true);
     }
 
     @Override
@@ -153,7 +164,7 @@ public abstract class CommonForwardAction extends TlsAction
     }
 
     /**
-     * Create a layer configuration for the send action. This function takes the tls context as
+     * Create a layer configuration for the receive action. This function takes the tls context as
      * input as the configuration can depend on the current state of the connection. Note that this
      * function may change the context, and therefore, calling it twice in a row may lead to
      * distinct configurations. If an action does not wish to send messages, it can return null
@@ -162,10 +173,27 @@ public abstract class CommonForwardAction extends TlsAction
      * @param tlsContext The current TLS context.
      * @return A list of layer configurations that should be executed.
      */
-    protected abstract List<LayerConfiguration> createLayerConfiguration(TlsContext tlsContext);
+    protected abstract List<LayerConfiguration> createReceiveConfiguration(TlsContext tlsContext);
+
+    /**
+     * Create a layer configuration for the send action. The received messaged messages are
+     * contained in the received result. This function takes the tls context as input as the
+     * configuration can depend on the current state of the connection. Note that this function may
+     * change the context, and therefore, calling it twice in a row may lead to distinct
+     * configurations. If an action does not wish to send messages, it can return null here.
+     *
+     * @param tlsContext
+     * @param receivedResult
+     * @return
+     */
+    protected abstract List<LayerConfiguration> createSendConfiguration(
+            TlsContext tlsContext, LayerStackProcessingResult receivedResult);
 
     @Override
     public List<ProtocolMessage> getReceivedMessages() {
+        if (layerStackReceiveResult == null) {
+            return null;
+        }
         return ActionHelperUtil.getDataContainersForLayer(
                         ImplementedLayers.MESSAGE, layerStackReceiveResult)
                 .stream()
@@ -175,6 +203,9 @@ public abstract class CommonForwardAction extends TlsAction
 
     @Override
     public List<Record> getReceivedRecords() {
+        if (layerStackReceiveResult == null) {
+            return null;
+        }
         return ActionHelperUtil.getDataContainersForLayer(
                         ImplementedLayers.RECORD, layerStackReceiveResult)
                 .stream()
@@ -184,6 +215,9 @@ public abstract class CommonForwardAction extends TlsAction
 
     @Override
     public List<DtlsHandshakeMessageFragment> getReceivedFragments() {
+        if (layerStackReceiveResult == null) {
+            return null;
+        }
         return ActionHelperUtil.getDataContainersForLayer(
                         ImplementedLayers.DTLS_FRAGMENT, layerStackReceiveResult)
                 .stream()
@@ -193,6 +227,9 @@ public abstract class CommonForwardAction extends TlsAction
 
     @Override
     public List<HttpMessage> getReceivedHttpMessages() {
+        if (layerStackReceiveResult == null) {
+            return null;
+        }
         return ActionHelperUtil.getDataContainersForLayer(
                         ImplementedLayers.HTTP, layerStackReceiveResult)
                 .stream()
@@ -202,6 +239,9 @@ public abstract class CommonForwardAction extends TlsAction
 
     @Override
     public List<QuicFrame> getReceivedQuicFrames() {
+        if (layerStackReceiveResult == null) {
+            return null;
+        }
         return ActionHelperUtil.getDataContainersForLayer(
                         ImplementedLayers.QUICFRAME, layerStackReceiveResult)
                 .stream()
@@ -211,6 +251,9 @@ public abstract class CommonForwardAction extends TlsAction
 
     @Override
     public List<QuicPacket> getReceivedQuicPackets() {
+        if (layerStackReceiveResult == null) {
+            return null;
+        }
         return ActionHelperUtil.getDataContainersForLayer(
                         ImplementedLayers.QUICPACKET, layerStackReceiveResult)
                 .stream()
@@ -220,6 +263,9 @@ public abstract class CommonForwardAction extends TlsAction
 
     @Override
     public final List<DtlsHandshakeMessageFragment> getSendFragments() {
+        if (layerStackSendResult == null) {
+            return null;
+        }
         return ActionHelperUtil.getDataContainersForLayer(
                         ImplementedLayers.DTLS_FRAGMENT, layerStackSendResult)
                 .stream()
@@ -229,6 +275,9 @@ public abstract class CommonForwardAction extends TlsAction
 
     @Override
     public final List<ProtocolMessage> getSendMessages() {
+        if (layerStackSendResult == null) {
+            return null;
+        }
         return ActionHelperUtil.getDataContainersForLayer(
                         ImplementedLayers.MESSAGE, layerStackSendResult)
                 .stream()
@@ -238,6 +287,9 @@ public abstract class CommonForwardAction extends TlsAction
 
     @Override
     public final List<QuicFrame> getSendQuicFrames() {
+        if (layerStackSendResult == null) {
+            return null;
+        }
         return ActionHelperUtil.getDataContainersForLayer(
                         ImplementedLayers.QUICFRAME, layerStackSendResult)
                 .stream()
@@ -247,6 +299,9 @@ public abstract class CommonForwardAction extends TlsAction
 
     @Override
     public final List<QuicPacket> getSendQuicPackets() {
+        if (layerStackSendResult == null) {
+            return null;
+        }
         return ActionHelperUtil.getDataContainersForLayer(
                         ImplementedLayers.QUICPACKET, layerStackSendResult)
                 .stream()
@@ -256,6 +311,9 @@ public abstract class CommonForwardAction extends TlsAction
 
     @Override
     public final List<Record> getSendRecords() {
+        if (layerStackSendResult == null) {
+            return null;
+        }
         return ActionHelperUtil.getDataContainersForLayer(
                         ImplementedLayers.RECORD, layerStackSendResult)
                 .stream()

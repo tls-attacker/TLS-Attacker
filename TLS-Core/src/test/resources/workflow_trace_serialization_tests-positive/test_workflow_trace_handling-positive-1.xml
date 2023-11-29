@@ -27,9 +27,9 @@
     <Send>
         <actionOptions/>
         <connectionAlias>client</connectionAlias>
-        <messages>
+        <configuredMessages>
             <ClientHello/>
-        </messages>
+        </configuredMessages>
         <httpMessages/>
         <records/>
         <fragments/>
@@ -42,8 +42,8 @@
 <workflowTrace>
     <Send>
         <actionOptions/>
-        <messages>
+        <configuredMessages>
             <ClientHello/>
-        </messages>
+        </configuredMessages>
     </Send>
 </workflowTrace>
