@@ -83,7 +83,6 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
 
     @Override
     public LayerProcessingResult sendConfiguration() throws IOException {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
         LayerConfiguration<QuicPacket> configuration = getLayerConfiguration();
         if (configuration != null && configuration.getContainerList() != null) {
             for (QuicPacket p : configuration.getContainerList()) {
@@ -93,7 +92,7 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
                         case HANDSHAKE_PACKET:
                         case ONE_RTT_PACKET:
                         case ZERO_RTT_PACKET:
-                            stream.writeBytes(p.getSerializer(context).serialize());
+                            getLowerLayer().sendData(null, p.getSerializer(context).serialize());
                             LOGGER.debug("Send {}", p.getPacketType().getName());
                             break;
                         case RETRY_PACKET:
@@ -109,8 +108,6 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
                     LOGGER.error("Can not send configured packet as it is not encrypted yet.");
                 }
             }
-            getLowerLayer().sendData(null, stream.toByteArray());
-            stream.flush();
             setLayerConfiguration(null);
         }
         return getLayerResult();
