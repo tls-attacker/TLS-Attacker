@@ -79,7 +79,7 @@ public class ReceiveQuicTillAction extends CommonReceiveAction {
     }
 
     @Override
-    protected List<LayerConfiguration> createLayerConfiguration(TlsContext tlsContext) {
+    protected List<LayerConfiguration<?>> createLayerConfiguration(TlsContext tlsContext) {
         return ActionHelperUtil.createReceiveTillConfiguration(
                 tlsContext, expectedQuicFrames, expectedQuicPackets);
     }

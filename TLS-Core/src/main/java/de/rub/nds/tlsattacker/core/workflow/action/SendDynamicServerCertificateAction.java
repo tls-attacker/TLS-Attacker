@@ -41,8 +41,8 @@ public class SendDynamicServerCertificateAction extends CommonSendAction {
             sb = new StringBuilder("Send Dynamic Certificate: (not executed)\n");
         }
         sb.append("\tMessages:");
-        if (getSendMessages() != null) {
-            for (ProtocolMessage message : getSendMessages()) {
+        if (getSentMessages() != null) {
+            for (ProtocolMessage message : getSentMessages()) {
                 sb.append(message.toCompactString());
                 sb.append(", ");
             }
@@ -56,9 +56,9 @@ public class SendDynamicServerCertificateAction extends CommonSendAction {
     @Override
     public String toCompactString() {
         StringBuilder sb = new StringBuilder(super.toCompactString());
-        if ((getSendMessages() != null) && (!getSendMessages().isEmpty())) {
+        if ((getSentMessages() != null) && (!getSentMessages().isEmpty())) {
             sb.append(" (");
-            for (ProtocolMessage message : getSendMessages()) {
+            for (ProtocolMessage message : getSentMessages()) {
                 sb.append(message.toCompactString());
                 sb.append(",");
             }
@@ -70,7 +70,7 @@ public class SendDynamicServerCertificateAction extends CommonSendAction {
     }
 
     @Override
-    protected List<LayerConfiguration> createLayerConfiguration(TlsContext tlsContext) {
+    protected List<LayerConfiguration<?>> createLayerConfiguration(TlsContext tlsContext) {
         CipherSuite selectedCipherSuite = tlsContext.getChooser().getSelectedCipherSuite();
         if (selectedCipherSuite.requiresServerCertificateMessage()) {
             return ActionHelperUtil.createSendConfiguration(

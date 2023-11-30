@@ -19,18 +19,18 @@ public class LogPrinter {
 
     private LogPrinter() {}
 
-    public static String toHumanReadableOneLine(List<LayerConfiguration> layerConfigurations) {
+    public static String toHumanReadableOneLine(List<LayerConfiguration<?>> layerConfigurations) {
         StringBuilder stringBuilder = new StringBuilder();
-        for (LayerConfiguration layerConfiguration : layerConfigurations) {
+        for (LayerConfiguration<?> layerConfiguration : layerConfigurations) {
             stringBuilder.append(layerConfiguration.toCompactString());
             stringBuilder.append(" ");
         }
         return stringBuilder.toString().trim();
     }
 
-    public static String toHumanReadableMultiLine(List<LayerConfiguration> layerConfigurations) {
+    public static String toHumanReadableMultiLine(List<LayerConfiguration<?>> layerConfigurations) {
         StringBuilder stringBuilder = new StringBuilder();
-        for (LayerConfiguration layerConfiguration : layerConfigurations) {
+        for (LayerConfiguration<?> layerConfiguration : layerConfigurations) {
             stringBuilder.append(layerConfiguration.toCompactString());
             stringBuilder.append(" ");
         }
@@ -39,7 +39,7 @@ public class LogPrinter {
 
     public static String toHumanReadableMultiLine(LayerStackProcessingResult processingResult) {
         StringBuilder stringBuilder = new StringBuilder();
-        for (LayerProcessingResult result : processingResult.getLayerProcessingResultList()) {
+        for (LayerProcessingResult<?> result : processingResult.getLayerProcessingResultList()) {
             stringBuilder.append(result.toCompactString());
             stringBuilder.append(System.lineSeparator());
         }
@@ -50,7 +50,7 @@ public class LogPrinter {
     public static String toHumanReadableContainerList(List<DataContainer<?>> containerList) {
         StringBuilder sb = new StringBuilder();
         StringJoiner joiner = new StringJoiner(", ");
-        for (DataContainer container : containerList) {
+        for (DataContainer<?> container : containerList) {
             joiner.add(container.toCompactString());
         }
         sb.trimToSize();
@@ -58,10 +58,10 @@ public class LogPrinter {
     }
 
     public static String toHumanReadableMultiLineContainerListArray(
-            List<DataContainer<?>>... containerListArray) {
+            List<List<DataContainer<?>>> containerListList) {
         StringBuilder sb = new StringBuilder();
         StringJoiner joiner = new StringJoiner(", ");
-        for (List<DataContainer<?>> containerList : containerListArray) {
+        for (List<DataContainer<?>> containerList : containerListList) {
             if (containerList != null) {
                 for (DataContainer<?> container : containerList) {
                     joiner.add(container.toCompactString());

@@ -33,23 +33,23 @@ public class SendDynamicClientKeyExchangeActionTest
     @Test
     public void testGetSendMessages() {
         assertTrue(
-                action.getSendMessages() instanceof ArrayList
-                        && action.getSendMessages().isEmpty());
+                action.getSentMessages() instanceof ArrayList
+                        && action.getSentMessages().isEmpty());
         action.execute(state);
         assertTrue(
-                action.getSendMessages() instanceof ArrayList
-                        && action.getSendMessages().size() == 1
-                        && action.getSendMessages().get(0) instanceof DHClientKeyExchangeMessage);
+                action.getSentMessages() instanceof ArrayList
+                        && action.getSentMessages().size() == 1
+                        && action.getSentMessages().get(0) instanceof DHClientKeyExchangeMessage);
     }
 
     @Test
     public void testGetSendRecords() {
         assertTrue(
-                action.getSendRecords() instanceof ArrayList && action.getSendRecords().isEmpty());
+                action.getSentRecords() instanceof ArrayList && action.getSentRecords().isEmpty());
         action.execute(state);
         assertTrue(
-                action.getSendRecords() instanceof ArrayList
-                        && action.getSendRecords().size() == 1);
+                action.getSentRecords() instanceof ArrayList
+                        && action.getSentRecords().size() == 1);
     }
 
     @Test

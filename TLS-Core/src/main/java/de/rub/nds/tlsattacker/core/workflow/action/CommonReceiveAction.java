@@ -55,7 +55,7 @@ public abstract class CommonReceiveAction extends MessageAction implements Recei
         }
 
         LOGGER.debug("Receiving... (" + this.getClass().getSimpleName() + ")");
-        List<LayerConfiguration> layerConfigurations = createLayerConfiguration(tlsContext);
+        List<LayerConfiguration<?>> layerConfigurations = createLayerConfiguration(tlsContext);
         getReceiveResult(tlsContext.getLayerStack(), layerConfigurations);
         setExecuted(true);
         LOGGER.debug(
@@ -83,7 +83,7 @@ public abstract class CommonReceiveAction extends MessageAction implements Recei
         return new HashSet<>(Collections.singleton(connectionAlias));
     }
 
-    protected abstract List<LayerConfiguration> createLayerConfiguration(TlsContext tlsContext);
+    protected abstract List<LayerConfiguration<?>> createLayerConfiguration(TlsContext tlsContext);
 
     @Override
     public List<ProtocolMessage> getReceivedMessages() {

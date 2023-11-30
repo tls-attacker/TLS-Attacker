@@ -22,16 +22,16 @@ public class LayerStackProcessingResult {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final List<LayerProcessingResult> layerProcessingResultList;
+    private final List<LayerProcessingResult<?>> layerProcessingResultList;
 
     // whether any layer has unreadBytes
     private boolean hasUnreadBytes;
 
     private final List<LayerType> layersWithUnreadBytes = new LinkedList<>();
 
-    public LayerStackProcessingResult(List<LayerProcessingResult> layerProcessingResultList) {
+    public LayerStackProcessingResult(List<LayerProcessingResult<?>> layerProcessingResultList) {
         this.layerProcessingResultList = layerProcessingResultList;
-        for (LayerProcessingResult layerProcessingResult : layerProcessingResultList) {
+        for (LayerProcessingResult<?> layerProcessingResult : layerProcessingResultList) {
             if (layerProcessingResult.getUnreadBytes().length != 0) {
                 layersWithUnreadBytes.add(layerProcessingResult.getLayerType());
                 hasUnreadBytes = true;
@@ -39,13 +39,13 @@ public class LayerStackProcessingResult {
         }
     }
 
-    public List<LayerProcessingResult> getLayerProcessingResultList() {
+    public List<LayerProcessingResult<?>> getLayerProcessingResultList() {
         return layerProcessingResultList;
     }
 
-    public LayerProcessingResult getResultForLayer(LayerType layerType) {
+    public LayerProcessingResult<?> getResultForLayer(LayerType layerType) {
         if (layerProcessingResultList != null) {
-            for (LayerProcessingResult layerResult : layerProcessingResultList) {
+            for (LayerProcessingResult<?> layerResult : layerProcessingResultList) {
                 if (layerResult.getLayerType().equals(layerType)) {
                     return layerResult;
                 }

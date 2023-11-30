@@ -26,71 +26,66 @@ public class WorkflowTraceMutatorTest {
     private WorkflowTrace trace;
     private Config config;
 
-    private ReceiveAction rcvHeartbeat;
-    private ReceiveAction rcvAlertMessage;
-    private ReceiveAction rcvServerHello;
-    private ReceiveAction rcvFinishedMessage;
+    private ReceiveAction receiveHeartbeatAction;
+    private ReceiveAction receiveAlertAction;
+    private ReceiveAction receiveServerHelloAction;
+    private ReceiveAction receiveFinishedAction;
 
-    private SendAction sHeartbeat;
-    private SendAction sAlertMessage;
-    private SendAction sClientHello;
-    private SendAction sFinishedMessage;
+    private SendAction sendHeartbeatAction;
+    private SendAction sendAlertAction;
+    private SendAction sendClientHelloAction;
+    private SendAction sendFinishedAction;
 
     @BeforeEach
     public void setUp() {
         config = new Config();
         trace = new WorkflowTrace();
 
-        rcvHeartbeat = new ReceiveAction();
-        rcvAlertMessage = new ReceiveAction();
-        rcvServerHello = new ReceiveAction();
-        rcvFinishedMessage = new ReceiveAction();
+        receiveHeartbeatAction = new ReceiveAction();
+        receiveAlertAction = new ReceiveAction();
+        receiveServerHelloAction = new ReceiveAction();
+        receiveFinishedAction = new ReceiveAction();
 
-        rcvHeartbeat.setExpectedMessages(new HeartbeatMessage());
-        rcvAlertMessage.setExpectedMessages(new AlertMessage());
-        rcvServerHello.setExpectedMessages(new ServerHelloMessage());
-        rcvFinishedMessage.setExpectedMessages(new FinishedMessage());
+        receiveHeartbeatAction.setExpectedMessages(new HeartbeatMessage());
+        receiveAlertAction.setExpectedMessages(new AlertMessage());
+        receiveServerHelloAction.setExpectedMessages(new ServerHelloMessage());
+        receiveFinishedAction.setExpectedMessages(new FinishedMessage());
 
-        sHeartbeat = new SendAction();
-        sAlertMessage = new SendAction();
-        sClientHello = new SendAction();
-        sFinishedMessage = new SendAction();
-
-        sHeartbeat.setConfiguredMessages(List.of(new HeartbeatMessage()));
-        sAlertMessage.setConfiguredMessages(List.of(new AlertMessage()));
-        sClientHello.setConfiguredMessages(List.of(new ClientHelloMessage()));
-        sFinishedMessage.setConfiguredMessages(List.of(new FinishedMessage()));
+        sendHeartbeatAction = new SendAction(new HeartbeatMessage());
+        sendAlertAction = new SendAction(new AlertMessage());
+        sendClientHelloAction = new SendAction(new ClientHelloMessage());
+        sendFinishedAction = new SendAction(new FinishedMessage());
     }
 
     @Test
     public void testReplaceSendingMessageProtocolMessage() {
-        trace.addTlsAction(sClientHello);
+        trace.addTlsAction(sendClientHelloAction);
 
         ProtocolMessage replaceMsg = new FinishedMessage();
-        WorkflowTraceMutator.replaceSendingMessage(
+        WorkflowTraceMutator.replaceStaticSendingMessage(
                 trace, ProtocolMessageType.HANDSHAKE, replaceMsg);
 
         assertEquals(
                 replaceMsg,
-                WorkflowTraceUtil.getFirstSendMessage(ProtocolMessageType.HANDSHAKE, trace));
+                WorkflowTraceResultUtil.getFirstSentMessage(ProtocolMessageType.HANDSHAKE, trace));
     }
 
     @Test
     public void testReplaceSendingMessageHandshakeMessage() {
-        trace.addTlsAction(sClientHello);
+        trace.addTlsAction(sendClientHelloAction);
 
         HandshakeMessage replaceMsg = new FinishedMessage();
-        WorkflowTraceMutator.replaceSendingMessage(
+        WorkflowTraceMutator.replaceStaticSendingMessage(
                 trace, HandshakeMessageType.CLIENT_HELLO, replaceMsg);
 
         assertEquals(
                 replaceMsg,
-                WorkflowTraceUtil.getFirstSendMessage(ProtocolMessageType.HANDSHAKE, trace));
+                WorkflowTraceResultUtil.getFirstSentMessage(ProtocolMessageType.HANDSHAKE, trace));
     }
 
     @Test
     public void testDeleteSendingMessageProtocolMessage() {
-        trace.addTlsAction(sClientHello);
+        trace.addTlsAction(sendClientHelloAction);
 
         WorkflowTraceMutator.deleteSendingMessage(trace, ProtocolMessageType.ALERT);
         assertEquals(1, trace.getSendingActions().size());
@@ -101,7 +96,7 @@ public class WorkflowTraceMutatorTest {
 
     @Test
     public void testDeleteSendingMessageHandshakeMessage() {
-        trace.addTlsAction(sClientHello);
+        trace.addTlsAction(sendClientHelloAction);
 
         WorkflowTraceMutator.deleteSendingMessage(trace, HandshakeMessageType.SERVER_HELLO);
         assertEquals(1, trace.getSendingActions().size());
@@ -112,7 +107,7 @@ public class WorkflowTraceMutatorTest {
 
     @Test
     public void testReplaceReceivingMessageProtocolMessage() throws WorkflowTraceMutationException {
-        trace.addTlsAction(rcvServerHello);
+        trace.addTlsAction(receiveServerHelloAction);
 
         ProtocolMessage replaceMsg = new FinishedMessage();
         WorkflowTraceMutator.replaceReceivingMessage(
@@ -120,7 +115,7 @@ public class WorkflowTraceMutatorTest {
 
         ReceiveAction action =
                 (ReceiveAction)
-                        WorkflowTraceUtil.getReceivingActionsForMessage(
+                        WorkflowTraceResultUtil.getActionsThatReceived(
                                         ProtocolMessageType.HANDSHAKE, trace)
                                 .get(0);
         assertEquals(replaceMsg, action.getExpectedMessages().get(0));
@@ -129,7 +124,7 @@ public class WorkflowTraceMutatorTest {
     @Test
     public void testReplaceReceivingMessageHandshakeMessage()
             throws WorkflowTraceMutationException {
-        trace.addTlsAction(rcvServerHello);
+        trace.addTlsAction(receiveServerHelloAction);
 
         HandshakeMessage replaceMsg = new FinishedMessage();
         WorkflowTraceMutator.replaceReceivingMessage(
@@ -137,7 +132,7 @@ public class WorkflowTraceMutatorTest {
 
         ReceiveAction action =
                 (ReceiveAction)
-                        WorkflowTraceUtil.getReceivingActionsForMessage(
+                        WorkflowTraceResultUtil.getActionsThatReceived(
                                         ProtocolMessageType.HANDSHAKE, trace)
                                 .get(0);
         assertEquals(replaceMsg, action.getExpectedMessages().get(0));
@@ -145,24 +140,24 @@ public class WorkflowTraceMutatorTest {
 
     @Test
     public void testDeleteReceivingMessageProtocolMessage() throws WorkflowTraceMutationException {
-        trace.addTlsAction(rcvServerHello);
+        trace.addTlsAction(receiveServerHelloAction);
 
         WorkflowTraceMutator.deleteReceivingMessage(trace, ProtocolMessageType.HANDSHAKE);
 
         List<ReceivingAction> actions =
-                WorkflowTraceUtil.getReceivingActionsForMessage(
+                WorkflowTraceResultUtil.getActionsThatReceived(
                         ProtocolMessageType.HANDSHAKE, trace);
         assertEquals(0, actions.size());
     }
 
     @Test
     public void testDeleteReceivingMessageHandshakeMessage() throws WorkflowTraceMutationException {
-        trace.addTlsAction(rcvServerHello);
+        trace.addTlsAction(receiveServerHelloAction);
 
         WorkflowTraceMutator.deleteReceivingMessage(trace, HandshakeMessageType.SERVER_HELLO);
 
         List<ReceivingAction> actions =
-                WorkflowTraceUtil.getReceivingActionsForMessage(
+                WorkflowTraceResultUtil.getActionsThatReceived(
                         ProtocolMessageType.HANDSHAKE, trace);
         assertEquals(0, actions.size());
     }
@@ -183,8 +178,8 @@ public class WorkflowTraceMutatorTest {
 
         HandshakeMessage chm = new SrpClientKeyExchangeMessage();
 
-        WorkflowTraceMutator.replaceSendingMessage(trace, HandshakeMessageType.FINISHED, chm);
-        assertEquals(chm, ((SendAction) trace.getTlsActions().get(2)).getSendMessages().get(2));
+        WorkflowTraceMutator.replaceStaticSendingMessage(trace, HandshakeMessageType.FINISHED, chm);
+        assertEquals(chm, ((SendAction) trace.getTlsActions().get(2)).getSentMessages().get(2));
 
         WorkflowTraceMutator.replaceReceivingMessage(trace, HandshakeMessageType.CERTIFICATE, chm);
         assertEquals(
@@ -274,7 +269,7 @@ public class WorkflowTraceMutatorTest {
         // Delete after first finished message
         WorkflowTraceMutator.truncateReceivingAt(trace, HandshakeMessageType.FINISHED, false);
         assertEquals(3, trace.getTlsActions().size());
-        assertEquals(3, ((SendAction) trace.getTlsActions().get(2)).getSendMessages().size());
+        assertEquals(3, ((SendAction) trace.getTlsActions().get(2)).getSentMessages().size());
 
         // Delete after ServerHelloDoneMessage
         WorkflowTraceMutator.truncateAfter(trace, HandshakeMessageType.SERVER_HELLO_DONE, false);

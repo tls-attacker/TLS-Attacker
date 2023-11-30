@@ -10,12 +10,59 @@ package de.rub.nds.tlsattacker.core.workflow.factory;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
-import de.rub.nds.tlsattacker.core.constants.*;
+import de.rub.nds.tlsattacker.core.constants.AlertDescription;
+import de.rub.nds.tlsattacker.core.constants.AlertLevel;
+import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.RunningModeType;
+import de.rub.nds.tlsattacker.core.constants.StarttlsType;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.http.HttpRequestMessage;
 import de.rub.nds.tlsattacker.core.http.HttpResponseMessage;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.*;
+import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.EncryptedClientHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.EncryptedExtensionsMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.EndOfEarlyDataMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.GOSTClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.HelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.HelloRequestMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PWDClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PWDServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PskClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PskDhClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PskDheServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PskEcDhClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PskEcDheServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PskRsaClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PskServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.RSAServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.SrpClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.SrpServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EarlyDataExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PreSharedKeyExtensionMessage;
 import de.rub.nds.tlsattacker.core.quic.constants.QuicTransportErrorCodes;
@@ -26,8 +73,39 @@ import de.rub.nds.tlsattacker.core.quic.frame.PingFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.RetryPacket;
 import de.rub.nds.tlsattacker.core.quic.packet.VersionNegotiationPacket;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceUtil;
-import de.rub.nds.tlsattacker.core.workflow.action.*;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceConfigurationUtil;
+import de.rub.nds.tlsattacker.core.workflow.action.BufferedGenericReceiveAction;
+import de.rub.nds.tlsattacker.core.workflow.action.BufferedSendAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ClearBuffersAction;
+import de.rub.nds.tlsattacker.core.workflow.action.CopyBuffersAction;
+import de.rub.nds.tlsattacker.core.workflow.action.CopyPreMasterSecretAction;
+import de.rub.nds.tlsattacker.core.workflow.action.EchConfigDnsRequestAction;
+import de.rub.nds.tlsattacker.core.workflow.action.EsniKeyDnsRequestAction;
+import de.rub.nds.tlsattacker.core.workflow.action.FlushSessionCacheAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ForwardDataAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ForwardMessagesAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ForwardRecordsAction;
+import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
+import de.rub.nds.tlsattacker.core.workflow.action.MessageActionFactory;
+import de.rub.nds.tlsattacker.core.workflow.action.PopAndSendAction;
+import de.rub.nds.tlsattacker.core.workflow.action.PopBufferedMessageAction;
+import de.rub.nds.tlsattacker.core.workflow.action.PopBufferedRecordAction;
+import de.rub.nds.tlsattacker.core.workflow.action.PopBuffersAction;
+import de.rub.nds.tlsattacker.core.workflow.action.PrintLastHandledApplicationDataAction;
+import de.rub.nds.tlsattacker.core.workflow.action.PrintSecretsAction;
+import de.rub.nds.tlsattacker.core.workflow.action.QuicPathChallengeAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ReceiveQuicTillAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ReceiveTillAction;
+import de.rub.nds.tlsattacker.core.workflow.action.RemBufferedChCiphersAction;
+import de.rub.nds.tlsattacker.core.workflow.action.RemBufferedChExtensionsAction;
+import de.rub.nds.tlsattacker.core.workflow.action.RenegotiationAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ResetConnectionAction;
+import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
+import de.rub.nds.tlsattacker.core.workflow.action.SendDynamicClientKeyExchangeAction;
+import de.rub.nds.tlsattacker.core.workflow.action.SendDynamicServerCertificateAction;
+import de.rub.nds.tlsattacker.core.workflow.action.SendDynamicServerKeyExchangeAction;
+import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.ArrayList;
@@ -801,8 +879,8 @@ public class WorkflowConfigurationFactory {
         if (ourConnection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
             initialHello =
                     (HelloMessage)
-                            WorkflowTraceUtil.getFirstSendMessage(
-                                    HandshakeMessageType.CLIENT_HELLO, trace);
+                            WorkflowTraceConfigurationUtil.getFirstStaticConfiguredSendMessage(
+                                    trace, HandshakeMessageType.CLIENT_HELLO);
             EarlyDataExtensionMessage earlyDataExtension =
                     initialHello.getExtension(EarlyDataExtensionMessage.class);
             if (initialHello.getExtensions() != null) {
@@ -811,12 +889,12 @@ public class WorkflowConfigurationFactory {
         } else {
             initialHello =
                     (HelloMessage)
-                            WorkflowTraceUtil.getFirstSendMessage(
-                                    HandshakeMessageType.SERVER_HELLO, trace);
+                            WorkflowTraceConfigurationUtil.getFirstStaticConfiguredSendMessage(
+                                    trace, HandshakeMessageType.SERVER_HELLO);
             EncryptedExtensionsMessage encryptedExtensionsMessage =
                     (EncryptedExtensionsMessage)
-                            WorkflowTraceUtil.getFirstSendMessage(
-                                    HandshakeMessageType.ENCRYPTED_EXTENSIONS, trace);
+                            WorkflowTraceConfigurationUtil.getFirstStaticConfiguredSendMessage(
+                                    trace, HandshakeMessageType.ENCRYPTED_EXTENSIONS);
             if (encryptedExtensionsMessage != null
                     && encryptedExtensionsMessage.getExtensions() != null) {
                 EarlyDataExtensionMessage earlyDataExtension =

@@ -77,19 +77,19 @@ public class SendDynamicServerCertificateActionTest
     @Test
     public void testGetSendMessages() {
         // check if the correct amount of messages have been sent
-        assertTrue(action.getSendMessages().isEmpty());
+        assertTrue(action.getSentMessages().isEmpty());
         action.execute(state);
-        assertEquals(1, action.getSendMessages().size());
-        assertTrue(action.getSendMessages().get(0) instanceof CertificateMessage);
+        assertEquals(1, action.getSentMessages().size());
+        assertTrue(action.getSentMessages().get(0) instanceof CertificateMessage);
     }
 
     @Test
     public void testGetSendRecords() {
         // check if send records contains the correct amount of sent records
-        assertTrue(action.getSendRecords().isEmpty());
+        assertTrue(action.getSentRecords().isEmpty());
         action.execute(state);
-        assertEquals(1, action.getSendRecords().size());
-        assertTrue(action.getSendRecords().get(0) instanceof Record);
+        assertEquals(1, action.getSentRecords().size());
+        assertTrue(action.getSentRecords().get(0) instanceof Record);
     }
 
     @Test
@@ -116,8 +116,8 @@ public class SendDynamicServerCertificateActionTest
         state.getTlsContext()
                 .setSelectedCipherSuite(CipherSuite.TLS_DH_anon_EXPORT_WITH_RC4_40_MD5);
         action.execute(state);
-        assertEquals(0, action.getSendMessages().size());
-        assertEquals(0, action.getSendRecords().size());
+        assertEquals(0, action.getSentMessages().size());
+        assertEquals(0, action.getSentRecords().size());
     }
 
     @Test

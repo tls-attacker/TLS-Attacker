@@ -120,8 +120,8 @@ public class SendRaccoonCkeAction extends CommonSendAction {
             sb = new StringBuilder("Send Raccoon DH-CKE: (not executed)\n");
         }
         sb.append("\tMessages:");
-        if (getSendMessages() != null) {
-            for (ProtocolMessage message : getSendMessages()) {
+        if (getSentMessages() != null) {
+            for (ProtocolMessage message : getSentMessages()) {
                 sb.append(message.toCompactString());
                 sb.append(", ");
             }
@@ -135,9 +135,9 @@ public class SendRaccoonCkeAction extends CommonSendAction {
     @Override
     public String toCompactString() {
         StringBuilder sb = new StringBuilder(super.toCompactString());
-        if ((getSendMessages() != null) && (!getSendMessages().isEmpty())) {
+        if ((getSentMessages() != null) && (!getSentMessages().isEmpty())) {
             sb.append(" (");
-            for (ProtocolMessage message : getSendMessages()) {
+            for (ProtocolMessage message : getSentMessages()) {
                 sb.append(message.toCompactString());
                 sb.append(",");
             }
@@ -149,7 +149,7 @@ public class SendRaccoonCkeAction extends CommonSendAction {
     }
 
     @Override
-    protected List<LayerConfiguration> createLayerConfiguration(TlsContext tlsContext) {
+    protected List<LayerConfiguration<?>> createLayerConfiguration(TlsContext tlsContext) {
         ClientKeyExchangeMessage message =
                 generateRaccoonDhClientKeyExchangeMessage(tlsContext, withNullByte);
         return ActionHelperUtil.createSendConfiguration(

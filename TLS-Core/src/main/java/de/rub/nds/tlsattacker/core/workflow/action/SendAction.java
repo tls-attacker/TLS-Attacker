@@ -37,7 +37,7 @@ import org.apache.logging.log4j.Logger;
 
 /** todo print configured records */
 @XmlRootElement(name = "Send")
-public class SendAction extends CommonSendAction {
+public class SendAction extends CommonSendAction implements StaticSendingAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -185,24 +185,14 @@ public class SendAction extends CommonSendAction {
                 + (isExecuted() ? "\n" : "(not executed)\n")
                 + "\tMessages: "
                 + LogPrinter.toHumanReadableMultiLineContainerListArray(
-                        (List<DataContainer<?>>) (List<?>) configuredHttpMessages,
-                        (List<DataContainer<?>>) (List<?>) configuredMessages,
-                        (List<DataContainer<?>>) (List<?>) configuredDtlsHandshakeMessageFragment,
-                        (List<DataContainer<?>>) (List<?>) configuredRecords,
-                        (List<DataContainer<?>>) (List<?>) configuredQuicPackets,
-                        (List<DataContainer<?>>) (List<?>) configuredQuicFrames);
+                        getConfiguredDataContainerLists());
     }
 
     @Override
     public String toCompactString() {
         return super.toCompactString()
                 + LogPrinter.toHumanReadableMultiLineContainerListArray(
-                        (List<DataContainer<?>>) (List<?>) configuredHttpMessages,
-                        (List<DataContainer<?>>) (List<?>) configuredMessages,
-                        (List<DataContainer<?>>) (List<?>) configuredDtlsHandshakeMessageFragment,
-                        (List<DataContainer<?>>) (List<?>) configuredRecords,
-                        (List<DataContainer<?>>) (List<?>) configuredQuicPackets,
-                        (List<DataContainer<?>>) (List<?>) configuredQuicFrames);
+                        getConfiguredDataContainerLists());
     }
 
     @Override
@@ -264,7 +254,7 @@ public class SendAction extends CommonSendAction {
     }
 
     @Override
-    protected List<LayerConfiguration> createLayerConfiguration(TlsContext tlsContext) {
+    protected List<LayerConfiguration<?>> createLayerConfiguration(TlsContext tlsContext) {
         return ActionHelperUtil.createSendConfiguration(
                 tlsContext,
                 configuredMessages,
@@ -273,5 +263,30 @@ public class SendAction extends CommonSendAction {
                 configuredQuicFrames,
                 configuredQuicPackets,
                 configuredHttpMessages);
+    }
+
+    @Override
+    public List<List<DataContainer<?>>> getConfiguredDataContainerLists() {
+        List<List<DataContainer<?>>> dataContainerLists = new LinkedList<>();
+        if (configuredHttpMessages != null) {
+            dataContainerLists.add((List<DataContainer<?>>) (List<?>) configuredHttpMessages);
+        }
+        if (configuredMessages != null) {
+            dataContainerLists.add((List<DataContainer<?>>) (List<?>) configuredMessages);
+        }
+        if (configuredDtlsHandshakeMessageFragment != null) {
+            dataContainerLists.add(
+                    (List<DataContainer<?>>) (List<?>) configuredDtlsHandshakeMessageFragment);
+        }
+        if (configuredRecords != null) {
+            dataContainerLists.add((List<DataContainer<?>>) (List<?>) configuredRecords);
+        }
+        if (configuredQuicFrames != null) {
+            dataContainerLists.add((List<DataContainer<?>>) (List<?>) configuredQuicFrames);
+        }
+        if (configuredQuicPackets != null) {
+            dataContainerLists.add((List<DataContainer<?>>) (List<?>) configuredQuicPackets);
+        }
+        return dataContainerLists;
     }
 }

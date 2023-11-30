@@ -85,7 +85,7 @@ public abstract class CommonForwardAction extends TlsAction
         TlsContext receiveFromContext = state.getTlsContext(receiveFromAlias);
         TlsContext forwardToContext = state.getTlsContext(forwardToAlias);
 
-        List<LayerConfiguration> layerConfigurationList =
+        List<LayerConfiguration<?>> layerConfigurationList =
                 createReceiveConfiguration(receiveFromContext);
         if (layerConfigurationList == null) {
             LOGGER.info("Not receiving messages");
@@ -173,7 +173,8 @@ public abstract class CommonForwardAction extends TlsAction
      * @param tlsContext The current TLS context.
      * @return A list of layer configurations that should be executed.
      */
-    protected abstract List<LayerConfiguration> createReceiveConfiguration(TlsContext tlsContext);
+    protected abstract List<LayerConfiguration<?>> createReceiveConfiguration(
+            TlsContext tlsContext);
 
     /**
      * Create a layer configuration for the send action. The received messaged messages are
@@ -186,7 +187,7 @@ public abstract class CommonForwardAction extends TlsAction
      * @param receivedResult
      * @return
      */
-    protected abstract List<LayerConfiguration> createSendConfiguration(
+    protected abstract List<LayerConfiguration<?>> createSendConfiguration(
             TlsContext tlsContext, LayerStackProcessingResult receivedResult);
 
     @Override
@@ -262,7 +263,7 @@ public abstract class CommonForwardAction extends TlsAction
     }
 
     @Override
-    public final List<DtlsHandshakeMessageFragment> getSendFragments() {
+    public final List<DtlsHandshakeMessageFragment> getSentFragments() {
         if (layerStackSendResult == null) {
             return null;
         }
@@ -274,7 +275,7 @@ public abstract class CommonForwardAction extends TlsAction
     }
 
     @Override
-    public final List<ProtocolMessage> getSendMessages() {
+    public final List<ProtocolMessage> getSentMessages() {
         if (layerStackSendResult == null) {
             return null;
         }
@@ -286,7 +287,7 @@ public abstract class CommonForwardAction extends TlsAction
     }
 
     @Override
-    public final List<QuicFrame> getSendQuicFrames() {
+    public final List<QuicFrame> getSentQuicFrames() {
         if (layerStackSendResult == null) {
             return null;
         }
@@ -298,7 +299,7 @@ public abstract class CommonForwardAction extends TlsAction
     }
 
     @Override
-    public final List<QuicPacket> getSendQuicPackets() {
+    public final List<QuicPacket> getSentQuicPackets() {
         if (layerStackSendResult == null) {
             return null;
         }
@@ -310,7 +311,7 @@ public abstract class CommonForwardAction extends TlsAction
     }
 
     @Override
-    public final List<Record> getSendRecords() {
+    public final List<Record> getSentRecords() {
         if (layerStackSendResult == null) {
             return null;
         }

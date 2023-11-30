@@ -12,7 +12,11 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
-import de.rub.nds.tlsattacker.core.workflow.action.*;
+import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ReceiveTillAction;
+import de.rub.nds.tlsattacker.core.workflow.action.StaticReceivingAction;
+import de.rub.nds.tlsattacker.core.workflow.action.StaticSendingAction;
+import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
@@ -20,6 +24,7 @@ import javax.annotation.Nullable;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/** A class to manipulate statically configured actions in workflow traces. */
 public class WorkflowTraceMutator {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -72,14 +77,15 @@ public class WorkflowTraceMutator {
         }
     }
 
-    public static void replaceSendingMessage(
-            WorkflowTrace trace, ProtocolMessageType type, ProtocolMessage replaceMessage) {
-        List<SendingAction> sendingActions =
-                WorkflowTraceUtil.getSendingActionsForMessage(type, trace);
-        List<SendingAction> deleteActions = new ArrayList<>();
-        for (SendingAction action : sendingActions) {
-            List<ProtocolMessage> messages = action.getSendMessages();
-            replaceMessagesInList(messages, type, replaceMessage);
+    public static void replaceStaticSendingMessage(
+            WorkflowTrace trace, ProtocolMessageType type, ProtocolMessage replacementMessage) {
+        List<StaticSendingAction> sendingActions =
+                WorkflowTraceConfigurationUtil.getStaticSendingActionsWithConfiguration(
+                        trace, type);
+        List<StaticSendingAction> deleteActions = new ArrayList<>();
+        for (StaticSendingAction action : sendingActions) {
+            List<ProtocolMessage> messages = action.getConfiguredList(ProtocolMessage.class);
+            replaceMessagesInList(messages, type, replacementMessage);
             if (messages.size() == 0) {
                 deleteActions.add(action);
             }
@@ -88,14 +94,15 @@ public class WorkflowTraceMutator {
         trace.getTlsActions().removeAll(deleteActions);
     }
 
-    public static void replaceSendingMessage(
-            WorkflowTrace trace, HandshakeMessageType type, HandshakeMessage replaceMessage) {
-        List<SendingAction> sendingActions =
-                WorkflowTraceUtil.getSendingActionsForMessage(type, trace);
-        List<SendingAction> deleteActions = new ArrayList<>();
-        for (SendingAction action : sendingActions) {
-            List<ProtocolMessage> messages = action.getSendMessages();
-            replaceMessagesInList(messages, type, replaceMessage);
+    public static void replaceStaticSendingMessage(
+            WorkflowTrace trace, HandshakeMessageType type, HandshakeMessage replacementMessage) {
+        List<StaticSendingAction> sendingActions =
+                WorkflowTraceConfigurationUtil.getStaticSendingActionsWithConfiguration(
+                        trace, type);
+        List<StaticSendingAction> deleteActions = new ArrayList<>();
+        for (StaticSendingAction action : sendingActions) {
+            List<ProtocolMessage> messages = action.getConfiguredList(ProtocolMessage.class);
+            replaceMessagesInList(messages, type, replacementMessage);
             if (messages.size() == 0) {
                 deleteActions.add(action);
             }
@@ -105,11 +112,11 @@ public class WorkflowTraceMutator {
     }
 
     public static void deleteSendingMessage(WorkflowTrace trace, ProtocolMessageType type) {
-        replaceSendingMessage(trace, type, null);
+        replaceStaticSendingMessage(trace, type, null);
     }
 
     public static void deleteSendingMessage(WorkflowTrace trace, HandshakeMessageType type) {
-        replaceSendingMessage(trace, type, null);
+        replaceStaticSendingMessage(trace, type, null);
     }
 
     public static void replaceReceivingMessage(
@@ -117,10 +124,11 @@ public class WorkflowTraceMutator {
             @Nonnull ProtocolMessageType type,
             @Nullable ProtocolMessage replaceMessage)
             throws WorkflowTraceMutationException {
-        List<ReceivingAction> receivingActions =
-                WorkflowTraceUtil.getReceivingActionsForMessage(type, trace);
-        List<ReceivingAction> deleteActions = new ArrayList<>();
-        for (ReceivingAction action : receivingActions) {
+        List<StaticReceivingAction> receivingActions =
+                WorkflowTraceConfigurationUtil.getStaticReceivingActionsWithConfiguration(
+                        trace, type);
+        List<StaticReceivingAction> deleteActions = new ArrayList<>();
+        for (StaticReceivingAction action : receivingActions) {
             if (action instanceof ReceiveAction) {
                 List<ProtocolMessage> messages = ((ReceiveAction) action).getExpectedMessages();
                 replaceMessagesInList(messages, type, replaceMessage);
@@ -150,10 +158,11 @@ public class WorkflowTraceMutator {
             @Nonnull HandshakeMessageType type,
             @Nullable ProtocolMessage replaceMessage)
             throws WorkflowTraceMutationException {
-        List<ReceivingAction> receivingActions =
-                WorkflowTraceUtil.getReceivingActionsForMessage(type, trace);
-        List<ReceivingAction> deleteActions = new ArrayList<>();
-        for (ReceivingAction action : receivingActions) {
+        List<StaticReceivingAction> receivingActions =
+                WorkflowTraceConfigurationUtil.getStaticReceivingActionsWithConfiguration(
+                        trace, type);
+        List<StaticReceivingAction> deleteActions = new ArrayList<>();
+        for (StaticReceivingAction action : receivingActions) {
             if (action instanceof ReceiveAction) {
                 List<ProtocolMessage> messages = ((ReceiveAction) action).getExpectedMessages();
                 replaceMessagesInList(messages, type, replaceMessage);
@@ -198,62 +207,62 @@ public class WorkflowTraceMutator {
         TlsAction action = null;
         if (untilLast != null && untilLast == true) {
             if (type instanceof HandshakeMessageType) {
-                if (sending == null) {
+                if (sending) {
                     action =
-                            WorkflowTraceUtil.getLastActionForMessage(
-                                    (HandshakeMessageType) type, trace);
-                } else if (sending) {
-                    action =
-                            WorkflowTraceUtil.getLastSendingActionForMessage(
-                                    (HandshakeMessageType) type, trace);
+                            (TlsAction)
+                                    WorkflowTraceConfigurationUtil
+                                            .getLastStaticConfiguredSendAction(
+                                                    trace, (HandshakeMessageType) type);
                 } else {
                     action =
-                            WorkflowTraceUtil.getLastReceivingActionForMessage(
-                                    (HandshakeMessageType) type, trace);
+                            (TlsAction)
+                                    WorkflowTraceConfigurationUtil
+                                            .getLastStaticConfiguredReceiveAction(
+                                                    trace, (HandshakeMessageType) type);
                 }
             } else if (type instanceof ProtocolMessageType) {
-                if (sending == null) {
+                if (sending) {
                     action =
-                            WorkflowTraceUtil.getLastActionForMessage(
-                                    (ProtocolMessageType) type, trace);
-                } else if (sending) {
-                    action =
-                            WorkflowTraceUtil.getLastSendingActionForMessage(
-                                    (ProtocolMessageType) type, trace);
+                            (TlsAction)
+                                    WorkflowTraceConfigurationUtil
+                                            .getLastStaticConfiguredSendAction(
+                                                    trace, (ProtocolMessageType) type);
                 } else {
                     action =
-                            WorkflowTraceUtil.getLastReceivingActionForMessage(
-                                    (ProtocolMessageType) type, trace);
+                            (TlsAction)
+                                    WorkflowTraceConfigurationUtil
+                                            .getLastStaticConfiguredReceiveAction(
+                                                    trace, (ProtocolMessageType) type);
                 }
             }
         } else {
             if (type instanceof HandshakeMessageType) {
-                if (sending == null) {
+                if (sending) {
                     action =
-                            WorkflowTraceUtil.getFirstActionForMessage(
-                                    (HandshakeMessageType) type, trace);
-                } else if (sending) {
-                    action =
-                            WorkflowTraceUtil.getFirstSendingActionForMessage(
-                                    (HandshakeMessageType) type, trace);
+                            (TlsAction)
+                                    WorkflowTraceConfigurationUtil
+                                            .getFirstStaticConfiguredSendAction(
+                                                    trace, (HandshakeMessageType) type);
                 } else {
                     action =
-                            WorkflowTraceUtil.getFirstReceivingActionForMessage(
-                                    (HandshakeMessageType) type, trace);
+                            (TlsAction)
+                                    WorkflowTraceConfigurationUtil
+                                            .getFirstStaticConfiguredReceiveAction(
+                                                    trace, (HandshakeMessageType) type);
                 }
             } else if (type instanceof ProtocolMessageType) {
-                if (sending == null) {
+                if (sending) {
                     action =
-                            WorkflowTraceUtil.getFirstActionForMessage(
-                                    (ProtocolMessageType) type, trace);
-                } else if (sending) {
-                    action =
-                            WorkflowTraceUtil.getFirstSendingActionForMessage(
-                                    (ProtocolMessageType) type, trace);
+                            (TlsAction)
+                                    WorkflowTraceConfigurationUtil
+                                            .getFirstStaticConfiguredSendAction(
+                                                    trace, (ProtocolMessageType) type);
                 } else {
                     action =
-                            WorkflowTraceUtil.getFirstReceivingActionForMessage(
-                                    (ProtocolMessageType) type, trace);
+                            (TlsAction)
+                                    WorkflowTraceConfigurationUtil
+                                            .getFirstStaticConfiguredReceiveAction(
+                                                    trace, (ProtocolMessageType) type);
                 }
             }
         }
@@ -262,24 +271,12 @@ public class WorkflowTraceMutator {
         }
 
         int messageIndex = -1;
-        int actionIndex = WorkflowTraceUtil.indexOfIdenticalAction(trace, action);
+        int actionIndex = trace.getTlsActions().indexOf(action);
         List<ProtocolMessage> messages = new ArrayList<>();
-        if (action instanceof SendingAction) {
-            if (action instanceof SendAction) {
-                messages = ((SendAction) action).getSendMessages();
-            } else if (!(action instanceof SendDynamicServerCertificateAction)
-                    && !(action instanceof SendDynamicClientKeyExchangeAction)
-                    && !(action instanceof SendDynamicServerKeyExchangeAction)) {
-                LOGGER.warn(
-                        "Unsupported action for truncating operation, actions after the selected action are still being deleted.");
-            }
-        } else if (action instanceof ReceivingAction) {
-            if (action instanceof ReceiveAction) {
-                messages = ((ReceiveAction) action).getExpectedMessages();
-            } else if (!(action instanceof ReceiveTillAction)) {
-                LOGGER.warn(
-                        "Unsupported action for truncating operation, actions after the selected action are still being deleted.");
-            }
+        if (action instanceof StaticSendingAction) {
+            messages = ((StaticSendingAction) action).getConfiguredList(ProtocolMessage.class);
+        } else if (action instanceof StaticReceivingAction) {
+            messages = ((StaticReceivingAction) action).getExpectedList(ProtocolMessage.class);
         }
 
         for (ProtocolMessage message : messages) {

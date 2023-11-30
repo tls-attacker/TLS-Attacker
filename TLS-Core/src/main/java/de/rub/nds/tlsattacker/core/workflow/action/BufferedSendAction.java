@@ -42,7 +42,7 @@ public class BufferedSendAction extends CommonSendAction {
     public String toString() {
         StringBuilder sb = new StringBuilder("BufferedSend Action:\n");
         sb.append("Messages:\n");
-        for (ProtocolMessage message : getSendMessages()) {
+        for (ProtocolMessage message : getSentMessages()) {
             sb.append(message.toCompactString());
             sb.append(", ");
         }
@@ -50,7 +50,7 @@ public class BufferedSendAction extends CommonSendAction {
     }
 
     @Override
-    protected List<LayerConfiguration> createLayerConfiguration(TlsContext tlsContext) {
+    protected List<LayerConfiguration<?>> createLayerConfiguration(TlsContext tlsContext) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'createLayerConfiguration'");
     }

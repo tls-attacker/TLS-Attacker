@@ -166,7 +166,7 @@ public class QuicWorkflowExecutor extends WorkflowExecutor {
                                 .getLayer(QuicPacketLayer.class);
         packetLayer.setLayerConfiguration(
                 new SpecificSendLayerConfiguration(
-                        ImplementedLayers.QUICPACKET, action.getSendQuicPackets()));
+                        ImplementedLayers.QUICPACKET, action.getSentQuicPackets()));
 
         try {
             packetLayer.sendConfiguration();

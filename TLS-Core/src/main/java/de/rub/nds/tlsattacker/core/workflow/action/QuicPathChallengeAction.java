@@ -90,8 +90,8 @@ public class QuicPathChallengeAction extends ConnectionBoundAction {
             throws ActionExecutionException {
         action.execute(state);
         if (action instanceof SendAction) {
-            sendQuicFrames.addAll(((SendAction) action).getSendQuicFrames());
-            sendQuicPackets.addAll(((SendAction) action).getSendQuicPackets());
+            sendQuicFrames.addAll(((SendAction) action).getSentQuicFrames());
+            sendQuicPackets.addAll(((SendAction) action).getSentQuicPackets());
         } else {
             receivedQuicFrames.addAll(((ReceiveAction) action).getReceivedQuicFrames());
             receivedQuicPackets.addAll(((ReceiveAction) action).getReceivedQuicPackets());

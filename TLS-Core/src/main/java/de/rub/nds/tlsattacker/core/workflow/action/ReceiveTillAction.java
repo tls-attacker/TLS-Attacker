@@ -104,7 +104,7 @@ public class ReceiveTillAction extends CommonReceiveAction {
     }
 
     @Override
-    protected List<LayerConfiguration> createLayerConfiguration(TlsContext tlsContext) {
+    protected List<LayerConfiguration<?>> createLayerConfiguration(TlsContext tlsContext) {
         return ActionHelperUtil.createReceiveTillConfiguration(tlsContext, waitTillMessage);
     }
 }

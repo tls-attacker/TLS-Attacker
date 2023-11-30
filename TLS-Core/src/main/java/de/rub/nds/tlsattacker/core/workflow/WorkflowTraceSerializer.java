@@ -241,7 +241,8 @@ public class WorkflowTraceSerializer {
              */
             WorkflowTrace wt = (WorkflowTrace) unmarshaller.unmarshal(xsr);
             ModvarHelper helper = new ModvarHelper();
-            List<ModifiableVariableField> allSentFields = helper.getAllSentFields(wt);
+            List<ModifiableVariableField> allSentFields =
+                    helper.getAllStaticallyConfiguredSentFields(wt);
             for (ModifiableVariableField field : allSentFields) {
                 if (field.getModifiableVariable() != null
                         && field.getModifiableVariable().getOriginalValue() != null) {

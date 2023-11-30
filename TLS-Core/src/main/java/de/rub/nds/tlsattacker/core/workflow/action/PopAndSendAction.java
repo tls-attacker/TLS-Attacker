@@ -49,7 +49,7 @@ public class PopAndSendAction extends CommonSendAction {
     @Override
     public void execute(State state) throws ActionExecutionException {
         super.execute(state);
-        if (getSendMessages().isEmpty()) {
+        if (getSentMessages().isEmpty()) {
             couldPop = false;
         } else {
             couldPop = true;
@@ -86,7 +86,7 @@ public class PopAndSendAction extends CommonSendAction {
     }
 
     @Override
-    protected List<LayerConfiguration> createLayerConfiguration(TlsContext tlsContext) {
+    protected List<LayerConfiguration<?>> createLayerConfiguration(TlsContext tlsContext) {
         List<ProtocolMessage> messages = new LinkedList<>();
         LinkedList<ProtocolMessage> messageBuffer = tlsContext.getMessageBuffer();
         if (index != null && index >= 0) {

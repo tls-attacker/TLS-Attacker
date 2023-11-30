@@ -63,13 +63,13 @@ public class ForwardDataActionTest extends AbstractActionTest<ForwardDataAction>
 
     @Test
     public void executingWithNullAliasThrowsException() throws Exception {
-        ForwardRecordsAction action = new ForwardRecordsAction(null, ctx2Alias);
+        ForwardDataAction action = new ForwardDataAction(null, ctx2Alias);
         assertThrows(WorkflowExecutionException.class, () -> action.execute(state));
     }
 
     @Test
     public void executingWithEmptyAliasThrowsException() throws Exception {
-        ForwardRecordsAction action = new ForwardRecordsAction("", ctx2Alias);
+        ForwardDataAction action = new ForwardDataAction("", ctx2Alias);
         assertThrows(WorkflowExecutionException.class, () -> action.execute(state));
     }
 

@@ -65,7 +65,7 @@ public class ActionHelperUtil {
         }
     }
 
-    public static List<LayerConfiguration> createReceivLayerConfiguration(
+    public static List<LayerConfiguration<?>> createReceivLayerConfiguration(
             TlsContext tlsContext,
             Set<ActionOption> actionOptions,
             List<ProtocolMessage> protocolMessagesToReceive,
@@ -76,7 +76,7 @@ public class ActionHelperUtil {
             List<HttpMessage> httpMessagesToReceive) {
         LayerStack layerStack = tlsContext.getLayerStack();
 
-        List<LayerConfiguration> layerConfigurationList;
+        List<LayerConfiguration<?>> layerConfigurationList;
         layerConfigurationList =
                 sortLayerConfigurations(
                         layerStack,
@@ -99,7 +99,7 @@ public class ActionHelperUtil {
         return layerConfigurationList;
     }
 
-    public static ReceiveLayerConfiguration createReceiveConfiguration(
+    public static ReceiveLayerConfiguration<?> createReceiveConfiguration(
             LayerType layerType,
             List<? extends DataContainer<?>> containersToReceive,
             Set<ActionOption> actionOptions) {
@@ -107,7 +107,7 @@ public class ActionHelperUtil {
             return new GenericReceiveLayerConfiguration(layerType);
         } else {
             if (layerType == ImplementedLayers.MESSAGE) {
-                return (ReceiveLayerConfiguration)
+                return (ReceiveLayerConfiguration<?>)
                         ActionHelperUtil.applyMessageFilters(
                                 new SpecificReceiveLayerConfiguration<>(
                                         layerType, containersToReceive),
@@ -117,41 +117,42 @@ public class ActionHelperUtil {
         }
     }
 
-    public static List<LayerConfiguration> createReceiveTillConfiguration(
+    public static List<LayerConfiguration<?>> createReceiveTillConfiguration(
             TlsContext tlsContext, List<QuicFrame> quicFrame, List<QuicPacket> quicPacket) {
         LayerStack layerStack = tlsContext.getLayerStack();
 
-        LayerConfiguration messageConfiguration =
-                new ReceiveTillLayerConfiguration(ImplementedLayers.QUICFRAME, quicFrame);
+        LayerConfiguration<?> messageConfiguration =
+                new ReceiveTillLayerConfiguration<QuicFrame>(
+                        ImplementedLayers.QUICFRAME, quicFrame);
 
         return ActionHelperUtil.sortLayerConfigurations(layerStack, messageConfiguration);
     }
 
-    public static List<LayerConfiguration> createReceiveTillConfiguration(
+    public static List<LayerConfiguration<?>> createReceiveTillConfiguration(
             TlsContext tlsContext, ProtocolMessage protocolMessageToReceive) {
         LayerStack layerStack = tlsContext.getLayerStack();
 
-        LayerConfiguration messageConfiguration =
-                new ReceiveTillLayerConfiguration(
+        LayerConfiguration<?> messageConfiguration =
+                new ReceiveTillLayerConfiguration<ProtocolMessage>(
                         ImplementedLayers.MESSAGE, protocolMessageToReceive);
 
         return ActionHelperUtil.sortLayerConfigurations(layerStack, messageConfiguration);
     }
 
-    public static List<LayerConfiguration> createTightReceiveConfiguration(
+    public static List<LayerConfiguration<?>> createTightReceiveConfiguration(
             TlsContext tlsContext, List<ProtocolMessage> protocolMessagesToReceive) {
         LayerStack layerStack = tlsContext.getLayerStack();
 
-        LayerConfiguration messageConfiguration =
-                new TightReceiveLayerConfiguration(
+        LayerConfiguration<?> messageConfiguration =
+                new TightReceiveLayerConfiguration<ProtocolMessage>(
                         ImplementedLayers.MESSAGE, protocolMessagesToReceive);
 
-        List<LayerConfiguration> layerConfigurationList =
+        List<LayerConfiguration<?>> layerConfigurationList =
                 sortLayerConfigurations(layerStack, messageConfiguration);
         return layerConfigurationList;
     }
 
-    public static List<LayerConfiguration> createSendConfiguration(
+    public static List<LayerConfiguration<?>> createSendConfiguration(
             TlsContext tlsContext,
             List<ProtocolMessage> protocolMessagesToSend,
             List<DtlsHandshakeMessageFragment> fragmentsToSend,
@@ -160,68 +161,78 @@ public class ActionHelperUtil {
             List<QuicPacket> packetsToSend,
             List<HttpMessage> httpMessagesToSend) {
         LayerStack layerStack = tlsContext.getLayerStack();
+        List<LayerConfiguration<?>> layerConfigurationsList = new LinkedList<>();
 
-        LayerConfiguration dtlsConfiguration =
-                new SpecificSendLayerConfiguration<>(
-                        ImplementedLayers.DTLS_FRAGMENT, fragmentsToSend);
-        LayerConfiguration messageConfiguration =
-                new SpecificSendLayerConfiguration<>(
-                        ImplementedLayers.MESSAGE, protocolMessagesToSend);
-        LayerConfiguration ssl2Configuration =
-                new SpecificSendLayerConfiguration(ImplementedLayers.SSL2, protocolMessagesToSend);
-        LayerConfiguration recordConfiguration =
-                new SpecificSendLayerConfiguration<>(ImplementedLayers.RECORD, recordsToSend);
-        LayerConfiguration httpConfiguration =
-                new SpecificSendLayerConfiguration<>(ImplementedLayers.HTTP, httpMessagesToSend);
-        LayerConfiguration quicFrameConfiguration =
-                new SpecificSendLayerConfiguration(ImplementedLayers.QUICFRAME, framesToSend);
-        LayerConfiguration quicPacketConfiguration =
-                new SpecificSendLayerConfiguration(ImplementedLayers.QUICPACKET, packetsToSend);
+        if (fragmentsToSend != null) {
+            layerConfigurationsList.add(
+                    new SpecificSendLayerConfiguration<>(
+                            ImplementedLayers.DTLS_FRAGMENT, fragmentsToSend));
+        }
 
-        List<LayerConfiguration> layerConfigurationList =
-                sortLayerConfigurations(
-                        layerStack,
-                        dtlsConfiguration,
-                        messageConfiguration,
-                        recordConfiguration,
-                        ssl2Configuration,
-                        quicFrameConfiguration,
-                        quicPacketConfiguration,
-                        httpConfiguration);
-        return layerConfigurationList;
+        if (protocolMessagesToSend != null) {
+            layerConfigurationsList.add(
+                    new SpecificSendLayerConfiguration<>(
+                            ImplementedLayers.MESSAGE, protocolMessagesToSend));
+        }
+
+        // TODO SSL2 missing here
+        if (recordsToSend != null) {
+            layerConfigurationsList.add(
+                    new SpecificSendLayerConfiguration<>(ImplementedLayers.RECORD, recordsToSend));
+        }
+        if (httpMessagesToSend != null) {
+            layerConfigurationsList.add(
+                    new SpecificSendLayerConfiguration<>(
+                            ImplementedLayers.HTTP, httpMessagesToSend));
+        }
+        if (framesToSend != null) {
+            layerConfigurationsList.add(
+                    new SpecificSendLayerConfiguration<>(
+                            ImplementedLayers.QUICFRAME, framesToSend));
+        }
+        if (packetsToSend != null) {
+            layerConfigurationsList.add(
+                    new SpecificSendLayerConfiguration<>(
+                            ImplementedLayers.QUICPACKET, packetsToSend));
+        }
+
+        layerConfigurationsList = sortLayerConfigurations(layerStack, layerConfigurationsList);
+        return layerConfigurationsList;
     }
 
-    public static LayerConfiguration applyMessageFilters(
-            LayerConfiguration messageLayerConfiguration, Set<ActionOption> actionOptions) {
+    public static LayerConfiguration<?> applyMessageFilters(
+            LayerConfiguration<?> messageLayerConfiguration, Set<ActionOption> actionOptions) {
         List<DataContainerFilter> containerFilters = new LinkedList<>();
-        if (actionOptions.contains(ActionOption.IGNORE_UNEXPECTED_APP_DATA)) {
-            containerFilters.add(new GenericDataContainerFilter(ApplicationMessage.class));
-        }
-        if (actionOptions.contains(ActionOption.IGNORE_UNEXPECTED_KEY_UPDATE_MESSAGES)) {
-            containerFilters.add(new GenericDataContainerFilter(KeyUpdateMessage.class));
-        }
-        if (actionOptions.contains(ActionOption.IGNORE_UNEXPECTED_NEW_SESSION_TICKETS)) {
-            containerFilters.add(new GenericDataContainerFilter(NewSessionTicketMessage.class));
-        }
-        if (actionOptions.contains(ActionOption.IGNORE_UNEXPECTED_WARNINGS)) {
-            containerFilters.add(new WarningAlertFilter());
-        }
-        if (messageLayerConfiguration instanceof SpecificReceiveLayerConfiguration) {
-            ((SpecificReceiveLayerConfiguration) messageLayerConfiguration)
-                    .setContainerFilterList(containerFilters);
+        if (actionOptions != null) {
+            if (actionOptions.contains(ActionOption.IGNORE_UNEXPECTED_APP_DATA)) {
+                containerFilters.add(new GenericDataContainerFilter(ApplicationMessage.class));
+            }
+            if (actionOptions.contains(ActionOption.IGNORE_UNEXPECTED_KEY_UPDATE_MESSAGES)) {
+                containerFilters.add(new GenericDataContainerFilter(KeyUpdateMessage.class));
+            }
+            if (actionOptions.contains(ActionOption.IGNORE_UNEXPECTED_NEW_SESSION_TICKETS)) {
+                containerFilters.add(new GenericDataContainerFilter(NewSessionTicketMessage.class));
+            }
+            if (actionOptions.contains(ActionOption.IGNORE_UNEXPECTED_WARNINGS)) {
+                containerFilters.add(new WarningAlertFilter());
+            }
+            if (messageLayerConfiguration instanceof SpecificReceiveLayerConfiguration) {
+                ((SpecificReceiveLayerConfiguration<?>) messageLayerConfiguration)
+                        .setContainerFilterList(containerFilters);
+            }
         }
         return messageLayerConfiguration;
     }
 
-    public static List<LayerConfiguration> sortLayerConfigurations(
-            LayerStack layerStack, LayerConfiguration... unsortedLayerConfigurations) {
+    public static List<LayerConfiguration<?>> sortLayerConfigurations(
+            LayerStack layerStack, LayerConfiguration<?>... unsortedLayerConfigurations) {
         return sortLayerConfigurations(
                 layerStack, new LinkedList<>(Arrays.asList(unsortedLayerConfigurations)));
     }
 
-    public static List<LayerConfiguration> sortLayerConfigurations(
-            LayerStack layerStack, List<LayerConfiguration> unsortedLayerConfigurations) {
-        List<LayerConfiguration> sortedLayerConfigurations = new LinkedList<>();
+    public static List<LayerConfiguration<?>> sortLayerConfigurations(
+            LayerStack layerStack, List<LayerConfiguration<?>> unsortedLayerConfigurations) {
+        List<LayerConfiguration<?>> sortedLayerConfigurations = new LinkedList<>();
         // iterate over all layers in the stack and assign the correct configuration
         // reset configurations to only assign a configuration to the upper most layer
         for (LayerType layerType : layerStack.getLayersInStack()) {
@@ -235,7 +246,7 @@ public class ActionHelperUtil {
                                 + "to current LayerStack. LayerType not implemented for TLSAction.");
                 continue;
             }
-            Optional<LayerConfiguration> layerConfiguration = Optional.empty();
+            Optional<LayerConfiguration<?>> layerConfiguration = Optional.empty();
             if (layer == ImplementedLayers.MESSAGE
                     || layer == ImplementedLayers.RECORD
                     || layer == ImplementedLayers.DTLS_FRAGMENT
@@ -254,7 +265,7 @@ public class ActionHelperUtil {
                 unsortedLayerConfigurations.remove(layerConfiguration.get());
             } else {
                 sortedLayerConfigurations.add(
-                        new SpecificReceiveLayerConfiguration(layerType, new LinkedList<>()));
+                        new SpecificReceiveLayerConfiguration<>(layerType, new LinkedList<>()));
             }
         }
         return sortedLayerConfigurations;

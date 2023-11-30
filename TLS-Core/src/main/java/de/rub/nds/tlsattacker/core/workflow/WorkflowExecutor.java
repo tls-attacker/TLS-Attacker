@@ -257,7 +257,7 @@ public abstract class WorkflowExecutor {
     /** Check if a at least one TLS context received a warning alert. */
     public boolean isReceivedWarningAlert() {
         List<ProtocolMessage> allReceivedMessages =
-                WorkflowTraceUtil.getAllReceivedMessages(
+                WorkflowTraceResultUtil.getAllReceivedMessagesOfType(
                         state.getWorkflowTrace(), ProtocolMessageType.ALERT);
         for (ProtocolMessage message : allReceivedMessages) {
             AlertMessage alert = (AlertMessage) message;

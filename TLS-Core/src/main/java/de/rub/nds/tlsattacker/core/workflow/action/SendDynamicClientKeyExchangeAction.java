@@ -43,9 +43,9 @@ public class SendDynamicClientKeyExchangeAction extends CommonSendAction {
             sb = new StringBuilder("Send Dynamic Client Key Exchange Action: (not executed)\n");
         }
         sb.append("\tMessages:");
-        if (getSendMessages() != null) {
+        if (getSentMessages() != null) {
             StringJoiner joiner = new StringJoiner(", ");
-            for (ProtocolMessage message : getSendMessages()) {
+            for (ProtocolMessage message : getSentMessages()) {
                 joiner.add(message.toCompactString());
             }
             sb.append(joiner.toString());
@@ -58,10 +58,10 @@ public class SendDynamicClientKeyExchangeAction extends CommonSendAction {
     @Override
     public String toCompactString() {
         StringBuilder sb = new StringBuilder(super.toCompactString());
-        if ((getSendMessages() != null) && (!getSendMessages().isEmpty())) {
+        if ((getSentMessages() != null) && (!getSentMessages().isEmpty())) {
             sb.append(" (");
             StringJoiner joiner = new StringJoiner(", ");
-            for (ProtocolMessage message : getSendMessages()) {
+            for (ProtocolMessage message : getSentMessages()) {
                 joiner.add(message.toCompactString());
             }
             sb.append(joiner.toString());
@@ -73,7 +73,7 @@ public class SendDynamicClientKeyExchangeAction extends CommonSendAction {
     }
 
     @Override
-    protected List<LayerConfiguration> createLayerConfiguration(TlsContext tlsContext) {
+    protected List<LayerConfiguration<?>> createLayerConfiguration(TlsContext tlsContext) {
         ClientKeyExchangeMessage clientKeyExchangeMessage =
                 new WorkflowConfigurationFactory(tlsContext.getConfig())
                         .createClientKeyExchangeMessage(

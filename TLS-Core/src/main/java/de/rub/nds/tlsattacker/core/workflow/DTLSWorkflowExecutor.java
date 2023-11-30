@@ -204,7 +204,7 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
                     .getRecordLayer()
                     .setLayerConfiguration(
                             new SpecificSendLayerConfiguration(
-                                    ImplementedLayers.RECORD, action.getSendRecords()));
+                                    ImplementedLayers.RECORD, action.getSentRecords()));
             try {
                 state.getTlsContext().getRecordLayer().sendConfiguration();
             } catch (IOException ex) {

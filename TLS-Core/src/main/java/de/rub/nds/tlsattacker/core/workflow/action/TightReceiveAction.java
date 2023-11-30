@@ -38,7 +38,7 @@ public class TightReceiveAction extends CommonReceiveAction {
     }
 
     @Override
-    protected List<LayerConfiguration> createLayerConfiguration(TlsContext tlsContext) {
+    protected List<LayerConfiguration<?>> createLayerConfiguration(TlsContext tlsContext) {
         return ActionHelperUtil.createTightReceiveConfiguration(tlsContext, expectedMessages);
     }
 }

@@ -17,6 +17,8 @@ import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceivingAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendingAction;
+import de.rub.nds.tlsattacker.core.workflow.action.StaticReceivingAction;
+import de.rub.nds.tlsattacker.core.workflow.action.StaticSendingAction;
 import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import jakarta.xml.bind.JAXBException;
@@ -211,6 +213,16 @@ public class WorkflowTrace implements Serializable {
         return receiveActions;
     }
 
+    public List<StaticReceivingAction> getStaticConfiguredReceivingActions() {
+        List<StaticReceivingAction> staticConfiguredReceivingActions = new LinkedList<>();
+        for (TlsAction action : tlsActions) {
+            if (action instanceof StaticReceivingAction) {
+                staticConfiguredReceivingActions.add((StaticReceivingAction) action);
+            }
+        }
+        return staticConfiguredReceivingActions;
+    }
+
     public List<SendingAction> getSendingActions() {
         List<SendingAction> sendActions = new LinkedList<>();
         for (TlsAction action : tlsActions) {
@@ -219,6 +231,16 @@ public class WorkflowTrace implements Serializable {
             }
         }
         return sendActions;
+    }
+
+    public List<StaticSendingAction> getStaticConfiguredSendingActions() {
+        List<StaticSendingAction> staticConfiguredSendingActions = new LinkedList<>();
+        for (TlsAction action : tlsActions) {
+            if (action instanceof StaticSendingAction) {
+                staticConfiguredSendingActions.add((StaticSendingAction) action);
+            }
+        }
+        return staticConfiguredSendingActions;
     }
 
     /**
@@ -409,7 +431,7 @@ public class WorkflowTrace implements Serializable {
     }
 
     public <T extends ProtocolMessage> T getFirstReceivedMessage(Class<T> msgClass) {
-        List<ProtocolMessage> messageList = WorkflowTraceUtil.getAllReceivedMessages(this);
+        List<ProtocolMessage> messageList = WorkflowTraceResultUtil.getAllReceivedMessages(this);
         messageList =
                 messageList.stream()
                         .filter(i -> msgClass.isAssignableFrom(i.getClass()))
@@ -423,7 +445,7 @@ public class WorkflowTrace implements Serializable {
     }
 
     public <T extends ProtocolMessage> T getLastReceivedMessage(Class<T> msgClass) {
-        List<ProtocolMessage> messageList = WorkflowTraceUtil.getAllReceivedMessages(this);
+        List<ProtocolMessage> messageList = WorkflowTraceResultUtil.getAllReceivedMessages(this);
         messageList =
                 messageList.stream()
                         .filter(i -> msgClass.isAssignableFrom(i.getClass()))
@@ -437,7 +459,7 @@ public class WorkflowTrace implements Serializable {
     }
 
     public <T extends ProtocolMessage> T getFirstSendMessage(Class<T> msgClass) {
-        List<ProtocolMessage> messageList = WorkflowTraceUtil.getAllSendMessages(this);
+        List<ProtocolMessage> messageList = WorkflowTraceResultUtil.getAllSentMessages(this);
         messageList =
                 messageList.stream()
                         .filter(i -> msgClass.isAssignableFrom(i.getClass()))
@@ -451,7 +473,7 @@ public class WorkflowTrace implements Serializable {
     }
 
     public <T extends ProtocolMessage> T getLastSendMessage(Class<T> msgClass) {
-        List<ProtocolMessage> messageList = WorkflowTraceUtil.getAllSendMessages(this);
+        List<ProtocolMessage> messageList = WorkflowTraceResultUtil.getAllSentMessages(this);
         messageList =
                 messageList.stream()
                         .filter(i -> msgClass.isAssignableFrom(i.getClass()))
@@ -465,10 +487,15 @@ public class WorkflowTrace implements Serializable {
     }
 
     public List<MessageAction> getMessageActionsWithUnreadBytes() {
-        return WorkflowTraceUtil.getMessageActionsWithUnreadBytes(this);
+        return WorkflowTraceResultUtil.getMessageActionsWithUnreadBytes(this);
     }
 
     public boolean hasUnreadByte() {
-        return WorkflowTraceUtil.hasUnreadBytes(this);
+        return WorkflowTraceResultUtil.hasUnreadBytes(this);
+    }
+
+    public static SendingAction getLastSendingAction(WorkflowTrace trace) {
+        List<SendingAction> sendingActions = trace.getSendingActions();
+        return sendingActions.get(sendingActions.size() - 1);
     }
 }

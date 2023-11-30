@@ -78,9 +78,9 @@ public class ForwardMessagesAction extends CommonForwardAction {
         }
         sb.append("\n");
         sb.append("Forwarded to alias: ").append(forwardToAlias).append("\n");
-        if (getSendMessages() != null) {
+        if (getSentMessages() != null) {
             sb.append("\t");
-            for (ProtocolMessage message : getSendMessages()) {
+            for (ProtocolMessage message : getSentMessages()) {
                 sb.append(message.toCompactString());
                 sb.append(", ");
             }
@@ -102,13 +102,13 @@ public class ForwardMessagesAction extends CommonForwardAction {
     }
 
     @Override
-    protected List<LayerConfiguration> createReceiveConfiguration(TlsContext tlsContext) {
+    protected List<LayerConfiguration<?>> createReceiveConfiguration(TlsContext tlsContext) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'createLayerConfiguration'");
     }
 
     @Override
-    protected List<LayerConfiguration> createSendConfiguration(
+    protected List<LayerConfiguration<?>> createSendConfiguration(
             TlsContext tlsContext, LayerStackProcessingResult receivedResult) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'createSendConfiguration'");

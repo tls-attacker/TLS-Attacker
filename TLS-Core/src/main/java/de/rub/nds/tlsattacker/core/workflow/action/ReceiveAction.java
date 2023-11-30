@@ -29,14 +29,14 @@ import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @XmlRootElement(name = "Receive")
-public class ReceiveAction extends CommonReceiveAction {
+public class ReceiveAction extends CommonReceiveAction implements StaticReceivingAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -81,17 +81,17 @@ public class ReceiveAction extends CommonReceiveAction {
 
     public ReceiveAction(ProtocolMessage... expectedMessages) {
         super();
-        this.expectedMessages = new ArrayList(Arrays.asList(expectedMessages));
+        this.expectedMessages = new ArrayList<>(Arrays.asList(expectedMessages));
     }
 
     public ReceiveAction(QuicFrame... expectedQuicFrames) {
         super();
-        this.expectedQuicFrames = new ArrayList(Arrays.asList(expectedQuicFrames));
+        this.expectedQuicFrames = new ArrayList<>(Arrays.asList(expectedQuicFrames));
     }
 
     public ReceiveAction(QuicPacket... expectedQuicPackets) {
         super();
-        this.expectedQuicPackets = new ArrayList(Arrays.asList(expectedQuicPackets));
+        this.expectedQuicPackets = new ArrayList<>(Arrays.asList(expectedQuicPackets));
     }
 
     public ReceiveAction(ActionOption actionOption, QuicFrame... expectedQuicFrames) {
@@ -135,7 +135,7 @@ public class ReceiveAction extends CommonReceiveAction {
     }
 
     public ReceiveAction(HttpMessage... expectedHttpMessages) {
-        this.expectedHttpMessages = new ArrayList(Arrays.asList(expectedHttpMessages));
+        this.expectedHttpMessages = new ArrayList<>(Arrays.asList(expectedHttpMessages));
     }
 
     public ReceiveAction(Set<ActionOption> myActionOptions, List<ProtocolMessage> messages) {
@@ -144,14 +144,12 @@ public class ReceiveAction extends CommonReceiveAction {
     }
 
     public ReceiveAction(Set<ActionOption> actionOptions, ProtocolMessage... messages) {
-        this(actionOptions, new ArrayList(Arrays.asList(messages)));
+        this(actionOptions, new ArrayList<>(Arrays.asList(messages)));
     }
 
     public ReceiveAction(ActionOption actionOption, List<ProtocolMessage> messages) {
         this(messages);
-        HashSet myActionOptions = new HashSet();
-        myActionOptions.add(actionOption);
-        setActionOptions(myActionOptions);
+        setActionOptions(Set.of(actionOption));
     }
 
     public ReceiveAction(ActionOption actionOption, ProtocolMessage... messages) {
@@ -179,18 +177,12 @@ public class ReceiveAction extends CommonReceiveAction {
                         + (isExecuted() ? "\n" : "(not executed)\n")
                         + "\tExpected: "
                         + LogPrinter.toHumanReadableMultiLineContainerListArray(
-                                (List<DataContainer<?>>) (List<?>) expectedMessages,
-                                (List<DataContainer<?>>) (List<?>) expectedHttpMessages,
-                                (List<DataContainer<?>>) (List<?>) expectedQuicPackets,
-                                (List<DataContainer<?>>) (List<?>) expectedQuicFrames);
+                                getExpectedDataContainerLists());
         if (isExecuted()) {
             string +=
                     "\n\tActual:"
                             + LogPrinter.toHumanReadableMultiLineContainerListArray(
-                                    (List<DataContainer<?>>) (List<?>) expectedMessages,
-                                    (List<DataContainer<?>>) (List<?>) expectedHttpMessages,
-                                    (List<DataContainer<?>>) (List<?>) expectedQuicPackets,
-                                    (List<DataContainer<?>>) (List<?>) expectedQuicFrames);
+                                    getExpectedDataContainerLists());
         }
         return string;
     }
@@ -198,10 +190,7 @@ public class ReceiveAction extends CommonReceiveAction {
     @Override
     public String toCompactString() {
         return LogPrinter.toHumanReadableMultiLineContainerListArray(
-                (List<DataContainer<?>>) (List<?>) expectedMessages,
-                (List<DataContainer<?>>) (List<?>) expectedHttpMessages,
-                (List<DataContainer<?>>) (List<?>) expectedQuicPackets,
-                (List<DataContainer<?>>) (List<?>) expectedQuicFrames);
+                getExpectedDataContainerLists());
     }
 
     public List<ProtocolMessageType> getGoingToReceiveProtocolMessageTypes() {
@@ -231,7 +220,7 @@ public class ReceiveAction extends CommonReceiveAction {
     }
 
     public void setExpectedMessages(ProtocolMessage... expectedMessages) {
-        this.expectedMessages = new ArrayList(Arrays.asList(expectedMessages));
+        this.expectedMessages = new ArrayList<>(Arrays.asList(expectedMessages));
     }
 
     public List<HttpMessage> getExpectedHttpMessages() {
@@ -275,7 +264,7 @@ public class ReceiveAction extends CommonReceiveAction {
     }
 
     @Override
-    protected List<LayerConfiguration> createLayerConfiguration(TlsContext tlsContext) {
+    protected List<LayerConfiguration<?>> createLayerConfiguration(TlsContext tlsContext) {
         return ActionHelperUtil.createReceivLayerConfiguration(
                 tlsContext,
                 getActionOptions(),
@@ -285,5 +274,29 @@ public class ReceiveAction extends CommonReceiveAction {
                 expectedQuicFrames,
                 expectedQuicPackets,
                 expectedHttpMessages);
+    }
+
+    @Override
+    public List<List<DataContainer<?>>> getExpectedDataContainerLists() {
+        List<List<DataContainer<?>>> dataContainerLists = new LinkedList<>();
+        if (expectedHttpMessages != null) {
+            dataContainerLists.add((List<DataContainer<?>>) (List<?>) expectedHttpMessages);
+        }
+        if (expectedMessages != null) {
+            dataContainerLists.add((List<DataContainer<?>>) (List<?>) expectedMessages);
+        }
+        if (expectedDtlsFragments != null) {
+            dataContainerLists.add((List<DataContainer<?>>) (List<?>) expectedDtlsFragments);
+        }
+        if (expectedRecords != null) {
+            dataContainerLists.add((List<DataContainer<?>>) (List<?>) expectedRecords);
+        }
+        if (expectedQuicFrames != null) {
+            dataContainerLists.add((List<DataContainer<?>>) (List<?>) expectedQuicFrames);
+        }
+        if (expectedQuicPackets != null) {
+            dataContainerLists.add((List<DataContainer<?>>) (List<?>) expectedQuicPackets);
+        }
+        return dataContainerLists;
     }
 }

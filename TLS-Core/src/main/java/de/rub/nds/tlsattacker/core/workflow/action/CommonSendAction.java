@@ -59,7 +59,7 @@ public abstract class CommonSendAction extends MessageAction implements SendingA
         if (isExecuted()) {
             throw new ActionExecutionException("Action already executed!");
         }
-        List<LayerConfiguration> layerConfigurations = createLayerConfiguration(tlsContext);
+        List<LayerConfiguration<?>> layerConfigurations = createLayerConfiguration(tlsContext);
         if (layerConfigurations == null) {
             LOGGER.info("Not sending messages");
         } else {
@@ -96,10 +96,10 @@ public abstract class CommonSendAction extends MessageAction implements SendingA
      * @param tlsContext The current TLS context.
      * @return A list of layer configurations that should be executed.
      */
-    protected abstract List<LayerConfiguration> createLayerConfiguration(TlsContext tlsContext);
+    protected abstract List<LayerConfiguration<?>> createLayerConfiguration(TlsContext tlsContext);
 
     @Override
-    public final List<DtlsHandshakeMessageFragment> getSendFragments() {
+    public final List<DtlsHandshakeMessageFragment> getSentFragments() {
         if (getLayerStackProcessingResult() == null) {
             return null;
         }
@@ -111,7 +111,7 @@ public abstract class CommonSendAction extends MessageAction implements SendingA
     }
 
     @Override
-    public final List<ProtocolMessage> getSendMessages() {
+    public final List<ProtocolMessage> getSentMessages() {
         if (getLayerStackProcessingResult() == null) {
             return null;
         }
@@ -123,7 +123,7 @@ public abstract class CommonSendAction extends MessageAction implements SendingA
     }
 
     @Override
-    public final List<QuicFrame> getSendQuicFrames() {
+    public final List<QuicFrame> getSentQuicFrames() {
         if (getLayerStackProcessingResult() == null) {
             return null;
         }
@@ -135,7 +135,7 @@ public abstract class CommonSendAction extends MessageAction implements SendingA
     }
 
     @Override
-    public final List<QuicPacket> getSendQuicPackets() {
+    public final List<QuicPacket> getSentQuicPackets() {
         if (getLayerStackProcessingResult() == null) {
             return null;
         }
@@ -147,7 +147,7 @@ public abstract class CommonSendAction extends MessageAction implements SendingA
     }
 
     @Override
-    public final List<Record> getSendRecords() {
+    public final List<Record> getSentRecords() {
         if (getLayerStackProcessingResult() == null) {
             return null;
         }

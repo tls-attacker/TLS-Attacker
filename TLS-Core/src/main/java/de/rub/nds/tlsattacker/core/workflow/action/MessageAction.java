@@ -52,13 +52,13 @@ public abstract class MessageAction extends ConnectionBoundAction {
     }
 
     protected LayerStackProcessingResult getReceiveResult(
-            LayerStack layerStack, List<LayerConfiguration> layerConfigurationList) {
+            LayerStack layerStack, List<LayerConfiguration<?>> layerConfigurationList) {
         layerStackProcessingResult = layerStack.receiveData(layerConfigurationList);
         return layerStackProcessingResult;
     }
 
     protected LayerStackProcessingResult getSendResult(
-            LayerStack layerStack, List<LayerConfiguration> layerConfigurationList)
+            LayerStack layerStack, List<LayerConfiguration<?>> layerConfigurationList)
             throws IOException {
         layerStackProcessingResult = layerStack.sendData(layerConfigurationList);
         return layerStackProcessingResult;

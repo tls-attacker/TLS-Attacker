@@ -184,7 +184,7 @@ public class ForwardMessagesActionTest extends AbstractActionTest<ForwardMessage
         assertTrue(action.isExecuted());
         assertTrue(action.executedAsPlanned());
 
-        ProtocolMessage forwardedMsgRaw = action.getSendMessages().get(0);
+        ProtocolMessage forwardedMsgRaw = action.getSentMessages().get(0);
         assertEquals("APPLICATION", forwardedMsgRaw.toCompactString());
 
         ApplicationMessage forwardedMsg = (ApplicationMessage) forwardedMsgRaw;
