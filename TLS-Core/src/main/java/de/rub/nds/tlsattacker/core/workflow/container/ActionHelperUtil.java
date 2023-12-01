@@ -65,7 +65,7 @@ public class ActionHelperUtil {
         }
     }
 
-    public static List<LayerConfiguration<?>> createReceivLayerConfiguration(
+    public static List<LayerConfiguration<?>> createReceiveLayerConfiguration(
             TlsContext tlsContext,
             Set<ActionOption> actionOptions,
             List<ProtocolMessage> protocolMessagesToReceive,

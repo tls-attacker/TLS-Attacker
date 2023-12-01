@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.LayerStackProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.printer.LogPrinter;
@@ -24,6 +25,7 @@ import de.rub.nds.tlsattacker.core.workflow.container.ActionHelperUtil;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -62,6 +64,8 @@ public abstract class CommonSendAction extends MessageAction implements SendingA
         List<LayerConfiguration<?>> layerConfigurations = createLayerConfiguration(tlsContext);
         if (layerConfigurations == null) {
             LOGGER.info("Not sending messages");
+            setLayerStackProcessingResult(new LayerStackProcessingResult(new LinkedList<>()));
+            setExecuted(true);
         } else {
             if (hasDefaultAlias()) {
                 LOGGER.info(
@@ -73,16 +77,16 @@ public abstract class CommonSendAction extends MessageAction implements SendingA
                         connectionAlias,
                         LogPrinter.toHumanReadableOneLine(layerConfigurations));
             }
-        }
-        try {
-            getSendResult(tlsContext.getLayerStack(), layerConfigurations);
-            setExecuted(true);
-        } catch (IOException e) {
-            if (!getActionOptions().contains(ActionOption.MAY_FAIL)) {
-                tlsContext.setReceivedTransportHandlerException(true);
-                LOGGER.debug(e);
+            try {
+                getSendResult(tlsContext.getLayerStack(), layerConfigurations);
+                setExecuted(true);
+            } catch (IOException e) {
+                if (!getActionOptions().contains(ActionOption.MAY_FAIL)) {
+                    tlsContext.setReceivedTransportHandlerException(true);
+                    LOGGER.debug(e);
+                }
+                setExecuted(getActionOptions().contains(ActionOption.MAY_FAIL));
             }
-            setExecuted(getActionOptions().contains(ActionOption.MAY_FAIL));
         }
     }
 

@@ -75,18 +75,18 @@ public class SendDynamicServerCertificateActionTest
     }
 
     @Test
-    public void testGetSendMessages() {
+    public void testGetSentMessages() {
         // check if the correct amount of messages have been sent
-        assertTrue(action.getSentMessages().isEmpty());
+        assertNull(action.getSentMessages());
         action.execute(state);
         assertEquals(1, action.getSentMessages().size());
         assertTrue(action.getSentMessages().get(0) instanceof CertificateMessage);
     }
 
     @Test
-    public void testGetSendRecords() {
+    public void testGetSentRecords() {
         // check if send records contains the correct amount of sent records
-        assertTrue(action.getSentRecords().isEmpty());
+        assertNull(action.getSentRecords());
         action.execute(state);
         assertEquals(1, action.getSentRecords().size());
         assertTrue(action.getSentRecords().get(0) instanceof Record);
@@ -111,7 +111,7 @@ public class SendDynamicServerCertificateActionTest
     }
 
     @Test
-    public void testSendNoCertificate() {
+    public void testSentNoCertificate() {
         // Check if no certificate is sent with the corresponding cipher suite
         state.getTlsContext()
                 .setSelectedCipherSuite(CipherSuite.TLS_DH_anon_EXPORT_WITH_RC4_40_MD5);

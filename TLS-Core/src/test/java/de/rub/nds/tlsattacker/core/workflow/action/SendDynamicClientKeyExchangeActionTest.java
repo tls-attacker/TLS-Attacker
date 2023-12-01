@@ -31,10 +31,8 @@ public class SendDynamicClientKeyExchangeActionTest
     }
 
     @Test
-    public void testGetSendMessages() {
-        assertTrue(
-                action.getSentMessages() instanceof ArrayList
-                        && action.getSentMessages().isEmpty());
+    public void testGetSentMessages() {
+        assertNull(action.getSentMessages());
         action.execute(state);
         assertTrue(
                 action.getSentMessages() instanceof ArrayList
@@ -43,9 +41,8 @@ public class SendDynamicClientKeyExchangeActionTest
     }
 
     @Test
-    public void testGetSendRecords() {
-        assertTrue(
-                action.getSentRecords() instanceof ArrayList && action.getSentRecords().isEmpty());
+    public void testGetSentRecords() {
+        assertNull(action.getSentRecords());
         action.execute(state);
         assertTrue(
                 action.getSentRecords() instanceof ArrayList

@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerStackProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.workflow.container.ActionHelperUtil;
 import jakarta.xml.bind.annotation.XmlElementRef;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlRootElement;
@@ -103,14 +104,14 @@ public class ForwardMessagesAction extends CommonForwardAction {
 
     @Override
     protected List<LayerConfiguration<?>> createReceiveConfiguration(TlsContext tlsContext) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'createLayerConfiguration'");
+        return ActionHelperUtil.createReceiveLayerConfiguration(
+                tlsContext, getActionOptions(), expectedMessages, null, null, null, null, null);
     }
 
     @Override
     protected List<LayerConfiguration<?>> createSendConfiguration(
             TlsContext tlsContext, LayerStackProcessingResult receivedResult) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'createSendConfiguration'");
+        return ActionHelperUtil.createSendConfiguration(
+                tlsContext, expectedMessages, null, null, null, null, null);
     }
 }
