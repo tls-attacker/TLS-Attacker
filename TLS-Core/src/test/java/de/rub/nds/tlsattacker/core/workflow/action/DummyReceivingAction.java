@@ -17,10 +17,12 @@ import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+@XmlRootElement
 public class DummyReceivingAction extends MessageAction
         implements ReceivingAction, StaticReceivingAction {
 
