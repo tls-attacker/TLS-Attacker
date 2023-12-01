@@ -28,7 +28,6 @@
         <useIpv6>false</useIpv6>
     </OutboundConnection>
     <Send>
-        <actionOptions/>
         <connectionAlias>client</connectionAlias>
         <configuredMessages>
             <ClientHello/>
@@ -47,7 +46,6 @@
         <timeout>44</timeout>
     </OutboundConnection>
     <Send>
-        <actionOptions/>
         <configuredMessages>
             <ClientHello/>
         </configuredMessages>

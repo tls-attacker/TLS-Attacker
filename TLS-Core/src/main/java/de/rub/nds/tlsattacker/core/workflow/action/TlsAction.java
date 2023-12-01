@@ -21,6 +21,7 @@ import jakarta.xml.bind.annotation.XmlElements;
 import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import org.apache.logging.log4j.LogManager;
@@ -165,6 +166,9 @@ public abstract class TlsAction implements Serializable, Aliasable {
     }
 
     public final void addActionOption(ActionOption option) {
+        if (this.actionOptions == null) {
+            this.actionOptions = new HashSet<>();
+        }
         this.actionOptions.add(option);
     }
 }

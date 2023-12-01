@@ -94,8 +94,9 @@ public abstract class CommonForwardAction extends TlsAction
                     "Receiving messages ({}): {}",
                     receiveFromAlias,
                     LogPrinter.toHumanReadableOneLine(layerConfigurationList));
+            layerStackReceiveResult =
+                    receiveFromContext.getLayerStack().receiveData(layerConfigurationList);
         }
-
         layerConfigurationList = createSendConfiguration(forwardToContext, layerStackReceiveResult);
 
         try {

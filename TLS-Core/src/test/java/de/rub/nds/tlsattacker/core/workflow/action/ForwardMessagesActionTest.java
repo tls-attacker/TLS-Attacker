@@ -145,9 +145,9 @@ public class ForwardMessagesActionTest extends AbstractActionTest<ForwardMessage
             pw.println("        <alias>ctx2</alias>");
             pw.println("    </InboundConnection>");
             pw.println("    <ForwardMessages>");
-            pw.println("        <actionOptions/>");
             pw.println("        <from>ctx1</from>");
             pw.println("        <to>ctx2</to>");
+            pw.println("        <expectedMessages/>");
             pw.println("    </ForwardMessages>");
             pw.println("</workflowTrace>");
         }

@@ -106,7 +106,6 @@ Test a MITM workflow trace
         <useIpv6>false</useIpv6>
     </OutboundConnection>
     <Receive>
-        <actionOptions/>
         <connectionAlias>server</connectionAlias>
         <messages/>
         <httpMessages/>
@@ -122,7 +121,6 @@ Test a MITM workflow trace
         <expectedQuicPackets/>
     </Receive>
     <Send>
-        <actionOptions/>
         <connectionAlias>server</connectionAlias>
         <messages>
             <ServerHello>
@@ -138,7 +136,6 @@ Test a MITM workflow trace
         <quicPackets/>
     </Send>
     <Receive>
-        <actionOptions/>
         <connectionAlias>server</connectionAlias>
         <messages/>
         <httpMessages/>
@@ -156,7 +153,6 @@ Test a MITM workflow trace
         <expectedQuicPackets/>
     </Receive>
     <Send>
-        <actionOptions/>
         <connectionAlias>server</connectionAlias>
         <messages>
             <ChangeCipherSpec/>
@@ -169,7 +165,6 @@ Test a MITM workflow trace
         <quicPackets/>
     </Send>
     <Send>
-        <actionOptions/>
         <connectionAlias>client</connectionAlias>
         <messages>
             <ClientHello/>
@@ -181,7 +176,6 @@ Test a MITM workflow trace
         <quicPackets/>
     </Send>
     <Receive>
-        <actionOptions/>
         <connectionAlias>client</connectionAlias>
         <messages/>
         <httpMessages/>
@@ -201,7 +195,6 @@ Test a MITM workflow trace
         <expectedQuicPackets/>
     </Receive>
     <Send>
-        <actionOptions/>
         <connectionAlias>client</connectionAlias>
         <messages>
             <RSAClientKeyExchange/>
@@ -215,7 +208,6 @@ Test a MITM workflow trace
         <quicPackets/>
     </Send>
     <Receive>
-        <actionOptions/>
         <connectionAlias>client</connectionAlias>
         <messages/>
         <httpMessages/>
@@ -232,7 +224,6 @@ Test a MITM workflow trace
         <expectedQuicPackets/>
     </Receive>
     <PrintLastHandledApplicationData>
-        <actionOptions/>
         <connectionAlias>server</connectionAlias>
         <stringEncoding>US-ASCII</stringEncoding>
     </PrintLastHandledApplicationData>
@@ -251,14 +242,12 @@ Test a MITM workflow trace
         <hostname>localhost</hostname>
     </OutboundConnection>
     <Receive>
-        <actionOptions/>
         <connectionAlias>server</connectionAlias>
         <expectedMessages>
             <ClientHello/>
         </expectedMessages>
     </Receive>
     <Send>
-        <actionOptions/>
         <connectionAlias>server</connectionAlias>
         <messages>
             <ServerHello>
@@ -269,7 +258,6 @@ Test a MITM workflow trace
         </messages>
     </Send>
     <Receive>
-        <actionOptions/>
         <connectionAlias>server</connectionAlias>
         <expectedMessages>
             <RSAClientKeyExchange/>
@@ -278,7 +266,6 @@ Test a MITM workflow trace
         </expectedMessages>
     </Receive>
     <Send>
-        <actionOptions/>
         <connectionAlias>server</connectionAlias>
         <messages>
             <ChangeCipherSpec/>
@@ -286,14 +273,12 @@ Test a MITM workflow trace
         </messages>
     </Send>
     <Send>
-        <actionOptions/>
         <connectionAlias>client</connectionAlias>
         <messages>
             <ClientHello/>
         </messages>
     </Send>
     <Receive>
-        <actionOptions/>
         <connectionAlias>client</connectionAlias>
         <expectedMessages>
             <ServerHello>
@@ -304,7 +289,6 @@ Test a MITM workflow trace
         </expectedMessages>
     </Receive>
     <Send>
-        <actionOptions/>
         <connectionAlias>client</connectionAlias>
         <messages>
             <RSAClientKeyExchange/>
@@ -313,7 +297,6 @@ Test a MITM workflow trace
         </messages>
     </Send>
     <Receive>
-        <actionOptions/>
         <connectionAlias>client</connectionAlias>
         <expectedMessages>
             <ChangeCipherSpec/>
@@ -321,7 +304,6 @@ Test a MITM workflow trace
         </expectedMessages>
     </Receive>
     <PrintLastHandledApplicationData>
-        <actionOptions/>
         <connectionAlias>server</connectionAlias>
         <stringEncoding>US-ASCII</stringEncoding>
     </PrintLastHandledApplicationData>

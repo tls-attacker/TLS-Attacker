@@ -40,7 +40,6 @@
         <useIpv6>false</useIpv6>
     </OutboundConnection>
     <Send>
-        <actionOptions/>
         <connectionAlias>client</connectionAlias>
         <configuredMessages>
             <ClientHello/>
@@ -56,7 +55,6 @@
 # And this after default filter application:
 <workflowTrace>
     <Send>
-        <actionOptions/>
         <configuredMessages>
             <ClientHello/>
         </configuredMessages>

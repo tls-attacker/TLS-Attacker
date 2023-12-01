@@ -87,13 +87,7 @@ public class ActionTestUtils {
                             + System.lineSeparator()
                             + "    <"
                             + xmlName
-                            + ">"
-                            + System.lineSeparator()
-                            + "        <actionOptions/>"
-                            + System.lineSeparator()
-                            + "    </"
-                            + xmlName
-                            + ">"
+                            + "/>"
                             + System.lineSeparator()
                             + "</workflowTrace>"
                             + System.lineSeparator();

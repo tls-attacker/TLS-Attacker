@@ -857,7 +857,7 @@ public class WorkflowConfigurationFactory {
         MessageAction serverMsgsAction =
                 MessageActionFactory.createTLSAction(
                         config, connection, ConnectionEndType.SERVER, serverMessages);
-        serverMsgsAction.getActionOptions().add(ActionOption.IGNORE_UNEXPECTED_NEW_SESSION_TICKETS);
+        serverMsgsAction.addActionOption(ActionOption.IGNORE_UNEXPECTED_NEW_SESSION_TICKETS);
         trace.addTlsAction(serverMsgsAction);
 
         // quic 0rtt does not use the EndOfEarlyDataMessage

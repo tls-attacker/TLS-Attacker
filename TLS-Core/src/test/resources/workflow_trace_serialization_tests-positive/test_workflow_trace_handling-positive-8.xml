@@ -31,7 +31,6 @@ if there is only one connection defined in the workflow trace.
         <useIpv6>false</useIpv6>
     </OutboundConnection>
     <Send>
-        <actionOptions/>
         <connectionAlias>client</connectionAlias>
         <configuredMessages>
             <ClientHello/>
@@ -50,7 +49,6 @@ if there is only one connection defined in the workflow trace.
         <alias>client</alias>
     </OutboundConnection>
     <Send>
-        <actionOptions/>
         <configuredMessages>
             <ClientHello/>
         </configuredMessages>

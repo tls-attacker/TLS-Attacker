@@ -33,7 +33,6 @@ true for default and custom connections.
         <useIpv6>false</useIpv6>
     </OutboundConnection>
     <Send>
-        <actionOptions/>
         <connectionAlias>custom</connectionAlias>
         <configuredMessages>
             <ClientHello/>
@@ -53,7 +52,6 @@ true for default and custom connections.
         <timeout>44</timeout>
     </OutboundConnection>
     <Send>
-        <actionOptions/>
         <configuredMessages>
             <ClientHello/>
         </configuredMessages>
