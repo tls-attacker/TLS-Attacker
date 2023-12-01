@@ -8,8 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.tlsattacker.core.layer.Message;
-import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
@@ -49,9 +48,9 @@ public class ActionIO {
             classes.add(WorkflowTrace.class);
             classes.addAll(tlsActionClasses);
 
-            Set<Class<? extends Message>> messageClasses = reflections.getSubTypesOf(Message.class);
-            classes.addAll(messageClasses);
-            classes.add(Record.class);
+            Set<Class<? extends DataContainer>> dataContainers =
+                    reflections.getSubTypesOf(DataContainer.class);
+            classes.addAll(dataContainers);
             LOGGER.debug("Registering Classes in JAXBContext of ActionIO:");
             for (Class tempClass : classes) {
                 LOGGER.debug(tempClass.getName());

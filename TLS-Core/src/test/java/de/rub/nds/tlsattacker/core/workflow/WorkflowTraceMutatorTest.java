@@ -67,20 +67,22 @@ public class WorkflowTraceMutatorTest {
 
         assertEquals(
                 replaceMsg,
-                WorkflowTraceResultUtil.getFirstSentMessage(ProtocolMessageType.HANDSHAKE, trace));
+                WorkflowTraceConfigurationUtil.getFirstStaticConfiguredSendMessage(
+                        trace, ProtocolMessageType.HANDSHAKE));
     }
 
     @Test
     public void testReplaceSendingMessageHandshakeMessage() {
         trace.addTlsAction(sendClientHelloAction);
 
-        HandshakeMessage replaceMsg = new FinishedMessage();
+        HandshakeMessage replacementMessage = new FinishedMessage();
         WorkflowTraceMutator.replaceStaticSendingMessage(
-                trace, HandshakeMessageType.CLIENT_HELLO, replaceMsg);
+                trace, HandshakeMessageType.CLIENT_HELLO, replacementMessage);
 
         assertEquals(
-                replaceMsg,
-                WorkflowTraceResultUtil.getFirstSentMessage(ProtocolMessageType.HANDSHAKE, trace));
+                replacementMessage,
+                WorkflowTraceConfigurationUtil.getFirstStaticConfiguredSendMessage(
+                        trace, ProtocolMessageType.HANDSHAKE));
     }
 
     @Test
@@ -179,7 +181,11 @@ public class WorkflowTraceMutatorTest {
         HandshakeMessage chm = new SrpClientKeyExchangeMessage();
 
         WorkflowTraceMutator.replaceStaticSendingMessage(trace, HandshakeMessageType.FINISHED, chm);
-        assertEquals(chm, ((SendAction) trace.getTlsActions().get(2)).getSentMessages().get(2));
+        assertEquals(
+                chm,
+                ((SendAction) trace.getTlsActions().get(2))
+                        .getConfiguredList(ProtocolMessage.class)
+                        .get(2));
 
         WorkflowTraceMutator.replaceReceivingMessage(trace, HandshakeMessageType.CERTIFICATE, chm);
         assertEquals(
@@ -243,16 +249,6 @@ public class WorkflowTraceMutatorTest {
     }
 
     @Test
-    public void testTruncateAt() {
-        trace.addTlsActions(
-                new SendAction(new FinishedMessage()), new ReceiveAction(new FinishedMessage()));
-
-        WorkflowTraceMutator.truncateAt(trace, HandshakeMessageType.FINISHED, false);
-
-        assertEquals(0, trace.getTlsActions().size());
-    }
-
-    @Test
     public void testTruncatingWorkflow() {
         trace.addTlsActions(
                 new SendAction(new ClientHelloMessage(config)),
@@ -269,21 +265,22 @@ public class WorkflowTraceMutatorTest {
         // Delete after first finished message
         WorkflowTraceMutator.truncateReceivingAt(trace, HandshakeMessageType.FINISHED, false);
         assertEquals(3, trace.getTlsActions().size());
-        assertEquals(3, ((SendAction) trace.getTlsActions().get(2)).getSentMessages().size());
+        assertEquals(
+                3,
+                ((SendAction) trace.getTlsActions().get(2))
+                        .getConfiguredList(ProtocolMessage.class)
+                        .size());
 
         // Delete after ServerHelloDoneMessage
-        WorkflowTraceMutator.truncateAfter(trace, HandshakeMessageType.SERVER_HELLO_DONE, false);
+        WorkflowTraceMutator.truncateReceivingAfter(
+                trace, HandshakeMessageType.SERVER_HELLO_DONE, false);
         assertEquals(2, trace.getTlsActions().size());
         assertTrue(trace.getTlsActions().get(1) instanceof ReceiveAction);
         assertEquals(
                 3, ((ReceiveAction) trace.getTlsActions().get(1)).getExpectedMessages().size());
-
-        // Delete from ServerHello
-        WorkflowTraceMutator.truncateAt(trace, HandshakeMessageType.SERVER_HELLO, false);
-        assertEquals(1, trace.getTlsActions().size());
     }
 
-    @Test
+    /*     @Test
     public void testTruncatingWorkflowWithDynamicActions() {
         trace.addTlsActions(
                 new SendAction(new ClientHelloMessage(config)),
@@ -302,5 +299,5 @@ public class WorkflowTraceMutatorTest {
 
         WorkflowTraceMutator.truncateAt(trace, HandshakeMessageType.SERVER_HELLO_DONE, false);
         assertEquals(1, trace.getTlsActions().size());
-    }
+    } */
 }

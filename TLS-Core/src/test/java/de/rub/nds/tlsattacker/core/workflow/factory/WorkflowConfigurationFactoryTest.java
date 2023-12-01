@@ -89,7 +89,7 @@ public class WorkflowConfigurationFactoryTest {
 
     public List<ProtocolMessage> extractMessages(MessageAction action) {
         if (action instanceof SendAction) {
-            return ((SendAction) action).getSentMessages();
+            return ((SendAction) action).getConfiguredMessages();
         } else if (action instanceof ReceiveAction) {
             return ((ReceiveAction) action).getExpectedMessages();
         } else {

@@ -21,7 +21,6 @@ import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceivingAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendingAction;
 import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -348,65 +347,67 @@ public class WorkflowTraceResultUtil {
     public static List<ReceivingAction> getActionsThatReceived(
             ProtocolMessageType type, WorkflowTrace trace) {
         List<ReceivingAction> receivingActions = trace.getReceivingActions();
-
-        receivingActions.removeIf(
-                (ReceivingAction i) -> {
-                    List<ProtocolMessageType> types = i.getGoingToReceiveProtocolMessageTypes();
-                    return !types.contains(type);
-                });
-
-        return receivingActions;
+        List<ReceivingAction> resultActions = new LinkedList<>();
+        for (ReceivingAction action : receivingActions) {
+            for (ProtocolMessage message : action.getReceivedMessages()) {
+                if (message.getProtocolMessageType() == type) {
+                    resultActions.add(action);
+                    break;
+                }
+            }
+        }
+        return resultActions;
     }
 
     public static List<SendingAction> getActionsThatSent(
             HandshakeMessageType type, WorkflowTrace trace) {
-        List<SendingAction> sendingActions = trace.getSendingActions();
-        Iterator<SendingAction> iterator = sendingActions.iterator();
-        while (iterator.hasNext()) {
-            SendingAction action = iterator.next();
-            if (action.getSentMessages().get(0) instanceof HandshakeMessage) {
-                HandshakeMessage message = (HandshakeMessage) action.getSentMessages().get(0);
-                if (message.getHandshakeMessageType() != type) {
-                    iterator.remove();
+        List<SendingAction> sendingAction = trace.getSendingActions();
+        List<SendingAction> resultActions = new LinkedList<>();
+        for (SendingAction action : sendingAction) {
+            for (ProtocolMessage message : action.getSentMessages()) {
+                if (message instanceof HandshakeMessage) {
+                    HandshakeMessage handshakeMessage = (HandshakeMessage) message;
+                    if (handshakeMessage.getHandshakeMessageType() == type) {
+                        resultActions.add(action);
+                        break;
+                    }
                 }
-            } else {
-                iterator.remove();
             }
         }
-
-        return sendingActions;
+        return resultActions;
     }
 
     public static List<SendingAction> getActionsThatSent(
             ProtocolMessageType type, WorkflowTrace trace) {
-        List<SendingAction> sendingActions = trace.getSendingActions();
-        Iterator<SendingAction> iterator = sendingActions.iterator();
-        while (iterator.hasNext()) {
-            SendingAction action = iterator.next();
-            if (action.getSentMessages().get(0) instanceof HandshakeMessage) {
-                HandshakeMessage message = (HandshakeMessage) action.getSentMessages().get(0);
-                if (message.getProtocolMessageType() != type) {
-                    iterator.remove();
+        List<SendingAction> sendingAction = trace.getSendingActions();
+        List<SendingAction> resultActions = new LinkedList<>();
+        for (SendingAction action : sendingAction) {
+            for (ProtocolMessage message : action.getSentMessages()) {
+                if (message.getProtocolMessageType() == type) {
+                    resultActions.add(action);
+                    break;
                 }
-            } else {
-                iterator.remove();
             }
         }
-
-        return sendingActions;
+        return resultActions;
     }
 
     public static List<ReceivingAction> getActionsThatReceived(
             HandshakeMessageType type, WorkflowTrace trace) {
         List<ReceivingAction> receivingActions = trace.getReceivingActions();
-
-        receivingActions.removeIf(
-                (ReceivingAction i) -> {
-                    List<HandshakeMessageType> types = i.getGoingToReceiveHandshakeMessageTypes();
-                    return !types.contains(type);
-                });
-
-        return receivingActions;
+        List<ReceivingAction> resultActions = new LinkedList<>();
+        for (ReceivingAction action : receivingActions) {
+            for (ProtocolMessage message : action.getReceivedMessages()) {
+                if (message instanceof HandshakeMessage) {
+                    HandshakeMessage handshakeMessage = (HandshakeMessage) message;
+                    if (handshakeMessage.getHandshakeMessageType() == type) {
+                        resultActions.add(action);
+                        break;
+                    }
+                }
+            }
+        }
+        return resultActions;
     }
 
     public static TlsAction getAllActionWithResult(HandshakeMessageType type, WorkflowTrace trace) {

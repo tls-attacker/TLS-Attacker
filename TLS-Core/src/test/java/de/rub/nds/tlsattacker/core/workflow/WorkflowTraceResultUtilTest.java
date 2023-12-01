@@ -29,8 +29,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptThenMacExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.HeartbeatExtensionMessage;
 import de.rub.nds.tlsattacker.core.record.Record;
-import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
-import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
+import de.rub.nds.tlsattacker.core.workflow.action.DummyReceivingAction;
+import de.rub.nds.tlsattacker.core.workflow.action.DummySendingAction;
 import jakarta.xml.bind.JAXBException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,20 +41,20 @@ import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class WorkflowTraceUtilTest {
+public class WorkflowTraceResultUtilTest {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     private WorkflowTrace trace;
     private Config config;
 
-    private ReceiveAction rcvHeartbeat;
-    private ReceiveAction rcvAlertMessage;
-    private ReceiveAction rcvServerHello;
-    private ReceiveAction rcvFinishedMessage;
-    private ReceiveAction rcvMultipleProtocolMessages;
-    private ReceiveAction rcvMultipleHandshakeMessages;
-    private ReceiveAction rcvMultipleRecords;
+    private DummyReceivingAction rcvHeartbeat;
+    private DummyReceivingAction rcvAlertMessage;
+    private DummyReceivingAction rcvServerHello;
+    private DummyReceivingAction rcvFinishedMessage;
+    private DummyReceivingAction rcvMultipleProtocolMessages;
+    private DummyReceivingAction rcvMultipleHandshakeMessages;
+    private DummyReceivingAction rcvMultipleRecords;
 
     private HeartbeatMessage msgHeartbeatMessageWithLength;
     private ServerHelloMessage msgServerHelloWithHeartbeatExtension;
@@ -63,25 +63,25 @@ public class WorkflowTraceUtilTest {
 
     private Record recWithLength;
 
-    private SendAction sHeartbeat;
-    private SendAction sAlertMessage;
-    private SendAction sClientHello;
-    private SendAction sFinishedMessage;
-    private SendAction sHeartbeatExtension;
-    private SendAction sEncryptThenMacExtension;
+    private DummySendingAction sHeartbeat;
+    private DummySendingAction sAlertMessage;
+    private DummySendingAction sClientHello;
+    private DummySendingAction sFinishedMessage;
+    private DummySendingAction sHeartbeatExtension;
+    private DummySendingAction sEncryptThenMacExtension;
 
     @BeforeEach
     public void setUp() {
-        config = Config.createConfig();
+        config = new Config();
         trace = new WorkflowTrace();
 
-        rcvHeartbeat = new ReceiveAction();
-        rcvAlertMessage = new ReceiveAction();
-        rcvServerHello = new ReceiveAction();
-        rcvFinishedMessage = new ReceiveAction();
-        rcvMultipleProtocolMessages = new ReceiveAction();
-        rcvMultipleHandshakeMessages = new ReceiveAction();
-        rcvMultipleRecords = new ReceiveAction();
+        rcvHeartbeat = new DummyReceivingAction();
+        rcvAlertMessage = new DummyReceivingAction();
+        rcvServerHello = new DummyReceivingAction();
+        rcvFinishedMessage = new DummyReceivingAction();
+        rcvMultipleProtocolMessages = new DummyReceivingAction();
+        rcvMultipleHandshakeMessages = new DummyReceivingAction();
+        rcvMultipleRecords = new DummyReceivingAction();
 
         msgHeartbeatMessageWithLength = new HeartbeatMessage();
         msgHeartbeatMessageWithLength.setPayloadLength(42);
@@ -109,12 +109,12 @@ public class WorkflowTraceUtilTest {
                 msgServerHelloMessageWithCipherSuite);
         rcvMultipleRecords.setExpectedRecords(List.of(new Record(), new Record(), recWithLength));
 
-        sHeartbeat = new SendAction();
-        sAlertMessage = new SendAction();
-        sClientHello = new SendAction();
-        sFinishedMessage = new SendAction();
-        sHeartbeatExtension = new SendAction();
-        sEncryptThenMacExtension = new SendAction();
+        sHeartbeat = new DummySendingAction();
+        sAlertMessage = new DummySendingAction();
+        sClientHello = new DummySendingAction();
+        sFinishedMessage = new DummySendingAction();
+        sHeartbeatExtension = new DummySendingAction();
+        sEncryptThenMacExtension = new DummySendingAction();
 
         sHeartbeat.setConfiguredMessages(new HeartbeatMessage());
         sAlertMessage.setConfiguredMessages(new AlertMessage());
@@ -275,7 +275,7 @@ public class WorkflowTraceUtilTest {
     }
 
     @Test
-    public void testGetFirstSendExtension() {
+    public void testGetFirstSentExtension() {
         assertNull(WorkflowTraceResultUtil.getFirstSentExtension(ExtensionType.HEARTBEAT, trace));
         assertNull(
                 WorkflowTraceResultUtil.getFirstSentExtension(
@@ -372,7 +372,8 @@ public class WorkflowTraceUtilTest {
                                 HandshakeMessageType.CLIENT_HELLO, trace)
                         .size());
 
-        ReceiveAction serverHelloRAction = new ReceiveAction(new ServerHelloMessage());
+        DummyReceivingAction serverHelloRAction =
+                new DummyReceivingAction(new ServerHelloMessage());
         trace.addTlsAction(serverHelloRAction);
 
         assertEquals(
@@ -394,7 +395,7 @@ public class WorkflowTraceUtilTest {
                 WorkflowTraceResultUtil.getActionsThatReceived(ProtocolMessageType.HANDSHAKE, trace)
                         .get(0));
 
-        ReceiveAction alertRAction = new ReceiveAction(new AlertMessage());
+        DummyReceivingAction alertRAction = new DummyReceivingAction(new AlertMessage());
         trace.addTlsAction(alertRAction);
 
         assertEquals(
@@ -417,32 +418,34 @@ public class WorkflowTraceUtilTest {
     }
 
     @Test
-    public void testGetFirstActionForMessage() {
+    public void testGetFirstActionThatReceived3() {
         trace.addTlsActions(
-                new SendAction(new FinishedMessage()), new ReceiveAction(new FinishedMessage()));
+                new DummySendingAction(new FinishedMessage()),
+                new DummyReceivingAction(new FinishedMessage()));
         assertTrue(
                 WorkflowTraceResultUtil.getFirstActionThatReceived(
                                 HandshakeMessageType.FINISHED, trace)
-                        instanceof SendAction);
+                        instanceof DummyReceivingAction);
     }
 
     @Test
-    public void testGetFirstActionForMessage2() {
+    public void testGetFirstActionThatReceived2() {
         trace.addTlsActions(
-                new ReceiveAction(new FinishedMessage()), new SendAction(new FinishedMessage()));
+                new DummyReceivingAction(new FinishedMessage()),
+                new DummySendingAction(new FinishedMessage()));
         assertTrue(
                 WorkflowTraceResultUtil.getFirstActionThatReceived(
                                 HandshakeMessageType.FINISHED, trace)
-                        instanceof ReceiveAction);
+                        instanceof DummyReceivingAction);
     }
 
     @Test
-    public void testGetFirstReceivingActionForMessage() {
+    public void testGetFirstActionThatReceived() {
         trace.addTlsActions(
-                new ReceiveAction(new FinishedMessage()),
-                new ReceiveAction(new FinishedMessage()),
-                new SendAction(new FinishedMessage()),
-                new SendAction(new FinishedMessage()));
+                new DummyReceivingAction(new FinishedMessage()),
+                new DummyReceivingAction(new FinishedMessage()),
+                new DummySendingAction(new FinishedMessage()),
+                new DummySendingAction(new FinishedMessage()));
         assertEquals(
                 trace.getTlsActions().get(0),
                 WorkflowTraceResultUtil.getFirstActionThatReceived(
@@ -450,12 +453,12 @@ public class WorkflowTraceUtilTest {
     }
 
     @Test
-    public void testGetFirstSendingActionForMessage() {
+    public void testGetFirstActionThatSent() {
         trace.addTlsActions(
-                new ReceiveAction(new FinishedMessage()),
-                new ReceiveAction(new FinishedMessage()),
-                new SendAction(new FinishedMessage()),
-                new SendAction(new FinishedMessage()));
+                new DummyReceivingAction(new FinishedMessage()),
+                new DummyReceivingAction(new FinishedMessage()),
+                new DummySendingAction(new FinishedMessage()),
+                new DummySendingAction(new FinishedMessage()));
         assertEquals(
                 trace.getTlsActions().get(2),
                 WorkflowTraceResultUtil.getFirstActionThatSent(

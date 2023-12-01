@@ -9,6 +9,6 @@
                     <RenegotiationInfoExtension/>
                 </extensions>
             </ClientHello>
-        </configuredMmessages>
+        </configuredMessages>
     </Send>
 </workflowTrace>

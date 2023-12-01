@@ -8,15 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.http.HttpMessage;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.record.Record;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -33,14 +30,6 @@ public interface ReceivingAction {
     List<QuicFrame> getReceivedQuicFrames();
 
     List<QuicPacket> getReceivedQuicPackets();
-
-    default List<ProtocolMessageType> getGoingToReceiveProtocolMessageTypes() {
-        return new ArrayList<>();
-    }
-
-    default List<HandshakeMessageType> getGoingToReceiveHandshakeMessageTypes() {
-        return new ArrayList<>();
-    }
 
     public abstract Set<String> getAllReceivingAliases();
 }

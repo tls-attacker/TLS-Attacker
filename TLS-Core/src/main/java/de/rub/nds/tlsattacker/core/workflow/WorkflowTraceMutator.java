@@ -163,25 +163,12 @@ public class WorkflowTraceMutator {
                         trace, type);
         List<StaticReceivingAction> deleteActions = new ArrayList<>();
         for (StaticReceivingAction action : receivingActions) {
-            if (action instanceof ReceiveAction) {
-                List<ProtocolMessage> messages = ((ReceiveAction) action).getExpectedMessages();
-                replaceMessagesInList(messages, type, replaceMessage);
-                if (messages.isEmpty()) {
-                    deleteActions.add(action);
-                }
-            } else if (action instanceof ReceiveTillAction) {
-                ProtocolMessage message = ((ReceiveTillAction) action).getWaitTillMessage();
-                if (message.isHandshakeMessage()
-                        && ((HandshakeMessage) message).getHandshakeMessageType() == type) {
-                    if (replaceMessage == null) {
-                        throw new WorkflowTraceMutationException(
-                                "ReceiveTillAction cannot be deleted, because this will probably break your workflow.");
-                    }
-                    ((ReceiveTillAction) action).setWaitTillMessage(replaceMessage);
-                }
-            } else {
-                throw new WorkflowTraceMutationException(
-                        "Unsupported ReceivingAction, could not mutate workflow.");
+
+            List<ProtocolMessage> messages =
+                    ((StaticReceivingAction) action).getExpectedList(ProtocolMessage.class);
+            replaceMessagesInList(messages, type, replaceMessage);
+            if (messages.isEmpty()) {
+                deleteActions.add(action);
             }
         }
 
@@ -202,7 +189,7 @@ public class WorkflowTraceMutator {
             WorkflowTrace trace,
             Object type,
             WorkflowTruncationMode mode,
-            Boolean sending,
+            boolean sending,
             Boolean untilLast) {
         TlsAction action = null;
         if (untilLast != null && untilLast == true) {
@@ -323,16 +310,6 @@ public class WorkflowTraceMutator {
     }
 
     public static void truncateAt(
-            WorkflowTrace trace, HandshakeMessageType type, Boolean untilLast) {
-        truncate(trace, type, WorkflowTruncationMode.AT, null, untilLast);
-    }
-
-    public static void truncateAt(
-            WorkflowTrace trace, ProtocolMessageType type, Boolean untilLast) {
-        truncate(trace, type, WorkflowTruncationMode.AT, null, untilLast);
-    }
-
-    public static void truncateAt(
             WorkflowTrace trace, HandshakeMessageType type, Boolean sending, Boolean untilLast) {
         truncate(trace, type, WorkflowTruncationMode.AT, sending, untilLast);
     }
@@ -360,16 +337,6 @@ public class WorkflowTraceMutator {
     public static void truncateReceivingAt(
             WorkflowTrace trace, ProtocolMessageType type, Boolean untilLast) {
         truncate(trace, type, WorkflowTruncationMode.AT, false, untilLast);
-    }
-
-    public static void truncateAfter(
-            WorkflowTrace trace, HandshakeMessageType type, Boolean untilLast) {
-        truncate(trace, type, WorkflowTruncationMode.AFTER, null, untilLast);
-    }
-
-    public static void truncateAfter(
-            WorkflowTrace trace, ProtocolMessageType type, Boolean untilLast) {
-        truncate(trace, type, WorkflowTruncationMode.AFTER, null, untilLast);
     }
 
     public static void truncateSendingAfter(

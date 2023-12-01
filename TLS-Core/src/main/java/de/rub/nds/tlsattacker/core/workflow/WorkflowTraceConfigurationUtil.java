@@ -323,15 +323,15 @@ public class WorkflowTraceConfigurationUtil {
 
     public static List<ProtocolMessage> getStaticConfiguredReceiveMessages(
             WorkflowTrace trace, ProtocolMessageType type) {
-        List<ProtocolMessage> sendMessages = getAllStaticConfiguredReceiveMessages(trace);
-        Iterator<ProtocolMessage> iterator = sendMessages.iterator();
+        List<ProtocolMessage> receiveMessages = getAllStaticConfiguredReceiveMessages(trace);
+        Iterator<ProtocolMessage> iterator = receiveMessages.iterator();
         while (iterator.hasNext()) {
             ProtocolMessage message = iterator.next();
             if (message.getProtocolMessageType() != type) {
                 iterator.remove();
             }
         }
-        return sendMessages;
+        return receiveMessages;
     }
 
     public static List<ProtocolMessage> getStaticConfiguredSendMessages(
@@ -351,8 +351,8 @@ public class WorkflowTraceConfigurationUtil {
 
     public static List<ProtocolMessage> getStaticConfiguredReceiveMessages(
             WorkflowTrace trace, HandshakeMessageType type) {
-        List<ProtocolMessage> sendMessages = getAllStaticConfiguredReceiveMessages(trace);
-        Iterator<ProtocolMessage> iterator = sendMessages.iterator();
+        List<ProtocolMessage> receiveMessages = getAllStaticConfiguredReceiveMessages(trace);
+        Iterator<ProtocolMessage> iterator = receiveMessages.iterator();
         while (iterator.hasNext()) {
             ProtocolMessage message = iterator.next();
             if (message instanceof HandshakeMessage) {
@@ -361,7 +361,7 @@ public class WorkflowTraceConfigurationUtil {
                 }
             }
         }
-        return sendMessages;
+        return receiveMessages;
     }
 
     public static List<ProtocolMessage> getAllStaticConfiguredSendMessages(WorkflowTrace trace) {
