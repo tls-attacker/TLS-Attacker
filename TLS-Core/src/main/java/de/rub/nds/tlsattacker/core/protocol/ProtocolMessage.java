@@ -29,6 +29,7 @@ public abstract class ProtocolMessage extends Message<TlsContext> {
     @XmlTransient protected boolean goingToBeSentDefault = true;
     @XmlTransient protected boolean requiredDefault = true;
     @XmlTransient protected boolean adjustContextDefault = true;
+    @XmlTransient protected boolean shouldPrepareDefault = true;
     /** resulting message */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PLAIN_PROTOCOL_MESSAGE)
     protected ModifiableByteArray completeResultingMessage;
@@ -51,6 +52,15 @@ public abstract class ProtocolMessage extends Message<TlsContext> {
 
     public boolean addToTypes(List<ProtocolMessageType> protocolMessageTypes) {
         return protocolMessageTypes.add(getProtocolMessageType());
+    }
+
+    public void setShouldPrepareDefault(boolean shouldPrepare) {
+        this.shouldPrepareDefault = shouldPrepare;
+    }
+
+    @Override
+    public boolean shouldPrepare() {
+        return shouldPrepareDefault;
     }
 
     @Override

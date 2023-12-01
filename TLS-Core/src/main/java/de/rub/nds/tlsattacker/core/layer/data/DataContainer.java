@@ -30,6 +30,10 @@ public interface DataContainer<Context extends LayerContext> {
         return true;
     }
 
+    public default boolean shouldPrepare() {
+        return true;
+    }
+
     public default String toCompactString() {
         return toString();
     }

@@ -100,20 +100,13 @@ public abstract class CommonForwardAction extends TlsAction
         layerConfigurationList = createSendConfiguration(forwardToContext, layerStackReceiveResult);
 
         try {
-            layerStackReceiveResult =
-                    receiveFromContext.getLayerStack().sendData(layerConfigurationList);
-        } catch (IOException e) {
-            forwardToContext.setReceivedTransportHandlerException(true);
-            LOGGER.debug(e);
-        }
-
-        try {
             layerStackSendResult =
                     forwardToContext.getLayerStack().sendData(layerConfigurationList);
         } catch (IOException e) {
             forwardToContext.setReceivedTransportHandlerException(true);
             LOGGER.debug(e);
         }
+
         setExecuted(true);
     }
 
@@ -160,7 +153,7 @@ public abstract class CommonForwardAction extends TlsAction
             throw new ActionExecutionException(
                     "Can't execute "
                             + this.getClass().getSimpleName()
-                            + " with empty forward alis (if using XML: add <to/>)");
+                            + " with empty forward alias (if using XML: add <to/>)");
         }
     }
 

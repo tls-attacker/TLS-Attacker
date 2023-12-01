@@ -159,7 +159,7 @@ public abstract class CommonReceiveAction extends MessageAction implements Recei
 
     @Override
     public boolean executedAsPlanned() {
-        if (getLayerStackProcessingResult() != null) {
+        if (this.isExecuted() && getLayerStackProcessingResult() != null) {
             return getLayerStackProcessingResult().executedAsPlanned();
         }
         return false;

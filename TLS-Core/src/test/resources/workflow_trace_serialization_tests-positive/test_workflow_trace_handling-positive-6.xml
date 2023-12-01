@@ -8,9 +8,9 @@
         <timeout>44</timeout>
     </OutboundConnection>
     <Send>
-        <messages>
+        <configuredMessages>
             <ClientHello/>
-        </messages>
+        </configuredMessages>
     </Send>
 </workflowTrace>
 
@@ -32,11 +32,6 @@
         <configuredMessages>
             <ClientHello/>
         </configuredMessages>
-        <configuredHttpMessages/>
-        <configuredRecords/>
-        <configuredFragments/>
-        <configuredQuicFrames/>
-        <configuredQuicPackets/>
     </Send>
 </workflowTrace>
 

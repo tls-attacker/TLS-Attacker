@@ -111,7 +111,13 @@ public class ForwardMessagesAction extends CommonForwardAction {
     @Override
     protected List<LayerConfiguration<?>> createSendConfiguration(
             TlsContext tlsContext, LayerStackProcessingResult receivedResult) {
+        List<ProtocolMessage> receivedMessages = getReceivedMessages();
+        for (ProtocolMessage message : receivedMessages) {
+            message.setShouldPrepareDefault(
+                    false); // Do not recompute the messages on the message layer
+        }
+
         return ActionHelperUtil.createSendConfiguration(
-                tlsContext, expectedMessages, null, null, null, null, null);
+                tlsContext, receivedMessages, null, null, null, null, null);
     }
 }

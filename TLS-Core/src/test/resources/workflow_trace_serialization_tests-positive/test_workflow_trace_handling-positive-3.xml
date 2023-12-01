@@ -20,9 +20,9 @@
 # And this input trace
 <workflowTrace>
     <Send>
-        <messages>
+        <configuredMessages>
             <ClientHello/>
-        </messages>
+        </configuredMessages>
     </Send>
 </workflowTrace>
 
@@ -44,11 +44,6 @@
         <configuredMessages>
             <ClientHello/>
         </configuredMessages>
-        <configuredHttpMessages/>
-        <configuredRecords/>
-        <configuredFragments/>
-        <configuredQuicFrames/>
-        <configuredQuicPackets/>
     </Send>
 </workflowTrace>
 

@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -164,8 +165,11 @@ public class ActionTestUtils {
             TlsAction actual = ActionIO.read(new ByteArrayInputStream(outputStream.toByteArray()));
             action.normalize();
             actual.normalize();
-
-            assertEquals(action, actual);
+            ByteArrayOutputStream resultStream = new ByteArrayOutputStream();
+            ByteArrayOutputStream actualStream = new ByteArrayOutputStream();
+            ActionIO.write(resultStream, action);
+            ActionIO.write(actualStream, actual);
+            assertArrayEquals(resultStream.toByteArray(), actualStream.toByteArray());
         } catch (InstantiationException
                 | IllegalAccessException
                 | NoSuchMethodException

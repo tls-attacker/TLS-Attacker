@@ -35,11 +35,6 @@ if there is only one connection defined in the workflow trace.
         <configuredMessages>
             <ClientHello/>
         </configuredMessages>
-        <configuredHttpMessages/>
-        <configuredRecords/>
-        <configuredFragments/>
-        <configuredQuicFrames/>
-        <configuredQuicPackets/>
     </Send>
 </workflowTrace>
 

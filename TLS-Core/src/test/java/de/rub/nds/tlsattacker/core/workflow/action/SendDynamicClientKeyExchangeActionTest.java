@@ -59,8 +59,7 @@ public class SendDynamicClientKeyExchangeActionTest
     @Test
     public void testToString() {
         assertEquals(
-                "Send Dynamic Client Key Exchange Action: (not executed)\n\tMessages:\n",
-                action.toString());
+                "Send Dynamic Client Key Exchange Action: (not executed)\n", action.toString());
     }
 
     @Test

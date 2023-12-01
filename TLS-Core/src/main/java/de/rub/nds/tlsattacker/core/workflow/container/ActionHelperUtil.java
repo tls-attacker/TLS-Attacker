@@ -15,6 +15,8 @@ import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.LayerStack;
 import de.rub.nds.tlsattacker.core.layer.LayerStackProcessingResult;
+import de.rub.nds.tlsattacker.core.layer.MissingReceiveLayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.MissingSendLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.ReceiveLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.ReceiveTillLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.SpecificReceiveLayerConfiguration;
@@ -80,6 +82,7 @@ public class ActionHelperUtil {
         layerConfigurationList =
                 sortLayerConfigurations(
                         layerStack,
+                        false,
                         createReceiveConfiguration(
                                 ImplementedLayers.DTLS_FRAGMENT, fragmentsToReceive, actionOptions),
                         createReceiveConfiguration(
@@ -103,7 +106,10 @@ public class ActionHelperUtil {
             LayerType layerType,
             List<? extends DataContainer<?>> containersToReceive,
             Set<ActionOption> actionOptions) {
-        if (containersToReceive == null || containersToReceive.isEmpty()) {
+        if (containersToReceive == null) {
+            return new MissingReceiveLayerConfiguration(layerType);
+
+        } else if (containersToReceive.isEmpty()) {
             return new GenericReceiveLayerConfiguration(layerType);
         } else {
             if (layerType == ImplementedLayers.MESSAGE) {
@@ -125,7 +131,7 @@ public class ActionHelperUtil {
                 new ReceiveTillLayerConfiguration<QuicFrame>(
                         ImplementedLayers.QUICFRAME, quicFrame);
 
-        return ActionHelperUtil.sortLayerConfigurations(layerStack, messageConfiguration);
+        return ActionHelperUtil.sortLayerConfigurations(layerStack, false, messageConfiguration);
     }
 
     public static List<LayerConfiguration<?>> createReceiveTillConfiguration(
@@ -136,7 +142,7 @@ public class ActionHelperUtil {
                 new ReceiveTillLayerConfiguration<ProtocolMessage>(
                         ImplementedLayers.MESSAGE, protocolMessageToReceive);
 
-        return ActionHelperUtil.sortLayerConfigurations(layerStack, messageConfiguration);
+        return ActionHelperUtil.sortLayerConfigurations(layerStack, false, messageConfiguration);
     }
 
     public static List<LayerConfiguration<?>> createTightReceiveConfiguration(
@@ -148,7 +154,7 @@ public class ActionHelperUtil {
                         ImplementedLayers.MESSAGE, protocolMessagesToReceive);
 
         List<LayerConfiguration<?>> layerConfigurationList =
-                sortLayerConfigurations(layerStack, messageConfiguration);
+                sortLayerConfigurations(layerStack, false, messageConfiguration);
         return layerConfigurationList;
     }
 
@@ -196,7 +202,8 @@ public class ActionHelperUtil {
                             ImplementedLayers.QUICPACKET, packetsToSend));
         }
 
-        layerConfigurationsList = sortLayerConfigurations(layerStack, layerConfigurationsList);
+        layerConfigurationsList =
+                sortLayerConfigurations(layerStack, true, layerConfigurationsList);
         return layerConfigurationsList;
     }
 
@@ -225,13 +232,17 @@ public class ActionHelperUtil {
     }
 
     public static List<LayerConfiguration<?>> sortLayerConfigurations(
-            LayerStack layerStack, LayerConfiguration<?>... unsortedLayerConfigurations) {
+            LayerStack layerStack,
+            boolean sending,
+            LayerConfiguration<?>... unsortedLayerConfigurations) {
         return sortLayerConfigurations(
-                layerStack, new LinkedList<>(Arrays.asList(unsortedLayerConfigurations)));
+                layerStack, sending, new LinkedList<>(Arrays.asList(unsortedLayerConfigurations)));
     }
 
     public static List<LayerConfiguration<?>> sortLayerConfigurations(
-            LayerStack layerStack, List<LayerConfiguration<?>> unsortedLayerConfigurations) {
+            LayerStack layerStack,
+            boolean sending,
+            List<LayerConfiguration<?>> unsortedLayerConfigurations) {
         List<LayerConfiguration<?>> sortedLayerConfigurations = new LinkedList<>();
         // iterate over all layers in the stack and assign the correct configuration
         // reset configurations to only assign a configuration to the upper most layer
@@ -247,25 +258,23 @@ public class ActionHelperUtil {
                 continue;
             }
             Optional<LayerConfiguration<?>> layerConfiguration = Optional.empty();
-            if (layer == ImplementedLayers.MESSAGE
-                    || layer == ImplementedLayers.RECORD
-                    || layer == ImplementedLayers.DTLS_FRAGMENT
-                    || layer == ImplementedLayers.HTTP
-                    || layer == ImplementedLayers.SSL2
-                    || layer == ImplementedLayers.QUICFRAME
-                    || layer == ImplementedLayers.QUICPACKET) {
-                layerConfiguration =
-                        unsortedLayerConfigurations.stream()
-                                .filter(Objects::nonNull)
-                                .filter(layerConfig -> layerConfig.getLayerType().equals(layer))
-                                .findFirst();
-            }
+
+            layerConfiguration =
+                    unsortedLayerConfigurations.stream()
+                            .filter(Objects::nonNull)
+                            .filter(layerConfig -> layerConfig.getLayerType().equals(layer))
+                            .findFirst();
+
             if (layerConfiguration.isPresent()) {
                 sortedLayerConfigurations.add(layerConfiguration.get());
                 unsortedLayerConfigurations.remove(layerConfiguration.get());
             } else {
-                sortedLayerConfigurations.add(
-                        new SpecificReceiveLayerConfiguration<>(layerType, new LinkedList<>()));
+                if (sending) {
+                    sortedLayerConfigurations.add(new MissingSendLayerConfiguration<>(layerType));
+                } else {
+                    sortedLayerConfigurations.add(
+                            new MissingReceiveLayerConfiguration<>(layerType));
+                }
             }
         }
         return sortedLayerConfigurations;

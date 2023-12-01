@@ -57,7 +57,7 @@ public class SendDynamicServerCertificateActionTest
 
     @Test
     public void testToString() {
-        assertEquals("Send Dynamic Certificate: (not executed)\n\tMessages:\n", action.toString());
+        assertEquals("Send Dynamic Certificate: (not executed)\n", action.toString());
         action.execute(state);
         assertEquals(
                 "Send Dynamic Certificate Action:\n\tMessages:CERTIFICATE, \n", action.toString());

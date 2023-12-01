@@ -37,11 +37,6 @@ true for default and custom connections.
         <configuredMessages>
             <ClientHello/>
         </configuredMessages>
-        <configuredHttpMessages/>
-        <configuredRecords/>
-        <configuredFragments/>
-        <configuredQuicFrames/>
-        <configuredQuicPackets/>
     </Send>
 </workflowTrace>
 

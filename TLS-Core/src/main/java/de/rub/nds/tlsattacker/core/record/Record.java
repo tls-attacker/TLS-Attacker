@@ -29,6 +29,7 @@ import de.rub.nds.tlsattacker.core.record.serializer.RecordSerializer;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.util.List;
@@ -37,6 +38,8 @@ import java.util.Objects;
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Record extends ModifiableVariableHolder implements DataContainer<TlsContext> {
+
+    @XmlTransient protected boolean shouldPrepareDefault = true;
 
     /** maximum length configuration for this record */
     private Integer maxRecordLengthConfig;
@@ -93,6 +96,10 @@ public class Record extends ModifiableVariableHolder implements DataContainer<Tl
 
     public Record(Integer maxRecordLengthConfig) {
         this.maxRecordLengthConfig = maxRecordLengthConfig;
+    }
+
+    public void setShouldPrepare(boolean shouldPrepare) {
+        this.shouldPrepareDefault = shouldPrepare;
     }
 
     public ModifiableInteger getLength() {

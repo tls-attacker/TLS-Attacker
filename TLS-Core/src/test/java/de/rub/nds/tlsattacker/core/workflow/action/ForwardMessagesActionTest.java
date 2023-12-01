@@ -177,9 +177,8 @@ public class ForwardMessagesActionTest extends AbstractActionTest<ForwardMessage
                         receivedData.getBytes()));
         initContexts();
 
-        ForwardMessagesAction action = new ForwardMessagesAction(ctx1Alias, ctx2Alias);
-        action.setExpectedMessages(List.of(new ApplicationMessage()));
-
+        ForwardMessagesAction action =
+                new ForwardMessagesAction(ctx1Alias, ctx2Alias, new ApplicationMessage());
         action.execute(state);
         assertTrue(action.isExecuted());
         assertTrue(action.executedAsPlanned());

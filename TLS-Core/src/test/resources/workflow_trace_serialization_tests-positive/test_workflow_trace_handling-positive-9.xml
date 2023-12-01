@@ -107,82 +107,43 @@ Test a MITM workflow trace
     </OutboundConnection>
     <Receive>
         <connectionAlias>server</connectionAlias>
-        <messages/>
-        <httpMessages/>
-        <records/>
-        <fragments/>
-        <quicFrames/>
-        <quicPackets/>
         <expectedMessages>
             <ClientHello/>
         </expectedMessages>
-        <expectedHttpMessages/>
-        <expectedQuicFrames/>
-        <expectedQuicPackets/>
     </Receive>
     <Send>
         <connectionAlias>server</connectionAlias>
-        <messages>
+        <configuredMessages>
             <ServerHello>
                 <autoSetHelloRetryModeInKeyShare>true</autoSetHelloRetryModeInKeyShare>
             </ServerHello>
             <Certificate/>
             <ServerHelloDone/>
-        </messages>
-        <httpMessages/>
-        <records/>
-        <fragments/>
-        <quicFrames/>
-        <quicPackets/>
+        </configuredMessages>
     </Send>
     <Receive>
         <connectionAlias>server</connectionAlias>
-        <messages/>
-        <httpMessages/>
-        <records/>
-        <fragments/>
-        <quicFrames/>
-        <quicPackets/>
         <expectedMessages>
             <RSAClientKeyExchange/>
             <ChangeCipherSpec/>
             <Finished/>
         </expectedMessages>
-        <expectedHttpMessages/>
-        <expectedQuicFrames/>
-        <expectedQuicPackets/>
     </Receive>
     <Send>
         <connectionAlias>server</connectionAlias>
-        <messages>
+        <configuredMessages>
             <ChangeCipherSpec/>
             <Finished/>
-        </messages>
-        <httpMessages/>
-        <records/>
-        <fragments/>
-        <quicFrames/>
-        <quicPackets/>
+        </configuredMessages>
     </Send>
     <Send>
         <connectionAlias>client</connectionAlias>
-        <messages>
+        <configuredMessages>
             <ClientHello/>
-        </messages>
-        <httpMessages/>
-        <records/>
-        <fragments/>
-        <quicFrames/>
-        <quicPackets/>
+        </configuredMessages>
     </Send>
     <Receive>
         <connectionAlias>client</connectionAlias>
-        <messages/>
-        <httpMessages/>
-        <records/>
-        <fragments/>
-        <quicFrames/>
-        <quicPackets/>
         <expectedMessages>
             <ServerHello>
                 <autoSetHelloRetryModeInKeyShare>true</autoSetHelloRetryModeInKeyShare>
@@ -190,38 +151,21 @@ Test a MITM workflow trace
             <Certificate/>
             <ServerHelloDone/>
         </expectedMessages>
-        <expectedHttpMessages/>
-        <expectedQuicFrames/>
-        <expectedQuicPackets/>
     </Receive>
     <Send>
         <connectionAlias>client</connectionAlias>
-        <messages>
+        <configuredMessages>
             <RSAClientKeyExchange/>
             <ChangeCipherSpec/>
             <Finished/>
-        </messages>
-        <httpMessages/>
-        <records/>
-        <fragments/>
-        <quicFrames/>
-        <quicPackets/>
+        </configuredMessages>
     </Send>
     <Receive>
         <connectionAlias>client</connectionAlias>
-        <messages/>
-        <httpMessages/>
-        <records/>
-        <fragments/>
-        <quicFrames/>
-        <quicPackets/>
         <expectedMessages>
             <ChangeCipherSpec/>
             <Finished/>
         </expectedMessages>
-        <expectedHttpMessages/>
-        <expectedQuicFrames/>
-        <expectedQuicPackets/>
     </Receive>
     <PrintLastHandledApplicationData>
         <connectionAlias>server</connectionAlias>
@@ -249,13 +193,13 @@ Test a MITM workflow trace
     </Receive>
     <Send>
         <connectionAlias>server</connectionAlias>
-        <messages>
+        <configuredMessages>
             <ServerHello>
                 <autoSetHelloRetryModeInKeyShare>true</autoSetHelloRetryModeInKeyShare>
             </ServerHello>
             <Certificate/>
             <ServerHelloDone/>
-        </messages>
+        </configuredMessages>
     </Send>
     <Receive>
         <connectionAlias>server</connectionAlias>
@@ -267,16 +211,16 @@ Test a MITM workflow trace
     </Receive>
     <Send>
         <connectionAlias>server</connectionAlias>
-        <messages>
+        <configuredMessages>
             <ChangeCipherSpec/>
             <Finished/>
-        </messages>
+        </configuredMessages>
     </Send>
     <Send>
         <connectionAlias>client</connectionAlias>
-        <messages>
+        <configuredMessages>
             <ClientHello/>
-        </messages>
+        </configuredMessages>
     </Send>
     <Receive>
         <connectionAlias>client</connectionAlias>
@@ -290,11 +234,11 @@ Test a MITM workflow trace
     </Receive>
     <Send>
         <connectionAlias>client</connectionAlias>
-        <messages>
+        <configuredMessages>
             <RSAClientKeyExchange/>
             <ChangeCipherSpec/>
             <Finished/>
-        </messages>
+        </configuredMessages>
     </Send>
     <Receive>
         <connectionAlias>client</connectionAlias>

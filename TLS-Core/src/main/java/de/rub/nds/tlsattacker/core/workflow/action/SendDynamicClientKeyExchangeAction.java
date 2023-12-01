@@ -39,19 +39,20 @@ public class SendDynamicClientKeyExchangeAction extends CommonSendAction {
         StringBuilder sb;
         if (isExecuted()) {
             sb = new StringBuilder("Send Dynamic Client Key Exchange Action:\n");
+            sb.append("\tMessages:");
+            if (getSentMessages() != null) {
+                StringJoiner joiner = new StringJoiner(", ");
+                for (ProtocolMessage message : getSentMessages()) {
+                    joiner.add(message.toCompactString());
+                }
+                sb.append(joiner.toString());
+            } else {
+                sb.append("null (no messages set)");
+            }
         } else {
             sb = new StringBuilder("Send Dynamic Client Key Exchange Action: (not executed)\n");
         }
-        sb.append("\tMessages:");
-        if (getSentMessages() != null) {
-            StringJoiner joiner = new StringJoiner(", ");
-            for (ProtocolMessage message : getSentMessages()) {
-                joiner.add(message.toCompactString());
-            }
-            sb.append(joiner.toString());
-        } else {
-            sb.append("null (no messages set)");
-        }
+
         return sb.toString();
     }
 

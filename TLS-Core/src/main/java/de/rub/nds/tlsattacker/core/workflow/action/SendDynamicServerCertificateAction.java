@@ -37,19 +37,20 @@ public class SendDynamicServerCertificateAction extends CommonSendAction {
         StringBuilder sb;
         if (isExecuted()) {
             sb = new StringBuilder("Send Dynamic Certificate Action:\n");
+            sb.append("\tMessages:");
+            if (getSentMessages() != null) {
+                for (ProtocolMessage message : getSentMessages()) {
+                    sb.append(message.toCompactString());
+                    sb.append(", ");
+                }
+                sb.append("\n");
+            } else {
+                sb.append("null (no messages set)");
+            }
         } else {
             sb = new StringBuilder("Send Dynamic Certificate: (not executed)\n");
         }
-        sb.append("\tMessages:");
-        if (getSentMessages() != null) {
-            for (ProtocolMessage message : getSentMessages()) {
-                sb.append(message.toCompactString());
-                sb.append(", ");
-            }
-            sb.append("\n");
-        } else {
-            sb.append("null (no messages set)");
-        }
+
         return sb.toString();
     }
 

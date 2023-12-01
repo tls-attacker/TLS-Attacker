@@ -289,17 +289,19 @@ public abstract class ProtocolLayer<
     }
 
     public boolean prepareDataContainer(DataContainer dataContainer, LayerContext context) {
-        Preparator preparator = dataContainer.getPreparator(context);
-        try {
-            preparator.prepare();
-            preparator.afterPrepare();
-        } catch (PreparationException ex) {
-            LOGGER.error(
-                    "Could not prepare message "
-                            + dataContainer.toString()
-                            + ". Therefore, we skip it: ",
-                    ex);
-            return false;
+        if (dataContainer.shouldPrepare()) {
+            Preparator<?> preparator = dataContainer.getPreparator(context);
+            try {
+                preparator.prepare();
+                preparator.afterPrepare();
+            } catch (PreparationException ex) {
+                LOGGER.error(
+                        "Could not prepare message "
+                                + dataContainer.toString()
+                                + ". Therefore, we skip it: ",
+                        ex);
+                return false;
+            }
         }
         return true;
     }
