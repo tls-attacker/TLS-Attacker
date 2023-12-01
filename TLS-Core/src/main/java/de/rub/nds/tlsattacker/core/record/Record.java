@@ -98,6 +98,11 @@ public class Record extends ModifiableVariableHolder implements DataContainer<Tl
         this.maxRecordLengthConfig = maxRecordLengthConfig;
     }
 
+    @Override
+    public boolean shouldPrepare() {
+        return shouldPrepareDefault;
+    }
+
     public void setShouldPrepare(boolean shouldPrepare) {
         this.shouldPrepareDefault = shouldPrepare;
     }
