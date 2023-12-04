@@ -196,10 +196,11 @@ public class CertificateByteChooser {
         }
         if (bestKeyPair != null) {
             LOGGER.debug(
-                    "Choosing Certificate: {}(Group:{}),{}",
+                    "Choosing Certificate: {}(Group:{}), {}(Group:{})",
                     bestKeyPair.getCertPublicKeyType(),
                     bestKeyPair.getPublicKeyGroup(),
-                    bestKeyPair.getSignatureAndHashAlgorithm());
+                    bestKeyPair.getSignatureAndHashAlgorithm(),
+                    bestKeyPair.getSignatureGroup());
             return bestKeyPair;
         }
 
@@ -225,6 +226,13 @@ public class CertificateByteChooser {
         }
 
         if (keyPair.isCompatibleWithCipherSuite(chooser)) {
+            if (chooser.getSelectedProtocolVersion().isTLS13()
+                    && isSignatureAlgorithmEcdsaOrEddsa(keyPair.getSignatureAlgorithm())) {
+                if (!isSignatureNamedGroupStrengthValidInTls13(keyPair)) {
+                    return INVALID_CERTIFICATE_RATING;
+                }
+            }
+
             Integer sigAlgRating = 1;
             if (!clientSupportedAlgorithms.isEmpty()) {
                 sigAlgRating =
@@ -274,5 +282,46 @@ public class CertificateByteChooser {
         } else {
             return certName.replace("cert.pem", "key.pem");
         }
+    }
+
+    /**
+     * Checks if the strength of the signature named group matches the strength of the hash
+     * algorithm in TLS 1.3.
+     *
+     * @param keyPair The certificate key pair to check.
+     * @return True if the strength matches, false otherwise.
+     */
+    private Boolean isSignatureNamedGroupStrengthValidInTls13(CertificateKeyPair keyPair) {
+        if (keyPair.getSignatureAndHashAlgorithm() == null || keyPair.getSignatureGroup() == null) {
+            return false;
+        }
+
+        NamedGroup signatureNamedGroup = keyPair.getSignatureGroup();
+        SignatureAndHashAlgorithm signatureAndHashAlgorithm =
+                keyPair.getSignatureAndHashAlgorithm();
+
+        boolean isValidEcdsa =
+                (signatureNamedGroup == NamedGroup.SECP256R1
+                                && signatureAndHashAlgorithm
+                                        == SignatureAndHashAlgorithm.ECDSA_SHA256)
+                        || (signatureNamedGroup == NamedGroup.SECP384R1
+                                && signatureAndHashAlgorithm
+                                        == SignatureAndHashAlgorithm.ECDSA_SHA384)
+                        || (signatureNamedGroup == NamedGroup.SECP521R1
+                                && signatureAndHashAlgorithm
+                                        == SignatureAndHashAlgorithm.ECDSA_SHA512);
+        boolean isValidEddsa =
+                (signatureNamedGroup == NamedGroup.ECDH_X25519
+                                && signatureAndHashAlgorithm == SignatureAndHashAlgorithm.ED25519)
+                        || (signatureNamedGroup == NamedGroup.ECDH_X448
+                                && signatureAndHashAlgorithm == SignatureAndHashAlgorithm.ED448);
+
+        return isValidEcdsa || isValidEddsa;
+    }
+
+    private Boolean isSignatureAlgorithmEcdsaOrEddsa(SignatureAlgorithm signatureAlgorithm) {
+        return signatureAlgorithm == SignatureAlgorithm.ECDSA
+                || signatureAlgorithm == SignatureAlgorithm.ED25519
+                || signatureAlgorithm == SignatureAlgorithm.ED448;
     }
 }
