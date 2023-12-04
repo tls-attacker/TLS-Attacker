@@ -233,11 +233,14 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
                 QuicVersion quicVersion = QuicVersion.getFromVersionBytes(versionBytes);
                 if (quicVersion == QuicVersion.NULL_VERSION) {
                     packetType = QuicPacketType.VERSION_NEGOTIATION;
-                } else if (quicVersion != context.getQuicVersion()) {
-                    LOGGER.error("Illegal response packet, ignoring it.");
-                    packetType = QuicPacketType.UNKNOWN;
                 } else {
                     packetType = QuicPacketType.getPacketTypeFromFirstByte(quicVersion, firstByte);
+
+                    if (quicVersion != context.getQuicVersion()
+                            && packetType != QuicPacketType.VERSION_NEGOTIATION) {
+                        LOGGER.error("Received packet with unexpected version, ignoring it.");
+                        packetType = QuicPacketType.UNKNOWN;
+                    }
                 }
             } else {
                 packetType =
