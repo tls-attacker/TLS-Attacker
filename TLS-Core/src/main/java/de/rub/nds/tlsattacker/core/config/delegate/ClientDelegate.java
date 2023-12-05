@@ -70,7 +70,8 @@ public class ClientDelegate extends Delegate {
                 try {
                     con.setIpv6(getIpv6ForHost(sniHostname));
                 } catch (UnknownHostException ex) {
-                    LOGGER.warn("Could not resolve IPv6 address for host " + sniHostname, ex);
+                    LOGGER.warn("Could not resolve IPv6 address for host {}", sniHostname);
+                    LOGGER.debug(ex); // Expected exception
                 }
             }
             setHostname(config, extractedHost, con);
