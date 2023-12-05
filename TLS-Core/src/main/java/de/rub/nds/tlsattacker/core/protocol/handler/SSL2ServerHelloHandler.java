@@ -8,8 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
@@ -33,17 +31,8 @@ public class SSL2ServerHelloHandler extends ProtocolMessageHandler<SSL2ServerHel
         LOGGER.debug("SSL2 bytesToParse: {}", bytesToParse);
 
         try {
-            byte[] concatenated =
-                    ArrayConverter.concatenate(
-                            ArrayConverter.intToBytes(
-                                    lengthBytes + HandshakeByteLength.CERTIFICATES_LENGTH,
-                                    HandshakeByteLength.CERTIFICATES_LENGTH),
-                            ArrayConverter.intToBytes(
-                                    lengthBytes, HandshakeByteLength.CERTIFICATES_LENGTH),
-                            bytesToParse);
-            LOGGER.debug("SSL2 concatenated: {}", concatenated);
-            ByteArrayInputStream stream = new ByteArrayInputStream(concatenated);
-            return CertificateIo.readRawChain(
+            ByteArrayInputStream stream = new ByteArrayInputStream(bytesToParse);
+            return CertificateIo.readRawCertificateAsChain(
                     stream); // TODO This is not correct, we are not adjusting the x509 context
         } catch (IOException | IllegalArgumentException e) {
             LOGGER.warn(
