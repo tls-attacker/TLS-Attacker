@@ -228,7 +228,11 @@ public class ActionTestUtils {
         action.normalize();
         actual.normalize();
 
-        assertEquals(action, actual);
+        ByteArrayOutputStream resultStream = new ByteArrayOutputStream();
+        ByteArrayOutputStream actualStream = new ByteArrayOutputStream();
+        ActionIO.write(resultStream, action);
+        ActionIO.write(actualStream, actual);
+        assertArrayEquals(resultStream.toByteArray(), actualStream.toByteArray());
     }
 
     private ActionTestUtils() {}
