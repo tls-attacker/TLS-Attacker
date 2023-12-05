@@ -81,7 +81,8 @@ public abstract class CommonSendAction extends MessageAction implements SendingA
                 getSendResult(tlsContext.getLayerStack(), layerConfigurations);
                 setExecuted(true);
             } catch (IOException e) {
-                if (!getActionOptions().contains(ActionOption.MAY_FAIL)) {
+                if (getActionOptions() == null
+                        || !getActionOptions().contains(ActionOption.MAY_FAIL)) {
                     tlsContext.setReceivedTransportHandlerException(true);
                     LOGGER.debug(e);
                 }
