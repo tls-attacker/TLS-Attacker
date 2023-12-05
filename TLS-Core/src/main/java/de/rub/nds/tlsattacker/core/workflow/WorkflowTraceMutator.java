@@ -18,6 +18,7 @@ import de.rub.nds.tlsattacker.core.workflow.action.StaticReceivingAction;
 import de.rub.nds.tlsattacker.core.workflow.action.StaticSendingAction;
 import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -55,13 +56,13 @@ public class WorkflowTraceMutator {
     private static void replaceMessagesInList(
             List<ProtocolMessage> messageList,
             HandshakeMessageType type,
-            ProtocolMessage replaceMessage) {
-        if (replaceMessage != null) {
+            ProtocolMessage replacementMessage) {
+        if (replacementMessage != null) {
             messageList.replaceAll(
                     message -> {
                         if (message instanceof HandshakeMessage
                                 && ((HandshakeMessage) message).getHandshakeMessageType() == type) {
-                            return replaceMessage;
+                            return replacementMessage;
                         }
                         return message;
                     });
@@ -91,7 +92,16 @@ public class WorkflowTraceMutator {
             }
         }
 
-        trace.getTlsActions().removeAll(deleteActions);
+        Iterator<TlsAction> iterator = trace.getTlsActions().iterator();
+        while (iterator.hasNext()) {
+            TlsAction action = iterator.next();
+            for (StaticSendingAction toDeleteAction : deleteActions) {
+                if (action == toDeleteAction) {
+                    iterator.remove();
+                    break;
+                }
+            }
+        }
     }
 
     public static void replaceStaticSendingMessage(
@@ -108,7 +118,16 @@ public class WorkflowTraceMutator {
             }
         }
 
-        trace.getTlsActions().removeAll(deleteActions);
+        Iterator<TlsAction> iterator = trace.getTlsActions().iterator();
+        while (iterator.hasNext()) {
+            TlsAction action = iterator.next();
+            for (StaticSendingAction toDeleteAction : deleteActions) {
+                if (action == toDeleteAction) {
+                    iterator.remove();
+                    break;
+                }
+            }
+        }
     }
 
     public static void deleteSendingMessage(WorkflowTrace trace, ProtocolMessageType type) {
@@ -150,7 +169,16 @@ public class WorkflowTraceMutator {
             }
         }
 
-        trace.getTlsActions().removeAll(deleteActions);
+        Iterator<TlsAction> iterator = trace.getTlsActions().iterator();
+        while (iterator.hasNext()) {
+            TlsAction action = iterator.next();
+            for (StaticReceivingAction toDeleteAction : deleteActions) {
+                if (action == toDeleteAction) {
+                    iterator.remove();
+                    break;
+                }
+            }
+        }
     }
 
     public static void replaceReceivingMessage(
@@ -171,8 +199,16 @@ public class WorkflowTraceMutator {
                 deleteActions.add(action);
             }
         }
-
-        trace.getTlsActions().removeAll(deleteActions);
+        Iterator<TlsAction> iterator = trace.getTlsActions().iterator();
+        while (iterator.hasNext()) {
+            TlsAction action = iterator.next();
+            for (StaticReceivingAction toDeleteAction : deleteActions) {
+                if (action == toDeleteAction) {
+                    iterator.remove();
+                    break;
+                }
+            }
+        }
     }
 
     public static void deleteReceivingMessage(WorkflowTrace trace, ProtocolMessageType type)
@@ -185,127 +221,176 @@ public class WorkflowTraceMutator {
         replaceReceivingMessage(trace, type, null);
     }
 
+    private static Integer getTurncationActionIndex(
+            WorkflowTrace trace, ProtocolMessageType type, boolean sending) {
+        for (int i = 0; i < trace.getTlsActions().size(); i++) {
+            TlsAction action = trace.getTlsActions().get(i);
+            if (action instanceof StaticReceivingAction && !sending) {
+                List<ProtocolMessage> messages =
+                        ((StaticReceivingAction) action).getExpectedList(ProtocolMessage.class);
+                for (ProtocolMessage message : messages) {
+                    if (message.getProtocolMessageType() == type) {
+                        return i;
+                    }
+                }
+            } else if (action instanceof StaticSendingAction && sending) {
+                List<ProtocolMessage> messages =
+                        ((StaticSendingAction) action).getConfiguredList(ProtocolMessage.class);
+                for (ProtocolMessage message : messages) {
+                    if (message.getProtocolMessageType() == type) {
+                        return i;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    private static Integer getTurncationActionIndex(
+            WorkflowTrace trace, HandshakeMessageType type, boolean sending) {
+        for (int i = 0; i < trace.getTlsActions().size(); i++) {
+            TlsAction action = trace.getTlsActions().get(i);
+            if (action instanceof StaticReceivingAction && !sending) {
+                List<ProtocolMessage> messages =
+                        ((StaticReceivingAction) action).getExpectedList(ProtocolMessage.class);
+                for (ProtocolMessage message : messages) {
+                    if (message instanceof HandshakeMessage
+                            && ((HandshakeMessage) message).getHandshakeMessageType() == type) {
+                        return i;
+                    }
+                }
+            } else if (action instanceof StaticSendingAction && sending) {
+                List<ProtocolMessage> messages =
+                        ((StaticSendingAction) action).getConfiguredList(ProtocolMessage.class);
+                for (ProtocolMessage message : messages) {
+                    if (message instanceof HandshakeMessage
+                            && ((HandshakeMessage) message).getHandshakeMessageType() == type) {
+                        return i;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
     private static void truncate(
             WorkflowTrace trace,
-            Object type,
+            ProtocolMessageType type,
             WorkflowTruncationMode mode,
             boolean sending,
             Boolean untilLast) {
-        TlsAction action = null;
-        if (untilLast != null && untilLast == true) {
-            if (type instanceof HandshakeMessageType) {
-                if (sending) {
-                    action =
-                            (TlsAction)
-                                    WorkflowTraceConfigurationUtil
-                                            .getLastStaticConfiguredSendAction(
-                                                    trace, (HandshakeMessageType) type);
-                } else {
-                    action =
-                            (TlsAction)
-                                    WorkflowTraceConfigurationUtil
-                                            .getLastStaticConfiguredReceiveAction(
-                                                    trace, (HandshakeMessageType) type);
-                }
-            } else if (type instanceof ProtocolMessageType) {
-                if (sending) {
-                    action =
-                            (TlsAction)
-                                    WorkflowTraceConfigurationUtil
-                                            .getLastStaticConfiguredSendAction(
-                                                    trace, (ProtocolMessageType) type);
-                } else {
-                    action =
-                            (TlsAction)
-                                    WorkflowTraceConfigurationUtil
-                                            .getLastStaticConfiguredReceiveAction(
-                                                    trace, (ProtocolMessageType) type);
-                }
-            }
+        Integer truncationIndex = getTurncationActionIndex(trace, type, sending);
+
+        if (truncationIndex == null) {
+            LOGGER.warn("Could not truncate WorkflowTrace. Message: {} not found.", type);
         } else {
-            if (type instanceof HandshakeMessageType) {
-                if (sending) {
-                    action =
-                            (TlsAction)
-                                    WorkflowTraceConfigurationUtil
-                                            .getFirstStaticConfiguredSendAction(
-                                                    trace, (HandshakeMessageType) type);
-                } else {
-                    action =
-                            (TlsAction)
-                                    WorkflowTraceConfigurationUtil
-                                            .getFirstStaticConfiguredReceiveAction(
-                                                    trace, (HandshakeMessageType) type);
-                }
-            } else if (type instanceof ProtocolMessageType) {
-                if (sending) {
-                    action =
-                            (TlsAction)
-                                    WorkflowTraceConfigurationUtil
-                                            .getFirstStaticConfiguredSendAction(
-                                                    trace, (ProtocolMessageType) type);
-                } else {
-                    action =
-                            (TlsAction)
-                                    WorkflowTraceConfigurationUtil
-                                            .getFirstStaticConfiguredReceiveAction(
-                                                    trace, (ProtocolMessageType) type);
+            TlsAction action = trace.getTlsActions().get(truncationIndex);
+            List<ProtocolMessage> messages = new ArrayList<>();
+            if (action instanceof StaticSendingAction) {
+                messages = ((StaticSendingAction) action).getConfiguredList(ProtocolMessage.class);
+            } else if (action instanceof StaticSendingAction) {
+                messages = ((StaticReceivingAction) action).getExpectedList(ProtocolMessage.class);
+            }
+            Integer messageIndex = null;
+            for (int i = 0; i < messages.size(); i++) {
+                if (messages.get(i).getProtocolMessageType() == type) {
+                    messageIndex = i;
+                    if (mode == WorkflowTruncationMode.AFTER) {
+                        messageIndex++;
+                    }
+
+                    if (!untilLast) {
+                        break;
+                    }
                 }
             }
-        }
-        if (action == null) {
-            return;
-        }
+            if (messageIndex == null) {
+                LOGGER.error(
+                        "Could not truncate WorkflowTrace. Message: {} not found. Messages(size): {}",
+                        type,
+                        messages.size());
+                return;
+            }
+            // We now know the point at which we want to trucate.
+            if (messageIndex >= messages.size()) {
+                // Delete all actions after the truncation point
 
-        int messageIndex = -1;
-        int actionIndex = trace.getTlsActions().indexOf(action);
-        List<ProtocolMessage> messages = new ArrayList<>();
-        if (action instanceof StaticSendingAction) {
-            messages = ((StaticSendingAction) action).getConfiguredList(ProtocolMessage.class);
-        } else if (action instanceof StaticReceivingAction) {
-            messages = ((StaticReceivingAction) action).getExpectedList(ProtocolMessage.class);
-        }
+                trace.getTlsActions()
+                        .subList(truncationIndex + 1, trace.getTlsActions().size())
+                        .clear();
+            }
+            // Delete all messages after the truncation point
+            messages.subList(messageIndex, messages.size()).clear();
+            if (messages.isEmpty()) {
+                trace.getTlsActions()
+                        .subList(truncationIndex, trace.getTlsActions().size())
+                        .clear();
 
-        for (ProtocolMessage message : messages) {
-            if (type instanceof HandshakeMessageType) {
-                if (!(message instanceof HandshakeMessage)) {
-                    continue;
-                }
-                if (((HandshakeMessage) message).getHandshakeMessageType() == type) {
-                    messageIndex = getIndexOfIdenticalMessage(messages, message);
-                    if (messageIndex == 0 && mode == WorkflowTruncationMode.AT) {
-                        actionIndex -= 1;
-                    }
-                    break;
-                }
             } else {
-                if (message.getProtocolMessageType() == type) {
-                    messageIndex = getIndexOfIdenticalMessage(messages, message);
-                    if (messageIndex == 0 && mode == WorkflowTruncationMode.AT) {
-                        actionIndex -= 1;
+                trace.getTlsActions()
+                        .subList(truncationIndex + 1, trace.getTlsActions().size())
+                        .clear();
+            }
+        }
+    }
+
+    private static void truncate(
+            WorkflowTrace trace,
+            HandshakeMessageType type,
+            WorkflowTruncationMode mode,
+            boolean sending,
+            Boolean untilLast) {
+        Integer truncationIndex = getTurncationActionIndex(trace, type, sending);
+
+        if (truncationIndex == null) {
+            LOGGER.warn("Could not truncate WorkflowTrace. Message: {} not found.", type);
+        } else {
+            TlsAction action = trace.getTlsActions().get(truncationIndex);
+            List<ProtocolMessage> messages = new ArrayList<>();
+            if (action instanceof StaticSendingAction) {
+                messages = ((StaticSendingAction) action).getConfiguredList(ProtocolMessage.class);
+            } else if (action instanceof StaticReceivingAction) {
+                messages = ((StaticReceivingAction) action).getExpectedList(ProtocolMessage.class);
+            }
+            Integer messageIndex = null;
+            for (int i = 0; i < messages.size(); i++) {
+                ProtocolMessage message = messages.get(i);
+                if (message instanceof HandshakeMessage
+                        && ((HandshakeMessage) message).getHandshakeMessageType() == type) {
+                    messageIndex = i;
+                    if (mode == WorkflowTruncationMode.AFTER) {
+                        messageIndex++;
                     }
-                    break;
+
+                    if (!untilLast) {
+                        break;
+                    }
                 }
             }
-        }
-
-        int offset = 0;
-        if (mode == WorkflowTruncationMode.AFTER) {
-            offset = 1;
-        }
-
-        // is false for example for dynamic send actions
-        if (messages.size() > 0) {
-            if (messages.size() > messageIndex + offset) {
-                messages.subList(messageIndex + offset, messages.size()).clear();
+            if (messageIndex == null) {
+                LOGGER.error("Could not truncate WorkflowTrace. Message: {} not found.", type);
+                return;
             }
-        } else if (mode == WorkflowTruncationMode.AT) {
-            actionIndex -= 1;
-        }
+            // We now know the point at which we want to trucate.
+            if (messageIndex >= messages.size()) {
+                // Delete all actions after the truncation point
 
-        List<TlsAction> workflowActions = trace.getTlsActions();
-        if (workflowActions.size() > actionIndex + 1) {
-            workflowActions.subList(actionIndex + 1, workflowActions.size()).clear();
+                trace.getTlsActions()
+                        .subList(truncationIndex + 1, trace.getTlsActions().size())
+                        .clear();
+            }
+            // Delete all messages after the truncation point
+            messages.subList(messageIndex, messages.size()).clear();
+            if (messages.isEmpty()) {
+                trace.getTlsActions()
+                        .subList(truncationIndex, trace.getTlsActions().size())
+                        .clear();
+
+            } else {
+                trace.getTlsActions()
+                        .subList(truncationIndex + 1, trace.getTlsActions().size())
+                        .clear();
+            }
         }
     }
 
@@ -357,17 +442,5 @@ public class WorkflowTraceMutator {
     public static void truncateReceivingAfter(
             WorkflowTrace trace, ProtocolMessageType type, Boolean untilLast) {
         truncate(trace, type, WorkflowTruncationMode.AFTER, false, untilLast);
-    }
-
-    private static int getIndexOfIdenticalMessage(
-            List<ProtocolMessage> collection, ProtocolMessage message) {
-        if (collection != null) {
-            for (int i = 0; i < collection.size(); i++) {
-                if (collection.get(i) == message) {
-                    return i;
-                }
-            }
-        }
-        return -1;
     }
 }

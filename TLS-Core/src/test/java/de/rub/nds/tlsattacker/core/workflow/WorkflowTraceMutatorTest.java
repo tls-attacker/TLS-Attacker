@@ -15,8 +15,21 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.*;
-import de.rub.nds.tlsattacker.core.workflow.action.*;
+import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.SrpClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ReceivingAction;
+import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
+import de.rub.nds.tlsattacker.core.workflow.action.StaticReceivingAction;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -117,9 +130,8 @@ public class WorkflowTraceMutatorTest {
 
         ReceiveAction action =
                 (ReceiveAction)
-                        WorkflowTraceResultUtil.getActionsThatReceived(
-                                        ProtocolMessageType.HANDSHAKE, trace)
-                                .get(0);
+                        WorkflowTraceConfigurationUtil.getFirstStaticConfiguredReceiveAction(
+                                trace, ProtocolMessageType.HANDSHAKE);
         assertEquals(replaceMsg, action.getExpectedMessages().get(0));
     }
 
@@ -132,12 +144,10 @@ public class WorkflowTraceMutatorTest {
         WorkflowTraceMutator.replaceReceivingMessage(
                 trace, HandshakeMessageType.SERVER_HELLO, replaceMsg);
 
-        ReceiveAction action =
-                (ReceiveAction)
-                        WorkflowTraceResultUtil.getActionsThatReceived(
-                                        ProtocolMessageType.HANDSHAKE, trace)
-                                .get(0);
-        assertEquals(replaceMsg, action.getExpectedMessages().get(0));
+        StaticReceivingAction action =
+                WorkflowTraceConfigurationUtil.getFirstStaticConfiguredReceiveAction(
+                        trace, ProtocolMessageType.HANDSHAKE);
+        assertEquals(replaceMsg, action.getExpectedList(ProtocolMessage.class).get(0));
     }
 
     @Test
@@ -148,7 +158,7 @@ public class WorkflowTraceMutatorTest {
 
         List<ReceivingAction> actions =
                 WorkflowTraceResultUtil.getActionsThatReceived(
-                        ProtocolMessageType.HANDSHAKE, trace);
+                        trace, ProtocolMessageType.HANDSHAKE);
         assertEquals(0, actions.size());
     }
 
@@ -160,7 +170,7 @@ public class WorkflowTraceMutatorTest {
 
         List<ReceivingAction> actions =
                 WorkflowTraceResultUtil.getActionsThatReceived(
-                        ProtocolMessageType.HANDSHAKE, trace);
+                        trace, ProtocolMessageType.HANDSHAKE);
         assertEquals(0, actions.size());
     }
 
@@ -178,23 +188,27 @@ public class WorkflowTraceMutatorTest {
                         new FinishedMessage()),
                 new ReceiveAction(new FinishedMessage()));
 
-        HandshakeMessage chm = new SrpClientKeyExchangeMessage();
+        HandshakeMessage srpMessage = new SrpClientKeyExchangeMessage();
 
-        WorkflowTraceMutator.replaceStaticSendingMessage(trace, HandshakeMessageType.FINISHED, chm);
+        WorkflowTraceMutator.replaceStaticSendingMessage(
+                trace, HandshakeMessageType.FINISHED, srpMessage);
         assertEquals(
-                chm,
+                srpMessage,
                 ((SendAction) trace.getTlsActions().get(2))
                         .getConfiguredList(ProtocolMessage.class)
                         .get(2));
 
-        WorkflowTraceMutator.replaceReceivingMessage(trace, HandshakeMessageType.CERTIFICATE, chm);
+        WorkflowTraceMutator.replaceReceivingMessage(
+                trace, HandshakeMessageType.CERTIFICATE, srpMessage);
         assertEquals(
-                chm, ((ReceiveAction) trace.getTlsActions().get(1)).getExpectedMessages().get(1));
+                srpMessage,
+                ((ReceiveAction) trace.getTlsActions().get(1)).getExpectedMessages().get(1));
 
         WorkflowTraceMutator.deleteReceivingMessage(trace, HandshakeMessageType.FINISHED);
         assertEquals(3, trace.getTlsActions().size());
 
         WorkflowTraceMutator.deleteSendingMessage(trace, HandshakeMessageType.CLIENT_KEY_EXCHANGE);
+        assertEquals(3, trace.getTlsActions().size());
         WorkflowTraceMutator.deleteSendingMessage(trace, ProtocolMessageType.CHANGE_CIPHER_SPEC);
         assertEquals(2, trace.getTlsActions().size());
     }

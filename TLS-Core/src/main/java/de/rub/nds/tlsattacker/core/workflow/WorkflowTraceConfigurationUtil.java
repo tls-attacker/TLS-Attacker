@@ -27,18 +27,6 @@ public class WorkflowTraceConfigurationUtil {
 
     private WorkflowTraceConfigurationUtil() {}
 
-    private static List<ProtocolMessage> filterProtocolMessages(
-            List<List<DataContainer<?>>> dataContainers) {
-        List<ProtocolMessage> protocolMessages = new LinkedList<>();
-        for (List<DataContainer<?>> dataContainerList : dataContainers) {
-            if (!dataContainerList.isEmpty()
-                    && dataContainerList.get(0) instanceof ProtocolMessage) {
-                protocolMessages.add((ProtocolMessage) dataContainerList.get(0));
-            }
-        }
-        return protocolMessages;
-    }
-
     public static ProtocolMessage getFirstStaticConfiguredSendMessage(
             WorkflowTrace trace, HandshakeMessageType type) {
         List<ProtocolMessage> messageList = getAllStaticConfiguredSendMessages(trace);
@@ -78,8 +66,7 @@ public class WorkflowTraceConfigurationUtil {
             WorkflowTrace trace, ProtocolMessageType type) {
         List<StaticReceivingAction> actionList = trace.getStaticConfiguredReceivingActions();
         for (StaticReceivingAction action : actionList) {
-            for (ProtocolMessage message :
-                    filterProtocolMessages(action.getExpectedDataContainerLists())) {
+            for (ProtocolMessage message : action.getExpectedList(ProtocolMessage.class)) {
                 if (message.getProtocolMessageType() == type) {
                     return action;
                 }
@@ -92,8 +79,7 @@ public class WorkflowTraceConfigurationUtil {
             WorkflowTrace trace, HandshakeMessageType type) {
         List<StaticSendingAction> actionList = trace.getStaticConfiguredSendingActions();
         for (StaticSendingAction action : actionList) {
-            for (ProtocolMessage message :
-                    filterProtocolMessages(action.getConfiguredDataContainerLists())) {
+            for (ProtocolMessage message : action.getConfiguredList(ProtocolMessage.class)) {
                 if (message instanceof HandshakeMessage
                         && ((HandshakeMessage) message).getHandshakeMessageType() == type) {
                     return action;
@@ -107,8 +93,7 @@ public class WorkflowTraceConfigurationUtil {
             WorkflowTrace trace, HandshakeMessageType type) {
         List<StaticReceivingAction> actionList = trace.getStaticConfiguredReceivingActions();
         for (StaticReceivingAction action : actionList) {
-            for (ProtocolMessage message :
-                    filterProtocolMessages(action.getExpectedDataContainerLists())) {
+            for (ProtocolMessage message : action.getExpectedList(ProtocolMessage.class)) {
                 if (message instanceof HandshakeMessage
                         && ((HandshakeMessage) message).getHandshakeMessageType() == type) {
                     return action;
@@ -122,8 +107,7 @@ public class WorkflowTraceConfigurationUtil {
             WorkflowTrace trace, ProtocolMessageType type) {
         List<StaticSendingAction> actionList = trace.getStaticConfiguredSendingActions();
         for (StaticSendingAction action : actionList) {
-            for (ProtocolMessage message :
-                    filterProtocolMessages(action.getConfiguredDataContainerLists())) {
+            for (ProtocolMessage message : action.getConfiguredList(ProtocolMessage.class)) {
                 if (message.getProtocolMessageType() == type) {
                     return action;
                 }
@@ -252,12 +236,10 @@ public class WorkflowTraceConfigurationUtil {
             WorkflowTrace trace, HandshakeMessageType type) {
         List<StaticSendingAction> actions = new LinkedList<>();
         for (StaticSendingAction action : trace.getStaticConfiguredSendingActions()) {
-            for (ProtocolMessage message :
-                    filterProtocolMessages(action.getConfiguredDataContainerLists())) {
-                if (message instanceof HandshakeMessage) {
-                    if (((HandshakeMessage) message).getHandshakeMessageType() == type) {
-                        actions.add(action);
-                    }
+            for (ProtocolMessage message : action.getConfiguredList(ProtocolMessage.class)) {
+                if (message instanceof HandshakeMessage
+                        && ((HandshakeMessage) message).getHandshakeMessageType() == type) {
+                    actions.add(action);
                 }
             }
         }
@@ -268,8 +250,7 @@ public class WorkflowTraceConfigurationUtil {
             WorkflowTrace trace, HandshakeMessageType type) {
         List<StaticReceivingAction> actions = new LinkedList<>();
         for (StaticReceivingAction action : trace.getStaticConfiguredReceivingActions()) {
-            for (ProtocolMessage message :
-                    filterProtocolMessages(action.getExpectedDataContainerLists())) {
+            for (ProtocolMessage message : action.getExpectedList(ProtocolMessage.class)) {
                 if (message instanceof HandshakeMessage) {
                     if (((HandshakeMessage) message).getHandshakeMessageType() == type) {
                         actions.add(action);
@@ -284,8 +265,7 @@ public class WorkflowTraceConfigurationUtil {
             WorkflowTrace trace, ProtocolMessageType type) {
         List<StaticSendingAction> actions = new LinkedList<>();
         for (StaticSendingAction action : trace.getStaticConfiguredSendingActions()) {
-            for (ProtocolMessage message :
-                    filterProtocolMessages(action.getConfiguredDataContainerLists())) {
+            for (ProtocolMessage message : action.getConfiguredList(ProtocolMessage.class)) {
                 if (message.getProtocolMessageType() == type) {
                     actions.add(action);
                 }
@@ -298,8 +278,7 @@ public class WorkflowTraceConfigurationUtil {
             WorkflowTrace trace, ProtocolMessageType type) {
         List<StaticReceivingAction> actions = new LinkedList<>();
         for (StaticReceivingAction action : trace.getStaticConfiguredReceivingActions()) {
-            for (ProtocolMessage message :
-                    filterProtocolMessages(action.getExpectedDataContainerLists())) {
+            for (ProtocolMessage message : action.getExpectedList(ProtocolMessage.class)) {
                 if (message.getProtocolMessageType() == type) {
                     actions.add(action);
                 }
