@@ -180,9 +180,8 @@ public class ReceiveAction extends CommonReceiveAction implements StaticReceivin
                                 getExpectedDataContainerLists());
         if (isExecuted()) {
             string +=
-                    "\n\tActual:"
-                            + LogPrinter.toHumanReadableMultiLineContainerListArray(
-                                    getExpectedDataContainerLists());
+                    "\n\tActual: "
+                            + LogPrinter.toHumanReadableMultiLine(getLayerStackProcessingResult());
         }
         return string;
     }
