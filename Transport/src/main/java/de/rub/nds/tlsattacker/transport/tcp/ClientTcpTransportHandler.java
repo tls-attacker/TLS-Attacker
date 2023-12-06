@@ -43,7 +43,7 @@ public class ClientTcpTransportHandler extends TcpTransportHandler {
             long timeout,
             String hostname,
             int serverPort) {
-        super(firstTimeout, timeout, ConnectionEndType.CLIENT);
+        super(timeout, ConnectionEndType.CLIENT);
         this.hostname = hostname;
         this.dstPort = serverPort;
         this.connectionTimeout = connectionTimeout;
@@ -52,7 +52,7 @@ public class ClientTcpTransportHandler extends TcpTransportHandler {
 
     public ClientTcpTransportHandler(
             long connectionTimeout, long timeout, String hostname, int serverPort, int clientPort) {
-        super(connectionTimeout, timeout, ConnectionEndType.CLIENT);
+        super(timeout, ConnectionEndType.CLIENT);
         this.hostname = hostname;
         this.dstPort = serverPort;
         this.connectionTimeout = connectionTimeout;

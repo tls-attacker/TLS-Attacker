@@ -79,12 +79,7 @@ public class ClientUdpTransportHandler extends UdpTransportHandler {
 
     @Override
     public byte[] fetchData() throws IOException {
-        if (firstReceived) {
-            setTimeout(firstTimeout);
-        } else {
-            setTimeout(timeout);
-        }
-        firstReceived = false;
+        setTimeout(timeout);
         DatagramPacket packet = new DatagramPacket(dataBuffer, RECEIVE_BUFFER_SIZE);
         socket.receive(packet);
         return Arrays.copyOfRange(packet.getData(), 0, packet.getLength());

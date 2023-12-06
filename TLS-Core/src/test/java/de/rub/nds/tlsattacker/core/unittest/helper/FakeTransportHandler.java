@@ -26,7 +26,7 @@ public class FakeTransportHandler extends TcpTransportHandler {
     private Boolean opened = false;
 
     public FakeTransportHandler(ConnectionEndType type) {
-        super(0, 0, type);
+        super(0, type);
         inputStream = new ByteArrayInputStream(new byte[0]);
         outputStream = new ByteArrayOutputStream();
     }

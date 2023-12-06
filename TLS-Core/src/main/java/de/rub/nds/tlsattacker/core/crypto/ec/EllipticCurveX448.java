@@ -16,7 +16,7 @@ import org.apache.commons.lang3.ArrayUtils;
 public class EllipticCurveX448 extends RFC7748Curve {
 
     @SuppressWarnings("SpellCheckingInspection")
-    public EllipticCurveX448() {
+    EllipticCurveX448() {
         super(
                 new BigInteger("262A6", 16),
                 new BigInteger("1", 16),

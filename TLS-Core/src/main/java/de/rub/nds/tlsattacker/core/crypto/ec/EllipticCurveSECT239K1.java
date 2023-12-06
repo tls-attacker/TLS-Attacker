@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.crypto.ec;
 import java.math.BigInteger;
 
 public class EllipticCurveSECT239K1 extends EllipticCurveOverF2m {
-    public EllipticCurveSECT239K1() {
+    EllipticCurveSECT239K1() {
         super(
                 BigInteger.ZERO,
                 BigInteger.ONE,

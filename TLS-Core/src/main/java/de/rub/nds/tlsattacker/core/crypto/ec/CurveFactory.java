@@ -10,11 +10,26 @@ package de.rub.nds.tlsattacker.core.crypto.ec;
 
 import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
+import java.util.EnumMap;
+import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class CurveFactory {
     private static final Logger LOGGER = LogManager.getLogger();
+
+    private static final Map<NamedGroup, EllipticCurve> curveCache =
+            new EnumMap<>(NamedGroup.class);
+    private static final Map<GOSTCurve, EllipticCurve> gostCurveCache =
+            new EnumMap<>(GOSTCurve.class);
+
+    public static EllipticCurve getCurve(NamedGroup name) {
+        return curveCache.computeIfAbsent(name, CurveFactory::getCurveUncached);
+    }
+
+    public static EllipticCurve getCurve(GOSTCurve name) {
+        return gostCurveCache.computeIfAbsent(name, CurveFactory::getCurveUncached);
+    }
 
     /**
      * Returns a named elliptic curve.
@@ -22,7 +37,7 @@ public class CurveFactory {
      * @param name The name of the curve, that should be returned.
      * @return EllipticCurve for the provided NamedGroup
      */
-    public static EllipticCurve getCurve(NamedGroup name) {
+    public static EllipticCurve getCurveUncached(NamedGroup name) {
         if (name.isGrease()) {
             LOGGER.warn("Using a GREASE elliptic curve. Falling back to a SECP256R1 curve.");
             return new EllipticCurveSECP256R1();
@@ -103,7 +118,7 @@ public class CurveFactory {
      * @param curve The name of the curve, that should be returned.
      * @return
      */
-    public static EllipticCurve getCurve(GOSTCurve curve) {
+    public static EllipticCurve getCurveUncached(GOSTCurve curve) {
         switch (curve) {
             case GostR3410_2001_CryptoPro_A:
                 return new EllipticCurveGost2001SetA();
