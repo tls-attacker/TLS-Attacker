@@ -242,6 +242,19 @@ public class TlsClientIT {
         ClientDelegate clientDelegate = clientCommandConfig.getDelegate(ClientDelegate.class);
         clientDelegate.setHost("localhost:" + port);
         Config config = clientCommandConfig.createConfig();
+        List<CipherSuite> testableCipherSuites =
+                CipherSuite.getImplemented().stream()
+                        .filter(
+                                cs ->
+                                        isCipherSuiteTestable(
+                                                        PublicKeyAlgorithm.RSA,
+                                                        config,
+                                                        cs,
+                                                        List.of(tlsServer.getCipherSuites()))
+                                                && !cs.isEphemeral())
+                        .collect(Collectors.toList());
+        config.setDefaultClientSupportedCipherSuites(testableCipherSuites);
+        config.setDefaultSelectedCipherSuite(testableCipherSuites.get(0));
 
         AliasedConnection con = config.getDefaultClientConnection();
         WorkflowTrace trace = new WorkflowTrace();
