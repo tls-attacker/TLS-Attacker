@@ -158,6 +158,11 @@ public class Config implements Serializable {
 
     private Boolean autoAdjustSignatureAndHashAlgorithm = true;
 
+    /**
+     * A list of X509CertificateConfigurations that are used to automatically create the certificate
+     * chain that is used in the CertificateMessage. The first config should be the leaf
+     * certificate.
+     */
     @XmlElement(name = "certificateConfig")
     @XmlElementWrapper
     private List<X509CertificateConfig> certificateChainConfig;
@@ -1293,8 +1298,8 @@ public class Config implements Serializable {
                 ArrayConverter.hexStringToByteArray("0F1F2F34F5F6F7F8F9F0F0F9F8F7F6F5F4F3F2F1");
         leafConfig.setSerialNumber(new BigInteger(serialNumber));
 
-        certificateChainConfig.add(caConfig);
         certificateChainConfig.add(leafConfig);
+        certificateChainConfig.add(caConfig);
         defaultLayerConfiguration = StackConfiguration.TLS;
         defaultClientConnection = new OutboundConnection("client", 443, "localhost");
         defaultServerConnection = new InboundConnection("server", 443, "localhost");

@@ -23,8 +23,8 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.x509attacker.constants.X509PublicKeyType;
 import de.rub.nds.x509attacker.filesystem.CertificateBytes;
-import de.rub.nds.x509attacker.x509.X509CertificateChain;
 import de.rub.nds.x509attacker.x509.X509CertificateChainBuilder;
+import de.rub.nds.x509attacker.x509.X509ChainCreationResult;
 import de.rub.nds.x509attacker.x509.model.X509Certificate;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -130,11 +130,14 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
                         // create one
                         LOGGER.debug("Building new certificate chain");
                         X509CertificateChainBuilder builder = new X509CertificateChainBuilder();
-                        X509CertificateChain chain =
+                        X509ChainCreationResult chainResult =
                                 builder.buildChain(chooser.getConfig().getCertificateChainConfig());
-
+                        chooser.getContext()
+                                .getTlsContext()
+                                .setTalkingX509Context(chainResult.getContext());
                         entryList = new LinkedList<>();
-                        for (X509Certificate certificate : chain.getCertificateList()) {
+                        for (X509Certificate certificate :
+                                chainResult.getCertificateChain().getCertificateList()) {
                             entryList.add(new CertificateEntry(certificate));
                         }
                         msg.setCertificateEntryList(entryList);

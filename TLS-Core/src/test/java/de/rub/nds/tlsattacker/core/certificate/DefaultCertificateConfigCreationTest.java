@@ -24,7 +24,8 @@ public class DefaultCertificateConfigCreationTest {
     public void testDefaultCertificateCreation() throws Exception {
         Config config = new Config();
         X509CertificateChainBuilder builder = new X509CertificateChainBuilder();
-        X509CertificateChain buildChain = builder.buildChain(config.getCertificateChainConfig());
+        X509CertificateChain buildChain =
+                builder.buildChain(config.getCertificateChainConfig()).getCertificateChain();
         for (X509Certificate certificate : buildChain.getCertificateList()) {
             LOGGER.debug("Certificate: {}", certificate.getSerializer(null).serialize());
         }
