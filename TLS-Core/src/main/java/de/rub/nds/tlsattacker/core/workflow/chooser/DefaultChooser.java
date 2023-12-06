@@ -1007,7 +1007,7 @@ public class DefaultChooser extends Chooser {
                     .getChooser()
                     .getSubjectDhPublicKey();
         } else {
-            if (getTalkingConnectionEnd() == ConnectionEndType.CLIENT) {
+            if (getConnectionEndType() == ConnectionEndType.CLIENT) {
                 return getServerEphemeralDhPublicKey();
             } else {
                 return getClientEphemeralDhPublicKey();
@@ -1050,7 +1050,7 @@ public class DefaultChooser extends Chooser {
                     .getChooser()
                     .getSubjectDhPrivateKey();
         } else {
-            if (getTalkingConnectionEnd() == ConnectionEndType.CLIENT) {
+            if (getConnectionEndType() == ConnectionEndType.CLIENT) {
                 return getClientEphemeralDhPrivateKey();
             } else {
                 return getServerEphemeralDhPrivateKey();
@@ -1068,7 +1068,7 @@ public class DefaultChooser extends Chooser {
                     .getChooser()
                     .getSubjectEcPublicKey();
         } else {
-            if (getTalkingConnectionEnd() == ConnectionEndType.CLIENT) {
+            if (getConnectionEndType() == ConnectionEndType.CLIENT) {
                 return getServerEphemeralEcPublicKey();
             } else {
                 return getClientEphemeralEcPublicKey();
@@ -1086,7 +1086,7 @@ public class DefaultChooser extends Chooser {
                     .getChooser()
                     .getSubjectEcPrivateKey();
         } else {
-            if (getTalkingConnectionEnd() == ConnectionEndType.CLIENT) {
+            if (getConnectionEndType() == ConnectionEndType.CLIENT) {
                 return getClientEphemeralEcPrivateKey();
             } else {
                 return getServerEphemeralEcPrivateKey();
@@ -1097,15 +1097,13 @@ public class DefaultChooser extends Chooser {
     @Override
     public BigInteger getKeySharePrivateKey(NamedGroup keyStoreGroup) {
         if (keyStoreGroup.isDhGroup()) {
-            if (getContext().getConnection().getLocalConnectionEndType()
-                    == ConnectionEndType.CLIENT) {
+            if (getConnectionEndType() == ConnectionEndType.CLIENT) {
                 return getClientEphemeralDhPrivateKey();
             } else {
                 return getServerEphemeralDhPrivateKey();
             }
         } else {
-            if (getContext().getConnection().getLocalConnectionEndType()
-                    == ConnectionEndType.CLIENT) {
+            if (getConnectionEndType() == ConnectionEndType.CLIENT) {
                 return getClientEphemeralEcPrivateKey();
             } else {
                 return getServerEphemeralEcPrivateKey();
