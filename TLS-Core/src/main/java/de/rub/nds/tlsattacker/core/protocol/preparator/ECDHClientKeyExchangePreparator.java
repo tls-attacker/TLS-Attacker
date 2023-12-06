@@ -19,6 +19,7 @@ import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -97,8 +98,15 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
         if (msg.getComputations().getPrivateKey() == null) {
             setComputationPrivateKey(msg);
         }
+        Point publicKey;
         CyclicGroup<?> group = usedGroup.getGroupParameters().getGroup();
-        Point publicKey = chooser.getEcKeyExchangePeerPublicKey();
+        if (chooser.getConnectionEndType() == ConnectionEndType.SERVER) {
+            publicKey =
+                    PointFormatter.formatFromByteArray(
+                            usedGroup.getGroupParameters(), msg.getPublicKey().getValue());
+        } else {
+            publicKey = chooser.getEcKeyExchangePeerPublicKey();
+        }
         EllipticCurve curve;
         if (group instanceof EllipticCurve) {
             curve = (EllipticCurve) group;
