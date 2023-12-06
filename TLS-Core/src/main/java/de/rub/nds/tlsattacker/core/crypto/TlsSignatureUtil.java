@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.crypto;
 
 import de.rub.nds.protocol.constants.HashAlgorithm;
+import de.rub.nds.protocol.crypto.hash.HashCalculator;
 import de.rub.nds.protocol.crypto.key.DsaPrivateKey;
 import de.rub.nds.protocol.crypto.key.EcdsaPrivateKey;
 import de.rub.nds.protocol.crypto.key.RsaPrivateKey;
@@ -18,9 +19,11 @@ import de.rub.nds.protocol.crypto.signature.RsaPkcs1SignatureComputations;
 import de.rub.nds.protocol.crypto.signature.SignatureCalculator;
 import de.rub.nds.protocol.crypto.signature.SignatureComputations;
 import de.rub.nds.protocol.crypto.signature.SignatureVerificationComputations;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.x509attacker.chooser.X509Chooser;
+import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
 
 public class TlsSignatureUtil {
@@ -34,8 +37,10 @@ public class TlsSignatureUtil {
     public void computeSignature(
             Chooser chooser,
             SignatureAndHashAlgorithm algorithm,
-            byte[] toBeHasedAndSigned,
+            byte[] toBeHashedAndSigned,
             SignatureComputations computations) {
+
+        ProtocolVersion selectedProtocolVersion = chooser.getSelectedProtocolVersion();
         switch (algorithm.getSignatureAlgorithm()) {
             case DSA:
                 if (!(computations instanceof DsaSignatureComputations)) {
@@ -43,10 +48,17 @@ public class TlsSignatureUtil {
                             "Computations must be of type DsaSignatureComputations for "
                                     + algorithm);
                 }
+                HashAlgorithm hashAlgorithm = algorithm.getHashAlgorithm();
+                if (selectedProtocolVersion == ProtocolVersion.DTLS10
+                        || selectedProtocolVersion == ProtocolVersion.SSL3
+                        || selectedProtocolVersion == ProtocolVersion.TLS10
+                        || selectedProtocolVersion == ProtocolVersion.TLS11) {
+                    hashAlgorithm = HashAlgorithm.SHA1;
+                }
                 computeDsaSignature(
                         chooser,
-                        algorithm.getHashAlgorithm(),
-                        toBeHasedAndSigned,
+                        hashAlgorithm,
+                        toBeHashedAndSigned,
                         (DsaSignatureComputations) computations);
                 break;
             case ECDSA:
@@ -58,7 +70,7 @@ public class TlsSignatureUtil {
                 computeEcdsaSignature(
                         chooser,
                         algorithm.getHashAlgorithm(),
-                        toBeHasedAndSigned,
+                        toBeHashedAndSigned,
                         (EcdsaSignatureComputations) computations);
                 break;
             case ED25519:
@@ -73,10 +85,21 @@ public class TlsSignatureUtil {
                             "Computations must be of type RsaPkcs1SignatureComputations for "
                                     + algorithm);
                 }
+                hashAlgorithm = algorithm.getHashAlgorithm();
+                if (selectedProtocolVersion == ProtocolVersion.DTLS10
+                        || selectedProtocolVersion == ProtocolVersion.SSL3
+                        || selectedProtocolVersion == ProtocolVersion.TLS10
+                        || selectedProtocolVersion == ProtocolVersion.TLS11) {
+                    hashAlgorithm = HashAlgorithm.NONE;
+                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                    outputStream.writeBytes(HashCalculator.computeMd5(toBeHashedAndSigned));
+                    outputStream.writeBytes(HashCalculator.computeSha1(toBeHashedAndSigned));
+                    toBeHashedAndSigned = outputStream.toByteArray();
+                }
                 computeRsaPkcs1Signature(
                         chooser,
-                        algorithm.getHashAlgorithm(),
-                        toBeHasedAndSigned,
+                        hashAlgorithm,
+                        toBeHashedAndSigned,
                         (RsaPkcs1SignatureComputations) computations);
                 break;
             default:
