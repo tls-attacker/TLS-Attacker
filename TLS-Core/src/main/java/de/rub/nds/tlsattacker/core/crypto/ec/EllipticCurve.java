@@ -8,15 +8,21 @@
  */
 package de.rub.nds.tlsattacker.core.crypto.ec;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import java.math.BigInteger;
+import org.apache.commons.lang3.tuple.Pair;
 
 /** An abstract class that provides functionality for elliptic curve over galois fields. */
 public abstract class EllipticCurve {
 
-    private Point basePoint;
-    private BigInteger basePointOrder;
+    private final Point basePoint;
+    private final BigInteger basePointOrder;
     /** The modulus of the field over which the curve is defined. */
     private final BigInteger modulus;
+
+    private final LoadingCache<Pair<BigInteger, Point>, Point> multCache;
 
     /**
      * Every child class must define its own public constructor. These constructors must be able to
@@ -26,7 +32,7 @@ public abstract class EllipticCurve {
      * @param modulus The modulus of the field over which the curve is defined.
      */
     protected EllipticCurve(BigInteger modulus) {
-        this.modulus = modulus;
+        this(modulus, null, null, null);
     }
 
     /**
@@ -45,8 +51,20 @@ public abstract class EllipticCurve {
             BigInteger basePointY,
             BigInteger basePointOrder) {
         this.modulus = modulus;
-        this.basePoint = this.getPoint(basePointX, basePointY);
+        if (basePointX == null) {
+            assert basePointY == null;
+            this.basePoint = null;
+        } else {
+            assert basePointY != null;
+            this.basePoint = this.getPoint(basePointX, basePointY);
+        }
         this.basePointOrder = basePointOrder;
+
+        multCache =
+                CacheBuilder.newBuilder()
+                        .maximumSize(256)
+                        .expireAfterAccess(10, java.util.concurrent.TimeUnit.MINUTES)
+                        .build(CacheLoader.from(this::multInternal));
     }
 
     /**
@@ -87,6 +105,13 @@ public abstract class EllipticCurve {
      *     or the point at infinity.
      */
     public Point mult(BigInteger k, Point p) {
+        return multCache.getUnchecked(Pair.of(k, p));
+    }
+
+    private Point multInternal(Pair<BigInteger, Point> pair) {
+        BigInteger k = pair.getLeft();
+        Point p = pair.getRight();
+
         if (k.compareTo(BigInteger.ZERO) < 0) {
             k = k.negate();
             p = this.inverse(p);

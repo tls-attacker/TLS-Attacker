@@ -28,7 +28,6 @@ public abstract class Connection implements Serializable {
     protected String proxyControlHostname = null;
     protected TransportHandlerType transportHandlerType = null;
     protected Integer timeout = null;
-    protected Integer firstTimeout = null;
     protected Integer connectionTimeout = null;
     protected Integer sourcePort = null;
     protected Boolean useIpv6 = null;
@@ -55,7 +54,6 @@ public abstract class Connection implements Serializable {
         proxyControlHostname = other.proxyControlHostname;
         transportHandlerType = other.transportHandlerType;
         timeout = other.timeout;
-        firstTimeout = other.firstTimeout;
         connectionTimeout = other.connectionTimeout;
         sourcePort = other.sourcePort;
         useIpv6 = other.useIpv6;
@@ -141,14 +139,6 @@ public abstract class Connection implements Serializable {
         return timeout;
     }
 
-    public void setFirstTimeout(Integer firstTimeout) {
-        this.firstTimeout = firstTimeout;
-    }
-
-    public Integer getFirstTimeout() {
-        return firstTimeout;
-    }
-
     public Integer getConnectionTimeout() {
         return connectionTimeout;
     }
@@ -218,9 +208,6 @@ public abstract class Connection implements Serializable {
         if (!Objects.equals(timeout, that.timeout)) {
             return false;
         }
-        if (!Objects.equals(firstTimeout, that.firstTimeout)) {
-            return false;
-        }
         if (!Objects.equals(connectionTimeout, that.connectionTimeout)) {
             return false;
         }
@@ -242,7 +229,6 @@ public abstract class Connection implements Serializable {
         result = 31 * result + (proxyControlHostname != null ? proxyControlHostname.hashCode() : 0);
         result = 31 * result + (transportHandlerType != null ? transportHandlerType.hashCode() : 0);
         result = 31 * result + (timeout != null ? timeout.hashCode() : 0);
-        result = 31 * result + (firstTimeout != null ? firstTimeout.hashCode() : 0);
         result = 31 * result + (connectionTimeout != null ? connectionTimeout.hashCode() : 0);
         result = 31 * result + (sourcePort != null ? sourcePort.hashCode() : 0);
         result = 31 * result + (useIpv6 != null ? useIpv6.hashCode() : 0);
@@ -259,7 +245,6 @@ public abstract class Connection implements Serializable {
         sb.append(" proxyControlHost=").append(proxyControlHostname);
         sb.append(" proxyControlPort=").append(proxyControlPort);
         sb.append(" type=").append(transportHandlerType);
-        sb.append(" firstTimeout=").append(firstTimeout);
         sb.append(" timeout=").append(timeout);
         sb.append(" connectionTimeout=").append(connectionTimeout);
         sb.append(" sourcePort=").append(sourcePort);

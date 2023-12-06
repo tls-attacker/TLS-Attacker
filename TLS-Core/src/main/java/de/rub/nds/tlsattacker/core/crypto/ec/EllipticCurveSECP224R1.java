@@ -12,7 +12,7 @@ import java.math.BigInteger;
 
 @SuppressWarnings("SpellCheckingInspection")
 public class EllipticCurveSECP224R1 extends EllipticCurveOverFp {
-    public EllipticCurveSECP224R1() {
+    EllipticCurveSECP224R1() {
         super(
                 new BigInteger("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFFFFFFFFFFFFFFFFFFFE", 16),
                 new BigInteger("B4050A850C04B3ABF54132565044B0B7D7BFD8BA270B39432355FFB4", 16),

@@ -12,7 +12,7 @@ import java.math.BigInteger;
 
 public class EllipticCurveGost2001SetB extends EllipticCurveOverF2m {
 
-    public EllipticCurveGost2001SetB() {
+    EllipticCurveGost2001SetB() {
         super(
                 new BigInteger(
                         "57896044618658097711785492504343953926634992332820282019728792003956564823190"),

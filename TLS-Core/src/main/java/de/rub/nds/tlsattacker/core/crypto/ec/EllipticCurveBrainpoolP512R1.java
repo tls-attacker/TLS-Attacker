@@ -12,7 +12,7 @@ import java.math.BigInteger;
 
 public class EllipticCurveBrainpoolP512R1 extends EllipticCurveOverFp {
     @SuppressWarnings("SpellCheckingInspection")
-    public EllipticCurveBrainpoolP512R1() {
+    EllipticCurveBrainpoolP512R1() {
         super(
                 new BigInteger(
                         "7830A3318B603B89E2327145AC234CC594CBDD8D3DF91610A83441CAEA9863BC2DED5D5AA8253AA10A2EF1C98B9AC8B57F1117A72BF2C7B9E7C1AC4D77FC94CA",
