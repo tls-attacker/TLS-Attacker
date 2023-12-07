@@ -171,6 +171,9 @@ public class AlgorithmResolver {
      */
     public static X509PublicKeyType[] getSuiteableLeafCertificateKeyType(CipherSuite suite) {
         KeyExchangeAlgorithm keyExchangeAlgorithm = getKeyExchangeAlgorithm(suite);
+        if (keyExchangeAlgorithm == null) {
+            return X509PublicKeyType.values();
+        }
         switch (keyExchangeAlgorithm) {
             case DHE_RSA:
             case ECDHE_RSA:

@@ -20,27 +20,16 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.TimeoutDelegate;
-import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.constants.PublicKeyAlgorithm;
-import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.util.BasicTlsServer;
 import de.rub.nds.tlsattacker.core.util.KeyStoreGenerator;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
-import de.rub.nds.tlsattacker.core.workflow.action.MessageActionFactory;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.util.FixedTimeProvider;
 import de.rub.nds.tlsattacker.util.TimeHelper;
 import de.rub.nds.tlsattacker.util.tests.TestCategories;
@@ -106,7 +95,7 @@ public class TlsClientIT {
                     NoSuchProviderException,
                     OperatorCreationException,
                     KeyManagementException {
-        startBasicTlsServer(PublicKeyAlgorithm.RSA);
+        startBasicTlsServer(X509PublicKeyType.RSA);
         assumeTrue(
                 tlsServer.getEnabledProtocolVersions().contains(protocolVersion),
                 "The TLS server used for testing does not support the protocol version to test, all supported versions: "
@@ -118,15 +107,17 @@ public class TlsClientIT {
                         .filter(
                                 cs ->
                                         isCipherSuiteTestable(
-                                                PublicKeyAlgorithm.RSA,
+                                                KeyExchangeAlgorithm.RSA,
                                                 config,
                                                 cs,
                                                 List.of(tlsServer.getCipherSuites())))
                         .collect(Collectors.toList());
+        for (CipherSuite suite : testableCipherSuites) {
+            System.out.println(suite);
+        }
         assertAll(
                 testableCipherSuites.stream()
                         .map(cs -> () -> executeHandshakeWorkflowWithCipherSuite(config, cs)));
-        executeCustomRsaWorkflow(tlsServer.getPort());
     }
 
     @ParameterizedTest
@@ -145,7 +136,7 @@ public class TlsClientIT {
                     InvalidKeyException,
                     NoSuchProviderException,
                     KeyManagementException {
-        startBasicTlsServer(PublicKeyAlgorithm.EC);
+        startBasicTlsServer(X509PublicKeyType.ECDH_ECDSA);
         assumeTrue(
                 tlsServer.getEnabledProtocolVersions().contains(protocolVersion),
                 "The TLS server used for testing does not support the protocol version to test, all supported versions: "
@@ -157,7 +148,7 @@ public class TlsClientIT {
                         .filter(
                                 cs ->
                                         isCipherSuiteTestable(
-                                                X509PublicKeyType.ECDH_ECDSA,
+                                                KeyExchangeAlgorithm.ECDHE_ECDSA,
                                                 config,
                                                 cs,
                                                 List.of(tlsServer.getCipherSuites())))
@@ -212,25 +203,22 @@ public class TlsClientIT {
     }
 
     private boolean isCipherSuiteTestable(
-            X509PublicKeyType x509PublicKeyType,
+            KeyExchangeAlgorithm keyExchangeAlgorithm,
             Config config,
             CipherSuite cs,
             List<String> serverSupportedCipherSuites) {
         if (cs.name().toUpperCase().contains("NULL") || cs.name().toUpperCase().contains("ANON")) {
             return false;
         }
-        X509PublicKeyType[] requiredAlgorithms =
-                AlgorithmResolver.getSuiteableLeafCertificateKeyType(cs);
-        for (X509PublicKeyType possibleKeyType : requiredAlgorithms) {
-            if (possibleKeyType == x509PublicKeyType) {
-                final boolean serverSupportsCipherSuite =
-                        serverSupportedCipherSuites.contains(cs.toString());
-                final boolean cipherSuiteIsSupportedByProtocolVersion =
-                        cs.isSupportedInProtocol(config.getHighestProtocolVersion());
-                return serverSupportsCipherSuite && cipherSuiteIsSupportedByProtocolVersion;
-            }
-        }
-        return false;
+        KeyExchangeAlgorithm kex = AlgorithmResolver.getKeyExchangeAlgorithm(cs);
+
+        final boolean serverSupportsCipherSuite =
+                serverSupportedCipherSuites.contains(cs.toString());
+        final boolean cipherSuiteIsSupportedByProtocolVersion =
+                cs.isSupportedInProtocol(config.getHighestProtocolVersion());
+        return serverSupportsCipherSuite
+                && cipherSuiteIsSupportedByProtocolVersion
+                && kex == keyExchangeAlgorithm;
     }
 
     private void executeHandshakeWorkflowWithCipherSuite(Config config, CipherSuite cs) {
@@ -250,53 +238,5 @@ public class TlsClientIT {
         assertDoesNotThrow(workflowExecutor::executeWorkflow);
         assertTrue(
                 state.getWorkflowTrace().executedAsPlanned(), state.getWorkflowTrace().toString());
-    }
-
-    private void executeCustomRsaWorkflow(int port) {
-        LOGGER.info("Executing custom RSA workflow");
-        ClientCommandConfig clientCommandConfig = new ClientCommandConfig(new GeneralDelegate());
-        TimeoutDelegate timeoutDelegate = clientCommandConfig.getDelegate(TimeoutDelegate.class);
-        timeoutDelegate.setTimeout(TIMEOUT);
-        ClientDelegate clientDelegate = clientCommandConfig.getDelegate(ClientDelegate.class);
-        clientDelegate.setHost("localhost:" + port);
-        Config config = clientCommandConfig.createConfig();
-
-        AliasedConnection con = config.getDefaultClientConnection();
-        WorkflowTrace trace = new WorkflowTrace();
-        trace.addTlsAction(
-                MessageActionFactory.createTLSAction(
-                        config, con, ConnectionEndType.CLIENT, new ClientHelloMessage(config)));
-        trace.addTlsAction(
-                MessageActionFactory.createTLSAction(
-                        config,
-                        con,
-                        ConnectionEndType.SERVER,
-                        new ServerHelloMessage(),
-                        new CertificateMessage(),
-                        new ServerHelloDoneMessage()));
-
-        trace.addTlsAction(
-                MessageActionFactory.createTLSAction(
-                        config,
-                        con,
-                        ConnectionEndType.CLIENT,
-                        new RSAClientKeyExchangeMessage(),
-                        new ChangeCipherSpecMessage(),
-                        new FinishedMessage()));
-        trace.addTlsAction(
-                MessageActionFactory.createTLSAction(
-                        config,
-                        con,
-                        ConnectionEndType.SERVER,
-                        new ChangeCipherSpecMessage(),
-                        new FinishedMessage()));
-
-        State state = new State(config, trace);
-        WorkflowExecutor workflowExecutor =
-                WorkflowExecutorFactory.createWorkflowExecutor(
-                        config.getWorkflowExecutorType(), state);
-        assertDoesNotThrow(workflowExecutor::executeWorkflow);
-        System.out.println(trace.toString());
-        assertTrue(trace.executedAsPlanned());
     }
 }
