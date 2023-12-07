@@ -10,8 +10,6 @@ package de.rub.nds.tlsattacker.core.constants;
 
 import de.rub.nds.protocol.constants.SignatureAlgorithm;
 import de.rub.nds.x509attacker.constants.X509PublicKeyType;
-import java.util.HashSet;
-import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -221,39 +219,6 @@ public class AlgorithmResolver {
                 throw new UnsupportedOperationException(
                         "Unsupported KeyExchange Algorithm: " + keyExchangeAlgorithm);
         }
-    }
-
-    /**
-     * Depending on the provided cipher suite, the server needs to be initialized with proper public
-     * key(s). Depending on the cipher suite, there are possibly more than one cipher suites needed.
-     *
-     * <p>This function returns a list of public key algorithms needed when running a server with a
-     * cipher suite.
-     *
-     * @param cipherSuite The selected CipherSuite
-     * @return The Set of publicKeyAlgorithms
-     */
-    public static Set<PublicKeyAlgorithm> getRequiredKeystoreAlgorithms(CipherSuite cipherSuite) {
-        String cipher = cipherSuite.toString().toUpperCase();
-        Set<PublicKeyAlgorithm> result = new HashSet<>();
-        if (cipher.contains("RSA")) {
-            result.add(PublicKeyAlgorithm.RSA);
-        } else if (cipher.contains("ECDSA")) {
-            result.add(PublicKeyAlgorithm.EC);
-        } else if (cipher.contains("DSS")) {
-            result.add(PublicKeyAlgorithm.DH);
-        } else if (cipher.contains("GOSTR341112")) {
-            result.add(PublicKeyAlgorithm.GOST12);
-        } else if (cipher.contains("GOSTR341001")) {
-            result.add(PublicKeyAlgorithm.GOST01);
-        }
-
-        if (cipher.contains("_ECDH_")) {
-            result.add(PublicKeyAlgorithm.EC);
-        } else if (cipher.contains("_DH_")) {
-            result.add(PublicKeyAlgorithm.DH);
-        }
-        return result;
     }
 
     public static CipherAlgorithm getCipher(CipherSuite cipherSuite) {
