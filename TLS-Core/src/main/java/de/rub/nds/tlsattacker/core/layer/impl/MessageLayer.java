@@ -415,9 +415,11 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
             }
             // receive until the layer configuration is satisfied or no data is left
         } catch (TimeoutException ex) {
-            LOGGER.debug(ex);
+            LOGGER.debug("Received a timeout");
+            LOGGER.trace(ex);
         } catch (EndOfStreamException ex) {
-            LOGGER.debug("Reached end of stream, cannot parse more messages", ex);
+            LOGGER.debug("Reached end of stream, cannot parse more messages");
+            LOGGER.trace(ex);
         }
     }
 
