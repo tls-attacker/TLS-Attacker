@@ -1,0 +1,64 @@
+/*
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
+ *
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
+ */
+package de.rub.nds.tlsattacker.core.workflow.action;
+
+import de.rub.nds.modifiablevariable.util.Modifiable;
+import de.rub.nds.protocol.util.DeepCopyUtil;
+import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
+import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.state.State;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.core.workflow.container.ActionHelperUtil;
+import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+public class SendRecordsFromLastFlightAction extends CommonSendAction {
+
+    private static final Logger LOGGER = LogManager.getLogger();
+
+    public SendRecordsFromLastFlightAction() {
+        super();
+    }
+
+    public SendRecordsFromLastFlightAction(String connectionAlias) {
+        super(connectionAlias);
+    }
+
+    @Override
+    protected List<LayerConfiguration<?>> createLayerConfiguration(State state) {
+        List<Record> lastRecords = getLastSendingAction(state.getWorkflowTrace()).getSentRecords();
+        List<Record> duplicatedRecords = DeepCopyUtil.deepCopy(lastRecords);
+        for (int i = 0; i < duplicatedRecords.size(); i++) {
+            duplicatedRecords
+                    .get(i)
+                    .setCleanProtocolMessageBytes(
+                            Modifiable.explicit(
+                                    lastRecords.get(i).getCleanProtocolMessageBytes().getValue()));
+        }
+        return ActionHelperUtil.createSendConfiguration(
+                state.getTlsContext(getConnectionAlias()),
+                null,
+                null,
+                duplicatedRecords,
+                null,
+                null,
+                null);
+    }
+
+    private SendingAction getLastSendingAction(WorkflowTrace trace) {
+        for (int i = 0; i < trace.getSendingActions().size(); i++) {
+            if (trace.getSendingActions().get(i) == this && i != 0) {
+                return trace.getSendingActions().get(i - 1);
+            }
+        }
+        throw new WorkflowExecutionException("Cannot find last sending action");
+    }
+}
