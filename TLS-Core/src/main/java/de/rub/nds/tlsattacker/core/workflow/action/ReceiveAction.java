@@ -22,6 +22,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.core.workflow.container.ActionHelperUtil;
 import jakarta.xml.bind.annotation.XmlElementRef;
@@ -263,7 +264,8 @@ public class ReceiveAction extends CommonReceiveAction implements StaticReceivin
     }
 
     @Override
-    protected List<LayerConfiguration<?>> createLayerConfiguration(TlsContext tlsContext) {
+    protected List<LayerConfiguration<?>> createLayerConfiguration(State state) {
+        TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
         return ActionHelperUtil.createReceiveLayerConfiguration(
                 tlsContext,
                 getActionOptions(),

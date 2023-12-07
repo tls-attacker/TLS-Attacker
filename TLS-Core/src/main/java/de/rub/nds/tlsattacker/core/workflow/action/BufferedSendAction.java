@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.state.State;
 import jakarta.xml.bind.annotation.XmlRootElement;
@@ -50,7 +49,7 @@ public class BufferedSendAction extends CommonSendAction {
     }
 
     @Override
-    protected List<LayerConfiguration<?>> createLayerConfiguration(TlsContext tlsContext) {
+    protected List<LayerConfiguration<?>> createLayerConfiguration(State state) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'createLayerConfiguration'");
     }

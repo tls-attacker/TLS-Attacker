@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
+import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.core.workflow.container.ActionHelperUtil;
 import jakarta.xml.bind.annotation.XmlElementRef;
@@ -79,7 +80,8 @@ public class ReceiveQuicTillAction extends CommonReceiveAction {
     }
 
     @Override
-    protected List<LayerConfiguration<?>> createLayerConfiguration(TlsContext tlsContext) {
+    protected List<LayerConfiguration<?>> createLayerConfiguration(State state) {
+        TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
         return ActionHelperUtil.createReceiveTillConfiguration(
                 tlsContext, expectedQuicFrames, expectedQuicPackets);
     }

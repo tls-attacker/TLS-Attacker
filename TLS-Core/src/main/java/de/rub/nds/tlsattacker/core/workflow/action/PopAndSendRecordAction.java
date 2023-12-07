@@ -83,7 +83,7 @@ public class PopAndSendRecordAction extends CommonSendAction {
     }
 
     @Override
-    protected List<LayerConfiguration<?>> createLayerConfiguration(TlsContext tlsContext) {
+    protected List<LayerConfiguration<?>> createLayerConfiguration(State state) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'createLayerConfiguration'");
     }

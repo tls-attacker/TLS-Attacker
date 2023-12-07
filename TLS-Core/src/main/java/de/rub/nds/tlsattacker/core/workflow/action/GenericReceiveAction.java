@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.container.ActionHelperUtil;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.List;
@@ -35,7 +36,8 @@ public class GenericReceiveAction extends CommonReceiveAction {
     }
 
     @Override
-    protected List<LayerConfiguration<?>> createLayerConfiguration(TlsContext tlsContext) {
+    protected List<LayerConfiguration<?>> createLayerConfiguration(State state) {
+        TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
         return ActionHelperUtil.createReceiveLayerConfiguration(
                 tlsContext, getActionOptions(), null, null, null, null, null, null);
     }

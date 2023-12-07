@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerStackProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.container.ActionHelperUtil;
 import jakarta.xml.bind.annotation.XmlElementRef;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
@@ -102,14 +103,16 @@ public class ForwardRecordsAction extends CommonForwardAction {
     }
 
     @Override
-    protected List<LayerConfiguration<?>> createReceiveConfiguration(TlsContext tlsContext) {
+    protected List<LayerConfiguration<?>> createReceiveConfiguration(State state) {
+        TlsContext tlsContext = state.getTlsContext(getReceiveFromAlias());
         return ActionHelperUtil.createReceiveLayerConfiguration(
                 tlsContext, getActionOptions(), null, null, getExpectedRecords(), null, null, null);
     }
 
     @Override
     protected List<LayerConfiguration<?>> createSendConfiguration(
-            TlsContext tlsContext, LayerStackProcessingResult receivedResult) {
+            State state, LayerStackProcessingResult receivedResult) {
+        TlsContext tlsContext = state.getTlsContext(getForwardToAlias());
         List<Record> receivedRecords = getReceivedRecords();
         for (Record record : receivedRecords) {
             record.setShouldPrepare(false); // Do not recompute the messages on the message layer

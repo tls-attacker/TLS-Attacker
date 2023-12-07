@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.container.ActionHelperUtil;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import jakarta.xml.bind.annotation.XmlRootElement;
@@ -74,7 +75,8 @@ public class SendDynamicClientKeyExchangeAction extends CommonSendAction {
     }
 
     @Override
-    protected List<LayerConfiguration<?>> createLayerConfiguration(TlsContext tlsContext) {
+    protected List<LayerConfiguration<?>> createLayerConfiguration(State state) {
+        TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
         ClientKeyExchangeMessage clientKeyExchangeMessage =
                 new WorkflowConfigurationFactory(tlsContext.getConfig())
                         .createClientKeyExchangeMessage(

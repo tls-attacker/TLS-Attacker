@@ -61,7 +61,7 @@ public abstract class CommonSendAction extends MessageAction implements SendingA
         if (isExecuted()) {
             throw new ActionExecutionException("Action already executed!");
         }
-        List<LayerConfiguration<?>> layerConfigurations = createLayerConfiguration(tlsContext);
+        List<LayerConfiguration<?>> layerConfigurations = createLayerConfiguration(state);
         if (layerConfigurations == null) {
             LOGGER.info("Not sending messages");
             setLayerStackProcessingResult(new LayerStackProcessingResult(new LinkedList<>()));
@@ -98,10 +98,10 @@ public abstract class CommonSendAction extends MessageAction implements SendingA
      * distinct configurations. If an action does not wish to send messages, it can return null
      * here.
      *
-     * @param tlsContext The current TLS context.
+     * @param state The current state
      * @return A list of layer configurations that should be executed.
      */
-    protected abstract List<LayerConfiguration<?>> createLayerConfiguration(TlsContext tlsContext);
+    protected abstract List<LayerConfiguration<?>> createLayerConfiguration(State state);
 
     @Override
     public final List<DtlsHandshakeMessageFragment> getSentFragments() {

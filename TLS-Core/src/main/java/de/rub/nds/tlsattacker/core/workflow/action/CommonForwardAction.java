@@ -85,8 +85,7 @@ public abstract class CommonForwardAction extends TlsAction
         TlsContext receiveFromContext = state.getTlsContext(receiveFromAlias);
         TlsContext forwardToContext = state.getTlsContext(forwardToAlias);
 
-        List<LayerConfiguration<?>> layerConfigurationList =
-                createReceiveConfiguration(receiveFromContext);
+        List<LayerConfiguration<?>> layerConfigurationList = createReceiveConfiguration(state);
         if (layerConfigurationList == null) {
             LOGGER.info("Not receiving messages");
         } else {
@@ -97,7 +96,7 @@ public abstract class CommonForwardAction extends TlsAction
             layerStackReceiveResult =
                     receiveFromContext.getLayerStack().receiveData(layerConfigurationList);
         }
-        layerConfigurationList = createSendConfiguration(forwardToContext, layerStackReceiveResult);
+        layerConfigurationList = createSendConfiguration(state, layerStackReceiveResult);
 
         try {
             layerStackSendResult =
@@ -158,31 +157,30 @@ public abstract class CommonForwardAction extends TlsAction
     }
 
     /**
-     * Create a layer configuration for the receive action. This function takes the tls context as
+     * Create a layer configuration for the receive operation. This function takes the state as
      * input as the configuration can depend on the current state of the connection. Note that this
      * function may change the context, and therefore, calling it twice in a row may lead to
      * distinct configurations. If an action does not wish to send messages, it can return null
      * here.
      *
-     * @param tlsContext The current TLS context.
+     * @param state
      * @return A list of layer configurations that should be executed.
      */
-    protected abstract List<LayerConfiguration<?>> createReceiveConfiguration(
-            TlsContext tlsContext);
+    protected abstract List<LayerConfiguration<?>> createReceiveConfiguration(State state);
 
     /**
-     * Create a layer configuration for the send action. The received messaged messages are
-     * contained in the received result. This function takes the tls context as input as the
-     * configuration can depend on the current state of the connection. Note that this function may
-     * change the context, and therefore, calling it twice in a row may lead to distinct
-     * configurations. If an action does not wish to send messages, it can return null here.
+     * Create a layer configuration for the send operation. The received messaged messages are
+     * contained in the received result. This function takes the state as input as the configuration
+     * can depend on the current state of the connection. Note that this function may change the
+     * context, and therefore, calling it twice in a row may lead to distinct configurations. If an
+     * action does not wish to send messages, it can return null here.
      *
-     * @param tlsContext
+     * @param state
      * @param receivedResult
      * @return
      */
     protected abstract List<LayerConfiguration<?>> createSendConfiguration(
-            TlsContext tlsContext, LayerStackProcessingResult receivedResult);
+            State state, LayerStackProcessingResult receivedResult);
 
     @Override
     public List<ProtocolMessage> getReceivedMessages() {

@@ -86,8 +86,9 @@ public class PopAndSendAction extends CommonSendAction {
     }
 
     @Override
-    protected List<LayerConfiguration<?>> createLayerConfiguration(TlsContext tlsContext) {
+    protected List<LayerConfiguration<?>> createLayerConfiguration(State state) {
         List<ProtocolMessage> messages = new LinkedList<>();
+        TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
         LinkedList<ProtocolMessage> messageBuffer = tlsContext.getMessageBuffer();
         if (index != null && index >= 0) {
             if (index >= messageBuffer.size()) {
@@ -99,8 +100,8 @@ public class PopAndSendAction extends CommonSendAction {
                                 + "elements.");
             }
             messages.add(messageBuffer.get(index));
-            messageBuffer.remove(index);
-            tlsContext.getRecordBuffer().remove(index);
+            messageBuffer.remove((int) index);
+            tlsContext.getRecordBuffer().remove((int) index);
         } else {
             messages.add(messageBuffer.pop());
             tlsContext.getRecordBuffer().pop();
