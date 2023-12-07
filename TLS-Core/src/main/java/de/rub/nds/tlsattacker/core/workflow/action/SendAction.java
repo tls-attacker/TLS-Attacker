@@ -45,7 +45,7 @@ public class SendAction extends CommonSendAction implements StaticSendingAction 
     protected List<ProtocolMessage> configuredMessages;
 
     @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
-    protected List<DtlsHandshakeMessageFragment> configuredDtlsHandshakeMessageFragment;
+    protected List<DtlsHandshakeMessageFragment> configuredDtlsHandshakeMessageFragments;
 
     @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
     protected List<Record> configuredRecords;
@@ -138,13 +138,13 @@ public class SendAction extends CommonSendAction implements StaticSendingAction 
         this.configuredMessages = new ArrayList<>(Arrays.asList(configuredMessages));
     }
 
-    public List<DtlsHandshakeMessageFragment> getConfiguredDtlsHandshakeMessageFragment() {
-        return configuredDtlsHandshakeMessageFragment;
+    public List<DtlsHandshakeMessageFragment> getConfiguredDtlsHandshakeMessageFragments() {
+        return configuredDtlsHandshakeMessageFragments;
     }
 
-    public void setConfiguredDtlsHandshakeMessageFragment(
+    public void setConfiguredDtlsHandshakeMessageFragments(
             List<DtlsHandshakeMessageFragment> configuredDtlsHandshakeMessageFragment) {
-        this.configuredDtlsHandshakeMessageFragment = configuredDtlsHandshakeMessageFragment;
+        this.configuredDtlsHandshakeMessageFragments = configuredDtlsHandshakeMessageFragment;
     }
 
     public List<Record> getConfiguredRecords() {
@@ -209,8 +209,8 @@ public class SendAction extends CommonSendAction implements StaticSendingAction 
                 holders.addAll(record.getAllModifiableVariableHolders());
             }
         }
-        if (configuredDtlsHandshakeMessageFragment != null) {
-            for (DtlsHandshakeMessageFragment fragment : configuredDtlsHandshakeMessageFragment) {
+        if (configuredDtlsHandshakeMessageFragments != null) {
+            for (DtlsHandshakeMessageFragment fragment : configuredDtlsHandshakeMessageFragments) {
                 holders.addAll(fragment.getAllModifiableVariableHolders());
             }
         }
@@ -258,7 +258,7 @@ public class SendAction extends CommonSendAction implements StaticSendingAction 
         return ActionHelperUtil.createSendConfiguration(
                 tlsContext,
                 configuredMessages,
-                configuredDtlsHandshakeMessageFragment,
+                configuredDtlsHandshakeMessageFragments,
                 configuredRecords,
                 configuredQuicFrames,
                 configuredQuicPackets,
@@ -274,9 +274,9 @@ public class SendAction extends CommonSendAction implements StaticSendingAction 
         if (configuredMessages != null) {
             dataContainerLists.add((List<DataContainer<?>>) (List<?>) configuredMessages);
         }
-        if (configuredDtlsHandshakeMessageFragment != null) {
+        if (configuredDtlsHandshakeMessageFragments != null) {
             dataContainerLists.add(
-                    (List<DataContainer<?>>) (List<?>) configuredDtlsHandshakeMessageFragment);
+                    (List<DataContainer<?>>) (List<?>) configuredDtlsHandshakeMessageFragments);
         }
         if (configuredRecords != null) {
             dataContainerLists.add((List<DataContainer<?>>) (List<?>) configuredRecords);
