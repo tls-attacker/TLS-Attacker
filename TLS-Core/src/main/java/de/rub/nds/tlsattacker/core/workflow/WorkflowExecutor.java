@@ -226,7 +226,7 @@ public abstract class WorkflowExecutor {
         alertMessage.setConfig(AlertLevel.FATAL, AlertDescription.CLOSE_NOTIFY);
         alertMessage.setLevel(AlertLevel.FATAL.getValue());
         SendAction sendAction = new SendAction(context.getConnection().getAlias(), alertMessage);
-        sendAction.getActionOptions().add(ActionOption.MAY_FAIL);
+        sendAction.addActionOption(ActionOption.MAY_FAIL);
         sendAction.execute(state);
     }
 
