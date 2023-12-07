@@ -308,7 +308,6 @@ public class DtlsFragmentLayer
             fragment.setHandshakeMessageLengthConfig(handshakeBytes.length);
             currentOffset += fragmentBytes.length;
         }
-        increaseWriteHandshakeMessageSequence();
         if (currentOffset != handshakeBytes.length) {
             LOGGER.warn(
                     "Unsent bytes for message "
