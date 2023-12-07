@@ -323,8 +323,7 @@ public abstract class AbstractHandshakeIT {
 
     protected NamedGroup[] getNamedGroupsToTest() {
         return new NamedGroup[] {
-            NamedGroup.SECP256R1 // , NamedGroup.SECP384R1, NamedGroup.SECP521R1,
-            // NamedGroup.ECDH_X25519
+            NamedGroup.SECP256R1, NamedGroup.SECP384R1, NamedGroup.SECP521R1, NamedGroup.ECDH_X25519
         };
     }
 
@@ -337,9 +336,9 @@ public abstract class AbstractHandshakeIT {
     protected CipherSuite[] getCipherSuitesToTest() {
         return new CipherSuite[] {
             CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA,
-            //      CipherSuite.TLS_DHE_RSA_WITH_AES_128_CBC_SHA,
-            //      CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,
-            //      CipherSuite.TLS_RSA_WITH_AES_128_GCM_SHA256,
+            CipherSuite.TLS_DHE_RSA_WITH_AES_128_CBC_SHA,
+            CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,
+            CipherSuite.TLS_RSA_WITH_AES_128_GCM_SHA256,
         };
     }
 
