@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.container.ActionHelperUtil;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
@@ -27,12 +28,23 @@ public class SendDynamicClientKeyExchangeAction extends CommonSendAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    private List<DtlsHandshakeMessageFragment> configuredFragmentList = null;
+
     public SendDynamicClientKeyExchangeAction() {
         super();
     }
 
     public SendDynamicClientKeyExchangeAction(String connectionAlias) {
         super(connectionAlias);
+    }
+
+    public List<DtlsHandshakeMessageFragment> getConfiguredFragmentList() {
+        return configuredFragmentList;
+    }
+
+    public void setConfiguredFragmentList(
+            List<DtlsHandshakeMessageFragment> configuredFragmentList) {
+        this.configuredFragmentList = configuredFragmentList;
     }
 
     @Override
@@ -84,7 +96,13 @@ public class SendDynamicClientKeyExchangeAction extends CommonSendAction {
                                         tlsContext.getChooser().getSelectedCipherSuite()));
         if (clientKeyExchangeMessage != null) {
             return ActionHelperUtil.createSendConfiguration(
-                    tlsContext, List.of(clientKeyExchangeMessage), null, null, null, null, null);
+                    tlsContext,
+                    List.of(clientKeyExchangeMessage),
+                    configuredFragmentList,
+                    null,
+                    null,
+                    null,
+                    null);
         } else {
             return null;
         }
