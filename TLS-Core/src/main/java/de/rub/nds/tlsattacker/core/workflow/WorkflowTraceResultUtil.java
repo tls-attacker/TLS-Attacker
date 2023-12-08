@@ -299,11 +299,13 @@ public class WorkflowTraceResultUtil {
     }
 
     public static List<ProtocolMessage> getAllSentMessages(WorkflowTrace trace) {
-        List<ProtocolMessage> sendMessages = new LinkedList<>();
+        List<ProtocolMessage> sentMessages = new LinkedList<>();
         for (SendingAction action : trace.getSendingActions()) {
-            sendMessages.addAll(action.getSentMessages());
+            if (action.getSentMessages() != null) {
+                sentMessages.addAll(action.getSentMessages());
+            }
         }
-        return sendMessages;
+        return sentMessages;
     }
 
     public static Boolean didReceiveTypeBeforeType(

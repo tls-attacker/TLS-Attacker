@@ -224,13 +224,13 @@ public class WorkflowTrace implements Serializable {
     }
 
     public List<SendingAction> getSendingActions() {
-        List<SendingAction> sendActions = new LinkedList<>();
+        List<SendingAction> sendingActions = new LinkedList<>();
         for (TlsAction action : tlsActions) {
             if (action instanceof SendingAction) {
-                sendActions.add((SendingAction) action);
+                sendingActions.add((SendingAction) action);
             }
         }
-        return sendActions;
+        return sendingActions;
     }
 
     public List<StaticSendingAction> getStaticConfiguredSendingActions() {
