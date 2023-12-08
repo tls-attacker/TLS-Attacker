@@ -29,6 +29,11 @@ public class LayerStackProcessingResult {
 
     private final List<LayerType> layersWithUnreadBytes = new LinkedList<>();
 
+    /** Private constructor for serialization. Do not use. */
+    private LayerStackProcessingResult() {
+        layerProcessingResultList = null;
+    }
+
     public LayerStackProcessingResult(List<LayerProcessingResult<?>> layerProcessingResultList) {
         this.layerProcessingResultList = layerProcessingResultList;
         for (LayerProcessingResult<?> layerProcessingResult : layerProcessingResultList) {
