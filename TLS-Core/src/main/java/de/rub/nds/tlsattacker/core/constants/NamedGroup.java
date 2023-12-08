@@ -430,15 +430,15 @@ public enum NamedGroup {
 
     @Deprecated
     public boolean isCurve() {
-        return groupParameters.getGroup() != null;
+        return groupParameters != null && groupParameters.getGroup() != null;
     }
 
     public boolean isEcGroup() {
-        return groupParameters.getGroup() instanceof EllipticCurve;
+        return groupParameters != null && groupParameters.getGroup() instanceof EllipticCurve;
     }
 
     public boolean isDhGroup() {
-        return groupParameters instanceof FfdhGroupParameters;
+        return groupParameters != null && groupParameters instanceof FfdhGroupParameters;
     }
 
     public boolean isGrease() {
