@@ -459,7 +459,7 @@ public class WorkflowTrace implements Serializable {
         }
     }
 
-    public <T extends ProtocolMessage> T getFirstSendMessage(Class<T> msgClass) {
+    public <T extends ProtocolMessage> T getFirstSentMessage(Class<T> msgClass) {
         List<ProtocolMessage> messageList = WorkflowTraceResultUtil.getAllSentMessages(this);
         messageList =
                 messageList.stream()
@@ -473,7 +473,7 @@ public class WorkflowTrace implements Serializable {
         }
     }
 
-    public <T extends ProtocolMessage> T getLastSendMessage(Class<T> msgClass) {
+    public <T extends ProtocolMessage> T getLastSentMessage(Class<T> msgClass) {
         List<ProtocolMessage> messageList = WorkflowTraceResultUtil.getAllSentMessages(this);
         messageList =
                 messageList.stream()

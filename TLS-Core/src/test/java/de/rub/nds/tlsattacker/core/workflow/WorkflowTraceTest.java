@@ -151,9 +151,9 @@ public class WorkflowTraceTest {
         assertEquals(new ReceiveAction(), trace.getReceivingActions().get(0));
     }
 
-    /** Test of getSendActions method, of class WorkflowTrace. */
+    /** Test of testGetSendingActions method, of class WorkflowTrace. */
     @Test
-    public void testGetSendActions() {
+    public void testGetSendingActions() {
         trace.addTlsAction(new SendAction());
         trace.addTlsAction(new ReceiveAction());
         trace.addTlsAction(new ChangeClientRandomAction());
@@ -191,7 +191,7 @@ public class WorkflowTraceTest {
         assertEquals(new ReceiveAction(), trace.getLastMessageAction());
     }
 
-    /** Test of executedAsPlanned method, of class WorkflowTrace. */
+    /** Test of configuredLooksLikeActual method, of class WorkflowTrace. */
     @Test
     @Disabled("Not implemented")
     public void testConfiguredLooksLikeActual() {}
@@ -232,7 +232,7 @@ public class WorkflowTraceTest {
         assertEquals(serverHelloMessage, trace.getLastReceivedMessage(ServerHelloMessage.class));
     }
 
-    public void testGetFirstSendMessage() {
+    public void testGetFirstSentMessage() {
         ReceiveAction receiveAlertMessageAction = new ReceiveAction();
         receiveAlertMessageAction.setExpectedMessages(new AlertMessage());
 
@@ -262,7 +262,7 @@ public class WorkflowTraceTest {
         sendClientHelloAction.execute(state);
         sendHeartbeatAction.execute(state);
 
-        assertEquals(clientHello, trace.getFirstSendMessage(ClientHelloMessage.class));
-        assertEquals(heartbeat, trace.getFirstSendMessage(HeartbeatMessage.class));
+        assertEquals(clientHello, trace.getFirstSentMessage(ClientHelloMessage.class));
+        assertEquals(heartbeat, trace.getFirstSentMessage(HeartbeatMessage.class));
     }
 }
