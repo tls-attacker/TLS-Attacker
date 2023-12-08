@@ -38,6 +38,12 @@ public class MultiReceiveAction extends GenericReceiveAction {
         this.expectedActionCandidates = Arrays.asList(receiveActions);
     }
 
+    public MultiReceiveAction(
+            String connectionAlias, List<ReceiveAction> expectedActionCandidates) {
+        super(connectionAlias);
+        this.expectedActionCandidates = expectedActionCandidates;
+    }
+
     @Override
     public boolean executedAsPlanned() {
         return selectedAction.executedAsPlanned();

@@ -20,10 +20,7 @@ import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -90,16 +87,6 @@ public class ForwardRecordsAction extends CommonForwardAction {
             sb.append("null (no records set)");
         }
         return sb.toString();
-    }
-
-    @Override
-    public Set<String> getAllSendingAliases() {
-        return new HashSet<>(Collections.singleton(forwardToAlias));
-    }
-
-    @Override
-    public Set<String> getAllReceivingAliases() {
-        return new HashSet<>(Collections.singleton(receiveFromAlias));
     }
 
     @Override

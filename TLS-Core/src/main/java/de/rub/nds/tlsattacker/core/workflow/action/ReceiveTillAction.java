@@ -31,6 +31,10 @@ public class ReceiveTillAction extends CommonReceiveAction {
         super();
     }
 
+    public ReceiveTillAction(String connectionAlias) {
+        super(connectionAlias);
+    }
+
     public ReceiveTillAction(ProtocolMessage waitTillMessage) {
         super();
         this.waitTillMessage = waitTillMessage;
