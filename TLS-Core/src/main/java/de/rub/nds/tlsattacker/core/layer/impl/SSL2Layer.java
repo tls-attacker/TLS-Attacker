@@ -43,7 +43,9 @@ public class SSL2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
     @Override
     public LayerProcessingResult sendConfiguration() throws IOException {
         LayerConfiguration<ProtocolMessage> configuration = getLayerConfiguration();
-        if (configuration != null && !configuration.getContainerList().isEmpty()) {
+        if (configuration != null
+                && configuration.getContainerList() != null
+                && !configuration.getContainerList().isEmpty()) {
             for (ProtocolMessage ssl2message : getUnprocessedConfiguredContainers()) {
                 ProtocolMessagePreparator preparator = ssl2message.getPreparator(context);
                 preparator.prepare();
