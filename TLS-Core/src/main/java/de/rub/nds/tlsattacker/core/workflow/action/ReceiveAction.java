@@ -214,9 +214,6 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
             for (LayerProcessingResult result :
                     getLayerStackProcessingResult().getLayerProcessingResultList()) {
                 if (!result.isExecutedAsPlanned()) {
-                    LOGGER.error(
-                            "ReceiveAction failed: Layer {}, did not execute as planned",
-                            result.getLayerType());
                     return false;
                 }
             }
