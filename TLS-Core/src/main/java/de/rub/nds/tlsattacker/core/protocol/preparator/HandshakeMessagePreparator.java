@@ -52,12 +52,12 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage>
 
     protected void prepareMessageLength(int length) {
         message.setLength(length);
-        LOGGER.debug("Length: " + message.getLength().getValue());
+        LOGGER.debug("Length: {}", message.getLength().getValue());
     }
 
     private void prepareMessageType(HandshakeMessageType type) {
         message.setType(type.getValue());
-        LOGGER.debug("Type: " + message.getType().getValue());
+        LOGGER.debug("Type: {}", message.getType().getValue());
     }
 
     private void prepareMessageContent(byte[] content) {
@@ -206,6 +206,6 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage>
 
     protected void prepareExtensionLength() {
         message.setExtensionsLength(message.getExtensionBytes().getValue().length);
-        LOGGER.debug("ExtensionLength: " + message.getExtensionsLength().getValue());
+        LOGGER.debug("ExtensionLength: {}", message.getExtensionsLength().getValue());
     }
 }
