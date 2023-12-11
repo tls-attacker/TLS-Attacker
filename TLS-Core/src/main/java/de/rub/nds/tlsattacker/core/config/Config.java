@@ -1272,6 +1272,10 @@ public class Config implements Serializable {
 
     private String keylogFilePath = null;
 
+    private byte[] defaultRsaSsaPssSalt =
+            ArrayConverter.hexStringToByteArray(
+                    "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+
     public Config() {
         this.certificateChainConfig = new LinkedList<>();
         List<Pair<X500AttributeType, String>> rdn = new LinkedList<>();
@@ -1442,6 +1446,14 @@ public class Config implements Serializable {
         defaultPskSets = new LinkedList<>();
         defaultProposedAlpnProtocols = new LinkedList<>();
         defaultProposedAlpnProtocols.add(AlpnProtocol.HTTP_2.getConstant());
+    }
+
+    public void setDefaultRsaSsaPssSalt(byte[] salt) {
+        System.arraycopy(defaultRsaSsaPssSalt, 0, salt, 0, defaultRsaSsaPssSalt.length);
+    }
+
+    public byte[] getDefaultRsaSsaPssSalt() {
+        return defaultRsaSsaPssSalt;
     }
 
     public Point getDefaultClientEphemeralEcPublicKey() {

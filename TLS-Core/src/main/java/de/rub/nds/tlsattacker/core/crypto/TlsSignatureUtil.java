@@ -26,8 +26,13 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.x509attacker.chooser.X509Chooser;
 import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
+import java.util.Arrays;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class TlsSignatureUtil {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final SignatureCalculator calculator;
 
@@ -231,10 +236,22 @@ public class TlsSignatureUtil {
                         .getTalkingX509Context()
                         .getChooser()
                         .getSubjectRsaPrivateKey();
+        byte[] salt = chooser.getConfig().getDefaultRsaSsaPssSalt();
+        if (salt.length > algorithm.getBitLength() * 8) {
+            LOGGER.debug("Default PSS salt is too long, truncating");
+            salt = Arrays.copyOfRange(salt, 0, algorithm.getBitLength() * 8);
+        } else if (salt.length < algorithm.getBitLength() * 8) {
+            LOGGER.debug("Default PSS salt is too short, padding");
+            byte[] newSalt = new byte[algorithm.getBitLength() * 8];
+            System.arraycopy(salt, 0, newSalt, 0, salt.length);
+            salt = newSalt;
+        }
         calculator.computeRsaPssSignature(
                 computations,
                 new RsaPrivateKey(privateKey, modulus),
                 toBeHasedAndSigned,
+                algorithm,
+                salt,
                 algorithm);
     }
 }
