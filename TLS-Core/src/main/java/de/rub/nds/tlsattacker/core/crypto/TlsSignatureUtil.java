@@ -92,8 +92,10 @@ public class TlsSignatureUtil {
                         || selectedProtocolVersion == ProtocolVersion.TLS11) {
                     hashAlgorithm = HashAlgorithm.NONE;
                     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                    outputStream.writeBytes(HashCalculator.computeMd5(toBeHashedAndSigned));
-                    outputStream.writeBytes(HashCalculator.computeSha1(toBeHashedAndSigned));
+                    outputStream.writeBytes(
+                            HashCalculator.compute(toBeHashedAndSigned, HashAlgorithm.MD5));
+                    outputStream.writeBytes(
+                            HashCalculator.compute(toBeHashedAndSigned, HashAlgorithm.SHA1));
                     toBeHashedAndSigned = outputStream.toByteArray();
                 }
                 computeRsaPkcs1Signature(

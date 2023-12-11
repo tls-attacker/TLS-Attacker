@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.protocol.constants.HashAlgorithm;
 import de.rub.nds.protocol.crypto.hash.HashCalculator;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
@@ -103,11 +104,11 @@ public class SrpServerKeyExchangePreparator
                 ArrayConverter.concatenate(
                         identity, ArrayConverter.hexStringToByteArray("3A"), password);
         LOGGER.debug("HashInput for hashInput1: {}", hashInput1);
-        byte[] hashOutput1 = HashCalculator.computeSha1(hashInput1);
+        byte[] hashOutput1 = HashCalculator.compute(hashInput1, HashAlgorithm.SHA1);
         LOGGER.debug("HashValue for hashInput1: {}", hashOutput1);
         byte[] hashInput2 = ArrayConverter.concatenate(salt, hashOutput1);
         LOGGER.debug("HashInput for hashInput2: {}", hashInput2);
-        byte[] hashOutput2 = HashCalculator.computeSha1(hashInput2);
+        byte[] hashOutput2 = HashCalculator.compute(hashInput2, HashAlgorithm.SHA1);
         LOGGER.debug("HashValue for hashInput2: {}", hashOutput2);
         return new BigInteger(1, hashOutput2);
     }
@@ -118,7 +119,7 @@ public class SrpServerKeyExchangePreparator
                 ArrayConverter.concatenate(
                         ArrayConverter.bigIntegerToByteArray(modulus), paddedGenerator);
         LOGGER.debug("HashInput SRP6Multi: {}", hashInput);
-        byte[] hashOutput = HashCalculator.computeSha1(hashInput);
+        byte[] hashOutput = HashCalculator.compute(hashInput, HashAlgorithm.SHA1);
         return new BigInteger(1, hashOutput);
     }
 
