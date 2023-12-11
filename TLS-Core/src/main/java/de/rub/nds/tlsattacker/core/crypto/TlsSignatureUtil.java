@@ -16,6 +16,8 @@ import de.rub.nds.protocol.crypto.key.RsaPrivateKey;
 import de.rub.nds.protocol.crypto.signature.DsaSignatureComputations;
 import de.rub.nds.protocol.crypto.signature.EcdsaSignatureComputations;
 import de.rub.nds.protocol.crypto.signature.RsaPkcs1SignatureComputations;
+import de.rub.nds.protocol.crypto.signature.RsaPssSignatureComputations;
+import de.rub.nds.protocol.crypto.signature.RsaSsaPssSignatureComputations;
 import de.rub.nds.protocol.crypto.signature.SignatureCalculator;
 import de.rub.nds.protocol.crypto.signature.SignatureComputations;
 import de.rub.nds.protocol.crypto.signature.SignatureVerificationComputations;
@@ -73,12 +75,6 @@ public class TlsSignatureUtil {
                         toBeHashedAndSigned,
                         (EcdsaSignatureComputations) computations);
                 break;
-            case ED25519:
-            case ED448:
-            case GOSTR34102001:
-            case GOSTR34102012_256:
-                throw new UnsupportedOperationException(
-                        "Not implemented yet: " + algorithm.getSignatureAlgorithm());
             case RSA_PKCS1:
                 if (!(computations instanceof RsaPkcs1SignatureComputations)) {
                     throw new IllegalArgumentException(
@@ -102,6 +98,24 @@ public class TlsSignatureUtil {
                         toBeHashedAndSigned,
                         (RsaPkcs1SignatureComputations) computations);
                 break;
+            case RSA_SSA_PSS:
+                if (!(computations instanceof RsaSsaPssSignatureComputations)) {
+                    throw new IllegalArgumentException(
+                            "Computations must be of type RsaPssSignatureComputations for "
+                                    + algorithm);
+                }
+                computeRsaPssSignature(
+                        chooser,
+                        algorithm.getHashAlgorithm(),
+                        toBeHashedAndSigned,
+                        (RsaSsaPssSignatureComputations) computations);
+                break;
+            case ED25519:
+            case ED448:
+            case GOSTR34102001:
+            case GOSTR34102012_256:
+                throw new UnsupportedOperationException(
+                        "Not implemented yet: " + algorithm.getSignatureAlgorithm());
             default:
                 throw new UnsupportedOperationException(
                         "Not implemented: " + algorithm.getSignatureAlgorithm());
@@ -194,6 +208,31 @@ public class TlsSignatureUtil {
                         .getChooser()
                         .getSubjectRsaPrivateKey();
         calculator.computeRsaPkcs1Signature(
+                computations,
+                new RsaPrivateKey(privateKey, modulus),
+                toBeHasedAndSigned,
+                algorithm);
+    }
+
+    private void computeRsaPssSignature(
+            Chooser chooser,
+            HashAlgorithm algorithm,
+            byte[] toBeHasedAndSigned,
+            RsaPssSignatureComputations computations) {
+
+        BigInteger modulus =
+                chooser.getContext()
+                        .getTlsContext()
+                        .getTalkingX509Context()
+                        .getChooser()
+                        .getSubjectRsaModulus();
+        BigInteger privateKey =
+                chooser.getContext()
+                        .getTlsContext()
+                        .getTalkingX509Context()
+                        .getChooser()
+                        .getSubjectRsaPrivateKey();
+        calculator.computeRsaPssSignature(
                 computations,
                 new RsaPrivateKey(privateKey, modulus),
                 toBeHasedAndSigned,
