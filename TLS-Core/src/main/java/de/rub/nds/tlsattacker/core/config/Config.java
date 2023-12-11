@@ -1272,6 +1272,7 @@ public class Config implements Serializable {
 
     private String keylogFilePath = null;
 
+    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultRsaSsaPssSalt =
             ArrayConverter.hexStringToByteArray(
                     "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");

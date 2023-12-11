@@ -1448,4 +1448,5 @@
     <acceptOnlyFittingDtlsFragments>false</acceptOnlyFittingDtlsFragments>
     <acceptContentRewritingDtlsFragments>true</acceptContentRewritingDtlsFragments>
     <writeKeylogFile>false</writeKeylogFile>
+    <defaultRsaSsaPssSalt>AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA</defaultRsaSsaPssSalt>
 </config>
