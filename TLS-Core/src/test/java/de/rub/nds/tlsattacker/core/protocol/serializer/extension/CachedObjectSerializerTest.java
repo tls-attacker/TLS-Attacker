@@ -10,11 +10,15 @@ package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
+import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.constants.CachedInfoType;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.CachedObjectParserTest;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.CachedObjectPreparator;
+import de.rub.nds.tlsattacker.core.state.Context;
+import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,7 +32,7 @@ public class CachedObjectSerializerTest {
 
     @BeforeEach
     public void setUp() {
-        context = new TlsContext();
+        context = new Context(new State(new Config()), new InboundConnection()).getTlsContext();
     }
 
     public static Stream<Arguments> provideTestVectors() {

@@ -12,7 +12,7 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement
+@XmlRootElement(name = "DeactivateEncryption")
 public class DeactivateEncryptionAction extends DeactivateCryptoAction {
 
     @Override

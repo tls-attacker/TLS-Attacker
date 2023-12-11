@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.layer;
 import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Send configuration that sends a list of containers to the recipient.
@@ -42,5 +43,15 @@ public class SpecificSendLayerConfiguration<Container extends DataContainer>
     @Override
     public boolean failedEarly(List<Container> list) {
         return false;
+    }
+
+    @Override
+    public String toCompactString() {
+        return "("
+                + getLayerType().getName()
+                + ") Send:"
+                + getContainerList().stream()
+                        .map(DataContainer::toCompactString)
+                        .collect(Collectors.joining(","));
     }
 }

@@ -75,7 +75,7 @@ public class GeneralDelegate extends Delegate {
     public void applyDelegate(Config config) {
         ProviderUtil.addBouncyCastleProvider();
         if (isDebug()) {
-            Configurator.setAllLevels("de.rub.nds.tlsattacker", Level.DEBUG);
+            Configurator.setAllLevels("de.rub.nds", Level.DEBUG);
         } else if (quiet) {
             Configurator.setAllLevels("de.rub.nds.tlsattacker", Level.OFF);
         }

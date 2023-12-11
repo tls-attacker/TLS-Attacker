@@ -25,7 +25,7 @@ import java.io.InputStream;
  * that wishes to perform a retry
  */
 @XmlRootElement
-public class RetryPacket extends LongHeaderPacket<RetryPacket> {
+public class RetryPacket extends LongHeaderPacket {
 
     /** An opaque token that the server can use to validate the client's address. */
     @ModifiableVariableProperty protected ModifiableByteArray retryToken;

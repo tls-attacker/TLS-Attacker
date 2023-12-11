@@ -20,7 +20,7 @@ import org.apache.logging.log4j.Logger;
 /**
  * @param <T> The HelloMessage that should be prepared
  */
-public abstract class HelloMessagePreparator<T extends HelloMessage<?>>
+public abstract class HelloMessagePreparator<T extends HelloMessage>
         extends HandshakeMessagePreparator<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();

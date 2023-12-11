@@ -23,7 +23,7 @@ import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@XmlRootElement
+@XmlRootElement(name = "ForwardData")
 public class ForwardDataAction extends TlsAction {
 
     private static final Logger LOGGER = LogManager.getLogger();

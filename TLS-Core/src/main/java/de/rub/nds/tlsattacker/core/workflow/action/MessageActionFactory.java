@@ -10,12 +10,17 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
+import de.rub.nds.tlsattacker.core.http.HttpMessage;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class MessageActionFactory {
 
@@ -33,6 +38,22 @@ public class MessageActionFactory {
                 connection,
                 sendingConnectionEndType,
                 new ArrayList<>(Arrays.asList(protocolMessages)));
+    }
+
+    public static MessageAction createHttpAction(
+            Config tlsConfig,
+            AliasedConnection connection,
+            ConnectionEndType sendingConnectionEndType,
+            HttpMessage... httpMessages) {
+        MessageAction action;
+        if (connection.getLocalConnectionEndType() == sendingConnectionEndType) {
+            action = new SendAction(httpMessages);
+        } else {
+            action = new ReceiveAction(httpMessages);
+            action.setActionOptions(getFactoryReceiveActionOptions(tlsConfig));
+        }
+        action.setConnectionAlias(connection.getAlias());
+        return action;
     }
 
     public static MessageAction createTLSAction(
@@ -59,7 +80,7 @@ public class MessageActionFactory {
         if (connection.getLocalConnectionEndType() == sendingConnectionEnd) {
             action = new SendAction(quicFrames);
         } else {
-            action = new ReceiveQuicAction(quicFrames);
+            action = new ReceiveAction(quicFrames);
             action.setActionOptions(getFactoryReceiveActionOptions(tlsConfig));
         }
         action.setConnectionAlias(connection.getAlias());
@@ -75,7 +96,7 @@ public class MessageActionFactory {
         if (connection.getLocalConnectionEndType() == sendingConnectionEnd) {
             action = new SendAction(quicPackets);
         } else {
-            action = new ReceiveQuicAction(quicPackets);
+            action = new ReceiveAction(quicPackets);
             action.setActionOptions(getFactoryReceiveActionOptions(tlsConfig));
         }
         action.setConnectionAlias(connection.getAlias());
@@ -93,7 +114,7 @@ public class MessageActionFactory {
             action = new SendAction(null, quicFrames, quicPackets);
         } else {
             action =
-                    new ReceiveQuicAction(
+                    new ReceiveAction(
                             getFactoryReceiveActionOptions(tlsConfig), quicFrames, quicPackets);
         }
         action.setConnectionAlias(connection.getAlias());

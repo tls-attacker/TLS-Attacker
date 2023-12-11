@@ -27,7 +27,7 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
-import de.rub.nds.tlsattacker.core.layer.constant.LayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.constant.StackConfiguration;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
@@ -40,6 +40,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
 import java.util.stream.Stream.Builder;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.Assert;
 import org.junit.Assume;
@@ -54,6 +56,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 @TestInstance(Lifecycle.PER_CLASS)
 public abstract class AbstractHandshakeIT {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private static final Integer PORT = FreePortFinder.getPossiblyFreePort();
     private static List<Image> localImages;
@@ -239,17 +243,17 @@ public abstract class AbstractHandshakeIT {
                 setCallbacks(executor);
             } else if (state.getWorkflowTrace().executedAsPlanned()) {
                 return;
+            } else {
+                failTest(
+                        state,
+                        protocolVersion,
+                        namedGroup,
+                        cipherSuite,
+                        workflowTraceType,
+                        addEncryptThenMac,
+                        addExtendedMasterSecret);
             }
         }
-
-        failTest(
-                state,
-                protocolVersion,
-                namedGroup,
-                cipherSuite,
-                workflowTraceType,
-                addEncryptThenMac,
-                addExtendedMasterSecret);
     }
 
     private static final int MAX_ATTEMPTS = 3;
@@ -262,7 +266,13 @@ public abstract class AbstractHandshakeIT {
             WorkflowTraceType workflowTraceType,
             boolean addEncryptThenMac,
             boolean addExtendedMasterSecret) {
-        System.out.println(state.getWorkflowTrace().toString());
+        LOGGER.error("Failed trace: " + state.getWorkflowTrace().toString());
+        try {
+            LOGGER.error("Instance Feedback: " + dockerInstance.getLogs());
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         Assert.fail(
                 "Failed to handshake with "
                         + implementation
@@ -312,7 +322,9 @@ public abstract class AbstractHandshakeIT {
     }
 
     protected NamedGroup[] getNamedGroupsToTest() {
-        return new NamedGroup[] {NamedGroup.SECP256R1};
+        return new NamedGroup[] {
+            NamedGroup.SECP256R1, NamedGroup.SECP384R1, NamedGroup.SECP521R1, NamedGroup.ECDH_X25519
+        };
     }
 
     protected ProtocolVersion[] getProtocolVersionsToTest() {
@@ -343,7 +355,7 @@ public abstract class AbstractHandshakeIT {
     protected void setCallbacks(WorkflowExecutor executor) {
         if (dockerConnectionRole == ConnectionRole.CLIENT) {
             executor.setBeforeTransportInitCallback(
-                    (State tmpState) -> {
+                    (State state) -> {
                         dockerInstance.start();
                         return 0;
                     });
@@ -362,7 +374,7 @@ public abstract class AbstractHandshakeIT {
             config.getDefaultClientConnection().setTransportHandlerType(TransportHandlerType.UDP);
             config.getDefaultServerConnection().setTransportHandlerType(TransportHandlerType.UDP);
             config.setWorkflowExecutorType(WorkflowExecutorType.DTLS);
-            config.setDefaultLayerConfiguration(LayerConfiguration.DTLS);
+            config.setDefaultLayerConfiguration(StackConfiguration.DTLS);
             config.setFinishWithCloseNotify(true);
             config.setIgnoreRetransmittedCssInDtls(true);
             config.setAddRetransmissionsToWorkflowTraceInDtls(false);
@@ -398,7 +410,6 @@ public abstract class AbstractHandshakeIT {
         config.setDefaultSelectedCipherSuite(cipherSuite);
         config.setDefaultServerNamedGroups(namedGroup);
         config.setDefaultSelectedNamedGroup(namedGroup);
-        config.setPreferredCertificateSignatureGroup(namedGroup);
         config.setDefaultEcCertificateCurve(namedGroup);
         config.setHighestProtocolVersion(protocolVersion);
         config.setDefaultSelectedProtocolVersion(protocolVersion);

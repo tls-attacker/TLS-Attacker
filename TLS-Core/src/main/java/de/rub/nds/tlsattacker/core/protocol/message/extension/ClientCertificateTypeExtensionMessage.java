@@ -24,8 +24,7 @@ import java.io.InputStream;
 
 /** This extension is defined in RFC7250 */
 @XmlRootElement(name = "ClientCertificateTypeExtension")
-public class ClientCertificateTypeExtensionMessage
-        extends ExtensionMessage<ClientCertificateTypeExtensionMessage> {
+public class ClientCertificateTypeExtensionMessage extends ExtensionMessage {
 
     @ModifiableVariableProperty private ModifiableInteger certificateTypesLength;
     @ModifiableVariableProperty private ModifiableByteArray certificateTypes;

@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
@@ -41,13 +42,13 @@ public class EllipticCurvesExtensionHandler
     @Override
     public void adjustTLSExtensionContext(EllipticCurvesExtensionMessage message) {
         byte[] groupBytes = message.getSupportedGroups().getValue();
-        if (groupBytes.length % NamedGroup.LENGTH != 0) {
+        if (groupBytes.length % HandshakeByteLength.NAMED_GROUP != 0) {
             throw new AdjustmentException(
                     "Could not create reasonable NamedGroups from groupBytes");
         }
         List<NamedGroup> groupList = new LinkedList<>();
-        for (int i = 0; i < groupBytes.length; i += NamedGroup.LENGTH) {
-            byte[] group = Arrays.copyOfRange(groupBytes, i, i + NamedGroup.LENGTH);
+        for (int i = 0; i < groupBytes.length; i += HandshakeByteLength.NAMED_GROUP) {
+            byte[] group = Arrays.copyOfRange(groupBytes, i, i + HandshakeByteLength.NAMED_GROUP);
             NamedGroup namedGroup = NamedGroup.getNamedGroup(group);
             if (namedGroup == null) {
                 LOGGER.warn("Unknown EllipticCurve: {}", group);

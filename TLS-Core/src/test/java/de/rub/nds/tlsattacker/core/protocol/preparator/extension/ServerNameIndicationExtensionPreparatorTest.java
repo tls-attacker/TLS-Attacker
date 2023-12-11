@@ -34,6 +34,7 @@ public class ServerNameIndicationExtensionPreparatorTest
     /** Test of prepareExtensionContent method, of class ServerNameIndicationExtensionPreparator. */
     @Test
     public void testPrepare() {
+        context.setConnection(context.getConfig().getDefaultClientConnection());
         List<ServerNamePair> pairList = new LinkedList<>();
         ServerNamePair pair = new ServerNamePair((byte) 1, new byte[] {0x01, 0x02});
         pairList.add(pair);
@@ -49,6 +50,7 @@ public class ServerNameIndicationExtensionPreparatorTest
 
     @Test
     public void testPrepareWithTwoPairs() {
+        context.setConnection(context.getConfig().getDefaultClientConnection());
         List<ServerNamePair> pairList = new LinkedList<>();
         ServerNamePair pair = new ServerNamePair((byte) 1, new byte[] {0x01, 0x02});
         pairList.add(pair);

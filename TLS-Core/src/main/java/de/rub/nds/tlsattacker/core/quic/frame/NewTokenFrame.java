@@ -22,7 +22,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
 @XmlRootElement
-public class NewTokenFrame extends QuicFrame<NewTokenFrame> {
+public class NewTokenFrame extends QuicFrame {
 
     /** A variable-length integer specifying the length of the token in bytes. */
     @ModifiableVariableProperty protected ModifiableLong tokenLength;

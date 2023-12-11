@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import de.rub.nds.tlsattacker.core.layer.constant.LayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.constant.StackConfiguration;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PskSet;
@@ -48,7 +48,7 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
                         setClientRecordCipher(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
                     }
                     if (tlsContext.getConfig().getDefaultLayerConfiguration()
-                            == LayerConfiguration.QUIC) {
+                            == StackConfiguration.QUIC) {
                         try {
                             QuicPacketCryptoComputations.calculateApplicationSecrets(
                                     tlsContext.getContext().getQuicContext());
@@ -167,7 +167,7 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
 
     private void setServerRecordCipher(Tls13KeySetType keySetType) {
         tlsContext.setActiveServerKeySetType(keySetType);
-        LOGGER.debug("Setting cipher for server to use " + keySetType);
+        LOGGER.debug("Setting cipher for server to use {}", keySetType);
         KeySet serverKeySet = getKeySet(tlsContext, tlsContext.getActiveServerKeySetType());
 
         if (tlsContext.getRecordLayer() != null) {
@@ -190,7 +190,7 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
 
     private void setClientRecordCipher(Tls13KeySetType keySetType) {
         tlsContext.setActiveClientKeySetType(keySetType);
-        LOGGER.debug("Setting cipher for client to use " + keySetType);
+        LOGGER.debug("Setting cipher for client to use {}", keySetType);
         KeySet clientKeySet = getKeySet(tlsContext, tlsContext.getActiveClientKeySetType());
 
         if (tlsContext.getRecordLayer() != null) {

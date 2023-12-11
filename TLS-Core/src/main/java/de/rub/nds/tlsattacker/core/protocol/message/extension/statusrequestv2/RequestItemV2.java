@@ -10,13 +10,13 @@ package de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import java.io.Serializable;
 import java.util.List;
 
-public class RequestItemV2 implements Serializable {
+public class RequestItemV2 extends ModifiableVariableHolder {
 
     @ModifiableVariableProperty ModifiableInteger requestType;
     @ModifiableVariableProperty ModifiableInteger requestLength;

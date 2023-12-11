@@ -10,12 +10,12 @@ package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.RSAServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.RSAServerComputations;
 import de.rub.nds.tlsattacker.core.protocol.parser.RSAServerKeyExchangeParser;
@@ -26,8 +26,7 @@ import java.io.InputStream;
 import java.util.List;
 
 @XmlRootElement(name = "RSAServerKeyExchange")
-public class RSAServerKeyExchangeMessage
-        extends ServerKeyExchangeMessage<RSAServerKeyExchangeMessage> {
+public class RSAServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
     protected ModifiableByteArray modulus;
@@ -42,13 +41,13 @@ public class RSAServerKeyExchangeMessage
     }
 
     @Override
-    public RSAServerComputations getComputations() {
+    public RSAServerComputations getKeyExchangeComputations() {
         return computations;
     }
 
     @Override
-    public void prepareComputations() {
-        if (getComputations() == null) {
+    public void prepareKeyExchangeComputations() {
+        if (getKeyExchangeComputations() == null) {
             computations = new RSAServerComputations();
         }
     }

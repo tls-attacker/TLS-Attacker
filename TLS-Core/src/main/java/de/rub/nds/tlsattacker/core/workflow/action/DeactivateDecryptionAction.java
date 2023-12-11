@@ -8,13 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import static de.rub.nds.tlsattacker.core.workflow.action.DeactivateCryptoAction.LOGGER;
-
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement
+@XmlRootElement(name = "DeactivateDecryption")
 public class DeactivateDecryptionAction extends DeactivateCryptoAction {
 
     @Override

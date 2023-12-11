@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.protocol.exception.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
@@ -38,7 +39,7 @@ import org.apache.logging.log4j.Logger;
  * prepared from context, but partially rely on config values. Thus preventing us to modify values
  * in context and re-creating a CH for forwarding.
  */
-@XmlRootElement
+@XmlRootElement(name = "RemBufferedChCiphers")
 public class RemBufferedChCiphersAction extends ConnectionBoundAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -88,12 +89,12 @@ public class RemBufferedChCiphersAction extends ConnectionBoundAction {
         String msgName = ch.toCompactString();
 
         if (ch.getCipherSuites() == null) {
-            LOGGER.debug("No cipher suites found in " + msgName + ". Nothing to do.");
+            LOGGER.debug("No cipher suites found in {}. Nothing to do.", msgName);
             return;
         }
 
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Original cipher suites in " + msgName + ":\n" + summarizeCiphers(ch));
+            LOGGER.debug("Original cipher suites in {}:\n{}", msgName, summarizeCiphers(ch));
         }
 
         byte[] ciphersBytes = ch.getCipherSuites().getValue();
@@ -102,12 +103,12 @@ public class RemBufferedChCiphersAction extends ConnectionBoundAction {
         ByteArrayOutputStream newCiphersBytes = new ByteArrayOutputStream();
         CipherSuite type;
         for (CipherSuite cs : ciphers) {
-            LOGGER.debug("cipher.name, cipher.val = " + cs.name() + ", " + cs.getValue());
+            LOGGER.debug("cipher.name, cipher.val = {}, {}", cs.name(), cs.getValue());
             if (!removeCiphers.contains(cs)) {
                 try {
                     newCiphersBytes.write(cs.getByteValue());
                 } catch (IOException ex) {
-                    throw new ActionExecutionException(
+                    throw new WorkflowExecutionException(
                             "Could not write CipherSuite value to byte[]", ex);
                 }
             }
@@ -120,7 +121,7 @@ public class RemBufferedChCiphersAction extends ConnectionBoundAction {
         ch.setCipherSuiteLength(newSuitesLength);
 
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Modified cipher suites in " + msgName + ":\n" + summarizeCiphers(ch));
+            LOGGER.debug("Modified cipher suites in {}:\n{}", msgName, summarizeCiphers(ch));
         }
     }
 

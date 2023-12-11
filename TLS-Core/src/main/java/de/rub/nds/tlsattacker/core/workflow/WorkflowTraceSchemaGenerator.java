@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.workflow;
 
+import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.SchemaOutputResolver;
 import java.io.File;
@@ -20,8 +21,12 @@ import java.util.Map.Entry;
 import javax.xml.transform.Result;
 import javax.xml.transform.stream.StreamResult;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class WorkflowTraceSchemaGenerator {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private static final String ROOT_NS = "";
 
@@ -38,14 +43,20 @@ public class WorkflowTraceSchemaGenerator {
     }
 
     private static void generateSchema(File outputDirectory) throws IOException, JAXBException {
-        AccumulatingSchemaOutputResolver sor = new AccumulatingSchemaOutputResolver();
-        WorkflowTraceSerializer.getJAXBContext().generateSchema(sor);
-        for (Entry<String, StringWriter> e : sor.getSchemaWriters().entrySet()) {
-            String systemId = sor.getSystemIds().get(e.getKey());
-            File f = new File(outputDirectory, systemId);
-            try (FileWriter w = new FileWriter(f)) {
-                System.out.printf("Writing %s to %s%n", e.getKey(), f.getAbsolutePath());
-                w.write(e.getValue().toString().replaceAll("\r?\n", System.lineSeparator()));
+        AccumulatingSchemaOutputResolver schemaOutputResolver =
+                new AccumulatingSchemaOutputResolver();
+
+        JAXBContext jaxbContext = WorkflowTraceSerializer.getJAXBContext();
+
+        jaxbContext.generateSchema(schemaOutputResolver);
+        for (Entry<String, StringWriter> entry :
+                schemaOutputResolver.getSchemaWriters().entrySet()) {
+            String systemId = schemaOutputResolver.getSystemIds().get(entry.getKey());
+            File file = new File(outputDirectory, systemId);
+            try (FileWriter fileWriter = new FileWriter(file)) {
+                LOGGER.debug("Writing %s to %s%n", entry.getKey(), file.getAbsolutePath());
+                fileWriter.write(
+                        entry.getValue().toString().replaceAll("\r?\n", System.lineSeparator()));
             }
         }
     }

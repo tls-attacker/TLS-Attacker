@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <workflowTrace>
     <Send>
-        <messages>
+        <configuredMessages>
             <ClientHello>
                 <extensions>
                     <ECPointFormat/>
@@ -9,6 +9,6 @@
                     <RenegotiationInfoExtension/>
                 </extensions>
             </ClientHello>
-        </messages>
+        </configuredMessages>
     </Send>
 </workflowTrace>

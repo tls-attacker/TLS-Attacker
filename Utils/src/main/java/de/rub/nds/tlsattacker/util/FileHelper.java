@@ -39,7 +39,7 @@ public class FileHelper {
         try (InputStream is = currentClass.getResourceAsStream(resourceFilePath)) {
             contents = inputStreamToString(is);
         } catch (IOException ex) {
-            LOGGER.error("Unable to load resource file " + resourceFilePath);
+            LOGGER.error("Unable to load resource file {}", resourceFilePath);
             return null;
         }
         return contents;

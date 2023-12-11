@@ -11,8 +11,12 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
+import de.rub.nds.tlsattacker.core.state.Context;
+import de.rub.nds.tlsattacker.core.state.State;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -25,7 +29,8 @@ public class ServerNamePairPreparatorTest {
 
     @BeforeEach
     public void setUp() {
-        TlsContext context = new TlsContext();
+        TlsContext context =
+                new Context(new State(new Config()), new InboundConnection()).getTlsContext();
         pair = new ServerNamePair(serverNameType, serverName);
         preparator = new ServerNamePairPreparator(context.getChooser(), pair);
     }

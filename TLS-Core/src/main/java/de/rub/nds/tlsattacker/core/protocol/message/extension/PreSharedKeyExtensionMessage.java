@@ -10,21 +10,18 @@ package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.PreSharedKeyExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PSKBinder;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PSKIdentity;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PskSet;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.PreSharedKeyExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PreSharedKeyExtensionPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PreSharedKeyExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import jakarta.xml.bind.annotation.XmlRootElement;
@@ -34,7 +31,7 @@ import java.util.List;
 
 /** RFC draft-ietf-tls-tls13-21 */
 @XmlRootElement(name = "PreSharedKeyExtension")
-public class PreSharedKeyExtensionMessage extends ExtensionMessage<PreSharedKeyExtensionMessage> {
+public class PreSharedKeyExtensionMessage extends ExtensionMessage {
 
     private ModifiableInteger identityListLength;
     private ModifiableInteger binderListLength;
@@ -204,17 +201,17 @@ public class PreSharedKeyExtensionMessage extends ExtensionMessage<PreSharedKeyE
     }
 
     @Override
-    public ExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
+    public PreSharedKeyExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
         return new PreSharedKeyExtensionParser(stream, tlsContext);
     }
 
     @Override
-    public ExtensionPreparator getPreparator(TlsContext tlsContext) {
+    public PreSharedKeyExtensionPreparator getPreparator(TlsContext tlsContext) {
         return new PreSharedKeyExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override
-    public ExtensionSerializer getSerializer(TlsContext tlsContext) {
+    public PreSharedKeyExtensionSerializer getSerializer(TlsContext tlsContext) {
         return new PreSharedKeyExtensionSerializer(
                 this, tlsContext.getChooser().getConnectionEndType());
     }

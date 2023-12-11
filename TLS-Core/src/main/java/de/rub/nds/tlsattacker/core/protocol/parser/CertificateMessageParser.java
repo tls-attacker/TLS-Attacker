@@ -12,10 +12,7 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificateEntry;
-import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificatePair;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.cert.CertificatePairParser;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionListParser;
+import de.rub.nds.tlsattacker.core.protocol.parser.cert.CertificateEntryParser;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.LinkedList;
@@ -49,9 +46,7 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
         }
         parseCertificatesListLength(msg);
         parseCertificateListBytes(msg);
-        if (getVersion().isTLS13()) {
-            parseCertificateList(msg);
-        }
+        parseCertificateList(msg);
     }
 
     /**
@@ -62,7 +57,7 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
     private void parseRequestContextLength(CertificateMessage msg) {
         msg.setRequestContextLength(
                 parseIntField(HandshakeByteLength.CERTIFICATE_REQUEST_CONTEXT_LENGTH));
-        LOGGER.debug("RequestContextLength: " + msg.getRequestContextLength());
+        LOGGER.debug("RequestContextLength: {}", msg.getRequestContextLength());
     }
 
     /**
@@ -82,7 +77,7 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
      */
     private void parseCertificatesListLength(CertificateMessage msg) {
         msg.setCertificatesListLength(parseIntField(HandshakeByteLength.CERTIFICATES_LENGTH));
-        LOGGER.debug("CertificatesListLength: " + msg.getCertificatesListLength());
+        LOGGER.debug("CertificatesListLength: {}", msg.getCertificatesListLength());
     }
 
     /**
@@ -102,29 +97,21 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
      * @param msg Message to write in
      */
     private void parseCertificateList(CertificateMessage msg) {
-        List<CertificatePair> pairList = new LinkedList<>();
+        List<CertificateEntry> entryList = new LinkedList<>();
         ByteArrayInputStream innerStream =
                 new ByteArrayInputStream(msg.getCertificatesListBytes().getValue());
         while (innerStream.available() > 0) {
-            CertificatePair pair = new CertificatePair();
-            CertificatePairParser parser = new CertificatePairParser(innerStream);
-            parser.parse(pair);
-            pairList.add(pair);
+            CertificateEntry entry = new CertificateEntry();
+            CertificateEntryParser parser = new CertificateEntryParser(innerStream, tlsContext);
+            parser.parse(entry);
+            entryList.add(entry);
         }
-        msg.setCertificatesList(pairList);
-
-        List<CertificateEntry> entryList = new LinkedList<>();
-        for (CertificatePair pair : msg.getCertificatesList()) {
-            ExtensionListParser parser =
-                    new ExtensionListParser(
-                            new ByteArrayInputStream(pair.getExtensions().getValue()),
-                            tlsContext,
-                            false);
-            List<ExtensionMessage> extensionMessages = new LinkedList<>();
-            parser.parse(extensionMessages);
-            entryList.add(
-                    new CertificateEntry(pair.getCertificate().getValue(), extensionMessages));
+        msg.setCertificateEntryList(entryList);
+        // We parse the certificate contents in reverse order such that the leaf certificate is
+        // parsed last.
+        for (int i = entryList.size() - 1; i >= 0; i--) {
+            CertificateEntryParser parser = new CertificateEntryParser(null, tlsContext);
+            parser.parseX509Certificate(entryList.get(i));
         }
-        msg.setCertificatesListAsEntry(entryList);
     }
 }

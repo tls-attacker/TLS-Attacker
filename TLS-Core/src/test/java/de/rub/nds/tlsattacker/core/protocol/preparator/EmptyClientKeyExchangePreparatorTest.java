@@ -9,24 +9,29 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.certificate.CertificateKeyPair;
-import de.rub.nds.tlsattacker.core.certificate.PemUtil;
+import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
+import de.rub.nds.protocol.crypto.ec.Point;
+import de.rub.nds.protocol.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.crypto.ec.Point;
-import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.protocol.message.EmptyClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import de.rub.nds.x509attacker.context.X509Context;
+import de.rub.nds.x509attacker.filesystem.CertificateBytes;
+import de.rub.nds.x509attacker.filesystem.CertificateIo;
+import de.rub.nds.x509attacker.x509.X509CertificateChain;
+import de.rub.nds.x509attacker.x509.model.X509Certificate;
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.NoSuchProviderException;
 import java.security.Security;
 import java.security.cert.CertificateException;
-import org.bouncycastle.crypto.tls.Certificate;
+import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -35,22 +40,34 @@ public class EmptyClientKeyExchangePreparatorTest
         extends AbstractProtocolMessagePreparatorTest<
                 EmptyClientKeyExchangeMessage,
                 EmptyClientKeyExchangePreparator<EmptyClientKeyExchangeMessage>> {
+
     /*
-     * In case you need to re-create the certificates or PMS parameters, follow these instructions (execute them in the
-     * OpenSSL ./demos/certs/ folder and execute `bash cert.sh` beforehand to generate the CA). 0) run `bash cert.sh` to
-     * create the DH keys and cert along with the CA 1) create EC key params: openssl genpkey -genparam -algorithm EC
-     * -pkeyopt ec_paramgen_curve:P-256 -out ecp.pem 2) create and extract EC client keys: openssl genpkey -paramfile
-     * ecp.pem -out ec_client_keys.pem openssl pkey -in ec_client_keys.pem -out ec_client_privkey.pem openssl pkey -in
-     * ec_client_keys.pem -pubout -out ec_client_pubkey.pem 3) create and sign client cert: CN="Test Client DH Cert"
-     * openssl req -config ca.cnf -new -key ec_client_keys.pem -out ec_client_req.pem openssl x509 -req -in
-     * ec_client_req.pem -CA root.pem -days 3600 -force_pubkey ec_client_pubkey.pem -extfile ca.cnf -extensions dh_cert
-     * -CAcreateserial -out ec_client.crt 4) create and extract EC server keys: openssl genpkey -paramfile ecp.pem -out
-     * ec_server_keys.pem openssl pkey -in ec_server_keys.pem -out ec_server_privkey.pem openssl pkey -in
-     * ec_server_keys.pem -pubout -out ec_server_pubkey.pem 5) derive the EC shared secret: openssl pkeyutl -derive
-     * -inkey ec_client_privkey.pem -peerkey ec_server_pubkey.pem -hexdump To get the actual key values that are needed
+     * In case you need to re-create the certificates or PMS parameters, follow
+     * these instructions (execute them in the
+     * OpenSSL ./demos/certs/ folder and execute `bash cert.sh` beforehand to
+     * generate the CA). 0) run `bash cert.sh` to
+     * create the DH keys and cert along with the CA 1) create EC key params:
+     * openssl genpkey -genparam -algorithm EC
+     * -pkeyopt ec_paramgen_curve:P-256 -out ecp.pem 2) create and extract EC client
+     * keys: openssl genpkey -paramfile
+     * ecp.pem -out ec_client_keys.pem openssl pkey -in ec_client_keys.pem -out
+     * ec_client_privkey.pem openssl pkey -in
+     * ec_client_keys.pem -pubout -out ec_client_pubkey.pem 3) create and sign
+     * client cert: CN="Test Client DH Cert"
+     * openssl req -config ca.cnf -new -key ec_client_keys.pem -out
+     * ec_client_req.pem openssl x509 -req -in
+     * ec_client_req.pem -CA root.pem -days 3600 -force_pubkey ec_client_pubkey.pem
+     * -extfile ca.cnf -extensions dh_cert
+     * -CAcreateserial -out ec_client.crt 4) create and extract EC server keys:
+     * openssl genpkey -paramfile ecp.pem -out
+     * ec_server_keys.pem openssl pkey -in ec_server_keys.pem -out
+     * ec_server_privkey.pem openssl pkey -in
+     * ec_server_keys.pem -pubout -out ec_server_pubkey.pem 5) derive the EC shared
+     * secret: openssl pkeyutl -derive
+     * -inkey ec_client_privkey.pem -peerkey ec_server_pubkey.pem -hexdump To get
+     * the actual key values that are needed
      * here, you can use this OpenSSL command: openssl pkey -in <file> -noout -text
      */
-
     private final String RANDOM = "AABBCCDDEEFF";
 
     private final String DH_CLIENT_CERT =
@@ -114,6 +131,8 @@ public class EmptyClientKeyExchangePreparatorTest
             ArrayConverter.hexStringToByteArray(
                     "26d7439f907fbd24408203579f7c712b04ee2aa55e62734adda2ecb904c6da0a");
 
+    private static final Logger LOGGER = LogManager.getLogger();
+
     @BeforeAll
     public static void setUpClass() {
         Security.addProvider(new BouncyCastleProvider());
@@ -129,12 +148,11 @@ public class EmptyClientKeyExchangePreparatorTest
 
     @Test
     public void testPrepare() {
-        context.setClientCertificate(Certificate.EMPTY_CHAIN);
+        context.setClientCertificateChain(new X509CertificateChain());
 
         preparator.prepareHandshakeMessageContents();
 
-        // PMS SHOULD not be calculatable without client key information
-        assertNull(message.getComputations().getPremasterSecret());
+        assertArrayEquals(new byte[0], message.getComputations().getPremasterSecret().getValue());
 
         // check client and server random are correctly set and concatenated
         assertArrayEquals(
@@ -149,19 +167,33 @@ public class EmptyClientKeyExchangePreparatorTest
             throws CertificateException, IOException, NoSuchProviderException {
         // prepare message params
         context.setSelectedCipherSuite(CipherSuite.TLS_DH_RSA_WITH_AES_256_CBC_SHA);
-        context.setServerDhPublicKey(DH_SERVER_PUBLIC_KEY);
+        context.getServerX509Context().setSubjectDhPublicKey(DH_SERVER_PUBLIC_KEY);
+        context.getServerX509Context().setSubjectDhModulus(DH_SERVER_PUBLIC_KEY);
 
         // testParse and set client certificate
-        Certificate clientCertificate =
-                PemUtil.readCertificate(new ByteArrayInputStream(DH_CLIENT_CERT.getBytes()));
-        context.setClientCertificate(clientCertificate);
+        X509CertificateChain clientCertificateChain = new X509CertificateChain();
+        context.setClientX509Context(new X509Context());
 
-        // create certificate pair and trigger extraction of parameters
-        CertificateKeyPair pair = new CertificateKeyPair(clientCertificate);
-        pair.adjustInContext(context, ConnectionEndType.CLIENT);
-
+        List<CertificateBytes> byteList =
+                CertificateIo.readPemCertificateByteList(
+                        new ByteArrayInputStream(DH_CLIENT_CERT.getBytes()));
+        for (CertificateBytes certificateBytes : byteList) {
+            LOGGER.debug("Trying to parse: {}", certificateBytes.getBytes());
+            X509Certificate x509Certificate = new X509Certificate("x509Certificate");
+            x509Certificate
+                    .getParser(context.getClientX509Context().getChooser())
+                    .parse(
+                            new BufferedInputStream(
+                                    new ByteArrayInputStream(certificateBytes.getBytes())));
+            clientCertificateChain.addCertificate(x509Certificate);
+        }
+        context.getServerX509Context()
+                .setSubjectDhModulus(
+                        new BigInteger(
+                                "139654574825163086931039779432700084721137093728592448263724893367282260875033276765642723398595467214600686069576825731414046467249623447307063533378369049982018500484294019122053107608715606657740629267449299233407157095954596131791080517152891252136791647808354801798603593447782078871273849261750140791763"));
+        context.setClientCertificateChain(clientCertificateChain);
         // set DH private key
-        context.setClientDhPrivateKey(DH_CLIENT_PRIVATE_KEY);
+        context.getClientX509Context().setSubjectDhPrivateKey(DH_CLIENT_PRIVATE_KEY);
 
         // test
         preparator.prepareHandshakeMessageContents();
@@ -186,20 +218,18 @@ public class EmptyClientKeyExchangePreparatorTest
         // testParse and set client certificate
         Point pubKey =
                 PointFormatter.formatFromByteArray(
-                        context.getChooser().getSelectedNamedGroup(), EC_SERVER_PUBLIC_KEY_BYTES);
-        context.setServerEcPublicKey(pubKey);
+                        (NamedEllipticCurveParameters)
+                                context.getChooser().getSelectedNamedGroup().getGroupParameters(),
+                        EC_SERVER_PUBLIC_KEY_BYTES);
+        context.getServerX509Context().setSubjectEcPublicKey(pubKey);
 
         // testParse and set client certificate
-        Certificate clientCertificate =
-                PemUtil.readCertificate(new ByteArrayInputStream(EC_CLIENT_CERT.getBytes()));
-        context.setClientCertificate(clientCertificate);
-
-        // create certificate pair and trigger extraction of parameters
-        CertificateKeyPair pair = new CertificateKeyPair(clientCertificate);
-        pair.adjustInContext(context, ConnectionEndType.CLIENT);
+        X509CertificateChain clientCertificateChain =
+                CertificateIo.readPemChain(new ByteArrayInputStream(EC_CLIENT_CERT.getBytes()));
+        context.setClientCertificateChain(clientCertificateChain);
 
         // set EC private key
-        context.setClientEcPrivateKey(EC_CLIENT_PRIVATE_KEY);
+        context.getClientX509Context().setSubjectEcPrivateKey(EC_CLIENT_PRIVATE_KEY);
 
         // test
         preparator.prepareHandshakeMessageContents();

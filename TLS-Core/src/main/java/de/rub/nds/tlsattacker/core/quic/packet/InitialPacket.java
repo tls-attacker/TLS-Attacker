@@ -33,7 +33,7 @@ import org.apache.logging.log4j.Logger;
  * direction.
  */
 @XmlRootElement
-public class InitialPacket extends LongHeaderPacket<InitialPacket> {
+public class InitialPacket extends LongHeaderPacket {
 
     private static final Logger LOGGER = LogManager.getLogger();
 

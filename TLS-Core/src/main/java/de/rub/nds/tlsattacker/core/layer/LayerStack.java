@@ -82,7 +82,7 @@ public class LayerStack {
      *     contain any messages the peer sends back.
      * @throws IOException If any layer fails to send its data.
      */
-    public LayerStackProcessingResult sendData(List<LayerConfiguration> layerConfigurationList)
+    public LayerStackProcessingResult sendData(List<LayerConfiguration<?>> layerConfigurationList)
             throws IOException {
         LOGGER.debug("Sending Data");
         if (getLayerList().size() != layerConfigurationList.size()) {
@@ -106,7 +106,7 @@ public class LayerStack {
         }
 
         // Gather results
-        List<LayerProcessingResult> resultList = new LinkedList<>();
+        List<LayerProcessingResult<?>> resultList = new LinkedList<>();
         getLayerList()
                 .forEach(
                         layer -> {
@@ -125,7 +125,8 @@ public class LayerStack {
      *     contain any messages the peer sends back. If any layer fails to receive the specified
      *     data.
      */
-    public LayerStackProcessingResult receiveData(List<LayerConfiguration> layerConfigurationList) {
+    public LayerStackProcessingResult receiveData(
+            List<LayerConfiguration<?>> layerConfigurationList) {
         LOGGER.debug("Receiving Data");
         if (getLayerList().size() != layerConfigurationList.size()) {
             throw new RuntimeException(
@@ -204,7 +205,7 @@ public class LayerStack {
      */
     public LayerStackProcessingResult gatherResults() {
         // Gather results
-        List<LayerProcessingResult> resultList = new LinkedList<>();
+        List<LayerProcessingResult<?>> resultList = new LinkedList<>();
         getLayerList().forEach(tempLayer -> resultList.add(tempLayer.getLayerResult()));
         return new LayerStackProcessingResult(resultList);
     }

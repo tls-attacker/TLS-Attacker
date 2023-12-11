@@ -10,8 +10,12 @@ package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
+import de.rub.nds.tlsattacker.core.state.Context;
+import de.rub.nds.tlsattacker.core.state.State;
 import java.io.ByteArrayInputStream;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -27,15 +31,18 @@ abstract class AbstractExtensionMessageHandlerTest<
     protected HT handler;
 
     AbstractExtensionMessageHandlerTest(
-            Supplier<MT> messageConstructor, Function<TlsContext, HT> handlerConstructor) {
-        this(messageConstructor, handlerConstructor, TlsContext::new);
-    }
-
-    AbstractExtensionMessageHandlerTest(
             Supplier<MT> messageConstructor,
             Function<TlsContext, HT> handlerConstructor,
             Supplier<TlsContext> contextSupplier) {
         this.context = contextSupplier.get();
+        this.messageConstructor = messageConstructor;
+        this.handler = handlerConstructor.apply(context);
+    }
+
+    AbstractExtensionMessageHandlerTest(
+            Supplier<MT> messageConstructor, Function<TlsContext, HT> handlerConstructor) {
+        this.context =
+                new Context(new State(new Config()), new OutboundConnection()).getTlsContext();
         this.messageConstructor = messageConstructor;
         this.handler = handlerConstructor.apply(context);
     }

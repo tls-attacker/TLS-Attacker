@@ -8,9 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
-import de.rub.nds.tlsattacker.core.constants.SrtpProtectionProfiles;
+import de.rub.nds.tlsattacker.core.constants.SrtpProtectionProfile;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SrtpExtensionMessage;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,15 +25,25 @@ public class SrtpExtensionHandler extends ExtensionHandler<SrtpExtensionMessage>
 
     @Override
     public void adjustTLSExtensionContext(SrtpExtensionMessage message) {
-        tlsContext.setSecureRealTimeTransportProtocolProtectionProfiles(
-                SrtpProtectionProfiles.getProfilesAsArrayList(
-                        message.getSrtpProtectionProfiles().getValue()));
-        LOGGER.debug(
-                "Adjusted the TLS context secure realtime transport protocol protection profiles to {}",
-                message.getSrtpProtectionProfiles());
-        tlsContext.setSecureRealTimeProtocolMasterKeyIdentifier(message.getSrtpMki().getValue());
-        LOGGER.debug(
-                "Adjusted the TLS context secure realtime transport protocol master key identifier to {}",
-                message.getSrtpMki());
+        if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
+            tlsContext.setClientSupportedSrtpProtectionProfiles(
+                    SrtpProtectionProfile.getProfilesAsArrayList(
+                            message.getSrtpProtectionProfiles().getValue()));
+            LOGGER.debug(
+                    "Adjusted the TLS context secure realtime transport protocol protection profiles to {}",
+                    message.getSrtpProtectionProfiles());
+            tlsContext.setSecureRealTimeProtocolMasterKeyIdentifier(
+                    message.getSrtpMki().getValue());
+            LOGGER.debug(
+                    "Adjusted the TLS context secure realtime transport protocol master key identifier to {}",
+                    message.getSrtpMki());
+        } else {
+            tlsContext.setSelectedSrtpProtectionProfile(
+                    SrtpProtectionProfile.getProfileByType(
+                            message.getSrtpProtectionProfiles().getValue()));
+            LOGGER.debug(
+                    "Server selected the SRTP protection profile: {}",
+                    tlsContext.getSelectedSrtpProtectionProfile().name());
+        }
     }
 }

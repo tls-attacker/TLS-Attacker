@@ -30,9 +30,9 @@ public class ApplicationMessageHandler extends ProtocolMessageHandler<Applicatio
                 ArrayConverter.bytesToHexString(tlsContext.getLastHandledApplicationMessageData());
         if (tlsContext.getTalkingConnectionEndType()
                 == tlsContext.getChooser().getMyConnectionPeer()) {
-            LOGGER.debug("Received Data:" + readableAppData);
+            LOGGER.debug("Received Data: {}", readableAppData);
         } else {
-            LOGGER.debug("Send Data:" + readableAppData);
+            LOGGER.debug("Send Data: {}", readableAppData);
         }
     }
 }

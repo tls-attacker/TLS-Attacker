@@ -29,11 +29,11 @@ public class CertificateStatusGenericParser extends Parser<CertificateStatusObje
 
         int type = parseIntField(HandshakeByteLength.CERTIFICATE_STATUS_TYPE_LENGTH);
         certificateStatusObject.setType(type);
-        LOGGER.debug("CertificateStatusType: " + type);
+        LOGGER.debug("CertificateStatusType: {}", type);
 
         int length = parseIntField(HandshakeByteLength.CERTIFICATE_STATUS_RESPONSE_LENGTH);
         certificateStatusObject.setLength(length);
-        LOGGER.debug("OCSP Response Length: " + length);
+        LOGGER.debug("OCSP Response Length: {}", length);
 
         byte[] ocspResponse = parseByteArrayField(length);
         certificateStatusObject.setOcspResponse(ocspResponse);

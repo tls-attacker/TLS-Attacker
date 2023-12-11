@@ -132,7 +132,7 @@ public class EncryptedClientHelloPreparator
         msg.setEncodedClientHelloInnerPadding(paddingBytes);
 
         LOGGER.debug("Encoded ClientHello inner: {}", clientHelloInnerValue);
-        LOGGER.debug("Padding length: " + padding);
+        LOGGER.debug("Padding length: {}", padding);
     }
 
     private void prepareHpkeContext() {
@@ -256,10 +256,10 @@ public class EncryptedClientHelloPreparator
         byte[] plaintext =
                 ArrayConverter.concatenate(
                         clientHelloInnerValue, msg.getEncodedClientHelloInnerPadding().getValue());
-        LOGGER.debug("plaintext: {}", plaintext);
+        LOGGER.debug("Plaintext: {}", plaintext);
         try {
             byte[] payload = hpkeSenderContext.seal(aad, plaintext);
-            LOGGER.debug("payload: {}", payload);
+            LOGGER.debug("Payload: {}", payload);
 
             EncryptedClientHelloExtensionMessage outerExtensionMessage =
                     msg.getEncryptedClientHelloExtensionMessage();

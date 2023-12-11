@@ -18,7 +18,7 @@ import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@XmlRootElement
+@XmlRootElement(name = "ChangeServerRandom")
 public class ChangeServerRandomAction extends ConnectionBoundAction {
 
     private static final Logger LOGGER = LogManager.getLogger();

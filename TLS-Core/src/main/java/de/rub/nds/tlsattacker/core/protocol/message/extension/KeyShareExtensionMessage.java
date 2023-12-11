@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bool.ModifiableBoolean;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
@@ -18,7 +19,6 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.KeyShareExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.KeyShareExtensionParser;
@@ -56,7 +56,7 @@ public class KeyShareExtensionMessage extends ExtensionMessage {
         for (NamedGroup group : tlsConfig.getDefaultClientKeyShareNamedGroups()) {
             if (NamedGroup.getImplemented().contains(group)) {
                 KeyShareEntry keyShareEntry =
-                        new KeyShareEntry(group, tlsConfig.getKeySharePrivate());
+                        new KeyShareEntry(group, tlsConfig.getDefaultKeySharePrivateKey(group));
                 keyShareList.add(keyShareEntry);
             }
         }

@@ -29,8 +29,9 @@ public class SrpServerKeyExchangeHandler
         adjustSRPModulus(message);
         adjustSalt(message);
         adjustServerPublicKey(message);
-        if (message.getComputations() != null
-                && message.getComputations().getPrivateKey() != null) {
+        adjustSelectedSignatureAndHashAlgorithm(message);
+        if (message.getKeyExchangeComputations() != null
+                && message.getKeyExchangeComputations().getPrivateKey() != null) {
             adjustServerPrivateKey(message);
         }
     }
@@ -51,7 +52,8 @@ public class SrpServerKeyExchangeHandler
     }
 
     private void adjustServerPrivateKey(SrpServerKeyExchangeMessage message) {
-        tlsContext.setServerSRPPrivateKey(message.getComputations().getPrivateKey().getValue());
+        tlsContext.setServerSRPPrivateKey(
+                message.getKeyExchangeComputations().getPrivateKey().getValue());
         LOGGER.debug("Server PrivateKey: " + tlsContext.getServerSRPPrivateKey());
     }
 

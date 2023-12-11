@@ -14,7 +14,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /** Copy client random from one context to another. */
-@XmlRootElement
+@XmlRootElement(name = "CopyServerRandom")
 public class CopyServerRandomAction extends CopyContextFieldAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -28,7 +28,7 @@ public class CopyServerRandomAction extends CopyContextFieldAction {
     @Override
     protected void copyField(TlsContext src, TlsContext dst) {
         dst.setServerRandom(src.getServerRandom());
-        LOGGER.debug("Copying server random from " + src + " to " + dst);
+        LOGGER.debug("Copying server random from {} to {}", src, dst);
         LOGGER.debug("Copied server random is: {}", dst.getServerRandom());
         setExecuted(true);
     }

@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.layer;
 
-import de.rub.nds.tlsattacker.core.layer.constant.LayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.constant.StackConfiguration;
 import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
 import de.rub.nds.tlsattacker.core.layer.context.TcpContext;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
@@ -23,7 +23,7 @@ import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
  */
 public class LayerStackFactory {
 
-    public static LayerStack createLayerStack(LayerConfiguration type, Context context) {
+    public static LayerStack createLayerStack(StackConfiguration type, Context context) {
 
         LayerStack layerStack;
         TlsContext tlsContext = context.getTlsContext();

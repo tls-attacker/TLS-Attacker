@@ -12,8 +12,15 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.AlertDescription;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.exceptions.*;
+import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
+import de.rub.nds.tlsattacker.core.exceptions.BouncyCastleNotLoadedException;
+import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
+import de.rub.nds.tlsattacker.core.exceptions.SkipActionException;
+import de.rub.nds.tlsattacker.core.exceptions.TransportHandlerConnectException;
+import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.layer.LayerStackFactory;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.state.Context;
@@ -82,45 +89,55 @@ public abstract class WorkflowExecutor {
      * Initialize the context's transport handler.Start listening or connect to a server, depending
      * on our connection end type.
      *
-     * @param context
+     * @param state
      */
-    public void initTransportHandler(Context context) {
-
-        if (context.getTransportHandler() == null) {
-            if (context.getConnection() == null) {
-                throw new ConfigurationException("Connection end not set");
-            }
-            context.setTransportHandler(
-                    TransportHandlerFactory.createTransportHandler(context.getConnection()));
-            context.getTransportHandler()
-                    .setResetClientSourcePort(config.isResetClientSourcePort());
-            if (context.getTransportHandler() instanceof ClientTcpTransportHandler) {
-                ((ClientTcpTransportHandler) context.getTransportHandler())
-                        .setRetryFailedSocketInitialization(
-                                config.isRetryFailedClientTcpSocketInitialization());
+    public void initTransportHandler(State state) {
+        // Check if we need to create transport handlers
+        for (Context context : state.getAllContexts()) {
+            if (context.getTransportHandler() == null) {
+                if (context.getConnection() == null) {
+                    throw new ConfigurationException("Connection end not set");
+                }
+                context.setTransportHandler(
+                        TransportHandlerFactory.createTransportHandler(context.getConnection()));
+                context.getTransportHandler()
+                        .setResetClientSourcePort(config.isResetClientSourcePort());
+                if (context.getTransportHandler() instanceof ClientTcpTransportHandler) {
+                    ((ClientTcpTransportHandler) context.getTransportHandler())
+                            .setRetryFailedSocketInitialization(
+                                    config.isRetryFailedClientTcpSocketInitialization());
+                }
             }
         }
-
         try {
             if (getBeforeTransportPreInitCallback() != null) {
+                LOGGER.debug("Executing beforeTransportPreInitCallback");
                 getBeforeTransportPreInitCallback().apply(state);
             }
-            context.getTransportHandler().preInitialize();
+            LOGGER.debug("Starting pre-initalization of TransportHandler");
+            for (Context context : state.getAllContexts()) {
+                context.getTransportHandler().preInitialize();
+            }
+            LOGGER.debug("Finished pre-initalization of TransportHandler");
+
             if (getBeforeTransportInitCallback() != null) {
+                LOGGER.debug("Executing beforeTransportInitCallback");
                 getBeforeTransportInitCallback().apply(state);
             }
-            context.getTransportHandler().initialize();
+            LOGGER.debug("Starting initalization of TransportHandler");
+            for (Context context : state.getAllContexts()) {
+                context.getTransportHandler().initialize();
+            }
             if (getAfterTransportInitCallback() != null) {
+                LOGGER.debug("Executing afterTransportInitCallback");
                 getAfterTransportInitCallback().apply(state);
             }
+            LOGGER.debug("Finished initalization of TransportHandler");
         } catch (NullPointerException | NumberFormatException ex) {
-            throw new ConfigurationException(
-                    "Invalid values in " + context.getConnection().toString(), ex);
+            throw new ConfigurationException("Invalid values", ex);
         } catch (Exception ex) {
             throw new TransportHandlerConnectException(
-                    "Unable to initialize the transport handler with: "
-                            + context.getConnection().toString(),
-                    ex);
+                    "Unable to initialize the transport handler", ex);
         }
     }
 
@@ -139,11 +156,10 @@ public abstract class WorkflowExecutor {
                 | PreparationException
                 | ActionExecutionException ex) {
             state.setExecutionException(ex);
-            LOGGER.warn("Not fatal error during action execution, skipping action: " + action, ex);
+            LOGGER.warn("Not fatal error during action execution, skipping action: {}", action, ex);
             throw new SkipActionException(ex);
         } catch (Exception ex) {
-            LOGGER.error(
-                    "Unexpected fatal error during action execution, stopping execution: ", ex);
+            LOGGER.error("Unexpected fatal error during action execution, stopping execution", ex);
             state.setExecutionException(ex);
             throw new WorkflowExecutionException(ex);
         } finally {
@@ -190,26 +206,27 @@ public abstract class WorkflowExecutor {
             try {
                 context.getTransportHandler().closeConnection();
             } catch (IOException ex) {
-                LOGGER.warn("Could not close connection for context " + context);
+                LOGGER.warn(
+                        "Could not close connection for context: {}",
+                        context.getConnection().getAlias());
                 LOGGER.debug(ex);
             }
         }
     }
 
     public void initAllLayer() throws IOException {
+        initTransportHandler(state);
         for (Context ctx : state.getAllContexts()) {
-            initTransportHandler(ctx);
             initProtocolStack(ctx);
         }
     }
 
-    public void sendCloseNotify() {
+    public void sendCloseNotify(TlsContext context) {
         AlertMessage alertMessage = new AlertMessage();
         alertMessage.setConfig(AlertLevel.FATAL, AlertDescription.CLOSE_NOTIFY);
-        SendAction sendAction =
-                new SendAction(
-                        state.getWorkflowTrace().getConnections().get(0).getAlias(), alertMessage);
-        sendAction.getActionOptions().add(ActionOption.MAY_FAIL);
+        alertMessage.setLevel(AlertLevel.FATAL.getValue());
+        SendAction sendAction = new SendAction(context.getConnection().getAlias(), alertMessage);
+        sendAction.addActionOption(ActionOption.MAY_FAIL);
         sendAction.execute(state);
     }
 
@@ -240,7 +257,7 @@ public abstract class WorkflowExecutor {
     /** Check if a at least one TLS context received a warning alert. */
     public boolean isReceivedWarningAlert() {
         List<ProtocolMessage> allReceivedMessages =
-                WorkflowTraceUtil.getAllReceivedMessages(
+                WorkflowTraceResultUtil.getAllReceivedMessagesOfType(
                         state.getWorkflowTrace(), ProtocolMessageType.ALERT);
         for (ProtocolMessage message : allReceivedMessages) {
             AlertMessage alert = (AlertMessage) message;

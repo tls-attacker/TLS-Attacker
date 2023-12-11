@@ -18,7 +18,7 @@ import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@XmlRootElement
+@XmlRootElement(name = "SendAscii")
 public class SendAsciiAction extends AsciiAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -45,7 +45,7 @@ public class SendAsciiAction extends AsciiAction {
         }
 
         try {
-            LOGGER.info("Sending ASCII message: " + getAsciiText());
+            LOGGER.info("Sending ASCII message: {}", getAsciiText());
             tcpContext.getTransportHandler().sendData(getAsciiText().getBytes(getEncoding()));
             setExecuted(true);
         } catch (IOException e) {

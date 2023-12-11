@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
 import org.apache.logging.log4j.LogManager;
@@ -46,8 +45,7 @@ public class ECDHEServerKeyExchangeSerializer<T extends ECDHEServerKeyExchangeMe
             SignatureAndHashAlgorithm sigHashAlg =
                     SignatureAndHashAlgorithm.getSignatureAndHashAlgorithm(
                             msg.getSignatureAndHashAlgorithm().getValue());
-            if (sigHashAlg == null
-                    || sigHashAlg.getSignatureAlgorithm() != SignatureAlgorithm.ANONYMOUS) {
+            if (sigHashAlg == null || sigHashAlg.getSignatureAlgorithm() != null) {
                 writeSignatureLength(msg);
                 writeSignature(msg);
             }

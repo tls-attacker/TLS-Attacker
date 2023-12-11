@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.quic.handler.packet;
 import de.rub.nds.tlsattacker.core.quic.packet.LongHeaderPacket;
 import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
 
-public abstract class LongHeaderPacketHandler<T extends LongHeaderPacket<T>>
+public abstract class LongHeaderPacketHandler<T extends LongHeaderPacket>
         extends QuicPacketHandler<T> {
 
     public LongHeaderPacketHandler(QuicContext quicContext) {

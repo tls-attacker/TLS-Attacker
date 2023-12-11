@@ -114,7 +114,7 @@ public class FragmentStream {
             stream.write(b);
         }
         if (skipCounter > 0) {
-            LOGGER.warn("Did not receive all bytes. Truncated  " + skipCounter + " missing bytes.");
+            LOGGER.warn("Did not receive all bytes. Truncated {} missing bytes.", skipCounter);
         }
         for (Integer i : fragmentByteMap.keySet()) {
             if (i > intendedSize) {

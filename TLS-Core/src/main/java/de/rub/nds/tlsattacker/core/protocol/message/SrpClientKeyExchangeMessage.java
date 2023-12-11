@@ -10,11 +10,11 @@ package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.SrpClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.SRPClientComputations;
 import de.rub.nds.tlsattacker.core.protocol.parser.SrpClientKeyExchangeParser;
@@ -25,8 +25,7 @@ import java.io.InputStream;
 import java.util.List;
 
 @XmlRootElement(name = "SrpClientKeyExchange")
-public class SrpClientKeyExchangeMessage
-        extends ClientKeyExchangeMessage<SrpClientKeyExchangeMessage> {
+public class SrpClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     /** SRP modulus */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)

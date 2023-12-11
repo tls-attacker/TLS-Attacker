@@ -22,7 +22,7 @@ import java.io.InputStream;
 
 /** A PATH_RESPONSE frame (type=0x1b) is sent in response to a PATH_CHALLENGE frame. */
 @XmlRootElement
-public class PathResponseFrame extends QuicFrame<PathResponseFrame> {
+public class PathResponseFrame extends QuicFrame {
 
     @ModifiableVariableProperty protected ModifiableByteArray data;
 

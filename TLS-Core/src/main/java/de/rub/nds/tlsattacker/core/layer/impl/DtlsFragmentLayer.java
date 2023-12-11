@@ -248,10 +248,12 @@ public class DtlsFragmentLayer
                 }
             }
         } catch (TimeoutException ex) {
-            LOGGER.debug(ex);
+            LOGGER.debug("Received a timeout");
+            LOGGER.trace(ex);
             throw ex;
         } catch (EndOfStreamException ex) {
-            LOGGER.debug("Reached end of stream, cannot parse more dtls fragments", ex);
+            LOGGER.debug("Reached end of stream, cannot parse more dtls fragments");
+            LOGGER.trace(ex);
             throw ex;
         }
     }
@@ -306,13 +308,14 @@ public class DtlsFragmentLayer
             fragment.setHandshakeMessageLengthConfig(handshakeBytes.length);
             currentOffset += fragmentBytes.length;
         }
-        increaseWriteHandshakeMessageSequence();
         if (currentOffset != handshakeBytes.length) {
             LOGGER.warn(
                     "Unsent bytes for message "
                             + type
                             + ". Not enough dtls fragments specified and disabled dynamic fragment creation in config.");
         }
+        increaseWriteHandshakeMessageSequence();
+
         return fragments;
     }
 

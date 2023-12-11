@@ -47,7 +47,7 @@ public class PskDhClientKeyExchangePreparator
         try {
             outputStream.write(
                     ArrayConverter.intToBytes(otherSecret.length, HandshakeByteLength.PSK_LENGTH));
-            LOGGER.debug("OtherSecret Length: " + otherSecret.length);
+            LOGGER.debug("OtherSecret Length: {}", otherSecret.length);
             outputStream.write(otherSecret);
             LOGGER.debug("OtherSecret: {}", otherSecret);
             outputStream.write(
@@ -56,7 +56,7 @@ public class PskDhClientKeyExchangePreparator
                             HandshakeByteLength.PSK_LENGTH));
             outputStream.write(chooser.getConfig().getDefaultPSKKey());
         } catch (IOException ex) {
-            LOGGER.warn("Encountered exception while writing to ByteArrayOutputStream.");
+            LOGGER.warn("Encountered exception while writing to ByteArrayOutputStream");
             LOGGER.debug(ex);
         }
         byte[] tempPremasterSecret = outputStream.toByteArray();

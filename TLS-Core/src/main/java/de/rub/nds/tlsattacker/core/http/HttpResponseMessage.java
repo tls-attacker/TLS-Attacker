@@ -23,7 +23,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 @XmlRootElement
-public class HttpResponseMessage extends HttpMessage<HttpResponseMessage> {
+public class HttpResponseMessage extends HttpMessage {
 
     private ModifiableString responseProtocol;
 

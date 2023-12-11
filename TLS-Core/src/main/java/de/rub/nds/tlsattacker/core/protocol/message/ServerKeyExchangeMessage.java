@@ -8,16 +8,19 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.message;
 
+import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.protocol.constants.SignatureAlgorithm;
+import de.rub.nds.protocol.crypto.signature.SignatureCalculator;
+import de.rub.nds.protocol.crypto.signature.SignatureComputations;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.KeyExchangeComputations;
 import java.util.Objects;
 
-public abstract class ServerKeyExchangeMessage<Self extends ServerKeyExchangeMessage<?>>
-        extends HandshakeMessage<Self> {
+public abstract class ServerKeyExchangeMessage extends HandshakeMessage {
 
     /** signature and hash algorithm */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
@@ -36,13 +39,24 @@ public abstract class ServerKeyExchangeMessage<Self extends ServerKeyExchangeMes
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
     private ModifiableByteArray publicKey;
 
+    @HoldsModifiableVariable private SignatureComputations signatureComputations;
+
     public ServerKeyExchangeMessage() {
         super(HandshakeMessageType.SERVER_KEY_EXCHANGE);
     }
 
-    public abstract KeyExchangeComputations getComputations();
+    public abstract KeyExchangeComputations getKeyExchangeComputations();
 
-    public abstract void prepareComputations();
+    public abstract void prepareKeyExchangeComputations();
+
+    public SignatureComputations getSignatureComputations(SignatureAlgorithm algorithm) {
+        // TODO its unlucky that this design can cause a conflict here if the type mismatches
+        if (signatureComputations == null) {
+            SignatureCalculator calculator = new SignatureCalculator();
+            signatureComputations = calculator.createSignatureComputations(algorithm);
+        }
+        return signatureComputations;
+    }
 
     public ModifiableByteArray getSignatureAndHashAlgorithm() {
         return signatureAndHashAlgorithm;

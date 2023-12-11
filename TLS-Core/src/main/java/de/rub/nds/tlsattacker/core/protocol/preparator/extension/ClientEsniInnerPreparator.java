@@ -70,7 +70,7 @@ public class ClientEsniInnerPreparator extends Preparator<ClientEsniInner> {
 
     private void prepareServerNameListLength(ClientEsniInner msg) {
         msg.setServerNameListLength(msg.getServerNameListBytes().getValue().length);
-        LOGGER.debug("ServerNameListLength: " + msg.getServerNameListLength().getValue());
+        LOGGER.debug("ServerNameListLength: {}", msg.getServerNameListLength().getValue());
     }
 
     private void preparePadding(ClientEsniInner msg) {
@@ -90,7 +90,7 @@ public class ClientEsniInnerPreparator extends Preparator<ClientEsniInner> {
             padding = new byte[0];
         }
         msg.setPadding(padding);
-        LOGGER.debug("paddedLength: " + paddedLength);
+        LOGGER.debug("PaddedLength: {}", paddedLength);
         LOGGER.debug("Padding: {}", msg.getPadding().getValue());
     }
 }

@@ -23,7 +23,7 @@ import java.io.InputStream;
 
 /** The cookie extension used in TLS 1.3 */
 @XmlRootElement(name = "CookieExtension")
-public class CookieExtensionMessage extends ExtensionMessage<CookieExtensionMessage> {
+public class CookieExtensionMessage extends ExtensionMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger cookieLength;

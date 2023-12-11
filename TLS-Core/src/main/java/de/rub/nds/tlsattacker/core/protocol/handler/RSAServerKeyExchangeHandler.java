@@ -21,11 +21,16 @@ public class RSAServerKeyExchangeHandler
 
     @Override
     public void adjustContext(RSAServerKeyExchangeMessage message) {
-        tlsContext.setServerRSAModulus(new BigInteger(1, message.getModulus().getValue()));
-        tlsContext.setServerRSAPublicKey(new BigInteger(1, message.getPublicKey().getValue()));
-        if (message.getComputations() != null
-                && message.getComputations().getPrivateKey() != null) {
-            tlsContext.setServerRSAPrivateKey(message.getComputations().getPrivateKey().getValue());
+        tlsContext.setServerEphemeralRsaExportModulus(
+                new BigInteger(1, message.getModulus().getValue()));
+        tlsContext.setServerEphemeralRsaExportPublicKey(
+                new BigInteger(1, message.getPublicKey().getValue()));
+        adjustSelectedSignatureAndHashAlgorithm(message);
+
+        if (message.getKeyExchangeComputations() != null
+                && message.getKeyExchangeComputations().getPrivateKey() != null) {
+            tlsContext.setServerEphemeralRsaExportPrivateKey(
+                    message.getKeyExchangeComputations().getPrivateKey().getValue());
         }
     }
 }

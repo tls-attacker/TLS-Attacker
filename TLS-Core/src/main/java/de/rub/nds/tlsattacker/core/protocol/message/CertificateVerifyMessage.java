@@ -8,11 +8,15 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.message;
 
+import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.protocol.constants.SignatureAlgorithm;
+import de.rub.nds.protocol.crypto.signature.SignatureCalculator;
+import de.rub.nds.protocol.crypto.signature.SignatureComputations;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.CertificateVerifyHandler;
@@ -24,7 +28,7 @@ import java.io.InputStream;
 import java.util.Objects;
 
 @XmlRootElement(name = "CertificateVerify")
-public class CertificateVerifyMessage extends HandshakeMessage<CertificateVerifyMessage> {
+public class CertificateVerifyMessage extends HandshakeMessage {
 
     /** selected Signature and Hashalgorithm */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
@@ -36,8 +40,19 @@ public class CertificateVerifyMessage extends HandshakeMessage<CertificateVerify
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.SIGNATURE)
     private ModifiableByteArray signature;
 
+    @HoldsModifiableVariable private SignatureComputations signatureComputations;
+
     public CertificateVerifyMessage() {
         super(HandshakeMessageType.CERTIFICATE_VERIFY);
+    }
+
+    public SignatureComputations getSignatureComputations(SignatureAlgorithm algorithm) {
+        // TODO its unlucky that this design can cause a conflict here if the type mismatches
+        if (signatureComputations == null) {
+            SignatureCalculator calculator = new SignatureCalculator();
+            signatureComputations = calculator.createSignatureComputations(algorithm);
+        }
+        return signatureComputations;
     }
 
     public ModifiableByteArray getSignatureHashAlgorithm() {

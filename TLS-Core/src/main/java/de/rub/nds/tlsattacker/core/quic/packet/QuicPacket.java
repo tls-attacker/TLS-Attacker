@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.quic.packet;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
@@ -17,31 +18,20 @@ import de.rub.nds.tlsattacker.core.layer.data.Handler;
 import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
-import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.quic.constants.MiscRfcConstants;
 import de.rub.nds.tlsattacker.core.quic.constants.QuicCryptoSecrets;
 import de.rub.nds.tlsattacker.core.quic.constants.QuicPacketType;
 import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlSeeAlso;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlSeeAlso({
-    QuicPacket.class,
-    LongHeaderPacket.class,
-    InitialPacket.class,
-    HandshakePacket.class,
-    OneRTTPacket.class,
-    VersionNegotiationPacket.class,
-    RetryPacket.class
-})
-public abstract class QuicPacket<T extends DataContainer<T, QuicContext>>
-        extends ModifiableVariableHolder implements DataContainer<T, QuicContext> {
+public abstract class QuicPacket extends ModifiableVariableHolder
+        implements DataContainer<QuicContext> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -352,14 +342,14 @@ public abstract class QuicPacket<T extends DataContainer<T, QuicContext>>
     }
 
     @Override
-    public abstract Handler<T> getHandler(QuicContext context);
+    public abstract Handler<?> getHandler(QuicContext context);
 
     @Override
-    public abstract Serializer<T> getSerializer(QuicContext context);
+    public abstract Serializer<?> getSerializer(QuicContext context);
 
     @Override
-    public abstract Preparator<T> getPreparator(QuicContext context);
+    public abstract Preparator<?> getPreparator(QuicContext context);
 
     @Override
-    public abstract Parser<T> getParser(QuicContext context, InputStream stream);
+    public abstract Parser<?> getParser(QuicContext context, InputStream stream);
 }

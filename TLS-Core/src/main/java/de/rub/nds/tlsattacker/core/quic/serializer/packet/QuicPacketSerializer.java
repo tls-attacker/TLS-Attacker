@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public abstract class QuicPacketSerializer<T extends QuicPacket<T>> extends Serializer<T> {
+public abstract class QuicPacketSerializer<T extends QuicPacket> extends Serializer<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 

@@ -20,9 +20,9 @@
 # And this input trace
 <workflowTrace>
     <Send>
-        <messages>
+        <configuredMessages>
             <ClientHello/>
-        </messages>
+        </configuredMessages>
     </Send>
 </workflowTrace>
 
@@ -39,25 +39,18 @@
         <useIpv6>false</useIpv6>
     </OutboundConnection>
     <Send>
-        <actionOptions/>
         <connectionAlias>client</connectionAlias>
-        <messages>
+        <configuredMessages>
             <ClientHello/>
-        </messages>
-        <httpMessages/>
-        <records/>
-        <fragments/>
-        <quicFrames/>
-        <quicPackets/>
+        </configuredMessages>
     </Send>
 </workflowTrace>
 
 # And this after default filter application:
 <workflowTrace>
     <Send>
-        <actionOptions/>
-        <messages>
+        <configuredMessages>
             <ClientHello/>
-        </messages>
+        </configuredMessages>
     </Send>
 </workflowTrace>

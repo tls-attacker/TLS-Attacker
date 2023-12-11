@@ -8,8 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
+import de.rub.nds.protocol.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.PWDServerKeyExchangeMessage;
 import java.math.BigInteger;
@@ -27,12 +27,14 @@ public class PWDServerKeyExchangeHandler
         tlsContext.setServerPWDSalt(message.getSalt().getValue());
         tlsContext.setServerPWDElement(
                 PointFormatter.formatFromByteArray(
-                        tlsContext.getChooser().getSelectedNamedGroup(),
+                        tlsContext.getChooser().getSelectedNamedGroup().getGroupParameters(),
                         message.getElement().getValue()));
         tlsContext.setServerPWDScalar(new BigInteger(1, message.getScalar().getValue()));
-        if (message.getComputations() != null) {
-            tlsContext.setPWDPE(message.getComputations().getPasswordElement());
-            tlsContext.setServerPWDPrivate(message.getComputations().getPrivateKeyScalar());
+        if (message.getKeyExchangeComputations() != null) {
+            tlsContext.setPwdPasswordElement(
+                    message.getKeyExchangeComputations().getPasswordElement());
+            tlsContext.setServerPWDPrivate(
+                    message.getKeyExchangeComputations().getPrivateKeyScalar());
         }
     }
 }

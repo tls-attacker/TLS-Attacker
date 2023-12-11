@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.core.workflow.filter;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
-import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
 import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -33,7 +32,7 @@ public class DiscardRecordsFilter extends Filter {
     public void applyFilter(WorkflowTrace trace) {
         for (TlsAction action : trace.getTlsActions()) {
             if (action.isMessageAction()) {
-                ((MessageAction) action).clearRecords();
+                // ((MessageAction) action).clearRecords(); TODO disabled for now
             }
         }
     }

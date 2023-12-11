@@ -22,7 +22,7 @@ import java.io.InputStream;
  * in RFC6066
  */
 @XmlRootElement(name = "TruncatedHmacExtension")
-public class TruncatedHmacExtensionMessage extends ExtensionMessage<TruncatedHmacExtensionMessage> {
+public class TruncatedHmacExtensionMessage extends ExtensionMessage {
 
     public TruncatedHmacExtensionMessage() {
         super(ExtensionType.TRUNCATED_HMAC);

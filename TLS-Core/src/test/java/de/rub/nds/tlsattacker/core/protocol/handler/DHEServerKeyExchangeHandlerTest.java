@@ -11,10 +11,9 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import de.rub.nds.protocol.constants.FfdhGroupParameters;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.crypto.ffdh.FFDHEGroup;
-import de.rub.nds.tlsattacker.core.crypto.ffdh.GroupFactory;
 import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
 import java.math.BigInteger;
 import org.junit.jupiter.api.Test;
@@ -23,8 +22,8 @@ import org.junit.jupiter.params.provider.EnumSource;
 
 public class DHEServerKeyExchangeHandlerTest
         extends AbstractProtocolMessageHandlerTest<
-                DHEServerKeyExchangeMessage<?>,
-                ServerKeyExchangeHandler<DHEServerKeyExchangeMessage<?>>> {
+                DHEServerKeyExchangeMessage,
+                ServerKeyExchangeHandler<DHEServerKeyExchangeMessage>> {
 
     DHEServerKeyExchangeHandlerTest() {
         super(DHEServerKeyExchangeMessage::new, DHEServerKeyExchangeHandler::new);
@@ -39,12 +38,13 @@ public class DHEServerKeyExchangeHandlerTest
         message.setGenerator(BigInteger.ONE.toByteArray());
         message.setPublicKey(new byte[] {1, 2, 3});
         context.setSelectedCipherSuite(CipherSuite.TLS_DHE_RSA_WITH_AES_128_CBC_SHA);
-        message.prepareComputations();
-        message.getComputations().setPrivateKey(BigInteger.ZERO);
+        message.prepareKeyExchangeComputations();
+        message.getKeyExchangeComputations().setPrivateKey(BigInteger.ZERO);
         handler.adjustContext(message);
-        assertEquals(BigInteger.TEN, context.getServerDhModulus());
-        assertEquals(BigInteger.ONE, context.getServerDhGenerator());
-        assertArrayEquals(new byte[] {1, 2, 3}, context.getServerDhPublicKey().toByteArray());
+        assertEquals(BigInteger.TEN, context.getServerEphemeralDhModulus());
+        assertEquals(BigInteger.ONE, context.getServerEphemeralDhGenerator());
+        assertArrayEquals(
+                new byte[] {1, 2, 3}, context.getServerEphemeralDhPublicKey().toByteArray());
     }
 
     @Test
@@ -54,23 +54,25 @@ public class DHEServerKeyExchangeHandlerTest
         message.setGenerator(BigInteger.ONE.toByteArray());
         message.setPublicKey(new byte[] {1, 2, 3});
         handler.adjustContext(message);
-        assertEquals(BigInteger.TEN, context.getServerDhModulus());
-        assertEquals(BigInteger.ONE, context.getServerDhGenerator());
-        assertArrayEquals(new byte[] {1, 2, 3}, context.getServerDhPublicKey().toByteArray());
+        assertEquals(BigInteger.TEN, context.getServerEphemeralDhModulus());
+        assertEquals(BigInteger.ONE, context.getServerEphemeralDhGenerator());
+        assertArrayEquals(
+                new byte[] {1, 2, 3}, context.getServerEphemeralDhPublicKey().toByteArray());
     }
 
     @ParameterizedTest
     @EnumSource(value = NamedGroup.class, names = "^FFDHE[0-9]*", mode = EnumSource.Mode.MATCH_ANY)
     public void testadjustContextWithFFDHEGroup(NamedGroup providedNamedGroup) {
         DHEServerKeyExchangeMessage message = new DHEServerKeyExchangeMessage();
-        FFDHEGroup group = GroupFactory.getGroup(providedNamedGroup);
-        message.setModulus(group.getP().toByteArray());
-        message.setGenerator(group.getG().toByteArray());
+        FfdhGroupParameters group = (FfdhGroupParameters) providedNamedGroup.getGroupParameters();
+        message.setModulus(group.getModulus().toByteArray());
+        message.setGenerator(group.getGenerator().toByteArray());
         message.setPublicKey(new byte[] {1, 2, 3});
         handler.adjustContext(message);
-        assertEquals(group.getG(), context.getServerDhGenerator());
-        assertEquals(group.getP(), context.getServerDhModulus());
-        assertArrayEquals(new byte[] {1, 2, 3}, context.getServerDhPublicKey().toByteArray());
+        assertEquals(group.getGenerator(), context.getServerEphemeralDhGenerator());
+        assertEquals(group.getModulus(), context.getServerEphemeralDhModulus());
+        assertArrayEquals(
+                new byte[] {1, 2, 3}, context.getServerEphemeralDhPublicKey().toByteArray());
         assertEquals(context.getSelectedGroup(), providedNamedGroup);
     }
 }

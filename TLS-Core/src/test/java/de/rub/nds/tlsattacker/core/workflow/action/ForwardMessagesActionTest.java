@@ -86,7 +86,7 @@ public class ForwardMessagesActionTest extends AbstractActionTest<ForwardMessage
     @Test
     @Override
     public void testExecute() throws Exception {
-        action.setMessages(alert);
+        action.setExpectedMessages(List.of(alert));
         super.testExecute();
     }
 
@@ -145,9 +145,9 @@ public class ForwardMessagesActionTest extends AbstractActionTest<ForwardMessage
             pw.println("        <alias>ctx2</alias>");
             pw.println("    </InboundConnection>");
             pw.println("    <ForwardMessages>");
-            pw.println("        <actionOptions/>");
             pw.println("        <from>ctx1</from>");
             pw.println("        <to>ctx2</to>");
+            pw.println("        <expectedMessages/>");
             pw.println("    </ForwardMessages>");
             pw.println("</workflowTrace>");
         }
@@ -177,14 +177,13 @@ public class ForwardMessagesActionTest extends AbstractActionTest<ForwardMessage
                         receivedData.getBytes()));
         initContexts();
 
-        ForwardMessagesAction action = new ForwardMessagesAction(ctx1Alias, ctx2Alias);
-        action.setMessages(new ApplicationMessage());
-
+        ForwardMessagesAction action =
+                new ForwardMessagesAction(ctx1Alias, ctx2Alias, new ApplicationMessage());
         action.execute(state);
         assertTrue(action.isExecuted());
         assertTrue(action.executedAsPlanned());
 
-        ProtocolMessage forwardedMsgRaw = action.getSendMessages().get(0);
+        ProtocolMessage forwardedMsgRaw = action.getSentMessages().get(0);
         assertEquals("APPLICATION", forwardedMsgRaw.toCompactString());
 
         ApplicationMessage forwardedMsg = (ApplicationMessage) forwardedMsgRaw;

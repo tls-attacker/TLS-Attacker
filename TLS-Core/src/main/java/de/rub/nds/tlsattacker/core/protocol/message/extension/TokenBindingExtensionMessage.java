@@ -23,7 +23,7 @@ import java.io.InputStream;
 
 /** This extension is defined in draft-ietf-tokbind-negotiation */
 @XmlRootElement(name = "TokenBindingExtension")
-public class TokenBindingExtensionMessage extends ExtensionMessage<TokenBindingExtensionMessage> {
+public class TokenBindingExtensionMessage extends ExtensionMessage {
 
     @ModifiableVariableProperty private ModifiableByteArray tokenBindingVersion;
     @ModifiableVariableProperty private ModifiableByteArray tokenBindingKeyParameters;

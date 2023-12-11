@@ -12,10 +12,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import de.rub.nds.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
+import de.rub.nds.tlsattacker.core.state.Context;
+import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -53,7 +56,7 @@ abstract class AbstractExtensionParserTest<
         this.parserConstructor = parserConstructor;
         this.messageGetters = messageGetters;
         this.config = new Config();
-        this.tlsContext = new TlsContext(config);
+        this.tlsContext = new Context(new State(config), new InboundConnection()).getTlsContext();
         this.messageClass = messageClass;
     }
 

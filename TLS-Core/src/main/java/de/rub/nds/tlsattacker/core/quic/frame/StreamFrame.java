@@ -22,7 +22,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
 @XmlRootElement(name = "StreamFrame")
-public class StreamFrame extends QuicFrame<StreamFrame> {
+public class StreamFrame extends QuicFrame {
 
     /** A variable-length integer indicating the stream ID of the stream; see Section 2.1. */
     @ModifiableVariableProperty protected ModifiableInteger streamId;

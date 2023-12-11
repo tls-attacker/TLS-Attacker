@@ -4,12 +4,12 @@
     <parent>
         <groupId>de.rub.nds</groupId>
         <artifactId>protocol-toolkit-bom</artifactId>
-        <version>3.5.17</version>
+        <version>4.0.0</version>
     </parent>
 
     <groupId>de.rub.nds.tls.attacker</groupId>
     <artifactId>tls-attacker</artifactId>
-    <version>5.3.4-SNAPSHOT</version>
+    <version>6.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>TLS-Attacker</name>
@@ -171,11 +171,15 @@
         </dependency>
         <dependency>
             <groupId>de.rub.nds</groupId>
-            <artifactId>asn1-tool</artifactId>
+            <artifactId>asn1-attacker</artifactId>
         </dependency>
         <dependency>
             <groupId>de.rub.nds</groupId>
             <artifactId>modifiable-variable</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.rub.nds</groupId>
+            <artifactId>protocol-attacker</artifactId>
         </dependency>
         <dependency>
             <groupId>de.rub.nds</groupId>
@@ -337,8 +341,7 @@
                                         <destFileName>${project.build.finalName}.${project.packaging}</destFileName>
                                     </artifactItem>
                                 </artifactItems>
-                                <!--suppress UnresolvedMavenProperty -->
-                                <outputDirectory>${maven.multiModuleProjectDirectory}/apps</outputDirectory>
+                                <outputDirectory>${main.basedir}/apps</outputDirectory>
                             </configuration>
                         </execution>
                         <execution>
@@ -348,7 +351,7 @@
                             </goals>
                             <phase>package</phase>
                             <configuration>
-                                <outputDirectory>${maven.multiModuleProjectDirectory}/apps/lib</outputDirectory>
+                                <outputDirectory>${main.basedir}/apps/lib</outputDirectory>
                                 <!--Ensures only runnable dependencies are included-->
                                 <includeScope>compile</includeScope>
                             </configuration>
@@ -402,8 +405,7 @@
                         <configuration>
                             <filesets>
                                 <fileset>
-                                    <!--suppress UnresolvedMavenProperty -->
-                                    <directory>${maven.multiModuleProjectDirectory}/apps</directory>
+                                    <directory>${main.basedir}/apps</directory>
                                 </fileset>
                             </filesets>
                         </configuration>
@@ -419,8 +421,7 @@
                             <excludeDefaultDirectories>true</excludeDefaultDirectories>
                             <filesets>
                                 <fileset>
-                                    <!--suppress UnresolvedMavenProperty -->
-                                    <directory>${maven.multiModuleProjectDirectory}/apps</directory>
+                                    <directory>${main.basedir}/apps</directory>
                                 </fileset>
                             </filesets>
                         </configuration>

@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.constants.ChooserType;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
@@ -17,6 +18,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedServerNam
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.EncryptedServerNameIndicationExtensionPreparator;
+import de.rub.nds.tlsattacker.core.state.Context;
+import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -136,7 +139,7 @@ public class EncryptedServerNameIndicationExtensionParserTest
                                                 .getServerNameList()
                                                 .get(0)
                                                 .getServerName())));
-        context = new TlsContext(config);
+        context = new Context(new State(config), new InboundConnection()).getTlsContext();
         chooser = ChooserFactory.getChooser(ChooserType.DEFAULT, tlsContext.getContext(), config);
     }
 

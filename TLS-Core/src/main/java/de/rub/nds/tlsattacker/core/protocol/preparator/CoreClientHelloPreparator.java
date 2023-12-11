@@ -22,7 +22,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public abstract class CoreClientHelloPreparator<T extends CoreClientHelloMessage<?>>
+public abstract class CoreClientHelloPreparator<T extends CoreClientHelloMessage>
         extends HelloMessagePreparator<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();

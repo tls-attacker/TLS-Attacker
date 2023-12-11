@@ -70,7 +70,8 @@ public class ClientDelegate extends Delegate {
                 try {
                     con.setIpv6(getIpv6ForHost(sniHostname));
                 } catch (UnknownHostException ex) {
-                    LOGGER.warn("Could not resolve IPv6 address for host " + sniHostname, ex);
+                    LOGGER.warn("Could not resolve IPv6 address for host {}", sniHostname);
+                    LOGGER.debug(ex); // Expected exception
                 }
             }
             setHostname(config, extractedHost, con);
@@ -138,7 +139,7 @@ public class ClientDelegate extends Delegate {
             InetAddress inetAddress = InetAddress.getByName(host);
             return inetAddress.getHostAddress();
         } catch (UnknownHostException ex) {
-            LOGGER.warn("Could not resolve host \"" + host + "\" returning anyways", ex);
+            LOGGER.warn("Could not resolve host \"{}\" returning anyways", host, ex);
             return host;
         }
     }
@@ -161,7 +162,7 @@ public class ClientDelegate extends Delegate {
         try {
             return InetAddress.getByName(ip).getCanonicalHostName();
         } catch (UnknownHostException ex) {
-            LOGGER.warn("Could not perform reverse DNS for \"" + ip + "\"", ex);
+            LOGGER.warn("Could not perform reverse DNS for \"{}\"", ip, ex);
             return ip;
         }
     }

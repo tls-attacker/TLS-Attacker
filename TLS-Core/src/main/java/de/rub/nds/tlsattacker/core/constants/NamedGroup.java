@@ -8,85 +8,98 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
-import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
-import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.protocol.constants.EcCurveEquationType;
+import de.rub.nds.protocol.constants.FfdhGroupParameters;
+import de.rub.nds.protocol.constants.GroupParameters;
+import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
+import de.rub.nds.protocol.crypto.ec.EllipticCurve;
+import de.rub.nds.protocol.crypto.ffdh.Rfc7919Group2048;
+import de.rub.nds.protocol.crypto.ffdh.Rfc7919Group3072;
+import de.rub.nds.protocol.crypto.ffdh.Rfc7919Group4096;
+import de.rub.nds.protocol.crypto.ffdh.Rfc7919Group6144;
+import de.rub.nds.protocol.crypto.ffdh.Rfc7919Group8192;
+import de.rub.nds.x509attacker.constants.X509NamedCurve;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.security.interfaces.ECPrivateKey;
-import java.security.interfaces.ECPublicKey;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public enum NamedGroup {
-    SECT163K1(new byte[] {(byte) 0, (byte) 1}, "sect163k1", 163),
-    SECT163R1(new byte[] {(byte) 0, (byte) 2}, "sect163r1", 163),
-    SECT163R2(new byte[] {(byte) 0, (byte) 3}, "sect163r2", 163),
-    SECT193R1(new byte[] {(byte) 0, (byte) 4}, "sect193r1", 193),
-    SECT193R2(new byte[] {(byte) 0, (byte) 5}, "sect193r2", 193),
-    SECT233K1(new byte[] {(byte) 0, (byte) 6}, "sect233k1", 233),
-    SECT233R1(new byte[] {(byte) 0, (byte) 7}, "sect233r1", 233),
-    SECT239K1(new byte[] {(byte) 0, (byte) 8}, "sect239k1", 239),
-    SECT283K1(new byte[] {(byte) 0, (byte) 9}, "sect283k1", 283),
-    SECT283R1(new byte[] {(byte) 0, (byte) 10}, "sect283r1", 283),
-    SECT409K1(new byte[] {(byte) 0, (byte) 11}, "sect409k1", 409),
-    SECT409R1(new byte[] {(byte) 0, (byte) 12}, "sect409r1", 409),
-    SECT571K1(new byte[] {(byte) 0, (byte) 13}, "sect571k1", 571),
-    SECT571R1(new byte[] {(byte) 0, (byte) 14}, "sect571r1", 571),
-    SECP160K1(new byte[] {(byte) 0, (byte) 15}, "secp160k1", 160),
-    SECP160R1(new byte[] {(byte) 0, (byte) 16}, "secp160r1", 160),
-    SECP160R2(new byte[] {(byte) 0, (byte) 17}, "secp160r2", 150),
-    SECP192K1(new byte[] {(byte) 0, (byte) 18}, "secp192k1", 192),
-    SECP192R1(new byte[] {(byte) 0, (byte) 19}, "secp192r1", 192),
-    SECP224K1(new byte[] {(byte) 0, (byte) 20}, "secp224k1", 224),
-    SECP224R1(new byte[] {(byte) 0, (byte) 21}, "secp224r1", 224),
-    SECP256K1(new byte[] {(byte) 0, (byte) 22}, "secp256k1", 256),
-    SECP256R1(new byte[] {(byte) 0, (byte) 23}, "secp256r1", 256),
-    SECP384R1(new byte[] {(byte) 0, (byte) 24}, "secp384r1", 384),
-    SECP521R1(new byte[] {(byte) 0, (byte) 25}, "secp521r1", 521),
-    BRAINPOOLP256R1(new byte[] {(byte) 0, (byte) 26}, "brainpoolp256r1", 256),
-    BRAINPOOLP384R1(new byte[] {(byte) 0, (byte) 27}, "brainpoolp384r1", 384),
-    BRAINPOOLP512R1(new byte[] {(byte) 0, (byte) 28}, "brainpoolp512r1", 512),
-    ECDH_X25519(new byte[] {(byte) 0, (byte) 29}, "ecdh_X25519", 256),
-    ECDH_X448(new byte[] {(byte) 0, (byte) 30}, "ecdh_X448", 448),
-    CURVE_SM2(new byte[] {(byte) 0, (byte) 41}, "sm2p256v1", 256),
-    FFDHE2048(new byte[] {(byte) 1, (byte) 0}, "FFDHE2048", 2048),
-    FFDHE3072(new byte[] {(byte) 1, (byte) 1}, "FFDHE3072", 3072),
-    FFDHE4096(new byte[] {(byte) 1, (byte) 2}, "FFDHE4096", 4096),
-    FFDHE6144(new byte[] {(byte) 1, (byte) 3}, "FFDHE6144", 6144),
-    FFDHE8192(new byte[] {(byte) 1, (byte) 4}, "FFDHE8192", 8192),
-    EXPLICIT_PRIME(new byte[] {(byte) 0xFF, (byte) 1}, "UNDEFINED", 0),
+    SECT163K1(new byte[] {(byte) 0, (byte) 1}, NamedEllipticCurveParameters.SECT163K1),
+    SECT163R1(new byte[] {(byte) 0, (byte) 2}, NamedEllipticCurveParameters.SECT163R1),
+    SECT163R2(new byte[] {(byte) 0, (byte) 3}, NamedEllipticCurveParameters.SECT163R2),
+    SECT193R1(new byte[] {(byte) 0, (byte) 4}, NamedEllipticCurveParameters.SECT193R1),
+    SECT193R2(new byte[] {(byte) 0, (byte) 5}, NamedEllipticCurveParameters.SECT193R2),
+    SECT233K1(new byte[] {(byte) 0, (byte) 6}, NamedEllipticCurveParameters.SECT233K1),
+    SECT233R1(new byte[] {(byte) 0, (byte) 7}, NamedEllipticCurveParameters.SECT233R1),
+    SECT239K1(new byte[] {(byte) 0, (byte) 8}, NamedEllipticCurveParameters.SECT239K1),
+    SECT283K1(new byte[] {(byte) 0, (byte) 9}, NamedEllipticCurveParameters.SECT283K1),
+    SECT283R1(new byte[] {(byte) 0, (byte) 10}, NamedEllipticCurveParameters.SECT283R1),
+    SECT409K1(new byte[] {(byte) 0, (byte) 11}, NamedEllipticCurveParameters.SECT409K1),
+    SECT409R1(new byte[] {(byte) 0, (byte) 12}, NamedEllipticCurveParameters.SECT409R1),
+    SECT571K1(new byte[] {(byte) 0, (byte) 13}, NamedEllipticCurveParameters.SECT571K1),
+    SECT571R1(new byte[] {(byte) 0, (byte) 14}, NamedEllipticCurveParameters.SECT571R1),
+    SECP160K1(new byte[] {(byte) 0, (byte) 15}, NamedEllipticCurveParameters.SECP160K1),
+    SECP160R1(new byte[] {(byte) 0, (byte) 16}, NamedEllipticCurveParameters.SECP160R1),
+    SECP160R2(new byte[] {(byte) 0, (byte) 17}, NamedEllipticCurveParameters.SECP160R2),
+    SECP192K1(new byte[] {(byte) 0, (byte) 18}, NamedEllipticCurveParameters.SECP192K1),
+    SECP192R1(new byte[] {(byte) 0, (byte) 19}, NamedEllipticCurveParameters.SECP192R1),
+    SECP224K1(new byte[] {(byte) 0, (byte) 20}, NamedEllipticCurveParameters.SECP224K1),
+    SECP224R1(new byte[] {(byte) 0, (byte) 21}, NamedEllipticCurveParameters.SECP224R1),
+    SECP256K1(new byte[] {(byte) 0, (byte) 22}, NamedEllipticCurveParameters.SECP256K1),
+    SECP256R1(new byte[] {(byte) 0, (byte) 23}, NamedEllipticCurveParameters.SECP256R1),
+    SECP384R1(new byte[] {(byte) 0, (byte) 24}, NamedEllipticCurveParameters.SECP384R1),
+    SECP521R1(new byte[] {(byte) 0, (byte) 25}, NamedEllipticCurveParameters.SECP521R1),
+    BRAINPOOLP256R1(new byte[] {(byte) 0, (byte) 26}, NamedEllipticCurveParameters.BRAINPOOLP256R1),
+    BRAINPOOLP384R1(new byte[] {(byte) 0, (byte) 27}, NamedEllipticCurveParameters.BRAINPOOLP384R1),
+    BRAINPOOLP512R1(new byte[] {(byte) 0, (byte) 28}, NamedEllipticCurveParameters.BRAINPOOLP512R1),
+    ECDH_X25519(new byte[] {(byte) 0, (byte) 29}, NamedEllipticCurveParameters.CURVE_X25519),
+    ECDH_X448(new byte[] {(byte) 0, (byte) 30}, NamedEllipticCurveParameters.CURVE_X448),
+    CURVE_SM2(new byte[] {(byte) 0, (byte) 41}, NamedEllipticCurveParameters.CURVE_SM2),
+    FFDHE2048(new byte[] {(byte) 1, (byte) 0}, new Rfc7919Group2048()),
+    FFDHE3072(new byte[] {(byte) 1, (byte) 1}, new Rfc7919Group3072()),
+    FFDHE4096(new byte[] {(byte) 1, (byte) 2}, new Rfc7919Group4096()),
+    FFDHE6144(new byte[] {(byte) 1, (byte) 3}, new Rfc7919Group6144()),
+    FFDHE8192(new byte[] {(byte) 1, (byte) 4}, new Rfc7919Group8192()),
+    EXPLICIT_PRIME(new byte[] {(byte) 0xFF, (byte) 1}, null),
     // GREASE constants
-    EXPLICIT_CHAR2(new byte[] {(byte) 0xFF, (byte) 2}, "UNDEFINED", 0),
-    GREASE_00(new byte[] {(byte) 0x0A, (byte) 0x0A}, "GREASE", null),
-    GREASE_01(new byte[] {(byte) 0x1A, (byte) 0x1A}, "GREASE", null),
-    GREASE_02(new byte[] {(byte) 0x2A, (byte) 0x2A}, "GREASE", null),
-    GREASE_03(new byte[] {(byte) 0x3A, (byte) 0x3A}, "GREASE", null),
-    GREASE_04(new byte[] {(byte) 0x4A, (byte) 0x4A}, "GREASE", null),
-    GREASE_05(new byte[] {(byte) 0x5A, (byte) 0x5A}, "GREASE", null),
-    GREASE_06(new byte[] {(byte) 0x6A, (byte) 0x6A}, "GREASE", null),
-    GREASE_07(new byte[] {(byte) 0x7A, (byte) 0x7A}, "GREASE", null),
-    GREASE_08(new byte[] {(byte) 0x8A, (byte) 0x8A}, "GREASE", null),
-    GREASE_09(new byte[] {(byte) 0x9A, (byte) 0x9A}, "GREASE", null),
-    GREASE_10(new byte[] {(byte) 0xAA, (byte) 0xAA}, "GREASE", null),
-    GREASE_11(new byte[] {(byte) 0xBA, (byte) 0xBA}, "GREASE", null),
-    GREASE_12(new byte[] {(byte) 0xCA, (byte) 0xCA}, "GREASE", null),
-    GREASE_13(new byte[] {(byte) 0xDA, (byte) 0xDA}, "GREASE", null),
-    GREASE_14(new byte[] {(byte) 0xEA, (byte) 0xEA}, "GREASE", null),
-    GREASE_15(new byte[] {(byte) 0xFA, (byte) 0xFA}, "GREASE", null);
+    EXPLICIT_CHAR2(new byte[] {(byte) 0xFF, (byte) 2}, null),
+    GREASE_00(new byte[] {(byte) 0x0A, (byte) 0x0A}, null),
+    GREASE_01(new byte[] {(byte) 0x1A, (byte) 0x1A}, null),
+    GREASE_02(new byte[] {(byte) 0x2A, (byte) 0x2A}, null),
+    GREASE_03(new byte[] {(byte) 0x3A, (byte) 0x3A}, null),
+    GREASE_04(new byte[] {(byte) 0x4A, (byte) 0x4A}, null),
+    GREASE_05(new byte[] {(byte) 0x5A, (byte) 0x5A}, null),
+    GREASE_06(new byte[] {(byte) 0x6A, (byte) 0x6A}, null),
+    GREASE_07(new byte[] {(byte) 0x7A, (byte) 0x7A}, null),
+    GREASE_08(new byte[] {(byte) 0x8A, (byte) 0x8A}, null),
+    GREASE_09(new byte[] {(byte) 0x9A, (byte) 0x9A}, null),
+    GREASE_10(new byte[] {(byte) 0xAA, (byte) 0xAA}, null),
+    GREASE_11(new byte[] {(byte) 0xBA, (byte) 0xBA}, null),
+    GREASE_12(new byte[] {(byte) 0xCA, (byte) 0xCA}, null),
+    GREASE_13(new byte[] {(byte) 0xDA, (byte) 0xDA}, null),
+    GREASE_14(new byte[] {(byte) 0xEA, (byte) 0xEA}, null),
+    GREASE_15(new byte[] {(byte) 0xFA, (byte) 0xFA}, null);
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public static final int LENGTH = 2;
-
     private byte[] value;
 
-    private String javaName;
+    private GroupParameters<?> groupParameters;
 
-    private final Integer coordinateSizeInBit;
-
-    private static final Map<Integer, NamedGroup> MAP;
+    private static final Map<ByteBuffer, NamedGroup> MAP;
 
     private static final Set<NamedGroup> tls13Groups =
             new HashSet<>(
@@ -103,106 +116,225 @@ public enum NamedGroup {
                             SECP521R1,
                             CURVE_SM2));
 
-    private NamedGroup(byte[] value, String javaName, Integer coordinateSizeInBit) {
+    private NamedGroup(byte[] value, GroupParameters<?> group) {
         this.value = value;
-        this.javaName = javaName;
-        this.coordinateSizeInBit = coordinateSizeInBit;
+        this.groupParameters = group;
     }
 
     static {
         MAP = new HashMap<>();
-        for (NamedGroup c : NamedGroup.values()) {
-            MAP.put(valueToInt(c.value), c);
+        for (NamedGroup group : NamedGroup.values()) {
+            MAP.put(ByteBuffer.wrap(group.value), group);
         }
-    }
-
-    public static NamedGroup fromJavaName(String name) {
-        if (name.equals("prime256v1")) {
-            return SECP256R1;
-        }
-        for (NamedGroup group : values()) {
-            if (group.getJavaName().equals(name)) {
-                return group;
-            }
-        }
-        return null;
-    }
-
-    public String getJavaName() {
-        return javaName;
-    }
-
-    public void setJavaName(String javaName) {
-        this.javaName = javaName;
-    }
-
-    private static Integer valueToInt(byte[] value) {
-        if (value.length < 2) {
-            LOGGER.warn("Could not convert NamedGroup. Returning null");
-            return null;
-        }
-        return (value[0] & 0xff) << Bits.IN_A_BYTE | (value[1] & 0xff);
     }
 
     public static NamedGroup getNamedGroup(byte[] value) {
-        return MAP.get(valueToInt(value));
+        return MAP.get(ByteBuffer.wrap(value));
     }
 
-    public static NamedGroup getNamedGroup(ECPublicKey publicKey) {
-        for (NamedGroup group : getImplemented()) {
-            // TODO: X25519 and X448 not supported for classic java curves
-            if (group.isCurve() && group.isStandardCurve()) {
-                try {
-                    EllipticCurve tlsAttackerCurve = CurveFactory.getCurve(group);
-                    if (publicKey
-                                    .getParams()
-                                    .getGenerator()
-                                    .getAffineX()
-                                    .equals(tlsAttackerCurve.getBasePoint().getFieldX().getData())
-                            && publicKey
-                                    .getParams()
-                                    .getGenerator()
-                                    .getAffineY()
-                                    .equals(
-                                            tlsAttackerCurve
-                                                    .getBasePoint()
-                                                    .getFieldY()
-                                                    .getData())) {
-                        return group;
-                    }
-                } catch (UnsupportedOperationException e) {
-                    LOGGER.debug("Could not test " + group.name() + " not completely integrated");
-                }
-            }
+    public X509NamedCurve convertToX509() {
+        switch (this) {
+            case BRAINPOOLP256R1:
+                return X509NamedCurve.BRAINPOOLP256R1;
+            case BRAINPOOLP384R1:
+                return X509NamedCurve.BRAINPOOLP384R1;
+            case BRAINPOOLP512R1:
+                return X509NamedCurve.BRAINPOOLP512R1;
+            case ECDH_X25519:
+            case ECDH_X448:
+                // X448 and X25519 are special values in x509 that are treated differently to
+                // all
+                // other curves
+                return null;
+            case EXPLICIT_CHAR2:
+            case EXPLICIT_PRIME:
+                // Not a named curve in x509
+                return null;
+            case FFDHE2048:
+            case FFDHE3072:
+            case FFDHE4096:
+            case FFDHE6144:
+            case FFDHE8192:
+                // FFDHE has no x509 equivalent
+                return null;
+            case GREASE_00:
+            case GREASE_01:
+            case GREASE_02:
+            case GREASE_03:
+            case GREASE_04:
+            case GREASE_05:
+            case GREASE_06:
+            case GREASE_07:
+            case GREASE_08:
+            case GREASE_09:
+            case GREASE_10:
+            case GREASE_11:
+            case GREASE_12:
+            case GREASE_13:
+            case GREASE_14:
+            case GREASE_15:
+                // GREASE has no equivalent
+                return null;
+            case SECP160K1:
+                return X509NamedCurve.SECP160K1;
+            case SECP160R1:
+                return X509NamedCurve.SECP160R1;
+            case SECP160R2:
+                return X509NamedCurve.SECP160R2;
+            case SECP192K1:
+                return X509NamedCurve.SECP192K1;
+            case SECP192R1:
+                return X509NamedCurve.SECP192R1;
+            case SECP224K1:
+                return X509NamedCurve.SECP224K1;
+            case SECP224R1:
+                return X509NamedCurve.SECP224R1;
+            case SECP256K1:
+                return X509NamedCurve.SECP256K1;
+            case SECP256R1:
+                return X509NamedCurve.SECP256R1;
+            case SECP384R1:
+                return X509NamedCurve.SECP384R1;
+            case SECP521R1:
+                return X509NamedCurve.SECP521R1;
+            case SECT163K1:
+                return X509NamedCurve.SECT163K1;
+            case SECT163R1:
+                return X509NamedCurve.SECT163R1;
+            case SECT163R2:
+                return X509NamedCurve.SECT163R2;
+            case SECT193R1:
+                return X509NamedCurve.SECT193R1;
+            case SECT193R2:
+                return X509NamedCurve.SECT193R2;
+            case SECT233K1:
+                return X509NamedCurve.SECT233K1;
+            case SECT233R1:
+                return X509NamedCurve.SECT233R1;
+            case SECT239K1:
+                return X509NamedCurve.SECT239K1;
+            case SECT283K1:
+                return X509NamedCurve.SECT283K1;
+            case SECT283R1:
+                return X509NamedCurve.SECT283R1;
+            case SECT409K1:
+                return X509NamedCurve.SECT409K1;
+            case SECT409R1:
+                return X509NamedCurve.SECT409R1;
+            case SECT571K1:
+                return X509NamedCurve.SECT571K1;
+            case SECT571R1:
+                return X509NamedCurve.SECT571R1;
+            default:
+                return null;
         }
-        return null;
     }
 
-    public static NamedGroup getNamedGroup(ECPrivateKey privateKey) {
-        for (NamedGroup group : getImplemented()) {
-            // TODO: X25519 and X448 not supported for classic java curves
-            if (group.isCurve() && group.isStandardCurve()) {
-                try {
-                    EllipticCurve tlsAttackerCurve = CurveFactory.getCurve(group);
-                    if (privateKey
-                                    .getParams()
-                                    .getGenerator()
-                                    .getAffineX()
-                                    .equals(tlsAttackerCurve.getBasePoint().getFieldX().getData())
-                            && privateKey
-                                    .getParams()
-                                    .getGenerator()
-                                    .getAffineY()
-                                    .equals(
-                                            tlsAttackerCurve
-                                                    .getBasePoint()
-                                                    .getFieldY()
-                                                    .getData())) {
-                        return group;
-                    }
-                } catch (UnsupportedOperationException e) {
-                    LOGGER.debug("Could not test " + group.name() + " not completely integrated");
-                }
+    public static NamedGroup convertFromX509NamedCurve(X509NamedCurve curve) {
+        switch (curve) {
+            case BRAINPOOLP160R1:
+                return null; // Has no TLS equivalent
+            case BRAINPOOLP160T1:
+                return null; // Has no TLS equivalent
+            case BRAINPOOLP192R1:
+                return null; // Has no TLS equivalent
+            case BRAINPOOLP192T1:
+                return null; // Has no TLS equivalent
+            case BRAINPOOLP224R1:
+                return null; // Has no TLS equivalent
+            case BRAINPOOLP224T1:
+                return null; // Has no TLS equivalent
+            case BRAINPOOLP256R1:
+                return NamedGroup.BRAINPOOLP256R1;
+            case BRAINPOOLP256T1:
+                return null; // Has no TLS equivalent
+            case BRAINPOOLP320R1:
+                return null; // Has no TLS equivalent
+            case BRAINPOOLP320T1:
+                return null; // Has no TLS equivalent
+            case BRAINPOOLP384R1:
+                return NamedGroup.BRAINPOOLP384R1;
+            case BRAINPOOLP384T1:
+                return null; // Has no TLS equivalent
+            case BRAINPOOLP512R1:
+                return NamedGroup.BRAINPOOLP512R1;
+            case BRAINPOOLP512T1:
+                return null; // Has no TLS equivalent
+            case SECP112R1:
+                return null; // Has no TLS equivalent
+            case SECP112R2:
+                return null; // Has no TLS equivalent
+            case SECP128R1:
+                return null; // Has no TLS equivalent
+            case SECP128R2:
+                return null; // Has no TLS equivalent
+            case SECP160K1:
+                return NamedGroup.SECP160K1;
+            case SECP160R1:
+                return NamedGroup.SECP160R1;
+            case SECP160R2:
+                return NamedGroup.SECP160R2;
+            case SECP192K1:
+                return NamedGroup.SECP192K1;
+            case SECP192R1:
+                return NamedGroup.SECP192R1;
+            case SECP224K1:
+                return NamedGroup.SECP224K1;
+            case SECP224R1:
+                return NamedGroup.SECP224R1;
+            case SECP256K1:
+                return NamedGroup.SECP256K1;
+            case SECP256R1:
+                return NamedGroup.SECP256R1;
+            case SECP384R1:
+                return NamedGroup.SECP384R1;
+            case SECP521R1:
+                return NamedGroup.SECP521R1;
+            case SECT113R1:
+                return null; // Has no TLS equivalent
+            case SECT113R2:
+                return null; // Has no TLS equivalent
+            case SECT131R1:
+                return null; // Has no TLS equivalent
+            case SECT131R2:
+                return null; // Has no TLS equivalent
+            case SECT163K1:
+                return NamedGroup.SECT163K1;
+            case SECT163R1:
+                return NamedGroup.SECT163R1;
+            case SECT163R2:
+                return NamedGroup.SECT163R2;
+            case SECT193R1:
+                return NamedGroup.SECT193R1;
+            case SECT193R2:
+                return NamedGroup.SECT193R2;
+            case SECT233K1:
+                return NamedGroup.SECT233K1;
+            case SECT233R1:
+                return NamedGroup.SECT233R1;
+            case SECT239K1:
+                return NamedGroup.SECT239K1;
+            case SECT283K1:
+                return NamedGroup.SECT283K1;
+            case SECT283R1:
+                return NamedGroup.SECT283R1;
+            case SECT409K1:
+                return NamedGroup.SECT409K1;
+            case SECT409R1:
+                return NamedGroup.SECT409R1;
+            case SECT571K1:
+                return NamedGroup.SECT571K1;
+            case SECT571R1:
+                return NamedGroup.SECT571R1;
+            default:
+                return null;
+        }
+    }
+
+    public static NamedGroup convert(GroupParameters<?> parameters) {
+        for (NamedGroup group : NamedGroup.values()) {
+            if (group.getGroupParameters() == parameters) {
+                return group;
             }
         }
         return null;
@@ -212,8 +344,8 @@ public enum NamedGroup {
         return value;
     }
 
-    public Integer getCoordinateSizeInBit() {
-        return coordinateSizeInBit;
+    public GroupParameters<?> getGroupParameters() {
+        return groupParameters;
     }
 
     public static NamedGroup getRandom(Random random) {
@@ -223,10 +355,6 @@ public enum NamedGroup {
             c = (NamedGroup) o[random.nextInt(o.length)];
         }
         return c;
-    }
-
-    public Integer getIntValue() {
-        return valueToInt(value);
     }
 
     public static byte[] namedGroupsToByteArray(List<NamedGroup> groups) throws IOException {
@@ -247,40 +375,70 @@ public enum NamedGroup {
             return new ArrayList<>();
         }
 
-        if (sourceBytes.length % NamedGroup.LENGTH != 0) {
+        if (sourceBytes.length % HandshakeByteLength.NAMED_GROUP != 0) {
             throw new IllegalArgumentException(
                     "Failed to convert byte array. "
                             + "Source array size is not a multiple of destination type size.");
         }
 
-        int pointer = 0;
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(sourceBytes);
         List<NamedGroup> groups = new ArrayList<>();
-        while (pointer < sourceBytes.length) {
-            byte[] value = new byte[4];
-            value[2] = sourceBytes[pointer];
-            value[3] = sourceBytes[pointer + 1];
-            pointer += 2;
-            NamedGroup group = MAP.get(ByteBuffer.wrap(value).getInt());
-            if (group != null) {
-                groups.add(group);
+        while (inputStream.available() > 0) {
+            try {
+                byte[] groupBytes = inputStream.readNBytes(HandshakeByteLength.NAMED_GROUP);
+                NamedGroup group = MAP.get(ByteBuffer.wrap(groupBytes));
+                if (group != null) {
+                    groups.add(group);
+                } else {
+                    LOGGER.warn(
+                            "Unknown named group: {}", ArrayConverter.bytesToHexString(groupBytes));
+                }
+            } catch (IOException ex) {
+                LOGGER.error("Could not read from ByteArrayInputStream", ex);
             }
         }
-
         return groups;
     }
 
-    public boolean isStandardCurve() {
-        return this.isCurve() && this != ECDH_X25519 && this != ECDH_X448;
+    public boolean isShortWeierstrass() {
+        if (this.isEcGroup()) {
+            if (this.getGroupParameters() instanceof NamedEllipticCurveParameters) {
+                return ((NamedEllipticCurveParameters) groupParameters).getEquationType()
+                        == EcCurveEquationType.SHORT_WEIERSTRASS;
+            } else {
+                throw new UnsupportedOperationException(
+                        "Unknown group parameters: " + groupParameters.getClass().getSimpleName());
+            }
+        } else {
+            return false;
+        }
     }
 
+    public boolean isMontgomery() {
+        if (this.isEcGroup()) {
+            if (this.getGroupParameters() instanceof NamedEllipticCurveParameters) {
+                return ((NamedEllipticCurveParameters) groupParameters).getEquationType()
+                        == EcCurveEquationType.MONTGOMERY;
+            } else {
+                throw new UnsupportedOperationException(
+                        "Unknown group parameters: " + groupParameters.getClass().getSimpleName());
+            }
+        } else {
+            return false;
+        }
+    }
+
+    @Deprecated
     public boolean isCurve() {
-        return this.name().toLowerCase().contains("ec")
-                || this.name().toLowerCase().contains("brainpool")
-                || this.name().toLowerCase().contains("sm2");
+        return groupParameters != null && groupParameters.getGroup() != null;
+    }
+
+    public boolean isEcGroup() {
+        return groupParameters != null && groupParameters.getGroup() instanceof EllipticCurve;
     }
 
     public boolean isDhGroup() {
-        return this.name().toLowerCase().contains("dhe");
+        return groupParameters != null && groupParameters instanceof FfdhGroupParameters;
     }
 
     public boolean isGrease() {

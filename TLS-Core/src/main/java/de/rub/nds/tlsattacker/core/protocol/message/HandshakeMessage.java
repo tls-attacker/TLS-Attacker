@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bool.ModifiableBoolean;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
@@ -20,7 +21,6 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.handler.HandshakeMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
@@ -38,8 +38,7 @@ import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public abstract class HandshakeMessage<Self extends HandshakeMessage<?>>
-        extends ProtocolMessage<Self> {
+public abstract class HandshakeMessage extends ProtocolMessage {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -279,17 +278,20 @@ public abstract class HandshakeMessage<Self extends HandshakeMessage<?>>
     }
 
     @Override
-    public abstract HandshakeMessageParser<Self> getParser(
+    public abstract HandshakeMessageParser<? extends HandshakeMessage> getParser(
             TlsContext tlsContext, InputStream stream);
 
     @Override
-    public abstract HandshakeMessagePreparator<Self> getPreparator(TlsContext tlsContext);
+    public abstract HandshakeMessagePreparator<? extends HandshakeMessage> getPreparator(
+            TlsContext tlsContext);
 
     @Override
-    public abstract HandshakeMessageSerializer<Self> getSerializer(TlsContext tlsContext);
+    public abstract HandshakeMessageSerializer<? extends HandshakeMessage> getSerializer(
+            TlsContext tlsContext);
 
     @Override
-    public abstract HandshakeMessageHandler<Self> getHandler(TlsContext tlsContext);
+    public abstract HandshakeMessageHandler<? extends HandshakeMessage> getHandler(
+            TlsContext tlsContext);
 
     public ModifiableByteArray getMessageContent() {
         return messageContent;

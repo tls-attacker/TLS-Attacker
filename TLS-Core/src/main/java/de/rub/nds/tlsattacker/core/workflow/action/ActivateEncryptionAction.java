@@ -12,7 +12,7 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement
+@XmlRootElement(name = "ActivateEncryption")
 public class ActivateEncryptionAction extends ActivateCryptoAction {
 
     @Override

@@ -8,8 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
-import java.util.HashSet;
-import java.util.Set;
+import de.rub.nds.protocol.constants.SignatureAlgorithm;
+import de.rub.nds.x509attacker.constants.X509PublicKeyType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -159,18 +159,21 @@ public class AlgorithmResolver {
         LOGGER.warn(
                 "The key exchange algorithm in "
                         + cipherSuite.toString()
-                        + " is not supported yet.");
-        return KeyExchangeAlgorithm.RSA;
+                        + " is not supported yet or does not define a key exchange algorithm.");
+        return null;
     }
 
     /**
-     * Returns the certificate type required for the cipher suite
+     * Returns the certificate types that can be used with the cipher suite
      *
      * @param suite
      * @return
      */
-    public static CertificateKeyType getCertificateKeyType(CipherSuite suite) {
+    public static X509PublicKeyType[] getSuiteableLeafCertificateKeyType(CipherSuite suite) {
         KeyExchangeAlgorithm keyExchangeAlgorithm = getKeyExchangeAlgorithm(suite);
+        if (keyExchangeAlgorithm == null) {
+            return X509PublicKeyType.values();
+        }
         switch (keyExchangeAlgorithm) {
             case DHE_RSA:
             case ECDHE_RSA:
@@ -178,24 +181,28 @@ public class AlgorithmResolver {
             case RSA_EXPORT:
             case SRP_SHA_RSA:
             case PSK_RSA:
-                return CertificateKeyType.RSA;
+                return new X509PublicKeyType[] {X509PublicKeyType.RSA};
             case DH_RSA:
             case DH_DSS:
-                return CertificateKeyType.DH;
+                return new X509PublicKeyType[] {X509PublicKeyType.DH};
             case ECDH_ECDSA:
+                return new X509PublicKeyType[] {
+                    X509PublicKeyType.ECDH_ECDSA, X509PublicKeyType.ECDH_ONLY
+                };
             case ECDH_RSA:
-                return CertificateKeyType.ECDH;
+                return new X509PublicKeyType[] {X509PublicKeyType.ECDH_ONLY};
             case ECDHE_ECDSA:
             case ECMQV_ECDSA:
             case CECPQ1_ECDSA:
-                return CertificateKeyType.ECDSA;
+                return new X509PublicKeyType[] {X509PublicKeyType.ECDH_ECDSA};
             case DHE_DSS:
             case SRP_SHA_DSS:
-                return CertificateKeyType.DSS;
+                return new X509PublicKeyType[] {X509PublicKeyType.DSA};
             case VKO_GOST01:
-                return CertificateKeyType.GOST01;
+                return new X509PublicKeyType[] {X509PublicKeyType.GOST_R3411_2001};
             case VKO_GOST12:
-                return CertificateKeyType.GOST12;
+                // TODO Not correct
+                return new X509PublicKeyType[] {X509PublicKeyType.GOST_R3411_94};
             case DHE_PSK:
             case DH_ANON:
             case ECCPWD:
@@ -205,49 +212,16 @@ public class AlgorithmResolver {
             case PSK:
             case SRP_SHA:
             case KRB5:
-                return CertificateKeyType.NONE;
+                return null;
             case ECDH_ECNRA:
             case ECMQV_ECNRA:
-                return CertificateKeyType.ECNRA;
+                throw new UnsupportedOperationException("Not Implemented");
             case FORTEZZA_KEA:
-                return CertificateKeyType.FORTEZZA;
+                return new X509PublicKeyType[] {X509PublicKeyType.KEA};
             default:
                 throw new UnsupportedOperationException(
                         "Unsupported KeyExchange Algorithm: " + keyExchangeAlgorithm);
         }
-    }
-
-    /**
-     * Depending on the provided cipher suite, the server needs to be initialized with proper public
-     * key(s). Depending on the cipher suite, there are possibly more than one cipher suites needed.
-     *
-     * <p>This function returns a list of public key algorithms needed when running a server with a
-     * cipher suite.
-     *
-     * @param cipherSuite The selected CipherSuite
-     * @return The Set of publicKeyAlgorithms
-     */
-    public static Set<PublicKeyAlgorithm> getRequiredKeystoreAlgorithms(CipherSuite cipherSuite) {
-        String cipher = cipherSuite.toString().toUpperCase();
-        Set<PublicKeyAlgorithm> result = new HashSet<>();
-        if (cipher.contains("RSA")) {
-            result.add(PublicKeyAlgorithm.RSA);
-        } else if (cipher.contains("ECDSA")) {
-            result.add(PublicKeyAlgorithm.EC);
-        } else if (cipher.contains("DSS")) {
-            result.add(PublicKeyAlgorithm.DH);
-        } else if (cipher.contains("GOSTR341112")) {
-            result.add(PublicKeyAlgorithm.GOST12);
-        } else if (cipher.contains("GOSTR341001")) {
-            result.add(PublicKeyAlgorithm.GOST01);
-        }
-
-        if (cipher.contains("_ECDH_")) {
-            result.add(PublicKeyAlgorithm.EC);
-        } else if (cipher.contains("_DH_")) {
-            result.add(PublicKeyAlgorithm.DH);
-        }
-        return result;
     }
 
     public static CipherAlgorithm getCipher(CipherSuite cipherSuite) {
@@ -460,7 +434,7 @@ public class AlgorithmResolver {
             case RSA_EXPORT:
             case SRP_SHA_RSA:
             case PSK_RSA:
-                return SignatureAlgorithm.RSA;
+                return SignatureAlgorithm.RSA_PKCS1;
             case ECDHE_ECDSA:
             case ECDH_ECDSA:
             case ECMQV_ECDSA:

@@ -8,56 +8,39 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
+import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
+import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
+import de.rub.nds.tlsattacker.core.state.State;
+import de.rub.nds.tlsattacker.core.workflow.container.ActionHelperUtil;
+import jakarta.xml.bind.annotation.XmlElementRef;
+import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
-@XmlRootElement
-public class TightReceiveAction extends ReceiveAction {
+@XmlRootElement(name = "TightReceive")
+public class TightReceiveAction extends CommonReceiveAction {
+
+    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
+    protected List<ProtocolMessage> expectedMessages;
 
     public TightReceiveAction() {}
 
     public TightReceiveAction(List<ProtocolMessage> expectedMessages) {
-        super(expectedMessages);
+        super();
+        this.expectedMessages = expectedMessages;
     }
 
     public TightReceiveAction(ProtocolMessage... expectedMessages) {
-        super(expectedMessages);
-    }
-
-    public TightReceiveAction(Set<ActionOption> myActionOptions, List<ProtocolMessage> messages) {
-        super(myActionOptions, messages);
-    }
-
-    public TightReceiveAction(Set<ActionOption> actionOptions, ProtocolMessage... messages) {
-        super(actionOptions, messages);
-    }
-
-    public TightReceiveAction(ActionOption actionOption, List<ProtocolMessage> messages) {
-        super(actionOption, messages);
-    }
-
-    public TightReceiveAction(ActionOption actionOption, ProtocolMessage... messages) {
-        super(actionOption, messages);
-    }
-
-    public TightReceiveAction(String connectionAlias) {
-        super(connectionAlias);
-    }
-
-    public TightReceiveAction(String connectionAliasAlias, List<ProtocolMessage> messages) {
-        super(connectionAliasAlias, messages);
-    }
-
-    public TightReceiveAction(String connectionAliasAlias, ProtocolMessage... messages) {
-        super(connectionAliasAlias, messages);
+        super();
+        this.expectedMessages = Arrays.asList(expectedMessages);
     }
 
     @Override
-    protected void distinctReceive(TlsContext tlsContext) {
-        tightReceive(tlsContext, getExpectedMessages());
+    protected List<LayerConfiguration<?>> createLayerConfiguration(State state) {
+        TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
+        return ActionHelperUtil.createTightReceiveConfiguration(tlsContext, expectedMessages);
     }
 }

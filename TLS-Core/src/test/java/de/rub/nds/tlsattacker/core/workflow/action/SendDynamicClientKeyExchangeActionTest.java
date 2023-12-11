@@ -14,11 +14,9 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.ArrayList;
-import java.util.List;
 import org.junit.jupiter.api.Test;
 
 public class SendDynamicClientKeyExchangeActionTest
@@ -33,33 +31,22 @@ public class SendDynamicClientKeyExchangeActionTest
     }
 
     @Test
-    public void testGetSendMessages() {
-        assertTrue(
-                action.getSendMessages() instanceof ArrayList
-                        && action.getSendMessages().isEmpty());
+    public void testGetSentMessages() {
+        assertNull(action.getSentMessages());
         action.execute(state);
         assertTrue(
-                action.getSendMessages() instanceof ArrayList
-                        && action.getSendMessages().size() == 1
-                        && action.getSendMessages().get(0) instanceof DHClientKeyExchangeMessage);
+                action.getSentMessages() instanceof ArrayList
+                        && action.getSentMessages().size() == 1
+                        && action.getSentMessages().get(0) instanceof DHClientKeyExchangeMessage);
     }
 
     @Test
-    public void testGetSendRecords() {
-        assertTrue(
-                action.getSendRecords() instanceof ArrayList && action.getSendRecords().isEmpty());
+    public void testGetSentRecords() {
+        assertNull(action.getSentRecords());
         action.execute(state);
         assertTrue(
-                action.getSendRecords() instanceof ArrayList
-                        && action.getSendRecords().size() == 1);
-    }
-
-    @Test
-    public void testSetRecords() {
-        action.execute(state);
-        List<Record> expectedRecords = new ArrayList<>();
-        action.setRecords(expectedRecords);
-        assertEquals(expectedRecords, action.getSendRecords());
+                action.getSentRecords() instanceof ArrayList
+                        && action.getSentRecords().size() == 1);
     }
 
     @Test
@@ -72,8 +59,7 @@ public class SendDynamicClientKeyExchangeActionTest
     @Test
     public void testToString() {
         assertEquals(
-                "Send Dynamic Client Key Exchange Action: (not executed)\n\tMessages:\n",
-                action.toString());
+                "Send Dynamic Client Key Exchange Action: (not executed)\n", action.toString());
     }
 
     @Test

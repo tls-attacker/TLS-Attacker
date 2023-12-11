@@ -23,7 +23,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
 @XmlRootElement
-public class NewConnectionIdFrame extends QuicFrame<NewConnectionIdFrame> {
+public class NewConnectionIdFrame extends QuicFrame {
 
     /**
      * The sequence number assigned to the connection ID by the sender, encoded as a variable-length

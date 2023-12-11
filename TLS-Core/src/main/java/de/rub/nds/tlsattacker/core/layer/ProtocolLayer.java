@@ -249,7 +249,7 @@ public abstract class ProtocolLayer<
         try {
             parser.parse(container);
             Preparator preparator = container.getPreparator(context);
-            preparator.prepareAfterParse(false); // TODO REMOVE THIS CLIENTMODE FLAG
+            preparator.prepareAfterParse();
             Handler handler = container.getHandler(context);
             handler.adjustContext(container);
             addProducedContainer(container);
@@ -271,7 +271,7 @@ public abstract class ProtocolLayer<
         try {
             parser.parse(container);
             Preparator preparator = container.getPreparator(context);
-            preparator.prepareAfterParse(false); // TODO REMOVE THIS CLIENTMODE FLAG
+            preparator.prepareAfterParse();
             Handler handler = container.getHandler(context);
             handler.adjustContext(container);
             addProducedContainer(container);
@@ -289,17 +289,19 @@ public abstract class ProtocolLayer<
     }
 
     public boolean prepareDataContainer(DataContainer dataContainer, LayerContext context) {
-        Preparator preparator = dataContainer.getPreparator(context);
-        try {
-            preparator.prepare();
-            preparator.afterPrepare();
-        } catch (PreparationException ex) {
-            LOGGER.error(
-                    "Could not prepare message "
-                            + dataContainer.toString()
-                            + ". Therefore, we skip it: ",
-                    ex);
-            return false;
+        if (dataContainer.shouldPrepare()) {
+            Preparator<?> preparator = dataContainer.getPreparator(context);
+            try {
+                preparator.prepare();
+                preparator.afterPrepare();
+            } catch (PreparationException ex) {
+                LOGGER.error(
+                        "Could not prepare message "
+                                + dataContainer.toString()
+                                + ". Therefore, we skip it: ",
+                        ex);
+                return false;
+            }
         }
         return true;
     }

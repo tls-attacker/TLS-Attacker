@@ -25,7 +25,7 @@ import java.io.InputStream;
 import java.util.Arrays;
 
 @XmlRootElement(name = "Application")
-public class ApplicationMessage extends ProtocolMessage<ApplicationMessage> {
+public class ApplicationMessage extends ProtocolMessage {
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] dataConfig = null;
