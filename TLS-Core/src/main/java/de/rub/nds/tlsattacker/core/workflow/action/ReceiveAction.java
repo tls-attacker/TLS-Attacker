@@ -193,24 +193,6 @@ public class ReceiveAction extends CommonReceiveAction implements StaticReceivin
                 getExpectedDataContainerLists());
     }
 
-    public List<ProtocolMessageType> getGoingToReceiveProtocolMessageTypes() {
-        List<ProtocolMessageType> protocolMessageTypes = new ArrayList<>();
-        for (ProtocolMessage msg : expectedMessages) {
-            protocolMessageTypes.add(msg.getProtocolMessageType());
-        }
-        return protocolMessageTypes;
-    }
-
-    public List<HandshakeMessageType> getGoingToReceiveHandshakeMessageTypes() {
-        List<HandshakeMessageType> handshakeMessageTypes = new ArrayList<>();
-        for (ProtocolMessage msg : expectedMessages) {
-            if (msg instanceof HandshakeMessage) {
-                handshakeMessageTypes.add(((HandshakeMessage) msg).getHandshakeMessageType());
-            }
-        }
-        return handshakeMessageTypes;
-    }
-
     public List<ProtocolMessage> getExpectedMessages() {
         return expectedMessages;
     }

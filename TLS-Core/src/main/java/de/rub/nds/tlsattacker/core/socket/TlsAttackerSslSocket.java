@@ -191,7 +191,6 @@ public class TlsAttackerSslSocket extends SSLSocket {
         StreamTransportHandler streamTransportHandler =
                 new StreamTransportHandler(
                         timeout,
-                        timeout,
                         ConnectionEndType.CLIENT,
                         super.getInputStream(),
                         super.getOutputStream());

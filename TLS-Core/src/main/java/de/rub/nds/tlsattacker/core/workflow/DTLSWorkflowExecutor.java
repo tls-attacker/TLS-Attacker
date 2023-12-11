@@ -123,7 +123,9 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
 
         setFinalSocketState();
 
-        closeConnection();
+        if (config.isWorkflowExecutorShouldClose()) {
+            closeConnection();
+        }
         if (config.isResetWorkflowTracesBeforeSaving()) {
             LOGGER.debug("Resetting WorkflowTrace");
             state.getWorkflowTrace().reset();

@@ -1054,7 +1054,6 @@
       <xs:element name="proxyControlPort" type="xs:int" minOccurs="0"/>
       <xs:element name="proxyControlHostname" type="xs:string" minOccurs="0"/>
       <xs:element name="timeout" type="xs:int" minOccurs="0"/>
-      <xs:element name="firstTimeout" type="xs:int" minOccurs="0"/>
       <xs:element name="connectionTimeout" type="xs:int" minOccurs="0"/>
       <xs:element name="transportHandlerType" type="transportHandlerType" minOccurs="0"/>
       <xs:element name="sourcePort" type="xs:int" minOccurs="0"/>

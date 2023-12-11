@@ -42,7 +42,7 @@ public class QuicDelegate extends Delegate {
             config.setQuic(true);
 
             // Connection
-            config.getDefaultClientConnection().setFirstTimeout(5000);
+            config.getDefaultClientConnection().setTimeout(5000);
             config.getDefaultClientConnection().setTransportHandlerType(TransportHandlerType.UDP);
             config.getDefaultServerConnection().setTransportHandlerType(TransportHandlerType.UDP);
 
