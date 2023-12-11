@@ -21,7 +21,7 @@ public class ClientEcdsaHandshakeIT extends AbstractHandshakeIT {
 
     public ClientEcdsaHandshakeIT() {
         super(
-                TlsImplementationType.MBED,
+                TlsImplementationType.MBEDTLS,
                 ConnectionRole.SERVER,
                 "2.6.0",
                 "debug_level=5 crt_file=/cert/ec256cert.pem key_file=/cert/ec256key.pem");

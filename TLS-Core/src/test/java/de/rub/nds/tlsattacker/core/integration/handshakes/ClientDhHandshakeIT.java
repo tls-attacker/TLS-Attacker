@@ -20,7 +20,7 @@ import org.junit.jupiter.api.Tag;
 public class ClientDhHandshakeIT extends AbstractHandshakeIT {
 
     public ClientDhHandshakeIT() {
-        super(TlsImplementationType.MBED, ConnectionRole.SERVER, "2.6.0", "debug_level=5 ");
+        super(TlsImplementationType.MBEDTLS, ConnectionRole.SERVER, "2.6.0", "debug_level=5 ");
     }
 
     @Override
