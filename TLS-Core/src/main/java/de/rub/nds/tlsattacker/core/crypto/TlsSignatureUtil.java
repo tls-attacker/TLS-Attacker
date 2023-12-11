@@ -16,7 +16,6 @@ import de.rub.nds.protocol.crypto.key.RsaPrivateKey;
 import de.rub.nds.protocol.crypto.signature.DsaSignatureComputations;
 import de.rub.nds.protocol.crypto.signature.EcdsaSignatureComputations;
 import de.rub.nds.protocol.crypto.signature.RsaPkcs1SignatureComputations;
-import de.rub.nds.protocol.crypto.signature.RsaPssSignatureComputations;
 import de.rub.nds.protocol.crypto.signature.RsaSsaPssSignatureComputations;
 import de.rub.nds.protocol.crypto.signature.SignatureCalculator;
 import de.rub.nds.protocol.crypto.signature.SignatureComputations;
@@ -218,7 +217,7 @@ public class TlsSignatureUtil {
             Chooser chooser,
             HashAlgorithm algorithm,
             byte[] toBeHasedAndSigned,
-            RsaPssSignatureComputations computations) {
+            RsaSsaPssSignatureComputations computations) {
 
         BigInteger modulus =
                 chooser.getContext()
