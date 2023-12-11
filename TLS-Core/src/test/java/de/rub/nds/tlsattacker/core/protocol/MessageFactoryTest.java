@@ -9,11 +9,14 @@
 package de.rub.nds.tlsattacker.core.protocol;
 
 import static de.rub.nds.tlsattacker.core.protocol.MessageFactory.generateHandshakeMessage;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.protocol.message.*;
+import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.state.State;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -23,7 +26,8 @@ public class MessageFactoryTest {
 
     @BeforeEach
     public void setUp() {
-        tlsContext = new TlsContext();
+        State state = new State(new Config());
+        tlsContext = state.getTlsContext();
     }
 
     @Test
