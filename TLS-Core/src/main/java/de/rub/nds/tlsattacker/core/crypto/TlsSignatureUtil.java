@@ -110,9 +110,7 @@ public class TlsSignatureUtil {
                             "Computations must be of type RsaPssSignatureComputations for "
                                     + algorithm);
                 }
-                ((RsaSsaPssSignatureComputations) computations)
-                        .setSalt(chooser.getConfig().getDefaultRsaSsaPssSalt());
-                computations.computeRsaPssSignature(
+                computeRsaPssSignature(
                         chooser,
                         algorithm.getHashAlgorithm(),
                         toBeHashedAndSigned,

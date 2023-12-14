@@ -211,9 +211,6 @@
         <defaultClientSupportedSignatureAndHashAlgorithm>RSA_PSS_RSAE_SHA256</defaultClientSupportedSignatureAndHashAlgorithm>
         <defaultClientSupportedSignatureAndHashAlgorithm>RSA_PSS_RSAE_SHA384</defaultClientSupportedSignatureAndHashAlgorithm>
         <defaultClientSupportedSignatureAndHashAlgorithm>RSA_PSS_RSAE_SHA512</defaultClientSupportedSignatureAndHashAlgorithm>
-        <defaultClientSupportedSignatureAndHashAlgorithm>GOSTR34102001_GOSTR3411</defaultClientSupportedSignatureAndHashAlgorithm>
-        <defaultClientSupportedSignatureAndHashAlgorithm>GOSTR34102012_256_GOSTR34112012_256</defaultClientSupportedSignatureAndHashAlgorithm>
-        <defaultClientSupportedSignatureAndHashAlgorithm>GOSTR34102012_512_GOSTR34112012_512</defaultClientSupportedSignatureAndHashAlgorithm>
         <defaultClientSupportedSignatureAndHashAlgorithm>SM2_SM3</defaultClientSupportedSignatureAndHashAlgorithm>
     </defaultClientSupportedSignatureAndHashAlgorithms>
     <defaultClientSupportedCertificateSignAlgorithms>
@@ -1242,9 +1239,6 @@
         <defaultServerSupportedSignatureAndHashAlgorithm>RSA_PSS_RSAE_SHA256</defaultServerSupportedSignatureAndHashAlgorithm>
         <defaultServerSupportedSignatureAndHashAlgorithm>RSA_PSS_RSAE_SHA384</defaultServerSupportedSignatureAndHashAlgorithm>
         <defaultServerSupportedSignatureAndHashAlgorithm>RSA_PSS_RSAE_SHA512</defaultServerSupportedSignatureAndHashAlgorithm>
-        <defaultServerSupportedSignatureAndHashAlgorithm>GOSTR34102001_GOSTR3411</defaultServerSupportedSignatureAndHashAlgorithm>
-        <defaultServerSupportedSignatureAndHashAlgorithm>GOSTR34102012_256_GOSTR34112012_256</defaultServerSupportedSignatureAndHashAlgorithm>
-        <defaultServerSupportedSignatureAndHashAlgorithm>GOSTR34102012_512_GOSTR34112012_512</defaultServerSupportedSignatureAndHashAlgorithm>
         <defaultServerSupportedSignatureAndHashAlgorithm>SM2_SM3</defaultServerSupportedSignatureAndHashAlgorithm>
     </defaultServerSupportedSignatureAndHashAlgorithms>
     <defaultServerSupportedCertificateSignAlgorithms>
