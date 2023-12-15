@@ -115,9 +115,13 @@ public enum SignatureAndHashAlgorithm {
         algoList.add(RSA_PSS_RSAE_SHA256);
         algoList.add(RSA_PSS_RSAE_SHA384);
         algoList.add(RSA_PSS_RSAE_SHA512);
-        algoList.add(GOSTR34102001_GOSTR3411);
-        algoList.add(GOSTR34102012_256_GOSTR34112012_256);
-        algoList.add(GOSTR34102012_512_GOSTR34112012_512);
+        /**
+         * Deactivated since the Protocol-Attacker rework, as Protocol-Attacker does not support
+         * them.
+         */
+        // algoList.add(GOSTR34102001_GOSTR3411);
+        // algoList.add(GOSTR34102012_256_GOSTR34112012_256);
+        // algoList.add(GOSTR34102012_512_GOSTR34112012_512);
         algoList.add(SM2_SM3);
         return algoList;
     }
