@@ -103,7 +103,7 @@ public class PopAndSendAction extends CommonSendAction {
             messageBuffer.remove((int) index);
             tlsContext.getRecordBuffer().remove((int) index);
         } else {
-            if(!messageBuffer.isEmpty() {
+            if (!messageBuffer.isEmpty()) {
                 messages.add(messageBuffer.pop());
             }
         }
