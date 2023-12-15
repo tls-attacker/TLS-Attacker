@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.dtls;
 import static org.junit.jupiter.api.Assertions.*;
 
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-
 import org.bouncycastle.util.Arrays;
 
 public class FragmentUtils {
