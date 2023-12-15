@@ -366,6 +366,7 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
             LOGGER.warn(
                     "Failed to parse HandshakeMessage using assumed type {}",
                     HandshakeMessageType.getMessageType(type));
+            LOGGER.trace(ex);
             // not being able to handle the handshake message results in an UnknownMessageContainer
             UnknownHandshakeMessage message = new UnknownHandshakeMessage();
             message.setAssumedType(type);
