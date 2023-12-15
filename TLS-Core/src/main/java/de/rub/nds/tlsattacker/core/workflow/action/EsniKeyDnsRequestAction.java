@@ -34,6 +34,8 @@ public class EsniKeyDnsRequestAction extends TlsAction {
 
     private List<ExtensionMessage> extensions;
 
+    private boolean asPlanned = false;
+
     @Override
     public void execute(State state) throws ActionExecutionException {
         TlsContext tlsContext;
@@ -54,10 +56,12 @@ public class EsniKeyDnsRequestAction extends TlsAction {
         } catch (TextParseException e) {
             LOGGER.error("Cannot send DNS query for ip addresses");
             setExecuted(true);
+            asPlanned = false;
             return;
         } catch (UnknownHostException e) {
             LOGGER.warn("Could not reach Cloudflare DNS server");
             setExecuted(true);
+            asPlanned = false;
             return;
         }
         // create DNS query
@@ -72,6 +76,7 @@ public class EsniKeyDnsRequestAction extends TlsAction {
         } catch (IOException e) {
             LOGGER.warn("Failed to send DNS query");
             setExecuted(true);
+            asPlanned = false;
             return;
         }
 
@@ -89,6 +94,7 @@ public class EsniKeyDnsRequestAction extends TlsAction {
         if (esniKeyRecords.isEmpty()) {
             LOGGER.warn("No ESNI DNS Resource Record available for {}", hostname);
             setExecuted(true);
+            asPlanned = false;
             return;
         }
 
@@ -103,6 +109,7 @@ public class EsniKeyDnsRequestAction extends TlsAction {
                     hostname,
                     esniKeyRecordStr);
             setExecuted(true);
+            asPlanned = false;
             return;
         }
         LOGGER.debug("esniKeyRecordStr: {}", esniKeyRecordStr);
@@ -122,16 +129,18 @@ public class EsniKeyDnsRequestAction extends TlsAction {
         tlsContext.setEsniKeysNotBefore(esniKeyRecord.getNotBefore());
         tlsContext.setEsniKeysNotAfter(esniKeyRecord.getNotAfter());
         extensions = esniKeyRecord.getExtensions();
+        asPlanned = true;
         setExecuted(true);
     }
 
     @Override
     public void reset() {
         setExecuted(false);
+        asPlanned = false;
     }
 
     @Override
     public boolean executedAsPlanned() {
-        return isExecuted();
+        return isExecuted() && asPlanned;
     }
 }
