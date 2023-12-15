@@ -15,7 +15,6 @@ import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedClientHelloExtensionMessage;
@@ -76,10 +75,8 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage>
                 message.getSerializer(chooser.getContext().getTlsContext());
         byte[] content = serializer.serializeHandshakeMessageContent();
         prepareMessageContent(content);
-        if (!(message instanceof DtlsHandshakeMessageFragment)) {
-            prepareMessageLength(content.length);
-            prepareMessageType(message.getHandshakeMessageType());
-        }
+        prepareMessageLength(content.length);
+        prepareMessageType(message.getHandshakeMessageType());
     }
 
     public void autoSelectExtensions(
