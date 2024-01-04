@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.container;
 
+import de.rub.nds.tlsattacker.core.dtls.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.http.HttpMessage;
 import de.rub.nds.tlsattacker.core.layer.DataContainerFilter;
 import de.rub.nds.tlsattacker.core.layer.GenericReceiveLayerConfiguration;
@@ -30,7 +31,6 @@ import de.rub.nds.tlsattacker.core.layer.impl.DataContainerFilters.GenericDataCo
 import de.rub.nds.tlsattacker.core.layer.impl.DataContainerFilters.Tls.WarningAlertFilter;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.KeyUpdateMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
 import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;

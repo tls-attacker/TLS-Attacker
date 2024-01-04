@@ -8,10 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
+import de.rub.nds.tlsattacker.core.dtls.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.record.Record;
