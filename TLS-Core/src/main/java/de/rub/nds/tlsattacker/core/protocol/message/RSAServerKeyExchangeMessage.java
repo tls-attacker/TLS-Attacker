@@ -1,65 +1,76 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message;
-
-import java.util.List;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.RSAServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.RSAServerComputations;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import javax.xml.bind.annotation.XmlRootElement;
+import de.rub.nds.tlsattacker.core.protocol.parser.RSAServerKeyExchangeParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.RSAServerKeyExchangePreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.RSAServerKeyExchangeSerializer;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import java.io.InputStream;
+import java.util.List;
 
 @XmlRootElement(name = "RSAServerKeyExchange")
 public class RSAServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
     protected ModifiableByteArray modulus;
+
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     protected ModifiableInteger modulusLength;
 
-    @HoldsModifiableVariable
-    protected RSAServerComputations computations;
+    @HoldsModifiableVariable protected RSAServerComputations computations;
 
     public RSAServerKeyExchangeMessage() {
         super();
     }
 
-    public RSAServerKeyExchangeMessage(Config tlsConfig) {
-        super(tlsConfig, HandshakeMessageType.SERVER_KEY_EXCHANGE);
-    }
-
     @Override
-    public RSAServerComputations getComputations() {
+    public RSAServerComputations getKeyExchangeComputations() {
         return computations;
     }
 
     @Override
-    public void prepareComputations() {
-        if (getComputations() == null) {
+    public void prepareKeyExchangeComputations() {
+        if (getKeyExchangeComputations() == null) {
             computations = new RSAServerComputations();
         }
     }
 
     @Override
-    public ProtocolMessageHandler<RSAServerKeyExchangeMessage> getHandler(TlsContext context) {
-        return new RSAServerKeyExchangeHandler(context);
+    public RSAServerKeyExchangeHandler getHandler(TlsContext tlsContext) {
+        return new RSAServerKeyExchangeHandler(tlsContext);
+    }
+
+    @Override
+    public RSAServerKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new RSAServerKeyExchangeParser(stream, tlsContext);
+    }
+
+    @Override
+    public RSAServerKeyExchangePreparator getPreparator(TlsContext tlsContext) {
+        return new RSAServerKeyExchangePreparator(tlsContext.getChooser(), this);
+    }
+
+    @Override
+    public RSAServerKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
+        return new RSAServerKeyExchangeSerializer(
+                this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override
@@ -81,7 +92,8 @@ public class RSAServerKeyExchangeMessage extends ServerKeyExchangeMessage {
         sb.append("\n  Signature and Hash Algorithm: ");
         // signature and hash algorithms are provided only while working with
         // (D)TLS 1.2
-        if (this.getSignatureAndHashAlgorithm() != null && this.getSignatureAndHashAlgorithm().getValue() != null) {
+        if (this.getSignatureAndHashAlgorithm() != null
+                && this.getSignatureAndHashAlgorithm().getValue() != null) {
             sb.append(ArrayConverter.bytesToHexString(getSignatureAndHashAlgorithm().getValue()));
         } else {
             sb.append("null");
@@ -97,7 +109,12 @@ public class RSAServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
     @Override
     public String toCompactString() {
-        return "RSA_SERVER_KEY_EXCHANGE";
+        StringBuilder sb = new StringBuilder();
+        sb.append("RSA_SERVER_KEY_EXCHANGE");
+        if (isRetransmission()) {
+            sb.append(" (ret.)");
+        }
+        return sb.toString();
     }
 
     @Override
@@ -130,6 +147,7 @@ public class RSAServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     }
 
     public void setModulusLength(int modulusLength) {
-        this.modulusLength = ModifiableVariableFactory.safelySetValue(this.modulusLength, modulusLength);
+        this.modulusLength =
+                ModifiableVariableFactory.safelySetValue(this.modulusLength, modulusLength);
     }
 }

@@ -1,87 +1,65 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestExtensionMessage;
-import java.util.Arrays;
-import java.util.Collection;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import java.util.List;
+import java.util.stream.Stream;
+import org.junit.jupiter.api.Named;
+import org.junit.jupiter.params.provider.Arguments;
 
-@RunWith(Parameterized.class)
-public class CertificateStatusRequestExtensionParserTest {
-    /**
-     * Parameterized set up of the test vector.
-     *
-     * @return test vector (extensionType, extensionLength, extensionPayload, expectedBytes)
-     */
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] {
-            { ExtensionType.STATUS_REQUEST, ArrayConverter.hexStringToByteArray("000500050100000000"), 5, 0, 1, 0,
-                new byte[0], 0, new byte[0] },
-            { ExtensionType.STATUS_REQUEST, ArrayConverter.hexStringToByteArray("0005000701000102000103"), 7, 0, 1, 1,
-                new byte[] { 0x02 }, 1, new byte[] { 0x03 } } });
+public class CertificateStatusRequestExtensionParserTest
+        extends AbstractExtensionParserTest<
+                CertificateStatusRequestExtensionMessage, CertificateStatusRequestExtensionParser> {
+
+    public CertificateStatusRequestExtensionParserTest() {
+        super(
+                CertificateStatusRequestExtensionMessage.class,
+                (stream, context) ->
+                        new CertificateStatusRequestExtensionParser(
+                                stream, ProtocolVersion.TLS12, context),
+                List.of(
+                        Named.of(
+                                "CertificateStatusRequestExtensionMessage::getCertificateStatusRequestType",
+                                CertificateStatusRequestExtensionMessage
+                                        ::getCertificateStatusRequestType),
+                        Named.of(
+                                "CertificateStatusRequestExtensionMessage::getResponderIDListLength",
+                                CertificateStatusRequestExtensionMessage::getResponderIDListLength),
+                        Named.of(
+                                "CertificateStatusRequestExtensionMessage::getResponderIDList",
+                                CertificateStatusRequestExtensionMessage::getResponderIDList),
+                        Named.of(
+                                "CertificateStatusRequestExtensionMessage::getRequestExtensionLength",
+                                CertificateStatusRequestExtensionMessage
+                                        ::getRequestExtensionLength),
+                        Named.of(
+                                "CertificateStatusRequestExtensionMessage::getRequestExtension",
+                                CertificateStatusRequestExtensionMessage::getRequestExtension)));
     }
 
-    private final ExtensionType extensionType;
-    private final byte[] expectedBytes;
-    private final int extensionLength;
-    private final int startParsing;
-    private final int certificateStatusRequestType;
-    private final int responderIDListLength;
-    private final byte[] responderIDList;
-    private final int requestExtensionLength;
-    private final byte[] requestExtension;
-    private CertificateStatusRequestExtensionParser parser;
-    private CertificateStatusRequestExtensionMessage message;
-
-    public CertificateStatusRequestExtensionParserTest(ExtensionType extensionType, byte[] expectedBytes,
-        int extensionLength, int startParsing, int certificateStatusRequestType, int responderIDListLength,
-        byte[] responderIDList, int requestExtensionLength, byte[] requestExtension) {
-        this.extensionType = extensionType;
-        this.expectedBytes = expectedBytes;
-        this.extensionLength = extensionLength;
-        this.startParsing = startParsing;
-        this.certificateStatusRequestType = certificateStatusRequestType;
-        this.responderIDListLength = responderIDListLength;
-        this.responderIDList = responderIDList;
-        this.requestExtensionLength = requestExtensionLength;
-        this.requestExtension = requestExtension;
-    }
-
-    @Before
-    public void setUp() {
-        parser = new CertificateStatusRequestExtensionParser(startParsing, expectedBytes, Config.createConfig());
-    }
-
-    @Test
-    public void testParseExtensionMessageContent() {
-        message = parser.parse();
-
-        assertArrayEquals(extensionType.getValue(), message.getExtensionType().getValue());
-        assertEquals(extensionLength, (long) message.getExtensionLength().getValue());
-
-        assertEquals(certificateStatusRequestType, (long) message.getCertificateStatusRequestType().getValue());
-
-        assertEquals(responderIDListLength, (long) message.getResponderIDListLength().getValue());
-        assertArrayEquals(responderIDList, message.getResponderIDList().getValue());
-
-        assertEquals(requestExtensionLength, (long) message.getRequestExtensionLength().getValue());
-        assertArrayEquals(requestExtension, message.getRequestExtension().getValue());
+    public static Stream<Arguments> provideTestVectors() {
+        return Stream.of(
+                Arguments.of(
+                        ArrayConverter.hexStringToByteArray("000500050100000000"),
+                        List.of(),
+                        ExtensionType.STATUS_REQUEST,
+                        5,
+                        List.of(1, 0, new byte[0], 0, new byte[0])),
+                Arguments.of(
+                        ArrayConverter.hexStringToByteArray("0005000701000102000103"),
+                        List.of(),
+                        ExtensionType.STATUS_REQUEST,
+                        7,
+                        List.of(1, 1, new byte[] {0x02}, 1, new byte[] {0x03})));
     }
 }

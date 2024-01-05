@@ -1,39 +1,37 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
+import de.rub.nds.protocol.exception.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
+import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.printer.LogPrinter;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
-import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
-import java.io.IOException;
-import java.util.ArrayList;
+import de.rub.nds.tlsattacker.core.workflow.container.ActionHelperUtil;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.LinkedList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@XmlRootElement
-public class PopAndSendAction extends MessageAction implements SendingAction {
+@XmlRootElement(name = "PopAndSend")
+public class PopAndSendAction extends CommonSendAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /**
-     * Pop and send message with this index in message buffer.
-     */
-    Integer index = null;
+    /** Pop and send message with this index in message buffer. */
+    private Integer index = null;
+
+    private boolean couldPop = false;
 
     public PopAndSendAction() {
         super();
@@ -49,94 +47,67 @@ public class PopAndSendAction extends MessageAction implements SendingAction {
     }
 
     @Override
-    public void execute(State state) throws WorkflowExecutionException {
-        TlsContext tlsContext = state.getTlsContext(connectionAlias);
-
-        if (isExecuted()) {
-            throw new WorkflowExecutionException("Action already executed!");
-        }
-
-        LinkedList<ProtocolMessage> messageBuffer = tlsContext.getMessageBuffer();
-        if (index != null && index >= 0) {
-            if (index >= messageBuffer.size()) {
-                throw new WorkflowExecutionException("Index out of bounds, " + "trying to get element " + index
-                    + "of message buffer with " + messageBuffer.size() + "elements.");
-            }
-            messages.add(messageBuffer.get(index));
-            messageBuffer.remove(index);
-            tlsContext.getRecordBuffer().remove(index);
+    public void execute(State state) throws ActionExecutionException {
+        super.execute(state);
+        if (getSentMessages().isEmpty()) {
+            couldPop = false;
         } else {
-            messages.add(messageBuffer.pop());
-            tlsContext.getRecordBuffer().pop();
-        }
-
-        String sending = getReadableString(messages);
-        if (connectionAlias == null) {
-            LOGGER.info("Sending messages: " + sending);
-        } else {
-            LOGGER.info("Sending messages (" + connectionAlias + "): " + sending);
-        }
-
-        try {
-            MessageActionResult result =
-                sendMessageHelper.sendMessages(messages, fragments, records, tlsContext, false);
-            messages = new ArrayList<>(result.getMessageList());
-            records = new ArrayList<>(result.getRecordList());
-            if (result.getMessageFragmentList() != null) {
-                fragments = new ArrayList<>(result.getMessageFragmentList());
-            }
-            setExecuted(true);
-        } catch (IOException e) {
-            LOGGER.debug(e);
-            setExecuted(getActionOptions().contains(ActionOption.MAY_FAIL));
+            couldPop = true;
         }
     }
 
     @Override
     public String toString() {
-        return "PopAndSendAction(index: " + index + ")";
+        String messageString =
+                LogPrinter.toHumanReadableContainerList(
+                        ActionHelperUtil.getDataContainersForLayer(
+                                ImplementedLayers.MESSAGE, getLayerStackProcessingResult()));
+        return "PopAndSendAction: index: "
+                + index
+                + " message: "
+                + messageString
+                + " exexuted: "
+                + isExecuted()
+                + " couldPop: "
+                + couldPop
+                + " connectionAlias: "
+                + connectionAlias;
     }
 
     @Override
     public boolean executedAsPlanned() {
-        return isExecuted();
-    }
-
-    @Override
-    public void setRecords(List<AbstractRecord> records) {
-        this.records = records;
-    }
-
-    @Override
-    public void setFragments(List<DtlsHandshakeMessageFragment> fragments) {
-        this.fragments = fragments;
+        return super.executedAsPlanned() && couldPop;
     }
 
     @Override
     public void reset() {
-        messages = new LinkedList<>();
-        records = new LinkedList<>();
-        fragments = new LinkedList<>();
-        setExecuted(null);
+        super.reset();
+        couldPop = false;
     }
 
     @Override
-    public List<ProtocolMessage> getSendMessages() {
-        return messages;
-    }
-
-    @Override
-    public List<AbstractRecord> getSendRecords() {
-        return records;
-    }
-
-    @Override
-    public List<DtlsHandshakeMessageFragment> getSendFragments() {
-        return fragments;
-    }
-
-    @Override
-    public MessageActionDirection getMessageDirection() {
-        return MessageActionDirection.SENDING;
+    protected List<LayerConfiguration<?>> createLayerConfiguration(State state) {
+        List<ProtocolMessage> messages = new LinkedList<>();
+        TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
+        LinkedList<ProtocolMessage> messageBuffer = tlsContext.getMessageBuffer();
+        if (index != null && index >= 0) {
+            if (index >= messageBuffer.size()) {
+                throw new WorkflowExecutionException(
+                        "Index out of bounds, trying to get element "
+                                + index
+                                + "of message buffer with "
+                                + messageBuffer.size()
+                                + "elements.");
+            }
+            messages.add(messageBuffer.get(index));
+            messageBuffer.remove((int) index);
+            tlsContext.getRecordBuffer().remove((int) index);
+        } else {
+            if (!messageBuffer.isEmpty()) {
+                messages.add(messageBuffer.pop());
+            }
+        }
+        return ActionHelperUtil.createSendConfiguration(
+                tlsContext, messages, null, null, null, null, null);
     }
 }

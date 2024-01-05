@@ -1,17 +1,16 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,8 +20,7 @@ public abstract class ChangeSequenceNumberAction extends ConnectionBoundAction {
 
     protected Long sequenceNumber = null;
 
-    public ChangeSequenceNumberAction() {
-    }
+    public ChangeSequenceNumberAction() {}
 
     public ChangeSequenceNumberAction(long sequenceNumber) {
         this.sequenceNumber = sequenceNumber;
@@ -31,11 +29,11 @@ public abstract class ChangeSequenceNumberAction extends ConnectionBoundAction {
     protected abstract void changeSequenceNumber(TlsContext tlsContext);
 
     @Override
-    public void execute(State state) throws WorkflowExecutionException {
-        TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
+    public void execute(State state) throws ActionExecutionException {
+        TlsContext tlsContext = state.getContext(getConnectionAlias()).getTlsContext();
 
         if (isExecuted()) {
-            throw new WorkflowExecutionException("Action already executed!");
+            throw new ActionExecutionException("Action already executed!");
         }
         changeSequenceNumber(tlsContext);
         setExecuted(true);

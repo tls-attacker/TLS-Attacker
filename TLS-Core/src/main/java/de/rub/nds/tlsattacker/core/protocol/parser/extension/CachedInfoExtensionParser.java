@@ -1,20 +1,20 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
-import de.rub.nds.tlsattacker.core.exceptions.ParserException;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CachedInfoExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -22,38 +22,25 @@ public class CachedInfoExtensionParser extends ExtensionParser<CachedInfoExtensi
 
     private List<CachedObject> cachedObjectList;
 
-    public CachedInfoExtensionParser(int startposition, byte[] array, Config config) {
-        super(startposition, array, config);
+    public CachedInfoExtensionParser(InputStream stream, TlsContext tlsContext) {
+        super(stream, tlsContext);
     }
 
     @Override
-    public void parseExtensionMessageContent(CachedInfoExtensionMessage msg) {
-        msg.setCachedInfoLength(parseIntField(ExtensionByteLength.CACHED_INFO_LENGTH));
-        msg.setCachedInfoBytes(parseByteArrayField(msg.getCachedInfoLength().getValue()));
-
-        int position = 0;
-        ConnectionEndType connectionEndType = ConnectionEndType.CLIENT;
+    public void parse(CachedInfoExtensionMessage msg) {
         cachedObjectList = new LinkedList<>();
+        msg.setCachedInfoLength(parseIntField(ExtensionByteLength.CACHED_INFO_LENGTH));
+        byte[] cachedInfoBytes = parseByteArrayField(msg.getCachedInfoLength().getValue());
+        msg.setCachedInfoBytes(cachedInfoBytes);
+        ByteArrayInputStream innerStream = new ByteArrayInputStream(cachedInfoBytes);
+        ConnectionEndType connectionEndType = getTlsContext().getTalkingConnectionEndType();
 
-        if (msg.getCachedInfoLength().getValue() <= 2) {
-            connectionEndType = ConnectionEndType.SERVER;
-        }
-
-        while (position < msg.getCachedInfoLength().getValue()) {
-            CachedObjectParser parser =
-                new CachedObjectParser(position, msg.getCachedInfoBytes().getValue(), connectionEndType);
-            cachedObjectList.add(parser.parse());
-            if (position == parser.getPointer()) {
-                throw new ParserException("Ran into infinite Loop while parsing CachedObjects");
-            }
-            position = parser.getPointer();
+        while (innerStream.available() > 0) {
+            CachedObjectParser parser = new CachedObjectParser(innerStream, connectionEndType);
+            CachedObject object = new CachedObject();
+            parser.parse(object);
+            cachedObjectList.add(object);
         }
         msg.setCachedInfo(cachedObjectList);
     }
-
-    @Override
-    protected CachedInfoExtensionMessage createExtensionMessage() {
-        return new CachedInfoExtensionMessage();
-    }
-
 }

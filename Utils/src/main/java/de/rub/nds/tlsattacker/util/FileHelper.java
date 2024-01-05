@@ -1,19 +1,14 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.util;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,25 +24,22 @@ public class FileHelper {
                 if (f.isDirectory()) {
                     deleteFolder(f);
                 } else {
-                    f.delete();
+                    assert f.delete();
                 }
             }
         }
-        folder.delete();
+        assert folder.delete();
     }
 
     public static String getResourceAsString(Class currentClass, String resourceFilePath) {
-        InputStream is;
         if (!resourceFilePath.startsWith("/")) {
-            is = currentClass.getResourceAsStream("/" + resourceFilePath);
-        } else {
-            is = currentClass.getResourceAsStream(resourceFilePath);
+            resourceFilePath = "/" + resourceFilePath;
         }
-        String contents = null;
-        try {
+        String contents;
+        try (InputStream is = currentClass.getResourceAsStream(resourceFilePath)) {
             contents = inputStreamToString(is);
         } catch (IOException ex) {
-            LOGGER.error("Unable to load resource file " + resourceFilePath);
+            LOGGER.error("Unable to load resource file {}", resourceFilePath);
             return null;
         }
         return contents;
@@ -61,10 +53,8 @@ public class FileHelper {
             bos.write((byte) result);
             result = bis.read();
         }
-        return bos.toString(StandardCharsets.UTF_8.name());
+        return bos.toString(StandardCharsets.UTF_8);
     }
 
-    private FileHelper() {
-    }
-
+    private FileHelper() {}
 }

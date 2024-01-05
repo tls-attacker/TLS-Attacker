@@ -1,97 +1,58 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.handler;
+
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.protocol.message.PskEcDheServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.PskEcDheServerKeyExchangeParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.PskEcDheServerKeyExchangePreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.PskEcDheServerKeyExchangeSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.math.BigInteger;
-import org.junit.After;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class PskEcDheServerKeyExchangeHandlerTest {
+public class PskEcDheServerKeyExchangeHandlerTest
+        extends AbstractProtocolMessageHandlerTest<
+                PskEcDheServerKeyExchangeMessage, PskEcDheServerKeyExchangeHandler> {
 
-    private PskEcDheServerKeyExchangeHandler handler;
-    private TlsContext context;
-
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        handler = new PskEcDheServerKeyExchangeHandler(context);
-
+    public PskEcDheServerKeyExchangeHandlerTest() {
+        super(PskEcDheServerKeyExchangeMessage::new, PskEcDheServerKeyExchangeHandler::new);
     }
 
-    @After
-    public void tearDown() {
-    }
-
-    /**
-     * Test of getParser method, of class PskEcDheServerKeyExchangeHandler.
-     */
+    /** Test of adjustContext method, of class PskEcDheServerKeyExchangeHandler. */
     @Test
-    public void testGetParser() {
-        assertTrue(handler.getParser(new byte[1], 0) instanceof PskEcDheServerKeyExchangeParser);
-    }
-
-    /**
-     * Test of getPreparator method, of class PskEcDheServerKeyExchangeHandler.
-     */
-    @Test
-    public void testGetPreparator() {
-        assertTrue(handler
-            .getPreparator(new PskEcDheServerKeyExchangeMessage()) instanceof PskEcDheServerKeyExchangePreparator);
-    }
-
-    /**
-     * Test of getSerializer method, of class PskEcDheServerKeyExchangeHandler.
-     */
-    @Test
-    public void testGetSerializer() {
-        assertTrue(handler
-            .getSerializer(new PskEcDheServerKeyExchangeMessage()) instanceof PskEcDheServerKeyExchangeSerializer);
-    }
-
-    /**
-     * Test of adjustTLSContext method, of class PskEcDheServerKeyExchangeHandler.
-     */
-    @Test
-    public void testAdjustTLSContext() {
+    @Override
+    public void testadjustContext() {
         PskEcDheServerKeyExchangeMessage message = new PskEcDheServerKeyExchangeMessage();
         message.setCurveType(EllipticCurveType.NAMED_CURVE.getValue());
         message.setNamedGroup(NamedGroup.SECP256R1.getValue());
-        message.setPublicKey(ArrayConverter.hexStringToByteArray(
-            "04f660a88e9dae015684be56c25610f9c62cf120cb075eea60c560e5e6dd5d10ef6e391d7213a298985470dc2268949317ce24940d474a0c8386ab13b312ffc104"));
+        message.setPublicKey(
+                ArrayConverter.hexStringToByteArray(
+                        "04f660a88e9dae015684be56c25610f9c62cf120cb075eea60c560e5e6dd5d10ef6e391d7213a298985470dc2268949317ce24940d474a0c8386ab13b312ffc104"));
         message.setPublicKeyLength(65);
-        message.prepareComputations();
-        message.getComputations().setPremasterSecret(new byte[] { 0, 1, 2, 3 });
-        message.getComputations().setPrivateKey(new BigInteger("12345"));
-        handler.adjustTLSContext(message);
+        message.prepareKeyExchangeComputations();
+        message.getKeyExchangeComputations().setPremasterSecret(new byte[] {0, 1, 2, 3});
+        message.getKeyExchangeComputations().setPrivateKey(new BigInteger("12345"));
+        handler.adjustContext(message);
         assertNull(context.getPreMasterSecret());
     }
 
     @Test
-    public void testAdjustTLSContextWithoutComputations() {
+    public void testadjustContextWithoutComputations() {
         PskEcDheServerKeyExchangeMessage message = new PskEcDheServerKeyExchangeMessage();
         message.setCurveType(EllipticCurveType.NAMED_CURVE.getValue());
         message.setNamedGroup(NamedGroup.SECP256R1.getValue());
-        message.setPublicKey(ArrayConverter.hexStringToByteArray(
-            "04f660a88e9dae015684be56c25610f9c62cf120cb075eea60c560e5e6dd5d10ef6e391d7213a298985470dc2268949317ce24940d474a0c8386ab13b312ffc104"));
+        message.setPublicKey(
+                ArrayConverter.hexStringToByteArray(
+                        "04f660a88e9dae015684be56c25610f9c62cf120cb075eea60c560e5e6dd5d10ef6e391d7213a298985470dc2268949317ce24940d474a0c8386ab13b312ffc104"));
         message.setPublicKeyLength(65);
-        handler.adjustTLSContext(message);
+        handler.adjustContext(message);
         assertNull(context.getPreMasterSecret());
         assertNull(context.getMasterSecret());
     }

@@ -1,45 +1,23 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message;
 
-import de.rub.nds.tlsattacker.core.config.Config;
-import org.junit.After;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
+import java.util.stream.Stream;
+import org.junit.jupiter.params.provider.Arguments;
 
-import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+public class UnknownMessageTest extends AbstractMessageTest<UnknownMessage> {
 
-public class UnknownMessageTest {
-
-    UnknownMessage message;
-
-    @Before
-    public void setUp() {
-        message = new UnknownMessage(Config.createConfig(), ProtocolMessageType.UNKNOWN);
+    public UnknownMessageTest() {
+        super(UnknownMessage::new, "UnknownMessage:\n" + "  Data: %s");
     }
 
-    @After
-    public void tearDown() {
+    public static Stream<Arguments> provideToStringTestVectors() {
+        return Stream.of(Arguments.of(new Object[] {null}, null));
     }
-
-    /**
-     * Test of toString method, of class UnknownMessage.
-     */
-    @Test
-    public void testToString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("UnknownMessage:");
-        sb.append("\n  Data: ").append("null");
-
-        assertEquals(message.toString(), sb.toString());
-    }
-
 }

@@ -1,78 +1,68 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
-import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.ChooserType;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ServerNameIndicationExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
 import java.util.LinkedList;
 import java.util.List;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class ServerNameIndicationExtensionPreparatorTest {
+public class ServerNameIndicationExtensionPreparatorTest
+        extends AbstractExtensionMessagePreparatorTest<
+                ServerNameIndicationExtensionMessage,
+                ServerNameIndicationExtensionSerializer,
+                ServerNameIndicationExtensionPreparator> {
 
-    private Chooser chooser;
-    private ServerNameIndicationExtensionMessage message;
-    private ServerNameIndicationExtensionSerializer serializer;
-    private Config config;
-
-    @Before
-    public void setUp() {
-        config = Config.createConfig();
-        chooser = ChooserFactory.getChooser(ChooserType.DEFAULT, new TlsContext(config), config);
-        message = new ServerNameIndicationExtensionMessage();
+    public ServerNameIndicationExtensionPreparatorTest() {
+        super(
+                ServerNameIndicationExtensionMessage::new,
+                ServerNameIndicationExtensionSerializer::new,
+                ServerNameIndicationExtensionPreparator::new);
     }
 
-    /**
-     * Test of prepareExtensionContent method, of class ServerNameIndicationExtensionPreparator.
-     */
+    /** Test of prepareExtensionContent method, of class ServerNameIndicationExtensionPreparator. */
     @Test
-    public void testPrepareExtensionContentWithOnePair() {
+    public void testPrepare() {
+        context.setConnection(context.getConfig().getDefaultClientConnection());
         List<ServerNamePair> pairList = new LinkedList<>();
-        ServerNamePair pair = new ServerNamePair((byte) 1, new byte[] { 0x01, 0x02 });
+        ServerNamePair pair = new ServerNamePair((byte) 1, new byte[] {0x01, 0x02});
         pairList.add(pair);
-        config.setDefaultSniHostnames(pairList);
-        ServerNameIndicationExtensionPreparator serverPrep =
-            new ServerNameIndicationExtensionPreparator(chooser, message, serializer);
+        context.getConfig().setDefaultSniHostnames(pairList);
 
-        serverPrep.prepareExtensionContent();
+        preparator.prepare();
 
-        assertArrayEquals(new byte[] { 0x01, 0x00, 0x02, 0x01, 0x02 },
-            serverPrep.getObject().getServerNameListBytes().getValue());
-        assertEquals(5, (long) serverPrep.getObject().getServerNameListLength().getOriginalValue());
+        assertArrayEquals(
+                new byte[] {0x01, 0x00, 0x02, 0x01, 0x02},
+                preparator.getObject().getServerNameListBytes().getValue());
+        assertEquals(5, preparator.getObject().getServerNameListLength().getOriginalValue());
     }
 
     @Test
-    public void testPrepareExtensionContentWithTwoPairs() {
+    public void testPrepareWithTwoPairs() {
+        context.setConnection(context.getConfig().getDefaultClientConnection());
         List<ServerNamePair> pairList = new LinkedList<>();
-        ServerNamePair pair = new ServerNamePair((byte) 1, new byte[] { 0x01, 0x02 });
+        ServerNamePair pair = new ServerNamePair((byte) 1, new byte[] {0x01, 0x02});
         pairList.add(pair);
-        ServerNamePair pair2 = new ServerNamePair((byte) 2, new byte[] { 0x03, 0x04, 0x05, 0x06 });
+        ServerNamePair pair2 = new ServerNamePair((byte) 2, new byte[] {0x03, 0x04, 0x05, 0x06});
         pairList.add(pair2);
-        config.setDefaultSniHostnames(pairList);
+        context.getConfig().setDefaultSniHostnames(pairList);
 
-        ServerNameIndicationExtensionPreparator serverPrep =
-            new ServerNameIndicationExtensionPreparator(chooser, message, serializer);
+        preparator.prepare();
 
-        serverPrep.prepareExtensionContent();
-
-        assertArrayEquals(new byte[] { 0x01, 0x00, 0x02, 0x01, 0x02, 0x02, 0x00, 0x04, 0x03, 0x04, 0x05, 0x06 },
-            serverPrep.getObject().getServerNameListBytes().getValue());
-        assertEquals(12, (long) serverPrep.getObject().getServerNameListLength().getOriginalValue());
+        assertArrayEquals(
+                new byte[] {0x01, 0x00, 0x02, 0x01, 0x02, 0x02, 0x00, 0x04, 0x03, 0x04, 0x05, 0x06},
+                preparator.getObject().getServerNameListBytes().getValue());
+        assertEquals(12, preparator.getObject().getServerNameListLength().getOriginalValue());
     }
 }

@@ -1,67 +1,56 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
-import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.connection.InboundConnection;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TrustedCaIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.TrustedCaIndicationExtensionParserTest;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.TrustedAuthorityPreparator;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.util.Collection;
+import de.rub.nds.tlsattacker.core.state.Context;
+import de.rub.nds.tlsattacker.core.state.State;
 import java.util.List;
-import static org.junit.Assert.assertArrayEquals;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import java.util.stream.Stream;
+import org.junit.jupiter.params.provider.Arguments;
 
-@RunWith(Parameterized.class)
-public class TrustedCaIndicationExtensionSerializerTest {
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return TrustedCaIndicationExtensionParserTest.generateData();
+public class TrustedCaIndicationExtensionSerializerTest
+        extends AbstractExtensionMessageSerializerTest<
+                TrustedCaIndicationExtensionMessage, TrustedCaIndicationExtensionSerializer> {
+
+    private TlsContext context;
+
+    public TrustedCaIndicationExtensionSerializerTest() {
+        // noinspection unchecked
+        super(
+                TrustedCaIndicationExtensionMessage::new,
+                TrustedCaIndicationExtensionSerializer::new,
+                List.of(
+                        (msg, obj) -> msg.setTrustedAuthoritiesLength((Integer) obj),
+                        (msg, obj) -> msg.setTrustedAuthorities((List<TrustedAuthority>) obj)));
+        context = new Context(new State(new Config()), new InboundConnection()).getTlsContext();
     }
 
-    private final ExtensionType type;
-    private final byte[] extensionBytes;
-    private final int startposition;
-    private final int extensionLength;
-    private final List<TrustedAuthority> trustedAuthoritiesList;
-    private final int trustedAuthoritiesLength;
-
-    public TrustedCaIndicationExtensionSerializerTest(ExtensionType type, byte[] extensionBytes, int startposition,
-        int extensionLength, List<TrustedAuthority> trustedAuthoritiesList, int trustedAuthoritiesLength) {
-        this.type = type;
-        this.extensionBytes = extensionBytes;
-        this.startposition = startposition;
-        this.extensionLength = extensionLength;
-        this.trustedAuthoritiesList = trustedAuthoritiesList;
-        this.trustedAuthoritiesLength = trustedAuthoritiesLength;
+    public static Stream<Arguments> provideTestVectors() {
+        return TrustedCaIndicationExtensionParserTest.provideTestVectors();
     }
 
-    @Test
-    public void testSerializeBytes() {
-        TrustedCaIndicationExtensionMessage msg = new TrustedCaIndicationExtensionMessage();
-        for (TrustedAuthority item : trustedAuthoritiesList) {
-            TrustedAuthorityPreparator preparator = new TrustedAuthorityPreparator(new TlsContext().getChooser(), item);
-            preparator.prepare();
+    @Override
+    protected void setExtensionMessageSpecific(
+            List<Object> providedAdditionalValues, List<Object> providedMessageSpecificValues) {
+        @SuppressWarnings("unchecked")
+        List<TrustedAuthority> trustedAuthorities =
+                (List<TrustedAuthority>) providedMessageSpecificValues.get(1);
+        for (TrustedAuthority trustedAuthority : trustedAuthorities) {
+            new TrustedAuthorityPreparator(context.getChooser(), trustedAuthority).prepare();
         }
-
-        msg.setExtensionType(type.getValue());
-        msg.setExtensionLength(extensionLength);
-        msg.setTrustedAuthoritiesLength(trustedAuthoritiesLength);
-        msg.setTrustedAuthorities(trustedAuthoritiesList);
-
-        TrustedCaIndicationExtensionSerializer serializer = new TrustedCaIndicationExtensionSerializer(msg);
-        byte[] test = serializer.serialize();
-        assertArrayEquals(extensionBytes, test);
+        super.setExtensionMessageSpecific(providedAdditionalValues, providedMessageSpecificValues);
     }
-
 }

@@ -1,14 +1,16 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.workflow;
 
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.SchemaOutputResolver;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -16,13 +18,15 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.SchemaOutputResolver;
 import javax.xml.transform.Result;
 import javax.xml.transform.stream.StreamResult;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class WorkflowTraceSchemaGenerator {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private static final String ROOT_NS = "";
 
@@ -30,38 +34,43 @@ public class WorkflowTraceSchemaGenerator {
 
     public static void main(String[] args) {
         try {
-            new File(args[0]).mkdirs();
-            generateSchema(args[0]);
+            File outputDirectory = new File(args[0]);
+            assert outputDirectory.exists() || outputDirectory.mkdirs();
+            generateSchema(outputDirectory);
         } catch (IOException | JAXBException e) {
             e.printStackTrace();
         }
     }
 
-    private static void generateSchema(String path) throws IOException, JAXBException {
-        AccumulatingSchemaOutputResolver sor = new AccumulatingSchemaOutputResolver();
-        WorkflowTraceSerializer.getJAXBContext().generateSchema(sor);
-        for (Entry<String, StringWriter> e : sor.getSchemaWriters().entrySet()) {
-            String systemId = sor.getSystemIds().get(e.getKey());
-            FileWriter w = null;
-            try {
-                File f = new File(path, systemId);
-                w = new FileWriter(f);
-                System.out.println(String.format("Writing %s to %s", e.getKey(), f.getAbsolutePath()));
-                w.write(e.getValue().toString());
-            } finally {
-                if (w != null) {
-                    w.close();
-                }
+    private static void generateSchema(File outputDirectory) throws IOException, JAXBException {
+        AccumulatingSchemaOutputResolver schemaOutputResolver =
+                new AccumulatingSchemaOutputResolver();
+
+        JAXBContext jaxbContext = WorkflowTraceSerializer.getJAXBContext();
+
+        jaxbContext.generateSchema(schemaOutputResolver);
+        for (Entry<String, StringWriter> entry :
+                schemaOutputResolver.getSchemaWriters().entrySet()) {
+            String systemId = schemaOutputResolver.getSystemIds().get(entry.getKey());
+            File file = new File(outputDirectory, systemId);
+            try (FileWriter fileWriter = new FileWriter(file)) {
+                LOGGER.debug("Writing %s to %s%n", entry.getKey(), file.getAbsolutePath());
+                fileWriter.write(
+                        entry.getValue().toString().replaceAll("\r?\n", System.lineSeparator()));
             }
         }
     }
 
     public static class AccumulatingSchemaOutputResolver extends SchemaOutputResolver {
+        public static String mapSystemIds() {
+            return "workflowTrace.xsd";
+        }
 
         private final Map<String, StringWriter> schemaWriters = new HashMap<>();
         private final Map<String, String> systemIds = new HashMap<>();
 
-        public Result createOutput(String namespaceURI, String suggestedFileName) throws IOException {
+        public Result createOutput(String namespaceURI, String suggestedFileName)
+                throws IOException {
             String ns = StringUtils.isBlank(namespaceURI) ? NO_NS : namespaceURI;
             schemaWriters.put(ns, new StringWriter());
             String systemId = mapSystemIds();
@@ -69,10 +78,6 @@ public class WorkflowTraceSchemaGenerator {
             StreamResult result = new StreamResult(schemaWriters.get(ns));
             result.setSystemId(systemId);
             return result;
-        }
-
-        public static String mapSystemIds() {
-            return "workflowTrace.xsd";
         }
 
         public Map<String, StringWriter> getSchemaWriters() {
@@ -83,5 +88,4 @@ public class WorkflowTraceSchemaGenerator {
             return systemIds;
         }
     }
-
 }

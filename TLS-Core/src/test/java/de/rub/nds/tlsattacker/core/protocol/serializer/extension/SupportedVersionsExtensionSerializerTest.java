@@ -1,57 +1,33 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
-import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SupportedVersionsExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.SupportedVersionsExtensionParserTest;
-import java.util.Collection;
-import static org.junit.Assert.assertArrayEquals;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import java.util.List;
+import java.util.stream.Stream;
+import org.junit.jupiter.params.provider.Arguments;
 
-@RunWith(Parameterized.class)
-public class SupportedVersionsExtensionSerializerTest {
+public class SupportedVersionsExtensionSerializerTest
+        extends AbstractExtensionMessageSerializerTest<
+                SupportedVersionsExtensionMessage, SupportedVersionsExtensionSerializer> {
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return SupportedVersionsExtensionParserTest.generateData();
+    public SupportedVersionsExtensionSerializerTest() {
+        super(
+                SupportedVersionsExtensionMessage::new,
+                SupportedVersionsExtensionSerializer::new,
+                List.of(
+                        (msg, obj) -> msg.setSupportedVersionsLength((Integer) obj),
+                        (msg, obj) -> msg.setSupportedVersions((byte[]) obj)));
     }
 
-    private final byte[] completeExtension;
-    private final ExtensionType type;
-    private final int extensionLength;
-    private final int versionListLength;
-    private final byte[] versionList;
-
-    public SupportedVersionsExtensionSerializerTest(byte[] extension, int start, byte[] completeExtension,
-        ExtensionType type, int extensionLength, int versionListLength, byte[] versionList) {
-        this.completeExtension = completeExtension;
-        this.type = type;
-        this.extensionLength = extensionLength;
-        this.versionListLength = versionListLength;
-        this.versionList = versionList;
-    }
-
-    /**
-     * Test of serializeExtensionContent method, of class SupportedVersionsExtensionSerializer.
-     */
-    @Test
-    public void testSerializeExtensionContent() {
-        SupportedVersionsExtensionMessage msg = new SupportedVersionsExtensionMessage();
-        msg.setExtensionType(type.getValue());
-        msg.setExtensionLength(extensionLength);
-        msg.setSupportedVersions(versionList);
-        msg.setSupportedVersionsLength(versionListLength);
-        SupportedVersionsExtensionSerializer serializer = new SupportedVersionsExtensionSerializer(msg);
-        assertArrayEquals(completeExtension, serializer.serialize());
+    public static Stream<Arguments> provideTestVectors() {
+        return SupportedVersionsExtensionParserTest.provideTestVectors();
     }
 }

@@ -1,30 +1,31 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.util.UnlimitedStrengthEnabler;
+import de.rub.nds.tlsattacker.core.util.ProviderUtil;
 import java.security.Provider;
 import java.security.Security;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 public class GeneralDelegate extends Delegate {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    @Parameter(names = { "-h", "-help" }, help = true, description = "Prints usage for all the existing commands.")
+    @Parameter(
+            names = {"-h", "-help"},
+            help = true,
+            description = "Prints usage for all the existing commands.")
     private boolean help;
 
     @Parameter(names = "-debug", description = "Show extra debug output (sets logLevel to DEBUG)")
@@ -36,8 +37,7 @@ public class GeneralDelegate extends Delegate {
     @Parameter(names = "-keylogfile", description = "Path to the keylogfile")
     protected String keylogfile = null;
 
-    public GeneralDelegate() {
-    }
+    public GeneralDelegate() {}
 
     public boolean isHelp() {
         return help;
@@ -73,9 +73,9 @@ public class GeneralDelegate extends Delegate {
 
     @Override
     public void applyDelegate(Config config) {
-        Security.addProvider(new BouncyCastleProvider());
+        ProviderUtil.addBouncyCastleProvider();
         if (isDebug()) {
-            Configurator.setAllLevels("de.rub.nds.tlsattacker", Level.DEBUG);
+            Configurator.setAllLevels("de.rub.nds", Level.DEBUG);
         } else if (quiet) {
             Configurator.setAllLevels("de.rub.nds.tlsattacker", Level.OFF);
         }
@@ -88,9 +88,5 @@ public class GeneralDelegate extends Delegate {
             config.setKeylogFilePath(keylogfile);
             config.setWriteKeylogFile(true);
         }
-
-        // remove stupid Oracle JDK security restriction (otherwise, it is not
-        // possible to use strong crypto with Oracle JDK)
-        UnlimitedStrengthEnabler.enable();
     }
 }

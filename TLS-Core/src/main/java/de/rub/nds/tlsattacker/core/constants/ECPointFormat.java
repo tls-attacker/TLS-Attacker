@@ -1,36 +1,38 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.constants;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import de.rub.nds.protocol.constants.PointFormat;
+import java.io.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public enum ECPointFormat {
-
-    UNCOMPRESSED((byte) 0),
-    ANSIX962_COMPRESSED_PRIME((byte) 1),
-    ANSIX962_COMPRESSED_CHAR2((byte) 2);
+    UNCOMPRESSED((byte) 0, PointFormat.UNCOMPRESSED),
+    ANSIX962_COMPRESSED_PRIME((byte) 1, PointFormat.COMPRESSED),
+    ANSIX962_COMPRESSED_CHAR2((byte) 2, PointFormat.COMPRESSED);
 
     private byte value;
+    private PointFormat format;
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private static final Map<Byte, ECPointFormat> MAP;
 
-    private ECPointFormat(byte value) {
+    private ECPointFormat(byte value, PointFormat format) {
         this.value = value;
+        this.format = format;
     }
 
     static {
@@ -42,6 +44,10 @@ public enum ECPointFormat {
 
     public static ECPointFormat getECPointFormat(byte value) {
         return MAP.get(value);
+    }
+
+    public PointFormat getFormat() {
+        return format;
     }
 
     public byte getValue() {
@@ -58,14 +64,15 @@ public enum ECPointFormat {
     }
 
     public byte[] getArrayValue() {
-        return new byte[] { value };
+        return new byte[] {value};
     }
 
     public short getShortValue() {
         return (short) (value & 0xFF);
     }
 
-    public static byte[] pointFormatsToByteArray(List<ECPointFormat> pointFormats) throws IOException {
+    public static byte[] pointFormatsToByteArray(List<ECPointFormat> pointFormats)
+            throws IOException {
         if (pointFormats == null || pointFormats.isEmpty()) {
             return new byte[0];
         }
@@ -75,19 +82,22 @@ public enum ECPointFormat {
         os.writeObject(pointFormats.toArray(new ECPointFormat[pointFormats.size()]));
 
         return bytes.toByteArray();
-
     }
 
-    public static ECPointFormat[] pointFormatsFromByteArray(byte[] sourceBytes)
-        throws IOException, ClassNotFoundException {
+    public static ECPointFormat[] pointFormatsFromByteArray(byte[] sourceBytes) {
         if (sourceBytes == null || sourceBytes.length == 0) {
             return null;
         }
+        List<ECPointFormat> formats = new ArrayList<>(sourceBytes.length);
+        for (byte sourceByte : sourceBytes) {
+            ECPointFormat format = ECPointFormat.getECPointFormat(sourceByte);
+            if (format != null) {
+                formats.add(format);
+            } else {
+                LOGGER.warn("Ignoring unknown ECPointFormat {}", sourceByte);
+            }
+        }
 
-        ByteArrayInputStream in = new ByteArrayInputStream(sourceBytes);
-        ObjectInputStream is = new ObjectInputStream(in);
-        ECPointFormat[] formats = (ECPointFormat[]) is.readObject();
-
-        return formats;
+        return formats.toArray(ECPointFormat[]::new);
     }
 }

@@ -1,71 +1,52 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAndHashAlgorithmsExtensionMessage;
-import java.util.Arrays;
-import java.util.Collection;
-import static org.junit.Assert.*;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import java.util.List;
+import java.util.stream.Stream;
+import org.junit.jupiter.api.Named;
+import org.junit.jupiter.params.provider.Arguments;
 
-@RunWith(Parameterized.class)
-public class SignatureAndHashAlgorithmsExtensionParserTest {
+public class SignatureAndHashAlgorithmsExtensionParserTest
+        extends AbstractExtensionParserTest<
+                SignatureAndHashAlgorithmsExtensionMessage,
+                SignatureAndHashAlgorithmsExtensionParser> {
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] { {
-            ArrayConverter
-                .hexStringToByteArray("000d0020001e060106020603050105020503040104020403030103020303020102020203"),
-            0,
-            ArrayConverter
-                .hexStringToByteArray("000d0020001e060106020603050105020503040104020403030103020303020102020203"),
-            ExtensionType.SIGNATURE_AND_HASH_ALGORITHMS, 32, 30,
-            ArrayConverter.hexStringToByteArray("060106020603050105020503040104020403030103020303020102020203") } });
+    public SignatureAndHashAlgorithmsExtensionParserTest() {
+        super(
+                SignatureAndHashAlgorithmsExtensionMessage.class,
+                SignatureAndHashAlgorithmsExtensionParser::new,
+                List.of(
+                        Named.of(
+                                "SignatureAndHashAlgorithmsExtensionMessage::getSignatureAndHashAlgorithmsLength",
+                                SignatureAndHashAlgorithmsExtensionMessage
+                                        ::getSignatureAndHashAlgorithmsLength),
+                        Named.of(
+                                "SignatureAndHashAlgorithmsExtensionMessage::getSignatureAndHashAlgorithms",
+                                SignatureAndHashAlgorithmsExtensionMessage
+                                        ::getSignatureAndHashAlgorithms)));
     }
 
-    private byte[] extension;
-    private int start;
-    private byte[] completeExtension;
-    private ExtensionType type;
-    private int extensionLength;
-    private int algoListLength;
-    private byte[] algoList;
-
-    public SignatureAndHashAlgorithmsExtensionParserTest(byte[] extension, int start, byte[] completeExtension,
-        ExtensionType type, int extensionLength, int algoListLength, byte[] algoList) {
-        this.extension = extension;
-        this.start = start;
-        this.completeExtension = completeExtension;
-        this.type = type;
-        this.extensionLength = extensionLength;
-        this.algoListLength = algoListLength;
-        this.algoList = algoList;
-    }
-
-    /**
-     * Test of parseExtensionMessageContent method, of class SignatureAndHashAlgorithmsExtensionParser.
-     */
-    @Test
-    public void testParseExtensionMessageContent() {
-        SignatureAndHashAlgorithmsExtensionParser parser =
-            new SignatureAndHashAlgorithmsExtensionParser(start, extension, Config.createConfig());
-        SignatureAndHashAlgorithmsExtensionMessage msg = parser.parse();
-        assertArrayEquals(msg.getExtensionBytes().getValue(), completeExtension);
-        assertArrayEquals(type.getValue(), msg.getExtensionType().getValue());
-        assertTrue(extensionLength == msg.getExtensionLength().getValue());
-        assertArrayEquals(msg.getSignatureAndHashAlgorithms().getValue(), algoList);
-        assertTrue(algoListLength == msg.getSignatureAndHashAlgorithmsLength().getValue());
+    public static Stream<Arguments> provideTestVectors() {
+        return Stream.of(
+                Arguments.of(
+                        ArrayConverter.hexStringToByteArray(
+                                "000d0020001e060106020603050105020503040104020403030103020303020102020203"),
+                        List.of(),
+                        ExtensionType.SIGNATURE_AND_HASH_ALGORITHMS,
+                        32,
+                        List.of(
+                                30,
+                                ArrayConverter.hexStringToByteArray(
+                                        "060106020603050105020503040104020403030103020303020102020203"))));
     }
 }

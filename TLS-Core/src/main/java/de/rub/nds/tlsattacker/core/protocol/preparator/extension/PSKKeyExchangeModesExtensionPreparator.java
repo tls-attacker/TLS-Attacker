@@ -1,32 +1,29 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PSKKeyExchangeModesExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- * RFC draft-ietf-tls-tls13-21
- */
-public class PSKKeyExchangeModesExtensionPreparator extends ExtensionPreparator<PSKKeyExchangeModesExtensionMessage> {
+/** RFC draft-ietf-tls-tls13-21 */
+public class PSKKeyExchangeModesExtensionPreparator
+        extends ExtensionPreparator<PSKKeyExchangeModesExtensionMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     private final PSKKeyExchangeModesExtensionMessage msg;
 
-    public PSKKeyExchangeModesExtensionPreparator(Chooser chooser, PSKKeyExchangeModesExtensionMessage message,
-        ExtensionSerializer<PSKKeyExchangeModesExtensionMessage> serializer) {
-        super(chooser, message, serializer);
+    public PSKKeyExchangeModesExtensionPreparator(
+            Chooser chooser, PSKKeyExchangeModesExtensionMessage message) {
+        super(chooser, message);
         this.msg = message;
     }
 

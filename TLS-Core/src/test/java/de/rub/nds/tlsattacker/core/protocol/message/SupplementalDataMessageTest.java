@@ -1,43 +1,28 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message;
 
-import org.junit.After;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
+import java.util.stream.Stream;
+import org.junit.jupiter.params.provider.Arguments;
 
-public class SupplementalDataMessageTest {
+public class SupplementalDataMessageTest extends AbstractMessageTest<SupplementalDataMessage> {
 
-    SupplementalDataMessage message;
-
-    @Before
-    public void setUp() {
-        message = new SupplementalDataMessage();
+    public SupplementalDataMessageTest() {
+        super(
+                SupplementalDataMessage::new,
+                "SupplementalDataMessage:\n"
+                        + "  Supplemental Data Length: %s\n"
+                        + "  SupplementalDataEntries:\n"
+                        + "%s");
     }
 
-    @After
-    public void tearDown() {
+    public static Stream<Arguments> provideToStringTestVectors() {
+        return Stream.of(Arguments.of(new Object[] {null, null}, null));
     }
-
-    /**
-     * Test of toString method, of class SupplementalDataMessage.
-     */
-    @Test
-    public void testToString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("SupplementalDataMessage:");
-        sb.append("\n  Supplemental Data Length: ").append("null");
-        sb.append("\n  SupplementalDataEntries:\n").append("null");
-
-        assertEquals(message.toString(), sb.toString());
-    }
-
 }

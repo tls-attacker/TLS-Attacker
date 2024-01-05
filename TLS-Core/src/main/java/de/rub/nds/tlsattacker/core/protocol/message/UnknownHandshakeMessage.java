@@ -1,37 +1,40 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.UnknownHandshakeHandler;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import javax.xml.bind.annotation.XmlRootElement;
+import de.rub.nds.tlsattacker.core.protocol.parser.UnknownHandshakeParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.UnknownHandshakePreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.UnknownHandshakeSerializer;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.Objects;
 
 @XmlRootElement(name = "UnknownHandshakeMessage")
 public class UnknownHandshakeMessage extends HandshakeMessage {
 
     private byte[] dataConfig;
 
-    @ModifiableVariableProperty
-    private ModifiableByteArray data;
+    // the type used for a failed parsing attempt (if the type was known)
+    private ModifiableByte assumedType;
+
+    @ModifiableVariableProperty private ModifiableByteArray data;
 
     public UnknownHandshakeMessage() {
-        super(HandshakeMessageType.UNKNOWN);
-    }
-
-    public UnknownHandshakeMessage(Config config) {
         super(HandshakeMessageType.UNKNOWN);
     }
 
@@ -56,8 +59,23 @@ public class UnknownHandshakeMessage extends HandshakeMessage {
     }
 
     @Override
-    public UnknownHandshakeHandler getHandler(TlsContext context) {
-        return new UnknownHandshakeHandler(context);
+    public UnknownHandshakeHandler getHandler(TlsContext tlsContext) {
+        return new UnknownHandshakeHandler(tlsContext);
+    }
+
+    @Override
+    public UnknownHandshakeParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new UnknownHandshakeParser(stream, tlsContext);
+    }
+
+    @Override
+    public UnknownHandshakePreparator getPreparator(TlsContext tlsContext) {
+        return new UnknownHandshakePreparator(tlsContext.getChooser(), this);
+    }
+
+    @Override
+    public UnknownHandshakeSerializer getSerializer(TlsContext tlsContext) {
+        return new UnknownHandshakeSerializer(this);
     }
 
     @Override
@@ -74,8 +92,63 @@ public class UnknownHandshakeMessage extends HandshakeMessage {
     }
 
     @Override
-    public String toShortString() {
-        return "HS(?)";
+    public String toCompactString() {
+        if (assumedType == null
+                || assumedType.getValue() == HandshakeMessageType.UNKNOWN.getValue()) {
+            return super.toCompactString();
+        } else {
+            HandshakeMessageType assumedHandshakeType =
+                    HandshakeMessageType.getMessageType(assumedType.getValue());
+            return super.toCompactString() + "(" + assumedHandshakeType + "?)";
+        }
     }
 
+    @Override
+    public String toShortString() {
+        if (assumedType != null
+                || assumedType.getValue() == HandshakeMessageType.UNKNOWN.getValue()) {
+            return "HS(?)";
+        } else {
+            return "HS(" + assumedType.getValue() + "?)";
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 17 * hash + Arrays.hashCode(this.dataConfig);
+        hash = 17 * hash + Objects.hashCode(this.data);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final UnknownHandshakeMessage other = (UnknownHandshakeMessage) obj;
+        if (!Arrays.equals(this.dataConfig, other.dataConfig)) {
+            return false;
+        }
+        return Objects.equals(this.data, other.data);
+    }
+
+    public void setAssumedType(ModifiableByte assumedType) {
+        this.assumedType = assumedType;
+    }
+
+    public void setAssumedType(byte assumedType) {
+        this.assumedType =
+                ModifiableVariableFactory.safelySetValue(this.getAssumedType(), assumedType);
+    }
+
+    public ModifiableByte getAssumedType() {
+        return assumedType;
+    }
 }

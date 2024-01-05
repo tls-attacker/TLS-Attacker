@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.crypto.cipher;
 
 import de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm;
@@ -55,16 +54,23 @@ class JavaCipher extends BaseCipher {
         IvParameterSpec encryptIv = new IvParameterSpec(iv);
         try {
             cipher = Cipher.getInstance(algorithm.getJavaName());
-            String keySpecAlgorithm = BulkCipherAlgorithm.getBulkCipherAlgorithm(algorithm).getJavaName();
+            String keySpecAlgorithm =
+                    BulkCipherAlgorithm.getBulkCipherAlgorithm(algorithm).getJavaName();
             cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key, keySpecAlgorithm), encryptIv);
             byte[] result = cipher.doFinal(someBytes);
             this.iv = cipher.getIV();
             return result;
-        } catch (IllegalStateException | IllegalBlockSizeException | BadPaddingException | NoSuchAlgorithmException
-            | InvalidAlgorithmParameterException | InvalidKeyException | NoSuchPaddingException
-            | IllegalArgumentException ex) {
-            throw new CryptoException("Could not initialize JavaCipher. "
-                + "Did you forget to use UnlimitedStrengthEnabler/add BouncyCastleProvider?", ex);
+        } catch (IllegalStateException
+                | IllegalBlockSizeException
+                | BadPaddingException
+                | NoSuchAlgorithmException
+                | InvalidAlgorithmParameterException
+                | InvalidKeyException
+                | NoSuchPaddingException
+                | IllegalArgumentException ex) {
+            throw new CryptoException(
+                    "Could not initialize JavaCipher. Did you forget to add BouncyCastleProvider?",
+                    ex);
         }
     }
 
@@ -73,7 +79,8 @@ class JavaCipher extends BaseCipher {
         try {
             if (cipher == null) {
                 cipher = Cipher.getInstance(algorithm.getJavaName());
-                String keySpecAlgorithm = BulkCipherAlgorithm.getBulkCipherAlgorithm(algorithm).getJavaName();
+                String keySpecAlgorithm =
+                        BulkCipherAlgorithm.getBulkCipherAlgorithm(algorithm).getJavaName();
                 cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key, keySpecAlgorithm));
             }
             if (keepCipherState) {
@@ -81,9 +88,15 @@ class JavaCipher extends BaseCipher {
             } else {
                 return cipher.doFinal(someBytes);
             }
-        } catch (IllegalStateException | IllegalBlockSizeException | BadPaddingException | NoSuchAlgorithmException
-            | InvalidKeyException | NoSuchPaddingException | IllegalArgumentException ex) {
-            throw new CryptoException("Could not encrypt data with: " + algorithm.getJavaName(), ex);
+        } catch (IllegalStateException
+                | IllegalBlockSizeException
+                | BadPaddingException
+                | NoSuchAlgorithmException
+                | InvalidKeyException
+                | NoSuchPaddingException
+                | IllegalArgumentException ex) {
+            throw new CryptoException(
+                    "Could not encrypt data with: " + algorithm.getJavaName(), ex);
         }
     }
 
@@ -92,34 +105,47 @@ class JavaCipher extends BaseCipher {
         GCMParameterSpec encryptIv = new GCMParameterSpec(tagLength, iv);
         try {
             cipher = Cipher.getInstance(algorithm.getJavaName());
-            String keySpecAlgorithm = BulkCipherAlgorithm.getBulkCipherAlgorithm(algorithm).getJavaName();
+            String keySpecAlgorithm =
+                    BulkCipherAlgorithm.getBulkCipherAlgorithm(algorithm).getJavaName();
             cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key, keySpecAlgorithm), encryptIv);
             byte[] result = cipher.doFinal(someBytes);
             this.iv = cipher.getIV();
             return result;
-        } catch (IllegalStateException | IllegalBlockSizeException | BadPaddingException | NoSuchAlgorithmException
-            | InvalidAlgorithmParameterException | InvalidKeyException | NoSuchPaddingException
-            | IllegalArgumentException ex) {
+        } catch (IllegalStateException
+                | IllegalBlockSizeException
+                | BadPaddingException
+                | NoSuchAlgorithmException
+                | InvalidAlgorithmParameterException
+                | InvalidKeyException
+                | NoSuchPaddingException
+                | IllegalArgumentException ex) {
             throw new CryptoException("Could not encrypt data with " + algorithm.getJavaName(), ex);
         }
     }
 
     @Override
-    public byte[] encrypt(byte[] iv, int tagLength, byte[] additionAuthenticatedData, byte[] someBytes)
-        throws CryptoException {
+    public byte[] encrypt(
+            byte[] iv, int tagLength, byte[] additionAuthenticatedData, byte[] someBytes)
+            throws CryptoException {
         GCMParameterSpec encryptIv = new GCMParameterSpec(tagLength, iv);
         try {
             cipher = Cipher.getInstance(algorithm.getJavaName());
 
-            String keySpecAlgorithm = BulkCipherAlgorithm.getBulkCipherAlgorithm(algorithm).getJavaName();
+            String keySpecAlgorithm =
+                    BulkCipherAlgorithm.getBulkCipherAlgorithm(algorithm).getJavaName();
             cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key, keySpecAlgorithm), encryptIv);
             cipher.updateAAD(additionAuthenticatedData);
             byte[] result = cipher.doFinal(someBytes);
             this.iv = cipher.getIV();
             return result;
-        } catch (IllegalStateException | IllegalBlockSizeException | BadPaddingException | NoSuchAlgorithmException
-            | InvalidAlgorithmParameterException | InvalidKeyException | NoSuchPaddingException
-            | IllegalArgumentException ex) {
+        } catch (IllegalStateException
+                | IllegalBlockSizeException
+                | BadPaddingException
+                | NoSuchAlgorithmException
+                | InvalidAlgorithmParameterException
+                | InvalidKeyException
+                | NoSuchPaddingException
+                | IllegalArgumentException ex) {
             throw new CryptoException("Could not encrypt data with " + algorithm.getJavaName(), ex);
         }
     }
@@ -139,16 +165,23 @@ class JavaCipher extends BaseCipher {
         IvParameterSpec decryptIv = new IvParameterSpec(iv);
         try {
             cipher = Cipher.getInstance(algorithm.getJavaName());
-            String keySpecAlgorithm = BulkCipherAlgorithm.getBulkCipherAlgorithm(algorithm).getJavaName();
+            String keySpecAlgorithm =
+                    BulkCipherAlgorithm.getBulkCipherAlgorithm(algorithm).getJavaName();
             cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key, keySpecAlgorithm), decryptIv);
             byte[] result = cipher.doFinal(someBytes);
             if (result.length >= getBlocksize()) {
                 this.iv = new byte[getBlocksize()];
-                System.arraycopy(someBytes, someBytes.length - getBlocksize(), this.iv, 0, getBlocksize());
+                System.arraycopy(
+                        someBytes, someBytes.length - getBlocksize(), this.iv, 0, getBlocksize());
             }
             return result;
-        } catch (IllegalStateException | IllegalBlockSizeException | BadPaddingException | NoSuchAlgorithmException
-            | InvalidAlgorithmParameterException | InvalidKeyException | NoSuchPaddingException ex) {
+        } catch (IllegalStateException
+                | IllegalBlockSizeException
+                | BadPaddingException
+                | NoSuchAlgorithmException
+                | InvalidAlgorithmParameterException
+                | InvalidKeyException
+                | NoSuchPaddingException ex) {
             throw new CryptoException("Could not decrypt data", ex);
         }
     }
@@ -158,7 +191,8 @@ class JavaCipher extends BaseCipher {
         try {
             if (cipher == null) {
                 cipher = Cipher.getInstance(algorithm.getJavaName());
-                String keySpecAlgorithm = BulkCipherAlgorithm.getBulkCipherAlgorithm(algorithm).getJavaName();
+                String keySpecAlgorithm =
+                        BulkCipherAlgorithm.getBulkCipherAlgorithm(algorithm).getJavaName();
                 cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key, keySpecAlgorithm));
             }
 
@@ -167,8 +201,12 @@ class JavaCipher extends BaseCipher {
             } else {
                 return cipher.doFinal(someBytes);
             }
-        } catch (IllegalStateException | NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException
-            | IllegalBlockSizeException | BadPaddingException ex) {
+        } catch (IllegalStateException
+                | NoSuchAlgorithmException
+                | NoSuchPaddingException
+                | InvalidKeyException
+                | IllegalBlockSizeException
+                | BadPaddingException ex) {
             throw new CryptoException("Could not decrypt data", ex);
         }
     }
@@ -178,38 +216,53 @@ class JavaCipher extends BaseCipher {
         GCMParameterSpec decryptIv = new GCMParameterSpec(tagLength, iv);
         try {
             cipher = Cipher.getInstance(algorithm.getJavaName());
-            String keySpecAlgorithm = BulkCipherAlgorithm.getBulkCipherAlgorithm(algorithm).getJavaName();
+            String keySpecAlgorithm =
+                    BulkCipherAlgorithm.getBulkCipherAlgorithm(algorithm).getJavaName();
             cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key, keySpecAlgorithm), decryptIv);
             byte[] result = cipher.doFinal(someBytes);
             if (result.length >= getBlocksize()) {
                 this.iv = new byte[getBlocksize()];
-                System.arraycopy(someBytes, someBytes.length - getBlocksize(), this.iv, 0, getBlocksize());
+                System.arraycopy(
+                        someBytes, someBytes.length - getBlocksize(), this.iv, 0, getBlocksize());
             }
             return result;
-        } catch (IllegalStateException | IllegalBlockSizeException | BadPaddingException | NoSuchAlgorithmException
-            | InvalidAlgorithmParameterException | InvalidKeyException | NoSuchPaddingException ex) {
+        } catch (IllegalStateException
+                | IllegalBlockSizeException
+                | BadPaddingException
+                | NoSuchAlgorithmException
+                | InvalidAlgorithmParameterException
+                | InvalidKeyException
+                | NoSuchPaddingException ex) {
             throw new CryptoException("Could not decrypt data", ex);
         }
     }
 
     @Override
-    public byte[] decrypt(byte[] iv, int tagLength, byte[] additionalAuthenticatedData, byte[] cipherText)
-        throws CryptoException {
+    public byte[] decrypt(
+            byte[] iv, int tagLength, byte[] additionalAuthenticatedData, byte[] cipherText)
+            throws CryptoException {
         GCMParameterSpec decryptIv = new GCMParameterSpec(tagLength, iv);
         try {
             cipher = Cipher.getInstance(algorithm.getJavaName());
-            String keySpecAlgorithm = BulkCipherAlgorithm.getBulkCipherAlgorithm(algorithm).getJavaName();
+            String keySpecAlgorithm =
+                    BulkCipherAlgorithm.getBulkCipherAlgorithm(algorithm).getJavaName();
             cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key, keySpecAlgorithm), decryptIv);
             cipher.updateAAD(additionalAuthenticatedData);
             byte[] result = cipher.doFinal(cipherText);
             if (result.length >= getBlocksize()) {
                 this.iv = new byte[getBlocksize()];
-                System.arraycopy(cipherText, cipherText.length - getBlocksize(), this.iv, 0, getBlocksize());
+                System.arraycopy(
+                        cipherText, cipherText.length - getBlocksize(), this.iv, 0, getBlocksize());
             }
             return result;
-        } catch (IllegalStateException | IllegalBlockSizeException | BadPaddingException | NoSuchAlgorithmException
-            | InvalidAlgorithmParameterException | InvalidKeyException | NoSuchPaddingException
-            | IllegalArgumentException ex) {
+        } catch (IllegalStateException
+                | IllegalBlockSizeException
+                | BadPaddingException
+                | NoSuchAlgorithmException
+                | InvalidAlgorithmParameterException
+                | InvalidKeyException
+                | NoSuchPaddingException
+                | IllegalArgumentException ex) {
             throw new CryptoException("Could not decrypt data", ex);
         }
     }

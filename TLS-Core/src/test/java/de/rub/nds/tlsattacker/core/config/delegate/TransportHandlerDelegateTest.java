@@ -1,72 +1,57 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.config.delegate;
 
-import com.beust.jcommander.JCommander;
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import org.apache.commons.lang3.builder.EqualsBuilder;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class TransportHandlerDelegateTest {
+public class TransportHandlerDelegateTest extends AbstractDelegateTest<TransportHandlerDelegate> {
 
-    private TransportHandlerDelegate delegate;
-    private JCommander jcommander;
-    private String[] args;
-
-    @Before
+    @BeforeEach
     public void setUp() {
-        this.delegate = new TransportHandlerDelegate();
-        this.jcommander = new JCommander(delegate);
+        super.setUp(new TransportHandlerDelegate());
     }
 
-    /**
-     * Test of getTransportHandlerType method, of class TransportHandlerDelegate.
-     */
+    /** Test of getTransportHandlerType method, of class TransportHandlerDelegate. */
     @Test
     public void testGetTransportHandlerType() {
         args = new String[2];
         args[0] = "-transport_handler_type";
         args[1] = "UDP";
-        assertFalse(delegate.getTransportHandlerType() == TransportHandlerType.UDP);
+        assertNotSame(TransportHandlerType.UDP, delegate.getTransportHandlerType());
         jcommander.parse(args);
-        assertTrue(delegate.getTransportHandlerType() == TransportHandlerType.UDP);
+        assertSame(TransportHandlerType.UDP, delegate.getTransportHandlerType());
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testGetInvalidTransportHandlerType() {
         args = new String[2];
         args[0] = "-transport_handler_type";
         args[1] = "NOTATRANSPORTHANDLER";
-        jcommander.parse(args);
+        assertThrows(ParameterException.class, () -> jcommander.parse(args));
     }
 
-    /**
-     * Test of setTransportHandlerType method, of class TransportHandlerDelegate.
-     */
+    /** Test of setTransportHandlerType method, of class TransportHandlerDelegate. */
     @Test
     public void testSetTransportHandlerType() {
-        assertFalse(delegate.getTransportHandlerType() == TransportHandlerType.UDP);
+        assertNotSame(TransportHandlerType.UDP, delegate.getTransportHandlerType());
         delegate.setTransportHandlerType(TransportHandlerType.UDP);
-        assertTrue(delegate.getTransportHandlerType() == TransportHandlerType.UDP);
+        assertSame(TransportHandlerType.UDP, delegate.getTransportHandlerType());
     }
 
-    /**
-     * Test of applyDelegate method, of class TransportHandlerDelegate.
-     */
+    /** Test of applyDelegate method, of class TransportHandlerDelegate. */
     @Test
     public void testApplyDelegate() {
         Config config = Config.createConfig();
@@ -79,8 +64,12 @@ public class TransportHandlerDelegateTest {
         jcommander.parse(args);
         delegate.applyDelegate(config);
 
-        assertThat(config.getDefaultClientConnection().getTransportHandlerType(), equalTo(TransportHandlerType.UDP));
-        assertThat(config.getDefaultServerConnection().getTransportHandlerType(), equalTo(TransportHandlerType.UDP));
+        assertSame(
+                TransportHandlerType.UDP,
+                config.getDefaultClientConnection().getTransportHandlerType());
+        assertSame(
+                TransportHandlerType.UDP,
+                config.getDefaultServerConnection().getTransportHandlerType());
     }
 
     @Test
@@ -88,8 +77,9 @@ public class TransportHandlerDelegateTest {
         Config config = Config.createConfig();
         Config config2 = Config.createConfig();
         delegate.applyDelegate(config);
-        assertTrue(EqualsBuilder.reflectionEquals(config, config2, "keyStore", "ourCertificate"));// little
+        assertTrue(
+                EqualsBuilder.reflectionEquals(
+                        config, config2, "certificateChainConfig")); // little
         // ugly
     }
-
 }

@@ -1,23 +1,20 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.exceptions.ParserException;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.SupplementalDataMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.supplementaldata.SupplementalDataEntry;
 import de.rub.nds.tlsattacker.core.protocol.parser.supplementaldata.SupplementalDataEntryParser;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -30,30 +27,19 @@ public class SupplementalDataParser extends HandshakeMessageParser<SupplementalD
     /**
      * Constructor for the Parser class
      *
-     * @param pointer
-     *                Position in the array where the HandshakeMessageParser is supposed to start parsing
-     * @param array
-     *                The byte[] which the HandshakeMessageParser is supposed to parse
-     * @param version
-     *                The Version for which this message should be parsed
-     * @param config
-     *                A Config used in the current context
+     * @param stream
+     * @param tlsContext
      */
-    public SupplementalDataParser(int pointer, byte[] array, ProtocolVersion version, Config config) {
-        super(pointer, array, HandshakeMessageType.SUPPLEMENTAL_DATA, version, config);
+    public SupplementalDataParser(InputStream stream, TlsContext tlsContext) {
+        super(stream, tlsContext);
     }
 
     @Override
-    protected void parseHandshakeMessageContent(SupplementalDataMessage msg) {
+    public void parse(SupplementalDataMessage msg) {
         LOGGER.debug("Parsing SupplementalDataMessage");
         parseSupplementalDataLength(msg);
         parseSupplementalDataBytes(msg);
         parseSupplementalDataEntries(msg);
-    }
-
-    @Override
-    protected SupplementalDataMessage createHandshakeMessage() {
-        return new SupplementalDataMessage();
     }
 
     private void parseSupplementalDataLength(SupplementalDataMessage msg) {
@@ -62,22 +48,20 @@ public class SupplementalDataParser extends HandshakeMessageParser<SupplementalD
     }
 
     private void parseSupplementalDataBytes(SupplementalDataMessage msg) {
-        msg.setSupplementalDataBytes(parseByteArrayField(msg.getSupplementalDataLength().getValue()));
-        LOGGER.debug(
-            "SupplementalDataBytes: " + ArrayConverter.bytesToHexString(msg.getSupplementalDataBytes().getValue()));
+        msg.setSupplementalDataBytes(
+                parseByteArrayField(msg.getSupplementalDataLength().getValue()));
+        LOGGER.debug("SupplementalDataBytes: {}", msg.getSupplementalDataBytes().getValue());
     }
 
     private void parseSupplementalDataEntries(SupplementalDataMessage msg) {
-        int pointer = 0;
         List<SupplementalDataEntry> entryList = new LinkedList<>();
-        while (pointer < msg.getSupplementalDataLength().getValue()) {
-            SupplementalDataEntryParser parser =
-                new SupplementalDataEntryParser(pointer, msg.getSupplementalDataBytes().getValue());
-            entryList.add(parser.parse());
-            if (pointer == parser.getPointer()) {
-                throw new ParserException("Ran into infinite Loop while parsing SupplementalDataEntries");
-            }
-            pointer = parser.getPointer();
+        ByteArrayInputStream innerStream =
+                new ByteArrayInputStream(msg.getSupplementalDataBytes().getValue());
+        while (innerStream.available() > 0) {
+            SupplementalDataEntryParser parser = new SupplementalDataEntryParser(innerStream);
+            SupplementalDataEntry entry = new SupplementalDataEntry();
+            parser.parse(entry);
+            entryList.add(entry);
         }
         msg.setEntries(entryList);
     }

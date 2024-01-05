@@ -1,59 +1,60 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
-import static org.junit.Assert.*;
-
-import java.nio.charset.StandardCharsets;
-
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.ChooserType;
+import de.rub.nds.tlsattacker.core.connection.InboundConnection;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientEsniInner;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ClientEsniInnerPreparator;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
+import de.rub.nds.tlsattacker.core.state.Context;
+import de.rub.nds.tlsattacker.core.state.State;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.stream.Stream;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 public class ClientEsniInnerSerializerTest {
 
-    private Chooser chooser;
-    private ClientEsniInner clientEsniInner;
-    private ClientEsniInnerPreparator clientEsniInnerPreparator;
-    private ClientEsniInnerSerializer clientEsniInnerSerializer;
+    private TlsContext context;
 
-    @Before
+    @BeforeEach
     public void setUp() {
-        Config config = Config.createConfig();
-        chooser = ChooserFactory.getChooser(ChooserType.DEFAULT, new TlsContext(config), config);
+        context = new Context(new State(new Config()), new InboundConnection()).getTlsContext();
     }
 
-    @Test
-    public void test() {
-        String hostname = "baz.example.com";
-        byte nameType = (byte) 0x00;
+    public static Stream<Arguments> provideTestVectors() {
+        return Stream.of(
+                Arguments.of(
+                        ArrayConverter.hexStringToByteArray(
+                                "A7284C9A52F15C13644B947261774657001200000F62617A2E6578616D706C652E636F6D000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"),
+                        List.of(
+                                new ServerNamePair(
+                                        (byte) 0x00,
+                                        "baz.example.com".getBytes(StandardCharsets.UTF_8)))));
+    }
 
-        clientEsniInner = new ClientEsniInner();
-        clientEsniInnerPreparator = new ClientEsniInnerPreparator(chooser, clientEsniInner);
-        clientEsniInnerSerializer = new ClientEsniInnerSerializer(clientEsniInner);
-        ServerNamePair pair = new ServerNamePair(nameType, hostname.getBytes(StandardCharsets.UTF_8));
-        clientEsniInner.getServerNameList().add(pair);
+    @ParameterizedTest
+    @MethodSource("provideTestVectors")
+    public void testSerialize(byte[] expectedBytes, List<ServerNamePair> providedServerNamePairs) {
+        ClientEsniInner clientEsniInner = new ClientEsniInner();
+        clientEsniInner.setServerNameList(providedServerNamePairs);
 
-        clientEsniInnerPreparator.prepare();
-        byte[] resultBytes = clientEsniInnerSerializer.serialize();
-        byte[] expectedBytes = ArrayConverter.hexStringToByteArray(
-            "A7284C9A52F15C13644B947261774657001200000F62617A2E6578616D706C652E636F6D000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000");
-        assertArrayEquals(expectedBytes, resultBytes);
+        new ClientEsniInnerPreparator(context.getChooser(), clientEsniInner).prepare();
+        byte[] actualBytes = new ClientEsniInnerSerializer(clientEsniInner).serialize();
+        assertArrayEquals(expectedBytes, actualBytes);
     }
 }

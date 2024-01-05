@@ -1,15 +1,13 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
@@ -34,8 +32,10 @@ public class KeyShareExtensionPreparator extends ExtensionPreparator<KeyShareExt
     private final KeyShareExtensionMessage msg;
     private ByteArrayOutputStream stream;
 
-    public KeyShareExtensionPreparator(Chooser chooser, KeyShareExtensionMessage message,
-        KeyShareExtensionSerializer serializer) {
+    public KeyShareExtensionPreparator(
+            Chooser chooser,
+            KeyShareExtensionMessage message,
+            KeyShareExtensionSerializer serializer) {
         super(chooser, message, serializer);
         this.msg = message;
     }
@@ -66,22 +66,30 @@ public class KeyShareExtensionPreparator extends ExtensionPreparator<KeyShareExt
         List<KeyShareStoreEntry> clientShares = chooser.getClientKeyShares();
         for (KeyShareStoreEntry i : clientShares) {
             if (chooser.getServerSupportedNamedGroups().contains(i.getGroup())) {
-                KeyShareEntry predefinedServerKeyShare = getPredefinedKeyShareEntryFromMessage(i.getGroup());
+                KeyShareEntry predefinedServerKeyShare =
+                        getPredefinedKeyShareEntryFromMessage(i.getGroup());
                 if (predefinedServerKeyShare != null) {
                     LOGGER.debug("Using predefined Key Share Entry for Server Hello");
                     serverList.add(predefinedServerKeyShare);
                 } else {
                     KeyShareEntry keyShareEntry =
-                        new KeyShareEntry(i.getGroup(), chooser.getConfig().getKeySharePrivate());
+                            new KeyShareEntry(
+                                    i.getGroup(),
+                                    chooser.getConfig().getDefaultKeySharePrivateKey(i.getGroup()));
                     serverList.add(keyShareEntry);
                 }
                 break;
             }
         }
         if (serverList.isEmpty()) {
-            LOGGER.debug("Client Key Share groups not supported - falling back to default selected group");
-            KeyShareEntry keyShareEntry = new KeyShareEntry(chooser.getConfig().getDefaultSelectedNamedGroup(),
-                chooser.getConfig().getKeySharePrivate());
+            LOGGER.debug(
+                    "Client Key Share groups not supported - falling back to default selected group");
+            KeyShareEntry keyShareEntry =
+                    new KeyShareEntry(
+                            chooser.getConfig().getDefaultSelectedNamedGroup(),
+                            chooser.getConfig()
+                                    .getDefaultKeySharePrivateKey(
+                                            chooser.getConfig().getDefaultSelectedNamedGroup()));
             serverList.add(keyShareEntry);
         }
         return serverList;
@@ -126,12 +134,11 @@ public class KeyShareExtensionPreparator extends ExtensionPreparator<KeyShareExt
 
     private void prepareKeyShareListBytes(KeyShareExtensionMessage msg) {
         msg.setKeyShareListBytes(stream.toByteArray());
-        LOGGER.debug("KeyShareListBytes: " + ArrayConverter.bytesToHexString(msg.getKeyShareListBytes().getValue()));
+        LOGGER.debug("KeyShareListBytes: {}", msg.getKeyShareListBytes().getValue());
     }
 
     private void prepareKeyShareListLength(KeyShareExtensionMessage msg) {
         msg.setKeyShareListLength(msg.getKeyShareListBytes().getValue().length);
         LOGGER.debug("KeyShareListBytesLength: " + msg.getKeyShareListLength().getValue());
     }
-
 }

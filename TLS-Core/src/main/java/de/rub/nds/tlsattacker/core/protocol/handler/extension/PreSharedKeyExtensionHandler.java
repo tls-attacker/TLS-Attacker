@@ -1,90 +1,73 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PreSharedKeyExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PSKIdentity;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PskSet;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.PreSharedKeyExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtensionPreparator;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PreSharedKeyExtensionPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PreSharedKeyExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.Arrays;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- * RFC draft-ietf-tls-tls13-21
- */
+/** RFC draft-ietf-tls-tls13-21 */
 public class PreSharedKeyExtensionHandler extends ExtensionHandler<PreSharedKeyExtensionMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public PreSharedKeyExtensionHandler(TlsContext context) {
-        super(context);
-    }
-
-    @Override
-    public ExtensionParser getParser(byte[] message, int pointer, Config config) {
-        return new PreSharedKeyExtensionParser(pointer, message, config);
-    }
-
-    @Override
-    public ExtensionPreparator getPreparator(PreSharedKeyExtensionMessage message) {
-        return new PreSharedKeyExtensionPreparator(context.getChooser(), message, getSerializer(message));
-    }
-
-    @Override
-    public ExtensionSerializer getSerializer(PreSharedKeyExtensionMessage message) {
-        return new PreSharedKeyExtensionSerializer(message, context.getChooser().getConnectionEndType());
+    public PreSharedKeyExtensionHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     @Override
     public void adjustTLSExtensionContext(PreSharedKeyExtensionMessage message) {
         LOGGER.debug("Adjusting TLS Context for PSK Key Extension Message");
-        if (context.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
+        if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
             if (message.getSelectedIdentity() != null) {
                 adjustPsk(message);
             } else {
-                if (context.getChooser().getPskSets().size() > 0) {
-                    context.setEarlyDataPSKIdentity(context.getChooser().getPskSets().get(0).getPreSharedKeyIdentity());
-                    context.setEarlyDataCipherSuite(context.getChooser().getPskSets().get(0).getCipherSuite());
+                if (tlsContext.getChooser().getPskSets().size() > 0) {
+                    tlsContext.setEarlyDataPSKIdentity(
+                            tlsContext.getChooser().getPskSets().get(0).getPreSharedKeyIdentity());
+                    tlsContext.setEarlyDataCipherSuite(
+                            tlsContext.getChooser().getPskSets().get(0).getCipherSuite());
                 } else {
                     LOGGER.warn("Could not adjust EarlyData Identity and Cipher suite");
                 }
             }
         }
-        if (context.getChooser().getConnectionEndType() == ConnectionEndType.SERVER && message.getIdentities() != null
-            && message.getIdentities().size() > 0) {
+        if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.SERVER
+                && message.getIdentities() != null
+                && message.getIdentities().size() > 0) {
             selectPsk(message);
-            if (context.isExtensionNegotiated(ExtensionType.EARLY_DATA)) {
+            if (tlsContext.isExtensionNegotiated(ExtensionType.EARLY_DATA)) {
                 selectEarlyDataPsk(message);
             }
         }
     }
 
     private void adjustPsk(PreSharedKeyExtensionMessage message) {
-        if (message.getSelectedIdentity() != null && message.getSelectedIdentity().getValue() != null
-            && message.getSelectedIdentity().getValue() < context.getChooser().getPskSets().size()) {
+        if (message.getSelectedIdentity() != null
+                && message.getSelectedIdentity().getValue() != null
+                && message.getSelectedIdentity().getValue()
+                        < tlsContext.getChooser().getPskSets().size()) {
             LOGGER.debug("Setting PSK as chosen by server");
-            context.setPsk(
-                context.getChooser().getPskSets().get(message.getSelectedIdentity().getValue()).getPreSharedKey());
-            context.setSelectedIdentityIndex(message.getSelectedIdentity().getValue());
+            tlsContext.setPsk(
+                    tlsContext
+                            .getChooser()
+                            .getPskSets()
+                            .get(message.getSelectedIdentity().getValue())
+                            .getPreSharedKey());
+            tlsContext.setSelectedIdentityIndex(message.getSelectedIdentity().getValue());
         } else {
             LOGGER.warn("The server's chosen PSK identity is unknown - no psk set");
         }
@@ -92,16 +75,19 @@ public class PreSharedKeyExtensionHandler extends ExtensionHandler<PreSharedKeyE
 
     private void selectPsk(PreSharedKeyExtensionMessage message) {
         int pskIdentityIndex = 0;
-        List<PskSet> pskSets = context.getChooser().getPskSets();
+        List<PskSet> pskSets = tlsContext.getChooser().getPskSets();
         if (message.getIdentities() != null) {
             for (PSKIdentity pskIdentity : message.getIdentities()) {
                 for (int x = 0; x < pskSets.size(); x++) {
-                    if (Arrays.equals(pskSets.get(x).getPreSharedKeyIdentity(), pskIdentity.getIdentity().getValue())) {
-                        LOGGER.debug("Selected PSK identity: "
-                            + ArrayConverter.bytesToHexString(pskSets.get(x).getPreSharedKeyIdentity()));
-                        context.setPsk(pskSets.get(x).getPreSharedKey());
-                        context.setEarlyDataCipherSuite(pskSets.get(x).getCipherSuite());
-                        context.setSelectedIdentityIndex(pskIdentityIndex);
+                    if (Arrays.equals(
+                            pskSets.get(x).getPreSharedKeyIdentity(),
+                            pskIdentity.getIdentity().getValue())) {
+                        LOGGER.debug(
+                                "Selected PSK identity: {}",
+                                pskSets.get(x).getPreSharedKeyIdentity());
+                        tlsContext.setPsk(pskSets.get(x).getPreSharedKey());
+                        tlsContext.setEarlyDataCipherSuite(pskSets.get(x).getCipherSuite());
+                        tlsContext.setSelectedIdentityIndex(pskIdentityIndex);
                         return;
                     }
                 }
@@ -113,22 +99,23 @@ public class PreSharedKeyExtensionHandler extends ExtensionHandler<PreSharedKeyE
 
     private void selectEarlyDataPsk(PreSharedKeyExtensionMessage message) {
 
-        LOGGER.debug("Calculating early traffic secret using transcript: "
-            + ArrayConverter.bytesToHexString(context.getDigest().getRawBytes()));
+        LOGGER.debug(
+                "Calculating early traffic secret using transcript: {}",
+                tlsContext.getDigest().getRawBytes());
 
-        List<PskSet> pskSets = context.getChooser().getPskSets();
+        List<PskSet> pskSets = tlsContext.getChooser().getPskSets();
         for (int x = 0; x < pskSets.size(); x++) {
-            if (Arrays.equals(pskSets.get(x).getPreSharedKeyIdentity(),
-                message.getIdentities().get(0).getIdentity().getValue())) {
-                context.setEarlyDataPsk(pskSets.get(x).getPreSharedKey());
-                context.setEarlyDataCipherSuite(pskSets.get(x).getCipherSuite());
-                LOGGER.debug("EarlyData PSK: " + ArrayConverter.bytesToHexString(pskSets.get(x).getPreSharedKey()));
+            if (Arrays.equals(
+                    pskSets.get(x).getPreSharedKeyIdentity(),
+                    message.getIdentities().get(0).getIdentity().getValue())) {
+                tlsContext.setEarlyDataPsk(pskSets.get(x).getPreSharedKey());
+                tlsContext.setEarlyDataCipherSuite(pskSets.get(x).getCipherSuite());
+                LOGGER.debug("EarlyData PSK: {}", pskSets.get(x).getPreSharedKey());
                 break;
             }
         }
-        if (context.getEarlyDataPsk() == null) {
+        if (tlsContext.getEarlyDataPsk() == null) {
             LOGGER.warn("Server is missing the EarlyData PSK - decryption will fail");
         }
     }
-
 }

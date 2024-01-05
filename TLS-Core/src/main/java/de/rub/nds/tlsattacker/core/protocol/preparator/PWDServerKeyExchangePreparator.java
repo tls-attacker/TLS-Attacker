@@ -1,23 +1,24 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
+import de.rub.nds.protocol.crypto.CyclicGroup;
+import de.rub.nds.protocol.crypto.ec.EllipticCurve;
+import de.rub.nds.protocol.crypto.ec.EllipticCurveOverFp;
+import de.rub.nds.protocol.crypto.ec.EllipticCurveSECP256R1;
+import de.rub.nds.protocol.crypto.ec.Point;
+import de.rub.nds.protocol.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
-import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
-import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurveOverFp;
-import de.rub.nds.tlsattacker.core.crypto.ec.Point;
-import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.PWDServerKeyExchangeMessage;
@@ -31,7 +32,8 @@ import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class PWDServerKeyExchangePreparator extends ServerKeyExchangePreparator<PWDServerKeyExchangeMessage> {
+public class PWDServerKeyExchangePreparator
+        extends ServerKeyExchangePreparator<PWDServerKeyExchangeMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -45,10 +47,9 @@ public class PWDServerKeyExchangePreparator extends ServerKeyExchangePreparator<
     @Override
     public void prepareHandshakeMessageContents() {
         LOGGER.debug("Preparing PWDServerKeyExchangeMessage");
-        msg.prepareComputations();
+        msg.prepareKeyExchangeComputations();
         prepareCurveType(msg);
         NamedGroup group = selectNamedGroup(msg);
-        EllipticCurve curve = CurveFactory.getCurve(group);
         msg.setNamedGroup(group.getValue());
         prepareSalt(msg);
         prepareSaltLength(msg);
@@ -62,13 +63,21 @@ public class PWDServerKeyExchangePreparator extends ServerKeyExchangePreparator<
     }
 
     protected void preparePasswordElement(PWDServerKeyExchangeMessage msg) throws CryptoException {
-        NamedGroup group = selectNamedGroup(msg);
-        EllipticCurve curve = CurveFactory.getCurve(selectNamedGroup(msg));
+        NamedGroup namedGroup = selectNamedGroup(msg);
+        CyclicGroup<?> group = namedGroup.getGroupParameters().getGroup();
+        EllipticCurve curve;
+        if (group instanceof EllipticCurve) {
+            curve = (EllipticCurve) group;
+        } else {
+            LOGGER.warn("Selected group is not an EllipticCurve. Using SECP256R1");
+            curve = new EllipticCurveSECP256R1();
+        }
         Point passwordElement = PWDComputations.computePasswordElement(chooser, curve);
-        msg.getComputations().setPasswordElement(passwordElement);
+        msg.getKeyExchangeComputations().setPasswordElement(passwordElement);
 
-        LOGGER.debug("PasswordElement.x: " + ArrayConverter
-            .bytesToHexString(ArrayConverter.bigIntegerToByteArray(passwordElement.getFieldX().getData())));
+        LOGGER.debug(
+                "PasswordElement.x: {}",
+                () -> ArrayConverter.bigIntegerToByteArray(passwordElement.getFieldX().getData()));
     }
 
     protected NamedGroup selectNamedGroup(PWDServerKeyExchangeMessage msg) {
@@ -79,20 +88,36 @@ public class PWDServerKeyExchangePreparator extends ServerKeyExchangePreparator<
             Set<NamedGroup> serverSet = new HashSet<>();
             Set<NamedGroup> clientSet = new HashSet<>();
             for (int i = 0; i < chooser.getClientSupportedNamedGroups().size(); i++) {
-                NamedGroup group = chooser.getClientSupportedNamedGroups().get(i);
-                if (group.isStandardCurve()) {
-                    EllipticCurve curve = CurveFactory.getCurve(group);
+                NamedGroup tempNamedGroup = chooser.getClientSupportedNamedGroups().get(i);
+                if (tempNamedGroup.isShortWeierstrass()) {
+                    CyclicGroup<?> group = tempNamedGroup.getGroupParameters().getGroup();
+                    EllipticCurve curve;
+                    if (group instanceof EllipticCurve) {
+                        curve = (EllipticCurve) group;
+                    } else {
+                        LOGGER.warn("Selected group is not an EllipticCurve. Using SECP256R1");
+                        curve = new EllipticCurveSECP256R1();
+                    }
                     if (curve instanceof EllipticCurveOverFp) {
-                        clientSet.add(group);
+                        clientSet.add(tempNamedGroup);
                     }
                 }
             }
             for (int i = 0; i < chooser.getConfig().getDefaultServerNamedGroups().size(); i++) {
-                NamedGroup group = chooser.getConfig().getDefaultServerNamedGroups().get(i);
-                if (group.isStandardCurve()) {
-                    EllipticCurve curve = CurveFactory.getCurve(group);
+                NamedGroup tempNamedGroup =
+                        chooser.getConfig().getDefaultServerNamedGroups().get(i);
+                if (tempNamedGroup.isShortWeierstrass()) {
+                    CyclicGroup<?> group =
+                            chooser.getSelectedNamedGroup().getGroupParameters().getGroup();
+                    EllipticCurve curve;
+                    if (group instanceof EllipticCurve) {
+                        curve = (EllipticCurve) group;
+                    } else {
+                        LOGGER.warn("Selected group is not an EllipticCurve. Using SECP256R1");
+                        curve = new EllipticCurveSECP256R1();
+                    }
                     if (curve instanceof EllipticCurveOverFp) {
-                        serverSet.add(group);
+                        serverSet.add(tempNamedGroup);
                     }
                 }
             }
@@ -113,7 +138,7 @@ public class PWDServerKeyExchangePreparator extends ServerKeyExchangePreparator<
 
     protected void prepareSalt(PWDServerKeyExchangeMessage msg) {
         msg.setSalt(chooser.getConfig().getDefaultServerPWDSalt());
-        LOGGER.debug("Salt: " + ArrayConverter.bytesToHexString(msg.getSalt().getValue()));
+        LOGGER.debug("Salt: {}", msg.getSalt().getValue());
     }
 
     protected void prepareSaltLength(PWDServerKeyExchangeMessage msg) {
@@ -126,10 +151,12 @@ public class PWDServerKeyExchangePreparator extends ServerKeyExchangePreparator<
     }
 
     protected List<ECPointFormat> getPointFormatList() {
-        List<ECPointFormat> sharedPointFormats = new ArrayList<>(chooser.getServerSupportedPointFormats());
+        List<ECPointFormat> sharedPointFormats =
+                new ArrayList<>(chooser.getServerSupportedPointFormats());
 
         if (sharedPointFormats.isEmpty()) {
-            LOGGER.warn("Don't know which point format to use for PWD. " + "Check if pointFormats is set in config.");
+            LOGGER.warn(
+                    "Don't know which point format to use for PWD. Check if pointFormats is set in config.");
             sharedPointFormats = chooser.getConfig().getDefaultServerSupportedPointFormats();
         }
 
@@ -146,20 +173,30 @@ public class PWDServerKeyExchangePreparator extends ServerKeyExchangePreparator<
 
         sharedPointFormats.removeAll(unsupportedFormats);
         if (sharedPointFormats.isEmpty()) {
-            sharedPointFormats = new ArrayList<>(chooser.getConfig().getDefaultServerSupportedPointFormats());
+            sharedPointFormats =
+                    new ArrayList<>(chooser.getConfig().getDefaultServerSupportedPointFormats());
         }
 
         return sharedPointFormats;
     }
 
     protected void prepareScalarElement(PWDServerKeyExchangeMessage msg) {
-        EllipticCurve curve = CurveFactory.getCurve(selectNamedGroup(msg));
+        CyclicGroup<?> group = selectNamedGroup(msg).getGroupParameters().getGroup();
+        EllipticCurve curve;
+        if (group instanceof EllipticCurve) {
+            curve = (EllipticCurve) group;
+        } else {
+            LOGGER.warn("Selected group is not an EllipticCurve. Using SECP256R1");
+            curve = new EllipticCurveSECP256R1();
+        }
         PWDComputations.PWDKeyMaterial keyMaterial =
-            PWDComputations.generateKeyMaterial(curve, msg.getComputations().getPasswordElement(), chooser);
+                PWDComputations.generateKeyMaterial(
+                        curve, msg.getKeyExchangeComputations().getPasswordElement(), chooser);
 
-        msg.getComputations().setPrivateKeyScalar(keyMaterial.privateKeyScalar);
-        LOGGER.debug("Private: "
-            + ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(keyMaterial.privateKeyScalar)));
+        msg.getKeyExchangeComputations().setPrivateKeyScalar(keyMaterial.privateKeyScalar);
+        LOGGER.debug(
+                "Private: {}",
+                () -> ArrayConverter.bigIntegerToByteArray(keyMaterial.privateKeyScalar));
 
         prepareScalar(msg, keyMaterial.scalar);
         prepareScalarLength(msg);
@@ -170,7 +207,7 @@ public class PWDServerKeyExchangePreparator extends ServerKeyExchangePreparator<
 
     protected void prepareScalar(PWDServerKeyExchangeMessage msg, BigInteger scalar) {
         msg.setScalar(ArrayConverter.bigIntegerToByteArray(scalar));
-        LOGGER.debug("Scalar: " + ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(scalar)));
+        LOGGER.debug("Scalar: {}", () -> ArrayConverter.bigIntegerToByteArray(scalar));
     }
 
     protected void prepareScalarLength(PWDServerKeyExchangeMessage msg) {
@@ -179,14 +216,20 @@ public class PWDServerKeyExchangePreparator extends ServerKeyExchangePreparator<
     }
 
     protected void prepareElement(PWDServerKeyExchangeMessage msg, Point element) {
-        byte[] serializedElement = PointFormatter.formatToByteArray(chooser.getConfig().getDefaultSelectedNamedGroup(),
-            element, chooser.getConfig().getDefaultSelectedPointFormat());
+        byte[] serializedElement =
+                PointFormatter.formatToByteArray(
+                        (NamedEllipticCurveParameters)
+                                chooser.getConfig()
+                                        .getDefaultSelectedNamedGroup()
+                                        .getGroupParameters(),
+                        element,
+                        chooser.getConfig().getDefaultSelectedPointFormat().getFormat());
         msg.setElement(serializedElement);
-        LOGGER.debug("Element: " + ArrayConverter.bytesToHexString(serializedElement));
+        LOGGER.debug("Element: {}", serializedElement);
     }
 
     protected void prepareElementLength(PWDServerKeyExchangeMessage msg) {
         msg.setElementLength(msg.getElement().getValue().length);
-        LOGGER.debug("ElementLength: " + msg.getElementLength());
+        LOGGER.debug("ElementLength: {}", msg.getElementLength());
     }
 }

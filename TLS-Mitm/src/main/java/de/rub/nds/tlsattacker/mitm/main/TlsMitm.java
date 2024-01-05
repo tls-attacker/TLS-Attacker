@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.mitm.main;
 
 import com.beust.jcommander.JCommander;
@@ -37,7 +36,8 @@ public class TlsMitm implements Runnable {
         this.args = args;
     }
 
-    public void run() throws ParameterException, WorkflowExecutionException, ConfigurationException {
+    public void run()
+            throws ParameterException, WorkflowExecutionException, ConfigurationException {
 
         MitmCommandConfig cmdConfig = new MitmCommandConfig(new GeneralDelegate());
         JCommander commander = new JCommander(cmdConfig);
@@ -65,7 +65,9 @@ public class TlsMitm implements Runnable {
             WorkflowTrace trace = null;
             if (cmdConfig.getWorkflowInput() != null) {
                 LOGGER.debug("Reading workflow trace from " + cmdConfig.getWorkflowInput());
-                trace = WorkflowTraceSerializer.secureRead(new FileInputStream(new File(cmdConfig.getWorkflowInput())));
+                try (FileInputStream fis = new FileInputStream(cmdConfig.getWorkflowInput())) {
+                    trace = WorkflowTraceSerializer.secureRead(fis);
+                }
             }
             State state = executeMitmWorkflow(config, trace);
             if (cmdConfig.getWorkflowOutput() != null) {
@@ -74,14 +76,18 @@ public class TlsMitm implements Runnable {
                 WorkflowTraceSerializer.write(new File(cmdConfig.getWorkflowOutput()), trace);
             }
         } catch (WorkflowExecutionException wee) {
-            LOGGER.error("The TLS protocol flow was not executed completely. " + wee.getLocalizedMessage()
-                + " - See debug messages for more details.");
+            LOGGER.error(
+                    "The TLS protocol flow was not executed completely. "
+                            + wee.getLocalizedMessage()
+                            + " - See debug messages for more details.");
             LOGGER.error(wee.getLocalizedMessage());
             LOGGER.debug(wee);
             throw wee;
         } catch (ConfigurationException ce) {
-            LOGGER.error("Encountered a ConfigurationException aborting. " + ce.getLocalizedMessage()
-                + " - See debug messages for more details.");
+            LOGGER.error(
+                    "Encountered a ConfigurationException aborting. "
+                            + ce.getLocalizedMessage()
+                            + " - See debug messages for more details.");
             LOGGER.debug(ce.getLocalizedMessage(), ce);
             throw ce;
         } catch (ParameterException pe) {
@@ -94,7 +100,7 @@ public class TlsMitm implements Runnable {
     }
 
     public State executeMitmWorkflow(Config config, WorkflowTrace trace)
-        throws ConfigurationException, WorkflowExecutionException {
+            throws ConfigurationException, WorkflowExecutionException {
         LOGGER.debug("Creating and launching mitm.");
         State state;
 
@@ -104,7 +110,8 @@ public class TlsMitm implements Runnable {
             state = new State(config, trace);
         }
         WorkflowExecutor workflowExecutor =
-            WorkflowExecutorFactory.createWorkflowExecutor(config.getWorkflowExecutorType(), state);
+                WorkflowExecutorFactory.createWorkflowExecutor(
+                        config.getWorkflowExecutorType(), state);
         workflowExecutor.executeWorkflow();
         return state;
     }

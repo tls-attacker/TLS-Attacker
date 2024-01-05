@@ -1,129 +1,57 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.tlsattacker.core.constants.CipherSuite;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import de.rub.nds.tlsattacker.core.record.cipher.RecordBlockCipher;
-import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
-import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
-import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
-import de.rub.nds.tlsattacker.util.tests.SlowTests;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import javax.crypto.NoSuchPaddingException;
-import org.junit.After;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
-public class ChangeServerRandomActionTest {
+import org.junit.jupiter.api.Test;
 
-    private State state;
-    private TlsContext tlsContext;
+public class ChangeServerRandomActionTest
+        extends AbstractChangeActionTest<ChangeServerRandomAction> {
 
-    private ChangeServerRandomAction action;
-
-    @Before
-    public void setUp() throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,
-        InvalidAlgorithmParameterException, CryptoException {
-        action = new ChangeServerRandomAction(new byte[] { 0, 1 });
-        WorkflowTrace trace = new WorkflowTrace();
-        trace.addTlsAction(action);
-        state = new State(trace);
-
-        tlsContext = state.getTlsContext();
-        tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
-        tlsContext.setRecordLayer(new TlsRecordLayer(tlsContext));
+    public ChangeServerRandomActionTest() {
+        super(new ChangeServerRandomAction(new byte[] {0, 1}), ChangeServerRandomAction.class);
     }
 
-    @After
-    public void tearDown() {
-    }
-
-    /**
-     * Test of setNewValue method, of class ChangeClientRandomAction.
-     */
+    /** Test of setNewValue method, of class ChangeClientRandomAction. */
     @Test
+    @Override
     public void testSetNewValue() {
-        assertArrayEquals(action.getNewValue(), new byte[] { 0, 1 });
-        action.setNewValue(new byte[] { 0 });
-        assertArrayEquals(action.getNewValue(), new byte[] { 0 });
+        assertArrayEquals(action.getNewValue(), new byte[] {0, 1});
+        action.setNewValue(new byte[] {0});
+        assertArrayEquals(action.getNewValue(), new byte[] {0});
     }
 
-    /**
-     * Test of getNewValue method, of class ChangeClientRandomAction.
-     */
+    /** Test of getNewValue method, of class ChangeClientRandomAction. */
     @Test
+    @Override
     public void testGetNewValue() {
-        assertArrayEquals(action.getNewValue(), new byte[] { 0, 1 });
+        assertArrayEquals(action.getNewValue(), new byte[] {0, 1});
     }
 
-    /**
-     * Test of getOldValue method, of class ChangeClientRandomAction.
-     */
+    /** Test of getOldValue method, of class ChangeClientRandomAction. */
     @Test
+    @Override
     public void testGetOldValue() {
-        tlsContext.setServerRandom(new byte[] { 3 });
+        context.setServerRandom(new byte[] {3});
         action.execute(state);
-        assertArrayEquals(action.getOldValue(), new byte[] { 3 });
+        assertArrayEquals(action.getOldValue(), new byte[] {3});
     }
 
-    /**
-     * Test of execute method, of class ChangeClientRandomAction.
-     */
+    /** Test of execute method, of class ChangeClientRandomAction. */
     @Test
-    public void testExecute() {
-        tlsContext.setServerRandom(new byte[] { 3 });
-        action.execute(state);
-        assertArrayEquals(action.getOldValue(), new byte[] { 3 });
-        assertArrayEquals(action.getNewValue(), new byte[] { 0, 1 });
-        assertArrayEquals(tlsContext.getServerRandom(), new byte[] { 0, 1 });
-        assertTrue(action.isExecuted());
-
+    @Override
+    public void testExecute() throws Exception {
+        context.setServerRandom(new byte[] {3});
+        super.testExecute();
+        assertArrayEquals(action.getOldValue(), new byte[] {3});
+        assertArrayEquals(action.getNewValue(), new byte[] {0, 1});
+        assertArrayEquals(context.getServerRandom(), new byte[] {0, 1});
     }
-
-    /**
-     * Test of reset method, of class ChangeClientRandomAction.
-     */
-    @Test
-    public void testReset() {
-        assertFalse(action.isExecuted());
-        action.execute(state);
-        assertTrue(action.isExecuted());
-        action.reset();
-        assertFalse(action.isExecuted());
-        action.execute(state);
-        assertTrue(action.isExecuted());
-    }
-
-    @Test
-    @Category(SlowTests.class)
-    public void marshalingEmptyActionYieldsMinimalOutput() {
-        ActionTestUtils.marshalingEmptyActionYieldsMinimalOutput(ChangeServerRandomAction.class);
-    }
-
-    @Test
-    @Category(SlowTests.class)
-    public void marshalingAndUnmarshalingEmptyObjectYieldsEqualObject() {
-        ActionTestUtils.marshalingAndUnmarshalingEmptyObjectYieldsEqualObject(ChangeServerRandomAction.class);
-    }
-
-    @Test
-    @Category(SlowTests.class)
-    public void marshalingAndUnmarshalingFilledObjectYieldsEqualObject() {
-        ActionTestUtils.marshalingAndUnmarshalingFilledObjectYieldsEqualObject(action);
-    }
-
 }

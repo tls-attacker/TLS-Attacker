@@ -1,74 +1,55 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
-import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CachedInfoExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.CachedInfoExtensionParserTest;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.CachedInfoExtensionPreparator;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.util.Collection;
+import de.rub.nds.tlsattacker.core.state.Context;
+import de.rub.nds.tlsattacker.core.state.State;
 import java.util.List;
-import static org.junit.Assert.assertArrayEquals;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import java.util.stream.Stream;
+import org.junit.jupiter.params.provider.Arguments;
 
-@RunWith(Parameterized.class)
-public class CachedInfoExtensionSerializerTest {
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return CachedInfoExtensionParserTest.generateData();
+public class CachedInfoExtensionSerializerTest
+        extends AbstractExtensionMessageSerializerTest<
+                CachedInfoExtensionMessage, CachedInfoExtensionSerializer> {
+
+    public CachedInfoExtensionSerializerTest() {
+        // noinspection unchecked
+        super(
+                CachedInfoExtensionMessage::new,
+                CachedInfoExtensionSerializer::new,
+                List.of(
+                        (msg, obj) -> msg.setCachedInfoLength((Integer) obj),
+                        (msg, obj) -> {},
+                        (msg, obj) -> msg.setCachedInfo((List<CachedObject>) obj)));
     }
 
-    private final ExtensionType type;
-    private final ConnectionEndType isClientState;
-    private final int cachedInfoLength;
-    private final byte[] cachedInfoBytes;
-    private final List<CachedObject> cachedObjectList;
-    private final byte[] extensionBytes;
-    private final int extensionLength;
-    private CachedInfoExtensionSerializer serializer;
-    private CachedInfoExtensionMessage msg;
-
-    public CachedInfoExtensionSerializerTest(ExtensionType type, ConnectionEndType isClientState, int cachedInfoLength,
-        byte[] cachedInfoBytes, List<CachedObject> cachedObjectList, byte[] extensionBytes, int extensionLength) {
-        this.type = type;
-        this.isClientState = isClientState;
-        this.cachedInfoLength = cachedInfoLength;
-        this.cachedInfoBytes = cachedInfoBytes;
-        this.cachedObjectList = cachedObjectList;
-        this.extensionBytes = extensionBytes;
-        this.extensionLength = extensionLength;
+    public static Stream<Arguments> provideTestVectors() {
+        return CachedInfoExtensionParserTest.provideTestVectors();
     }
 
-    @Before
-    public void setUp() {
-        msg = new CachedInfoExtensionMessage();
-        serializer = new CachedInfoExtensionSerializer(msg);
-    }
+    @Override
+    protected void setExtensionMessageSpecific(
+            List<Object> providedAdditionalValues, List<Object> providedMessageSpecificValues) {
+        super.setExtensionMessageSpecific(providedAdditionalValues, providedMessageSpecificValues);
 
-    @Test
-    public void testSerializeExtensionContent() {
-        msg.setCachedInfo(cachedObjectList);
-        msg.setExtensionType(type.getValue());
-        msg.setExtensionLength(extensionLength);
-        msg.setCachedInfoLength(cachedInfoLength);
-
-        CachedInfoExtensionPreparator preparator = new CachedInfoExtensionPreparator(new TlsContext().getChooser(), msg,
-            new CachedInfoExtensionSerializer(msg));
+        CachedInfoExtensionPreparator preparator =
+                new CachedInfoExtensionPreparator(
+                        new Context(new State(new Config()), new InboundConnection())
+                                .getTlsContext()
+                                .getChooser(),
+                        message);
         preparator.prepare();
-
-        assertArrayEquals(extensionBytes, serializer.serialize());
     }
 }

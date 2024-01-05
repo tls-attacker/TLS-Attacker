@@ -2,20 +2,22 @@
 <Configuration status="WARN">
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout pattern="%highlight{%d{HH:mm:ss}{GMT+0} [%t] %-5level: %c{1} - %msg%n%throwable}"/>
+            <ExtendedPatternLayout pattern="%highlight{%d{HH:mm:ss}{GMT+0} [%t] %-5level: %c{1} - %msg%n%throwable}"/>
         </Console>
         <Console name="Info" target="SYSTEM_OUT">
-            <PatternLayout pattern="%highlight{%d{HH:mm:ss}{GMT+0} [%t] %-5level: %c{1}} - %msg%n%highlight{%throwable}"/>
+            <ExtendedPatternLayout pattern="%highlight{%d{HH:mm:ss}{GMT+0} [%t] %-5level: %c{1}} - %msg%n%highlight{%throwable}"/>
         </Console>
         <Console name="Direct" target="SYSTEM_OUT">
-            <PatternLayout pattern="%highlight{%msg}%n"/>
+            <ExtendedPatternLayout pattern="%highlight{%msg}%n"/>
         </Console>
     </Appenders>
     <Loggers>
         <Logger name="DirectLogger" level="ALL" additivity="false">
             <AppenderRef ref="Direct"/>
         </Logger>
-        
+        <Logger name="org.reflections" level="WARN"/>
+        <Logger name="de.rub.nds.asn1" level="WARN"/>
+        <Logger name="de.rub.nds.x509attacker" level="WARN"/>
         <Logger name="de.rub.nds.tlsattacker.core.protocol.handler" level="INFO"/>
         <Logger name="de.rub.nds.tlsattacker.core.protocol.message" level="INFO"/>
         <Logger name="de.rub.nds.tlsattacker.core.protocol.parser" level="INFO"/>

@@ -1,72 +1,56 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.config.delegate;
 
-import com.beust.jcommander.JCommander;
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.config.Config;
-import java.util.Objects;
 import org.apache.commons.lang3.builder.EqualsBuilder;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class RecordSizeLimitDelegateTest {
+public class RecordSizeLimitDelegateTest extends AbstractDelegateTest<RecordSizeLimitDelegate> {
 
-    private RecordSizeLimitDelegate delegate;
-    private JCommander jcommander;
-    private String[] args;
-
-    @Before
+    @BeforeEach
     public void setUp() {
-        this.delegate = new RecordSizeLimitDelegate();
-        this.jcommander = new JCommander(delegate);
-
+        super.setUp(new RecordSizeLimitDelegate());
     }
 
-    /**
-     * Test of getRecordSizeLimit method, of class RecordSizeLimitDelegate.
-     */
+    /** Test of getRecordSizeLimit method, of class RecordSizeLimitDelegate. */
     @Test
     public void testGetRecordSizeLimit() {
         args = new String[2];
         args[0] = "-record_size_limit";
         args[1] = "1337";
-        assertTrue(delegate.getRecordSizeLimit() == null);
+        assertNull(delegate.getRecordSizeLimit());
         jcommander.parse(args);
-        assertTrue(delegate.getRecordSizeLimit() == 1337);
+        assertEquals(1337, (int) delegate.getRecordSizeLimit());
     }
 
-    @Test(expected = ParameterException.class)
+    @Test
     public void testGetInvalidRecordSizeLimit() {
         args = new String[2];
         args[0] = "-record_size_limit";
         args[1] = "abcdefg";
-        jcommander.parse(args);
+        assertThrows(ParameterException.class, () -> jcommander.parse(args));
     }
 
-    /**
-     * Test of setRecordSizeLimit method, of class RecordSizeLimitDelegate.
-     */
+    /** Test of setRecordSizeLimit method, of class RecordSizeLimitDelegate. */
     @Test
     public void testSetRecordSizeLimit() {
-        assertFalse(Objects.equals(delegate.getRecordSizeLimit(), 1337));
+        assertNull(delegate.getRecordSizeLimit());
         delegate.setRecordSizeLimit(1337);
-        assertTrue(Objects.equals(delegate.getRecordSizeLimit(), 1337));
+        assertEquals(1337, (int) delegate.getRecordSizeLimit());
     }
 
-    /**
-     * Test of applyDelegate method, of class RecordSizeLimitDelegate.
-     */
+    /** Test of applyDelegate method, of class RecordSizeLimitDelegate. */
     @Test
     public void testApplyDelegate() {
         Config config = Config.createConfig();
@@ -77,7 +61,7 @@ public class RecordSizeLimitDelegateTest {
         jcommander.parse(args);
         delegate.applyDelegate(config);
         assertTrue(config.isAddRecordSizeLimitExtension());
-        assertTrue(config.getInboundRecordSizeLimit() == 1337);
+        assertEquals(1337, (int) config.getInboundRecordSizeLimit());
     }
 
     @Test
@@ -121,7 +105,6 @@ public class RecordSizeLimitDelegateTest {
         Config config = Config.createConfig();
         Config config2 = Config.createConfig();
         delegate.applyDelegate(config);
-        assertTrue(EqualsBuilder.reflectionEquals(config, config2, "keyStore", "ourCertificate"));// little
-        // ugly
+        assertTrue(EqualsBuilder.reflectionEquals(config, config2, "certificateChainConfig"));
     }
 }

@@ -1,46 +1,26 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.AuthzDataFormat;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerAuthzExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.ServerAuthzExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ServerAuthzExtensionPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ServerAuthzExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 public class ServerAuthzExtensionHandler extends ExtensionHandler<ServerAuthzExtensionMessage> {
 
-    public ServerAuthzExtensionHandler(TlsContext context) {
-        super(context);
-    }
-
-    @Override
-    public ServerAuthzExtensionParser getParser(byte[] message, int pointer, Config config) {
-        return new ServerAuthzExtensionParser(pointer, message, config);
-    }
-
-    @Override
-    public ServerAuthzExtensionPreparator getPreparator(ServerAuthzExtensionMessage message) {
-        return new ServerAuthzExtensionPreparator(context.getChooser(), message, getSerializer(message));
-    }
-
-    @Override
-    public ServerAuthzExtensionSerializer getSerializer(ServerAuthzExtensionMessage message) {
-        return new ServerAuthzExtensionSerializer(message);
+    public ServerAuthzExtensionHandler(TlsContext tlsContext) {
+        super(tlsContext);
     }
 
     @Override
     public void adjustTLSExtensionContext(ServerAuthzExtensionMessage message) {
-        context.setServerAuthzDataFormatList(AuthzDataFormat.byteArrayToList(message.getAuthzFormatList().getValue()));
+        tlsContext.setServerAuthzDataFormatList(
+                AuthzDataFormat.byteArrayToList(message.getAuthzFormatList().getValue()));
     }
-
 }

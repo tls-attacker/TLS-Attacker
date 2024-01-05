@@ -1,29 +1,24 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.tokenbinding;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class TokenBindingMessageSerializerTest {
 
     private TokenBindingMessageSerializer serializer;
 
-    private ProtocolVersion version;
-
-    private TokenBindingMessage message;
-
-    @Before
+    @BeforeEach
     public void setUp() {
-        message = new TokenBindingMessage();
+        TokenBindingMessage message = new TokenBindingMessage();
         message.setExtensionBytes(new byte[0]);
         message.setExtensionLength(0);
         message.setKeyLength(0);
@@ -39,17 +34,14 @@ public class TokenBindingMessageSerializerTest {
         message.setSignature(new byte[0]);
         message.setSignatureLength(0);
         message.setPointLength(0);
-        version = ProtocolVersion.TLS12;
+        ProtocolVersion version = ProtocolVersion.TLS12;
 
-        serializer = new TokenBindingMessageSerializer(message, version);
+        serializer = new TokenBindingMessageSerializer(message);
     }
 
-    /**
-     * Test of serializeProtocolMessageContent method, of class TokenBindingMessageSerializer.
-     */
+    /** Test of serializeBytes method, of class TokenBindingMessageSerializer. */
     @Test
-    public void testSerializeProtocolMessageContent() {
+    public void testSerializeBytes() {
         serializer.serialize();
     }
-
 }

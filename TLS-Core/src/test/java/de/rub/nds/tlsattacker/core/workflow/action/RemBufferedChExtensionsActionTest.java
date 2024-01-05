@@ -1,73 +1,58 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.workflow.action;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ClientHelloPreparator;
-import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
-import de.rub.nds.tlsattacker.util.tests.SlowTests;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
+import de.rub.nds.tlsattacker.util.tests.TestCategories;
+import jakarta.xml.bind.JAXBException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import javax.crypto.NoSuchPaddingException;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import javax.xml.stream.XMLStreamException;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
-public class RemBufferedChExtensionsActionTest {
+public class RemBufferedChExtensionsActionTest
+        extends AbstractActionTest<RemBufferedChExtensionsAction> {
 
-    private State state;
-    private TlsContext ctx;
-    private WorkflowTrace trace;
-
-    private ClientHelloMessage ch;
-    private ClientHelloPreparator preparator;
-    private RemBufferedChExtensionsAction action;
-    private List<ExtensionType> remove;
-    private List<ExtensionType> expected;
+    private final ClientHelloMessage ch;
+    private final List<ExtensionType> remove;
+    private final List<ExtensionType> expected;
     private List<ExtensionType> actual;
     private byte[] expectedBytes;
     private int expectedLength;
     private int expectedMsgLength;
-    private byte[] actualBytes;
-    private int actualLength;
-    private int actualMsgLength;
 
     public RemBufferedChExtensionsActionTest() {
-    }
+        super(new RemBufferedChExtensionsAction(), RemBufferedChExtensionsAction.class);
 
-    @Before
-    public void setUp() throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,
-        InvalidAlgorithmParameterException {
-
-        expected = new ArrayList();
+        expected = new ArrayList<>();
         expected.add(ExtensionType.EC_POINT_FORMATS);
         expected.add(ExtensionType.ELLIPTIC_CURVES);
         expected.add(ExtensionType.EXTENDED_MASTER_SECRET);
         expected.add(ExtensionType.ENCRYPT_THEN_MAC);
-        expectedBytes = ArrayConverter.hexStringToByteArray("000B00020100000A000A000800130017001800190017000000160000");
+        expectedBytes =
+                ArrayConverter.hexStringToByteArray(
+                        "000B00020100000A000A000800130017001800190017000000160000");
         expectedLength = 28;
 
-        Config config = Config.createConfig();
+        Config config = state.getConfig();
+        TlsContext context = state.getTlsContext();
         config.setAddECPointFormatExtension(true);
         config.setAddEllipticCurveExtension(true);
         config.setAddEncryptThenMacExtension(true);
@@ -75,20 +60,22 @@ public class RemBufferedChExtensionsActionTest {
         config.setAddRenegotiationInfoExtension(false);
         config.setAddSignatureAndHashAlgorithmsExtension(false);
         config.setAddSignatureAlgorithmsCertExtension(false);
-        config.setDefaultClientNamedGroups(NamedGroup.SECP192R1, NamedGroup.SECP256R1, NamedGroup.SECP384R1,
-            NamedGroup.SECP521R1);
-        config.setDefaultServerNamedGroups(NamedGroup.SECP192R1, NamedGroup.SECP256R1, NamedGroup.SECP384R1,
-            NamedGroup.SECP521R1);
-        action = new RemBufferedChExtensionsAction();
-        trace = new WorkflowTrace();
-        trace.addTlsAction(action);
-        state = new State(config, trace);
-        ctx = state.getTlsContext();
+        config.setDefaultClientNamedGroups(
+                NamedGroup.SECP192R1,
+                NamedGroup.SECP256R1,
+                NamedGroup.SECP384R1,
+                NamedGroup.SECP521R1);
+        config.setDefaultServerNamedGroups(
+                NamedGroup.SECP192R1,
+                NamedGroup.SECP256R1,
+                NamedGroup.SECP384R1,
+                NamedGroup.SECP521R1);
+
         ch = new ClientHelloMessage(config);
-        preparator = new ClientHelloPreparator(ctx.getChooser(), ch);
+        ClientHelloPreparator preparator = new ClientHelloPreparator(context.getChooser(), ch);
         preparator.prepare();
         expectedMsgLength = ch.getLength().getValue();
-        ctx.getMessageBuffer().add(ch);
+        context.getMessageBuffer().add(ch);
         remove = new ArrayList<>();
     }
 
@@ -102,16 +89,16 @@ public class RemBufferedChExtensionsActionTest {
 
     private void compareList() {
         actual = typesFromMessageList(ch.getExtensions());
-        assertThat("extension list should be adjusted", actual, equalTo(expected));
+        assertEquals(expected, actual, "extension list should be adjusted");
     }
 
     private void compareFields() {
-        actualBytes = ch.getExtensionBytes().getValue();
-        actualLength = ch.getExtensionsLength().getValue();
-        actualMsgLength = ch.getLength().getValue();
-        assertThat("bytes should be adjusted", actualBytes, equalTo(expectedBytes));
-        assertThat("bytes lengths should be adjusted", actualLength, equalTo(expectedLength));
-        assertThat("message lengths should be adjusted", actualMsgLength, equalTo(expectedMsgLength));
+        byte[] actualBytes = ch.getExtensionBytes().getValue();
+        int actualLength = ch.getExtensionsLength().getValue();
+        int actualMsgLength = ch.getLength().getValue();
+        assertArrayEquals(expectedBytes, actualBytes, "bytes should be adjusted");
+        assertEquals(expectedLength, actualLength, "bytes lengths should be adjusted");
+        assertEquals(expectedMsgLength, actualMsgLength, "message lengths should be adjusted");
         assertTrue(action.isExecuted());
     }
 
@@ -124,78 +111,55 @@ public class RemBufferedChExtensionsActionTest {
     }
 
     @Test
-    public void removingNothingIsOk() {
-        action.execute(state);
+    @Override
+    public void testExecute() throws Exception {
+        super.testExecute();
         actual = typesFromMessageList(ch.getExtensions());
-
-        action.execute(state);
-
-        assertTrue(action.isExecuted());
         compareList();
         compareFields();
     }
 
     @Test
-    public void removingSingleExtensionIsOk() {
+    public void testRemoveSingleExtensionIsOk() throws Exception {
         expected.remove(ExtensionType.ELLIPTIC_CURVES);
         setExpectedFields("000B000201000017000000160000");
-
         action.setRemoveExtensions(ExtensionType.ELLIPTIC_CURVES);
-        action.execute(state);
-
-        assertTrue(action.isExecuted());
+        super.testExecute();
         compareList();
         compareFields();
     }
 
     @Test
-    public void removingMultipleExtensionsIsOk() {
+    public void testRemoveMultipleExtensionsIsOk() throws Exception {
         remove.add(ExtensionType.ENCRYPT_THEN_MAC);
         remove.add(ExtensionType.ELLIPTIC_CURVES);
         expected.removeAll(remove);
         setExpectedFields("000B0002010000170000");
-
         action.setRemoveExtensions(remove);
-        action.execute(state);
-
-        assertTrue(action.isExecuted());
+        super.testExecute();
         compareList();
         compareFields();
     }
 
     @Test
-    public void removingNonProposedExtensionsIsOk() {
+    public void testRemoveNonProposedExtensionsIsOk() throws Exception {
         remove.add(ExtensionType.ALPN);
         remove.add(ExtensionType.RENEGOTIATION_INFO);
         remove.add(ExtensionType.ELLIPTIC_CURVES);
         expected.removeAll(remove);
         setExpectedFields("000B000201000017000000160000");
-
         action.setRemoveExtensions(remove);
-        action.execute(state);
-
-        assertTrue(action.isExecuted());
+        super.testExecute();
         compareList();
         compareFields();
     }
 
     @Test
-    @Category(SlowTests.class)
-    public void marshalingEmptyActionYieldsMinimalOutput() {
-        ActionTestUtils.marshalingEmptyActionYieldsMinimalOutput(RemBufferedChExtensionsAction.class);
-    }
-
-    @Test
-    @Category(SlowTests.class)
-    public void marshalingAndUnmarshalingEmptyObjectYieldsEqualObject() {
-        ActionTestUtils.marshalingAndUnmarshalingEmptyObjectYieldsEqualObject(RemBufferedChExtensionsAction.class);
-    }
-
-    @Test
-    @Category(SlowTests.class)
-    public void marshalingAndUnmarshalingFilledObjectYieldsEqualObject() {
+    @Tag(TestCategories.SLOW_TEST)
+    @Override
+    public void testMarshalingAndUnmarshalingFilledObjectYieldsEqualObject()
+            throws JAXBException, IOException, XMLStreamException {
         action.setRemoveExtensions(ExtensionType.TOKEN_BINDING, ExtensionType.ALPN);
-        ActionTestUtils.marshalingAndUnmarshalingFilledObjectYieldsEqualObject(action);
+        super.testMarshalingAndUnmarshalingFilledObjectYieldsEqualObject();
     }
-
 }

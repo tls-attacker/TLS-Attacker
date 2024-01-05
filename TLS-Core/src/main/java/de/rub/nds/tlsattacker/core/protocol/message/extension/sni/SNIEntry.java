@@ -1,32 +1,30 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message.extension.sni;
 
-import de.rub.nds.tlsattacker.core.constants.NameType;
+import de.rub.nds.tlsattacker.core.constants.SniType;
 import java.io.Serializable;
 import java.util.Objects;
 
 public class SNIEntry implements Serializable {
 
     private String name;
-    private NameType type;
+    private SniType type;
 
-    public SNIEntry() {
-    }
+    public SNIEntry() {}
 
     public SNIEntry(SNIEntry other) {
         name = other.name;
         type = other.type;
     }
 
-    public SNIEntry(String name, NameType type) {
+    public SNIEntry(String name, SniType type) {
         this.name = name;
         this.type = type;
     }
@@ -39,11 +37,11 @@ public class SNIEntry implements Serializable {
         this.name = name;
     }
 
-    public NameType getType() {
+    public SniType getType() {
         return type;
     }
 
-    public void setType(NameType type) {
+    public void setType(SniType type) {
         this.type = type;
     }
 
@@ -72,5 +70,4 @@ public class SNIEntry implements Serializable {
         }
         return this.type == other.type;
     }
-
 }

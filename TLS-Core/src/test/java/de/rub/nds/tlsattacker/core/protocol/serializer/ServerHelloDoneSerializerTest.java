@@ -1,61 +1,27 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.ServerHelloDoneParserTest;
-import java.util.Collection;
-import static org.junit.Assert.*;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import java.util.stream.Stream;
+import org.junit.jupiter.params.provider.Arguments;
 
-@RunWith(Parameterized.class)
-public class ServerHelloDoneSerializerTest {
+public class ServerHelloDoneSerializerTest
+        extends AbstractHandshakeMessageSerializerTest<
+                ServerHelloDoneMessage, ServerHelloDoneSerializer> {
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return ServerHelloDoneParserTest.generateData();
+    public ServerHelloDoneSerializerTest() {
+        super(ServerHelloDoneMessage::new, ServerHelloDoneSerializer::new);
     }
 
-    private byte[] message;
-    private int start;
-    private byte[] expectedPart;
-
-    private HandshakeMessageType type;
-    private int length;
-    private ProtocolVersion version;
-
-    public ServerHelloDoneSerializerTest(byte[] message, HandshakeMessageType type, int length,
-        ProtocolVersion version) {
-        this.message = message;
-        this.start = 0;
-        this.expectedPart = message;
-        this.type = type;
-        this.length = length;
-        this.version = version;
+    public static Stream<Arguments> provideTestVectors() {
+        return ServerHelloDoneParserTest.provideTestVectors();
     }
-
-    /**
-     * Test of serializeHandshakeMessageContent method, of class ServerHelloDoneSerializer.
-     */
-    @Test
-    public void testSerializeHandshakeMessageContent() {
-        ServerHelloDoneMessage msg = new ServerHelloDoneMessage();
-        msg.setCompleteResultingMessage(expectedPart);
-        msg.setType(type.getValue());
-        msg.setLength(length);
-        ServerHelloDoneSerializer serializer = new ServerHelloDoneSerializer(msg, version);
-        assertArrayEquals(expectedPart, serializer.serialize());
-    }
-
 }

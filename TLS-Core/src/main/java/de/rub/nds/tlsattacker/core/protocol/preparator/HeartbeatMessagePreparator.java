@@ -1,22 +1,21 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMessageType;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class HeartbeatMessagePreparator extends TlsMessagePreparator<HeartbeatMessage> {
+public class HeartbeatMessagePreparator extends ProtocolMessagePreparator<HeartbeatMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -33,11 +32,12 @@ public class HeartbeatMessagePreparator extends TlsMessagePreparator<HeartbeatMe
             LOGGER.warn("HeartBeat payload length is smaller than 0. Setting it to 0 instead");
             payloadLength = 0;
         } else if (payloadLength > 65536) {
-            LOGGER.warn("HeartBeat payload length is bigger than the max value. Setting it to max value.");
+            LOGGER.warn(
+                    "HeartBeat payload length is bigger than the max value. Setting it to max value.");
             payloadLength = 65536;
         }
         byte[] payload = new byte[payloadLength];
-        chooser.getContext().getRandom().nextBytes(payload);
+        chooser.getContext().getTlsContext().getRandom().nextBytes(payload);
         return payload;
     }
 
@@ -47,11 +47,12 @@ public class HeartbeatMessagePreparator extends TlsMessagePreparator<HeartbeatMe
             LOGGER.warn("HeartBeat padding length is smaller than 0. Setting it to 0 instead");
             paddingLength = 0;
         } else if (paddingLength > 65536) {
-            LOGGER.warn("HeartBeat padding length is bigger than the max value. Setting it to max value.");
+            LOGGER.warn(
+                    "HeartBeat padding length is bigger than the max value. Setting it to max value.");
             paddingLength = 65536;
         }
         byte[] padding = new byte[paddingLength];
-        chooser.getContext().getRandom().nextBytes(padding);
+        chooser.getContext().getTlsContext().getRandom().nextBytes(padding);
         return padding;
     }
 
@@ -72,7 +73,7 @@ public class HeartbeatMessagePreparator extends TlsMessagePreparator<HeartbeatMe
 
     private void preparePayload(HeartbeatMessage msg) {
         msg.setPayload(generatePayload());
-        LOGGER.debug("Payload: " + ArrayConverter.bytesToHexString(msg.getPayload().getValue()));
+        LOGGER.debug("Payload: {}", msg.getPayload().getValue());
     }
 
     private void preparePayloadLength(HeartbeatMessage msg) {
@@ -82,6 +83,6 @@ public class HeartbeatMessagePreparator extends TlsMessagePreparator<HeartbeatMe
 
     private void preparePadding(HeartbeatMessage msg) {
         msg.setPadding(generatePadding());
-        LOGGER.debug("Padding: " + ArrayConverter.bytesToHexString(msg.getPadding().getValue()));
+        LOGGER.debug("Padding: {}", msg.getPadding().getValue());
     }
 }

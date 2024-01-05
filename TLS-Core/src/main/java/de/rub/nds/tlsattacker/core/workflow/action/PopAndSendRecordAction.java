@@ -1,31 +1,29 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.record.AbstractRecord;
-import de.rub.nds.tlsattacker.core.record.serializer.AbstractRecordSerializer;
+import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
+import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.context.TcpContext;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.record.serializer.RecordSerializer;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.IOException;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
-import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@XmlRootElement
-public class PopAndSendRecordAction extends MessageAction implements SendingAction {
+@XmlRootElement(name = "PopAndSendRecord")
+public class PopAndSendRecordAction extends CommonSendAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
     private Boolean asPlanned = null;
@@ -39,23 +37,26 @@ public class PopAndSendRecordAction extends MessageAction implements SendingActi
     }
 
     @Override
-    public void execute(State state) throws WorkflowExecutionException {
-        TlsContext tlsContext = state.getTlsContext(connectionAlias);
+    public void execute(State state) throws ActionExecutionException {
+        TlsContext tlsContext =
+                state.getContext(connectionAlias)
+                        .getTlsContext(); // TODO this assumes that TLS is ran on top of TCP
+        TcpContext tcpContext = state.getContext(connectionAlias).getTcpContext();
 
         if (isExecuted()) {
-            throw new WorkflowExecutionException("Action already executed!");
+            throw new ActionExecutionException("Action already executed!");
         }
 
-        AbstractRecord record = tlsContext.getRecordBuffer().pop();
+        Record record = tlsContext.getRecordBuffer().pop();
         String sending = record.getContentMessageType().name();
         if (connectionAlias == null) {
-            LOGGER.info("Sending record: " + sending);
+            LOGGER.info("Sending record: {}", sending);
         } else {
-            LOGGER.info("Sending record(" + connectionAlias + "): " + sending);
+            LOGGER.info("Sending record({}): {}", connectionAlias, sending);
         }
-        AbstractRecordSerializer s = record.getRecordSerializer();
+        RecordSerializer s = record.getRecordSerializer();
         try {
-            tlsContext.getTransportHandler().sendData(s.serialize());
+            tcpContext.getTransportHandler().sendData(s.serialize());
             asPlanned = true;
         } catch (IOException ex) {
             LOGGER.debug(ex);
@@ -72,40 +73,18 @@ public class PopAndSendRecordAction extends MessageAction implements SendingActi
 
     @Override
     public boolean executedAsPlanned() {
-        return isExecuted() && Objects.equals(asPlanned, Boolean.TRUE);
-    }
-
-    @Override
-    public void setRecords(List<AbstractRecord> records) {
-        this.records = records;
+        return super.executedAsPlanned() && Objects.equals(asPlanned, Boolean.TRUE);
     }
 
     @Override
     public void reset() {
-        messages = new LinkedList<>();
-        records = new LinkedList<>();
-        fragments = new LinkedList<>();
-        setExecuted(null);
+        super.reset();
         asPlanned = null;
     }
 
     @Override
-    public List<ProtocolMessage> getSendMessages() {
-        return messages;
-    }
-
-    @Override
-    public List<AbstractRecord> getSendRecords() {
-        return records;
-    }
-
-    @Override
-    public List<DtlsHandshakeMessageFragment> getSendFragments() {
-        return fragments;
-    }
-
-    @Override
-    public MessageActionDirection getMessageDirection() {
-        return MessageActionDirection.SENDING;
+    protected List<LayerConfiguration<?>> createLayerConfiguration(State state) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'createLayerConfiguration'");
     }
 }

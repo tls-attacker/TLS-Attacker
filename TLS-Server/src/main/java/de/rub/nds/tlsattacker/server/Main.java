@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.server;
 
 import com.beust.jcommander.JCommander;
@@ -48,8 +47,9 @@ public class Main {
                 WorkflowTrace trace = null;
                 if (config.getWorkflowInput() != null) {
                     LOGGER.debug("Reading workflow trace from " + config.getWorkflowInput());
-                    trace =
-                        WorkflowTraceSerializer.secureRead(new FileInputStream(new File(config.getWorkflowInput())));
+                    try (FileInputStream fis = new FileInputStream(config.getWorkflowInput())) {
+                        trace = WorkflowTraceSerializer.secureRead(fis);
+                    }
                 }
                 TlsServer server = new TlsServer();
                 State state = server.execute(tlsConfig, trace);
@@ -59,7 +59,9 @@ public class Main {
                     WorkflowTraceSerializer.write(new File(config.getWorkflowOutput()), trace);
                 }
             } catch (Exception e) {
-                LOGGER.warn("Encountered a ConfigurationException aborting. Try -debug for more info", e);
+                LOGGER.warn(
+                        "Encountered a ConfigurationException aborting. Try -debug for more info",
+                        e);
                 commander.usage();
             }
         } catch (ParameterException e) {

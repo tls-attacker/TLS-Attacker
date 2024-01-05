@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message.computations;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -14,8 +13,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.crypto.ec.Point;
+import de.rub.nds.protocol.crypto.ec.Point;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 
 public class GOSTClientComputations extends KeyExchangeComputations {
@@ -45,9 +43,11 @@ public class GOSTClientComputations extends KeyExchangeComputations {
 
     public void setClientPublicKey(Point point) {
         this.clientPublicKeyX =
-            ModifiableVariableFactory.safelySetValue(this.clientPublicKeyX, point.getFieldX().getData());
+                ModifiableVariableFactory.safelySetValue(
+                        this.clientPublicKeyX, point.getFieldX().getData());
         this.clientPublicKeyY =
-            ModifiableVariableFactory.safelySetValue(this.clientPublicKeyY, point.getFieldY().getData());
+                ModifiableVariableFactory.safelySetValue(
+                        this.clientPublicKeyY, point.getFieldY().getData());
     }
 
     public ModifiableBigInteger getClientPublicKeyX() {
@@ -71,7 +71,8 @@ public class GOSTClientComputations extends KeyExchangeComputations {
     }
 
     public void setEncryptedKey(byte[] encryptedKey) {
-        this.encryptedKey = ModifiableVariableFactory.safelySetValue(this.encryptedKey, encryptedKey);
+        this.encryptedKey =
+                ModifiableVariableFactory.safelySetValue(this.encryptedKey, encryptedKey);
     }
 
     public ModifiableString getEncryptionParamSet() {
@@ -79,7 +80,8 @@ public class GOSTClientComputations extends KeyExchangeComputations {
     }
 
     public void setEncryptionParamSet(ASN1ObjectIdentifier oid) {
-        this.encryptionParamSet = ModifiableVariableFactory.safelySetValue(this.encryptionParamSet, oid.getId());
+        this.encryptionParamSet =
+                ModifiableVariableFactory.safelySetValue(this.encryptionParamSet, oid.getId());
     }
 
     public ModifiableByteArray getKeyEncryptionKey() {
@@ -87,7 +89,8 @@ public class GOSTClientComputations extends KeyExchangeComputations {
     }
 
     public void setKeyEncryptionKey(byte[] keyEncryptionKey) {
-        this.keyEncryptionKey = ModifiableVariableFactory.safelySetValue(this.keyEncryptionKey, keyEncryptionKey);
+        this.keyEncryptionKey =
+                ModifiableVariableFactory.safelySetValue(this.keyEncryptionKey, keyEncryptionKey);
     }
 
     public ModifiableByteArray getMacKey() {
@@ -141,5 +144,4 @@ public class GOSTClientComputations extends KeyExchangeComputations {
     public void setKek(ModifiableByteArray kek) {
         this.keyEncryptionKey = kek;
     }
-
 }

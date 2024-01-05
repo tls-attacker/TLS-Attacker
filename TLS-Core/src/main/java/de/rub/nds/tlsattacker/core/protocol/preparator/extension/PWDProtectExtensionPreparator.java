@@ -1,26 +1,24 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.protocol.crypto.CyclicGroup;
+import de.rub.nds.protocol.crypto.ec.EllipticCurve;
+import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.Bits;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
-import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
-import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
-import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PWDProtectExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PWDProtectExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
@@ -35,9 +33,8 @@ public class PWDProtectExtensionPreparator extends ExtensionPreparator<PWDProtec
 
     private final PWDProtectExtensionMessage msg;
 
-    public PWDProtectExtensionPreparator(Chooser chooser, PWDProtectExtensionMessage message,
-        PWDProtectExtensionSerializer serializer) {
-        super(chooser, message, serializer);
+    public PWDProtectExtensionPreparator(Chooser chooser, PWDProtectExtensionMessage message) {
+        super(chooser, message);
         this.msg = message;
     }
 
@@ -54,7 +51,14 @@ public class PWDProtectExtensionPreparator extends ExtensionPreparator<PWDProtec
 
     private void prepareUsername(PWDProtectExtensionMessage msg) throws CryptoException {
         Config config = chooser.getConfig();
-        EllipticCurve curve = CurveFactory.getCurve(config.getDefaultPWDProtectGroup());
+        CyclicGroup<?> group = config.getDefaultPWDProtectGroup().getGroupParameters().getGroup();
+        if (!(group instanceof EllipticCurve)) {
+            msg.setUsername(new byte[0]);
+            LOGGER.debug(
+                    "Can only compute username for elliptic curves. Using new byte[0] instead");
+            return;
+        }
+        EllipticCurve curve = (EllipticCurve) group;
         Point generator = curve.getBasePoint();
         Point serverPublicKey = config.getDefaultServerPWDProtectPublicKey();
 
@@ -72,23 +76,34 @@ public class PWDProtectExtensionPreparator extends ExtensionPreparator<PWDProtec
         if (!multedPoint.isAtInfinity()) {
             clientPublicKey = multedPoint.getFieldX().getData();
         } else {
-            LOGGER.warn("Computed intermediate value as point in infinity. Using Zero instead for X value");
+            LOGGER.warn(
+                    "Computed intermediate value as point in infinity. Using Zero instead for X value");
             clientPublicKey = BigInteger.ZERO;
         }
-        Point sharedPoint = curve.mult(config.getDefaultServerPWDProtectRandomSecret(), serverPublicKey);
+        Point sharedPoint =
+                curve.mult(config.getDefaultServerPWDProtectRandomSecret(), serverPublicKey);
         BigInteger sharedSecret;
         if (!sharedPoint.isAtInfinity()) {
             sharedSecret =
-                curve.mult(config.getDefaultServerPWDProtectRandomSecret(), serverPublicKey).getFieldX().getData();
+                    curve.mult(config.getDefaultServerPWDProtectRandomSecret(), serverPublicKey)
+                            .getFieldX()
+                            .getData();
         } else {
-            LOGGER.warn("Computed shared secet as point in infinity. Using Zero instead for X value");
+            LOGGER.warn(
+                    "Computed shared secet as point in infinity. Using Zero instead for X value");
             sharedSecret = BigInteger.ZERO;
         }
 
-        byte[] key = HKDFunction.expand(hkdfAlgorithm,
-            HKDFunction.extract(hkdfAlgorithm, null, ArrayConverter.bigIntegerToByteArray(sharedSecret)), new byte[0],
-            curve.getModulus().bitLength() / Bits.IN_A_BYTE);
-        LOGGER.debug("Username encryption key: " + ArrayConverter.bytesToHexString(key));
+        byte[] key =
+                HKDFunction.expand(
+                        hkdfAlgorithm,
+                        HKDFunction.extract(
+                                hkdfAlgorithm,
+                                null,
+                                ArrayConverter.bigIntegerToByteArray(sharedSecret)),
+                        new byte[0],
+                        curve.getModulus().bitLength() / Bits.IN_A_BYTE);
+        LOGGER.debug("Username encryption key: {}", key);
 
         byte[] ctrKey = Arrays.copyOfRange(key, 0, key.length / 2);
         byte[] macKey = Arrays.copyOfRange(key, key.length / 2, key.length);
@@ -102,14 +117,22 @@ public class PWDProtectExtensionPreparator extends ExtensionPreparator<PWDProtec
         }
         SivMode aesSIV = new SivMode();
         byte[] protectedUsername =
-            aesSIV.encrypt(ctrKey, macKey, chooser.getClientPWDUsername().getBytes(StandardCharsets.ISO_8859_1));
-        msg.setUsername(ArrayConverter.concatenate(ArrayConverter.bigIntegerToByteArray(clientPublicKey,
-            curve.getModulus().bitLength() / Bits.IN_A_BYTE, true), protectedUsername));
-        LOGGER.debug("Username: " + ArrayConverter.bytesToHexString(msg.getUsername()));
+                aesSIV.encrypt(
+                        ctrKey,
+                        macKey,
+                        chooser.getClientPWDUsername().getBytes(StandardCharsets.ISO_8859_1));
+        msg.setUsername(
+                ArrayConverter.concatenate(
+                        ArrayConverter.bigIntegerToByteArray(
+                                clientPublicKey,
+                                curve.getModulus().bitLength() / Bits.IN_A_BYTE,
+                                true),
+                        protectedUsername));
+        LOGGER.debug("Username: {}", msg.getUsername());
     }
 
     private void prepareUsernameLength(PWDProtectExtensionMessage msg) {
         msg.setUsernameLength(msg.getUsername().getValue().length);
-        LOGGER.debug("UsernameLength: " + msg.getUsernameLength().getValue());
+        LOGGER.debug("UsernameLength: {}", msg.getUsernameLength().getValue());
     }
 }

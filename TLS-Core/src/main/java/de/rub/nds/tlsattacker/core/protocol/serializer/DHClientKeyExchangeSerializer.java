@@ -1,23 +1,20 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class DHClientKeyExchangeSerializer<T extends DHClientKeyExchangeMessage>
-    extends ClientKeyExchangeSerializer<T> {
+        extends ClientKeyExchangeSerializer<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -26,13 +23,10 @@ public class DHClientKeyExchangeSerializer<T extends DHClientKeyExchangeMessage>
     /**
      * Constructor for the DHClientKeyExchangeSerializer
      *
-     * @param message
-     *                Message that should be serialized
-     * @param version
-     *                Version of the Protocol
+     * @param message Message that should be serialized
      */
-    public DHClientKeyExchangeSerializer(T message, ProtocolVersion version) {
-        super(message, version);
+    public DHClientKeyExchangeSerializer(T message) {
+        super(message);
         this.msg = message;
     }
 
@@ -58,11 +52,9 @@ public class DHClientKeyExchangeSerializer<T extends DHClientKeyExchangeMessage>
         LOGGER.debug("SerializedPublicKexLength: " + msg.getPublicKeyLength().getValue());
     }
 
-    /**
-     * Writes the SerializedPublicKey of the DHClientKeyExchangeMessage into the final byte[]
-     */
+    /** Writes the SerializedPublicKey of the DHClientKeyExchangeMessage into the final byte[] */
     private void writeSerializedPublicKey(T msg) {
         appendBytes(msg.getPublicKey().getValue());
-        LOGGER.debug("SerializedPublicKey: " + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
+        LOGGER.debug("SerializedPublicKey: {}", msg.getPublicKey().getValue());
     }
 }

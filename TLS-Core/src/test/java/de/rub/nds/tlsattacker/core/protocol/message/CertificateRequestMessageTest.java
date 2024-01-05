@@ -1,44 +1,30 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message;
 
-import org.junit.After;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
+import java.util.stream.Stream;
+import org.junit.jupiter.params.provider.Arguments;
 
-public class CertificateRequestMessageTest {
-    CertificateRequestMessage message;
+public class CertificateRequestMessageTest extends AbstractMessageTest<CertificateRequestMessage> {
 
-    @Before
-    public void setUp() {
-        message = new CertificateRequestMessage();
+    public CertificateRequestMessageTest() {
+        super(
+                CertificateRequestMessage::new,
+                "CertificateRequestMessage:\n"
+                        + "  Certificate Types Count: %s\n"
+                        + "  Certificate Types: %s\n"
+                        + "  Signature Hash Algorithms Length: %s\n"
+                        + "  Signature Hash Algorithms: %s\n"
+                        + "  Distinguished Names Length: %s");
     }
 
-    @After
-    public void tearDown() {
+    public static Stream<Arguments> provideToStringTestVectors() {
+        return Stream.of(Arguments.of(new Object[] {null, null, null, null, null}, null));
     }
-
-    /**
-     * Test of toString method, of class CertificateRequestMessage.
-     */
-    @Test
-    public void testToString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("CertificateRequestMessage:");
-        sb.append("\n  Certificate Types Count: ").append("null");
-        sb.append("\n  Certificate Types: ").append("null");
-        sb.append("\n  Signature Hash Algorithms Length: ").append("null");
-        sb.append("\n  Signature Hash Algorithms: ").append("null");
-        sb.append("\n  Distinguished Names Length: ").append("null");
-        assertEquals(message.toString(), sb.toString());
-    }
-
 }

@@ -1,50 +1,39 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message.computations;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.tlsattacker.core.config.Config;
 import java.math.BigInteger;
 
 public class SRPClientComputations extends KeyExchangeComputations {
 
-    /**
-     * server's private key
-     */
+    /** server's private key */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
     private ModifiableBigInteger serverPublicKey;
 
-    /**
-     * dh modulus used for computations
-     */
+    /** dh modulus used for computations */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
     private ModifiableBigInteger modulus;
 
-    /**
-     * dh generator used for computations
-     */
+    /** dh generator used for computations */
     private ModifiableBigInteger generator;
 
-    /**
-     * SRP salt
-     */
+    /** SRP salt */
     private ModifiableByteArray salt;
 
     private ModifiableByteArray srpIdentity;
     private ModifiableByteArray srpPassword;
 
-    public SRPClientComputations() {
-    }
+    public SRPClientComputations() {}
 
     public ModifiableBigInteger getServerPublicKey() {
         return serverPublicKey;
@@ -55,7 +44,8 @@ public class SRPClientComputations extends KeyExchangeComputations {
     }
 
     public void setServerPublicKey(BigInteger serverPublicKey) {
-        this.serverPublicKey = ModifiableVariableFactory.safelySetValue(this.serverPublicKey, serverPublicKey);
+        this.serverPublicKey =
+                ModifiableVariableFactory.safelySetValue(this.serverPublicKey, serverPublicKey);
     }
 
     public ModifiableByteArray getSRPIdentity() {

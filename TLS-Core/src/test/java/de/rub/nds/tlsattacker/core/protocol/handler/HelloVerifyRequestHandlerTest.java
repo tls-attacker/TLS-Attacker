@@ -1,72 +1,33 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+
 import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.HelloVerifyRequestParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.HelloVerifyRequestPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.HelloVerifyRequestSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import org.junit.After;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class HelloVerifyRequestHandlerTest {
+public class HelloVerifyRequestHandlerTest
+        extends AbstractProtocolMessageHandlerTest<
+                HelloVerifyRequestMessage, HelloVerifyRequestHandler> {
 
-    private HelloVerifyRequestHandler handler;
-    private TlsContext context;
-
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        handler = new HelloVerifyRequestHandler(context);
+    public HelloVerifyRequestHandlerTest() {
+        super(HelloVerifyRequestMessage::new, HelloVerifyRequestHandler::new);
     }
 
-    @After
-    public void tearDown() {
-    }
-
-    /**
-     * Test of getParser method, of class HelloVerifyRequestHandler.
-     */
+    /** Test of adjustContext method, of class HelloVerifyRequestHandler. */
     @Test
-    public void testGetParser() {
-        assertTrue(handler.getParser(new byte[1], 0) instanceof HelloVerifyRequestParser);
-    }
-
-    /**
-     * Test of getPreparator method, of class HelloVerifyRequestHandler.
-     */
-    @Test
-    public void testGetPreparator() {
-        assertTrue(handler.getPreparator(new HelloVerifyRequestMessage()) instanceof HelloVerifyRequestPreparator);
-    }
-
-    /**
-     * Test of getSerializer method, of class HelloVerifyRequestHandler.
-     */
-    @Test
-    public void testGetSerializer() {
-        assertTrue(handler.getSerializer(new HelloVerifyRequestMessage()) instanceof HelloVerifyRequestSerializer);
-    }
-
-    /**
-     * Test of adjustTLSContext method, of class HelloVerifyRequestHandler.
-     */
-    @Test
-    public void testAdjustTLSContext() {
+    @Override
+    public void testadjustContext() {
         HelloVerifyRequestMessage message = new HelloVerifyRequestMessage();
-        message.setCookie(new byte[] { 0, 1, 2, 3 });
-        handler.adjustTLSContext(message);
-        assertArrayEquals(new byte[] { 0, 1, 2, 3 }, context.getDtlsCookie());
+        message.setCookie(new byte[] {0, 1, 2, 3});
+        handler.adjustContext(message);
+        assertArrayEquals(new byte[] {0, 1, 2, 3}, context.getDtlsCookie());
     }
-
 }

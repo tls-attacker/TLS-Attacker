@@ -1,60 +1,52 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
-import de.rub.nds.tlsattacker.core.constants.NameType;
+import static org.junit.jupiter.api.Assertions.*;
+
+import de.rub.nds.tlsattacker.core.constants.SniType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.SNIEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.ServerNameIndicationExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ServerNameIndicationExtensionPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ServerNameIndicationExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.LinkedList;
 import java.util.List;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class ServerNameIndicationExtensionHandlerTest {
+public class ServerNameIndicationExtensionHandlerTest
+        extends AbstractExtensionMessageHandlerTest<
+                ServerNameIndicationExtensionMessage, ServerNameIndicationExtensionHandler> {
 
-    private TlsContext context;
-    private ServerNameIndicationExtensionHandler handler;
-
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        handler = new ServerNameIndicationExtensionHandler(context);
+    public ServerNameIndicationExtensionHandlerTest() {
+        super(ServerNameIndicationExtensionMessage::new, ServerNameIndicationExtensionHandler::new);
     }
 
-    /**
-     * Test of adjustTLSContext method, of class ServerNameIndicationExtensionHandler.
-     */
+    /** Test of adjustContext method, of class ServerNameIndicationExtensionHandler. */
     @Test
-    public void testAdjustTLSContext() {
+    @Override
+    public void testadjustTLSExtensionContext() {
         ServerNameIndicationExtensionMessage msg = new ServerNameIndicationExtensionMessage();
         List<ServerNamePair> pairList = new LinkedList<>();
-        ServerNamePair pair = new ServerNamePair(NameType.HOST_NAME.getValue(), "localhost".getBytes());
+        ServerNamePair pair =
+                new ServerNamePair(SniType.HOST_NAME.getValue(), "localhost".getBytes());
         pair.setServerName(pair.getServerNameConfig());
         pair.setServerNameType(pair.getServerNameTypeConfig());
         pairList.add(pair);
         msg.setServerNameList(pairList);
-        handler.adjustTLSContext(msg);
-        assertTrue(context.getClientSNIEntryList().size() == 1);
+        handler.adjustTLSExtensionContext(msg);
+        assertEquals(1, context.getClientSNIEntryList().size());
         SNIEntry entry = context.getClientSNIEntryList().get(0);
         assertEquals("localhost", entry.getName());
-        assertTrue(entry.getType() == NameType.HOST_NAME);
+        assertSame(SniType.HOST_NAME, entry.getType());
     }
 
     @Test
-    public void testUndefinedAdjustTLSContext() {
+    public void testUndefinedadjustContext() {
         ServerNameIndicationExtensionMessage msg = new ServerNameIndicationExtensionMessage();
         List<ServerNamePair> pairList = new LinkedList<>();
         ServerNamePair pair = new ServerNamePair((byte) 99, "localhost".getBytes());
@@ -62,35 +54,7 @@ public class ServerNameIndicationExtensionHandlerTest {
         pair.setServerNameType(pair.getServerNameTypeConfig());
         pairList.add(pair);
         msg.setServerNameList(pairList);
-        handler.adjustTLSContext(msg);
+        handler.adjustContext(msg);
         assertTrue(context.getClientSNIEntryList().isEmpty());
     }
-
-    /**
-     * Test of getParser method, of class ServerNameIndicationExtensionHandler.
-     */
-    @Test
-    public void testGetParser() {
-        assertTrue(handler.getParser(new byte[] { 0, 2, 3, }, 0,
-            context.getConfig()) instanceof ServerNameIndicationExtensionParser);
-    }
-
-    /**
-     * Test of getPreparator method, of class ServerNameIndicationExtensionHandler.
-     */
-    @Test
-    public void testGetPreparator() {
-        assertTrue(handler.getPreparator(
-            new ServerNameIndicationExtensionMessage()) instanceof ServerNameIndicationExtensionPreparator);
-    }
-
-    /**
-     * Test of getSerializer method, of class ServerNameIndicationExtensionHandler.
-     */
-    @Test
-    public void testGetSerializer() {
-        assertTrue(handler.getSerializer(
-            new ServerNameIndicationExtensionMessage()) instanceof ServerNameIndicationExtensionSerializer);
-    }
-
 }

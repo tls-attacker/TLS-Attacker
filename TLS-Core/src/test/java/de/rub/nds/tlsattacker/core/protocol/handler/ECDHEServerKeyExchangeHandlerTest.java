@@ -1,101 +1,62 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.handler;
+
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.ECDHEServerKeyExchangeParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.ECDHEServerKeyExchangePreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.ECDHEServerKeyExchangeSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.math.BigInteger;
-import org.junit.After;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class ECDHEServerKeyExchangeHandlerTest {
+public class ECDHEServerKeyExchangeHandlerTest
+        extends AbstractProtocolMessageHandlerTest<
+                ECDHEServerKeyExchangeMessage,
+                ServerKeyExchangeHandler<ECDHEServerKeyExchangeMessage>> {
 
-    private ECDHEServerKeyExchangeHandler handler;
-    private TlsContext context;
-
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        handler = new ECDHEServerKeyExchangeHandler(context);
-
+    public ECDHEServerKeyExchangeHandlerTest() {
+        super(ECDHEServerKeyExchangeMessage::new, ECDHEServerKeyExchangeHandler::new);
     }
 
-    @After
-    public void tearDown() {
-    }
-
-    /**
-     * Test of getParser method, of class ECDHEServerKeyExchangeHandler.
-     */
+    /** Test of adjustContext method, of class ECDHEServerKeyExchangeHandler. */
     @Test
-    public void testGetParser() {
-        assertTrue(handler.getParser(new byte[1], 0) instanceof ECDHEServerKeyExchangeParser);
-    }
-
-    /**
-     * Test of getPreparator method, of class ECDHEServerKeyExchangeHandler.
-     */
-    @Test
-    public void testGetPreparator() {
-        assertTrue(
-            handler.getPreparator(new ECDHEServerKeyExchangeMessage()) instanceof ECDHEServerKeyExchangePreparator);
-    }
-
-    /**
-     * Test of getSerializer method, of class ECDHEServerKeyExchangeHandler.
-     */
-    @Test
-    public void testGetSerializer() {
-        assertTrue(
-            handler.getSerializer(new ECDHEServerKeyExchangeMessage()) instanceof ECDHEServerKeyExchangeSerializer);
-    }
-
-    /**
-     * Test of adjustTLSContext method, of class ECDHEServerKeyExchangeHandler.
-     */
-    @Test
-    public void testAdjustTLSContext() {
+    @Override
+    public void testadjustContext() {
         ECDHEServerKeyExchangeMessage message = new ECDHEServerKeyExchangeMessage();
         message.setCurveType(EllipticCurveType.NAMED_CURVE.getValue());
         message.setNamedGroup(NamedGroup.SECP256R1.getValue());
-        message.setPublicKey(ArrayConverter.hexStringToByteArray(
-            "04f660a88e9dae015684be56c25610f9c62cf120cb075eea60c560e5e6dd5d10ef6e391d7213a298985470dc2268949317ce24940d474a0c8386ab13b312ffc104"));
+        message.setPublicKey(
+                ArrayConverter.hexStringToByteArray(
+                        "04f660a88e9dae015684be56c25610f9c62cf120cb075eea60c560e5e6dd5d10ef6e391d7213a298985470dc2268949317ce24940d474a0c8386ab13b312ffc104"));
         message.setPublicKeyLength(65);
-        message.prepareComputations();
-        message.getComputations().setPremasterSecret(new byte[] { 0, 1, 2, 3 });
-        message.getComputations().setPrivateKey(new BigInteger("12345"));
-        handler.adjustTLSContext(message);
+        message.prepareKeyExchangeComputations();
+        message.getKeyExchangeComputations().setPremasterSecret(new byte[] {0, 1, 2, 3});
+        message.getKeyExchangeComputations().setPrivateKey(new BigInteger("12345"));
+        handler.adjustContext(message);
         assertNull(context.getPreMasterSecret());
         // assertNull(context.getMasterSecret());//TODO assert master secret was
         // computed correctly
     }
 
     @Test
-    public void testAdjustTLSContextWithoutComputations() {
+    public void testadjustContextWithoutComputations() {
         ECDHEServerKeyExchangeMessage message = new ECDHEServerKeyExchangeMessage();
         message.setCurveType(EllipticCurveType.NAMED_CURVE.getValue());
         message.setNamedGroup(NamedGroup.SECP256R1.getValue());
-        message.setPublicKey(ArrayConverter.hexStringToByteArray(
-            "04f660a88e9dae015684be56c25610f9c62cf120cb075eea60c560e5e6dd5d10ef6e391d7213a298985470dc2268949317ce24940d474a0c8386ab13b312ffc104"));
+        message.setPublicKey(
+                ArrayConverter.hexStringToByteArray(
+                        "04f660a88e9dae015684be56c25610f9c62cf120cb075eea60c560e5e6dd5d10ef6e391d7213a298985470dc2268949317ce24940d474a0c8386ab13b312ffc104"));
         message.setPublicKeyLength(65);
-        handler.adjustTLSContext(message);
+        handler.adjustContext(message);
         assertNull(context.getPreMasterSecret());
         assertNull(context.getMasterSecret());
     }
-
 }

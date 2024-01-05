@@ -1,22 +1,18 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.constants;
 
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * http://tools.ietf.org/html/rfc5246#section-7.4.4
- */
+/** <a href="http://tools.ietf.org/html/rfc5246#section-7.4.4">RFC 5246 Section 7.4.4</a> */
 public enum ClientCertificateType {
-
     RSA_SIGN((byte) 1),
     DSS_SIGN((byte) 2),
     RSA_FIXED_DH((byte) 3),
@@ -34,9 +30,7 @@ public enum ClientCertificateType {
     GOSTR34102012_256((byte) 238),
     GOSTR34102012_512((byte) 239);
 
-    /**
-     * length of the ClientCertificateType in the TLS byte arrays
-     */
+    /** length of the ClientCertificateType in the TLS byte arrays */
     public static final int LENGTH = 1;
 
     private byte value;
@@ -63,6 +57,6 @@ public enum ClientCertificateType {
     }
 
     public byte[] getArrayValue() {
-        return new byte[] { value };
+        return new byte[] {value};
     }
 }

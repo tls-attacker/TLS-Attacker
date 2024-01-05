@@ -8,9 +8,9 @@
         <timeout>44</timeout>
     </OutboundConnection>
     <Send>
-        <messages>
+        <configuredMessages>
             <ClientHello/>
-        </messages>
+        </configuredMessages>
     </Send>
 </workflowTrace>
 
@@ -18,17 +18,19 @@
 <workflowTrace>
     <OutboundConnection>
         <alias>client</alias>
+        <ip>localhost</ip>
         <port>443</port>
         <hostname>localhost</hostname>
         <timeout>44</timeout>
+        <connectionTimeout>8000</connectionTimeout>
         <transportHandlerType>TCP</transportHandlerType>
+        <useIpv6>false</useIpv6>
     </OutboundConnection>
     <Send>
         <connectionAlias>client</connectionAlias>
-        <messages>
+        <configuredMessages>
             <ClientHello/>
-        </messages>
-        <records/>
+        </configuredMessages>
     </Send>
 </workflowTrace>
 
@@ -38,8 +40,8 @@
         <timeout>44</timeout>
     </OutboundConnection>
     <Send>
-        <messages>
+        <configuredMessages>
             <ClientHello/>
-        </messages>
+        </configuredMessages>
     </Send>
 </workflowTrace>

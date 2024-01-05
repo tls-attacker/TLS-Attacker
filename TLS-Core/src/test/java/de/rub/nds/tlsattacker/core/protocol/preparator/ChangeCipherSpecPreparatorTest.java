@@ -1,39 +1,30 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class ChangeCipherSpecPreparatorTest {
+public class ChangeCipherSpecPreparatorTest
+        extends AbstractProtocolMessagePreparatorTest<
+                ChangeCipherSpecMessage, ChangeCipherSpecPreparator> {
 
-    private ChangeCipherSpecPreparator preparator;
-    private ChangeCipherSpecMessage message;
-    private TlsContext context;
-
-    @Before
-    public void setUp() {
-        this.context = new TlsContext();
-        this.message = new ChangeCipherSpecMessage();
-        preparator = new ChangeCipherSpecPreparator(context.getChooser(), message);
+    public ChangeCipherSpecPreparatorTest() {
+        super(ChangeCipherSpecMessage::new, ChangeCipherSpecPreparator::new);
     }
 
-    /**
-     * Test of prepareProtocolMessageContents method, of class ChangeCipherSpecPreparator.
-     */
+    /** Test of prepareProtocolMessageContents method, of class ChangeCipherSpecPreparator. */
     @Test
     public void testPrepare() {
         preparator.prepare();
-        assertTrue(message.getCcsProtocolType().getValue()[0] == 1);
+        assertEquals(1, message.getCcsProtocolType().getValue()[0]);
     }
 }

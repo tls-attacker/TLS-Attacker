@@ -1,20 +1,17 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.constants;
 
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * RFC6066
- */
+/** RFC6066 */
 public enum TrustedCaIndicationIdentifierType {
     PRE_AGREED((byte) 0),
     KEY_SHA1_HASH((byte) 1),
@@ -43,5 +40,4 @@ public enum TrustedCaIndicationIdentifierType {
     public static TrustedCaIndicationIdentifierType getIdentifierByByte(byte key) {
         return MAP.get(key);
     }
-
 }

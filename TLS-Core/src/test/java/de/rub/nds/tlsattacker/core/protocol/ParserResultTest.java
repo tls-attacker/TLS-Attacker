@@ -1,55 +1,35 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 public class ParserResultTest {
 
-    @Before
-    public void setUp() {
-
-    }
-
-    @After
-    public void tearDown() {
-    }
-
-    /**
-     * Test of getMessage method, of class ParserResult.
-     */
+    /** Test of getMessage method, of class ParserResult. */
     @Test
-    public void testGetMessage() {
-    }
+    @Disabled("Not implemented")
+    public void testGetMessage() {}
 
-    /**
-     * Test of setMessage method, of class ParserResult.
-     */
+    /** Test of setMessage method, of class ParserResult. */
     @Test
-    public void testSetMessage() {
-    }
+    @Disabled("Not implemented")
+    public void testSetMessage() {}
 
-    /**
-     * Test of getParserPosition method, of class ParserResult.
-     */
+    /** Test of getParserPosition method, of class ParserResult. */
     @Test
-    public void testGetParserPosition() {
-    }
+    @Disabled("Not implemented")
+    public void testGetParserPosition() {}
 
-    /**
-     * Test of setParserPosition method, of class ParserResult.
-     */
+    /** Test of setParserPosition method, of class ParserResult. */
     @Test
-    public void testSetParserPosition() {
-    }
-
+    @Disabled("Not implemented")
+    public void testSetParserPosition() {}
 }

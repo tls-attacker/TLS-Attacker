@@ -1,84 +1,45 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.Set;
-import static org.junit.Assert.*;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class CopyBuffersActionTest {
+import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
+import org.junit.jupiter.api.Test;
 
-    @Test
-    public void testGetSrcContextAlias() {
-        CopyBuffersAction a = new CopyBuffersAction("src", "dst");
-        assertEquals(a.getSrcContextAlias(), "src");
+public class CopyBuffersActionTest extends AbstractCopyActionTest<CopyBuffersAction> {
+
+    public CopyBuffersActionTest() {
+        super(new CopyBuffersAction("src", "dst"), CopyBuffersAction.class);
     }
 
     @Test
-    public void testGetDstContextAlias() {
-        CopyBuffersAction a = new CopyBuffersAction("src", "dst");
-        assertEquals(a.getDstContextAlias(), "dst");
+    @Override
+    public void testAliasesSetProperlyErrorSrc() {
+        CopyBuffersAction action = new CopyBuffersAction(null, "dst");
+        assertThrows(ActionExecutionException.class, action::assertAliasesSetProperly);
     }
 
     @Test
-    public void testGetAllAliases() {
-        CopyBuffersAction a = new CopyBuffersAction("src", "dst");
-        Set<String> expected = new LinkedHashSet<>(Arrays.asList("dst", "src"));
-        assertEquals(a.getAllAliases(), expected);
+    @Override
+    public void testAliasesSetProperlyErrorDst() {
+        CopyBuffersAction action = new CopyBuffersAction("src", null);
+        assertThrows(ActionExecutionException.class, action::assertAliasesSetProperly);
     }
 
     @Test
-    public void testExecute() {
-        CopyBuffersAction a = new CopyBuffersAction("src", "dst");
-        WorkflowTrace trace = new WorkflowTrace();
-        trace.addConnection(new OutboundConnection("src"));
-        trace.addConnection(new OutboundConnection("dst"));
-        trace.addTlsAction(a);
-        State state = new State(trace);
-        TlsContext src = state.getTlsContext("src");
-        TlsContext dst = state.getTlsContext("dst");
+    @Override
+    public void testExecute() throws Exception {
         assertNotSame(src.getMessageBuffer(), dst.getMessageBuffer());
         assertNotSame(src.getRecordBuffer(), dst.getRecordBuffer());
-
-        a.execute(state);
+        super.testExecute();
         assertSame(src.getMessageBuffer(), dst.getMessageBuffer());
         assertSame(src.getRecordBuffer(), dst.getRecordBuffer());
-        assertTrue(a.isExecuted());
-        assertTrue(a.executedAsPlanned());
-    }
-
-    @Test
-    public void reset() {
-        CopyBuffersAction a = new CopyBuffersAction("src", "dst");
-        a.setExecuted(true);
-        assertTrue(a.isExecuted());
-        a.reset();
-        assertFalse(a.isExecuted());
-    }
-
-    @Test(expected = WorkflowExecutionException.class)
-    public void testAliasesSetProperlyErrorSrc() {
-        CopyBuffersAction a = new CopyBuffersAction(null, "dst");
-        a.assertAliasesSetProperly();
-    }
-
-    @Test(expected = WorkflowExecutionException.class)
-    public void testAliasesSetProperlyErrorDst() {
-        CopyBuffersAction a = new CopyBuffersAction("src", null);
-        a.assertAliasesSetProperly();
     }
 }

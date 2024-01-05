@@ -1,68 +1,45 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.RenegotiationInfoExtensionMessage;
-import java.util.Arrays;
-import java.util.Collection;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import java.util.List;
+import java.util.stream.Stream;
+import org.junit.jupiter.api.Named;
+import org.junit.jupiter.params.provider.Arguments;
 
-@RunWith(Parameterized.class)
-public class RenegotiationInfoExtensionParserTest {
+public class RenegotiationInfoExtensionParserTest
+        extends AbstractExtensionParserTest<
+                RenegotiationInfoExtensionMessage, RenegotiationInfoExtensionParser> {
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] { { ExtensionType.RENEGOTIATION_INFO, 1, 0, new byte[] {},
-            ArrayConverter.hexStringToByteArray("ff01000100"), 0 } });
+    public RenegotiationInfoExtensionParserTest() {
+        super(
+                RenegotiationInfoExtensionMessage.class,
+                RenegotiationInfoExtensionParser::new,
+                List.of(
+                        Named.of(
+                                "RenegotiationInfoExtensionMessage::getRenegotiationInfoLength",
+                                RenegotiationInfoExtensionMessage::getRenegotiationInfoLength),
+                        Named.of(
+                                "RenegotiationInfoExtensionMessage::getRenegotiationInfo",
+                                RenegotiationInfoExtensionMessage::getRenegotiationInfo)));
     }
 
-    private final ExtensionType extensionType;
-    private final int extensionLength;
-    private final int extensionPayloadLength;
-    private final byte[] extensionPayload;
-    private final byte[] expectedBytes;
-    private final int startParsing;
-    private RenegotiationInfoExtensionParser parser;
-    private RenegotiationInfoExtensionMessage message;
-
-    public RenegotiationInfoExtensionParserTest(ExtensionType extensionType, int extensionLength,
-        int extensionPayloadLength, byte[] extensionPayload, byte[] expectedBytes, int startParsing) {
-        this.extensionType = extensionType;
-        this.extensionLength = extensionLength;
-        this.extensionPayload = extensionPayload;
-        this.expectedBytes = expectedBytes;
-        this.startParsing = startParsing;
-        this.extensionPayloadLength = extensionPayloadLength;
+    public static Stream<Arguments> provideTestVectors() {
+        return Stream.of(
+                Arguments.of(
+                        ArrayConverter.hexStringToByteArray("ff01000100"),
+                        List.of(),
+                        ExtensionType.RENEGOTIATION_INFO,
+                        1,
+                        List.of(0, new byte[0])));
     }
-
-    @Before
-    public void setUp() {
-        parser = new RenegotiationInfoExtensionParser(startParsing, expectedBytes, Config.createConfig());
-    }
-
-    @Test
-    public void testParseExtensionMessageContent() {
-        message = parser.parse();
-
-        assertEquals(extensionType, message.getExtensionTypeConstant());
-        assertEquals(extensionLength, (long) message.getExtensionLength().getValue());
-        assertEquals(extensionPayloadLength, (long) message.getRenegotiationInfoLength().getValue());
-        assertArrayEquals(extensionPayload, message.getRenegotiationInfo().getValue());
-    }
-
 }

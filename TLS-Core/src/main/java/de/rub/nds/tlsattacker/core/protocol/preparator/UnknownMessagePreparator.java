@@ -1,21 +1,20 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class UnknownMessagePreparator extends TlsMessagePreparator<UnknownMessage> {
+public class UnknownMessagePreparator extends ProtocolMessagePreparator<UnknownMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -38,8 +37,6 @@ public class UnknownMessagePreparator extends TlsMessagePreparator<UnknownMessag
         } else {
             msg.setCompleteResultingMessage(new byte[0]);
         }
-        LOGGER.debug("CompleteResultingMessage: "
-            + ArrayConverter.bytesToHexString(msg.getCompleteResultingMessage().getValue()));
+        LOGGER.debug("CompleteResultingMessage: {}", msg.getCompleteResultingMessage().getValue());
     }
-
 }

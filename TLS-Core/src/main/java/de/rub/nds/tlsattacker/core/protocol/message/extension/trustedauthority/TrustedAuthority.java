@@ -1,37 +1,31 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
-import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
-import java.io.Serializable;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-public class TrustedAuthority extends ModifiableVariableHolder implements Serializable {
+public class TrustedAuthority extends ModifiableVariableHolder {
 
-    @ModifiableVariableProperty
-    private ModifiableByte identifierType;
-    @ModifiableVariableProperty
-    private ModifiableByteArray sha1Hash;
-    @ModifiableVariableProperty
-    private ModifiableInteger distinguishedNameLength;
-    @ModifiableVariableProperty
-    private ModifiableByteArray distinguishedName;
+    @ModifiableVariableProperty private ModifiableByte identifierType;
+    @ModifiableVariableProperty private ModifiableByteArray sha1Hash;
+    @ModifiableVariableProperty private ModifiableInteger distinguishedNameLength;
+    @ModifiableVariableProperty private ModifiableByteArray distinguishedName;
 
     private byte identifierTypeConfig;
 
@@ -43,11 +37,13 @@ public class TrustedAuthority extends ModifiableVariableHolder implements Serial
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] distinguishedNameConfig;
 
-    public TrustedAuthority() {
-    }
+    public TrustedAuthority() {}
 
-    public TrustedAuthority(byte preparatorIdentifierType, byte[] preparatorSha1Hash,
-        Integer preparatorDistinguishedNameLength, byte[] preparatorDistinguishedName) {
+    public TrustedAuthority(
+            byte preparatorIdentifierType,
+            byte[] preparatorSha1Hash,
+            Integer preparatorDistinguishedNameLength,
+            byte[] preparatorDistinguishedName) {
         this.identifierTypeConfig = preparatorIdentifierType;
         this.sha1HashConfig = preparatorSha1Hash;
         this.distinguishedNameLengthConfig = preparatorDistinguishedNameLength;
@@ -63,7 +59,8 @@ public class TrustedAuthority extends ModifiableVariableHolder implements Serial
     }
 
     public void setIdentifierType(byte identifierType) {
-        this.identifierType = ModifiableVariableFactory.safelySetValue(this.identifierType, identifierType);
+        this.identifierType =
+                ModifiableVariableFactory.safelySetValue(this.identifierType, identifierType);
     }
 
     public ModifiableByteArray getSha1Hash() {
@@ -88,7 +85,8 @@ public class TrustedAuthority extends ModifiableVariableHolder implements Serial
 
     public void setDistinguishedNameLength(int distinguishedNameLength) {
         this.distinguishedNameLength =
-            ModifiableVariableFactory.safelySetValue(this.distinguishedNameLength, distinguishedNameLength);
+                ModifiableVariableFactory.safelySetValue(
+                        this.distinguishedNameLength, distinguishedNameLength);
     }
 
     public ModifiableByteArray getDistinguishedName() {
@@ -100,7 +98,8 @@ public class TrustedAuthority extends ModifiableVariableHolder implements Serial
     }
 
     public void setDistinguishedName(byte[] distinguishedName) {
-        this.distinguishedName = ModifiableVariableFactory.safelySetValue(this.distinguishedName, distinguishedName);
+        this.distinguishedName =
+                ModifiableVariableFactory.safelySetValue(this.distinguishedName, distinguishedName);
     }
 
     public byte getIdentifierTypeConfig() {
@@ -134,5 +133,4 @@ public class TrustedAuthority extends ModifiableVariableHolder implements Serial
     public void setDistinguishedNameConfig(byte[] distinguishedNameConfig) {
         this.distinguishedNameConfig = distinguishedNameConfig;
     }
-
 }

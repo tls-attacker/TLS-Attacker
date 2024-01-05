@@ -1,64 +1,33 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
-import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SRPExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.SRPExtensionParserTest;
-import java.util.Collection;
-import static org.junit.Assert.assertArrayEquals;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import java.util.List;
+import java.util.stream.Stream;
+import org.junit.jupiter.params.provider.Arguments;
 
-@RunWith(Parameterized.class)
-public class SRPExtensionSerializerTest {
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return SRPExtensionParserTest.generateData();
+public class SRPExtensionSerializerTest
+        extends AbstractExtensionMessageSerializerTest<
+                SRPExtensionMessage, SRPExtensionSerializer> {
+
+    public SRPExtensionSerializerTest() {
+        super(
+                SRPExtensionMessage::new,
+                SRPExtensionSerializer::new,
+                List.of(
+                        (msg, obj) -> msg.setSrpIdentifierLength((Integer) obj),
+                        (msg, obj) -> msg.setSrpIdentifier((byte[]) obj)));
     }
 
-    private final ExtensionType extensionType;
-    private final byte[] extensionBytes;
-    private final int extensionLength;
-    private final int startParsing;
-    private final int srpIdentifierLength;
-    private final byte[] srpIdentifier;
-    private SRPExtensionSerializer serializer;
-    private SRPExtensionMessage message;
-
-    public SRPExtensionSerializerTest(ExtensionType extensionType, byte[] extensionBytes, int extensionLength,
-        int startParsing, int srpIdentifierLength, byte[] srpIdentifier) {
-        this.extensionType = extensionType;
-        this.extensionBytes = extensionBytes;
-        this.extensionLength = extensionLength;
-        this.startParsing = startParsing;
-        this.srpIdentifierLength = srpIdentifierLength;
-        this.srpIdentifier = srpIdentifier;
+    public static Stream<Arguments> provideTestVectors() {
+        return SRPExtensionParserTest.provideTestVectors();
     }
-
-    @Before
-    public void setUp() {
-        message = new SRPExtensionMessage();
-        serializer = new SRPExtensionSerializer(message);
-    }
-
-    @Test
-    public void testSerializeExtensionContent() {
-        message.setExtensionType(extensionType.getValue());
-        message.setExtensionLength(extensionLength);
-        message.setSrpIdentifierLength(srpIdentifierLength);
-        message.setSrpIdentifier(srpIdentifier);
-
-        assertArrayEquals(extensionBytes, serializer.serialize());
-    }
-
 }

@@ -1,60 +1,63 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.connection.InboundConnection;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestV2ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.RequestItemV2;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.ResponderId;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.CertificateStatusRequestV2ExtensionParserTest;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.RequestItemV2Preparator;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ResponderIdPreparator;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.util.Arrays;
+import de.rub.nds.tlsattacker.core.state.Context;
+import de.rub.nds.tlsattacker.core.state.State;
 import java.util.List;
-import static org.junit.Assert.assertArrayEquals;
-import org.junit.Test;
+import java.util.stream.Stream;
+import org.junit.jupiter.params.provider.Arguments;
 
-public class CertificateStatusRequestV2ExtensionSerializerTest {
+public class CertificateStatusRequestV2ExtensionSerializerTest
+        extends AbstractExtensionMessageSerializerTest<
+                CertificateStatusRequestV2ExtensionMessage,
+                CertificateStatusRequestV2ExtensionSerializer> {
 
-    private final byte[] expectedBytes =
-        ArrayConverter.hexStringToByteArray("00110013001101000E0007000501020304050003010203");
-    private final int reqListLength = 0x11;
-    private final int extensionLength = 0x13;
-    private final ExtensionType type = ExtensionType.STATUS_REQUEST_V2;
-    private final RequestItemV2 item = new RequestItemV2(1, 14, 7, 3, new byte[] { 0x01, 0x02, 0x03 });
-    private final List<ResponderId> responderIdList =
-        Arrays.asList(new ResponderId(5, new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05 }));
-    private final byte[] responderIdListBytes = new byte[] { 0x00, 0x05, 0x01, 0x02, 0x03, 0x04, 0x05 };
+    private final TlsContext context;
 
-    @Test
-    public void testSerializer() {
-        item.setResponderIdList(responderIdList);
-        item.setResponderIdListBytes(responderIdListBytes);
-        RequestItemV2Preparator preparator = new RequestItemV2Preparator(new TlsContext().getChooser(), item);
-        preparator.prepare();
+    public CertificateStatusRequestV2ExtensionSerializerTest() {
+        // noinspection unchecked
+        super(
+                CertificateStatusRequestV2ExtensionMessage::new,
+                CertificateStatusRequestV2ExtensionSerializer::new,
+                List.of(
+                        (msg, obj) -> msg.setStatusRequestListLength((Integer) obj),
+                        (msg, obj) -> {},
+                        (msg, obj) -> msg.setStatusRequestList((List<RequestItemV2>) obj)));
+        context = new Context(new State(new Config()), new InboundConnection()).getTlsContext();
+    }
 
-        for (ResponderId id : responderIdList) {
-            ResponderIdPreparator responderPreparator = new ResponderIdPreparator(new TlsContext().getChooser(), id);
-            responderPreparator.prepare();
+    public static Stream<Arguments> provideTestVectors() {
+        return CertificateStatusRequestV2ExtensionParserTest.provideTestVectors();
+    }
+
+    @Override
+    protected void setExtensionMessageSpecific(
+            List<Object> providedAdditionalValues, List<Object> providedMessageSpecificValues) {
+        @SuppressWarnings("unchecked")
+        List<RequestItemV2> requestItems =
+                (List<RequestItemV2>) providedMessageSpecificValues.get(2);
+        for (RequestItemV2 requestItem : requestItems) {
+            new RequestItemV2Preparator(context.getChooser(), requestItem).prepare();
+            for (ResponderId id : requestItem.getResponderIdList()) {
+                new ResponderIdPreparator(context.getChooser(), id).prepare();
+            }
         }
-
-        CertificateStatusRequestV2ExtensionMessage msg = new CertificateStatusRequestV2ExtensionMessage();
-        msg.setExtensionType(type.getValue());
-        msg.setExtensionLength(extensionLength);
-        msg.setStatusRequestListLength(reqListLength);
-        msg.setStatusRequestList(Arrays.asList(item));
-
-        CertificateStatusRequestV2ExtensionSerializer serializer =
-            new CertificateStatusRequestV2ExtensionSerializer(msg);
-
-        assertArrayEquals(expectedBytes, serializer.serialize());
+        super.setExtensionMessageSpecific(providedAdditionalValues, providedMessageSpecificValues);
     }
 }

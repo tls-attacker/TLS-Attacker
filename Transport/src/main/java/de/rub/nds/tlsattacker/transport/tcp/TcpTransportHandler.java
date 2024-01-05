@@ -1,19 +1,17 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.transport.tcp;
 
 import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.socket.SocketState;
-
 import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
@@ -33,15 +31,17 @@ public abstract class TcpTransportHandler extends TransportHandler {
 
     public TcpTransportHandler(Connection con) {
         super(con);
+        srcPort = con.getSourcePort();
     }
 
-    public TcpTransportHandler(long firstTimeout, long timeout, ConnectionEndType type) {
-        super(firstTimeout, timeout, type);
+    public TcpTransportHandler(long timeout, ConnectionEndType type) {
+        super(timeout, type);
     }
 
     /**
-     * Checks the current SocketState. NOTE: If you check the SocketState and Data is received during the Check the
-     * current State of the TransportHandler will get messed up and an Exception will be thrown.
+     * Checks the current SocketState. NOTE: If you check the SocketState and Data is received
+     * during the Check the current State of the TransportHandler will get messed up and an
+     * Exception will be thrown.
      *
      * @return The current SocketState
      */
@@ -65,11 +65,10 @@ public abstract class TcpTransportHandler extends TransportHandler {
             }
 
             int read = inStream.read();
-            socket.setSoTimeout(1);
-            inStream.unread(read);
             if (read == -1) {
                 return SocketState.CLOSED;
             } else {
+                inStream.unread(read);
                 return SocketState.DATA_AVAILABLE;
             }
         } catch (SocketTimeoutException ex) {
@@ -86,6 +85,7 @@ public abstract class TcpTransportHandler extends TransportHandler {
         try {
             this.timeout = timeout;
             socket.setSoTimeout((int) timeout);
+
         } catch (SocketException ex) {
             LOGGER.error("Could not adjust socket timeout", ex);
         }

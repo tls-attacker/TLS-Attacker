@@ -1,22 +1,21 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.PskDheServerKeyExchangeMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class PskDheServerKeyExchangeSerializer extends DHEServerKeyExchangeSerializer<PskDheServerKeyExchangeMessage> {
+public class PskDheServerKeyExchangeSerializer
+        extends DHEServerKeyExchangeSerializer<PskDheServerKeyExchangeMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -25,12 +24,11 @@ public class PskDheServerKeyExchangeSerializer extends DHEServerKeyExchangeSeria
     /**
      * Constructor for the PSKDHServerKeyExchangeSerializer
      *
-     * @param message
-     *                Message that should be serialized
-     * @param version
-     *                Version of the Protocol
+     * @param message Message that should be serialized
+     * @param version Version of the Protocol
      */
-    public PskDheServerKeyExchangeSerializer(PskDheServerKeyExchangeMessage message, ProtocolVersion version) {
+    public PskDheServerKeyExchangeSerializer(
+            PskDheServerKeyExchangeMessage message, ProtocolVersion version) {
         super(message, version);
         this.msg = message;
     }
@@ -54,6 +52,6 @@ public class PskDheServerKeyExchangeSerializer extends DHEServerKeyExchangeSeria
      */
     private void writePSKIdentityHint(PskDheServerKeyExchangeMessage msg) {
         appendBytes(msg.getIdentityHint().getValue());
-        LOGGER.debug("SerializedPSKIdentityHint: " + ArrayConverter.bytesToHexString(msg.getIdentityHint().getValue()));
+        LOGGER.debug("SerializedPSKIdentityHint: {}", msg.getIdentityHint().getValue());
     }
 }

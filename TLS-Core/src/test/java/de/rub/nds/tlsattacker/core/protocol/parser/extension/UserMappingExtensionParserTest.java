@@ -1,44 +1,43 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.UserMappingExtensionHintType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.UserMappingExtensionMessage;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.Test;
+import java.util.List;
+import java.util.stream.Stream;
+import org.junit.jupiter.api.Named;
+import org.junit.jupiter.params.provider.Arguments;
 
-public class UserMappingExtensionParserTest {
+public class UserMappingExtensionParserTest
+        extends AbstractExtensionParserTest<
+                UserMappingExtensionMessage, UserMappingExtensionParser> {
 
-    private final ExtensionType extensionType = ExtensionType.USER_MAPPING;
-    private final byte[] extensionBytes = ArrayConverter.hexStringToByteArray("0006000140");
-    private final int extensionLength = 1;
-    private final int startposition = 0;
-    private final UserMappingExtensionHintType hintType = UserMappingExtensionHintType.UPN_DOMAIN_HINT;
-    private UserMappingExtensionParser parser;
-    private UserMappingExtensionMessage message;
-
-    @Before
-    public void setUp() {
-        parser = new UserMappingExtensionParser(startposition, extensionBytes, Config.createConfig());
+    public UserMappingExtensionParserTest() {
+        super(
+                UserMappingExtensionMessage.class,
+                UserMappingExtensionParser::new,
+                List.of(
+                        Named.of(
+                                "UserMappingExtensionMessage::getUserMappingType",
+                                UserMappingExtensionMessage::getUserMappingType)));
     }
 
-    @Test
-    public void testParseExtensionMessageContent() {
-        message = parser.parse();
-        assertArrayEquals(extensionType.getValue(), message.getExtensionType().getValue());
-        assertEquals(extensionLength, (long) message.getExtensionLength().getValue());
-        assertEquals(hintType.getValue(), (long) message.getUserMappingType().getValue());
+    public static Stream<Arguments> provideTestVectors() {
+        return Stream.of(
+                Arguments.of(
+                        ArrayConverter.hexStringToByteArray("0006000140"),
+                        List.of(),
+                        ExtensionType.USER_MAPPING,
+                        1,
+                        List.of(UserMappingExtensionHintType.UPN_DOMAIN_HINT.getValue())));
     }
 }

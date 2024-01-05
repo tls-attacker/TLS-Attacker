@@ -17,13 +17,13 @@
     </InboundConnection>        
     <Receive>
         <connectionAlias>UnknownAlias</connectionAlias>        
-        <messages>
+        <expectedMessages>
             <ClientHello>
                 <extensions>
                     <ECPointFormat/>
                     <EllipticCurves/>
                 </extensions>
             </ClientHello>
-        </messages>
+        </expectedMessages>
     </Receive>
 </workflowTrace>

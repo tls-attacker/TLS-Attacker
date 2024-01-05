@@ -1,55 +1,33 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PSKKeyExchangeModesExtensionMessage;
-import static org.junit.Assert.*;
-import org.junit.Test;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.PSKKeyExchangeModesExtensionParserTest;
+import java.util.List;
+import java.util.stream.Stream;
+import org.junit.jupiter.params.provider.Arguments;
 
-public class PSKKeyExchangeModesExtensionSerializerTest {
+public class PSKKeyExchangeModesExtensionSerializerTest
+        extends AbstractExtensionMessageSerializerTest<
+                PSKKeyExchangeModesExtensionMessage, PSKKeyExchangeModesExtensionSerializer> {
 
-    @Test
-    public void testSerializeExtensionContent() {
-
-        PSKKeyExchangeModesExtensionMessage validMsg = new PSKKeyExchangeModesExtensionMessage();
-        validMsg.setKeyExchangeModesListLength(2);
-        validMsg.setKeyExchangeModesListBytes(new byte[] { 1, 0 });
-
-        assertArrayEquals(new byte[] { 2, 1, 0 },
-            new PSKKeyExchangeModesExtensionSerializer(validMsg).serializeExtensionContent());
-
-        PSKKeyExchangeModesExtensionMessage invalidEmptyMsg = new PSKKeyExchangeModesExtensionMessage();
-        invalidEmptyMsg.setKeyExchangeModesListLength(0);
-        invalidEmptyMsg.setKeyExchangeModesListBytes(new byte[0]);
-
-        assertArrayEquals(new byte[] { 0 },
-            new PSKKeyExchangeModesExtensionSerializer(invalidEmptyMsg).serializeExtensionContent());
+    public PSKKeyExchangeModesExtensionSerializerTest() {
+        super(
+                PSKKeyExchangeModesExtensionMessage::new,
+                PSKKeyExchangeModesExtensionSerializer::new,
+                List.of(
+                        (msg, obj) -> msg.setKeyExchangeModesListLength((Integer) obj),
+                        (msg, obj) -> msg.setKeyExchangeModesListBytes((byte[]) obj)));
     }
 
-    @Test
-    public void testSerialize() {
-        PSKKeyExchangeModesExtensionMessage validMsg = new PSKKeyExchangeModesExtensionMessage();
-        validMsg.setExtensionType(validMsg.getExtensionTypeConstant().getValue());
-        validMsg.setExtensionLength(3);
-        validMsg.setKeyExchangeModesListLength(2);
-        validMsg.setKeyExchangeModesListBytes(new byte[] { 0, 1 });
-
-        PSKKeyExchangeModesExtensionSerializer validSerializer = new PSKKeyExchangeModesExtensionSerializer(validMsg);
-        byte[] serializedMsg = validSerializer.serialize();
-
-        assertArrayEquals(new byte[] { 0, // extension_type
-            // psk_key_exchange_modes(45), 2 bytes
-            45, 0, // length of extension_data, 2 bytes
-            3, 2, // extension_data: length of ke_modes
-            0, // ke_modes[0]
-            1 // ke_modes[1]
-        }, serializedMsg);
+    public static Stream<Arguments> provideTestVectors() {
+        return PSKKeyExchangeModesExtensionParserTest.provideTestVectors();
     }
 }

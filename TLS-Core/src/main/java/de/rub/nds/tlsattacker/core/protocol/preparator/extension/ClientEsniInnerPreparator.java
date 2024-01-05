@@ -1,20 +1,18 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
+import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientEsniInner;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
-import de.rub.nds.tlsattacker.core.protocol.Preparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ServerNamePairSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
@@ -47,7 +45,7 @@ public class ClientEsniInnerPreparator extends Preparator<ClientEsniInner> {
 
         byte[] nonce = chooser.getEsniClientNonce();
         msg.setClientNonce(nonce);
-        LOGGER.debug("Nonce: " + ArrayConverter.bytesToHexString(msg.getClientNonce().getValue()));
+        LOGGER.debug("Nonce: {}", msg.getClientNonce().getValue());
     }
 
     private void prepareServerPariNameList(ClientEsniInner msg) {
@@ -67,20 +65,21 @@ public class ClientEsniInnerPreparator extends Preparator<ClientEsniInner> {
 
     private void prepareServerNameListBytes(ClientEsniInner msg) {
         msg.setServerNameListBytes(serverNamePairListStream.toByteArray());
-        LOGGER
-            .debug("ServerNameListBytes: " + ArrayConverter.bytesToHexString(msg.getServerNameListBytes().getValue()));
+        LOGGER.debug("ServerNameListBytes: {}", msg.getServerNameListBytes().getValue());
     }
 
     private void prepareServerNameListLength(ClientEsniInner msg) {
         msg.setServerNameListLength(msg.getServerNameListBytes().getValue().length);
-        LOGGER.debug("ServerNameListLength: " + msg.getServerNameListLength().getValue());
+        LOGGER.debug("ServerNameListLength: {}", msg.getServerNameListLength().getValue());
     }
 
     private void preparePadding(ClientEsniInner msg) {
         byte[] padding;
         int paddedLength = chooser.getEsniPaddedLength();
         int paddingLength =
-            paddedLength - msg.getServerNameListBytes().getValue().length - ExtensionByteLength.SERVER_NAME_LIST;
+                paddedLength
+                        - msg.getServerNameListBytes().getValue().length
+                        - ExtensionByteLength.SERVER_NAME_LIST;
         if (paddingLength > 65536) {
             LOGGER.warn("ESNI Inner PaddingLength is greater than 65536. Limiting it to 65536");
             paddingLength = 65536;
@@ -91,7 +90,7 @@ public class ClientEsniInnerPreparator extends Preparator<ClientEsniInner> {
             padding = new byte[0];
         }
         msg.setPadding(padding);
-        LOGGER.debug("paddedLength: " + paddedLength);
-        LOGGER.debug("Padding: " + ArrayConverter.bytesToHexString(msg.getPadding().getValue()));
+        LOGGER.debug("PaddedLength: {}", paddedLength);
+        LOGGER.debug("Padding: {}", msg.getPadding().getValue());
     }
 }

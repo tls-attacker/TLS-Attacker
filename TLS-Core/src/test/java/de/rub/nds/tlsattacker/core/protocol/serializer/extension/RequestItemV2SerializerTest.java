@@ -1,45 +1,70 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+
+import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.connection.InboundConnection;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.RequestItemV2;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.ResponderId;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.RequestItemV2ParserTest;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.RequestItemV2Preparator;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ResponderIdPreparator;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.util.Arrays;
+import de.rub.nds.tlsattacker.core.state.Context;
+import de.rub.nds.tlsattacker.core.state.State;
 import java.util.List;
-import static org.junit.Assert.assertArrayEquals;
-import org.junit.Test;
+import java.util.stream.Stream;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 public class RequestItemV2SerializerTest {
 
-    private final RequestItemV2 item = new RequestItemV2(1, 14, 7, 3, new byte[] { 0x01, 0x02, 0x03 });
-    private final List<ResponderId> respIdList =
-        Arrays.asList(new ResponderId(5, new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05 }));
-    private final byte[] respIdListBytes = new byte[] { 0x00, 0x05, 0x01, 0x02, 0x03, 0x04, 0x05 };
-    private final byte[] expectedBytes = ArrayConverter.hexStringToByteArray("01000E0007000501020304050003010203");
+    private TlsContext context;
 
-    @Test
-    public void testSerializer() {
-        for (ResponderId id : respIdList) {
-            ResponderIdPreparator preparatorResponderId = new ResponderIdPreparator(new TlsContext().getChooser(), id);
-            preparatorResponderId.prepare();
+    @BeforeEach
+    public void setUp() {
+        context = new Context(new State(new Config()), new InboundConnection()).getTlsContext();
+    }
+
+    public static Stream<Arguments> provideTestVectors() {
+        return RequestItemV2ParserTest.provideTestVectors();
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideTestVectors")
+    public void testSerialize(
+            byte[] expectedRequestItemV2Bytes,
+            int providedRequestType,
+            int providedRequestLength,
+            int providedResponderListLength,
+            byte[] providedResponderIdListBytes,
+            List<ResponderId> providedResponderIdList,
+            int providedRequestExtensionsLength,
+            byte[] providedRequestExtensions) {
+        RequestItemV2 item =
+                new RequestItemV2(
+                        providedRequestType,
+                        providedRequestLength,
+                        providedResponderListLength,
+                        providedRequestExtensionsLength,
+                        providedRequestExtensions);
+        for (ResponderId id : providedResponderIdList) {
+            new ResponderIdPreparator(context.getChooser(), id).prepare();
         }
-        RequestItemV2Preparator preparator = new RequestItemV2Preparator(new TlsContext().getChooser(), item);
-        preparator.prepare();
-        item.setResponderIdList(respIdList);
-        item.setResponderIdListBytes(respIdListBytes);
-        RequestItemV2Serializer serializer = new RequestItemV2Serializer(item);
-
-        assertArrayEquals(expectedBytes, serializer.serialize());
+        new RequestItemV2Preparator(context.getChooser(), item).prepare();
+        item.setResponderIdList(providedResponderIdList);
+        item.setResponderIdListBytes(providedResponderIdListBytes);
+        byte[] actualBytes = new RequestItemV2Serializer(item).serialize();
+        assertArrayEquals(expectedRequestItemV2Bytes, actualBytes);
     }
 }

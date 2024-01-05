@@ -1,63 +1,46 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.KeyShareExtensionParserTest;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.util.Collection;
-import static org.junit.Assert.assertArrayEquals;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Stream;
+import org.junit.jupiter.params.provider.Arguments;
 
-@RunWith(Parameterized.class)
-public class KeyShareExtensionSerializerTest {
+public class KeyShareExtensionSerializerTest
+        extends AbstractExtensionMessageSerializerTest<
+                KeyShareExtensionMessage, KeyShareExtensionSerializer> {
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return KeyShareExtensionParserTest.generateData();
+    public KeyShareExtensionSerializerTest() {
+        super(
+                KeyShareExtensionMessage::new,
+                (msg) -> new KeyShareExtensionSerializer(msg, ConnectionEndType.CLIENT),
+                List.of(
+                        (msg, obj) -> msg.setKeyShareListLength((Integer) obj),
+                        (msg, obj) -> msg.setKeyShareListBytes((byte[]) obj)));
     }
 
-    private byte[] extension;
-    private int start;
-    private byte[] completeExtension;
-    private ExtensionType type;
-    private int extensionLength;
-    private int keyShareListLength;
-    private byte[] keyShareList;
-
-    public KeyShareExtensionSerializerTest(byte[] extension, int start, byte[] completeExtension, ExtensionType type,
-        int extensionLength, int keyShareListLength, byte[] keyShareList) {
-        this.extension = extension;
-        this.start = start;
-        this.completeExtension = completeExtension;
-        this.type = type;
-        this.extensionLength = extensionLength;
-        this.keyShareListLength = keyShareListLength;
-        this.keyShareList = keyShareList;
+    public static Stream<Arguments> provideTestVectors() {
+        return Stream.of(
+                Arguments.of(
+                        ArrayConverter.hexStringToByteArray(
+                                "003300260024001d00206786b901eb52a2578a57195d897b8329cb630a19617352af9163c69e0f9a4204"),
+                        List.of(),
+                        ExtensionType.KEY_SHARE,
+                        38,
+                        Arrays.asList(
+                                36,
+                                ArrayConverter.hexStringToByteArray(
+                                        "001d00206786b901eb52a2578a57195d897b8329cb630a19617352af9163c69e0f9a4204"))));
     }
-
-    /**
-     * Test of serializeExtensionContent method, of class KeyShareExtensionSerializerTest.
-     */
-    @Test
-    public void testSerializeExtensionContent() {
-        KeyShareExtensionMessage msg = new KeyShareExtensionMessage();
-        msg.setExtensionType(type.getValue());
-        msg.setExtensionLength(extensionLength);
-        msg.setKeyShareListBytes(keyShareList);
-        msg.setKeyShareListLength(keyShareListLength);
-        KeyShareExtensionSerializer serializer = new KeyShareExtensionSerializer(msg, ConnectionEndType.CLIENT);
-        assertArrayEquals(completeExtension, serializer.serialize());
-    }
-
 }

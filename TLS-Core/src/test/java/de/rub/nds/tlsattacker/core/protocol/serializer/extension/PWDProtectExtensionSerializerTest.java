@@ -1,65 +1,33 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
-import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PWDProtectExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.PWDProtectExtensionParserTest;
-import java.util.Collection;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import java.util.List;
+import java.util.stream.Stream;
+import org.junit.jupiter.params.provider.Arguments;
 
-@RunWith(Parameterized.class)
-public class PWDProtectExtensionSerializerTest {
+public class PWDProtectExtensionSerializerTest
+        extends AbstractExtensionMessageSerializerTest<
+                PWDProtectExtensionMessage, PWDProtectExtensionSerializer> {
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return PWDProtectExtensionParserTest.generateData();
+    public PWDProtectExtensionSerializerTest() {
+        super(
+                PWDProtectExtensionMessage::new,
+                PWDProtectExtensionSerializer::new,
+                List.of(
+                        (msg, obj) -> msg.setUsernameLength((Integer) obj),
+                        (msg, obj) -> msg.setUsername((byte[]) obj)));
     }
 
-    private final byte[] expectedBytes;
-    private final int start;
-    private final ExtensionType type;
-    private final int extensionLength;
-    private final int usernameLength;
-    private final byte[] username;
-    private PWDProtectExtensionMessage message;
-    private PWDProtectExtensionSerializer serializer;
-
-    public PWDProtectExtensionSerializerTest(byte[] expectedBytes, int start, ExtensionType type, int extensionLength,
-        int usernameLength, byte[] username) {
-        this.expectedBytes = expectedBytes;
-        this.start = start;
-        this.type = type;
-        this.extensionLength = extensionLength;
-        this.usernameLength = usernameLength;
-        this.username = username;
+    public static Stream<Arguments> provideTestVectors() {
+        return PWDProtectExtensionParserTest.provideTestVectors();
     }
-
-    @Before
-    public void setUp() {
-        message = new PWDProtectExtensionMessage();
-        serializer = new PWDProtectExtensionSerializer(message);
-    }
-
-    @Test
-    public void testSerializeExtensionContent() {
-        message.setExtensionType(type.getValue());
-        message.setExtensionLength(extensionLength);
-        message.setUsername(username);
-        message.setUsernameLength(usernameLength);
-
-        assertArrayEquals(expectedBytes, serializer.serialize());
-    }
-
 }

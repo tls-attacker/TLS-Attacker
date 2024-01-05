@@ -1,71 +1,44 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SRPExtensionMessage;
-import java.util.Arrays;
-import java.util.Collection;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import java.util.List;
+import java.util.stream.Stream;
+import org.junit.jupiter.api.Named;
+import org.junit.jupiter.params.provider.Arguments;
 
-@RunWith(Parameterized.class)
-public class SRPExtensionParserTest {
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return Arrays.asList(
-            new Object[][] { { ExtensionType.SRP, new byte[] { 0x00, 0x0C, 0x00, 0x05, 0x04, 0x01, 0x02, 0x03, 0x04 },
-                5, 0, 4, ArrayConverter.hexStringToByteArray("01020304") } });
+public class SRPExtensionParserTest
+        extends AbstractExtensionParserTest<SRPExtensionMessage, SRPExtensionParser> {
+
+    public SRPExtensionParserTest() {
+        super(
+                SRPExtensionMessage.class,
+                SRPExtensionParser::new,
+                List.of(
+                        Named.of(
+                                "SRPExtensionMessage::getSrpIdentifierLength",
+                                SRPExtensionMessage::getSrpIdentifierLength),
+                        Named.of(
+                                "SRPExtensionMessage::getSrpIdentifier",
+                                SRPExtensionMessage::getSrpIdentifier)));
     }
 
-    private final ExtensionType extensionType;
-    private final byte[] extensionBytes;
-    private final int extensionLength;
-    private final int startParsing;
-    private final int srpIdentifierLength;
-    private final byte[] srpIdentifier;
-    private SRPExtensionParser parser;
-    private SRPExtensionMessage message;
-
-    public SRPExtensionParserTest(ExtensionType extensionType, byte[] extensionBytes, int extensionLength,
-        int startParsing, int srpIdentifierLength, byte[] srpIdentifier) {
-        this.extensionType = extensionType;
-        this.extensionBytes = extensionBytes;
-        this.extensionLength = extensionLength;
-        this.startParsing = startParsing;
-        this.srpIdentifierLength = srpIdentifierLength;
-        this.srpIdentifier = srpIdentifier;
+    public static Stream<Arguments> provideTestVectors() {
+        return Stream.of(
+                Arguments.of(
+                        new byte[] {0x00, 0x0C, 0x00, 0x05, 0x04, 0x01, 0x02, 0x03, 0x04},
+                        List.of(),
+                        ExtensionType.SRP,
+                        5,
+                        List.of(4, ArrayConverter.hexStringToByteArray("01020304"))));
     }
-
-    @Before
-    public void setUp() {
-        parser = new SRPExtensionParser(startParsing, extensionBytes, Config.createConfig());
-
-    }
-
-    @Test
-    public void testParseExtensionMessageContent() {
-        message = parser.parse();
-
-        assertArrayEquals(extensionType.getValue(), message.getExtensionType().getValue());
-        assertEquals(extensionLength, (long) message.getExtensionLength().getValue());
-
-        assertEquals(srpIdentifierLength, (long) message.getSrpIdentifierLength().getValue());
-        assertArrayEquals(srpIdentifier, message.getSrpIdentifier().getValue());
-
-    }
-
 }

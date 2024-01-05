@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message.certificatestatus;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -22,8 +21,7 @@ public class CertificateStatusObject {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger length;
 
-    @ModifiableVariableProperty
-    private ModifiableByteArray ocspResponse;
+    @ModifiableVariableProperty private ModifiableByteArray ocspResponse;
 
     public ModifiableInteger getType() {
         return type;
@@ -58,7 +56,7 @@ public class CertificateStatusObject {
     }
 
     public void setOcspResponse(byte[] ocspResponse) {
-        this.ocspResponse = ModifiableVariableFactory.safelySetValue(this.ocspResponse, ocspResponse);
+        this.ocspResponse =
+                ModifiableVariableFactory.safelySetValue(this.ocspResponse, ocspResponse);
     }
-
 }

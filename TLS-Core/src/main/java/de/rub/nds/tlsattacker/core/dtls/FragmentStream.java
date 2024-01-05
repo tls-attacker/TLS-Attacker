@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.dtls;
 
 import java.io.ByteArrayOutputStream;
@@ -50,14 +49,13 @@ public class FragmentStream {
     /**
      * Checks if the fragment stream is complete up to the specified index
      *
-     * @param  tillIndex
-     *                   Bytes till the maximum index
-     * @return           true if all keys are in the map, otherwise false
+     * @param tillIndex Bytes till the maximum index
+     * @return true if all keys are in the map, otherwise false
      */
     public boolean isComplete(int tillIndex) {
         if (tillIndex < 0) {
             throw new IllegalArgumentException(
-                "Cannot check stream for completeness with negative index: " + tillIndex);
+                    "Cannot check stream for completeness with negative index: " + tillIndex);
         }
         for (int i = 0; i < tillIndex; i++) {
             if (!fragmentByteMap.containsKey(i)) {
@@ -68,11 +66,11 @@ public class FragmentStream {
     }
 
     /**
-     * Returns the fragment streams contents and fills any holes in it with the specified filling byte
+     * Returns the fragment streams contents and fills any holes in it with the specified filling
+     * byte
      *
-     * @param  fillingByte
-     *                     the byte with which we fill holes in the fragment
-     * @return             the stream
+     * @param fillingByte the byte with which we fill holes in the fragment
+     * @return the stream
      */
     public byte[] getCompleteFilledStream(byte fillingByte) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -84,26 +82,26 @@ public class FragmentStream {
                 fillingCounter++;
             }
             stream.write(b);
-
         }
         if (fillingCounter > 0) {
-            LOGGER.warn("Had to fill " + fillingCounter
-                + " missing bytes in HandshakeMessageFragments. This will _likely_ result in invalid messages");
+            LOGGER.warn(
+                    "Had to fill "
+                            + fillingCounter
+                            + " missing bytes in HandshakeMessageFragments. This will _likely_ result in invalid messages");
         }
         for (Integer i : fragmentByteMap.keySet()) {
             if (i > intendedSize) {
-                LOGGER.warn("Found fragment greater than intended message size(intended size: " + intendedSize
-                    + " but found byte for: " + i + "). Ignoring");
+                LOGGER.warn(
+                        "Found fragment greater than intended message size(intended size: "
+                                + intendedSize
+                                + " but found byte for: "
+                                + i
+                                + "). Ignoring");
             }
         }
         return stream.toByteArray();
     }
 
-    /**
-     *
-     * @param  fillingByte
-     * @return
-     */
     public byte[] getCompleteTruncatedStream() {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         int skipCounter = 0;
@@ -116,12 +114,16 @@ public class FragmentStream {
             stream.write(b);
         }
         if (skipCounter > 0) {
-            LOGGER.warn("Did not receive all bytes. Truncated  " + skipCounter + " missing bytes.");
+            LOGGER.warn("Did not receive all bytes. Truncated {} missing bytes.", skipCounter);
         }
         for (Integer i : fragmentByteMap.keySet()) {
             if (i > intendedSize) {
-                LOGGER.warn("Found fragment greater than intended message size(intended size: " + intendedSize
-                    + " but found byte for: " + i + "). Ignoring");
+                LOGGER.warn(
+                        "Found fragment greater than intended message size(intended size: "
+                                + intendedSize
+                                + " but found byte for: "
+                                + i
+                                + "). Ignoring");
             }
         }
         return stream.toByteArray();

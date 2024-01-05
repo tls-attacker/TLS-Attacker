@@ -1,24 +1,23 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.Objects;
-import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@XmlRootElement
+@XmlRootElement(name = "ChangeProtocolVersion")
 public class ChangeProtocolVersionAction extends ConnectionBoundAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -31,8 +30,7 @@ public class ChangeProtocolVersionAction extends ConnectionBoundAction {
         this.newValue = newValue;
     }
 
-    public ChangeProtocolVersionAction() {
-    }
+    public ChangeProtocolVersionAction() {}
 
     public void setNewValue(ProtocolVersion newValue) {
         this.newValue = newValue;
@@ -47,16 +45,18 @@ public class ChangeProtocolVersionAction extends ConnectionBoundAction {
     }
 
     @Override
-    public void execute(State state) throws WorkflowExecutionException {
-        TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
+    public void execute(State state) throws ActionExecutionException {
+        TlsContext tlsContext = state.getContext(getConnectionAlias()).getTlsContext();
 
         if (isExecuted()) {
-            throw new WorkflowExecutionException("Action already executed!");
+            throw new ActionExecutionException("Action already executed!");
         }
         oldValue = tlsContext.getSelectedProtocolVersion();
         tlsContext.setSelectedProtocolVersion(newValue);
         LOGGER.info(
-            "Changed ProtocolVersion from " + oldValue == null ? oldValue.name() : null + " to " + newValue.name());
+                "Changed ProtocolVersion from " + oldValue == null
+                        ? oldValue.name()
+                        : null + " to " + newValue.name());
         setExecuted(true);
     }
 
@@ -96,5 +96,4 @@ public class ChangeProtocolVersionAction extends ConnectionBoundAction {
     public boolean executedAsPlanned() {
         return isExecuted();
     }
-
 }

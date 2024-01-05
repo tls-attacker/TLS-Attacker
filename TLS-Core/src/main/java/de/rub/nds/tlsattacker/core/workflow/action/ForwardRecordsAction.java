@@ -1,239 +1,111 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
-import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.record.AbstractRecord;
-import de.rub.nds.tlsattacker.core.record.BlobRecord;
+import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.LayerStackProcessingResult;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.core.workflow.action.executor.ReceiveMessageHelper;
-import de.rub.nds.tlsattacker.core.workflow.action.executor.SendMessageHelper;
-import java.io.IOException;
-import java.util.LinkedHashSet;
+import de.rub.nds.tlsattacker.core.workflow.container.ActionHelperUtil;
+import jakarta.xml.bind.annotation.XmlElementRef;
+import jakarta.xml.bind.annotation.XmlElementWrapper;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlElements;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@XmlRootElement
-public class ForwardRecordsAction extends TlsAction implements ReceivingAction, SendingAction {
+@XmlRootElement(name = "ForwardRecords")
+public class ForwardRecordsAction extends CommonForwardAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    @XmlElement(name = "from")
-    protected String receiveFromAlias = null;
-    @XmlElement(name = "to")
-    protected String forwardToAlias = null;
+    @XmlElementWrapper @HoldsModifiableVariable @XmlElementRef
+    protected List<Record> expectedRecords;
 
-    @XmlTransient
-    private Boolean executedAsPlanned = null;
+    public ForwardRecordsAction() {}
 
-    @HoldsModifiableVariable
-    @XmlElementWrapper
-    @XmlElements(value = { @XmlElement(type = Record.class, name = "Record"),
-        @XmlElement(type = BlobRecord.class, name = "BlobRecord") })
-    protected List<AbstractRecord> receivedRecords;
-
-    @HoldsModifiableVariable
-    @XmlElementWrapper
-    @XmlElements(value = { @XmlElement(type = Record.class, name = "Record"),
-        @XmlElement(type = BlobRecord.class, name = "BlobRecord") })
-    protected List<AbstractRecord> sendRecords;
-
-    @XmlTransient
-    private ReceiveMessageHelper receiveMessageHelper;
-
-    @XmlTransient
-    private SendMessageHelper sendMessageHelper;
-
-    public ForwardRecordsAction() {
-        receiveMessageHelper = new ReceiveMessageHelper();
-        sendMessageHelper = new SendMessageHelper();
+    public ForwardRecordsAction(
+            String receiveFromAlias, String forwardToAlias, List<Record> expectedRecords) {
+        super(receiveFromAlias, forwardToAlias);
+        this.expectedRecords = expectedRecords;
     }
 
-    public ForwardRecordsAction(String receiveFromAlias, String forwardToAlias) {
-        this(receiveFromAlias, forwardToAlias, new ReceiveMessageHelper());
+    public ForwardRecordsAction(
+            String receiveFromAlias, String forwardToAlias, Record... expectedRecords) {
+        this(receiveFromAlias, forwardToAlias, new ArrayList<>(Arrays.asList(expectedRecords)));
     }
 
-    /**
-     * Allow to pass a fake ReceiveMessageHelper helper for testing.
-     */
-    protected ForwardRecordsAction(String receiveFromAlias, String forwardToAlias,
-        ReceiveMessageHelper receiveMessageHelper) {
-        this.receiveFromAlias = receiveFromAlias;
-        this.forwardToAlias = forwardToAlias;
-        this.receiveMessageHelper = receiveMessageHelper;
-        sendMessageHelper = new SendMessageHelper();
+    public List<Record> getExpectedRecords() {
+        return expectedRecords;
     }
 
-    public void setReceiveFromAlias(String receiveFromAlias) {
-        this.receiveFromAlias = receiveFromAlias;
+    public void setExpectedRecords(List<Record> expectedRecords) {
+        this.expectedRecords = expectedRecords;
     }
 
-    public void setForwardToAlias(String forwardToAlias) {
-        this.forwardToAlias = forwardToAlias;
+    public String toString() {
+        StringBuilder sb = new StringBuilder("Forward Records Action:\n");
+        sb.append("Receive from alias: ").append(receiveFromAlias).append("\n");
+        sb.append("\tExpected:");
+        if ((expectedRecords != null)) {
+            for (Record record : expectedRecords) {
+                sb.append(", ");
+                sb.append(record.toCompactString());
+            }
+        } else {
+            sb.append(" (no records set)");
+        }
+        sb.append("\n\tActual:");
+        if ((getReceivedRecords() != null) && (!getReceivedRecords().isEmpty())) {
+            for (Record record : getReceivedRecords()) {
+                sb.append(record.toCompactString());
+                sb.append(", ");
+            }
+        } else {
+            sb.append(" (no records set)");
+        }
+        sb.append("\n");
+        sb.append("Forwarded to alias: ").append(forwardToAlias).append("\n");
+        if (getSentRecords() != null) {
+            sb.append("\t");
+            for (Record record : getSentRecords()) {
+                sb.append(record.toCompactString());
+                sb.append(", ");
+            }
+            sb.append("\n");
+        } else {
+            sb.append("null (no records set)");
+        }
+        return sb.toString();
     }
 
     @Override
-    public void execute(State state) throws WorkflowExecutionException {
-        if (isExecuted()) {
-            throw new WorkflowExecutionException("Action already executed!");
+    protected List<LayerConfiguration<?>> createReceiveConfiguration(State state) {
+        TlsContext tlsContext = state.getTlsContext(getReceiveFromAlias());
+        return ActionHelperUtil.createReceiveLayerConfiguration(
+                tlsContext, getActionOptions(), null, null, getExpectedRecords(), null, null, null);
+    }
+
+    @Override
+    protected List<LayerConfiguration<?>> createSendConfiguration(
+            State state, LayerStackProcessingResult receivedResult) {
+        TlsContext tlsContext = state.getTlsContext(getForwardToAlias());
+        List<Record> receivedRecords = getReceivedRecords();
+        for (Record record : receivedRecords) {
+            record.setShouldPrepare(false); // Do not recompute the messages on the message layer
         }
 
-        assertAliasesSetProperly();
-
-        TlsContext receiveFromCtx = state.getTlsContext(receiveFromAlias);
-        TlsContext forwardToCtx = state.getTlsContext(forwardToAlias);
-
-        receiveRecords(receiveFromCtx);
-        forwardRecords(forwardToCtx);
+        return ActionHelperUtil.createSendConfiguration(
+                tlsContext, null, null, getReceivedRecords(), null, null, null);
     }
-
-    void receiveRecords(TlsContext receiveFromCtx) {
-        LOGGER.debug("Receiving records...");
-        receivedRecords = receiveMessageHelper.receiveRecords(receiveFromCtx);
-        LOGGER.info("Records received (" + receiveFromAlias + "): " + receivedRecords.size());
-        executedAsPlanned = true;
-    }
-
-    private void forwardRecords(TlsContext forwardToCtx) {
-        LOGGER.info("Forwarding " + receivedRecords.size() + " records to " + forwardToAlias);
-        try {
-            sendMessageHelper.sendRecords(receivedRecords, forwardToCtx);
-            setExecuted(true);
-        } catch (IOException e) {
-            LOGGER.debug(e);
-            executedAsPlanned = false;
-            setExecuted(false);
-        }
-    }
-
-    public String getReceiveFromAlias() {
-        return receiveFromAlias;
-    }
-
-    public String getForwardToAlias() {
-        return forwardToAlias;
-    }
-
-    @Override
-    public boolean executedAsPlanned() {
-        return executedAsPlanned;
-    }
-
-    @Override
-    public void reset() {
-        receivedRecords = null;
-        sendRecords = null;
-        executedAsPlanned = false;
-        setExecuted(null);
-    }
-
-    @Override
-    public List<AbstractRecord> getReceivedRecords() {
-        return receivedRecords;
-    }
-
-    @Override
-    public List<AbstractRecord> getSendRecords() {
-        return sendRecords;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 3;
-        hash = 89 * hash + Objects.hashCode(this.receiveFromAlias);
-        hash = 89 * hash + Objects.hashCode(this.forwardToAlias);
-        hash = 89 * hash + Objects.hashCode(this.executedAsPlanned);
-        hash = 89 * hash + Objects.hashCode(this.receivedRecords);
-        hash = 89 * hash + Objects.hashCode(this.sendRecords);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final ForwardRecordsAction other = (ForwardRecordsAction) obj;
-        if (!Objects.equals(this.receiveFromAlias, other.receiveFromAlias)) {
-            return false;
-        }
-        if (!Objects.equals(this.forwardToAlias, other.forwardToAlias)) {
-            return false;
-        }
-        if (!Objects.equals(this.executedAsPlanned, other.executedAsPlanned)) {
-            return false;
-        }
-        if (!Objects.equals(this.receivedRecords, other.receivedRecords)) {
-            return false;
-        }
-        return Objects.equals(this.sendRecords, other.sendRecords);
-    }
-
-    @Override
-    public Set<String> getAllAliases() {
-        Set<String> aliases = new LinkedHashSet<>();
-        aliases.add(forwardToAlias);
-        aliases.add(receiveFromAlias);
-        return aliases;
-    }
-
-    @Override
-    public void assertAliasesSetProperly() throws ConfigurationException {
-        if ((receiveFromAlias == null) || (receiveFromAlias.isEmpty())) {
-            throw new WorkflowExecutionException("Can't execute " + this.getClass().getSimpleName()
-                + " with empty receive alias (if using XML: add <from/>)");
-        }
-        if ((forwardToAlias == null) || (forwardToAlias.isEmpty())) {
-            throw new WorkflowExecutionException("Can't execute " + this.getClass().getSimpleName()
-                + " with empty forward alis (if using XML: add <to/>)");
-        }
-    }
-
-    @Override
-    public List<ProtocolMessage> getReceivedMessages() {
-        throw new UnsupportedOperationException("Not supported.");
-    }
-
-    @Override
-    public List<ProtocolMessage> getSendMessages() {
-        throw new UnsupportedOperationException("Not supported.");
-    }
-
-    @Override
-    public List<DtlsHandshakeMessageFragment> getReceivedFragments() {
-        throw new UnsupportedOperationException("Not supported.");
-    }
-
-    @Override
-    public List<DtlsHandshakeMessageFragment> getSendFragments() {
-        throw new UnsupportedOperationException("Not supported.");
-    }
-
 }

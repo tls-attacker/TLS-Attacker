@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
@@ -20,23 +19,28 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * The MitmDelegate parses an arbitrary number of {Client,Server}ConnectionEnds from command line. It requires at least
- * one "accepting" and one "connecting" connection end.
+ * The MitmDelegate parses an arbitrary number of {Client,Server}ConnectionEnds from command line.
+ * It requires at least one "accepting" and one "connecting" connection end.
  */
 public class MitmDelegate extends Delegate {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    @Parameter(names = "-accept", description = "A MiTM client can connect to this connection end."
-        + " Allowed syntax: <PORT> or <CONNECTION_ALIAS>:<PORT>")
+    @Parameter(
+            names = "-accept",
+            description =
+                    "A MiTM client can connect to this connection end."
+                            + " Allowed syntax: <PORT> or <CONNECTION_ALIAS>:<PORT>")
     protected String inboundConnectionStr;
 
-    @Parameter(names = "-connect", description = "Add a server to which the MiTM will connect to."
-        + " Allowed syntax: <HOSTNAME>:<PORT> or <CONNECTION_ALIAS>:<HOSTNAME>:<PORT>")
+    @Parameter(
+            names = "-connect",
+            description =
+                    "Add a server to which the MiTM will connect to."
+                            + " Allowed syntax: <HOSTNAME>:<PORT> or <CONNECTION_ALIAS>:<HOSTNAME>:<PORT>")
     protected String outboundConnectionStr;
 
-    public MitmDelegate() {
-    }
+    public MitmDelegate() {}
 
     public String getInboundConnectionStr() {
         return inboundConnectionStr;
@@ -62,17 +66,18 @@ public class MitmDelegate extends Delegate {
         if (inboundConnectionStr != null) {
             setInboundConnection(config);
         } else {
-            LOGGER.debug("Parameter -accept not specified. Using inbound connection from "
-                + "-workflow_input or config defaults.");
+            LOGGER.debug(
+                    "Parameter -accept not specified. Using inbound connection from "
+                            + "-workflow_input or config defaults.");
         }
 
         if (outboundConnectionStr != null) {
             setOutboundConnection(config);
         } else {
-            LOGGER.debug("Parameter -connect not specified. Using outbound connection from "
-                + "-workflow_input or config defaults.");
+            LOGGER.debug(
+                    "Parameter -connect not specified. Using outbound connection from "
+                            + "-workflow_input or config defaults.");
         }
-
     }
 
     private void setInboundConnection(Config config) {
@@ -92,8 +97,11 @@ public class MitmDelegate extends Delegate {
                 inboundConnection.setPort(parsePort(parsedPort[1]));
                 break;
             default:
-                throw new ConfigurationException("Could not parse provided accepting connection" + " end: "
-                    + inboundConnectionStr + ". Expected [CONNECTION_ALIAS:]<PORT>");
+                throw new ConfigurationException(
+                        "Could not parse provided accepting connection"
+                                + " end: "
+                                + inboundConnectionStr
+                                + ". Expected [CONNECTION_ALIAS:]<PORT>");
         }
         config.setDefaultServerConnection(inboundConnection);
     }
@@ -117,16 +125,18 @@ public class MitmDelegate extends Delegate {
                 outboundConnection.setPort(parsePort(parsedHost[2]));
                 break;
             default:
-                throw new ConfigurationException("Could not parse provided server address: " + outboundConnectionStr
-                    + ". Expected [CONNECTION_ALIAS:]<HOSTNAME>:<PORT>");
+                throw new ConfigurationException(
+                        "Could not parse provided server address: "
+                                + outboundConnectionStr
+                                + ". Expected [CONNECTION_ALIAS:]<HOSTNAME>:<PORT>");
         }
         config.setDefaultClientConnection(outboundConnection);
     }
 
     private int parsePort(String portStr) {
         int port = Integer.parseInt(portStr);
-        if (port < 0 || port > 65535) {
-            throw new ParameterException("port must be in interval [0,65535], but is " + port);
+        if (port < 1 || port > 65535) {
+            throw new ParameterException("port must be in interval [1,65535], but is " + port);
         }
         return port;
     }

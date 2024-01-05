@@ -1,42 +1,23 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message;
 
-import org.junit.After;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
+import java.util.stream.Stream;
+import org.junit.jupiter.params.provider.Arguments;
 
-public class UnknownHandshakeMessageTest {
+public class UnknownHandshakeMessageTest extends AbstractMessageTest<UnknownHandshakeMessage> {
 
-    UnknownHandshakeMessage message;
-
-    @Before
-    public void setUp() {
-        message = new UnknownHandshakeMessage();
+    public UnknownHandshakeMessageTest() {
+        super(UnknownHandshakeMessage::new, "UnknownHandshakeMessage:\n" + "  Data: %s");
     }
 
-    @After
-    public void tearDown() {
+    public static Stream<Arguments> provideToStringTestVectors() {
+        return Stream.of(Arguments.of(new Object[] {null}, null));
     }
-
-    /**
-     * Test of toString method, of class UnknownHandshakeMessage.
-     */
-    @Test
-    public void testToString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("UnknownHandshakeMessage:");
-        sb.append("\n  Data: ").append("null");
-
-        assertEquals(message.toString(), sb.toString());
-    }
-
 }

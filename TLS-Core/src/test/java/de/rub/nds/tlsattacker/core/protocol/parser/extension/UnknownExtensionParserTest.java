@@ -1,87 +1,59 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.UnknownExtensionMessage;
-import java.util.Arrays;
-import java.util.Collection;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Stream;
+import org.junit.jupiter.api.Named;
+import org.junit.jupiter.params.provider.Arguments;
 
-@RunWith(Parameterized.class)
-public class UnknownExtensionParserTest {
+public class UnknownExtensionParserTest
+        extends AbstractExtensionParserTest<UnknownExtensionMessage, UnknownExtensionParser> {
 
-    private static final Logger LOGGER = LogManager.getLogger();
-
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] {
-            { ArrayConverter.hexStringToByteArray("00230000"), ArrayConverter.hexStringToByteArray("00230000"),
-                ArrayConverter.hexStringToByteArray("0023"), 0, null, },
-            { ArrayConverter.hexStringToByteArray("000f000101"), ArrayConverter.hexStringToByteArray("000f000101"),
-                ArrayConverter.hexStringToByteArray("000f"), 1, ArrayConverter.hexStringToByteArray("01"), },
-            { ArrayConverter.hexStringToByteArray("000f00010100"), ArrayConverter.hexStringToByteArray("000f000101"),
-                ArrayConverter.hexStringToByteArray("000f"), 1, ArrayConverter.hexStringToByteArray("01"), },
-            { ArrayConverter.hexStringToByteArray("00000000"), ArrayConverter.hexStringToByteArray("00000000"),
-                ArrayConverter.hexStringToByteArray("0000"), 0, null, },
-            { ArrayConverter.hexStringToByteArray("0000FFFF"), ArrayConverter.hexStringToByteArray("0000FFFF"),
-                ArrayConverter.hexStringToByteArray("0000"), 0xFFFF, null, } });
+    public UnknownExtensionParserTest() {
+        super(
+                UnknownExtensionMessage.class,
+                UnknownExtensionParser::new,
+                List.of(
+                        Named.of(
+                                "UnknownExtensionMessage::getExtensionData",
+                                UnknownExtensionMessage::getExtensionData)));
     }
 
-    private final byte[] array;
-    private final byte[] message;
-    private final byte[] type;
-    private final Integer extensionLength;
-    private final byte[] data;
-
-    public UnknownExtensionParserTest(byte[] array, byte[] message, byte[] type, Integer extensionLength, byte[] data) {
-        this.array = array;
-        this.message = message;
-        this.type = type;
-        this.extensionLength = extensionLength;
-        this.data = data;
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    /**
-     * Test of parse method, of class UnknownExtensionParser.
-     */
-    @Test
-    public void testParse() {
-        UnknownExtensionParser parser = new UnknownExtensionParser(0, array, Config.createConfig());
-        UnknownExtensionMessage unknownMessage = parser.parse();
-        assertArrayEquals(message, unknownMessage.getExtensionBytes().getValue());
-        if (type != null) {
-            assertArrayEquals(type, unknownMessage.getExtensionType().getValue());
-        } else {
-            assertNull(unknownMessage.getExtensionType());
-        }
-        if (extensionLength != null) {
-            assertTrue(extensionLength.intValue() == unknownMessage.getExtensionLength().getValue());
-        } else {
-            assertNull(unknownMessage.getExtensionLength());
-        }
-        if (data != null) {
-            assertArrayEquals(data, unknownMessage.getExtensionData().getValue());
-        } else {
-            assertNull(unknownMessage.getExtensionData());
-        }
+    public static Stream<Arguments> provideTestVectors() {
+        return Stream.of(
+                Arguments.of(
+                        ArrayConverter.hexStringToByteArray("00230000"),
+                        List.of(),
+                        ArrayConverter.hexStringToByteArray("0023"),
+                        0,
+                        Collections.singletonList(new byte[0])),
+                Arguments.of(
+                        ArrayConverter.hexStringToByteArray("000f000101"),
+                        List.of(),
+                        ArrayConverter.hexStringToByteArray("000f"),
+                        1,
+                        List.of(ArrayConverter.hexStringToByteArray("01"))),
+                Arguments.of(
+                        ArrayConverter.hexStringToByteArray("00000000"),
+                        List.of(),
+                        ArrayConverter.hexStringToByteArray("0000"),
+                        0,
+                        Collections.singletonList(new byte[0])),
+                Arguments.of(
+                        ArrayConverter.hexStringToByteArray("0000FFFF"),
+                        List.of(),
+                        ArrayConverter.hexStringToByteArray("0000"),
+                        0xFFFF,
+                        Collections.singletonList(new byte[0])));
     }
 }

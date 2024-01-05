@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.state;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -29,8 +28,7 @@ public class StatePlaintext {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByte compressionMethod;
 
-    @ModifiableVariableProperty()
-    private ModifiableByteArray masterSecret;
+    @ModifiableVariableProperty() private ModifiableByteArray masterSecret;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByte clientAuthenticationType;
@@ -38,14 +36,11 @@ public class StatePlaintext {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger clientAuthenticationDataLength;
 
-    @ModifiableVariableProperty()
-    private ModifiableByteArray clientAuthenticationData;
+    @ModifiableVariableProperty() private ModifiableByteArray clientAuthenticationData;
 
-    @ModifiableVariableProperty()
-    private ModifiableLong timestamp;
+    @ModifiableVariableProperty() private ModifiableLong timestamp;
 
-    public StatePlaintext() {
-    }
+    public StatePlaintext() {}
 
     public void generateStatePlaintext(Chooser chooser) {
         setCipherSuite(chooser.getSelectedCipherSuite().getByteValue());
@@ -63,9 +58,11 @@ public class StatePlaintext {
                 setClientAuthenticationDataLength(0);
                 break;
             case CERTIFICATE_BASED:
-                throw new UnsupportedOperationException("Certificate based ClientAuthentication is not supported");
+                throw new UnsupportedOperationException(
+                        "Certificate based ClientAuthentication is not supported");
             case PSK:
-                throw new UnsupportedOperationException("PSK ClientAuthentication is not supported");
+                throw new UnsupportedOperationException(
+                        "PSK ClientAuthentication is not supported");
             default:
                 throw new UnsupportedOperationException("Unknown ClientAuthenticationType");
         }
@@ -80,7 +77,8 @@ public class StatePlaintext {
     }
 
     public void setProtocolVersion(byte[] protocolVersion) {
-        this.protocolVersion = ModifiableVariableFactory.safelySetValue(this.protocolVersion, protocolVersion);
+        this.protocolVersion =
+                ModifiableVariableFactory.safelySetValue(this.protocolVersion, protocolVersion);
     }
 
     public ModifiableByteArray getCipherSuite() {
@@ -104,7 +102,8 @@ public class StatePlaintext {
     }
 
     public void setCompressionMethod(byte compressionMethod) {
-        this.compressionMethod = ModifiableVariableFactory.safelySetValue(this.compressionMethod, compressionMethod);
+        this.compressionMethod =
+                ModifiableVariableFactory.safelySetValue(this.compressionMethod, compressionMethod);
     }
 
     public ModifiableByteArray getMasterSecret() {
@@ -116,7 +115,8 @@ public class StatePlaintext {
     }
 
     public void setMasterSecret(byte[] masterSecret) {
-        this.masterSecret = ModifiableVariableFactory.safelySetValue(this.masterSecret, masterSecret);
+        this.masterSecret =
+                ModifiableVariableFactory.safelySetValue(this.masterSecret, masterSecret);
     }
 
     public ModifiableByte getClientAuthenticationType() {
@@ -129,20 +129,23 @@ public class StatePlaintext {
 
     public void setClientAuthenticationType(byte clientAuthenticationType) {
         this.clientAuthenticationType =
-            ModifiableVariableFactory.safelySetValue(this.clientAuthenticationType, clientAuthenticationType);
+                ModifiableVariableFactory.safelySetValue(
+                        this.clientAuthenticationType, clientAuthenticationType);
     }
 
     public ModifiableInteger getClientAuthenticationDataLength() {
         return clientAuthenticationDataLength;
     }
 
-    public void setClientAuthenticationDataLength(ModifiableInteger clientAuthenticationDataLength) {
+    public void setClientAuthenticationDataLength(
+            ModifiableInteger clientAuthenticationDataLength) {
         this.clientAuthenticationDataLength = clientAuthenticationDataLength;
     }
 
     public void setClientAuthenticationDataLength(int clientAuthenticationDataLength) {
-        this.clientAuthenticationDataLength = ModifiableVariableFactory
-            .safelySetValue(this.clientAuthenticationDataLength, clientAuthenticationDataLength);
+        this.clientAuthenticationDataLength =
+                ModifiableVariableFactory.safelySetValue(
+                        this.clientAuthenticationDataLength, clientAuthenticationDataLength);
     }
 
     public ModifiableByteArray getClientAuthenticationData() {
@@ -155,7 +158,8 @@ public class StatePlaintext {
 
     public void setClientAuthenticationData(byte[] clientAuthenticationData) {
         this.clientAuthenticationData =
-            ModifiableVariableFactory.safelySetValue(this.clientAuthenticationData, clientAuthenticationData);
+                ModifiableVariableFactory.safelySetValue(
+                        this.clientAuthenticationData, clientAuthenticationData);
     }
 
     public ModifiableLong getTimestamp() {

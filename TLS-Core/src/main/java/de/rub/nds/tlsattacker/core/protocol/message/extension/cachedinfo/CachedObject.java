@@ -1,45 +1,45 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
-import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 
 public class CachedObject extends ModifiableVariableHolder {
 
-    @ModifiableVariableProperty
-    private ModifiableByte cachedInformationType;
+    @ModifiableVariableProperty private ModifiableByte cachedInformationType;
+
     @ModifiableVariableProperty
     // Hash Value Length 1 Byte
     private ModifiableInteger hashValueLength;
-    @ModifiableVariableProperty
-    private ModifiableByteArray hashValue;
+
+    @ModifiableVariableProperty private ModifiableByteArray hashValue;
 
     // Preparator values
     byte cachedInformationTypeConfig;
     Integer hashValueLengthConfig;
     byte[] hashValueConfig;
 
-    public CachedObject(byte preparatorCachedInformationType, Integer preparatorHashValueLength,
-        byte[] preparatorHashValue) {
+    public CachedObject(
+            byte preparatorCachedInformationType,
+            Integer preparatorHashValueLength,
+            byte[] preparatorHashValue) {
         this.cachedInformationTypeConfig = preparatorCachedInformationType;
         this.hashValueLengthConfig = preparatorHashValueLength;
         this.hashValueConfig = preparatorHashValue;
     }
 
-    public CachedObject() {
-    }
+    public CachedObject() {}
 
     public ModifiableByte getCachedInformationType() {
         return cachedInformationType;
@@ -51,7 +51,8 @@ public class CachedObject extends ModifiableVariableHolder {
 
     public void setCachedInformationType(byte cachedInformationType) {
         this.cachedInformationType =
-            ModifiableVariableFactory.safelySetValue(this.cachedInformationType, cachedInformationType);
+                ModifiableVariableFactory.safelySetValue(
+                        this.cachedInformationType, cachedInformationType);
     }
 
     public ModifiableInteger getHashValueLength() {
@@ -63,7 +64,8 @@ public class CachedObject extends ModifiableVariableHolder {
     }
 
     public void setHashValueLength(Integer hashValueLength) {
-        this.hashValueLength = ModifiableVariableFactory.safelySetValue(this.hashValueLength, hashValueLength);
+        this.hashValueLength =
+                ModifiableVariableFactory.safelySetValue(this.hashValueLength, hashValueLength);
     }
 
     public ModifiableByteArray getHashValue() {
@@ -101,5 +103,4 @@ public class CachedObject extends ModifiableVariableHolder {
     public void setHashValueConfig(byte[] hashValueConfig) {
         this.hashValueConfig = hashValueConfig;
     }
-
 }

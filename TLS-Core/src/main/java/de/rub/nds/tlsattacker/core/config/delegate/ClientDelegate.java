@@ -1,13 +1,14 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.config.delegate;
+
+import static java.nio.charset.StandardCharsets.US_ASCII;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
@@ -15,20 +16,20 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
-import java.net.IDN;
-import java.net.InetAddress;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.UnknownHostException;
-import java.nio.charset.Charset;
-import java.util.Arrays;
+import java.net.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
 import org.bouncycastle.util.IPAddress;
 
 public class ClientDelegate extends Delegate {
 
     private static final int DEFAULT_HTTPS_PORT = 443;
 
-    @Parameter(names = "-connect", required = true, description = "Who to connect to. Syntax: localhost:4433")
+    @Parameter(
+            names = "-connect",
+            required = true,
+            description = "Who to connect to. Syntax: localhost:4433")
     private String host = null;
 
     @Parameter(names = "-server_name", description = "Server name for the SNI extension.")
@@ -38,8 +39,7 @@ public class ClientDelegate extends Delegate {
 
     private int extractedPort = -1;
 
-    public ClientDelegate() {
-    }
+    public ClientDelegate() {}
 
     public String getHost() {
         return host;
@@ -60,9 +60,20 @@ public class ClientDelegate extends Delegate {
             con = new OutboundConnection();
             config.setDefaultClientConnection(con);
         }
+        LOGGER.info("Processing client delegate host={} sniHostname={}", host, sniHostname);
         con.setPort(extractedPort);
         if (IPAddress.isValid(extractedHost)) {
             con.setIp(extractedHost);
+            if (IPAddress.isValidIPv6(extractedHost)) {
+                con.setIpv6(extractedHost);
+            } else if (sniHostname != null) {
+                try {
+                    con.setIpv6(getIpv6ForHost(sniHostname));
+                } catch (UnknownHostException ex) {
+                    LOGGER.warn("Could not resolve IPv6 address for host {}", sniHostname);
+                    LOGGER.debug(ex); // Expected exception
+                }
+            }
             setHostname(config, extractedHost, con);
             if (sniHostname != null) {
                 setHostname(config, sniHostname, con);
@@ -74,13 +85,22 @@ public class ClientDelegate extends Delegate {
                 setHostname(config, extractedHost, con);
             }
             con.setIp(getIpForHost(extractedHost));
+            try {
+                con.setIpv6(getIpv6ForHost(extractedHost));
+            } catch (UnknownHostException ex) {
+                LOGGER.warn("Could not resolve IPv6 address for host " + extractedHost, ex);
+            }
         }
     }
 
     public void setHostname(Config config, String hostname, OutboundConnection connection) {
         connection.setHostname(hostname);
-        config.setDefaultSniHostnames(Arrays
-            .asList(new ServerNamePair(config.getSniType().getValue(), hostname.getBytes(Charset.forName("ASCII")))));
+        config.setDefaultSniHostnames(
+                new LinkedList<>(
+                        List.of(
+                                new ServerNamePair(
+                                        config.getSniType().getValue(),
+                                        hostname.getBytes(US_ASCII)))));
     }
 
     private void extractParameters() {
@@ -119,16 +139,30 @@ public class ClientDelegate extends Delegate {
             InetAddress inetAddress = InetAddress.getByName(host);
             return inetAddress.getHostAddress();
         } catch (UnknownHostException ex) {
-            LOGGER.warn("Could not resolve host \"" + host + "\" returning anyways", ex);
+            LOGGER.warn("Could not resolve host \"{}\" returning anyways", host, ex);
             return host;
         }
+    }
+
+    public String getIpv6ForHost(String host) throws UnknownHostException {
+        // workaround for windows where java does not resolve any domain to ipv6, this allows
+        // testing on windows with local servers
+        if (Objects.equals(host, "localhost")) {
+            return InetAddress.getByName("::1").getHostAddress();
+        }
+        for (InetAddress addr : InetAddress.getAllByName(host)) {
+            if (addr instanceof Inet6Address) {
+                return addr.getHostAddress();
+            }
+        }
+        throw new UnknownHostException();
     }
 
     private String getHostForIp(String ip) {
         try {
             return InetAddress.getByName(ip).getCanonicalHostName();
         } catch (UnknownHostException ex) {
-            LOGGER.warn("Could not perform reverse DNS for \"" + ip + "\"", ex);
+            LOGGER.warn("Could not perform reverse DNS for \"{}\"", ip, ex);
             return ip;
         }
     }

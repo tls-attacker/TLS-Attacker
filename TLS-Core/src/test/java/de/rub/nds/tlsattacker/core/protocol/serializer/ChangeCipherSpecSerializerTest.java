@@ -1,52 +1,31 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.ChangeCipherSpecParserTest;
-import java.util.Collection;
-import static org.junit.Assert.*;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import java.util.List;
+import java.util.stream.Stream;
+import org.junit.jupiter.params.provider.Arguments;
 
-@RunWith(Parameterized.class)
-public class ChangeCipherSpecSerializerTest {
+public class ChangeCipherSpecSerializerTest
+        extends AbstractProtocolMessageSerializerTest<
+                ChangeCipherSpecMessage, ChangeCipherSpecSerializer> {
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return ChangeCipherSpecParserTest.generateData();
+    public ChangeCipherSpecSerializerTest() {
+        super(
+                ChangeCipherSpecMessage::new,
+                ChangeCipherSpecSerializer::new,
+                List.of((msg, obj) -> msg.setCcsProtocolType((byte[]) obj)));
     }
 
-    private final byte[] expectedPart;
-    private final ProtocolVersion version;
-
-    private final byte ccsType;
-
-    public ChangeCipherSpecSerializerTest(byte[] message, byte ccsType, ProtocolVersion version) {
-        this.expectedPart = message;
-        this.ccsType = ccsType;
-        this.version = version;
+    public static Stream<Arguments> provideTestVectors() {
+        return ChangeCipherSpecParserTest.provideTestVectors();
     }
-
-    /**
-     * Test of serializeProtocolMessageContent method, of class ChangeCipherSpecSerializer.
-     */
-    @Test
-    public void testSerializeProtocolMessageContent() {
-        ChangeCipherSpecMessage msg = new ChangeCipherSpecMessage();
-        msg.setCcsProtocolType(new byte[] { ccsType });
-        msg.setCompleteResultingMessage(expectedPart);
-        ChangeCipherSpecSerializer serializer = new ChangeCipherSpecSerializer(msg, version);
-        assertArrayEquals(expectedPart, serializer.serialize());
-    }
-
 }

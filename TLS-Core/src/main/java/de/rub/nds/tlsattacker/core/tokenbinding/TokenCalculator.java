@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.tokenbinding;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -21,13 +20,14 @@ public class TokenCalculator {
     public static byte[] calculateEKM(Chooser chooser, int length) throws CryptoException {
         byte[] masterSecret = chooser.getMasterSecret();
         String label = TokenBindingLabel.TOKEN_LABEL;
-        byte[] clientServerRandom = ArrayConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom());
+        byte[] clientServerRandom =
+                ArrayConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom());
         PRFAlgorithm algorithm =
-            AlgorithmResolver.getPRFAlgorithm(chooser.getSelectedProtocolVersion(), chooser.getSelectedCipherSuite());
-        return PseudoRandomFunction.compute(algorithm, masterSecret, label, clientServerRandom, length);
+                AlgorithmResolver.getPRFAlgorithm(
+                        chooser.getSelectedProtocolVersion(), chooser.getSelectedCipherSuite());
+        return PseudoRandomFunction.compute(
+                algorithm, masterSecret, label, clientServerRandom, length);
     }
 
-    private TokenCalculator() {
-    }
-
+    private TokenCalculator() {}
 }

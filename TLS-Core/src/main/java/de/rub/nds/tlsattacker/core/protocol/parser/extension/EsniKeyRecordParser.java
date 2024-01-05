@@ -1,27 +1,24 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.CipherSuite;
-import de.rub.nds.tlsattacker.core.constants.EsniDnsKeyRecordVersion;
-import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
-import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.core.constants.NamedGroup;
+import de.rub.nds.tlsattacker.core.constants.*;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EsniKeyRecord;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
-import de.rub.nds.tlsattacker.core.protocol.Parser;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,26 +26,45 @@ import org.apache.logging.log4j.Logger;
 public class EsniKeyRecordParser extends Parser<EsniKeyRecord> {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    private EsniKeyRecord record;
-    private Config config;
 
-    public EsniKeyRecordParser(int startposition, byte[] array, Config config) {
-        super(startposition, array);
-        this.config = config;
+    private final TlsContext tlsContext;
+
+    public EsniKeyRecordParser(InputStream stream, TlsContext tlsContext) {
+        super(stream);
+        this.tlsContext = tlsContext;
     }
 
     @Override
-    public EsniKeyRecord parse() {
-        record = new EsniKeyRecord();
+    public void parse(EsniKeyRecord record) {
         parseVersion(record);
-        parseChecksum(record);
-        parseKeys(record);
-        parseCipherSuites(record);
-        parsePaddedLength(record);
-        parseNotBefore(record);
-        parseNotAfter(record);
-        parseExtensions(record);
-        return record;
+        switch (record.getVersion()) {
+            case FF01:
+                parseChecksum(record);
+                parseKeys(record);
+                parseCipherSuites(record);
+                parsePaddedLength(record);
+                parseNotBefore(record);
+                parseNotAfter(record);
+                parseExtensions(record);
+                break;
+            case FF02:
+                parseChecksum(record);
+                parsePublicName(record);
+                parseKeys(record);
+                parseCipherSuites(record);
+                parsePaddedLength(record);
+                parseNotBefore(record);
+                parseNotAfter(record);
+                parseExtensions(record);
+                break;
+            case FF03:
+                parsePublicName(record);
+                parseKeys(record);
+                parseCipherSuites(record);
+                parsePaddedLength(record);
+                parseExtensions(record);
+                break;
+        }
     }
 
     private void parseVersion(EsniKeyRecord record) {
@@ -60,15 +76,27 @@ public class EsniKeyRecordParser extends Parser<EsniKeyRecord> {
     private void parseChecksum(EsniKeyRecord record) {
         byte[] checksum = this.parseByteArrayField(ExtensionByteLength.ESNI_RECORD_CHECKSUM);
         record.setChecksum(checksum);
-        LOGGER.debug("Checksum: " + ArrayConverter.bytesToHexString(record.getChecksum()));
+        LOGGER.debug("Checksum: {}", record.getChecksum());
+    }
+
+    private void parsePublicName(EsniKeyRecord record) {
+        byte[] publicNameLen =
+                this.parseByteArrayField(ExtensionByteLength.ESNI_RECORD_PUBLIC_NAME);
+        record.setPublicNameLength(publicNameLen);
+        byte[] publicName = this.parseByteArrayField(ArrayConverter.bytesToInt(publicNameLen));
+        record.setPublicName(publicName);
+        LOGGER.debug("Public Name Length: " + ArrayConverter.bytesToInt(publicNameLen));
+        LOGGER.debug("Public Name: " + Arrays.toString(record.getPublicName()));
     }
 
     private void parseKeys(EsniKeyRecord record) {
-        int keysLen = this.parseIntField(ExtensionByteLength.KEY_SHARE_LIST_LENGTH);
-        LOGGER.debug("KeysLength: " + keysLen);
+        byte[] keysLen = this.parseByteArrayField(ExtensionByteLength.KEY_SHARE_LIST_LENGTH);
+        record.setKeysLength(keysLen);
+        LOGGER.debug("KeysLength: " + ArrayConverter.bytesToInt(keysLen));
         KeyShareStoreEntry entry;
+        // TODO this should use streams
         int i = 0;
-        while (i < keysLen) {
+        while (i < ArrayConverter.bytesToInt(keysLen)) {
             byte[] namedGroup = this.parseByteArrayField(ExtensionByteLength.KEY_SHARE_GROUP);
             int keyExchangeLen = this.parseIntField(ExtensionByteLength.KEY_SHARE_LENGTH);
             byte[] keyExchange = this.parseByteArrayField(keyExchangeLen);
@@ -76,17 +104,21 @@ public class EsniKeyRecordParser extends Parser<EsniKeyRecord> {
             entry.setGroup(NamedGroup.getNamedGroup(namedGroup));
             entry.setPublicKey(keyExchange);
             record.getKeys().add(entry);
-            i += ExtensionByteLength.KEY_SHARE_GROUP + ExtensionByteLength.KEY_SHARE_LENGTH + keyExchangeLen;
-            LOGGER.debug("namedGroup: " + ArrayConverter.bytesToHexString(namedGroup));
-            LOGGER.debug("keyExchange: " + ArrayConverter.bytesToHexString(keyExchange));
-
+            i +=
+                    ExtensionByteLength.KEY_SHARE_GROUP
+                            + ExtensionByteLength.KEY_SHARE_LENGTH
+                            + keyExchangeLen;
+            LOGGER.debug("namedGroup: {}", namedGroup);
+            LOGGER.debug("keyExchange: {}", keyExchange);
         }
     }
 
     private void parseCipherSuites(EsniKeyRecord record) {
-
-        int cipherSuitesLen = this.parseIntField(HandshakeByteLength.CIPHER_SUITES_LENGTH);
-        byte[] cipherSuitesBytes = this.parseByteArrayField(cipherSuitesLen);
+        byte[] cipherSuitesLen = this.parseByteArrayField(HandshakeByteLength.CIPHER_SUITES_LENGTH);
+        record.setCipherSuitesLength(cipherSuitesLen);
+        LOGGER.debug("CipherSuitesLength: " + ArrayConverter.bytesToInt(cipherSuitesLen));
+        byte[] cipherSuitesBytes =
+                this.parseByteArrayField(ArrayConverter.bytesToInt(cipherSuitesLen));
         List<CipherSuite> cipherSuites = CipherSuite.getCipherSuites(cipherSuitesBytes);
         record.setCipherSuiteList(cipherSuites);
     }
@@ -110,28 +142,18 @@ public class EsniKeyRecordParser extends Parser<EsniKeyRecord> {
     }
 
     private void parseExtensions(EsniKeyRecord record) {
-        int extensionsLength = this.parseIntField(HandshakeByteLength.EXTENSION_LENGTH);
-        int i = 0;
-        while (i < extensionsLength) {
-            byte[] extensionType = this.parseByteArrayField(ExtensionByteLength.TYPE);
-            int contentLength = this.parseIntField(ExtensionByteLength.EXTENSIONS_LENGTH);
-            byte[] extensionContentBytes = this.parseByteArrayField(contentLength);
+        byte[] extensionsLengthBytes =
+                this.parseByteArrayField(HandshakeByteLength.EXTENSION_LENGTH);
+        record.setExtensionsLength(extensionsLengthBytes);
+        LOGGER.debug("ExtensionsLength: " + ArrayConverter.bytesToInt(extensionsLengthBytes));
+        int extensionsLength = ArrayConverter.bytesToInt(extensionsLengthBytes);
 
-            ByteArrayOutputStream extensionStream = new ByteArrayOutputStream();
-            try {
-                extensionStream.write(extensionType);
-                extensionStream.write(ArrayConverter.intToBytes(contentLength, ExtensionByteLength.EXTENSIONS_LENGTH));
-                extensionStream.write(extensionContentBytes);
-            } catch (IOException e) {
-                LOGGER.warn("Failed to parse extensions.");
-            }
-
-            byte[] extensionBytes = extensionStream.toByteArray();
-            ExtensionParser parser = ExtensionParserFactory.getExtensionParser(extensionBytes, 0, config);
-            ExtensionMessage extensionMessage = parser.parse();
-            record.getExtensions().add(extensionMessage);
-            i = i + ExtensionByteLength.TYPE + ExtensionByteLength.EXTENSIONS_LENGTH + contentLength;
-        }
+        byte[] extensionListBytes = parseByteArrayField(extensionsLength);
+        ExtensionListParser extensionListParser =
+                new ExtensionListParser(
+                        new ByteArrayInputStream(extensionListBytes), tlsContext, false);
+        List<ExtensionMessage> extensionList = new LinkedList<>();
+        extensionListParser.parse(extensionList);
+        record.setExtensions(extensionList);
     }
-
 }

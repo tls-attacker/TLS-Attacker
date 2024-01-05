@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.record.crypto;
 
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
@@ -33,7 +32,7 @@ public abstract class RecordCryptoUnit {
         if (recordCipherList.size() > epoch) {
             return recordCipherList.get(epoch);
         } else {
-            LOGGER.warn("Got no RecordCipher for epoch: " + epoch + " using epoch 0 cipher");
+            LOGGER.warn("Got no RecordCipher for epoch: {} using epoch 0 cipher", epoch);
             return recordCipherList.get(0);
         }
     }
@@ -55,5 +54,4 @@ public abstract class RecordCryptoUnit {
             LOGGER.warn("Could not remove as many ciphers as specified");
         }
     }
-
 }

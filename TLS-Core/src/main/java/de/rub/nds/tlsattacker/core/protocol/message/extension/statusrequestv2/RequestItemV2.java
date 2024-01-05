@@ -1,40 +1,30 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2;
-
-import static de.rub.nds.modifiablevariable.ModifiableVariableFactory.safelySetValue;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import java.io.Serializable;
 import java.util.List;
 
-public class RequestItemV2 implements Serializable {
+public class RequestItemV2 extends ModifiableVariableHolder {
 
-    @ModifiableVariableProperty
-    ModifiableInteger requestType;
-    @ModifiableVariableProperty
-    ModifiableInteger requestLength;
-    @ModifiableVariableProperty
-    ModifiableInteger responderIdListLength;
-    @HoldsModifiableVariable
-    List<ResponderId> responderIdList;
-    @ModifiableVariableProperty
-    ModifiableInteger requestExtensionsLength;
-    @ModifiableVariableProperty
-    ModifiableByteArray requestExtensions;
-    @ModifiableVariableProperty
-    ModifiableByteArray responderIdListBytes;
+    @ModifiableVariableProperty ModifiableInteger requestType;
+    @ModifiableVariableProperty ModifiableInteger requestLength;
+    @ModifiableVariableProperty ModifiableInteger responderIdListLength;
+    @HoldsModifiableVariable List<ResponderId> responderIdList;
+    @ModifiableVariableProperty ModifiableInteger requestExtensionsLength;
+    @ModifiableVariableProperty ModifiableByteArray requestExtensions;
+    @ModifiableVariableProperty ModifiableByteArray responderIdListBytes;
 
     Integer requestTypeConfig;
     Integer requestLengthConfig;
@@ -42,12 +32,14 @@ public class RequestItemV2 implements Serializable {
     Integer requestExtensionLengthConfig;
     byte[] requestExtensionsConfig;
 
-    public RequestItemV2() {
-    }
+    public RequestItemV2() {}
 
-    public RequestItemV2(Integer preparatorRequestType, Integer preparatorRequestLength,
-        Integer preparatorResponderIdListLength, Integer preparatorRequestExtensionLength,
-        byte[] preparatorRequestExtensions) {
+    public RequestItemV2(
+            Integer preparatorRequestType,
+            Integer preparatorRequestLength,
+            Integer preparatorResponderIdListLength,
+            Integer preparatorRequestExtensionLength,
+            byte[] preparatorRequestExtensions) {
         this.requestTypeConfig = preparatorRequestType;
         this.requestLengthConfig = preparatorRequestLength;
         this.responderIdListLengthConfig = preparatorResponderIdListLength;
@@ -77,7 +69,8 @@ public class RequestItemV2 implements Serializable {
 
     public void setResponderIdListLength(int responderIdListLength) {
         this.responderIdListLength =
-            ModifiableVariableFactory.safelySetValue(this.responderIdListLength, responderIdListLength);
+                ModifiableVariableFactory.safelySetValue(
+                        this.responderIdListLength, responderIdListLength);
     }
 
     public List<ResponderId> getResponderIdList() {
@@ -98,7 +91,8 @@ public class RequestItemV2 implements Serializable {
 
     public void setRequestExtensionsLength(int requestExtensionsLength) {
         this.requestExtensionsLength =
-            ModifiableVariableFactory.safelySetValue(this.requestExtensionsLength, requestExtensionsLength);
+                ModifiableVariableFactory.safelySetValue(
+                        this.requestExtensionsLength, requestExtensionsLength);
     }
 
     public ModifiableByteArray getRequestExtensions() {
@@ -110,7 +104,8 @@ public class RequestItemV2 implements Serializable {
     }
 
     public void setRequestExtensions(byte[] requestExtensions) {
-        this.requestExtensions = ModifiableVariableFactory.safelySetValue(this.requestExtensions, requestExtensions);
+        this.requestExtensions =
+                ModifiableVariableFactory.safelySetValue(this.requestExtensions, requestExtensions);
     }
 
     public ModifiableByteArray getResponderIdListBytes() {
@@ -123,7 +118,8 @@ public class RequestItemV2 implements Serializable {
 
     public void setResponderIdListBytes(byte[] responderIdListBytes) {
         this.responderIdListBytes =
-            ModifiableVariableFactory.safelySetValue(this.responderIdListBytes, responderIdListBytes);
+                ModifiableVariableFactory.safelySetValue(
+                        this.responderIdListBytes, responderIdListBytes);
     }
 
     public ModifiableInteger getRequestLength() {
@@ -135,7 +131,8 @@ public class RequestItemV2 implements Serializable {
     }
 
     public void setRequestLength(int requestLength) {
-        this.requestLength = safelySetValue(this.requestLength, requestLength);
+        this.requestLength =
+                ModifiableVariableFactory.safelySetValue(this.requestLength, requestLength);
     }
 
     public Integer getRequestTypeConfig() {
@@ -177,5 +174,4 @@ public class RequestItemV2 implements Serializable {
     public void setRequestExtensionsConfig(byte[] requestExtensionsConfig) {
         this.requestExtensionsConfig = requestExtensionsConfig;
     }
-
 }

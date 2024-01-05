@@ -1,25 +1,21 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.SrpServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.SrpServerKeyExchangeParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.SrpServerKeyExchangePreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.SrpServerKeyExchangeSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class SrpServerKeyExchangeHandler extends ServerKeyExchangeHandler<SrpServerKeyExchangeMessage> {
+public class SrpServerKeyExchangeHandler
+        extends ServerKeyExchangeHandler<SrpServerKeyExchangeMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -28,28 +24,14 @@ public class SrpServerKeyExchangeHandler extends ServerKeyExchangeHandler<SrpSer
     }
 
     @Override
-    public SrpServerKeyExchangeParser getParser(byte[] message, int pointer) {
-        return new SrpServerKeyExchangeParser(pointer, message, tlsContext.getChooser().getSelectedProtocolVersion(),
-            tlsContext.getConfig());
-    }
-
-    @Override
-    public SrpServerKeyExchangePreparator getPreparator(SrpServerKeyExchangeMessage message) {
-        return new SrpServerKeyExchangePreparator(tlsContext.getChooser(), message);
-    }
-
-    @Override
-    public SrpServerKeyExchangeSerializer getSerializer(SrpServerKeyExchangeMessage message) {
-        return new SrpServerKeyExchangeSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
-    }
-
-    @Override
-    public void adjustTLSContext(SrpServerKeyExchangeMessage message) {
+    public void adjustContext(SrpServerKeyExchangeMessage message) {
         adjustSRPGenerator(message);
         adjustSRPModulus(message);
         adjustSalt(message);
         adjustServerPublicKey(message);
-        if (message.getComputations() != null && message.getComputations().getPrivateKey() != null) {
+        adjustSelectedSignatureAndHashAlgorithm(message);
+        if (message.getKeyExchangeComputations() != null
+                && message.getKeyExchangeComputations().getPrivateKey() != null) {
             adjustServerPrivateKey(message);
         }
     }
@@ -70,12 +52,13 @@ public class SrpServerKeyExchangeHandler extends ServerKeyExchangeHandler<SrpSer
     }
 
     private void adjustServerPrivateKey(SrpServerKeyExchangeMessage message) {
-        tlsContext.setServerSRPPrivateKey(message.getComputations().getPrivateKey().getValue());
+        tlsContext.setServerSRPPrivateKey(
+                message.getKeyExchangeComputations().getPrivateKey().getValue());
         LOGGER.debug("Server PrivateKey: " + tlsContext.getServerSRPPrivateKey());
     }
 
     private void adjustSalt(SrpServerKeyExchangeMessage message) {
         tlsContext.setSRPServerSalt(message.getSalt().getValue());
-        LOGGER.debug("SRP Salt: " + ArrayConverter.bytesToHexString(tlsContext.getSRPServerSalt()));
+        LOGGER.debug("SRP Salt: {}", tlsContext.getSRPServerSalt());
     }
 }

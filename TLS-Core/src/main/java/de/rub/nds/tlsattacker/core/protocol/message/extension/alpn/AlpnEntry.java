@@ -1,26 +1,24 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message.extension.alpn;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.modifiablevariable.util.IllegalStringAdapter;
-import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
-import java.io.Serializable;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-public class AlpnEntry extends ModifiableVariableHolder implements Serializable {
+public class AlpnEntry extends ModifiableVariableHolder {
 
     private ModifiableInteger alpnEntryLength;
 
@@ -29,8 +27,7 @@ public class AlpnEntry extends ModifiableVariableHolder implements Serializable 
     @XmlJavaTypeAdapter(IllegalStringAdapter.class)
     private String alpnEntryConfig;
 
-    public AlpnEntry() {
-    }
+    public AlpnEntry() {}
 
     public AlpnEntry(String alpnEntryConfig) {
         this.alpnEntryConfig = alpnEntryConfig;
@@ -45,7 +42,8 @@ public class AlpnEntry extends ModifiableVariableHolder implements Serializable 
     }
 
     public void setAlpnEntryLength(int alpnEntryLength) {
-        this.alpnEntryLength = ModifiableVariableFactory.safelySetValue(this.alpnEntryLength, alpnEntryLength);
+        this.alpnEntryLength =
+                ModifiableVariableFactory.safelySetValue(this.alpnEntryLength, alpnEntryLength);
     }
 
     public ModifiableString getAlpnEntry() {

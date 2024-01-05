@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.crypto.gost;
 
 import org.apache.logging.log4j.LogManager;
@@ -15,11 +14,7 @@ import org.bouncycastle.crypto.CipherParameters;
 import org.bouncycastle.crypto.Wrapper;
 import org.bouncycastle.crypto.engines.GOST28147Engine;
 import org.bouncycastle.crypto.modes.GCFBBlockCipher;
-import org.bouncycastle.crypto.params.KeyParameter;
-import org.bouncycastle.crypto.params.ParametersWithIV;
-import org.bouncycastle.crypto.params.ParametersWithRandom;
-import org.bouncycastle.crypto.params.ParametersWithSBox;
-import org.bouncycastle.crypto.params.ParametersWithUKM;
+import org.bouncycastle.crypto.params.*;
 import org.bouncycastle.util.Arrays;
 import org.bouncycastle.util.Pack;
 
@@ -74,7 +69,9 @@ public class GOST28147WrapEngine implements Wrapper {
 
             GCFBBlockCipher c = new GCFBBlockCipher(new GOST28147Engine());
 
-            c.init(true, new ParametersWithIV(new ParametersWithSBox(new KeyParameter(key), sbox), s));
+            c.init(
+                    true,
+                    new ParametersWithIV(new ParametersWithSBox(new KeyParameter(key), sbox), s));
 
             c.processBlock(key, 0, key, 0);
             c.processBlock(key, 8, key, 8);
@@ -104,13 +101,19 @@ public class GOST28147WrapEngine implements Wrapper {
         KeyParameter keyParameter;
 
         if (parametersWithUKM.getParameters() instanceof ParametersWithSBox) {
-            keyParameter = (KeyParameter) ((ParametersWithSBox) parametersWithUKM.getParameters()).getParameters();
+            keyParameter =
+                    (KeyParameter)
+                            ((ParametersWithSBox) parametersWithUKM.getParameters())
+                                    .getParameters();
             sbox = ((ParametersWithSBox) parametersWithUKM.getParameters()).getSBox();
         } else {
             keyParameter = (KeyParameter) parametersWithUKM.getParameters();
         }
 
-        keyParameter = new KeyParameter(cryptoProDiversify(keyParameter.getKey(), parametersWithUKM.getUKM(), sbox));
+        keyParameter =
+                new KeyParameter(
+                        cryptoProDiversify(
+                                keyParameter.getKey(), parametersWithUKM.getUKM(), sbox));
         CipherParameters cipherParameters;
 
         if (sbox != null) {
@@ -168,5 +171,4 @@ public class GOST28147WrapEngine implements Wrapper {
 
         return decKey;
     }
-
 }

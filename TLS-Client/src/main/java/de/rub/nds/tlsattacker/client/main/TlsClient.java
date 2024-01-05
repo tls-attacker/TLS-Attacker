@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.client.main;
 
 import com.beust.jcommander.JCommander;
@@ -26,9 +25,7 @@ import java.io.FileInputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- * A TLS-Client implementation that supports custom Workflows
- */
+/** A TLS-Client implementation that supports custom Workflows */
 public class TlsClient {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -42,7 +39,7 @@ public class TlsClient {
                 commander.usage();
                 return;
             }
-            ListDelegate list = (ListDelegate) config.getDelegate(ListDelegate.class);
+            ListDelegate list = config.getDelegate(ListDelegate.class);
             if (list.isSet()) {
                 list.plotListing();
                 return;
@@ -52,22 +49,24 @@ public class TlsClient {
                 Config tlsConfig = config.createConfig();
                 WorkflowTrace trace = null;
                 if (config.getWorkflowInput() != null) {
-                    LOGGER.debug("Reading workflow trace from " + config.getWorkflowInput());
-                    trace =
-                        WorkflowTraceSerializer.secureRead(new FileInputStream(new File(config.getWorkflowInput())));
+                    LOGGER.debug("Reading workflow trace from {}", config.getWorkflowInput());
+                    try (FileInputStream fis = new FileInputStream(config.getWorkflowInput())) {
+                        trace = WorkflowTraceSerializer.secureRead(fis);
+                    }
                 }
                 TlsClient client = new TlsClient();
                 State state = client.startTlsClient(tlsConfig, trace);
                 if (config.getWorkflowOutput() != null) {
                     trace = state.getWorkflowTrace();
-                    LOGGER.debug("Writing workflow trace to " + config.getWorkflowOutput());
+                    LOGGER.debug("Writing workflow trace to {}", config.getWorkflowOutput());
                     WorkflowTraceSerializer.write(new File(config.getWorkflowOutput()), trace);
                 }
             } catch (Exception e) {
-                LOGGER.error("Encountered an uncaught Exception aborting. See debug for more info.", e);
+                LOGGER.error(
+                        "Encountered an uncaught Exception aborting. See debug for more info.", e);
             }
         } catch (ParameterException e) {
-            LOGGER.error("Could not parse provided parameters. " + e.getLocalizedMessage(), e);
+            LOGGER.error("Could not parse provided parameters", e);
             commander.usage();
         }
     }
@@ -80,14 +79,15 @@ public class TlsClient {
             state = new State(config, trace);
         }
         WorkflowExecutor workflowExecutor =
-            WorkflowExecutorFactory.createWorkflowExecutor(config.getWorkflowExecutorType(), state);
+                WorkflowExecutorFactory.createWorkflowExecutor(
+                        config.getWorkflowExecutorType(), state);
 
         try {
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException ex) {
             LOGGER.warn(
-                "The TLS protocol flow was not executed completely, follow the debug messages for more information.");
-            LOGGER.debug(ex.getLocalizedMessage(), ex);
+                    "The TLS protocol flow was not executed completely, follow the debug messages for more information.");
+            LOGGER.debug(ex);
         }
         return state;
     }

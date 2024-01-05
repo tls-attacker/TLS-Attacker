@@ -1,32 +1,32 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.ECDHEServerKeyExchangeHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.TlsMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.ECDHEServerComputations;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.protocol.parser.ECDHEServerKeyExchangeParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.ECDHEServerKeyExchangePreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.ECDHEServerKeyExchangeSerializer;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import java.io.InputStream;
 import java.util.List;
-import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement(name = "ECDHEClientKeyExchange")
+@XmlRootElement(name = "ECDHEServerKeyExchange")
 public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
@@ -39,10 +39,6 @@ public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
     public ECDHEServerKeyExchangeMessage() {
         super();
-    }
-
-    public ECDHEServerKeyExchangeMessage(Config tlsConfig) {
-        super(tlsConfig, HandshakeMessageType.SERVER_KEY_EXCHANGE);
     }
 
     public ModifiableByte getGroupType() {
@@ -94,7 +90,8 @@ public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
         sb.append("\n  Signature and Hash Algorithm: ");
         // signature and hash algorithms are provided only while working with
         // (D)TLS 1.2
-        if (this.getSignatureAndHashAlgorithm() != null && getSignatureAndHashAlgorithm().getValue() != null) {
+        if (this.getSignatureAndHashAlgorithm() != null
+                && getSignatureAndHashAlgorithm().getValue() != null) {
             sb.append(ArrayConverter.bytesToHexString(getSignatureAndHashAlgorithm().getValue()));
         } else {
             sb.append("null");
@@ -110,18 +107,39 @@ public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     }
 
     @Override
-    public ECDHEServerComputations getComputations() {
+    public ECDHEServerComputations getKeyExchangeComputations() {
         return computations;
     }
 
     @Override
-    public ECDHEServerKeyExchangeHandler<? extends ECDHEServerKeyExchangeMessage> getHandler(TlsContext context) {
-        return new ECDHEServerKeyExchangeHandler<>(context);
+    public ECDHEServerKeyExchangeHandler getHandler(TlsContext tlsContext) {
+        return new ECDHEServerKeyExchangeHandler(tlsContext);
+    }
+
+    @Override
+    public ECDHEServerKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new ECDHEServerKeyExchangeParser(stream, tlsContext);
+    }
+
+    @Override
+    public ECDHEServerKeyExchangePreparator getPreparator(TlsContext tlsContext) {
+        return new ECDHEServerKeyExchangePreparator(tlsContext.getChooser(), this);
+    }
+
+    @Override
+    public ECDHEServerKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
+        return new ECDHEServerKeyExchangeSerializer(
+                this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override
     public String toCompactString() {
-        return "ECDHE_SERVER_KEY_EXCHANGE";
+        StringBuilder sb = new StringBuilder();
+        sb.append("ECDHE_SERVER_KEY_EXCHANGE");
+        if (isRetransmission()) {
+            sb.append(" (ret.)");
+        }
+        return sb.toString();
     }
 
     @Override
@@ -130,7 +148,7 @@ public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     }
 
     @Override
-    public void prepareComputations() {
+    public void prepareKeyExchangeComputations() {
         if (computations == null) {
             computations = new ECDHEServerComputations();
         }

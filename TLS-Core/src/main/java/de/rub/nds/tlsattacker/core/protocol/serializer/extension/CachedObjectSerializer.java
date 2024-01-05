@@ -1,17 +1,16 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
+import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
-import de.rub.nds.tlsattacker.core.protocol.Serializer;
 
 public class CachedObjectSerializer extends Serializer<CachedObject> {
 
@@ -25,14 +24,14 @@ public class CachedObjectSerializer extends Serializer<CachedObject> {
     protected byte[] serializeBytes() {
         appendByte(object.getCachedInformationType().getValue());
         if (object.getHashValueLength() != null && object.getHashValueLength().getValue() != null) {
-            appendInt(object.getHashValueLength().getValue(), ExtensionByteLength.CACHED_INFO_HASH_LENGTH);
+            appendInt(
+                    object.getHashValueLength().getValue(),
+                    ExtensionByteLength.CACHED_INFO_HASH_LENGTH);
         }
         if (object.getHashValue() != null && object.getHashValue().getValue() != null) {
             appendBytes(object.getHashValue().getValue());
-
         }
 
         return getAlreadySerialized();
     }
-
 }

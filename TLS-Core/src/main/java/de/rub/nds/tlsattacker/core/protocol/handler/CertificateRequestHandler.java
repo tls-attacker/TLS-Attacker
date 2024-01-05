@@ -1,24 +1,19 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAndHashAlgorithmsExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.CertificateRequestParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.CertificateRequestPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateRequestSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -33,23 +28,7 @@ public class CertificateRequestHandler extends HandshakeMessageHandler<Certifica
     }
 
     @Override
-    public CertificateRequestParser getParser(byte[] message, int pointer) {
-        return new CertificateRequestParser(pointer, message, tlsContext.getChooser().getSelectedProtocolVersion(),
-            tlsContext.getConfig());
-    }
-
-    @Override
-    public CertificateRequestPreparator getPreparator(CertificateRequestMessage message) {
-        return new CertificateRequestPreparator(tlsContext.getChooser(), message);
-    }
-
-    @Override
-    public CertificateRequestSerializer getSerializer(CertificateRequestMessage message) {
-        return new CertificateRequestSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
-    }
-
-    @Override
-    public void adjustTLSContext(CertificateRequestMessage message) {
+    public void adjustContext(CertificateRequestMessage message) {
         if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
             adjustCertificateRequestContext(message);
             adjustServerSupportedSignatureAndHashAlgorithms(message);
@@ -57,43 +36,51 @@ public class CertificateRequestHandler extends HandshakeMessageHandler<Certifica
             adjustClientCertificateTypes(message);
             adjustDistinguishedNames(message);
             if (tlsContext.getChooser().getSelectedProtocolVersion() == ProtocolVersion.TLS12
-                || tlsContext.getChooser().getSelectedProtocolVersion() == ProtocolVersion.DTLS12) {
+                    || tlsContext.getChooser().getSelectedProtocolVersion()
+                            == ProtocolVersion.DTLS12) {
                 adjustServerSupportedSignatureAndHashAlgorithms(message);
             }
         }
     }
 
-    private void adjustServerSupportedSignatureAndHashAlgorithms(CertificateRequestMessage message) {
+    private void adjustServerSupportedSignatureAndHashAlgorithms(
+            CertificateRequestMessage message) {
         List<SignatureAndHashAlgorithm> algoList;
         if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
             SignatureAndHashAlgorithmsExtensionMessage extension =
-                message.getExtension(SignatureAndHashAlgorithmsExtensionMessage.class);
+                    message.getExtension(SignatureAndHashAlgorithmsExtensionMessage.class);
             if (extension != null) {
-                algoList = convertSignatureAndHashAlgorithms(extension.getSignatureAndHashAlgorithms().getValue());
+                algoList =
+                        convertSignatureAndHashAlgorithms(
+                                extension.getSignatureAndHashAlgorithms().getValue());
             } else {
                 if (message.getSignatureHashAlgorithms() != null) {
-                    algoList = convertSignatureAndHashAlgorithms(message.getSignatureHashAlgorithms().getValue());
+                    algoList =
+                            convertSignatureAndHashAlgorithms(
+                                    message.getSignatureHashAlgorithms().getValue());
                 } else {
                     algoList = new LinkedList<>();
                 }
             }
         } else {
             if (message.getSignatureHashAlgorithms() != null) {
-                algoList = convertSignatureAndHashAlgorithms(message.getSignatureHashAlgorithms().getValue());
+                algoList =
+                        convertSignatureAndHashAlgorithms(
+                                message.getSignatureHashAlgorithms().getValue());
             } else {
                 algoList = new LinkedList<>();
             }
         }
         tlsContext.setServerSupportedSignatureAndHashAlgorithms(algoList);
-        LOGGER.debug("Set ServerSupportedSignatureAndHashAlgorithms to " + algoList.toString());
+        LOGGER.debug("Set ServerSupportedSignatureAndHashAlgorithms to {}", algoList);
     }
 
     private void adjustDistinguishedNames(CertificateRequestMessage message) {
-        if (message.getDistinguishedNames() != null && message.getDistinguishedNames().getValue() != null) {
+        if (message.getDistinguishedNames() != null
+                && message.getDistinguishedNames().getValue() != null) {
             byte[] distinguishedNames = message.getDistinguishedNames().getValue();
             tlsContext.setDistinguishedNames(distinguishedNames);
-            LOGGER.debug(
-                "Set DistinguishedNames in Context to " + ArrayConverter.bytesToHexString(distinguishedNames, false));
+            LOGGER.debug("Set DistinguishedNames in Context to {}", distinguishedNames);
         } else {
             LOGGER.debug("Not adjusting DistinguishedNames");
         }
@@ -101,9 +88,9 @@ public class CertificateRequestHandler extends HandshakeMessageHandler<Certifica
 
     private void adjustClientCertificateTypes(CertificateRequestMessage message) {
         List<ClientCertificateType> clientCertTypes =
-            convertClientCertificateTypes(message.getClientCertificateTypes().getValue());
+                convertClientCertificateTypes(message.getClientCertificateTypes().getValue());
         tlsContext.setClientCertificateTypes(clientCertTypes);
-        LOGGER.debug("Set ClientCertificateType in Context to " + clientCertTypes.toString());
+        LOGGER.debug("Set ClientCertificateType in Context to {} ", clientCertTypes);
     }
 
     private List<ClientCertificateType> convertClientCertificateTypes(byte[] bytesToConvert) {
@@ -111,7 +98,7 @@ public class CertificateRequestHandler extends HandshakeMessageHandler<Certifica
         for (byte b : bytesToConvert) {
             ClientCertificateType type = ClientCertificateType.getClientCertificateType(b);
             if (type == null) {
-                LOGGER.warn("Cannot convert:" + b + " to a ClientCertificateType");
+                LOGGER.warn("Cannot convert: {} to a ClientCertificateType", b);
             } else {
                 list.add(type);
             }
@@ -119,10 +106,10 @@ public class CertificateRequestHandler extends HandshakeMessageHandler<Certifica
         return list;
     }
 
-    private List<SignatureAndHashAlgorithm> convertSignatureAndHashAlgorithms(byte[] bytesToConvert) {
+    private List<SignatureAndHashAlgorithm> convertSignatureAndHashAlgorithms(
+            byte[] bytesToConvert) {
         if (bytesToConvert.length % 2 != 0) {
-            LOGGER.warn("Cannot convert:" + ArrayConverter.bytesToHexString(bytesToConvert, false)
-                + " to a List<SignatureAndHashAlgorithm>");
+            LOGGER.warn("Cannot convert: {} to a List<SignatureAndHashAlgorithm>", bytesToConvert);
             return new LinkedList<>();
         }
         List<SignatureAndHashAlgorithm> list = new LinkedList<>();
@@ -131,7 +118,8 @@ public class CertificateRequestHandler extends HandshakeMessageHandler<Certifica
             byte[] copied = new byte[2];
             copied[0] = bytesToConvert[i];
             copied[1] = bytesToConvert[i + 1];
-            SignatureAndHashAlgorithm algo = SignatureAndHashAlgorithm.getSignatureAndHashAlgorithm(copied);
+            SignatureAndHashAlgorithm algo =
+                    SignatureAndHashAlgorithm.getSignatureAndHashAlgorithm(copied);
             list.add(algo);
         }
         return list;

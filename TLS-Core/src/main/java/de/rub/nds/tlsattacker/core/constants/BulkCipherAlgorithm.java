@@ -1,12 +1,11 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.constants;
 
 import org.apache.logging.log4j.LogManager;
@@ -14,9 +13,7 @@ import org.apache.logging.log4j.Logger;
 
 public enum BulkCipherAlgorithm {
 
-    /**
-     * DESede references 3DES
-     */
+    /** DESede references 3DES */
     NULL,
     IDEA,
     DESede,
@@ -30,14 +27,14 @@ public enum BulkCipherAlgorithm {
     ARIA,
     CHACHA20_POLY1305,
     GOST28147,
-    AES;
+    AES,
+    SM4;
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     /**
-     * @param  cipherSuite
-     *                     The CipherSuite to choose the BulkCipherAlgorithm from
-     * @return             The BulkCipherAlgorithm of the cipher suite
+     * @param cipherSuite The CipherSuite to choose the BulkCipherAlgorithm from
+     * @return The BulkCipherAlgorithm of the cipher suite
      */
     public static BulkCipherAlgorithm getBulkCipherAlgorithm(CipherSuite cipherSuite) {
         String cipher = cipherSuite.toString().toUpperCase();
@@ -69,9 +66,14 @@ public enum BulkCipherAlgorithm {
             return GOST28147;
         } else if (cipher.contains("CHACHA20_POLY1305")) {
             return CHACHA20_POLY1305;
+        } else if (cipher.contains("SM4")) {
+            return SM4;
         }
 
-        LOGGER.warn("The cipher algorithm from " + cipherSuite + " is not supported yet. Falling back to NULL.");
+        LOGGER.warn(
+                "The cipher algorithm from "
+                        + cipherSuite
+                        + " is not supported yet. Falling back to NULL.");
         return NULL;
     }
 
@@ -103,9 +105,11 @@ public enum BulkCipherAlgorithm {
             return ARIA;
         } else if (cipher.contains("CHACHA20_POLY1305")) {
             return CHACHA20_POLY1305;
+        } else if (cipher.contains("SM4")) {
+            return SM4;
         }
         throw new UnsupportedOperationException(
-            "The cipher algorithm from " + cipherAlgorithm.name() + " is not supported yet.");
+                "The cipher algorithm from " + cipherAlgorithm.name() + " is not supported yet.");
     }
 
     public String getJavaName() {

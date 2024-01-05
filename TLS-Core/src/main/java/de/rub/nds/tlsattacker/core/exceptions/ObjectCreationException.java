@@ -1,18 +1,16 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.exceptions;
 
 public class ObjectCreationException extends RuntimeException {
 
-    public ObjectCreationException() {
-    }
+    public ObjectCreationException() {}
 
     public ObjectCreationException(String message) {
         super(message);
@@ -26,9 +24,11 @@ public class ObjectCreationException extends RuntimeException {
         super(cause);
     }
 
-    public ObjectCreationException(String message, Throwable cause, boolean enableSuppression,
-        boolean writableStackTrace) {
+    public ObjectCreationException(
+            String message,
+            Throwable cause,
+            boolean enableSuppression,
+            boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
-
 }

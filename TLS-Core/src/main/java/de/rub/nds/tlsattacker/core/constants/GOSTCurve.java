@@ -1,14 +1,14 @@
-/**
+/*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
  *
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-
 package de.rub.nds.tlsattacker.core.constants;
 
+import de.rub.nds.protocol.constants.GroupParameters;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.cryptopro.CryptoProObjectIdentifiers;
 import org.bouncycastle.asn1.rosstandart.RosstandartObjectIdentifiers;
@@ -20,12 +20,18 @@ public enum GOSTCurve {
     GostR3410_2001_CryptoPro_C(CryptoProObjectIdentifiers.gostR3410_2001_CryptoPro_C),
     GostR3410_2001_CryptoPro_XchA(CryptoProObjectIdentifiers.gostR3410_2001_CryptoPro_XchA),
     GostR3410_2001_CryptoPro_XchB(CryptoProObjectIdentifiers.gostR3410_2001_CryptoPro_XchB),
-    Tc26_Gost_3410_12_256_paramSetA(RosstandartObjectIdentifiers.id_tc26_gost_3410_12_256_paramSetA),
-    Tc26_Gost_3410_12_512_paramSetA(RosstandartObjectIdentifiers.id_tc26_gost_3410_12_512_paramSetA),
-    Tc26_Gost_3410_12_512_paramSetB(RosstandartObjectIdentifiers.id_tc26_gost_3410_12_512_paramSetB),
-    Tc26_Gost_3410_12_512_paramSetC(RosstandartObjectIdentifiers.id_tc26_gost_3410_12_512_paramSetC);
+    Tc26_Gost_3410_12_256_paramSetA(
+            RosstandartObjectIdentifiers.id_tc26_gost_3410_12_256_paramSetA),
+    Tc26_Gost_3410_12_512_paramSetA(
+            RosstandartObjectIdentifiers.id_tc26_gost_3410_12_512_paramSetA),
+    Tc26_Gost_3410_12_512_paramSetB(
+            RosstandartObjectIdentifiers.id_tc26_gost_3410_12_512_paramSetB),
+    Tc26_Gost_3410_12_512_paramSetC(
+            RosstandartObjectIdentifiers.id_tc26_gost_3410_12_512_paramSetC);
 
     private final ASN1ObjectIdentifier identifier;
+
+    private GroupParameters groupParameters;
 
     GOSTCurve(ASN1ObjectIdentifier identifier) {
         this.identifier = identifier;
@@ -33,6 +39,10 @@ public enum GOSTCurve {
 
     public ASN1ObjectIdentifier getIdentifier() {
         return identifier;
+    }
+
+    public GroupParameters getGroupParameters() {
+        return groupParameters;
     }
 
     public String getJavaName() {
@@ -50,5 +60,4 @@ public enum GOSTCurve {
     public static GOSTCurve fromString(String name) {
         return GOSTCurve.valueOf(name.replace('-', '_'));
     }
-
 }
