@@ -116,7 +116,6 @@ public class WorkflowConfigurationFactoryTest {
         MessageAction messageAction1;
         MessageAction messageAction2;
         ReceiveAction lastAction;
-        ClientHelloMessage clientHelloMessage;
 
         // Invariants Test: We will always obtain a WorkflowTrace containing at
         // least two TLS-Actions with exactly one message for the first

@@ -18,8 +18,6 @@ import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerInputStream;
 import de.rub.nds.tlsattacker.transport.udp.UdpTransportHandler;
 import java.io.IOException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * The UDP layer is a wrapper around an underlying UDP socket. It forwards the sockets InputStream
@@ -27,8 +25,6 @@ import org.apache.logging.log4j.Logger;
  */
 public class UdpLayer
         extends ProtocolLayer<LayerProcessingHint, DataContainer> { // TODO change types
-
-    private static Logger LOGGER = LogManager.getLogger();
 
     private final TlsContext context;
 

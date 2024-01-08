@@ -21,13 +21,9 @@ import de.rub.nds.tlsattacker.core.workflow.container.ActionHelperUtil;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.math.BigInteger;
 import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 @XmlRootElement(name = "SendRaccoonCke")
 public class SendRaccoonCkeAction extends CommonSendAction {
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     private boolean withNullByte = true;
 

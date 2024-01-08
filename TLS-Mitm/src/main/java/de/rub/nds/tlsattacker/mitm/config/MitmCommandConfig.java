@@ -12,12 +12,8 @@ import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParametersDelegate;
 import de.rub.nds.tlsattacker.core.config.TLSDelegateConfig;
 import de.rub.nds.tlsattacker.core.config.delegate.*;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class MitmCommandConfig extends TLSDelegateConfig {
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     @ParametersDelegate private CipherSuiteDelegate ciphersuiteDelegate;
     @ParametersDelegate private ProtocolVersionDelegate protocolVersionDelegate;

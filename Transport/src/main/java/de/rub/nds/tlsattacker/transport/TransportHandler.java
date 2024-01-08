@@ -17,12 +17,8 @@ import java.io.OutputStream;
 import java.io.PushbackInputStream;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public abstract class TransportHandler {
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     protected long timeout;
 

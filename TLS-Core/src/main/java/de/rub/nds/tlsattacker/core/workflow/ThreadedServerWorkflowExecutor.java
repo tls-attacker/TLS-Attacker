@@ -36,7 +36,6 @@ public class ThreadedServerWorkflowExecutor extends WorkflowExecutor {
     private static final int POOL_SIZE = 3;
 
     private ServerSocket serverSocket;
-    private final InetAddress bindAddr;
     private final int bindPort;
     private List<Socket> sockets = new ArrayList<>();
     private boolean killed = true;

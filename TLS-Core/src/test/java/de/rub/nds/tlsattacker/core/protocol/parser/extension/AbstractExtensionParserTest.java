@@ -89,6 +89,7 @@ abstract class AbstractExtensionParserTest<
         }
 
         parseExtensionMessage(providedExtensionBytes);
+        assertArrayEquals(expectedExtensionTypeBytes, message.getExtensionType().getValue());
         assertExtensionMessageSpecific(providedAdditionalValues, expectedMessageSpecificValues);
     }
 

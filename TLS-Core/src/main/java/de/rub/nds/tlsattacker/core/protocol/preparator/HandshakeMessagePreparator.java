@@ -136,7 +136,6 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage>
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         if (message.getExtensions() != null) {
             for (ExtensionMessage extensionMessage : message.getExtensions()) {
-                HandshakeMessageType handshakeMessageType = message.getHandshakeMessageType();
                 if (extensionMessage instanceof KeyShareExtensionMessage
                         && message instanceof ServerHelloMessage) {
                     ServerHelloMessage serverHello = (ServerHelloMessage) message;

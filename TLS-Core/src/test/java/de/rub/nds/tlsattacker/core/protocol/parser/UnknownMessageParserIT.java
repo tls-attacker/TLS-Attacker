@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
 import de.rub.nds.tlsattacker.util.tests.TestCategories;
 import java.io.ByteArrayInputStream;
@@ -23,11 +22,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 public class UnknownMessageParserIT {
 
-    private Config config;
-
-    public void setUp() {
-        config = Config.createConfig();
-    }
+    public void setUp() {}
 
     public static Stream<Arguments> provideTestVectors() {
         Stream.Builder<Arguments> streamBuilder = Stream.builder();

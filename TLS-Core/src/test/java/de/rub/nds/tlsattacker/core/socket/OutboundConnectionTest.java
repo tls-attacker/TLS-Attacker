@@ -137,7 +137,6 @@ public class OutboundConnectionTest {
     @Test
     public void mixInDefaultsFromEmptyReference() {
         TestXmlRoot con = new TestXmlRoot();
-        OutboundConnection defaultCon = new OutboundConnection();
 
         assertNull(con.getTimeout());
         assertNull(con.getTransportHandlerType());
@@ -157,7 +156,6 @@ public class OutboundConnectionTest {
     @Test
     public void stripDefaultsReversesMixInEmptyDefaults() {
         TestXmlRoot con = new TestXmlRoot();
-        OutboundConnection defaultCon = new OutboundConnection();
 
         assertNull(con.getTimeout());
         assertNull(con.getTransportHandlerType());

@@ -15,7 +15,6 @@ import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.util.JKSLoader;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.util.KeystoreHandler;
 import de.rub.nds.x509attacker.config.X509CertificateConfig;
 import de.rub.nds.x509attacker.constants.X509NamedCurve;
@@ -147,20 +146,6 @@ public class CertificateDelegate extends Delegate {
                             + join(mandatoryParameters.keySet()));
         }
         try {
-            ConnectionEndType type;
-            switch (config.getDefaultRunningMode()) {
-                case CLIENT:
-                    type = ConnectionEndType.CLIENT;
-                    break;
-                case MITM:
-                    throw new ConfigurationException(
-                            "CertificateDelegate is not allowed for MitM running mode");
-                case SERVER:
-                    type = ConnectionEndType.SERVER;
-                    break;
-                default:
-                    throw new ConfigurationException("Unknown RunningMode");
-            }
             KeyStore store = KeystoreHandler.loadKeyStore(keystore, password);
             Certificate cert = JKSLoader.loadTLSCertificate(store, alias);
             privateKey = (PrivateKey) store.getKey(alias, password.toCharArray());

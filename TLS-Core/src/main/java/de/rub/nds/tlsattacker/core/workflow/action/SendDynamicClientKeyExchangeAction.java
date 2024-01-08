@@ -20,13 +20,9 @@ import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.List;
 import java.util.StringJoiner;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 @XmlRootElement(name = "SendDynamicClientKeyExchange")
 public class SendDynamicClientKeyExchangeAction extends CommonSendAction {
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     private List<DtlsHandshakeMessageFragment> configuredFragmentList = null;
 

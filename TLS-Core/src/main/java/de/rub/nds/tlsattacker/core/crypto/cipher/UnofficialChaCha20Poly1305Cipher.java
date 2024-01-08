@@ -8,8 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.crypto.cipher;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.engines.ChaChaEngine;
 
 /**
@@ -20,8 +18,6 @@ import org.bouncycastle.crypto.engines.ChaChaEngine;
  * (instead of SQN ^ IV) 2. Order of fields for MAC input (AAD length directly follows AAD bytes)
  */
 public class UnofficialChaCha20Poly1305Cipher extends ChaCha20Poly1305Cipher {
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     public UnofficialChaCha20Poly1305Cipher(byte[] key) {
         super(key, 8);

@@ -13,12 +13,8 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.TLSDelegateConfig;
 import de.rub.nds.tlsattacker.core.config.delegate.*;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class TraceToolCommandConfig extends TLSDelegateConfig {
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     public static final String COMMAND = "tracetool";
 
