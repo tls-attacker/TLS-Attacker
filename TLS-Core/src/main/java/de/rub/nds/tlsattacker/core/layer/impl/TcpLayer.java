@@ -8,12 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.layer.impl;
 
+import de.rub.nds.tcp.TcpStreamContainer;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.context.TcpContext;
-import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStreamAdapterStream;
@@ -26,7 +26,7 @@ import org.apache.logging.log4j.Logger;
  * The TCP layer is a wrapper around an underlying TCP socket. It forwards the sockets InputStream
  * for reading and sends any data over the TCP socket without modifications.
  */
-public class TcpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer> {
+public class TcpLayer extends ProtocolLayer<LayerProcessingHint, TcpStreamContainer> {
 
     private static Logger LOGGER = LogManager.getLogger();
 
@@ -39,10 +39,13 @@ public class TcpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer> 
 
     @Override
     public LayerProcessingResult sendConfiguration() throws IOException {
-        LayerConfiguration<DataContainer> configuration = getLayerConfiguration();
+        LayerConfiguration<TcpStreamContainer> configuration = getLayerConfiguration();
         if (configuration != null && configuration.getContainerList() != null) {
-            for (DataContainer container : getUnprocessedConfiguredContainers()) {
-                // TODO Send container data
+            for (TcpStreamContainer container : getUnprocessedConfiguredContainers()) {
+                prepareDataContainer(container, context);
+                addProducedContainer(container);
+                TcpTransportHandler handler = getTransportHandler();
+        handler.sendData(container.getSerializer(context).serialize());
             }
         }
         return getLayerResult();
@@ -52,9 +55,17 @@ public class TcpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer> 
     @Override
     public LayerProcessingResult sendData(LayerProcessingHint hint, byte[] data)
             throws IOException {
+        TcpStreamContainer container;
+        if (getUnprocessedConfiguredContainers().isEmpty()) {
+            container = new TcpStreamContainer();
+        } else {
+            container = getUnprocessedConfiguredContainers().get(0);
+        }
+        prepareDataContainer(container, context);
+        addProducedContainer(container);
         TcpTransportHandler handler = getTransportHandler();
-        handler.sendData(data);
-        return new LayerProcessingResult(null, getLayerType(), true); // Not implemented
+        handler.sendData(container.getSerializer(context).serialize());
+        return getLayerResult();
     }
 
     @Override

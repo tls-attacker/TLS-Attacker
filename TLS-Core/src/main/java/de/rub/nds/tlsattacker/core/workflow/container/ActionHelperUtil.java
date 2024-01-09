@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.workflow.container;
 import de.rub.nds.tlsattacker.core.http.HttpMessage;
 import de.rub.nds.tlsattacker.core.layer.DataContainerFilter;
 import de.rub.nds.tlsattacker.core.layer.GenericReceiveLayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.IgnoreLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.LayerStack;
@@ -65,6 +66,27 @@ public class ActionHelperUtil {
             }
             return new LinkedList<>();
         }
+    }
+
+    public static List<LayerConfiguration<?>> createForwardTransportConfigurations(
+            TlsContext tlsContext,
+            Set<ActionOption> actionOptions,
+            List<ProtocolMessage> protocolMessagesToReceive) {
+        LayerStack layerStack = tlsContext.getLayerStack();
+
+        List<LayerConfiguration<?>> layerConfigurationList;
+        layerConfigurationList =
+                sortLayerConfigurations(
+                        layerStack,
+                        false,
+                        new IgnoreLayerConfiguration<>(ImplementedLayers.DTLS_FRAGMENT),
+                        new IgnoreLayerConfiguration<>(ImplementedLayers.MESSAGE),
+                        new IgnoreLayerConfiguration<>(ImplementedLayers.SSL2),
+                        new IgnoreLayerConfiguration<>(ImplementedLayers.RECORD),
+                        new IgnoreLayerConfiguration<>(ImplementedLayers.HTTP),
+                        new IgnoreLayerConfiguration<>(ImplementedLayers.QUICFRAME),
+                        new IgnoreLayerConfiguration<>(ImplementedLayers.QUICPACKET));
+        return layerConfigurationList;
     }
 
     public static List<LayerConfiguration<?>> createReceiveLayerConfiguration(

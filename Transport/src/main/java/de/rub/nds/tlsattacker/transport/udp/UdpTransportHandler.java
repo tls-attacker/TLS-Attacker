@@ -8,16 +8,20 @@
  */
 package de.rub.nds.tlsattacker.transport.udp;
 
+import de.rub.nds.tlsattacker.PacketbasedTransportHandler;
 import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.io.IOException;
+import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.Inet4Address;
+import java.net.Inet6Address;
 import java.net.SocketException;
+import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public abstract class UdpTransportHandler extends TransportHandler {
+public abstract class UdpTransportHandler extends PacketbasedTransportHandler {
 
     private Logger LOGGER = LogManager.getLogger();
 
@@ -31,6 +35,41 @@ public abstract class UdpTransportHandler extends TransportHandler {
 
     public UdpTransportHandler(long firstTimeout, long timeout, ConnectionEndType type) {
         super(timeout, type);
+    }
+
+    @Override
+    public void sendData(byte[] data) throws IOException {
+        DatagramPacket packet;
+        if (socket.isConnected()) {
+            packet = new DatagramPacket(data, data.length);
+        } else {
+            if (useIpv6) {
+                if (ipv6 != null) {
+                    packet =
+                            new DatagramPacket(
+                                    data, data.length, Inet6Address.getByName(ipv6), port);
+                } else {
+                    throw new IOException("No IPv6 address set");
+                }
+            } else {
+                if (ipv4 != null) {
+                    packet =
+                            new DatagramPacket(
+                                    data, data.length, Inet4Address.getByName(ipv4), port);
+                } else {
+                    throw new IOException("No IPv4 address set");
+                }
+            }
+        }
+        socket.send(packet);
+    }
+
+    @Override
+    public byte[] fetchData() throws IOException {
+        setTimeout(timeout);
+        DatagramPacket packet = new DatagramPacket(dataBuffer, RECEIVE_BUFFER_SIZE);
+        socket.receive(packet);
+        return Arrays.copyOfRange(packet.getData(), 0, packet.getLength());
     }
 
     @Override
