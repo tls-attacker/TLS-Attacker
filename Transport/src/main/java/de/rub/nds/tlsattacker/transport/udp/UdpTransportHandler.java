@@ -11,11 +11,11 @@ package de.rub.nds.tlsattacker.transport.udp;
 import de.rub.nds.tlsattacker.PacketbasedTransportHandler;
 import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.Inet4Address;
-import java.net.Inet6Address;
 import java.net.SocketException;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
@@ -29,47 +29,56 @@ public abstract class UdpTransportHandler extends PacketbasedTransportHandler {
 
     protected int port;
 
+    private final int RECEIVE_BUFFER_SIZE = 65536;
+
+    private final byte[] dataBuffer = new byte[RECEIVE_BUFFER_SIZE];
+
+    /**
+     * It can happen that we only read half a packet. If we do that, we need to cache the remainder
+     * of the packet and return it the next time somebody reads
+     */
+    private ByteArrayInputStream dataBufferInputStream;
+
     public UdpTransportHandler(Connection con) {
         super(con);
     }
 
-    public UdpTransportHandler(long firstTimeout, long timeout, ConnectionEndType type) {
+    public UdpTransportHandler(long timeout, ConnectionEndType type) {
         super(timeout, type);
     }
 
     @Override
     public void sendData(byte[] data) throws IOException {
-        DatagramPacket packet;
-        if (socket.isConnected()) {
-            packet = new DatagramPacket(data, data.length);
-        } else {
-            if (useIpv6) {
-                if (ipv6 != null) {
-                    packet =
-                            new DatagramPacket(
-                                    data, data.length, Inet6Address.getByName(ipv6), port);
-                } else {
-                    throw new IOException("No IPv6 address set");
-                }
-            } else {
-                if (ipv4 != null) {
-                    packet =
-                            new DatagramPacket(
-                                    data, data.length, Inet4Address.getByName(ipv4), port);
-                } else {
-                    throw new IOException("No IPv4 address set");
-                }
-            }
-        }
+        DatagramPacket packet = new DatagramPacket(data, data.length);
         socket.send(packet);
     }
 
     @Override
     public byte[] fetchData() throws IOException {
+        if (dataBufferInputStream != null && dataBufferInputStream.available() > 0) {
+            return dataBufferInputStream.readAllBytes();
+        } else {
+            setTimeout(timeout);
+            DatagramPacket packet = new DatagramPacket(dataBuffer, RECEIVE_BUFFER_SIZE);
+            socket.receive(packet);
+            return Arrays.copyOfRange(packet.getData(), 0, packet.getLength());
+        }
+    }
+
+    @Override
+    public byte[] fetchData(int amountOfData) throws IOException {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        outputStream.write(dataBufferInputStream.readAllBytes());
         setTimeout(timeout);
-        DatagramPacket packet = new DatagramPacket(dataBuffer, RECEIVE_BUFFER_SIZE);
-        socket.receive(packet);
-        return Arrays.copyOfRange(packet.getData(), 0, packet.getLength());
+        // Read packets till we got atleast amountOfData bytes
+        while (outputStream.size() < amountOfData) {
+            DatagramPacket packet = new DatagramPacket(dataBuffer, RECEIVE_BUFFER_SIZE);
+            socket.receive(packet);
+            outputStream.write(Arrays.copyOfRange(packet.getData(), 0, packet.getLength()));
+        }
+        // Now we got atleast amount of data bytes. If we got more, cache them
+        dataBufferInputStream = new ByteArrayInputStream(outputStream.toByteArray());
+        return dataBufferInputStream.readNBytes(amountOfData);
     }
 
     @Override

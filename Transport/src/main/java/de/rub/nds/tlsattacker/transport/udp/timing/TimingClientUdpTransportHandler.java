@@ -19,9 +19,8 @@ public class TimingClientUdpTransportHandler extends ClientUdpTransportHandler
         super(connection);
     }
 
-    public TimingClientUdpTransportHandler(
-            long firstTimeout, long timeout, String hostname, int port) {
-        super(firstTimeout, timeout, hostname, port);
+    public TimingClientUdpTransportHandler(long timeout, String hostname, int port) {
+        super(timeout, hostname, port);
     }
 
     @Override

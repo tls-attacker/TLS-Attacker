@@ -17,8 +17,6 @@ import org.apache.logging.log4j.Logger;
 
 public class ClientUdpTransportHandler extends UdpTransportHandler {
 
-    private static final int RECEIVE_BUFFER_SIZE = 16384;
-
     private static final Logger LOGGER = LogManager.getLogger();
 
     protected String ipv4;
@@ -29,8 +27,6 @@ public class ClientUdpTransportHandler extends UdpTransportHandler {
 
     protected Integer sourcePort;
 
-    private final byte[] dataBuffer = new byte[RECEIVE_BUFFER_SIZE];
-
     public ClientUdpTransportHandler(Connection con) {
         super(con);
         this.ipv4 = con.getIp();
@@ -40,8 +36,8 @@ public class ClientUdpTransportHandler extends UdpTransportHandler {
         this.sourcePort = con.getSourcePort();
     }
 
-    public ClientUdpTransportHandler(long firstTimeout, long timeout, String ipv4, int port) {
-        super(firstTimeout, timeout, ConnectionEndType.CLIENT);
+    public ClientUdpTransportHandler(long timeout, String ipv4, int port) {
+        super(timeout, ConnectionEndType.CLIENT);
         this.ipv4 = ipv4;
         this.port = port;
     }

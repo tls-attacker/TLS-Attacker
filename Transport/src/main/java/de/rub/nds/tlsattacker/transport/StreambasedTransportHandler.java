@@ -24,6 +24,14 @@ public abstract class StreambasedTransportHandler extends TransportHandler {
 
     protected PushbackInputStream inStream;
 
+    public StreambasedTransportHandler(Connection connection) {
+        super(connection);
+    }
+
+    public StreambasedTransportHandler(long timeout, ConnectionEndType type) {
+        super(timeout, type);
+    }
+
     /**
      * Reads the specified amount of data from the stream
      *
@@ -97,7 +105,6 @@ public abstract class StreambasedTransportHandler extends TransportHandler {
         initialized = true;
     }
 
-    // TODO: Change UDP to packet based processing instead of having in/out streams
     public InputStream getInputStream() {
         return inStream;
     }

@@ -9,11 +9,16 @@
 package de.rub.nds.tlsattacker;
 
 import de.rub.nds.tlsattacker.transport.Connection;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 
 public abstract class PacketbasedTransportHandler extends TransportHandler {
 
     public PacketbasedTransportHandler(Connection con) {
         super(con);
+    }
+
+    public PacketbasedTransportHandler(long timeout, ConnectionEndType type) {
+        super(timeout, type);
     }
 }
