@@ -95,12 +95,18 @@ public abstract class UdpTransportHandler extends PacketbasedTransportHandler {
 
     @Override
     public void closeConnection() throws IOException {
-        socket.close();
+        if (socket != null) {
+            socket.close();
+        }
     }
 
     @Override
     public boolean isClosed() throws IOException {
-        return socket.isClosed();
+        if (socket != null) {
+            return socket.isClosed();
+        } else {
+            return true;
+        }
     }
 
     public int getSrcPort() {
@@ -108,7 +114,6 @@ public abstract class UdpTransportHandler extends PacketbasedTransportHandler {
             // mimic socket.getLocalPort() behavior as if socket was closed
             return -1;
         }
-
         return socket.getLocalPort();
     }
 
@@ -117,7 +122,6 @@ public abstract class UdpTransportHandler extends PacketbasedTransportHandler {
             // mimic socket.getPort() behavior as if socket was not connected
             return -1;
         }
-
         return socket.getPort();
     }
 }
