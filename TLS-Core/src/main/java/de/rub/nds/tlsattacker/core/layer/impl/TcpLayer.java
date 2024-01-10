@@ -45,7 +45,7 @@ public class TcpLayer extends ProtocolLayer<LayerProcessingHint, TcpStreamContai
                 prepareDataContainer(container, context);
                 addProducedContainer(container);
                 TcpTransportHandler handler = getTransportHandler();
-        handler.sendData(container.getSerializer(context).serialize());
+                handler.sendData(container.getSerializer(context).serialize());
             }
         }
         return getLayerResult();
