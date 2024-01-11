@@ -56,6 +56,13 @@ public class TransportHandlerFactory {
                 } else {
                     return new TimingServerUdpTransportHandler(con);
                 }
+            case UDP_PROXY:
+                if (localConEndType == ConnectionEndType.CLIENT) {
+                    return new ProxyClientUdpTransportHandler(con);
+                } else {
+                    throw new UnsupportedOperationException(
+                            "UDP_PROXY for server sockets is currently not supported");
+                }
             case TCP_PROXY_TIMING:
                 if (localConEndType == ConnectionEndType.CLIENT) {
                     return new TimingProxyClientTcpTransportHandler(con);
