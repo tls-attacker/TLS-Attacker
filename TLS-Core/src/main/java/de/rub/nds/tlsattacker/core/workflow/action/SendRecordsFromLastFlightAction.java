@@ -49,8 +49,11 @@ public class SendRecordsFromLastFlightAction extends CommonSendAction {
         List<LayerConfiguration<?>> configurationList = new LinkedList<>();
         configurationList.add(
                 new SpecificSendLayerConfiguration<>(ImplementedLayers.RECORD, duplicatedRecords));
-        return ActionHelperUtil.sortLayerConfigurations(
-                state.getTlsContext(connectionAlias).getLayerStack(), true, configurationList);
+        return ActionHelperUtil.sortAndAddOptions(
+                state.getTlsContext(connectionAlias).getLayerStack(),
+                true,
+                getActionOptions(),
+                configurationList);
     }
 
     private SendingAction getLastSendingAction(WorkflowTrace trace) {

@@ -113,7 +113,7 @@ public class ReceiveQuicTillAction extends CommonReceiveAction {
                     new SpecificReceiveLayerConfiguration<>(
                             ImplementedLayers.QUICPACKET, expectedQuicPackets));
         }
-        return ActionHelperUtil.sortLayerConfigurations(
-                tlsContext.getLayerStack(), false, configurationList);
+        return ActionHelperUtil.sortAndAddOptions(
+                tlsContext.getLayerStack(), false, getActionOptions(), configurationList);
     }
 }

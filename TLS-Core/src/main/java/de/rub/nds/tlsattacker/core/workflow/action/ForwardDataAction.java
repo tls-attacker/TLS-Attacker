@@ -68,8 +68,8 @@ public class ForwardDataAction extends CommonForwardAction {
         List<LayerConfiguration<?>> configurationList = new LinkedList<>();
         configurationList.add(new GenericReceiveLayerConfiguration(ImplementedLayers.TCP));
         configurationList.add(new GenericReceiveLayerConfiguration(ImplementedLayers.UDP));
-        return ActionHelperUtil.sortLayerConfigurations(
-                tlsContext.getLayerStack(), false, configurationList);
+        return ActionHelperUtil.sortAndAddOptions(
+                tlsContext.getLayerStack(), false, getActionOptions(), configurationList);
     }
 
     @Override
@@ -83,7 +83,7 @@ public class ForwardDataAction extends CommonForwardAction {
         List<LayerConfiguration<?>> configurationList = new LinkedList<>();
         configurationList.add(
                 new SpecificSendLayerConfiguration<>(ImplementedLayers.RECORD, receivedRecords));
-        return ActionHelperUtil.sortLayerConfigurations(
-                tlsContext.getLayerStack(), true, configurationList);
+        return ActionHelperUtil.sortAndAddOptions(
+                tlsContext.getLayerStack(), true, getActionOptions(), configurationList);
     }
 }

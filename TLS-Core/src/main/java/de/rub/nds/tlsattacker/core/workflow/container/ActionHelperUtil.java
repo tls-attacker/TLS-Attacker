@@ -56,6 +56,25 @@ public class ActionHelperUtil {
         }
     }
 
+    public static List<LayerConfiguration<?>> sortAndAddOptions(
+            LayerStack layerStack,
+            boolean sending,
+            Set<ActionOption> actionOptions,
+            List<LayerConfiguration<?>> unsortedLayerConfigurations) {
+        unsortedLayerConfigurations =
+                sortLayerConfigurations(layerStack, sending, unsortedLayerConfigurations);
+        return applyAllMessageFilters(unsortedLayerConfigurations, actionOptions);
+    }
+
+    public static List<LayerConfiguration<?>> applyAllMessageFilters(
+            List<LayerConfiguration<?>> messageLayerConfiguration,
+            Set<ActionOption> actionOptions) {
+        for (LayerConfiguration<?> layerConfig : messageLayerConfiguration) {
+            applyMessageFilters(layerConfig, actionOptions);
+        }
+        return messageLayerConfiguration;
+    }
+
     public static LayerConfiguration<?> applyMessageFilters(
             LayerConfiguration<?> messageLayerConfiguration, Set<ActionOption> actionOptions) {
         List<DataContainerFilter> containerFilters = new LinkedList<>();
@@ -80,7 +99,7 @@ public class ActionHelperUtil {
         return messageLayerConfiguration;
     }
 
-    public static List<LayerConfiguration<?>> sortLayerConfigurations(
+    private static List<LayerConfiguration<?>> sortLayerConfigurations(
             LayerStack layerStack,
             boolean sending,
             LayerConfiguration<?>... unsortedLayerConfigurations) {
@@ -88,7 +107,7 @@ public class ActionHelperUtil {
                 layerStack, sending, new LinkedList<>(Arrays.asList(unsortedLayerConfigurations)));
     }
 
-    public static List<LayerConfiguration<?>> sortLayerConfigurations(
+    private static List<LayerConfiguration<?>> sortLayerConfigurations(
             LayerStack layerStack,
             boolean sending,
             List<LayerConfiguration<?>> unsortedLayerConfigurations) {

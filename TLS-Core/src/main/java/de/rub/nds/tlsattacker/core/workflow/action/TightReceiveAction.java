@@ -47,7 +47,7 @@ public class TightReceiveAction extends CommonReceiveAction {
         List<LayerConfiguration<?>> configurationList = new LinkedList<>();
         configurationList.add(
                 new TightReceiveLayerConfiguration(ImplementedLayers.MESSAGE, expectedMessages));
-        return ActionHelperUtil.sortLayerConfigurations(
-                tlsContext.getLayerStack(), false, configurationList);
+        return ActionHelperUtil.sortAndAddOptions(
+                tlsContext.getLayerStack(), false, getActionOptions(), configurationList);
     }
 }

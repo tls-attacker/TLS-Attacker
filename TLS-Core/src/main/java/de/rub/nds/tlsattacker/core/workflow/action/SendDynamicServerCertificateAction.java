@@ -83,8 +83,9 @@ public class SendDynamicServerCertificateAction extends CommonSendAction {
             configurationList.add(
                     new SpecificSendLayerConfiguration<>(
                             ImplementedLayers.MESSAGE, new CertificateMessage()));
-            return ActionHelperUtil.sortLayerConfigurations(
-                    tlsContext.getLayerStack(), true, configurationList);
+            return ActionHelperUtil.sortAndAddOptions(
+                    tlsContext.getLayerStack(), true, getActionOptions(), configurationList);
+
         } else {
             return null;
         }

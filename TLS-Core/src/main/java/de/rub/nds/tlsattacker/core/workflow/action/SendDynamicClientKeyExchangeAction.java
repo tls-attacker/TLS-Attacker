@@ -107,8 +107,9 @@ public class SendDynamicClientKeyExchangeAction extends CommonSendAction {
                         new SpecificSendLayerConfiguration<>(
                                 ImplementedLayers.DTLS_FRAGMENT, configuredFragmentList));
             }
-            return ActionHelperUtil.sortLayerConfigurations(
-                    tlsContext.getLayerStack(), true, configurationList);
+            return ActionHelperUtil.sortAndAddOptions(
+                    tlsContext.getLayerStack(), true, getActionOptions(), configurationList);
+
         } else {
             return null;
         }

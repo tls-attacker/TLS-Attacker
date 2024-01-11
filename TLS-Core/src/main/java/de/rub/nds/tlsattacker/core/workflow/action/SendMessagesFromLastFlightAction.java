@@ -46,8 +46,11 @@ public class SendMessagesFromLastFlightAction extends CommonSendAction {
         configurationList.add(
                 new SpecificSendLayerConfiguration<>(
                         ImplementedLayers.MESSAGE, duplicatedMessages));
-        return ActionHelperUtil.sortLayerConfigurations(
-                state.getTlsContext(getConnectionAlias()).getLayerStack(), true, configurationList);
+        return ActionHelperUtil.sortAndAddOptions(
+                state.getTlsContext(connectionAlias).getLayerStack(),
+                true,
+                getActionOptions(),
+                configurationList);
     }
 
     private SendingAction getLastSendingAction(WorkflowTrace trace) {

@@ -278,8 +278,8 @@ public class ReceiveAction extends CommonReceiveAction implements StaticReceivin
                     new SpecificReceiveLayerConfiguration<>(
                             ImplementedLayers.QUICPACKET, getExpectedQuicPackets()));
         }
-        return ActionHelperUtil.sortLayerConfigurations(
-                tlsContext.getLayerStack(), false, configurationList);
+        return ActionHelperUtil.sortAndAddOptions(
+                tlsContext.getLayerStack(), false, getActionOptions(), configurationList);
     }
 
     @Override

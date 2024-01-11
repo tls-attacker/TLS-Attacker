@@ -101,8 +101,8 @@ public class ForwardMessagesAction extends CommonForwardAction {
         configurationList.add(
                 new SpecificReceiveLayerConfiguration<>(
                         ImplementedLayers.MESSAGE, expectedMessages));
-        return ActionHelperUtil.sortLayerConfigurations(
-                tlsContext.getLayerStack(), false, configurationList);
+        return ActionHelperUtil.sortAndAddOptions(
+                tlsContext.getLayerStack(), false, getActionOptions(), configurationList);
     }
 
     @Override
@@ -118,7 +118,7 @@ public class ForwardMessagesAction extends CommonForwardAction {
         List<LayerConfiguration<?>> configurationList = new LinkedList<>();
         configurationList.add(
                 new SpecificSendLayerConfiguration<>(ImplementedLayers.MESSAGE, receivedMessages));
-        return ActionHelperUtil.sortLayerConfigurations(
-                tlsContext.getLayerStack(), true, configurationList);
+        return ActionHelperUtil.sortAndAddOptions(
+                tlsContext.getLayerStack(), true, getActionOptions(), configurationList);
     }
 }

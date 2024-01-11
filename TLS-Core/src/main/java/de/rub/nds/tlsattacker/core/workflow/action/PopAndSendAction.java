@@ -112,7 +112,7 @@ public class PopAndSendAction extends CommonSendAction {
         List<LayerConfiguration<?>> configurationList = new LinkedList<>();
         configurationList.add(
                 new SpecificSendLayerConfiguration<>(ImplementedLayers.MESSAGE, messages));
-        return ActionHelperUtil.sortLayerConfigurations(
-                tlsContext.getLayerStack(), true, configurationList);
+        return ActionHelperUtil.sortAndAddOptions(
+                tlsContext.getLayerStack(), true, getActionOptions(), configurationList);
     }
 }

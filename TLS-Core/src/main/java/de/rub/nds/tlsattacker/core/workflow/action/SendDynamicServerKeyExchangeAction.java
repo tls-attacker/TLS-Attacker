@@ -88,8 +88,9 @@ public class SendDynamicServerKeyExchangeAction extends CommonSendAction {
             configurationList.add(
                     new SpecificSendLayerConfiguration<>(
                             ImplementedLayers.MESSAGE, serverKeyExchangeMessage));
-            return ActionHelperUtil.sortLayerConfigurations(
-                    tlsContext.getLayerStack(), true, configurationList);
+            return ActionHelperUtil.sortAndAddOptions(
+                    tlsContext.getLayerStack(), true, getActionOptions(), configurationList);
+
         } else {
             return null;
         }

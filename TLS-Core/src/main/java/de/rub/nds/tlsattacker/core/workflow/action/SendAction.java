@@ -291,8 +291,8 @@ public class SendAction extends CommonSendAction implements StaticSendingAction 
                     new SpecificReceiveLayerConfiguration<>(
                             ImplementedLayers.QUICPACKET, getConfiguredQuicPackets()));
         }
-        return ActionHelperUtil.sortLayerConfigurations(
-                tlsContext.getLayerStack(), true, configurationList);
+        return ActionHelperUtil.sortAndAddOptions(
+                tlsContext.getLayerStack(), true, getActionOptions(), configurationList);
     }
 
     @Override

@@ -62,6 +62,7 @@ public class TcpLayer extends ProtocolLayer<LayerProcessingHint, TcpStreamContai
         } else {
             container = getUnprocessedConfiguredContainers().get(0);
         }
+        container.setConfigData(data);
         prepareDataContainer(container, context);
         addProducedContainer(container);
         TcpTransportHandler handler = getTransportHandler();

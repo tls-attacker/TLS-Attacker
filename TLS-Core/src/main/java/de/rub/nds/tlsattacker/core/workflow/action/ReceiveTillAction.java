@@ -117,7 +117,7 @@ public class ReceiveTillAction extends CommonReceiveAction {
         List<LayerConfiguration<?>> configurationList = new LinkedList<>();
         configurationList.add(
                 new ReceiveTillLayerConfiguration(ImplementedLayers.MESSAGE, waitTillMessage));
-        return ActionHelperUtil.sortLayerConfigurations(
-                tlsContext.getLayerStack(), false, configurationList);
+        return ActionHelperUtil.sortAndAddOptions(
+                tlsContext.getLayerStack(), false, getActionOptions(), configurationList);
     }
 }
