@@ -15,9 +15,9 @@ import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.context.TcpContext;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
-import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
-import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStreamAdapterStream;
+import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerInputStream;
 import de.rub.nds.tlsattacker.transport.tcp.TcpTransportHandler;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -73,15 +73,20 @@ public class TcpLayer extends ProtocolLayer<LayerProcessingHint, TcpStreamContai
     public void receiveMoreDataForHint(LayerProcessingHint hint) throws IOException {
         // There is nothing we can do here to fill up our stream, either there is data in it
         // or not
-    }
-
-    /** Returns the inputStream associated with the TCP socket. */
-    @Override
-    public HintedInputStream getDataStream() {
-        getTransportHandler().setTimeout(getTransportHandler().getTimeout());
-        currentInputStream =
-                new HintedInputStreamAdapterStream(null, getTransportHandler().getInputStream());
-        return currentInputStream;
+        byte[] receivedTcpData = getTransportHandler().fetchData();
+        TcpStreamContainer tcpStreamContainer = new TcpStreamContainer();
+        tcpStreamContainer
+                .getParser(context, new ByteArrayInputStream(receivedTcpData))
+                .parse(tcpStreamContainer);
+        tcpStreamContainer.getPreparator(context).prepareAfterParse();
+        tcpStreamContainer.getHandler(context).adjustContext(tcpStreamContainer);
+        addProducedContainer(tcpStreamContainer);
+        if (currentInputStream == null) {
+            currentInputStream = new HintedLayerInputStream(null, this);
+            currentInputStream.extendStream(receivedTcpData);
+        } else {
+            currentInputStream.extendStream(receivedTcpData);
+        }
     }
 
     @Override
