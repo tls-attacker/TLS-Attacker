@@ -21,6 +21,7 @@ public class TcpStreamContainerSerializer extends Serializer<TcpStreamContainer>
 
     @Override
     protected byte[] serializeBytes() {
-        return streamContainer.getData().getValue();
+        appendBytes(streamContainer.getData().getValue());
+        return getAlreadySerialized();
     }
 }

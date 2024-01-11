@@ -12,15 +12,16 @@ import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 
 public class UdpDataPacketSerializer extends Serializer<UdpDataPacket> {
 
-    private UdpDataPacket streamContainer;
+    private UdpDataPacket udpDataPacket;
 
-    public UdpDataPacketSerializer(UdpDataPacket streamContainer) {
+    public UdpDataPacketSerializer(UdpDataPacket udpDataPacket) {
         super();
-        this.streamContainer = streamContainer;
+        this.udpDataPacket = udpDataPacket;
     }
 
     @Override
     protected byte[] serializeBytes() {
-        return streamContainer.getData().getValue();
+        appendBytes(udpDataPacket.getData().getValue());
+        return getAlreadySerialized();
     }
 }
