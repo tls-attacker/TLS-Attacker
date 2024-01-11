@@ -11,6 +11,8 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.Modifiable;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.SpecificSendLayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientKeyExchangeMessage;
@@ -20,6 +22,7 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.core.workflow.container.ActionHelperUtil;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.math.BigInteger;
+import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -154,7 +157,10 @@ public class SendRaccoonCkeAction extends CommonSendAction {
         TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
         ClientKeyExchangeMessage message =
                 generateRaccoonDhClientKeyExchangeMessage(tlsContext, withNullByte);
-        return ActionHelperUtil.createSendConfiguration(
-                tlsContext, List.of(message), null, null, null, null, null);
+        List<LayerConfiguration<?>> configurationList = new LinkedList<>();
+        configurationList.add(
+                new SpecificSendLayerConfiguration<>(ImplementedLayers.MESSAGE, message));
+        return ActionHelperUtil.sortLayerConfigurations(
+                tlsContext.getLayerStack(), true, configurationList);
     }
 }

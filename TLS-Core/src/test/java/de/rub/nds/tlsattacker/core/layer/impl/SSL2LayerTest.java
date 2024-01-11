@@ -77,7 +77,7 @@ public class SSL2LayerTest extends TestCase {
             System.out.println(
                     "SendByte: "
                             + ArrayConverter.bytesToHexString(
-                                    transportHandler.getSendByte(), false, false));
+                                    transportHandler.getSentBytes(), false, false));
             assertEquals(
                     tlsContext
                             .getLayerStack()
@@ -87,7 +87,7 @@ public class SSL2LayerTest extends TestCase {
                             .get(i),
                     ssl2HandshakeMessages.get(i));
             assertEquals(
-                    Arrays.toString(transportHandler.getSendByte()),
+                    Arrays.toString(transportHandler.getSentBytes()),
                     Arrays.toString(messageByteList.get(i)));
         }
     }

@@ -39,8 +39,9 @@ public class TcpLayer extends ProtocolLayer<LayerProcessingHint, TcpStreamContai
 
     @Override
     public LayerProcessingResult sendConfiguration() throws IOException {
+        System.out.println("TcpLayer.sendConfiguration(): " + getLayerConfiguration().toString());
         LayerConfiguration<TcpStreamContainer> configuration = getLayerConfiguration();
-        if (configuration != null && configuration.getContainerList() != null) {
+        if (configuration != null) {
             for (TcpStreamContainer container : getUnprocessedConfiguredContainers()) {
                 prepareDataContainer(container, context);
                 addProducedContainer(container);
