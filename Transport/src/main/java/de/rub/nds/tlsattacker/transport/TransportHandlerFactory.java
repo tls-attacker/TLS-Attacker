@@ -18,6 +18,7 @@ import de.rub.nds.tlsattacker.transport.tcp.timing.TimingClientTcpTransportHandl
 import de.rub.nds.tlsattacker.transport.tcp.timing.TimingServerTcpTransportHandler;
 import de.rub.nds.tlsattacker.transport.udp.ClientUdpTransportHandler;
 import de.rub.nds.tlsattacker.transport.udp.ServerUdpTransportHandler;
+import de.rub.nds.tlsattacker.transport.udp.proxy.ProxyClientUdpTransportHandler;
 import de.rub.nds.tlsattacker.transport.udp.timing.TimingClientUdpTransportHandler;
 import de.rub.nds.tlsattacker.transport.udp.timing.TimingServerUdpTransportHandler;
 

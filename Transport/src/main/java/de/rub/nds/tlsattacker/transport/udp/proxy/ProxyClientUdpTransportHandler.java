@@ -46,7 +46,7 @@ import de.rub.nds.tlsattacker.transport.udp.ClientUdpTransportHandler;
         socket.setSoTimeout((int) timeout);
         /* tell the proxy where the real server is */
         byte[] message = (hostname + ":" + Integer.toString(port)).getBytes();
-        DatagramPacket packet = new DatagramPacket(message, message.length)
+        DatagramPacket packet = new DatagramPacket(message, message.length);
         controlSocket.send(packet);
     }
 
