@@ -61,6 +61,9 @@ public abstract class UdpTransportHandler extends PacketbasedTransportHandler {
             setTimeout(timeout);
             DatagramPacket packet = new DatagramPacket(dataBuffer, RECEIVE_BUFFER_SIZE);
             socket.receive(packet);
+            if (!socket.isConnected()) {
+                socket.connect(packet.getSocketAddress());
+            }
             return Arrays.copyOfRange(packet.getData(), 0, packet.getLength());
         }
     }
@@ -74,6 +77,9 @@ public abstract class UdpTransportHandler extends PacketbasedTransportHandler {
         while (outputStream.size() < amountOfData) {
             DatagramPacket packet = new DatagramPacket(dataBuffer, RECEIVE_BUFFER_SIZE);
             socket.receive(packet);
+            if (!socket.isConnected()) {
+                socket.connect(packet.getSocketAddress());
+            }
             outputStream.write(Arrays.copyOfRange(packet.getData(), 0, packet.getLength()));
         }
         // Now we got atleast amount of data bytes. If we got more, cache them
