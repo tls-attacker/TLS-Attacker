@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.IOException;
 import java.net.DatagramSocket;
+import java.net.InetSocketAddress;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,8 +22,6 @@ public class ClientUdpTransportHandler extends UdpTransportHandler {
 
     protected String ipv4;
 
-    protected String ipv6;
-
     protected String hostname;
 
     protected Integer sourcePort;
@@ -30,15 +29,14 @@ public class ClientUdpTransportHandler extends UdpTransportHandler {
     public ClientUdpTransportHandler(Connection con) {
         super(con);
         this.ipv4 = con.getIp();
-        this.ipv6 = con.getIpv6();
         this.hostname = con.getHostname();
         this.port = con.getPort();
         this.sourcePort = con.getSourcePort();
     }
 
-    public ClientUdpTransportHandler(long timeout, String ipv4, int port) {
+    public ClientUdpTransportHandler(long timeout, String ipAddress, int port) {
         super(timeout, ConnectionEndType.CLIENT);
-        this.ipv4 = ipv4;
+        this.ipv4 = ipAddress;
         this.port = port;
     }
 
@@ -55,6 +53,7 @@ public class ClientUdpTransportHandler extends UdpTransportHandler {
         } else {
             socket = new DatagramSocket(sourcePort);
         }
+        socket.connect(new InetSocketAddress(ipv4, port));
         socket.setSoTimeout((int) timeout);
         cachedSocketState = null;
         this.initialized = true;
