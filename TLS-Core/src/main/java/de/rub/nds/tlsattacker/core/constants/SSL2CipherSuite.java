@@ -9,14 +9,13 @@
 package de.rub.nds.tlsattacker.core.constants;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import org.bouncycastle.util.Arrays;
 
-public enum SSL2CipherSuite implements Serializable {
+public enum SSL2CipherSuite {
     SSL_CK_RC4_128_WITH_MD5(0x010080, 16, 0, 0),
     SSL_CK_RC4_128_EXPORT40_WITH_MD5(0x020080, 5, 11, 0),
     SSL_CK_RC2_128_CBC_WITH_MD5(0x030080, 16, 0, 8),
