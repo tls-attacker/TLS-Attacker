@@ -1,14 +1,21 @@
+/*
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
+ *
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
+ */
 package de.rub.nds.tlsattacker.transport.udp.proxy;
-
-import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
 
 import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ProxyableTransportHandler;
 import de.rub.nds.tlsattacker.transport.udp.ClientUdpTransportHandler;
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
 
-    public class ProxyClientUdpTransportHandler extends ClientUdpTransportHandler
+public class ProxyClientUdpTransportHandler extends ClientUdpTransportHandler
         implements ProxyableTransportHandler {
 
     protected DatagramSocket controlSocket;
@@ -67,5 +74,4 @@ import de.rub.nds.tlsattacker.transport.udp.ClientUdpTransportHandler;
     public boolean isClosed() throws IOException {
         return socket.isClosed() || controlSocket.isClosed();
     }
-}
 }
