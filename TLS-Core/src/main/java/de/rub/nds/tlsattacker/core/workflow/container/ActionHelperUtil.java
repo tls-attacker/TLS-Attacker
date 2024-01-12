@@ -60,9 +60,9 @@ public class ActionHelperUtil {
             boolean sending,
             Set<ActionOption> actionOptions,
             List<LayerConfiguration<?>> unsortedLayerConfigurations) {
-        unsortedLayerConfigurations =
+        List<LayerConfiguration<?>> sortedLayerConfigurations =
                 sortLayerConfigurations(layerStack, sending, unsortedLayerConfigurations);
-        return applyAllMessageFilters(unsortedLayerConfigurations, actionOptions);
+        return applyAllMessageFilters(sortedLayerConfigurations, actionOptions);
     }
 
     public static List<LayerConfiguration<?>> applyAllMessageFilters(
