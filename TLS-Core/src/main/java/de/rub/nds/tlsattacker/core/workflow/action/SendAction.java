@@ -190,6 +190,14 @@ public class SendAction extends CommonSendAction implements StaticSendingAction 
         this.configuredQuicPackets = configuredQuicPackets;
     }
 
+    public List<SSL2Message> getConfiguredSSL2Messages() {
+        return configuredSSL2Messages;
+    }
+
+    public void setConfiguredSSL2Messages(List<SSL2Message> configuredSSL2Messages) {
+        this.configuredSSL2Messages = configuredSSL2Messages;
+    }
+
     @Override
     public String toString() {
         return "SendAction: "
@@ -215,6 +223,13 @@ public class SendAction extends CommonSendAction implements StaticSendingAction 
                 holders.addAll(message.getAllModifiableVariableHolders());
             }
         }
+
+        if (configuredSSL2Messages != null) {
+            for (SSL2Message message : configuredSSL2Messages) {
+                holders.addAll(message.getAllModifiableVariableHolders());
+            }
+        }
+
         if (configuredRecords != null) {
             for (Record record : configuredRecords) {
                 holders.addAll(record.getAllModifiableVariableHolders());
@@ -278,6 +293,11 @@ public class SendAction extends CommonSendAction implements StaticSendingAction 
                     new SpecificReceiveLayerConfiguration<>(
                             ImplementedLayers.MESSAGE, getConfiguredMessages()));
         }
+        if (getConfiguredSSL2Messages() != null) {
+            configurationList.add(
+                    new SpecificReceiveLayerConfiguration<>(
+                            ImplementedLayers.SSL2, getConfiguredSSL2Messages()));
+        }
         if (getConfiguredDtlsHandshakeMessageFragments() != null) {
             configurationList.add(
                     new SpecificReceiveLayerConfiguration<>(
@@ -324,6 +344,9 @@ public class SendAction extends CommonSendAction implements StaticSendingAction 
         }
         if (configuredQuicPackets != null) {
             dataContainerLists.add((List<DataContainer<?>>) (List<?>) configuredQuicPackets);
+        }
+        if (configuredSSL2Messages != null) {
+            dataContainerLists.add((List<DataContainer<?>>) (List<?>) configuredSSL2Messages);
         }
         return dataContainerLists;
     }

@@ -217,6 +217,18 @@ public class ReceiveAction extends CommonReceiveAction implements StaticReceivin
         this.expectedMessages = new ArrayList<>(Arrays.asList(expectedMessages));
     }
 
+    public List<SSL2Message> getExpectedSSL2Messages() {
+        return expectedSSL2Messages;
+    }
+
+    public void setExpectedSSL2Messages(List<SSL2Message> expectedSSL2Messages) {
+        this.expectedSSL2Messages = expectedSSL2Messages;
+    }
+
+    public void setExpectedSSL2Messages(SSL2Message... expectedSSL2Messages) {
+        this.expectedSSL2Messages = new ArrayList<>(Arrays.asList(expectedSSL2Messages));
+    }
+
     public List<HttpMessage> getExpectedHttpMessages() {
         return expectedHttpMessages;
     }
@@ -261,16 +273,25 @@ public class ReceiveAction extends CommonReceiveAction implements StaticReceivin
     protected List<LayerConfiguration<?>> createLayerConfiguration(State state) {
         TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
         List<LayerConfiguration<?>> configurationList = new LinkedList<>();
-        if (getExpectedRecords() != null) {
-            configurationList.add(
-                    new SpecificReceiveLayerConfiguration<>(
-                            ImplementedLayers.RECORD, getExpectedRecords()));
-        }
+
         if (getExpectedMessages() != null) {
             configurationList.add(
                     new SpecificReceiveLayerConfiguration<>(
                             ImplementedLayers.MESSAGE, getExpectedMessages()));
         }
+
+        if (getExpectedSSL2Messages() != null) {
+            configurationList.add(
+                    new SpecificReceiveLayerConfiguration<>(
+                            ImplementedLayers.SSL2, getExpectedSSL2Messages()));
+        }
+
+        if (getExpectedRecords() != null) {
+            configurationList.add(
+                    new SpecificReceiveLayerConfiguration<>(
+                            ImplementedLayers.RECORD, getExpectedRecords()));
+        }
+
         if (getExpectedDtlsFragments() != null) {
             configurationList.add(
                     new SpecificReceiveLayerConfiguration<>(
@@ -303,6 +324,9 @@ public class ReceiveAction extends CommonReceiveAction implements StaticReceivin
         }
         if (expectedMessages != null) {
             dataContainerLists.add((List<DataContainer<?>>) (List<?>) expectedMessages);
+        }
+        if (expectedSSL2Messages != null) {
+            dataContainerLists.add((List<DataContainer<?>>) (List<?>) expectedSSL2Messages);
         }
         if (expectedDtlsFragments != null) {
             dataContainerLists.add((List<DataContainer<?>>) (List<?>) expectedDtlsFragments);
