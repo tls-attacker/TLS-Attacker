@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
+import de.rub.nds.tlsattacker.core.protocol.message.SSL2Message;
 import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.record.Record;
@@ -66,6 +67,11 @@ public class DummySendingAction extends MessageAction
         List<List<DataContainer<?>>> lists = new LinkedList<>();
         lists.add((List<DataContainer<?>>) (List<?>) configuredMessages);
         return lists;
+    }
+
+    @Override
+    public List<SSL2Message> getSentSSL2Messages() {
+        throw new UnsupportedOperationException("Unimplemented method 'getSentSSL2Messages'");
     }
 
     @Override

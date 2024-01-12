@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.http.HttpMessage;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.SSL2Message;
 import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
@@ -40,6 +41,18 @@ public class MessageActionFactory {
                 new ArrayList<>(Arrays.asList(protocolMessages)));
     }
 
+    public static MessageAction createSSL2Action(
+            Config tlsConfig,
+            AliasedConnection connection,
+            ConnectionEndType sendingConnectionEndType,
+            SSL2Message... ssl2Messages) {
+        return createSSL2Action(
+                tlsConfig,
+                connection,
+                sendingConnectionEndType,
+                new ArrayList<>(Arrays.asList(ssl2Messages)));
+    }
+
     public static MessageAction createHttpAction(
             Config tlsConfig,
             AliasedConnection connection,
@@ -66,6 +79,28 @@ public class MessageActionFactory {
             action = new SendAction(protocolMessages);
         } else {
             action = new ReceiveAction(getFactoryReceiveActionOptions(tlsConfig), protocolMessages);
+        }
+        action.setConnectionAlias(connection.getAlias());
+        return action;
+    }
+
+    public static MessageAction createSSL2Action(
+            Config tlsConfig,
+            AliasedConnection connection,
+            ConnectionEndType sendingConnectionEnd,
+            List<SSL2Message> ssl2Messages) {
+        MessageAction action;
+        if (connection.getLocalConnectionEndType() == sendingConnectionEnd) {
+            action =
+                    new SendAction(
+                            (SSL2Message[])
+                                    ssl2Messages.toArray(new SSL2Message[ssl2Messages.size()]));
+        } else {
+            action =
+                    new ReceiveAction(
+                            getFactoryReceiveActionOptions(tlsConfig),
+                            (SSL2Message[])
+                                    ssl2Messages.toArray(new SSL2Message[ssl2Messages.size()]));
         }
         action.setConnectionAlias(connection.getAlias());
         return action;

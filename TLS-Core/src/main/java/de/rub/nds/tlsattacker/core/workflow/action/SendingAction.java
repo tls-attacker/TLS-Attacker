@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.tcp.TcpStreamContainer;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
+import de.rub.nds.tlsattacker.core.protocol.message.SSL2Message;
 import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.record.Record;
@@ -21,6 +22,8 @@ import java.util.Set;
 public interface SendingAction {
 
     public abstract List<ProtocolMessage> getSentMessages();
+
+    public abstract List<SSL2Message> getSentSSL2Messages();
 
     public abstract List<Record> getSentRecords();
 

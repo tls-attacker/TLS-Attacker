@@ -19,6 +19,7 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.printer.LogPrinter;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
+import de.rub.nds.tlsattacker.core.protocol.message.SSL2Message;
 import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.record.Record;
@@ -197,6 +198,18 @@ public abstract class CommonForwardAction extends TlsAction
     }
 
     @Override
+    public List<SSL2Message> getReceivedSSL2Messages() {
+        if (layerStackReceiveResult == null) {
+            return null;
+        }
+        return ActionHelperUtil.getDataContainersForLayer(
+                        ImplementedLayers.SSL2, layerStackReceiveResult)
+                .stream()
+                .map(container -> (SSL2Message) container)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public List<Record> getReceivedRecords() {
         if (layerStackReceiveResult == null) {
             return null;
@@ -277,6 +290,18 @@ public abstract class CommonForwardAction extends TlsAction
                         ImplementedLayers.MESSAGE, layerStackSendResult)
                 .stream()
                 .map(container -> (ProtocolMessage) container)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public final List<SSL2Message> getSentSSL2Messages() {
+        if (layerStackSendResult == null) {
+            return null;
+        }
+        return ActionHelperUtil.getDataContainersForLayer(
+                        ImplementedLayers.SSL2, layerStackSendResult)
+                .stream()
+                .map(container -> (SSL2Message) container)
                 .collect(Collectors.toList());
     }
 

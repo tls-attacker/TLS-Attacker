@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.http.HttpMessage;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
+import de.rub.nds.tlsattacker.core.protocol.message.SSL2Message;
 import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.record.Record;
@@ -54,6 +55,11 @@ public class DummyReceivingAction extends MessageAction
     @Override
     public List<Record> getReceivedRecords() {
         return expectedRecords;
+    }
+
+    @Override
+    public List<SSL2Message> getReceivedSSL2Messages() {
+        throw new UnsupportedOperationException("Unimplemented method 'getReceivedSSL2Messages'");
     }
 
     @Override

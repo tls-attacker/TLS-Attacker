@@ -18,6 +18,7 @@ import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.printer.LogPrinter;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
+import de.rub.nds.tlsattacker.core.protocol.message.SSL2Message;
 import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.record.Record;
@@ -42,6 +43,9 @@ public class ReceiveAction extends CommonReceiveAction implements StaticReceivin
 
     @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
     protected List<ProtocolMessage> expectedMessages;
+
+    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
+    protected List<SSL2Message> expectedSSL2Messages;
 
     @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
     protected List<Record> expectedRecords;
@@ -145,6 +149,15 @@ public class ReceiveAction extends CommonReceiveAction implements StaticReceivin
 
     public ReceiveAction(Set<ActionOption> actionOptions, ProtocolMessage... messages) {
         this(actionOptions, new ArrayList<>(Arrays.asList(messages)));
+    }
+
+    public ReceiveAction(Set<ActionOption> actionOptions, SSL2Message... messages) {
+        setActionOptions(actionOptions);
+        this.expectedSSL2Messages = new ArrayList<>(Arrays.asList(messages));
+    }
+
+    public ReceiveAction(SSL2Message... messages) {
+        this.expectedSSL2Messages = new ArrayList<>(Arrays.asList(messages));
     }
 
     public ReceiveAction(ActionOption actionOption, List<ProtocolMessage> messages) {

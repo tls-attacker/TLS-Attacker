@@ -64,7 +64,7 @@ public class ParserSerializerIT extends GenericParserSerializerTest {
                 continue;
             }
 
-            if (message instanceof HandshakeMessage && !(message instanceof SSL2Message)) {
+            if (message instanceof HandshakeMessage) {
                 // TODO: review if this test can be applied to HandshakeMessage's
                 continue;
             }

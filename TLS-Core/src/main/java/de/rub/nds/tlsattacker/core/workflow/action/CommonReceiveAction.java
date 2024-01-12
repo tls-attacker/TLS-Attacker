@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.printer.LogPrinter;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
+import de.rub.nds.tlsattacker.core.protocol.message.SSL2Message;
 import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.record.Record;
@@ -96,6 +97,18 @@ public abstract class CommonReceiveAction extends MessageAction implements Recei
                         ImplementedLayers.MESSAGE, getLayerStackProcessingResult())
                 .stream()
                 .map(container -> (ProtocolMessage) container)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<SSL2Message> getReceivedSSL2Messages() {
+        if (getLayerStackProcessingResult() == null) {
+            return null;
+        }
+        return ActionHelperUtil.getDataContainersForLayer(
+                        ImplementedLayers.SSL2, getLayerStackProcessingResult())
+                .stream()
+                .map(container -> (SSL2Message) container)
                 .collect(Collectors.toList());
     }
 

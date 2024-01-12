@@ -14,10 +14,10 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.SSL2MessageType;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageSerializer;
 import de.rub.nds.tlsattacker.core.protocol.handler.SSL2ServerVerifyHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.SSL2ServerVerifyParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.SSL2ServerVerifyPreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.SSL2MessageSerializer;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.Objects;
@@ -60,7 +60,7 @@ public class SSL2ServerVerifyMessage extends SSL2Message {
     }
 
     @Override
-    public ProtocolMessageSerializer<SSL2ServerVerifyMessage> getSerializer(TlsContext tlsContext) {
+    public SSL2MessageSerializer<SSL2ServerVerifyMessage> getSerializer(TlsContext tlsContext) {
         // We currently don't send ServerVerify messages, only receive them.
         return null;
     }

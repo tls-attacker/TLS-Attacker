@@ -12,6 +12,7 @@ import de.rub.nds.tcp.TcpStreamContainer;
 import de.rub.nds.tlsattacker.core.http.HttpMessage;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
+import de.rub.nds.tlsattacker.core.protocol.message.SSL2Message;
 import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.record.Record;
@@ -22,6 +23,8 @@ import java.util.Set;
 public interface ReceivingAction {
 
     List<ProtocolMessage> getReceivedMessages();
+
+    List<SSL2Message> getReceivedSSL2Messages();
 
     List<Record> getReceivedRecords();
 

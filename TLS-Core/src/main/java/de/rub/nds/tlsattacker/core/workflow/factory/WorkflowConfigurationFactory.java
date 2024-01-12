@@ -514,11 +514,11 @@ public class WorkflowConfigurationFactory {
                 factory.createTlsEntryWorkflowTrace(config.getDefaultClientConnection());
 
         MessageAction action =
-                MessageActionFactory.createTLSAction(
+                MessageActionFactory.createSSL2Action(
                         config, connection, ConnectionEndType.CLIENT, new SSL2ClientHelloMessage());
         trace.addTlsAction(action);
         action =
-                MessageActionFactory.createTLSAction(
+                MessageActionFactory.createSSL2Action(
                         config, connection, ConnectionEndType.SERVER, new SSL2ServerHelloMessage());
         trace.addTlsAction(action);
         return trace;

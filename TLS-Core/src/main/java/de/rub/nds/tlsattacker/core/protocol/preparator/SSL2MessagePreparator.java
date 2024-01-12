@@ -8,19 +8,23 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerVerifyMessage;
+import de.rub.nds.tlsattacker.core.layer.data.Preparator;
+import de.rub.nds.tlsattacker.core.protocol.message.SSL2Message;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
-public class SSL2ServerVerifyPreparator extends SSL2MessagePreparator<SSL2ServerVerifyMessage> {
+public abstract class SSL2MessagePreparator<T extends SSL2Message> extends Preparator<T> {
 
-    public SSL2ServerVerifyPreparator(Chooser chooser, SSL2ServerVerifyMessage message) {
+    protected final T message;
+
+    public SSL2MessagePreparator(Chooser chooser, T message) {
         super(chooser, message);
+        this.message = message;
     }
 
     @Override
-    protected void prepareProtocolMessageContents() {
-        throw new UnsupportedOperationException("Not supported Yet");
+    public final void prepare() {
+        prepareProtocolMessageContents();
     }
 
-    public void prepareAfterParse() {}
+    protected abstract void prepareProtocolMessageContents();
 }

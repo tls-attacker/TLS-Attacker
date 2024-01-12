@@ -22,6 +22,7 @@ import de.rub.nds.tlsattacker.core.printer.LogPrinter;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.SSL2Message;
 import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.record.Record;
@@ -46,6 +47,9 @@ public class SendAction extends CommonSendAction implements StaticSendingAction 
 
     @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
     protected List<ProtocolMessage> configuredMessages;
+
+    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
+    protected List<SSL2Message> configuredSSL2Messages;
 
     @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
     protected List<DtlsHandshakeMessageFragment> configuredDtlsHandshakeMessageFragments;
@@ -113,6 +117,10 @@ public class SendAction extends CommonSendAction implements StaticSendingAction 
 
     public SendAction(ProtocolMessage... messages) {
         this(new ArrayList<>(Arrays.asList(messages)));
+    }
+
+    public SendAction(SSL2Message... messages) {
+        this.configuredSSL2Messages = new ArrayList<>(Arrays.asList(messages));
     }
 
     public SendAction(String connectionAlias) {

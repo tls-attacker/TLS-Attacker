@@ -9,14 +9,16 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerVerifyMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.UnknownSSL2Message;
 
-public class SSL2ServerVerifyHandler extends SSL2MessageHandler<SSL2ServerVerifyMessage> {
+public class UnknownSSL2MessageHandler extends SSL2MessageHandler<UnknownSSL2Message> {
 
-    public SSL2ServerVerifyHandler(TlsContext tlsContext) {
+    public UnknownSSL2MessageHandler(TlsContext tlsContext) {
         super(tlsContext);
     }
 
     @Override
-    public void adjustContext(SSL2ServerVerifyMessage message) {}
+    public void adjustContext(UnknownSSL2Message message) {
+        // Nothing to do
+    }
 }

@@ -18,11 +18,9 @@ import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.constants.ssl.SSL2ByteLength;
 import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
-import de.rub.nds.tlsattacker.core.protocol.message.SSL2Message;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -207,15 +205,12 @@ public class CyclicParserSerializerTest {
         byte[] serializedMessage = serializer.serialize();
 
         byte[] messageHeader = null;
-        if (message.getProtocolMessageType() == ProtocolMessageType.HANDSHAKE
-                || message instanceof SSL2Message) {
+        if (message.getProtocolMessageType() == ProtocolMessageType.HANDSHAKE) {
             int handshakeHeaderLength;
-            if (message instanceof SSL2Message) {
-                handshakeHeaderLength = SSL2ByteLength.LENGTH + SSL2ByteLength.MESSAGE_TYPE;
-            } else {
-                handshakeHeaderLength =
-                        HandshakeByteLength.MESSAGE_TYPE + HandshakeByteLength.MESSAGE_LENGTH_FIELD;
-            }
+
+            handshakeHeaderLength =
+                    HandshakeByteLength.MESSAGE_TYPE + HandshakeByteLength.MESSAGE_LENGTH_FIELD;
+
             messageHeader = Arrays.copyOfRange(serializedMessage, 0, handshakeHeaderLength);
             serializedMessage =
                     Arrays.copyOfRange(
@@ -232,8 +227,7 @@ public class CyclicParserSerializerTest {
         }
 
         serializer = message.getSerializer(context);
-        if (message.getProtocolMessageType() == ProtocolMessageType.HANDSHAKE
-                || message instanceof SSL2Message) {
+        if (message.getProtocolMessageType() == ProtocolMessageType.HANDSHAKE) {
             assertArrayEquals(
                     ArrayConverter.concatenate(messageHeader, serializedMessage),
                     serializer.serialize());

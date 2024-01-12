@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.layer.constant;
 
+import de.rub.nds.tcp.TcpStreamContainer;
 import de.rub.nds.tlsattacker.core.http.HttpMessage;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
@@ -15,11 +16,12 @@ import de.rub.nds.tlsattacker.core.protocol.message.SSL2Message;
 import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.udp.UdpDataPacket;
 
 /** Holds all implemented layers of the TLS-Core, not limited to any layer of the ISO stack */
 public enum ImplementedLayers implements LayerType {
-    TCP(null),
-    UDP(null),
+    TCP(TcpStreamContainer.class),
+    UDP(UdpDataPacket.class),
     // Record + Message layer are both part of TLS
     RECORD(Record.class),
     MESSAGE(ProtocolMessage.class),

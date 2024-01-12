@@ -21,16 +21,20 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.hints.RecordLayerHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageHandler;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessagePreparator;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageSerializer;
-import de.rub.nds.tlsattacker.core.protocol.message.*;
+import de.rub.nds.tlsattacker.core.protocol.handler.SSL2MessageHandler;
+import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientMasterKeyMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.SSL2Message;
+import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerVerifyMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.UnknownSSL2Message;
+import de.rub.nds.tlsattacker.core.protocol.preparator.SSL2MessagePreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.SSL2MessageSerializer;
 import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class SSL2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessage> {
+public class SSL2Layer extends ProtocolLayer<LayerProcessingHint, SSL2Message> {
 
     private static final Logger LOGGER = LogManager.getLogger();
     private TlsContext context;
@@ -42,17 +46,17 @@ public class SSL2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
     @Override
     public LayerProcessingResult sendConfiguration() throws IOException {
-        LayerConfiguration<ProtocolMessage> configuration = getLayerConfiguration();
+        LayerConfiguration<SSL2Message> configuration = getLayerConfiguration();
         if (configuration != null
                 && configuration.getContainerList() != null
                 && !configuration.getContainerList().isEmpty()) {
-            for (ProtocolMessage ssl2message : getUnprocessedConfiguredContainers()) {
-                ProtocolMessagePreparator preparator = ssl2message.getPreparator(context);
+            for (SSL2Message ssl2message : getUnprocessedConfiguredContainers()) {
+                SSL2MessagePreparator preparator = ssl2message.getPreparator(context);
                 preparator.prepare();
                 preparator.afterPrepare();
-                ProtocolMessageHandler handler = ssl2message.getHandler(context);
+                SSL2MessageHandler handler = ssl2message.getHandler(context);
                 handler.adjustContext(ssl2message);
-                ProtocolMessageSerializer serializer = ssl2message.getSerializer(context);
+                SSL2MessageSerializer serializer = ssl2message.getSerializer(context);
                 byte[] serializedMessage = serializer.serialize();
                 ssl2message.setCompleteResultingMessage(serializedMessage);
                 handler.adjustContextAfterSerialize(ssl2message);

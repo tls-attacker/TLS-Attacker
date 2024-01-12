@@ -209,7 +209,16 @@ public class LayerStack {
                 return layer;
             }
         }
-        throw new RuntimeException("No configured layer found. All layers are ignored.");
+        StringBuilder debugInformation = new StringBuilder();
+        for (ProtocolLayer layer : getLayerList()) {
+            debugInformation.append(layer.getLayerType());
+            debugInformation.append(" ");
+            debugInformation.append(layer.getLayerConfiguration());
+            debugInformation.append("\n");
+        }
+        throw new RuntimeException(
+                "No configured layer found. All layers are ignored. "
+                        + debugInformation.toString());
     }
 
     /**
