@@ -90,15 +90,20 @@ public class SSL2Layer extends ProtocolLayer<LayerProcessingHint, SSL2Message> {
 
                 dataStream = getLowerLayer().getDataStream();
                 totalHeader = dataStream.readNBytes(SSL2ByteLength.LENGTH);
-
-                if (SSL2TotalHeaderLengths.isNoPaddingHeader(totalHeader[0])) {
-                    messageLength = resolveUnpaddedMessageLength(totalHeader);
-                    paddingLength = 0x00;
+                if (totalHeader.length != SSL2ByteLength.LENGTH) {
+                    LOGGER.warn(
+                            "Could not read enough bytes for SSL2 message header, parsing as unknown SSL2 message");
+                    messageType = SSL2MessageType.SSL_UNKNOWN;
                 } else {
-                    messageLength = resolvePaddedMessageLength(totalHeader);
-                    paddingLength = dataStream.readByte();
+                    if (SSL2TotalHeaderLengths.isNoPaddingHeader(totalHeader[0])) {
+                        messageLength = resolveUnpaddedMessageLength(totalHeader);
+                        paddingLength = 0x00;
+                    } else {
+                        messageLength = resolvePaddedMessageLength(totalHeader);
+                        paddingLength = dataStream.readByte();
+                    }
+                    messageType = SSL2MessageType.getMessageType(dataStream.readByte());
                 }
-                messageType = SSL2MessageType.getMessageType(dataStream.readByte());
             } catch (IOException e) {
                 LOGGER.warn(
                         "Failed to parse SSL2 message header, parsing as unknown SSL2 message", e);
