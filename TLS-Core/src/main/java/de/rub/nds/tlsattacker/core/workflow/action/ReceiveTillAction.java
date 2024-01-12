@@ -116,7 +116,8 @@ public class ReceiveTillAction extends CommonReceiveAction {
         TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
         List<LayerConfiguration<?>> configurationList = new LinkedList<>();
         configurationList.add(
-                new ReceiveTillLayerConfiguration(ImplementedLayers.MESSAGE, waitTillMessage));
+                new ReceiveTillLayerConfiguration<ProtocolMessage>(
+                        ImplementedLayers.MESSAGE, waitTillMessage));
         return ActionHelperUtil.sortAndAddOptions(
                 tlsContext.getLayerStack(), false, getActionOptions(), configurationList);
     }
