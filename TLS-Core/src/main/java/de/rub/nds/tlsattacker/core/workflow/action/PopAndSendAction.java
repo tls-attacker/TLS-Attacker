@@ -68,7 +68,7 @@ public class PopAndSendAction extends CommonSendAction {
                 + index
                 + " message: "
                 + messageString
-                + " exexuted: "
+                + " executed: "
                 + isExecuted()
                 + " couldPop: "
                 + couldPop
