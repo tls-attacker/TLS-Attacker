@@ -73,12 +73,12 @@ public abstract class CommonSendAction extends MessageAction implements SendingA
             if (hasDefaultAlias()) {
                 LOGGER.info(
                         "Sending messages: {}",
-                        LogPrinter.toHumanReadableOneLine(layerConfigurations));
+                        LogPrinter.toHumanReadableOneLine(layerConfigurations, LOGGER.getLevel()));
             } else {
                 LOGGER.info(
                         "Sending messages ({}): {}",
                         connectionAlias,
-                        LogPrinter.toHumanReadableOneLine(layerConfigurations));
+                        LogPrinter.toHumanReadableOneLine(layerConfigurations, LOGGER.getLevel()));
             }
             try {
                 getSendResult(tlsContext.getLayerStack(), layerConfigurations);

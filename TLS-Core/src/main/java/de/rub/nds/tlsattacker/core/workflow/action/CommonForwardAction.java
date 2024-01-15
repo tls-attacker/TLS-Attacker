@@ -95,7 +95,7 @@ public abstract class CommonForwardAction extends TlsAction
             LOGGER.info(
                     "Receiving messages ({}): {}",
                     receiveFromAlias,
-                    LogPrinter.toHumanReadableOneLine(layerConfigurationList));
+                    LogPrinter.toHumanReadableOneLine(layerConfigurationList, LOGGER.getLevel()));
             layerStackReceiveResult =
                     receiveFromContext.getLayerStack().receiveData(layerConfigurationList);
         }

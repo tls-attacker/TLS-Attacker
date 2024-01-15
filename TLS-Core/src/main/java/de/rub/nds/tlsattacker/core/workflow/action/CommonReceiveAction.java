@@ -62,17 +62,20 @@ public abstract class CommonReceiveAction extends MessageAction implements Recei
         getReceiveResult(tlsContext.getLayerStack(), layerConfigurations);
         setExecuted(true);
         LOGGER.debug(
-                "Receive Expected: {}", LogPrinter.toHumanReadableOneLine(layerConfigurations));
+                "Receive Expected: {}",
+                LogPrinter.toHumanReadableOneLine(layerConfigurations, LOGGER.getLevel()));
 
         if (hasDefaultAlias()) {
             LOGGER.info(
                     "Received Messages: {}",
-                    LogPrinter.toHumanReadableMultiLine(getLayerStackProcessingResult()));
+                    LogPrinter.toHumanReadableMultiLine(
+                            getLayerStackProcessingResult(), LOGGER.getLevel()));
         } else {
             LOGGER.info(
                     "Received Messages ({}): {}",
                     getConnectionAlias(),
-                    LogPrinter.toHumanReadableMultiLine(getLayerStackProcessingResult()));
+                    LogPrinter.toHumanReadableMultiLine(
+                            getLayerStackProcessingResult(), LOGGER.getLevel()));
         }
     }
 

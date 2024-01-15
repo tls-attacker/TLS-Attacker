@@ -190,11 +190,12 @@ public class ReceiveAction extends CommonReceiveAction implements StaticReceivin
                         + (isExecuted() ? "\n" : "(not executed)\n")
                         + "\tExpected: "
                         + LogPrinter.toHumanReadableMultiLineContainerListArray(
-                                getExpectedDataContainerLists());
+                                getExpectedDataContainerLists(), LOGGER.getLevel());
         if (isExecuted()) {
             string +=
                     "\n\tActual: "
-                            + LogPrinter.toHumanReadableMultiLine(getLayerStackProcessingResult());
+                            + LogPrinter.toHumanReadableMultiLine(
+                                    getLayerStackProcessingResult(), LOGGER.getLevel());
         }
         return string;
     }
@@ -202,7 +203,7 @@ public class ReceiveAction extends CommonReceiveAction implements StaticReceivin
     @Override
     public String toCompactString() {
         return LogPrinter.toHumanReadableMultiLineContainerListArray(
-                getExpectedDataContainerLists());
+                getExpectedDataContainerLists(), LOGGER.getLevel());
     }
 
     public List<ProtocolMessage> getExpectedMessages() {

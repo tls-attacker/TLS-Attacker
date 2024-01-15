@@ -62,7 +62,8 @@ public class PopAndSendAction extends CommonSendAction {
         String messageString =
                 LogPrinter.toHumanReadableContainerList(
                         ActionHelperUtil.getDataContainersForLayer(
-                                ImplementedLayers.MESSAGE, getLayerStackProcessingResult()));
+                                ImplementedLayers.MESSAGE, getLayerStackProcessingResult()),
+                        LOGGER.getLevel());
         return "PopAndSendAction: index: "
                 + index
                 + " message: "

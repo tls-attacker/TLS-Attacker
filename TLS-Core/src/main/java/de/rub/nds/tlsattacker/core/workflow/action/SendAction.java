@@ -204,14 +204,14 @@ public class SendAction extends CommonSendAction implements StaticSendingAction 
                 + (isExecuted() ? "\n" : "(not executed)\n")
                 + "\tMessages: "
                 + LogPrinter.toHumanReadableMultiLineContainerListArray(
-                        getConfiguredDataContainerLists());
+                        getConfiguredDataContainerLists(), LOGGER.getLevel());
     }
 
     @Override
     public String toCompactString() {
         return super.toCompactString()
                 + LogPrinter.toHumanReadableMultiLineContainerListArray(
-                        getConfiguredDataContainerLists());
+                        getConfiguredDataContainerLists(), LOGGER.getLevel());
     }
 
     @Override
