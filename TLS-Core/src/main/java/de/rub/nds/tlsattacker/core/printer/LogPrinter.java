@@ -48,6 +48,13 @@ public class LogPrinter {
     }
 
     public static String toHumanReadableContainerList(List<DataContainer<?>> containerList) {
+        if (containerList == null) {
+            return "null";
+        }
+        if (containerList.isEmpty()) {
+            return "empty";
+        }
+
         StringBuilder sb = new StringBuilder();
         StringJoiner joiner = new StringJoiner(", ");
         for (DataContainer<?> container : containerList) {
