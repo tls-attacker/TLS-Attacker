@@ -152,8 +152,6 @@ public class WorkflowConfigurationFactoryTest {
                         WorkflowTraceType.HELLO, RunningModeType.CLIENT);
 
         firstAction = helloWorkflow.getMessageActions().get(0);
-        clientHelloMessage = (ClientHelloMessage) extractMessages(firstAction).get(0);
-
         assertTrue(helloWorkflow.getMessageActions().size() >= 4);
         assertNotNull(helloWorkflow.getMessageActions().get(1));
         assertNotNull(helloWorkflow.getMessageActions().get(2));

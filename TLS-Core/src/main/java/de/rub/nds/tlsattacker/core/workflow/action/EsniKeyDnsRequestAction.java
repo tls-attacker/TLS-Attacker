@@ -125,7 +125,6 @@ public class EsniKeyDnsRequestAction extends TlsAction {
         tlsContext.setEsniPaddedLength(esniKeyRecord.getPaddedLength());
         tlsContext.setEsniKeysNotBefore(esniKeyRecord.getNotBefore());
         tlsContext.setEsniKeysNotAfter(esniKeyRecord.getNotAfter());
-        extensions = esniKeyRecord.getExtensions();
         asPlanned = true;
         setExecuted(true);
     }

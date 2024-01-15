@@ -62,13 +62,10 @@ public class ThreadedServerWorkflowExecutor extends WorkflowExecutor {
                 // option, like loopback
                 tempBindAddr = InetAddress.getLoopbackAddress();
             }
-            bindAddr = tempBindAddr;
             // Java did not allow me to set the bindAddr field in the
             // *single line* try block and the catch block at the same
             // time, because it might already be set...
             // So now we have a temporary variable as a workaround
-        } else {
-            bindAddr = null;
         }
         this.pool = pool;
         addHook();
