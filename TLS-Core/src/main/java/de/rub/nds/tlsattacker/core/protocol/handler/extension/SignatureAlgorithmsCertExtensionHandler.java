@@ -8,6 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAlgorithmsCertExtensionMessage;
+import java.util.List;
+
 public class SignatureAlgorithmsCertExtensionHandler
         extends ExtensionHandler<SignatureAlgorithmsCertExtensionMessage> {
 
