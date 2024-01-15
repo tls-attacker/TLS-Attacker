@@ -10,6 +10,8 @@ package de.rub.nds.udp;
 
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import de.rub.nds.tlsattacker.transport.TransportHandler;
+import de.rub.nds.tlsattacker.transport.udp.UdpTransportHandler;
 
 public class UdpDataPacketPreparator extends Preparator<UdpDataPacket> {
 
@@ -20,5 +22,22 @@ public class UdpDataPacketPreparator extends Preparator<UdpDataPacket> {
     @Override
     public void prepare() {
         getObject().setData(getObject().getConfigData());
+        setUdpHeader();
+    }
+
+    @Override
+    public void prepareAfterParse() {
+        setUdpHeader();
+    }
+
+    public void setUdpHeader() {
+        TransportHandler transportHandler = chooser.getContext().getTransportHandler();
+        if (transportHandler instanceof UdpTransportHandler) {
+            UdpTransportHandler udpTransportHandler = (UdpTransportHandler) transportHandler;
+            getObject().setDestinationPort(udpTransportHandler.getDstPort());
+            getObject().setSourcePort(udpTransportHandler.getSrcPort());
+            getObject().setDestinationIp(udpTransportHandler.getDestinationIp());
+            getObject().setSourceIp(udpTransportHandler.getSourceIp());
+        }
     }
 }

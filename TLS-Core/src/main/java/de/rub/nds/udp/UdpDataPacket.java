@@ -16,6 +16,14 @@ import java.io.InputStream;
 
 public class UdpDataPacket implements DataContainer<LayerContext> {
 
+    private String sourceIp;
+
+    private String destinationIp;
+
+    private Integer sourcePort;
+
+    private Integer destinationPort;
+
     private transient byte[] configData;
 
     private ModifiableByteArray data;
@@ -64,5 +72,56 @@ public class UdpDataPacket implements DataContainer<LayerContext> {
 
     public void setConfigData(byte[] configData) {
         this.configData = configData;
+    }
+
+    public String getSourceIp() {
+        return sourceIp;
+    }
+
+    public void setSourceIp(String sourceIp) {
+        this.sourceIp = sourceIp;
+    }
+
+    public String getDestinationIp() {
+        return destinationIp;
+    }
+
+    public void setDestinationIp(String destinationIp) {
+        this.destinationIp = destinationIp;
+    }
+
+    public Integer getSourcePort() {
+        return sourcePort;
+    }
+
+    public void setSourcePort(Integer sourcePort) {
+        this.sourcePort = sourcePort;
+    }
+
+    public Integer getDestinationPort() {
+        return destinationPort;
+    }
+
+    public void setDestinationPort(Integer destinationPort) {
+        this.destinationPort = destinationPort;
+    }
+
+    @Override
+    public String toString() {
+        if (sourceIp == null
+                || sourcePort == null
+                || destinationIp == null
+                || destinationPort == null) {
+            return "UdpDataPacket";
+        }
+        return "UdpDataPacket [src: "
+                + sourceIp
+                + ":"
+                + sourcePort
+                + ", dst:"
+                + destinationIp
+                + ":"
+                + destinationPort
+                + "]";
     }
 }
