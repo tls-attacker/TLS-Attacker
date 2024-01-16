@@ -1316,6 +1316,9 @@ public class WorkflowConfigurationFactory {
                 trace.addTlsAction(
                         MessageActionFactory.createTLSAction(
                                 config, connection, ConnectionEndType.CLIENT, tls13Messages));
+                if (config.getExpectHandshakeDoneQuicFrame()) {
+                    trace.addTlsAction(new ReceiveQuicTillAction(new HandshakeDoneFrame()));
+                }
             } else {
                 if (Objects.equals(config.isClientAuthentication(), Boolean.TRUE)) {
                     trace.addTlsAction(new SendAction(new CertificateMessage()));
