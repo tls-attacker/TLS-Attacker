@@ -39,6 +39,12 @@ public class NewSessionTicketMessage extends HandshakeMessage {
         ticket = new SessionTicket();
     }
 
+    public NewSessionTicketMessage(boolean required) {
+        super(HandshakeMessageType.NEW_SESSION_TICKET);
+        ticket = new SessionTicket();
+        this.setRequired(required);
+    }
+
     public NewSessionTicketMessage(Config tlsConfig, boolean includeInDigest) {
         super(HandshakeMessageType.NEW_SESSION_TICKET);
         isIncludeInDigestDefault = includeInDigest;
