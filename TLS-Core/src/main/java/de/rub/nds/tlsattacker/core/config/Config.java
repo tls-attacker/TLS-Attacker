@@ -1436,6 +1436,8 @@ public class Config implements Serializable {
         defaultPskSets = new LinkedList<>();
         defaultProposedAlpnProtocols = new LinkedList<>();
         defaultProposedAlpnProtocols.add(AlpnProtocol.HTTP_2.getConstant());
+        defaultQuicTransportParameters = new QuicTransportParameters();
+        defaultQuicTransportParameters = QuicTransportParameters.getDefaultParameters();
     }
 
     public void setDefaultRsaSsaPssSalt(byte[] salt) {
