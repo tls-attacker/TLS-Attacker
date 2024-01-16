@@ -46,7 +46,6 @@ public class ParserSerializerIT extends GenericParserSerializerTest {
                     InvocationTargetException {
         Random r = new Random(42);
         for (int i = 0; i < 10000; i++) {
-            int random = r.nextInt(20);
             ProtocolMessage message = null;
             TlsContext tlsContext =
                     new Context(new State(config), new InboundConnection()).getTlsContext();
@@ -55,7 +54,6 @@ public class ParserSerializerIT extends GenericParserSerializerTest {
                 int length = r.nextInt(1000);
                 bytesToParse = new byte[length];
                 r.nextBytes(bytesToParse);
-                int start = r.nextInt(100);
                 message = getRandomMessage(r);
                 Parser parser =
                         message.getParser(tlsContext, new ByteArrayInputStream(bytesToParse));

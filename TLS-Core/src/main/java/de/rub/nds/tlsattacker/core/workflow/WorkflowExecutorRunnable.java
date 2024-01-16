@@ -81,7 +81,6 @@ public class WorkflowExecutorRunnable implements Runnable {
 
     protected void initConnectionForState(State state) {
         // Do this post state init only if you know what you are doing.
-        TlsContext serverTlsCtx = state.getInboundContexts().get(0).getTlsContext();
         Context serverCtx = state.getInboundContexts().get(0);
         AliasedConnection serverCon = serverCtx.getConnection();
         // getting the hostname is slow, so we just set the ip

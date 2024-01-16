@@ -101,7 +101,6 @@ public class RemBufferedChCiphersAction extends ConnectionBoundAction {
         List<CipherSuite> ciphers = CipherSuite.getCipherSuites(ciphersBytes);
         int origCiphersLength = ciphersBytes.length;
         ByteArrayOutputStream newCiphersBytes = new ByteArrayOutputStream();
-        CipherSuite type;
         for (CipherSuite cs : ciphers) {
             LOGGER.debug("cipher.name, cipher.val = {}, {}", cs.name(), cs.getValue());
             if (!removeCiphers.contains(cs)) {

@@ -32,7 +32,6 @@ public class ServerAuthzExtensionPreparatorTest
                     AuthzDataFormat.X509_ATTR_CERT_URL,
                     AuthzDataFormat.SAML_ASSERTION_URL);
     private final byte[] authzFormatListAsBytes = new byte[] {0x00, 0x01, 0x02, 0x03};
-    private final int authzFormatListLength = 4;
 
     public ServerAuthzExtensionPreparatorTest() {
         super(

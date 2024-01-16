@@ -44,10 +44,7 @@ public class WorkflowTraceMutatorTest {
     private ReceiveAction receiveServerHelloAction;
     private ReceiveAction receiveFinishedAction;
 
-    private SendAction sendHeartbeatAction;
-    private SendAction sendAlertAction;
     private SendAction sendClientHelloAction;
-    private SendAction sendFinishedAction;
 
     @BeforeEach
     public void setUp() {
@@ -64,10 +61,7 @@ public class WorkflowTraceMutatorTest {
         receiveServerHelloAction.setExpectedMessages(new ServerHelloMessage());
         receiveFinishedAction.setExpectedMessages(new FinishedMessage());
 
-        sendHeartbeatAction = new SendAction(new HeartbeatMessage());
-        sendAlertAction = new SendAction(new AlertMessage());
         sendClientHelloAction = new SendAction(new ClientHelloMessage());
-        sendFinishedAction = new SendAction(new FinishedMessage());
     }
 
     @Test

@@ -24,8 +24,6 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * Contains runtime information about a connection. With the introduction of the layer system all
@@ -34,8 +32,6 @@ import org.apache.logging.log4j.Logger;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Context {
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     /** TODO: Replace with standard values in layer contexts */
     private Chooser chooser;

@@ -72,14 +72,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /** Holds all runtime variables of the TLSLayer. */
 @XmlAccessorType(XmlAccessType.FIELD)
 public class TlsContext extends LayerContext {
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     private List<Session> sessionList;
 

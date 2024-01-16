@@ -12,7 +12,6 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EsniKeyRecord;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.EsniKeyRecordParser;
 import de.rub.nds.tlsattacker.core.state.State;
 import jakarta.xml.bind.annotation.XmlRootElement;
@@ -31,8 +30,6 @@ import org.xbill.DNS.Record;
 public class EsniKeyDnsRequestAction extends TlsAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
-
-    private List<ExtensionMessage> extensions;
 
     private boolean asPlanned = false;
 
@@ -128,7 +125,6 @@ public class EsniKeyDnsRequestAction extends TlsAction {
         tlsContext.setEsniPaddedLength(esniKeyRecord.getPaddedLength());
         tlsContext.setEsniKeysNotBefore(esniKeyRecord.getNotBefore());
         tlsContext.setEsniKeysNotAfter(esniKeyRecord.getNotAfter());
-        extensions = esniKeyRecord.getExtensions();
         asPlanned = true;
         setExecuted(true);
     }

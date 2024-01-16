@@ -21,13 +21,9 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateStatusSerializ
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.Objects;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 @XmlRootElement(name = "CertificateStatus")
 public class CertificateStatusMessage extends HandshakeMessage {
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger certificateStatusType;
