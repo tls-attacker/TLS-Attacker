@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SniType;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.layer.constant.StackConfiguration;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.quic.QuicTransportParameters;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import java.util.ArrayList;
@@ -75,12 +76,18 @@ public class QuicDelegate extends Delegate {
             config.setAddRenegotiationInfoExtension(false);
             config.setAddAlpnExtension(true);
             config.setQuicTransportParametersExtension(true);
+
+            // ALPN
             List<String> alpnEntries = new ArrayList<>();
             alpnEntries.add(AlpnProtocol.HTTP3.getConstant());
             alpnEntries.add("h3-27");
             alpnEntries.add("h3-28");
             alpnEntries.add("h3-29");
             config.setDefaultProposedAlpnProtocols(alpnEntries);
+
+            // QUIC Transport Parameters
+            QuicTransportParameters parameters = QuicTransportParameters.getDefaultParameters();
+            config.setDefaultQuicTransportParameters(parameters);
         }
     }
 }
