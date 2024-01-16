@@ -152,7 +152,7 @@ public class QuicWorkflowExecutor extends WorkflowExecutor {
             sendAction.setConfiguredQuicPackets(List.of(new InitialPacket()));
         }
 
-        sendAction.getActionOptions().add(ActionOption.MAY_FAIL);
+        sendAction.addActionOption(ActionOption.MAY_FAIL);
         sendAction.execute(state);
     }
 
