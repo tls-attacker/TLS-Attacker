@@ -72,8 +72,19 @@ public class InitialPacket extends LongHeaderPacket {
         }
     }
 
+    public void setToken(ModifiableByteArray token) {
+        this.token = token;
+    }
+
     public void setToken(byte[] array) {
         this.token = ModifiableVariableFactory.safelySetValue(this.token, array);
+    }
+
+    public void setTokenLength(ModifiableInteger tokenLength) {
+        this.tokenLength = tokenLength;
+        this.tokenLengthSize =
+                VariableLengthIntegerEncoding.encodeVariableLengthInteger(tokenLength.getValue())
+                        .length;
     }
 
     public void setTokenLength(int length) {
