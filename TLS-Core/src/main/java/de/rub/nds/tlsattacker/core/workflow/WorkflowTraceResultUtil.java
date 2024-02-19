@@ -477,6 +477,26 @@ public class WorkflowTraceResultUtil {
         return sendRecords;
     }
 
+    public static List<QuicPacket> getAllSentQuicPackets(WorkflowTrace trace) {
+        List<QuicPacket> sendPackets = new LinkedList<>();
+        for (SendingAction action : trace.getSendingActions()) {
+            if (action.getSentRecords() != null) {
+                sendPackets.addAll(action.getSentQuicPackets());
+            }
+        }
+        return sendPackets;
+    }
+
+    public static List<QuicFrame> getAllSentQuicFrames(WorkflowTrace trace) {
+        List<QuicFrame> sentFrames = new LinkedList<>();
+        for (SendingAction action : trace.getSendingActions()) {
+            if (action.getSentRecords() != null) {
+                sentFrames.addAll(action.getSentQuicFrames());
+            }
+        }
+        return sentFrames;
+    }
+
     public static List<ReceivingAction> getActionsThatReceived(
             WorkflowTrace trace, ProtocolMessageType type) {
         List<ReceivingAction> receivingActions = trace.getReceivingActions();
