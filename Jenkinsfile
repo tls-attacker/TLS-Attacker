@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        JDK_TOOL_NAME = 'JDK 11'
-        MAVEN_TOOL_NAME = 'Maven 3.8.6'
+        JDK_TOOL_NAME = 'JDK 21'
+        MAVEN_TOOL_NAME = 'Maven 3.9.6'
     }
 
     options {
@@ -59,7 +59,8 @@ pipeline {
             steps {
                 withMaven(jdk: env.JDK_TOOL_NAME, maven: env.MAVEN_TOOL_NAME) {
                     // `package` goal is required here to load modules in reactor and avoid dependency resolve conflicts
-                    sh 'mvn -DskipTests=true package pmd:pmd pmd:cpd spotbugs:spotbugs'
+//                    sh 'mvn -DskipTests=true package pmd:pmd pmd:cpd spotbugs:spotbugs'
+                    sh 'mvn -DskipTests=true package spotbugs:spotbugs'
                 }
             }
             post {

@@ -32,6 +32,7 @@ public class AlertMessage extends ProtocolMessage {
     /** config array used to configure alert message */
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] config;
+
     /** alert level */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     ModifiableByte level;

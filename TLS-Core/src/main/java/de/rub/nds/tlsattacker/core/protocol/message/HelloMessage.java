@@ -19,13 +19,17 @@ public abstract class HelloMessage extends HandshakeMessage {
     /** protocol version in the client and server hello */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByteArray protocolVersion;
+
     /** unix time */
     @ModifiableVariableProperty private ModifiableByteArray unixTime;
+
     /** random */
     @ModifiableVariableProperty private ModifiableByteArray random;
+
     /** length of the session id length field indicating the session id length */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger sessionIdLength;
+
     /** session id */
     @ModifiableVariableProperty private ModifiableByteArray sessionId;
 
