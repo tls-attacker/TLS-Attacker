@@ -28,8 +28,6 @@ public class WorkflowTraceSchemaGenerator {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private static final String ROOT_NS = "";
-
     private static final String NO_NS = "__NO__NS";
 
     public static void main(String[] args) {

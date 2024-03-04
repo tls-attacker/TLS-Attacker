@@ -22,13 +22,9 @@ import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.LinkedList;
 import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 @XmlRootElement(name = "SendDynamicServerKeyExchange")
 public class SendDynamicServerKeyExchangeAction extends CommonSendAction {
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     public SendDynamicServerKeyExchangeAction() {
         super();

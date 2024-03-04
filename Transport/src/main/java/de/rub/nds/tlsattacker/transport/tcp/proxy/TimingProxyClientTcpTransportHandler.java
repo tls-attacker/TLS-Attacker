@@ -16,13 +16,9 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.ByteBuffer;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class TimingProxyClientTcpTransportHandler extends ClientTcpTransportHandler
         implements ProxyableTransportHandler, TimeableTransportHandler {
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     protected Socket controlSocket;
     protected String proxyDataHostName = "127.0.0.1";

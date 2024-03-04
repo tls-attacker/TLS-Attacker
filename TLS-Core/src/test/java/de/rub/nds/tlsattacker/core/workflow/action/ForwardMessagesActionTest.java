@@ -50,7 +50,6 @@ public class ForwardMessagesActionTest extends AbstractActionTest<ForwardMessage
         alert.setDescription(AlertDescription.DECODE_ERROR.getValue());
         alert.setLevel(AlertLevel.FATAL.getValue());
 
-        TlsContext ctx1 = state.getTlsContext(ctx1Alias);
         TlsContext ctx2 = state.getTlsContext(ctx2Alias);
 
         byte[] alertMsg = new byte[] {0x15, 0x03, 0x03, 0x00, 0x02, 0x02, 50};

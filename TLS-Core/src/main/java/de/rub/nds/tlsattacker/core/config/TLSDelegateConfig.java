@@ -17,12 +17,8 @@ import java.io.File;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public abstract class TLSDelegateConfig {
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     private final List<Delegate> delegateList;
 

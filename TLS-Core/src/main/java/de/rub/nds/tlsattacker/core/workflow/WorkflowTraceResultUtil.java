@@ -24,12 +24,8 @@ import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import java.util.LinkedList;
 import java.util.List;
 import javax.annotation.Nonnull;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class WorkflowTraceResultUtil {
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     public static ProtocolMessage getFirstReceivedMessage(
             WorkflowTrace trace, ProtocolMessageType type) {

@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.core.http;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
@@ -22,12 +21,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 public class HttpResponseSerializerTest {
 
-    private Config config;
-
     @BeforeEach
-    public void setUp() {
-        config = Config.createConfig();
-    }
+    public void setUp() {}
 
     public static Stream<Arguments> provideTestVectors() {
         return Stream.of(

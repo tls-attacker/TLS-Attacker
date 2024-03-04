@@ -116,7 +116,6 @@ public class WorkflowConfigurationFactoryTest {
         MessageAction messageAction1;
         MessageAction messageAction2;
         ReceiveAction lastAction;
-        ClientHelloMessage clientHelloMessage;
 
         // Invariants Test: We will always obtain a WorkflowTrace containing at
         // least two TLS-Actions with exactly one message for the first
@@ -153,8 +152,6 @@ public class WorkflowConfigurationFactoryTest {
                         WorkflowTraceType.HELLO, RunningModeType.CLIENT);
 
         firstAction = helloWorkflow.getMessageActions().get(0);
-        clientHelloMessage = (ClientHelloMessage) extractMessages(firstAction).get(0);
-
         assertTrue(helloWorkflow.getMessageActions().size() >= 4);
         assertNotNull(helloWorkflow.getMessageActions().get(1));
         assertNotNull(helloWorkflow.getMessageActions().get(2));

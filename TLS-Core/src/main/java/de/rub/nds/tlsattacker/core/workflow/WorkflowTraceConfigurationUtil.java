@@ -18,12 +18,8 @@ import de.rub.nds.tlsattacker.core.workflow.action.StaticSendingAction;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class WorkflowTraceConfigurationUtil {
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     private WorkflowTraceConfigurationUtil() {}
 
