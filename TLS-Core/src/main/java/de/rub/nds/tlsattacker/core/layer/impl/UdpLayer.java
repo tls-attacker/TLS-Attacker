@@ -15,8 +15,8 @@ import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerInputStream;
+import de.rub.nds.tlsattacker.core.udp.UdpDataPacket;
 import de.rub.nds.tlsattacker.transport.udp.UdpTransportHandler;
-import de.rub.nds.udp.UdpDataPacket;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 

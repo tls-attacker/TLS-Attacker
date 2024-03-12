@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.layer.MissingSendLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.SpecificSendLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.constant.StackConfiguration;
@@ -27,8 +28,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import junit.framework.TestCase;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class SSL2LayerTest extends TestCase {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private Config config;
 
@@ -72,20 +77,26 @@ public class SSL2LayerTest extends TestCase {
                     .getLayerStack()
                     .getLayer(SSL2Layer.class)
                     .setLayerConfiguration(layerConfiguration);
+            tlsContext
+                    .getLayerStack()
+                    .getLayer(TcpLayer.class)
+                    .setLayerConfiguration(
+                            new MissingSendLayerConfiguration<>(ImplementedLayers.TCP));
+
             tlsContext.getLayerStack().getLayer(SSL2Layer.class).sendConfiguration();
             tlsContext.getLayerStack().getLayer(TcpLayer.class).sendConfiguration();
-            System.out.println(
-                    "SendByte: "
-                            + ArrayConverter.bytesToHexString(
-                                    transportHandler.getSentBytes(), false, false));
+            LOGGER.debug(
+                    "SendByte: {}",
+                    ArrayConverter.bytesToHexString(transportHandler.getSentBytes(), false, false));
             assertEquals(
                     tlsContext
                             .getLayerStack()
                             .getLayer(SSL2Layer.class)
                             .getLayerResult()
                             .getUsedContainers()
-                            .get(i),
-                    ssl2HandshakeMessages.get(i));
+                            .get(i)
+                            .getClass(),
+                    ssl2HandshakeMessages.get(i).getClass());
             assertEquals(
                     Arrays.toString(transportHandler.getSentBytes()),
                     Arrays.toString(messageByteList.get(i)));
