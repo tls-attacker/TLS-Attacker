@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.http.HttpMessage;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
-import de.rub.nds.tlsattacker.core.layer.SpecificReceiveLayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.SpecificSendLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
@@ -262,33 +262,33 @@ public class SendAction extends CommonSendAction implements StaticSendingAction 
         List<LayerConfiguration<?>> configurationList = new LinkedList<>();
         if (getConfiguredRecords() != null) {
             configurationList.add(
-                    new SpecificReceiveLayerConfiguration<>(
+                    new SpecificSendLayerConfiguration<>(
                             ImplementedLayers.RECORD, getConfiguredMessages()));
         }
         if (getConfiguredMessages() != null) {
             configurationList.add(
-                    new SpecificReceiveLayerConfiguration<>(
+                    new SpecificSendLayerConfiguration<>(
                             ImplementedLayers.MESSAGE, getConfiguredMessages()));
         }
         if (getConfiguredDtlsHandshakeMessageFragments() != null) {
             configurationList.add(
-                    new SpecificReceiveLayerConfiguration<>(
+                    new SpecificSendLayerConfiguration<>(
                             ImplementedLayers.DTLS_FRAGMENT,
                             getConfiguredDtlsHandshakeMessageFragments()));
         }
         if (getConfiguredHttpMessages() != null) {
             configurationList.add(
-                    new SpecificReceiveLayerConfiguration<>(
+                    new SpecificSendLayerConfiguration<>(
                             ImplementedLayers.HTTP, getConfiguredHttpMessages()));
         }
         if (getConfiguredQuicFrames() != null) {
             configurationList.add(
-                    new SpecificReceiveLayerConfiguration<>(
+                    new SpecificSendLayerConfiguration<>(
                             ImplementedLayers.QUICFRAME, getConfiguredQuicFrames()));
         }
         if (getConfiguredQuicPackets() != null) {
             configurationList.add(
-                    new SpecificReceiveLayerConfiguration<>(
+                    new SpecificSendLayerConfiguration<>(
                             ImplementedLayers.QUICPACKET, getConfiguredQuicPackets()));
         }
         return ActionHelperUtil.sortAndAddOptions(
