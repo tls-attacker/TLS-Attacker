@@ -65,4 +65,9 @@ public class UdpDataPacket implements DataContainer<LayerContext> {
     public void setConfigData(byte[] configData) {
         this.configData = configData;
     }
+
+    @Override
+    public String toString() {
+        return "UDP{" + data.getValue().length + " Bytes}";
+    }
 }

@@ -65,4 +65,9 @@ public class TcpStreamContainer implements DataContainer<LayerContext> {
     public void setConfigData(byte[] configData) {
         this.configData = configData;
     }
+
+    @Override
+    public String toString() {
+        return "TCP{" + data.getValue().length + " Bytes}";
+    }
 }
