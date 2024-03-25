@@ -76,9 +76,9 @@ public class WorkflowTraceSerializer {
                     reflections.getSubTypesOf(DataContainer.class);
             classes.addAll(dataContainers);
 
-            LOGGER.debug("Registering Classes in JAXBContext of WorkflowTraceSerializer:");
+            LOGGER.trace("Registering Classes in JAXBContext of WorkflowTraceSerializer:");
             for (Class<?> tempClass : classes) {
-                LOGGER.debug(tempClass.getName());
+                LOGGER.trace(tempClass.getName());
             }
             context = JAXBContext.newInstance(classes.toArray(new Class[classes.size()]));
         }
