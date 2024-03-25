@@ -114,7 +114,9 @@ public abstract class CommonForwardAction extends TlsAction
 
     @Override
     public boolean executedAsPlanned() {
-        return layerStackReceiveResult.executedAsPlanned()
+        return layerStackReceiveResult != null
+                && layerStackSendResult != null
+                && layerStackReceiveResult.executedAsPlanned()
                 && layerStackSendResult.executedAsPlanned();
     }
 
