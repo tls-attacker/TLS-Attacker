@@ -106,7 +106,7 @@ public abstract class CommonForwardAction extends TlsAction
                     forwardToContext.getLayerStack().sendData(layerConfigurationList);
         } catch (IOException e) {
             forwardToContext.setReceivedTransportHandlerException(true);
-            LOGGER.debug(e);
+            LOGGER.debug("Failed execution", e);
         }
 
         setExecuted(true);
