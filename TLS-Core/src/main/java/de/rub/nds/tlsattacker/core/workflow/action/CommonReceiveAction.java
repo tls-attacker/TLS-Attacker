@@ -30,8 +30,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public abstract class CommonReceiveAction extends MessageAction implements ReceivingAction {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public CommonReceiveAction() {
         super();
