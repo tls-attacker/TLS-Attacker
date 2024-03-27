@@ -45,10 +45,7 @@ import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.Assert;
 import org.junit.Assume;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -96,17 +93,14 @@ public abstract class AbstractHandshakeIT {
     }
 
     @BeforeAll
-    public void loadList() {
+    public void loadList() throws InterruptedException {
         try {
             DockerClientManager.getDockerClient().listContainersCmd().exec();
         } catch (Exception ex) {
             Assume.assumeNoException(ex);
         }
         localImages = DockerTlsManagerFactory.getAllImages();
-    }
 
-    @BeforeEach
-    public final void setUp() throws InterruptedException {
         Security.addProvider(new BouncyCastleProvider());
 
         DockerClientManager.setDockerServerUsername(System.getenv("DOCKER_USERNAME"));
@@ -433,7 +427,7 @@ public abstract class AbstractHandshakeIT {
         }
     }
 
-    @AfterEach
+    @AfterAll
     public void tearDown() {
         killContainer();
     }
