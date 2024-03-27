@@ -91,7 +91,7 @@ public abstract class CommonSendAction extends MessageAction implements SendingA
                 if (getActionOptions() == null
                         || !getActionOptions().contains(ActionOption.MAY_FAIL)) {
                     tlsContext.setReceivedTransportHandlerException(true);
-                    LOGGER.debug(e);
+                    LOGGER.debug("Encountered exception", e);
                 }
                 setExecuted(true);
             }
