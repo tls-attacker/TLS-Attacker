@@ -200,7 +200,7 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
     }
 
     private void executeRetransmission(SendingAction action) throws IOException {
-        LOGGER.info("Executing retransmission of last sent flight");
+        LOGGER.debug("Executing retransmission for {}", action.getClass().getSimpleName());
         for (String alias : action.getAllSendingAliases()) {
             LOGGER.debug("Retransmitting records for alias {}", alias);
             state.getTlsContext(alias)
