@@ -8,4 +8,56 @@
  */
 package de.rub.nds.tlsattacker.core.stun.model;
 
-public class ErrorCodeAttribute {}
+import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.modifiablevariable.string.ModifiableString;
+
+public class ErrorCodeAttribute {
+
+    private ModifiableByteArray reservedByte;
+
+    private ModifiableInteger number;
+
+    private ModifiableString reasonPhrase;
+
+    public ErrorCodeAttribute() {}
+
+    public ModifiableByteArray getReservedByte() {
+        return reservedByte;
+    }
+
+    public void setReservedByte(ModifiableByteArray reservedByte) {
+        this.reservedByte = reservedByte;
+    }
+
+    public ModifiableInteger getNumber() {
+        return number;
+    }
+
+    public void setNumber(ModifiableInteger number) {
+        this.number = number;
+    }
+
+    public ModifiableString getReasonPhrase() {
+        return reasonPhrase;
+    }
+
+    public void setReasonPhrase(ModifiableString reasonPhrase) {
+        this.reasonPhrase = reasonPhrase;
+    }
+
+    public void setReasonPhrase(String reasonPhrase) {
+        this.reasonPhrase =
+                ModifiableVariableFactory.safelySetValue(this.reasonPhrase, reasonPhrase);
+    }
+
+    public void setNumber(int number) {
+        this.number = ModifiableVariableFactory.safelySetValue(this.number, number);
+    }
+
+    public void setReservedByte(byte[] reservedByte) {
+        this.reservedByte =
+                ModifiableVariableFactory.safelySetValue(this.reservedByte, reservedByte);
+    }
+}
