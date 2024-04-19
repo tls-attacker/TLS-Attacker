@@ -22,7 +22,7 @@ public enum StunMessageType {
     SEND("0006"),
     DATA("0007"),
     CREATE_PERMISSION("0008"),
-    CHANNEL_BIND("0009"); 
+    CHANNEL_BIND("0009");
 
     private byte[] value;
 
