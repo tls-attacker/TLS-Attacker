@@ -11,8 +11,10 @@ package de.rub.nds.tlsattacker.core.stun.model;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.tlsattacker.core.layer.Message;
+import de.rub.nds.tlsattacker.core.stun.StunContext;
 
-public abstract class StunMessage {
+public abstract class StunMessage extends Message<StunContext> {
 
     /** 2 bytes */
     private ModifiableByteArray stunMessageType;

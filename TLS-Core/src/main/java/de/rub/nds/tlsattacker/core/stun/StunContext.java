@@ -8,4 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.stun;
 
-public class StunContext {}
+import de.rub.nds.tlsattacker.core.layer.context.LayerContext;
+import de.rub.nds.tlsattacker.core.state.Context;
+
+public class StunContext extends LayerContext {
+
+    public StunContext(Context context) {
+        super(context);
+    }
+}
