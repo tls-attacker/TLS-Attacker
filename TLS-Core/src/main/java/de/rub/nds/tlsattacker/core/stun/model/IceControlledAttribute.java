@@ -1,0 +1,64 @@
+/*
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
+ *
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
+ */
+package de.rub.nds.tlsattacker.core.stun.model;
+
+import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.tlsattacker.core.layer.data.Handler;
+import de.rub.nds.tlsattacker.core.layer.data.Parser;
+import de.rub.nds.tlsattacker.core.layer.data.Preparator;
+import de.rub.nds.tlsattacker.core.layer.data.Serializer;
+import de.rub.nds.tlsattacker.core.stun.StunContext;
+import java.io.InputStream;
+
+public class IceControlledAttribute extends StunAttribute {
+
+    /** 8 byte */
+    private ModifiableByteArray tieBreaker;
+
+    public IceControlledAttribute() {
+        super();
+    }
+
+    public ModifiableByteArray getTieBreaker() {
+        return tieBreaker;
+    }
+
+    public void setTieBreaker(ModifiableByteArray tieBreaker) {
+        this.tieBreaker = tieBreaker;
+    }
+
+    public void setTieBreaker(byte[] tieBreaker) {
+        this.tieBreaker = ModifiableVariableFactory.safelySetValue(this.tieBreaker, tieBreaker);
+    }
+
+    @Override
+    public Handler<?> getHandler(StunContext context) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Parser<?> getParser(StunContext context, InputStream stream) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Preparator<?> getPreparator(StunContext context) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Serializer<?> getSerializer(StunContext context) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+}
