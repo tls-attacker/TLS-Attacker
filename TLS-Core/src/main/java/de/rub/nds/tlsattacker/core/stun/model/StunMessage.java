@@ -13,6 +13,8 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.layer.Message;
 import de.rub.nds.tlsattacker.core.stun.IceContext;
+import java.util.LinkedList;
+import java.util.List;
 
 public abstract class StunMessage extends Message<IceContext> {
 
@@ -28,7 +30,11 @@ public abstract class StunMessage extends Message<IceContext> {
     /** 12 bytes */
     private ModifiableByteArray transactionId;
 
-    private StunMessage() {}
+    private List<StunAttribute> attributeList;
+
+    private StunMessage() {
+        attributeList = new LinkedList<>();
+    }
 
     public ModifiableByteArray getStunMessageType() {
         return stunMessageType;
@@ -51,6 +57,11 @@ public abstract class StunMessage extends Message<IceContext> {
         this.messageLength = messageLength;
     }
 
+    public void setMessageLength(int messageLength) {
+        this.messageLength =
+                ModifiableVariableFactory.safelySetValue(this.messageLength, messageLength);
+    }
+
     public ModifiableByteArray getMagicCookie() {
         return magicCookie;
     }
@@ -59,11 +70,28 @@ public abstract class StunMessage extends Message<IceContext> {
         this.magicCookie = magicCookie;
     }
 
+    public void setMagicCookie(byte[] magicCookie) {
+        this.magicCookie = ModifiableVariableFactory.safelySetValue(this.magicCookie, magicCookie);
+    }
+
     public ModifiableByteArray getTransactionId() {
         return transactionId;
     }
 
     public void setTransactionId(ModifiableByteArray transactionId) {
         this.transactionId = transactionId;
+    }
+
+    public void setTransactionId(byte[] transactionId) {
+        this.transactionId =
+                ModifiableVariableFactory.safelySetValue(this.transactionId, transactionId);
+    }
+
+    public List<StunAttribute> getAttributeList() {
+        return attributeList;
+    }
+
+    public void setAttributeList(List<StunAttribute> attributeList) {
+        this.attributeList = attributeList;
     }
 }
