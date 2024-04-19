@@ -61,12 +61,4 @@ public class UnknownAttribute extends StunAttribute {
         // TODO Auto-generated method stub
         return null;
     }
-
-    public ModifiableByteArray getContent() {
-        return content;
-    }
-
-    public void setContent(ModifiableByteArray content) {
-        this.content = content;
-    }
 }
