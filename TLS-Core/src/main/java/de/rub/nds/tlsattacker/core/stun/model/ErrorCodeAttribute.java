@@ -12,8 +12,14 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.tlsattacker.core.layer.data.Handler;
+import de.rub.nds.tlsattacker.core.layer.data.Parser;
+import de.rub.nds.tlsattacker.core.layer.data.Preparator;
+import de.rub.nds.tlsattacker.core.layer.data.Serializer;
+import de.rub.nds.tlsattacker.core.stun.IceContext;
+import java.io.InputStream;
 
-public class ErrorCodeAttribute {
+public class ErrorCodeAttribute extends StunAttribute {
 
     private ModifiableByteArray reservedByte;
 
@@ -59,5 +65,29 @@ public class ErrorCodeAttribute {
     public void setReservedByte(byte[] reservedByte) {
         this.reservedByte =
                 ModifiableVariableFactory.safelySetValue(this.reservedByte, reservedByte);
+    }
+
+    @Override
+    public Parser<?> getParser(IceContext context, InputStream stream) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getParser'");
+    }
+
+    @Override
+    public Preparator<?> getPreparator(IceContext context) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getPreparator'");
+    }
+
+    @Override
+    public Serializer<?> getSerializer(IceContext context) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getSerializer'");
+    }
+
+    @Override
+    public Handler<?> getHandler(IceContext context) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getHandler'");
     }
 }
