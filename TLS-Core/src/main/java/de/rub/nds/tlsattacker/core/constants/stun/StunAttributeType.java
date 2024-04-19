@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.constants.stun;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import java.util.Arrays;
 
 public enum StunAttributeType {
     MAPPED_ADDRESS("0001"),
@@ -42,5 +43,14 @@ public enum StunAttributeType {
 
     public byte[] getValue() {
         return value;
+    }
+
+    public static StunAttributeType getAttributeType(byte[] value) {
+        for (StunAttributeType type : StunAttributeType.values()) {
+            if (Arrays.equals(type.value, value)) {
+                return type;
+            }
+        }
+        return null;
     }
 }
