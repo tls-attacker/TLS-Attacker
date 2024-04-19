@@ -12,9 +12,9 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.layer.Message;
-import de.rub.nds.tlsattacker.core.stun.StunContext;
+import de.rub.nds.tlsattacker.core.stun.IceContext;
 
-public abstract class StunMessage extends Message<StunContext> {
+public abstract class StunMessage extends Message<IceContext> {
 
     /** 2 bytes */
     private ModifiableByteArray stunMessageType;

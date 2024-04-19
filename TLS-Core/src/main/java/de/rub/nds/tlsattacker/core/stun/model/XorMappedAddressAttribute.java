@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.layer.data.Handler;
 import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
-import de.rub.nds.tlsattacker.core.stun.StunContext;
+import de.rub.nds.tlsattacker.core.stun.IceContext;
 import java.io.InputStream;
 
 public class XorMappedAddressAttribute extends StunAttribute {
@@ -118,25 +118,25 @@ public class XorMappedAddressAttribute extends StunAttribute {
     }
 
     @Override
-    public Handler<?> getHandler(StunContext context) {
+    public Handler<?> getHandler(IceContext context) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public Parser<?> getParser(StunContext context, InputStream stream) {
+    public Parser<?> getParser(IceContext context, InputStream stream) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public Preparator<?> getPreparator(StunContext context) {
+    public Preparator<?> getPreparator(IceContext context) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public Serializer<?> getSerializer(StunContext context) {
+    public Serializer<?> getSerializer(IceContext context) {
         // TODO Auto-generated method stub
         return null;
     }

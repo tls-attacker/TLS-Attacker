@@ -14,10 +14,10 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
-import de.rub.nds.tlsattacker.core.stun.StunContext;
+import de.rub.nds.tlsattacker.core.stun.IceContext;
 
 public abstract class StunAttribute extends ModifiableVariableHolder
-        implements DataContainer<StunContext> {
+        implements DataContainer<IceContext> {
 
     /** 2 bytes */
     private ModifiableByteArray attributeType;
