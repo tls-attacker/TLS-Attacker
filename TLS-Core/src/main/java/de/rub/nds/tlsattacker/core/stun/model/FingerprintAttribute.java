@@ -59,5 +59,6 @@ public class FingerprintAttribute extends StunAttribute {
     @Override
     public Serializer<?> getSerializer(StunContext context) {
         // TODO Auto-generated method stub
+        return null;
     }
 }
