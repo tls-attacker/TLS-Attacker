@@ -14,6 +14,11 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.stun.IceContext;
+import de.rub.nds.tlsattacker.core.stun.handler.StunAttributeHandler;
+import de.rub.nds.tlsattacker.core.stun.parser.StunAttributeParser;
+import de.rub.nds.tlsattacker.core.stun.preparator.StunAttributePreparator;
+import de.rub.nds.tlsattacker.core.stun.serializer.StunAttributeSerializer;
+import java.io.InputStream;
 
 public abstract class StunAttribute extends ModifiableVariableHolder
         implements DataContainer<IceContext> {
@@ -80,4 +85,19 @@ public abstract class StunAttribute extends ModifiableVariableHolder
     public void setPadding(byte[] padding) {
         this.padding = ModifiableVariableFactory.safelySetValue(this.padding, padding);
     }
+
+    @Override
+    public abstract StunAttributeHandler<? extends StunAttribute> getHandler(IceContext context);
+
+    @Override
+    public abstract StunAttributeParser<? extends StunAttribute> getParser(
+            IceContext context, InputStream stream);
+
+    @Override
+    public abstract StunAttributePreparator<? extends StunAttribute> getPreparator(
+            IceContext context);
+
+    @Override
+    public abstract StunAttributeSerializer<? extends StunAttribute> getSerializer(
+            IceContext context);
 }
