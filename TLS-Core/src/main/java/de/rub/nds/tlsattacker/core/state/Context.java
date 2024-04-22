@@ -18,6 +18,7 @@ import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
 import de.rub.nds.tlsattacker.core.layer.context.TcpContext;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
+import de.rub.nds.tlsattacker.core.stun.IceContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -49,6 +50,8 @@ public class Context {
 
     private QuicContext quicContext;
 
+    private IceContext iceContext;
+
     private LayerStack layerStack;
 
     private ConnectionEndType talkingConnectionEndType = ConnectionEndType.CLIENT;
@@ -69,6 +72,14 @@ public class Context {
 
     public State getState() {
         return state;
+    }
+
+    public IceContext getIceContext() {
+        return iceContext;
+    }
+
+    public void setIceContext(IceContext iceContext) {
+        this.iceContext = iceContext;
     }
 
     public TcpContext getTcpContext() {
@@ -172,6 +183,7 @@ public class Context {
         httpContext = new HttpContext(this);
         tcpContext = new TcpContext(this);
         quicContext = new QuicContext(this);
+        iceContext = new IceContext(this);
         layerStack = LayerStackFactory.createLayerStack(type, this);
         this.setLayerStack(layerStack);
     }
