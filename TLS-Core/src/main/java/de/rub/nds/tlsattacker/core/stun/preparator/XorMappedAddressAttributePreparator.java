@@ -44,7 +44,7 @@ public class XorMappedAddressAttributePreparator
                         mapXor(
                                 ArrayConverter.intToBytes(
                                         getObject().getPort().getValue(),
-                                        IceByteLengths.STUN_PORT_LENGTH),
+                                        IceByteLengths.STUN_XOR_MAPPED_ATTRIBUTE_PORT),
                                 chooser.getConfig().getIceConfig().getDefaultStunTransactionId()));
     }
 

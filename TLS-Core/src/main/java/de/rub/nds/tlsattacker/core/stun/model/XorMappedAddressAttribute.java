@@ -15,8 +15,8 @@ import de.rub.nds.tlsattacker.core.stun.IceContext;
 import de.rub.nds.tlsattacker.core.stun.handler.XorMappedAddressAttributeHandler;
 import de.rub.nds.tlsattacker.core.stun.parser.XorMappedAddressAttributeParser;
 import de.rub.nds.tlsattacker.core.stun.preparator.XorMappedAddressAttributePreparator;
+import de.rub.nds.tlsattacker.core.stun.serializer.XorMappedAddressAttributeSerializer;
 import java.io.InputStream;
-
 
 public class XorMappedAddressAttribute extends StunAttribute {
 
@@ -88,20 +88,24 @@ public class XorMappedAddressAttribute extends StunAttribute {
         this.ipAddress = ipAddress;
     }
 
-    public void setReserved ervedByte =
+    public void setReservedByte(byte[] reservedByte) {
+        this.reservedByte =
                 ModifiableVariableFactory.safelySetValue(this.reservedByte, reservedByte);
     }
 
-    public void setProtocolFa tocolFamily =
+    public void setProtocolFamily(byte[] protocolFamily) {
+        this.protocolFamily =
                 ModifiableVariableFactory.safelySetValue(this.protocolFamily, protocolFamily);
     }
 
-    public void setXorMapped MappedPort =
+    public void setXorMappedPort(byte[] xorMappedPort) {
+        this.xorMappedPort =
                 ModifiableVariableFactory.safelySetValue(this.xorMappedPort, xorMappedPort);
     }
 
-    public void setXorMappedIpAdd MappedIpAddress =
-                leVariableFactory.safelySetValue(
+    public void setXorMappedIpAddress(byte[] xorMappedIpAddress) {
+        this.xorMappedIpAddress =
+                ModifiableVariableFactory.safelySetValue(
                         this.xorMappedIpAddress, xorMappedIpAddress);
     }
 

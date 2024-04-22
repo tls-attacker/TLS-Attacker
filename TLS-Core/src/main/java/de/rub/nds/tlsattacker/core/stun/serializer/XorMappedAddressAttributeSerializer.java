@@ -10,9 +10,10 @@ package de.rub.nds.tlsattacker.core.stun.serializer;
 
 import de.rub.nds.tlsattacker.core.stun.model.XorMappedAddressAttribute;
 
-public class XorMappedAddressSerializer extends StunAttributeSerializer<XorMappedAddressAttribute> {
+public class XorMappedAddressAttributeSerializer
+        extends StunAttributeSerializer<XorMappedAddressAttribute> {
 
-    public XorMappedAddressSerializer(XorMappedAddressAttribute attribute) {
+    public XorMappedAddressAttributeSerializer(XorMappedAddressAttribute attribute) {
         super(attribute);
     }
 
