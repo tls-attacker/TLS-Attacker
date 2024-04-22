@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.stun.serializer;
 
 import de.rub.nds.tlsattacker.core.stun.model.UsernameAttribute;
 
-public class UsernameAttributeSerializer extends StunAttributeSerializer<UsernameAttribute> {}
+public class UsernameAttributeSerializer extends StunAttributeSerializer<UsernameAttribute> {
 
     public UsernameAttributeSerializer(UsernameAttribute attribute) {
         super(attribute);

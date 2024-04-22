@@ -19,6 +19,6 @@ public class UsernameAttributeHandler extends StunAttributeHandler<UsernameAttri
 
     @Override
     public void adjustContext(UsernameAttribute container) {
-        context.setUsername(container.getUsername().getValue());
+        context.setStunUsername(container.getUsername().getValue());
     }
 }
