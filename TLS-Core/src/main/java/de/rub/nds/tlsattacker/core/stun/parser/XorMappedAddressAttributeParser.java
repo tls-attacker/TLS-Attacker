@@ -12,9 +12,10 @@ import de.rub.nds.tlsattacker.core.stun.IceContext;
 import de.rub.nds.tlsattacker.core.stun.model.XorMappedAddressAttribute;
 import java.io.InputStream;
 
-public class XorMappedAttributeParser extends StunAttributeParser<XorMappedAddressAttribute> {
+public class XorMappedAddressAttributeParser
+        extends StunAttributeParser<XorMappedAddressAttribute> {
 
-    public XorMappedAttributeParser(IceContext context, InputStream stream) {
+    public XorMappedAddressAttributeParser(IceContext context, InputStream stream) {
         super(context, stream);
     }
 

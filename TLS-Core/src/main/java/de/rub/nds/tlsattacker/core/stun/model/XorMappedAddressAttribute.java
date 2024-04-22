@@ -11,11 +11,10 @@ package de.rub.nds.tlsattacker.core.stun.model;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.tlsattacker.core.layer.data.Handler;
-import de.rub.nds.tlsattacker.core.layer.data.Parser;
-import de.rub.nds.tlsattacker.core.layer.data.Preparator;
-import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import de.rub.nds.tlsattacker.core.stun.IceContext;
+import de.rub.nds.tlsattacker.core.stun.handler.XorMappedAddressAttributeHandler;
+import de.rub.nds.tlsattacker.core.stun.parser.XorMappedAddressAttributeParser;
+import de.rub.nds.tlsattacker.core.stun.preparator.XorMappedAddressAttributePreparator;
 import java.io.InputStream;
 
 public class XorMappedAddressAttribute extends StunAttribute {
@@ -118,26 +117,22 @@ public class XorMappedAddressAttribute extends StunAttribute {
     }
 
     @Override
-    public Handler<?> getHandler(IceContext context) {
-        // TODO Auto-generated method stub
-        return null;
+    public XorMappedAddressAttributeHandler getHandler(IceContext context) {
+        return new XorMappedAddressAttributeHandler(context);
     }
 
     @Override
-    public Parser<?> getParser(IceContext context, InputStream stream) {
-        // TODO Auto-generated method stub
-        return null;
+    public XorMappedAddressAttributeParser getParser(IceContext context, InputStream stream) {
+        return new XorMappedAddressAttributeParser(context, stream);
     }
 
     @Override
-    public Preparator<?> getPreparator(IceContext context) {
-        // TODO Auto-generated method stub
-        return null;
+    public XorMappedAddressAttributePreparator getPreparator(IceContext context) {
+        return new XorMappedAddressAttributePreparator(context.getChooser(), this);
     }
 
     @Override
-    public Serializer<?> getSerializer(IceContext context) {
-        // TODO Auto-generated method stub
-        return null;
+    public XorMappedAddressAttributeSerializer getSerializer(IceContext context) {
+        return new XorMappedAddressAttributeSerializer(this);
     }
 }
