@@ -65,6 +65,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair
 import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.RequestItemV2;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
 import de.rub.nds.tlsattacker.core.quic.constants.QuicVersion;
+import de.rub.nds.tlsattacker.core.stun.IceConfig;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
@@ -1266,6 +1267,8 @@ public class Config implements Serializable {
             ArrayConverter.hexStringToByteArray(
                     "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 
+    private IceConfig iceConfig;
+
     public Config() {
         this.certificateChainConfig = new LinkedList<>();
         List<Pair<X500AttributeType, String>> rdn = new LinkedList<>();
@@ -1436,6 +1439,14 @@ public class Config implements Serializable {
         defaultPskSets = new LinkedList<>();
         defaultProposedAlpnProtocols = new LinkedList<>();
         defaultProposedAlpnProtocols.add(AlpnProtocol.HTTP_2.getConstant());
+    }
+
+    public IceConfig getIceConfig() {
+        return iceConfig;
+    }
+
+    public void setIceConfig(IceConfig iceConfig) {
+        this.iceConfig = iceConfig;
     }
 
     public void setDefaultRsaSsaPssSalt(byte[] salt) {
