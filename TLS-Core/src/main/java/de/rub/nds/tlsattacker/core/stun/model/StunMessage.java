@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.stun.model;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.bool.ModifiableBoolean;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.layer.Message;
@@ -25,7 +26,7 @@ public abstract class StunMessage extends Message<IceContext> {
     private ModifiableInteger messageLength;
 
     /** 4 bytes */
-    private ModifiableByteArray magicCookie;
+    private ModifiableBoolean magicCookiePresent;
 
     /** 12 bytes */
     private ModifiableByteArray transactionId;
@@ -62,16 +63,18 @@ public abstract class StunMessage extends Message<IceContext> {
                 ModifiableVariableFactory.safelySetValue(this.messageLength, messageLength);
     }
 
-    public ModifiableByteArray getMagicCookie() {
-        return magicCookie;
+    public ModifiableBoolean getMagicCookiePresent() {
+        return magicCookiePresent;
     }
 
-    public void setMagicCookie(ModifiableByteArray magicCookie) {
-        this.magicCookie = magicCookie;
+    public void setMagicCookiePresent(ModifiableBoolean magicCookiePresent) {
+        this.magicCookiePresent = magicCookiePresent;
     }
 
-    public void setMagicCookie(byte[] magicCookie) {
-        this.magicCookie = ModifiableVariableFactory.safelySetValue(this.magicCookie, magicCookie);
+    public void setMagicCookiePresent(boolean magicCookiePresent) {
+        this.magicCookiePresent =
+                ModifiableVariableFactory.safelySetValue(
+                        this.magicCookiePresent, magicCookiePresent);
     }
 
     public ModifiableByteArray getTransactionId() {
