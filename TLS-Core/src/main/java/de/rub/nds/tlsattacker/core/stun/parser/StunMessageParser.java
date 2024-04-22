@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.stun.parser;
 
 import de.rub.nds.tlsattacker.core.constants.stun.IceByteLengths;
 import de.rub.nds.tlsattacker.core.constants.stun.StunAttributeType;
+import de.rub.nds.tlsattacker.core.constants.stun.StunVersionCookie;
 import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.stun.IceContext;
 import de.rub.nds.tlsattacker.core.stun.factory.AttributeFactory;
@@ -34,8 +35,8 @@ public class StunMessageParser extends Parser<StunMessage> {
     public void parse(StunMessage stunMessage) {
         stunMessage.setStunMessageType(parseByteArrayField(IceByteLengths.STUN_MESSAGE_TYPE));
         stunMessage.setMessageLength(parseIntField(IceByteLengths.STUN_MESSAGE_LENGTH));
-        stunMessage.setMagicCookie(parseByteArrayField(IceByteLengths.STUN_MAGIC_COOKIE));
         stunMessage.setTransactionId(parseByteArrayField(IceByteLengths.STUN_TRANSACTION_ID));
+        stunMessage.setMagicCookiePresent(isMagicCookiePresent(stunMessage));
         while (getBytesLeft() > 0) {
             byte[] attributeTypeBytes = parseByteArrayField(IceByteLengths.STUN_ATTRIBUTE_TYPE);
             StunAttributeType attributeType =
@@ -55,5 +56,17 @@ public class StunMessageParser extends Parser<StunMessage> {
             attribute.getParser(context, new ByteArrayInputStream(attributeBody)).parse(attribute);
             stunMessage.getAttributeList().add(attribute);
         }
+    }
+
+    private boolean isMagicCookiePresent(StunMessage message) {
+        // Check if the first 4 bytes of the transaction id match the magic cookie
+        byte[] magicCookie = StunVersionCookie.RFC5389_VERSION;
+        byte[] transactionId = message.getTransactionId().getValue();
+        for (int i = 0; i < 4; i++) {
+            if (magicCookie[i] != transactionId[i]) {
+                return false;
+            }
+        }
+        return true;
     }
 }

@@ -15,7 +15,8 @@ public class IceByteLengths {
 
     public static final int STUN_MAGIC_COOKIE = 4;
 
-    public static final int STUN_TRANSACTION_ID = 12;
+    /** This is the lenght inclusive of the TransactionId */
+    public static final int STUN_TRANSACTION_ID = 16;
 
     public static final int STUN_ATTRIBUTE_TYPE = 2;
 
