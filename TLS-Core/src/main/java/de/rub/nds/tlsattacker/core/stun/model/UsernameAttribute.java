@@ -10,11 +10,11 @@ package de.rub.nds.tlsattacker.core.stun.model;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.tlsattacker.core.layer.data.Preparator;
-import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import de.rub.nds.tlsattacker.core.stun.IceContext;
 import de.rub.nds.tlsattacker.core.stun.handler.UsernameAttributeHandler;
 import de.rub.nds.tlsattacker.core.stun.parser.UsernameAttributeParser;
+import de.rub.nds.tlsattacker.core.stun.preparator.UsernameAttributePreparator;
+import de.rub.nds.tlsattacker.core.stun.serializer.UsernameAttributeSerializer;
 import java.io.InputStream;
 
 public class UsernameAttribute extends StunAttribute {
@@ -48,11 +48,12 @@ public class UsernameAttribute extends StunAttribute {
     }
 
     @Override
-    public Preparator<?> getPreparator(IceContext context) {}
+    public UsernameAttributePreparator getPreparator(IceContext context) {
+        return new UsernameAttributePreparator(context.getChooser(), this);
+    }
 
     @Override
-    public Serializer<?> getSerializer(IceContext context) {
-        // TODO Auto-generated method stub
-        return null;
+    public UsernameAttributeSerializer getSerializer(IceContext context) {
+        return new UsernameAttributeSerializer(this);
     }
 }
