@@ -13,17 +13,52 @@ import de.rub.nds.tlsattacker.core.state.Context;
 
 public class IceContext extends LayerContext {
 
-    private String username;
+    private String stunUsername;
+
+    /** Must be 4 bytes long */
+    private byte[] address;
+
+    private int port;
+
+    private byte[] stunTransactionId;
 
     public IceContext(Context context) {
         super(context);
     }
 
-    public String getUsername() {
-        return username;
+    public byte[] getStunTransactionId() {
+        return stunTransactionId;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setStunTransactionId(byte[] stunTransactionId) {
+        this.stunTransactionId = stunTransactionId;
+    }
+
+    public String getStunUsername() {
+        return stunUsername;
+    }
+
+    public void setStunUsername(String stunUsername) {
+        this.stunUsername = stunUsername;
+    }
+
+    public byte[] getAddress() {
+        return address;
+    }
+
+    public void setAddress(byte[] address) {
+        this.address = address;
+    }
+
+    public Integer getPort() {
+        return port;
+    }
+
+    public void setPort(Integer port) {
+        this.port = port;
+    }
+
+    public IceChooser getIceChooser() {
+        return new IceChooser(super.getConfig().getIceConfig(), this);
     }
 }

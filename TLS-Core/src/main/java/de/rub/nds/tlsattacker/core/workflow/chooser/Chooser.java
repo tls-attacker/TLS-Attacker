@@ -33,6 +33,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareE
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.psk.PskSet;
 import de.rub.nds.tlsattacker.core.state.Context;
+import de.rub.nds.tlsattacker.core.stun.IceChooser;
 import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
@@ -65,6 +66,10 @@ public abstract class Chooser {
 
     public X509Chooser getClientX509Chooser() {
         return context.getTlsContext().getClientX509Context().getChooser();
+    }
+
+    public IceChooser getIceChooser() {
+        return context.getIceContext().getIceChooser();
     }
 
     public abstract List<ECPointFormat> getClientSupportedPointFormats();

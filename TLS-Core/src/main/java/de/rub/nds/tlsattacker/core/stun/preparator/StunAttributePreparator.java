@@ -9,14 +9,18 @@
 package de.rub.nds.tlsattacker.core.stun.preparator;
 
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
+import de.rub.nds.tlsattacker.core.stun.IceChooser;
 import de.rub.nds.tlsattacker.core.stun.model.StunAttribute;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 public abstract class StunAttributePreparator<AttributeT extends StunAttribute>
         extends Preparator<AttributeT> {
 
+    protected IceChooser iceChooser;
+
     public StunAttributePreparator(Chooser chooser, AttributeT attribute) {
         super(chooser, attribute);
+        this.iceChooser = chooser.getIceChooser();
     }
 
     @Override
