@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.stun.serializer;
 
+import de.rub.nds.tlsattacker.core.constants.stun.IceByteLengths;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import de.rub.nds.tlsattacker.core.stun.model.StunAttribute;
 
@@ -19,4 +20,14 @@ public abstract class StunAttributeSerializer<AttributeT extends StunAttribute>
     public StunAttributeSerializer(AttributeT message) {
         this.attribute = message;
     }
+
+    @Override
+    protected byte[] serializeBytes() {
+        appendBytes(attribute.getAttributeType().getValue());
+        appendInt(attribute.getAttributeLength().getValue(), IceByteLengths.STUN_ATTRIBUTE_LENGTH);
+        appendBytes(attribute.getBody().getValue());
+        return getAlreadySerialized();
+    }
+
+    public abstract byte[] serializeAttributeContent();
 }

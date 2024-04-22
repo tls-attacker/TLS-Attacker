@@ -18,4 +18,16 @@ public abstract class StunAttributePreparator<AttributeT extends StunAttribute>
     public StunAttributePreparator(Chooser chooser, AttributeT attribute) {
         super(chooser, attribute);
     }
+
+    @Override
+    public final void prepare() {
+        prepareContent();
+        getObject()
+                .setBody(
+                        getObject()
+                                .getSerializer(chooser.getContext().getIceContext())
+                                .serializeAttributeContent());
+    }
+
+    public abstract void prepareContent();
 }
