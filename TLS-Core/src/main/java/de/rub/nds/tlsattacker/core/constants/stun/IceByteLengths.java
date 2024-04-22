@@ -19,5 +19,10 @@ public class IceByteLengths {
 
     public static final int STUN_ATTRIBUTE_TYPE = 2;
 
+    public static final int STUN_ATTRIBUTE_LENGTH = 2;
+
+    /** All Stun attributes have to be a multiple of 4 bytes */
+    public static final int STUN_ATTRIBUTE_ALIGNMENT = 4;
+
     private IceByteLengths() {}
 }

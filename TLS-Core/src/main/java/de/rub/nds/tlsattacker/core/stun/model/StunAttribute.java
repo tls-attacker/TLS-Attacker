@@ -12,7 +12,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.stun.IceContext;
 
@@ -25,9 +24,24 @@ public abstract class StunAttribute extends ModifiableVariableHolder
     /** 2 bytes */
     private ModifiableInteger attributeLength;
 
-    private ModifiableByte padding;
+    /** length many bytes */
+    private ModifiableByteArray body;
+
+    private ModifiableByteArray padding;
 
     public StunAttribute() {}
+
+    public ModifiableByteArray getBody() {
+        return body;
+    }
+
+    public void setBody(ModifiableByteArray body) {
+        this.body = body;
+    }
+
+    public void setBody(byte[] body) {
+        this.body = ModifiableVariableFactory.safelySetValue(this.body, body);
+    }
 
     public ModifiableByteArray getAttributeType() {
         return attributeType;
@@ -45,20 +59,25 @@ public abstract class StunAttribute extends ModifiableVariableHolder
         this.attributeLength = attributeLength;
     }
 
+    public void setAttributeLength(int attributeLength) {
+        this.attributeLength =
+                ModifiableVariableFactory.safelySetValue(this.attributeLength, attributeLength);
+    }
+
     public void setAttributeType(byte[] attributeType) {
         this.attributeType =
                 ModifiableVariableFactory.safelySetValue(this.attributeType, attributeType);
     }
 
-    public ModifiableByte getPadding() {
+    public ModifiableByteArray getPadding() {
         return padding;
     }
 
-    public void setPadding(ModifiableByte padding) {
+    public void setPadding(ModifiableByteArray padding) {
         this.padding = padding;
     }
 
-    public void setPadding(byte padding) {
+    public void setPadding(byte[] padding) {
         this.padding = ModifiableVariableFactory.safelySetValue(this.padding, padding);
     }
 }
