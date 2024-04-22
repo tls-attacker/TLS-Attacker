@@ -13,7 +13,17 @@ import de.rub.nds.tlsattacker.core.state.Context;
 
 public class IceContext extends LayerContext {
 
+    private String username;
+
     public IceContext(Context context) {
         super(context);
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }
