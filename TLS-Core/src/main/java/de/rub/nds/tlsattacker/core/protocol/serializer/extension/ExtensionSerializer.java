@@ -17,7 +17,7 @@ import org.apache.logging.log4j.Logger;
 /**
  * @param <T> The ExtensionMessage that should be serialized
  */
-public abstract class ExtensionSerializer<T extends ExtensionMessage> extends Serializer {
+public abstract class ExtensionSerializer<T extends ExtensionMessage> extends Serializer<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
