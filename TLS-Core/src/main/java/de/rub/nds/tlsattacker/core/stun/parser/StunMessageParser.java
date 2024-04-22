@@ -16,7 +16,6 @@ import de.rub.nds.tlsattacker.core.stun.IceContext;
 import de.rub.nds.tlsattacker.core.stun.factory.AttributeFactory;
 import de.rub.nds.tlsattacker.core.stun.model.StunAttribute;
 import de.rub.nds.tlsattacker.core.stun.model.StunMessage;
-import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -53,7 +52,8 @@ public class StunMessageParser extends Parser<StunMessage> {
                             IceByteLengths.STUN_ATTRIBUTE_ALIGNMENT
                                     - attributeLength % IceByteLengths.STUN_ATTRIBUTE_ALIGNMENT);
             attribute.setPadding(padding);
-            attribute.getParser(context, new ByteArrayInputStream(attributeBody)).parse(attribute);
+            StunAttributeParser attributeParser = attribute.getParser(context, getStream());
+            attributeParser.parse(attribute);
             stunMessage.getAttributeList().add(attribute);
         }
     }
