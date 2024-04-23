@@ -17,8 +17,8 @@ public abstract class StunAttributeSerializer<AttributeT extends StunAttribute>
 
     protected final AttributeT attribute;
 
-    public StunAttributeSerializer(AttributeT message) {
-        this.attribute = message;
+    public StunAttributeSerializer(AttributeT attribute) {
+        this.attribute = attribute;
     }
 
     @Override

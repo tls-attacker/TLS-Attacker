@@ -18,12 +18,22 @@ public class IceContext extends LayerContext {
     /** Must be 4 bytes long */
     private byte[] address;
 
-    private int port;
+    private Integer port;
 
     private byte[] stunTransactionId;
 
+    private Long stunPriority;
+
     public IceContext(Context context) {
         super(context);
+    }
+
+    public Long getStunPriority() {
+        return stunPriority;
+    }
+
+    public void setStunPriority(Long stunPriority) {
+        this.stunPriority = stunPriority;
     }
 
     public byte[] getStunTransactionId() {

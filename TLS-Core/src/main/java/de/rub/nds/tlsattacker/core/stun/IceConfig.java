@@ -24,6 +24,8 @@ public class IceConfig {
     private byte[] defaultStunTransactionId =
             new byte[] {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C};
 
+    private Long defaultStunPriority = 0x12345678L;
+
     public IceConfig() {}
 
     public byte[] getDefaultStunTransactionId() {
