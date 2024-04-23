@@ -8,14 +8,15 @@
  */
 package de.rub.nds.tlsattacker.core.stun.model;
 
+import java.io.InputStream;
+
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.tlsattacker.core.layer.data.Handler;
-import de.rub.nds.tlsattacker.core.layer.data.Parser;
-import de.rub.nds.tlsattacker.core.layer.data.Preparator;
-import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import de.rub.nds.tlsattacker.core.stun.IceContext;
-import java.io.InputStream;
+import de.rub.nds.tlsattacker.core.stun.handler.FingerprintAttributeHandler;
+import de.rub.nds.tlsattacker.core.stun.parser.FingerprintAttributeParser;
+import de.rub.nds.tlsattacker.core.stun.preparator.FingerprintAttributePreparator;
+import de.rub.nds.tlsattacker.core.stun.serializer.FingerprintAttributeSerializer;
 
 public class FingerprintAttribute extends StunAttribute {
 
@@ -39,26 +40,22 @@ public class FingerprintAttribute extends StunAttribute {
     }
 
     @Override
-    public Handler<?> getHandler(IceContext context) {
-        // TODO Auto-generated method stub
-        return null;
+    public FingerprintAttributeHandler getHandler(IceContext context) {
+        return new FingerprintAttributeHandler(context);
     }
 
     @Override
-    public Parser<?> getParser(IceContext context, InputStream stream) {
-        // TODO Auto-generated method stub
-        return null;
+    public FingerprintAttributeParser getParser(IceContext context, InputStream stream) {
+        return new FingerprintAttributeParser(context.getIceChooser().getContext(), stream);
     }
 
     @Override
-    public Preparator<?> getPreparator(IceContext context) {
-        // TODO Auto-generated method stub
-        return null;
+    public FingerprintAttributePreparator getPreparator(IceContext context) {
+        return new FingerprintAttributePreparator(context.getChooser(), this);
     }
 
     @Override
-    public Serializer<?> getSerializer(IceContext context) {
-        // TODO Auto-generated method stub
-        return null;
+    public FingerprintAttributeSerializer getSerializer(IceContext context) {
+        return new FingerprintAttributeSerializer(this);
     }
 }

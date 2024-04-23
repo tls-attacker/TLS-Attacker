@@ -37,5 +37,7 @@ public class IceByteLengths {
 
     public static final int STUN_MESSAGE_INTEGRITY_HMAC = 20;
 
+    public static final int STUN_FINGERPRINT_CRC_CHECKSUM = 4;
+
     private IceByteLengths() {}
 }
