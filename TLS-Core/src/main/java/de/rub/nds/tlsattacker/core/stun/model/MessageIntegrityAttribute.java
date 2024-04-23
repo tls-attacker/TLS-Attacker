@@ -12,7 +12,6 @@ import java.io.InputStream;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.tlsattacker.core.layer.data.Handler;
 import de.rub.nds.tlsattacker.core.stun.IceContext;
 import de.rub.nds.tlsattacker.core.stun.handler.MessageIntegrityHandler;
 import de.rub.nds.tlsattacker.core.stun.parser.MessageIntegrityParser;
