@@ -28,7 +28,27 @@ public class IceConfig {
 
     private byte[] defaultTieBreaker = new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
 
+    private byte[] defaultStunPassword = new byte[]{0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08};
+
+    private String defaultRealm = "testRealm";
+
     public IceConfig() {
+    }
+
+    public String getDefaultRealm() {
+        return defaultRealm;
+    }
+
+    public void setDefaultRealm(String defaultRealm) {
+        this.defaultRealm = defaultRealm;
+    }
+
+    public byte[] getDefaultStunPassword() {
+        return defaultStunPassword;
+    }
+
+    public void setDefaultStunPassword(byte[] defaultStunPassword) {
+        this.defaultStunPassword = defaultStunPassword;
     }
 
     public byte[] getDefaultTieBreaker() {

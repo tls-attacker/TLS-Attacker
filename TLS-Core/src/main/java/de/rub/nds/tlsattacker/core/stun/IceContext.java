@@ -8,6 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.stun;
 
+import java.io.ByteArrayOutputStream;
+
 import de.rub.nds.tlsattacker.core.layer.context.LayerContext;
 import de.rub.nds.tlsattacker.core.state.Context;
 
@@ -26,8 +28,29 @@ public class IceContext extends LayerContext {
 
     private byte[] tieBreaker;
 
+    private ByteArrayOutputStream messageTranscript;
+
+    private String realm;
+
     public IceContext(Context context) {
         super(context);
+        messageTranscript = new ByteArrayOutputStream();
+    }
+
+    public String getRealm() {
+        return realm;
+    }
+
+    public void setRealm(String realm) {
+        this.realm = realm;
+    }
+
+    public void resetMessageTranscript() {
+        messageTranscript.reset();
+    }
+
+    public byte[] getMessageTranscript() {
+        return messageTranscript.toByteArray();
     }
 
     public byte[] getTieBreaker() {

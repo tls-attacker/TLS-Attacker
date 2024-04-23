@@ -35,5 +35,7 @@ public class IceByteLengths {
 
     public static final int STUN_ICE_CONTROLLED_TIE_BREAKER = 8;
 
+    public static final int STUN_MESSAGE_INTEGRITY_HMAC = 20;
+
     private IceByteLengths() {}
 }
