@@ -8,14 +8,16 @@
  */
 package de.rub.nds.tlsattacker.core.stun.model;
 
+import java.io.InputStream;
+
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.core.layer.data.Handler;
-import de.rub.nds.tlsattacker.core.layer.data.Parser;
-import de.rub.nds.tlsattacker.core.layer.data.Preparator;
-import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import de.rub.nds.tlsattacker.core.stun.IceContext;
-import java.io.InputStream;
+import de.rub.nds.tlsattacker.core.stun.handler.MessageIntegrityHandler;
+import de.rub.nds.tlsattacker.core.stun.parser.MessageIntegrityParser;
+import de.rub.nds.tlsattacker.core.stun.preparator.MessageIntegrityPreparator;
+import de.rub.nds.tlsattacker.core.stun.serializer.MessageIntegritySerializer;
 
 public class MessageIntegrityAttribute extends StunAttribute {
 
@@ -39,26 +41,22 @@ public class MessageIntegrityAttribute extends StunAttribute {
     }
 
     @Override
-    public Handler<?> getHandler(IceContext context) {
-        // TODO Auto-generated method stub
-        return null;
+    public MessageIntegrityHandler getHandler(IceContext context) {
+        return new MessageIntegrityHandler(context);
     }
 
     @Override
-    public Parser<?> getParser(IceContext context, InputStream stream) {
-        // TODO Auto-generated method stub
-        return null;
+    public MessageIntegrityParser getParser(IceContext context, InputStream stream) {
+        return new MessageIntegrityParser(context, stream);
     }
 
     @Override
-    public Preparator<?> getPreparator(IceContext context) {
-        // TODO Auto-generated method stub
-        return null;
+    public MessageIntegrityPreparator getPreparator(IceContext context) {
+        return new MessageIntegrityPreparator(context.getChooser(), this);
     }
 
     @Override
-    public Serializer<?> getSerializer(IceContext context) {
-        // TODO Auto-generated method stub
-        return null;
+    public MessageIntegritySerializer getSerializer(IceContext context) {
+        return new MessageIntegritySerializer(this);
     }
 }
