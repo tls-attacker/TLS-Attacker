@@ -24,8 +24,18 @@ public class IceContext extends LayerContext {
 
     private Long stunPriority;
 
+    private byte[] tieBreaker;
+
     public IceContext(Context context) {
         super(context);
+    }
+
+    public byte[] getTieBreaker() {
+        return tieBreaker;
+    }
+
+    public void setTieBreaker(byte[] tieBreaker) {
+        this.tieBreaker = tieBreaker;
     }
 
     public Long getStunPriority() {

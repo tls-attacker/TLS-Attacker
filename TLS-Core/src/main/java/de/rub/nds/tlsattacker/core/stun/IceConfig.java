@@ -26,7 +26,17 @@ public class IceConfig {
 
     private Long defaultStunPriority = 0x12345678L;
 
+    private byte[] defaultTieBreaker = new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
+
     public IceConfig() {
+    }
+
+    public byte[] getDefaultTieBreaker() {
+        return defaultTieBreaker;
+    }
+
+    public void setDefaultTieBreaker(byte[] defaultTieBreaker) {
+        this.defaultTieBreaker = defaultTieBreaker;
     }
 
     public Long getDefaultStunPriority() {
