@@ -33,7 +33,17 @@ public class IceConfig {
 
     private String defaultRealm = "testRealm";
 
+    private byte[] defaultData = new byte[] {0x01, 0x02, 0x03, 0x04};
+
     public IceConfig() {}
+
+    public void setDefaultData(byte[] defaultData) {
+        this.defaultData = defaultData;
+    }
+
+    public byte[] getDefaultData() {
+        return defaultData;
+    }
 
     public String getDefaultRealm() {
         return defaultRealm;

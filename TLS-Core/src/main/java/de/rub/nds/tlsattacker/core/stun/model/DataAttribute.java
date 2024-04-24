@@ -8,21 +8,32 @@
  */
 package de.rub.nds.tlsattacker.core.stun.model;
 
-import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
-import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.tlsattacker.core.layer.data.Handler;
-import de.rub.nds.tlsattacker.core.layer.data.Parser;
-import de.rub.nds.tlsattacker.core.layer.data.Preparator;
-import de.rub.nds.tlsattacker.core.layer.data.Serializer;
-import de.rub.nds.tlsattacker.core.stun.IceContext;
 import java.io.InputStream;
 
+import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.tlsattacker.core.stun.IceContext;
+import de.rub.nds.tlsattacker.core.stun.handler.DataAttributeHandler;
+import de.rub.nds.tlsattacker.core.stun.parser.DataAttributeParser;
+import de.rub.nds.tlsattacker.core.stun.preparator.DataAttributePreparator;
+import de.rub.nds.tlsattacker.core.stun.serializer.DataAttributeSerializer;
+
 public class DataAttribute extends StunAttribute {
+
+    private byte[] dataConfig = null;
 
     private ModifiableByteArray data;
 
     public DataAttribute() {
         super();
+    }
+
+    public void setDataConfig(byte[] dataConfig) {
+        this.dataConfig = dataConfig;
+    }
+
+    public byte[] getDataConfig() {
+        return dataConfig;
     }
 
     public ModifiableByteArray getData() {
@@ -38,26 +49,22 @@ public class DataAttribute extends StunAttribute {
     }
 
     @Override
-    public Handler<?> getHandler(IceContext context) {
-        // TODO Auto-generated method stub
-        return null;
+    public DataAttributeHandler getHandler(IceContext context) {
+        return new DataAttributeHandler(context);
     }
 
     @Override
-    public Parser<?> getParser(IceContext context, InputStream stream) {
-        // TODO Auto-generated method stub
-        return null;
+    public DataAttributeParser getParser(IceContext context, InputStream stream) {
+        return new DataAttributeParser(context, stream);
     }
 
     @Override
-    public Preparator<?> getPreparator(IceContext context) {
-        // TODO Auto-generated method stub
-        return null;
+    public DataAttributePreparator getPreparator(IceContext context) {
+        return new DataAttributePreparator(context.getChooser(), this);
     }
 
     @Override
-    public Serializer<?> getSerializer(IceContext context) {
-        // TODO Auto-generated method stub
-        return null;
+    public DataAttributeSerializer getSerializer(IceContext context) {
+        return new DataAttributeSerializer(this);
     }
 }
