@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.stun.model;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.tlsattacker.core.constants.stun.StunAttributeType;
 import de.rub.nds.tlsattacker.core.layer.context.IceContext;
 import de.rub.nds.tlsattacker.core.stun.handler.MessageIntegrityHandler;
 import de.rub.nds.tlsattacker.core.stun.parser.MessageIntegrityParser;
@@ -23,7 +24,7 @@ public class MessageIntegrityAttribute extends StunAttribute {
     private ModifiableByteArray hmac;
 
     public MessageIntegrityAttribute() {
-        super();
+        super(StunAttributeType.MESSAGE_INTEGRITY);
     }
 
     public ModifiableByteArray getHmac() {

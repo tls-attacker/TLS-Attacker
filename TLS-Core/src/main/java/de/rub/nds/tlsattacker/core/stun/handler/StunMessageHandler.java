@@ -8,13 +8,14 @@
  */
 package de.rub.nds.tlsattacker.core.stun.handler;
 
-import de.rub.nds.tlsattacker.core.layer.context.IceContext;
-import de.rub.nds.tlsattacker.core.layer.data.Handler;
-import de.rub.nds.tlsattacker.core.stun.model.StunMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public abstract class StunMessageHandler<MessageT extends StunMessage> extends Handler<MessageT> {
+import de.rub.nds.tlsattacker.core.layer.context.IceContext;
+import de.rub.nds.tlsattacker.core.layer.data.Handler;
+import de.rub.nds.tlsattacker.core.stun.model.StunMessage;
+
+public class StunMessageHandler extends Handler<StunMessage> {
 
     protected static final Logger LOGGER = LogManager.getLogger();
     /** context */
@@ -22,5 +23,10 @@ public abstract class StunMessageHandler<MessageT extends StunMessage> extends H
 
     public StunMessageHandler(IceContext iceContext) {
         this.iceContext = iceContext;
+    }
+
+    @Override
+    public void adjustContext(StunMessage container) {
+        // TODO: maybe we need to keep context?
     }
 }

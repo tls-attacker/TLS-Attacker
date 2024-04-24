@@ -14,6 +14,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.tlsattacker.core.constants.stun.StunAttributeType;
 import de.rub.nds.tlsattacker.core.layer.context.IceContext;
 import de.rub.nds.tlsattacker.core.stun.handler.ErrorCodeAttributeHandler;
 import de.rub.nds.tlsattacker.core.stun.parser.ErrorCodeAttributeParser;
@@ -47,6 +48,7 @@ public class ErrorCodeAttribute extends StunAttribute {
     private ModifiableString reasonPhrase;
 
     public ErrorCodeAttribute() {
+        super(StunAttributeType.ERROR_CODE);
     }
 
     public String getReasonConfig() {

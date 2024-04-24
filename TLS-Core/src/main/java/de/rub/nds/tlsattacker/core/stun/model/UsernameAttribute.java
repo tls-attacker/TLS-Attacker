@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.stun.model;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.tlsattacker.core.constants.stun.StunAttributeType;
 import de.rub.nds.tlsattacker.core.layer.context.IceContext;
 import de.rub.nds.tlsattacker.core.stun.handler.UsernameAttributeHandler;
 import de.rub.nds.tlsattacker.core.stun.parser.UsernameAttributeParser;
@@ -22,7 +23,7 @@ public class UsernameAttribute extends StunAttribute {
     private ModifiableString username;
 
     public UsernameAttribute() {
-        super();
+        super(StunAttributeType.USERNAME);
     }
 
     public ModifiableString getUsername() {

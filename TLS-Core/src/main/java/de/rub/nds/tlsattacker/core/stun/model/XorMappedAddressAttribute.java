@@ -8,15 +8,17 @@
  */
 package de.rub.nds.tlsattacker.core.stun.model;
 
+import java.io.InputStream;
+
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.tlsattacker.core.constants.stun.StunAttributeType;
 import de.rub.nds.tlsattacker.core.layer.context.IceContext;
 import de.rub.nds.tlsattacker.core.stun.handler.XorMappedAddressAttributeHandler;
 import de.rub.nds.tlsattacker.core.stun.parser.XorMappedAddressAttributeParser;
 import de.rub.nds.tlsattacker.core.stun.preparator.XorMappedAddressAttributePreparator;
 import de.rub.nds.tlsattacker.core.stun.serializer.XorMappedAddressAttributeSerializer;
-import java.io.InputStream;
 
 public class XorMappedAddressAttribute extends StunAttribute {
 
@@ -37,7 +39,7 @@ public class XorMappedAddressAttribute extends StunAttribute {
     private ModifiableByteArray ipAddress;
 
     public XorMappedAddressAttribute() {
-        super();
+        super(StunAttributeType.XOR_MAPPED_ADDRESS);
     }
 
     public ModifiableByteArray getReservedByte() {

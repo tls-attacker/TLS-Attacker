@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.stun.model;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.tlsattacker.core.constants.stun.StunAttributeType;
 import de.rub.nds.tlsattacker.core.layer.context.IceContext;
 import de.rub.nds.tlsattacker.core.stun.handler.IceControllingHandler;
 import de.rub.nds.tlsattacker.core.stun.parser.IceControllingParser;
@@ -23,7 +24,7 @@ public class IceControllingAttribute extends StunAttribute {
     private ModifiableByteArray tieBreaker;
 
     public IceControllingAttribute() {
-        super();
+        super(StunAttributeType.ICE_CONTROLLING);
     }
 
     public ModifiableByteArray getTieBreaker() {

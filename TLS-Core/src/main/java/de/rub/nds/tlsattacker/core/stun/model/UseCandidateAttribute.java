@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.stun.model;
 
+import de.rub.nds.tlsattacker.core.constants.stun.StunAttributeType;
 import de.rub.nds.tlsattacker.core.layer.context.IceContext;
 import de.rub.nds.tlsattacker.core.stun.handler.UseCandidateHandler;
 import de.rub.nds.tlsattacker.core.stun.parser.UseCandidateParser;
@@ -18,7 +19,7 @@ import java.io.InputStream;
 public class UseCandidateAttribute extends StunAttribute {
 
     public UseCandidateAttribute() {
-        super();
+        super(StunAttributeType.USE_CANDIDATE);
     }
 
     @Override

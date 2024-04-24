@@ -22,7 +22,7 @@ public class UnknownAttribute extends StunAttribute {
     private ModifiableByteArray unknownContent;
 
     public UnknownAttribute() {
-        super();
+        super(null);
     }
 
     public ModifiableByteArray getUnknownContent() {

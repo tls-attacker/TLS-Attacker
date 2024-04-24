@@ -8,14 +8,64 @@
  */
 package de.rub.nds.tlsattacker.core.stun.preparator;
 
+import java.io.ByteArrayOutputStream;
+
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.stun.IceByteLengths;
+import de.rub.nds.tlsattacker.core.constants.stun.StunVersionCookie;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.stun.model.StunMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
-public abstract class StunMessagePreparator<MessageT extends StunMessage>
-        extends Preparator<MessageT> {
+public class StunMessagePreparator extends Preparator<StunMessage> {
 
-    public StunMessagePreparator(Chooser chooser, MessageT attribute) {
-        super(chooser, attribute);
+    private StunMessage message;
+
+    public StunMessagePreparator(Chooser chooser, StunMessage message) {
+        super(chooser, message);
+        this.message = message;
+    }
+
+    @Override
+    public void prepare() {
+        contextStream = = new ByteArrayOutputStream();
+        message.setStunMessageClass(new byte[] { message.getClassType().getValue() });
+        message.setStunMethodType(message.getMethodType().getValue());
+
+        message.setStunMessageTypeBytes(encodeClassTypeWithMethodType(message.getStunMethodType().getValue(), message.getStunMessageClass().getValue()));
+        // Message length can only be determined when all attributes are known
+
+        message.setTransactionId(chooser.getIceChooser().getStunTransactionId());
+        message.setMagicCookiePresent(isMagicCookiePresent());
+        ByteArrayOutputStream attributeStream = new ByteArrayOutputStream();
+        for(StunAttribute attribute : message.getAttributeList()) {
+            StunAttributePreparator preparator = new StunAttributePreparator(chooser, attribute);
+            preparator.prepare();
+            attributeStream.write(attribute.getCompleteData().getValue());
+        }
+    }
+
+    private byte[] encodeClassTypeWithMethodType(byte[] method, byte[] classType) {
+        int methodInt = ArrayConverter.bytesToInt(method);
+        int classInt = ArrayConverter.bytesToInt(classType);
+        int encoded = (methodInt & 0x1F80) << 2 | (methodInt & 0x0070) << 1
+                | (methodInt & 0x000F) | (classInt & 0x0002) << 7
+                | (classInt & 0x0001) << 4;
+        return ArrayConverter.intToBytes(encoded, IceByteLengths.STUN_MESSAGE_TYPE);
+    }
+
+    private boolean isMagicCookiePresent() {
+        // Check if the first 4 bytes of the transaction id match the magic cookie
+        byte[] magicCookie = StunVersionCookie.RFC5389_VERSION;
+        byte[] transactionId = message.getTransactionId().getValue();
+        if (transactionId.length < 4) {
+            return false;
+        }
+        for (int i = 0; i < 4; i++) {
+            if (magicCookie[i] != transactionId[i]) {
+                return false;
+            }
+        }
+        return true;
     }
 }

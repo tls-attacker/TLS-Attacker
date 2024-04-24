@@ -8,15 +8,31 @@
  */
 package de.rub.nds.tlsattacker.core.stun.serializer;
 
+import de.rub.nds.tlsattacker.core.constants.stun.IceByteLengths;
+import de.rub.nds.tlsattacker.core.layer.context.IceContext;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
+import de.rub.nds.tlsattacker.core.stun.model.StunAttribute;
 import de.rub.nds.tlsattacker.core.stun.model.StunMessage;
 
-public abstract class StunMessageSerializer<MessageT extends StunMessage>
-        extends Serializer<MessageT> {
+public class StunMessageSerializer extends Serializer<StunMessage> {
 
-    protected final MessageT message;
+    protected final StunMessage message;
 
-    public StunMessageSerializer(MessageT message) {
+    private IceContext iceContext;
+
+    public StunMessageSerializer(IceContext iceContext, StunMessage message) {
         this.message = message;
+        this.iceContext = iceContext;
+    }
+
+    @Override
+    protected byte[] serializeBytes() {
+        appendBytes(message.getStunMessageTypeBytes().getValue());
+        appendInt(message.getMessageLength().getValue(), IceByteLengths.STUN_MESSAGE_LENGTH);
+        appendBytes(message.getTransactionId().getValue());
+        for (StunAttribute attribute : message.getAttributeList()) {
+            appendBytes(attribute.getSerializer(iceContext).serialize());
+        }
+        return getAlreadySerialized();
     }
 }

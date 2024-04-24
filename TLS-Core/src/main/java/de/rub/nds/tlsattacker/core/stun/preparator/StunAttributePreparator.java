@@ -25,6 +25,7 @@ public abstract class StunAttributePreparator<AttributeT extends StunAttribute>
 
     @Override
     public final void prepare() {
+        getObject().setAttributeType(getObject().getA);
         prepareContent();
         getObject()
                 .setBody(

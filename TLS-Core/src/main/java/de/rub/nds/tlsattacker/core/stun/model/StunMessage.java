@@ -8,20 +8,37 @@
  */
 package de.rub.nds.tlsattacker.core.stun.model;
 
+import java.io.InputStream;
+import java.util.LinkedList;
+import java.util.List;
+
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bool.ModifiableBoolean;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.tlsattacker.core.constants.stun.StunMessageClass;
+import de.rub.nds.tlsattacker.core.constants.stun.StunMethodType;
 import de.rub.nds.tlsattacker.core.layer.Message;
 import de.rub.nds.tlsattacker.core.layer.context.IceContext;
+import de.rub.nds.tlsattacker.core.stun.handler.StunMessageHandler;
+import de.rub.nds.tlsattacker.core.stun.parser.StunMessageParser;
+import de.rub.nds.tlsattacker.core.stun.preparator.StunMessagePreparator;
+import de.rub.nds.tlsattacker.core.stun.serializer.StunMessageSerializer;
 
-import java.util.LinkedList;
-import java.util.List;
+public class StunMessage extends Message<IceContext> {
 
-public abstract class StunMessage extends Message<IceContext> {
+    private final StunMessageClass classType;
+    
+    private final StunMethodType methodType;
+
+    /** 10 bit */
+    private ModifiableByteArray stunMethodType;
+
+    /** 2 bit */
+    private ModifiableByteArray stunMessageClass;
 
     /** 2 bytes */
-    private ModifiableByteArray stunMessageType;
+    private ModifiableByteArray stunMessageTypeBytes;
 
     /** 2 bytes */
     private ModifiableInteger messageLength;
@@ -34,21 +51,55 @@ public abstract class StunMessage extends Message<IceContext> {
 
     private List<StunAttribute> attributeList;
 
-    private StunMessage() {
+    private StunMessage(StunMessageClass classType, StunMethodType methodType) {
         attributeList = new LinkedList<>();
+        this.classType = classType;
+        this.methodType = methodType;
     }
 
-    public ModifiableByteArray getStunMessageType() {
-        return stunMessageType;
+    public StunMessageClass getClassType() {
+        return classType;
     }
 
-    public void setStunMessageType(ModifiableByteArray stunMessageType) {
-        this.stunMessageType = stunMessageType;
+    public StunMethodType getMethodType() {
+        return methodType;
     }
 
-    public void setStunMessageType(byte[] stunMessageType) {
-        this.stunMessageType =
-                ModifiableVariableFactory.safelySetValue(this.stunMessageType, stunMessageType);
+    public ModifiableByteArray getStunMethodType() {
+        return stunMethodType;
+    }
+
+    public void setStunMethodType(ModifiableByteArray stunMethodType) {
+        this.stunMethodType = stunMethodType;
+    }
+
+    public void setStunMethodType(byte[] stunMethodType) {
+        this.stunMethodType = ModifiableVariableFactory.safelySetValue(this.stunMethodType, stunMethodType);
+    }
+
+    public ModifiableByteArray getStunMessageClass() {
+        return stunMessageClass;
+    }
+
+    public void setStunMessageClass(ModifiableByteArray stunMessageClass) {
+        this.stunMessageClass = stunMessageClass;
+    }
+
+    public void setStunMessageClass(byte[] stunMessageClass) {
+        this.stunMessageClass = ModifiableVariableFactory.safelySetValue(this.stunMessageClass, stunMessageClass);
+    }
+
+    public ModifiableByteArray getStunMessageTypeBytes() {
+        return stunMessageTypeBytes;
+    }
+
+    public void setStunMessageTypeBytes(ModifiableByteArray stunMessageType) {
+        this.stunMessageTypeBytes = stunMessageType;
+    }
+
+    public void setStunMessageTypeBytes(byte[] stunMessageType) {
+        this.stunMessageTypeBytes = ModifiableVariableFactory.safelySetValue(this.stunMessageTypeBytes,
+                stunMessageType);
     }
 
     public ModifiableInteger getMessageLength() {
@@ -60,8 +111,7 @@ public abstract class StunMessage extends Message<IceContext> {
     }
 
     public void setMessageLength(int messageLength) {
-        this.messageLength =
-                ModifiableVariableFactory.safelySetValue(this.messageLength, messageLength);
+        this.messageLength = ModifiableVariableFactory.safelySetValue(this.messageLength, messageLength);
     }
 
     public ModifiableBoolean getMagicCookiePresent() {
@@ -73,9 +123,8 @@ public abstract class StunMessage extends Message<IceContext> {
     }
 
     public void setMagicCookiePresent(boolean magicCookiePresent) {
-        this.magicCookiePresent =
-                ModifiableVariableFactory.safelySetValue(
-                        this.magicCookiePresent, magicCookiePresent);
+        this.magicCookiePresent = ModifiableVariableFactory.safelySetValue(
+                this.magicCookiePresent, magicCookiePresent);
     }
 
     public ModifiableByteArray getTransactionId() {
@@ -87,8 +136,7 @@ public abstract class StunMessage extends Message<IceContext> {
     }
 
     public void setTransactionId(byte[] transactionId) {
-        this.transactionId =
-                ModifiableVariableFactory.safelySetValue(this.transactionId, transactionId);
+        this.transactionId = ModifiableVariableFactory.safelySetValue(this.transactionId, transactionId);
     }
 
     public List<StunAttribute> getAttributeList() {
@@ -97,5 +145,30 @@ public abstract class StunMessage extends Message<IceContext> {
 
     public void setAttributeList(List<StunAttribute> attributeList) {
         this.attributeList = attributeList;
+    }
+
+    @Override
+    public StunMessageParser getParser(IceContext context, InputStream stream) {
+        return new StunMessageParser(stream);
+    }
+
+    @Override
+    public StunMessagePreparator getPreparator(IceContext context) {
+        return new StunMessagePreparator(context.getChooser(), this);
+    }
+
+    @Override
+    public StunMessageSerializer getSerializer(IceContext context) {
+        return new StunMessageSerializer(this);
+    }
+
+    @Override
+    public StunMessageHandler getHandler(IceContext context) {
+        return new StunMessageHandler(context);
+    }
+
+    @Override
+    public String toShortString() {
+        return "STUN:" + classType + ":" + methodType;
     }
 }

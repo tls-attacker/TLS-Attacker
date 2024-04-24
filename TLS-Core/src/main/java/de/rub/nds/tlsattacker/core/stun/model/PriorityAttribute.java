@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.stun.model;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.longint.ModifiableLong;
+import de.rub.nds.tlsattacker.core.constants.stun.StunAttributeType;
 import de.rub.nds.tlsattacker.core.layer.context.IceContext;
 import de.rub.nds.tlsattacker.core.stun.handler.PriorityAttributeHandler;
 import de.rub.nds.tlsattacker.core.stun.parser.PriorityAttributeParser;
@@ -23,7 +24,7 @@ public class PriorityAttribute extends StunAttribute {
     private ModifiableLong priority;
 
     public PriorityAttribute() {
-        super();
+        super(StunAttributeType.PRIORITY);
     }
 
     public ModifiableLong getPriority() {

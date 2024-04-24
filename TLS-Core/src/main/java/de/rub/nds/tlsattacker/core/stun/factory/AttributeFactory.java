@@ -11,14 +11,20 @@ package de.rub.nds.tlsattacker.core.stun.factory;
 import de.rub.nds.tlsattacker.core.constants.stun.StunAttributeType;
 import de.rub.nds.tlsattacker.core.stun.model.DataAttribute;
 import de.rub.nds.tlsattacker.core.stun.model.ErrorCodeAttribute;
+import de.rub.nds.tlsattacker.core.stun.model.FingerprintAttribute;
+import de.rub.nds.tlsattacker.core.stun.model.IceControlledAttribute;
+import de.rub.nds.tlsattacker.core.stun.model.IceControllingAttribute;
 import de.rub.nds.tlsattacker.core.stun.model.MessageIntegrityAttribute;
+import de.rub.nds.tlsattacker.core.stun.model.PriorityAttribute;
 import de.rub.nds.tlsattacker.core.stun.model.StunAttribute;
 import de.rub.nds.tlsattacker.core.stun.model.UnknownAttribute;
+import de.rub.nds.tlsattacker.core.stun.model.UseCandidateAttribute;
 import de.rub.nds.tlsattacker.core.stun.model.UsernameAttribute;
 import de.rub.nds.tlsattacker.core.stun.model.XorMappedAddressAttribute;
 
 public class AttributeFactory {
-    private AttributeFactory() {}
+    private AttributeFactory() {
+    }
 
     public static StunAttribute createAttribute(StunAttributeType type) {
         switch (type) {
@@ -32,11 +38,31 @@ public class AttributeFactory {
                 return new MessageIntegrityAttribute();
             case USERNAME:
                 return new UsernameAttribute();
+            case USE_CANDIDATE:
+                return new UseCandidateAttribute();
+            case PRIORITY:
+                return new PriorityAttribute();
+            case ICE_CONTROLLED:
+                return new IceControlledAttribute();
+            case ICE_CONTROLLING:
+                return new IceControllingAttribute();
+            case FINGERPRINT:
+                return new FingerprintAttribute();
+            case ADDERSS_ERROR_CODE:
+            case ADDITIONAL_ADDRESS_FAMILY:
+            case ALTERNATE_DOMAIN:
+            case ALTERNATE_SERVER:
+            case BANDWIDTH:
+            case CHANGE_REQUEST:
+            case CACHE_TIMEOUT:
+            case REALM:
+            case NONCE:
+            case SOFTWARE:
+            case ACCESS_TOKEN:
             case XOR_PEER_ADDRESS:
             case XOR_RELAYED_ADDRESS:
             case CHANGED_ADDRESS:
             case CHANNEL_NUMBER:
-            case CHANGE_REQUEST:
             case DONT_FRAGMENT:
             case EVEN_PORT:
             case LIFETIME:
@@ -44,12 +70,32 @@ public class AttributeFactory {
             case REFLECTED_FROM:
             case REQUESTED_TRANSPORT:
             case RESERVATION_TOKEN:
-            case RESERVED_WAS_TIMER_VAL:
-            case RESERVER_WAS_BANDWIDTH:
             case RESPONSE_ADDRESS:
             case SOURCE_ADDRESS:
             case UNKNOWN_ATTRIBUTES:
-                throw new UnsupportedOperationException("Attribute type not supported yet");
+            case CISCO_STUN_FLOWDATA:
+            case CISCO_WEBEX_FLOW_INFO:
+            case CITRIX_TRANSACTION_ID:
+            case CONNECTION_ID:
+            case ECN_CHECK_STUN:
+            case ENF_FLOW_DESCRIPTION:
+            case ENF_NETWORK_STATUS:
+            case ICMP:
+            case MOBILITY_TICKET:
+            case OTHER_ADDRESS:
+            case PADDING:
+            case PASSWORD_ALGORITHM:
+            case PASSWORD_ALGORITHMS:
+            case REQUESTED_ADDRESS_FAMILY:
+            case RESPONSE_ORIGIN:
+            case RESPONSE_PORT:
+            case TIMER_VAL:
+            case TRANSACTION_TRANSMIT_COUNTER:
+            case USERHASH:
+            case GOOG_NETWORK_INFO:
+            case THIRD_PARTY_AUTHORIZATION:
+            case MESSAGE_INTEGRITY_SHA256:
+            case GOOG_DELTA:
             default:
                 return new UnknownAttribute();
         }
