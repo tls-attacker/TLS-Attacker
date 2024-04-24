@@ -8,8 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.stun.model;
 
-import java.io.InputStream;
-
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.core.stun.IceContext;
@@ -17,6 +15,7 @@ import de.rub.nds.tlsattacker.core.stun.handler.UnknownAttributeHandler;
 import de.rub.nds.tlsattacker.core.stun.parser.UnknownAttributeParser;
 import de.rub.nds.tlsattacker.core.stun.preparator.UnknownAttributePreparator;
 import de.rub.nds.tlsattacker.core.stun.serializer.UnknownAttributeSerializer;
+import java.io.InputStream;
 
 public class UnknownAttribute extends StunAttribute {
 
@@ -35,7 +34,8 @@ public class UnknownAttribute extends StunAttribute {
     }
 
     public void setUnknownContent(byte[] unknownContent) {
-        this.unknownContent = ModifiableVariableFactory.safelySetValue(this.unknownContent, unknownContent);
+        this.unknownContent =
+                ModifiableVariableFactory.safelySetValue(this.unknownContent, unknownContent);
     }
 
     @Override

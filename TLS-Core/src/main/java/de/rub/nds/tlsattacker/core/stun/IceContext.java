@@ -31,9 +31,19 @@ public class IceContext extends LayerContext {
 
     private String realm;
 
+    private Integer stunErrorCode;
+
     public IceContext(Context context) {
         super(context);
         messageTranscript = new ByteArrayOutputStream();
+    }
+
+    public Integer getStunErrorCode() {
+        return stunErrorCode;
+    }
+
+    public void setStunErrorCode(Integer stunErrorCode) {
+        this.stunErrorCode = stunErrorCode;
     }
 
     public String getRealm() {

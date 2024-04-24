@@ -8,11 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.stun.parser;
 
-import java.io.InputStream;
-
 import de.rub.nds.tlsattacker.core.constants.stun.IceByteLengths;
 import de.rub.nds.tlsattacker.core.stun.IceContext;
 import de.rub.nds.tlsattacker.core.stun.model.IceControllingAttribute;
+import java.io.InputStream;
 
 public class IceControllingParser extends StunAttributeParser<IceControllingAttribute> {
 

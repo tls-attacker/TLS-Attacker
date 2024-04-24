@@ -8,8 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.stun.model;
 
-import java.io.InputStream;
-
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.core.stun.IceContext;
@@ -17,6 +15,7 @@ import de.rub.nds.tlsattacker.core.stun.handler.DataAttributeHandler;
 import de.rub.nds.tlsattacker.core.stun.parser.DataAttributeParser;
 import de.rub.nds.tlsattacker.core.stun.preparator.DataAttributePreparator;
 import de.rub.nds.tlsattacker.core.stun.serializer.DataAttributeSerializer;
+import java.io.InputStream;
 
 public class DataAttribute extends StunAttribute {
 

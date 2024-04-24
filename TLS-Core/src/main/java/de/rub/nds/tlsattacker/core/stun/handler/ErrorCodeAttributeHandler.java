@@ -9,16 +9,16 @@
 package de.rub.nds.tlsattacker.core.stun.handler;
 
 import de.rub.nds.tlsattacker.core.stun.IceContext;
-import de.rub.nds.tlsattacker.core.stun.model.UnknownAttribute;
+import de.rub.nds.tlsattacker.core.stun.model.ErrorCodeAttribute;
 
-public class UnknownAttributeHandler extends StunAttributeHandler<UnknownAttribute> {
+public class ErrorCodeAttributeHandler extends StunAttributeHandler<ErrorCodeAttribute> {
 
-    public UnknownAttributeHandler(IceContext context) {
+    public ErrorCodeAttributeHandler(IceContext context) {
         super(context);
     }
 
     @Override
-    public void adjustContext(UnknownAttribute container) {
-        // Todo nothing to do here
+    public void adjustContext(ErrorCodeAttribute container) {
+        context.setStunErrorCode(container.getNumber().getValue());
     }
 }

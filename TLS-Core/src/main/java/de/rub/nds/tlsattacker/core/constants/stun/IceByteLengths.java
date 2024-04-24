@@ -39,5 +39,13 @@ public class IceByteLengths {
 
     public static final int STUN_FINGERPRINT_CRC_CHECKSUM = 4;
 
+    /** This is technically 21 bits - but we just ignore this */
+    public static final int STUN_ERROR_CODE_RESERVED_BYTES = 2;
+
+    /** This is technically 3 bits - but we just ignore this */
+    public static final int STUN_ERROR_CLASS = 1;
+
+    public static final int STUN_ERROR_VALUE = 1;
+
     private IceByteLengths() {}
 }

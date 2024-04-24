@@ -8,33 +8,69 @@
  */
 package de.rub.nds.tlsattacker.core.stun.model;
 
+import java.io.InputStream;
+
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.tlsattacker.core.layer.data.Handler;
-import de.rub.nds.tlsattacker.core.layer.data.Parser;
-import de.rub.nds.tlsattacker.core.layer.data.Preparator;
-import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import de.rub.nds.tlsattacker.core.stun.IceContext;
-import java.io.InputStream;
+import de.rub.nds.tlsattacker.core.stun.handler.ErrorCodeAttributeHandler;
+import de.rub.nds.tlsattacker.core.stun.parser.ErrorCodeAttributeParser;
+import de.rub.nds.tlsattacker.core.stun.preparator.ErrorCodeAttributePreparator;
+import de.rub.nds.tlsattacker.core.stun.serializer.ErrorCodeAttributeSerializer;
 
 public class ErrorCodeAttribute extends StunAttribute {
 
-    private ModifiableByteArray reservedByte;
+    private Integer errorCodeConfig = null;
 
+    private String reasonConfig = null;
+
+    /**
+     * In the spec this is 21 bits - we make this 16 bits and make the 4 lsb part of the error code
+     * class
+     */
+    private ModifiableByteArray reservedBytes;
+
+    /** This is the human readable error code that is encoded here */
     private ModifiableInteger number;
+
+    /**
+     * Error codes are weirdly encoded in STUN. They are generally numbers between 300 - 699 however
+     * they are encoded as two byte values. The first byte is the (decimal) hundreds digit, the last
+     * byte is the last two digit.
+     */
+    private ModifiableByteArray errorCodeClass;
+
+    private ModifiableByteArray errorCodeLowerValue;
 
     private ModifiableString reasonPhrase;
 
-    public ErrorCodeAttribute() {}
-
-    public ModifiableByteArray getReservedByte() {
-        return reservedByte;
+    public ErrorCodeAttribute() {
     }
 
-    public void setReservedByte(ModifiableByteArray reservedByte) {
-        this.reservedByte = reservedByte;
+    public String getReasonConfig() {
+        return reasonConfig;
+    }
+
+    public void setReasonConfig(String reasonConfig) {
+        this.reasonConfig = reasonConfig;
+    }
+
+    public Integer getErrorCodeConfig() {
+        return errorCodeConfig;
+    }
+
+    public void setErrorCodeConfig(Integer errorCodeConfig) {
+        this.errorCodeConfig = errorCodeConfig;
+    }
+
+    public ModifiableByteArray getReservedBytes() {
+        return reservedBytes;
+    }
+
+    public void setReservedBytes(ModifiableByteArray reservedBytes) {
+        this.reservedBytes = reservedBytes;
     }
 
     public ModifiableInteger getNumber() {
@@ -43,6 +79,10 @@ public class ErrorCodeAttribute extends StunAttribute {
 
     public void setNumber(ModifiableInteger number) {
         this.number = number;
+    }
+
+    public void setNumber(Integer number) {
+        this.number = ModifiableVariableFactory.safelySetValue(this.number, number);
     }
 
     public ModifiableString getReasonPhrase() {
@@ -54,8 +94,7 @@ public class ErrorCodeAttribute extends StunAttribute {
     }
 
     public void setReasonPhrase(String reasonPhrase) {
-        this.reasonPhrase =
-                ModifiableVariableFactory.safelySetValue(this.reasonPhrase, reasonPhrase);
+        this.reasonPhrase = ModifiableVariableFactory.safelySetValue(this.reasonPhrase, reasonPhrase);
     }
 
     public void setNumber(int number) {
@@ -63,31 +102,51 @@ public class ErrorCodeAttribute extends StunAttribute {
     }
 
     public void setReservedByte(byte[] reservedByte) {
-        this.reservedByte =
-                ModifiableVariableFactory.safelySetValue(this.reservedByte, reservedByte);
+        this.reservedBytes = ModifiableVariableFactory.safelySetValue(this.reservedBytes, reservedByte);
+    }
+
+    public ModifiableByteArray getErrorCodeClass() {
+        return errorCodeClass;
+    }
+
+    public void setErrorCodeClass(ModifiableByteArray errorCodeClass) {
+        this.errorCodeClass = errorCodeClass;
+    }
+
+    public void setErrorCodeClass(byte[] errorCodeClass) {
+        this.errorCodeClass = ModifiableVariableFactory.safelySetValue(this.errorCodeClass, errorCodeClass);
+    }
+
+    public ModifiableByteArray getErrorCodeLowerValue() {
+        return errorCodeLowerValue;
+    }
+
+    public void setErrorCodeLowerValue(ModifiableByteArray errorCodeLowerValue) {
+        this.errorCodeLowerValue = errorCodeLowerValue;
+    }
+
+    public void setErrorCodeLowerValue(byte[] errorCodeLowerValue) {
+        this.errorCodeLowerValue = ModifiableVariableFactory.safelySetValue(this.errorCodeLowerValue,
+                errorCodeLowerValue);
     }
 
     @Override
-    public Parser<?> getParser(IceContext context, InputStream stream) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getParser'");
+    public ErrorCodeAttributeParser getParser(IceContext context, InputStream stream) {
+        return new ErrorCodeAttributeParser(context, stream);
     }
 
     @Override
-    public Preparator<?> getPreparator(IceContext context) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getPreparator'");
+    public ErrorCodeAttributePreparator getPreparator(IceContext context) {
+        return new ErrorCodeAttributePreparator(context.getChooser(), this);
     }
 
     @Override
-    public Serializer<?> getSerializer(IceContext context) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getSerializer'");
+    public ErrorCodeAttributeSerializer getSerializer(IceContext context) {
+        return new ErrorCodeAttributeSerializer(this);
     }
 
     @Override
-    public Handler<?> getHandler(IceContext context) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getHandler'");
+    public ErrorCodeAttributeHandler getHandler(IceContext context) {
+        return new ErrorCodeAttributeHandler(context);
     }
 }

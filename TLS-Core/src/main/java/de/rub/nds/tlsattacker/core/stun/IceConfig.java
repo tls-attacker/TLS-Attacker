@@ -35,7 +35,27 @@ public class IceConfig {
 
     private byte[] defaultData = new byte[] {0x01, 0x02, 0x03, 0x04};
 
+    private Integer defaultErrorCode = 404;
+
+    private String defaultErrorReason ="Not Found :)";
+
     public IceConfig() {}
+
+    public String getDefaultErrorReason() {
+        return defaultErrorReason;
+    }
+
+    public void setDefaultErrorReason(String defaultErrorReason) {
+        this.defaultErrorReason = defaultErrorReason;
+    }
+
+    public void setDefaultErrorCode(Integer defaultErrorCode) {
+        this.defaultErrorCode = defaultErrorCode;
+    }
+
+    public Integer getDefaultErrorCode() {
+        return defaultErrorCode;
+    }
 
     public void setDefaultData(byte[] defaultData) {
         this.defaultData = defaultData;
