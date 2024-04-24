@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.SSL2Message;
 import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.stun.model.StunMessage;
 import de.rub.nds.tlsattacker.core.tcp.TcpStreamContainer;
 import de.rub.nds.tlsattacker.core.udp.UdpDataPacket;
 
@@ -29,7 +30,8 @@ public enum ImplementedLayers implements LayerType {
     HTTP(HttpMessage.class),
     SSL2(SSL2Message.class),
     QUICPACKET(QuicPacket.class),
-    QUICFRAME(QuicFrame.class);
+    QUICFRAME(QuicFrame.class),
+    STUN_TURN(StunMessage.class);
 
     private Class<?> baseContainerClass;
 
