@@ -8,14 +8,15 @@
  */
 package de.rub.nds.tlsattacker.core.stun.model;
 
+import java.io.InputStream;
+
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.tlsattacker.core.layer.data.Handler;
-import de.rub.nds.tlsattacker.core.layer.data.Parser;
-import de.rub.nds.tlsattacker.core.layer.data.Preparator;
-import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import de.rub.nds.tlsattacker.core.stun.IceContext;
-import java.io.InputStream;
+import de.rub.nds.tlsattacker.core.stun.handler.IceControllingHandler;
+import de.rub.nds.tlsattacker.core.stun.parser.IceControllingParser;
+import de.rub.nds.tlsattacker.core.stun.preparator.IceControllingPreparator;
+import de.rub.nds.tlsattacker.core.stun.serializer.IceControllingSerializer;
 
 public class IceControllingAttribute extends StunAttribute {
 
@@ -39,26 +40,22 @@ public class IceControllingAttribute extends StunAttribute {
     }
 
     @Override
-    public Handler<?> getHandler(IceContext context) {
-        // TODO Auto-generated method stub
-        return null;
+    public IceControllingHandler getHandler(IceContext context) {
+        return new IceControllingHandler(context);
     }
 
     @Override
-    public Parser<?> getParser(IceContext context, InputStream stream) {
-        // TODO Auto-generated method stub
-        return null;
+    public IceControllingParser getParser(IceContext context, InputStream stream) {
+        return new IceControllingParser(context, stream);
     }
 
     @Override
-    public Preparator<?> getPreparator(IceContext context) {
-        // TODO Auto-generated method stub
-        return null;
+    public IceControllingPreparator getPreparator(IceContext context) {
+        return new IceControllingPreparator(context.getChooser(), this);
     }
 
     @Override
-    public Serializer<?> getSerializer(IceContext context) {
-        // TODO Auto-generated method stub
-        return null;
+    public IceControllingSerializer getSerializer(IceContext context) {
+        return new IceControllingSerializer(this);
     }
 }
