@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.stun.handler;
 
-import de.rub.nds.tlsattacker.core.stun.IceContext;
+import de.rub.nds.tlsattacker.core.layer.context.IceContext;
 import de.rub.nds.tlsattacker.core.stun.model.DataAttribute;
 
 public class DataAttributeHandler extends StunAttributeHandler<DataAttribute> {

@@ -8,8 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.stun.parser;
 
+import de.rub.nds.tlsattacker.core.layer.context.IceContext;
 import de.rub.nds.tlsattacker.core.layer.data.Parser;
-import de.rub.nds.tlsattacker.core.stun.IceContext;
 import de.rub.nds.tlsattacker.core.stun.model.StunAttribute;
 import java.io.InputStream;
 

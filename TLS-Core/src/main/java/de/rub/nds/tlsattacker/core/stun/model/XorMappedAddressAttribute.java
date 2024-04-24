@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.stun.model;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.tlsattacker.core.stun.IceContext;
+import de.rub.nds.tlsattacker.core.layer.context.IceContext;
 import de.rub.nds.tlsattacker.core.stun.handler.XorMappedAddressAttributeHandler;
 import de.rub.nds.tlsattacker.core.stun.parser.XorMappedAddressAttributeParser;
 import de.rub.nds.tlsattacker.core.stun.preparator.XorMappedAddressAttributePreparator;

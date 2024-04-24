@@ -8,6 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.stun;
 
+import de.rub.nds.tlsattacker.core.layer.context.IceContext;
+
 public class IceChooser {
 
     private final IceConfig config;

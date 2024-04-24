@@ -13,7 +13,8 @@ import de.rub.nds.modifiablevariable.bool.ModifiableBoolean;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.layer.Message;
-import de.rub.nds.tlsattacker.core.stun.IceContext;
+import de.rub.nds.tlsattacker.core.layer.context.IceContext;
+
 import java.util.LinkedList;
 import java.util.List;
 

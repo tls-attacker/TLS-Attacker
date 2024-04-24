@@ -14,7 +14,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.tlsattacker.core.stun.IceContext;
+import de.rub.nds.tlsattacker.core.layer.context.IceContext;
 import de.rub.nds.tlsattacker.core.stun.handler.ErrorCodeAttributeHandler;
 import de.rub.nds.tlsattacker.core.stun.parser.ErrorCodeAttributeParser;
 import de.rub.nds.tlsattacker.core.stun.preparator.ErrorCodeAttributePreparator;

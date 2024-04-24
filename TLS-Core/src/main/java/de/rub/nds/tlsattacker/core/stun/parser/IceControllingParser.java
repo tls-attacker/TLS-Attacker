@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.core.stun.parser;
 
 import de.rub.nds.tlsattacker.core.constants.stun.IceByteLengths;
-import de.rub.nds.tlsattacker.core.stun.IceContext;
+import de.rub.nds.tlsattacker.core.layer.context.IceContext;
 import de.rub.nds.tlsattacker.core.stun.model.IceControllingAttribute;
 import java.io.InputStream;
 

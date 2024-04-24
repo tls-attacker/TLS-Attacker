@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.stun.model;
 
-import de.rub.nds.tlsattacker.core.stun.IceContext;
+import de.rub.nds.tlsattacker.core.layer.context.IceContext;
 import de.rub.nds.tlsattacker.core.stun.handler.UseCandidateHandler;
 import de.rub.nds.tlsattacker.core.stun.parser.UseCandidateParser;
 import de.rub.nds.tlsattacker.core.stun.preparator.UseCandidatePreparator;

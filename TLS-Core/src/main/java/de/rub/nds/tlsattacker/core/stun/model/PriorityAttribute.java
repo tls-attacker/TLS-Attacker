@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.stun.model;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.longint.ModifiableLong;
-import de.rub.nds.tlsattacker.core.stun.IceContext;
+import de.rub.nds.tlsattacker.core.layer.context.IceContext;
 import de.rub.nds.tlsattacker.core.stun.handler.PriorityAttributeHandler;
 import de.rub.nds.tlsattacker.core.stun.parser.PriorityAttributeParser;
 import de.rub.nds.tlsattacker.core.stun.preparator.PriorityAttributePreparator;
