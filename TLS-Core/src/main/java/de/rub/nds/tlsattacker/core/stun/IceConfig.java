@@ -15,25 +15,25 @@ public class IceConfig {
     private String username = "testUser";
 
     /** 1.2.3.4 */
-    private byte[] address = new byte[] { 0x01, 0x02, 0x03, 0x04 };
+    private byte[] address = new byte[] {0x01, 0x02, 0x03, 0x04};
 
     private IpProtocolFamily protocolFamily = IpProtocolFamily.IP_V_4;
 
     private Integer port = 1234;
 
-    private byte[] defaultStunTransactionId = new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A,
-            0x0B, 0x0C };
+    private byte[] defaultStunTransactionId =
+            new byte[] {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C};
 
     private Long defaultStunPriority = 0x12345678L;
 
-    private byte[] defaultTieBreaker = new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
+    private byte[] defaultTieBreaker = new byte[] {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08};
 
-    private byte[] defaultStunPassword = new byte[]{0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08};
+    private byte[] defaultStunPassword =
+            new byte[] {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08};
 
     private String defaultRealm = "testRealm";
 
-    public IceConfig() {
-    }
+    public IceConfig() {}
 
     public String getDefaultRealm() {
         return defaultRealm;

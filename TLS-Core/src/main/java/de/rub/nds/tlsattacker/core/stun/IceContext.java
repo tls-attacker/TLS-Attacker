@@ -8,10 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.stun;
 
-import java.io.ByteArrayOutputStream;
-
 import de.rub.nds.tlsattacker.core.layer.context.LayerContext;
 import de.rub.nds.tlsattacker.core.state.Context;
+import java.io.ByteArrayOutputStream;
 
 public class IceContext extends LayerContext {
 

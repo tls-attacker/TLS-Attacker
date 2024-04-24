@@ -1,10 +1,17 @@
+/*
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
+ *
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
+ */
 package de.rub.nds.tlsattacker.core.stun.parser;
-
-import java.io.InputStream;
 
 import de.rub.nds.tlsattacker.core.constants.stun.IceByteLengths;
 import de.rub.nds.tlsattacker.core.stun.IceContext;
 import de.rub.nds.tlsattacker.core.stun.model.MessageIntegrityAttribute;
+import java.io.InputStream;
 
 public class MessageIntegrityParser extends StunAttributeParser<MessageIntegrityAttribute> {
 
@@ -16,5 +23,4 @@ public class MessageIntegrityParser extends StunAttributeParser<MessageIntegrity
     public void parse(MessageIntegrityAttribute attribute) {
         attribute.setHmac(parseByteArrayField(IceByteLengths.STUN_MESSAGE_INTEGRITY_HMAC));
     }
-    
 }

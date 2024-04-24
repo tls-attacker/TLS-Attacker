@@ -8,8 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.stun.model;
 
-import java.io.InputStream;
-
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.longint.ModifiableLong;
 import de.rub.nds.tlsattacker.core.stun.IceContext;
@@ -17,6 +15,7 @@ import de.rub.nds.tlsattacker.core.stun.handler.PriorityAttributeHandler;
 import de.rub.nds.tlsattacker.core.stun.parser.PriorityAttributeParser;
 import de.rub.nds.tlsattacker.core.stun.preparator.PriorityAttributePreparator;
 import de.rub.nds.tlsattacker.core.stun.serializer.PriorityAttributeSerializer;
+import java.io.InputStream;
 
 public class PriorityAttribute extends StunAttribute {
 

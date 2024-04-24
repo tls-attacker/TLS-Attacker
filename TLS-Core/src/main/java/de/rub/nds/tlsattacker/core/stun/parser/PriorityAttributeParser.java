@@ -8,12 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.stun.parser;
 
-import java.io.InputStream;
-
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.stun.IceByteLengths;
 import de.rub.nds.tlsattacker.core.stun.IceContext;
 import de.rub.nds.tlsattacker.core.stun.model.PriorityAttribute;
+import java.io.InputStream;
 
 public class PriorityAttributeParser extends StunAttributeParser<PriorityAttribute> {
 
@@ -23,6 +22,8 @@ public class PriorityAttributeParser extends StunAttributeParser<PriorityAttribu
 
     @Override
     public void parse(PriorityAttribute attribute) {
-        attribute.setPriority(ArrayConverter.bytesToLong(parseByteArrayField(IceByteLengths.STUN_PRIORITY_LENGTH)));
+        attribute.setPriority(
+                ArrayConverter.bytesToLong(
+                        parseByteArrayField(IceByteLengths.STUN_PRIORITY_LENGTH)));
     }
 }
