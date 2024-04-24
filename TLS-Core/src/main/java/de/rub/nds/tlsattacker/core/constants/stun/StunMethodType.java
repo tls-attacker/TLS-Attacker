@@ -10,23 +10,23 @@ package de.rub.nds.tlsattacker.core.constants.stun;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 
-public enum StunMessageType {
-    BINDING_REQUEST("0001"),
-    BINDING_RESPONSE("0101"),
-    BINDING_ERROR_RESPONSE("0111"),
-    SHARED_SECRET_REQUEST("0002"),
-    SHARED_SECRET_RESPONSE("0102"),
-    SHARED_SECRET_ERROR_RESPONSE("0112"),
+public enum StunMethodType {
+    BINDING("0001"),
     ALLOCATE("0003"),
     REFRESH("0004"),
     SEND("0006"),
     DATA("0007"),
     CREATE_PERMISSION("0008"),
-    CHANNEL_BIND("0009");
+    CHANNEL_BIND("0009"),
+    CONNECT("000A"),
+    CONNECTION_BIND("000B"),
+    CONNECTION_ATTEMPT("000C"),
+    GOOG_PING("0080");
+
 
     private byte[] value;
 
-    private StunMessageType(String value) {
+    private StunMethodType(String value) {
         this.value = ArrayConverter.hexStringToByteArray(value);
     }
 
