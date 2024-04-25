@@ -23,8 +23,7 @@ import de.rub.nds.tlsattacker.core.stun.model.UsernameAttribute;
 import de.rub.nds.tlsattacker.core.stun.model.XorMappedAddressAttribute;
 
 public class AttributeFactory {
-    private AttributeFactory() {
-    }
+    private AttributeFactory() {}
 
     public static StunAttribute createAttribute(StunAttributeType type) {
         switch (type) {

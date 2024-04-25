@@ -37,7 +37,7 @@ public class IceConfig {
 
     private Integer defaultErrorCode = 404;
 
-    private String defaultErrorReason ="Not Found :)";
+    private String defaultErrorReason = "Not Found :)";
 
     public IceConfig() {}
 

@@ -8,8 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.stun.model;
 
-import java.io.InputStream;
-
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
@@ -20,6 +18,7 @@ import de.rub.nds.tlsattacker.core.stun.handler.ErrorCodeAttributeHandler;
 import de.rub.nds.tlsattacker.core.stun.parser.ErrorCodeAttributeParser;
 import de.rub.nds.tlsattacker.core.stun.preparator.ErrorCodeAttributePreparator;
 import de.rub.nds.tlsattacker.core.stun.serializer.ErrorCodeAttributeSerializer;
+import java.io.InputStream;
 
 public class ErrorCodeAttribute extends StunAttribute {
 
@@ -96,7 +95,8 @@ public class ErrorCodeAttribute extends StunAttribute {
     }
 
     public void setReasonPhrase(String reasonPhrase) {
-        this.reasonPhrase = ModifiableVariableFactory.safelySetValue(this.reasonPhrase, reasonPhrase);
+        this.reasonPhrase =
+                ModifiableVariableFactory.safelySetValue(this.reasonPhrase, reasonPhrase);
     }
 
     public void setNumber(int number) {
@@ -104,7 +104,8 @@ public class ErrorCodeAttribute extends StunAttribute {
     }
 
     public void setReservedByte(byte[] reservedByte) {
-        this.reservedBytes = ModifiableVariableFactory.safelySetValue(this.reservedBytes, reservedByte);
+        this.reservedBytes =
+                ModifiableVariableFactory.safelySetValue(this.reservedBytes, reservedByte);
     }
 
     public ModifiableByteArray getErrorCodeClass() {
@@ -116,7 +117,8 @@ public class ErrorCodeAttribute extends StunAttribute {
     }
 
     public void setErrorCodeClass(byte[] errorCodeClass) {
-        this.errorCodeClass = ModifiableVariableFactory.safelySetValue(this.errorCodeClass, errorCodeClass);
+        this.errorCodeClass =
+                ModifiableVariableFactory.safelySetValue(this.errorCodeClass, errorCodeClass);
     }
 
     public ModifiableByteArray getErrorCodeLowerValue() {
@@ -128,8 +130,9 @@ public class ErrorCodeAttribute extends StunAttribute {
     }
 
     public void setErrorCodeLowerValue(byte[] errorCodeLowerValue) {
-        this.errorCodeLowerValue = ModifiableVariableFactory.safelySetValue(this.errorCodeLowerValue,
-                errorCodeLowerValue);
+        this.errorCodeLowerValue =
+                ModifiableVariableFactory.safelySetValue(
+                        this.errorCodeLowerValue, errorCodeLowerValue);
     }
 
     @Override

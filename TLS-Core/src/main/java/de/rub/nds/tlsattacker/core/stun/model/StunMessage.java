@@ -8,10 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.stun.model;
 
-import java.io.InputStream;
-import java.util.LinkedList;
-import java.util.List;
-
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bool.ModifiableBoolean;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
@@ -24,11 +20,14 @@ import de.rub.nds.tlsattacker.core.stun.handler.StunMessageHandler;
 import de.rub.nds.tlsattacker.core.stun.parser.StunMessageParser;
 import de.rub.nds.tlsattacker.core.stun.preparator.StunMessagePreparator;
 import de.rub.nds.tlsattacker.core.stun.serializer.StunMessageSerializer;
+import java.io.InputStream;
+import java.util.LinkedList;
+import java.util.List;
 
 public class StunMessage extends Message<IceContext> {
 
     private final StunMessageClass classType;
-    
+
     private final StunMethodType methodType;
 
     /** 10 bit */
@@ -74,7 +73,8 @@ public class StunMessage extends Message<IceContext> {
     }
 
     public void setStunMethodType(byte[] stunMethodType) {
-        this.stunMethodType = ModifiableVariableFactory.safelySetValue(this.stunMethodType, stunMethodType);
+        this.stunMethodType =
+                ModifiableVariableFactory.safelySetValue(this.stunMethodType, stunMethodType);
     }
 
     public ModifiableByteArray getStunMessageClass() {
@@ -86,7 +86,8 @@ public class StunMessage extends Message<IceContext> {
     }
 
     public void setStunMessageClass(byte[] stunMessageClass) {
-        this.stunMessageClass = ModifiableVariableFactory.safelySetValue(this.stunMessageClass, stunMessageClass);
+        this.stunMessageClass =
+                ModifiableVariableFactory.safelySetValue(this.stunMessageClass, stunMessageClass);
     }
 
     public ModifiableByteArray getStunMessageTypeBytes() {
@@ -98,8 +99,9 @@ public class StunMessage extends Message<IceContext> {
     }
 
     public void setStunMessageTypeBytes(byte[] stunMessageType) {
-        this.stunMessageTypeBytes = ModifiableVariableFactory.safelySetValue(this.stunMessageTypeBytes,
-                stunMessageType);
+        this.stunMessageTypeBytes =
+                ModifiableVariableFactory.safelySetValue(
+                        this.stunMessageTypeBytes, stunMessageType);
     }
 
     public ModifiableInteger getMessageLength() {
@@ -111,7 +113,8 @@ public class StunMessage extends Message<IceContext> {
     }
 
     public void setMessageLength(int messageLength) {
-        this.messageLength = ModifiableVariableFactory.safelySetValue(this.messageLength, messageLength);
+        this.messageLength =
+                ModifiableVariableFactory.safelySetValue(this.messageLength, messageLength);
     }
 
     public ModifiableBoolean getMagicCookiePresent() {
@@ -123,8 +126,9 @@ public class StunMessage extends Message<IceContext> {
     }
 
     public void setMagicCookiePresent(boolean magicCookiePresent) {
-        this.magicCookiePresent = ModifiableVariableFactory.safelySetValue(
-                this.magicCookiePresent, magicCookiePresent);
+        this.magicCookiePresent =
+                ModifiableVariableFactory.safelySetValue(
+                        this.magicCookiePresent, magicCookiePresent);
     }
 
     public ModifiableByteArray getTransactionId() {
@@ -136,7 +140,8 @@ public class StunMessage extends Message<IceContext> {
     }
 
     public void setTransactionId(byte[] transactionId) {
-        this.transactionId = ModifiableVariableFactory.safelySetValue(this.transactionId, transactionId);
+        this.transactionId =
+                ModifiableVariableFactory.safelySetValue(this.transactionId, transactionId);
     }
 
     public List<StunAttribute> getAttributeList() {

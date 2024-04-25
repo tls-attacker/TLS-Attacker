@@ -8,8 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.stun.model;
 
-import java.io.InputStream;
-
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.core.constants.stun.StunAttributeType;
@@ -18,6 +16,7 @@ import de.rub.nds.tlsattacker.core.stun.handler.FingerprintAttributeHandler;
 import de.rub.nds.tlsattacker.core.stun.parser.FingerprintAttributeParser;
 import de.rub.nds.tlsattacker.core.stun.preparator.FingerprintAttributePreparator;
 import de.rub.nds.tlsattacker.core.stun.serializer.FingerprintAttributeSerializer;
+import java.io.InputStream;
 
 public class FingerprintAttribute extends StunAttribute {
 

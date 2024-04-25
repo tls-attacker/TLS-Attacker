@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.core.layer.context.IceContext;
 import de.rub.nds.tlsattacker.core.stun.model.ErrorCodeAttribute;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+
 public class ErrorCodeAttributeParser extends StunAttributeParser<ErrorCodeAttribute> {
 
     public ErrorCodeAttributeParser(IceContext context, InputStream stream) {
@@ -26,7 +27,9 @@ public class ErrorCodeAttributeParser extends StunAttributeParser<ErrorCodeAttri
         attribute.setErrorCodeClass(parseByteArrayField(IceByteLengths.STUN_ERROR_CLASS));
         attribute.setErrorCodeLowerValue(parseByteArrayField(IceByteLengths.STUN_ERROR_VALUE));
         attribute.setReasonPhrase(new String(parseTillEnd(), StandardCharsets.UTF_8));
-        int errorCode = attribute.getErrorCodeClass().getValue()[0] * 100 + attribute.getErrorCodeLowerValue().getValue()[0];
+        int errorCode =
+                attribute.getErrorCodeClass().getValue()[0] * 100
+                        + attribute.getErrorCodeLowerValue().getValue()[0];
         attribute.setNumber(errorCode);
     }
 }

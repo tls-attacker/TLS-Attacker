@@ -8,11 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.stun.parser;
 
-import java.io.InputStream;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import de.rub.nds.tlsattacker.core.constants.stun.IceByteLengths;
 import de.rub.nds.tlsattacker.core.constants.stun.StunAttributeType;
 import de.rub.nds.tlsattacker.core.constants.stun.StunMessageClass;
@@ -23,6 +18,9 @@ import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.stun.factory.AttributeFactory;
 import de.rub.nds.tlsattacker.core.stun.model.StunAttribute;
 import de.rub.nds.tlsattacker.core.stun.model.StunMessage;
+import java.io.InputStream;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class StunMessageParser extends Parser<StunMessage> {
 
@@ -40,12 +38,20 @@ public class StunMessageParser extends Parser<StunMessage> {
         stunMessage.setMessageLength(parseIntField(IceByteLengths.STUN_MESSAGE_LENGTH));
         stunMessage.setTransactionId(parseByteArrayField(IceByteLengths.STUN_TRANSACTION_ID));
         stunMessage.setMagicCookiePresent(isMagicCookiePresent(stunMessage));
-        stunMessage.setStunMessageClass(new byte[] {
-                StunMessageClass.getMessageClass(stunMessage.getStunMessageTypeBytes().getValue()).getValue() });
-        stunMessage.setStunMethodType(StunMethodType.getStunMethodTypeFromRawBytes(stunMessage.getStunMessageTypeBytes().getValue()).getValue());
+        stunMessage.setStunMessageClass(
+                new byte[] {
+                    StunMessageClass.getMessageClass(
+                                    stunMessage.getStunMessageTypeBytes().getValue())
+                            .getValue()
+                });
+        stunMessage.setStunMethodType(
+                StunMethodType.getStunMethodTypeFromRawBytes(
+                                stunMessage.getStunMessageTypeBytes().getValue())
+                        .getValue());
         while (getBytesLeft() > 0) {
             byte[] attributeTypeBytes = parseByteArrayField(IceByteLengths.STUN_ATTRIBUTE_TYPE);
-            StunAttributeType attributeType = StunAttributeType.getAttributeType(attributeTypeBytes);
+            StunAttributeType attributeType =
+                    StunAttributeType.getAttributeType(attributeTypeBytes);
             LOGGER.debug("Parsing: {}", attributeType);
             StunAttribute attribute = AttributeFactory.createAttribute(attributeType);
             attribute.setAttributeType(attributeTypeBytes);
@@ -53,9 +59,10 @@ public class StunMessageParser extends Parser<StunMessage> {
             attribute.setAttributeLength(attributeLength);
             byte[] attributeBody = parseByteArrayField(attributeLength);
             attribute.setBody(attributeBody);
-            byte[] padding = parseByteArrayField(
-                    IceByteLengths.STUN_ATTRIBUTE_ALIGNMENT
-                            - attributeLength % IceByteLengths.STUN_ATTRIBUTE_ALIGNMENT);
+            byte[] padding =
+                    parseByteArrayField(
+                            IceByteLengths.STUN_ATTRIBUTE_ALIGNMENT
+                                    - attributeLength % IceByteLengths.STUN_ATTRIBUTE_ALIGNMENT);
             attribute.setPadding(padding);
             StunAttributeParser attributeParser = attribute.getParser(context, getStream());
             attributeParser.parse(attribute);
