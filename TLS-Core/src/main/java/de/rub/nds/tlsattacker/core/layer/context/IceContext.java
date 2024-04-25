@@ -27,7 +27,7 @@ public class IceContext extends LayerContext {
 
     private byte[] tieBreaker;
 
-    private ByteArrayOutputStream messageTranscript;
+    private byte[] messageTranscript;
 
     private String realm;
 
@@ -35,7 +35,6 @@ public class IceContext extends LayerContext {
 
     public IceContext(Context context) {
         super(context);
-        messageTranscript = new ByteArrayOutputStream();
     }
 
     public Integer getStunErrorCode() {
@@ -54,12 +53,12 @@ public class IceContext extends LayerContext {
         this.realm = realm;
     }
 
-    public void resetMessageTranscript() {
-        messageTranscript.reset();
+    public byte[] getMessageTranscript() {
+        return messageTranscript;
     }
 
-    public byte[] getMessageTranscript() {
-        return messageTranscript.toByteArray();
+    public void setMessageTranscript(byte[] messageTranscript) {
+        this.messageTranscript = messageTranscript;
     }
 
     public byte[] getTieBreaker() {

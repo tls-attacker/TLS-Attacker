@@ -15,6 +15,8 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.stun.IceByteLengths;
 import de.rub.nds.tlsattacker.core.constants.stun.StunVersionCookie;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
+import de.rub.nds.tlsattacker.core.stun.model.FingerprintAttribute;
+import de.rub.nds.tlsattacker.core.stun.model.MessageIntegrityAttribute;
 import de.rub.nds.tlsattacker.core.stun.model.StunAttribute;
 import de.rub.nds.tlsattacker.core.stun.model.StunMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
@@ -43,6 +45,11 @@ public class StunMessagePreparator extends Preparator<StunMessage> {
         message.setMagicCookiePresent(isMagicCookiePresent());
         ByteArrayOutputStream attributeStream = new ByteArrayOutputStream();
         for (StunAttribute attribute : message.getAttributeList()) {
+            if(attribute instanceof MessageIntegrityAttribute || attribute instanceof FingerprintAttribute) {
+                //For these attributes we need to fill the context with the message transcript
+                byte[] fakeTranscript = computeTranscript(attributeStream.toByteArray());
+                chooser.getContext().getIceContext().setMessageTranscript(fakeTranscript);
+            }
             StunAttributePreparator<?> preparator = attribute.getPreparator(chooser.getContext().getIceContext());
             preparator.prepare();
             try {
@@ -52,6 +59,26 @@ public class StunMessagePreparator extends Preparator<StunMessage> {
                 e.printStackTrace();
             }
         }
+        message.setMessageLength(attributeStream.size() + message.getTransactionId().getValue().length);
+    }
+
+    private byte[] computeTranscript(byte[] currentAttributeStream) {
+        ByteArrayOutputStream transcriptStream = new ByteArrayOutputStream();
+        /**
+         * The transcript contains everything before the message integrity attribute. The length for the message field will be
+         * faked to include the message integrity attribute
+         */
+        try {
+            transcriptStream.write(message.getStunMessageTypeBytes().getValue());
+            int fakeLength = IceByteLengths.STUN_TRANSACTION_ID + currentAttributeStream.length + IceByteLengths.STUN_ATTRIBUTE_LENGTH + IceByteLengths.STUN_MESSAGE_INTEGRITY_HMAC;
+            transcriptStream.write(ArrayConverter.intToBytes(fakeLength, IceByteLengths.STUN_MESSAGE_LENGTH));
+            transcriptStream.write(message.getTransactionId().getValue());
+            transcriptStream.write(currentAttributeStream);
+            return transcriptStream.toByteArray();  
+        } catch (IOException e) {
+            throw new RuntimeException("Could not write to byte array output stream");
+        }
+
     }
 
     private byte[] encodeClassTypeWithMethodType(byte[] method, byte[] classType) {
