@@ -26,10 +26,15 @@ public class IceByteLengths {
     public static final int STUN_ATTRIBUTE_ALIGNMENT = 4;
 
     public static final int STUN_XOR_MAPPED_ATTRIBUTE_PORT = 2;
+    public static final int STUN_XOR_PEER_ATTRIBUTE_PORT = 2;
 
     public static final int STUN_XOR_MAPPED_ATTRIBUTE_RESERVED = 1;
 
+    public static final int STUN_XOR_PEER_ATTRIBUTE_RESERVED = 1;
+
     public static final int STUN_XOR_MAPPED_ATTRIBUTE_PROTOCOL_FAMILY = 1;
+
+    public static final int STUN_XOR_PEER_ATTRIBUTE_PROTOCOL_FAMILY = 1;
 
     public static final int STUN_PRIORITY_LENGTH = 4;
 

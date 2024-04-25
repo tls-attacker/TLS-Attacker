@@ -26,6 +26,7 @@ import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.tlsattacker.core.stun.model.DataAttribute;
 import de.rub.nds.tlsattacker.core.stun.model.FingerprintAttribute;
 import de.rub.nds.tlsattacker.core.stun.model.StunMessage;
+import de.rub.nds.tlsattacker.core.stun.model.XorPeerAddressAttribute;
 
 public class StunTurnLayer extends ProtocolLayer<RecordLayerHint, StunMessage> {
 
@@ -51,23 +52,28 @@ public class StunTurnLayer extends ProtocolLayer<RecordLayerHint, StunMessage> {
     }
 
     @Override
-    public LayerProcessingResult sendData(RecordLayerHint hint, byte[] additionalData)
+    public LayerProcessingResult sendData(RecordLayerHint hint, byte[] additionalData) {
         //TODO Fix Fragmentation if data is too big
-        if(additionalData.length > 0xFFFF) {
-            LOGGER.warn("Data is too big for a single STUN message. Fragmentation is not yet implemented.");
-        }
-        StunMessage message = new StunMessage(StunMessageClass.INDICATION, StunMethodType.DATA);
-        message.getAttributeList().add(new DataAttribute(additionalData));
-        message.getAttributeList().add(new XorPeerAddressAttribute());
-        message.getAttributeList().add(new FingerprintAttribute());
-        message.getPreparator(context).prepare();
-        message.getHandler(context).adjustContext(message);
-        message.setCompleteMessageBytes(message.getSerializer(context).serialize());
-        getLowerLayer().sendData(null, message.getCompleteMessageBytes().getValue());
-        addProducedContainer(message);
-        
-        return getLayerResult();
+        try {
 
+            if (additionalData.length > 0xFFFF) {
+                LOGGER.warn("Data is too big for a single STUN message. Fragmentation is not yet implemented.");
+            }
+            StunMessage message = new StunMessage(StunMessageClass.INDICATION, StunMethodType.DATA);
+            message.getAttributeList().add(new DataAttribute(additionalData));
+            message.getAttributeList().add(new XorPeerAddressAttribute());
+            message.getAttributeList().add(new FingerprintAttribute());
+            message.getPreparator(context).prepare();
+            message.getHandler(context).adjustContext(message);
+            message.setCompleteMessageBytes(message.getSerializer(context).serialize());
+            getLowerLayer().sendData(null, message.getCompleteMessageBytes().getValue());
+            addProducedContainer(message);
+
+            return getLayerResult();
+        } catch (IOException e) {
+            LOGGER.warn("Could not send data", e);
+            return getLayerResult();
+        }
     }
 
     @Override
