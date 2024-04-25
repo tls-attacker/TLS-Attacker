@@ -50,10 +50,25 @@ public class StunMessage extends Message<IceContext> {
 
     private List<StunAttribute> attributeList;
 
-    private StunMessage(StunMessageClass classType, StunMethodType methodType) {
+    private ModifiableByteArray completeMessageBytes;
+
+    public StunMessage(StunMessageClass classType, StunMethodType methodType) {
         attributeList = new LinkedList<>();
         this.classType = classType;
         this.methodType = methodType;
+    }
+    
+    public ModifiableByteArray getCompleteMessageBytes() {
+        return completeMessageBytes;
+    }
+
+    public void setCompleteMessageBytes(ModifiableByteArray completeMessageBytes) {
+        this.completeMessageBytes = completeMessageBytes;
+    }
+
+    public void setCompleteMessageBytes(byte[] completeMessageBytes) {
+        this.completeMessageBytes =
+                ModifiableVariableFactory.safelySetValue(this.completeMessageBytes, completeMessageBytes);
     }
 
     public StunMessageClass getClassType() {

@@ -28,6 +28,11 @@ public class DataAttribute extends StunAttribute {
         super(StunAttributeType.DATA);
     }
 
+    public DataAttribute(byte[] dataConfig) {
+        super(StunAttributeType.DATA);
+        this.dataConfig = dataConfig;
+    }
+
     public void setDataConfig(byte[] dataConfig) {
         this.dataConfig = dataConfig;
     }
