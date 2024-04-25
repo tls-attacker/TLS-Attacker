@@ -166,8 +166,7 @@ public class DtlsFragmentLayer
     @Override
     public LayerProcessingResult receiveData() {
         throw new UnsupportedOperationException(
-                "Not supported yet."); // To change body of generated methods, choose
-        // Tools | Templates.
+                "Not supported yet.");
     }
 
     /**
