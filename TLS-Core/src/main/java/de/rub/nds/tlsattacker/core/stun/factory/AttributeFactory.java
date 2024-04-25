@@ -96,7 +96,7 @@ public class AttributeFactory {
             case MESSAGE_INTEGRITY_SHA256:
             case GOOG_DELTA:
             default:
-                return new UnknownAttribute();
+                return new UnknownAttribute(type);
         }
     }
 }

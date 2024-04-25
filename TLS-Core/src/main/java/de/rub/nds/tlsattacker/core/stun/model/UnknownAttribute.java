@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.stun.model;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.tlsattacker.core.constants.stun.StunAttributeType;
 import de.rub.nds.tlsattacker.core.layer.context.IceContext;
 import de.rub.nds.tlsattacker.core.stun.handler.UnknownAttributeHandler;
 import de.rub.nds.tlsattacker.core.stun.parser.UnknownAttributeParser;
@@ -21,8 +22,13 @@ public class UnknownAttribute extends StunAttribute {
 
     private ModifiableByteArray unknownContent;
 
-    public UnknownAttribute() {
-        super(null);
+    /**
+     * This takes a type attribute to show known but not implemented attributes
+     * Null means its completly unknown
+     * @param type
+     */
+    public UnknownAttribute(StunAttributeType type) {
+        super(type);
     }
 
     public ModifiableByteArray getUnknownContent() {
