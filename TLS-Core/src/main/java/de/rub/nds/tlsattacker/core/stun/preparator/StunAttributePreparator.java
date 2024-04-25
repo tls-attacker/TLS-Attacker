@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.stun.preparator;
 
+import de.rub.nds.tlsattacker.core.constants.stun.IceByteLengths;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.stun.IceChooser;
 import de.rub.nds.tlsattacker.core.stun.model.StunAttribute;
@@ -25,13 +26,15 @@ public abstract class StunAttributePreparator<AttributeT extends StunAttribute>
 
     @Override
     public final void prepare() {
-        getObject().setAttributeType(getObject().getA);
+        getObject().setAttributeType(getObject().getType().getValue());
         prepareContent();
         getObject()
                 .setBody(
                         getObject()
                                 .getSerializer(chooser.getContext().getIceContext())
                                 .serializeAttributeContent());
+        getObject().setAttributeLength(getObject().getBody().getValue().length);
+        getObject().setPadding(new byte[IceByteLengths.STUN_ATTRIBUTE_ALIGNMENT - getObject().getAttributeLength().getValue() % IceByteLengths.STUN_ATTRIBUTE_ALIGNMENT]);
     }
 
     public abstract void prepareContent();

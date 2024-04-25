@@ -34,7 +34,7 @@ public class StunMessageParser extends Parser<StunMessage> {
 
     @Override
     public void parse(StunMessage stunMessage) {
-        stunMessage.setStunMessageType(parseByteArrayField(IceByteLengths.STUN_MESSAGE_TYPE));
+        stunMessage.setStunMessageTypeBytes(parseByteArrayField(IceByteLengths.STUN_MESSAGE_TYPE));
         stunMessage.setMessageLength(parseIntField(IceByteLengths.STUN_MESSAGE_LENGTH));
         stunMessage.setTransactionId(parseByteArrayField(IceByteLengths.STUN_TRANSACTION_ID));
         stunMessage.setMagicCookiePresent(isMagicCookiePresent(stunMessage));

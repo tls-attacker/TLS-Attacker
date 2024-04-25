@@ -164,7 +164,7 @@ public class StunMessage extends Message<IceContext> {
 
     @Override
     public StunMessageSerializer getSerializer(IceContext context) {
-        return new StunMessageSerializer(this);
+        return new StunMessageSerializer(context, this);
     }
 
     @Override

@@ -8,6 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.stun.preparator;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.stun.IceByteLengths;
 import de.rub.nds.tlsattacker.core.constants.stun.StunVersionCookie;
@@ -15,7 +18,6 @@ import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.stun.model.StunAttribute;
 import de.rub.nds.tlsattacker.core.stun.model.StunMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import java.io.ByteArrayOutputStream;
 
 public class StunMessagePreparator extends Preparator<StunMessage> {
 
@@ -28,7 +30,7 @@ public class StunMessagePreparator extends Preparator<StunMessage> {
 
     @Override
     public void prepare() {
-        message.setStunMessageClass(new byte[] {message.getClassType().getValue()});
+        message.setStunMessageClass(new byte[] { message.getClassType().getValue() });
         message.setStunMethodType(message.getMethodType().getValue());
 
         message.setStunMessageTypeBytes(
@@ -41,22 +43,25 @@ public class StunMessagePreparator extends Preparator<StunMessage> {
         message.setMagicCookiePresent(isMagicCookiePresent());
         ByteArrayOutputStream attributeStream = new ByteArrayOutputStream();
         for (StunAttribute attribute : message.getAttributeList()) {
-            StunAttributePreparator preparator = new StunAttributePreparator(chooser, attribute);
+            StunAttributePreparator<?> preparator = attribute.getPreparator(chooser.getContext().getIceContext());
             preparator.prepare();
-            attributeStream.write(
-                    attribute.getSerializer(chooser.getContext().getIceContext()).serialize());
+            try {
+                attributeStream.write(
+                        attribute.getSerializer(chooser.getContext().getIceContext()).serialize());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     private byte[] encodeClassTypeWithMethodType(byte[] method, byte[] classType) {
         int methodInt = ArrayConverter.bytesToInt(method);
         int classInt = ArrayConverter.bytesToInt(classType);
-        int encoded =
-                (methodInt & 0x1F80) << 2
-                        | (methodInt & 0x0070) << 1
-                        | (methodInt & 0x000F)
-                        | (classInt & 0x0002) << 7
-                        | (classInt & 0x0001) << 4;
+        int encoded = (methodInt & 0x1F80) << 2
+                | (methodInt & 0x0070) << 1
+                | (methodInt & 0x000F)
+                | (classInt & 0x0002) << 7
+                | (classInt & 0x0001) << 4;
         return ArrayConverter.intToBytes(encoded, IceByteLengths.STUN_MESSAGE_TYPE);
     }
 
