@@ -26,6 +26,7 @@ import java.io.IOException;
  */
 public class UdpLayer extends ProtocolLayer<LayerProcessingHint, UdpDataPacket> {
 
+    // TODO This should be a regular context
     private final TlsContext context;
 
     public UdpLayer(TlsContext context) {
