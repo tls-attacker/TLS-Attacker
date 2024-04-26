@@ -1439,6 +1439,7 @@ public class Config implements Serializable {
         defaultPskSets = new LinkedList<>();
         defaultProposedAlpnProtocols = new LinkedList<>();
         defaultProposedAlpnProtocols.add(AlpnProtocol.HTTP_2.getConstant());
+        iceConfig = new IceConfig();
     }
 
     public IceConfig getIceConfig() {

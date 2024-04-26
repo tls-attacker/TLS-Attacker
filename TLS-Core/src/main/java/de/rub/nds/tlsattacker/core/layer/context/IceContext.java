@@ -35,6 +35,7 @@ public class IceContext extends LayerContext {
 
     public IceContext(Context context) {
         super(context);
+        context.setIceContext(this);
     }
 
     public Integer getStunErrorCode() {
