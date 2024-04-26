@@ -64,6 +64,7 @@ public class LayerStack {
         return null;
     }
 
+    //TODO This is a very unintuiutive API - can we change this?
     public ProtocolLayer getHighestLayer() {
         return getTopConfiguredLayer();
     }
