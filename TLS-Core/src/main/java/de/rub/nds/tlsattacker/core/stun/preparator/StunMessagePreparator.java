@@ -59,7 +59,7 @@ public class StunMessagePreparator extends Preparator<StunMessage> {
                 e.printStackTrace();
             }
         }
-        message.setMessageLength(attributeStream.size() + message.getTransactionId().getValue().length);
+        message.setMessageLength(attributeStream.size());
     }
 
     private byte[] computeTranscript(byte[] currentAttributeStream) {
