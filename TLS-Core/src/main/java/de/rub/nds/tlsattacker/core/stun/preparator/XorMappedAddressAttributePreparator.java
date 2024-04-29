@@ -27,7 +27,7 @@ public class XorMappedAddressAttributePreparator
 
     @Override
     public void prepareContent() {
-        getObject().setReservedByte(new byte[0]);
+        getObject().setReservedByte(new byte[1]);
         getObject()
                 .setProtocolFamily(
                         chooser.getConfig().getIceConfig().getProtocolFamily().getValue());

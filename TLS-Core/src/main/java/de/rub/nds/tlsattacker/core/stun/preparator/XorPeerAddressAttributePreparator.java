@@ -13,7 +13,6 @@ import org.apache.logging.log4j.Logger;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.stun.IceByteLengths;
-import de.rub.nds.tlsattacker.core.stun.model.XorMappedAddressAttribute;
 import de.rub.nds.tlsattacker.core.stun.model.XorPeerAddressAttribute;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
@@ -29,7 +28,7 @@ public class XorPeerAddressAttributePreparator
 
     @Override
     public void prepareContent() {
-        getObject().setReservedByte(new byte[0]);
+        getObject().setReservedByte(new byte[1]);
         getObject()
                 .setProtocolFamily(
                         chooser.getConfig().getIceConfig().getProtocolFamily().getValue());
