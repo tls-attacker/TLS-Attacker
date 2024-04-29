@@ -1,5 +1,7 @@
 package de.rub.nds.tlsattacker.core.layer.impl;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -18,6 +20,8 @@ import de.rub.nds.tlsattacker.core.layer.context.IceContext;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.stun.model.StunMessage;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import de.rub.nds.tlsattacker.transport.stream.StreamTransportHandler;
 
 public class StunTurnLayerTest {
 
@@ -31,13 +35,15 @@ public class StunTurnLayerTest {
     }
 
     @BeforeEach
-    public void setUp() {
+    public void setUp() throws IOException {
         State state = new State(new Config());
         context = state.getContext();
         LayerStack stack = new LayerStack(context, new StunTurnLayer(context.getIceContext()),
                 new UdpLayer(context.getTlsContext()));
         
         context.setLayerStack(stack);
+        context.setTransportHandler(new StreamTransportHandler(0, ConnectionEndType.CLIENT, new ByteArrayInputStream(new byte[0]), new ByteArrayOutputStream()));
+        context.getTransportHandler().initialize();
         iceContext = state.getContext().getIceContext();
         layer = (StunTurnLayer) state.getContext().getLayerStack().getLayerList().get(0);
         state.getContext().getLayerStack().getLayerList().get(1).setLayerConfiguration(new IgnoreLayerConfiguration<>(ImplementedLayers.UDP));
