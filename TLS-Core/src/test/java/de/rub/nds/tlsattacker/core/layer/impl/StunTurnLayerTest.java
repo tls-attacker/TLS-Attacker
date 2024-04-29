@@ -1,5 +1,7 @@
 package de.rub.nds.tlsattacker.core.layer.impl;
 
+import static org.junit.Assert.assertArrayEquals;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -21,6 +23,7 @@ import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.stun.model.DataAttribute;
 import de.rub.nds.tlsattacker.core.stun.model.FingerprintAttribute;
+import de.rub.nds.tlsattacker.core.stun.model.SoftwareAttribute;
 import de.rub.nds.tlsattacker.core.stun.model.StunMessage;
 import de.rub.nds.tlsattacker.core.stun.model.XorPeerAddressAttribute;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -60,19 +63,18 @@ public class StunTurnLayerTest {
      */
     @Test
     public void testSendConfiguration() throws IOException {
-        // We are trying to create this message: 000000010006001c7f8206146f630800450000b40e2540006d11a9283442c20c0ab554e80d96a22200a0b670001700842112a442244fd6f80dbf5bd0db28fc5500130054011100402112a442a637a7d7a0c6660a1dd4d560002000080001a8791550664e0009000f000004004261642052657175657374000008001436c457d17880317130bcd2aeaf1f0cce46b806c7802800049a643e4a00120008000143711550664e80220014436f7475726e2d342e362e312027476f7273742780280004642d00d6
         iceContext.getConfig().getIceConfig().setDefaultStunTransactionId(ArrayConverter.hexStringToByteArray("2112a442244fd6f80dbf5bd0db28fc55"));
         iceContext.getConfig().getIceConfig().setDefaultData(ArrayConverter.hexStringToByteArray("011100402112a442a637a7d7a0c6660a1dd4d560002000080001a8791550664e0009000f000004004261642052657175657374000008001436c457d17880317130bcd2aeaf1f0cce46b806c7802800049a643e4a"));
         iceContext.getConfig().getIceConfig().setAddress(ArrayConverter.hexStringToByteArray("3442C20C"));
         iceContext.getConfig().getIceConfig().setPort(25187);
         StunMessage message = new StunMessage(StunMessageClass.INDICATION, StunMethodType.DATA);
-        message.getAttributeList().add(new XorPeerAddressAttribute());
         message.getAttributeList().add(new DataAttribute());
+        message.getAttributeList().add(new XorPeerAddressAttribute());
+        message.getAttributeList().add(new SoftwareAttribute());
         message.getAttributeList().add(new FingerprintAttribute());
         layer.setLayerConfiguration(new SpecificSendLayerConfiguration<>(ImplementedLayers.STUN_TURN,
                 message));
         LayerProcessingResult<StunMessage> result = layer.sendConfiguration();
-        System.out.println("" + ArrayConverter
-                .bytesToHexString(result.getUsedContainers().get(0).getCompleteMessageBytes().getValue()));
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("001700842112a442244fd6f80dbf5bd0db28fc5500130054011100402112a442a637a7d7a0c6660a1dd4d560002000080001a8791550664e0009000f000004004261642052657175657374000008001436c457d17880317130bcd2aeaf1f0cce46b806c7802800049a643e4a00120008000143711550664e80220014436f7475726e2d342e362e312027476f7273742780280004642d00d6"), result.getUsedContainers().get(0).getCompleteMessageBytes().getValue());
     }
 }
