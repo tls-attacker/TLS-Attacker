@@ -1441,4 +1441,18 @@
     <acceptContentRewritingDtlsFragments>true</acceptContentRewritingDtlsFragments>
     <writeKeylogFile>false</writeKeylogFile>
     <defaultRsaSsaPssSalt>AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA AA</defaultRsaSsaPssSalt>
+    <iceConfig>
+        <username>testUser</username>
+        <address>01 02 03 04</address>
+        <protocolFamily>IP_V_4</protocolFamily>
+        <port>1234</port>
+        <defaultStunTransactionId>01 02 03 04 05 06 07 08 09 0A 0B 0C</defaultStunTransactionId>
+        <defaultStunPriority>305419896</defaultStunPriority>
+        <defaultTieBreaker>01 02 03 04 05 06 07 08</defaultTieBreaker>
+        <defaultStunPassword>01 02 03 04 05 06 07 08</defaultStunPassword>
+        <defaultRealm>testRealm</defaultRealm>
+        <defaultData>01 02 03 04</defaultData>
+        <defaultErrorCode>404</defaultErrorCode>
+        <defaultErrorReason>Not Found :)</defaultErrorReason>
+    </iceConfig>
 </config>

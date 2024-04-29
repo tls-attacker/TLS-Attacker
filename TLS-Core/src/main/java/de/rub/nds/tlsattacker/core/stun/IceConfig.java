@@ -8,31 +8,46 @@
  */
 package de.rub.nds.tlsattacker.core.stun;
 
+import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.constants.stun.IpProtocolFamily;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+@SuppressWarnings("SpellCheckingInspection")
+@XmlRootElement(name = "iceConfig")
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(propOrder = {})
 public class IceConfig {
 
     private String username = "testUser";
 
     /** 1.2.3.4 */
+    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] address = new byte[] {0x01, 0x02, 0x03, 0x04};
 
     private IpProtocolFamily protocolFamily = IpProtocolFamily.IP_V_4;
 
     private Integer port = 1234;
 
+    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultStunTransactionId =
             new byte[] {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C};
 
     private Long defaultStunPriority = 0x12345678L;
 
+    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultTieBreaker = new byte[] {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08};
 
+    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultStunPassword =
             new byte[] {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08};
 
     private String defaultRealm = "testRealm";
 
+    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultData = new byte[] {0x01, 0x02, 0x03, 0x04};
 
     private Integer defaultErrorCode = 404;
