@@ -20,7 +20,7 @@ public class DataAttributePreparator extends StunAttributePreparator<DataAttribu
     @Override
     public void prepareContent() {
         byte[] data;
-        if (getObject().getDataConfig() == null) {
+        if (getObject().getDataConfig() != null) {
             data = getObject().getDataConfig();
         } else {
             data = chooser.getIceChooser().getConfig().getDefaultData();
