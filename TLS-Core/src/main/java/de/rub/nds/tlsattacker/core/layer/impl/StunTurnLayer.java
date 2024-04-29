@@ -89,6 +89,7 @@ public class StunTurnLayer extends ProtocolLayer<RecordLayerHint, StunMessage> {
         byte[] data = dataStream.readAllBytes();
         if (data.length < 2) {
             LOGGER.warn("Not enough data in the stream to parse a StunMessage");
+            return;
         }
         //Peek to get the type
         byte[] typeBytes = Arrays.copyOf(data, IceByteLengths.STUN_MESSAGE_TYPE);
