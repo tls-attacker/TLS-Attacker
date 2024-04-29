@@ -97,6 +97,7 @@ public class StunTurnLayer extends ProtocolLayer<RecordLayerHint, StunMessage> {
         StunMethodType methodType = StunMethodType.getStunMethodTypeFromRawBytes(typeBytes);
         StunMessageClass messageClass = StunMessageClass.getMessageClass(typeBytes);
         StunMessage stunMessage = new StunMessage(messageClass, methodType);
+        stunMessage.setCompleteMessageBytes(data);
         readDataContainer(stunMessage, context, new ByteArrayInputStream(data));
     }
 }
