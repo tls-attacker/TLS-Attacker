@@ -45,12 +45,12 @@ public class StunMessagePreparator extends Preparator<StunMessage> {
         message.setMagicCookiePresent(isMagicCookiePresent());
         ByteArrayOutputStream attributeStream = new ByteArrayOutputStream();
         for (StunAttribute attribute : message.getAttributeList()) {
-            if(attribute instanceof MessageIntegrityAttribute) {
+            if (attribute instanceof MessageIntegrityAttribute) {
                 //For these attributes we need to fill the context with the message transcript
                 byte[] fakeTranscript = computeTranscriptIntegrity(attributeStream.toByteArray());
                 chooser.getContext().getIceContext().setMessageTranscript(fakeTranscript);
             }
-            if(attribute instanceof FingerprintAttribute) {
+            if (attribute instanceof FingerprintAttribute) {
                 //For these attributes we need to fill the context with the message transcript
                 byte[] fakeTranscript = computeTranscriptFingerprint(attributeStream.toByteArray());
                 chooser.getContext().getIceContext().setMessageTranscript(fakeTranscript);
@@ -75,11 +75,12 @@ public class StunMessagePreparator extends Preparator<StunMessage> {
          */
         try {
             transcriptStream.write(message.getStunMessageTypeBytes().getValue());
-            int fakeLength = currentAttributeStream.length + IceByteLengths.STUN_ATTRIBUTE_LENGTH + IceByteLengths.CRC32_CHECKSUM;
+            int fakeLength = currentAttributeStream.length + IceByteLengths.STUN_ATTRIBUTE_TYPE
+                    + IceByteLengths.STUN_ATTRIBUTE_LENGTH + IceByteLengths.CRC32_CHECKSUM;
             transcriptStream.write(ArrayConverter.intToBytes(fakeLength, IceByteLengths.STUN_MESSAGE_LENGTH));
             transcriptStream.write(message.getTransactionId().getValue());
             transcriptStream.write(currentAttributeStream);
-            return transcriptStream.toByteArray();  
+            return transcriptStream.toByteArray();
         } catch (IOException e) {
             throw new RuntimeException("Could not write to byte array output stream");
         }
@@ -93,11 +94,12 @@ public class StunMessagePreparator extends Preparator<StunMessage> {
          */
         try {
             transcriptStream.write(message.getStunMessageTypeBytes().getValue());
-            int fakeLength = currentAttributeStream.length + IceByteLengths.STUN_ATTRIBUTE_LENGTH + IceByteLengths.STUN_MESSAGE_INTEGRITY_HMAC;
+            int fakeLength = currentAttributeStream.length + IceByteLengths.STUN_ATTRIBUTE_TYPE
+                    + IceByteLengths.STUN_ATTRIBUTE_LENGTH + IceByteLengths.STUN_MESSAGE_INTEGRITY_HMAC;
             transcriptStream.write(ArrayConverter.intToBytes(fakeLength, IceByteLengths.STUN_MESSAGE_LENGTH));
             transcriptStream.write(message.getTransactionId().getValue());
             transcriptStream.write(currentAttributeStream);
-            return transcriptStream.toByteArray();  
+            return transcriptStream.toByteArray();
         } catch (IOException e) {
             throw new RuntimeException("Could not write to byte array output stream");
         }
