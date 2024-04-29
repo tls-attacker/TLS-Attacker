@@ -72,7 +72,14 @@ public class LayerStackFactory {
                         new LayerStack(
                                 context, new SSL2Layer(tlsContext), new TcpLayer(tcpContext));
                 return layerStack;
-
+            case DTLS_OVER_TURN:
+            return new LayerStack(
+                context,
+                new MessageLayer(tlsContext),
+                new DtlsFragmentLayer(tlsContext),
+                new RecordLayer(tlsContext),
+                new StunTurnLayer(context.getIceContext()),
+                new UdpLayer(tlsContext));
             default:
                 throw new RuntimeException("Unknown LayerStackType: " + type.name());
         }

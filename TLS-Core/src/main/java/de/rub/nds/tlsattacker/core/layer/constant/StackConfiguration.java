@@ -16,6 +16,7 @@ package de.rub.nds.tlsattacker.core.layer.constant;
 public enum StackConfiguration {
     TLS,
     DTLS,
+    DTLS_OVER_TURN,
     QUIC,
     OPEN_VPN,
     STARTTLS,
