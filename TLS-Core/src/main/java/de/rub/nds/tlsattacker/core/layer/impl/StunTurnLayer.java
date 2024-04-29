@@ -14,6 +14,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.util.Arrays;
 
+import de.rub.nds.tlsattacker.core.constants.stun.IceByteLengths;
 import de.rub.nds.tlsattacker.core.constants.stun.StunMessageClass;
 import de.rub.nds.tlsattacker.core.constants.stun.StunMethodType;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
@@ -90,7 +91,7 @@ public class StunTurnLayer extends ProtocolLayer<RecordLayerHint, StunMessage> {
             LOGGER.warn("Not enough data in the stream to parse a StunMessage");
         }
         //Peek to get the type
-        byte[] typeBytes = Arrays.copyOf(data, 2);
+        byte[] typeBytes = Arrays.copyOf(data, IceByteLengths.STUN_MESSAGE_TYPE);
         StunMethodType methodType = StunMethodType.getStunMethodTypeFromRawBytes(typeBytes);
         StunMessageClass messageClass = StunMessageClass.getMessageClass(typeBytes);
         StunMessage stunMessage = new StunMessage(messageClass, methodType);
