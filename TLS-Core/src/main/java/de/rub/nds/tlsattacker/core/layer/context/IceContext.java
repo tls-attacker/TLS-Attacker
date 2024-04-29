@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.core.layer.context;
 
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.stun.IceChooser;
-import java.io.ByteArrayOutputStream;
 
 public class IceContext extends LayerContext {
 
@@ -33,9 +32,29 @@ public class IceContext extends LayerContext {
 
     private Integer stunErrorCode;
 
+    private String ourSoftwareString;
+
+    private String peerSoftwareString;
+
     public IceContext(Context context) {
         super(context);
         context.setIceContext(this);
+    }
+
+    public String getPeerSoftwareString() {
+        return peerSoftwareString;
+    }
+
+    public void setPeerSoftwareString(String peerSoftwareString) {
+        this.peerSoftwareString = peerSoftwareString;
+    }
+
+    public String getOurSoftwareString() {
+        return ourSoftwareString;
+    }
+
+    public void setOurSoftwareString(String softwareString) {
+        this.ourSoftwareString = softwareString;
     }
 
     public Integer getStunErrorCode() {

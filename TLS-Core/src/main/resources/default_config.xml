@@ -1454,5 +1454,6 @@
         <defaultData>01 02 03 04</defaultData>
         <defaultErrorCode>404</defaultErrorCode>
         <defaultErrorReason>Not Found :)</defaultErrorReason>
+        <defaultSoftwareString>Coturn-4.6.1 'Gorst'</defaultSoftwareString>
     </iceConfig>
 </config>

@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.core.stun.model.IceControlledAttribute;
 import de.rub.nds.tlsattacker.core.stun.model.IceControllingAttribute;
 import de.rub.nds.tlsattacker.core.stun.model.MessageIntegrityAttribute;
 import de.rub.nds.tlsattacker.core.stun.model.PriorityAttribute;
+import de.rub.nds.tlsattacker.core.stun.model.SoftwareAttribute;
 import de.rub.nds.tlsattacker.core.stun.model.StunAttribute;
 import de.rub.nds.tlsattacker.core.stun.model.UnknownAttribute;
 import de.rub.nds.tlsattacker.core.stun.model.UseCandidateAttribute;
@@ -23,7 +24,8 @@ import de.rub.nds.tlsattacker.core.stun.model.UsernameAttribute;
 import de.rub.nds.tlsattacker.core.stun.model.XorMappedAddressAttribute;
 
 public class AttributeFactory {
-    private AttributeFactory() {}
+    private AttributeFactory() {
+    }
 
     public static StunAttribute createAttribute(StunAttributeType type) {
         switch (type) {
@@ -47,6 +49,8 @@ public class AttributeFactory {
                 return new IceControllingAttribute();
             case FINGERPRINT:
                 return new FingerprintAttribute();
+            case SOFTWARE:
+                return new SoftwareAttribute();
             case ADDERSS_ERROR_CODE:
             case ADDITIONAL_ADDRESS_FAMILY:
             case ALTERNATE_DOMAIN:
@@ -56,7 +60,6 @@ public class AttributeFactory {
             case CACHE_TIMEOUT:
             case REALM:
             case NONCE:
-            case SOFTWARE:
             case ACCESS_TOKEN:
             case XOR_PEER_ADDRESS:
             case XOR_RELAYED_ADDRESS:

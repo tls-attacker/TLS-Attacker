@@ -54,7 +54,17 @@ public class IceConfig {
 
     private String defaultErrorReason = "Not Found :)";
 
+    private String defaultSoftwareString = "Coturn-4.6.1 'Gorst'";
+
     public IceConfig() {}
+
+    public String getDefaultSoftwareString() {
+        return defaultSoftwareString;
+    }
+
+    public void setDefaultSoftwareString(String defaultSoftwareString) {
+        this.defaultSoftwareString = defaultSoftwareString;
+    }
 
     public String getDefaultErrorReason() {
         return defaultErrorReason;
