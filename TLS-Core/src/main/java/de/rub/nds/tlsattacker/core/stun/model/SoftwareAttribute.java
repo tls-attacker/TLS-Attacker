@@ -24,7 +24,7 @@ public class SoftwareAttribute extends StunAttribute {
     private ModifiableString softwareString;
 
     public SoftwareAttribute() {
-        super(StunAttributeType.DATA);
+        super(StunAttributeType.SOFTWARE);
     }
 
     public void setSoftwareString(ModifiableString softwareString) {
