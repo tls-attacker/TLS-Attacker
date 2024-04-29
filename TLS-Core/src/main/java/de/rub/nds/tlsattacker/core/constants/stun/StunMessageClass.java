@@ -11,8 +11,8 @@ package de.rub.nds.tlsattacker.core.constants.stun;
 public enum StunMessageClass {
     REQUEST((byte) 0x00),
     INDICATION((byte) 0x01),
-    SUCCESS_RESPONSE((byte) 0x10),
-    ERROR_RESPONSE((byte) 0x11);
+    SUCCESS_RESPONSE((byte) 0x02),
+    ERROR_RESPONSE((byte) 0x03);
 
     private byte value;
 
