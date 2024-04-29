@@ -62,7 +62,7 @@ public class WorkflowTypeDelegateTest extends AbstractDelegateTest<WorkflowTypeD
         delegate.applyDelegate(config);
         assertTrue(
                 EqualsBuilder.reflectionEquals(
-                        config, config2, "certificateChainConfig")); // little
+                        config, config2, "certificateChainConfig", "iceConfig")); // little
         // ugly
     }
 }

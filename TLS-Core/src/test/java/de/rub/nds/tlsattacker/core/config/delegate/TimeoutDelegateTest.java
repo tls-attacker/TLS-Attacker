@@ -66,7 +66,7 @@ public class TimeoutDelegateTest extends AbstractDelegateTest<TimeoutDelegate> {
         delegate.applyDelegate(config);
         assertTrue(
                 EqualsBuilder.reflectionEquals(
-                        config, config2, "certificateChainConfig")); // little
+                        config, config2, "certificateChainConfig", "iceConfig")); // little
         // ugly
     }
 }

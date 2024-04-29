@@ -216,6 +216,6 @@ public class CertificateDelegateTest extends AbstractDelegateTest<CertificateDel
         Config config = Config.createConfig();
         Config config2 = Config.createConfig();
         delegate.applyDelegate(config);
-        assertTrue(EqualsBuilder.reflectionEquals(config, config2, "certificateChainConfig"));
+        assertTrue(EqualsBuilder.reflectionEquals(config, config2, "certificateChainConfig", "iceConfig"));
     }
 }
