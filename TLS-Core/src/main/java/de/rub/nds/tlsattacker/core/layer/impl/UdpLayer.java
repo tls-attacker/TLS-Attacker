@@ -8,6 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.layer.impl;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
@@ -16,15 +22,16 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerInputStream;
 import de.rub.nds.tlsattacker.core.udp.UdpDataPacket;
+import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.udp.UdpTransportHandler;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 
 /**
  * The UDP layer is a wrapper around an underlying UDP socket. It forwards the sockets InputStream
  * for reading and sends any data over the UDP layer without modifications.
  */
 public class UdpLayer extends ProtocolLayer<LayerProcessingHint, UdpDataPacket> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     // TODO This should be a regular context
     private final TlsContext context;
@@ -41,7 +48,7 @@ public class UdpLayer extends ProtocolLayer<LayerProcessingHint, UdpDataPacket> 
             for (UdpDataPacket udpDataPacket : getUnprocessedConfiguredContainers()) {
                 prepareDataContainer(udpDataPacket, context);
                 addProducedContainer(udpDataPacket);
-                UdpTransportHandler handler = getTransportHandler();
+                TransportHandler handler = getTransportHandler();
                 handler.sendData(udpDataPacket.getSerializer(context).serialize());
             }
         }
@@ -61,7 +68,7 @@ public class UdpLayer extends ProtocolLayer<LayerProcessingHint, UdpDataPacket> 
         udpDataPacket.setConfigData(data);
         prepareDataContainer(udpDataPacket, context);
         addProducedContainer(udpDataPacket);
-        UdpTransportHandler handler = getTransportHandler();
+        TransportHandler handler = getTransportHandler();
         handler.sendData(udpDataPacket.getSerializer(context).serialize());
         return getLayerResult();
     }
@@ -89,13 +96,13 @@ public class UdpLayer extends ProtocolLayer<LayerProcessingHint, UdpDataPacket> 
         return new LayerProcessingResult(null, getLayerType(), true);
     }
 
-    private UdpTransportHandler getTransportHandler() {
+    private TransportHandler getTransportHandler() {
         if (context.getTransportHandler() == null) {
             throw new RuntimeException("TransportHandler is not set in context!");
         }
         if (!(context.getTransportHandler() instanceof UdpTransportHandler)) {
-            throw new RuntimeException("Trying to set UDP layer with non UDP TransportHandler");
+            LOGGER.warn("UDP layer with non UDP TransportHandler");
         }
-        return (UdpTransportHandler) context.getTransportHandler();
+        return context.getTransportHandler();
     }
 }
