@@ -39,6 +39,9 @@ public abstract class StreambasedTransportHandler extends TransportHandler {
      * @return
      */
     public byte[] fetchData(int amountOfData) throws IOException {
+        if (!initialized) {
+            throw new IOException("Transport handler is not initialized!");
+        }
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         for (int i = 0; i < amountOfData; i++) {
             try {
@@ -61,6 +64,9 @@ public abstract class StreambasedTransportHandler extends TransportHandler {
     }
 
     public byte[] fetchData() throws IOException {
+        if (!initialized) {
+            throw new IOException("Transport handler is not initialized!");
+        }
         setTimeout(timeout);
         try {
             if (inStream.available() != 0) {
