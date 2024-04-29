@@ -75,7 +75,7 @@ public class StunMessagePreparator extends Preparator<StunMessage> {
          */
         try {
             transcriptStream.write(message.getStunMessageTypeBytes().getValue());
-            int fakeLength = currentAttributeStream.length + IceByteLengths.STUN_ATTRIBUTE_LENGTH + IceByteLengths.STUN_MESSAGE_INTEGRITY_HMAC;
+            int fakeLength = currentAttributeStream.length + IceByteLengths.STUN_ATTRIBUTE_LENGTH + IceByteLengths.CRC32_CHECKSUM;
             transcriptStream.write(ArrayConverter.intToBytes(fakeLength, IceByteLengths.STUN_MESSAGE_LENGTH));
             transcriptStream.write(message.getTransactionId().getValue());
             transcriptStream.write(currentAttributeStream);
@@ -93,7 +93,7 @@ public class StunMessagePreparator extends Preparator<StunMessage> {
          */
         try {
             transcriptStream.write(message.getStunMessageTypeBytes().getValue());
-            int fakeLength = currentAttributeStream.length + IceByteLengths.STUN_ATTRIBUTE_LENGTH + IceByteLengths.CRC32_CHECKSUM;
+            int fakeLength = currentAttributeStream.length + IceByteLengths.STUN_ATTRIBUTE_LENGTH + IceByteLengths.STUN_MESSAGE_INTEGRITY_HMAC;
             transcriptStream.write(ArrayConverter.intToBytes(fakeLength, IceByteLengths.STUN_MESSAGE_LENGTH));
             transcriptStream.write(message.getTransactionId().getValue());
             transcriptStream.write(currentAttributeStream);
