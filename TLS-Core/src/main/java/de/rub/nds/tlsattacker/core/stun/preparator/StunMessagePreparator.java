@@ -45,9 +45,14 @@ public class StunMessagePreparator extends Preparator<StunMessage> {
         message.setMagicCookiePresent(isMagicCookiePresent());
         ByteArrayOutputStream attributeStream = new ByteArrayOutputStream();
         for (StunAttribute attribute : message.getAttributeList()) {
-            if(attribute instanceof MessageIntegrityAttribute || attribute instanceof FingerprintAttribute) {
+            if(attribute instanceof MessageIntegrityAttribute) {
                 //For these attributes we need to fill the context with the message transcript
-                byte[] fakeTranscript = computeTranscript(attributeStream.toByteArray());
+                byte[] fakeTranscript = computeTranscriptIntegrity(attributeStream.toByteArray());
+                chooser.getContext().getIceContext().setMessageTranscript(fakeTranscript);
+            }
+            if(attribute instanceof FingerprintAttribute) {
+                //For these attributes we need to fill the context with the message transcript
+                byte[] fakeTranscript = computeTranscriptFingerprint(attributeStream.toByteArray());
                 chooser.getContext().getIceContext().setMessageTranscript(fakeTranscript);
             }
             StunAttributePreparator<?> preparator = attribute.getPreparator(chooser.getContext().getIceContext());
@@ -62,7 +67,25 @@ public class StunMessagePreparator extends Preparator<StunMessage> {
         message.setMessageLength(attributeStream.size());
     }
 
-    private byte[] computeTranscript(byte[] currentAttributeStream) {
+    private byte[] computeTranscriptFingerprint(byte[] currentAttributeStream) {
+        ByteArrayOutputStream transcriptStream = new ByteArrayOutputStream();
+        /**
+         * The transcript contains everything before the message fingerprint attribute. The length for the message field will be
+         * faked to include the message fingerprint attribute
+         */
+        try {
+            transcriptStream.write(message.getStunMessageTypeBytes().getValue());
+            int fakeLength = currentAttributeStream.length + IceByteLengths.STUN_ATTRIBUTE_LENGTH + IceByteLengths.STUN_MESSAGE_INTEGRITY_HMAC;
+            transcriptStream.write(ArrayConverter.intToBytes(fakeLength, IceByteLengths.STUN_MESSAGE_LENGTH));
+            transcriptStream.write(message.getTransactionId().getValue());
+            transcriptStream.write(currentAttributeStream);
+            return transcriptStream.toByteArray();  
+        } catch (IOException e) {
+            throw new RuntimeException("Could not write to byte array output stream");
+        }
+    }
+
+    private byte[] computeTranscriptIntegrity(byte[] currentAttributeStream) {
         ByteArrayOutputStream transcriptStream = new ByteArrayOutputStream();
         /**
          * The transcript contains everything before the message integrity attribute. The length for the message field will be
@@ -70,7 +93,7 @@ public class StunMessagePreparator extends Preparator<StunMessage> {
          */
         try {
             transcriptStream.write(message.getStunMessageTypeBytes().getValue());
-            int fakeLength = currentAttributeStream.length + IceByteLengths.STUN_ATTRIBUTE_LENGTH + IceByteLengths.STUN_MESSAGE_INTEGRITY_HMAC;
+            int fakeLength = currentAttributeStream.length + IceByteLengths.STUN_ATTRIBUTE_LENGTH + IceByteLengths.CRC32_CHECKSUM;
             transcriptStream.write(ArrayConverter.intToBytes(fakeLength, IceByteLengths.STUN_MESSAGE_LENGTH));
             transcriptStream.write(message.getTransactionId().getValue());
             transcriptStream.write(currentAttributeStream);

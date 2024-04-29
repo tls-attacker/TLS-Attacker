@@ -52,5 +52,7 @@ public class IceByteLengths {
 
     public static final int STUN_ERROR_VALUE = 1;
 
+    public static final int CRC32_CHECKSUM = 4;
+
     private IceByteLengths() {}
 }
