@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.layer.impl;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
 import org.apache.logging.log4j.LogManager;
@@ -96,6 +97,6 @@ public class StunTurnLayer extends ProtocolLayer<RecordLayerHint, StunMessage> {
         StunMethodType methodType = StunMethodType.getStunMethodTypeFromRawBytes(typeBytes);
         StunMessageClass messageClass = StunMessageClass.getMessageClass(typeBytes);
         StunMessage stunMessage = new StunMessage(messageClass, methodType);
-        readDataContainer(stunMessage, context);
+        readDataContainer(stunMessage, context, new ByteArrayInputStream(data));
     }
 }
