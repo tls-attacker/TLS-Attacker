@@ -38,7 +38,8 @@ public class FingerprintAttributePreparator extends StunAttributePreparator<Fing
         byte[] transcript = chooser.getContext().getIceContext().getMessageTranscript();
         CRC32 crc32 = new CRC32();
         crc32.update(transcript);
-        System.out.println("Transcript:" + ArrayConverter.bytesToHexString(transcript));
+        LOGGER.debug("Transcript: {}", ArrayConverter.bytesToHexString(transcript));
+        LOGGER.debug("CRC32: {}", crc32.getValue());
         return ArrayConverter.longToBytes(
                 crc32.getValue(), IceByteLengths.STUN_FINGERPRINT_CRC_CHECKSUM);
     }
