@@ -9,6 +9,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.stun.StunMessageClass;
 import de.rub.nds.tlsattacker.core.constants.stun.StunMethodType;
+import de.rub.nds.tlsattacker.core.layer.IgnoreLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.LayerStack;
 import de.rub.nds.tlsattacker.core.layer.SpecificSendLayerConfiguration;
@@ -39,6 +40,7 @@ public class StunTurnLayerTest {
         context.setLayerStack(stack);
         iceContext = state.getContext().getIceContext();
         layer = (StunTurnLayer) state.getContext().getLayerStack().getLayerList().get(0);
+        state.getContext().getLayerStack().getLayerList().get(1).setLayerConfiguration(new IgnoreLayerConfiguration<>(ImplementedLayers.UDP));
     }
 
     /**
