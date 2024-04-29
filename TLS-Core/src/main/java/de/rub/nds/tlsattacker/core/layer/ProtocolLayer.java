@@ -35,8 +35,7 @@ import org.apache.logging.log4j.Logger;
  * @param <Hint> Some layers need a hint which message they should send or receive.
  * @param <Container> The kind of messages/Containers this layer is able to send and receive.
  */
-public abstract class ProtocolLayer<
-        Hint extends LayerProcessingHint, Container extends DataContainer> {
+public abstract class ProtocolLayer<Hint extends LayerProcessingHint, Container extends DataContainer> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -215,7 +214,7 @@ public abstract class ProtocolLayer<
                 return true;
             } else {
                 return layerConfiguration.successRequiresMoreContainers(
-                                getLayerResult().getUsedContainers())
+                        getLayerResult().getUsedContainers())
                         || (isDataBuffered()
                                 && ((ReceiveLayerConfiguration) layerConfiguration)
                                         .isProcessTrailingContainers());
@@ -276,6 +275,9 @@ public abstract class ProtocolLayer<
             handler.adjustContext(container);
             addProducedContainer(container);
         } catch (RuntimeException ex) {
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Could not read data container: ", ex);
+            }
             setUnreadBytes(parser.getAlreadyParsed());
         }
     }
@@ -307,8 +309,7 @@ public abstract class ProtocolLayer<
     }
 
     public List<Container> getUnprocessedConfiguredContainers() {
-        if(getLayerConfiguration() == null)
-        {
+        if (getLayerConfiguration() == null) {
             throw new RuntimeException("LayerConfiguration is null");
         }
         if (getLayerConfiguration().getContainerList() == null) {
