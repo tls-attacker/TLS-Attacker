@@ -46,7 +46,7 @@ public class FingerprintAttribute extends StunAttribute {
 
     @Override
     public FingerprintAttributeParser getParser(IceContext context, InputStream stream) {
-        return new FingerprintAttributeParser(context.getIceChooser().getContext(), stream);
+        return new FingerprintAttributeParser(context, stream);
     }
 
     @Override
