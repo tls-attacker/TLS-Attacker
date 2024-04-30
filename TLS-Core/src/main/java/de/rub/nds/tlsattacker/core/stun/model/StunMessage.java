@@ -169,7 +169,7 @@ public class StunMessage extends Message<IceContext> {
 
     @Override
     public StunMessageParser getParser(IceContext context, InputStream stream) {
-        return new StunMessageParser(stream);
+        return new StunMessageParser(context, stream);
     }
 
     @Override
