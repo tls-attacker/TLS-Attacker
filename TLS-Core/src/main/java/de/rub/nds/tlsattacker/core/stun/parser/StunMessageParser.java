@@ -8,6 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.stun.parser;
 
+import java.io.InputStream;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import de.rub.nds.tlsattacker.core.constants.stun.IceByteLengths;
 import de.rub.nds.tlsattacker.core.constants.stun.StunAttributeType;
 import de.rub.nds.tlsattacker.core.constants.stun.StunMessageClass;
@@ -18,9 +23,6 @@ import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.stun.factory.AttributeFactory;
 import de.rub.nds.tlsattacker.core.stun.model.StunAttribute;
 import de.rub.nds.tlsattacker.core.stun.model.StunMessage;
-import java.io.InputStream;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class StunMessageParser extends Parser<StunMessage> {
 
@@ -44,6 +46,9 @@ public class StunMessageParser extends Parser<StunMessage> {
                                     stunMessage.getStunMessageTypeBytes().getValue())
                             .getValue()
                 });
+        StunMethodType methodType = StunMethodType.getStunMethodTypeFromRawBytes(
+                                stunMessage.getStunMessageTypeBytes().getValue();
+        
         stunMessage.setStunMethodType(
                 StunMethodType.getStunMethodTypeFromRawBytes(
                                 stunMessage.getStunMessageTypeBytes().getValue())
