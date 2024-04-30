@@ -31,8 +31,9 @@ public class StunMessageParser extends Parser<StunMessage> {
 
     private IceContext context;
 
-    public StunMessageParser(InputStream stream) {
+    public StunMessageParser(IceContext context, InputStream stream) {
         super(stream);
+        this.context = context;
     }
 
     @Override
