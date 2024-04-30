@@ -28,6 +28,9 @@ public class AttributeFactory {
     }
 
     public static StunAttribute createAttribute(StunAttributeType type) {
+        if (type == null) {
+            return new UnknownAttribute(null);
+        }
         switch (type) {
             case DATA:
                 return new DataAttribute();
