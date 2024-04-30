@@ -46,18 +46,20 @@ public class StunMessageParser extends Parser<StunMessage> {
                                     stunMessage.getStunMessageTypeBytes().getValue())
                             .getValue()
                 });
-        StunMethodType methodType = StunMethodType.getStunMethodTypeFromRawBytes(
-                                stunMessage.getStunMessageTypeBytes().getValue();
+        byte[] methodType = StunMethodType.getStunMethodTypeBytesFromRawBytes(
+                                stunMessage.getStunMessageTypeBytes().getValue());
         
-        stunMessage.setStunMethodType(
-                StunMethodType.getStunMethodTypeFromRawBytes(
-                                stunMessage.getStunMessageTypeBytes().getValue())
-                        .getValue());
+        stunMessage.setStunMethodType(methodType);
         while (getBytesLeft() > 0) {
             byte[] attributeTypeBytes = parseByteArrayField(IceByteLengths.STUN_ATTRIBUTE_TYPE);
             StunAttributeType attributeType =
                     StunAttributeType.getAttributeType(attributeTypeBytes);
-            LOGGER.debug("Parsing: {}", attributeType);
+            if(attributeType == null)
+            {
+                LOGGER.debug("Parsing: unknown");
+            }else{
+                LOGGER.debug("Parsing: {}", attributeType);
+            }
             StunAttribute attribute = AttributeFactory.createAttribute(attributeType);
             attribute.setAttributeType(attributeTypeBytes);
             int attributeLength = parseIntField(IceByteLengths.STUN_ATTRIBUTE_LENGTH);

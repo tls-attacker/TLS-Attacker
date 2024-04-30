@@ -8,8 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.constants.stun;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import java.util.Arrays;
+
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 
 public enum StunMethodType {
     BINDING("0001"),
@@ -41,17 +42,21 @@ public enum StunMethodType {
      * @return
      */
     public static StunMethodType getStunMethodTypeFromRawBytes(byte[] value) {
-        if (value.length != 2) {
-            throw new IllegalArgumentException("The value has to be 2 bytes long");
-        }
-        byte[] tempValue =
-                ArrayConverter.intToBytes(conversion(ArrayConverter.bytesToInt(value)), 2);
+        byte[] tempValue = getStunMethodTypeBytesFromRawBytes(value);
         for (StunMethodType type : StunMethodType.values()) {
             if (Arrays.equals(type.getValue(), tempValue)) {
                 return type;
             }
         }
         return null;
+    }
+
+    public static byte[] getStunMethodTypeBytesFromRawBytes(byte[] value) {
+        if (value.length != 2) {
+            throw new IllegalArgumentException("The value has to be 2 bytes long");
+        }
+        return ArrayConverter.intToBytes(conversion(ArrayConverter.bytesToInt(value)), 2);
+
     }
 
     /** Taken from RFC 8489p.64 */
