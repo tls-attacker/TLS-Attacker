@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.stun.parser;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 import org.apache.logging.log4j.LogManager;
@@ -69,10 +70,10 @@ public class StunMessageParser extends Parser<StunMessage> {
             byte[] attributeBody = parseByteArrayField(attributeLength);
             attribute.setBody(attributeBody);
             byte[] padding = parseByteArrayField(
-                    IceByteLengths.STUN_ATTRIBUTE_ALIGNMENT
-                            - attributeLength % IceByteLengths.STUN_ATTRIBUTE_ALIGNMENT);
+                    (IceByteLengths.STUN_ATTRIBUTE_ALIGNMENT
+                            - (attributeLength % IceByteLengths.STUN_ATTRIBUTE_ALIGNMENT))% IceByteLengths.STUN_ATTRIBUTE_ALIGNMENT);
             attribute.setPadding(padding);
-            StunAttributeParser attributeParser = attribute.getParser(context, getStream());
+            StunAttributeParser attributeParser = attribute.getParser(context, new ByteArrayInputStream(attributeBody));
             attributeParser.parse(attribute);
             stunMessage.getAttributeList().add(attribute);
         }
