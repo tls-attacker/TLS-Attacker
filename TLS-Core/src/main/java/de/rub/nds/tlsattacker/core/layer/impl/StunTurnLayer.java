@@ -16,6 +16,7 @@ import org.apache.logging.log4j.Logger;
 import org.bouncycastle.util.Arrays;
 
 import de.rub.nds.tlsattacker.core.constants.stun.IceByteLengths;
+import de.rub.nds.tlsattacker.core.constants.stun.StunAttributeType;
 import de.rub.nds.tlsattacker.core.constants.stun.StunMessageClass;
 import de.rub.nds.tlsattacker.core.constants.stun.StunMethodType;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
@@ -25,8 +26,10 @@ import de.rub.nds.tlsattacker.core.layer.context.IceContext;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.hints.RecordLayerHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
+import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerInputStream;
 import de.rub.nds.tlsattacker.core.stun.model.DataAttribute;
 import de.rub.nds.tlsattacker.core.stun.model.FingerprintAttribute;
+import de.rub.nds.tlsattacker.core.stun.model.StunAttribute;
 import de.rub.nds.tlsattacker.core.stun.model.StunMessage;
 import de.rub.nds.tlsattacker.core.stun.model.XorPeerAddressAttribute;
 
@@ -99,5 +102,12 @@ public class StunTurnLayer extends ProtocolLayer<RecordLayerHint, StunMessage> {
         StunMessage stunMessage = new StunMessage(messageClass, methodType);
         stunMessage.setCompleteMessageBytes(data);
         readDataContainer(stunMessage, context, new ByteArrayInputStream(data));
+        currentInputStream = new HintedLayerInputStream(hint, this);
+        for (StunAttribute attribute : stunMessage.getAttributeList()) {
+            if (attribute.getType() == StunAttributeType.DATA) {
+                DataAttribute dataAttribute = (DataAttribute) attribute;
+                getDataStream().extendStream(dataAttribute.getData().getValue());
+            }
+        }
     }
 }
