@@ -47,7 +47,7 @@ public class StunTurnLayer extends ProtocolLayer<RecordLayerHint, StunMessage> {
     @Override
     public LayerProcessingResult sendConfiguration() throws IOException {
         for (StunMessage message : getLayerConfiguration().getContainerList()) {
-            message.getPreparator(context).prepare();
+            prepareDataContainer(message, context);
             message.getHandler(context).adjustContext(message);
             message.setCompleteMessageBytes(message.getSerializer(context).serialize());
             getLowerLayer().sendData(null, message.getCompleteMessageBytes().getValue());
