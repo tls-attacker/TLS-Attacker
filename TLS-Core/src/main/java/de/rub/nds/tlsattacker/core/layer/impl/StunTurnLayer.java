@@ -106,6 +106,7 @@ public class StunTurnLayer extends ProtocolLayer<RecordLayerHint, StunMessage> {
         for (StunAttribute attribute : stunMessage.getAttributeList()) {
             if (attribute.getType() == StunAttributeType.DATA) {
                 DataAttribute dataAttribute = (DataAttribute) attribute;
+                LOGGER.debug("Received DATA for upper layer:", dataAttribute.getData().getValue());
                 getDataStream().extendStream(dataAttribute.getData().getValue());
             }
         }
