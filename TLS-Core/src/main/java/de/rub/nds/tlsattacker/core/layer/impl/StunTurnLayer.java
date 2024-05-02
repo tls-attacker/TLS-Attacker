@@ -61,7 +61,7 @@ public class StunTurnLayer extends ProtocolLayer<RecordLayerHint, StunMessage> {
         //TODO Fix Fragmentation if data is too big
         try {
 
-            if (additionalData.length > 0xFFFF) {
+            if (additionalData.length > 0xFFFF) { //TODO Fix number
                 LOGGER.warn("Data is too big for a single STUN message. Fragmentation is not yet implemented.");
             }
             StunMessage message = new StunMessage(StunMessageClass.INDICATION, StunMethodType.DATA);
@@ -103,12 +103,15 @@ public class StunTurnLayer extends ProtocolLayer<RecordLayerHint, StunMessage> {
         stunMessage.setCompleteMessageBytes(data);
         readDataContainer(stunMessage, context, new ByteArrayInputStream(data));
         currentInputStream = new HintedLayerInputStream(hint, this);
+        
         for (StunAttribute attribute : stunMessage.getAttributeList()) {
             if (attribute.getType() == StunAttributeType.DATA) {
                 DataAttribute dataAttribute = (DataAttribute) attribute;
                 LOGGER.debug("Received DATA for upper layer:", dataAttribute.getData().getValue());
-                getDataStream().extendStream(dataAttribute.getData().getValue());
+                currentInputStream.extendStream(dataAttribute.getData().getValue());
             }
         }
+        getLowerLayer().removeDrainedInputStream();
+        
     }
 }
