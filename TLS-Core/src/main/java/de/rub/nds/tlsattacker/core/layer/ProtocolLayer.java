@@ -39,9 +39,9 @@ public abstract class ProtocolLayer<Hint extends LayerProcessingHint, Container 
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private ProtocolLayer higherLayer = null;
+    private ProtocolLayer<?,?> higherLayer = null;
 
-    private ProtocolLayer lowerLayer = null;
+    private ProtocolLayer<?,?> lowerLayer = null;
 
     private LayerConfiguration<Container> layerConfiguration;
 
@@ -69,11 +69,11 @@ public abstract class ProtocolLayer<Hint extends LayerProcessingHint, Container 
         return lowerLayer;
     }
 
-    public void setHigherLayer(ProtocolLayer higherLayer) {
+    public void setHigherLayer(ProtocolLayer<?,?> higherLayer) {
         this.higherLayer = higherLayer;
     }
 
-    public void setLowerLayer(ProtocolLayer lowerLayer) {
+    public void setLowerLayer(ProtocolLayer<?,?> lowerLayer) {
         this.lowerLayer = lowerLayer;
     }
 
@@ -166,6 +166,7 @@ public abstract class ProtocolLayer<Hint extends LayerProcessingHint, Container 
      */
     public HintedInputStream getDataStream() throws IOException {
         if (currentInputStream == null) {
+            LOGGER.debug("No input stream, available");
             receiveMoreDataForHint(null);
             if (currentInputStream == null) {
                 throw new EndOfStreamException(
@@ -177,6 +178,7 @@ public abstract class ProtocolLayer<Hint extends LayerProcessingHint, Container 
         } else {
             if (nextInputStream != null) {
                 currentInputStream = nextInputStream;
+                nextInputStream = null;
                 return currentInputStream;
             } else {
                 LOGGER.debug("Trying to get datastream while no data is available");
