@@ -22,6 +22,7 @@ import de.rub.nds.tlsattacker.core.stun.model.UnknownAttribute;
 import de.rub.nds.tlsattacker.core.stun.model.UseCandidateAttribute;
 import de.rub.nds.tlsattacker.core.stun.model.UsernameAttribute;
 import de.rub.nds.tlsattacker.core.stun.model.XorMappedAddressAttribute;
+import de.rub.nds.tlsattacker.core.stun.model.XorPeerAddressAttribute;
 
 public class AttributeFactory {
     private AttributeFactory() {
@@ -54,6 +55,10 @@ public class AttributeFactory {
                 return new FingerprintAttribute();
             case SOFTWARE:
                 return new SoftwareAttribute();
+            case XOR_PEER_ADDRESS:
+                return new XorPeerAddressAttribute();
+            case XOR_RELAYED_ADDRESS:
+            
             case ADDERSS_ERROR_CODE:
             case ADDITIONAL_ADDRESS_FAMILY:
             case ALTERNATE_DOMAIN:
@@ -64,8 +69,6 @@ public class AttributeFactory {
             case REALM:
             case NONCE:
             case ACCESS_TOKEN:
-            case XOR_PEER_ADDRESS:
-            case XOR_RELAYED_ADDRESS:
             case CHANGED_ADDRESS:
             case CHANNEL_NUMBER:
             case DONT_FRAGMENT:
