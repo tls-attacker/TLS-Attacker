@@ -219,6 +219,7 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
      */
     @Override
     public LayerProcessingResult receiveData() {
+        LOGGER.debug("Trying to receive data on message layer");
         try {
             HintedInputStream dataStream;
             do {
@@ -342,7 +343,7 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
         }
         HandshakeMessageHandler handler = handshakeMessage.getHandler(context);
         handshakeMessage.setMessageContent(payload);
-
+        LOGGER.debug("Received a complete Handshake message");
         try {
             handshakeMessage.setCompleteResultingMessage(
                     ArrayConverter.concatenate(
