@@ -53,9 +53,9 @@ public enum StunMethodType {
 
     public static byte[] getStunMethodTypeBytesFromRawBytes(byte[] value) {
         if (value.length != 2) {
-            throw new IllegalArgumentException("The value has to be 2 bytes long");
+            throw new IllegalArgumentException("The value has to be 2 bytes long but was " + value.length);
         }
-        return ArrayConverter.intToBytes(conversion(ArrayConverter.bytesToInt(value)), 2);
+        return ArrayConverter.intToBytes(conversion(ArrayConverter.bytesToInt(value)), IceByteLengths.STUN_METHOD_TYPE);
 
     }
 
