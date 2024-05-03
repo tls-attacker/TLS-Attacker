@@ -67,6 +67,13 @@ public class StunMessagePreparator extends Preparator<StunMessage> {
         message.setMessageLength(attributeStream.size());
     }
 
+    @Override
+    public void prepareAfterParse() {
+        for (StunAttribute attribute : message.getAttributeList()) {
+            attribute.getPreparator(chooser.getContext().getIceContext()).prepareAfterParse();
+        }
+    }
+
     private byte[] computeTranscriptFingerprint(byte[] currentAttributeStream) {
         ByteArrayOutputStream transcriptStream = new ByteArrayOutputStream();
         /**
