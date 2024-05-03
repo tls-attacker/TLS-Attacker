@@ -90,7 +90,7 @@ public class StunTurnLayer extends ProtocolLayer<RecordLayerHint, StunMessage> {
     @Override
     public void receiveMoreDataForHint(LayerProcessingHint hint) throws IOException {
         HintedInputStream dataStream = getLowerLayer().getDataStream();
-        byte[] data = dataStream.readAllBytes();
+        byte[] data = dataStream.readNBytes(dataStream.available());
         if (data.length < 2) {
             LOGGER.warn("Not enough data in the stream to parse a StunMessage");
             return;
