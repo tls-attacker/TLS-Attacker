@@ -13,8 +13,8 @@ import java.io.IOException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bouncycastle.util.Arrays;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.stun.IceByteLengths;
 import de.rub.nds.tlsattacker.core.constants.stun.StunAttributeType;
 import de.rub.nds.tlsattacker.core.constants.stun.StunMessageClass;
@@ -72,6 +72,7 @@ public class StunTurnLayer extends ProtocolLayer<RecordLayerHint, StunMessage> {
             message.getHandler(context).adjustContext(message);
             message.setCompleteMessageBytes(message.getSerializer(context).serialize());
             getLowerLayer().sendData(null, message.getCompleteMessageBytes().getValue());
+
             addProducedContainer(message);
 
             return getLayerResult();
@@ -90,28 +91,29 @@ public class StunTurnLayer extends ProtocolLayer<RecordLayerHint, StunMessage> {
     @Override
     public void receiveMoreDataForHint(LayerProcessingHint hint) throws IOException {
         HintedInputStream dataStream = getLowerLayer().getDataStream();
-        byte[] data = dataStream.readNBytes(dataStream.available());
-        if (data.length < 2) {
-            LOGGER.warn("Not enough data in the stream to parse a StunMessage");
-            return;
-        }
-        LOGGER.debug("Reading StunMessage: {}", data);
         //Peek to get the type
-        byte[] typeBytes = Arrays.copyOf(data, IceByteLengths.STUN_MESSAGE_TYPE);
-        StunMethodType methodType = StunMethodType.getStunMethodTypeFromRawBytes(typeBytes);
-        StunMessageClass messageClass = StunMessageClass.getMessageClass(typeBytes);
-        StunMessage stunMessage = new StunMessage(messageClass, methodType);
-        stunMessage.setCompleteMessageBytes(data);
-        readDataContainer(stunMessage, context, new ByteArrayInputStream(data));
-        if (currentInputStream == null) {
-            currentInputStream = new HintedLayerInputStream(hint, this);
-        }
-        for (StunAttribute attribute : stunMessage.getAttributeList()) {
-            if (attribute.getType() == StunAttributeType.DATA) {
-                DataAttribute dataAttribute = (DataAttribute) attribute;
-                LOGGER.debug("Received DATA for upper layer: {}", dataAttribute.getData().getValue());
-                currentInputStream.extendStream(dataAttribute.getData().getValue());
+        while (dataStream.available() > 0) {
+
+            byte[] typeBytes = dataStream.readChunk(IceByteLengths.STUN_MESSAGE_TYPE);
+            byte[] lengthBytes = dataStream.readChunk(IceByteLengths.STUN_MESSAGE_LENGTH);
+            int length = ArrayConverter.bytesToInt(lengthBytes) + IceByteLengths.STUN_TRANSACTION_ID;
+            byte[] body = dataStream.readChunk(length);
+            byte[] fullMessage = ArrayConverter.concatenate(typeBytes, lengthBytes, body);
+            StunMethodType methodType = StunMethodType.getStunMethodTypeFromRawBytes(typeBytes);
+            StunMessageClass messageClass = StunMessageClass.getMessageClass(typeBytes);
+            StunMessage stunMessage = new StunMessage(messageClass, methodType);
+            stunMessage.setCompleteMessageBytes(fullMessage);
+            readDataContainer(stunMessage, context, new ByteArrayInputStream(fullMessage));
+            if (currentInputStream == null) {
+                currentInputStream = new HintedLayerInputStream(hint, this);
             }
-        }
+            for (StunAttribute attribute : stunMessage.getAttributeList()) {
+                if (attribute.getType() == StunAttributeType.DATA) {
+                    DataAttribute dataAttribute = (DataAttribute) attribute;
+                    LOGGER.debug("Received DATA for upper layer: {}", dataAttribute.getData().getValue());
+                    currentInputStream.extendStream(dataAttribute.getData().getValue());
+                }
+            }
+        } 
     }
 }
