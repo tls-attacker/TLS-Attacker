@@ -76,6 +76,7 @@ public class UdpLayer extends ProtocolLayer<LayerProcessingHint, UdpDataPacket> 
     @Override
     public void receiveMoreDataForHint(LayerProcessingHint hint) throws IOException {
         byte[] receivedPacket = getTransportHandler().fetchData();
+        LOGGER.debug("Received packet: {}", receivedPacket);
         UdpDataPacket udpDataPacket = new UdpDataPacket();
         udpDataPacket
                 .getParser(context, new ByteArrayInputStream(receivedPacket))
@@ -83,11 +84,14 @@ public class UdpLayer extends ProtocolLayer<LayerProcessingHint, UdpDataPacket> 
         udpDataPacket.getPreparator(context).prepareAfterParse();
         udpDataPacket.getHandler(context).adjustContext(udpDataPacket);
         addProducedContainer(udpDataPacket);
-        if (currentInputStream == null) {
+        if (currentInputStream == null || currentInputStream.available() == 0) {
             currentInputStream = new HintedLayerInputStream(null, this);
             currentInputStream.extendStream(receivedPacket);
         } else {
-            currentInputStream.extendStream(receivedPacket);
+            if(nextInputStream == null) {
+                nextInputStream = new HintedLayerInputStream(null, this);
+            }
+            nextInputStream.extendStream(receivedPacket);
         }
     }
 

@@ -95,7 +95,7 @@ public class StunTurnLayer extends ProtocolLayer<RecordLayerHint, StunMessage> {
             LOGGER.warn("Not enough data in the stream to parse a StunMessage");
             return;
         }
-        LOGGER.debug("Reading StunMessage");
+        LOGGER.debug("Reading StunMessage: {}", data);
         //Peek to get the type
         byte[] typeBytes = Arrays.copyOf(data, IceByteLengths.STUN_MESSAGE_TYPE);
         StunMethodType methodType = StunMethodType.getStunMethodTypeFromRawBytes(typeBytes);
@@ -103,16 +103,15 @@ public class StunTurnLayer extends ProtocolLayer<RecordLayerHint, StunMessage> {
         StunMessage stunMessage = new StunMessage(messageClass, methodType);
         stunMessage.setCompleteMessageBytes(data);
         readDataContainer(stunMessage, context, new ByteArrayInputStream(data));
-        currentInputStream = new HintedLayerInputStream(hint, this);
-        
+        if (currentInputStream == null) {
+            currentInputStream = new HintedLayerInputStream(hint, this);
+        }
         for (StunAttribute attribute : stunMessage.getAttributeList()) {
             if (attribute.getType() == StunAttributeType.DATA) {
                 DataAttribute dataAttribute = (DataAttribute) attribute;
-                LOGGER.debug("Received DATA for upper layer:", dataAttribute.getData().getValue());
+                LOGGER.debug("Received DATA for upper layer: {}", dataAttribute.getData().getValue());
                 currentInputStream.extendStream(dataAttribute.getData().getValue());
             }
         }
-        getLowerLayer().removeDrainedInputStream();
-        
     }
 }
