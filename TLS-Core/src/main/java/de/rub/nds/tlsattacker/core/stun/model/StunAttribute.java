@@ -109,4 +109,9 @@ public abstract class StunAttribute extends ModifiableVariableHolder
     @Override
     public abstract StunAttributeSerializer<? extends StunAttribute> getSerializer(
             IceContext context);
+
+    @Override
+    public String toShortString() {
+        return type.toString();
+    }
 }
