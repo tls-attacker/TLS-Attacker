@@ -66,8 +66,8 @@ public class StunTurnLayerTest {
     public void testSendConfiguration() throws IOException {
         iceContext.getConfig().getIceConfig().setDefaultStunTransactionId(ArrayConverter.hexStringToByteArray("2112a442244fd6f80dbf5bd0db28fc55"));
         iceContext.getConfig().getIceConfig().setDefaultData(ArrayConverter.hexStringToByteArray("011100402112a442a637a7d7a0c6660a1dd4d560002000080001a8791550664e0009000f000004004261642052657175657374000008001436c457d17880317130bcd2aeaf1f0cce46b806c7802800049a643e4a"));
-        iceContext.getConfig().getIceConfig().setAddress(ArrayConverter.hexStringToByteArray("3442C20C"));
-        iceContext.getConfig().getIceConfig().setPort(25187);
+        iceContext.getConfig().getIceConfig().setDefaultAddress(ArrayConverter.hexStringToByteArray("3442C20C"));
+        iceContext.getConfig().getIceConfig().setDefaultPort(25187);
         StunMessage message = new StunMessage(StunMessageClass.INDICATION, StunMethodType.DATA);
         message.getAttributeList().add(new DataAttribute());
         message.getAttributeList().add(new XorPeerAddressAttribute());
