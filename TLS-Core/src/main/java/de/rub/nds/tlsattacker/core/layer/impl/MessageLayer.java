@@ -292,7 +292,7 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
 
     private void readCcsProtocolData(Integer epoch) {
         ChangeCipherSpecMessage message = new ChangeCipherSpecMessage();
-        if (context.getSelectedProtocolVersion().isDTLS()) {
+        if (context.getChooser().getSelectedProtocolVersion().isDTLS()) {
             if (context.getDtlsReceivedChangeCipherSpecEpochs().contains(epoch)
                     && context.getConfig().isIgnoreRetransmittedCcsInDtls()) {
                 message.setAdjustContext(false);
