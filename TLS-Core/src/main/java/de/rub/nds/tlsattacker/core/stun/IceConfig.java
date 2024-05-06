@@ -30,7 +30,7 @@ public class IceConfig {
 
     private IpProtocolFamily protocolFamily = IpProtocolFamily.IP_V_4;
 
-    private Integer port = 1234;
+    private Integer defaultPort = 1234;
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultStunTransactionId =
@@ -142,16 +142,16 @@ public class IceConfig {
         return address;
     }
 
-    public void setAddress(byte[] address) {
+    public void setDefaultAddress(byte[] address) {
         this.address = address;
     }
 
     public Integer getDefaultPort() {
-        return port;
+        return defaultPort;
     }
 
-    public void setPort(Integer port) {
-        this.port = port;
+    public void setDefaultPort(Integer defaultPort) {
+        this.defaultPort = defaultPort;
     }
 
     public IpProtocolFamily getProtocolFamily() {
