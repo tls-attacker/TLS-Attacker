@@ -34,7 +34,12 @@ public abstract class StunAttributePreparator<AttributeT extends StunAttribute>
                                 .getSerializer(chooser.getContext().getIceContext())
                                 .serializeAttributeContent());
         getObject().setAttributeLength(getObject().getBody().getValue().length);
-        getObject().setPadding(new byte[IceByteLengths.STUN_ATTRIBUTE_ALIGNMENT - getObject().getAttributeLength().getValue() % IceByteLengths.STUN_ATTRIBUTE_ALIGNMENT]);
+        int paddingLength = (IceByteLengths.STUN_ATTRIBUTE_ALIGNMENT - getObject().getAttributeLength().getValue())
+                % IceByteLengths.STUN_ATTRIBUTE_ALIGNMENT;
+        if (paddingLength < 0) {
+            paddingLength = 0;
+        }
+        getObject().setPadding(new byte[paddingLength]);
     }
 
     public abstract void prepareContent();

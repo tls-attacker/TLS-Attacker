@@ -26,6 +26,7 @@ public abstract class StunAttributeSerializer<AttributeT extends StunAttribute>
         appendBytes(attribute.getAttributeType().getValue());
         appendInt(attribute.getAttributeLength().getValue(), IceByteLengths.STUN_ATTRIBUTE_LENGTH);
         appendBytes(attribute.getBody().getValue());
+        appendBytes(attribute.getPadding().getValue());
         return getAlreadySerialized();
     }
 
