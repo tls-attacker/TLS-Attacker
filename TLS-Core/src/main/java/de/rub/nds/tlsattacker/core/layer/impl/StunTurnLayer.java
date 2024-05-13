@@ -64,7 +64,7 @@ public class StunTurnLayer extends ProtocolLayer<RecordLayerHint, StunMessage> {
             if (additionalData.length > 0xFFFF) { //TODO Fix number
                 LOGGER.warn("Data is too big for a single STUN message. Fragmentation is not yet implemented.");
             }
-            StunMessage message = new StunMessage(StunMessageClass.INDICATION, StunMethodType.DATA);
+            StunMessage message = new StunMessage(StunMessageClass.INDICATION, StunMethodType.SEND);
             message.getAttributeList().add(new DataAttribute(additionalData));
             message.getAttributeList().add(new XorPeerAddressAttribute());
             message.getAttributeList().add(new FingerprintAttribute());
