@@ -8,14 +8,21 @@
  */
 package de.rub.nds.tlsattacker.core.layer.impl;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.protocol.exception.TimeoutException;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
-import de.rub.nds.tlsattacker.core.exceptions.TimeoutException;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
@@ -32,14 +39,17 @@ import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageSerializer;
 import de.rub.nds.tlsattacker.core.protocol.handler.HandshakeMessageHandler;
-import de.rub.nds.tlsattacker.core.protocol.message.*;
+import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.UnknownHandshakeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.HandshakeMessageParser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * The MessageLayer handles TLS Handshake messages. The encapsulation into records happens in the

@@ -8,17 +8,19 @@
  */
 package de.rub.nds.tlsattacker.core.layer.data;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
-import de.rub.nds.tlsattacker.core.exceptions.ParserException;
-import de.rub.nds.tlsattacker.core.exceptions.TimeoutException;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.net.SocketTimeoutException;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.protocol.exception.TimeoutException;
+import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
+import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 
 /**
  * Abstract Parser class which can be used to read a byte array.
