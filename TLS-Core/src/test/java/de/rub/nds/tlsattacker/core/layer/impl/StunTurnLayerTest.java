@@ -53,6 +53,7 @@ public class StunTurnLayerTest {
                 new ByteArrayInputStream(new byte[0]), new ByteArrayOutputStream()));
         context.getTransportHandler().initialize();
         iceContext = state.getContext().getIceContext();
+        iceContext.getConfig().getIceConfig().setRandomizeStunTransactionIds(false);
         layer = (StunTurnLayer) state.getContext().getLayerStack().getLayerList().get(0);
         state.getContext().getLayerStack().getLayerList().get(1)
                 .setLayerConfiguration(new IgnoreLayerConfiguration<>(ImplementedLayers.UDP));

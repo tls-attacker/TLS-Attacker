@@ -1455,5 +1455,6 @@
         <defaultErrorCode>404</defaultErrorCode>
         <defaultErrorReason>Not Found :)</defaultErrorReason>
         <defaultSoftwareString>Coturn-4.6.1 'Gorst'</defaultSoftwareString>
+        <randomizeStunTransactionIds>true</randomizeStunTransactionIds>
     </iceConfig>
 </config>

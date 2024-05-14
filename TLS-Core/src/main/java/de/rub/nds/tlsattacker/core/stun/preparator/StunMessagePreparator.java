@@ -12,6 +12,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.constants.stun.IceByteLengths;
 import de.rub.nds.tlsattacker.core.constants.stun.StunVersionCookie;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
@@ -40,8 +41,13 @@ public class StunMessagePreparator extends Preparator<StunMessage> {
                         message.getStunMethodType().getValue(),
                         message.getStunMessageClass().getValue()));
         // Message length can only be determined when all attributes are known
-
-        message.setTransactionId(chooser.getIceChooser().getStunTransactionId());
+        if (chooser.getConfig().getIceConfig().isRandomizeStunTransactionIds()) {
+            byte[] randomTransactionId = new byte[IceByteLengths.STUN_TRANSACTION_ID];
+            RandomHelper.getRandom().nextBytes(randomTransactionId);
+            message.setTransactionId(randomTransactionId);
+        } else {
+            message.setTransactionId(chooser.getIceChooser().getStunTransactionId());
+        }
         message.setMagicCookiePresent(isMagicCookiePresent());
         ByteArrayOutputStream attributeStream = new ByteArrayOutputStream();
         for (StunAttribute attribute : message.getAttributeList()) {
@@ -142,18 +148,18 @@ public class StunMessagePreparator extends Preparator<StunMessage> {
      * 0x0101.
      */
     private byte[] encodeClassTypeWithMethodType(byte[] method, byte[] classType) {
-        if(method.length != 2 || classType.length != 1) {
+        if (method.length != 2 || classType.length != 1) {
             throw new IllegalArgumentException("Method must be 2 bytes and class type must be 1 byte");
         }
         byte[] encoded = new byte[2];
-        encoded[0] = (byte) ((method[0] & 0b00001111) <<2);
-        encoded[0] |= (byte) ((method[1] & 0b10000000) >> 6 );
+        encoded[0] = (byte) ((method[0] & 0b00001111) << 2);
+        encoded[0] |= (byte) ((method[1] & 0b10000000) >> 6);
         encoded[0] |= (byte) (classType[0] >> 1);
-        
+
         encoded[1] = (byte) (((classType[0] & 0b00000001)) << 4);
         encoded[1] |= (byte) (method[1] & 0b00001111);
         encoded[1] |= (byte) ((method[1] & 0b01110000) >> 1);
-        
+
         return encoded;
     }
 

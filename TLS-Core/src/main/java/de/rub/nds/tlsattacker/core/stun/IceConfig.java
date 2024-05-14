@@ -26,29 +26,28 @@ public class IceConfig {
 
     /** 1.2.3.4 */
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
-    private byte[] address = new byte[] {0x01, 0x02, 0x03, 0x04};
+    private byte[] address = new byte[] { 0x01, 0x02, 0x03, 0x04 };
 
     private IpProtocolFamily protocolFamily = IpProtocolFamily.IP_V_4;
 
     private Integer defaultPort = 1234;
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
-    private byte[] defaultStunTransactionId =
-            new byte[] {0x21, 0x12, (byte)0xA4, 0x42, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F,0x00};
+    private byte[] defaultStunTransactionId = new byte[] { 0x21, 0x12, (byte) 0xA4, 0x42, 0x05, 0x06, 0x07, 0x08, 0x09,
+            0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x00 };
 
     private Long defaultStunPriority = 0x12345678L;
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
-    private byte[] defaultTieBreaker = new byte[] {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08};
+    private byte[] defaultTieBreaker = new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
-    private byte[] defaultStunPassword =
-            new byte[] {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08};
+    private byte[] defaultStunPassword = new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
 
     private String defaultRealm = "testRealm";
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
-    private byte[] defaultData = new byte[] {0x01, 0x02, 0x03, 0x04};
+    private byte[] defaultData = new byte[] { 0x01, 0x02, 0x03, 0x04 };
 
     private Integer defaultErrorCode = 404;
 
@@ -56,7 +55,18 @@ public class IceConfig {
 
     private String defaultSoftwareString = "Coturn-4.6.1 'Gorst'";
 
-    public IceConfig() {}
+    private Boolean randomizeStunTransactionIds = true;
+
+    public IceConfig() {
+    }
+
+    public boolean isRandomizeStunTransactionIds() {
+        return randomizeStunTransactionIds;
+    }
+
+    public void setRandomizeStunTransactionIds(boolean randomizeStunTransactionIds) {
+        this.randomizeStunTransactionIds = randomizeStunTransactionIds;
+    }
 
     public String getDefaultSoftwareString() {
         return defaultSoftwareString;
