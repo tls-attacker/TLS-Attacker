@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.layer.context;
 
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.stun.IceChooser;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
 public class IceContext extends LayerContext {
 
@@ -36,9 +37,19 @@ public class IceContext extends LayerContext {
 
     private String peerSoftwareString;
 
+    private ConnectionEndType iceConnectionEndType;
+
     public IceContext(Context context) {
         super(context);
         context.setIceContext(this);
+    }
+
+    public ConnectionEndType getIceConnectionEndType() {
+        return iceConnectionEndType;
+    }
+
+    public void setIceConnectionEndType(ConnectionEndType iceConnectionEndType) {
+        this.iceConnectionEndType = iceConnectionEndType;
     }
 
     public String getPeerSoftwareString() {

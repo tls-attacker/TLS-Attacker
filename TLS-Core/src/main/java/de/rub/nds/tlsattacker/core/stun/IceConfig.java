@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.stun;
 
 import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.constants.stun.IpProtocolFamily;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;

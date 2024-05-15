@@ -29,9 +29,11 @@ import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerInputStream;
 import de.rub.nds.tlsattacker.core.stun.model.DataAttribute;
 import de.rub.nds.tlsattacker.core.stun.model.FingerprintAttribute;
+import de.rub.nds.tlsattacker.core.stun.model.SoftwareAttribute;
 import de.rub.nds.tlsattacker.core.stun.model.StunAttribute;
 import de.rub.nds.tlsattacker.core.stun.model.StunMessage;
 import de.rub.nds.tlsattacker.core.stun.model.XorPeerAddressAttribute;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
 public class StunTurnLayer extends ProtocolLayer<RecordLayerHint, StunMessage> {
 
@@ -64,10 +66,25 @@ public class StunTurnLayer extends ProtocolLayer<RecordLayerHint, StunMessage> {
             if (additionalData.length > 0xFFFF) { //TODO Fix number
                 LOGGER.warn("Data is too big for a single STUN message. Fragmentation is not yet implemented.");
             }
-            StunMessage message = new StunMessage(StunMessageClass.INDICATION, StunMethodType.SEND);
-            message.getAttributeList().add(new XorPeerAddressAttribute());
-            message.getAttributeList().add(new DataAttribute(additionalData));
-            message.getAttributeList().add(new FingerprintAttribute());
+            if(context.getIceConnectionEndType() == null) {
+                LOGGER.warn("Connection end type is not set. Assuming client.");
+                context.setIceConnectionEndType(ConnectionEndType.CLIENT);
+            }
+
+            StunMessage message;
+            if (context.getIceConnectionEndType() == ConnectionEndType.CLIENT) {
+                message = new StunMessage(StunMessageClass.INDICATION, StunMethodType.SEND);
+                message.getAttributeList().add(new XorPeerAddressAttribute());
+                message.getAttributeList().add(new DataAttribute(additionalData));
+                message.getAttributeList().add(new FingerprintAttribute());
+            } else {
+                message = new StunMessage(StunMessageClass.INDICATION, StunMethodType.DATA);
+                message.getAttributeList().add(new DataAttribute(additionalData));
+                message.getAttributeList().add(new XorPeerAddressAttribute());
+                message.getAttributeList().add(new SoftwareAttribute());
+                message.getAttributeList().add(new FingerprintAttribute());
+            
+            }
             message.getPreparator(context).prepare();
             message.getHandler(context).adjustContext(message);
             message.setCompleteMessageBytes(message.getSerializer(context).serialize());
@@ -114,6 +131,6 @@ public class StunTurnLayer extends ProtocolLayer<RecordLayerHint, StunMessage> {
                     currentInputStream.extendStream(dataAttribute.getData().getValue());
                 }
             }
-        } 
+        }
     }
 }
