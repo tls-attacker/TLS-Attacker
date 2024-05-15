@@ -73,11 +73,13 @@ public class StunTurnLayer extends ProtocolLayer<RecordLayerHint, StunMessage> {
 
             StunMessage message;
             if (context.getIceConnectionEndType() == ConnectionEndType.CLIENT) {
+                LOGGER.debug("Sending data as a STUN/TURN client");
                 message = new StunMessage(StunMessageClass.INDICATION, StunMethodType.SEND);
                 message.getAttributeList().add(new XorPeerAddressAttribute());
                 message.getAttributeList().add(new DataAttribute(additionalData));
                 message.getAttributeList().add(new FingerprintAttribute());
             } else {
+                LOGGER.debug("Sending data as a STUN/TURN server");
                 message = new StunMessage(StunMessageClass.INDICATION, StunMethodType.DATA);
                 message.getAttributeList().add(new DataAttribute(additionalData));
                 message.getAttributeList().add(new XorPeerAddressAttribute());
