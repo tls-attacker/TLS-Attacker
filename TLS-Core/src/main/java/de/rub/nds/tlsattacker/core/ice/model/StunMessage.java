@@ -22,10 +22,9 @@ import de.rub.nds.tlsattacker.core.ice.handler.StunMessageHandler;
 import de.rub.nds.tlsattacker.core.ice.parser.StunMessageParser;
 import de.rub.nds.tlsattacker.core.ice.preparator.StunMessagePreparator;
 import de.rub.nds.tlsattacker.core.ice.serializer.StunMessageSerializer;
-import de.rub.nds.tlsattacker.core.layer.Message;
 import de.rub.nds.tlsattacker.core.layer.context.IceContext;
 
-public class StunMessage extends Message<IceContext> {
+public class StunMessage extends IceMessage {
 
     private StunMessageClass classType;
 

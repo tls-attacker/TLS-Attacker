@@ -9,10 +9,9 @@ import de.rub.nds.tlsattacker.core.ice.handler.ChannelDataMessageHandler;
 import de.rub.nds.tlsattacker.core.ice.parser.ChannelDataMessageParser;
 import de.rub.nds.tlsattacker.core.ice.preparator.ChannelDataMessagePreparator;
 import de.rub.nds.tlsattacker.core.ice.serializer.ChannelDataMessageSerializer;
-import de.rub.nds.tlsattacker.core.layer.Message;
 import de.rub.nds.tlsattacker.core.layer.context.IceContext;
 
-public class ChannelDataMessage extends Message<IceContext> {
+public class ChannelDataMessage extends IceMessage {
 
     private ModifiableByteArray channelNumber;
 
