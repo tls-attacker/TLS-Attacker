@@ -20,6 +20,7 @@ import de.rub.nds.tlsattacker.core.constants.stun.StunAttributeType;
 import de.rub.nds.tlsattacker.core.constants.stun.StunMessageClass;
 import de.rub.nds.tlsattacker.core.constants.stun.StunMethodType;
 import de.rub.nds.tlsattacker.core.ice.handler.IceMessageHandler;
+import de.rub.nds.tlsattacker.core.ice.model.ChannelDataMessage;
 import de.rub.nds.tlsattacker.core.ice.model.DataAttribute;
 import de.rub.nds.tlsattacker.core.ice.model.FingerprintAttribute;
 import de.rub.nds.tlsattacker.core.ice.model.IceMessage;
@@ -37,6 +38,9 @@ import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerInputStream;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
+/**
+ * A Layer that implements STUN/TURN & TURN ChannelMessages for ICE
+ */
 public class IceLayer extends ProtocolLayer<RecordLayerHint, IceMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -69,39 +73,54 @@ public class IceLayer extends ProtocolLayer<RecordLayerHint, IceMessage> {
             if (additionalData.length > 0xFFFF) { //TODO Fix number
                 LOGGER.warn("Data is too big for a single STUN message. Fragmentation is not yet implemented.");
             }
-            if(context.getIceConnectionEndType() == null) {
+            if (context.getIceConnectionEndType() == null) {
                 LOGGER.warn("Connection end type is not set. Assuming client.");
                 context.setIceConnectionEndType(ConnectionEndType.CLIENT);
             }
 
-            StunMessage message;
-            if (context.getIceConnectionEndType() == ConnectionEndType.CLIENT) {
-                LOGGER.trace("Sending data as a STUN/TURN client");
-                message = new StunMessage(StunMessageClass.INDICATION, StunMethodType.SEND);
-                message.getAttributeList().add(new XorPeerAddressAttribute());
-                message.getAttributeList().add(new DataAttribute(additionalData));
-                message.getAttributeList().add(new FingerprintAttribute());
+            if (context.getTurnDataChannel() != null) {
+                sendAsChannelData(additionalData);
             } else {
-                LOGGER.trace("Sending data as a STUN/TURN server");
-                message = new StunMessage(StunMessageClass.INDICATION, StunMethodType.DATA);
-                message.getAttributeList().add(new DataAttribute(additionalData));
-                message.getAttributeList().add(new XorPeerAddressAttribute());
-                message.getAttributeList().add(new SoftwareAttribute());
-                message.getAttributeList().add(new FingerprintAttribute());
-            
+                sendAsTurnOverStun(additionalData);
             }
-            message.getPreparator(context).prepare();
-            message.getHandler(context).adjustContext(message);
-            message.setCompleteMessageBytes(message.getSerializer(context).serialize());
-            getLowerLayer().sendData(null, message.getCompleteMessageBytes().getValue());
-
-            addProducedContainer(message);
-
             return getLayerResult();
         } catch (IOException e) {
             LOGGER.warn("Could not send data", e);
             return getLayerResult();
         }
+    }
+
+    private void sendAsChannelData(byte[] additionalData) throws IOException {
+        LOGGER.trace("Sending data as TURN channel data");
+        ChannelDataMessage message = new ChannelDataMessage(additionalData);
+        prepareDataContainer(message, context);
+        message.getHandler(context).adjustContext(message);
+        message.setCompleteMessageBytes(message.getSerializer(context).serialize());
+        getLowerLayer().sendData(null, message.getCompleteMessageBytes().getValue());
+        addProducedContainer(message);
+    }
+
+    private void sendAsTurnOverStun(byte[] additionalData) throws IOException {
+        StunMessage message;
+        if (context.getIceConnectionEndType() == ConnectionEndType.CLIENT) {
+            LOGGER.trace("Sending data as a STUN/TURN client");
+            message = new StunMessage(StunMessageClass.INDICATION, StunMethodType.SEND);
+            message.getAttributeList().add(new XorPeerAddressAttribute());
+            message.getAttributeList().add(new DataAttribute(additionalData));
+            message.getAttributeList().add(new FingerprintAttribute());
+        } else {
+            LOGGER.trace("Sending data as a STUN/TURN server");
+            message = new StunMessage(StunMessageClass.INDICATION, StunMethodType.DATA);
+            message.getAttributeList().add(new DataAttribute(additionalData));
+            message.getAttributeList().add(new XorPeerAddressAttribute());
+            message.getAttributeList().add(new SoftwareAttribute());
+            message.getAttributeList().add(new FingerprintAttribute());
+        }
+        prepareDataContainer(message, context);
+        message.getHandler(context).adjustContext(message);
+        message.setCompleteMessageBytes(message.getSerializer(context).serialize());
+        getLowerLayer().sendData(null, message.getCompleteMessageBytes().getValue());
+        addProducedContainer(message);
     }
 
     @Override
