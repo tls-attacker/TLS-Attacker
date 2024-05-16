@@ -17,7 +17,6 @@ public class StunMessagePreparatorTest {
         State state = new State(new Config());
         for (StunMethodType methodType : StunMethodType.values()) {
             for (StunMessageClass messageClass : StunMessageClass.values()) {
-                System.out.println("Testing : " + methodType + " : " + messageClass);
                 StunMessage message = new StunMessage(messageClass, methodType);
                 StunMessagePreparator preparator = new StunMessagePreparator(state.getTlsContext().getChooser(),
                         message);
