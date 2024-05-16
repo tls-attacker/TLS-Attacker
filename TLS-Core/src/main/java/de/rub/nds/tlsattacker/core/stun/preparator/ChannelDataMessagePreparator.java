@@ -1,7 +1,7 @@
-package de.rub.nds.tlsattacker.core.stun.turn.preparator;
+package de.rub.nds.tlsattacker.core.stun.preparator;
 
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
-import de.rub.nds.tlsattacker.core.stun.turn.model.ChannelDataMessage;
+import de.rub.nds.tlsattacker.core.stun.model.ChannelDataMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 public class ChannelDataMessagePreparator extends Preparator<ChannelDataMessage> {

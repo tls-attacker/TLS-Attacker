@@ -1,4 +1,4 @@
-package de.rub.nds.tlsattacker.core.stun.turn.model;
+package de.rub.nds.tlsattacker.core.stun.model;
 
 import java.io.InputStream;
 
@@ -7,10 +7,10 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.layer.Message;
 import de.rub.nds.tlsattacker.core.layer.context.IceContext;
-import de.rub.nds.tlsattacker.core.stun.turn.handler.ChannelDataMessageHandler;
-import de.rub.nds.tlsattacker.core.stun.turn.parser.ChannelDataMessageParser;
-import de.rub.nds.tlsattacker.core.stun.turn.preparator.ChannelDataMessagePreparator;
-import de.rub.nds.tlsattacker.core.stun.turn.serializer.ChannelDataMessageSerializer;
+import de.rub.nds.tlsattacker.core.stun.handler.ChannelDataMessageHandler;
+import de.rub.nds.tlsattacker.core.stun.parser.ChannelDataMessageParser;
+import de.rub.nds.tlsattacker.core.stun.preparator.ChannelDataMessagePreparator;
+import de.rub.nds.tlsattacker.core.stun.serializer.ChannelDataMessageSerializer;
 
 public class ChannelDataMessage extends Message<IceContext>{
 

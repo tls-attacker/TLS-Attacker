@@ -1,4 +1,4 @@
-package de.rub.nds.tlsattacker.core.stun.turn.handler;
+package de.rub.nds.tlsattacker.core.stun.handler;
 
 import de.rub.nds.tlsattacker.core.layer.data.Handler;
 import de.rub.nds.tlsattacker.core.stun.model.StunMessage;

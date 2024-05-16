@@ -1,10 +1,10 @@
-package de.rub.nds.tlsattacker.core.stun.turn.parser;
+package de.rub.nds.tlsattacker.core.stun.parser;
 
 import java.io.InputStream;
 
 import de.rub.nds.tlsattacker.core.constants.stun.IceByteLengths;
 import de.rub.nds.tlsattacker.core.layer.data.Parser;
-import de.rub.nds.tlsattacker.core.stun.turn.model.ChannelDataMessage;
+import de.rub.nds.tlsattacker.core.stun.model.ChannelDataMessage;
 
 public class ChannelDataMessageParser extends Parser<ChannelDataMessage> {
 

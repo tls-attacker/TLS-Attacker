@@ -1,8 +1,8 @@
-package de.rub.nds.tlsattacker.core.stun.turn.serializer;
+package de.rub.nds.tlsattacker.core.stun.serializer;
 
 import de.rub.nds.tlsattacker.core.constants.stun.IceByteLengths;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
-import de.rub.nds.tlsattacker.core.stun.turn.model.ChannelDataMessage;
+import de.rub.nds.tlsattacker.core.stun.model.ChannelDataMessage;
 
 public class ChannelDataMessageSerializer extends Serializer<ChannelDataMessage>{
 
