@@ -15,7 +15,17 @@ public class ChannelDataMessageParser extends IceMessageParser<ChannelDataMessag
     public void parse(ChannelDataMessage message) {
         message.setChannelNumber(parseByteArrayField(IceByteLengths.TURN_CHANNEL_NUMBER));
         message.setMessageLength(parseIntField(IceByteLengths.TURN_CHANNEL_DATA_LENGTH));
-        message.setData(parseByteArrayField(message.getMessageLength().getValue()));        
+        message.setData(parseByteArrayField(message.getMessageLength().getValue()));
+        int paddingLength = 0;
+        if (getBytesLeft() > 0) {
+            paddingLength = (IceByteLengths.DATA_CHANNEL_ALIGNMENT - (message.getMessageLength().getValue())
+                    % IceByteLengths.DATA_CHANNEL_ALIGNMENT) % IceByteLengths.DATA_CHANNEL_ALIGNMENT;
+            if (paddingLength < 0) {
+                paddingLength = 0;
+            }
+        }
+
+        message.setPadding(parseByteArrayField(paddingLength));
     }
 
 }
