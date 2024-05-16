@@ -134,26 +134,61 @@ public class IceLayer extends ProtocolLayer<RecordLayerHint, IceMessage> {
         HintedInputStream dataStream = getLowerLayer().getDataStream();
         //Peek to get the type
         while (dataStream.available() > 0) {
-
-            byte[] typeBytes = dataStream.readChunk(IceByteLengths.STUN_MESSAGE_TYPE);
-            byte[] lengthBytes = dataStream.readChunk(IceByteLengths.STUN_MESSAGE_LENGTH);
-            int length = ArrayConverter.bytesToInt(lengthBytes) + IceByteLengths.STUN_TRANSACTION_ID;
-            byte[] body = dataStream.readChunk(length);
-            byte[] fullMessage = ArrayConverter.concatenate(typeBytes, lengthBytes, body);
-            StunMethodType methodType = StunMethodType.getStunMethodTypeFromRawBytes(typeBytes);
-            StunMessageClass messageClass = StunMessageClass.getMessageClass(typeBytes);
-            StunMessage stunMessage = new StunMessage(messageClass, methodType);
-            stunMessage.setCompleteMessageBytes(fullMessage);
-            readDataContainer(stunMessage, context, new ByteArrayInputStream(fullMessage));
-            if (currentInputStream == null) {
-                currentInputStream = new HintedLayerInputStream(hint, this);
+            byte[] firstTwobytes = dataStream.readChunk(IceByteLengths.STUN_MESSAGE_TYPE);
+            if (firstTwobytes[0] >= 64 && firstTwobytes[0] <= 79) {
+                LOGGER.trace("Reading as TURN ChannelData message");
+                receiveTurnChannelData(hint, dataStream, firstTwobytes);
+            } else{
+                LOGGER.trace("Reading as STUN/TURN message");
+                receiveStunMessage(hint, dataStream, firstTwobytes);
             }
-            for (StunAttribute attribute : stunMessage.getAttributeList()) {
-                if (attribute.getType() == StunAttributeType.DATA) {
-                    DataAttribute dataAttribute = (DataAttribute) attribute;
-                    LOGGER.debug("Received DATA for upper layer: {}", dataAttribute.getData().getValue());
-                    currentInputStream.extendStream(dataAttribute.getData().getValue());
-                }
+        }
+    }
+
+    private void receiveTurnChannelData(LayerProcessingHint hint, HintedInputStream dataStream, byte[] firstTwobytes) throws IOException {
+        byte[] channelNumber = firstTwobytes;
+        byte[] lengthBytes = dataStream.readChunk(IceByteLengths.TURN_CHANNEL_DATA_LENGTH);
+        int length = ArrayConverter.bytesToInt(lengthBytes);
+        byte[] data = dataStream.readChunk(length);
+        int paddingLength = 0;
+        if (dataStream.available() > 0) {
+            paddingLength = (IceByteLengths.DATA_CHANNEL_ALIGNMENT - (length)
+                    % IceByteLengths.DATA_CHANNEL_ALIGNMENT) % IceByteLengths.DATA_CHANNEL_ALIGNMENT;
+            if (paddingLength < 0) {
+                paddingLength = 0;
+            }
+        }
+        byte[] padding = dataStream.readChunk(paddingLength);
+        byte[] completeMessageBytes = ArrayConverter.concatenate(channelNumber, lengthBytes, data, padding);
+        ChannelDataMessage message = new ChannelDataMessage(data);
+        message.setCompleteMessageBytes(completeMessageBytes);
+        readDataContainer(message,context, new ByteArrayInputStream(completeMessageBytes));
+        if(currentInputStream == null){
+            currentInputStream = new HintedLayerInputStream(hint, this);
+        }
+        currentInputStream.extendStream(message.getData().getValue());        
+    }
+
+    private void receiveStunMessage(LayerProcessingHint hint, HintedInputStream dataStream, byte[] firstTwobytes)
+            throws IOException {
+        byte[] typeBytes = firstTwobytes;
+        byte[] lengthBytes = dataStream.readChunk(IceByteLengths.STUN_MESSAGE_LENGTH);
+        int length = ArrayConverter.bytesToInt(lengthBytes) + IceByteLengths.STUN_TRANSACTION_ID;
+        byte[] body = dataStream.readChunk(length);
+        byte[] fullMessage = ArrayConverter.concatenate(typeBytes, lengthBytes, body);
+        StunMethodType methodType = StunMethodType.getStunMethodTypeFromRawBytes(typeBytes);
+        StunMessageClass messageClass = StunMessageClass.getMessageClass(typeBytes);
+        StunMessage stunMessage = new StunMessage(messageClass, methodType);
+        stunMessage.setCompleteMessageBytes(fullMessage);
+        readDataContainer(stunMessage, context, new ByteArrayInputStream(fullMessage));
+        if (currentInputStream == null) {
+            currentInputStream = new HintedLayerInputStream(hint, this);
+        }
+        for (StunAttribute attribute : stunMessage.getAttributeList()) {
+            if (attribute.getType() == StunAttributeType.DATA) {
+                DataAttribute dataAttribute = (DataAttribute) attribute;
+                LOGGER.debug("Received DATA for upper layer: {}", dataAttribute.getData().getValue());
+                currentInputStream.extendStream(dataAttribute.getData().getValue());
             }
         }
     }
