@@ -12,7 +12,7 @@ import de.rub.nds.tlsattacker.core.ice.serializer.ChannelDataMessageSerializer;
 import de.rub.nds.tlsattacker.core.layer.Message;
 import de.rub.nds.tlsattacker.core.layer.context.IceContext;
 
-public class ChannelDataMessage extends Message<IceContext>{
+public class ChannelDataMessage extends Message<IceContext> {
 
     private ModifiableByteArray channelNumber;
 
@@ -20,8 +20,19 @@ public class ChannelDataMessage extends Message<IceContext>{
 
     private ModifiableByteArray data;
 
-    public ChannelDataMessage() {
+    private byte[] dataConfig;
+
+    public ChannelDataMessage(byte[] dataConfig) {
         super();
+        this.dataConfig = dataConfig;
+    }
+
+    public void setDataConfig(byte[] dataConfig) {
+        this.dataConfig = dataConfig;
+    }
+
+    public byte[] getDataConfig() {
+        return dataConfig;
     }
 
     public ModifiableByteArray getChannelNumber() {
@@ -84,6 +95,5 @@ public class ChannelDataMessage extends Message<IceContext>{
     public String toShortString() {
         return "ChannelDataMessage";
     }
-    
 
 }
