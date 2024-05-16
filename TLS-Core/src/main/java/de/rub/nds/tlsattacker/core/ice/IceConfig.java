@@ -57,6 +57,7 @@ public class IceConfig {
 
     private Boolean randomizeStunTransactionIds = true;
 
+    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultTurnDataChannel = new byte[] { 0x45, 0x67};
 
     private boolean padUdpChannelDataMessages = false;

@@ -1456,5 +1456,7 @@
         <defaultErrorReason>Not Found :)</defaultErrorReason>
         <defaultSoftwareString>Coturn-4.6.1 'Gorst'</defaultSoftwareString>
         <randomizeStunTransactionIds>true</randomizeStunTransactionIds>
+        <defaultTurnDataChannel>45 67</defaultTurnDataChannel>
+        <padUdpChannelDataMessages>false</padUdpChannelDataMessages>
     </iceConfig>
 </config>
