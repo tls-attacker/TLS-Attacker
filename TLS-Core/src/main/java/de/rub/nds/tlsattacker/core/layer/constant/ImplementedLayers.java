@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.core.layer.constant;
 
 import de.rub.nds.tlsattacker.core.http.HttpMessage;
-import de.rub.nds.tlsattacker.core.ice.model.StunMessage;
+import de.rub.nds.tlsattacker.core.ice.model.IceMessage;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2Message;
@@ -31,7 +31,7 @@ public enum ImplementedLayers implements LayerType {
     SSL2(SSL2Message.class),
     QUICPACKET(QuicPacket.class),
     QUICFRAME(QuicFrame.class),
-    STUN_TURN(StunMessage.class);
+    ICE(IceMessage.class);
 
     private Class<?> baseContainerClass;
 

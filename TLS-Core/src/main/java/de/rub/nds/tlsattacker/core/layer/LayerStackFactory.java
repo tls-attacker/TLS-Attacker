@@ -78,7 +78,7 @@ public class LayerStackFactory {
                 new MessageLayer(tlsContext),
                 new DtlsFragmentLayer(tlsContext),
                 new RecordLayer(tlsContext),
-                new StunTurnLayer(context.getIceContext()),
+                new IceLayer(context.getIceContext()),
                 new UdpLayer(tlsContext));
             default:
                 throw new RuntimeException("Unknown LayerStackType: " + type.name());

@@ -19,8 +19,10 @@ import de.rub.nds.tlsattacker.core.constants.stun.IceByteLengths;
 import de.rub.nds.tlsattacker.core.constants.stun.StunAttributeType;
 import de.rub.nds.tlsattacker.core.constants.stun.StunMessageClass;
 import de.rub.nds.tlsattacker.core.constants.stun.StunMethodType;
+import de.rub.nds.tlsattacker.core.ice.handler.IceMessageHandler;
 import de.rub.nds.tlsattacker.core.ice.model.DataAttribute;
 import de.rub.nds.tlsattacker.core.ice.model.FingerprintAttribute;
+import de.rub.nds.tlsattacker.core.ice.model.IceMessage;
 import de.rub.nds.tlsattacker.core.ice.model.SoftwareAttribute;
 import de.rub.nds.tlsattacker.core.ice.model.StunAttribute;
 import de.rub.nds.tlsattacker.core.ice.model.StunMessage;
@@ -35,22 +37,23 @@ import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerInputStream;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
-public class StunTurnLayer extends ProtocolLayer<RecordLayerHint, StunMessage> {
+public class IceLayer extends ProtocolLayer<RecordLayerHint, IceMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     private IceContext context;
 
-    public StunTurnLayer(IceContext context) {
-        super(ImplementedLayers.STUN_TURN);
+    public IceLayer(IceContext context) {
+        super(ImplementedLayers.ICE);
         this.context = context;
     }
 
     @Override
     public LayerProcessingResult sendConfiguration() throws IOException {
-        for (StunMessage message : getLayerConfiguration().getContainerList()) {
+        for (IceMessage message : getLayerConfiguration().getContainerList()) {
             prepareDataContainer(message, context);
-            message.getHandler(context).adjustContext(message);
+            IceMessageHandler handler = message.getHandler(context);
+            handler.adjustContext(message);
             message.setCompleteMessageBytes(message.getSerializer(context).serialize());
             getLowerLayer().sendData(null, message.getCompleteMessageBytes().getValue());
             addProducedContainer(message);

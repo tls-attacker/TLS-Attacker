@@ -4,9 +4,8 @@ import java.io.InputStream;
 
 import de.rub.nds.tlsattacker.core.constants.stun.IceByteLengths;
 import de.rub.nds.tlsattacker.core.ice.model.ChannelDataMessage;
-import de.rub.nds.tlsattacker.core.layer.data.Parser;
 
-public class ChannelDataMessageParser extends Parser<ChannelDataMessage> {
+public class ChannelDataMessageParser extends IceMessageParser<ChannelDataMessage> {
 
     public ChannelDataMessageParser(InputStream stream) {
         super(stream);

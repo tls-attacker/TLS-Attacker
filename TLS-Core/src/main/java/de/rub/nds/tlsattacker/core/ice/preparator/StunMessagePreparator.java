@@ -19,10 +19,9 @@ import de.rub.nds.tlsattacker.core.ice.model.FingerprintAttribute;
 import de.rub.nds.tlsattacker.core.ice.model.MessageIntegrityAttribute;
 import de.rub.nds.tlsattacker.core.ice.model.StunAttribute;
 import de.rub.nds.tlsattacker.core.ice.model.StunMessage;
-import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
-public class StunMessagePreparator extends Preparator<StunMessage> {
+public class StunMessagePreparator extends IceMessagePreparator<StunMessage> {
 
     private StunMessage message;
 

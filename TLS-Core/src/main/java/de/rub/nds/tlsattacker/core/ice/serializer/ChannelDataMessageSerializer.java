@@ -2,9 +2,8 @@ package de.rub.nds.tlsattacker.core.ice.serializer;
 
 import de.rub.nds.tlsattacker.core.constants.stun.IceByteLengths;
 import de.rub.nds.tlsattacker.core.ice.model.ChannelDataMessage;
-import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 
-public class ChannelDataMessageSerializer extends Serializer<ChannelDataMessage>{
+public class ChannelDataMessageSerializer extends IceMessageSerializer<ChannelDataMessage>{
 
         protected final ChannelDataMessage message;
 

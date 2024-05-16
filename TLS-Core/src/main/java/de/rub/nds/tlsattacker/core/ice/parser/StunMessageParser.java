@@ -23,9 +23,8 @@ import de.rub.nds.tlsattacker.core.ice.factory.AttributeFactory;
 import de.rub.nds.tlsattacker.core.ice.model.StunAttribute;
 import de.rub.nds.tlsattacker.core.ice.model.StunMessage;
 import de.rub.nds.tlsattacker.core.layer.context.IceContext;
-import de.rub.nds.tlsattacker.core.layer.data.Parser;
 
-public class StunMessageParser extends Parser<StunMessage> {
+public class StunMessageParser extends IceMessageParser<StunMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 

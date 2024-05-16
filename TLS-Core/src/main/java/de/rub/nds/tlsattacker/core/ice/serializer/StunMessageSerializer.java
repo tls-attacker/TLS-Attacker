@@ -12,9 +12,8 @@ import de.rub.nds.tlsattacker.core.constants.stun.IceByteLengths;
 import de.rub.nds.tlsattacker.core.ice.model.StunAttribute;
 import de.rub.nds.tlsattacker.core.ice.model.StunMessage;
 import de.rub.nds.tlsattacker.core.layer.context.IceContext;
-import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 
-public class StunMessageSerializer extends Serializer<StunMessage> {
+public class StunMessageSerializer extends IceMessageSerializer<StunMessage> {
 
     protected final StunMessage message;
 
