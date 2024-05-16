@@ -16,6 +16,7 @@ public class ChannelDataMessageSerializer extends IceMessageSerializer<ChannelDa
         appendBytes(message.getChannelNumber().getValue());
         appendInt(message.getMessageLength().getValue(), IceByteLengths.STUN_MESSAGE_LENGTH);
         appendBytes(message.getData().getValue());
+        appendBytes(message.getPadding().getValue());
         return getAlreadySerialized();
     }
     
