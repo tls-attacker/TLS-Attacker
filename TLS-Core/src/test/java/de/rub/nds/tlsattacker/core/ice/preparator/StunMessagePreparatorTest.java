@@ -1,4 +1,4 @@
-package de.rub.nds.tlsattacker.core.stun.preparator;
+package de.rub.nds.tlsattacker.core.ice.preparator;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -8,7 +8,6 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.stun.StunMessageClass;
 import de.rub.nds.tlsattacker.core.constants.stun.StunMethodType;
 import de.rub.nds.tlsattacker.core.ice.model.StunMessage;
-import de.rub.nds.tlsattacker.core.ice.preparator.StunMessagePreparator;
 import de.rub.nds.tlsattacker.core.state.State;
 
 public class StunMessagePreparatorTest {
