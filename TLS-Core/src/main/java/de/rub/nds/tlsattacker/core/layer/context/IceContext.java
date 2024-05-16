@@ -8,8 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.layer.context;
 
+import de.rub.nds.tlsattacker.core.ice.IceChooser;
 import de.rub.nds.tlsattacker.core.state.Context;
-import de.rub.nds.tlsattacker.core.stun.IceChooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
 public class IceContext extends LayerContext {

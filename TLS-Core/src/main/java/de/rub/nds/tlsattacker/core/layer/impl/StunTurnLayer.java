@@ -19,6 +19,12 @@ import de.rub.nds.tlsattacker.core.constants.stun.IceByteLengths;
 import de.rub.nds.tlsattacker.core.constants.stun.StunAttributeType;
 import de.rub.nds.tlsattacker.core.constants.stun.StunMessageClass;
 import de.rub.nds.tlsattacker.core.constants.stun.StunMethodType;
+import de.rub.nds.tlsattacker.core.ice.model.DataAttribute;
+import de.rub.nds.tlsattacker.core.ice.model.FingerprintAttribute;
+import de.rub.nds.tlsattacker.core.ice.model.SoftwareAttribute;
+import de.rub.nds.tlsattacker.core.ice.model.StunAttribute;
+import de.rub.nds.tlsattacker.core.ice.model.StunMessage;
+import de.rub.nds.tlsattacker.core.ice.model.XorPeerAddressAttribute;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
@@ -27,12 +33,6 @@ import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.hints.RecordLayerHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerInputStream;
-import de.rub.nds.tlsattacker.core.stun.model.DataAttribute;
-import de.rub.nds.tlsattacker.core.stun.model.FingerprintAttribute;
-import de.rub.nds.tlsattacker.core.stun.model.SoftwareAttribute;
-import de.rub.nds.tlsattacker.core.stun.model.StunAttribute;
-import de.rub.nds.tlsattacker.core.stun.model.StunMessage;
-import de.rub.nds.tlsattacker.core.stun.model.XorPeerAddressAttribute;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
 public class StunTurnLayer extends ProtocolLayer<RecordLayerHint, StunMessage> {

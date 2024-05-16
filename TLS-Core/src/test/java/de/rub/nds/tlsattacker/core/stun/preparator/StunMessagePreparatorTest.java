@@ -7,8 +7,9 @@ import org.junit.jupiter.api.Test;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.stun.StunMessageClass;
 import de.rub.nds.tlsattacker.core.constants.stun.StunMethodType;
+import de.rub.nds.tlsattacker.core.ice.model.StunMessage;
+import de.rub.nds.tlsattacker.core.ice.preparator.StunMessagePreparator;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.stun.model.StunMessage;
 
 public class StunMessagePreparatorTest {
     @Test

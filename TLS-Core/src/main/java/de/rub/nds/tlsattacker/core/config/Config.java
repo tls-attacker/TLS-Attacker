@@ -54,6 +54,7 @@ import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingType;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.constants.UserMappingExtensionHintType;
+import de.rub.nds.tlsattacker.core.ice.IceConfig;
 import de.rub.nds.tlsattacker.core.layer.constant.StackConfiguration;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EchConfig;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
@@ -65,7 +66,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair
 import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.RequestItemV2;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
 import de.rub.nds.tlsattacker.core.quic.constants.QuicVersion;
-import de.rub.nds.tlsattacker.core.stun.IceConfig;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
