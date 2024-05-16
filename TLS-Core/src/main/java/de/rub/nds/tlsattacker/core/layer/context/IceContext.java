@@ -39,9 +39,19 @@ public class IceContext extends LayerContext {
 
     private ConnectionEndType iceConnectionEndType;
 
+    private byte[] turnDataChannel;
+
     public IceContext(Context context) {
         super(context);
         context.setIceContext(this);
+    }
+
+    public byte[] getTurnDataChannel() {
+        return turnDataChannel;
+    }
+
+    public void setTurnDataChannel(byte[] turnDataChannel) {
+        this.turnDataChannel = turnDataChannel;
     }
 
     public ConnectionEndType getIceConnectionEndType() {

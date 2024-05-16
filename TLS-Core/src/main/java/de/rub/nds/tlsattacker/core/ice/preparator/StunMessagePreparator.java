@@ -43,7 +43,7 @@ public class StunMessagePreparator extends IceMessagePreparator<StunMessage> {
         if (chooser.getConfig().getIceConfig().isRandomizeStunTransactionIds()) {
             byte[] randomTransactionId = new byte[IceByteLengths.STUN_TRANSACTION_ID];
             RandomHelper.getRandom().nextBytes(randomTransactionId);
-            // Hardcode magic cookie
+            // TODO Hardcode magic cookie
             randomTransactionId[0] = 0x21;
             randomTransactionId[1] = 0x12;
             randomTransactionId[2] = (byte) 0xA4;

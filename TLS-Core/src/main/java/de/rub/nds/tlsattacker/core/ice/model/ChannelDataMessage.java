@@ -19,6 +19,8 @@ public class ChannelDataMessage extends IceMessage {
 
     private ModifiableByteArray data;
 
+    private ModifiableByteArray padding;
+
     private byte[] dataConfig;
 
     public ChannelDataMessage(byte[] dataConfig) {
@@ -32,6 +34,18 @@ public class ChannelDataMessage extends IceMessage {
 
     public byte[] getDataConfig() {
         return dataConfig;
+    }
+
+    public ModifiableByteArray getPadding() {
+        return padding;
+    }
+
+    public void setPadding(ModifiableByteArray padding) {
+        this.padding = padding;
+    }
+
+    public void setPadding(byte[] padding) {
+        this.padding = ModifiableVariableFactory.safelySetValue(this.padding, padding);
     }
 
     public ModifiableByteArray getChannelNumber() {

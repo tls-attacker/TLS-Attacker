@@ -52,4 +52,13 @@ public class IceChooser {
             return context.getStunTransactionId();
         }
     }
+
+    public byte[] getTurnDataChannel()
+    {
+        if (context.getTurnDataChannel() == null) {
+            return config.getDefaultTurnDataChannel();
+        } else {
+            return context.getTurnDataChannel();
+        }
+    }
 }

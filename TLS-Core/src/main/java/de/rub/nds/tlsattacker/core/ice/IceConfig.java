@@ -57,7 +57,27 @@ public class IceConfig {
 
     private Boolean randomizeStunTransactionIds = true;
 
+    private byte[] defaultTurnDataChannel = new byte[] { 0x45, 0x67};
+
+    private boolean padUdpChannelDataMessages = false;
+
     public IceConfig() {
+    }
+
+    public byte[] getDefaultTurnDataChannel() {
+        return defaultTurnDataChannel;
+    }
+
+    public void setDefaultTurnDataChannel(byte[] defaultTurnDataChannel) {
+        this.defaultTurnDataChannel = defaultTurnDataChannel;
+    }
+
+    public boolean isPadUdpChannelDataMessages() {
+        return padUdpChannelDataMessages;
+    }
+
+    public void setPadUdpChannelDataMessages(boolean padUdpChannelDataMessages) {
+        this.padUdpChannelDataMessages = padUdpChannelDataMessages;
     }
 
     public boolean isRandomizeStunTransactionIds() {
