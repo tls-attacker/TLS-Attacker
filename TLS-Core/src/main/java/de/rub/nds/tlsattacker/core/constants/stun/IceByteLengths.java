@@ -56,5 +56,9 @@ public class IceByteLengths {
 
     public static final int STUN_METHOD_TYPE = 2;
 
+    public static final int TURN_CHANNEL_NUMBER = 0;
+
+    public static final int TURN_CHANNEL_DATA_LENGTH = 0;
+
     private IceByteLengths() {}
 }
