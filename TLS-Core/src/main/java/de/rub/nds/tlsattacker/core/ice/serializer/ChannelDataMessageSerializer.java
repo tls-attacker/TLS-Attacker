@@ -13,6 +13,7 @@ public class ChannelDataMessageSerializer extends IceMessageSerializer<ChannelDa
 
     @Override
     protected byte[] serializeBytes() {
+        //TODO Do not parse channel number for TCP
         appendBytes(message.getChannelNumber().getValue());
         appendInt(message.getMessageLength().getValue(), IceByteLengths.STUN_MESSAGE_LENGTH);
         appendBytes(message.getData().getValue());

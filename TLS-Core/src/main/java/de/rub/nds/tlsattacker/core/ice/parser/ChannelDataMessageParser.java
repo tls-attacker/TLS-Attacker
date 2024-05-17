@@ -13,6 +13,7 @@ public class ChannelDataMessageParser extends IceMessageParser<ChannelDataMessag
 
     @Override
     public void parse(ChannelDataMessage message) {
+        //TODO Do not parse channel number for TCP
         message.setChannelNumber(parseByteArrayField(IceByteLengths.TURN_CHANNEL_NUMBER));
         message.setMessageLength(parseIntField(IceByteLengths.TURN_CHANNEL_DATA_LENGTH));
         message.setData(parseByteArrayField(message.getMessageLength().getValue()));
