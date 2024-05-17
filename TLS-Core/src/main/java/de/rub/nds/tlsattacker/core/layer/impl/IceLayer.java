@@ -146,8 +146,19 @@ public class IceLayer extends ProtocolLayer<RecordLayerHint, IceMessage> {
     }
 
     private void receiveTurnChannelData(LayerProcessingHint hint, HintedInputStream dataStream, byte[] firstTwobytes) throws IOException {
-        byte[] channelNumber = firstTwobytes;
-        byte[] lengthBytes = dataStream.readChunk(IceByteLengths.TURN_CHANNEL_DATA_LENGTH);
+        byte[] channelNumber;
+        byte[] lengthBytes;
+        if(context.getLayerStack().getLowestLayer() instanceof TcpLayer)
+        {
+            //If we are using TCP, we do not need to read the channel number
+            channelNumber = new byte[0];
+            lengthBytes = firstTwobytes;    
+        }else{
+            //We are using UDP, so the first two bytes are the channel number followed by the length
+            channelNumber = firstTwobytes;    
+            lengthBytes = dataStream.readChunk(IceByteLengths.TURN_CHANNEL_DATA_LENGTH);
+        
+        }
         int length = ArrayConverter.bytesToInt(lengthBytes);
         byte[] data = dataStream.readChunk(length);
         int paddingLength = 0;
