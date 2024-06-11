@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.SSL2Message;
 import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.smtp.SmtpMessage;
 
 /** Holds all implemented layers of the TLS-Core, not limited to any layer of the ISO stack */
 public enum ImplementedLayers implements LayerType {
@@ -27,7 +28,8 @@ public enum ImplementedLayers implements LayerType {
     HTTP(HttpMessage.class),
     SSL2(SSL2Message.class),
     QUICPACKET(QuicPacket.class),
-    QUICFRAME(QuicFrame.class);
+    QUICFRAME(QuicFrame.class),
+    SMTP(SmtpMessage.class);
 
     private Class<?> baseContainerClass;
 
