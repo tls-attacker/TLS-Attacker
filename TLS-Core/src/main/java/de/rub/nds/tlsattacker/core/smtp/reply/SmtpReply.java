@@ -1,11 +1,18 @@
-package de.rub.nds.tlsattacker.core.smtp;
+/*
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
+ *
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
+ */
+package de.rub.nds.tlsattacker.core.smtp.reply;
 
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
-
+import de.rub.nds.tlsattacker.core.smtp.*;
 import java.io.InputStream;
 
 public class SmtpReply extends SmtpMessage {
-
 
     @Override
     public SmtpMessageHandler<? extends SmtpMessage> getHandler(SmtpContext smtpContext) {
@@ -13,7 +20,8 @@ public class SmtpReply extends SmtpMessage {
     }
 
     @Override
-    public SmtpMessageParser<? extends SmtpMessage> getParser(SmtpContext context, InputStream stream) {
+    public SmtpMessageParser<? extends SmtpMessage> getParser(
+            SmtpContext context, InputStream stream) {
         return null;
     }
 
