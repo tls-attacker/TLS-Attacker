@@ -27,7 +27,7 @@ public class EHLOParser extends SmtpCommandParser<SmtpEHLOCommand> {
     }
 
     @Override
-    public boolean hasArguments() {
+    public boolean hasParameters() {
         return true;
     }
 }

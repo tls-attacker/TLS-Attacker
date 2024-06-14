@@ -33,7 +33,7 @@ public class SmtpCommand extends SmtpMessage {
     @Override
     public SmtpMessageParser<? extends SmtpMessage> getParser(
             SmtpContext context, InputStream stream) {
-        return new SmtpCommandParser(stream);
+        return new SmtpCommandParser<>(stream);
     }
 
     @Override
