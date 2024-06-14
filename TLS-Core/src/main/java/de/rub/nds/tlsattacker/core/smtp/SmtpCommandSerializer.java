@@ -39,6 +39,8 @@ public class SmtpCommandSerializer extends SmtpMessageSerializer<SmtpCommand> {
             builder.append(this.command.getParameters());
         }
         builder.append(CRLF);
-        return builder.toString().getBytes();
+        byte[] output = builder.toString().getBytes();
+        appendBytes(output);
+        return getAlreadySerialized();
     }
 }

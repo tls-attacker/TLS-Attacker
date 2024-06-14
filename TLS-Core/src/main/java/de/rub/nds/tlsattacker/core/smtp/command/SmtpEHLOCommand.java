@@ -18,6 +18,7 @@ import org.bouncycastle.util.IPAddress;
 public class SmtpEHLOCommand extends SmtpCommand {
     // TODO: Maybe subclass this to accommodate HELO command as well
 
+    // TODO: this is a duplicate of prameters which is not ideal - maybe don't inherit parameters?
     private String domain;
     private boolean hasAddressLiteral = false;
 
@@ -27,10 +28,12 @@ public class SmtpEHLOCommand extends SmtpCommand {
 
     public SmtpEHLOCommand(String domain) {
         super("EHLO", domain);
+        this.domain = domain;
     }
 
     public SmtpEHLOCommand(IPAddress ip) {
         super("EHLO", ip.toString());
+        this.domain = ip.toString();
     }
 
     @Override

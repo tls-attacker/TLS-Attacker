@@ -38,7 +38,7 @@ public class SmtpCommand extends SmtpMessage {
 
     @Override
     public SmtpMessagePreparator<? extends SmtpMessage> getPreparator(SmtpContext context) {
-        return null;
+        return new SmtpMessagePreparator<>(context.getChooser(), this);
     }
 
     @Override
