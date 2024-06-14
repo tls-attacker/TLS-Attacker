@@ -14,11 +14,11 @@ public class SmtpCommandParser extends SmtpMessageParser<SmtpCommand> {
     public SmtpCommandParser(InputStream stream) {
         super(stream);
     }
+
     public void parse(SmtpCommand smtpCommand) {
-        //TODO: make this robust against not having CRLF, fails at the moment when no CR
-        //parseStringTill(CRLF) is sadly not possible
+        // parseStringTill(CRLF) is sadly not possible
         String untilCR = parseStringTill(CR);
-        if(getBytesLeft() != 1 || !untilCR.endsWith("\r")) {
+        if (getBytesLeft() != 2) {
             throw new ParserException("Could not parse as SmtpCommand: Command does not end with CRLF");
         }
         byte lf = parseByteField(1);
@@ -28,9 +28,8 @@ public class SmtpCommandParser extends SmtpMessageParser<SmtpCommand> {
         String[] split = untilCR.trim().split(" ", 2);
 
         smtpCommand.setVerb(split[0]);
-        if(split.length > 1) {
+        if (split.length > 1) {
             smtpCommand.setParameters(split[1]);
         }
-
     }
 }

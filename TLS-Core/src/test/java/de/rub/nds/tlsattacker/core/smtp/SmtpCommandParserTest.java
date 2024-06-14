@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class SmtpCommandParserTest {
     @Test
     void testParse() {
-        String stringMessage = "EHLO\r\n";
+        String stringMessage = getTerminatedStringMessage("EHLO\r\n");
 
         SmtpCommandParser parser =
                 new SmtpCommandParser(
@@ -24,9 +24,10 @@ class SmtpCommandParserTest {
         assertEquals("EHLO", ehlo.getVerb());
         assertEquals(null, ehlo.getParameters());
     }
+
     @Test
     void testParseWithParam() {
-        String stringMessage = "EHLO www.rub.de\r\n";
+        String stringMessage = getTerminatedStringMessage("EHLO www.rub.de\r\n");
 
         SmtpCommandParser parser =
                 new SmtpCommandParser(
@@ -39,7 +40,7 @@ class SmtpCommandParserTest {
 
     @Test
     void invalidCommand() {
-        String stringMessage = "EHLO www.rub.de\n";
+        String stringMessage = getTerminatedStringMessage("EHLO www.rub.de\n");
 
         SmtpCommandParser parser =
                 new SmtpCommandParser(
@@ -48,4 +49,7 @@ class SmtpCommandParserTest {
         assertThrows(ParserException.class, () -> parser.parse(ehlo));
     }
 
+    String getTerminatedStringMessage(String message) {
+        return message + '\r';
+    }
 }
