@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.layer.LayerStack;
 import de.rub.nds.tlsattacker.core.layer.LayerStackFactory;
 import de.rub.nds.tlsattacker.core.layer.constant.StackConfiguration;
 import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
+import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.layer.context.TcpContext;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
@@ -44,6 +45,8 @@ public class Context {
     private TcpContext tcpContext;
 
     private HttpContext httpContext;
+
+    private SmtpContext smtpContext;
 
     private TlsContext tlsContext;
 
@@ -86,6 +89,10 @@ public class Context {
     public void setHttpContext(HttpContext httpContext) {
         this.httpContext = httpContext;
     }
+
+    public SmtpContext getSmtpContext() { return smtpContext;}
+
+    public void setSmtpContext(SmtpContext smtpContext) { this.smtpContext = smtpContext;}
 
     public TlsContext getTlsContext() {
         return tlsContext;
@@ -170,6 +177,7 @@ public class Context {
     public void prepareWithLayers(StackConfiguration type) {
         tlsContext = new TlsContext(this);
         httpContext = new HttpContext(this);
+        smtpContext = new SmtpContext(this);
         tcpContext = new TcpContext(this);
         quicContext = new QuicContext(this);
         layerStack = LayerStackFactory.createLayerStack(type, this);

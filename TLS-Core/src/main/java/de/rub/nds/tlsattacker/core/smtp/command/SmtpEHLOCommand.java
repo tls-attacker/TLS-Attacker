@@ -26,7 +26,7 @@ public class SmtpEHLOCommand extends SmtpCommand {
     }
 
     public SmtpEHLOCommand(String domain) {
-        super("EHLO", domain);
+        super("EHLO",domain);
     }
 
     public SmtpEHLOCommand(IPAddress ip) {
