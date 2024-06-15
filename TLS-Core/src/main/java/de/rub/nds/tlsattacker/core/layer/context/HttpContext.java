@@ -50,4 +50,6 @@ public class HttpContext extends LayerContext {
     public void setHttpCookieValue(String httpCookieValue) {
         this.httpCookieValue = httpCookieValue;
     }
+
+
 }

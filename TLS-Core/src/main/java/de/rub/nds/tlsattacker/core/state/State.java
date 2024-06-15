@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.layer.LayerStack;
 import de.rub.nds.tlsattacker.core.layer.LayerStackFactory;
 import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
+import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.layer.context.TcpContext;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
@@ -218,6 +219,14 @@ public class State {
 
     public HttpContext getHttpContext() {
         return getContext().getHttpContext();
+    }
+
+    public SmtpContext getSmtpContext(String alias) {
+        return getContext(alias).getSmtpContext();
+    }
+
+    public SmtpContext getSmtpContext() {
+        return getContext().getSmtpContext();
     }
 
     public TcpContext getTcpContext(String alias) {

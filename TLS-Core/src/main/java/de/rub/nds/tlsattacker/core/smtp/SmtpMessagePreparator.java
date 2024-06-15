@@ -11,11 +11,17 @@ package de.rub.nds.tlsattacker.core.smtp;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
-public class SmtpMessagePreparator<MessageT extends SmtpMessage> extends Preparator<MessageT> {
-    public SmtpMessagePreparator(Chooser chooser, MessageT object) {
-        super(chooser, object);
+public abstract class SmtpMessagePreparator<MessageT extends SmtpMessage> extends Preparator<MessageT> {
+
+    protected final MessageT message;
+
+    public SmtpMessagePreparator(Chooser chooser, MessageT message) {
+        super(chooser, message);
+        this.message = message;
     }
 
     @Override
-    public void prepare() {}
+    public final void prepare() { prepareSmtpMessageContents();}
+
+    protected abstract void prepareSmtpMessageContents();
 }
