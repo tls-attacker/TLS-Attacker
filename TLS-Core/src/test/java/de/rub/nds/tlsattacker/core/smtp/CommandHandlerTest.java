@@ -4,7 +4,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpMAILCommand;
-import de.rub.nds.tlsattacker.core.smtp.parser.MAILParser;
+import de.rub.nds.tlsattacker.core.smtp.parser.MAILCommandParser;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import org.junit.Before;
@@ -26,8 +26,8 @@ public class CommandHandlerTest {
         context = new Context(new State(new Config()), new OutboundConnection()).getSmtpContext();
 
         String message = "MAIL rub@ubp.de\r\n";
-        MAILParser parser =
-                new MAILParser(
+        MAILCommandParser parser =
+                new MAILCommandParser(
                         new ByteArrayInputStream(message.getBytes(Charset.forName("UTF-8"))));
         mail = new SmtpMAILCommand();
         parser.parse(mail);

@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.smtp;
 
+import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpCommand;
 
 /*
@@ -25,8 +26,8 @@ public class SmtpCommandSerializer extends SmtpMessageSerializer<SmtpCommand> {
 
     private final SmtpCommand command;
 
-    public SmtpCommandSerializer(SmtpCommand smtpCommand) {
-        super(smtpCommand);
+    public SmtpCommandSerializer(SmtpContext context, SmtpCommand smtpCommand) {
+        super(smtpCommand, context);
         this.command = smtpCommand;
     }
 

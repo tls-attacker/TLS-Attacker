@@ -8,14 +8,25 @@
  */
 package de.rub.nds.tlsattacker.core.smtp;
 
+import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 
 public abstract class SmtpMessageSerializer<MessageT extends SmtpMessage>
         extends Serializer<MessageT> {
 
     protected final MessageT message;
+    protected final SmtpContext context;
 
-    public SmtpMessageSerializer(MessageT message) {
+    public SmtpMessageSerializer(MessageT message, SmtpContext context) {
         this.message = message;
+        this.context = context;
+    }
+
+    public MessageT getMessage() {
+        return message;
+    }
+
+    public SmtpContext getContext() {
+        return context;
     }
 }

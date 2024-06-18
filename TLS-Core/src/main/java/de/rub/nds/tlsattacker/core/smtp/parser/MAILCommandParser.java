@@ -5,8 +5,8 @@ import de.rub.nds.tlsattacker.core.smtp.command.SmtpMAILCommand;
 
 import java.io.InputStream;
 
-public class MAILParser extends SmtpCommandParser<SmtpMAILCommand> {
-    public MAILParser(InputStream stream) { super(stream);}
+public class MAILCommandParser extends SmtpCommandParser<SmtpMAILCommand> {
+    public MAILCommandParser(InputStream stream) { super(stream);}
 
     @Override
     public void parseArguments(SmtpMAILCommand command, String arguments) {

@@ -44,12 +44,12 @@ public class SmtpCommand extends SmtpMessage {
 
     @Override
     public SmtpMessagePreparator<? extends SmtpMessage> getPreparator(SmtpContext context) {
-        return new SmtpMessagePreparator<>(context.getChooser(), this);
+        return new SmtpCommandPreparator<>(context.getChooser(), this);
     }
 
     @Override
     public SmtpMessageSerializer<? extends SmtpMessage> getSerializer(SmtpContext context) {
-        return new SmtpCommandSerializer(this);
+        return new SmtpCommandSerializer(context, this);
     }
 
     @Override

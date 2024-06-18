@@ -13,8 +13,8 @@ import de.rub.nds.tlsattacker.core.smtp.command.SmtpEHLOCommand;
 import java.io.InputStream;
 import org.bouncycastle.util.IPAddress;
 
-public class EHLOParser extends SmtpCommandParser<SmtpEHLOCommand> {
-    public EHLOParser(InputStream stream) {
+public class EHLOCommandParser extends SmtpCommandParser<SmtpEHLOCommand> {
+    public EHLOCommandParser(InputStream stream) {
         super(stream);
     }
 

@@ -27,7 +27,8 @@ public class SmtpReply extends SmtpMessage {
 
     @Override
     public SmtpMessagePreparator<? extends SmtpMessage> getPreparator(SmtpContext context) {
-        return new SmtpMessagePreparator<>(context.getChooser(), this);
+        return null;
+        //return new SmtpMessagePreparator<>(context.getChooser(), this);
     }
 
     @Override
