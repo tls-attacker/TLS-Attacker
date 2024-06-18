@@ -6,7 +6,7 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-package de.rub.nds.tlsattacker.core.smtp;
+package de.rub.nds.tlsattacker.core.smtp.serializer;
 
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpCommand;
@@ -18,7 +18,7 @@ import de.rub.nds.tlsattacker.core.smtp.command.SmtpCommand;
    When there are no parameters, the command is serialized as "COMMAND<CRLF>".
    This is according to the SMTP protocol as defined in RFC 5321.
 */
-public class SmtpCommandSerializer extends SmtpMessageSerializer<SmtpCommand> {
+public class SmtpCommandSerializer<CommandT extends SmtpCommand> extends SmtpMessageSerializer<CommandT> {
 
     // modeled after their usage in RFC 5321
     private static final String SP = " ";
@@ -26,7 +26,7 @@ public class SmtpCommandSerializer extends SmtpMessageSerializer<SmtpCommand> {
 
     private final SmtpCommand command;
 
-    public SmtpCommandSerializer(SmtpContext context, SmtpCommand smtpCommand) {
+    public SmtpCommandSerializer(SmtpContext context, CommandT smtpCommand) {
         super(smtpCommand, context);
         this.command = smtpCommand;
     }

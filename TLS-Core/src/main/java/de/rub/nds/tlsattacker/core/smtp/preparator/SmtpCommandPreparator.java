@@ -1,6 +1,5 @@
-package de.rub.nds.tlsattacker.core.smtp;
+package de.rub.nds.tlsattacker.core.smtp.preparator;
 
-import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpCommand;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 

@@ -1,4 +1,4 @@
-package de.rub.nds.tlsattacker.core.smtp;
+package de.rub.nds.tlsattacker.core.smtp.handler;
 
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpCommand;

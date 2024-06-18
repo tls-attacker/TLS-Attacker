@@ -53,8 +53,8 @@ public class SMTPWorkflowTestBench {
         );
         List<LayerConfiguration<?>> layerConfigurationList = new ArrayList<>();
         SmtpMessage m = new SmtpEHLOCommand("seal.upb.de");
-        SmtpReply r = new SmtpReply();
-        layerConfigurationList.add(new SpecificSendLayerConfiguration<>(ImplementedLayers.SMTP, List.of(m, r)));
+        //SmtpReply r = new SmtpReply();
+        layerConfigurationList.add(new SpecificSendLayerConfiguration<>(ImplementedLayers.SMTP, List.of(m)));
         layerConfigurationList.add(null);
         try {
             stack.sendData(

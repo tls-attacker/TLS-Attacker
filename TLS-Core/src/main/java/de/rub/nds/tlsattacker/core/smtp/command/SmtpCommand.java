@@ -10,8 +10,15 @@ package de.rub.nds.tlsattacker.core.smtp.command;
 
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.*;
+import de.rub.nds.tlsattacker.core.smtp.handler.SmtpMessageHandler;
+import de.rub.nds.tlsattacker.core.smtp.parser.SmtpCommandParser;
+import de.rub.nds.tlsattacker.core.smtp.parser.SmtpMessageParser;
+import de.rub.nds.tlsattacker.core.smtp.preparator.SmtpCommandPreparator;
+import de.rub.nds.tlsattacker.core.smtp.preparator.SmtpMessagePreparator;
+import de.rub.nds.tlsattacker.core.smtp.serializer.SmtpCommandSerializer;
+import de.rub.nds.tlsattacker.core.smtp.serializer.SmtpMessageSerializer;
+
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 
 public class SmtpCommand extends SmtpMessage {
@@ -43,13 +50,13 @@ public class SmtpCommand extends SmtpMessage {
     }
 
     @Override
-    public SmtpMessagePreparator<? extends SmtpMessage> getPreparator(SmtpContext context) {
+    public SmtpCommandPreparator<? extends SmtpCommand> getPreparator(SmtpContext context) {
         return new SmtpCommandPreparator<>(context.getChooser(), this);
     }
 
     @Override
-    public SmtpMessageSerializer<? extends SmtpMessage> getSerializer(SmtpContext context) {
-        return new SmtpCommandSerializer(context, this);
+    public SmtpCommandSerializer<? extends SmtpCommand> getSerializer(SmtpContext context) {
+        return new SmtpCommandSerializer<>(context, this);
     }
 
     @Override

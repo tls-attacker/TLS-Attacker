@@ -4,6 +4,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpMAILCommand;
+import de.rub.nds.tlsattacker.core.smtp.handler.SmtpCommandHandler;
 import de.rub.nds.tlsattacker.core.smtp.parser.MAILCommandParser;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -32,6 +33,7 @@ public class CommandHandlerTest {
         mail = new SmtpMAILCommand();
         parser.parse(mail);
 
+        //FIXME: implement a specific MAILCommandHandler
         handler = new SmtpCommandHandler(context);
     }
 

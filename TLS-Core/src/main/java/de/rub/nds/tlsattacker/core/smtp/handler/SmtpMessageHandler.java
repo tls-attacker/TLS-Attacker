@@ -6,25 +6,21 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-package de.rub.nds.tlsattacker.core.smtp;
+package de.rub.nds.tlsattacker.core.smtp.handler;
 
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
-import de.rub.nds.tlsattacker.core.layer.data.Serializer;
+import de.rub.nds.tlsattacker.core.layer.data.Handler;
+import de.rub.nds.tlsattacker.core.smtp.SmtpMessage;
 
-public abstract class SmtpMessageSerializer<MessageT extends SmtpMessage>
-        extends Serializer<MessageT> {
+public abstract class SmtpMessageHandler<MessageT extends SmtpMessage> extends Handler<MessageT> {
 
-    protected final MessageT message;
     protected final SmtpContext context;
 
-    public SmtpMessageSerializer(MessageT message, SmtpContext context) {
-        this.message = message;
+    public SmtpMessageHandler(SmtpContext context) {
         this.context = context;
     }
 
-    public MessageT getMessage() {
-        return message;
-    }
+    public void adjustContext(MessageT container) {}
 
     public SmtpContext getContext() {
         return context;

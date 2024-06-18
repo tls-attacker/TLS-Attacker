@@ -1,6 +1,5 @@
 package de.rub.nds.tlsattacker.core.smtp.parser;
 
-import de.rub.nds.tlsattacker.core.smtp.SmtpCommandParser;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpMAILCommand;
 
 import java.io.InputStream;
