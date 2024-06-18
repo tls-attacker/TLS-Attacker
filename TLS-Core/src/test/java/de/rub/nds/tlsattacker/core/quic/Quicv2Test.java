@@ -170,7 +170,6 @@ public class Quicv2Test {
         }
     }
 
-
     @Test
     public void versionDependent0RTTSecretsTest()
             throws NoSuchAlgorithmException, CryptoException, NoSuchPaddingException {
@@ -179,8 +178,7 @@ public class Quicv2Test {
         QuicContext quicv2Context = calculate0RTTSecretsForVersion(QuicVersion.VERSION_2);
 
         assert Arrays.equals(
-                quicv1Context.getZeroRTTClientSecret(),
-                quicv2Context.getZeroRTTClientSecret());
+                quicv1Context.getZeroRTTClientSecret(), quicv2Context.getZeroRTTClientSecret());
 
         // And check that we do not generate any secrets for "pseudo-versions"
         try {
@@ -210,16 +208,17 @@ public class Quicv2Test {
         QuicPacketCryptoComputations.calculateInitialSecrets(context);
         return context;
     }
+
     private QuicContext calculate0RTTSecretsForVersion(QuicVersion version)
             throws NoSuchAlgorithmException, CryptoException, NoSuchPaddingException {
         Config config = new Config();
         config.setQuicVersion(version);
-        Context context =
-                new Context(new State(config), new InboundConnection());
+        Context context = new Context(new State(config), new InboundConnection());
         TlsContext tlsContext = context.getTlsContext();
         QuicContext quicContext = context.getQuicContext();
         tlsContext.setEarlyDataCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
-        tlsContext.setClientEarlyTrafficSecret(new byte[] {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08});
+        tlsContext.setClientEarlyTrafficSecret(
+                new byte[] {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08});
         // Fix connection ID for secret calculation
         quicContext.setFirstDestinationConnectionId(new byte[8]);
         // We only calculate the initial secrets for this test because the other secrets require
