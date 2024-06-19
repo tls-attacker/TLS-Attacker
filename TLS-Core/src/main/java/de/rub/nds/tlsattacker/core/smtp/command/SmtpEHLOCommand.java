@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.core.smtp.parser.SmtpMessageParser;
 import de.rub.nds.tlsattacker.core.smtp.preparator.SmtpMessagePreparator;
 import de.rub.nds.tlsattacker.core.smtp.parser.EHLOCommandParser;
 import de.rub.nds.tlsattacker.core.smtp.preparator.EHLOCommandPreparator;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import org.bouncycastle.util.IPAddress;
 
 import java.io.InputStream;
@@ -22,6 +23,7 @@ import java.io.InputStream;
  * The EHLO command mostly replaces the old HELO command: The difference is that EHLO can be used
  * with an address literal as well as a domain, rather than just a domain.
  */
+@XmlRootElement
 public class SmtpEHLOCommand extends SmtpCommand {
     // TODO: Maybe subclass this to accommodate HELO command as well
 

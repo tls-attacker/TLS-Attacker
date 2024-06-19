@@ -23,6 +23,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.smtp.SmtpMessage;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.core.workflow.container.ActionHelperUtil;
@@ -49,6 +50,9 @@ public class SendAction extends CommonSendAction implements StaticSendingAction 
 
     @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
     protected List<HttpMessage> configuredHttpMessages;
+
+    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
+    protected List<SmtpMessage> configuredSmtpMessages;
 
     @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
     protected List<QuicFrame> configuredQuicFrames;
@@ -103,6 +107,10 @@ public class SendAction extends CommonSendAction implements StaticSendingAction 
 
     public SendAction(HttpMessage... httpMessage) {
         this.configuredHttpMessages = new ArrayList<>(Arrays.asList(httpMessage));
+    }
+
+    public SendAction(SmtpMessage... smtpMessage) {
+        this.configuredSmtpMessages = new ArrayList<>(Arrays.asList(smtpMessage));
     }
 
     public SendAction(ProtocolMessage... messages) {
@@ -216,6 +224,11 @@ public class SendAction extends CommonSendAction implements StaticSendingAction 
                 holders.addAll(msg.getAllModifiableVariableHolders());
             }
         }
+        if (configuredSmtpMessages != null) {
+            for (SmtpMessage msg : configuredSmtpMessages) {
+                holders.addAll(msg.getAllModifiableVariableHolders());
+            }
+        }
         if (configuredQuicFrames != null) {
             for (QuicFrame frames : configuredQuicFrames) {
                 holders.addAll(frames.getAllModifiableVariableHolders());
@@ -260,7 +273,8 @@ public class SendAction extends CommonSendAction implements StaticSendingAction 
                 configuredRecords,
                 configuredQuicFrames,
                 configuredQuicPackets,
-                configuredHttpMessages);
+                configuredHttpMessages,
+                configuredSmtpMessages);
     }
 
     @Override
@@ -268,6 +282,9 @@ public class SendAction extends CommonSendAction implements StaticSendingAction 
         List<List<DataContainer<?>>> dataContainerLists = new LinkedList<>();
         if (configuredHttpMessages != null) {
             dataContainerLists.add((List<DataContainer<?>>) (List<?>) configuredHttpMessages);
+        }
+        if (configuredSmtpMessages != null) {
+            dataContainerLists.add((List<DataContainer<?>>) (List<?>) configuredSmtpMessages);
         }
         if (configuredMessages != null) {
             dataContainerLists.add((List<DataContainer<?>>) (List<?>) configuredMessages);

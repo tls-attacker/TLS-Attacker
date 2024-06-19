@@ -102,6 +102,6 @@ public class ForwardRecordsAction extends CommonForwardAction {
         }
 
         return ActionHelperUtil.createSendConfiguration(
-                tlsContext, null, null, getReceivedRecords(), null, null, null);
+                tlsContext, null, null, getReceivedRecords(), null, null, null, null);
     }
 }
