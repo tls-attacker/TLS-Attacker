@@ -178,6 +178,7 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
                 case ACK_FRAME:
                     readDataContainer(new AckFrame(), context, inputStream);
                     LOGGER.debug("Read {}", frameType);
+                    break;
                 case ACK_FRAME_WITH_ECN:
                     readDataContainer(new AckFrameWithEcn(), context, inputStream);
                     LOGGER.debug("Read {}", frameType);

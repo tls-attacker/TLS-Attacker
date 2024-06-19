@@ -164,6 +164,11 @@ public class QuicPacketCryptoComputations extends ModifiableVariableHolder {
 
         QuicVersion version = context.getQuicVersion();
 
+        if (version == QuicVersion.NEGOTIATION_VERSION) {
+            // There are no initial secrets, version negotiation packets are unencrypted
+            return;
+        }
+
         // client
         context.setInitialClientSecret(
                 HKDFunction.expandLabel(
