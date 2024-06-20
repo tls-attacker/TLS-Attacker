@@ -89,7 +89,7 @@ public class ForwardRecordsAction extends CommonForwardAction {
     protected List<LayerConfiguration<?>> createReceiveConfiguration(State state) {
         TlsContext tlsContext = state.getTlsContext(getReceiveFromAlias());
         return ActionHelperUtil.createReceiveLayerConfiguration(
-                tlsContext, getActionOptions(), null, null, getExpectedRecords(), null, null, null);
+                tlsContext, getActionOptions(), null, null, getExpectedRecords(), null, null, null, null);
     }
 
     @Override

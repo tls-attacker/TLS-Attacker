@@ -76,7 +76,8 @@ public class ActionHelperUtil {
             List<Record> recordsToReceive,
             List<QuicFrame> framesToReceive,
             List<QuicPacket> packetsToReceive,
-            List<HttpMessage> httpMessagesToReceive) {
+            List<HttpMessage> httpMessagesToReceive,
+            List<SmtpMessage> smtpMessagesToReceive) {
         LayerStack layerStack = tlsContext.getLayerStack();
 
         List<LayerConfiguration<?>> layerConfigurationList;
@@ -96,6 +97,8 @@ public class ActionHelperUtil {
                                 ImplementedLayers.RECORD, recordsToReceive, actionOptions),
                         createReceiveConfiguration(
                                 ImplementedLayers.HTTP, httpMessagesToReceive, actionOptions),
+                        createReceiveConfiguration(
+                                ImplementedLayers.SMTP, smtpMessagesToReceive, actionOptions),
                         createReceiveConfiguration(
                                 ImplementedLayers.QUICFRAME, framesToReceive, actionOptions),
                         createReceiveConfiguration(
