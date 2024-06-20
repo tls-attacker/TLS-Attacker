@@ -166,7 +166,8 @@ public class QuicPacketCryptoComputations extends ModifiableVariableHolder {
 
         if (version == QuicVersion.NEGOTIATION_VERSION) {
             // There are no initial secrets, version negotiation packets are unencrypted
-            return;
+            throw new UnsupportedOperationException(
+                    "Version Negotiation Packets do not have initial secrets. They are not encrypted.");
         }
 
         // client
