@@ -61,6 +61,10 @@ public class AckFrame extends QuicFrame {
         super(QuicFrameType.ACK_FRAME);
     }
 
+    protected AckFrame(QuicFrameType frameType) {
+        super(frameType);
+    }
+
     public void setLargestAcknowledged(ModifiableLong largestAcknowledged) {
         this.largestAcknowledged = largestAcknowledged;
     }
