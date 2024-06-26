@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.quic.preparator.packet;
 
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
+import de.rub.nds.tlsattacker.core.quic.constants.QuicPacketType;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacketCryptoComputations;
 import de.rub.nds.tlsattacker.core.quic.packet.ZeroRTTPacket;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
@@ -27,6 +28,8 @@ public class ZeroRTTPacketPreparator extends LongHeaderPacketPreparator<ZeroRTTP
 
     @Override
     public void prepare() {
+        packet.setUnprotectedFlags(
+                QuicPacketType.ZERO_RTT_PACKET.getHeader(context.getQuicVersion()));
         try {
             if (!context.isZeroRTTSecretsInitialized()) {
                 QuicPacketCryptoComputations.calculate0RTTSecrets(context);
