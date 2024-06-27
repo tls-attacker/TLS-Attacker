@@ -3,11 +3,15 @@ package de.rub.nds.tlsattacker.core.smtp.parser;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.smtp.extensions.*;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpEHLOReply;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.InputStream;
 import java.util.List;
 
 public class EHLOReplyParser extends SmtpReplyParser<SmtpEHLOReply> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public EHLOReplyParser(InputStream stream) {
         super(stream);
@@ -15,14 +19,18 @@ public class EHLOReplyParser extends SmtpReplyParser<SmtpEHLOReply> {
 
     @Override
     public void parse(SmtpEHLOReply smtpEHLOReply) {
+        LOGGER.trace("Parsing EHLOReply");
         List<String> lines = parseAllLines();
+        LOGGER.trace("Parsing lines: {}", lines);
 
         //only the last line can be '250 ' the others must be '250-', check for both
         if(!lines.get(lines.size() - 1).startsWith("250 ")) {
+            LOGGER.trace("Could not parse EHLOReply. Expected '250 ' for final line but got: {}", lines.get(lines.size() - 1));
             throw new ParserException("Could not parse EHLOReply. Expected '250 ' for final line but got: " + lines.get(lines.size() - 1));
         }
         for(int i = 1; i < lines.size() - 1; i++) {
             if(!lines.get(i).startsWith("250-")) {
+                LOGGER.trace("Could not parse EHLOReply. Expected '250-' for multiline but got: {}", lines.get(i));
                 throw new ParserException("Could not parse EHLOReply. Expected '250-' for multiline but got: " + lines.get(i));
             }
         }

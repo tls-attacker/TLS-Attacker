@@ -27,7 +27,10 @@ import de.rub.nds.tlsattacker.core.workflow.container.ActionHelperUtil;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.tcp.ClientTcpTransportHandler;
 import jakarta.xml.bind.JAXBException;
+import org.apache.logging.log4j.core.config.Configurator;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
@@ -41,6 +44,11 @@ import java.util.List;
  */
 public class SMTPWorkflowTestBench {
 
+
+    @BeforeEach
+    public void changeLoglevel() {
+        Configurator.setAllLevels("de.rub.nds.tlsattacker", org.apache.logging.log4j.Level.ALL);
+    }
     @Disabled
     @Test
     public void testWorkFlow() throws IOException, JAXBException {
