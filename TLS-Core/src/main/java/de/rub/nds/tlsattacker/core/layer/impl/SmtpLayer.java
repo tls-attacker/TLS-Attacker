@@ -61,10 +61,10 @@ public class SmtpLayer extends ProtocolLayer<SmtpLayerHint, SmtpMessage> {
                 if(context.getContext().getConnection().getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
                     SmtpReply smtpReply = context.getExpectedNextReplyType();
                     if(smtpReply != null) {
-                        LOGGER.debug("Expecting reply of type: {}", smtpReply.getClass().getSimpleName());
+                        LOGGER.trace("Expecting reply of type: {}", smtpReply.getClass().getSimpleName());
                     } else {
                         smtpReply = new SmtpUnknownReply();
-                        LOGGER.debug("Expected reply type unclear, receiving {} instead", smtpReply.getClass().getSimpleName());
+                        LOGGER.trace("Expected reply type unclear, receiving {} instead", smtpReply.getClass().getSimpleName());
                     }
                     readDataContainer(smtpReply, context);
                 } else if (context.getContext().getConnection().getLocalConnectionEndType() == ConnectionEndType.SERVER) {
@@ -72,8 +72,7 @@ public class SmtpLayer extends ProtocolLayer<SmtpLayerHint, SmtpMessage> {
                     SmtpCommand smtpCommand = new SmtpCommand();
                     readDataContainer(smtpCommand, context);
                 }
-                LOGGER.debug("Should continue processing: {}", shouldContinueProcessing());
-                break;
+                LOGGER.trace("Should continue processing: {}", shouldContinueProcessing());
             } while (shouldContinueProcessing());
         } catch (TimeoutException e) {
             LOGGER.debug(e);
