@@ -6,7 +6,12 @@ package de.rub.nds.tlsattacker.core.smtp.extensions;
 public abstract class SmtpServiceExtension {
 
     private final String ehloKeyword;
+    private String parameters = null;
 
+    public SmtpServiceExtension(String ehloKeyword, String parameters) {
+        this.ehloKeyword = ehloKeyword;
+        this.parameters = parameters;
+    }
     public SmtpServiceExtension(String ehloKeyword) {
         this.ehloKeyword = ehloKeyword;
     }
@@ -17,5 +22,9 @@ public abstract class SmtpServiceExtension {
 
     public boolean isImplemented() {
         return false;
+    }
+
+    public String getParameters() {
+        return parameters;
     }
 }

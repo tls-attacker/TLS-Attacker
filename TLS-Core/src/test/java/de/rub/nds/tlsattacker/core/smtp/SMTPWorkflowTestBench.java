@@ -12,6 +12,8 @@ import de.rub.nds.tlsattacker.core.layer.context.TcpContext;
 import de.rub.nds.tlsattacker.core.layer.impl.SmtpLayer;
 import de.rub.nds.tlsattacker.core.layer.impl.TcpLayer;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpEHLOCommand;
+import de.rub.nds.tlsattacker.core.smtp.reply.SmtpEHLOReply;
+import de.rub.nds.tlsattacker.core.smtp.reply.SmtpInitialGreeting;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpReply;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -59,9 +61,13 @@ public class SMTPWorkflowTestBench {
 
         WorkflowTrace trace = new WorkflowTrace();
 
+        SmtpReply initialGreeting = new SmtpInitialGreeting();
         SmtpMessage m = new SmtpEHLOCommand("seal.upb.de");
+        trace.addTlsAction(new ReceiveAction(initialGreeting));
         trace.addTlsAction(new SendAction(m));
-        trace.addTlsAction(new ReceiveAction(new SmtpReply()));
+        trace.addTlsAction(new WaitAction(1000));
+        trace.addTlsAction(new ReceiveAction(new SmtpEHLOReply()));
+        trace.addTlsAction(new WaitAction(1000));
         trace.addTlsAction(new SendAction(m));
 
         State state = new State(config, trace);

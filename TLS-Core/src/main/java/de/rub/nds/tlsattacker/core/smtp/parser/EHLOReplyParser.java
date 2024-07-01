@@ -53,6 +53,7 @@ public class EHLOReplyParser extends SmtpReplyParser<SmtpEHLOReply> {
                 smtpEHLOReply.getExtensions().add(extension);
             }
         }
+        smtpEHLOReply.setReplyCode(250);
     }
     public SmtpServiceExtension parseKeyword(String keyword) {
         //just ehlo-line

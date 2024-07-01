@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.core.smtp.parser.SmtpReplyParser;
 import de.rub.nds.tlsattacker.core.smtp.preparator.SmtpMessagePreparator;
 import de.rub.nds.tlsattacker.core.smtp.preparator.SmtpReplyPreparator;
 import de.rub.nds.tlsattacker.core.smtp.serializer.SmtpMessageSerializer;
+import de.rub.nds.tlsattacker.core.smtp.serializer.SmtpReplySerializer;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
 import java.io.InputStream;
@@ -52,7 +53,7 @@ public class SmtpReply extends SmtpMessage {
 
     @Override
     public SmtpMessageSerializer<? extends SmtpMessage> getSerializer(SmtpContext context) {
-        return null;
+        return new SmtpReplySerializer<>(context, this);
     }
 
     @Override

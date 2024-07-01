@@ -2,9 +2,8 @@ package de.rub.nds.tlsattacker.core.smtp.reply;
 
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.SmtpMessage;
-import de.rub.nds.tlsattacker.core.smtp.handler.SmtpMessageHandler;
+import de.rub.nds.tlsattacker.core.smtp.preparator.InitialGreetingPreparator;
 import de.rub.nds.tlsattacker.core.smtp.preparator.SmtpMessagePreparator;
-import de.rub.nds.tlsattacker.core.smtp.serializer.SmtpMessageSerializer;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -24,15 +23,9 @@ public class SmtpInitialGreeting extends SmtpReply {
     }
 
     @Override
-    public SmtpMessageHandler<? extends SmtpMessage> getHandler(SmtpContext smtpContext) {
-        //TODO
-        return null;
-    }
-
-    @Override
     public SmtpMessagePreparator<? extends SmtpMessage> getPreparator(SmtpContext context) {
         //TODO
-        return null;
+        return new InitialGreetingPreparator(context, this);
     }
 
     @Override
