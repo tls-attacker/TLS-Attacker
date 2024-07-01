@@ -65,6 +65,8 @@ public class EHLOReplyParser extends SmtpReplyParser<SmtpEHLOReply> {
             parameters = "";
         }
         switch(ehloKeyword) {
+            case "8BITMIME":
+                return new _8BITMIMEExtension();
             case "ATRN":
                 return new ATRNExtension();
             case "AUTH":
