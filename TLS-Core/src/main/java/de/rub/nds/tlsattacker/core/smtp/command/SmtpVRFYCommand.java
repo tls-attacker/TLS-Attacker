@@ -22,7 +22,7 @@ public class SmtpVRFYCommand extends SmtpCommand {
 
     private static final String COMMAND_NAME = "VRFY";
     private String username;
-    private String mailboxAddress;
+    private String mailbox;
 
     public SmtpVRFYCommand(String parameters) {
         super(COMMAND_NAME, parameters);
@@ -32,16 +32,16 @@ public class SmtpVRFYCommand extends SmtpCommand {
         return username;
     }
 
-    public String getMailboxAddress() {
-        return mailboxAddress;
+    public String getMailbox() {
+        return mailbox;
     }
 
     public void setUsername(String username) {
         this.username = username;
     }
 
-    public void setMailboxAddress(String mailboxAddress) {
-        this.mailboxAddress = mailboxAddress;
+    public void setMailbox(String mailbox) {
+        this.mailbox = mailbox;
     }
 
     @Override

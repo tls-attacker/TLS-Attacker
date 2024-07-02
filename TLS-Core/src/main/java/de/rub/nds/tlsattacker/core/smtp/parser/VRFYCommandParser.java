@@ -15,41 +15,35 @@ public class VRFYCommandParser extends SmtpCommandParser<SmtpVRFYCommand> {
      * Parses VRFY-Command.
      *
      * @param command Instance of the VRFY command class.
-     * @param parameters Parameters of the VRFY command. According to RFC5321:
-     *                   They may be just a username [username], just a mailbox [local-part@domain] or both:
-     *                   [username] [local-part@domain].
-     *                   The parameters string itself may be an atom string (alphanumeric) or a quoted
-     *                   string containing most ascii-characters (like space). The same goes for the
-     *                   local-part of the mailbox as well.
+     * @param parameters Parameters of the VRFY command. According to RFC5321, the syntax of a full command is:
+     *                                                  VRFY SP String CRLF
+     *                   The string (here: parameters) may be: (a) just a username [username] or
+     *                   (b) just a mailbox [local-part@domain] (see section 4.1.1.6 of RFC).
+     *                   The parameters string may be an atom string (alphanumeric) or a quoted string.
+     *                   In accordance with RFC 5321, this implementation considers the following
+     *                   commands to be valid (CRLF omitted):
+     *                                                  VRFY john
+     *                                                  VRFY "john"
+     *                                                  VRFY "john@mail.com"
+     *                                                  VRFY "John Doe"
+     *                   Quoted strings may contain all printable ascii-characters (potentially with a backslash).
+     *                   However, the RFC is quite fuzzy about nested quoted-strings (e.g. local-part quoted string
+     *                   inside a quoted string). The validity of other mailboxes than defined above, will be solely
+     *                   determined by the specific validation method used.
      */
     @Override
     public void parseArguments(SmtpVRFYCommand command, String parameters) {
-        String parametersText = parameters;
-        if (isQuotedString(parameters)) parametersText = parameters.substring(1, parameters.length() - 1); // strip quotes
+        if (!isQuotedString(parameters)) { // case: only username or mailbox
+            if (isWellFormedAtomStringUsername(parameters)) command.setUsername(parameters);
+            else if (isValidMailbox(parameters)) command.setMailbox(parameters);
 
-        String[] dividedParameters = findUsernameAndMailboxAddress(parametersText);
-        String username = dividedParameters[0];
-        String mailboxAddress = dividedParameters[1];
-
-        if (username == null && mailboxAddress == null) return;
-
-        boolean onlyAddressIsPresent = username == null;
-        boolean mailboxAddressIsValid = mailboxAddress != null && isValidMailboxAddress(mailboxAddress);
-        boolean mailboxAddressIsQuotedString = mailboxAddress != null && isQuotedString(mailboxAddress);
-
-        if (onlyAddressIsPresent && !mailboxAddressIsValid && mailboxAddressIsQuotedString) {
-            /*
-                a quoted-string username may contain identical characters as a mailboxAddress,
-                so if the address itself is invalid, it may potentially be a valid username instead
-            */
-            username = mailboxAddress;
-            mailboxAddress = null;
-        } else if (!mailboxAddressIsValid && !mailboxAddressIsQuotedString) {
-            mailboxAddress = null;
+            return;
         }
 
-        command.setUsername(username);
-        command.setMailboxAddress(mailboxAddress);
+        // case: quoted string:
+        parameters = parameters.substring(1, parameters.length() - 1); // strip outermost quotes
+        if (isValidMailbox(parameters)) command.setMailbox(parameters);
+        else if (isWellFormedQuotedStringUsername(parameters)) command.setUsername(parameters);
     }
 
     private boolean isQuotedString(String string) {
@@ -58,48 +52,52 @@ public class VRFYCommandParser extends SmtpCommandParser<SmtpVRFYCommand> {
                 string.charAt(string.length() - 1) == '"';
     }
 
+    private boolean isWellFormedQuotedStringUsername(String username) { // According to RFC5321
+        for (int i = 0; i < username.length(); i++) {
+            int asciiValue = username.charAt(i);
+
+            boolean isValid = asciiValue != 34 && asciiValue != 92; // i.e. not double quote or backslash
+            boolean previousCharIsBackslash = i > 0 && ((int) username.charAt(i-1)) == 92; // backslash is used for escaping
+
+            if (!isValid && !previousCharIsBackslash) return false;
+        }
+
+        return true;
+    }
+
+    private boolean isWellFormedAtomStringUsername(String username) {
+        for (int i = 0; i < username.length(); i++) {
+            if (!isValidAtomCharacter(username.charAt(i))) return false;
+        }
+
+        return true;
+    }
+
     /**
-     * @param parameters: Parameters of the VRFY command with outermost double quotes stripped.
-     * @return An array containing two strings denoting username and mailbox address. If either is
-     *         not present, the value null is provided.
+     *
+     * @param c Char of an atom string.
+     * @return Whether it's valid according to RFC5322 (missing in RFC 5321).
      */
-    private String[] findUsernameAndMailboxAddress(String parameters) {
-        // 1. Find mailbox if it is present:
-        int i = indexOfCharacter(parameters, parameters.length() - 1, '@'); // Mailbox must contain character '@'
-        if (i < 0) return new String[]{parameters, null}; // Case: no mailbox exists in parameters
-
-        // 2. If possible mailbox is found, find beginning of local part of mailbox:
-        boolean localPartisQuotedString = i > 0 && parameters.charAt(i-1) == '"'; // only quoted strings may contain double quotes
-        if (localPartisQuotedString) i = indexOfCharacter(parameters, --i, '"');
-        else i = indexOfCharacter(parameters, i, ' ') + 1; // case: local part is atom string
-
-        // 3. Return split parameters based on where the split 'i' was found:
-        if (i < 0) return new String[]{parameters, null}; // case: malformed, quoted-string local part
-        if (i < 2) return new String[]{null, parameters}; // case: only mailbox address is present (as username).
-
-        return splitStringByIndex(parameters, i); // case: username and mailbox found
-    }
-
-    private String[] splitStringByIndex(String string, int index) {
-        return new String[]{string.substring(0, index-1), string.substring(index)};
-    }
-
-    private int indexOfCharacter(String string, int startIndex, char character) {
-        int i = startIndex;
-        while(i >= 0 && string.charAt(i) != character) i--;
-
-        return i;
+    private boolean isValidAtomCharacter(char c) {
+        return c == 33 ||
+                35 <= c && c <= 39 ||
+                42 <= c && c <= 45 ||
+                47 <= c && c <= 57 ||
+                61 <= c && c <= 63 ||
+                65 <= c && c <= 90 ||
+                94 <= c && c <= 126;
     }
 
     /**
-     * @param mailboxAddress Mailbox address from the VRFY-command parameters.
+     * @param mailbox Mailbox address from the VRFY-command parameters.
      * @return Whether mailbox address has valid syntax in accordance with RFC822.
-     * TODO: check whether RFC822 compliance is equivalent to RFC5321 compliance.
+     * TODO: check whether RFC822 compliance is equivalent to RFC5321 compliance / how they differ.
      */
-    private boolean isValidMailboxAddress(String mailboxAddress) {
+    private boolean isValidMailbox(String mailbox) {
         boolean isValid = true;
+
         try {
-            InternetAddress internetAddress = new InternetAddress(mailboxAddress);
+            InternetAddress internetAddress = new InternetAddress(mailbox);
             internetAddress.validate();
         } catch (AddressException ex) {
             isValid = false;
