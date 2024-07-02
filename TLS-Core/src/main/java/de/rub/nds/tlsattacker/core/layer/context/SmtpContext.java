@@ -34,7 +34,15 @@ public class SmtpContext extends LayerContext {
         super(context);
     }
 
+    public void clearBuffers() {
+        reversePathBuffer.clear();
+        forwardPathBuffer.clear();
+        mailDataBuffer.setLength(0);
+    }
 
+    public void insertReversePath(String reversePath) {
+        reversePathBuffer.add(reversePath);
+    }
 
     public List<String> getReversePathBuffer() {
         return reversePathBuffer;

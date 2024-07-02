@@ -26,10 +26,6 @@ import java.util.List;
 @XmlRootElement
 public class SmtpCommand extends SmtpMessage {
 
-    private List<String> reversePathBuffer;
-    private List<String> forwardPathBuffer;
-    private StringBuilder mailDataBuffer;
-
     String verb;
     String parameters;
 
@@ -83,38 +79,5 @@ public class SmtpCommand extends SmtpMessage {
         this.parameters = parameters;
     }
 
-    public void clearBuffers() {
-        reversePathBuffer.clear();
-        forwardPathBuffer.clear();
-        mailDataBuffer.setLength(0);
-    }
-
-    public void insertReversePath(String reversePath) {
-        reversePathBuffer.add(reversePath);
-    }
-
-    public List<String> getReversePathBuffer() {
-        return reversePathBuffer;
-    }
-
-    public List<String> getForwardPathBuffer() {
-        return forwardPathBuffer;
-    }
-
-    public StringBuilder getMailDataBuffer() {
-        return mailDataBuffer;
-    }
-
-    public void setReversePathBuffer(List<String> reversePathBuffer) {
-        this.reversePathBuffer = reversePathBuffer;
-    }
-
-    public void setForwardPathBuffer(List<String> forwardPathBuffer) {
-        this.forwardPathBuffer = forwardPathBuffer;
-    }
-
-    public void setMailDataBuffer(StringBuilder mailDataBuffer) {
-        this.mailDataBuffer = mailDataBuffer;
-    }
 
 }

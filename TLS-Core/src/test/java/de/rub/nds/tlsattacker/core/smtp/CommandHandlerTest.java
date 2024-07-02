@@ -36,10 +36,4 @@ public class CommandHandlerTest {
         //FIXME: implement a specific MAILCommandHandler
 //        handler = new SmtpCommandHandler(context);
     }
-
-    @Test
-    public void testadjustContext() {
-        handler.adjustContext(mail);
-        assertEquals(context.getReversePathBuffer(), mail.getReversePathBuffer());
-    }
 }

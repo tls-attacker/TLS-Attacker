@@ -9,7 +9,9 @@ public class MAILCommandParser extends SmtpCommandParser<SmtpMAILCommand> {
 
     @Override
     public void parseArguments(SmtpMAILCommand command, String arguments) {
-        command.setReversePath(arguments);
+        String[] parameters = arguments.split(" ");
+        command.setReversePath(parameters[0]);
+        command.setMailParameters(parameters[1]);
     }
 
     @Override
