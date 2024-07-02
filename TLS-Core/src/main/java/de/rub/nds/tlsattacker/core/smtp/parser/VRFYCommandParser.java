@@ -15,11 +15,11 @@ public class VRFYCommandParser extends SmtpCommandParser<SmtpVRFYCommand> {
      * Parses VRFY-Command.
      *
      * @param command Instance of the VRFY command class.
-     * @param parameters Parameters of the VRFY command. According to RFC5321, the syntax of a full command is:
+     * @param parameter Parameter of the VRFY command. According to RFC5321, the syntax of a full command is:
      *                                                  VRFY SP String CRLF
-     *                   The string (here: parameters) may be: (a) just a username [username] or
+     *                   The string (here: parameter) may be: (a) just a username [username] or
      *                   (b) just a mailbox [local-part@domain] (see section 4.1.1.6 of RFC).
-     *                   The parameters string may be an atom string (alphanumeric) or a quoted string.
+     *                   The parameter string may be an atom string (alphanumeric) or a quoted string.
      *                   In accordance with RFC 5321, this implementation considers the following
      *                   commands to be valid (CRLF omitted):
      *                                                  VRFY john
@@ -32,18 +32,25 @@ public class VRFYCommandParser extends SmtpCommandParser<SmtpVRFYCommand> {
      *                   determined by the specific validation method used.
      */
     @Override
-    public void parseArguments(SmtpVRFYCommand command, String parameters) {
-        if (!isQuotedString(parameters)) { // case: only username or mailbox
-            if (isWellFormedAtomStringUsername(parameters)) command.setUsername(parameters);
-            else if (isValidMailbox(parameters)) command.setMailbox(parameters);
+    public void parseArguments(SmtpVRFYCommand command, String parameter) {
+        if (!isQuotedString(parameter)) {
+            if (isWellFormedAtomStringUsername(parameter)) command.setUsername(parameter);
+            else if (isValidMailbox(parameter)) command.setMailbox(parameter);
+            else throwInvalidParameterException(); // TODO: check whether exception should be caught
 
             return;
         }
 
         // case: quoted string:
-        parameters = parameters.substring(1, parameters.length() - 1); // strip outermost quotes
-        if (isValidMailbox(parameters)) command.setMailbox(parameters);
-        else if (isWellFormedQuotedStringUsername(parameters)) command.setUsername(parameters);
+        parameter = parameter.substring(1, parameter.length() - 1); // strip outermost quotes
+        if (isValidMailbox(parameter)) command.setMailbox(parameter);
+        else if (isWellFormedQuotedStringUsername(parameter)) command.setUsername(parameter);
+        else throwInvalidParameterException();
+    }
+
+    private void throwInvalidParameterException() {
+        throw new IllegalArgumentException("The VRFY-command parameter is invalid: " +
+                "it's neither a valid username nor a valid mailbox.");
     }
 
     private boolean isQuotedString(String string) {
@@ -52,7 +59,13 @@ public class VRFYCommandParser extends SmtpCommandParser<SmtpVRFYCommand> {
                 string.charAt(string.length() - 1) == '"';
     }
 
-    private boolean isWellFormedQuotedStringUsername(String username) { // According to RFC5321
+    /**
+     *
+     * @param username Potential username provided in the VRFY-command.
+     * @return Whether the username is RFC-5321 compliant, i.e. if it contains only regular characters or escaped
+     *         special characters (backslash or double quote).
+     */
+    private boolean isWellFormedQuotedStringUsername(String username) {
         for (int i = 0; i < username.length(); i++) {
             int asciiValue = username.charAt(i);
 
