@@ -19,7 +19,6 @@ import de.rub.nds.tlsattacker.core.smtp.preparator.SmtpReplyPreparator;
 import de.rub.nds.tlsattacker.core.smtp.serializer.SmtpMessageSerializer;
 import de.rub.nds.tlsattacker.core.smtp.serializer.SmtpReplySerializer;
 import jakarta.xml.bind.annotation.XmlRootElement;
-
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;

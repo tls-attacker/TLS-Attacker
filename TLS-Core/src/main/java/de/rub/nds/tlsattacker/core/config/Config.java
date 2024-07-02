@@ -1061,7 +1061,6 @@ public class Config implements Serializable {
     @XmlJavaTypeAdapter(IllegalStringAdapter.class)
     private String defaultHttpsRequestPath = "/robots.txt";
 
-
     private List<String> DefaultReversePathBuffer = new ArrayList<>();
 
     private List<String> DefaultforwardPathBuffer = new ArrayList<>();

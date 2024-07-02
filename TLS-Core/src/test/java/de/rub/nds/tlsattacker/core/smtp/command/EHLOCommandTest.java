@@ -15,12 +15,11 @@ import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import de.rub.nds.tlsattacker.core.smtp.parser.EHLOCommandParser;
-import java.io.ByteArrayInputStream;
-import java.nio.charset.StandardCharsets;
-
 import de.rub.nds.tlsattacker.core.smtp.preparator.EHLOCommandPreparator;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
+import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -65,7 +64,7 @@ class EHLOCommandTest {
 
     @Test
     public void testSerialization() {
-        //given an SmtpEHLOCommand see if getSerializer leads to something worthwhile
+        // given an SmtpEHLOCommand see if getSerializer leads to something worthwhile
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
         SmtpEHLOCommand ehloCommand = new SmtpEHLOCommand("seal.upb.de");
         EHLOCommandPreparator preparator = ehloCommand.getPreparator(context);
@@ -73,6 +72,5 @@ class EHLOCommandTest {
         preparator.prepare();
         serializer.serialize();
         Assertions.assertEquals("EHLO seal.upb.de\r\n", serializer.getOutputStream().toString());
-
     }
 }

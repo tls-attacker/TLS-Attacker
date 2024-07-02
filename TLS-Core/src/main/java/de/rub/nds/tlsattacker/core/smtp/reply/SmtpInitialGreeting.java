@@ -1,3 +1,11 @@
+/*
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
+ *
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
+ */
 package de.rub.nds.tlsattacker.core.smtp.reply;
 
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
@@ -17,6 +25,7 @@ public class SmtpInitialGreeting extends SmtpReply {
     public SmtpInitialGreeting() {
         super();
     }
+
     public SmtpInitialGreeting(String greeting) {
         super();
         this.greeting = greeting;
@@ -24,7 +33,7 @@ public class SmtpInitialGreeting extends SmtpReply {
 
     @Override
     public SmtpMessagePreparator<? extends SmtpMessage> getPreparator(SmtpContext context) {
-        //TODO
+        // TODO
         return new InitialGreetingPreparator(context, this);
     }
 
@@ -44,6 +53,7 @@ public class SmtpInitialGreeting extends SmtpReply {
     public boolean serverRejection() {
         return this.getReplyCode() == 554;
     }
+
     public boolean serverReady() {
         return this.getReplyCode() == 220;
     }

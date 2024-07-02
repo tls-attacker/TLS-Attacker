@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.core.smtp.serializer;
 
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
-import de.rub.nds.tlsattacker.core.smtp.command.SmtpCommand;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpReply;
 
 /*
@@ -36,12 +35,15 @@ public class SmtpReplySerializer<ReplyT extends SmtpReply> extends SmtpMessageSe
         StringBuilder builder = new StringBuilder();
 
         int replyCode = this.reply.getReplyCode();
-        for(int i = 0; i < this.reply.getReplyLines().size() - 1; i++) {
+        for (int i = 0; i < this.reply.getReplyLines().size() - 1; i++) {
             builder.append(replyCode).append("-");
             builder.append(this.reply.getReplyLines().get(i));
             builder.append(CRLF);
         }
-        builder.append(replyCode).append(SP).append(this.reply.getReplyLines().get(this.reply.getReplyLines().size() - 1)).append(CRLF);
+        builder.append(replyCode)
+                .append(SP)
+                .append(this.reply.getReplyLines().get(this.reply.getReplyLines().size() - 1))
+                .append(CRLF);
         byte[] output = builder.toString().getBytes();
         appendBytes(output);
         return getAlreadySerialized();

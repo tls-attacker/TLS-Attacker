@@ -213,20 +213,29 @@ public abstract class ProtocolLayer<
         LOGGER.trace("Layer:{}", this.layerType);
         if (layerConfiguration != null) {
             if (layerConfiguration instanceof GenericReceiveLayerConfiguration) {
-                LOGGER.trace("Should continue processing because of GenericReceiveLayerConfiguration");
+                LOGGER.trace(
+                        "Should continue processing because of GenericReceiveLayerConfiguration");
                 return true;
             } else {
                 boolean successRequiresMoreContainers =
                         layerConfiguration.successRequiresMoreContainers(
                                 getLayerResult().getUsedContainers());
-                boolean dataIsBuffered = (isDataBuffered() && ((ReceiveLayerConfiguration) layerConfiguration).isProcessTrailingContainers());
-                LOGGER.trace("Should continue processing because successRequiresMoreContainers: {}", successRequiresMoreContainers);
-                LOGGER.trace("Should continue processing because dataIsBuffered: {}", dataIsBuffered);
+                boolean dataIsBuffered =
+                        (isDataBuffered()
+                                && ((ReceiveLayerConfiguration) layerConfiguration)
+                                        .isProcessTrailingContainers());
+                LOGGER.trace(
+                        "Should continue processing because successRequiresMoreContainers: {}",
+                        successRequiresMoreContainers);
+                LOGGER.trace(
+                        "Should continue processing because dataIsBuffered: {}", dataIsBuffered);
 
                 return successRequiresMoreContainers || dataIsBuffered;
             }
         } else {
-            LOGGER.trace("Should continue processing because no layerConfiguration is set and data is buffered: {}", isDataBuffered());
+            LOGGER.trace(
+                    "Should continue processing because no layerConfiguration is set and data is buffered: {}",
+                    isDataBuffered());
             return isDataBuffered();
         }
     }
