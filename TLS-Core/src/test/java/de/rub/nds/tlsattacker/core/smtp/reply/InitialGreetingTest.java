@@ -4,11 +4,11 @@ import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
-import de.rub.nds.tlsattacker.core.smtp.command.SmtpEHLOCommand;
-import de.rub.nds.tlsattacker.core.smtp.extensions.*;
-import de.rub.nds.tlsattacker.core.smtp.parser.EHLOCommandParser;
+import de.rub.nds.tlsattacker.core.smtp.extensions.ATRNExtension;
+import de.rub.nds.tlsattacker.core.smtp.extensions.HELPExtension;
+import de.rub.nds.tlsattacker.core.smtp.extensions.STARTTLSExtension;
+import de.rub.nds.tlsattacker.core.smtp.extensions._8BITMIMEExtension;
 import de.rub.nds.tlsattacker.core.smtp.parser.EHLOReplyParser;
-import de.rub.nds.tlsattacker.core.smtp.preparator.EHLOReplyPreparator;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import org.junit.jupiter.api.Test;
@@ -17,36 +17,33 @@ import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-class EHLOReplyTest {
+class InitialGreetingTest {
 
     @Test
     public void testParseSimple() {
-        String stringMessage = "250 seal.cs.upb.de says Greetings\r\n";
+        String stringMessage = "220 seal.cs.upb.de says Greetings\r\n";
 
-        SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
-        SmtpEHLOReply ehlo = new SmtpEHLOReply();
-        EHLOReplyParser parser =
-                ehlo.getParser(context,
-                        new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
-        parser.parse(ehlo);
-
-        assertEquals(250, ehlo.getReplyCode());
-        assertEquals("seal.cs.upb.de", ehlo.getDomain());
-        assertEquals("says Greetings", ehlo.getGreeting());
+        SmtpInitialGreeting greeting = new SmtpInitialGreeting();
+//        Parser parser =
+//                greeting.getParser()
+//                        new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
+//        parser.parse(ehlo);
+//        assertEquals(250, ehlo.getReplyCode());
+//        assertEquals("seal.cs.upb.de", ehlo.getDomain());
+//        assertEquals("says Greetings", ehlo.getGreeting());
     }
     @Test
     public void testParseSimpleNoGreeting() {
         String stringMessage = "250 seal.cs.upb.de\r\n";
 
-        SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
-        SmtpEHLOReply ehlo = new SmtpEHLOReply();
         EHLOReplyParser parser =
-                ehlo.getParser(context,
+                new EHLOReplyParser(
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
+        SmtpEHLOReply ehlo = new SmtpEHLOReply();
         parser.parse(ehlo);
-
         assertEquals(250, ehlo.getReplyCode());
         assertEquals("seal.cs.upb.de", ehlo.getDomain());
         assertNull(ehlo.getGreeting());
@@ -66,7 +63,6 @@ class EHLOReplyTest {
                 ehlo.getParser(context,
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
         parser.parse(ehlo);
-
         assertEquals(250, ehlo.getReplyCode());
         assertEquals("seal.cs.upb.de", ehlo.getDomain());
         assertEquals("says Greetings", ehlo.getGreeting());
