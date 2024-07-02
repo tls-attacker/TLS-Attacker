@@ -56,10 +56,8 @@ public class VRFYCommandParser extends SmtpCommandParser<SmtpVRFYCommand> {
     /**
      *
      * @param parameters: Parameters of the VRFY command with outermost double quotes stripped.
-     * @return Either:
-     *          - an empty array if the parameters are malformed.
-     *          - an array containing two strings denoting username and mailbox address. if either is
-     *            not present, the value null is provided.
+     * @return An array containing two strings denoting username and mailbox address. If either is
+     *         not present, the value null is provided.
      */
     private String[] findUsernameAndMailboxAddress(String parameters) {
         // 1. Find mailbox if it is present:
