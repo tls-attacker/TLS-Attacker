@@ -10,6 +10,14 @@ public class SmtpCommandHandler<CommandT extends SmtpCommand> extends SmtpMessag
     }
 
     @Override
-    public void adjustContext(SmtpCommand smtpCommand) {
+    public void adjustContext(CommandT smtpCommand) {
+        this.context.setLastCommand(smtpCommand);
+        adjustContextSpecific(smtpCommand);
     }
+
+    public void adjustContextSpecific(CommandT smtpCommand) {
+        // empty, override if needed
+    }
+
+
 }

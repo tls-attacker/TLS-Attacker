@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.smtp.command;
 
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.*;
+import de.rub.nds.tlsattacker.core.smtp.handler.SmtpCommandHandler;
 import de.rub.nds.tlsattacker.core.smtp.handler.SmtpMessageHandler;
 import de.rub.nds.tlsattacker.core.smtp.parser.SmtpCommandParser;
 import de.rub.nds.tlsattacker.core.smtp.parser.SmtpMessageParser;
@@ -17,10 +18,12 @@ import de.rub.nds.tlsattacker.core.smtp.preparator.SmtpCommandPreparator;
 import de.rub.nds.tlsattacker.core.smtp.preparator.SmtpMessagePreparator;
 import de.rub.nds.tlsattacker.core.smtp.serializer.SmtpCommandSerializer;
 import de.rub.nds.tlsattacker.core.smtp.serializer.SmtpMessageSerializer;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 import java.io.InputStream;
 import java.util.List;
 
+@XmlRootElement
 public class SmtpCommand extends SmtpMessage {
 
     private List<String> reversePathBuffer;
@@ -40,7 +43,7 @@ public class SmtpCommand extends SmtpMessage {
 
     @Override
     public SmtpMessageHandler<? extends SmtpMessage> getHandler(SmtpContext smtpContext) {
-        return null;
+        return new SmtpCommandHandler<>(smtpContext);
     }
 
     @Override

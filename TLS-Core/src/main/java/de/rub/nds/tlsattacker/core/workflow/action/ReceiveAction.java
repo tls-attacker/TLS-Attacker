@@ -19,6 +19,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment
 import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.smtp.SmtpMessage;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.core.workflow.container.ActionHelperUtil;
@@ -45,6 +46,9 @@ public class ReceiveAction extends CommonReceiveAction implements StaticReceivin
 
     @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
     protected List<HttpMessage> expectedHttpMessages;
+
+    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
+    protected List<SmtpMessage> expectedSmtpMessages;
 
     @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
     protected List<QuicFrame> expectedQuicFrames;
@@ -132,6 +136,10 @@ public class ReceiveAction extends CommonReceiveAction implements StaticReceivin
         this.expectedHttpMessages = new ArrayList<>(Arrays.asList(expectedHttpMessages));
     }
 
+    public ReceiveAction(SmtpMessage... expectedSmtpMessages) {
+        this.expectedSmtpMessages = new ArrayList<>(Arrays.asList(expectedSmtpMessages));
+    }
+
     public ReceiveAction(Set<ActionOption> myActionOptions, List<ProtocolMessage> messages) {
         this(messages);
         setActionOptions(myActionOptions);
@@ -206,6 +214,14 @@ public class ReceiveAction extends CommonReceiveAction implements StaticReceivin
         this.expectedHttpMessages = expectedHttpMessages;
     }
 
+    public List<SmtpMessage> getExpectedSmtpMessages() {
+        return expectedSmtpMessages;
+    }
+
+    public void setExpectedSmtpMessages(List<SmtpMessage> expectedSmtpMessages) {
+        this.expectedSmtpMessages = expectedSmtpMessages;
+    }
+
     public List<QuicFrame> getExpectedQuicFrames() {
         return expectedQuicFrames;
     }
@@ -249,7 +265,8 @@ public class ReceiveAction extends CommonReceiveAction implements StaticReceivin
                 expectedRecords,
                 expectedQuicFrames,
                 expectedQuicPackets,
-                expectedHttpMessages);
+                expectedHttpMessages,
+                expectedSmtpMessages);
     }
 
     @Override
@@ -257,6 +274,9 @@ public class ReceiveAction extends CommonReceiveAction implements StaticReceivin
         List<List<DataContainer<?>>> dataContainerLists = new LinkedList<>();
         if (expectedHttpMessages != null) {
             dataContainerLists.add((List<DataContainer<?>>) (List<?>) expectedHttpMessages);
+        }
+        if (expectedSmtpMessages != null) {
+            dataContainerLists.add((List<DataContainer<?>>) (List<?>) expectedSmtpMessages);
         }
         if (expectedMessages != null) {
             dataContainerLists.add((List<DataContainer<?>>) (List<?>) expectedMessages);

@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.layer;
 
 import de.rub.nds.tlsattacker.core.layer.constant.StackConfiguration;
 import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
+import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.layer.context.TcpContext;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.impl.*;
@@ -30,11 +31,13 @@ public class LayerStackFactory {
         TcpContext tcpContext = context.getTcpContext();
         HttpContext httpContext = context.getHttpContext();
         QuicContext quicContext = context.getQuicContext();
+        SmtpContext smtpContext = context.getSmtpContext();
 
         switch (type) {
             case OPEN_VPN:
             case STARTTLS:
                 throw new UnsupportedOperationException("Not implemented yet");
+
             case DTLS:
                 return new LayerStack(
                         context,
@@ -63,6 +66,22 @@ public class LayerStackFactory {
                         new LayerStack(
                                 context,
                                 new HttpLayer(httpContext),
+                                new MessageLayer(tlsContext),
+                                new RecordLayer(tlsContext),
+                                new TcpLayer(tcpContext));
+                return layerStack;
+            case SMTP:
+                layerStack =
+                        new LayerStack(
+                                context,
+                                new SmtpLayer(smtpContext),
+                                new TcpLayer(tcpContext));
+                return layerStack;
+            case SMTPS:
+                layerStack =
+                        new LayerStack(
+                                context,
+                                new SmtpLayer(smtpContext),
                                 new MessageLayer(tlsContext),
                                 new RecordLayer(tlsContext),
                                 new TcpLayer(tcpContext));

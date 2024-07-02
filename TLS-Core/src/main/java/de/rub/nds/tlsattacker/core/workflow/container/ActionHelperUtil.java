@@ -36,6 +36,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
 import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.smtp.SmtpMessage;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -75,7 +76,8 @@ public class ActionHelperUtil {
             List<Record> recordsToReceive,
             List<QuicFrame> framesToReceive,
             List<QuicPacket> packetsToReceive,
-            List<HttpMessage> httpMessagesToReceive) {
+            List<HttpMessage> httpMessagesToReceive,
+            List<SmtpMessage> smtpMessagesToReceive) {
         LayerStack layerStack = tlsContext.getLayerStack();
 
         List<LayerConfiguration<?>> layerConfigurationList;
@@ -95,6 +97,8 @@ public class ActionHelperUtil {
                                 ImplementedLayers.RECORD, recordsToReceive, actionOptions),
                         createReceiveConfiguration(
                                 ImplementedLayers.HTTP, httpMessagesToReceive, actionOptions),
+                        createReceiveConfiguration(
+                                ImplementedLayers.SMTP, smtpMessagesToReceive, actionOptions),
                         createReceiveConfiguration(
                                 ImplementedLayers.QUICFRAME, framesToReceive, actionOptions),
                         createReceiveConfiguration(
@@ -165,7 +169,8 @@ public class ActionHelperUtil {
             List<Record> recordsToSend,
             List<QuicFrame> framesToSend,
             List<QuicPacket> packetsToSend,
-            List<HttpMessage> httpMessagesToSend) {
+            List<HttpMessage> httpMessagesToSend,
+            List<SmtpMessage> smtpMessagesToSend) {
         LayerStack layerStack = tlsContext.getLayerStack();
         List<LayerConfiguration<?>> layerConfigurationsList = new LinkedList<>();
 
@@ -191,6 +196,12 @@ public class ActionHelperUtil {
                     new SpecificSendLayerConfiguration<>(
                             ImplementedLayers.HTTP, httpMessagesToSend));
         }
+        if (smtpMessagesToSend != null) {
+            layerConfigurationsList.add(
+                    new SpecificSendLayerConfiguration<>(
+                            ImplementedLayers.SMTP, smtpMessagesToSend));
+        }
+
         if (framesToSend != null) {
             layerConfigurationsList.add(
                     new SpecificSendLayerConfiguration<>(

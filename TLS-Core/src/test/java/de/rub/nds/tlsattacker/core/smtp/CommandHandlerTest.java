@@ -34,7 +34,7 @@ public class CommandHandlerTest {
         parser.parse(mail);
 
         //FIXME: implement a specific MAILCommandHandler
-        handler = new SmtpCommandHandler(context);
+//        handler = new SmtpCommandHandler(context);
     }
 
     @Test

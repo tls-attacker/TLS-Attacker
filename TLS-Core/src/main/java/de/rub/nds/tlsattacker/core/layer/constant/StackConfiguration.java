@@ -20,5 +20,7 @@ public enum StackConfiguration {
     OPEN_VPN,
     STARTTLS,
     HTTPS,
+    SMTP,
+    SMTPS,
     SSL2;
 }

@@ -3,11 +3,13 @@ package de.rub.nds.tlsattacker.core.smtp.reply;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.extensions.SmtpServiceExtension;
 import de.rub.nds.tlsattacker.core.smtp.parser.EHLOReplyParser;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+@XmlRootElement
 public class SmtpEHLOReply extends SmtpReply {
     private String domain;
     private String greeting;

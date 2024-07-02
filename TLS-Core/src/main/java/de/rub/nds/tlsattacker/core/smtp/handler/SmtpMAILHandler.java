@@ -10,7 +10,7 @@ public class SmtpMAILHandler extends SmtpCommandHandler<SmtpMAILCommand> {
     }
 
     @Override
-    public void adjustContext(SmtpCommand smtpCommand) {
+    public void adjustContextSpecific(SmtpMAILCommand smtpCommand) {
         this.getContext().setReversePathBuffer(smtpCommand.getReversePathBuffer());
         this.getContext().setForwardPathBuffer(smtpCommand.getForwardPathBuffer());
         this.getContext().setMailDataBuffer(smtpCommand.getMailDataBuffer());

@@ -46,7 +46,7 @@ public class SendRecordsFromLastFlightAction extends CommonSendAction {
                 duplicatedRecords,
                 null,
                 null,
-                null);
+                null, null);
     }
 
     private SendingAction getLastSendingAction(WorkflowTrace trace) {
