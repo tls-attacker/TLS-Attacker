@@ -8,15 +8,18 @@
  */
 package de.rub.nds.tlsattacker.core.smtp.command;
 
+/**
+ * This class represents an SMTP VRFY command, which is used to verify whether an e-mail address exists.
+ * The VRFY command can have the parameters: username OR mailboxAddress OR username and mailboxAddress.
+ */
 public class SmtpVRFYCommand extends SmtpCommand {
 
-    private static final String COMMAND = "VRFY";
+    private static final String COMMAND_NAME = "VRFY";
     private String username;
     private String mailboxAddress;
 
-    // Constructor for malformed VRFY-commands, where too many/too little parameters are provided:
     public SmtpVRFYCommand(String parameters) {
-        super(COMMAND, parameters);
+        super(COMMAND_NAME, parameters);
     }
 
     public String getUsername() {
