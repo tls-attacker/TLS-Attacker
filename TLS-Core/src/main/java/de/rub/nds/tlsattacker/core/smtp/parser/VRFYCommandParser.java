@@ -33,13 +33,18 @@ public class VRFYCommandParser extends SmtpCommandParser<SmtpVRFYCommand> {
 
         if (username == null && mailboxAddress == null) return;
 
-        /*
-            a quoted-string username may contain identical characters as a mailboxAddress,
-            so if the address itself is invalid, it may potentially be a valid username instead
-         */
         boolean onlyAddressIsPresent = username == null;
-        if (onlyAddressIsPresent && !isValidMailboxAddress(mailboxAddress) && isQuotedString(mailboxAddress)) {
+        boolean mailboxAddressIsValid = mailboxAddress != null && isValidMailboxAddress(mailboxAddress);
+        boolean mailboxAddressIsQuotedString = mailboxAddress != null && isQuotedString(mailboxAddress);
+
+        if (onlyAddressIsPresent && !mailboxAddressIsValid && mailboxAddressIsQuotedString) {
+            /*
+                a quoted-string username may contain identical characters as a mailboxAddress,
+                so if the address itself is invalid, it may potentially be a valid username instead
+            */
             username = mailboxAddress;
+            mailboxAddress = null;
+        } else if (!mailboxAddressIsValid && !mailboxAddressIsQuotedString) {
             mailboxAddress = null;
         }
 
@@ -54,7 +59,6 @@ public class VRFYCommandParser extends SmtpCommandParser<SmtpVRFYCommand> {
     }
 
     /**
-     *
      * @param parameters: Parameters of the VRFY command with outermost double quotes stripped.
      * @return An array containing two strings denoting username and mailbox address. If either is
      *         not present, the value null is provided.
@@ -62,26 +66,18 @@ public class VRFYCommandParser extends SmtpCommandParser<SmtpVRFYCommand> {
     private String[] findUsernameAndMailboxAddress(String parameters) {
         // 1. Find mailbox if it is present:
         int i = indexOfCharacter(parameters, parameters.length() - 1, '@'); // Mailbox must contain character '@'
-
         if (i < 0) return new String[]{parameters, null}; // Case: no mailbox exists in parameters
 
         // 2. If possible mailbox is found, find beginning of local part of mailbox:
         boolean localPartisQuotedString = i > 0 && parameters.charAt(i-1) == '"'; // only quoted strings may contain double quotes
+        if (localPartisQuotedString) i = indexOfCharacter(parameters, --i, '"');
+        else i = indexOfCharacter(parameters, i, ' ') + 1; // case: local part is atom string
 
-        if (localPartisQuotedString) {
-            i--;
-            i = indexOfCharacter(parameters, i, '"'); // find starting double quote
+        // 3. Return split parameters based on where the split 'i' was found:
+        if (i < 0) return new String[]{parameters, null}; // case: malformed, quoted-string local part
+        if (i < 2) return new String[]{null, parameters}; // case: only mailbox address is present (as username).
 
-            if (i < 0) return new String[]{parameters, null}; // case: if the string is a mailbox, the local-part is malformed. hence it must be a username
-            if (i < 2) return new String[]{null, parameters}; // case: only mailbox address is present (as username).
-
-            return splitStringByIndex(parameters, i);
-        }
-
-        // Case: local-part is an atom string:
-        i = indexOfCharacter(parameters, i, ' ');
-        if (i < 1) return new String[]{null, parameters}; // case: only mailbox address is present (as username)
-        return splitStringByIndex(parameters, i+1);
+        return splitStringByIndex(parameters, i); // case: username and mailbox found
     }
 
     private String[] splitStringByIndex(String string, int index) {
@@ -95,6 +91,11 @@ public class VRFYCommandParser extends SmtpCommandParser<SmtpVRFYCommand> {
         return i;
     }
 
+    /**
+     * @param mailboxAddress Mailbox address from the VRFY-command parameters.
+     * @return Whether mailbox address has valid syntax in accordance with RFC822.
+     * TODO: check whether RFC822 compliance is equivalent to RFC5321 compliance.
+     */
     private boolean isValidMailboxAddress(String mailboxAddress) {
         boolean isValid = true;
         try {
