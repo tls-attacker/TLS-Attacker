@@ -3,7 +3,7 @@ package de.rub.nds.tlsattacker.core.smtp.parser;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-class SyntaxCheckerText {
+class SyntaxCheckerTest {
     @Test
     void testValidMailboxes() {
         String[] validMailboxes = new String[]{
