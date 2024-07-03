@@ -14,7 +14,7 @@ class SyntaxCheckerTest {
                 "john.doe@[123.1.2.3]",
                 "'*+-/=?^_`{|}~#$@nice.org",
                 "userc@d.bar.org",
-                "test@[IPv6:2001:470:30:84:e276:63ff:fe72:3900]"
+                "test@[IPv6:2001:470:30:84:e276:63ff:fe72:3900]",
         };
 
         for (String validMailbox : validMailboxes) {
@@ -34,7 +34,11 @@ class SyntaxCheckerTest {
                 "@mail.com",
                 ".@mail.com",
                 "john.doe@[300.1.2.3]",
-                "john.doe@[123.1.2.3.1]"
+                "john.doe@[123.1.2.3.1]",
+                "john..doe@gmail.com",
+                "john.doeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" +
+                        "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" +
+                        "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee@gmail.com"
         };
 
         for (String invalidMailbox : invalidMailboxes) {

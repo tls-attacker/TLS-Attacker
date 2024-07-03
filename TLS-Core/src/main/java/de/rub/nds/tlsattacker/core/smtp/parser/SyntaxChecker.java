@@ -2,6 +2,8 @@ package de.rub.nds.tlsattacker.core.smtp.parser;
 
 import org.bouncycastle.util.IPAddress;
 
+import java.nio.charset.StandardCharsets;
+
 /**
  * This class contains functions that check syntax based on RFC5321's Command Argument Syntax.
  */
@@ -58,6 +60,7 @@ public final class SyntaxChecker {
         for (int i = 1; i < str.length()-1; i++) {
             char c = str.charAt(i);
             if (isNotAnAtomCharacter(c) && c != '.') return false;
+            if (str.charAt(i-1) == '.' && c == '.') return false; // consecutive dots are not allowed
         }
 
         return true;
@@ -114,6 +117,7 @@ public final class SyntaxChecker {
 
     private static boolean isValidLocalPart(String localPart) {
         if (localPart.isEmpty()) return false;
+        if (localPart.getBytes(StandardCharsets.UTF_8).length > 64) return false; // can't be longer than 64 octets
 
         if (isValidDotString(localPart)) return true;
 
