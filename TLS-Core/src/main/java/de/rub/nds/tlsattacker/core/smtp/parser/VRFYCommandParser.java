@@ -19,16 +19,7 @@ public class VRFYCommandParser extends SmtpCommandParser<SmtpVRFYCommand> {
      *                   The string (here: parameter) may be: (a) just a username [username] or
      *                   (b) just a mailbox [local-part@domain] (see section 4.1.1.6 of RFC).
      *                   The parameter string may be an atom string (alphanumeric) or a quoted string.
-     *                   In accordance with RFC 5321, this implementation considers the following
-     *                   commands to be valid (CRLF omitted):
-     *                                                  VRFY john
-     *                                                  VRFY "john"
-     *                                                  VRFY "john@mail.com"
-     *                                                  VRFY "John Doe"
-     *                   Quoted strings may contain all printable ascii-characters (potentially with a backslash).
-     *                   However, the RFC is quite fuzzy about nested quoted-strings (e.g. local-part quoted string
-     *                   inside a quoted string). The validity of other mailboxes than defined above, will be solely
-     *                   determined by the specific validation method used.
+     *                   In case of a mailbox, the local-part of it may also be a quoted string.
      */
     @Override
     public void parseArguments(SmtpVRFYCommand command, String parameter) {
