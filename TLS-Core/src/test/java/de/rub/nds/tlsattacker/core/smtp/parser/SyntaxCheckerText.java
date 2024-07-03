@@ -38,4 +38,56 @@ class SyntaxCheckerText {
             assertFalse(SyntaxChecker.isValidMailbox(invalidMailbox));
         }
     }
+
+    @Test
+    void testValidQuotedStrings() {
+        String[] validQuotedStrings = new String[]{
+                "\"quoted-string\"",
+                "\"\"quoted-string\"",
+        };
+
+        for (String validQuotedString : validQuotedStrings) {
+            assertFalse(SyntaxChecker.isNotAQuotedString(validQuotedString));
+        }
+    }
+
+    @Test
+    void testInvalidQuotedStrings() {
+        String[] invalidQuotedStrings = new String[]{
+                "not",
+                "\"not",
+                "not\"",
+                ""
+        };
+
+        for (String invalidQuotedString : invalidQuotedStrings) {
+            assertTrue(SyntaxChecker.isNotAQuotedString(invalidQuotedString));
+        }
+    }
+
+    @Test
+    void testInvalidQuotedStringContent() {
+        String[] invalidContents = new String[]{
+                "\r\n",
+                String.valueOf((char) 1),
+                String.valueOf((char) 31)
+        };
+
+        for (String invalidContent : invalidContents) {
+            assertFalse(SyntaxChecker.isValidQuotedStringContent(invalidContent));
+        }
+    }
+
+    @Test
+    void testInvalidAtomStrings() {
+        String[] invalidAtomStrings = new String[]{
+                ".",
+                "@",
+                "\""
+        };
+
+        for (String invalidAtomString: invalidAtomStrings) {
+            assertFalse(SyntaxChecker.isValidAtomString(invalidAtomString));
+        }
+    }
 }
