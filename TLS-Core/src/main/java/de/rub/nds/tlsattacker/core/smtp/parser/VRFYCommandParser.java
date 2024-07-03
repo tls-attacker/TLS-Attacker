@@ -22,8 +22,8 @@ public class VRFYCommandParser extends SmtpCommandParser<SmtpVRFYCommand> {
      */
     @Override
     public void parseArguments(SmtpVRFYCommand command, String parameter) {
-        if (SyntaxChecker.isNotAQuotedString(parameter)) {
-            if (SyntaxChecker.isValidAtomString(parameter)) command.setUsername(parameter);
+        if (SmtpSyntaxParser.isNotAQuotedString(parameter)) {
+            if (SmtpSyntaxParser.isValidAtomString(parameter)) command.setUsername(parameter);
             // mailbox can't be in an atom string, so there's no need to check if it's valid
             else throwInvalidParameterException(); // TODO: check whether exception should be caught
 
@@ -32,8 +32,8 @@ public class VRFYCommandParser extends SmtpCommandParser<SmtpVRFYCommand> {
 
         // case: quoted string:
         parameter = parameter.substring(1, parameter.length() - 1); // strip outermost quotes
-        if (SyntaxChecker.isValidMailbox(parameter)) command.setMailbox(parameter);
-        else if (SyntaxChecker.isValidQuotedStringContent(parameter)) command.setUsername(parameter);
+        if (SmtpSyntaxParser.isValidMailbox(parameter)) command.setMailbox(parameter);
+        else if (SmtpSyntaxParser.isValidQuotedStringContent(parameter)) command.setUsername(parameter);
         else throwInvalidParameterException();
     }
 

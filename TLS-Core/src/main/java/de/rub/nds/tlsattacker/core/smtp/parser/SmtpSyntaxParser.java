@@ -7,7 +7,7 @@ import java.nio.charset.StandardCharsets;
 /**
  * This class contains functions that check syntax based on RFC5321's Command Argument Syntax.
  */
-public final class SyntaxChecker {
+public final class SmtpSyntaxParser {
     public static boolean isNotAQuotedString(String string) {
         return !(string.length() > 1 &&
                 string.charAt(0) == '"' &&

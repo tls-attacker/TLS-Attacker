@@ -3,7 +3,7 @@ package de.rub.nds.tlsattacker.core.smtp.parser;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-class SyntaxCheckerTest {
+class SmtpSyntaxParserTest {
     @Test
     void testValidMailboxes() {
         String[] validMailboxes = new String[]{
@@ -18,7 +18,7 @@ class SyntaxCheckerTest {
         };
 
         for (String validMailbox : validMailboxes) {
-            assertTrue(SyntaxChecker.isValidMailbox(validMailbox));
+            assertTrue(SmtpSyntaxParser.isValidMailbox(validMailbox));
         }
     }
 
@@ -42,7 +42,7 @@ class SyntaxCheckerTest {
         };
 
         for (String invalidMailbox : invalidMailboxes) {
-            assertFalse(SyntaxChecker.isValidMailbox(invalidMailbox));
+            assertFalse(SmtpSyntaxParser.isValidMailbox(invalidMailbox));
         }
     }
 
@@ -54,7 +54,7 @@ class SyntaxCheckerTest {
         };
 
         for (String validQuotedString : validQuotedStrings) {
-            assertFalse(SyntaxChecker.isNotAQuotedString(validQuotedString));
+            assertFalse(SmtpSyntaxParser.isNotAQuotedString(validQuotedString));
         }
     }
 
@@ -68,7 +68,7 @@ class SyntaxCheckerTest {
         };
 
         for (String invalidQuotedString : invalidQuotedStrings) {
-            assertTrue(SyntaxChecker.isNotAQuotedString(invalidQuotedString));
+            assertTrue(SmtpSyntaxParser.isNotAQuotedString(invalidQuotedString));
         }
     }
 
@@ -81,7 +81,7 @@ class SyntaxCheckerTest {
         };
 
         for (String invalidContent : invalidContents) {
-            assertFalse(SyntaxChecker.isValidQuotedStringContent(invalidContent));
+            assertFalse(SmtpSyntaxParser.isValidQuotedStringContent(invalidContent));
         }
     }
 
@@ -94,7 +94,7 @@ class SyntaxCheckerTest {
         };
 
         for (String invalidAtomString: invalidAtomStrings) {
-            assertFalse(SyntaxChecker.isValidAtomString(invalidAtomString));
+            assertFalse(SmtpSyntaxParser.isValidAtomString(invalidAtomString));
         }
     }
 }
