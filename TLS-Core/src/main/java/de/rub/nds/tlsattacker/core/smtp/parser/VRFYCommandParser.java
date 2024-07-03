@@ -43,7 +43,7 @@ public class VRFYCommandParser extends SmtpCommandParser<SmtpVRFYCommand> {
         // case: quoted string:
         parameter = parameter.substring(1, parameter.length() - 1); // strip outermost quotes
         if (isValidMailbox(parameter)) command.setMailbox(parameter);
-        else if (isValidQuotedString(parameter)) command.setUsername(parameter);
+        else if (isValidQuotedStringContent(parameter)) command.setUsername(parameter);
         else throwInvalidParameterException();
     }
 
@@ -60,11 +60,11 @@ public class VRFYCommandParser extends SmtpCommandParser<SmtpVRFYCommand> {
 
     /**
      *
-     * @param str Any string with outermost double quotes removed.
-     * @return Whether the string is RFC-5321 compliant, i.e. if it contains only regular characters or escaped
+     * @param str The content of a quoted string.
+     * @return Whether the content is RFC-5321 compliant, i.e. if it contains only regular characters or escaped
      *         special characters (backslash or double quote).
      */
-    private boolean isValidQuotedString(String str) {
+    private boolean isValidQuotedStringContent(String str) {
         for (int i = 0; i < str.length(); i++) {
             int asciiValue = str.charAt(i);
 
@@ -163,7 +163,7 @@ public class VRFYCommandParser extends SmtpCommandParser<SmtpVRFYCommand> {
 
         localPart = localPart.substring(1, localPart.length()-1); // strip double quotes
 
-        return isValidQuotedString(localPart);
+        return isValidQuotedStringContent(localPart);
     }
 
     /**
