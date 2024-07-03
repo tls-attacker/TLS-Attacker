@@ -122,10 +122,7 @@ public final class SyntaxChecker {
         if (isValidDotString(localPart)) return true;
 
         // case: special characters were found, thus local part must be quoted string:
-        if (localPart.charAt(0) != '"' || localPart.charAt(localPart.length()-1) != '"') return false;
-
-        // if localPart is encompassed by double quotes, any character is permitted
-        return true;
+        return localPart.charAt(0) == '"' && localPart.charAt(localPart.length() - 1) == '"';
     }
 
     /**
