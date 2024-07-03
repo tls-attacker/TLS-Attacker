@@ -98,9 +98,10 @@ public class VRFYCommandParser extends SmtpCommandParser<SmtpVRFYCommand> {
     }
 
     private boolean isValidDotString(String str) {
-        if (isNotAnAtomCharacter(str.charAt(0))) return false;
+        // first and last character must be atom characters
+        if (isNotAnAtomCharacter(str.charAt(0)) || isNotAnAtomCharacter(str.charAt(str.length()-1))) return false;
 
-        for (int i = 1; i < str.length(); i++) {
+        for (int i = 1; i < str.length()-1; i++) {
             char c = str.charAt(i);
             if (isNotAnAtomCharacter(c) && c != '.') return false;
         }
@@ -147,7 +148,7 @@ public class VRFYCommandParser extends SmtpCommandParser<SmtpVRFYCommand> {
     private boolean isValidLocalPart(String localPart) {
         if (localPart.isEmpty()) return false;
 
-        if (isValidDotString(localPart)) return true; // note: method is equivalent for local part
+        if (isValidDotString(localPart)) return true;
 
         // case: special characters were found, thus local part must be quoted string:
         if (localPart.charAt(0) != '"' || localPart.charAt(localPart.length()-1) != '"') return false;
