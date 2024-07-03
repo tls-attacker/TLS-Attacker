@@ -11,7 +11,10 @@ class SyntaxCheckerTest {
                 "john.doe@mail.com",
                 "\"john @ \\ doe\"@gmx.de",
                 "john.doe@m-a-i-l.c-o-m",
-                "john.doe@[123.1.2.3]"
+                "john.doe@[123.1.2.3]",
+                "'*+-/=?^_`{|}~#$@nice.org",
+                "userc@d.bar.org",
+                "test@[IPv6:2001:470:30:84:e276:63ff:fe72:3900]"
         };
 
         for (String validMailbox : validMailboxes) {
