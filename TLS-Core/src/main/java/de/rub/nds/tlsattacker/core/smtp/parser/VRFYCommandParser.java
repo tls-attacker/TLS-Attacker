@@ -25,7 +25,7 @@ public class VRFYCommandParser extends SmtpCommandParser<SmtpVRFYCommand> {
     public void parseArguments(SmtpVRFYCommand command, String parameter) {
         if (isNotAQuotedString(parameter)) {
             if (isValidAtomString(parameter)) command.setUsername(parameter);
-            else if (isValidMailbox(parameter)) command.setMailbox(parameter);
+            // mailbox can't be in an atom string, so there's no need to check if it's valid
             else throwInvalidParameterException(); // TODO: check whether exception should be caught
 
             return;
@@ -159,14 +159,10 @@ public class VRFYCommandParser extends SmtpCommandParser<SmtpVRFYCommand> {
     }
 
     /**
-     * @param mailbox Mailbox address from the VRFY-command parameters.
+     * @param mailbox String potentially containing a mailbox.
      * @return Whether mailbox address has valid syntax in accordance with RFC5321.
      */
     private boolean isValidMailbox(String mailbox) {
-        if (isNotAQuotedString(mailbox)) // the mailbox must be a quoted-string because of the '@'-sign
-            throw new IllegalArgumentException("Malformed VRFY-command: mailbox must be a quoted-string");
-
-        mailbox = mailbox.substring(1, mailbox.length()-1); // strip outermost double quotes
         String localPart = mailbox.substring(0, endIndexOfLocalPart(mailbox));
 
         if (!isValidLocalPart(localPart))
