@@ -14,21 +14,12 @@ public final class SyntaxChecker {
 
     /**
      *
-     * @param str The content of a quoted string.
+     * @param str The content of a quoted string (i.e. with outermost double quotes already removed).
      * @return Whether the content is RFC-5321 compliant, i.e. if it contains only regular characters or escaped
      *         special characters (backslash or double quote).
      */
     public static boolean isValidQuotedStringContent(String str) {
-        for (int i = 0; i < str.length(); i++) {
-            int asciiValue = str.charAt(i);
-
-            boolean isValid = asciiValue != 34 && asciiValue != 92; // i.e. not double quote or backslash
-            boolean isEscaped = i > 0 && ((int) str.charAt(i-1)) == 92; // backslash is used for escaping
-
-            if (!isValid && !isEscaped) return false;
-        }
-
-        return true;
+        return doesNotContainControlCharacters(str);
     }
 
     public static boolean isValidAtomString(String str) {
@@ -78,7 +69,7 @@ public final class SyntaxChecker {
             return i;
         }
 
-        throw new IllegalArgumentException("Malformed VRFY-command: mailbox doesn't contain an '@'-sign.");
+        return -1;
     }
 
     private static boolean isValidSubdomain(String str) {
@@ -108,6 +99,14 @@ public final class SyntaxChecker {
         return IPAddress.isValid(str);
     }
 
+    private static boolean doesNotContainControlCharacters(String str) {
+        for (int i = 0; i < str.length(); i++) {
+            if (str.charAt(i) < 32) return false;
+        }
+
+        return true;
+    }
+
     private static boolean isValidLocalPart(String localPart) {
         if (localPart.isEmpty()) return false;
 
@@ -116,9 +115,8 @@ public final class SyntaxChecker {
         // case: special characters were found, thus local part must be quoted string:
         if (localPart.charAt(0) != '"' || localPart.charAt(localPart.length()-1) != '"') return false;
 
-        localPart = localPart.substring(1, localPart.length()-1); // strip double quotes
-
-        return isValidQuotedStringContent(localPart);
+        // if localPart is encompassed by double quotes, any character is permitted
+        return true;
     }
 
     /**
@@ -128,12 +126,10 @@ public final class SyntaxChecker {
     public static boolean isValidMailbox(String mailbox) {
         String localPart = mailbox.substring(0, endIndexOfLocalPart(mailbox));
 
-        if (!isValidLocalPart(localPart))
-            throw new IllegalArgumentException("Malformed VRFY-command: local-part is invalid.");
+        if (!isValidLocalPart(localPart)) return false;
 
         String mailboxEnding = mailbox.substring(endIndexOfLocalPart(mailbox)+1); // everything past @
-        if (isValidAddressLiteral(mailboxEnding) || isValidDomain(mailboxEnding)) return true;
 
-        throw new IllegalArgumentException("Malformed VRFY-command: mailbox domain/address-literal is invalid.");
+        return isValidAddressLiteral(mailboxEnding) || isValidDomain(mailboxEnding);
     }
 }
