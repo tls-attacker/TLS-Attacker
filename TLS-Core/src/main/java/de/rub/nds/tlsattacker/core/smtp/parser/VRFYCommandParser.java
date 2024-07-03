@@ -1,9 +1,8 @@
 package de.rub.nds.tlsattacker.core.smtp.parser;
 
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpVRFYCommand;
+import org.bouncycastle.util.IPAddress;
 
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
 import java.io.InputStream;
 
 public class VRFYCommandParser extends SmtpCommandParser<SmtpVRFYCommand> {
@@ -33,8 +32,8 @@ public class VRFYCommandParser extends SmtpCommandParser<SmtpVRFYCommand> {
      */
     @Override
     public void parseArguments(SmtpVRFYCommand command, String parameter) {
-        if (!isQuotedString(parameter)) {
-            if (isWellFormedAtomStringUsername(parameter)) command.setUsername(parameter);
+        if (isNotAQuotedString(parameter)) {
+            if (isValidAtomString(parameter)) command.setUsername(parameter);
             else if (isValidMailbox(parameter)) command.setMailbox(parameter);
             else throwInvalidParameterException(); // TODO: check whether exception should be caught
 
@@ -44,7 +43,7 @@ public class VRFYCommandParser extends SmtpCommandParser<SmtpVRFYCommand> {
         // case: quoted string:
         parameter = parameter.substring(1, parameter.length() - 1); // strip outermost quotes
         if (isValidMailbox(parameter)) command.setMailbox(parameter);
-        else if (isWellFormedQuotedStringUsername(parameter)) command.setUsername(parameter);
+        else if (isValidQuotedString(parameter)) command.setUsername(parameter);
         else throwInvalidParameterException();
     }
 
@@ -53,34 +52,34 @@ public class VRFYCommandParser extends SmtpCommandParser<SmtpVRFYCommand> {
                 "it's neither a valid username nor a valid mailbox.");
     }
 
-    private boolean isQuotedString(String string) {
-        return string.length() > 1 &&
+    private boolean isNotAQuotedString(String string) {
+        return !(string.length() > 1 &&
                 string.charAt(0) == '"' &&
-                string.charAt(string.length() - 1) == '"';
+                string.charAt(string.length() - 1) == '"');
     }
 
     /**
      *
-     * @param username Potential username provided in the VRFY-command.
-     * @return Whether the username is RFC-5321 compliant, i.e. if it contains only regular characters or escaped
+     * @param str Any string with outermost double quotes removed.
+     * @return Whether the string is RFC-5321 compliant, i.e. if it contains only regular characters or escaped
      *         special characters (backslash or double quote).
      */
-    private boolean isWellFormedQuotedStringUsername(String username) {
-        for (int i = 0; i < username.length(); i++) {
-            int asciiValue = username.charAt(i);
+    private boolean isValidQuotedString(String str) {
+        for (int i = 0; i < str.length(); i++) {
+            int asciiValue = str.charAt(i);
 
             boolean isValid = asciiValue != 34 && asciiValue != 92; // i.e. not double quote or backslash
-            boolean previousCharIsBackslash = i > 0 && ((int) username.charAt(i-1)) == 92; // backslash is used for escaping
+            boolean isEscaped = i > 0 && ((int) str.charAt(i-1)) == 92; // backslash is used for escaping
 
-            if (!isValid && !previousCharIsBackslash) return false;
+            if (!isValid && !isEscaped) return false;
         }
 
         return true;
     }
 
-    private boolean isWellFormedAtomStringUsername(String username) {
-        for (int i = 0; i < username.length(); i++) {
-            if (!isValidAtomCharacter(username.charAt(i))) return false;
+    private boolean isValidAtomString(String str) {
+        for (int i = 0; i < str.length(); i++) {
+            if (isNotAnAtomCharacter(str.charAt(i))) return false;
         }
 
         return true;
@@ -88,34 +87,102 @@ public class VRFYCommandParser extends SmtpCommandParser<SmtpVRFYCommand> {
 
     /**
      *
-     * @param c Char of an atom string.
-     * @return Whether it's valid according to RFC5322 (missing in RFC 5321).
+     * @param c Any character.
+     * @return Whether it's invalid according to RFC5322 (definition missing in RFC 5321).
      */
-    private boolean isValidAtomCharacter(char c) {
-        return c == 33 ||
+    private boolean isNotAnAtomCharacter(char c) {
+        return !(c == 33 ||
                 35 <= c && c <= 39 ||
                 42 <= c && c <= 45 ||
                 47 <= c && c <= 57 ||
                 61 <= c && c <= 63 ||
                 65 <= c && c <= 90 ||
-                94 <= c && c <= 126;
+                94 <= c && c <= 126);
+    }
+
+    private boolean isNotAlphanumeric(char c) {
+        return !(48 <= c && c <= 57 ||
+                65 <= c && c <= 90 ||
+                97 <= c && c <= 122);
+    }
+
+    private boolean isValidDotString(String str) {
+        if (isNotAnAtomCharacter(str.charAt(0))) return false;
+
+        for (int i = 1; i < str.length(); i++) {
+            char c = str.charAt(i);
+            if (isNotAnAtomCharacter(c) && c != '.') return false;
+        }
+
+        return true;
+    }
+
+    private int endIndexOfLocalPart(String mailbox) {
+        for (int i = mailbox.length()-1; i >= 0; i--) { // Last '@'-sign denotes ending of local-part.
+            if (mailbox.charAt(i) != '@') continue;
+            return i;
+        }
+
+        throw new IllegalArgumentException("Malformed VRFY-command: mailbox doesn't contain an '@'-sign.");
+    }
+
+    private boolean isValidSubdomain(String str) {
+        // first and last characters have to be alphanumeric:
+        if (isNotAlphanumeric(str.charAt(0)) || isNotAlphanumeric(str.charAt(str.length()-1))) return false;
+
+        // characters in between may also be '-'
+        for (int i = 1; i < str.length()-1; i++) {
+            char c = str.charAt(i);
+            if (isNotAlphanumeric(c) && c != '-') return false;
+        }
+
+        return true;
+    }
+
+    private boolean isValidDomain(String str) {
+        String[] subdomains = str.split("\\."); // if this causes issues use Pattern.quote(".") instead
+
+        for (String subdomain : subdomains) {
+            if (!isValidSubdomain(subdomain)) return false;
+        }
+
+        return true;
+    }
+
+    private boolean isValidAddressLiteral(String str) {
+        return IPAddress.isValid(str);
+    }
+
+    private boolean isValidLocalPart(String localPart) {
+        if (localPart.isEmpty()) return false;
+
+        if (isValidDotString(localPart)) return true; // note: method is equivalent for local part
+
+        // case: special characters were found, thus local part must be quoted string:
+        if (localPart.charAt(0) != '"' || localPart.charAt(localPart.length()-1) != '"') return false;
+
+        localPart = localPart.substring(1, localPart.length()-1); // strip double quotes
+
+        return isValidQuotedString(localPart);
     }
 
     /**
      * @param mailbox Mailbox address from the VRFY-command parameters.
-     * @return Whether mailbox address has valid syntax in accordance with RFC822.
-     * TODO: check whether RFC822 compliance is equivalent to RFC5321 compliance / how they differ.
+     * @return Whether mailbox address has valid syntax in accordance with RFC5321.
      */
     private boolean isValidMailbox(String mailbox) {
-        boolean isValid = true;
+        if (isNotAQuotedString(mailbox)) // the mailbox must be a quoted-string because of the '@'-sign
+            throw new IllegalArgumentException("Malformed VRFY-command: mailbox must be a quoted-string");
 
-        try {
-            InternetAddress internetAddress = new InternetAddress(mailbox);
-            internetAddress.validate();
-        } catch (AddressException ex) {
-            isValid = false;
-        }
+        mailbox = mailbox.substring(1, mailbox.length()-1); // strip outermost double quotes
+        String localPart = mailbox.substring(0, endIndexOfLocalPart(mailbox));
 
-        return isValid;
+        if (!isValidLocalPart(localPart))
+            throw new IllegalArgumentException("Malformed VRFY-command: local-part is invalid.");
+
+        String mailboxEnding = mailbox.substring(endIndexOfLocalPart(mailbox)+1); // everything past @
+        if (isValidAddressLiteral(mailboxEnding) || isValidDomain(mailboxEnding)) return true;
+
+        throw new IllegalArgumentException("Malformed VRFY-command: mailbox domain/address-literal is invalid.");
     }
 }
