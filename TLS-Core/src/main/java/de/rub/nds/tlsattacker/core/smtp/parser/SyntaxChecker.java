@@ -96,7 +96,9 @@ public final class SyntaxChecker {
     }
 
     private static boolean isValidAddressLiteral(String str) {
-        return IPAddress.isValid(str);
+        if (str.charAt(0) != '[' || str.charAt(str.length()-1) != ']') return false;
+
+        return IPAddress.isValid(str.substring(1, str.length()-1));
     }
 
     private static boolean doesNotContainControlCharacters(String str) {
