@@ -69,7 +69,8 @@ public final class SyntaxChecker {
             return i;
         }
 
-        return -1;
+        // TODO: consider changing:
+        return 0; // For now, it sets an invalid index to 0, so isValidLocalPart() detects that the local-part is empty.
     }
 
     private static boolean isValidSubdomain(String str) {

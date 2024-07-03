@@ -41,4 +41,9 @@ public class VRFYCommandParser extends SmtpCommandParser<SmtpVRFYCommand> {
         throw new IllegalArgumentException("The VRFY-command parameter is invalid: " +
                 "it's neither a valid username nor a valid mailbox.");
     }
+
+    @Override
+    public boolean hasParameters() {
+        return true;
+    }
 }
