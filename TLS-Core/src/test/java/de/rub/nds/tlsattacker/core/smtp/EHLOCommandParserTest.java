@@ -12,18 +12,18 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import de.rub.nds.protocol.exception.ParserException;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpEHLOCommand;
-import de.rub.nds.tlsattacker.core.smtp.parser.EHLOParser;
+import de.rub.nds.tlsattacker.core.smtp.parser.EHLOCommandParser;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.Test;
 
-class EHLOParserTest {
+class EHLOCommandParserTest {
     @Test
     void testParse() {
         String stringMessage = "EHLO seal.cs.upb.de\r\n";
 
-        EHLOParser parser =
-                new EHLOParser(
+        EHLOCommandParser parser =
+                new EHLOCommandParser(
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
         SmtpEHLOCommand ehlo = new SmtpEHLOCommand();
         parser.parse(ehlo);
@@ -35,8 +35,8 @@ class EHLOParserTest {
     void testParseAddressLiteral() {
         String stringMessage = "EHLO 127.0.0.1\r\n";
 
-        EHLOParser parser =
-                new EHLOParser(
+        EHLOCommandParser parser =
+                new EHLOCommandParser(
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
         SmtpEHLOCommand ehlo = new SmtpEHLOCommand();
         parser.parse(ehlo);
@@ -49,8 +49,8 @@ class EHLOParserTest {
     void testParseWithoutDomain() {
         String stringMessage = "EHLO  \r\n";
 
-        EHLOParser parser =
-                new EHLOParser(
+        EHLOCommandParser parser =
+                new EHLOCommandParser(
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
         SmtpEHLOCommand ehlo = new SmtpEHLOCommand();
         assertThrows(ParserException.class, () -> parser.parse(ehlo));

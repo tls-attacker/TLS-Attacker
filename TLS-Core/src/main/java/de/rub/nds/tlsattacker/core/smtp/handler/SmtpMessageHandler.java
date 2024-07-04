@@ -6,10 +6,23 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-package de.rub.nds.tlsattacker.core.smtp;
+package de.rub.nds.tlsattacker.core.smtp.handler;
 
+import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.layer.data.Handler;
+import de.rub.nds.tlsattacker.core.smtp.SmtpMessage;
 
 public abstract class SmtpMessageHandler<MessageT extends SmtpMessage> extends Handler<MessageT> {
+
+    protected final SmtpContext context;
+
+    public SmtpMessageHandler(SmtpContext context) {
+        this.context = context;
+    }
+
     public void adjustContext(MessageT container) {}
+
+    public SmtpContext getContext() {
+        return context;
+    }
 }

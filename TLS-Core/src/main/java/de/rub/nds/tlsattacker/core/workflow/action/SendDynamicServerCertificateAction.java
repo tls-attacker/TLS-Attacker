@@ -73,7 +73,7 @@ public class SendDynamicServerCertificateAction extends CommonSendAction {
         CipherSuite selectedCipherSuite = tlsContext.getChooser().getSelectedCipherSuite();
         if (selectedCipherSuite.requiresServerCertificateMessage()) {
             return ActionHelperUtil.createSendConfiguration(
-                    tlsContext, List.of(new CertificateMessage()), null, null, null, null, null);
+                    tlsContext, List.of(new CertificateMessage()), null, null, null, null, null, null);
         } else {
             return null;
         }

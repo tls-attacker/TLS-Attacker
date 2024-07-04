@@ -10,11 +10,18 @@ package de.rub.nds.tlsattacker.core.smtp;
 
 import de.rub.nds.tlsattacker.core.layer.Message;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
+import de.rub.nds.tlsattacker.core.smtp.handler.SmtpMessageHandler;
+import de.rub.nds.tlsattacker.core.smtp.parser.SmtpMessageParser;
+import de.rub.nds.tlsattacker.core.smtp.preparator.SmtpMessagePreparator;
+import de.rub.nds.tlsattacker.core.smtp.serializer.SmtpMessageSerializer;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlRootElement;
+
 import java.io.InputStream;
 
 @XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement
 public abstract class SmtpMessage extends Message<SmtpContext> {
 
     @Override

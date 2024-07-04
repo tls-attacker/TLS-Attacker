@@ -104,6 +104,6 @@ public class PopAndSendAction extends CommonSendAction {
             }
         }
         return ActionHelperUtil.createSendConfiguration(
-                tlsContext, messages, null, null, null, null, null);
+                tlsContext, messages, null, null, null, null, null, null);
     }
 }

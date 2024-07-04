@@ -6,17 +6,13 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-package de.rub.nds.tlsattacker.core.smtp;
+package de.rub.nds.tlsattacker.core.smtp.parser;
 
 import de.rub.nds.protocol.exception.ParserException;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpCommand;
 import java.io.InputStream;
 
 public class SmtpCommandParser<CommandT extends SmtpCommand> extends SmtpMessageParser<CommandT> {
-
-    private static final byte SP = 0x20;
-    private static final byte CR = 0x0D;
-    private static final byte LF = 0x0A;
 
     public SmtpCommandParser(InputStream stream) {
         super(stream);
@@ -25,20 +21,16 @@ public class SmtpCommandParser<CommandT extends SmtpCommand> extends SmtpMessage
     public void parse(CommandT smtpCommand) {
         // TODO: make this robust against not having CRLF, fails at the moment when no CR
         // parseStringTill(CRLF) is sadly not possible
-        String untilLF = parseStringTill(LF);
+        String line = parseSingleLine();
         // throws EndOfStreamException if no LF is found
 
         if (getBytesLeft() > 0) {
             throw new ParserException(
                     "Could not parse as SmtpCommand: Multiple commands in one message are not supported");
         }
-        if (!untilLF.endsWith("\r\n")) {
-            throw new ParserException(
-                    "Could not parse as SmtpCommand: Command does not end with CRLF");
-        }
         // 4.1.1 In the interest of improved interoperability, SMTP receivers SHOULD tolerate
         // trailing white space before the terminating <CRLF>.
-        String actualCommand = untilLF.substring(0, untilLF.length() - 2).trim();
+        String actualCommand = line.trim();
         if (hasParameters()) {
             if (!actualCommand.contains(" ")) {
                 throw new ParserException(
