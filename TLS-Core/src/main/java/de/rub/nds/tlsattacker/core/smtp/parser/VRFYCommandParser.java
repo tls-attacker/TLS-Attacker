@@ -21,7 +21,7 @@ public class VRFYCommandParser extends SmtpCommandParser<SmtpVRFYCommand> {
      *                   In case of a mailbox, the local-part of it may also be a quoted string.
      */
     @Override
-    public void parseArguments(SmtpVRFYCommand command, String parameter) {
+    public void parseArguments(SmtpVRFYCommand command, String parameter) { // TODO: add command line length limit check (4.5.3.1.4).
         if (SmtpSyntaxParser.isNotAQuotedString(parameter)) {
             if (SmtpSyntaxParser.isValidAtomString(parameter)) command.setUsername(parameter);
             // mailbox can't be in an atom string, so there's no need to check if it's valid
