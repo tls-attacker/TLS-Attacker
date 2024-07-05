@@ -52,7 +52,7 @@ public class VRFYReplyParser extends SmtpReplyParser<SmtpVRFYReply> {
             return;
         }
 
-        parseUserAmbiguousResponse(line, reply);
+        parseAmbiguousAndUnavailableResponse(line, reply);
     }
 
     /**
@@ -61,10 +61,10 @@ public class VRFYReplyParser extends SmtpReplyParser<SmtpVRFYReply> {
      * a mailbox is considered to signify ambiguity. So even if misused, the string will be saved in the reply's
      * description property. We also make the assumption that any ambiguity message will not contain an @ sign.
      *
-     * @param line A string containing the text portion of a 553 (i.e. User ambiguous) VRFY-Reply.
-     * @param reply The SmtpVRFYReply object that data will be saved in..
+     * @param line A string containing the text portion of a 553 (i.e. User ambiguous) or 550 VRFY-Reply.
+     * @param reply The SmtpVRFYReply object that data will be saved in.
      */
-    private void parseUserAmbiguousResponse(String line, SmtpVRFYReply reply) {
+    private void parseAmbiguousAndUnavailableResponse(String line, SmtpVRFYReply reply) {
         boolean isAmbiguityMessage = !line.contains("@");
 
         if (isAmbiguityMessage) {
