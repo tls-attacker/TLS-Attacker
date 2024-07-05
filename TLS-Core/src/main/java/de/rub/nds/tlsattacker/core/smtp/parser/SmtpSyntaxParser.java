@@ -78,7 +78,7 @@ public final class SmtpSyntaxParser {
 
     private static boolean isValidSubdomain(String str) {
         // first and last characters have to be alphanumeric:
-        if (isNotAlphanumeric(str.charAt(0)) || isNotAlphanumeric(str.charAt(str.length()-1))) return false;
+        if (str.isEmpty() || isNotAlphanumeric(str.charAt(0)) || isNotAlphanumeric(str.charAt(str.length()-1))) return false;
 
         // characters in between may also be '-'
         for (int i = 1; i < str.length()-1; i++) {
@@ -100,7 +100,7 @@ public final class SmtpSyntaxParser {
     }
 
     private static boolean isValidAddressLiteral(String str) {
-        if (str.charAt(0) != '[' || str.charAt(str.length()-1) != ']') return false;
+        if (str.isEmpty() || str.charAt(0) != '[' || str.charAt(str.length()-1) != ']') return false;
 
         str = str.startsWith("[IPv6:") ? str.substring(6, str.length()-1) : str.substring(1, str.length()-1);
 
@@ -137,5 +137,13 @@ public final class SmtpSyntaxParser {
         String mailboxEnding = mailbox.substring(endIndexOfLocalPart(mailbox)+1); // everything past @
 
         return isValidAddressLiteral(mailboxEnding) || isValidDomain(mailboxEnding);
+    }
+
+    public static String startsWithValidStatusCode(String reply, String[] validStatusCodes) {
+        for (String code : validStatusCodes) {
+            if (reply.startsWith(code + " ") || reply.startsWith(code + "-")) return code;
+        }
+
+        return null;
     }
 }
