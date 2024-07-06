@@ -22,24 +22,24 @@ import org.bouncycastle.util.IPAddress;
  */
 @XmlRootElement
 public class SmtpEHLOCommand extends SmtpCommand {
-    // TODO: Maybe subclass this to accommodate HELO command as well
-
-    // TODO: this is a duplicate of prameters which is not ideal - maybe don't inherit parameters?
-    private String domain;
+    private String clientIdentity;
     private boolean hasAddressLiteral = false;
 
     public SmtpEHLOCommand() {
-        super("EHLO", null);
+        super("EHLO");
     }
 
-    public SmtpEHLOCommand(String domain) {
-        super("EHLO", domain);
-        this.domain = domain;
+    public SmtpEHLOCommand(String clientIdentity) {
+        super("EHLO", clientIdentity);
+        if(IPAddress.isValid(clientIdentity)) {
+            this.hasAddressLiteral = true;
+        }
+        this.clientIdentity = clientIdentity;
     }
 
     public SmtpEHLOCommand(IPAddress ip) {
         super("EHLO", ip.toString());
-        this.domain = ip.toString();
+        this.clientIdentity = ip.toString();
     }
 
     @Override
@@ -47,12 +47,12 @@ public class SmtpEHLOCommand extends SmtpCommand {
         return super.toCompactString();
     }
 
-    public String getDomain() {
-        return domain;
+    public String getClientIdentity() {
+        return clientIdentity;
     }
 
-    public void setDomain(String domain) {
-        this.domain = domain;
+    public void setClientIdentity(String clientIdentity) {
+        this.clientIdentity = clientIdentity;
     }
 
     public boolean hasAddressLiteral() {
