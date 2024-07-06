@@ -8,22 +8,25 @@
  */
 package de.rub.nds.tlsattacker.core.smtp.command;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import de.rub.nds.protocol.exception.ParserException;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
+import de.rub.nds.tlsattacker.core.layer.data.Handler;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import de.rub.nds.tlsattacker.core.smtp.parser.EHLOCommandParser;
 import de.rub.nds.tlsattacker.core.smtp.preparator.EHLOCommandPreparator;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
-import java.io.ByteArrayInputStream;
-import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
+
+import static org.junit.jupiter.api.Assertions.*;
+
 class EHLOCommandTest {
+
     @Test
     void testParse() {
         String stringMessage = "EHLO seal.cs.upb.de\r\n";
@@ -34,12 +37,11 @@ class EHLOCommandTest {
         SmtpEHLOCommand ehlo = new SmtpEHLOCommand();
         parser.parse(ehlo);
         assertEquals("EHLO", ehlo.getVerb());
-        assertEquals("seal.cs.upb.de", ehlo.getDomain());
+        assertEquals("seal.cs.upb.de", ehlo.getClientIdentity());
     }
-
     @Test
-    void testParseAddressLiteral() {
-        String stringMessage = "EHLO 127.0.0.1\r\n";
+    void testDomainTrailingSpace() {
+        String stringMessage = "EHLO seal.cs.upb.de \r\n";
 
         EHLOCommandParser parser =
                 new EHLOCommandParser(
@@ -47,7 +49,20 @@ class EHLOCommandTest {
         SmtpEHLOCommand ehlo = new SmtpEHLOCommand();
         parser.parse(ehlo);
         assertEquals("EHLO", ehlo.getVerb());
-        assertEquals("127.0.0.1", ehlo.getDomain());
+        assertEquals("seal.cs.upb.de", ehlo.getClientIdentity());
+    }
+
+    @Test
+    void testParseAddressLiteral() {
+        String stringMessage = "EHLO [127.0.0.1]\r\n";
+
+        EHLOCommandParser parser =
+                new EHLOCommandParser(
+                        new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
+        SmtpEHLOCommand ehlo = new SmtpEHLOCommand();
+        parser.parse(ehlo);
+        assertEquals("EHLO", ehlo.getVerb());
+        assertEquals("127.0.0.1", ehlo.getClientIdentity());
         assertTrue(ehlo.hasAddressLiteral());
     }
 
@@ -61,10 +76,16 @@ class EHLOCommandTest {
         SmtpEHLOCommand ehlo = new SmtpEHLOCommand();
         assertThrows(ParserException.class, () -> parser.parse(ehlo));
     }
-
     @Test
-    public void testSerialization() {
-        // given an SmtpEHLOCommand see if getSerializer leads to something worthwhile
+    public void parseAddressLiteralTest() {
+        EHLOCommandParser parser = new EHLOCommandParser(new ByteArrayInputStream("EHLO [127.0.0.1]\r\n".getBytes(StandardCharsets.UTF_8)));
+        SmtpEHLOCommand command = new SmtpEHLOCommand();
+        parser.parse(command);
+        assertEquals("127.0.0.1", command.getClientIdentity());
+        assertTrue(command.hasAddressLiteral());
+    }
+    @Test
+    public void testDomainSerialization() {
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
         SmtpEHLOCommand ehloCommand = new SmtpEHLOCommand("seal.upb.de");
         EHLOCommandPreparator preparator = ehloCommand.getPreparator(context);
@@ -72,5 +93,26 @@ class EHLOCommandTest {
         preparator.prepare();
         serializer.serialize();
         Assertions.assertEquals("EHLO seal.upb.de\r\n", serializer.getOutputStream().toString());
+    }
+    @Test
+    public void testAddressLiteralSerialization() {
+        SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
+        SmtpEHLOCommand ehloCommand = new SmtpEHLOCommand("127.0.0.1");
+        EHLOCommandPreparator preparator = ehloCommand.getPreparator(context);
+        Serializer serializer = ehloCommand.getSerializer(context);
+        preparator.prepare();
+        serializer.serialize();
+        Assertions.assertEquals("EHLO [127.0.0.1]\r\n", serializer.getOutputStream().toString());
+    }
+
+    @Test
+    public void testHandle() {
+        SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
+        SmtpEHLOCommand ehloCommand = new SmtpEHLOCommand("seal.upb.de");
+        Handler handler = ehloCommand.getHandler(context);
+
+        handler.adjustContext(ehloCommand);
+
+        assertEquals(context.getClientIdentity(), ehloCommand.getClientIdentity());
     }
 }

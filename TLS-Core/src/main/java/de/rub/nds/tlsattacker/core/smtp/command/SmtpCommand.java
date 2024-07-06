@@ -35,6 +35,9 @@ public class SmtpCommand extends SmtpMessage {
         this.verb = verb;
         this.parameters = parameters;
     }
+    public SmtpCommand(String verb) {
+        this.verb = verb;
+    }
 
     public SmtpCommand() {}
 
