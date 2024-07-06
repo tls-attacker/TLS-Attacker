@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Test;
 
 class EHLOReplyParserTest {
 
+
     @Test
     public void testSingleLineReply() {
         EHLOReplyParser parser =
@@ -63,7 +64,7 @@ class EHLOReplyParserTest {
         EHLOReplyParser parser =
                 new EHLOReplyParser(
                         new ByteArrayInputStream(
-                                "250-seal.upb.de Hello user! itsa me\r\n250-STARTTLS\r\n250 END\r\n"
+                                "250-seal.upb.de Hello user! itsa me\r\n250-STARTTLS\r\n250 UNKNOWNKEYWORD\r\n"
                                         .getBytes(StandardCharsets.UTF_8)));
         SmtpEHLOReply reply = new SmtpEHLOReply();
         assertThrows(ParserException.class, () -> parser.parse(reply));
@@ -83,5 +84,49 @@ class EHLOReplyParserTest {
         assertEquals(2, reply.getExtensions().size());
         assertTrue(reply.getExtensions().stream().anyMatch(e -> e instanceof STARTTLSExtension));
         assertTrue(reply.getExtensions().stream().anyMatch(e -> e instanceof HELPExtension));
+    }
+
+    @Test
+    public void testCommandNotImplemented() {
+        EHLOReplyParser parser =
+                new EHLOReplyParser(
+                        new ByteArrayInputStream(
+                                "502 Command not implemented\r\n".getBytes(StandardCharsets.UTF_8)));
+        SmtpEHLOReply reply = new SmtpEHLOReply();
+        parser.parse(reply);
+        assertEquals(502, reply.getReplyCode());
+    }
+
+    @Test
+    public void testMailboxUnavailable() {
+        EHLOReplyParser parser =
+                new EHLOReplyParser(
+                        new ByteArrayInputStream(
+                                "550 Requested action not taken: mailbox unavailable\r\n".getBytes(StandardCharsets.UTF_8)));
+        SmtpEHLOReply reply = new SmtpEHLOReply();
+        parser.parse(reply);
+        assertEquals(550, reply.getReplyCode());
+    }
+
+    @Test
+    public void testCommandParameterNotImplemented() {
+        EHLOReplyParser parser =
+                new EHLOReplyParser(
+                        new ByteArrayInputStream(
+                                "504 Command parameter not implemented\r\n".getBytes(StandardCharsets.UTF_8)));
+        SmtpEHLOReply reply = new SmtpEHLOReply();
+        parser.parse(reply);
+        assertEquals(504, reply.getReplyCode());
+    }
+
+    @Test
+    public void testInvalidMultilineError() {
+        EHLOReplyParser parser =
+                new EHLOReplyParser(
+                        new ByteArrayInputStream(
+                                "502 Command not implemented\r\n250 Second line for some reason\r\n"
+                                        .getBytes(StandardCharsets.UTF_8)));
+        SmtpEHLOReply reply = new SmtpEHLOReply();
+        assertThrows(ParserException.class, () -> parser.parse(reply));
     }
 }

@@ -32,18 +32,25 @@ public class EHLOReplyParser extends SmtpReplyParser<SmtpEHLOReply> {
         LOGGER.trace("Parsing lines: {}", lines);
 
         //Error cases
-        if(lines.get(0).startsWith("504 ")) {
-            // Command parameter not implemented
-            // not sure why this would be sent, RFC says "fairly obscure" - there is no real EHLO command parameter
-            smtpEHLOReply.setReplyCode(504);
-        }
-        else if(lines.get(0).startsWith("550 ")) {
-            // Requested action not taken: mailbox unavailable
-            smtpEHLOReply.setReplyCode(550);
-        }
-        else if(lines.get(0).startsWith("502 ")) {
-            // Command not implemented
-            smtpEHLOReply.setReplyCode(502);
+        if(lines.get(0).startsWith("5")) {
+            if(lines.get(0).startsWith("504 ")) {
+                // Command parameter not implemented
+                // not sure why this would be sent, RFC says "fairly obscure" - there is no real EHLO     command parameter
+                smtpEHLOReply.setReplyCode(504);
+            }
+            else if(lines.get(0).startsWith("550 ")) {
+                // Requested action not taken: mailbox unavailable
+                smtpEHLOReply.setReplyCode(550);
+            }
+            else if(lines.get(0).startsWith("502 ")) {
+                // Command not implemented
+                smtpEHLOReply.setReplyCode(502);
+            } else {
+                throw new ParserException("Could not parse EHLOReply. Unexpected Errorcode: " + lines.get(0));
+            }
+            if(lines.size() > 1) {
+                throw new ParserException("Could not parse EHLOReply. Unexpected additional lines: " + lines.subList(1, lines.size()));
+            }
         } else {
             //Success case
             // only the last line can be '250 ' the others must be '250-', check for both
