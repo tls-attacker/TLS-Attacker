@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.smtp.parser;
 
-import de.rub.nds.tlsattacker.core.exceptions.ParserException;
+import de.rub.nds.protocol.exception.ParserException;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpEHLOCommand;
 import java.io.InputStream;
 import org.bouncycastle.util.IPAddress;
@@ -20,6 +20,9 @@ public class EHLOCommandParser extends SmtpCommandParser<SmtpEHLOCommand> {
 
     @Override
     public void parseArguments(SmtpEHLOCommand command, String arguments) {
+        if(arguments.contains(" ")) {
+            throw new ParserException("EHLO command must have exactly one argument");
+        }
         if (arguments.startsWith("[") && arguments.endsWith("]")) {
             String address = arguments.substring(1, arguments.length() - 1);
             if(IPAddress.isValid(address)) {

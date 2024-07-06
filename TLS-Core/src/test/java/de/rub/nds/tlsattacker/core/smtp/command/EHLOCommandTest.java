@@ -55,6 +55,18 @@ class EHLOCommandTest {
     }
 
     @Test
+    void testParseInvalidDomain() {
+        String stringMessage = "EHLO seal.cs.upb.de invalid\r\n";
+        SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
+        SmtpEHLOCommand ehlo = new SmtpEHLOCommand();
+
+        EHLOCommandParser parser =
+                ehlo.getParser(context,
+                        new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
+        assertThrows(ParserException.class, () -> parser.parse(ehlo));
+    }
+
+    @Test
     void testParseAddressLiteral() {
         String stringMessage = "EHLO [127.0.0.1]\r\n";
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
@@ -68,6 +80,18 @@ class EHLOCommandTest {
         assertEquals("127.0.0.1", ehlo.getClientIdentity());
         assertTrue(ehlo.hasAddressLiteral());
     }
+
+    @Test
+    void testParseMalformedAddressLiteral() {
+        String stringMessage = "EHLO [1.2.3. ]\r\n";
+        SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
+        SmtpEHLOCommand ehlo = new SmtpEHLOCommand();
+        EHLOCommandParser parser =
+                ehlo.getParser(context,
+                        new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
+        assertThrows(ParserException.class, () -> parser.parse(ehlo));
+    }
+
 
     @Test
     void testParseWithoutDomain() {
