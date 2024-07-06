@@ -18,6 +18,7 @@ public class EHLOCommandPreparator extends SmtpCommandPreparator<SmtpEHLOCommand
 
     @Override
     public void prepare() {
+        this.getObject().setVerb("EHLO");
         if (this.getObject().hasAddressLiteral()) {
             this.getObject().setParameters("[" + this.getObject().getClientIdentity() + "]");
         } else {
