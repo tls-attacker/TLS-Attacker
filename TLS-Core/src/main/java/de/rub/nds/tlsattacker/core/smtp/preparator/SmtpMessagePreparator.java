@@ -13,7 +13,8 @@ import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.smtp.SmtpMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
-public abstract class SmtpMessagePreparator<MessageT extends SmtpMessage> extends Preparator<MessageT> {
+public abstract class SmtpMessagePreparator<MessageT extends SmtpMessage>
+        extends Preparator<MessageT> {
 
     protected final SmtpContext context;
 

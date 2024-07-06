@@ -9,14 +9,11 @@
 package de.rub.nds.tlsattacker.core.smtp.command;
 
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
-import de.rub.nds.tlsattacker.core.smtp.parser.SmtpMessageParser;
-import de.rub.nds.tlsattacker.core.smtp.preparator.SmtpMessagePreparator;
 import de.rub.nds.tlsattacker.core.smtp.parser.EHLOCommandParser;
 import de.rub.nds.tlsattacker.core.smtp.preparator.EHLOCommandPreparator;
 import jakarta.xml.bind.annotation.XmlRootElement;
-import org.bouncycastle.util.IPAddress;
-
 import java.io.InputStream;
+import org.bouncycastle.util.IPAddress;
 
 /**
  * This class represents an SMTP EHLO command, which is used to identify the client to the server.

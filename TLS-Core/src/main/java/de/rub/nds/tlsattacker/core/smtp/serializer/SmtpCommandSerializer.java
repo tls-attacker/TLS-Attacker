@@ -18,7 +18,8 @@ import de.rub.nds.tlsattacker.core.smtp.command.SmtpCommand;
    When there are no parameters, the command is serialized as "COMMAND<CRLF>".
    This is according to the SMTP protocol as defined in RFC 5321.
 */
-public class SmtpCommandSerializer<CommandT extends SmtpCommand> extends SmtpMessageSerializer<CommandT> {
+public class SmtpCommandSerializer<CommandT extends SmtpCommand>
+        extends SmtpMessageSerializer<CommandT> {
 
     // modeled after their usage in RFC 5321
     private static final String SP = " ";
