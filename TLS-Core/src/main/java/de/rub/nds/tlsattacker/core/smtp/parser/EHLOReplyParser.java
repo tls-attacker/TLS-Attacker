@@ -31,28 +31,30 @@ public class EHLOReplyParser extends SmtpReplyParser<SmtpEHLOReply> {
         List<String> lines = parseAllLines();
         LOGGER.trace("Parsing lines: {}", lines);
 
-        //Error cases
-        if(lines.get(0).startsWith("5")) {
-            if(lines.get(0).startsWith("504 ")) {
+        // Error cases
+        if (lines.get(0).startsWith("5")) {
+            if (lines.get(0).startsWith("504 ")) {
                 // Command parameter not implemented
-                // not sure why this would be sent, RFC says "fairly obscure" - there is no real EHLO     command parameter
+                // not sure why this would be sent, RFC says "fairly obscure" - there is no real
+                // EHLO     command parameter
                 smtpEHLOReply.setReplyCode(504);
-            }
-            else if(lines.get(0).startsWith("550 ")) {
+            } else if (lines.get(0).startsWith("550 ")) {
                 // Requested action not taken: mailbox unavailable
                 smtpEHLOReply.setReplyCode(550);
-            }
-            else if(lines.get(0).startsWith("502 ")) {
+            } else if (lines.get(0).startsWith("502 ")) {
                 // Command not implemented
                 smtpEHLOReply.setReplyCode(502);
             } else {
-                throw new ParserException("Could not parse EHLOReply. Unexpected Errorcode: " + lines.get(0));
+                throw new ParserException(
+                        "Could not parse EHLOReply. Unexpected Errorcode: " + lines.get(0));
             }
-            if(lines.size() > 1) {
-                throw new ParserException("Could not parse EHLOReply. Unexpected additional lines: " + lines.subList(1, lines.size()));
+            if (lines.size() > 1) {
+                throw new ParserException(
+                        "Could not parse EHLOReply. Unexpected additional lines: "
+                                + lines.subList(1, lines.size()));
             }
         } else {
-            //Success case
+            // Success case
             // only the last line can be '250 ' the others must be '250-', check for both
             if (!lines.get(lines.size() - 1).startsWith("250 ")) {
                 LOGGER.trace(
@@ -149,7 +151,7 @@ public class EHLOReplyParser extends SmtpReplyParser<SmtpEHLOReply> {
             case "MTRK":
                 return new MTRKExtension();
             case "NO-SOLICITING":
-                //TODO: NO-SOLICITING parameter not understood in any way
+                // TODO: NO-SOLICITING parameter not understood in any way
                 return new NO_SOLICITINGExtension(parameters);
             case "PIPELINING":
                 return new PIPELININGExtension();

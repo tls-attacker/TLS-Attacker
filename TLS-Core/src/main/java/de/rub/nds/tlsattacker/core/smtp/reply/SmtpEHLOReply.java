@@ -61,5 +61,4 @@ public class SmtpEHLOReply extends SmtpReply {
     public void setExtensions(List<SmtpServiceExtension> extensions) {
         this.extensions = extensions;
     }
-
 }

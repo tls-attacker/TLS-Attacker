@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.smtp.extensions;
 
 public class SIZEExtension extends SmtpServiceExtension {
     private int size;
+
     public SIZEExtension(int size) {
         super("SIZE");
         this.size = size;

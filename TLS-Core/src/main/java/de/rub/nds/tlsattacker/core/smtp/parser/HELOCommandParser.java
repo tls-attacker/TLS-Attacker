@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.core.smtp.parser;
 
 import de.rub.nds.protocol.exception.ParserException;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpHELOCommand;
-
 import java.io.InputStream;
 
 public class HELOCommandParser extends SmtpCommandParser<SmtpHELOCommand> {
@@ -21,7 +20,7 @@ public class HELOCommandParser extends SmtpCommandParser<SmtpHELOCommand> {
     @Override
     public void parseArguments(SmtpHELOCommand command, String arguments) {
         // just a domain
-        if(arguments.contains(" ")) {
+        if (arguments.contains(" ")) {
             throw new ParserException("HELO command must have exactly one argument");
         }
         command.setDomain(arguments);

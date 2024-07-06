@@ -32,7 +32,7 @@ public class SmtpEHLOCommand extends SmtpCommand {
 
     public SmtpEHLOCommand(String clientIdentity) {
         super("EHLO", clientIdentity);
-        if(IPAddress.isValid(clientIdentity)) {
+        if (IPAddress.isValid(clientIdentity)) {
             this.hasAddressLiteral = true;
         }
         this.clientIdentity = clientIdentity;

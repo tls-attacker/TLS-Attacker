@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.core.smtp.preparator;
 
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
-import de.rub.nds.tlsattacker.core.smtp.command.SmtpEHLOCommand;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpHELOCommand;
 
 public class HELOCommandPreparator extends SmtpCommandPreparator<SmtpHELOCommand> {

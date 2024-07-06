@@ -109,6 +109,7 @@ class EHLOReplyTest {
                 "250-seal.cs.upb.de says Greetings\r\n250-8BITMIME\r\n250-ATRN\r\n250-STARTTLS\r\n250 HELP\r\n",
                 serializer.getOutputStream().toString());
     }
+
     @Test
     public void testParseMalformedSingleLineReply() {
         EHLOReplyParser parser =
@@ -152,7 +153,8 @@ class EHLOReplyTest {
         EHLOReplyParser parser =
                 new EHLOReplyParser(
                         new ByteArrayInputStream(
-                                "502 Command not implemented\r\n".getBytes(StandardCharsets.UTF_8)));
+                                "502 Command not implemented\r\n"
+                                        .getBytes(StandardCharsets.UTF_8)));
         SmtpEHLOReply reply = new SmtpEHLOReply();
         parser.parse(reply);
         assertEquals(502, reply.getReplyCode());
@@ -163,7 +165,8 @@ class EHLOReplyTest {
         EHLOReplyParser parser =
                 new EHLOReplyParser(
                         new ByteArrayInputStream(
-                                "550 Requested action not taken: mailbox unavailable\r\n".getBytes(StandardCharsets.UTF_8)));
+                                "550 Requested action not taken: mailbox unavailable\r\n"
+                                        .getBytes(StandardCharsets.UTF_8)));
         SmtpEHLOReply reply = new SmtpEHLOReply();
         parser.parse(reply);
         assertEquals(550, reply.getReplyCode());
@@ -174,7 +177,8 @@ class EHLOReplyTest {
         EHLOReplyParser parser =
                 new EHLOReplyParser(
                         new ByteArrayInputStream(
-                                "504 Command parameter not implemented\r\n".getBytes(StandardCharsets.UTF_8)));
+                                "504 Command parameter not implemented\r\n"
+                                        .getBytes(StandardCharsets.UTF_8)));
         SmtpEHLOReply reply = new SmtpEHLOReply();
         parser.parse(reply);
         assertEquals(504, reply.getReplyCode());

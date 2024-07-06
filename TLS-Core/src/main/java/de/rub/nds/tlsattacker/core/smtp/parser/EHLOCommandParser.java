@@ -20,18 +20,19 @@ public class EHLOCommandParser extends SmtpCommandParser<SmtpEHLOCommand> {
 
     @Override
     public void parseArguments(SmtpEHLOCommand command, String arguments) {
-        if(arguments.contains(" ")) {
+        if (arguments.contains(" ")) {
             throw new ParserException("EHLO command must have exactly one argument");
         }
         if (arguments.startsWith("[") && arguments.endsWith("]")) {
             String address = arguments.substring(1, arguments.length() - 1);
-            if(IPAddress.isValid(address)) {
+            if (IPAddress.isValid(address)) {
                 command.setHasAddressLiteral(true);
                 command.setClientIdentity(address);
             } else {
-                throw new ParserException("Malformed address literal in EHLO command: " + arguments);
+                throw new ParserException(
+                        "Malformed address literal in EHLO command: " + arguments);
             }
-        } else{
+        } else {
             // just a domain
             command.setClientIdentity(arguments);
         }
