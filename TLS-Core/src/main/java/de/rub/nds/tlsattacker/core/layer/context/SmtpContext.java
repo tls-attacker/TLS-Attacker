@@ -24,6 +24,7 @@ public class SmtpContext extends LayerContext {
     private List<String> forwardPathBuffer = new ArrayList<>();
     private StringBuilder mailDataBuffer = new StringBuilder();
     private String clientIdentity;
+    private boolean serverOnlySupportsEHLO = false;
 
     // SMTP is a back and forth of commands and replies. We need to keep track of each to correctly
     // get the type of the reply
@@ -87,5 +88,13 @@ public class SmtpContext extends LayerContext {
                         "No reply implemented for :" + command.getClass());
             }
         }
+    }
+
+    public boolean isServerOnlySupportsEHLO() {
+        return serverOnlySupportsEHLO;
+    }
+
+    public void setServerOnlySupportsEHLO(boolean serverOnlySupportsEHLO) {
+        this.serverOnlySupportsEHLO = serverOnlySupportsEHLO;
     }
 }
