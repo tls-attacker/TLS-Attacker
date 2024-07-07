@@ -13,6 +13,8 @@ import de.rub.nds.tlsattacker.core.smtp.handler.HELOCommandHandler;
 import de.rub.nds.tlsattacker.core.smtp.parser.HELOCommandParser;
 import de.rub.nds.tlsattacker.core.smtp.preparator.HELOCommandPreparator;
 import java.io.InputStream;
+
+import jakarta.xml.bind.annotation.XmlRootElement;
 import org.bouncycastle.util.IPAddress;
 
 /**
@@ -21,6 +23,7 @@ import org.bouncycastle.util.IPAddress;
  * similar to the EHLO command, it is implemented not as a subclass, because it does carry some
  * implications regarding the client version and how to handle messages.
  */
+@XmlRootElement
 public class SmtpHELOCommand extends SmtpCommand {
     private String domain;
 

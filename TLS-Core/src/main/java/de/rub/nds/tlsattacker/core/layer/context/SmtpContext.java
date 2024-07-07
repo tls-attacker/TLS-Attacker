@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.layer.context;
 
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpCommand;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpEHLOCommand;
+import de.rub.nds.tlsattacker.core.smtp.command.SmtpHELOCommand;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpInitialGreetingDummy;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpEHLOReply;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpInitialGreeting;
@@ -79,7 +80,7 @@ public class SmtpContext extends LayerContext {
         if (command == null) {
             return null;
         } else {
-            if (command instanceof SmtpEHLOCommand) {
+            if (command instanceof SmtpEHLOCommand || command instanceof SmtpHELOCommand) {
                 return new SmtpEHLOReply();
             } else if (command instanceof SmtpInitialGreetingDummy) {
                 return new SmtpInitialGreeting();
