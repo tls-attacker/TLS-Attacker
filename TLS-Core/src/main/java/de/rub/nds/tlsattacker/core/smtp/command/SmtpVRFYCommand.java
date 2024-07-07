@@ -11,12 +11,12 @@ package de.rub.nds.tlsattacker.core.smtp.command;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.parser.VRFYCommandParser;
 import de.rub.nds.tlsattacker.core.smtp.preparator.VRFYCommandPreparator;
-
 import java.io.InputStream;
 
 /**
- * This class represents an SMTP VRFY command, which is used to verify whether an e-mail address exists.
- * The VRFY command can have the parameters: username OR mailboxAddress OR username and mailboxAddress.
+ * This class represents an SMTP VRFY command, which is used to verify whether an e-mail address
+ * exists. The VRFY command can have the parameters: username OR mailboxAddress OR username and
+ * mailboxAddress.
  */
 public class SmtpVRFYCommand extends SmtpCommand {
 

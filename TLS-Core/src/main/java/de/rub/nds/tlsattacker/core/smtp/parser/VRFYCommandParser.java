@@ -1,8 +1,15 @@
+/*
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
+ *
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
+ */
 package de.rub.nds.tlsattacker.core.smtp.parser;
 
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpVRFYCommand;
-
 import java.io.InputStream;
 
 public class VRFYCommandParser extends SmtpCommandParser<SmtpVRFYCommand> {
@@ -14,12 +21,11 @@ public class VRFYCommandParser extends SmtpCommandParser<SmtpVRFYCommand> {
      * Parses VRFY-Command.
      *
      * @param command Instance of the VRFY command class.
-     * @param parameter Parameter of the VRFY command. According to RFC5321, the syntax of a full command is:
-     *                                                  VRFY SP String CRLF
-     *                   The string (here: parameter) may be: (a) just a username [username] or
-     *                   (b) just a mailbox [local-part@domain] (see section 4.1.1.6 of RFC).
-     *                   The parameter string may be an atom string (alphanumeric) or a quoted string.
-     *                   In case of a mailbox, the local-part of it may also be a quoted string.
+     * @param parameter Parameter of the VRFY command. According to RFC5321, the syntax of a full
+     *     command is: VRFY SP String CRLF The string (here: parameter) may be: (a) just a username
+     *     [username] or (b) just a mailbox [local-part@domain] (see section 4.1.1.6 of RFC). The
+     *     parameter string may be an atom string (alphanumeric) or a quoted string. In case of a
+     *     mailbox, the local-part of it may also be a quoted string.
      */
     @Override
     public void parseArguments(SmtpVRFYCommand command, String parameter) {
@@ -34,13 +40,15 @@ public class VRFYCommandParser extends SmtpCommandParser<SmtpVRFYCommand> {
         // case: quoted string:
         parameter = parameter.substring(1, parameter.length() - 1); // strip outermost quotes
         if (SmtpSyntaxParser.isValidMailbox(parameter)) command.setMailbox(parameter);
-        else if (SmtpSyntaxParser.isValidQuotedStringContent(parameter)) command.setUsername(parameter);
+        else if (SmtpSyntaxParser.isValidQuotedStringContent(parameter))
+            command.setUsername(parameter);
         else throwInvalidParameterException();
     }
 
     private void throwInvalidParameterException() {
-        throw new ParserException("Malformed VRFY-Command: " +
-                "the provided parameter is neither a valid username nor a valid mailbox.");
+        throw new ParserException(
+                "Malformed VRFY-Command: "
+                        + "the provided parameter is neither a valid username nor a valid mailbox.");
     }
 
     @Override
