@@ -12,9 +12,8 @@ import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.handler.HELOCommandHandler;
 import de.rub.nds.tlsattacker.core.smtp.parser.HELOCommandParser;
 import de.rub.nds.tlsattacker.core.smtp.preparator.HELOCommandPreparator;
-import java.io.InputStream;
-
 import jakarta.xml.bind.annotation.XmlRootElement;
+import java.io.InputStream;
 import org.bouncycastle.util.IPAddress;
 
 /**
