@@ -26,7 +26,7 @@ public class VRFYCommandParser extends SmtpCommandParser<SmtpVRFYCommand> {
         if (SmtpSyntaxParser.isNotAQuotedString(parameter)) {
             if (SmtpSyntaxParser.isValidAtomString(parameter)) command.setUsername(parameter);
             // mailbox can't be in an atom string, so there's no need to check if it's valid
-            else throwInvalidParameterException(); // TODO: check whether exception should be caught
+            else throwInvalidParameterException();
 
             return;
         }
