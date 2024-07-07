@@ -20,12 +20,20 @@ import de.rub.nds.tlsattacker.core.smtp.serializer.SmtpMessageSerializer;
 import de.rub.nds.tlsattacker.core.smtp.serializer.SmtpReplySerializer;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.List;
 
 @XmlRootElement
 public class SmtpReply extends SmtpMessage {
+
     private int replyCode;
     private List<String> replyLines;
+
+    public SmtpReply() {
+        super();
+        this.replyLines = new ArrayList<>();
+    }
 
     @Override
     public SmtpMessageHandler<? extends SmtpMessage> getHandler(SmtpContext smtpContext) {
@@ -35,7 +43,7 @@ public class SmtpReply extends SmtpMessage {
     @Override
     public SmtpMessageParser<? extends SmtpMessage> getParser(
             SmtpContext context, InputStream stream) {
-        return new SmtpReplyParser<>(stream);
+        return null;
     }
 
     @Override

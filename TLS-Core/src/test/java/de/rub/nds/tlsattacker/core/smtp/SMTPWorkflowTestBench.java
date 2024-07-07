@@ -14,6 +14,8 @@ import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.layer.*;
 import de.rub.nds.tlsattacker.core.layer.constant.StackConfiguration;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpEHLOCommand;
+import de.rub.nds.tlsattacker.core.smtp.reply.SmtpEHLOReply;
+import de.rub.nds.tlsattacker.core.smtp.reply.SmtpInitialGreeting;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpReply;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
@@ -22,6 +24,7 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceSerializer;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
+import de.rub.nds.tlsattacker.core.workflow.action.WaitAction;
 import jakarta.xml.bind.JAXBException;
 import java.io.IOException;
 import java.security.Security;
@@ -52,9 +55,13 @@ public class SMTPWorkflowTestBench {
 
         WorkflowTrace trace = new WorkflowTrace();
 
+        SmtpReply initialGreeting = new SmtpInitialGreeting();
         SmtpMessage m = new SmtpEHLOCommand("seal.upb.de");
+        trace.addTlsAction(new ReceiveAction(initialGreeting));
         trace.addTlsAction(new SendAction(m));
-        trace.addTlsAction(new ReceiveAction(new SmtpReply()));
+        trace.addTlsAction(new WaitAction(1000));
+        trace.addTlsAction(new ReceiveAction(new SmtpEHLOReply()));
+        trace.addTlsAction(new WaitAction(1000));
         trace.addTlsAction(new SendAction(m));
 
         State state = new State(config, trace);
