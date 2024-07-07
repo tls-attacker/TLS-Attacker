@@ -36,9 +36,6 @@ class SmtpSyntaxParserTest {
                 "john.doe@[300.1.2.3]",
                 "john.doe@[123.1.2.3.1]",
                 "john..doe@gmail.com",
-                "john.doeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" +
-                        "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" +
-                        "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee@gmail.com",
                 "@",
                 "john.doe@",
                 "john.doe@-"

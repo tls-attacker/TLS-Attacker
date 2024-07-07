@@ -17,7 +17,7 @@ public class VRFYReplyParser extends SmtpReplyParser<SmtpVRFYReply> {
         super(inputStream);
     }
     @Override
-    public void parse(SmtpVRFYReply reply) { // TODO: add reply line length limit check (4.5.3.1.5).
+    public void parse(SmtpVRFYReply reply) {
         List<String> lines = parseAllLines();
 
         if (lines.isEmpty())
@@ -31,6 +31,9 @@ public class VRFYReplyParser extends SmtpReplyParser<SmtpVRFYReply> {
 
             if (i > 0 && !reply.getStatusCode().equals(statusCode))
                 throw new ParserException("Malformed VRFY-Reply: Multiline status codes are inconsistent.");
+
+            if (i > 0 && isNormalResponse(statusCode) || isUnimplementedResponse(statusCode))
+                throw new ParserException("Malformed VRFY-Reply: Normal response contains multiple lines.");
 
             line = line.substring(4).trim();
             parseResponse(statusCode, line, reply);
@@ -107,7 +110,8 @@ public class VRFYReplyParser extends SmtpReplyParser<SmtpVRFYReply> {
     /**
      * Note: RFC5321's guidelines about the reply format are quite lax. While the RFC indicates that hosts MAY decide
      *       to define the username as they want, we do not consider the use of quoted strings here, as the unlimited
-     *       use of double quotes or < in both username and local-part would significantly complicate parsing.
+     *       use of double quotes or < in both username and local-part would significantly complicate parsing. We *do*
+     *       consider the general format that is used in examples in the RFC.
      *
      * @param line A normal response line.
      * @param reply The SmtpVRFYReply object that data will be saved in.

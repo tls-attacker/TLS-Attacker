@@ -1,7 +1,5 @@
 package de.rub.nds.tlsattacker.core.smtp.parser;
 
-import de.rub.nds.tlsattacker.core.exceptions.ParserException;
-import de.rub.nds.tlsattacker.core.smtp.command.SmtpVRFYCommand;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpVRFYReply;
 import org.junit.jupiter.api.Test;
 
@@ -47,11 +45,12 @@ class VRFYReplyParserTest {
                 "250 John john@mail.com\r\n",
                 "250 John Doe <\"john.doe@mail.com>\r\n",
                 "250 <john.doe@mail.com>>\r\n",
+                "250 John <john@mail.com>\r\n250 John <john@mail.com>\r\n",
                 "250 ",
                 "250+ John Doe <john.doe@mail.com>\r\n",
                 "251 User not local\r\n", // mailbox must be provided
 
-                "553 User ambiguous\r\n553 User ambiguous\n", // two descriptions
+                "553 User ambiguous\r\n553 User ambiguous\r\n", // two descriptions
                 "555", // invalid code
                 ""
         };

@@ -2,13 +2,11 @@ package de.rub.nds.tlsattacker.core.smtp.parser;
 
 import org.bouncycastle.util.IPAddress;
 
-import java.nio.charset.StandardCharsets;
-
 /**
  * This class contains functions that check syntax based on RFC5321's Command Argument Syntax.
  */
 public final class SmtpSyntaxParser {
-    public static boolean isNotAQuotedString(String string) {
+    public static boolean isNotAQuotedString(String string) { // note: does not check whether quoted string content is valid
         return !(string.length() > 1 &&
                 string.charAt(0) == '"' &&
                 string.charAt(string.length() - 1) == '"');
@@ -72,7 +70,6 @@ public final class SmtpSyntaxParser {
             return i;
         }
 
-        // TODO: consider changing:
         return 0; // For now, it sets an invalid index to 0, so isValidLocalPart() detects that the local-part is empty.
     }
 
@@ -117,12 +114,14 @@ public final class SmtpSyntaxParser {
 
     private static boolean isValidLocalPart(String localPart) {
         if (localPart.isEmpty()) return false;
-        if (localPart.getBytes(StandardCharsets.UTF_8).length > 64) return false; // can't be longer than 64 octets
+        // Commented out because RFC is not that strict about limits (larger objects "should" be ignored):
+        // if (localPart.getBytes(StandardCharsets.UTF_8).length > 64) return false;
 
         if (isValidDotString(localPart)) return true;
 
         // case: special characters were found, thus local part must be quoted string:
-        return localPart.charAt(0) == '"' && localPart.charAt(localPart.length() - 1) == '"';
+        return localPart.charAt(0) == '"' && localPart.charAt(localPart.length() - 1) == '"' &&
+                SmtpSyntaxParser.isValidQuotedStringContent(localPart.substring(1, localPart.length()-1));
     }
 
     /**

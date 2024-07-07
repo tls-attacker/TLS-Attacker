@@ -1,6 +1,6 @@
 package de.rub.nds.tlsattacker.core.smtp.parser;
 
-import de.rub.nds.tlsattacker.core.smtp.command.SmtpEHLOCommand;
+import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpVRFYCommand;
 import org.junit.jupiter.api.Test;
 
@@ -44,7 +44,7 @@ class VRFYCommandParserTest {
                     new ByteArrayInputStream(command.getBytes(StandardCharsets.UTF_8)));
 
             SmtpVRFYCommand vrfy = new SmtpVRFYCommand();
-            assertThrows(IllegalArgumentException.class, () -> parser.parse(vrfy));
+            assertThrows(ParserException.class, () -> parser.parse(vrfy));
         }
     }
 }
