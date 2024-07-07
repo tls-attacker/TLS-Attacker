@@ -51,8 +51,8 @@ class VRFYReplyParserTest {
                 "251 User not local\r\n", // mailbox must be provided
 
                 "553 User ambiguous\r\n553 User ambiguous\r\n", // two descriptions
-                "555", // invalid code
-                ""
+                "555\r\n", // invalid code
+                "\r\n"
         };
 
         for (String command : invalidCommands) {
