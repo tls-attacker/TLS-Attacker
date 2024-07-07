@@ -8,6 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.smtp.reply;
 
+import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
+import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.*;
 import de.rub.nds.tlsattacker.core.smtp.handler.SmtpMessageHandler;
@@ -26,12 +29,13 @@ import java.util.List;
 @XmlRootElement
 public class SmtpReply extends SmtpMessage {
 
-    private int replyCode;
+    @HoldsModifiableVariable private ModifiableInteger replyCode;
     private List<String> replyLines;
 
     public SmtpReply() {
         super();
         this.replyLines = new ArrayList<>();
+        replyCode = ModifiableVariableFactory.createIntegerModifiableVariable();
     }
 
     @Override
@@ -61,11 +65,11 @@ public class SmtpReply extends SmtpMessage {
     }
 
     public int getReplyCode() {
-        return replyCode;
+        return replyCode.getValue();
     }
 
     public void setReplyCode(int replyCode) {
-        this.replyCode = replyCode;
+        this.replyCode = ModifiableVariableFactory.safelySetValue(this.replyCode, replyCode);
     }
 
     public List<String> getReplyLines() {

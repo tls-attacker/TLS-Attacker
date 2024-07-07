@@ -13,11 +13,7 @@ import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.layer.impl.QuicFrameLayer;
 import de.rub.nds.tlsattacker.core.state.Context;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -43,7 +39,7 @@ public class LayerStack {
 
     public LayerStack(Context context, ProtocolLayer... layers) {
         this.context = context;
-        layerList = Arrays.asList(layers);
+        layerList = new ArrayList<>(Arrays.asList(layers));
         for (int i = 0; i < layers.length; i++) {
             ProtocolLayer layer = layerList.get(i);
             if (i != 0) {
@@ -218,5 +214,26 @@ public class LayerStack {
     /** Returns the layer list. */
     public List<ProtocolLayer> getLayerList() {
         return Collections.unmodifiableList(layerList);
+    }
+
+    public void insertLayer(ProtocolLayer newLayer, int index) {
+        if(index < 0 || index > layerList.size() - 1) {
+            throw new IllegalArgumentException("Layer index out of bounds");
+        }
+
+        if(index > 0) {
+            ProtocolLayer higherLayer = layerList.get(index - 1);
+            higherLayer.setLowerLayer(newLayer);
+            newLayer.setHigherLayer(higherLayer);
+        }
+        if(index < layerList.size()) {
+            ProtocolLayer lowerLayer = layerList.get(index);
+            newLayer.setLowerLayer(lowerLayer);
+            lowerLayer.setHigherLayer(newLayer);
+        }
+        //not every List<> implementation supports adding at a specific index
+        //the getter explicitly returns an unmodifiable list
+        //just be aware that this is janky :)
+        this.layerList.add(index, newLayer);
     }
 }
