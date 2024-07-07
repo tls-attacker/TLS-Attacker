@@ -8,12 +8,14 @@
  */
 package de.rub.nds.tlsattacker.core.layer.impl;
 
+import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
 import de.rub.nds.tlsattacker.core.exceptions.TimeoutException;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
+import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.hints.SmtpLayerHint;
@@ -23,6 +25,7 @@ import de.rub.nds.tlsattacker.core.smtp.handler.SmtpMessageHandler;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpReply;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpUnknownReply;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+
 import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -90,6 +93,14 @@ public class SmtpLayer extends ProtocolLayer<SmtpLayerHint, SmtpMessage> {
             } while (shouldContinueProcessing());
         } catch (TimeoutException e) {
             LOGGER.debug(e);
+        } catch (EndOfStreamException ex) {
+            if (getLayerConfiguration() != null
+                    && getLayerConfiguration().getContainerList() != null
+                    && !getLayerConfiguration().getContainerList().isEmpty()) {
+                LOGGER.debug("Reached end of stream, cannot parse more messages", ex);
+            } else {
+                LOGGER.debug("No messages required for layer.");
+            }
         }
         return getLayerResult();
     }
@@ -101,5 +112,13 @@ public class SmtpLayer extends ProtocolLayer<SmtpLayerHint, SmtpMessage> {
 
     public SmtpCommand getCommandType() {
         return new SmtpCommand();
+    }
+
+    @Override
+    public boolean executedAsPlanned() {
+//        for(DataContainer<SmtpContext> produced : getLayerResult().getUsedContainers()) {
+//
+//        }
+        return true;
     }
 }
