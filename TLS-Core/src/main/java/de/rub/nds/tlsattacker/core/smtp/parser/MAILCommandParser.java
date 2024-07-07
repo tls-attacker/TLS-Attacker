@@ -9,10 +9,6 @@
 package de.rub.nds.tlsattacker.core.smtp.parser;
 
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpMAILCommand;
-import org.bouncycastle.util.IPAddress;
-
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
 import java.io.InputStream;
 
 public class MAILCommandParser extends SmtpCommandParser<SmtpMAILCommand> {
@@ -24,7 +20,8 @@ public class MAILCommandParser extends SmtpCommandParser<SmtpMAILCommand> {
     public void parseArguments(SmtpMAILCommand command, String arguments) {
         String[] parameters = arguments.split(" ");
         if (!parameters[0].startsWith("<") || !parameters[0].endsWith(">")) {
-            throw new IllegalArgumentException("Malformed MAIL Command - Invalid forward path <> is missing");
+            throw new IllegalArgumentException(
+                    "Malformed MAIL Command - Invalid forward path <> is missing");
         }
         // routed email through reverse path, mostly deprecated ( [A-d-l ":"] in RFC 5321)
         String mailbox = parameters[0].replaceAll("[<>]", "");
@@ -32,10 +29,10 @@ public class MAILCommandParser extends SmtpCommandParser<SmtpMAILCommand> {
         if (SmtpSyntaxParser.isValidMailbox(mailbox)) {
             command.setReversePath(parameters[0].replace("\"", ""));
             if (parameters.length > 1) {
-                throw new UnsupportedOperationException("Parsing of Special Mail parameters is not implemented yet.");
+                throw new UnsupportedOperationException(
+                        "Parsing of Special Mail parameters is not implemented yet.");
             }
         } else throwInvalidParameterException();
-
     }
 
     private void throwInvalidParameterException() {

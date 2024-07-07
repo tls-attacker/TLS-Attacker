@@ -15,13 +15,9 @@ import de.rub.nds.tlsattacker.core.smtp.handler.SmtpMessageHandler;
 import de.rub.nds.tlsattacker.core.smtp.parser.SmtpCommandParser;
 import de.rub.nds.tlsattacker.core.smtp.parser.SmtpMessageParser;
 import de.rub.nds.tlsattacker.core.smtp.preparator.SmtpCommandPreparator;
-import de.rub.nds.tlsattacker.core.smtp.preparator.SmtpMessagePreparator;
 import de.rub.nds.tlsattacker.core.smtp.serializer.SmtpCommandSerializer;
-import de.rub.nds.tlsattacker.core.smtp.serializer.SmtpMessageSerializer;
 import jakarta.xml.bind.annotation.XmlRootElement;
-
 import java.io.InputStream;
-import java.util.List;
 
 @XmlRootElement
 public class SmtpCommand extends SmtpMessage {
@@ -78,6 +74,4 @@ public class SmtpCommand extends SmtpMessage {
     public void setParameters(String parameters) {
         this.parameters = parameters;
     }
-
-
 }

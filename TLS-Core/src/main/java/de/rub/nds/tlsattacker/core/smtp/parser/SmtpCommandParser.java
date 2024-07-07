@@ -46,8 +46,7 @@ public class SmtpCommandParser<CommandT extends SmtpCommand> extends SmtpMessage
     }
     /**
      * Parses the arguments of the SmtpCommand. This method needs to be implemented by subclasses,
-     * if the command has any arguments.
-     * Is only called if hasArguments() evaluates as true.
+     * if the command has any arguments. Is only called if hasArguments() evaluates as true.
      *
      * @param command a CommandT object only partially initialized by Method parse
      * @param arguments parameter string containing everything after first space
@@ -58,9 +57,8 @@ public class SmtpCommandParser<CommandT extends SmtpCommand> extends SmtpMessage
     }
 
     /**
-     * Evaluate whether the command type to be parsed expects parameters
-     * You need to subclass SmtpCommandParser and implement this method, if the command has any
-     * arguments.
+     * Evaluate whether the command type to be parsed expects parameters You need to subclass
+     * SmtpCommandParser and implement this method, if the command has any arguments.
      *
      * @return true if parsed command expects parameters; false otherwise
      */

@@ -12,7 +12,6 @@ import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.parser.MAILReplyParser;
 import de.rub.nds.tlsattacker.core.smtp.preparator.MAILReplyPreparator;
 import jakarta.xml.bind.annotation.XmlRootElement;
-
 import java.io.InputStream;
 
 @XmlRootElement

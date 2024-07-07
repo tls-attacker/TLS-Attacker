@@ -10,11 +10,9 @@ package de.rub.nds.tlsattacker.core.layer.context;
 
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpCommand;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpEHLOCommand;
-import de.rub.nds.tlsattacker.core.smtp.command.SmtpMAILCommand;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpEHLOReply;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpReply;
 import de.rub.nds.tlsattacker.core.state.Context;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,10 +23,9 @@ public class SmtpContext extends LayerContext {
     private StringBuilder mailDataBuffer = new StringBuilder();
     private String clientIdentity;
 
-
-    // SMTP is a back and forth of commands and replies. We need to keep track of each to correctly get the type of the reply
+    // SMTP is a back and forth of commands and replies. We need to keep track of each to correctly
+    // get the type of the reply
     private SmtpCommand lastCommand;
-
 
     public SmtpContext(Context context) {
         super(context);
@@ -89,10 +86,11 @@ public class SmtpContext extends LayerContext {
         if (command == null) {
             return null;
         } else {
-            if(command instanceof SmtpEHLOCommand) {
+            if (command instanceof SmtpEHLOCommand) {
                 return new SmtpEHLOReply();
             } else {
-                throw new UnsupportedOperationException("No reply implemented for :" + command.getClass());
+                throw new UnsupportedOperationException(
+                        "No reply implemented for :" + command.getClass());
             }
         }
     }

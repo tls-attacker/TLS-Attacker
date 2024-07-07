@@ -1,13 +1,20 @@
+/*
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
+ *
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
+ */
 package de.rub.nds.tlsattacker.core.smtp.parser;
 
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.smtp.extensions.*;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpEHLOReply;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.io.InputStream;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class EHLOReplyParser extends SmtpReplyParser<SmtpEHLOReply> {
 
@@ -23,48 +30,58 @@ public class EHLOReplyParser extends SmtpReplyParser<SmtpEHLOReply> {
         List<String> lines = parseAllLines();
         LOGGER.trace("Parsing lines: {}", lines);
 
-        //only the last line can be '250 ' the others must be '250-', check for both
-        if(!lines.get(lines.size() - 1).startsWith("250 ")) {
-            LOGGER.trace("Could not parse EHLOReply. Expected '250 ' for final line but got: {}", lines.get(lines.size() - 1));
-            throw new ParserException("Could not parse EHLOReply. Expected '250 ' for final line but got: " + lines.get(lines.size() - 1));
+        // only the last line can be '250 ' the others must be '250-', check for both
+        if (!lines.get(lines.size() - 1).startsWith("250 ")) {
+            LOGGER.trace(
+                    "Could not parse EHLOReply. Expected '250 ' for final line but got: {}",
+                    lines.get(lines.size() - 1));
+            throw new ParserException(
+                    "Could not parse EHLOReply. Expected '250 ' for final line but got: "
+                            + lines.get(lines.size() - 1));
         }
-        for(int i = 1; i < lines.size() - 1; i++) {
-            if(!lines.get(i).startsWith("250-")) {
-                LOGGER.trace("Could not parse EHLOReply. Expected '250-' for multiline but got: {}", lines.get(i));
-                throw new ParserException("Could not parse EHLOReply. Expected '250-' for multiline but got: " + lines.get(i));
+        for (int i = 1; i < lines.size() - 1; i++) {
+            if (!lines.get(i).startsWith("250-")) {
+                LOGGER.trace(
+                        "Could not parse EHLOReply. Expected '250-' for multiline but got: {}",
+                        lines.get(i));
+                throw new ParserException(
+                        "Could not parse EHLOReply. Expected '250-' for multiline but got: "
+                                + lines.get(i));
             }
         }
 
         String domainAndGreeting = lines.get(0);
-        //in both cases the first is almost the same
+        // in both cases the first is almost the same
         String[] parts = domainAndGreeting.substring(4).split(" ", 2);
-        if(parts.length == 1) {
+        if (parts.length == 1) {
             smtpEHLOReply.setDomain(parts[0]);
-        } else if(parts.length == 2) {
+        } else if (parts.length == 2) {
             smtpEHLOReply.setDomain(parts[0]);
             smtpEHLOReply.setGreeting(parts[1]);
         } else {
-            throw new ParserException("Could not parse EHLOReply. Malformed 250: " + domainAndGreeting);
+            throw new ParserException(
+                    "Could not parse EHLOReply. Malformed 250: " + domainAndGreeting);
         }
 
-        if(lines.size() > 1) {
-            for(int i = 1; i < lines.size(); i++) {
+        if (lines.size() > 1) {
+            for (int i = 1; i < lines.size(); i++) {
                 SmtpServiceExtension extension = parseKeyword(lines.get(i).substring(4));
                 smtpEHLOReply.getExtensions().add(extension);
             }
         }
     }
+
     public SmtpServiceExtension parseKeyword(String keyword) {
-        //just ehlo-line
+        // just ehlo-line
         String[] parts = keyword.split(" ", 2);
         String ehloKeyword = parts[0];
         String parameters;
-        if(parts.length > 1) {
+        if (parts.length > 1) {
             parameters = parts[1];
         } else {
             parameters = "";
         }
-        switch(ehloKeyword) {
+        switch (ehloKeyword) {
             case "ATRN":
                 return new ATRNExtension();
             case "AUTH":
@@ -73,7 +90,7 @@ public class EHLOReplyParser extends SmtpReplyParser<SmtpEHLOReply> {
             case "BINARYMIME":
                 return new BINARYMIMEExtension();
             case "BURL":
-                //TODO: BURL can have a parameter
+                // TODO: BURL can have a parameter
                 return new BURLExtension();
             case "CHECKPOINT":
                 return new CHECKPOINTExtension();
@@ -100,12 +117,12 @@ public class EHLOReplyParser extends SmtpReplyParser<SmtpEHLOReply> {
             case "LIMITS":
                 return new LIMITSExtension();
             case "MT-PRIORITY":
-                //TODO: MT-PRIORITY can have a parameter
+                // TODO: MT-PRIORITY can have a parameter
                 return new MT_PRIORITYExtension();
             case "MTRK":
                 return new MTRKExtension();
             case "NO-SOLICITING":
-                //TODO: NO-SOLICITING can have a parameter
+                // TODO: NO-SOLICITING can have a parameter
                 return new NO_SOLICITINGExtension();
             case "PIPELINING":
                 return new PIPELININGExtension();
@@ -118,7 +135,7 @@ public class EHLOReplyParser extends SmtpReplyParser<SmtpEHLOReply> {
             case "SEND":
                 return new SENDExtension();
             case "SIZE":
-                //TODO: SIZE can have a parameter
+                // TODO: SIZE can have a parameter
                 return new SIZEExtension();
             case "SMTPUTF8":
                 return new SMTPUTF8Extension();
@@ -135,12 +152,12 @@ public class EHLOReplyParser extends SmtpReplyParser<SmtpEHLOReply> {
             case "VERB":
                 return new VERBExtension();
             default:
-                if(keyword.startsWith("X") || keyword.startsWith("x")) {
+                if (keyword.startsWith("X") || keyword.startsWith("x")) {
                     return new LocalSmtpServiceExtension(ehloKeyword, parameters);
                 } else {
-                    throw new ParserException("Could not parse EHLOReply. Unknown EHLO keyword: " + ehloKeyword);
+                    throw new ParserException(
+                            "Could not parse EHLOReply. Unknown EHLO keyword: " + ehloKeyword);
                 }
         }
     }
-
 }

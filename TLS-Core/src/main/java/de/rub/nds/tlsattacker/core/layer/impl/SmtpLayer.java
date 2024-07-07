@@ -1,3 +1,11 @@
+/*
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
+ *
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
+ */
 package de.rub.nds.tlsattacker.core.layer.impl;
 
 import de.rub.nds.tlsattacker.core.exceptions.TimeoutException;
@@ -15,10 +23,9 @@ import de.rub.nds.tlsattacker.core.smtp.handler.SmtpMessageHandler;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpReply;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpUnknownReply;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.io.IOException;
 
 public class SmtpLayer extends ProtocolLayer<SmtpLayerHint, SmtpMessage> {
     private static final Logger LOGGER = LogManager.getLogger();
@@ -50,7 +57,8 @@ public class SmtpLayer extends ProtocolLayer<SmtpLayerHint, SmtpMessage> {
     }
 
     @Override
-    public LayerProcessingResult sendData(SmtpLayerHint hint, byte[] additionalData) throws IOException {
+    public LayerProcessingResult sendData(SmtpLayerHint hint, byte[] additionalData)
+            throws IOException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -58,17 +66,23 @@ public class SmtpLayer extends ProtocolLayer<SmtpLayerHint, SmtpMessage> {
     public LayerProcessingResult receiveData() {
         try {
             do {
-                if(context.getContext().getConnection().getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
+                if (context.getContext().getConnection().getLocalConnectionEndType()
+                        == ConnectionEndType.CLIENT) {
                     SmtpReply smtpReply = context.getExpectedNextReplyType();
-                    if(smtpReply != null) {
-                        LOGGER.debug("Expecting reply of type: {}", smtpReply.getClass().getSimpleName());
+                    if (smtpReply != null) {
+                        LOGGER.debug(
+                                "Expecting reply of type: {}",
+                                smtpReply.getClass().getSimpleName());
                     } else {
                         smtpReply = new SmtpUnknownReply();
-                        LOGGER.debug("Expected reply type unclear, receiving {} instead", smtpReply.getClass().getSimpleName());
+                        LOGGER.debug(
+                                "Expected reply type unclear, receiving {} instead",
+                                smtpReply.getClass().getSimpleName());
                     }
                     readDataContainer(smtpReply, context);
-                } else if (context.getContext().getConnection().getLocalConnectionEndType() == ConnectionEndType.SERVER) {
-                    //TODO: What to do when the client receives an unknown reply?
+                } else if (context.getContext().getConnection().getLocalConnectionEndType()
+                        == ConnectionEndType.SERVER) {
+                    // TODO: What to do when the client receives an unknown reply?
                     SmtpCommand smtpCommand = new SmtpCommand();
                     readDataContainer(smtpCommand, context);
                 }
@@ -86,7 +100,7 @@ public class SmtpLayer extends ProtocolLayer<SmtpLayerHint, SmtpMessage> {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public SmtpCommand getCommandType(){
+    public SmtpCommand getCommandType() {
         return new SmtpCommand();
     }
 }

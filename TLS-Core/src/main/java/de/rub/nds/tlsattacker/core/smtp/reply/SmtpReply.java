@@ -27,7 +27,6 @@ public class SmtpReply extends SmtpMessage {
     private int replyCode;
     private List<String> replyLines;
 
-
     @Override
     public SmtpMessageHandler<? extends SmtpMessage> getHandler(SmtpContext smtpContext) {
         return new SmtpReplyHandler<>(smtpContext);
