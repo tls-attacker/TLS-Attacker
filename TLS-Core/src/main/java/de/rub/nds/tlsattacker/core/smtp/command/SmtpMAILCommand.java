@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.smtp.command;
 
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
+import de.rub.nds.tlsattacker.core.smtp.handler.MAILCommandHandler;
 import de.rub.nds.tlsattacker.core.smtp.parser.MAILCommandParser;
 import de.rub.nds.tlsattacker.core.smtp.preparator.MAILCommandPreparator;
 import jakarta.xml.bind.annotation.XmlRootElement;
@@ -70,5 +71,10 @@ public class SmtpMAILCommand extends SmtpCommand {
     @Override
     public MAILCommandPreparator getPreparator(SmtpContext context) {
         return new MAILCommandPreparator(context, this);
+    }
+
+    @Override
+    public MAILCommandHandler getHandler(SmtpContext context) {
+        return new MAILCommandHandler(context);
     }
 }

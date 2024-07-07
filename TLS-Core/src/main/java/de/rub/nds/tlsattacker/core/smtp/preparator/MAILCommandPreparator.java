@@ -18,11 +18,15 @@ public class MAILCommandPreparator extends SmtpCommandPreparator<SmtpMAILCommand
 
     @Override
     public void prepare() {
-        this.getObject().setVerb("MAIL FROM:");
-        this.getObject()
-                .setParameters(
-                        this.getObject().getParameters()
-                                + " "
-                                + this.getObject().getMailParameters());
+        this.getObject().setVerb("MAIL");
+        if (this.getObject().getMailParameters() != null) {
+            this.getObject()
+                    .setParameters(
+                            this.getObject().getReversePath()
+                                    + " "
+                                    + this.getObject().getMailParameters());
+        } else {
+            this.getObject().setParameters(this.getObject().getReversePath());
+        }
     }
 }

@@ -6,16 +6,24 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-package de.rub.nds.tlsattacker.core.smtp.parser;
+package de.rub.nds.tlsattacker.core.smtp.command;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import de.rub.nds.tlsattacker.core.smtp.command.SmtpMAILCommand;
+import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
+import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
+import de.rub.nds.tlsattacker.core.layer.data.Handler;
+import de.rub.nds.tlsattacker.core.layer.data.Serializer;
+import de.rub.nds.tlsattacker.core.smtp.parser.MAILCommandParser;
+import de.rub.nds.tlsattacker.core.smtp.preparator.MAILCommandPreparator;
+import de.rub.nds.tlsattacker.core.state.Context;
+import de.rub.nds.tlsattacker.core.state.State;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.Test;
 
-public class MAILCommandParserTest {
+public class MAILCommandTest {
+
     @Test
     public void testStandardInput() {
         String stringMessage = "MAIL <seal@upb.de>\r\n";
@@ -71,5 +79,28 @@ public class MAILCommandParserTest {
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
         SmtpMAILCommand mail = new SmtpMAILCommand();
         assertThrows(IllegalArgumentException.class, () -> parser.parse(mail));
+    }
+
+    @Test
+    public void testSerialization() {
+        SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
+        SmtpMAILCommand mailCommand = new SmtpMAILCommand("seal@upb.de");
+        MAILCommandPreparator preparator = mailCommand.getPreparator(context);
+        Serializer serializer = mailCommand.getSerializer(context);
+        preparator.prepare();
+        serializer.serialize();
+        assertEquals("MAIL seal@upb.de\r\n", serializer.getOutputStream().toString());
+    }
+
+    @Test
+    public void testHandle() {
+        SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
+        SmtpMAILCommand mailCommand = new SmtpMAILCommand("seal@upb.de");
+        Handler handler = mailCommand.getHandler(context);
+        handler.adjustContext(mailCommand);
+
+        assertEquals(context.getReversePathBuffer().get(0), mailCommand.getReversePath());
+        assertTrue(context.getForwardPathBuffer().isEmpty());
+        assertEquals(context.getMailDataBuffer().length(), 0);
     }
 }
