@@ -16,16 +16,7 @@ import java.util.List;
 public class VRFYReplyParser extends SmtpReplyParser<SmtpVRFYReply> {
 
     private final String[] validStatusCodes =
-            new String[] {
-                "250",
-                "251",
-                "252",
-                "502",
-                "504",
-                "550",
-                "551",
-                "553"
-            };
+            new String[] {"250", "251", "252", "502", "504", "550", "551", "553"};
 
     public VRFYReplyParser(InputStream inputStream) {
         super(inputStream);
@@ -164,7 +155,7 @@ public class VRFYReplyParser extends SmtpReplyParser<SmtpVRFYReply> {
 
     private void trySettingDescription(String description, SmtpVRFYReply reply) {
         if (reply.getDescription() != null)
-        throw new ParserException(
+            throw new ParserException(
                     "Malformed VRFY-Reply: Reply may not contain multiple descriptions.");
 
         reply.setDescription(description);
@@ -177,7 +168,7 @@ public class VRFYReplyParser extends SmtpReplyParser<SmtpVRFYReply> {
     private int findMailboxStartIndex(String line) {
         // length < 5 because it needs to contain at least something of the form: <a@a>
         if (line.length() < 5)
-        throw new ParserException("Malformed VRFY-Reply: Mailbox is too short.");
+            throw new ParserException("Malformed VRFY-Reply: Mailbox is too short.");
 
         if (line.charAt(line.length() - 1) != '>')
             throw new ParserException(

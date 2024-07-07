@@ -13,7 +13,6 @@ import org.bouncycastle.util.IPAddress;
 /** This class contains functions that check syntax based on RFC5321's Command Argument Syntax. */
 public final class SmtpSyntaxParser {
     /**
-     *
      * @param string Any string.
      * @return Whether the string is a quoted string. Note: Does not check quoted string content.
      */
