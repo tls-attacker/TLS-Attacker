@@ -73,9 +73,7 @@ public class LayerStackFactory {
             case SMTP:
                 layerStack =
                         new LayerStack(
-                                context,
-                                new SmtpLayer(smtpContext),
-                                new TcpLayer(tcpContext));
+                                context, new SmtpLayer(smtpContext), new TcpLayer(tcpContext));
                 return layerStack;
             case SMTPS:
                 layerStack =

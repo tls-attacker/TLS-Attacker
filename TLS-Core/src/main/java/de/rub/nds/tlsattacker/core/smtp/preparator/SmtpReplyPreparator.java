@@ -6,16 +6,16 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-package de.rub.nds.tlsattacker.core.smtp.handler;
+package de.rub.nds.tlsattacker.core.smtp.preparator;
 
-import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpReply;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
-public class SmtpReplyHandler<CommandT extends SmtpReply> extends SmtpMessageHandler<CommandT> {
-    public SmtpReplyHandler(SmtpContext smtpContext) {
-        super(smtpContext);
+public class SmtpReplyPreparator<ReplyT extends SmtpReply> extends SmtpMessagePreparator<ReplyT> {
+    public SmtpReplyPreparator(Chooser chooser, ReplyT reply) {
+        super(chooser, reply);
     }
 
     @Override
-    public void adjustContext(SmtpReply smtpMessage) {}
+    public void prepare() {}
 }
