@@ -26,8 +26,8 @@ import java.util.List;
 @XmlRootElement
 public class SmtpReply extends SmtpMessage {
 
-    private int replyCode;
-    private List<String> replyLines;
+    protected int replyCode;
+    protected List<String> replyLines;
 
     public SmtpReply() {
         super();
