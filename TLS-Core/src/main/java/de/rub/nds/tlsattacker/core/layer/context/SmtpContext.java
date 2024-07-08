@@ -11,8 +11,10 @@ package de.rub.nds.tlsattacker.core.layer.context;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpCommand;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpEHLOCommand;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpInitialGreetingDummy;
+import de.rub.nds.tlsattacker.core.smtp.command.SmtpQUITCommand;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpEHLOReply;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpInitialGreeting;
+import de.rub.nds.tlsattacker.core.smtp.reply.SmtpQUITReply;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpReply;
 import de.rub.nds.tlsattacker.core.state.Context;
 import java.util.ArrayList;
@@ -24,6 +26,13 @@ public class SmtpContext extends LayerContext {
     private List<String> forwardPathBuffer = new ArrayList<>();
     private StringBuilder mailDataBuffer = new StringBuilder();
     private String clientIdentity;
+
+    // Client can request connection close via QUIT, but MUST NOT close the connection itself
+    // intentionally before that
+    private boolean clientRequestedClose = false;
+    // Clients SHOULD NOT close the connection until they have received the reply indicating the
+    // server has
+    private boolean serverAcknowledgedClose = false;
 
     // SMTP is a back and forth of commands and replies. We need to keep track of each to correctly
     // get the type of the reply
@@ -82,10 +91,28 @@ public class SmtpContext extends LayerContext {
                 return new SmtpEHLOReply();
             } else if (command instanceof SmtpInitialGreetingDummy) {
                 return new SmtpInitialGreeting();
+            } else if (command instanceof SmtpQUITCommand) {
+                return new SmtpQUITReply();
             } else {
                 throw new UnsupportedOperationException(
                         "No reply implemented for :" + command.getClass());
             }
         }
+    }
+
+    public boolean isClientRequestedClose() {
+        return clientRequestedClose;
+    }
+
+    public void setClientRequestedClose(boolean clientRequestedClose) {
+        this.clientRequestedClose = clientRequestedClose;
+    }
+
+    public boolean isServerAcknowledgedClose() {
+        return serverAcknowledgedClose;
+    }
+
+    public void setServerAcknowledgedClose(boolean serverAcknowledgedClose) {
+        this.serverAcknowledgedClose = serverAcknowledgedClose;
     }
 }

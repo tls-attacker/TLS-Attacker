@@ -30,8 +30,12 @@ public class SmtpReply extends SmtpMessage {
     protected List<String> replyLines;
 
     public SmtpReply() {
-        super();
         this.replyLines = new ArrayList<>();
+    }
+
+    public SmtpReply(int replyCode, List<String> replyLines) {
+        this.replyCode = replyCode;
+        this.replyLines = replyLines;
     }
 
     @Override
