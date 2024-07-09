@@ -151,9 +151,13 @@ public final class SmtpSyntaxParser {
         return isValidAddressLiteral(mailboxEnding) || isValidDomain(mailboxEnding);
     }
 
-    public static String startsWithValidStatusCode(String reply, String[] validStatusCodes) {
+    public static String startsWithValidStatusCode(
+            String reply, String[] validStatusCodes, boolean isFinalLine) {
+        char delimiter = ' ';
+        if (!isFinalLine) delimiter = '-';
+
         for (String code : validStatusCodes) {
-            if (reply.startsWith(code + " ") || reply.startsWith(code + "-")) return code;
+            if (reply.startsWith(code + delimiter)) return code;
         }
 
         return null;

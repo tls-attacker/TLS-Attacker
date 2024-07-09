@@ -28,11 +28,12 @@ public class VRFYReplyParser extends SmtpReplyParser<SmtpVRFYReply> {
 
         if (lines.isEmpty()) throw new ParserException("Malformed VRFY-Reply: Reply is empty.");
 
-        reply.setStatusCode(parseStatusCode(lines.get(0)));
+        reply.setStatusCode(parseStatusCode(lines.get(0),  lines.size() == 1));
 
         for (int i = 0; i < lines.size(); i++) {
             String line = lines.get(i);
-            String statusCode = parseStatusCode(line);
+            boolean isFinalLine = i == lines.size()-1;
+            String statusCode = parseStatusCode(line, isFinalLine);
 
             if (i > 0 && !reply.getStatusCode().equals(statusCode))
                 throw new ParserException(
@@ -181,8 +182,8 @@ public class VRFYReplyParser extends SmtpReplyParser<SmtpVRFYReply> {
         throw new ParserException("Malformed VRFY-Reply: Mailbox is missing starting bracket <.");
     }
 
-    private String parseStatusCode(String line) {
-        String statusCode = SmtpSyntaxParser.startsWithValidStatusCode(line, validStatusCodes);
+    private String parseStatusCode(String line, boolean isFinalLine) {
+        String statusCode = SmtpSyntaxParser.startsWithValidStatusCode(line, validStatusCodes, isFinalLine);
 
         if (statusCode == null)
             throw new ParserException(

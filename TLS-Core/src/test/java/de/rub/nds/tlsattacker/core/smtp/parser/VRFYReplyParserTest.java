@@ -24,14 +24,13 @@ class VRFYReplyParserTest {
             "250 John J. D. Doe <john.doe@mail.com>\r\n",
             "250 <john.doe@mail.com>\r\n",
             "250 john.doe@mail.com\r\n",
-            "250- John Doe <john.doe@mail.com>\r\n",
             "251 User not local; will forward to <john@mail.com>\r\n",
             "252 Cannot VRFY user, but will accept message and attempt delivery to <john@mail.com>\r\n",
             "550  Requested action not taken: mailbox unavailable\r\n",
             "551  User not local; please try <john@mail.com>\r\n",
             "553 User ambiguous\r\n",
-            "553 User ambiguous\r\n553-John Doe <john.doe@mail.com>\r\n553-Jane Doe <jane.doe@mail.com>\r\n",
-            "553-John Doe <john.doe@mail.com>\r\n553-Jane Doe <jane.doe@mail.com>\r\n553-Jin Doe <jin.doe@mail.com>\r\n",
+            "553-User ambiguous\r\n553-John Doe <john.doe@mail.com>\r\n553 Jane Doe <jane.doe@mail.com>\r\n",
+            "553-John Doe <john.doe@mail.com>\r\n553-Jane Doe <jane.doe@mail.com>\r\n553 Jin Doe <jin.doe@mail.com>\r\n",
             "553-John Doe <john.doe@mail.com>\r\n553-Jane Doe <jane.doe@mail.com>\r\n553 User ambiguous\r\n",
         };
 
@@ -58,7 +57,9 @@ class VRFYReplyParserTest {
             "251 User not local\r\n", // mailbox must be provided
             "553 User ambiguous\r\n553 User ambiguous\r\n", // two descriptions
             "555\r\n", // invalid code
-            "\r\n"
+            "\r\n",
+            "250- John Doe <john.doe@mail.com>\r\n",
+            "553-John Doe <john.doe@mail.com>\r\n553 Jane Doe <jane.doe@mail.com>\r\n553-Jin Doe <jin.doe@mail.com>\r\n"
         };
 
         for (String command : invalidCommands) {
