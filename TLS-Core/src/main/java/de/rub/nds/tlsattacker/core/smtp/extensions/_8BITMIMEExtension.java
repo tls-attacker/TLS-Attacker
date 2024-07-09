@@ -8,12 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.smtp.extensions;
 
-public class MT_PRIORITYExtension extends SmtpServiceExtension {
-
-    private String parameter;
-
-    public MT_PRIORITYExtension(String parameter) {
-        super("MT-PRIORITY");
-        this.parameter = parameter;
+public class _8BITMIMEExtension extends SmtpServiceExtension {
+    public _8BITMIMEExtension() {
+        super("8BITMIME");
     }
 }

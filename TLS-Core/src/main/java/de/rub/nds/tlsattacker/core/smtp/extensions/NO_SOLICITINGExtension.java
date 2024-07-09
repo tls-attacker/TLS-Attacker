@@ -9,7 +9,11 @@
 package de.rub.nds.tlsattacker.core.smtp.extensions;
 
 public class NO_SOLICITINGExtension extends SmtpServiceExtension {
-    public NO_SOLICITINGExtension() {
+
+    private String parameters;
+
+    public NO_SOLICITINGExtension(String parameters) {
         super("NO-SOLICITING");
+        this.parameters = parameters;
     }
 }

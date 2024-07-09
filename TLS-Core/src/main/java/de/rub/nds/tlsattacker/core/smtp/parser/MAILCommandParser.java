@@ -9,6 +9,8 @@
 package de.rub.nds.tlsattacker.core.smtp.parser;
 
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpMAILCommand;
+import de.rub.nds.tlsattacker.core.smtp.extensions.SmtpServiceExtension;
+import de.rub.nds.tlsattacker.core.smtp.parameters.SmtpParameters;
 import java.io.InputStream;
 
 public class MAILCommandParser extends SmtpCommandParser<SmtpMAILCommand> {
@@ -18,7 +20,7 @@ public class MAILCommandParser extends SmtpCommandParser<SmtpMAILCommand> {
 
     @Override
     public void parseArguments(SmtpMAILCommand command, String arguments) {
-        String[] parameters = arguments.split(" ");
+        String[] parameters = arguments.split(" ", 2);
         if (!parameters[0].startsWith("<") || !parameters[0].endsWith(">")) {
             throw new IllegalArgumentException(
                     "Malformed MAIL Command - Invalid forward path <> is missing");
@@ -29,8 +31,20 @@ public class MAILCommandParser extends SmtpCommandParser<SmtpMAILCommand> {
         if (SmtpSyntaxParser.isValidMailbox(mailbox)) {
             command.setReversePath(parameters[0].replace("\"", ""));
             if (parameters.length > 1) {
-                throw new UnsupportedOperationException(
-                        "Parsing of Special Mail parameters is not implemented yet.");
+                for (int i = 1; i < parameters.length; i++) {
+                    String[] currentParameter = parameters[i].split(" ", 2);
+                    if (!SmtpSyntaxParser.isValidSpecialParameter(currentParameter)) {
+                        throw new IllegalArgumentException(
+                                ("Malformed MAIL Command - invalid Special Parameter"));
+                    }
+                    currentParameter[1] = currentParameter[1].replaceAll("[\\[\\]]", "");
+                    currentParameter[1] = currentParameter[1].replace("\"=\"", "");
+                    SmtpServiceExtension extension =
+                            SmtpSyntaxParser.parseKeyword(currentParameter[0], currentParameter[1]);
+                    SmtpParameters MAILparameters =
+                            new SmtpParameters(extension, currentParameter[1]);
+                    command.getMAILparameters().add(MAILparameters);
+                }
             }
         } else throwInvalidParameterException();
     }

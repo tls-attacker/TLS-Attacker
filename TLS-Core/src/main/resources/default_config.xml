@@ -1355,7 +1355,6 @@
     <useAllProvidedRecords>false</useAllProvidedRecords>
     <defaultHttpsLocationPath>/</defaultHttpsLocationPath>
     <defaultHttpsRequestPath>/robots.txt</defaultHttpsRequestPath>
-    <DefaultmailDataBuffer/>
     <starttlsType>NONE</starttlsType>
     <overrideSessionIdForTickets>true</overrideSessionIdForTickets>
     <sessionTicketLifetimeHint>7200</sessionTicketLifetimeHint>

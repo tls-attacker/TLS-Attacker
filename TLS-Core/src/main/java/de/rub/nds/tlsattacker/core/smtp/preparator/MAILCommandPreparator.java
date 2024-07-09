@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.smtp.preparator;
 
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpMAILCommand;
+import de.rub.nds.tlsattacker.core.smtp.parameters.SmtpParameters;
 
 public class MAILCommandPreparator extends SmtpCommandPreparator<SmtpMAILCommand> {
     public MAILCommandPreparator(SmtpContext context, SmtpMAILCommand command) {
@@ -19,14 +20,12 @@ public class MAILCommandPreparator extends SmtpCommandPreparator<SmtpMAILCommand
     @Override
     public void prepare() {
         this.getObject().setVerb("MAIL");
-        if (this.getObject().getMailParameters() != null) {
-            this.getObject()
-                    .setParameters(
-                            this.getObject().getReversePath()
-                                    + " "
-                                    + this.getObject().getMailParameters());
-        } else {
-            this.getObject().setParameters(this.getObject().getReversePath());
+        StringBuilder pars = new StringBuilder(this.getObject().getParameters());
+        if (this.getObject().getMAILparameters() != null) {
+            for (SmtpParameters MAILparameters : this.getObject().getMAILparameters()) {
+                pars.append(" ").append(MAILparameters.toString());
+            }
         }
+        this.getObject().setParameters(pars.toString());
     }
 }

@@ -10,10 +10,13 @@ package de.rub.nds.tlsattacker.core.smtp.command;
 
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.handler.MAILCommandHandler;
+import de.rub.nds.tlsattacker.core.smtp.parameters.SmtpParameters;
 import de.rub.nds.tlsattacker.core.smtp.parser.MAILCommandParser;
 import de.rub.nds.tlsattacker.core.smtp.preparator.MAILCommandPreparator;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class represents an SMTP MAIL command, which is used to initiate a mail transaction. The
@@ -27,19 +30,22 @@ public class SmtpMAILCommand extends SmtpCommand {
 
     private String reversePath;
 
-    private String MailParameters;
+    private List<SmtpParameters> MAILparameters;
 
     public SmtpMAILCommand() {
         super(COMMAND, null);
+        this.MAILparameters = new ArrayList<>();
     }
 
-    public SmtpMAILCommand(String parameters) {
-        super(COMMAND, parameters);
-        String[] pars = parameters.split(" ");
-        this.reversePath = pars[0];
-        if (pars.length > 1) {
-            this.MailParameters = pars[1];
-        }
+    public SmtpMAILCommand(String reversePath) {
+        super(COMMAND, reversePath);
+        this.MAILparameters = new ArrayList<>();
+    }
+
+    public SmtpMAILCommand(String reversePath, List<SmtpParameters> parameters) {
+        super(COMMAND, reversePath);
+        this.reversePath = reversePath;
+        this.MAILparameters = parameters;
     }
 
     @Override
@@ -55,14 +61,6 @@ public class SmtpMAILCommand extends SmtpCommand {
         this.reversePath = reversePath;
     }
 
-    public String getMailParameters() {
-        return MailParameters;
-    }
-
-    public void setMailParameters(String mailParameters) {
-        MailParameters = mailParameters;
-    }
-
     @Override
     public MAILCommandParser getParser(SmtpContext context, InputStream stream) {
         return new MAILCommandParser(stream);
@@ -76,5 +74,9 @@ public class SmtpMAILCommand extends SmtpCommand {
     @Override
     public MAILCommandHandler getHandler(SmtpContext context) {
         return new MAILCommandHandler(context);
+    }
+
+    public List<SmtpParameters> getMAILparameters() {
+        return MAILparameters;
     }
 }

@@ -82,6 +82,38 @@ public class MAILCommandTest {
     }
 
     @Test
+    public void testSpecialMailParameters() {
+        String stringMessage = "MAIL <seal@upb.de> SIZE [\"=\"12345]\r\n";
+        MAILCommandParser parser =
+                new MAILCommandParser(
+                        new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
+        SmtpMAILCommand mail = new SmtpMAILCommand();
+        parser.parse(mail);
+        assertEquals("MAIL", mail.getVerb());
+        assertEquals("<seal@upb.de>", mail.getReversePath());
+        assertEquals("SIZE", mail.getMAILparameters().get(0).getExtension().getEhloKeyword());
+        assertEquals("12345", mail.getMAILparameters().get(0).getParameters());
+    }
+
+    @Test
+    public void testInvalidSpecialMailParameters() {
+        String[] invalidCommands = {
+            "MAIL <seal@upb.de> SIZE [12345]\r\n",
+            "MAIL <seal@upb.de> SIZE \"=\"12345]\r\n",
+            "MAIL <seal@upb.de> SIZE [\"=\"12345\r\n",
+            "MAIL <seal@upb.de> SIZE \r\n",
+            "MAIL <seal@upb.de> SIZE[\"=\"12345]\r\n"
+        };
+        for (String command : invalidCommands) {
+            MAILCommandParser parser =
+                    new MAILCommandParser(
+                            new ByteArrayInputStream(command.getBytes(StandardCharsets.UTF_8)));
+            SmtpMAILCommand mail = new SmtpMAILCommand();
+            assertThrows(IllegalArgumentException.class, () -> parser.parse(mail));
+        }
+    }
+
+    @Test
     public void testSerialization() {
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
         SmtpMAILCommand mailCommand = new SmtpMAILCommand("seal@upb.de");
