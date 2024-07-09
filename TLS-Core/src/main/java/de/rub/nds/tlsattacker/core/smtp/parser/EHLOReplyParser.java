@@ -70,6 +70,7 @@ public class EHLOReplyParser extends SmtpReplyParser<SmtpEHLOReply> {
                 smtpEHLOReply.getExtensions().add(extension);
             }
         }
+        smtpEHLOReply.setReplyCode(250);
     }
 
     public SmtpServiceExtension parseKeyword(String keyword) {
@@ -83,6 +84,8 @@ public class EHLOReplyParser extends SmtpReplyParser<SmtpEHLOReply> {
             parameters = "";
         }
         switch (ehloKeyword) {
+            case "8BITMIME":
+                return new _8BITMIMEExtension();
             case "ATRN":
                 return new ATRNExtension();
             case "AUTH":

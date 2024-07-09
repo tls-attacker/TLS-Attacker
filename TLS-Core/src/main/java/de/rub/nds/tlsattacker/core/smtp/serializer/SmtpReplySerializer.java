@@ -11,6 +11,12 @@ package de.rub.nds.tlsattacker.core.smtp.serializer;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpReply;
 
+/*
+   This class serializes SMTP replies.
+   A reply is serialized in the format "REPLY_CODE<SP>[RESPONSE CONTENT]<CRLF>".
+   Where <SP> is a space character and <CRLF> is a carriage return followed by a line feed.
+   A reply can be multiline of the format "REPLY_CODE-[CONTENT1]<CRLF>...<CRLF>REPLYCODE [CONTENTn]<CRLF>.
+*/
 public class SmtpReplySerializer<ReplyT extends SmtpReply> extends SmtpMessageSerializer<ReplyT> {
 
     // modeled after their usage in RFC 5321

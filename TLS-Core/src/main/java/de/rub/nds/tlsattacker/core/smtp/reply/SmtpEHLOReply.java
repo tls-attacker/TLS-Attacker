@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.smtp.reply;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.extensions.SmtpServiceExtension;
 import de.rub.nds.tlsattacker.core.smtp.parser.EHLOReplyParser;
+import de.rub.nds.tlsattacker.core.smtp.preparator.EHLOReplyPreparator;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -30,6 +31,10 @@ public class SmtpEHLOReply extends SmtpReply {
     @Override
     public EHLOReplyParser getParser(SmtpContext context, InputStream stream) {
         return new EHLOReplyParser(stream);
+    }
+
+    public EHLOReplyPreparator getPreparator(SmtpContext context) {
+        return new EHLOReplyPreparator(context, this);
     }
 
     public String getGreeting() {

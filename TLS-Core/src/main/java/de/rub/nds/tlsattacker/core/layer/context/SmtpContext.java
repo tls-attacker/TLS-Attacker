@@ -10,7 +10,9 @@ package de.rub.nds.tlsattacker.core.layer.context;
 
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpCommand;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpEHLOCommand;
+import de.rub.nds.tlsattacker.core.smtp.command.SmtpInitialGreetingDummy;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpEHLOReply;
+import de.rub.nds.tlsattacker.core.smtp.reply.SmtpInitialGreeting;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpReply;
 import de.rub.nds.tlsattacker.core.state.Context;
 import java.util.ArrayList;
@@ -25,8 +27,7 @@ public class SmtpContext extends LayerContext {
 
     // SMTP is a back and forth of commands and replies. We need to keep track of each to correctly
     // get the type of the reply
-    private SmtpCommand lastCommand;
-
+    private SmtpCommand lastCommand = new SmtpInitialGreetingDummy();
     public SmtpContext(Context context) {
         super(context);
     }
@@ -88,6 +89,8 @@ public class SmtpContext extends LayerContext {
         } else {
             if (command instanceof SmtpEHLOCommand) {
                 return new SmtpEHLOReply();
+            } else if (command instanceof SmtpInitialGreetingDummy) {
+                return new SmtpInitialGreeting();
             } else {
                 throw new UnsupportedOperationException(
                         "No reply implemented for :" + command.getClass());
