@@ -28,6 +28,7 @@ public class SmtpContext extends LayerContext {
     // SMTP is a back and forth of commands and replies. We need to keep track of each to correctly
     // get the type of the reply
     private SmtpCommand lastCommand = new SmtpInitialGreetingDummy();
+
     public SmtpContext(Context context) {
         super(context);
     }
