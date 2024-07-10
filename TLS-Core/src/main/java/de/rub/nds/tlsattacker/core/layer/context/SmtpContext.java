@@ -24,7 +24,7 @@ public class SmtpContext extends LayerContext {
 
     private List<String> reversePathBuffer = new ArrayList<>();
     private List<String> forwardPathBuffer = new ArrayList<>();
-    private StringBuilder mailDataBuffer = new StringBuilder();
+    private List<String> mailDataBuffer = new ArrayList<>();
     private String clientIdentity;
 
     // Client can request connection close via QUIT, but MUST NOT close the connection itself
@@ -42,6 +42,12 @@ public class SmtpContext extends LayerContext {
         super(context);
     }
 
+    public void clearBuffers() {
+        reversePathBuffer.clear();
+        forwardPathBuffer.clear();
+        mailDataBuffer.clear();
+    }
+
     public List<String> getReversePathBuffer() {
         return reversePathBuffer;
     }
@@ -50,7 +56,7 @@ public class SmtpContext extends LayerContext {
         return forwardPathBuffer;
     }
 
-    public StringBuilder getMailDataBuffer() {
+    public List<String> getMailDataBuffer() {
         return mailDataBuffer;
     }
 
@@ -62,7 +68,7 @@ public class SmtpContext extends LayerContext {
         this.forwardPathBuffer = forwardPathBuffer;
     }
 
-    public void setMailDataBuffer(StringBuilder mailDataBuffer) {
+    public void setMailDataBuffer(List<String> mailDataBuffer) {
         this.mailDataBuffer = mailDataBuffer;
     }
 

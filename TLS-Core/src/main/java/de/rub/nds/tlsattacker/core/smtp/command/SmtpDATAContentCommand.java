@@ -8,7 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.smtp.command;
 
+import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
+import de.rub.nds.tlsattacker.core.smtp.handler.DATAContentCommandHandler;
+import de.rub.nds.tlsattacker.core.smtp.parser.DATAContentParser;
 import jakarta.xml.bind.annotation.XmlRootElement;
+
+import java.io.InputStream;
 import java.util.List;
 
 @XmlRootElement
@@ -27,7 +32,16 @@ public class SmtpDATAContentCommand extends SmtpCommand {
         return lines;
     }
 
-    public void setLines(List<String> content) {
-        this.lines = content;
+    public void setLines(List<String> lines) {
+        this.lines = lines;
+    }
+
+    @Override
+    public DATAContentParser getParser(SmtpContext context, InputStream stream) {
+        return new DATAContentParser(stream);
+    }
+
+    public DATAContentCommandHandler getHandler(SmtpContext context) {
+        return new DATAContentCommandHandler(context);
     }
 }

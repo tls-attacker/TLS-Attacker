@@ -15,7 +15,7 @@ import java.util.List;
 
 public class DATAContentParser extends SmtpCommandParser<SmtpDATAContentCommand> {
 
-    DATAContentParser(InputStream stream) {
+    public DATAContentParser(InputStream stream) {
         super(stream);
     }
 
