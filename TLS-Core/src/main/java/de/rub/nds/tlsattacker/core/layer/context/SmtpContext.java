@@ -11,8 +11,10 @@ package de.rub.nds.tlsattacker.core.layer.context;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpCommand;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpEHLOCommand;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpInitialGreetingDummy;
+import de.rub.nds.tlsattacker.core.smtp.command.SmtpNOOPCommand;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpEHLOReply;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpInitialGreeting;
+import de.rub.nds.tlsattacker.core.smtp.reply.SmtpNOOPReply;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpReply;
 import de.rub.nds.tlsattacker.core.state.Context;
 import java.util.ArrayList;
@@ -80,6 +82,8 @@ public class SmtpContext extends LayerContext {
         } else {
             if (command instanceof SmtpEHLOCommand) {
                 return new SmtpEHLOReply();
+            } else if (command instanceof SmtpNOOPCommand) {
+                return new SmtpNOOPReply();
             } else if (command instanceof SmtpInitialGreetingDummy) {
                 return new SmtpInitialGreeting();
             } else {
