@@ -31,19 +31,20 @@ public class SmtpCommandParser<CommandT extends SmtpCommand> extends SmtpMessage
         // 4.1.1 In the interest of improved interoperability, SMTP receivers SHOULD tolerate
         // trailing white space before the terminating <CRLF>.
         String actualCommand = line.trim();
+        String[] verbAndParams = actualCommand.split(" ", 2);
+        smtpCommand.setVerb(verbAndParams[0]);
+        if (verbAndParams.length == 2) {
+            smtpCommand.setParameters(verbAndParams[1]);
+        }
         if (hasParameters()) {
-            if (!actualCommand.contains(" ")) {
+            if (verbAndParams.length != 2) {
                 throw new ParserException(
                         "Command does not contain any arguments although it was expected");
             }
-            String[] verbAndParams = actualCommand.split(" ", 2);
-            smtpCommand.setVerb(verbAndParams[0]);
-            smtpCommand.setParameters(verbAndParams[1]);
             parseArguments(smtpCommand, verbAndParams[1]);
-        } else {
-            smtpCommand.setVerb(actualCommand);
         }
     }
+
     /**
      * Parses the arguments of the SmtpCommand. This method needs to be implemented by subclasses,
      * if the command has any arguments. Is only called if hasArguments() evaluates as true.

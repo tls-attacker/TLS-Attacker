@@ -27,7 +27,12 @@ import java.util.List;
 public class SmtpReply extends SmtpMessage {
 
     private int replyCode;
+    // this list of strings is used to store each of the lines of the reply, supposed to be used in the preparator + parser
     private List<String> replyLines;
+
+    // this is the human readable message part associated with the reply code
+    // for a single line reply, this is the only line in the replyLines list
+    private String humanReadableMessage;
 
     public SmtpReply() {
         super();
@@ -74,5 +79,13 @@ public class SmtpReply extends SmtpMessage {
 
     public void setReplyLines(List<String> replyLines) {
         this.replyLines = replyLines;
+    }
+
+    public String getHumanReadableMessage() {
+        return humanReadableMessage;
+    }
+
+    public void setHumanReadableMessage(String humanReadableMessage) {
+        this.humanReadableMessage = humanReadableMessage;
     }
 }
