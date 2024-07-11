@@ -35,6 +35,7 @@ public class QUITReplyTest {
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
         parser.parse(quitReply);
         assertEquals(221, quitReply.getReplyCode());
+        assertEquals("byebye", quitReply.getHumanReadableMessage());
     }
 
     @Test

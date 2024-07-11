@@ -16,8 +16,6 @@ import java.io.InputStream;
 
 @XmlRootElement
 public class SmtpMAILReply extends SmtpReply {
-    private String message;
-
     public SmtpMAILReply() {
         super();
     }
@@ -31,11 +29,4 @@ public class SmtpMAILReply extends SmtpReply {
         return new MAILReplyPreparator(context, this);
     }
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public String getMessage() {
-        return message;
-    }
 }

@@ -22,7 +22,7 @@ public class MAILReplyPreparator extends SmtpReplyPreparator<SmtpMAILReply> {
     public void prepare() {
         this.getObject().setReplyCode(this.getObject().getReplyCode());
         List<String> replyLines = new ArrayList<>();
-        String message = getObject().getMessage();
+        String message = getObject().getHumanReadableMessage();
         replyLines.add(message);
         this.getObject().setReplyLines(replyLines);
     }

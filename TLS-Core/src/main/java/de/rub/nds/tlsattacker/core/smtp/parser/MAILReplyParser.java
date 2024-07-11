@@ -38,9 +38,9 @@ public class MAILReplyParser extends SmtpReplyParser<SmtpMAILReply> {
 
         String[] line = lines.get(0).split(" ", 2);
         if (line.length > 1) {
-            reply.setMessage(line[1]);
+            reply.setHumanReadableMessage(line[1]);
         } else {
-            reply.setMessage(" ");
+            reply.setHumanReadableMessage(" ");
         }
         reply.setReplyCode(Integer.parseInt(line[0]));
     }
