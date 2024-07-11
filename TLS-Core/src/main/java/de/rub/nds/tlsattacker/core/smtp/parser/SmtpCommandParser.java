@@ -36,34 +36,17 @@ public class SmtpCommandParser<CommandT extends SmtpCommand> extends SmtpMessage
         if (verbAndParams.length == 2) {
             smtpCommand.setParameters(verbAndParams[1]);
         }
-        if (hasParameters()) {
-            if (verbAndParams.length != 2) {
-                throw new ParserException(
-                        "Command does not contain any arguments although it was expected");
-            }
-            parseArguments(smtpCommand, verbAndParams[1]);
-        }
+        parseArguments(smtpCommand, smtpCommand.getParameters());
     }
 
     /**
      * Parses the arguments of the SmtpCommand. This method needs to be implemented by subclasses,
-     * if the command has any arguments. Is only called if hasArguments() evaluates as true.
+     * if the command has any arguments.
+     * Implementations should throw a ParserException if the arguments are not valid.
+     * Implementors are responsible for checking arguments for nullness.
      *
      * @param command a CommandT object only partially initialized by Method parse
      * @param arguments parameter string containing everything after first space
      */
-    public void parseArguments(CommandT command, String arguments) {
-        throw new UnsupportedOperationException(
-                "You need to subclass SmtpCommandParser and implement this method, if the command has any arguments.");
-    }
-
-    /**
-     * Evaluate whether the command type to be parsed expects parameters You need to subclass
-     * SmtpCommandParser and implement this method, if the command has any arguments.
-     *
-     * @return true if parsed command expects parameters; false otherwise
-     */
-    public boolean hasParameters() {
-        return false;
-    }
+    public void parseArguments(CommandT command, String arguments) {}
 }

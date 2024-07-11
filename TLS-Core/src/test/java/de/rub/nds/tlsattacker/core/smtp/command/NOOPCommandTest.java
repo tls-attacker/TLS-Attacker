@@ -50,6 +50,7 @@ class NOOPCommandTest {
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
         parser.parse(noop);
         assertEquals("NOOP", noop.getVerb());
+        assertEquals("parameter", noop.getParameters());
     }
 
     @Test
