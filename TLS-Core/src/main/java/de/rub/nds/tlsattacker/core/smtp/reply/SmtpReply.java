@@ -26,17 +26,20 @@ import java.util.List;
 @XmlRootElement
 public class SmtpReply extends SmtpMessage {
 
-    private int replyCode;
-    // this list of strings is used to store each of the lines of the reply, supposed to be used in the preparator + parser
-    private List<String> replyLines;
+    protected int replyCode;
+    protected List<String> replyLines;
 
     // this is the human readable message part associated with the reply code
     // for a single line reply, this is the only line in the replyLines list
     private String humanReadableMessage;
 
     public SmtpReply() {
-        super();
         this.replyLines = new ArrayList<>();
+    }
+
+    public SmtpReply(int replyCode, List<String> replyLines) {
+        this.replyCode = replyCode;
+        this.replyLines = replyLines;
     }
 
     @Override
