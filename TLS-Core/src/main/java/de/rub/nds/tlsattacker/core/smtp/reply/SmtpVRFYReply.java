@@ -13,7 +13,6 @@ import de.rub.nds.tlsattacker.core.smtp.SmtpMessage;
 import de.rub.nds.tlsattacker.core.smtp.parser.SmtpMessageParser;
 import de.rub.nds.tlsattacker.core.smtp.parser.VRFYCommandParser;
 import jakarta.xml.bind.annotation.XmlRootElement;
-
 import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;

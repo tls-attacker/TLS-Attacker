@@ -15,8 +15,7 @@ import java.util.List;
 
 public class VRFYReplyParser extends SmtpReplyParser<SmtpVRFYReply> {
 
-    private final int[] validReplyCodes =
-            new int[] {250, 251, 252, 502, 504, 550, 551, 553};
+    private final int[] validReplyCodes = new int[] {250, 251, 252, 502, 504, 550, 551, 553};
 
     public VRFYReplyParser(InputStream inputStream) {
         super(inputStream);

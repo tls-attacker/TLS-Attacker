@@ -12,7 +12,6 @@ import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.parser.VRFYCommandParser;
 import de.rub.nds.tlsattacker.core.smtp.preparator.VRFYCommandPreparator;
 import jakarta.xml.bind.annotation.XmlRootElement;
-
 import java.io.InputStream;
 
 /**
@@ -33,7 +32,6 @@ public class SmtpVRFYCommand extends SmtpCommand {
     public SmtpVRFYCommand(String username) {
         super(COMMAND_NAME, username);
         this.username = username;
-
     }
 
     public String getUsername() {

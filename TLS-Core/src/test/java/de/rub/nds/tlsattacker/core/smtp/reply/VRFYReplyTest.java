@@ -11,10 +11,8 @@ package de.rub.nds.tlsattacker.core.smtp.reply;
 import static org.junit.jupiter.api.Assertions.*;
 
 import de.rub.nds.tlsattacker.core.smtp.parser.VRFYReplyParser;
-import de.rub.nds.tlsattacker.core.smtp.reply.SmtpVRFYReply;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
-
 import org.junit.jupiter.api.Test;
 
 class VRFYReplyTest {

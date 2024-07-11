@@ -12,17 +12,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
-
-import java.io.ByteArrayInputStream;
-import java.nio.charset.StandardCharsets;
-
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import de.rub.nds.tlsattacker.core.smtp.parser.VRFYCommandParser;
-import de.rub.nds.tlsattacker.core.smtp.preparator.EHLOCommandPreparator;
 import de.rub.nds.tlsattacker.core.smtp.preparator.VRFYCommandPreparator;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
+import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -72,6 +69,7 @@ class VRFYCommandTest {
         Serializer serializer = vrfy.getSerializer(context);
         preparator.prepare();
         serializer.serialize();
-        Assertions.assertEquals("VRFY \"john@mail.com\"\r\n", serializer.getOutputStream().toString());
+        Assertions.assertEquals(
+                "VRFY \"john@mail.com\"\r\n", serializer.getOutputStream().toString());
     }
 }

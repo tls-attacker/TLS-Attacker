@@ -38,9 +38,11 @@ public class VRFYCommandParser extends SmtpCommandParser<SmtpVRFYCommand> {
         }
 
         // case: quoted string:
-        String strippedParameter = parameter.substring(1, parameter.length() - 1); // strip outermost quotes
+        String strippedParameter =
+                parameter.substring(1, parameter.length() - 1); // strip outermost quotes
         if (SmtpSyntaxParser.isValidMailbox(strippedParameter)
-            || SmtpSyntaxParser.isValidQuotedStringContent(strippedParameter)) command.setUsername(parameter);
+                || SmtpSyntaxParser.isValidQuotedStringContent(strippedParameter))
+            command.setUsername(parameter);
         else throwInvalidParameterException();
     }
 
