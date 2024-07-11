@@ -6,19 +6,21 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-package de.rub.nds.tlsattacker.core.smtp.parser;
+package de.rub.nds.tlsattacker.core.smtp.reply;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import de.rub.nds.tlsattacker.core.smtp.parser.VRFYReplyParser;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpVRFYReply;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
+
 import org.junit.jupiter.api.Test;
 
-class VRFYReplyParserTest {
+class VRFYReplyTest {
     @Test
-    void testValidReplies() {
-        String[] validCommands = {
+    void testParseValidReplies() {
+        String[] validReplies = {
             "250 John <john@mail.com>\r\n",
             "250 John Doe <john.doe@mail.com>\r\n",
             "250 John J. D. Doe <john.doe@mail.com>\r\n",
@@ -34,20 +36,20 @@ class VRFYReplyParserTest {
             "553-John Doe <john.doe@mail.com>\r\n553-Jane Doe <jane.doe@mail.com>\r\n553 User ambiguous\r\n",
         };
 
-        for (String command : validCommands) {
+        for (String reply : validReplies) {
             VRFYReplyParser parser =
                     new VRFYReplyParser(
-                            new ByteArrayInputStream(command.getBytes(StandardCharsets.UTF_8)));
+                            new ByteArrayInputStream(reply.getBytes(StandardCharsets.UTF_8)));
 
             SmtpVRFYReply vrfy = new SmtpVRFYReply();
             assertDoesNotThrow(() -> parser.parse(vrfy));
-            assertEquals(vrfy.getStatusCode(), command.substring(0, 3));
+            assertEquals(vrfy.getReplyCode(), Integer.parseInt(reply.substring(0, 3)));
         }
     }
 
     @Test
-    void testInvalidReplies() {
-        String[] invalidCommands = {
+    void testParseInvalidReplies() {
+        String[] invalidReplies = {
             "250 John john@mail.com\r\n",
             "250 John Doe <\"john.doe@mail.com>\r\n",
             "250 <john.doe@mail.com>>\r\n",
@@ -62,10 +64,10 @@ class VRFYReplyParserTest {
             "553-John Doe <john.doe@mail.com>\r\n553 Jane Doe <jane.doe@mail.com>\r\n553-Jin Doe <jin.doe@mail.com>\r\n"
         };
 
-        for (String command : invalidCommands) {
+        for (String reply : invalidReplies) {
             VRFYReplyParser parser =
                     new VRFYReplyParser(
-                            new ByteArrayInputStream(command.getBytes(StandardCharsets.UTF_8)));
+                            new ByteArrayInputStream(reply.getBytes(StandardCharsets.UTF_8)));
 
             SmtpVRFYReply vrfy = new SmtpVRFYReply();
             assertThrows(RuntimeException.class, () -> parser.parse(vrfy));

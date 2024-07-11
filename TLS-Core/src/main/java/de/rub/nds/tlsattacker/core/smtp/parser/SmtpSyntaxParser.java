@@ -151,15 +151,15 @@ public final class SmtpSyntaxParser {
         return isValidAddressLiteral(mailboxEnding) || isValidDomain(mailboxEnding);
     }
 
-    public static String startsWithValidStatusCode(
-            String reply, String[] validStatusCodes, boolean isFinalLine) {
+    public static int startsWithValidReplyCode(
+            String reply, int[] validReplyCodes, boolean isFinalLine) {
         char delimiter = ' ';
         if (!isFinalLine) delimiter = '-';
 
-        for (String code : validStatusCodes) {
-            if (reply.startsWith(code + delimiter)) return code;
+        for (int code : validReplyCodes) {
+            if (reply.startsWith(String.valueOf(code) + delimiter)) return code;
         }
 
-        return null;
+        return -1;
     }
 }

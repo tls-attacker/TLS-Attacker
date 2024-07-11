@@ -12,12 +12,14 @@ import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.SmtpMessage;
 import de.rub.nds.tlsattacker.core.smtp.parser.SmtpMessageParser;
 import de.rub.nds.tlsattacker.core.smtp.parser.VRFYCommandParser;
+import jakarta.xml.bind.annotation.XmlRootElement;
+
 import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 
+@XmlRootElement
 public class SmtpVRFYReply extends SmtpReply {
-    private String statusCode;
     private String description;
 
     // these are lists because in a 553 reply, there may be multiple usernames/mailboxes:
@@ -28,14 +30,6 @@ public class SmtpVRFYReply extends SmtpReply {
     public SmtpMessageParser<? extends SmtpMessage> getParser(
             SmtpContext context, InputStream stream) {
         return new VRFYCommandParser(stream);
-    }
-
-    public String getStatusCode() {
-        return statusCode;
-    }
-
-    public void setStatusCode(String statusCode) {
-        this.statusCode = statusCode;
     }
 
     public List<String> getFullNames() {
