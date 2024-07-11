@@ -31,7 +31,7 @@ public class SmtpReply extends SmtpMessage {
 
     // this is the human readable message part associated with the reply code
     // for a single line reply, this is the only line in the replyLines list
-    private String humanReadableMessage;
+    protected String humanReadableMessage;
 
     public SmtpReply() {
         this.replyLines = new ArrayList<>();
