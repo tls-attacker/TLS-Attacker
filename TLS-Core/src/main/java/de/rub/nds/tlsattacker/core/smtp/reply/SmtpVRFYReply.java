@@ -37,10 +37,11 @@ public class SmtpVRFYReply extends SmtpReply {
     }
 
     /*
-        For 553-reply codes. Technically, replyCode should always be 553 but omitting it may cause
-        misuse of the constructor.
-     */
-    public SmtpVRFYReply(int replyCode, String description, List<String> fullNames, List<String> mailboxes) {
+       For 553-reply codes. Technically, replyCode should always be 553 but omitting it may cause
+       misuse of the constructor.
+    */
+    public SmtpVRFYReply(
+            int replyCode, String description, List<String> fullNames, List<String> mailboxes) {
         setReplyCode(replyCode);
         setDescription(description);
         setFullNames(fullNames);

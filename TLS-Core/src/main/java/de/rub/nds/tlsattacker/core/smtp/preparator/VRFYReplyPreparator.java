@@ -1,9 +1,16 @@
+/*
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
+ *
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
+ */
 package de.rub.nds.tlsattacker.core.smtp.preparator;
 
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpVRFYReply;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,10 +45,12 @@ public class VRFYReplyPreparator extends SmtpReplyPreparator<SmtpVRFYReply> {
 
         if (is553Response()) {
             boolean fullNamesExist = !getObject().getFullNames().isEmpty();
-            boolean sizesDoNotMatch = getObject().getMailboxes().size() != getObject().getFullNames().size();
+            boolean sizesDoNotMatch =
+                    getObject().getMailboxes().size() != getObject().getFullNames().size();
 
             if (fullNamesExist && sizesDoNotMatch)
-                throw new PreparationException("VRFY-Reply's fullNames and mailboxes sizes do not match.");
+                throw new PreparationException(
+                        "VRFY-Reply's fullNames and mailboxes sizes do not match.");
 
             if (getObject().getDescription() != null) replyLines.add(getObject().getDescription());
 
@@ -52,7 +61,8 @@ public class VRFYReplyPreparator extends SmtpReplyPreparator<SmtpVRFYReply> {
             return replyLines;
         }
 
-        throw new PreparationException("Malformed VRFY-Reply: Reply cannot be matched with any valid replies.");
+        throw new PreparationException(
+                "Malformed VRFY-Reply: Reply cannot be matched with any valid replies.");
     }
 
     private String getFullNameAndMailboxString(int index, boolean containsFullNames) {
@@ -75,8 +85,7 @@ public class VRFYReplyPreparator extends SmtpReplyPreparator<SmtpVRFYReply> {
     }
 
     private boolean isDescriptionOnlyResponse() {
-        return getObject().getFullNames().isEmpty()
-                && getObject().getMailboxes().isEmpty();
+        return getObject().getFullNames().isEmpty() && getObject().getMailboxes().isEmpty();
     }
 
     private boolean isDescriptionAndMailboxResponse() {
@@ -87,7 +96,8 @@ public class VRFYReplyPreparator extends SmtpReplyPreparator<SmtpVRFYReply> {
 
     private boolean is553Response() {
         return getObject().getDescription() != null
-                && getObject().getMailboxes().isEmpty() && getObject().getFullNames().isEmpty()
+                        && getObject().getMailboxes().isEmpty()
+                        && getObject().getFullNames().isEmpty()
                 || getObject().getMailboxes().size() > 1;
     }
 }

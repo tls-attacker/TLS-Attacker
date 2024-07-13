@@ -15,14 +15,13 @@ import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import de.rub.nds.tlsattacker.core.smtp.parser.VRFYReplyParser;
+import de.rub.nds.tlsattacker.core.state.Context;
+import de.rub.nds.tlsattacker.core.state.State;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-
-import de.rub.nds.tlsattacker.core.state.Context;
-import de.rub.nds.tlsattacker.core.state.State;
 import org.junit.jupiter.api.Test;
 
 class VRFYReplyTest {
@@ -103,34 +102,77 @@ class VRFYReplyTest {
         List<String> mailboxes = Arrays.asList("<a@mail.com>", "<b@mail.com>");
 
         // case: 553 User ambiguous.
-        SmtpVRFYReply vrfy = new SmtpVRFYReply(replyCode, description, new LinkedList<>(), new LinkedList<>());
+        SmtpVRFYReply vrfy =
+                new SmtpVRFYReply(replyCode, description, new LinkedList<>(), new LinkedList<>());
         String expectedResult = replyCode + sp + description + crlf;
         testAmbiguousSerialize(vrfy, expectedResult);
 
         // case: 553-User ambiguous + multiple mailboxes...
         vrfy = new SmtpVRFYReply(replyCode, description, new LinkedList<>(), mailboxes);
-        expectedResult = replyCode + dash + description + crlf
-                + replyCode + dash + mailboxes.get(0) + crlf
-                + replyCode + sp + mailboxes.get(1) + crlf;
+        expectedResult =
+                replyCode
+                        + dash
+                        + description
+                        + crlf
+                        + replyCode
+                        + dash
+                        + mailboxes.get(0)
+                        + crlf
+                        + replyCode
+                        + sp
+                        + mailboxes.get(1)
+                        + crlf;
         testAmbiguousSerialize(vrfy, expectedResult);
 
         // case: 553-User ambiguous + multiple full names & mailboxes...
         vrfy = new SmtpVRFYReply(replyCode, description, fullNames, mailboxes);
-        expectedResult = replyCode + dash + description + crlf
-                + replyCode + dash + fullNames.get(0) + sp + mailboxes.get(0) + crlf
-                + replyCode + sp + fullNames.get(1) + sp + mailboxes.get(1) + crlf;
+        expectedResult =
+                replyCode
+                        + dash
+                        + description
+                        + crlf
+                        + replyCode
+                        + dash
+                        + fullNames.get(0)
+                        + sp
+                        + mailboxes.get(0)
+                        + crlf
+                        + replyCode
+                        + sp
+                        + fullNames.get(1)
+                        + sp
+                        + mailboxes.get(1)
+                        + crlf;
         testAmbiguousSerialize(vrfy, expectedResult);
 
         // case: multiple mailboxes...
         vrfy = new SmtpVRFYReply(replyCode, null, new LinkedList<>(), mailboxes);
-        expectedResult = replyCode + dash + mailboxes.get(0) + crlf
-                + replyCode + sp + mailboxes.get(1) + crlf;
+        expectedResult =
+                replyCode
+                        + dash
+                        + mailboxes.get(0)
+                        + crlf
+                        + replyCode
+                        + sp
+                        + mailboxes.get(1)
+                        + crlf;
         testAmbiguousSerialize(vrfy, expectedResult);
 
         // case: multiple full names and mailboxes...
         vrfy = new SmtpVRFYReply(replyCode, null, fullNames, mailboxes);
-        expectedResult = replyCode + dash + fullNames.get(0) + sp + mailboxes.get(0) + crlf
-                + replyCode + sp + fullNames.get(1) + sp + mailboxes.get(1) + crlf;
+        expectedResult =
+                replyCode
+                        + dash
+                        + fullNames.get(0)
+                        + sp
+                        + mailboxes.get(0)
+                        + crlf
+                        + replyCode
+                        + sp
+                        + fullNames.get(1)
+                        + sp
+                        + mailboxes.get(1)
+                        + crlf;
         testAmbiguousSerialize(vrfy, expectedResult);
     }
 
@@ -155,7 +197,8 @@ class VRFYReplyTest {
         assertEquals(expectedResult, serializer.getOutputStream().toString());
     }
 
-    private String expectedSerializeResult(int replyCode, String description, String fullName, String mailbox) {
+    private String expectedSerializeResult(
+            int replyCode, String description, String fullName, String mailbox) {
         StringBuilder sb = new StringBuilder();
         String sp = " ";
         String crlf = "\r\n";
