@@ -85,7 +85,9 @@ public class VRFYReplyPreparator extends SmtpReplyPreparator<SmtpVRFYReply> {
     }
 
     private boolean isDescriptionOnlyResponse() {
-        return getObject().getFullNames().isEmpty() && getObject().getMailboxes().isEmpty();
+        return getObject().getDescription() != null
+                && getObject().getFullNames().isEmpty()
+                && getObject().getMailboxes().isEmpty();
     }
 
     private boolean isDescriptionAndMailboxResponse() {
