@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.SmtpMessage;
 import de.rub.nds.tlsattacker.core.smtp.parser.SmtpMessageParser;
 import de.rub.nds.tlsattacker.core.smtp.parser.VRFYCommandParser;
+import de.rub.nds.tlsattacker.core.smtp.preparator.VRFYReplyPreparator;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.LinkedList;
@@ -25,10 +26,36 @@ public class SmtpVRFYReply extends SmtpReply {
     private List<String> fullNames = new LinkedList<>();
     private List<String> mailboxes = new LinkedList<>();
 
+    public SmtpVRFYReply() {}
+
+    // For non-553 reply codes:
+    public SmtpVRFYReply(int replyCode, String description, String fullName, String mailbox) {
+        setReplyCode(replyCode);
+        setDescription(description);
+        addFullName(fullName);
+        addMailbox(mailbox);
+    }
+
+    /*
+        For 553-reply codes. Technically, replyCode should always be 553 but omitting it may cause
+        misuse of the constructor.
+     */
+    public SmtpVRFYReply(int replyCode, String description, List<String> fullNames, List<String> mailboxes) {
+        setReplyCode(replyCode);
+        setDescription(description);
+        setFullNames(fullNames);
+        setMailboxes(mailboxes);
+    }
+
     @Override
     public SmtpMessageParser<? extends SmtpMessage> getParser(
             SmtpContext context, InputStream stream) {
         return new VRFYCommandParser(stream);
+    }
+
+    @Override
+    public VRFYReplyPreparator getPreparator(SmtpContext context) {
+        return new VRFYReplyPreparator(context, this);
     }
 
     public List<String> getFullNames() {
@@ -44,7 +71,7 @@ public class SmtpVRFYReply extends SmtpReply {
     }
 
     public void setDescription(String description) {
-        this.description = description;
+        if (description != null) this.description = description;
     }
 
     public List<String> getMailboxes() {
@@ -56,10 +83,10 @@ public class SmtpVRFYReply extends SmtpReply {
     }
 
     public void addMailbox(String mailbox) {
-        this.mailboxes.add(mailbox);
+        if (mailbox != null) this.mailboxes.add(mailbox);
     }
 
     public void addFullName(String fullName) {
-        this.fullNames.add(fullName);
+        if (fullName != null) this.fullNames.add(fullName);
     }
 }
