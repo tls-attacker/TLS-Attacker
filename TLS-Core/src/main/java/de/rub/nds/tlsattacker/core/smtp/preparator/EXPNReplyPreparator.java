@@ -91,8 +91,8 @@ public class EXPNReplyPreparator extends SmtpReplyPreparator<SmtpEXPNReply> {
 
     private boolean is250Response() {
         return getObject().getDescription() != null
-                && getObject().getMailboxes().isEmpty()
-                && getObject().getFullNames().isEmpty()
+                        && getObject().getMailboxes().isEmpty()
+                        && getObject().getFullNames().isEmpty()
                 || getObject().getMailboxes().size() > 1;
     }
 }

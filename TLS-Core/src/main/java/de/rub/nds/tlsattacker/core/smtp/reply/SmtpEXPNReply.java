@@ -12,11 +12,8 @@ import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.SmtpMessage;
 import de.rub.nds.tlsattacker.core.smtp.parser.EXPNReplyParser;
 import de.rub.nds.tlsattacker.core.smtp.parser.SmtpMessageParser;
-import de.rub.nds.tlsattacker.core.smtp.parser.VRFYCommandParser;
 import de.rub.nds.tlsattacker.core.smtp.preparator.EXPNReplyPreparator;
 import de.rub.nds.tlsattacker.core.smtp.preparator.SmtpMessagePreparator;
-import de.rub.nds.tlsattacker.core.smtp.preparator.VRFYCommandPreparator;
-
 import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
@@ -32,7 +29,11 @@ public class SmtpEXPNReply extends SmtpReply {
     public SmtpEXPNReply() {}
 
     public SmtpEXPNReply(
-            int replyCode, String description, List<String> fullNames, List<String> mailboxes, boolean mailboxesAreEnclosed) {
+            int replyCode,
+            String description,
+            List<String> fullNames,
+            List<String> mailboxes,
+            boolean mailboxesAreEnclosed) {
         setReplyCode(replyCode);
         setDescription(description);
         setFullNames(fullNames);

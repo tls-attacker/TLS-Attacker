@@ -8,38 +8,41 @@
  */
 package de.rub.nds.tlsattacker.core.smtp.reply;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import de.rub.nds.tlsattacker.core.smtp.parser.EXPNReplyParser;
+import de.rub.nds.tlsattacker.core.state.Context;
+import de.rub.nds.tlsattacker.core.state.State;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-
-import de.rub.nds.tlsattacker.core.state.Context;
-import de.rub.nds.tlsattacker.core.state.State;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class EXPNReplyTest {
 
     @Test
     void serializeValid250Reply() {
-        String reply =
-                "250-John <john.doe@mail.com>\r\n250 Jane Doe <jane.doe@mail.com>\r\n";
+        String reply = "250-John <john.doe@mail.com>\r\n250 Jane Doe <jane.doe@mail.com>\r\n";
 
-        SmtpEXPNReply expn = new SmtpEXPNReply(
-                250, null, Arrays.asList("John", "Jane Doe"), Arrays.asList("john.doe@mail.com", "jane.doe@mail.com"), true);
+        SmtpEXPNReply expn =
+                new SmtpEXPNReply(
+                        250,
+                        null,
+                        Arrays.asList("John", "Jane Doe"),
+                        Arrays.asList("john.doe@mail.com", "jane.doe@mail.com"),
+                        true);
 
         Serializer serializer = serialize(expn);
         assertEquals(reply, serializer.getOutputStream().toString());
     }
+
     @Test
     void parseAndSerializeValid250Reply() {
-        String reply =
-                "250-John <john.doe@mail.com>\r\n250 Jane Doe <jane.doe@mail.com>\r\n";
+        String reply = "250-John <john.doe@mail.com>\r\n250 Jane Doe <jane.doe@mail.com>\r\n";
 
         EXPNReplyParser parser =
                 new EXPNReplyParser(
@@ -72,7 +75,9 @@ public class EXPNReplyTest {
         SmtpEXPNReply expn = new SmtpEXPNReply();
         assertDoesNotThrow(() -> parser.parse(expn));
         assertEquals(expn.getReplyCode(), Integer.parseInt(reply.substring(0, 3)));
-        assertEquals(expn.getDescription(), "Cannot VRFY user, but will accept message and attempt delivery to");
+        assertEquals(
+                expn.getDescription(),
+                "Cannot VRFY user, but will accept message and attempt delivery to");
         assertEquals(expn.getMailboxes().get(0), "john@mail.com");
 
         Serializer serializer = serialize(expn);
@@ -96,9 +101,9 @@ public class EXPNReplyTest {
     @Test
     void parseValidDescriptionReplies() {
         String[] validCommands = {
-                "500 Syntax error, command unrecognized\r\n",
-                "550 Requested action not taken: mailbox unavailable\r\n",
-                "502 Command not implemented\r\n"
+            "500 Syntax error, command unrecognized\r\n",
+            "550 Requested action not taken: mailbox unavailable\r\n",
+            "502 Command not implemented\r\n"
         };
 
         for (String command : validCommands) {

@@ -31,7 +31,12 @@ public class SmtpVRFYReply extends SmtpReply {
     public SmtpVRFYReply() {}
 
     // For non-553 reply codes:
-    public SmtpVRFYReply(int replyCode, String description, String fullName, String mailbox, boolean mailboxesAreEnclosed) {
+    public SmtpVRFYReply(
+            int replyCode,
+            String description,
+            String fullName,
+            String mailbox,
+            boolean mailboxesAreEnclosed) {
         setReplyCode(replyCode);
         setDescription(description);
         addFullName(fullName);
@@ -44,7 +49,11 @@ public class SmtpVRFYReply extends SmtpReply {
        misuse of the constructor.
     */
     public SmtpVRFYReply(
-            int replyCode, String description, List<String> fullNames, List<String> mailboxes, boolean mailboxesAreEnclosed) {
+            int replyCode,
+            String description,
+            List<String> fullNames,
+            List<String> mailboxes,
+            boolean mailboxesAreEnclosed) {
         setReplyCode(replyCode);
         setDescription(description);
         setFullNames(fullNames);

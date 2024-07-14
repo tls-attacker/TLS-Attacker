@@ -125,7 +125,8 @@ class VRFYReplyTest {
 
         // case: 553 User ambiguous.
         SmtpVRFYReply vrfy =
-                new SmtpVRFYReply(replyCode, description, new LinkedList<>(), new LinkedList<>(), false);
+                new SmtpVRFYReply(
+                        replyCode, description, new LinkedList<>(), new LinkedList<>(), false);
         String expectedResult = replyCode + sp + description + crlf;
         testAmbiguousSerialize(vrfy, expectedResult);
 
@@ -203,8 +204,14 @@ class VRFYReplyTest {
         assertEquals(expectedResult, serializer.getOutputStream().toString());
     }
 
-    private void testSerialize(int replyCode, String description, String fullName, String mailbox, boolean mailboxesAreEnclosed) {
-        SmtpVRFYReply vrfy = new SmtpVRFYReply(replyCode, description, fullName, mailbox, mailboxesAreEnclosed);
+    private void testSerialize(
+            int replyCode,
+            String description,
+            String fullName,
+            String mailbox,
+            boolean mailboxesAreEnclosed) {
+        SmtpVRFYReply vrfy =
+                new SmtpVRFYReply(replyCode, description, fullName, mailbox, mailboxesAreEnclosed);
         String expectedResult = expectedSerializeResult(replyCode, description, fullName, mailbox);
 
         Serializer serializer = serialize(vrfy);
