@@ -39,5 +39,7 @@ public class EXPNReplyParser extends SmtpReplyParser<SmtpEXPNReply> {
         expnReply.setDescription(vrfyReply.getDescription());
         if (!vrfyReply.getMailboxes().isEmpty()) expnReply.setMailboxes(vrfyReply.getMailboxes());
         if (!vrfyReply.getFullNames().isEmpty()) expnReply.setFullNames(vrfyReply.getFullNames());
+        if (vrfyReply.mailboxesAreEnclosed()) expnReply.markMailboxesAsEnclosed();
+        expnReply.setReplyLines(vrfyReply.getReplyLines());
     }
 }
