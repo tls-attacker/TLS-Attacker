@@ -42,7 +42,8 @@ public class VRFYReplyParser extends SmtpReplyParser<SmtpVRFYReply> {
                 throw new ParserException(
                         "Malformed VRFY-Reply: Multiline status codes are inconsistent.");
 
-            if (!allowMultiline && i > 0
+            if (!allowMultiline
+                    && i > 0
                     && (isNormalResponse(replyCode) || isUnimplementedResponse(replyCode)))
                 throw new ParserException(
                         "Malformed VRFY-Reply: Normal response contains multiple lines.");

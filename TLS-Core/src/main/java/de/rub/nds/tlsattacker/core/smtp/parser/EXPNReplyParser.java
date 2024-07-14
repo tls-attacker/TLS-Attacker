@@ -15,8 +15,7 @@ import java.util.List;
 
 public class EXPNReplyParser extends SmtpReplyParser<SmtpEXPNReply> {
 
-    private final int[] validReplyCodes =
-            new int[] {250, 252, 500, 550, 502, 504};
+    private final int[] validReplyCodes = new int[] {250, 252, 500, 550, 502, 504};
 
     public EXPNReplyParser(InputStream inputStream) {
         super(inputStream);
@@ -24,6 +23,7 @@ public class EXPNReplyParser extends SmtpReplyParser<SmtpEXPNReply> {
 
     /**
      * Treats EXPN-reply as a VRFY-553 reply, since they have the same exact format.
+     *
      * @param expnReply EXPN-Reply object where data is saved.
      */
     @Override
