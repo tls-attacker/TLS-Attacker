@@ -1,22 +1,16 @@
-/*
- * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
- *
- * Licensed under Apache License, Version 2.0
- * http://www.apache.org/licenses/LICENSE-2.0.txt
- */
-package de.rub.nds.tlsattacker.core.smtp.parser;
+package de.rub.nds.tlsattacker.core.smtp.reply;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import de.rub.nds.tlsattacker.core.smtp.reply.SmtpEXPNReply;
-import java.io.ByteArrayInputStream;
-import java.nio.charset.StandardCharsets;
+import de.rub.nds.tlsattacker.core.smtp.parser.EXPNReplyParser;
 import org.junit.jupiter.api.Test;
 
-// Fewer test cases here because of overlap with VRFY-553 Reply.
-class EXPNReplyParserTest {
+import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
+
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+// Fewer test cases here because of overlap with VRFY-553 Reply:
+public class EXPNReplyTest {
     @Test
     void testValidReplies() {
         String[] validCommands = {
@@ -40,4 +34,5 @@ class EXPNReplyParserTest {
             assertEquals(expn.getReplyCode(), Integer.parseInt(command.substring(0, 3)));
         }
     }
+
 }

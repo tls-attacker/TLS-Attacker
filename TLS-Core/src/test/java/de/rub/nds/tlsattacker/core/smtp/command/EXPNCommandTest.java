@@ -1,24 +1,18 @@
-/*
- * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
- * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
- *
- * Licensed under Apache License, Version 2.0
- * http://www.apache.org/licenses/LICENSE-2.0.txt
- */
-package de.rub.nds.tlsattacker.core.smtp.parser;
-
-import static org.junit.jupiter.api.Assertions.*;
+package de.rub.nds.tlsattacker.core.smtp.command;
 
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
-import de.rub.nds.tlsattacker.core.smtp.command.SmtpEXPNCommand;
-import java.io.ByteArrayInputStream;
-import java.nio.charset.StandardCharsets;
+import de.rub.nds.tlsattacker.core.smtp.parser.EXPNCommandParser;
 import org.junit.jupiter.api.Test;
 
-class EXPNCommandParserTest {
+import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+public class EXPNCommandTest {
     @Test
-    void testValidCommands() {
+    void testParseValidCommands() {
         String[] validCommands = {
                 "EXPN john\r\n", "EXPN \"John Doe\"\r\n", "EXPN \"john.doe@gmail.com\"\r\n"
         };
@@ -38,7 +32,7 @@ class EXPNCommandParserTest {
     }
 
     @Test
-    void testInvalidCommands() {
+    void testParseInvalidCommands() {
         String[] invalidCommands = {
                 "EXPN John Doe\r\n", "EXPN john john.doe@gmail.com\r\n", "EXPN john.doe@gmail.com\r\n",
         };
