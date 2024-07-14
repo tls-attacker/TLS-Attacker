@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.smtp.command;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.parser.VRFYCommandParser;
 import de.rub.nds.tlsattacker.core.smtp.preparator.VRFYCommandPreparator;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
 /**
@@ -18,30 +19,27 @@ import java.io.InputStream;
  * exists. The VRFY command can have the parameters: username OR mailboxAddress OR username and
  * mailboxAddress.
  */
+@XmlRootElement
 public class SmtpVRFYCommand extends SmtpCommand {
 
     private static final String COMMAND_NAME = "VRFY";
     private String username;
-    private String mailbox;
 
     public SmtpVRFYCommand() {
         super(COMMAND_NAME, null);
+    }
+
+    public SmtpVRFYCommand(String username) {
+        super(COMMAND_NAME, username);
+        this.username = username;
     }
 
     public String getUsername() {
         return username;
     }
 
-    public String getMailbox() {
-        return mailbox;
-    }
-
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public void setMailbox(String mailbox) {
-        this.mailbox = mailbox;
     }
 
     @Override
