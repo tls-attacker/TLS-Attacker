@@ -15,7 +15,7 @@ import java.util.List;
 
 public class VRFYReplyParser extends SmtpReplyParser<SmtpVRFYReply> {
 
-    private final int[] validReplyCodes = new int[] {250, 251, 252, 502, 504, 550, 551, 553};
+    private int[] validReplyCodes = new int[] {250, 251, 252, 502, 504, 550, 551, 553};
 
     public VRFYReplyParser(InputStream inputStream) {
         super(inputStream);
@@ -24,7 +24,11 @@ public class VRFYReplyParser extends SmtpReplyParser<SmtpVRFYReply> {
     @Override
     public void parse(SmtpVRFYReply reply) {
         List<String> lines = parseAllLines();
+        parseLines(lines, reply, false);
+    }
 
+    // parseLines() offers line parsing without having to create an input stream:
+    public void parseLines(List<String> lines, SmtpVRFYReply reply, boolean allowMultiline) {
         if (lines.isEmpty()) throw new ParserException("Malformed VRFY-Reply: Reply is empty.");
 
         reply.setReplyCode(parseReplyCode(lines.get(0), lines.size() == 1));
@@ -38,7 +42,8 @@ public class VRFYReplyParser extends SmtpReplyParser<SmtpVRFYReply> {
                 throw new ParserException(
                         "Malformed VRFY-Reply: Multiline status codes are inconsistent.");
 
-            if (i > 0 && isNormalResponse(replyCode) || isUnimplementedResponse(replyCode))
+            if (!allowMultiline && i > 0
+                    && (isNormalResponse(replyCode) || isUnimplementedResponse(replyCode)))
                 throw new ParserException(
                         "Malformed VRFY-Reply: Normal response contains multiple lines.");
 
@@ -192,5 +197,13 @@ public class VRFYReplyParser extends SmtpReplyParser<SmtpVRFYReply> {
                     "Malformed VRFY-Reply: String starts with invalid status code or delimiter.");
 
         return replyCode;
+    }
+
+    public int[] getValidReplyCodes() {
+        return validReplyCodes;
+    }
+
+    public void setValidReplyCodes(int[] validReplyCodes) {
+        this.validReplyCodes = validReplyCodes;
     }
 }

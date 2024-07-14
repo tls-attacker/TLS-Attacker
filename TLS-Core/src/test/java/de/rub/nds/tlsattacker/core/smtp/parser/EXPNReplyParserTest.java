@@ -37,7 +37,7 @@ class EXPNReplyParserTest {
 
             SmtpEXPNReply expn = new SmtpEXPNReply();
             assertDoesNotThrow(() -> parser.parse(expn));
-            assertEquals(expn.getStatusCode(), command.substring(0, 3));
+            assertEquals(expn.getReplyCode(), Integer.parseInt(command.substring(0, 3)));
         }
     }
 }

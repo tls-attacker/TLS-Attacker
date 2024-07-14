@@ -17,24 +17,25 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class SmtpEXPNReply extends SmtpReply {
-    private String statusCode;
     private String description;
 
     private List<String> fullNames = new LinkedList<>();
     private List<String> mailboxes = new LinkedList<>();
 
+    public SmtpEXPNReply() {}
+
+    public SmtpEXPNReply(
+            int replyCode, String description, List<String> fullNames, List<String> mailboxes) {
+        setReplyCode(replyCode);
+        setDescription(description);
+        setFullNames(fullNames);
+        setMailboxes(mailboxes);
+    }
+
     @Override
     public SmtpMessageParser<? extends SmtpMessage> getParser(
             SmtpContext context, InputStream stream) {
         return new VRFYCommandParser(stream);
-    }
-
-    public String getStatusCode() {
-        return statusCode;
-    }
-
-    public void setStatusCode(String statusCode) {
-        this.statusCode = statusCode;
     }
 
     public List<String> getFullNames() {
@@ -50,7 +51,7 @@ public class SmtpEXPNReply extends SmtpReply {
     }
 
     public void setDescription(String description) {
-        this.description = description;
+        if (description != null) this.description = description;
     }
 
     public List<String> getMailboxes() {
@@ -62,10 +63,10 @@ public class SmtpEXPNReply extends SmtpReply {
     }
 
     public void addMailbox(String mailbox) {
-        this.mailboxes.add(mailbox);
+        if (mailbox != null) this.mailboxes.add(mailbox);
     }
 
     public void addFullName(String fullName) {
-        this.fullNames.add(fullName);
+        if (fullName != null) this.fullNames.add(fullName);
     }
 }

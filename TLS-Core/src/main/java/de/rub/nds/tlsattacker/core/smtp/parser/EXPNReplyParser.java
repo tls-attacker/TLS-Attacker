@@ -8,8 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.smtp.parser;
 
-import de.rub.nds.tlsattacker.core.exceptions.ParserException;
-import de.rub.nds.tlsattacker.core.smtp.command.SmtpVRFYCommand;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpEXPNReply;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpVRFYReply;
 import java.io.InputStream;
@@ -17,8 +15,8 @@ import java.util.List;
 
 public class EXPNReplyParser extends SmtpReplyParser<SmtpEXPNReply> {
 
-    private final String[] validStatusCodes =
-            new String[] {"250", "252", "500", "550", "502", "504"};
+    private final int[] validReplyCodes =
+            new int[] {250, 252, 500, 550, 502, 504};
 
     public EXPNReplyParser(InputStream inputStream) {
         super(inputStream);
@@ -34,10 +32,10 @@ public class EXPNReplyParser extends SmtpReplyParser<SmtpEXPNReply> {
 
         SmtpVRFYReply vrfyReply = new SmtpVRFYReply();
         VRFYReplyParser vrfyReplyParser = new VRFYReplyParser(null);
-        vrfyReplyParser.setValidStatusCodes(validStatusCodes);
-        vrfyReplyParser.parseLines(vrfyReply, lines);
+        vrfyReplyParser.setValidReplyCodes(validReplyCodes);
+        vrfyReplyParser.parseLines(lines, vrfyReply, true);
 
-        expnReply.setStatusCode(vrfyReply.getStatusCode());
+        expnReply.setReplyCode(vrfyReply.getReplyCode());
         expnReply.setDescription(vrfyReply.getDescription());
         if (!vrfyReply.getMailboxes().isEmpty()) expnReply.setMailboxes(vrfyReply.getMailboxes());
         if (!vrfyReply.getFullNames().isEmpty()) expnReply.setFullNames(vrfyReply.getFullNames());

@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.smtp.parser;
 
-import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpEXPNCommand;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpVRFYCommand;
 import java.io.InputStream;
@@ -25,8 +24,7 @@ public class EXPNCommandParser extends SmtpCommandParser<SmtpEXPNCommand> {
         VRFYCommandParser vrfyCommandParser = new VRFYCommandParser(null);
         vrfyCommandParser.parseArguments(vrfyCommand, parameter);
 
-        expnCommand.setUsername(vrfyCommand.getUsername());
-        expnCommand.setMailbox(vrfyCommand.getMailbox());
+        expnCommand.setMailingList(vrfyCommand.getUsername());
     }
 
     @Override

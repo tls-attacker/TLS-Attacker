@@ -11,33 +11,28 @@ package de.rub.nds.tlsattacker.core.smtp.command;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.parser.VRFYCommandParser;
 import de.rub.nds.tlsattacker.core.smtp.preparator.EXPNCommandPreparator;
-import de.rub.nds.tlsattacker.core.smtp.preparator.VRFYCommandPreparator;
 import java.io.InputStream;
 
 public class SmtpEXPNCommand extends SmtpCommand {
 
     private static final String COMMAND_NAME = "EXPN";
-    private String username;
-    private String mailbox;
+    private String mailingList;
 
     public SmtpEXPNCommand() {
         super(COMMAND_NAME, null);
     }
 
-    public String getUsername() {
-        return username;
+    public SmtpEXPNCommand(String mailingList) {
+        super(COMMAND_NAME, mailingList);
+        this.mailingList = mailingList;
     }
 
-    public String getMailbox() {
-        return mailbox;
+    public String getMailingList() {
+        return mailingList;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setMailbox(String mailbox) {
-        this.mailbox = mailbox;
+    public void setMailingList(String mailingList) {
+        this.mailingList = mailingList;
     }
 
     @Override
