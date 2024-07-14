@@ -39,7 +39,9 @@ public class VRFYReplyPreparator extends SmtpReplyPreparator<SmtpVRFYReply> {
         }
 
         if (isDescriptionAndMailboxResponse()) {
-            replyLines.add(getObject().getDescription() + " " + getObject().getMailboxes().get(0));
+            String mailbox = getObject().getMailboxes().get(0);
+            if (getObject().mailboxesAreEnclosed()) mailbox = "<" + mailbox + ">";
+            replyLines.add(getObject().getDescription() + " " + mailbox);
             return replyLines;
         }
 
