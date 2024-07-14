@@ -146,6 +146,7 @@ public class VRFYReplyParser extends SmtpReplyParser<SmtpVRFYReply> {
         }
 
         // case: <local-part@domain> OR User Name <local-part@domain>
+        reply.markMailboxesAsEnclosed();
         int mailboxStartIndex = findMailboxStartIndex(line);
         String mailbox = line.substring(mailboxStartIndex + 1, line.length() - 1);
 

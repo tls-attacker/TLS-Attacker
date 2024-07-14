@@ -26,14 +26,17 @@ public class SmtpVRFYReply extends SmtpReply {
     private List<String> fullNames = new LinkedList<>();
     private List<String> mailboxes = new LinkedList<>();
 
+    private boolean mailboxesAreEnclosed = false;
+
     public SmtpVRFYReply() {}
 
     // For non-553 reply codes:
-    public SmtpVRFYReply(int replyCode, String description, String fullName, String mailbox) {
+    public SmtpVRFYReply(int replyCode, String description, String fullName, String mailbox, boolean mailboxesAreEnclosed) {
         setReplyCode(replyCode);
         setDescription(description);
         addFullName(fullName);
         addMailbox(mailbox);
+        if (mailboxesAreEnclosed) markMailboxesAsEnclosed();
     }
 
     /*
@@ -41,11 +44,12 @@ public class SmtpVRFYReply extends SmtpReply {
        misuse of the constructor.
     */
     public SmtpVRFYReply(
-            int replyCode, String description, List<String> fullNames, List<String> mailboxes) {
+            int replyCode, String description, List<String> fullNames, List<String> mailboxes, boolean mailboxesAreEnclosed) {
         setReplyCode(replyCode);
         setDescription(description);
         setFullNames(fullNames);
         setMailboxes(mailboxes);
+        if (mailboxesAreEnclosed) markMailboxesAsEnclosed();
     }
 
     @Override
@@ -89,5 +93,13 @@ public class SmtpVRFYReply extends SmtpReply {
 
     public void addFullName(String fullName) {
         if (fullName != null) this.fullNames.add(fullName);
+    }
+
+    public void markMailboxesAsEnclosed() {
+        this.mailboxesAreEnclosed = true;
+    }
+
+    public boolean mailboxesAreEnclosed() {
+        return mailboxesAreEnclosed;
     }
 }

@@ -73,7 +73,9 @@ public class VRFYReplyPreparator extends SmtpReplyPreparator<SmtpVRFYReply> {
             sb.append(" ");
         }
 
+        if (getObject().mailboxesAreEnclosed()) sb.append("<");
         sb.append(getObject().getMailboxes().get(index));
+        if (getObject().mailboxesAreEnclosed()) sb.append(">");
 
         return sb.toString();
     }

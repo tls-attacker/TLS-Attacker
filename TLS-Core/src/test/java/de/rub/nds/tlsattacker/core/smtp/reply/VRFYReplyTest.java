@@ -55,6 +55,27 @@ class VRFYReplyTest {
     }
 
     @Test
+    void testParseAndSerialize() {
+        String reply = "250 john <john@mail.com>\r\n";
+
+        VRFYReplyParser parser =
+                new VRFYReplyParser(
+                        new ByteArrayInputStream(reply.getBytes(StandardCharsets.UTF_8)));
+
+        SmtpVRFYReply vrfy = new SmtpVRFYReply();
+        assertDoesNotThrow(() -> parser.parse(vrfy));
+
+        assertTrue(vrfy.getFullNames().size() == 1 && vrfy.getMailboxes().size() == 1);
+        assertTrue(vrfy.mailboxesAreEnclosed());
+        assertEquals(vrfy.getReplyCode(), 250);
+        assertEquals(vrfy.getFullNames().get(0), "john");
+        assertEquals(vrfy.getMailboxes().get(0), "john@mail.com");
+
+        Serializer serializer = serialize(vrfy);
+        assertEquals(reply, serializer.getOutputStream().toString());
+    }
+
+    @Test
     void testParseInvalidReplies() {
         String[] invalidReplies = {
             "250 John john@mail.com\r\n",
@@ -83,11 +104,11 @@ class VRFYReplyTest {
 
     @Test
     void testSimpleSerialize() {
-        testSerialize(250, null, "John Doe", "<john.doe@gmail.com>");
-        testSerialize(250, null, null, "<john.doe@gmail.com>");
-        testSerialize(250, null, null, "john.doe@gmail.com");
-        testSerialize(502, "Unimplemented command.", null, null);
-        testSerialize(251, "User not local; will forward to ", null, "<some@email.com>");
+        testSerialize(250, null, "John Doe", "<john.doe@gmail.com>", true);
+        testSerialize(250, null, null, "<john.doe@gmail.com>", true);
+        testSerialize(250, null, null, "john.doe@gmail.com", false);
+        testSerialize(502, "Unimplemented command.", null, null, false);
+        testSerialize(251, "User not local; will forward to ", null, "<some@email.com>", true);
     }
 
     @Test
@@ -99,16 +120,17 @@ class VRFYReplyTest {
         int replyCode = 553;
         String description = "User ambiguous.";
         List<String> fullNames = Arrays.asList("a", "b");
-        List<String> mailboxes = Arrays.asList("<a@mail.com>", "<b@mail.com>");
+        List<String> mailboxes = Arrays.asList("a@mail.com", "b@mail.com");
+        List<String> enclosedMailboxes = Arrays.asList("<a@mail.com>", "<b@mail.com>");
 
         // case: 553 User ambiguous.
         SmtpVRFYReply vrfy =
-                new SmtpVRFYReply(replyCode, description, new LinkedList<>(), new LinkedList<>());
+                new SmtpVRFYReply(replyCode, description, new LinkedList<>(), new LinkedList<>(), false);
         String expectedResult = replyCode + sp + description + crlf;
         testAmbiguousSerialize(vrfy, expectedResult);
 
         // case: 553-User ambiguous + multiple mailboxes...
-        vrfy = new SmtpVRFYReply(replyCode, description, new LinkedList<>(), mailboxes);
+        vrfy = new SmtpVRFYReply(replyCode, description, new LinkedList<>(), mailboxes, true);
         expectedResult =
                 replyCode
                         + dash
@@ -116,16 +138,16 @@ class VRFYReplyTest {
                         + crlf
                         + replyCode
                         + dash
-                        + mailboxes.get(0)
+                        + enclosedMailboxes.get(0)
                         + crlf
                         + replyCode
                         + sp
-                        + mailboxes.get(1)
+                        + enclosedMailboxes.get(1)
                         + crlf;
         testAmbiguousSerialize(vrfy, expectedResult);
 
         // case: 553-User ambiguous + multiple full names & mailboxes...
-        vrfy = new SmtpVRFYReply(replyCode, description, fullNames, mailboxes);
+        vrfy = new SmtpVRFYReply(replyCode, description, fullNames, mailboxes, true);
         expectedResult =
                 replyCode
                         + dash
@@ -135,66 +157,68 @@ class VRFYReplyTest {
                         + dash
                         + fullNames.get(0)
                         + sp
-                        + mailboxes.get(0)
+                        + enclosedMailboxes.get(0)
                         + crlf
                         + replyCode
                         + sp
                         + fullNames.get(1)
                         + sp
-                        + mailboxes.get(1)
+                        + enclosedMailboxes.get(1)
                         + crlf;
         testAmbiguousSerialize(vrfy, expectedResult);
 
         // case: multiple mailboxes...
-        vrfy = new SmtpVRFYReply(replyCode, null, new LinkedList<>(), mailboxes);
+        vrfy = new SmtpVRFYReply(replyCode, null, new LinkedList<>(), mailboxes, true);
         expectedResult =
                 replyCode
                         + dash
-                        + mailboxes.get(0)
+                        + enclosedMailboxes.get(0)
                         + crlf
                         + replyCode
                         + sp
-                        + mailboxes.get(1)
+                        + enclosedMailboxes.get(1)
                         + crlf;
         testAmbiguousSerialize(vrfy, expectedResult);
 
         // case: multiple full names and mailboxes...
-        vrfy = new SmtpVRFYReply(replyCode, null, fullNames, mailboxes);
+        vrfy = new SmtpVRFYReply(replyCode, null, fullNames, mailboxes, true);
         expectedResult =
                 replyCode
                         + dash
                         + fullNames.get(0)
                         + sp
-                        + mailboxes.get(0)
+                        + enclosedMailboxes.get(0)
                         + crlf
                         + replyCode
                         + sp
                         + fullNames.get(1)
                         + sp
-                        + mailboxes.get(1)
+                        + enclosedMailboxes.get(1)
                         + crlf;
         testAmbiguousSerialize(vrfy, expectedResult);
     }
 
     private void testAmbiguousSerialize(SmtpVRFYReply reply, String expectedResult) {
+        Serializer serializer = serialize(reply);
+        assertEquals(expectedResult, serializer.getOutputStream().toString());
+    }
+
+    private void testSerialize(int replyCode, String description, String fullName, String mailbox, boolean mailboxesAreEnclosed) {
+        SmtpVRFYReply vrfy = new SmtpVRFYReply(replyCode, description, fullName, mailbox, mailboxesAreEnclosed);
+        String expectedResult = expectedSerializeResult(replyCode, description, fullName, mailbox);
+
+        Serializer serializer = serialize(vrfy);
+        assertEquals(expectedResult, serializer.getOutputStream().toString());
+    }
+
+    private Serializer serialize(SmtpVRFYReply reply) {
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
         Preparator preparator = reply.getPreparator(context);
         Serializer serializer = reply.getSerializer(context);
         preparator.prepare();
         serializer.serialize();
-        assertEquals(expectedResult, serializer.getOutputStream().toString());
-    }
 
-    private void testSerialize(int replyCode, String description, String fullName, String mailbox) {
-        SmtpVRFYReply vrfy = new SmtpVRFYReply(replyCode, description, fullName, mailbox);
-        String expectedResult = expectedSerializeResult(replyCode, description, fullName, mailbox);
-
-        SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
-        Preparator preparator = vrfy.getPreparator(context);
-        Serializer serializer = vrfy.getSerializer(context);
-        preparator.prepare();
-        serializer.serialize();
-        assertEquals(expectedResult, serializer.getOutputStream().toString());
+        return serializer;
     }
 
     private String expectedSerializeResult(
