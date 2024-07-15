@@ -26,7 +26,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.KeyUpdateMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -97,14 +96,6 @@ public class ActionHelperUtil {
             }
         }
         return messageLayerConfiguration;
-    }
-
-    private static List<LayerConfiguration<?>> sortLayerConfigurations(
-            LayerStack layerStack,
-            boolean sending,
-            LayerConfiguration<?>... unsortedLayerConfigurations) {
-        return sortLayerConfigurations(
-                layerStack, sending, new LinkedList<>(Arrays.asList(unsortedLayerConfigurations)));
     }
 
     private static List<LayerConfiguration<?>> sortLayerConfigurations(
