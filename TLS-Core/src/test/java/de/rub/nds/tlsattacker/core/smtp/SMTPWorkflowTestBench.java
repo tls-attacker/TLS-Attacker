@@ -10,10 +10,12 @@ package de.rub.nds.tlsattacker.core.smtp;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
+import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.layer.*;
 import de.rub.nds.tlsattacker.core.layer.constant.StackConfiguration;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpEHLOCommand;
+import de.rub.nds.tlsattacker.core.smtp.command.SmtpHELOCommand;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpEHLOReply;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpInitialGreeting;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpReply;
@@ -22,9 +24,9 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceSerializer;
-import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
-import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
-import de.rub.nds.tlsattacker.core.workflow.action.WaitAction;
+import de.rub.nds.tlsattacker.core.workflow.action.*;
+import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
+import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import jakarta.xml.bind.JAXBException;
 import java.io.IOException;
 import java.security.Security;
@@ -44,7 +46,6 @@ public class SMTPWorkflowTestBench {
     public void changeLoglevel() {
         Configurator.setAllLevels("de.rub.nds.tlsattacker", org.apache.logging.log4j.Level.ALL);
     }
-
     @Disabled
     @Test
     public void testWorkFlow() throws IOException, JAXBException {
@@ -56,20 +57,112 @@ public class SMTPWorkflowTestBench {
         WorkflowTrace trace = new WorkflowTrace();
 
         SmtpReply initialGreeting = new SmtpInitialGreeting();
-        SmtpMessage m = new SmtpEHLOCommand("seal.upb.de");
         trace.addTlsAction(new ReceiveAction(initialGreeting));
-        trace.addTlsAction(new SendAction(m));
-        trace.addTlsAction(new WaitAction(1000));
+        trace.addTlsAction(new SendAction(new SmtpEHLOCommand("seal.upb.de")));
         trace.addTlsAction(new ReceiveAction(new SmtpEHLOReply()));
-        trace.addTlsAction(new WaitAction(1000));
-        trace.addTlsAction(new SendAction(m));
-
         State state = new State(config, trace);
 
         WorkflowExecutor workflowExecutor =
                 WorkflowExecutorFactory.createWorkflowExecutor(
                         config.getWorkflowExecutorType(), state);
 
+        try {
+            workflowExecutor.executeWorkflow();
+        } catch (WorkflowExecutionException ex) {
+            System.out.println(
+                    "The TLS protocol flow was not executed completely, follow the debug messages for more information.");
+            System.out.println(ex);
+        }
+
+        System.out.println(state.getWorkflowTrace().executedAsPlanned());
+        String res = WorkflowTraceSerializer.write(state.getWorkflowTrace());
+        System.out.println(res);
+    }
+
+    @Disabled
+    @Test
+    public void testWorkFlowSMTPS() throws IOException, JAXBException {
+        Security.addProvider(new BouncyCastleProvider());
+        Config config = Config.createConfig();
+        config.setDefaultClientConnection(new OutboundConnection(4443, "localhost"));
+        config.setDefaultLayerConfiguration(StackConfiguration.SMTPS);
+
+        WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
+        WorkflowTrace trace = factory.createWorkflowTrace(WorkflowTraceType.DYNAMIC_HANDSHAKE, RunningModeType.CLIENT);
+
+
+        trace.addTlsAction(new ReceiveAction(new SmtpInitialGreeting()));
+        trace.addTlsAction(new SendAction(new SmtpEHLOCommand("seal.upb.de")));
+        trace.addTlsAction(new ReceiveAction(new SmtpEHLOReply()));
+
+        System.out.println(trace);
+        State state = new State(config, trace);
+
+        WorkflowExecutor workflowExecutor =
+                WorkflowExecutorFactory.createWorkflowExecutor(
+                        config.getWorkflowExecutorType(), state);
+
+        try {
+            workflowExecutor.executeWorkflow();
+        } catch (WorkflowExecutionException ex) {
+            System.out.println(
+                    "The TLS protocol flow was not executed completely, follow the debug messages for more information.");
+            System.out.println(ex);
+        }
+
+        System.out.println(state.getWorkflowTrace());
+        System.out.println(state.getContext().getLayerStack().getHighestLayer().getLayerResult());
+        assert state.getWorkflowTrace().executedAsPlanned();
+    }
+    @Disabled
+    @Test
+    public void testWorkFlowSTARTTLS() throws IOException, JAXBException {
+        Security.addProvider(new BouncyCastleProvider());
+        Config config = Config.createConfig();
+        config.setDefaultClientConnection(new OutboundConnection(4443, "localhost"));
+        config.setDefaultLayerConfiguration(StackConfiguration.SMTP);
+
+        WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
+        WorkflowTrace trace = factory.createWorkflowTrace(WorkflowTraceType.DYNAMIC_HANDSHAKE, RunningModeType.CLIENT);
+
+        trace.addTlsAction(new ReceiveAction(new SmtpInitialGreeting()));
+        trace.addTlsAction(new SendAction(new SmtpEHLOCommand("seal.upb.de")));
+        trace.addTlsAction(new ReceiveAction(new SmtpEHLOReply()));
+
+        System.out.println(trace);
+        State state = new State(config, trace);
+
+        WorkflowExecutor workflowExecutor =
+                WorkflowExecutorFactory.createWorkflowExecutor(
+                        config.getWorkflowExecutorType(), state);
+
+        try {
+            workflowExecutor.executeWorkflow();
+        } catch (WorkflowExecutionException ex) {
+            System.out.println(
+                    "The TLS protocol flow was not executed completely, follow the debug messages for more information.");
+            System.out.println(ex);
+        }
+
+        System.out.println(state.getWorkflowTrace());
+        System.out.println(state.getContext().getLayerStack().getHighestLayer().getLayerResult());
+        assert state.getWorkflowTrace().executedAsPlanned();
+    }
+
+    @Test
+    void testHTTPWorkflow() throws JAXBException, IOException {
+        Security.addProvider(new BouncyCastleProvider());
+        Config config = Config.createConfig();
+        config.setDefaultClientConnection(new OutboundConnection(8443, "localhost"));
+        config.setDefaultLayerConfiguration(StackConfiguration.HTTPS);
+        WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
+        WorkflowTrace trace =
+                factory.createWorkflowTrace(WorkflowTraceType.HTTPS, RunningModeType.CLIENT);
+        State state = new State(config, trace);
+
+        WorkflowExecutor workflowExecutor =
+                WorkflowExecutorFactory.createWorkflowExecutor(
+                        config.getWorkflowExecutorType(), state);
         try {
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException ex) {
