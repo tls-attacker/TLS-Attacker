@@ -27,75 +27,34 @@ public class EHLOReplyParser extends SmtpReplyParser<SmtpEHLOReply> {
 
     @Override
     public void parse(SmtpEHLOReply smtpEHLOReply) {
-        LOGGER.trace("Parsing EHLOReply");
-        List<String> lines = parseAllLines();
-        LOGGER.trace("Parsing lines: {}", lines);
+        List<String> lines = readWholeReply();
+        int statusCode = Integer.parseInt(lines.get(0).substring(0, 3));
+        smtpEHLOReply.setReplyCode(statusCode);
 
-        // Error cases
-        if (lines.get(0).startsWith("5")) {
-            if (lines.get(0).startsWith("504 ")) {
-                // Command parameter not implemented
-                // not sure why this would be sent, RFC says "fairly obscure" - there is no real
-                // EHLO     command parameter
-                smtpEHLOReply.setReplyCode(504);
-            } else if (lines.get(0).startsWith("550 ")) {
-                // Requested action not taken: mailbox unavailable
-                smtpEHLOReply.setReplyCode(550);
-            } else if (lines.get(0).startsWith("502 ")) {
-                // Command not implemented
-                smtpEHLOReply.setReplyCode(502);
-            } else {
-                throw new ParserException(
-                        "Could not parse EHLOReply. Unexpected Errorcode: " + lines.get(0));
-            }
-            if (lines.size() > 1) {
-                throw new ParserException(
-                        "Could not parse EHLOReply. Unexpected additional lines: "
-                                + lines.subList(1, lines.size()));
-            }
+        String domainAndGreeting = lines.get(0);
+        // in both cases the first is almost the same
+        String[] parts = domainAndGreeting.substring(4).split(" ", 2);
+        if (parts.length == 1) {
+            smtpEHLOReply.setDomain(parts[0]);
+        } else if (parts.length == 2) {
+            smtpEHLOReply.setDomain(parts[0]);
+            smtpEHLOReply.setGreeting(parts[1]);
         } else {
-            // Success case
-            // only the last line can be '250 ' the others must be '250-', check for both
-            if (!lines.get(lines.size() - 1).startsWith("250 ")) {
-                LOGGER.trace(
-                        "Could not parse EHLOReply. Expected '250 ' for final line but got: {}",
-                        lines.get(lines.size() - 1));
-                throw new ParserException(
-                        "Could not parse EHLOReply. Expected '250 ' for final line but got: "
-                                + lines.get(lines.size() - 1));
-            }
-            for (int i = 1; i < lines.size() - 1; i++) {
-                if (!lines.get(i).startsWith("250-")) {
-                    LOGGER.trace(
-                            "Could not parse EHLOReply. Expected '250-' for multiline but got: {}",
-                            lines.get(i));
-                    throw new ParserException(
-                            "Could not parse EHLOReply. Expected '250-' for multiline but got: "
-                                    + lines.get(i));
-                }
-            }
-
-            String domainAndGreeting = lines.get(0);
-            // in both cases the first is almost the same
-            String[] parts = domainAndGreeting.substring(4).split(" ", 2);
-            if (parts.length == 1) {
-                smtpEHLOReply.setDomain(parts[0]);
-            } else if (parts.length == 2) {
-                smtpEHLOReply.setDomain(parts[0]);
-                smtpEHLOReply.setGreeting(parts[1]);
-            } else {
-                throw new ParserException(
-                        "Could not parse EHLOReply. Malformed 250: " + domainAndGreeting);
-            }
-
-            if (lines.size() > 1) {
-                for (int i = 1; i < lines.size(); i++) {
-                    SmtpServiceExtension extension = parseKeyword(lines.get(i).substring(4));
-                    smtpEHLOReply.getExtensions().add(extension);
-                }
-            }
-            smtpEHLOReply.setReplyCode(250);
+            throw new ParserException(
+                    "Could not parse EHLOReply. Malformed greeting: " + domainAndGreeting);
         }
+
+        for(String line : lines.subList(1, lines.size())) {
+            int statusCodeLine = Integer.parseInt(line.substring(0, 3));
+            if (statusCode != statusCodeLine) {
+                throw new ParserException(
+                        "Could not parse EHLOReply inconsistent status codes" + statusCode + " != " + statusCodeLine);
+            }
+            String keyword = line.substring(4);
+            SmtpServiceExtension extension = parseKeyword(keyword);
+            smtpEHLOReply.getExtensions().add(extension);
+        }
+
     }
 
     public SmtpServiceExtension parseKeyword(String keyword) {
