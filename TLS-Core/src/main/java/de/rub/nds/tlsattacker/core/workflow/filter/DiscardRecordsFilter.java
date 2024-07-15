@@ -11,13 +11,9 @@ package de.rub.nds.tlsattacker.core.workflow.filter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /** Strips all record messages. */
 public class DiscardRecordsFilter extends Filter {
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     public DiscardRecordsFilter(Config config) {
         super(config);

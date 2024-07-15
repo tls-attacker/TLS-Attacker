@@ -17,8 +17,6 @@ import java.io.PushbackInputStream;
 
 public class StreamTransportHandler extends StreambasedTransportHandler {
 
-    private final InputStream inputStream;
-
     private final OutputStream outputStream;
 
     private final TimeoutableInputStream timeoutableInputStream;
@@ -31,7 +29,6 @@ public class StreamTransportHandler extends StreambasedTransportHandler {
             InputStream inputStream,
             OutputStream outputStream) {
         super(timeout, type);
-        this.inputStream = inputStream;
         this.outputStream = outputStream;
         this.timeoutableInputStream = new TimeoutableInputStream(inputStream, timeout);
     }

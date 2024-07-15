@@ -20,13 +20,9 @@ import jakarta.xml.bind.annotation.XmlElementRef;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.LinkedList;
 import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 @XmlRootElement(name = "ReceiveTill")
 public class ReceiveTillAction extends CommonReceiveAction {
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     @HoldsModifiableVariable @XmlElementRef protected ProtocolMessage waitTillMessage;
 

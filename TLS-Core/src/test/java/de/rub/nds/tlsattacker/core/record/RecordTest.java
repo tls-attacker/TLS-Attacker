@@ -12,7 +12,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
-import de.rub.nds.tlsattacker.core.constants.ChooserType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.record.compressor.RecordCompressor;
@@ -22,8 +21,6 @@ import de.rub.nds.tlsattacker.core.record.preparator.RecordPreparator;
 import de.rub.nds.tlsattacker.core.record.serializer.RecordSerializer;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
 import java.io.ByteArrayInputStream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,7 +28,6 @@ import org.junit.jupiter.api.Test;
 public class RecordTest {
 
     private Record record;
-    private Chooser chooser;
     private Encryptor encryptor;
     private RecordCompressor compressor;
     private Context context;
@@ -41,7 +37,6 @@ public class RecordTest {
         record = new Record();
         Config config = Config.createConfig();
         context = new Context(new State(config), new InboundConnection());
-        chooser = ChooserFactory.getChooser(ChooserType.DEFAULT, context, config);
     }
 
     /** Test of getRecordPreparator method, of class Record. */

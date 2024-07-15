@@ -38,9 +38,13 @@ public class ProxyConnection implements Runnable {
                 config = ConfigIO.read(fis);
             }
         } else {
-            config = Config.createConfig();
+            config = new Config();
         }
         LOGGER.info("Accepted a connection!");
+    }
+
+    public ProxyConfig getProxyConfig() {
+        return proxyConfig;
     }
 
     @Override

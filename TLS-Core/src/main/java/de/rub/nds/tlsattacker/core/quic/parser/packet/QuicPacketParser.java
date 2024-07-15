@@ -14,12 +14,8 @@ import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
 import java.io.IOException;
 import java.io.InputStream;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public abstract class QuicPacketParser<T extends QuicPacket> extends Parser<T> {
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     protected QuicContext context;
 
@@ -43,7 +39,7 @@ public abstract class QuicPacketParser<T extends QuicPacket> extends Parser<T> {
 
     protected void parseDestinationConnectionId(T message) {
         byte[] destinationConnectionIdLengthBytes =
-                parseByteArrayField(message.getDestinationConnectionIdLength().getValue());
+                parseByteArrayField(message.getDestinationConnectionIdLength().getValue() & 0xFF);
         message.setDestinationConnectionId(destinationConnectionIdLengthBytes);
 
         try {

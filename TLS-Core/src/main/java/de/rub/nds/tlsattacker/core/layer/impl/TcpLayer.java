@@ -19,16 +19,12 @@ import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerInputStream;
 import de.rub.nds.tlsattacker.transport.tcp.TcpTransportHandler;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * The TCP layer is a wrapper around an underlying TCP socket. It forwards the sockets InputStream
  * for reading and sends any data over the TCP socket without modifications.
  */
 public class TcpLayer extends ProtocolLayer<LayerProcessingHint, TcpStreamContainer> {
-
-    private static Logger LOGGER = LogManager.getLogger();
 
     private final TcpContext context;
 

@@ -29,7 +29,8 @@ public class LayerStackProcessingResult {
 
     private final List<LayerType> layersWithUnreadBytes = new LinkedList<>();
 
-    /** Private constructor for serialization. Do not use. */
+    /** Private no-arg constructor to please JAXB */
+    @SuppressWarnings("unused")
     private LayerStackProcessingResult() {
         layerProcessingResultList = null;
     }

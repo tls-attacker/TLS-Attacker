@@ -21,13 +21,9 @@ import de.rub.nds.tlsattacker.core.workflow.container.ActionHelperUtil;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.LinkedList;
 import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 @XmlRootElement(name = "PopAndSend")
 public class PopAndSendAction extends CommonSendAction {
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     /** Pop and send message with this index in message buffer. */
     private Integer index = null;

@@ -13,7 +13,6 @@ import de.rub.nds.tlsattacker.core.constants.SvcbType;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EchConfig;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.EchConfigParser;
 import de.rub.nds.tlsattacker.core.state.State;
 import jakarta.xml.bind.annotation.XmlRootElement;
@@ -32,8 +31,6 @@ import org.xbill.DNS.Record;
 @XmlRootElement
 public class EchConfigDnsRequestAction extends TlsAction {
     private static final Logger LOGGER = LogManager.getLogger();
-
-    private List<ExtensionMessage> extensions;
 
     private TlsContext tlsContext;
     private Config tlsConfig;
