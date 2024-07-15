@@ -29,7 +29,7 @@ public abstract class UdpTransportHandler extends PacketbasedTransportHandler {
 
     protected int port;
 
-    private final int RECEIVE_BUFFER_SIZE = 65536;
+    private static final int RECEIVE_BUFFER_SIZE = 65536;
 
     private final byte[] dataBuffer = new byte[RECEIVE_BUFFER_SIZE];
 
