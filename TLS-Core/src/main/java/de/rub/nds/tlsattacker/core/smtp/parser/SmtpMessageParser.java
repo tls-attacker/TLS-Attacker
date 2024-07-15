@@ -44,13 +44,4 @@ public abstract class SmtpMessageParser<MessageT extends SmtpMessage> extends Pa
         }
         return lineUntilLF.trim();
     }
-
-    public List<String> parseAllLines() {
-        List<String> lines = new ArrayList<>();
-        while (getBytesLeft() > 0) {
-            String line = parseSingleLine();
-            lines.add(line);
-        }
-        return lines;
-    }
 }

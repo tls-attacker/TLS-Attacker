@@ -11,6 +11,8 @@ package de.rub.nds.tlsattacker.core.smtp.parser;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpReply;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SmtpReplyParser<ReplyT extends SmtpReply> extends SmtpMessageParser<ReplyT> {
     public SmtpReplyParser(InputStream stream) {
@@ -37,5 +39,21 @@ public class SmtpReplyParser<ReplyT extends SmtpReply> extends SmtpMessageParser
             throw new ParserException(
                     "Could not parse SmtpReply. Could not parse reply code: " + replyParts[0]);
         }
+    }
+
+    public List<String> readWholeReply() {
+        List<String> lines = new ArrayList<>();
+        String line;
+        while ((line = parseSingleLine()) != null) {
+            lines.add(line);
+            if (isEndOfReply(line)) {
+                break;
+            }
+        }
+        return lines;
+    }
+
+    private boolean isEndOfReply(String line) {
+        return line.matches("\\d{3} .*");
     }
 }
