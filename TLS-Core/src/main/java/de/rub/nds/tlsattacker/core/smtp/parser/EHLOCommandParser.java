@@ -22,11 +22,13 @@ public class EHLOCommandParser extends SmtpCommandParser<SmtpEHLOCommand> {
     public void parseArguments(SmtpEHLOCommand command, String arguments) {
         if (arguments.startsWith("[") && arguments.endsWith("]")) {
             String address = arguments.substring(1, arguments.length() - 1);
+            command.setClientIdentity(address);
             if (IPAddress.isValid(address)) {
                 command.setHasAddressLiteral(true);
             }
+        } else {
+            command.setClientIdentity(arguments);
         }
-        command.setClientIdentity(arguments);
     }
 
     @Override

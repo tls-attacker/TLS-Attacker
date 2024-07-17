@@ -66,7 +66,9 @@ class EHLOCommandTest {
                 ehlo.getParser(
                         context,
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
-        assertThrows(ParserException.class, () -> parser.parse(ehlo));
+        parser.parse(ehlo);
+        assertEquals("EHLO", ehlo.getVerb());
+        assertEquals("seal.cs.upb.de invalid", ehlo.getClientIdentity());
     }
 
     @Test
@@ -94,7 +96,10 @@ class EHLOCommandTest {
                 ehlo.getParser(
                         context,
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
-        assertThrows(ParserException.class, () -> parser.parse(ehlo));
+
+        parser.parse(ehlo);
+        assertEquals("EHLO", ehlo.getVerb());
+        assertEquals("1.2.3. ", ehlo.getClientIdentity());
     }
 
     @Test
