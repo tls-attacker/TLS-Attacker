@@ -20,6 +20,9 @@ public class EHLOCommandParser extends SmtpCommandParser<SmtpEHLOCommand> {
 
     @Override
     public void parseArguments(SmtpEHLOCommand command, String arguments) {
+        if(arguments == null) {
+            throw new ParserException("EHLO command requires parameters.");
+        }
         if (arguments.startsWith("[") && arguments.endsWith("]")) {
             String address = arguments.substring(1, arguments.length() - 1);
             command.setClientIdentity(address);
@@ -29,10 +32,5 @@ public class EHLOCommandParser extends SmtpCommandParser<SmtpEHLOCommand> {
         } else {
             command.setClientIdentity(arguments);
         }
-    }
-
-    @Override
-    public boolean hasParameters() {
-        return true;
     }
 }
