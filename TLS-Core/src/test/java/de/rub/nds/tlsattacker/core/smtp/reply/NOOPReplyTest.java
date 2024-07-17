@@ -1,0 +1,41 @@
+/*
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
+ *
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
+ */
+package de.rub.nds.tlsattacker.core.smtp.reply;
+
+import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
+import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
+import de.rub.nds.tlsattacker.core.layer.data.Parser;
+import de.rub.nds.tlsattacker.core.state.Context;
+import de.rub.nds.tlsattacker.core.state.State;
+import org.junit.jupiter.api.Test;
+
+import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
+class NOOPReplyTest {
+
+    @Test
+    public void testParseSimple() {
+        String stringMessage = "250 NOOP acknowledged\r\n";
+
+        SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
+        SmtpNOOPReply noop = new SmtpNOOPReply();
+        Parser parser =
+                noop.getParser(
+                        context,
+                        new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
+        parser.parse(noop);
+
+        assertEquals(250, noop.getReplyCode());
+        assertEquals("NOOP acknowledged", noop.getHumanReadableMessage());
+    }
+}

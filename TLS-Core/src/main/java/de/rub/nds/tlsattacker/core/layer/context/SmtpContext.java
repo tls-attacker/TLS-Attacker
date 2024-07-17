@@ -12,8 +12,12 @@ import de.rub.nds.tlsattacker.core.smtp.command.SmtpCommand;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpEHLOCommand;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpHELOCommand;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpInitialGreetingDummy;
+import de.rub.nds.tlsattacker.core.smtp.command.SmtpNOOPCommand;
+import de.rub.nds.tlsattacker.core.smtp.command.SmtpQUITCommand;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpEHLOReply;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpInitialGreeting;
+import de.rub.nds.tlsattacker.core.smtp.reply.SmtpNOOPReply;
+import de.rub.nds.tlsattacker.core.smtp.reply.SmtpQUITReply;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpReply;
 import de.rub.nds.tlsattacker.core.state.Context;
 import java.util.ArrayList;
@@ -27,12 +31,29 @@ public class SmtpContext extends LayerContext {
     private String clientIdentity;
     private boolean serverOnlySupportsEHLO = false;
 
+    // Client can request connection close via QUIT, but MUST NOT close the connection itself
+    // intentionally before that
+    private boolean clientRequestedClose = false;
+    // Clients SHOULD NOT close the connection until they have received the reply indicating the
+    // server has
+    private boolean serverAcknowledgedClose = false;
+
     // SMTP is a back and forth of commands and replies. We need to keep track of each to correctly
     // get the type of the reply
     private SmtpCommand lastCommand = new SmtpInitialGreetingDummy();
 
     public SmtpContext(Context context) {
         super(context);
+    }
+
+    public void clearBuffers() {
+        reversePathBuffer.clear();
+        forwardPathBuffer.clear();
+        mailDataBuffer.setLength(0);
+    }
+
+    public void insertReversePath(String reversePath) {
+        reversePathBuffer.add(reversePath);
     }
 
     public List<String> getReversePathBuffer() {
@@ -83,8 +104,12 @@ public class SmtpContext extends LayerContext {
             if (command instanceof SmtpEHLOCommand || command instanceof SmtpHELOCommand) {
                 // HELO's reply is a special case of EHLO's reply without any extensions - this just reuses code
                 return new SmtpEHLOReply();
+            } else if (command instanceof SmtpNOOPCommand) {
+                return new SmtpNOOPReply();
             } else if (command instanceof SmtpInitialGreetingDummy) {
                 return new SmtpInitialGreeting();
+            } else if (command instanceof SmtpQUITCommand) {
+                return new SmtpQUITReply();
             } else {
                 throw new UnsupportedOperationException(
                         "No reply implemented for :" + command.getClass());
@@ -98,5 +123,20 @@ public class SmtpContext extends LayerContext {
 
     public void setServerOnlySupportsEHLO(boolean serverOnlySupportsEHLO) {
         this.serverOnlySupportsEHLO = serverOnlySupportsEHLO;
+    }
+    public boolean isClientRequestedClose() {
+        return clientRequestedClose;
+    }
+
+    public void setClientRequestedClose(boolean clientRequestedClose) {
+        this.clientRequestedClose = clientRequestedClose;
+    }
+
+    public boolean isServerAcknowledgedClose() {
+        return serverAcknowledgedClose;
+    }
+
+    public void setServerAcknowledgedClose(boolean serverAcknowledgedClose) {
+        this.serverAcknowledgedClose = serverAcknowledgedClose;
     }
 }
