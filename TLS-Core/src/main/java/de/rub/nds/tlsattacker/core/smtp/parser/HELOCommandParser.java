@@ -25,9 +25,4 @@ public class HELOCommandParser extends SmtpCommandParser<SmtpHELOCommand> {
         }
         command.setDomain(arguments);
     }
-
-    @Override
-    public boolean hasParameters() {
-        return true;
-    }
 }
