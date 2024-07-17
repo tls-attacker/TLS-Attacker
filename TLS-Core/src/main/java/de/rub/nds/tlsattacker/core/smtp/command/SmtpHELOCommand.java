@@ -21,6 +21,10 @@ import org.bouncycastle.util.IPAddress;
  * The HELO command is used with a domain, rather than an address literal. Although it is very
  * similar to the EHLO command, it is implemented not as a subclass, because it does carry some
  * implications regarding the client version and how to handle messages.
+ *
+ * SMTP HELO does not have its own reply, because the HELO Reply is a special case of the EHLO reply.
+ * @see SmtpEHLOCommand
+ * @see de.rub.nds.tlsattacker.core.smtp.reply.SmtpEHLOReply
  */
 @XmlRootElement
 public class SmtpHELOCommand extends SmtpCommand {
@@ -32,12 +36,7 @@ public class SmtpHELOCommand extends SmtpCommand {
 
     public SmtpHELOCommand(String domain) {
         super("HELO", domain);
-        if (IPAddress.isValid(domain)) {
-            // might be superfluous could be removed later
-            throw new IllegalArgumentException("HELO cannot be used with an adress literal.");
-        } else {
-            this.domain = domain;
-        }
+        this.domain = domain;
     }
 
     @Override
