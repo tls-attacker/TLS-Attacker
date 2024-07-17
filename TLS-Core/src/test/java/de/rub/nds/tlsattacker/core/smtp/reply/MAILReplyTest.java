@@ -37,7 +37,7 @@ class MAILReplyTest {
         parser.parse(reply);
 
         assertEquals(250, reply.getReplyCode());
-        assertEquals("OK", reply.getMessage());
+        assertEquals("OK", reply.getHumanReadableMessage());
     }
 
     @Test
@@ -49,7 +49,7 @@ class MAILReplyTest {
         SmtpMAILReply reply = new SmtpMAILReply();
         parser.parse(reply);
         assertEquals(reply.getReplyCode(), 552);
-        assertEquals(reply.getMessage(), "Aborted");
+        assertEquals(reply.getHumanReadableMessage(), "Aborted");
     }
 
     @Test
@@ -76,7 +76,7 @@ class MAILReplyTest {
     public void testSerialize() {
         SmtpMAILReply reply = new SmtpMAILReply();
         reply.setReplyCode(250);
-        reply.setMessage("OK");
+        reply.setHumanReadableMessage("OK");
 
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
         Preparator preparator = reply.getPreparator(context);

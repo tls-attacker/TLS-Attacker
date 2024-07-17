@@ -54,9 +54,4 @@ public class MAILCommandParser extends SmtpCommandParser<SmtpMAILCommand> {
                 "The MAIL-command parameter is invalid: "
                         + "It's not a valid mailbox or the input format is wrong");
     }
-
-    @Override
-    public boolean hasParameters() {
-        return true;
-    }
 }

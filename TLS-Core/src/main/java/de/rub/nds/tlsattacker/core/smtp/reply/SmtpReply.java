@@ -29,6 +29,10 @@ public class SmtpReply extends SmtpMessage {
     protected int replyCode;
     protected List<String> replyLines;
 
+    // this is the human readable message part associated with the reply code
+    // for a single line reply, this is the only line in the replyLines list
+    protected String humanReadableMessage;
+
     public SmtpReply() {
         this.replyLines = new ArrayList<>();
     }
@@ -78,5 +82,13 @@ public class SmtpReply extends SmtpMessage {
 
     public void setReplyLines(List<String> replyLines) {
         this.replyLines = replyLines;
+    }
+
+    public String getHumanReadableMessage() {
+        return humanReadableMessage;
+    }
+
+    public void setHumanReadableMessage(String humanReadableMessage) {
+        this.humanReadableMessage = humanReadableMessage;
     }
 }
