@@ -23,9 +23,4 @@ public class VRFYCommandParser extends SmtpCommandParser<SmtpVRFYCommand> {
 
         command.setUsername(parameter);
     }
-
-    @Override
-    public boolean hasParameters() {
-        return true;
-    }
 }
