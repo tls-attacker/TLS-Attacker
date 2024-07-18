@@ -34,6 +34,11 @@ public class SmtpReply extends SmtpMessage {
         this.replyLines = new ArrayList<>();
     }
 
+    public SmtpReply(int replyCode, List<String> replyLines) {
+        this.replyCode = replyCode;
+        this.replyLines = replyLines;
+    }
+
     @Override
     public SmtpMessageHandler<? extends SmtpMessage> getHandler(SmtpContext smtpContext) {
         return new SmtpReplyHandler<>(smtpContext);
