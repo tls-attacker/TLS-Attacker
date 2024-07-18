@@ -8,7 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.smtp.parser;
 
+import de.rub.nds.tlsattacker.core.exceptions.ParserException;
+import de.rub.nds.tlsattacker.core.smtp.extensions.*;
 import org.bouncycastle.util.IPAddress;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /** This class contains functions that check syntax based on RFC5321's Command Argument Syntax. */
 public final class SmtpSyntaxParser {
@@ -149,6 +154,120 @@ public final class SmtpSyntaxParser {
                 mailbox.substring(endIndexOfLocalPart(mailbox) + 1); // everything past @
 
         return isValidAddressLiteral(mailboxEnding) || isValidDomain(mailboxEnding);
+    }
+
+    private static boolean isValidesmtpKeyword(String keyword) {
+        if (isNotAlphanumeric(keyword.charAt(0))) {
+            return false;
+        }
+        for (int i = 0; i < keyword.length(); i++) {
+            char c = keyword.charAt(i);
+            if (isNotAlphanumeric(c) && c != '-') {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static boolean isValidesmtpValue(String value) {
+        return value != null && value.matches("^[\\x21-\\x3C\\x3E-\\x7E]+$");
+    }
+
+    public static boolean isValidSpecialParameter(String[] parameter) {
+        if (parameter.length < 2) {
+            return false;
+        }
+        if (!parameter[1].startsWith("[\"=\"") || !parameter[1].endsWith("]")) {
+            return false;
+        }
+        parameter[1] = parameter[1].replaceAll("[\\[\\]]", "");
+        parameter[1] = parameter[1].replace("\"=\"", "");
+        return (isValidesmtpKeyword(parameter[0]) && isValidesmtpValue(parameter[1]));
+    }
+
+    public static SmtpServiceExtension parseKeyword(String ext, String parameters) {
+        // just ehlo-line
+        switch (ext) {
+            case "8BITMIME":
+                return new _8BITMIMEExtension();
+            case "ATRN":
+                return new ATRNExtension();
+            case "AUTH":
+                String[] sasl = parameters.split(" ");
+                return new AUTHExtension(new ArrayList<>(List.of(sasl)));
+            case "BINARYMIME":
+                return new BINARYMIMEExtension();
+            case "BURL":
+                // TODO: BURL parameter not understood in any way
+                return new BURLExtension(parameters);
+            case "CHECKPOINT":
+                return new CHECKPOINTExtension();
+            case "CHUNKING":
+                return new CHUNKINGExtension();
+            case "CONNEG":
+                return new CONNEGExtension();
+            case "CONPERM":
+                return new CONPERMExtension();
+            case "DELIVERBY":
+                return new DELIVERBYExtension();
+            case "DSN":
+                return new DSNExtension();
+            case "ENHANCEDSTATUSCODES":
+                return new ENHANCEDSTATUSCODESExtension();
+            case "ETRN":
+                return new ETRNExtension();
+            case "EXPN":
+                return new EXPNExtension();
+            case "FUTURERELEASE":
+                return new FUTURERELEASEExtension();
+            case "HELP":
+                return new HELPExtension();
+            case "LIMITS":
+                return new LIMITSExtension();
+            case "MT-PRIORITY":
+                // TODO: MT_PRIORITY parameter not understood in any way
+                return new MT_PRIORITYExtension(parameters);
+            case "MTRK":
+                return new MTRKExtension();
+            case "NO-SOLICITING":
+                // TODO: NO-SOLICITING parameter not understood in any way
+                return new NO_SOLICITINGExtension(parameters);
+            case "PIPELINING":
+                return new PIPELININGExtension();
+            case "REQUIRETLS":
+                return new REQUIRETLSExtension();
+            case "RRVS":
+                return new RRVSExtension();
+            case "SAML":
+                return new SAMLExtension();
+            case "SEND":
+                return new SENDExtension();
+            case "SIZE":
+                // TODO: SIZE can have a parameter
+                int size = Integer.parseInt(parameters);
+                return new SIZEExtension(size);
+            case "SMTPUTF8":
+                return new SMTPUTF8Extension();
+            case "SOML":
+                return new SOMLExtension();
+            case "STARTTLS":
+                return new STARTTLSExtension();
+            case "SUBMITTER":
+                return new SUBMITTERExtension();
+            case "TURN":
+                return new TURNExtension();
+            case "UTF8SMTP":
+                return new UTF8SMTPExtension();
+            case "VERB":
+                return new VERBExtension();
+            default:
+                if (ext.startsWith("X") || ext.startsWith("x")) {
+                    return new LocalSmtpServiceExtension(ext, parameters);
+                } else {
+                    throw new ParserException(
+                            "Could not parse Extension of Command/Reply. Unknown keyword: " + ext);
+                }
+        }
     }
 
     public static int startsWithValidReplyCode(
