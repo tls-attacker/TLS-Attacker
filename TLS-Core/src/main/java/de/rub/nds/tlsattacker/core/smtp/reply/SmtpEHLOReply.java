@@ -24,7 +24,7 @@ public class SmtpEHLOReply extends SmtpReply {
     private List<SmtpServiceExtension> extensions;
 
     public SmtpEHLOReply() {
-        super();
+        this.replyCode = 250;
         this.extensions = new ArrayList<>();
     }
 
