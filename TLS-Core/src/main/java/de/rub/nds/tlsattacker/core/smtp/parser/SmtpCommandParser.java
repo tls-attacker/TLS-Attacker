@@ -41,9 +41,8 @@ public class SmtpCommandParser<CommandT extends SmtpCommand> extends SmtpMessage
 
     /**
      * Parses the arguments of the SmtpCommand. This method needs to be implemented by subclasses,
-     * if the command has any arguments.
-     * Implementations should throw a ParserException if the arguments are not valid.
-     * Implementors are responsible for checking arguments for nullness.
+     * if the command has any arguments. Implementations should throw a ParserException if the
+     * arguments are not valid. Implementors are responsible for checking arguments for nullness.
      *
      * @param command a CommandT object only partially initialized by Method parse
      * @param arguments parameter string containing everything after first space

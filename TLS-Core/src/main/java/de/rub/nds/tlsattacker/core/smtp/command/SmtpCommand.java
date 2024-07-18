@@ -23,7 +23,8 @@ import java.io.InputStream;
 public class SmtpCommand extends SmtpMessage {
 
     String verb;
-    // this field is used by preparator+serializer for the command parameters, it should not be used for the actual contents
+    // this field is used by preparator+serializer for the command parameters, it should not be used
+    // for the actual contents
     String parameters;
 
     public SmtpCommand(String verb, String parameters) {

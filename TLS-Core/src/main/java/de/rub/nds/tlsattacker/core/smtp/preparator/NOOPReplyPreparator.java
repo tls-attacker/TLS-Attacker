@@ -1,4 +1,3 @@
-
 /*
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
