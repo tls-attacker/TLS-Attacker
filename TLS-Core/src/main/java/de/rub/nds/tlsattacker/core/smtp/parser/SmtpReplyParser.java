@@ -37,5 +37,10 @@ public class SmtpReplyParser<ReplyT extends SmtpReply> extends SmtpMessageParser
             throw new ParserException(
                     "Could not parse SmtpReply. Could not parse reply code: " + replyParts[0]);
         }
+        parseMessage(replyT, replyParts[1]);
+    }
+
+    public void parseMessage(ReplyT replyT, String message) {
+        replyT.setHumanReadableMessage(message);
     }
 }

@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.smtp.extensions.*;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpEHLOReply;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -88,13 +89,13 @@ public class EHLOReplyParser extends SmtpReplyParser<SmtpEHLOReply> {
             case "ATRN":
                 return new ATRNExtension();
             case "AUTH":
-                // TODO: AUTH can have a parameter
-                return new AUTHExtension();
+                String[] sasl = parameters.split(" ");
+                return new AUTHExtension(new ArrayList<>(List.of(sasl)));
             case "BINARYMIME":
                 return new BINARYMIMEExtension();
             case "BURL":
                 // TODO: BURL can have a parameter
-                return new BURLExtension();
+                return new BURLExtension(parameters);
             case "CHECKPOINT":
                 return new CHECKPOINTExtension();
             case "CHUNKING":
@@ -121,12 +122,12 @@ public class EHLOReplyParser extends SmtpReplyParser<SmtpEHLOReply> {
                 return new LIMITSExtension();
             case "MT-PRIORITY":
                 // TODO: MT-PRIORITY can have a parameter
-                return new MT_PRIORITYExtension();
+                return new MT_PRIORITYExtension(parameters);
             case "MTRK":
                 return new MTRKExtension();
             case "NO-SOLICITING":
                 // TODO: NO-SOLICITING can have a parameter
-                return new NO_SOLICITINGExtension();
+                return new NO_SOLICITINGExtension(parameters);
             case "PIPELINING":
                 return new PIPELININGExtension();
             case "REQUIRETLS":
@@ -139,7 +140,8 @@ public class EHLOReplyParser extends SmtpReplyParser<SmtpEHLOReply> {
                 return new SENDExtension();
             case "SIZE":
                 // TODO: SIZE can have a parameter
-                return new SIZEExtension();
+                int size = Integer.parseInt(parameters);
+                return new SIZEExtension(size);
             case "SMTPUTF8":
                 return new SMTPUTF8Extension();
             case "SOML":

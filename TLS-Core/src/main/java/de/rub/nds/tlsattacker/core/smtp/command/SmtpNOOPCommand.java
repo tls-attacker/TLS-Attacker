@@ -6,14 +6,15 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-package de.rub.nds.tlsattacker.core.smtp.extensions;
+package de.rub.nds.tlsattacker.core.smtp.command;
 
-public class MT_PRIORITYExtension extends SmtpServiceExtension {
+import jakarta.xml.bind.annotation.XmlRootElement;
 
-    private String parameter;
+@XmlRootElement
+public class SmtpNOOPCommand extends SmtpCommand {
+    private static final String COMMAND = "NOOP";
 
-    public MT_PRIORITYExtension(String parameter) {
-        super("MT-PRIORITY");
-        this.parameter = parameter;
+    public SmtpNOOPCommand() {
+        super(COMMAND, null);
     }
 }

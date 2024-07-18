@@ -14,8 +14,10 @@ import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.layer.*;
 import de.rub.nds.tlsattacker.core.layer.constant.StackConfiguration;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpEHLOCommand;
+import de.rub.nds.tlsattacker.core.smtp.command.SmtpNOOPCommand;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpEHLOReply;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpInitialGreeting;
+import de.rub.nds.tlsattacker.core.smtp.reply.SmtpNOOPReply;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpReply;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
@@ -62,7 +64,10 @@ public class SMTPWorkflowTestBench {
         trace.addTlsAction(new WaitAction(1000));
         trace.addTlsAction(new ReceiveAction(new SmtpEHLOReply()));
         trace.addTlsAction(new WaitAction(1000));
-        trace.addTlsAction(new SendAction(m));
+        trace.addTlsAction(new SendAction(new SmtpNOOPCommand()));
+        trace.addTlsAction(new ReceiveAction(new SmtpNOOPReply()));
+        //        trace.addTlsAction(new SendAction(new SmtpQUITCommand()));
+        //        trace.addTlsAction(new ReceiveAction(new SmtpQUITReply()));
 
         State state = new State(config, trace);
 
@@ -81,5 +86,6 @@ public class SMTPWorkflowTestBench {
         System.out.println(state.getWorkflowTrace().executedAsPlanned());
         String res = WorkflowTraceSerializer.write(state.getWorkflowTrace());
         System.out.println(res);
+        assert (state.getWorkflowTrace().executedAsPlanned());
     }
 }
