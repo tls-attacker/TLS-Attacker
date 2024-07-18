@@ -19,7 +19,7 @@ public class VRFYCommandParser extends SmtpCommandParser<SmtpVRFYCommand> {
 
     @Override
     public void parseArguments(SmtpVRFYCommand command, String parameter) {
-        if (parameter.isEmpty()) throw new ParserException("VRFY-parameter must not be empty.");
+        if (parameter == null) throw new ParserException("VRFY-parameter must not be empty.");
 
         command.setUsername(parameter);
     }
