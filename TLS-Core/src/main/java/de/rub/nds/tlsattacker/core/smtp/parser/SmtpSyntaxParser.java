@@ -8,15 +8,17 @@
  */
 package de.rub.nds.tlsattacker.core.smtp.parser;
 
-import de.rub.nds.tlsattacker.core.exceptions.ParserException;
-import de.rub.nds.tlsattacker.core.smtp.extensions.*;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
 import org.bouncycastle.util.IPAddress;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /** This class contains functions that check syntax based on RFC5321's Command Argument Syntax. */
 public final class SmtpSyntaxParser {
+    /**
+     * @param string Any string.
+     * @return Whether the string is a quoted string. Note: Does not check quoted string content.
+     */
     public static boolean isNotAQuotedString(String string) {
         return !(string.length() > 1
                 && string.charAt(0) == '"'
@@ -75,50 +77,46 @@ public final class SmtpSyntaxParser {
     }
 
     private static int endIndexOfLocalPart(String mailbox) {
-        for (int i = mailbox.length() - 1;
-                i >= 0;
-                i--) { // Last '@'-sign denotes ending of local-part.
+        for (int i = mailbox.length() - 1; i >= 0; i--) {
             if (mailbox.charAt(i) != '@') continue;
             return i;
         }
-
-        // TODO: consider changing:
-        return 0; // For now, it sets an invalid index to 0, so isValidLocalPart() detects that the
-        // local-part is empty.
+        return 0;
     }
 
     private static boolean isValidSubdomain(String str) {
         // first and last characters have to be alphanumeric:
-        if (isNotAlphanumeric(str.charAt(0)) || isNotAlphanumeric(str.charAt(str.length() - 1)))
-            return false;
+        if (str.isEmpty()
+                || isNotAlphanumeric(str.charAt(0))
+                || isNotAlphanumeric(str.charAt(str.length() - 1))) return false;
 
         // characters in between may also be '-'
         for (int i = 1; i < str.length() - 1; i++) {
             char c = str.charAt(i);
             if (isNotAlphanumeric(c) && c != '-') return false;
         }
-
         return true;
     }
 
     private static boolean isValidDomain(String str) {
-        String[] subdomains =
-                str.split("\\."); // if this causes issues use Pattern.quote(".") instead
+        String[] subdomains = str.split("\\.");
 
         for (String subdomain : subdomains) {
             if (!isValidSubdomain(subdomain)) return false;
         }
-
         return true;
     }
 
-    private static boolean isValidAddressLiteral(String str) {
-        if (str.charAt(0) != '[' || str.charAt(str.length() - 1) != ']') return false;
+    private static boolean isValidAtDomain(String str) {
+        return str.startsWith("@") && isValidDomain(str.substring(1));
+    }
 
-        str =
-                str.startsWith("[IPv6:")
-                        ? str.substring(6, str.length() - 1)
-                        : str.substring(1, str.length() - 1);
+    private static boolean isValidAddressLiteral(String str) {
+        if (str.isEmpty() || str.charAt(0) != '[' || str.charAt(str.length() - 1) != ']')
+            return false;
+
+        if (str.startsWith("[IPv6:")) str = str.substring(6, str.length() - 1);
+        else str = str.substring(1, str.length() - 1);
 
         return IPAddress.isValid(str);
     }
@@ -131,16 +129,74 @@ public final class SmtpSyntaxParser {
         return true;
     }
 
+    /**
+     * @param hopString String potentially containing hops / @-domains.
+     * @return Whether address has valid syntax in accordance with RFC5321.
+     */
+    public static boolean isValidHopString(String hopString) {
+        if (hopString.contains(","))
+        {
+            // contains several domains, so check them all
+            String[] hops = hopString.split(",");
+            for (String hop : hops) {
+                if (!isValidAtDomain(hop)) return false;
+            }
+            return true;
+        }
+        else{
+            return isValidDomain(hopString);
+        }
+    }
+
     private static boolean isValidLocalPart(String localPart) {
         if (localPart.isEmpty()) return false;
-        if (localPart.getBytes(StandardCharsets.UTF_8).length > 64)
-            return false; // can't be longer than 64 octets
-
         if (isValidDotString(localPart)) return true;
 
         // case: special characters were found, thus local part must be quoted string:
-        return localPart.charAt(0) == '"' && localPart.charAt(localPart.length() - 1) == '"';
+        return localPart.charAt(0) == '"'
+                && localPart.charAt(localPart.length() - 1) == '"'
+                && SmtpSyntaxParser.isValidQuotedStringContent(
+                localPart.substring(1, localPart.length() - 1));
     }
+
+    /**
+     * @param postmaster String potentially containing a postmaster.
+     * @return Whether address has valid syntax in accordance with RFC5321.
+     */
+    public static boolean isValidPostmaster(String postmaster) {
+        String localPart = postmaster.substring(0, endIndexOfLocalPart(postmaster));
+
+        return postmaster.equalsIgnoreCase("postmaster");
+        }
+
+    /**
+     * @param forwardPath String potentially containing a forward path.
+     * @return Whether address has valid syntax in accordance with RFC5321.
+     */
+    public static boolean isValidForwardPath(String forwardPath) {
+        if (forwardPath.contains(":"))
+        {
+            String hopString = forwardPath.substring(0, forwardPath.indexOf(":"));
+            String mailbox = forwardPath.substring(forwardPath.indexOf(":") + 1);
+
+            return isValidHopString(hopString) && isValidMailbox(mailbox);
+        }
+        return false;
+    }
+
+    /**
+     * @param address String potentially containing a IP address.
+     * @return Whether address has valid syntax in accordance with RFC5321.
+     */
+    public static boolean isValidIPAddress(String address) {
+        // regular expression for IP addresses
+        String regex = "^[a-zA-Z0-9._%+-]+@\\[(IPv6:[a-fA-F0-9:]+|\\d{1,3}(?:\\.\\d{1,3}){3})\\]$";
+
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(address);
+
+        return matcher.matches();
+       }
 
     /**
      * @param mailbox String potentially containing a mailbox.
@@ -157,117 +213,15 @@ public final class SmtpSyntaxParser {
         return isValidAddressLiteral(mailboxEnding) || isValidDomain(mailboxEnding);
     }
 
-    private static boolean isValidesmtpKeyword(String keyword) {
-        if (isNotAlphanumeric(keyword.charAt(0))) {
-            return false;
-        }
-        for (int i = 0; i < keyword.length(); i++) {
-            char c = keyword.charAt(i);
-            if (isNotAlphanumeric(c) && c != '-') {
-                return false;
-            }
-        }
-        return true;
-    }
+    public static int startsWithValidReplyCode(
+            String reply, int[] validReplyCodes, boolean isFinalLine) {
+        char delimiter = ' ';
+        if (!isFinalLine) delimiter = '-';
 
-    private static boolean isValidesmtpValue(String value) {
-        return value != null && value.matches("^[\\x21-\\x3C\\x3E-\\x7E]+$");
-    }
+        for (int code : validReplyCodes) {
+            if (reply.startsWith(String.valueOf(code) + delimiter)) return code;
+        }
 
-    public static boolean isValidSpecialParameter(String[] parameter) {
-        if (parameter.length < 2) {
-            return false;
-        }
-        if (!parameter[1].startsWith("[\"=\"") || !parameter[1].endsWith("]")) {
-            return false;
-        }
-        parameter[1] = parameter[1].replaceAll("[\\[\\]]", "");
-        parameter[1] = parameter[1].replace("\"=\"", "");
-        return (isValidesmtpKeyword(parameter[0]) && isValidesmtpValue(parameter[1]));
-    }
-
-    public static SmtpServiceExtension parseKeyword(String ext, String parameters) {
-        // just ehlo-line
-        switch (ext) {
-            case "8BITMIME":
-                return new _8BITMIMEExtension();
-            case "ATRN":
-                return new ATRNExtension();
-            case "AUTH":
-                String[] sasl = parameters.split(" ");
-                return new AUTHExtension(new ArrayList<>(List.of(sasl)));
-            case "BINARYMIME":
-                return new BINARYMIMEExtension();
-            case "BURL":
-                // TODO: BURL parameter not understood in any way
-                return new BURLExtension(parameters);
-            case "CHECKPOINT":
-                return new CHECKPOINTExtension();
-            case "CHUNKING":
-                return new CHUNKINGExtension();
-            case "CONNEG":
-                return new CONNEGExtension();
-            case "CONPERM":
-                return new CONPERMExtension();
-            case "DELIVERBY":
-                return new DELIVERBYExtension();
-            case "DSN":
-                return new DSNExtension();
-            case "ENHANCEDSTATUSCODES":
-                return new ENHANCEDSTATUSCODESExtension();
-            case "ETRN":
-                return new ETRNExtension();
-            case "EXPN":
-                return new EXPNExtension();
-            case "FUTURERELEASE":
-                return new FUTURERELEASEExtension();
-            case "HELP":
-                return new HELPExtension();
-            case "LIMITS":
-                return new LIMITSExtension();
-            case "MT-PRIORITY":
-                // TODO: MT_PRIORITY parameter not understood in any way
-                return new MT_PRIORITYExtension(parameters);
-            case "MTRK":
-                return new MTRKExtension();
-            case "NO-SOLICITING":
-                // TODO: NO-SOLICITING parameter not understood in any way
-                return new NO_SOLICITINGExtension(parameters);
-            case "PIPELINING":
-                return new PIPELININGExtension();
-            case "REQUIRETLS":
-                return new REQUIRETLSExtension();
-            case "RRVS":
-                return new RRVSExtension();
-            case "SAML":
-                return new SAMLExtension();
-            case "SEND":
-                return new SENDExtension();
-            case "SIZE":
-                // TODO: SIZE can have a parameter
-                int size = Integer.parseInt(parameters);
-                return new SIZEExtension(size);
-            case "SMTPUTF8":
-                return new SMTPUTF8Extension();
-            case "SOML":
-                return new SOMLExtension();
-            case "STARTTLS":
-                return new STARTTLSExtension();
-            case "SUBMITTER":
-                return new SUBMITTERExtension();
-            case "TURN":
-                return new TURNExtension();
-            case "UTF8SMTP":
-                return new UTF8SMTPExtension();
-            case "VERB":
-                return new VERBExtension();
-            default:
-                if (ext.startsWith("X") || ext.startsWith("x")) {
-                    return new LocalSmtpServiceExtension(ext, parameters);
-                } else {
-                    throw new ParserException(
-                            "Could not parse Extension of Command/Reply. Unknown keyword: " + ext);
-                }
-        }
+        return -1;
     }
 }
