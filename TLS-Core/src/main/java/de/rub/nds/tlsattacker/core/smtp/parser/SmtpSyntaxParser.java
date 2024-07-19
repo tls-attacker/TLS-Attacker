@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.bouncycastle.util.IPAddress;
 
 /** This class contains functions that check syntax based on RFC5321's Command Argument Syntax. */
@@ -79,8 +78,8 @@ public final class SmtpSyntaxParser {
 
     private static int endIndexOfLocalPart(String mailbox) {
         for (int i = mailbox.length() - 1;
-             i >= 0;
-             i--) { // Last '@'-sign denotes ending of local-part.
+                i >= 0;
+                i--) { // Last '@'-sign denotes ending of local-part.
             if (mailbox.charAt(i) != '@') continue;
             return i;
         }
@@ -291,8 +290,7 @@ public final class SmtpSyntaxParser {
      * @return Whether address has valid syntax in accordance with RFC5321.
      */
     public static boolean isValidForwardPath(String forwardPath) {
-        if (forwardPath.contains(":"))
-        {
+        if (forwardPath.contains(":")) {
             String hopString = forwardPath.substring(0, forwardPath.indexOf(":"));
             String mailbox = forwardPath.substring(forwardPath.indexOf(":") + 1);
 
@@ -306,19 +304,18 @@ public final class SmtpSyntaxParser {
      * @return Whether address has valid syntax in accordance with RFC5321.
      */
     public static boolean isValidHopString(String hopString) {
-        if (hopString.contains(","))
-        {
+        if (hopString.contains(",")) {
             // contains several domains, so check them all
             String[] hops = hopString.split(",");
             for (String hop : hops) {
                 if (!isValidAtDomain(hop)) return false;
             }
             return true;
-        }
-        else{
+        } else {
             return isValidDomain(hopString);
         }
     }
+
     private static boolean isValidAtDomain(String str) {
         return str.startsWith("@") && isValidDomain(str.substring(1));
     }

@@ -20,7 +20,6 @@ import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
-
 import org.junit.jupiter.api.Test;
 
 class RCPTReplyTest {
@@ -41,19 +40,19 @@ class RCPTReplyTest {
     @Test
     void testParseValidReplies() {
         String[] validReplies = {
-                "250 Ok\r\n",
-                "251 User not local; will forward to <seal@upb.de>\r\n",
-                "450 Requested mail action not taken: mailbox unavailable\r\n",
-                "451 Requested action aborted: local error in processing\r\n",
-                "452 Requested action not taken: insufficient system storage\r\n",
-                "455 Server unable to accommodate parameters\r\n",
-                "550 Requested action not taken: mailbox unavailable\r\n",
-                "551 User not local; please try <user@example.com>\r\n",
-                "552 Requested mail action aborted: exceeded storage allocation\r\n",
-                "553 Requested action not taken: mailbox name not allowed\r\n",
-                "503 Bad sequence of commands\r\n",
-                "555 MAIL FROM/RCPT TO parameters not recognized or not implemented\r\n"
-                };
+            "250 Ok\r\n",
+            "251 User not local; will forward to <seal@upb.de>\r\n",
+            "450 Requested mail action not taken: mailbox unavailable\r\n",
+            "451 Requested action aborted: local error in processing\r\n",
+            "452 Requested action not taken: insufficient system storage\r\n",
+            "455 Server unable to accommodate parameters\r\n",
+            "550 Requested action not taken: mailbox unavailable\r\n",
+            "551 User not local; please try <user@example.com>\r\n",
+            "552 Requested mail action aborted: exceeded storage allocation\r\n",
+            "553 Requested action not taken: mailbox name not allowed\r\n",
+            "503 Bad sequence of commands\r\n",
+            "555 MAIL FROM/RCPT TO parameters not recognized or not implemented\r\n"
+        };
 
         for (String reply : validReplies) {
             RCPTReplyParser parser =
@@ -69,10 +68,7 @@ class RCPTReplyTest {
 
     @Test
     void testParseNegativeReplies() {
-        String[] invalidReplies = {
-                "321 No such user here\r\n",
-                "123 Everything fine\r\n"
-            };
+        String[] invalidReplies = {"321 No such user here\r\n", "123 Everything fine\r\n"};
 
         for (String reply : invalidReplies) {
             RCPTReplyParser parser =
@@ -88,8 +84,7 @@ class RCPTReplyTest {
     @Test
     void testParseInvalidReplies() {
         String[] invalidReplies = {
-                "User not local; will forward to <seal@upb.de>\r\n",
-                "250\r\n",
+            "User not local; will forward to <seal@upb.de>\r\n", "250\r\n",
         };
 
         for (String reply : invalidReplies) {

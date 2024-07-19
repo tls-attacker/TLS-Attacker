@@ -1,12 +1,18 @@
+/*
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
+ *
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
+ */
 package de.rub.nds.tlsattacker.core.smtp.parser;
 
-import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpRCPTReply;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.io.InputStream;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class RCPTReplyParser extends SmtpReplyParser<SmtpRCPTReply> {
 
@@ -22,7 +28,7 @@ public class RCPTReplyParser extends SmtpReplyParser<SmtpRCPTReply> {
         List<String> lines = readWholeReply();
         LOGGER.trace("Parsing lines: {}", lines);
 
-        if(lines.isEmpty()){
+        if (lines.isEmpty()) {
             LOGGER.trace("Reply is empty");
             smtpRCPTReply.setValid(false);
             return;
@@ -30,10 +36,9 @@ public class RCPTReplyParser extends SmtpReplyParser<SmtpRCPTReply> {
 
         // parse into reply message object
         int replyCode = 0;
-        try{
+        try {
             replyCode = Integer.parseInt(lines.get(0).substring(0, 3));
-        }
-        catch(NumberFormatException e){
+        } catch (NumberFormatException e) {
             LOGGER.trace("Could not parse RCPTReply code: {}", e.getMessage());
             smtpRCPTReply.setValid(false);
             return;
@@ -49,16 +54,12 @@ public class RCPTReplyParser extends SmtpReplyParser<SmtpRCPTReply> {
         if (List.of(validCodes).contains(replyCode)) {
             smtpRCPTReply.setValid(true);
             LOGGER.trace("RCPTReply fine. {}", lines);
-        }
-        else if (List.of(errorCodes).contains(replyCode)) {
+        } else if (List.of(errorCodes).contains(replyCode)) {
             smtpRCPTReply.setValid(true);
-            LOGGER.trace(
-                    "Error code in RCPTReply. {}", lines);
-        }
-        else {
+            LOGGER.trace("Error code in RCPTReply. {}", lines);
+        } else {
             smtpRCPTReply.setValid(false);
-            LOGGER.trace(
-                    "Could not parse RCPTReply. {}", lines);
+            LOGGER.trace("Could not parse RCPTReply. {}", lines);
         }
     }
-}    
+}
