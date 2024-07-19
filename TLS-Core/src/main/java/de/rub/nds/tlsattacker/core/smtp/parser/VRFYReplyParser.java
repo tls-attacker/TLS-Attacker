@@ -39,7 +39,7 @@ public class VRFYReplyParser extends SmtpReplyParser<SmtpVRFYReply> {
             addMailboxes(reply, line, mailboxIndices);
         }
 
-        reply.setReplyLines(replyLines); // bare minimum
+        reply.setLineContents(replyLines);
     }
 
     // str only saved as mailbox if it has <...@...>

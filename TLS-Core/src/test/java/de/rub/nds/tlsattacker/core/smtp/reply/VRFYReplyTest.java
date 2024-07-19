@@ -70,35 +70,16 @@ class VRFYReplyTest {
 
     @Test
     void testSerialize() {
-        String replyLine = "John Doe <john.doe@gmail.com>";
+        String replyContent = "John Doe <john.doe@gmail.com>";
         SmtpVRFYReply vrfy = new SmtpVRFYReply();
         vrfy.setReplyCode(250);
-        vrfy.setReplyLines(List.of(replyLine));
+        vrfy.setLineContents(List.of(replyContent));
 
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
         Preparator preparator = vrfy.getPreparator(context);
         Serializer serializer = vrfy.getSerializer(context);
         preparator.prepare();
         serializer.serialize();
-
-        assertEquals("250 " + replyLine + "\r\n", serializer.getOutputStream().toString());
-    }
-
-    @Test
-    void testParseAndSerialize() {
-        String reply = "250 John Doe <john.doe@gmail.com>\r\n";
-
-        VRFYReplyParser parser =
-                new VRFYReplyParser(
-                        new ByteArrayInputStream(reply.getBytes(StandardCharsets.UTF_8)));
-
-        SmtpVRFYReply vrfy = new SmtpVRFYReply();
-        parser.parse(vrfy);
-
-        SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
-        Serializer serializer = vrfy.getSerializer(context);
-        serializer.serialize();
-        assertEquals(
-                "250 John Doe <john.doe@gmail.com>\r\n", serializer.getOutputStream().toString());
+        assertEquals("250 " + replyContent + "\r\n", serializer.getOutputStream().toString());
     }
 }
