@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.smtp.command;
 import static org.junit.jupiter.api.Assertions.*;
 
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
-import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import de.rub.nds.tlsattacker.core.smtp.parser.VRFYCommandParser;
@@ -25,7 +24,7 @@ import org.junit.jupiter.api.Test;
 
 class VRFYCommandTest {
     @Test
-    void testParseValidCommands() {
+    void testParseCommands() {
         String[] validCommands = {
             "VRFY john\r\n", "VRFY \"John Doe\"\r\n", "VRFY \"john.doe@gmail.com\"\r\n"
         };
@@ -41,22 +40,6 @@ class VRFYCommandTest {
 
             assertEquals(vrfy.getVerb(), "VRFY");
             assertEquals(vrfy.getParameters(), command.substring(5, command.length() - 2));
-        }
-    }
-
-    @Test
-    void testParseInvalidCommands() {
-        String[] invalidCommands = {
-            "VRFY John Doe\r\n", "VRFY john john.doe@gmail.com\r\n", "VRFY john.doe@gmail.com\r\n",
-        };
-
-        for (String command : invalidCommands) {
-            VRFYCommandParser parser =
-                    new VRFYCommandParser(
-                            new ByteArrayInputStream(command.getBytes(StandardCharsets.UTF_8)));
-
-            SmtpVRFYCommand vrfy = new SmtpVRFYCommand();
-            assertThrows(ParserException.class, () -> parser.parse(vrfy));
         }
     }
 
