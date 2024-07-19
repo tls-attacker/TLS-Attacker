@@ -100,9 +100,9 @@ public class SmtpContext extends LayerContext {
                 return new SmtpNOOPReply();
             } else if (command instanceof SmtpInitialGreetingDummy) {
                 return new SmtpInitialGreeting();
-            } else if(command instanceof SmtpDATACommand) {
+            } else if (command instanceof SmtpDATACommand) {
                 return new SmtpDATAReply();
-            } else if(command instanceof SmtpDATAContentCommand) {
+            } else if (command instanceof SmtpDATAContentCommand) {
                 return new SmtpDATAContentReply();
             } else if (command instanceof SmtpQUITCommand) {
                 return new SmtpQUITReply();
