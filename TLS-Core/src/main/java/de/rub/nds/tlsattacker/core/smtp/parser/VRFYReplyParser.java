@@ -21,7 +21,7 @@ public class VRFYReplyParser extends SmtpReplyParser<SmtpVRFYReply> {
 
     @Override
     public void parse(SmtpVRFYReply reply) {
-        List<String> lines = parseAllLines();
+        List<String> lines = readWholeReply();
         List<String> replyLines = new LinkedList<>();
 
         for (String line : lines) {
