@@ -133,6 +133,6 @@ public class MAILCommandTest {
 
         assertEquals(context.getReversePathBuffer().get(0), mailCommand.getReversePath());
         assertTrue(context.getForwardPathBuffer().isEmpty());
-        assertEquals(context.getMailDataBuffer().length(), 0);
+        assertEquals(context.getMailDataBuffer().size(), 0);
     }
 }

@@ -14,7 +14,6 @@ import de.rub.nds.tlsattacker.core.smtp.parser.HELOCommandParser;
 import de.rub.nds.tlsattacker.core.smtp.preparator.HELOCommandPreparator;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
-import org.bouncycastle.util.IPAddress;
 
 /**
  * This class represents an SMTP HELO command, which is used to identify the client to the server.
@@ -22,7 +21,9 @@ import org.bouncycastle.util.IPAddress;
  * similar to the EHLO command, it is implemented not as a subclass, because it does carry some
  * implications regarding the client version and how to handle messages.
  *
- * SMTP HELO does not have its own reply, because the HELO Reply is a special case of the EHLO reply.
+ * <p>SMTP HELO does not have its own reply, because the HELO Reply is a special case of the EHLO
+ * reply.
+ *
  * @see SmtpEHLOCommand
  * @see de.rub.nds.tlsattacker.core.smtp.reply.SmtpEHLOReply
  */
