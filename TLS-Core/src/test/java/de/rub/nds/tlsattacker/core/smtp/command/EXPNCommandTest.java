@@ -8,14 +8,13 @@
  */
 package de.rub.nds.tlsattacker.core.smtp.command;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.smtp.parser.EXPNCommandParser;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class EXPNCommandTest {
     @Test
@@ -50,7 +49,9 @@ public class EXPNCommandTest {
                             new ByteArrayInputStream(command.getBytes(StandardCharsets.UTF_8)));
 
             SmtpEXPNCommand expn = new SmtpEXPNCommand();
-            assertThrows(ParserException.class, () -> parser.parse(expn));
+            assertDoesNotThrow(() -> parser.parse(expn));
+            assertEquals(expn.getVerb(), "EXPN");
+            assertEquals(expn.getParameters(), command.substring(5, command.length() - 2));
         }
     }
 }

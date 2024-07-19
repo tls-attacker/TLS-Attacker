@@ -24,7 +24,7 @@ public class SmtpVRFYReply extends SmtpReply {
 
     public SmtpVRFYReply() {}
 
-    public SmtpVRFYReply(int replyCode, List<String> replyLines) {
+    public SmtpVRFYReply(int replyCode, char delimiter, List<String> replyLines) {
         super(replyCode, replyLines);
     }
 

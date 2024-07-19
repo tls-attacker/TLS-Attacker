@@ -12,60 +12,25 @@ import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.SmtpMessage;
 import de.rub.nds.tlsattacker.core.smtp.parser.EXPNReplyParser;
 import de.rub.nds.tlsattacker.core.smtp.parser.SmtpMessageParser;
-import de.rub.nds.tlsattacker.core.smtp.preparator.EXPNReplyPreparator;
 import de.rub.nds.tlsattacker.core.smtp.preparator.SmtpMessagePreparator;
 import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 
 public class SmtpEXPNReply extends SmtpReply {
-    private String description;
-
-    private List<String> fullNames = new LinkedList<>();
     private List<String> mailboxes = new LinkedList<>();
-
-    private boolean mailboxesAreEnclosed = false;
 
     public SmtpEXPNReply() {}
 
-    public SmtpEXPNReply(
-            int replyCode,
-            String description,
-            List<String> fullNames,
-            List<String> mailboxes,
-            boolean mailboxesAreEnclosed) {
-        setReplyCode(replyCode);
-        setDescription(description);
-        setFullNames(fullNames);
-        setMailboxes(mailboxes);
-        if (mailboxesAreEnclosed) markMailboxesAsEnclosed();
+    public SmtpEXPNReply(int replyCode, List<String> replyLines) {
+        this.replyCode = replyCode;
+        this.replyLines = replyLines;
     }
 
     @Override
     public SmtpMessageParser<? extends SmtpMessage> getParser(
             SmtpContext context, InputStream stream) {
         return new EXPNReplyParser(stream);
-    }
-
-    @Override
-    public SmtpMessagePreparator<? extends SmtpMessage> getPreparator(SmtpContext context) {
-        return new EXPNReplyPreparator(context, this);
-    }
-
-    public List<String> getFullNames() {
-        return fullNames;
-    }
-
-    public void setFullNames(List<String> fullNames) {
-        this.fullNames = fullNames;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        if (description != null) this.description = description;
     }
 
     public List<String> getMailboxes() {
@@ -78,17 +43,5 @@ public class SmtpEXPNReply extends SmtpReply {
 
     public void addMailbox(String mailbox) {
         if (mailbox != null) this.mailboxes.add(mailbox);
-    }
-
-    public void addFullName(String fullName) {
-        if (fullName != null) this.fullNames.add(fullName);
-    }
-
-    public void markMailboxesAsEnclosed() {
-        this.mailboxesAreEnclosed = true;
-    }
-
-    public boolean mailboxesAreEnclosed() {
-        return mailboxesAreEnclosed;
     }
 }

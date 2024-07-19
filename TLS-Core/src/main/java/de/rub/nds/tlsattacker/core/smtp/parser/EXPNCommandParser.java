@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.smtp.parser;
 
+import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpEXPNCommand;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpVRFYCommand;
 import java.io.InputStream;
@@ -19,16 +20,13 @@ public class EXPNCommandParser extends SmtpCommandParser<SmtpEXPNCommand> {
 
     @Override
     public void parseArguments(SmtpEXPNCommand expnCommand, String parameter) {
+        if (parameter == null) throw new ParserException("EXPN-Parameter can't be null.");
+
         // Use VRFY-Parser due to identical input:
         SmtpVRFYCommand vrfyCommand = new SmtpVRFYCommand();
         VRFYCommandParser vrfyCommandParser = new VRFYCommandParser(null);
         vrfyCommandParser.parseArguments(vrfyCommand, parameter);
 
         expnCommand.setMailingList(vrfyCommand.getUsername());
-    }
-
-    @Override
-    public boolean hasParameters() {
-        return true;
     }
 }

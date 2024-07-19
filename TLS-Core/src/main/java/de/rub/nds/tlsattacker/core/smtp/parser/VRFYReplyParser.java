@@ -22,17 +22,15 @@ public class VRFYReplyParser extends SmtpReplyParser<SmtpVRFYReply> {
     @Override
     public void parse(SmtpVRFYReply reply) {
         List<String> lines = parseAllLines();
+        parseLines(reply, lines);
+    }
+
+    // for parsing without streams:
+    public void parseLines(SmtpVRFYReply reply, List<String> lines) {
         List<String> replyLines = new LinkedList<>();
 
         for (String line : lines) {
-            // extract as much as we can:
-            int replyLineStartIndex = 0;
-            String possibleReplyCode = line.substring(0, 3);
-
-            if (isNaturalNumberString(possibleReplyCode)) {
-                reply.setReplyCode(Integer.parseInt(possibleReplyCode));
-                replyLineStartIndex = 3;
-            }
+            int replyLineStartIndex = parseReplyCode(line, reply);
 
             replyLines.add(line.substring(replyLineStartIndex));
 
@@ -41,6 +39,24 @@ public class VRFYReplyParser extends SmtpReplyParser<SmtpVRFYReply> {
         }
 
         reply.setReplyLines(replyLines); // bare minimum
+    }
+
+    // extract as much as we can:
+    private int parseReplyCode(String line, SmtpVRFYReply reply) {
+        String possibleReplyCode = line.substring(0, 3);
+
+        if (!isNaturalNumberString(possibleReplyCode)) return 0;
+
+        reply.setReplyCode(Integer.parseInt(possibleReplyCode));
+
+        char delimiter = line.charAt(4);
+        if (!isReplyCodeDelimiter(delimiter)) return 3;
+
+        return 4;
+    }
+
+    private boolean isReplyCodeDelimiter(char c) {
+        return c == ' ' || c == '-';
     }
 
     private boolean isNaturalNumberString(String str) {
