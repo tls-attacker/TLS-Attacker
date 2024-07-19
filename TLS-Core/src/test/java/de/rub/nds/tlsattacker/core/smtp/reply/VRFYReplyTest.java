@@ -98,6 +98,7 @@ class VRFYReplyTest {
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
         Serializer serializer = vrfy.getSerializer(context);
         serializer.serialize();
-        assertEquals("250 John Doe <john.doe@gmail.com>\r\n", serializer.getOutputStream().toString());
+        assertEquals(
+                "250 John Doe <john.doe@gmail.com>\r\n", serializer.getOutputStream().toString());
     }
 }

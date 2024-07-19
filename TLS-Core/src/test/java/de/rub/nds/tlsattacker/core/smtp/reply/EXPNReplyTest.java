@@ -19,9 +19,7 @@ import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.List;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -35,7 +33,9 @@ public class EXPNReplyTest {
         expn.setReplyLines(List.of("John <john.doe@mail.com>", "Jane Doe <jane.doe@mail.com>"));
 
         Serializer serializer = serialize(expn);
-        assertEquals("250-John <john.doe@mail.com>\r\n250 Jane Doe <jane.doe@mail.com>\r\n", serializer.getOutputStream().toString());
+        assertEquals(
+                "250-John <john.doe@mail.com>\r\n250 Jane Doe <jane.doe@mail.com>\r\n",
+                serializer.getOutputStream().toString());
     }
 
     @Test
@@ -58,11 +58,12 @@ public class EXPNReplyTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {
-            "500 Syntax error, command unrecognized\r\n",
-            "550 Requested action not taken: mailbox unavailable\r\n",
-            "502 Command not implemented\r\n"
-    })
+    @ValueSource(
+            strings = {
+                "500 Syntax error, command unrecognized\r\n",
+                "550 Requested action not taken: mailbox unavailable\r\n",
+                "502 Command not implemented\r\n"
+            })
     void parseValidDescriptionReplies(String reply) {
         EXPNReplyParser parser =
                 new EXPNReplyParser(
