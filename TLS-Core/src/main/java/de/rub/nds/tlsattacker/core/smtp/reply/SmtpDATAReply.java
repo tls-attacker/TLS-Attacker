@@ -17,7 +17,7 @@ import java.io.InputStream;
 public class SmtpDATAReply extends SmtpReply {
 
     public SmtpDATAReply() {
-        this.replyCode = 250;
+        this.replyCode = 354;
     }
 
     @Override
