@@ -102,7 +102,8 @@ public class SmtpContext extends LayerContext {
             return null;
         } else {
             if (command instanceof SmtpEHLOCommand || command instanceof SmtpHELOCommand) {
-                // HELO's reply is a special case of EHLO's reply without any extensions - this just reuses code
+                // HELO's reply is a special case of EHLO's reply without any extensions - this just
+                // reuses code
                 return new SmtpEHLOReply();
             } else if (command instanceof SmtpNOOPCommand) {
                 return new SmtpNOOPReply();
@@ -124,6 +125,7 @@ public class SmtpContext extends LayerContext {
     public void setServerOnlySupportsEHLO(boolean serverOnlySupportsEHLO) {
         this.serverOnlySupportsEHLO = serverOnlySupportsEHLO;
     }
+
     public boolean isClientRequestedClose() {
         return clientRequestedClose;
     }

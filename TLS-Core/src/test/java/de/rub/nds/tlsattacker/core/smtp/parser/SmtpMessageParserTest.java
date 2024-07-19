@@ -15,7 +15,6 @@ import de.rub.nds.tlsattacker.core.smtp.SmtpMessage;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 import org.junit.jupiter.api.Test;
 
 class SmtpMessageParserTest {
