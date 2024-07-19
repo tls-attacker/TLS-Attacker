@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.smtp.reply;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.parser.DATAContentReplyParser;
 import de.rub.nds.tlsattacker.core.smtp.preparator.DATAContentReplyPreparator;
-import de.rub.nds.tlsattacker.core.smtp.preparator.DATAReplyPreparator;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.List;

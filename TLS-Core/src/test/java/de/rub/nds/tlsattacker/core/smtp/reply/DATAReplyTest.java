@@ -35,7 +35,8 @@ public class DATAReplyTest {
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
         dataReplyParser.parse(dataReply);
         assertEquals(354, dataReply.getReplyCode());
-        assertEquals("Start mail input; end with <CRLF>.<CRLF>", dataReply.getLineContents().get(0));
+        assertEquals(
+                "Start mail input; end with <CRLF>.<CRLF>", dataReply.getLineContents().get(0));
     }
 
     @Test
