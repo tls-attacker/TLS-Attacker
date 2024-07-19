@@ -20,7 +20,7 @@ public class EHLOCommandParser extends SmtpCommandParser<SmtpEHLOCommand> {
 
     @Override
     public void parseArguments(SmtpEHLOCommand command, String arguments) {
-        if(arguments == null) {
+        if (arguments == null) {
             throw new ParserException("EHLO command requires parameters.");
         }
         if (arguments.startsWith("[") && arguments.endsWith("]")) {

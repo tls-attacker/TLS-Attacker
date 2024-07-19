@@ -16,7 +16,9 @@ import java.io.InputStream;
 @XmlRootElement
 public class SmtpDATAContentReply extends SmtpReply {
 
-    public SmtpDATAContentReply() {}
+    public SmtpDATAContentReply() {
+        this.replyCode = 250;
+    }
 
     @Override
     public DATAContentReplyParser getParser(SmtpContext context, InputStream stream) {

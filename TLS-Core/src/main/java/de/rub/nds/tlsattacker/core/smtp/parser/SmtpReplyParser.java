@@ -47,10 +47,11 @@ public class SmtpReplyParser<ReplyT extends SmtpReply> extends SmtpMessageParser
     }
 
     /**
-     * Reads the whole reply from the input stream. The reply is terminated by a line with Status code space and message.
-     * If a reply does not fulfill this condition, a ParserException is thrown.
-     * TODO: That means lines are lost if the reply is not terminated by a line with Status code space and message.
-     * TODO: make sure that classes calling this are aware
+     * Reads the whole reply from the input stream. The reply is terminated by a line with Status
+     * code space and message. If a reply does not fulfill this condition, a ParserException is
+     * thrown. TODO: That means lines are lost if the reply is not terminated by a line with Status
+     * code space and message. TODO: make sure that classes calling this are aware
+     *
      * @return
      */
     public List<String> readWholeReply() {
@@ -61,7 +62,7 @@ public class SmtpReplyParser<ReplyT extends SmtpReply> extends SmtpMessageParser
             if (isEndOfReply(line)) {
                 break;
             }
-            if(!isPartOfMultilineReply(line)){
+            if (!isPartOfMultilineReply(line)) {
                 throw new ParserException("Expected multiline reply but got: " + line);
             }
         }
@@ -71,6 +72,7 @@ public class SmtpReplyParser<ReplyT extends SmtpReply> extends SmtpMessageParser
     public boolean isPartOfMultilineReply(String line) {
         return line.matches("\\d{3}-.*");
     }
+
     public boolean isEndOfReply(String line) {
         return line.matches("\\d{3} .*");
     }

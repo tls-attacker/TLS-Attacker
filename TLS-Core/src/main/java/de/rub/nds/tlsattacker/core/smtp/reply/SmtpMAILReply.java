@@ -28,5 +28,4 @@ public class SmtpMAILReply extends SmtpReply {
     public MAILReplyPreparator getPreparator(SmtpContext context) {
         return new MAILReplyPreparator(context, this);
     }
-
 }

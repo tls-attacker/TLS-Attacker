@@ -41,7 +41,8 @@ public class DATAContentParser extends SmtpCommandParser<SmtpDATAContentCommand>
         }
 
         // TODO: consider removing exception and save data regardless.
-        if (!isValid) throw new ParserException("DATA Content does not end with single line period");
+        if (!isValid)
+            throw new ParserException("DATA Content does not end with single line period");
 
         return lines;
     }
