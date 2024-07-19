@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.core.smtp.extensions;
 
 public class NO_SOLICITINGExtension extends SmtpServiceExtension {
-
+    // TODO: Implement, so far this just enables EHLOReplyParser to read it
     private String parameters;
 
     public NO_SOLICITINGExtension(String parameters) {

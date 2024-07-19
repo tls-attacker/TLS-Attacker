@@ -22,7 +22,7 @@ public class MAILReplyParser extends SmtpReplyParser<SmtpMAILReply> {
 
     @Override
     public void parse(SmtpMAILReply reply) {
-        List<String> lines = parseAllLines();
+        List<String> lines = readWholeReply();
         // save all possible reply codes
         List<String> replyCodes =
                 Arrays.asList(

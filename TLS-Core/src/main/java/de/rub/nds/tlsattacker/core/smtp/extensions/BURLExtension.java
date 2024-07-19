@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.smtp.extensions;
 
 public class BURLExtension extends SmtpServiceExtension {
+    // TODO: Implement, so far this just enables EHLOReplyParser to read it
     private String parameter;
 
     public BURLExtension(String parameters) {
