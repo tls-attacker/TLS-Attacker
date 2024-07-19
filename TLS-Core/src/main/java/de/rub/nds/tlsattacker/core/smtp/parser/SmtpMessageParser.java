@@ -12,8 +12,6 @@ import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.smtp.SmtpMessage;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 public abstract class SmtpMessageParser<MessageT extends SmtpMessage> extends Parser<MessageT> {
 

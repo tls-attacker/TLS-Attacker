@@ -40,21 +40,20 @@ public class EHLOReplyParser extends SmtpReplyParser<SmtpEHLOReply> {
             smtpEHLOReply.setDomain(parts[0]);
             smtpEHLOReply.setGreeting(parts[1]);
         } else {
-            throw new ParserException(
-                    "Could not parse EHLOReply. Malformed greeting: " + domainAndGreeting);
+            // TODO: note as Human Readable Message still
         }
-
-        for(String line : lines.subList(1, lines.size())) {
+        for (String line : lines.subList(1, lines.size())) {
             int statusCodeLine = Integer.parseInt(line.substring(0, 3));
             if (statusCode != statusCodeLine) {
-                throw new ParserException(
-                        "Could not parse EHLOReply inconsistent status codes" + statusCode + " != " + statusCodeLine);
+                LOGGER.warn(
+                        "Parsing EHLOReply found inconsistent status codes in multiline reply{} != {}",
+                        statusCode,
+                        statusCodeLine);
             }
             String keyword = line.substring(4);
             SmtpServiceExtension extension = parseKeyword(keyword);
             smtpEHLOReply.getExtensions().add(extension);
         }
-
     }
 
     public SmtpServiceExtension parseKeyword(String keyword) {

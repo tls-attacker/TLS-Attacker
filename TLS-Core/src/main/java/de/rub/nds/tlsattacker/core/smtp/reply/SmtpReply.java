@@ -8,9 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.smtp.reply;
 
-import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
-import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
-import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.*;
 import de.rub.nds.tlsattacker.core.smtp.handler.SmtpMessageHandler;
@@ -29,13 +26,20 @@ import java.util.List;
 @XmlRootElement
 public class SmtpReply extends SmtpMessage {
 
-    @HoldsModifiableVariable private ModifiableInteger replyCode;
-    private List<String> replyLines;
+    protected int replyCode;
+    protected List<String> replyLines;
+
+    // this is the human readable message part associated with the reply code
+    // for a single line reply, this is the only line in the replyLines list
+    protected String humanReadableMessage;
 
     public SmtpReply() {
-        super();
         this.replyLines = new ArrayList<>();
-        replyCode = ModifiableVariableFactory.createIntegerModifiableVariable();
+    }
+
+    public SmtpReply(int replyCode, List<String> replyLines) {
+        this.replyCode = replyCode;
+        this.replyLines = replyLines;
     }
 
     @Override
@@ -65,11 +69,11 @@ public class SmtpReply extends SmtpMessage {
     }
 
     public int getReplyCode() {
-        return replyCode.getValue();
+        return replyCode;
     }
 
     public void setReplyCode(int replyCode) {
-        this.replyCode = ModifiableVariableFactory.safelySetValue(this.replyCode, replyCode);
+        this.replyCode = replyCode;
     }
 
     public List<String> getReplyLines() {
@@ -78,5 +82,13 @@ public class SmtpReply extends SmtpMessage {
 
     public void setReplyLines(List<String> replyLines) {
         this.replyLines = replyLines;
+    }
+
+    public String getHumanReadableMessage() {
+        return humanReadableMessage;
+    }
+
+    public void setHumanReadableMessage(String humanReadableMessage) {
+        this.humanReadableMessage = humanReadableMessage;
     }
 }

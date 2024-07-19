@@ -8,13 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.layer.context;
 
-import de.rub.nds.tlsattacker.core.smtp.command.SmtpCommand;
-import de.rub.nds.tlsattacker.core.smtp.command.SmtpEHLOCommand;
-import de.rub.nds.tlsattacker.core.smtp.command.SmtpHELOCommand;
-import de.rub.nds.tlsattacker.core.smtp.command.SmtpInitialGreetingDummy;
-import de.rub.nds.tlsattacker.core.smtp.reply.SmtpEHLOReply;
-import de.rub.nds.tlsattacker.core.smtp.reply.SmtpInitialGreeting;
-import de.rub.nds.tlsattacker.core.smtp.reply.SmtpReply;
+import de.rub.nds.tlsattacker.core.smtp.command.*;
+import de.rub.nds.tlsattacker.core.smtp.reply.*;
 import de.rub.nds.tlsattacker.core.state.Context;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,9 +18,16 @@ public class SmtpContext extends LayerContext {
 
     private List<String> reversePathBuffer = new ArrayList<>();
     private List<String> forwardPathBuffer = new ArrayList<>();
-    private StringBuilder mailDataBuffer = new StringBuilder();
+    private List<String> mailDataBuffer = new ArrayList<>();
     private String clientIdentity;
     private boolean serverOnlySupportsEHLO = false;
+
+    // Client can request connection close via QUIT, but MUST NOT close the connection itself
+    // intentionally before that
+    private boolean clientRequestedClose = false;
+    // Clients SHOULD NOT close the connection until they have received the reply indicating the
+    // server has
+    private boolean serverAcknowledgedClose = false;
 
     // SMTP is a back and forth of commands and replies. We need to keep track of each to correctly
     // get the type of the reply
@@ -33,6 +35,16 @@ public class SmtpContext extends LayerContext {
 
     public SmtpContext(Context context) {
         super(context);
+    }
+
+    public void clearBuffers() {
+        reversePathBuffer.clear();
+        forwardPathBuffer.clear();
+        mailDataBuffer.clear();
+    }
+
+    public void insertReversePath(String reversePath) {
+        reversePathBuffer.add(reversePath);
     }
 
     public List<String> getReversePathBuffer() {
@@ -43,7 +55,7 @@ public class SmtpContext extends LayerContext {
         return forwardPathBuffer;
     }
 
-    public StringBuilder getMailDataBuffer() {
+    public List<String> getMailDataBuffer() {
         return mailDataBuffer;
     }
 
@@ -55,7 +67,7 @@ public class SmtpContext extends LayerContext {
         this.forwardPathBuffer = forwardPathBuffer;
     }
 
-    public void setMailDataBuffer(StringBuilder mailDataBuffer) {
+    public void setMailDataBuffer(List<String> mailDataBuffer) {
         this.mailDataBuffer = mailDataBuffer;
     }
 
@@ -81,9 +93,19 @@ public class SmtpContext extends LayerContext {
             return null;
         } else {
             if (command instanceof SmtpEHLOCommand || command instanceof SmtpHELOCommand) {
+                // HELO's reply is a special case of EHLO's reply without any extensions - this just
+                // reuses code
                 return new SmtpEHLOReply();
+            } else if (command instanceof SmtpNOOPCommand) {
+                return new SmtpNOOPReply();
             } else if (command instanceof SmtpInitialGreetingDummy) {
                 return new SmtpInitialGreeting();
+            } else if (command instanceof SmtpDATACommand) {
+                return new SmtpDATAReply();
+            } else if (command instanceof SmtpDATAContentCommand) {
+                return new SmtpDATAContentReply();
+            } else if (command instanceof SmtpQUITCommand) {
+                return new SmtpQUITReply();
             } else {
                 throw new UnsupportedOperationException(
                         "No reply implemented for :" + command.getClass());
@@ -97,5 +119,21 @@ public class SmtpContext extends LayerContext {
 
     public void setServerOnlySupportsEHLO(boolean serverOnlySupportsEHLO) {
         this.serverOnlySupportsEHLO = serverOnlySupportsEHLO;
+    }
+
+    public boolean isClientRequestedClose() {
+        return clientRequestedClose;
+    }
+
+    public void setClientRequestedClose(boolean clientRequestedClose) {
+        this.clientRequestedClose = clientRequestedClose;
+    }
+
+    public boolean isServerAcknowledgedClose() {
+        return serverAcknowledgedClose;
+    }
+
+    public void setServerAcknowledgedClose(boolean serverAcknowledgedClose) {
+        this.serverAcknowledgedClose = serverAcknowledgedClose;
     }
 }
