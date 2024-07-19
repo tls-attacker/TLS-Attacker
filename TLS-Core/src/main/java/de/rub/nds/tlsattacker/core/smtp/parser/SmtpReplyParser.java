@@ -11,6 +11,8 @@ package de.rub.nds.tlsattacker.core.smtp.parser;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpReply;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SmtpReplyParser<ReplyT extends SmtpReply> extends SmtpMessageParser<ReplyT> {
     public SmtpReplyParser(InputStream stream) {
@@ -42,5 +44,36 @@ public class SmtpReplyParser<ReplyT extends SmtpReply> extends SmtpMessageParser
 
     public void parseMessage(ReplyT replyT, String message) {
         replyT.setHumanReadableMessage(message);
+    }
+
+    /**
+     * Reads the whole reply from the input stream. The reply is terminated by a line with Status
+     * code space and message. If a reply does not fulfill this condition, a ParserException is
+     * thrown. TODO: That means lines are lost if the reply is not terminated by a line with Status
+     * code space and message. TODO: make sure that classes calling this are aware
+     *
+     * @return
+     */
+    public List<String> readWholeReply() {
+        List<String> lines = new ArrayList<>();
+        String line;
+        while ((line = parseSingleLine()) != null) {
+            lines.add(line);
+            if (isEndOfReply(line)) {
+                break;
+            }
+            if (!isPartOfMultilineReply(line)) {
+                throw new ParserException("Expected multiline reply but got: " + line);
+            }
+        }
+        return lines;
+    }
+
+    public boolean isPartOfMultilineReply(String line) {
+        return line.matches("\\d{3}-.*");
+    }
+
+    public boolean isEndOfReply(String line) {
+        return line.matches("\\d{3} .*");
     }
 }

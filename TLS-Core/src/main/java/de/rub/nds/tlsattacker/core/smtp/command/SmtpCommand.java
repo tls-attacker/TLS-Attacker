@@ -33,6 +33,10 @@ public class SmtpCommand extends SmtpMessage {
         this.parameters = parameters;
     }
 
+    public SmtpCommand(String verb) {
+        this.verb = verb;
+    }
+
     public SmtpCommand() {}
 
     @Override

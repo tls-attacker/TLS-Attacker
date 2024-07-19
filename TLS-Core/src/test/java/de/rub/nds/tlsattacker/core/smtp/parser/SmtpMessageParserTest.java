@@ -15,7 +15,6 @@ import de.rub.nds.tlsattacker.core.smtp.SmtpMessage;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 import org.junit.jupiter.api.Test;
 
 class SmtpMessageParserTest {
@@ -40,16 +39,6 @@ class SmtpMessageParserTest {
     }
 
     @Test
-    void testValidSingleLineWithParseAll() {
-        String stringMessage = "EHLO test\r\n";
-        SmtpMessageParser<SmtpMessage> parser =
-                new FakeSmtpMessageParser(
-                        new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
-        List<String> singleLine = parser.parseAllLines();
-        assertLinesMatch(List.of("EHLO test"), singleLine);
-    }
-
-    @Test
     void testInvalidSingleLine() {
         String stringMessage = "EHLO test\ra";
         SmtpMessageParser<SmtpMessage> parser =
@@ -64,7 +53,9 @@ class SmtpMessageParserTest {
         SmtpMessageParser<SmtpMessage> parser =
                 new FakeSmtpMessageParser(
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
-        List<String> multiLine = parser.parseAllLines();
-        assertLinesMatch(List.of("EHLO test", "250-Hello", "250-World", "250 END"), multiLine);
+        String firstLine = parser.parseSingleLine();
+        assertEquals(firstLine, "EHLO test");
+        String secondLine = parser.parseSingleLine();
+        assertEquals(secondLine, "250-Hello");
     }
 }

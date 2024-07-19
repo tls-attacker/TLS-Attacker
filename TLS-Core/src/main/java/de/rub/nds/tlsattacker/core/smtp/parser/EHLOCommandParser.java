@@ -23,9 +23,14 @@ public class EHLOCommandParser extends SmtpCommandParser<SmtpEHLOCommand> {
         if (arguments == null) {
             throw new ParserException("EHLO command requires parameters.");
         }
-        if (IPAddress.isValid(arguments)) {
-            command.setHasAddressLiteral(true);
+        if (arguments.startsWith("[") && arguments.endsWith("]")) {
+            String address = arguments.substring(1, arguments.length() - 1);
+            command.setClientIdentity(address);
+            if (IPAddress.isValid(address)) {
+                command.setHasAddressLiteral(true);
+            }
+        } else {
+            command.setClientIdentity(arguments);
         }
-        command.setDomain(arguments);
     }
 }

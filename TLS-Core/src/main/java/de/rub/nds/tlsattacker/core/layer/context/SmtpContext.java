@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.layer.context;
 
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpCommand;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpEHLOCommand;
+import de.rub.nds.tlsattacker.core.smtp.command.SmtpHELOCommand;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpInitialGreetingDummy;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpNOOPCommand;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpQUITCommand;
@@ -28,6 +29,7 @@ public class SmtpContext extends LayerContext {
     private List<String> forwardPathBuffer = new ArrayList<>();
     private StringBuilder mailDataBuffer = new StringBuilder();
     private String clientIdentity;
+    private boolean serverOnlySupportsEHLO = false;
 
     // Client can request connection close via QUIT, but MUST NOT close the connection itself
     // intentionally before that
@@ -99,7 +101,9 @@ public class SmtpContext extends LayerContext {
         if (command == null) {
             return null;
         } else {
-            if (command instanceof SmtpEHLOCommand) {
+            if (command instanceof SmtpEHLOCommand || command instanceof SmtpHELOCommand) {
+                // HELO's reply is a special case of EHLO's reply without any extensions - this just
+                // reuses code
                 return new SmtpEHLOReply();
             } else if (command instanceof SmtpNOOPCommand) {
                 return new SmtpNOOPReply();
@@ -112,6 +116,14 @@ public class SmtpContext extends LayerContext {
                         "No reply implemented for :" + command.getClass());
             }
         }
+    }
+
+    public boolean isServerOnlySupportsEHLO() {
+        return serverOnlySupportsEHLO;
+    }
+
+    public void setServerOnlySupportsEHLO(boolean serverOnlySupportsEHLO) {
+        this.serverOnlySupportsEHLO = serverOnlySupportsEHLO;
     }
 
     public boolean isClientRequestedClose() {

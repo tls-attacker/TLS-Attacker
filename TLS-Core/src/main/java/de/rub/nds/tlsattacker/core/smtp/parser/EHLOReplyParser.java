@@ -27,29 +27,9 @@ public class EHLOReplyParser extends SmtpReplyParser<SmtpEHLOReply> {
 
     @Override
     public void parse(SmtpEHLOReply smtpEHLOReply) {
-        LOGGER.trace("Parsing EHLOReply");
-        List<String> lines = parseAllLines();
-        LOGGER.trace("Parsing lines: {}", lines);
-
-        // only the last line can be '250 ' the others must be '250-', check for both
-        if (!lines.get(lines.size() - 1).startsWith("250 ")) {
-            LOGGER.trace(
-                    "Could not parse EHLOReply. Expected '250 ' for final line but got: {}",
-                    lines.get(lines.size() - 1));
-            throw new ParserException(
-                    "Could not parse EHLOReply. Expected '250 ' for final line but got: "
-                            + lines.get(lines.size() - 1));
-        }
-        for (int i = 1; i < lines.size() - 1; i++) {
-            if (!lines.get(i).startsWith("250-")) {
-                LOGGER.trace(
-                        "Could not parse EHLOReply. Expected '250-' for multiline but got: {}",
-                        lines.get(i));
-                throw new ParserException(
-                        "Could not parse EHLOReply. Expected '250-' for multiline but got: "
-                                + lines.get(i));
-            }
-        }
+        List<String> lines = readWholeReply();
+        int statusCode = Integer.parseInt(lines.get(0).substring(0, 3));
+        smtpEHLOReply.setReplyCode(statusCode);
 
         String domainAndGreeting = lines.get(0);
         // in both cases the first is almost the same
@@ -60,17 +40,20 @@ public class EHLOReplyParser extends SmtpReplyParser<SmtpEHLOReply> {
             smtpEHLOReply.setDomain(parts[0]);
             smtpEHLOReply.setGreeting(parts[1]);
         } else {
-            throw new ParserException(
-                    "Could not parse EHLOReply. Malformed 250: " + domainAndGreeting);
+            // TODO: note as Human Readable Message still
         }
-
-        if (lines.size() > 1) {
-            for (int i = 1; i < lines.size(); i++) {
-                SmtpServiceExtension extension = parseKeyword(lines.get(i).substring(4));
-                smtpEHLOReply.getExtensions().add(extension);
+        for (String line : lines.subList(1, lines.size())) {
+            int statusCodeLine = Integer.parseInt(line.substring(0, 3));
+            if (statusCode != statusCodeLine) {
+                LOGGER.warn(
+                        "Parsing EHLOReply found inconsistent status codes in multiline reply{} != {}",
+                        statusCode,
+                        statusCodeLine);
             }
+            String keyword = line.substring(4);
+            SmtpServiceExtension extension = parseKeyword(keyword);
+            smtpEHLOReply.getExtensions().add(extension);
         }
-        smtpEHLOReply.setReplyCode(250);
     }
 
     public SmtpServiceExtension parseKeyword(String keyword) {
@@ -94,7 +77,7 @@ public class EHLOReplyParser extends SmtpReplyParser<SmtpEHLOReply> {
             case "BINARYMIME":
                 return new BINARYMIMEExtension();
             case "BURL":
-                // TODO: BURL can have a parameter
+                // TODO: BURL parameter not understood in any way
                 return new BURLExtension(parameters);
             case "CHECKPOINT":
                 return new CHECKPOINTExtension();
@@ -121,12 +104,12 @@ public class EHLOReplyParser extends SmtpReplyParser<SmtpEHLOReply> {
             case "LIMITS":
                 return new LIMITSExtension();
             case "MT-PRIORITY":
-                // TODO: MT-PRIORITY can have a parameter
+                // TODO: MT_PRIORITY parameter not understood in any way
                 return new MT_PRIORITYExtension(parameters);
             case "MTRK":
                 return new MTRKExtension();
             case "NO-SOLICITING":
-                // TODO: NO-SOLICITING can have a parameter
+                // TODO: NO-SOLICITING parameter not understood in any way
                 return new NO_SOLICITINGExtension(parameters);
             case "PIPELINING":
                 return new PIPELININGExtension();

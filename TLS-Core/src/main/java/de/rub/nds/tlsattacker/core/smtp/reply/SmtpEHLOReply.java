@@ -33,6 +33,7 @@ public class SmtpEHLOReply extends SmtpReply {
         return new EHLOReplyParser(stream);
     }
 
+    @Override
     public EHLOReplyPreparator getPreparator(SmtpContext context) {
         return new EHLOReplyPreparator(context, this);
     }
