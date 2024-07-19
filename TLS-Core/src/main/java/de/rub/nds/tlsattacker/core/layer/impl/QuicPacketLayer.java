@@ -83,7 +83,6 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
 
     @Override
     public LayerProcessingResult sendConfiguration() throws IOException {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
         LayerConfiguration<QuicPacket> configuration = getLayerConfiguration();
         if (configuration != null && configuration.getContainerList() != null) {
             for (QuicPacket p : configuration.getContainerList()) {
@@ -93,7 +92,7 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
                         case HANDSHAKE_PACKET:
                         case ONE_RTT_PACKET:
                         case ZERO_RTT_PACKET:
-                            stream.writeBytes(p.getSerializer(context).serialize());
+                            getLowerLayer().sendData(null, p.getSerializer(context).serialize());
                             LOGGER.debug("Send {}", p.getPacketType().getName());
                             break;
                         case RETRY_PACKET:
@@ -109,8 +108,6 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
                     LOGGER.error("Can not send configured packet as it is not encrypted yet.");
                 }
             }
-            getLowerLayer().sendData(null, stream.toByteArray());
-            stream.flush();
             setLayerConfiguration(null);
         }
         return getLayerResult();
@@ -230,18 +227,25 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
             // the quic version needs to be parsed to determine the packet type as the version
             // negotiation packet can only be identified by the version being 0
             byte[] versionBytes = new byte[] {};
-            QuicVersion quicVersion;
             QuicPacketType packetType;
             if (QuicPacketType.isLongHeaderPacket(firstByte)) {
                 versionBytes = dataStream.readNBytes(QuicPacketByteLength.QUIC_VERSION_LENGTH);
-                quicVersion = QuicVersion.getFromVersionBytes(versionBytes);
+                QuicVersion quicVersion = QuicVersion.getFromVersionBytes(versionBytes);
                 if (quicVersion == QuicVersion.NULL_VERSION) {
                     packetType = QuicPacketType.VERSION_NEGOTIATION;
                 } else {
-                    packetType = QuicPacketType.getPacketTypeFromFirstByte(firstByte);
+                    packetType = QuicPacketType.getPacketTypeFromFirstByte(quicVersion, firstByte);
+
+                    if (quicVersion != context.getQuicVersion()
+                            && packetType != QuicPacketType.VERSION_NEGOTIATION) {
+                        LOGGER.error("Received packet with unexpected version, ignoring it.");
+                        packetType = QuicPacketType.UNKNOWN;
+                    }
                 }
             } else {
-                packetType = QuicPacketType.getPacketTypeFromFirstByte(firstByte);
+                packetType =
+                        QuicPacketType.getPacketTypeFromFirstByte(
+                                context.getQuicVersion(), firstByte);
             }
 
             LOGGER.debug("Read {}", packetType);
