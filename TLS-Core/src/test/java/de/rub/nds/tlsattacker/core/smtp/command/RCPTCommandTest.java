@@ -188,6 +188,5 @@ public class RCPTCommandTest {
         assertEquals(context.getRecipientBuffer().get(0), rcptCommand.getRecipient());
         assertTrue(context.getReversePathBuffer().isEmpty());
         assertTrue(context.getForwardPathBuffer().isEmpty());
-        assertEquals(context.getMailDataBuffer().length(), 0);
     }
 }

@@ -27,6 +27,10 @@ import java.util.List;
 public class SmtpReply extends SmtpMessage {
 
     protected int replyCode;
+    /**
+     * These are the outgoing lines for a reply. They are to be set in the prepare step of the reply preparator and the serializer.
+     * They are NOT to be used for storing the abstracted contents of a message.
+     */
     protected List<String> replyLines;
 
     // this is the human readable message part associated with the reply code

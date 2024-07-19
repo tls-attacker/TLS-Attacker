@@ -13,6 +13,9 @@ import de.rub.nds.tlsattacker.core.smtp.extensions.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.bouncycastle.util.IPAddress;
 
 /** This class contains functions that check syntax based on RFC5321's Command Argument Syntax. */
@@ -102,6 +105,7 @@ public final class SmtpSyntaxParser {
     }
 
     private static boolean isValidDomain(String str) {
+        if (str.isEmpty()) return false;
         String[] subdomains =
                 str.split("\\."); // if this causes issues use Pattern.quote(".") instead
 
@@ -113,6 +117,7 @@ public final class SmtpSyntaxParser {
     }
 
     private static boolean isValidAddressLiteral(String str) {
+        if (str.isEmpty()) return false;
         if (str.charAt(0) != '[' || str.charAt(str.length() - 1) != ']') return false;
 
         str =
@@ -269,5 +274,66 @@ public final class SmtpSyntaxParser {
                             "Could not parse Extension of Command/Reply. Unknown keyword: " + ext);
                 }
         }
+    }
+
+    /**
+     * @param postmaster String potentially containing a postmaster.
+     * @return Whether address has valid syntax in accordance with RFC5321.
+     */
+    public static boolean isValidPostmaster(String postmaster) {
+        String localPart = postmaster.substring(0, endIndexOfLocalPart(postmaster));
+
+        return postmaster.equalsIgnoreCase("postmaster");
+    }
+
+    /**
+     * @param forwardPath String potentially containing a forward path.
+     * @return Whether address has valid syntax in accordance with RFC5321.
+     */
+    public static boolean isValidForwardPath(String forwardPath) {
+        if (forwardPath.contains(":"))
+        {
+            String hopString = forwardPath.substring(0, forwardPath.indexOf(":"));
+            String mailbox = forwardPath.substring(forwardPath.indexOf(":") + 1);
+
+            return isValidHopString(hopString) && isValidMailbox(mailbox);
+        }
+        return false;
+    }
+
+    /**
+     * @param hopString String potentially containing hops / @-domains.
+     * @return Whether address has valid syntax in accordance with RFC5321.
+     */
+    public static boolean isValidHopString(String hopString) {
+        if (hopString.contains(","))
+        {
+            // contains several domains, so check them all
+            String[] hops = hopString.split(",");
+            for (String hop : hops) {
+                if (!isValidAtDomain(hop)) return false;
+            }
+            return true;
+        }
+        else{
+            return isValidDomain(hopString);
+        }
+    }
+    private static boolean isValidAtDomain(String str) {
+        return str.startsWith("@") && isValidDomain(str.substring(1));
+    }
+
+    /**
+     * @param address String potentially containing a IP address.
+     * @return Whether address has valid syntax in accordance with RFC5321.
+     */
+    public static boolean isValidIPAddress(String address) {
+        // regular expression for IP addresses
+        String regex = "^[a-zA-Z0-9._%+-]+@\\[(IPv6:[a-fA-F0-9:]+|\\d{1,3}(?:\\.\\d{1,3}){3})\\]$";
+
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(address);
+
+        return matcher.matches();
     }
 }
