@@ -24,10 +24,6 @@ public class SmtpCommandParser<CommandT extends SmtpCommand> extends SmtpMessage
         String line = parseSingleLine();
         // throws EndOfStreamException if no LF is found
 
-        if (getBytesLeft() > 0) {
-            throw new ParserException(
-                    "Could not parse as SmtpCommand: Multiple commands in one message are not supported");
-        }
         // 4.1.1 In the interest of improved interoperability, SMTP receivers SHOULD tolerate
         // trailing white space before the terminating <CRLF>.
         String actualCommand = line.trim();
