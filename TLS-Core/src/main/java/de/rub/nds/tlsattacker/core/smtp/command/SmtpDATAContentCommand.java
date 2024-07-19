@@ -40,6 +40,7 @@ public class SmtpDATAContentCommand extends SmtpCommand {
         return new DATAContentParser(stream);
     }
 
+    @Override
     public DATAContentCommandHandler getHandler(SmtpContext context) {
         return new DATAContentCommandHandler(context);
     }

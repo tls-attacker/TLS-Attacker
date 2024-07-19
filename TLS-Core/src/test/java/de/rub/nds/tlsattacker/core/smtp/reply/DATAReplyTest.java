@@ -20,6 +20,8 @@ import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 
 public class DATAReplyTest {
@@ -35,7 +37,7 @@ public class DATAReplyTest {
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
         dataReplyParser.parse(dataReply);
         assertEquals(354, dataReply.getReplyCode());
-        assertEquals("Start mail input; end with <CRLF>.<CRLF>", dataReply.getDataMessage());
+        assertEquals("Start mail input; end with <CRLF>.<CRLF>", dataReply.getReplyLines().get(0));
     }
 
     @Test
@@ -48,7 +50,8 @@ public class DATAReplyTest {
                         context,
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
 
-        assertThrows(ParserException.class, () -> dataReplyParser.parse(dataReply));
+        assertDoesNotThrow(() -> dataReplyParser.parse(dataReply));
+        assertEquals(dataReply.getReplyCode(), 111);
     }
 
     @Test
@@ -56,7 +59,7 @@ public class DATAReplyTest {
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
         SmtpDATAReply dataReply = new SmtpDATAReply();
         dataReply.setReplyCode(354);
-        dataReply.setDataMessage("Start mail input; end with <CRLF>.<CRLF>");
+        dataReply.setReplyLines(List.of("Start mail input; end with <CRLF>.<CRLF>"));
         Preparator preparator = dataReply.getPreparator(context);
         preparator.prepare();
         Serializer serializer = dataReply.getSerializer(context);

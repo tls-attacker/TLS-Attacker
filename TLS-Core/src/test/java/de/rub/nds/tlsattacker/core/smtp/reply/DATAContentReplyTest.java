@@ -21,6 +21,8 @@ import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 
 public class DATAContentReplyTest {
@@ -35,7 +37,7 @@ public class DATAContentReplyTest {
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
         parser.parse(reply);
         assertEquals(250, reply.getReplyCode());
-        assertEquals("OK", reply.getDataMessage());
+        assertEquals("OK", reply.getReplyLines().get(0));
     }
 
     @Test
@@ -78,7 +80,7 @@ public class DATAContentReplyTest {
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
         SmtpDATAContentReply reply = new SmtpDATAContentReply();
         reply.setReplyCode(250);
-        reply.setDataMessage("OK");
+        reply.setReplyLines(List.of("OK"));
         Preparator preparator = reply.getPreparator(context);
         Serializer serializer = reply.getSerializer(context);
         preparator.prepare();

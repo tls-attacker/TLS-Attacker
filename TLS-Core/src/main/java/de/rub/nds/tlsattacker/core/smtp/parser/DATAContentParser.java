@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.smtp.parser;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpDATAContentCommand;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 public class DATAContentParser extends SmtpCommandParser<SmtpDATAContentCommand> {
@@ -21,26 +22,31 @@ public class DATAContentParser extends SmtpCommandParser<SmtpDATAContentCommand>
 
     @Override
     public void parse(SmtpDATAContentCommand smtpCommand) {
-        List<String> lines = parseAllLines();
-
-        String finalLine = lines.get(lines.size() - 1);
-        if (!finalLine.equals("."))
-            throw new ParserException("Data-Content does not end with a single line period.");
-
-        for (String line : lines) {
-            if (!isAsciiString(line))
-                throw new ParserException("Data-Content contains non-ASCII characters.");
-        }
+        List<String> lines = readWholeDATAContent();
 
         lines.remove(lines.size() - 1); // don't add final period to actual lines.
         smtpCommand.setLines(lines);
     }
 
-    private boolean isAsciiString(String str) {
-        for (int i = 0; i < str.length(); i++) {
-            if (str.charAt(i) > 127) return false;
+    private List<String> readWholeDATAContent() {
+        boolean isValid = false;
+        List<String> lines = new ArrayList<>();
+        String line;
+        while ((line = parseSingleLine()) != null) {
+            lines.add(line);
+            if (isEndOfDataContent(line)) {
+                isValid = true;
+                break;
+            }
         }
 
-        return true;
+        // TODO: consider removing exception and save data regardless.
+        if (!isValid) throw new ParserException("DATA Content does not end with single line period");
+
+        return lines;
+    }
+
+    private boolean isEndOfDataContent(String line) {
+        return line.equals(".");
     }
 }
