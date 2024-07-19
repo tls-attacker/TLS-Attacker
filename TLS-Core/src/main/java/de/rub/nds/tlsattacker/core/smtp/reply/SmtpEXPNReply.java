@@ -12,11 +12,14 @@ import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.SmtpMessage;
 import de.rub.nds.tlsattacker.core.smtp.parser.EXPNReplyParser;
 import de.rub.nds.tlsattacker.core.smtp.parser.SmtpMessageParser;
+import de.rub.nds.tlsattacker.core.smtp.preparator.EXPNReplyPreparator;
+import de.rub.nds.tlsattacker.core.smtp.preparator.SmtpMessagePreparator;
 import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 
 public class SmtpEXPNReply extends SmtpReply {
+    private List<String> lineContents = new LinkedList<>();
     private List<String> mailboxes = new LinkedList<>();
 
     public SmtpEXPNReply() {}
@@ -25,6 +28,11 @@ public class SmtpEXPNReply extends SmtpReply {
     public SmtpMessageParser<? extends SmtpMessage> getParser(
             SmtpContext context, InputStream stream) {
         return new EXPNReplyParser(stream);
+    }
+
+    @Override
+    public SmtpMessagePreparator<? extends SmtpMessage> getPreparator(SmtpContext context) {
+        return new EXPNReplyPreparator(context, this);
     }
 
     public List<String> getMailboxes() {
@@ -37,5 +45,13 @@ public class SmtpEXPNReply extends SmtpReply {
 
     public void addMailbox(String mailbox) {
         if (mailbox != null) this.mailboxes.add(mailbox);
+    }
+
+    public List<String> getLineContents() {
+        return lineContents;
+    }
+
+    public void setLineContents(List<String> lineContents) {
+        this.lineContents = lineContents;
     }
 }

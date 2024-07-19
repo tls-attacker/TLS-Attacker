@@ -30,7 +30,7 @@ public class EXPNReplyTest {
     void serializeValid250Reply() {
         SmtpEXPNReply expn = new SmtpEXPNReply();
         expn.setReplyCode(250);
-        expn.setReplyLines(List.of("John <john.doe@mail.com>", "Jane Doe <jane.doe@mail.com>"));
+        expn.setLineContents(List.of("John <john.doe@mail.com>", "Jane Doe <jane.doe@mail.com>"));
 
         Serializer serializer = serialize(expn);
         assertEquals(
@@ -72,8 +72,8 @@ public class EXPNReplyTest {
         SmtpEXPNReply expn = new SmtpEXPNReply();
         assertDoesNotThrow(() -> parser.parse(expn));
         assertEquals(expn.getReplyCode(), Integer.parseInt(reply.substring(0, 3)));
-        assertEquals(expn.getReplyLines().size(), 1);
-        assertEquals(expn.getReplyCode() + " " + expn.getReplyLines().get(0) + "\r\n", reply);
+        assertEquals(expn.getLineContents().size(), 1);
+        assertEquals(expn.getReplyCode() + " " + expn.getLineContents().get(0) + "\r\n", reply);
     }
 
     private Serializer serialize(SmtpEXPNReply reply) {
