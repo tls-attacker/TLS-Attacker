@@ -24,10 +24,6 @@ public class SmtpVRFYReply extends SmtpReply {
 
     public SmtpVRFYReply() {}
 
-    public SmtpVRFYReply(int replyCode, char delimiter, List<String> replyLines) {
-        super(replyCode, replyLines);
-    }
-
     @Override
     public SmtpMessageParser<? extends SmtpMessage> getParser(
             SmtpContext context, InputStream stream) {

@@ -22,11 +22,6 @@ public class SmtpEXPNReply extends SmtpReply {
 
     public SmtpEXPNReply() {}
 
-    public SmtpEXPNReply(int replyCode, List<String> replyLines) {
-        this.replyCode = replyCode;
-        this.replyLines = replyLines;
-    }
-
     @Override
     public SmtpMessageParser<? extends SmtpMessage> getParser(
             SmtpContext context, InputStream stream) {

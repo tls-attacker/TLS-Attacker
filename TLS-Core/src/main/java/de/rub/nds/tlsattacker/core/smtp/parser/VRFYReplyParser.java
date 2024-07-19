@@ -21,7 +21,7 @@ public class VRFYReplyParser extends SmtpReplyParser<SmtpVRFYReply> {
 
     @Override
     public void parse(SmtpVRFYReply reply) {
-        List<String> lines = parseAllLines();
+        List<String> lines = readWholeReply(); // ensures reply codes are well formed
         parseLines(reply, lines);
     }
 
@@ -30,42 +30,16 @@ public class VRFYReplyParser extends SmtpReplyParser<SmtpVRFYReply> {
         List<String> replyLines = new LinkedList<>();
 
         for (String line : lines) {
-            int replyLineStartIndex = parseReplyCode(line, reply);
+            reply.setReplyCode(Integer.parseInt(line.substring(0, 3)));
 
-            replyLines.add(line.substring(replyLineStartIndex));
+            line = line.substring(4);
+            replyLines.add(line);
 
             List<Integer[]> mailboxIndices = getMailboxIndices(line);
             addMailboxes(reply, line, mailboxIndices);
         }
 
         reply.setReplyLines(replyLines); // bare minimum
-    }
-
-    // extract as much as we can:
-    private int parseReplyCode(String line, SmtpVRFYReply reply) {
-        String possibleReplyCode = line.substring(0, 3);
-
-        if (!isNaturalNumberString(possibleReplyCode)) return 0;
-
-        reply.setReplyCode(Integer.parseInt(possibleReplyCode));
-
-        char delimiter = line.charAt(4);
-        if (!isReplyCodeDelimiter(delimiter)) return 3;
-
-        return 4;
-    }
-
-    private boolean isReplyCodeDelimiter(char c) {
-        return c == ' ' || c == '-';
-    }
-
-    private boolean isNaturalNumberString(String str) {
-        for (int i = 0; i < str.length(); i++) {
-            char c = str.charAt(i);
-            if (c < 48 || 57 < c) return false;
-        }
-
-        return true;
     }
 
     // str only saved as mailbox if it has <...@...>

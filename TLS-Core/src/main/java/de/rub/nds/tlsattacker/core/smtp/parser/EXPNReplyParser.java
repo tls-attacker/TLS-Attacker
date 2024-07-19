@@ -21,7 +21,7 @@ public class EXPNReplyParser extends SmtpReplyParser<SmtpEXPNReply> {
 
     @Override
     public void parse(SmtpEXPNReply expnReply) {
-        List<String> lines = parseAllLines();
+        List<String> lines = readWholeReply();
 
         SmtpVRFYReply vrfyReply = new SmtpVRFYReply();
         VRFYReplyParser vrfyReplyParser = new VRFYReplyParser(null);

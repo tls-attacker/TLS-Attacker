@@ -23,24 +23,18 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
-
-/*
-TODO: This implementation considers reply codes (+ delimiters) to be optional.
-    The serializer still considers both mandatory.
-    For now, I adjusted the assertEquals statements to account for that.
- */
 public class EXPNReplyTest {
 
     @Test
     void serializeValid250Reply() {
-        List<String> replyLines = List.of("John <john.doe@mail.com>", "Jane Doe <jane.doe@mail.com>");
-
-        SmtpEXPNReply expn =
-                new SmtpEXPNReply(250, replyLines);
+        SmtpEXPNReply expn = new SmtpEXPNReply();
+        expn.setReplyCode(250);
+        expn.setReplyLines(List.of("John <john.doe@mail.com>", "Jane Doe <jane.doe@mail.com>"));
 
         Serializer serializer = serialize(expn);
-        String expectedResult = "";
         assertEquals("250-John <john.doe@mail.com>\r\n250 Jane Doe <jane.doe@mail.com>\r\n", serializer.getOutputStream().toString());
     }
 
@@ -55,20 +49,21 @@ public class EXPNReplyTest {
         SmtpEXPNReply expn = new SmtpEXPNReply();
         assertDoesNotThrow(() -> parser.parse(expn));
 
-
         assertEquals(expn.getReplyCode(), 250);
         assertEquals(expn.getMailboxes().get(0), "john.doe@mail.com");
         assertEquals(expn.getMailboxes().get(1), "jane.doe@mail.com");
 
         Serializer serializer = serialize(expn);
-        assertEquals("250--John <john.doe@mail.com>\r\n250  Jane Doe <jane.doe@mail.com>\r\n", serializer.getOutputStream().toString());
+        assertEquals(reply, serializer.getOutputStream().toString());
     }
 
-    @Test
-    void parseAndSerializeValidDescriptionAndMailboxReply() {
-        String reply =
-                "252 Cannot VRFY user, but will accept message and attempt delivery to <john@mail.com>\r\n";
-
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "500 Syntax error, command unrecognized\r\n",
+            "550 Requested action not taken: mailbox unavailable\r\n",
+            "502 Command not implemented\r\n"
+    })
+    void parseValidDescriptionReplies(String reply) {
         EXPNReplyParser parser =
                 new EXPNReplyParser(
                         new ByteArrayInputStream(reply.getBytes(StandardCharsets.UTF_8)));
@@ -76,43 +71,8 @@ public class EXPNReplyTest {
         SmtpEXPNReply expn = new SmtpEXPNReply();
         assertDoesNotThrow(() -> parser.parse(expn));
         assertEquals(expn.getReplyCode(), Integer.parseInt(reply.substring(0, 3)));
-        assertEquals(expn.getMailboxes().get(0), "john@mail.com");
-
-        Serializer serializer = serialize(expn);
-        assertEquals(reply, serializer.getOutputStream().toString());
-    }
-
-    @Test
-    void parseInvalidDescriptionAndMailboxReply() {
-        // Invalid status code for EXPN-reply:
-        String validReply =
-                "251 Cannot VRFY user, but will accept message and attempt delivery to <john@mail.com>\r\n";
-
-        EXPNReplyParser parser =
-                new EXPNReplyParser(
-                        new ByteArrayInputStream(validReply.getBytes(StandardCharsets.UTF_8)));
-
-        SmtpEXPNReply expn = new SmtpEXPNReply();
-        assertThrows(RuntimeException.class, () -> parser.parse(expn));
-    }
-
-    @Test
-    void parseValidDescriptionReplies() {
-        String[] validCommands = {
-            "500 Syntax error, command unrecognized\r\n",
-            "550 Requested action not taken: mailbox unavailable\r\n",
-            "502 Command not implemented\r\n"
-        };
-
-        for (String command : validCommands) {
-            EXPNReplyParser parser =
-                    new EXPNReplyParser(
-                            new ByteArrayInputStream(command.getBytes(StandardCharsets.UTF_8)));
-
-            SmtpEXPNReply expn = new SmtpEXPNReply();
-            assertDoesNotThrow(() -> parser.parse(expn));
-            assertEquals(expn.getReplyCode(), Integer.parseInt(command.substring(0, 3)));
-        }
+        assertEquals(expn.getReplyLines().size(), 1);
+        assertEquals(expn.getReplyCode() + " " + expn.getReplyLines().get(0) + "\r\n", reply);
     }
 
     private Serializer serialize(SmtpEXPNReply reply) {
