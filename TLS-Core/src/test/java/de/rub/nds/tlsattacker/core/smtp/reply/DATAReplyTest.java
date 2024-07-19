@@ -35,7 +35,7 @@ public class DATAReplyTest {
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
         dataReplyParser.parse(dataReply);
         assertEquals(354, dataReply.getReplyCode());
-        assertEquals("Start mail input; end with <CRLF>.<CRLF>", dataReply.getReplyLines().get(0));
+        assertEquals("Start mail input; end with <CRLF>.<CRLF>", dataReply.getLineContents().get(0));
     }
 
     @Test
@@ -57,7 +57,7 @@ public class DATAReplyTest {
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
         SmtpDATAReply dataReply = new SmtpDATAReply();
         dataReply.setReplyCode(354);
-        dataReply.setReplyLines(List.of("Start mail input; end with <CRLF>.<CRLF>"));
+        dataReply.setLineContents(List.of("Start mail input; end with <CRLF>.<CRLF>"));
         Preparator preparator = dataReply.getPreparator(context);
         preparator.prepare();
         Serializer serializer = dataReply.getSerializer(context);

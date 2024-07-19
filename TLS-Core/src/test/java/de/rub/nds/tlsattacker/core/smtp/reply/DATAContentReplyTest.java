@@ -36,7 +36,7 @@ public class DATAContentReplyTest {
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
         parser.parse(reply);
         assertEquals(250, reply.getReplyCode());
-        assertEquals("OK", reply.getReplyLines().get(0));
+        assertEquals("OK", reply.getLineContents().get(0));
     }
 
     @Test
@@ -79,7 +79,7 @@ public class DATAContentReplyTest {
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
         SmtpDATAContentReply reply = new SmtpDATAContentReply();
         reply.setReplyCode(250);
-        reply.setReplyLines(List.of("OK"));
+        reply.setLineContents(List.of("OK"));
         Preparator preparator = reply.getPreparator(context);
         Serializer serializer = reply.getSerializer(context);
         preparator.prepare();

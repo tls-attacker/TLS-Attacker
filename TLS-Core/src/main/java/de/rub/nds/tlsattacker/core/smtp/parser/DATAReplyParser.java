@@ -30,6 +30,6 @@ public class DATAReplyParser extends SmtpReplyParser<SmtpDATAReply> {
             replyLines.add(line.substring(4));
         }
 
-        dataReply.setReplyLines(replyLines);
+        dataReply.setLineContents(replyLines);
     }
 }

@@ -10,11 +10,15 @@ package de.rub.nds.tlsattacker.core.smtp.reply;
 
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.parser.DATAContentReplyParser;
+import de.rub.nds.tlsattacker.core.smtp.preparator.DATAContentReplyPreparator;
+import de.rub.nds.tlsattacker.core.smtp.preparator.DATAReplyPreparator;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
+import java.util.List;
 
 @XmlRootElement
 public class SmtpDATAContentReply extends SmtpReply {
+    private List<String> lineContents;
 
     public SmtpDATAContentReply() {
         this.replyCode = 250;
@@ -23,5 +27,18 @@ public class SmtpDATAContentReply extends SmtpReply {
     @Override
     public DATAContentReplyParser getParser(SmtpContext context, InputStream stream) {
         return new DATAContentReplyParser(stream);
+    }
+
+    public void setLineContents(List<String> lineContents) {
+        this.lineContents = lineContents;
+    }
+
+    public List<String> getLineContents() {
+        return lineContents;
+    }
+
+    @Override
+    public DATAContentReplyPreparator getPreparator(SmtpContext context) {
+        return new DATAContentReplyPreparator(context, this);
     }
 }

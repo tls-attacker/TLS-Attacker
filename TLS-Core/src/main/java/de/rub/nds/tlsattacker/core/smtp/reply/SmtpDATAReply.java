@@ -10,11 +10,14 @@ package de.rub.nds.tlsattacker.core.smtp.reply;
 
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.parser.DATAReplyParser;
+import de.rub.nds.tlsattacker.core.smtp.preparator.DATAReplyPreparator;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
+import java.util.List;
 
 @XmlRootElement
 public class SmtpDATAReply extends SmtpReply {
+    private List<String> lineContents;
 
     public SmtpDATAReply() {
         this.replyCode = 354;
@@ -23,5 +26,18 @@ public class SmtpDATAReply extends SmtpReply {
     @Override
     public DATAReplyParser getParser(SmtpContext context, InputStream stream) {
         return new DATAReplyParser(stream);
+    }
+
+    public void setLineContents(List<String> lineContents) {
+        this.lineContents = lineContents;
+    }
+
+    public List<String> getLineContents() {
+        return lineContents;
+    }
+
+    @Override
+    public DATAReplyPreparator getPreparator(SmtpContext context) {
+        return new DATAReplyPreparator(context, this);
     }
 }
