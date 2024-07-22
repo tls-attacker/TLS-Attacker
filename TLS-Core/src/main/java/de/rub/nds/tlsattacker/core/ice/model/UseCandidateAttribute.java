@@ -14,7 +14,6 @@ import de.rub.nds.tlsattacker.core.ice.parser.UseCandidateParser;
 import de.rub.nds.tlsattacker.core.ice.preparator.UseCandidatePreparator;
 import de.rub.nds.tlsattacker.core.ice.serializer.UseCandidateSerializer;
 import de.rub.nds.tlsattacker.core.layer.context.IceContext;
-
 import java.io.InputStream;
 
 public class UseCandidateAttribute extends StunAttribute {

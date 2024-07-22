@@ -8,12 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.layer.impl;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.stun.IceByteLengths;
 import de.rub.nds.tlsattacker.core.constants.stun.StunAttributeType;
@@ -37,10 +31,12 @@ import de.rub.nds.tlsattacker.core.layer.hints.RecordLayerHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerInputStream;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-/**
- * A Layer that implements STUN/TURN & TURN ChannelMessages for ICE
- */
+/** A Layer that implements STUN/TURN & TURN ChannelMessages for ICE */
 public class IceLayer extends ProtocolLayer<RecordLayerHint, IceMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -67,11 +63,12 @@ public class IceLayer extends ProtocolLayer<RecordLayerHint, IceMessage> {
 
     @Override
     public LayerProcessingResult sendData(RecordLayerHint hint, byte[] additionalData) {
-        //TODO Fix Fragmentation if data is too big
+        // TODO Fix Fragmentation if data is too big
         try {
 
-            if (additionalData.length > 0xFFFF) { //TODO Fix number
-                LOGGER.warn("Data is too big for a single STUN message. Fragmentation is not yet implemented.");
+            if (additionalData.length > 0xFFFF) { // TODO Fix number
+                LOGGER.warn(
+                        "Data is too big for a single STUN message. Fragmentation is not yet implemented.");
             }
             if (context.getIceConnectionEndType() == null) {
                 LOGGER.warn("Connection end type is not set. Assuming client.");
@@ -125,62 +122,66 @@ public class IceLayer extends ProtocolLayer<RecordLayerHint, IceMessage> {
 
     @Override
     public LayerProcessingResult receiveData() {
-        throw new UnsupportedOperationException(
-                "Not supported yet.");
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public void receiveMoreDataForHint(LayerProcessingHint hint) throws IOException {
         HintedInputStream dataStream = getLowerLayer().getDataStream();
-        //Peek to get the type
+        // Peek to get the type
         while (dataStream.available() > 0) {
             byte[] firstTwobytes = dataStream.readChunk(IceByteLengths.STUN_MESSAGE_TYPE);
             if (firstTwobytes[0] >= 64 && firstTwobytes[0] <= 79) {
                 LOGGER.trace("Reading as TURN ChannelData message");
                 receiveTurnChannelData(hint, dataStream, firstTwobytes);
-            } else{
+            } else {
                 LOGGER.trace("Reading as STUN/TURN message");
                 receiveStunMessage(hint, dataStream, firstTwobytes);
             }
         }
     }
 
-    private void receiveTurnChannelData(LayerProcessingHint hint, HintedInputStream dataStream, byte[] firstTwobytes) throws IOException {
+    private void receiveTurnChannelData(
+            LayerProcessingHint hint, HintedInputStream dataStream, byte[] firstTwobytes)
+            throws IOException {
         byte[] channelNumber;
         byte[] lengthBytes;
-        if(context.getLayerStack().getLowestLayer() instanceof TcpLayer)
-        {
-            //If we are using TCP, we do not need to read the channel number
+        if (context.getLayerStack().getLowestLayer() instanceof TcpLayer) {
+            // If we are using TCP, we do not need to read the channel number
             channelNumber = new byte[0];
-            lengthBytes = firstTwobytes;    
-        }else{
-            //We are using UDP, so the first two bytes are the channel number followed by the length
-            channelNumber = firstTwobytes;    
+            lengthBytes = firstTwobytes;
+        } else {
+            // We are using UDP, so the first two bytes are the channel number followed by the
+            // length
+            channelNumber = firstTwobytes;
             lengthBytes = dataStream.readChunk(IceByteLengths.TURN_CHANNEL_DATA_LENGTH);
-        
         }
         int length = ArrayConverter.bytesToInt(lengthBytes);
         byte[] data = dataStream.readChunk(length);
         int paddingLength = 0;
         if (dataStream.available() > 0) {
-            paddingLength = (IceByteLengths.DATA_CHANNEL_ALIGNMENT - (length)
-                    % IceByteLengths.DATA_CHANNEL_ALIGNMENT) % IceByteLengths.DATA_CHANNEL_ALIGNMENT;
+            paddingLength =
+                    (IceByteLengths.DATA_CHANNEL_ALIGNMENT
+                                    - (length) % IceByteLengths.DATA_CHANNEL_ALIGNMENT)
+                            % IceByteLengths.DATA_CHANNEL_ALIGNMENT;
             if (paddingLength < 0) {
                 paddingLength = 0;
             }
         }
         byte[] padding = dataStream.readChunk(paddingLength);
-        byte[] completeMessageBytes = ArrayConverter.concatenate(channelNumber, lengthBytes, data, padding);
+        byte[] completeMessageBytes =
+                ArrayConverter.concatenate(channelNumber, lengthBytes, data, padding);
         ChannelDataMessage message = new ChannelDataMessage(data);
         message.setCompleteMessageBytes(completeMessageBytes);
-        readDataContainer(message,context, new ByteArrayInputStream(completeMessageBytes));
-        if(currentInputStream == null){
+        readDataContainer(message, context, new ByteArrayInputStream(completeMessageBytes));
+        if (currentInputStream == null) {
             currentInputStream = new HintedLayerInputStream(hint, this);
         }
-        currentInputStream.extendStream(message.getData().getValue());        
+        currentInputStream.extendStream(message.getData().getValue());
     }
 
-    private void receiveStunMessage(LayerProcessingHint hint, HintedInputStream dataStream, byte[] firstTwobytes)
+    private void receiveStunMessage(
+            LayerProcessingHint hint, HintedInputStream dataStream, byte[] firstTwobytes)
             throws IOException {
         byte[] typeBytes = firstTwobytes;
         byte[] lengthBytes = dataStream.readChunk(IceByteLengths.STUN_MESSAGE_LENGTH);
@@ -198,7 +199,8 @@ public class IceLayer extends ProtocolLayer<RecordLayerHint, IceMessage> {
         for (StunAttribute attribute : stunMessage.getAttributeList()) {
             if (attribute.getType() == StunAttributeType.DATA) {
                 DataAttribute dataAttribute = (DataAttribute) attribute;
-                LOGGER.debug("Received DATA for upper layer: {}", dataAttribute.getData().getValue());
+                LOGGER.debug(
+                        "Received DATA for upper layer: {}", dataAttribute.getData().getValue());
                 currentInputStream.extendStream(dataAttribute.getData().getValue());
             }
         }

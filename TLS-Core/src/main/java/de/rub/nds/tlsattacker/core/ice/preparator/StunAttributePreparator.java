@@ -8,14 +8,13 @@
  */
 package de.rub.nds.tlsattacker.core.ice.preparator;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import de.rub.nds.tlsattacker.core.constants.stun.IceByteLengths;
 import de.rub.nds.tlsattacker.core.ice.IceChooser;
 import de.rub.nds.tlsattacker.core.ice.model.StunAttribute;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public abstract class StunAttributePreparator<AttributeT extends StunAttribute>
         extends Preparator<AttributeT> {
@@ -39,14 +38,16 @@ public abstract class StunAttributePreparator<AttributeT extends StunAttribute>
                                 .getSerializer(chooser.getContext().getIceContext())
                                 .serializeAttributeContent());
         getObject().setAttributeLength(getObject().getBody().getValue().length);
-        int paddingLength = (IceByteLengths.STUN_ATTRIBUTE_ALIGNMENT - (getObject().getAttributeLength().getValue())
-                % IceByteLengths.STUN_ATTRIBUTE_ALIGNMENT) % IceByteLengths.STUN_ATTRIBUTE_ALIGNMENT;
+        int paddingLength =
+                (IceByteLengths.STUN_ATTRIBUTE_ALIGNMENT
+                                - (getObject().getAttributeLength().getValue())
+                                        % IceByteLengths.STUN_ATTRIBUTE_ALIGNMENT)
+                        % IceByteLengths.STUN_ATTRIBUTE_ALIGNMENT;
         if (paddingLength < 0) {
             paddingLength = 0;
         }
         LOGGER.debug("Padding length: {}", paddingLength);
         getObject().setPadding(new byte[paddingLength]);
-
     }
 
     public abstract void prepareContent();

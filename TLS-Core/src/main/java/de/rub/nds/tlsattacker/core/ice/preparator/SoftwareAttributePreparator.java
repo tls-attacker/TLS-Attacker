@@ -19,6 +19,7 @@ public class SoftwareAttributePreparator extends StunAttributePreparator<Softwar
 
     @Override
     public void prepareContent() {
-        getObject().setSoftwareString(chooser.getConfig().getIceConfig().getDefaultSoftwareString());
+        getObject()
+                .setSoftwareString(chooser.getConfig().getIceConfig().getDefaultSoftwareString());
     }
 }

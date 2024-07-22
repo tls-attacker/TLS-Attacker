@@ -8,8 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.ice.model;
 
-import java.io.InputStream;
-
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
@@ -19,6 +17,7 @@ import de.rub.nds.tlsattacker.core.ice.parser.XorPeerAddressAttributeParser;
 import de.rub.nds.tlsattacker.core.ice.preparator.XorPeerAddressAttributePreparator;
 import de.rub.nds.tlsattacker.core.ice.serializer.XorPeerAddressAttributeSerializer;
 import de.rub.nds.tlsattacker.core.layer.context.IceContext;
+import java.io.InputStream;
 
 public class XorPeerAddressAttribute extends StunAttribute {
 
@@ -101,14 +100,12 @@ public class XorPeerAddressAttribute extends StunAttribute {
     }
 
     public void setXorPeerPort(byte[] xorPeerPort) {
-        this.xorPeerPort =
-                ModifiableVariableFactory.safelySetValue(this.xorPeerPort, xorPeerPort);
+        this.xorPeerPort = ModifiableVariableFactory.safelySetValue(this.xorPeerPort, xorPeerPort);
     }
 
     public void setXorPeerIpAddress(byte[] xorPeerIpAddress) {
         this.xorPeerIpAddress =
-                ModifiableVariableFactory.safelySetValue(
-                        this.xorPeerIpAddress, xorPeerIpAddress);
+                ModifiableVariableFactory.safelySetValue(this.xorPeerIpAddress, xorPeerIpAddress);
     }
 
     public void setPort(int port) {

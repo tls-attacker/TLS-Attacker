@@ -16,7 +16,6 @@ import de.rub.nds.tlsattacker.core.ice.parser.UsernameAttributeParser;
 import de.rub.nds.tlsattacker.core.ice.preparator.UsernameAttributePreparator;
 import de.rub.nds.tlsattacker.core.ice.serializer.UsernameAttributeSerializer;
 import de.rub.nds.tlsattacker.core.layer.context.IceContext;
-
 import java.io.InputStream;
 
 public class UsernameAttribute extends StunAttribute {

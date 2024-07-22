@@ -16,7 +16,6 @@ import de.rub.nds.tlsattacker.core.ice.parser.MessageIntegrityParser;
 import de.rub.nds.tlsattacker.core.ice.preparator.MessageIntegrityPreparator;
 import de.rub.nds.tlsattacker.core.ice.serializer.MessageIntegritySerializer;
 import de.rub.nds.tlsattacker.core.layer.context.IceContext;
-
 import java.io.InputStream;
 
 public class MessageIntegrityAttribute extends StunAttribute {

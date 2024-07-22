@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.ice.parser;
 import de.rub.nds.tlsattacker.core.ice.model.StunAttribute;
 import de.rub.nds.tlsattacker.core.layer.context.IceContext;
 import de.rub.nds.tlsattacker.core.layer.data.Parser;
-
 import java.io.InputStream;
 
 /** A Parser class for the contents of the body of the respective attribute */

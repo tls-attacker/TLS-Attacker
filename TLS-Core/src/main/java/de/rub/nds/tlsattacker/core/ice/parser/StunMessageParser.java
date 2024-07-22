@@ -8,12 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.ice.parser;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import de.rub.nds.tlsattacker.core.constants.stun.IceByteLengths;
 import de.rub.nds.tlsattacker.core.constants.stun.StunAttributeType;
 import de.rub.nds.tlsattacker.core.constants.stun.StunMessageClass;
@@ -23,6 +17,10 @@ import de.rub.nds.tlsattacker.core.ice.factory.AttributeFactory;
 import de.rub.nds.tlsattacker.core.ice.model.StunAttribute;
 import de.rub.nds.tlsattacker.core.ice.model.StunMessage;
 import de.rub.nds.tlsattacker.core.layer.context.IceContext;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class StunMessageParser extends IceMessageParser<StunMessage> {
 
@@ -44,20 +42,23 @@ public class StunMessageParser extends IceMessageParser<StunMessage> {
         stunMessage.setTransactionId(parseByteArrayField(IceByteLengths.STUN_TRANSACTION_ID));
         LOGGER.debug("STUN transaction id: {}", stunMessage.getTransactionId().getValue());
         stunMessage.setMagicCookiePresent(isMagicCookiePresent(stunMessage));
-        LOGGER.debug("STUN magic cookie present: {}", stunMessage.getMagicCookiePresent().getValue());
+        LOGGER.debug(
+                "STUN magic cookie present: {}", stunMessage.getMagicCookiePresent().getValue());
         stunMessage.setStunMessageClass(
                 new byte[] {
-                        StunMessageClass.getMessageClass(
-                                stunMessage.getStunMessageTypeBytes().getValue())
-                                .getValue()
+                    StunMessageClass.getMessageClass(
+                                    stunMessage.getStunMessageTypeBytes().getValue())
+                            .getValue()
                 });
-        byte[] methodType = StunMethodType.getStunMethodTypeBytesFromRawBytes(
-                stunMessage.getStunMessageTypeBytes().getValue());
+        byte[] methodType =
+                StunMethodType.getStunMethodTypeBytesFromRawBytes(
+                        stunMessage.getStunMessageTypeBytes().getValue());
 
         stunMessage.setStunMethodType(methodType);
         while (getBytesLeft() > 0) {
             byte[] attributeTypeBytes = parseByteArrayField(IceByteLengths.STUN_ATTRIBUTE_TYPE);
-            StunAttributeType attributeType = StunAttributeType.getAttributeType(attributeTypeBytes);
+            StunAttributeType attributeType =
+                    StunAttributeType.getAttributeType(attributeTypeBytes);
             if (attributeType == null) {
                 LOGGER.debug("Parsing: unknown({})", attributeTypeBytes);
             } else {
@@ -69,11 +70,15 @@ public class StunMessageParser extends IceMessageParser<StunMessage> {
             attribute.setAttributeLength(attributeLength);
             byte[] attributeBody = parseByteArrayField(attributeLength);
             attribute.setBody(attributeBody);
-            byte[] padding = parseByteArrayField(
-                    (IceByteLengths.STUN_ATTRIBUTE_ALIGNMENT
-                            - (attributeLength % IceByteLengths.STUN_ATTRIBUTE_ALIGNMENT))% IceByteLengths.STUN_ATTRIBUTE_ALIGNMENT);
+            byte[] padding =
+                    parseByteArrayField(
+                            (IceByteLengths.STUN_ATTRIBUTE_ALIGNMENT
+                                            - (attributeLength
+                                                    % IceByteLengths.STUN_ATTRIBUTE_ALIGNMENT))
+                                    % IceByteLengths.STUN_ATTRIBUTE_ALIGNMENT);
             attribute.setPadding(padding);
-            StunAttributeParser attributeParser = attribute.getParser(context, new ByteArrayInputStream(attributeBody));
+            StunAttributeParser attributeParser =
+                    attribute.getParser(context, new ByteArrayInputStream(attributeBody));
             attributeParser.parse(attribute);
             stunMessage.getAttributeList().add(attribute);
         }

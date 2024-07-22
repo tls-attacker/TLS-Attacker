@@ -17,7 +17,6 @@ import de.rub.nds.tlsattacker.core.ice.parser.XorMappedAddressAttributeParser;
 import de.rub.nds.tlsattacker.core.ice.preparator.XorMappedAddressAttributePreparator;
 import de.rub.nds.tlsattacker.core.ice.serializer.XorMappedAddressAttributeSerializer;
 import de.rub.nds.tlsattacker.core.layer.context.IceContext;
-
 import java.io.InputStream;
 
 public class XorMappedAddressAttribute extends StunAttribute {

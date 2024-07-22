@@ -16,7 +16,6 @@ import de.rub.nds.tlsattacker.core.ice.parser.PriorityAttributeParser;
 import de.rub.nds.tlsattacker.core.ice.preparator.PriorityAttributePreparator;
 import de.rub.nds.tlsattacker.core.ice.serializer.PriorityAttributeSerializer;
 import de.rub.nds.tlsattacker.core.layer.context.IceContext;
-
 import java.io.InputStream;
 
 public class PriorityAttribute extends StunAttribute {

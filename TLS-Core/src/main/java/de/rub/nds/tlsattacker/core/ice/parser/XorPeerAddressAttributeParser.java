@@ -8,13 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.ice.parser;
 
-import java.io.InputStream;
-
 import de.rub.nds.tlsattacker.core.ice.model.XorPeerAddressAttribute;
 import de.rub.nds.tlsattacker.core.layer.context.IceContext;
+import java.io.InputStream;
 
-public class XorPeerAddressAttributeParser
-        extends StunAttributeParser<XorPeerAddressAttribute> {
+public class XorPeerAddressAttributeParser extends StunAttributeParser<XorPeerAddressAttribute> {
 
     public XorPeerAddressAttributeParser(IceContext context, InputStream stream) {
         super(context, stream);

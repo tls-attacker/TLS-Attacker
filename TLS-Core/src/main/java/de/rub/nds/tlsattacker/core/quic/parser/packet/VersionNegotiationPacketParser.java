@@ -8,18 +8,16 @@
  */
 package de.rub.nds.tlsattacker.core.quic.parser.packet;
 
-import java.io.IOException;
-import java.io.InputStream;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import de.rub.nds.protocol.exception.TimeoutException;
 import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.quic.constants.QuicPacketByteLength;
 import de.rub.nds.tlsattacker.core.quic.packet.VersionNegotiationPacket;
 import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
+import java.io.IOException;
+import java.io.InputStream;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class VersionNegotiationPacketParser
         extends LongHeaderPacketParser<VersionNegotiationPacket> {

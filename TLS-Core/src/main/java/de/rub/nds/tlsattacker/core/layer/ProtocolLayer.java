@@ -35,13 +35,14 @@ import org.apache.logging.log4j.Logger;
  * @param <Hint> Some layers need a hint which message they should send or receive.
  * @param <Container> The kind of messages/Containers this layer is able to send and receive.
  */
-public abstract class ProtocolLayer<Hint extends LayerProcessingHint, Container extends DataContainer> {
+public abstract class ProtocolLayer<
+        Hint extends LayerProcessingHint, Container extends DataContainer> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private ProtocolLayer<?,?> higherLayer = null;
+    private ProtocolLayer<?, ?> higherLayer = null;
 
-    private ProtocolLayer<?,?> lowerLayer = null;
+    private ProtocolLayer<?, ?> lowerLayer = null;
 
     private LayerConfiguration<Container> layerConfiguration;
 
@@ -69,11 +70,11 @@ public abstract class ProtocolLayer<Hint extends LayerProcessingHint, Container 
         return lowerLayer;
     }
 
-    public void setHigherLayer(ProtocolLayer<?,?> higherLayer) {
+    public void setHigherLayer(ProtocolLayer<?, ?> higherLayer) {
         this.higherLayer = higherLayer;
     }
 
-    public void setLowerLayer(ProtocolLayer<?,?> lowerLayer) {
+    public void setLowerLayer(ProtocolLayer<?, ?> lowerLayer) {
         this.lowerLayer = lowerLayer;
     }
 
@@ -216,7 +217,7 @@ public abstract class ProtocolLayer<Hint extends LayerProcessingHint, Container 
                 return true;
             } else {
                 return layerConfiguration.successRequiresMoreContainers(
-                        getLayerResult().getUsedContainers())
+                                getLayerResult().getUsedContainers())
                         || (isDataBuffered()
                                 && ((ReceiveLayerConfiguration) layerConfiguration)
                                         .isProcessTrailingContainers());

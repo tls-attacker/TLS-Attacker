@@ -11,8 +11,7 @@ package de.rub.nds.tlsattacker.core.ice.handler;
 import de.rub.nds.tlsattacker.core.ice.model.XorPeerAddressAttribute;
 import de.rub.nds.tlsattacker.core.layer.context.IceContext;
 
-public class XorPeerAddressAttributeHandler
-        extends StunAttributeHandler<XorPeerAddressAttribute> {
+public class XorPeerAddressAttributeHandler extends StunAttributeHandler<XorPeerAddressAttribute> {
 
     public XorPeerAddressAttributeHandler(IceContext context) {
         super(context);

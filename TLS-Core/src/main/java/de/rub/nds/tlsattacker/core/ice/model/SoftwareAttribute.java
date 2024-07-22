@@ -8,8 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.ice.model;
 
-import java.io.InputStream;
-
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.tlsattacker.core.constants.stun.StunAttributeType;
@@ -18,6 +16,7 @@ import de.rub.nds.tlsattacker.core.ice.parser.SoftwareAttributeParser;
 import de.rub.nds.tlsattacker.core.ice.preparator.SoftwareAttributePreparator;
 import de.rub.nds.tlsattacker.core.ice.serializer.SoftwareAttributeSerializer;
 import de.rub.nds.tlsattacker.core.layer.context.IceContext;
+import java.io.InputStream;
 
 public class SoftwareAttribute extends StunAttribute {
 
@@ -36,7 +35,8 @@ public class SoftwareAttribute extends StunAttribute {
     }
 
     public void setSoftwareString(String softwareString) {
-        this.softwareString = ModifiableVariableFactory.safelySetValue(this.softwareString, softwareString);
+        this.softwareString =
+                ModifiableVariableFactory.safelySetValue(this.softwareString, softwareString);
     }
 
     @Override

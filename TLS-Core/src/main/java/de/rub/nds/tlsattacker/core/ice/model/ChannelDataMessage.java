@@ -1,6 +1,12 @@
+/*
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
+ *
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
+ */
 package de.rub.nds.tlsattacker.core.ice.model;
-
-import java.io.InputStream;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
@@ -10,6 +16,7 @@ import de.rub.nds.tlsattacker.core.ice.parser.ChannelDataMessageParser;
 import de.rub.nds.tlsattacker.core.ice.preparator.ChannelDataMessagePreparator;
 import de.rub.nds.tlsattacker.core.ice.serializer.ChannelDataMessageSerializer;
 import de.rub.nds.tlsattacker.core.layer.context.IceContext;
+import java.io.InputStream;
 
 public class ChannelDataMessage extends IceMessage {
 
@@ -57,7 +64,8 @@ public class ChannelDataMessage extends IceMessage {
     }
 
     public void setChannelNumber(byte[] channelNumber) {
-        this.channelNumber = ModifiableVariableFactory.safelySetValue(this.channelNumber, channelNumber);
+        this.channelNumber =
+                ModifiableVariableFactory.safelySetValue(this.channelNumber, channelNumber);
     }
 
     public ModifiableInteger getMessageLength() {
@@ -69,7 +77,8 @@ public class ChannelDataMessage extends IceMessage {
     }
 
     public void setMessageLength(int messageLength) {
-        this.messageLength = ModifiableVariableFactory.safelySetValue(this.messageLength, messageLength);
+        this.messageLength =
+                ModifiableVariableFactory.safelySetValue(this.messageLength, messageLength);
     }
 
     public ModifiableByteArray getData() {
@@ -108,5 +117,4 @@ public class ChannelDataMessage extends IceMessage {
     public String toShortString() {
         return "ChannelDataMessage";
     }
-
 }

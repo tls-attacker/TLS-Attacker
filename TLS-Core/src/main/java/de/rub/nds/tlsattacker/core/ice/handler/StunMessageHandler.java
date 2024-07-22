@@ -8,11 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.ice.handler;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import de.rub.nds.tlsattacker.core.ice.model.StunMessage;
 import de.rub.nds.tlsattacker.core.layer.context.IceContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class StunMessageHandler extends IceMessageHandler<StunMessage> {
 

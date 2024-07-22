@@ -53,8 +53,7 @@ public class IceChooser {
         }
     }
 
-    public byte[] getTurnDataChannel()
-    {
+    public byte[] getTurnDataChannel() {
         if (context.getTurnDataChannel() == null) {
             return config.getDefaultTurnDataChannel();
         } else {

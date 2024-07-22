@@ -16,7 +16,6 @@ import de.rub.nds.tlsattacker.core.ice.parser.IceControlledParser;
 import de.rub.nds.tlsattacker.core.ice.preparator.IceControlledPreparator;
 import de.rub.nds.tlsattacker.core.ice.serializer.IceControlledSerializer;
 import de.rub.nds.tlsattacker.core.layer.context.IceContext;
-
 import java.io.InputStream;
 
 public class IceControlledAttribute extends StunAttribute {

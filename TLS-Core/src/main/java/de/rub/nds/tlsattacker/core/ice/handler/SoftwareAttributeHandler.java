@@ -19,7 +19,8 @@ public class SoftwareAttributeHandler extends StunAttributeHandler<SoftwareAttri
 
     @Override
     public void adjustContext(SoftwareAttribute container) {
-        if (context.getChooser().getTalkingConnectionEnd() == context.getChooser().getMyConnectionPeer()) {
+        if (context.getChooser().getTalkingConnectionEnd()
+                == context.getChooser().getMyConnectionPeer()) {
             context.setPeerSoftwareString(container.getSoftwareString().getValue());
         } else {
             context.setOurSoftwareString(container.getSoftwareString().getValue());

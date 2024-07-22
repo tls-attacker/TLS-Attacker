@@ -8,21 +8,19 @@
  */
 package de.rub.nds.tlsattacker.core.ice.preparator;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.stun.IceByteLengths;
 import de.rub.nds.tlsattacker.core.ice.model.XorPeerAddressAttribute;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class XorPeerAddressAttributePreparator
         extends StunAttributePreparator<XorPeerAddressAttribute> {
 
     private Logger LOGGER = LogManager.getLogger();
 
-    public XorPeerAddressAttributePreparator(
-            Chooser chooser, XorPeerAddressAttribute attribute) {
+    public XorPeerAddressAttributePreparator(Chooser chooser, XorPeerAddressAttribute attribute) {
         super(chooser, attribute);
     }
 

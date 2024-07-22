@@ -19,7 +19,6 @@ import de.rub.nds.tlsattacker.core.ice.preparator.StunAttributePreparator;
 import de.rub.nds.tlsattacker.core.ice.serializer.StunAttributeSerializer;
 import de.rub.nds.tlsattacker.core.layer.context.IceContext;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
-
 import java.io.InputStream;
 
 public abstract class StunAttribute extends ModifiableVariableHolder

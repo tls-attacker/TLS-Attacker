@@ -16,7 +16,6 @@ import de.rub.nds.tlsattacker.core.ice.parser.FingerprintAttributeParser;
 import de.rub.nds.tlsattacker.core.ice.preparator.FingerprintAttributePreparator;
 import de.rub.nds.tlsattacker.core.ice.serializer.FingerprintAttributeSerializer;
 import de.rub.nds.tlsattacker.core.layer.context.IceContext;
-
 import java.io.InputStream;
 
 public class FingerprintAttribute extends StunAttribute {

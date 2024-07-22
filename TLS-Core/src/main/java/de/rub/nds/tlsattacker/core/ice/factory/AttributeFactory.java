@@ -25,8 +25,7 @@ import de.rub.nds.tlsattacker.core.ice.model.XorMappedAddressAttribute;
 import de.rub.nds.tlsattacker.core.ice.model.XorPeerAddressAttribute;
 
 public class AttributeFactory {
-    private AttributeFactory() {
-    }
+    private AttributeFactory() {}
 
     public static StunAttribute createAttribute(StunAttributeType type) {
         if (type == null) {
@@ -58,7 +57,7 @@ public class AttributeFactory {
             case XOR_PEER_ADDRESS:
                 return new XorPeerAddressAttribute();
             case XOR_RELAYED_ADDRESS:
-            
+
             case ADDERSS_ERROR_CODE:
             case ADDITIONAL_ADDRESS_FAMILY:
             case ALTERNATE_DOMAIN:

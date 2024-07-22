@@ -8,10 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.ice.model;
 
-import java.io.InputStream;
-
-import org.bouncycastle.util.Arrays;
-
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -21,6 +17,8 @@ import de.rub.nds.tlsattacker.core.ice.parser.DataAttributeParser;
 import de.rub.nds.tlsattacker.core.ice.preparator.DataAttributePreparator;
 import de.rub.nds.tlsattacker.core.ice.serializer.DataAttributeSerializer;
 import de.rub.nds.tlsattacker.core.layer.context.IceContext;
+import java.io.InputStream;
+import org.bouncycastle.util.Arrays;
 
 public class DataAttribute extends StunAttribute {
 
@@ -85,7 +83,7 @@ public class DataAttribute extends StunAttribute {
             byte[] dataValue = data.getValue();
             byte[] tempValue;
             if (dataValue.length > 5) {
-                tempValue = Arrays.copyOf(dataValue, 5); //Just copy the first 5 bytes
+                tempValue = Arrays.copyOf(dataValue, 5); // Just copy the first 5 bytes
             } else {
                 tempValue = dataValue;
             }

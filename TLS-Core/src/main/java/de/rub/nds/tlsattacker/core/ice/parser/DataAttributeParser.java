@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.core.ice.parser;
 
 import de.rub.nds.tlsattacker.core.ice.model.DataAttribute;
 import de.rub.nds.tlsattacker.core.layer.context.IceContext;
-
 import java.io.InputStream;
 
 public class DataAttributeParser extends StunAttributeParser<DataAttribute> {

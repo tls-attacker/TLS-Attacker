@@ -8,8 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.constants.stun;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-
 public enum StunMessageClass {
     REQUEST((byte) 0x00),
     INDICATION((byte) 0x01),
@@ -49,7 +47,8 @@ public enum StunMessageClass {
     public static byte[] getMessageClassBytesFromRawBytes(byte[] messageTypeBytes) {
         if (messageTypeBytes.length != 2) {
             throw new IllegalArgumentException(
-                    "The messageTypeBytes have to be 2 bytes long. Was " + messageTypeBytes.length
+                    "The messageTypeBytes have to be 2 bytes long. Was "
+                            + messageTypeBytes.length
                             + " bytes long.");
         }
         // Technically, the message type is 12 bits long, we internally treat them as if
@@ -58,7 +57,10 @@ public enum StunMessageClass {
         // the lsb of byte[0] and the bit 5 of the last byte of the type bytes form the
         // message
         // class (concatenated).
-        byte value = (byte) (((messageTypeBytes[0] & 0b00000001) << 1) | (((messageTypeBytes[1] & 0b00010000)) >> 4));
-        return new byte[] { value };
+        byte value =
+                (byte)
+                        (((messageTypeBytes[0] & 0b00000001) << 1)
+                                | (((messageTypeBytes[1] & 0b00010000)) >> 4));
+        return new byte[] {value};
     }
 }

@@ -16,7 +16,6 @@ import de.rub.nds.tlsattacker.core.ice.parser.UnknownAttributeParser;
 import de.rub.nds.tlsattacker.core.ice.preparator.UnknownAttributePreparator;
 import de.rub.nds.tlsattacker.core.ice.serializer.UnknownAttributeSerializer;
 import de.rub.nds.tlsattacker.core.layer.context.IceContext;
-
 import java.io.InputStream;
 
 public class UnknownAttribute extends StunAttribute {
@@ -24,8 +23,9 @@ public class UnknownAttribute extends StunAttribute {
     private ModifiableByteArray unknownContent;
 
     /**
-     * This takes a type attribute to show known but not implemented attributes
-     * Null means its completly unknown
+     * This takes a type attribute to show known but not implemented attributes Null means its
+     * completly unknown
+     *
      * @param type
      */
     public UnknownAttribute(StunAttributeType type) {

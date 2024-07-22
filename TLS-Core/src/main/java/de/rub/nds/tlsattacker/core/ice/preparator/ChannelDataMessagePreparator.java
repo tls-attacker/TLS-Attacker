@@ -1,11 +1,18 @@
+/*
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
+ *
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
+ */
 package de.rub.nds.tlsattacker.core.ice.preparator;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import de.rub.nds.tlsattacker.core.constants.stun.IceByteLengths;
 import de.rub.nds.tlsattacker.core.ice.model.ChannelDataMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ChannelDataMessagePreparator extends IceMessagePreparator<ChannelDataMessage> {
 
@@ -21,8 +28,11 @@ public class ChannelDataMessagePreparator extends IceMessagePreparator<ChannelDa
         getObject().setData(getObject().getDataConfig());
         getObject().setMessageLength(getObject().getData().getValue().length);
         if (chooser.getConfig().getIceConfig().isPadUdpChannelDataMessages()) {
-            int paddingLength = (IceByteLengths.DATA_CHANNEL_ALIGNMENT - (getObject().getMessageLength().getValue())
-                    % IceByteLengths.DATA_CHANNEL_ALIGNMENT) % IceByteLengths.DATA_CHANNEL_ALIGNMENT;
+            int paddingLength =
+                    (IceByteLengths.DATA_CHANNEL_ALIGNMENT
+                                    - (getObject().getMessageLength().getValue())
+                                            % IceByteLengths.DATA_CHANNEL_ALIGNMENT)
+                            % IceByteLengths.DATA_CHANNEL_ALIGNMENT;
             if (paddingLength < 0) {
                 paddingLength = 0;
             }
@@ -32,5 +42,4 @@ public class ChannelDataMessagePreparator extends IceMessagePreparator<ChannelDa
             getObject().setPadding(new byte[0]);
         }
     }
-
 }
