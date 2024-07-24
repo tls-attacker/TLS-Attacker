@@ -40,7 +40,7 @@ public class CryptoFrame extends QuicFrame {
     /** The cryptographic message data. */
     @ModifiableVariableProperty protected ModifiableByteArray cryptoData;
 
-    private int maxFrameLengthConfig = 1100;
+    private int maxFrameLengthConfig;
 
     public CryptoFrame() {
         super(QuicFrameType.CRYPTO_FRAME);

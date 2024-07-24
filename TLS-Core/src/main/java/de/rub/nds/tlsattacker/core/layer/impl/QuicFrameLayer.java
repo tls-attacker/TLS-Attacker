@@ -54,7 +54,7 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
     // this stage
     // so the max frame size can not be calculated for perfect fit (padding added in packet layer
     // for exact packet size of 1200)
-    private static final int MAX_FRAME_SIZE = 1100;
+    private final int MAX_FRAME_SIZE;
 
     private long initialPhaseExpectedCryptoFrameOffset = 0;
     private long handshakePhaseExpectedCryptoFrameOffset = 0;
@@ -65,6 +65,7 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
     public QuicFrameLayer(QuicContext context) {
         super(ImplementedLayers.QUICFRAME);
         this.context = context;
+        this.MAX_FRAME_SIZE = context.getConfig().getQuicMaximumFrameSize();
     }
 
     public void clearCryptoFrameBuffer() {

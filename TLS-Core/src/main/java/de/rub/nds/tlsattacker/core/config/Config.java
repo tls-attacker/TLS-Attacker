@@ -734,6 +734,8 @@ public class Config implements Serializable {
      */
     private Integer dtlsMaximumFragmentLength = 1400;
 
+    private Integer quicMaximumFrameSize = 1100;
+
     private WorkflowExecutorType workflowExecutorType = WorkflowExecutorType.DEFAULT;
 
     /** Does not mix messages with different message types in a single record */
@@ -2012,6 +2014,14 @@ public class Config implements Serializable {
 
     public void setDtlsMaximumFragmentLength(Integer dtlsMaximumFragmentLength) {
         this.dtlsMaximumFragmentLength = dtlsMaximumFragmentLength;
+    }
+
+    public Integer getQuicMaximumFrameSize() {
+        return quicMaximumFrameSize;
+    }
+
+    public void setQuicMaximumFrameSize(Integer quicMaximumFrameSize) {
+        this.quicMaximumFrameSize = quicMaximumFrameSize;
     }
 
     public byte[] getDefaultClientSessionId() {
