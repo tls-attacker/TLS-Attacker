@@ -8,11 +8,16 @@
  */
 package de.rub.nds.tlsattacker.core.layer.impl;
 
+import java.io.IOException;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import de.rub.nds.protocol.exception.EndOfStreamException;
 import de.rub.nds.protocol.exception.TimeoutException;
 import de.rub.nds.tlsattacker.core.constants.SSL2MessageType;
 import de.rub.nds.tlsattacker.core.constants.SSL2TotalHeaderLengths;
 import de.rub.nds.tlsattacker.core.constants.ssl.SSL2ByteLength;
-import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
@@ -30,9 +35,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerVerifyMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownSSL2Message;
 import de.rub.nds.tlsattacker.core.protocol.preparator.SSL2MessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.SSL2MessageSerializer;
-import java.io.IOException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class SSL2Layer extends ProtocolLayer<LayerProcessingHint, SSL2Message> {
 

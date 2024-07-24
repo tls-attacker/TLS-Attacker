@@ -38,7 +38,7 @@ public class QuicContext extends LayerContext {
     public static final byte[] DEFAULT_INITIAL_PACKET_TOKEN = new byte[] {};
     public static final int DEFAULT_INITIAL_PACKET_NUMBER = 0;
 
-    private byte[] quicVersion;
+    private QuicVersion quicVersion;
 
     private byte[] firstDestinationConnectionId;
     private byte[] destinationConnectionId;
@@ -141,7 +141,7 @@ public class QuicContext extends LayerContext {
 
     private void init(Context context) {
         this.quicVersion = context.getConfig().getQuicVersion();
-        this.initialSalt = QuicVersion.getFromVersionBytes(quicVersion).getInitialSalt();
+        this.initialSalt = quicVersion.getInitialSalt();
         this.initialCipherSuite = CipherSuite.TLS_AES_128_GCM_SHA256;
         this.initialHKDFAlgorithm = AlgorithmResolver.getHKDFAlgorithm(getInitialCipherSuite());
         try {
@@ -318,7 +318,7 @@ public class QuicContext extends LayerContext {
         return initialAeadCipher;
     }
 
-    public byte[] getQuicVersion() {
+    public QuicVersion getQuicVersion() {
         return quicVersion;
     }
 

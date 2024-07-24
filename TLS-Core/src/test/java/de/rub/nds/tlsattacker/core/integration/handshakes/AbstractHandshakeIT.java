@@ -15,12 +15,9 @@ import com.github.dockerjava.api.model.Image;
 import de.rub.nds.tls.subject.ConnectionRole;
 import de.rub.nds.tls.subject.TlsImplementationType;
 import de.rub.nds.tls.subject.constants.TransportType;
-import de.rub.nds.tls.subject.docker.DockerClientManager;
-import de.rub.nds.tls.subject.docker.DockerTlsInstance;
-import de.rub.nds.tls.subject.docker.DockerTlsManagerFactory;
+import de.rub.nds.tls.subject.docker.*;
 import de.rub.nds.tls.subject.docker.DockerTlsManagerFactory.TlsClientInstanceBuilder;
 import de.rub.nds.tls.subject.docker.DockerTlsManagerFactory.TlsServerInstanceBuilder;
-import de.rub.nds.tls.subject.docker.DockerTlsServerInstance;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
@@ -29,26 +26,22 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.layer.constant.StackConfiguration;
 import de.rub.nds.tlsattacker.core.state.State;
+import de.rub.nds.tlsattacker.core.util.ProviderUtil;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import de.rub.nds.tlsattacker.util.FreePortFinder;
-import java.security.Security;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
 import java.util.stream.Stream.Builder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.Assert;
 import org.junit.Assume;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -75,11 +68,12 @@ public abstract class AbstractHandshakeIT {
             ConnectionRole dockerConnectionRole,
             String version,
             String additionalParameters) {
-        this.implementation = implementation;
-        this.dockerConnectionRole = dockerConnectionRole;
-        this.version = version;
-        this.additionalParameters = additionalParameters;
-        this.transportType = TransportType.TCP;
+        this(
+                implementation,
+                dockerConnectionRole,
+                version,
+                additionalParameters,
+                TransportType.TCP);
     }
 
     public AbstractHandshakeIT(
@@ -96,18 +90,15 @@ public abstract class AbstractHandshakeIT {
     }
 
     @BeforeAll
-    public void loadList() {
+    public void loadList() throws InterruptedException {
         try {
             DockerClientManager.getDockerClient().listContainersCmd().exec();
         } catch (Exception ex) {
             Assume.assumeNoException(ex);
         }
         localImages = DockerTlsManagerFactory.getAllImages();
-    }
 
-    @BeforeEach
-    public final void setUp() throws InterruptedException {
-        Security.addProvider(new BouncyCastleProvider());
+        ProviderUtil.addBouncyCastleProvider();
 
         DockerClientManager.setDockerServerUsername(System.getenv("DOCKER_USERNAME"));
         DockerClientManager.setDockerServerPassword(System.getenv("DOCKER_PASSWORD"));
@@ -123,12 +114,12 @@ public abstract class AbstractHandshakeIT {
     }
 
     private void getDockerInstance(Image image) throws DockerException, InterruptedException {
+        DockerTlsManagerFactory.TlsInstanceBuilder instanceBuilder;
         if (dockerConnectionRole == ConnectionRole.SERVER) {
-            TlsServerInstanceBuilder serverInstanceBuilder;
             if (image != null) {
-                serverInstanceBuilder = new TlsServerInstanceBuilder(image, transportType);
+                instanceBuilder = new TlsServerInstanceBuilder(image, transportType);
             } else {
-                serverInstanceBuilder =
+                instanceBuilder =
                         new TlsServerInstanceBuilder(implementation, version, transportType).pull();
                 localImages = DockerTlsManagerFactory.getAllImages();
                 assumeNotNull(
@@ -137,11 +128,9 @@ public abstract class AbstractHandshakeIT {
                                 "TLS implementation %s %s not available",
                                 implementation.name(), version));
             }
-            serverInstanceBuilder
+            instanceBuilder
                     .containerName("client-handshake-test-server-" + UUID.randomUUID())
                     .additionalParameters(additionalParameters);
-            dockerInstance = serverInstanceBuilder.build();
-            dockerInstance.start();
         } else {
             TlsClientInstanceBuilder clientInstanceBuilder;
             if (image != null) {
@@ -160,10 +149,12 @@ public abstract class AbstractHandshakeIT {
                     .containerName("server-handshake-test-client-" + UUID.randomUUID())
                     .ip("172.17.0.1")
                     .port(PORT)
-                    .connectOnStartup(true)
+                    .connectOnStartup(false)
                     .additionalParameters(additionalParameters);
-            dockerInstance = clientInstanceBuilder.build();
+            instanceBuilder = clientInstanceBuilder;
         }
+        dockerInstance = instanceBuilder.build();
+        dockerInstance.start();
     }
 
     @ParameterizedTest
@@ -356,7 +347,7 @@ public abstract class AbstractHandshakeIT {
         if (dockerConnectionRole == ConnectionRole.CLIENT) {
             executor.setBeforeTransportInitCallback(
                     (State state) -> {
-                        dockerInstance.start();
+                        ((DockerTlsClientInstance) dockerInstance).connect();
                         return 0;
                     });
         }
@@ -433,7 +424,7 @@ public abstract class AbstractHandshakeIT {
         }
     }
 
-    @AfterEach
+    @AfterAll
     public void tearDown() {
         killContainer();
     }

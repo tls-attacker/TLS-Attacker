@@ -9,12 +9,21 @@
 package de.rub.nds.tlsattacker.core.quic.parser.frame;
 
 import de.rub.nds.tlsattacker.core.quic.frame.AckFrame;
+import de.rub.nds.tlsattacker.core.quic.frame.AckFrameWithEcn;
 import java.io.InputStream;
 
 public class AckFrameParser extends QuicFrameParser<AckFrame> {
 
+    private final boolean hasEcn;
+
     public AckFrameParser(InputStream stream) {
         super(stream);
+        this.hasEcn = false;
+    }
+
+    public AckFrameParser(InputStream stream, boolean hasEcn) {
+        super(stream);
+        this.hasEcn = hasEcn;
     }
 
     @Override
@@ -23,6 +32,16 @@ public class AckFrameParser extends QuicFrameParser<AckFrame> {
         parseAckDelay(frame);
         parseAckRangeCount(frame);
         parseFirstAckRange(frame);
+
+        // TODO AckFrame only stores one ack range, this discards all other ranges
+        for (int i = 1; i < frame.getAckRangeCount().getValue(); i++) {
+            parseVariableLengthInteger();
+            parseVariableLengthInteger();
+        }
+
+        if (hasEcn) {
+            parseEcnCounts((AckFrameWithEcn) frame);
+        }
     }
 
     protected void parseLargestAcknowledged(AckFrame frame) {
@@ -39,5 +58,11 @@ public class AckFrameParser extends QuicFrameParser<AckFrame> {
 
     protected void parseFirstAckRange(AckFrame frame) {
         frame.setFirstACKRange((int) parseVariableLengthInteger());
+    }
+
+    protected void parseEcnCounts(AckFrameWithEcn frame) {
+        frame.setEct0(parseVariableLengthInteger());
+        frame.setEct1(parseVariableLengthInteger());
+        frame.setEcnCe(parseVariableLengthInteger());
     }
 }

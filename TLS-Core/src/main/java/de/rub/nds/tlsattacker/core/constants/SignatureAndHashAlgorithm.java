@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.constants;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.protocol.constants.HashAlgorithm;
 import de.rub.nds.protocol.constants.SignatureAlgorithm;
-import de.rub.nds.tlsattacker.core.exceptions.ParserException;
+import de.rub.nds.protocol.exception.ParserException;
 import java.io.ByteArrayInputStream;
 import java.util.HashMap;
 import java.util.LinkedList;

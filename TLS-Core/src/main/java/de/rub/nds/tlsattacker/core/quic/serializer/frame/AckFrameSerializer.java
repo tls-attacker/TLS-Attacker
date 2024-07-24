@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.quic.serializer.frame;
 
 import de.rub.nds.tlsattacker.core.quic.VariableLengthIntegerEncoding;
 import de.rub.nds.tlsattacker.core.quic.frame.AckFrame;
+import de.rub.nds.tlsattacker.core.quic.frame.AckFrameWithEcn;
 
 public class AckFrameSerializer extends QuicFrameSerializer<AckFrame> {
 
@@ -27,6 +28,11 @@ public class AckFrameSerializer extends QuicFrameSerializer<AckFrame> {
         writeAckDelay();
         writeAckRangeCount();
         writeFirstAckRange();
+
+        if (frame instanceof AckFrameWithEcn) {
+            writeEcn();
+        }
+
         return getAlreadySerialized();
     }
 
@@ -52,5 +58,19 @@ public class AckFrameSerializer extends QuicFrameSerializer<AckFrame> {
         appendBytes(
                 VariableLengthIntegerEncoding.encodeVariableLengthInteger(
                         frame.getFirstACKRange().getValue()));
+    }
+
+    private void writeEcn() {
+        AckFrameWithEcn frameEcn = (AckFrameWithEcn) frame;
+
+        appendBytes(
+                VariableLengthIntegerEncoding.encodeVariableLengthInteger(
+                        frameEcn.getEct0().getValue()));
+        appendBytes(
+                VariableLengthIntegerEncoding.encodeVariableLengthInteger(
+                        frameEcn.getEct1().getValue()));
+        appendBytes(
+                VariableLengthIntegerEncoding.encodeVariableLengthInteger(
+                        frameEcn.getEcnCe().getValue()));
     }
 }

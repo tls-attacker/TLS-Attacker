@@ -12,13 +12,16 @@ import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.TimeableTransportHandler;
 import de.rub.nds.tlsattacker.transport.tcp.ClientTcpTransportHandler;
 import java.io.IOException;
+import java.net.SocketTimeoutException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class TimingClientTcpTransportHandler extends ClientTcpTransportHandler
         implements TimeableTransportHandler {
 
+    private static final Logger LOGGER = LogManager.getLogger();
+    private boolean measuringActive = true;
     private Long measurement = null;
-    private boolean prependEarlyReadData = false;
-    private int earlyReadData = 0;
 
     public TimingClientTcpTransportHandler(Connection connection) {
         super(connection);
@@ -33,29 +36,38 @@ public class TimingClientTcpTransportHandler extends ClientTcpTransportHandler
     public void sendData(byte[] data) throws IOException {
         long startTime = System.nanoTime();
         super.sendData(data);
-        // read will block until data is available
-        earlyReadData = inStream.read();
-        long endTime = System.nanoTime();
-        measurement = (endTime - startTime);
-        prependEarlyReadData = true;
-    }
-
-    @Override
-    public byte[] fetchData() throws IOException {
-        byte[] data = super.fetchData();
-        if (!prependEarlyReadData) {
-            return data;
-        } else {
-            byte[] dataWithEarlyReadByte = new byte[data.length + 1];
-            dataWithEarlyReadByte[0] = (byte) earlyReadData;
-            prependEarlyReadData = false;
-            System.arraycopy(data, 0, dataWithEarlyReadByte, 1, data.length);
-            return dataWithEarlyReadByte;
+        if (measuringActive) {
+            // read will block until data is available
+            int earlyReadData = -1;
+            try {
+                earlyReadData = inStream.read();
+            } catch (SocketTimeoutException ex) {
+                LOGGER.debug(
+                        "Transport handler expected a reaction but none was observed within socket timeout. Measurement will be null.");
+                // do not fail send action if our timeout is too conservative
+                measurement = null;
+                return;
+            }
+            if (earlyReadData != -1) {
+                inStream.unread(earlyReadData);
+            }
+            long endTime = System.nanoTime();
+            measurement = (endTime - startTime);
         }
     }
 
     @Override
     public Long getLastMeasurement() {
         return measurement;
+    }
+
+    @Override
+    public boolean isMeasuringActive() {
+        return measuringActive;
+    }
+
+    @Override
+    public void setMeasuringActive(boolean measuringActive) {
+        this.measuringActive = measuringActive;
     }
 }

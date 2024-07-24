@@ -39,7 +39,7 @@ public abstract class QuicPacketParser<T extends QuicPacket> extends Parser<T> {
 
     protected void parseDestinationConnectionId(T message) {
         byte[] destinationConnectionIdLengthBytes =
-                parseByteArrayField(message.getDestinationConnectionIdLength().getValue());
+                parseByteArrayField(message.getDestinationConnectionIdLength().getValue() & 0xFF);
         message.setDestinationConnectionId(destinationConnectionIdLengthBytes);
 
         try {

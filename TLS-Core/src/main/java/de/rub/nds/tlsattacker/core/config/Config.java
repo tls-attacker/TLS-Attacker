@@ -801,8 +801,7 @@ public class Config implements Serializable {
 
     private Boolean quicRetryFlowRequired = false;
 
-    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
-    private byte[] quicVersion = QuicVersion.VERSION_1.getByteValue();
+    private QuicVersion quicVersion = QuicVersion.VERSION_1;
 
     private Boolean stopActionsAfterWarning = false;
 
@@ -1547,11 +1546,11 @@ public class Config implements Serializable {
         this.expectHandshakeDoneQuicFrame = expectHandshakeDoneQuicFrame;
     }
 
-    public byte[] getQuicVersion() {
+    public QuicVersion getQuicVersion() {
         return quicVersion;
     }
 
-    public void setQuicVersion(byte[] quicVersion) {
+    public void setQuicVersion(QuicVersion quicVersion) {
         this.quicVersion = quicVersion;
     }
 

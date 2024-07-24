@@ -47,24 +47,48 @@ public class TimingClientTcpTransportHandlerTest {
     @Test
     public void fullTest() throws IOException {
         try (ServerSocketChannel serverSocketChannel = ServerSocketChannel.open()) {
-            serverSocketChannel.socket().bind(new InetSocketAddress(0));
-            serverSocketChannel.configureBlocking(false);
-            handler =
-                    new TimingClientTcpTransportHandler(
-                            100, 100, "localhost", serverSocketChannel.socket().getLocalPort());
-            handler.initialize();
-            SocketChannel acceptChannel = serverSocketChannel.accept();
-            assertNotNull(acceptChannel);
-            Socket s = acceptChannel.socket();
-            s.getOutputStream().write(new byte[] {6, 6, 6});
-            handler.sendData(new byte[] {1, 2, 3});
-            byte[] receive = new byte[3];
-            assertEquals(3, s.getInputStream().read(receive));
-            assertArrayEquals(new byte[] {1, 2, 3}, receive);
+            Socket s = getSocket(serverSocketChannel);
+            testSending(s);
             byte[] fetchData = handler.fetchData();
-            assertArrayEquals(new byte[] {6, 6, 6}, fetchData);
-            long timing = handler.getLastMeasurement();
-            assertTrue(timing > 0);
+            compareReceived(fetchData);
         }
+    }
+
+    @Test
+    public void testReceivesAllBytesFromStream() throws IOException {
+        try (ServerSocketChannel serverSocketChannel = ServerSocketChannel.open()) {
+            Socket s = getSocket(serverSocketChannel);
+            testSending(s);
+            byte[] fetchData = handler.getInputStream().readNBytes(3);
+            compareReceived(fetchData);
+            assertEquals(0, handler.getInputStream().available());
+        }
+    }
+
+    private void compareReceived(byte[] fetchData) {
+        assertArrayEquals(new byte[] {6, 6, 6}, fetchData);
+        long timing = handler.getLastMeasurement();
+        assertTrue(timing > 0);
+    }
+
+    private void testSending(Socket s) throws IOException {
+        s.getOutputStream().write(new byte[] {6, 6, 6});
+        handler.sendData(new byte[] {1, 2, 3});
+        byte[] receive = new byte[3];
+        assertEquals(3, s.getInputStream().read(receive));
+        assertArrayEquals(new byte[] {1, 2, 3}, receive);
+    }
+
+    private Socket getSocket(ServerSocketChannel serverSocketChannel) throws IOException {
+        serverSocketChannel.socket().bind(new InetSocketAddress(0));
+        serverSocketChannel.configureBlocking(false);
+        handler =
+                new TimingClientTcpTransportHandler(
+                        100, 100, "localhost", serverSocketChannel.socket().getLocalPort());
+        handler.initialize();
+        SocketChannel acceptChannel = serverSocketChannel.accept();
+        assertNotNull(acceptChannel);
+        Socket s = acceptChannel.socket();
+        return s;
     }
 }

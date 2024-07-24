@@ -12,55 +12,52 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum QuicPacketType {
-    UNKNOWN((byte) 255, 255),
-    INITIAL_PACKET((byte) 0, 0xc0),
-    ZERO_RTT_PACKET((byte) 1, 0xd0),
-    HANDSHAKE_PACKET((byte) 2, 0xe0),
-    RETRY_PACKET((byte) 3, 0xf0),
-    ONE_RTT_PACKET((byte) 255, 0x80),
-    VERSION_NEGOTIATION((byte) 0, 0x20),
-    UDP_PADDING((byte) 0, 0x00);
+    UNKNOWN(255, 255),
+    INITIAL_PACKET(0xc0, 0xd0),
+    ZERO_RTT_PACKET(0xd0, 0xe0),
+    HANDSHAKE_PACKET(0xe0, 0xf0),
+    RETRY_PACKET(0xf0, 0xc0),
 
-    private final int value;
-    private final int header;
-    private static final Map<Byte, QuicPacketType> MAP;
+    ONE_RTT_PACKET(0x80, 0x80),
+    VERSION_NEGOTIATION(0x20, 0x20),
+    UDP_PADDING(0x00, 0x00);
 
-    QuicPacketType(byte value, int header) {
-        this.value = value;
-        this.header = header;
+    private static final Map<Byte, QuicPacketType> QUIC1_MAP;
+    private static final Map<Byte, QuicPacketType> QUIC2_MAP;
+
+    private final byte headerQuic1;
+    private final byte headerQuic2;
+
+    QuicPacketType(int headerQuic1, int headerQuic2) {
+        this.headerQuic1 = (byte) headerQuic1;
+        this.headerQuic2 = (byte) headerQuic2;
     }
 
     static {
-        MAP = new HashMap<>();
+        QUIC1_MAP = new HashMap<>();
+        QUIC2_MAP = new HashMap<>();
         for (QuicPacketType cm : QuicPacketType.values()) {
             if (cm == UNKNOWN) {
                 continue;
             }
-            MAP.put((byte) cm.header, cm);
+            QUIC1_MAP.put(cm.headerQuic1, cm);
+            QUIC2_MAP.put(cm.headerQuic2, cm);
         }
     }
 
-    public static QuicPacketType getPacketTypeFromFirstByte(int firstByte) {
+    public static QuicPacketType getPacketTypeFromFirstByte(QuicVersion version, int firstByte) {
         if (isShortHeaderPacket(firstByte)) {
             // ONE_RTT_PACKETS are the only short header packets
             return ONE_RTT_PACKET;
         } else {
             // long header packet
-            QuicPacketType type = MAP.get((byte) (firstByte & 0b11110000));
+            QuicPacketType type = getHeaderMap(version).get((byte) (firstByte & 0b11110000));
             if (type != null) {
                 return type;
             } else {
                 return UNKNOWN;
             }
         }
-    }
-
-    public static QuicPacketType getPacketType(byte value) {
-        QuicPacketType type = MAP.get(value);
-        if (type == null) {
-            type = UNKNOWN;
-        }
-        return type;
     }
 
     public static boolean isLongHeaderPacket(int firstByte) {
@@ -71,12 +68,26 @@ public enum QuicPacketType {
         return (firstByte & 0b10000000) == 0b00000000;
     }
 
-    public byte getValue() {
-        return (byte) value;
+    public byte getHeader(QuicVersion version) {
+        switch (version) {
+            case VERSION_1:
+                return headerQuic1;
+            case VERSION_2:
+                return headerQuic2;
+            default:
+                throw new UnsupportedOperationException();
+        }
     }
 
-    public byte getHeader() {
-        return (byte) header;
+    private static Map<Byte, QuicPacketType> getHeaderMap(QuicVersion version) {
+        switch (version) {
+            case VERSION_1:
+                return QUIC1_MAP;
+            case VERSION_2:
+                return QUIC2_MAP;
+            default:
+                throw new UnsupportedOperationException();
+        }
     }
 
     public String getName() {

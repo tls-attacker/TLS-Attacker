@@ -8,6 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.crypto;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.protocol.constants.GroupParameters;
 import de.rub.nds.protocol.crypto.CyclicGroup;
@@ -19,6 +22,8 @@ import de.rub.nds.protocol.crypto.ffdh.FfdhGroup;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import java.math.BigInteger;
+import java.util.concurrent.TimeUnit;
+import org.apache.commons.lang3.tuple.Triple;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -26,8 +31,28 @@ public class KeyShareCalculator {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    private static final LoadingCache<Triple<NamedGroup, BigInteger, ECPointFormat>, byte[]>
+            publicKeyCache;
+
+    static {
+        publicKeyCache =
+                CacheBuilder.newBuilder()
+                        .maximumSize(256)
+                        .expireAfterAccess(10, TimeUnit.MINUTES)
+                        .build(CacheLoader.from(KeyShareCalculator::createPublicKey));
+    }
+
     public static byte[] createPublicKey(
             NamedGroup namedGroup, BigInteger privateKey, ECPointFormat pointFormat) {
+        // FIXME: remove cache once the crypto implementation is faster
+        return publicKeyCache.getUnchecked(Triple.of(namedGroup, privateKey, pointFormat));
+    }
+
+    private static byte[] createPublicKey(
+            Triple<NamedGroup, BigInteger, ECPointFormat> parameters) {
+        NamedGroup namedGroup = parameters.getLeft();
+        BigInteger privateKey = parameters.getMiddle();
+        ECPointFormat pointFormat = parameters.getRight();
         if (namedGroup.isGrease()) {
             return new byte[0];
         }

@@ -32,8 +32,8 @@ public abstract class LongHeaderPacketParser<T extends LongHeaderPacket>
     }
 
     protected void parseSourceConnectionId(T packet) {
-
-        byte[] sourceIdBytes = parseByteArrayField(packet.getSourceConnectionIdLength().getValue());
+        byte[] sourceIdBytes =
+                parseByteArrayField(packet.getSourceConnectionIdLength().getValue() & 0xFF);
         packet.setSourceConnectionId(sourceIdBytes);
         try {
             packet.protectedHeaderHelper.write(sourceIdBytes);
