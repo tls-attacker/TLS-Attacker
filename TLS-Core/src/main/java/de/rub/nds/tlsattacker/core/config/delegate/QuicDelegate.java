@@ -83,6 +83,9 @@ public class QuicDelegate extends Delegate {
             alpnEntries.add("h3-27");
             alpnEntries.add("h3-28");
             alpnEntries.add("h3-29");
+            alpnEntries.add("hq-29");
+            alpnEntries.add("echo");
+            alpnEntries.add("hq-interop");
             config.setDefaultProposedAlpnProtocols(alpnEntries);
 
             // QUIC Transport Parameters
