@@ -40,8 +40,15 @@ public class CryptoFrame extends QuicFrame {
     /** The cryptographic message data. */
     @ModifiableVariableProperty protected ModifiableByteArray cryptoData;
 
+    private int maxFrameLengthConfig = 1100;
+
     public CryptoFrame() {
         super(QuicFrameType.CRYPTO_FRAME);
+    }
+
+    public CryptoFrame(int maxFrameLengthConfig) {
+        super(QuicFrameType.CRYPTO_FRAME);
+        this.maxFrameLengthConfig = maxFrameLengthConfig;
     }
 
     public void setOffset(long offset) {
@@ -50,6 +57,10 @@ public class CryptoFrame extends QuicFrame {
 
     public void setOffset(int offset) {
         this.setOffset((long) offset);
+    }
+
+    public void setOffset(ModifiableLong offset) {
+        this.offset = offset;
     }
 
     public ModifiableLong getOffset() {
@@ -64,12 +75,20 @@ public class CryptoFrame extends QuicFrame {
         this.setLength((long) length);
     }
 
+    public void setLength(ModifiableLong length) {
+        this.length = length;
+    }
+
     public ModifiableLong getLength() {
         return this.length;
     }
 
     public void setCryptoData(byte[] cryptoData) {
         this.cryptoData = ModifiableVariableFactory.safelySetValue(this.cryptoData, cryptoData);
+    }
+
+    public void setCryptoData(ModifiableByteArray cryptoData) {
+        this.cryptoData = cryptoData;
     }
 
     public ModifiableByteArray getCryptoData() {
@@ -130,5 +149,13 @@ public class CryptoFrame extends QuicFrame {
         result = 31 * result + length.hashCode();
         result = 31 * result + cryptoData.hashCode();
         return result;
+    }
+
+    public int getMaxFrameLengthConfig() {
+        return maxFrameLengthConfig;
+    }
+
+    public void setMaxFrameLengthConfig(int maxFrameLengthConfig) {
+        this.maxFrameLengthConfig = maxFrameLengthConfig;
     }
 }
