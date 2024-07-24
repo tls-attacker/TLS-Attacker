@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.layer.impl;
 
-import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
+import de.rub.nds.protocol.exception.EndOfStreamException;
 import de.rub.nds.tlsattacker.core.exceptions.TimeoutException;
 import de.rub.nds.tlsattacker.core.http.HttpMessage;
 import de.rub.nds.tlsattacker.core.http.HttpMessageHandler;

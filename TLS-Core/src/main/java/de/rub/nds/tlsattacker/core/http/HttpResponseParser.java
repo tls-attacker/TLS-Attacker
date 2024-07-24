@@ -8,8 +8,15 @@
  */
 package de.rub.nds.tlsattacker.core.http;
 
-import de.rub.nds.tlsattacker.core.exceptions.ParserException;
-import de.rub.nds.tlsattacker.core.http.header.*;
+import de.rub.nds.protocol.exception.ParserException;
+import de.rub.nds.tlsattacker.core.http.header.ContentLengthHeader;
+import de.rub.nds.tlsattacker.core.http.header.DateHeader;
+import de.rub.nds.tlsattacker.core.http.header.ExpiresHeader;
+import de.rub.nds.tlsattacker.core.http.header.GenericHttpHeader;
+import de.rub.nds.tlsattacker.core.http.header.HostHeader;
+import de.rub.nds.tlsattacker.core.http.header.HttpHeader;
+import de.rub.nds.tlsattacker.core.http.header.LocationHeader;
+import de.rub.nds.tlsattacker.core.http.header.TokenBindingHeader;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
