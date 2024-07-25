@@ -41,7 +41,7 @@ public class NewConnectionIdFrameParser extends QuicFrameParser<NewConnectionIdF
     }
 
     protected void parseLength(NewConnectionIdFrame frame) {
-        frame.setLength(parseIntField(1));
+        frame.setLength(parseIntField(NewConnectionIdFrame.STATELESS_RESET_TOKEN_LENGTH));
         LOGGER.debug("Length: {}", frame.getLength().getValue());
     }
 

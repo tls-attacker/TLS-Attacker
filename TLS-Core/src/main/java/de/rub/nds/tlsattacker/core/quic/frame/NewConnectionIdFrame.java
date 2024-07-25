@@ -41,6 +41,8 @@ public class NewConnectionIdFrame extends QuicFrame {
 
     public static final int STATELESS_RESET_TOKEN_LENGTH = 16;
 
+    public static final int CONNECTION_ID_LENGTH_FIELD = 1;
+
     public NewConnectionIdFrame() {
         super(QuicFrameType.NEW_CONNECTION_ID_FRAME);
     }

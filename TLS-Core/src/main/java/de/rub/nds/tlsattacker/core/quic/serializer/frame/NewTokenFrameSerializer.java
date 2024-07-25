@@ -10,8 +10,12 @@ package de.rub.nds.tlsattacker.core.quic.serializer.frame;
 
 import de.rub.nds.tlsattacker.core.quic.VariableLengthIntegerEncoding;
 import de.rub.nds.tlsattacker.core.quic.frame.NewTokenFrame;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class NewTokenFrameSerializer extends QuicFrameSerializer<NewTokenFrame> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public NewTokenFrameSerializer(NewTokenFrame frame) {
         super(frame);
@@ -29,9 +33,11 @@ public class NewTokenFrameSerializer extends QuicFrameSerializer<NewTokenFrame> 
         appendBytes(
                 VariableLengthIntegerEncoding.encodeVariableLengthInteger(
                         frame.getTokenLength().getValue()));
+        LOGGER.debug("Token Length: {}", frame.getTokenLength().getValue());
     }
 
     private void writeToken() {
         appendBytes(frame.getToken().getValue());
+        LOGGER.debug("Token: {}", frame.getToken().getValue());
     }
 }

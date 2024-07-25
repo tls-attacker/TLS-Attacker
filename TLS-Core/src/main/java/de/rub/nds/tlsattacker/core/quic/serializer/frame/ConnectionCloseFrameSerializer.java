@@ -10,14 +10,15 @@ package de.rub.nds.tlsattacker.core.quic.serializer.frame;
 
 import de.rub.nds.tlsattacker.core.quic.VariableLengthIntegerEncoding;
 import de.rub.nds.tlsattacker.core.quic.frame.ConnectionCloseFrame;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-public class ConnectionCloseFrameSerializer extends QuicFrameSerializer {
+public class ConnectionCloseFrameSerializer extends QuicFrameSerializer<ConnectionCloseFrame> {
 
-    private final ConnectionCloseFrame frame;
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public ConnectionCloseFrameSerializer(ConnectionCloseFrame frame) {
         super(frame);
-        this.frame = frame;
     }
 
     @Override
@@ -34,23 +35,29 @@ public class ConnectionCloseFrameSerializer extends QuicFrameSerializer {
         appendBytes(
                 VariableLengthIntegerEncoding.encodeVariableLengthInteger(
                         frame.getErrorCode().getValue()));
+        LOGGER.debug("Error Code: {}", frame.getErrorCode().getValue());
     }
 
     private void writeTriggerFrameType() {
         appendBytes(
                 VariableLengthIntegerEncoding.encodeVariableLengthInteger(
                         frame.getTriggerFrameType().getValue()));
+        LOGGER.debug("Frame Type: {}", frame.getTriggerFrameType().getValue());
     }
 
     private void writeReasonPhraseLength() {
-        appendBytes(
-                VariableLengthIntegerEncoding.encodeVariableLengthInteger(
-                        frame.getReasonPhraseLength().getValue()));
+        if (frame.getReasonPhraseLength() != null) {
+            appendBytes(
+                    VariableLengthIntegerEncoding.encodeVariableLengthInteger(
+                            frame.getReasonPhraseLength().getValue()));
+            LOGGER.debug("Reason Phrase Length: {}", frame.getReasonPhraseLength().getValue());
+        }
     }
 
     private void writeReasonPhrase() {
         if (frame.getReasonPhrase() != null) {
             appendBytes(frame.getReasonPhrase().getValue());
+            LOGGER.debug("Reason Phrase: {}", frame.getReasonPhrase().getValue());
         }
     }
 }

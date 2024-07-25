@@ -24,6 +24,6 @@ public abstract class QuicFrameParser<T extends QuicFrame> extends Parser<T> {
 
     public void parseFrameType(QuicFrame frame) {
         frame.setFrameType((byte) parseVariableLengthInteger());
-        LOGGER.debug("Data: {}", frame.getFrameType().getValue());
+        LOGGER.debug("Frame Type: {}", frame.getFrameType().getValue());
     }
 }

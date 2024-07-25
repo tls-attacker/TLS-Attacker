@@ -41,6 +41,6 @@ public class StreamFramePreparator extends QuicFramePreparator<StreamFrame> {
             quicFrameType |= 0b00000001;
         }
         frame.setFrameType(quicFrameType);
-        LOGGER.debug("Data: {}", frame.getData().getValue());
+        LOGGER.debug("Frame Type: {}", frame.getData().getValue());
     }
 }
