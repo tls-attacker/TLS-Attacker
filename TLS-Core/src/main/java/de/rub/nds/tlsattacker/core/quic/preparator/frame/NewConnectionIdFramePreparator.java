@@ -18,5 +18,7 @@ public class NewConnectionIdFramePreparator extends QuicFramePreparator<NewConne
     }
 
     @Override
-    public void prepare() {}
+    public void prepare() {
+        // TODO
+    }
 }

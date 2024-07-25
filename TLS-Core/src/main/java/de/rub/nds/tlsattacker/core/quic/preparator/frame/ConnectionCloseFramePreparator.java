@@ -18,5 +18,7 @@ public class ConnectionCloseFramePreparator extends QuicFramePreparator<Connecti
     }
 
     @Override
-    public void prepare() {}
+    public void prepare() {
+        // TODO
+    }
 }

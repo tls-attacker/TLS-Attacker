@@ -18,5 +18,7 @@ public class NewTokenFramePreparator extends QuicFramePreparator<NewTokenFrame> 
     }
 
     @Override
-    public void prepare() {}
+    public void prepare() {
+        // TODO
+    }
 }

@@ -18,5 +18,7 @@ public class CryptoFramePreparator extends QuicFramePreparator<CryptoFrame> {
     }
 
     @Override
-    public void prepare() {}
+    public void prepare() {
+        // TODO
+    }
 }
