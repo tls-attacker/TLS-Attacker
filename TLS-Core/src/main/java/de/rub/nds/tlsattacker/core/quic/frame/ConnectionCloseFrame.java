@@ -24,37 +24,19 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
+/**
+ * An endpoint sends a CONNECTION_CLOSE frame (type=0x1c or 0x1d) to notify its peer that the
+ * connection is being closed.
+ */
 @XmlRootElement
 public class ConnectionCloseFrame extends QuicFrame {
 
-    /**
-     * A variable-length integer that indicates the reason for closing this connection. A
-     * CONNECTION_CLOSE frame of type 0x1c uses codes from the space defined in Section 20.1. A
-     * CONNECTION_CLOSE frame of type 0x1d uses codes defined by the application protocol; see
-     * Section 20.2.
-     */
     @ModifiableVariableProperty private ModifiableLong errorCode;
 
-    /**
-     * A variable-length integer encoding the type of frame that triggered the error. A value of 0
-     * (equivalent to the mention of the PADDING frame) is used when the frame type is unknown. The
-     * application-specific variant of CONNECTION_CLOSE (type 0x1d) does not include this field.
-     */
     @ModifiableVariableProperty private ModifiableLong triggerFrameType;
 
-    /**
-     * A variable-length integer specifying the length of the reason phrase in bytes. Because a
-     * CONNECTION_CLOSE frame cannot be split between packets, any limits on packet size will also
-     * limit the space available for a reason phrase.
-     */
     @ModifiableVariableProperty private ModifiableLong reasonPhraseLength;
 
-    /**
-     * Additional diagnostic information for the closure. This can be zero length if the sender
-     * chooses not to give details beyond the Error Code value. This SHOULD be a UTF-8 encoded
-     * string [RFC3629], though the frame does not carry information, such as language tags, that
-     * would aid comprehension by any entity other than the one that created the text.
-     */
     @ModifiableVariableProperty private ModifiableByteArray reasonPhrase;
 
     public ConnectionCloseFrame() {
@@ -108,7 +90,7 @@ public class ConnectionCloseFrame extends QuicFrame {
     }
 
     public void setErrorCode(int errorCode) {
-        this.errorCode = ModifiableVariableFactory.safelySetValue(this.errorCode, (long) errorCode);
+        this.setErrorCode((long) errorCode);
     }
 
     public ModifiableLong getTriggerFrameType() {

@@ -21,51 +21,34 @@ import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
+/** STREAM frames implicitly create a stream and carry stream data. */
 @XmlRootElement(name = "StreamFrame")
 public class StreamFrame extends QuicFrame {
 
-    /** A variable-length integer indicating the stream ID of the stream; see Section 2.1. */
     @ModifiableVariableProperty protected ModifiableInteger streamId;
 
-    /**
-     * A variable-length integer specifying the byte offset in the stream for the data in this
-     * STREAM frame. This field is present when the OFF bit is set to 1. When the Offset field is
-     * absent, the offset is 0.
-     */
     @ModifiableVariableProperty protected ModifiableInteger offset;
 
-    /**
-     * A variable-length integer specifying the length of the Stream Data field in this STREAM
-     * frame. This field is present when the LEN bit is set to 1. When the LEN bit is set to 0, the
-     * Stream Data field consumes all the remaining bytes in the packet.
-     */
     @ModifiableVariableProperty protected ModifiableInteger length;
 
-    /** The bytes from the designated stream to be delivered. */
     @ModifiableVariableProperty protected ModifiableByteArray data;
 
-    /**
-     * The FIN bit (0x01) indicates that the frame marks the end of the stream. The final size of
-     * the stream is the sum of the offset and the length of this frame. The LSB of the frame type
-     * represents the FIN bit.
-     */
     protected boolean isFinalFrame;
 
     public StreamFrame() {
         super(QuicFrameType.STREAM_FRAME);
     }
 
-    public StreamFrame(byte[] data, int streamId) {
-        super(QuicFrameType.STREAM_FRAME);
+    public StreamFrame(byte[] data, int streamId, boolean isFinalFrame) {
+        this();
         setData(data);
         setLength(data.length);
         setStreamId(streamId);
-        this.isFinalFrame = false;
+        setFinalFrame(isFinalFrame);
     }
 
-    public StreamFrame(byte[] data, int streamId, boolean isFinalFrame) {
-        this(data, streamId);
-        this.isFinalFrame = isFinalFrame;
+    public StreamFrame(byte[] data, int streamId) {
+        this(data, streamId, false);
     }
 
     public StreamFrame(QuicFrameType frameType) {

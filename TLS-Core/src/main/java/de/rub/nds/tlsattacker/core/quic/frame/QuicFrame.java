@@ -34,6 +34,11 @@ public abstract class QuicFrame extends ModifiableVariableHolder
         setFrameType(quicFrameType.getValue());
     }
 
+    public void setFrameType(QuicFrameType frameType) {
+        this.frameType =
+                ModifiableVariableFactory.safelySetValue(this.frameType, frameType.getValue());
+    }
+
     public void setFrameType(ModifiableByte frameType) {
         this.frameType = frameType;
     }

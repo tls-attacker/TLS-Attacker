@@ -22,35 +22,21 @@ import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
+/**
+ * An endpoint sends a NEW_CONNECTION_ID frame (type=0x18) to provide its peer with alternative
+ * connection IDs that can be used to break linkability when migrating connections.
+ */
 @XmlRootElement
 public class NewConnectionIdFrame extends QuicFrame {
 
-    /**
-     * The sequence number assigned to the connection ID by the sender, encoded as a variable-length
-     * integer; see Section 5.1.1.
-     */
     @ModifiableVariableProperty protected ModifiableLong sequenceNumber;
 
-    /**
-     * A variable-length integer indicating which connection IDs should be retired; see Section
-     * 5.1.2.
-     */
     @ModifiableVariableProperty protected ModifiableLong retirePriorTo;
 
-    /**
-     * An 8-bit unsigned integer containing the length of the connection ID. Values less than 1 and
-     * greater than 20 are invalid and MUST be treated as a connection error of type
-     * FRAME_ENCODING_ERROR.
-     */
     @ModifiableVariableProperty protected ModifiableInteger length;
 
-    /** A connection ID of the specified length. */
     @ModifiableVariableProperty protected ModifiableByteArray connectionId;
 
-    /**
-     * A 128-bit value that will be used for a stateless reset when the associated connection ID is
-     * used; see Section 10.3.
-     */
     @ModifiableVariableProperty protected ModifiableByteArray statelessResetToken;
 
     public static final int STATELESS_RESET_TOKEN_LENGTH = 16;

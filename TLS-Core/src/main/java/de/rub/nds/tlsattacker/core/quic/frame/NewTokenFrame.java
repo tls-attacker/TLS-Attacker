@@ -21,17 +21,15 @@ import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
+/**
+ * A server sends a NEW_TOKEN frame (type=0x07) to provide the client with a token to send in the
+ * header of an Initial packet for a future connection.
+ */
 @XmlRootElement
 public class NewTokenFrame extends QuicFrame {
 
-    /** A variable-length integer specifying the length of the token in bytes. */
     @ModifiableVariableProperty protected ModifiableLong tokenLength;
 
-    /**
-     * An opaque blob that the client can use with a future Initial packet. The token MUST NOT be
-     * empty. A client MUST treat receipt of a NEW_TOKEN frame with an empty Token field as a
-     * connection error of type FRAME_ENCODING_ERROR.
-     */
     @ModifiableVariableProperty protected ModifiableByteArray token;
 
     public NewTokenFrame() {

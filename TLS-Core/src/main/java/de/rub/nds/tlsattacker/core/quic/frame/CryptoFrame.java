@@ -22,22 +22,14 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.Arrays;
 
+/** A CRYPTO frame (type=0x06) is used to transmit cryptographic handshake messages. */
 @XmlRootElement
 public class CryptoFrame extends QuicFrame {
 
-    /**
-     * A variable-length integer specifying the byte offset in the stream for the data in this
-     * CRYPTO frame.
-     */
     @ModifiableVariableProperty protected ModifiableLong offset;
 
-    /**
-     * A variable-length integer specifying the length of the Crypto Data field in this CRYPTO
-     * frame.
-     */
     @ModifiableVariableProperty protected ModifiableLong length;
 
-    /** The cryptographic message data. */
     @ModifiableVariableProperty protected ModifiableByteArray cryptoData;
 
     private int maxFrameLengthConfig;
@@ -49,6 +41,26 @@ public class CryptoFrame extends QuicFrame {
     public CryptoFrame(int maxFrameLengthConfig) {
         super(QuicFrameType.CRYPTO_FRAME);
         this.maxFrameLengthConfig = maxFrameLengthConfig;
+    }
+
+    @Override
+    public CryptoFrameHandler getHandler(QuicContext context) {
+        return new CryptoFrameHandler(context);
+    }
+
+    @Override
+    public CryptoFrameSerializer getSerializer(QuicContext context) {
+        return new CryptoFrameSerializer(this);
+    }
+
+    @Override
+    public CryptoFramePreparator getPreparator(QuicContext context) {
+        return new CryptoFramePreparator(context.getChooser(), this);
+    }
+
+    @Override
+    public CryptoFrameParser getParser(QuicContext context, InputStream stream) {
+        return new CryptoFrameParser(stream);
     }
 
     public void setOffset(long offset) {
@@ -95,24 +107,12 @@ public class CryptoFrame extends QuicFrame {
         return this.cryptoData;
     }
 
-    @Override
-    public CryptoFrameHandler getHandler(QuicContext context) {
-        return new CryptoFrameHandler(context);
+    public int getMaxFrameLengthConfig() {
+        return maxFrameLengthConfig;
     }
 
-    @Override
-    public CryptoFrameSerializer getSerializer(QuicContext context) {
-        return new CryptoFrameSerializer(this);
-    }
-
-    @Override
-    public CryptoFramePreparator getPreparator(QuicContext context) {
-        return new CryptoFramePreparator(context.getChooser(), this);
-    }
-
-    @Override
-    public CryptoFrameParser getParser(QuicContext context, InputStream stream) {
-        return new CryptoFrameParser(stream);
+    public void setMaxFrameLengthConfig(int maxFrameLengthConfig) {
+        this.maxFrameLengthConfig = maxFrameLengthConfig;
     }
 
     @Override
@@ -141,21 +141,5 @@ public class CryptoFrame extends QuicFrame {
             return false;
         }
         return Arrays.equals(cryptoData.getValue(), that.cryptoData.getValue());
-    }
-
-    @Override
-    public int hashCode() {
-        int result = offset.hashCode();
-        result = 31 * result + length.hashCode();
-        result = 31 * result + cryptoData.hashCode();
-        return result;
-    }
-
-    public int getMaxFrameLengthConfig() {
-        return maxFrameLengthConfig;
-    }
-
-    public void setMaxFrameLengthConfig(int maxFrameLengthConfig) {
-        this.maxFrameLengthConfig = maxFrameLengthConfig;
     }
 }

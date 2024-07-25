@@ -19,6 +19,10 @@ import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
+/**
+ * Endpoints can use PING frames (type=0x01) to verify that their peers are still alive or to check
+ * reachability to the peer.
+ */
 @XmlRootElement
 public class PingFrame extends QuicFrame {
 

@@ -20,41 +20,23 @@ import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
+/**
+ * Receivers send ACK frames (types 0x02 and 0x03) to inform senders of packets they have received
+ * and processed. The ACK frame contains one or more ACK Ranges. ACK Ranges identify acknowledged
+ * packets. If the frame type is 0x03, ACK frames also contain the cumulative count of QUIC packets
+ * with associated ECN marks received on the connection up until this point.
+ */
 @XmlRootElement
 public class AckFrame extends QuicFrame {
 
-    /**
-     * A variable-length integer representing the largest packet number the peer is acknowledging;
-     * this is usually the largest packet number that the peer has received prior to generating the
-     * ACK frame. Unlike the packet number in the QUIC long or short header, the value in an ACK
-     * frame is not truncated.
-     */
     @ModifiableVariableProperty protected ModifiableLong largestAcknowledged;
 
-    /**
-     * A variable-length integer encoding the acknowledgment delay in microseconds; see Section
-     * 13.2.5. It is decoded by multiplying the value in the field by 2 to the power of the
-     * ack_delay_exponent transport parameter sent by the sender of the ACK frame; see Section 18.2.
-     * Compared to simply expressing the delay as an integer, this encoding allows for a larger
-     * range of values within the same number of bytes, at the cost of lower resolution.
-     */
     @ModifiableVariableProperty protected ModifiableLong ackDelay;
 
-    /** A variable-length integer specifying the number of ACK Range fields in the frame. */
     @ModifiableVariableProperty protected ModifiableLong ackRangeCount;
 
-    /**
-     * A variable-length integer indicating the number of contiguous packets preceding the Largest
-     * Acknowledged that are being acknowledged. That is, the smallest packet acknowledged in the
-     * range is determined by subtracting the First ACK Range value from the Largest Acknowledged
-     * field.
-     */
     @ModifiableVariableProperty protected ModifiableLong firstACKRange;
 
-    /**
-     * Contains additional ranges of packets that are alternately not acknowledged (Gap) and
-     * acknowledged (ACK Range); see Section 19.3.1.
-     */
     @ModifiableVariableProperty protected ModifiableLong packetNumberSpace;
 
     public AckFrame() {
@@ -63,6 +45,26 @@ public class AckFrame extends QuicFrame {
 
     protected AckFrame(QuicFrameType frameType) {
         super(frameType);
+    }
+
+    @Override
+    public AckFrameHandler getHandler(QuicContext context) {
+        return new AckFrameHandler(context);
+    }
+
+    @Override
+    public AckFrameSerializer getSerializer(QuicContext context) {
+        return new AckFrameSerializer(this);
+    }
+
+    @Override
+    public AckFramePreparator getPreparator(QuicContext context) {
+        return new AckFramePreparator(context.getChooser(), this);
+    }
+
+    @Override
+    public AckFrameParser getParser(QuicContext context, InputStream stream) {
+        return new AckFrameParser(stream);
     }
 
     public void setLargestAcknowledged(ModifiableLong largestAcknowledged) {
@@ -89,6 +91,10 @@ public class AckFrame extends QuicFrame {
         this.ackDelay = ackDelay;
     }
 
+    public void setAckDelay(long ackDelay) {
+        this.ackDelay = ModifiableVariableFactory.safelySetValue(this.ackDelay, ackDelay);
+    }
+
     public void setAckDelay(int ackDelay) {
         this.ackDelay = ModifiableVariableFactory.safelySetValue(this.ackDelay, (long) ackDelay);
     }
@@ -99,6 +105,11 @@ public class AckFrame extends QuicFrame {
 
     public void setAckRangeCount(ModifiableLong ackRangeCount) {
         this.ackRangeCount = ackRangeCount;
+    }
+
+    public void setAckRangeCount(long ackRangeCount) {
+        this.ackRangeCount =
+                ModifiableVariableFactory.safelySetValue(this.ackRangeCount, ackRangeCount);
     }
 
     public void setAckRangeCount(int ackRangeCount) {
@@ -145,25 +156,5 @@ public class AckFrame extends QuicFrame {
 
     public ModifiableLong getPacketNumberSpace() {
         return packetNumberSpace;
-    }
-
-    @Override
-    public AckFrameHandler getHandler(QuicContext context) {
-        return new AckFrameHandler(context);
-    }
-
-    @Override
-    public AckFrameSerializer getSerializer(QuicContext context) {
-        return new AckFrameSerializer(this);
-    }
-
-    @Override
-    public AckFramePreparator getPreparator(QuicContext context) {
-        return new AckFramePreparator(context.getChooser(), this);
-    }
-
-    @Override
-    public AckFrameParser getParser(QuicContext context, InputStream stream) {
-        return new AckFrameParser(stream);
     }
 }
