@@ -8,9 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.quic.serializer.frame;
 
-import de.rub.nds.tlsattacker.core.quic.VariableLengthIntegerEncoding;
 import de.rub.nds.tlsattacker.core.quic.frame.AckFrame;
 import de.rub.nds.tlsattacker.core.quic.frame.AckFrameWithEcn;
+import de.rub.nds.tlsattacker.core.quic.util.VariableLengthIntegerEncoding;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

@@ -9,8 +9,8 @@
 package de.rub.nds.tlsattacker.core.quic.serializer.packet;
 
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
-import de.rub.nds.tlsattacker.core.quic.VariableLengthIntegerEncoding;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
+import de.rub.nds.tlsattacker.core.quic.util.VariableLengthIntegerEncoding;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

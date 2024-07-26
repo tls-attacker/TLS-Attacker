@@ -58,11 +58,11 @@ public enum QuicFrameType {
 
     static {
         MAP = new HashMap<>();
-        for (QuicFrameType knownType : QuicFrameType.values()) {
-            if (knownType == UNKNOWN) {
+        for (QuicFrameType type : QuicFrameType.values()) {
+            if (type == UNKNOWN) {
                 continue;
             }
-            MAP.put((byte) knownType.value, knownType);
+            MAP.put((byte) type.value, type);
         }
     }
 
