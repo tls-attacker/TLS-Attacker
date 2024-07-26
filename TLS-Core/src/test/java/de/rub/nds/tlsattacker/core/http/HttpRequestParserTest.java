@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.http;
 import static org.junit.Assert.assertEquals;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
+import de.rub.nds.protocol.exception.EndOfStreamException;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.Charset;
 import org.junit.Before;

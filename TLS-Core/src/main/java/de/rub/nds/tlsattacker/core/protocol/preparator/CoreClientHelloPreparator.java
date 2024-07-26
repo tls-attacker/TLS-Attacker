@@ -8,11 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
+import de.rub.nds.protocol.exception.PreparationException;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.CoreClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;

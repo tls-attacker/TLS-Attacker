@@ -8,11 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.layer.impl;
 
+import de.rub.nds.protocol.exception.EndOfStreamException;
+import de.rub.nds.protocol.exception.ParserException;
+import de.rub.nds.protocol.exception.PreparationException;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
-import de.rub.nds.tlsattacker.core.exceptions.ParserException;
-import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
