@@ -25,27 +25,19 @@ public class InitialPacketPreparator extends LongHeaderPacketPreparator<InitialP
 
     public InitialPacketPreparator(Chooser chooser, InitialPacket packet) {
         super(chooser, packet);
-        this.packet = packet;
     }
 
     @Override
     public void prepare() {
-        packet.setUnprotectedFlags(
-                QuicPacketType.INITIAL_PACKET.getHeader(context.getQuicVersion()));
-        if (!context.isInitialSecretsInitialized()) {
-            try {
-                QuicPacketCryptoComputations.calculateInitialSecrets(context);
-            } catch (NoSuchAlgorithmException | CryptoException e) {
-                LOGGER.error("Could not calculate initial secrets: ", e);
-                return;
-            }
-        }
+        LOGGER.debug("Preparing Inital Packet");
+        prepareUnprotectedFlags();
+        calculateInitialSecrets();
+        prepareUnprotectedPacketNumber();
+        prepareToken();
+        prepareLongHeaderPacket();
+    }
 
-        if (packet.getUnprotectedPacketNumber() == null) {
-            packet.setUnprotectedPacketNumber(context.getInitialPacketPacketNumber());
-            context.setInitialPacketPacketNumber(context.getInitialPacketPacketNumber() + 1);
-        }
-
+    private void prepareToken() {
         if (context.getInitialPacketToken() != null) {
             packet.setToken(context.getInitialPacketToken());
             packet.setTokenLength(context.getInitialPacketToken().length);
@@ -53,32 +45,39 @@ public class InitialPacketPreparator extends LongHeaderPacketPreparator<InitialP
             packet.setToken(new byte[] {});
             packet.setTokenLength(0);
         }
+        LOGGER.debug("Token: {}", packet.getToken().getValue());
+        LOGGER.debug("Token Length: {}", packet.getTokenLength());
+    }
 
-        prepareLongHeaderPacket();
+    private void prepareUnprotectedPacketNumber() {
+        if (packet.getUnprotectedPacketNumber() == null) {
+            packet.setUnprotectedPacketNumber(context.getInitialPacketPacketNumber());
+            context.setInitialPacketPacketNumber(context.getInitialPacketPacketNumber() + 1);
+            LOGGER.debug(
+                    "Unprotected Packet Number: {}",
+                    packet.getUnprotectedPacketNumber().getValue());
+        }
+    }
+
+    // TODO: move to handler?
+    private void calculateInitialSecrets() {
+        try {
+            if (!context.isInitialSecretsInitialized()) {
+                QuicPacketCryptoComputations.calculateInitialSecrets(context);
+            }
+        } catch (NoSuchAlgorithmException | CryptoException e) {
+            LOGGER.error("Could not calculate initial secrets: {}", e);
+        }
+    }
+
+    private void prepareUnprotectedFlags() {
+        packet.setUnprotectedFlags(
+                QuicPacketType.INITIAL_PACKET.getHeader(context.getQuicVersion()));
+        LOGGER.debug("Unprotected Flags: {}", packet.getUnprotectedFlags().getValue());
     }
 
     @Override
     protected int calculatePadding() {
-        //        Initial Packet {
-        //            Header Form (1) = 1,
-        //            Fixed Bit (1) = 1,
-        //            Long Packet Type (2) = 0,
-        //            Reserved Bits (2),
-        //            Packet Number Length (2),
-        //            Version (32),
-        //            Destination Connection ID Length (8),
-        //            Destination Connection ID (0..160),
-        //            Source Connection ID Length (8),
-        //            Source Connection ID (0..160),
-        //            Token Length (i),
-        //            Token (..),
-        //            Length (i),
-        //            Packet Number (8..32),
-        //            Packet Payload (8..),
-        //        }
-        // 1200 - ( (HeaderForm + Fixed Bit + Long Packet Type + Reserved Bits + Packet Number
-        // Length) + Version + DestConIdLen + DestConId + SrcConIdLen + SrcConId + TokenLen +
-        // PacketLen + Payload(= data + AuthTag)
         return Math.max(
                 0,
                 MiscRfcConstants.SMALLEST_MAX_DATAGRAM_SIZE

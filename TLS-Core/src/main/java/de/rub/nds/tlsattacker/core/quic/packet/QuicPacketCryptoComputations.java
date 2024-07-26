@@ -40,20 +40,16 @@ public class QuicPacketCryptoComputations extends ModifiableVariableHolder {
 
     public QuicPacketCryptoComputations() {}
 
+    /** Generates header protection mask. */
     public static byte[] generateHeaderProtectionMask(
             Cipher cipher, byte[] headerProtectionKey, byte[] sample) throws CryptoException {
         try {
             byte[] mask;
             SecretKeySpec keySpec = new SecretKeySpec(headerProtectionKey, cipher.getAlgorithm());
             if (cipher.getAlgorithm().equals("ChaCha20")) {
-                // 5.4.4. ChaCha20-Based Header Protection
-                //  header_protection(hp_key, sample):
-                //    counter = sample[0..3]
-                //    nonce = sample[4..15]
-                //    mask = ChaCha20(hp_key, counter, nonce, {0,0,0,0,0})
-
-                ByteBuffer wrapped =
-                        ByteBuffer.wrap(Arrays.copyOfRange(sample, 0, 4)); // big-endian by default
+                // Based on RFC 9001 Section 5.4.4
+                // https://www.rfc-editor.org/rfc/rfc9001#name-chacha20-based-header-prote
+                ByteBuffer wrapped = ByteBuffer.wrap(Arrays.copyOfRange(sample, 0, 4));
                 wrapped.order(ByteOrder.LITTLE_ENDIAN);
                 int counter = wrapped.getInt();
                 byte[] nonce = Arrays.copyOfRange(sample, 4, 16);
@@ -61,15 +57,12 @@ public class QuicPacketCryptoComputations extends ModifiableVariableHolder {
                 cipher.init(Cipher.ENCRYPT_MODE, keySpec, param);
                 mask = cipher.doFinal(new byte[] {0, 0, 0, 0, 0});
             } else {
-                // 5.4.3. AES-Based Header Protection
-                //  header_protection(hp_key, sample):
-                //    mask = AES-ECB(hp_key, sample)
-
+                // Based on RFC 9001 Section 5.4.3
+                // https://www.rfc-editor.org/rfc/rfc9001#name-aes-based-header-protection
                 cipher.init(Cipher.ENCRYPT_MODE, keySpec);
                 mask = cipher.doFinal(sample);
             }
             return mask;
-
         } catch (BadPaddingException
                 | IllegalBlockSizeException
                 | InvalidKeyException
@@ -145,14 +138,11 @@ public class QuicPacketCryptoComputations extends ModifiableVariableHolder {
     /**
      * Calculates all initial client and server secrets including key, IV, and the key for header
      * protection.
-     *
-     * @param context
-     * @throws CryptoException
-     * @throws NoSuchAlgorithmException
      */
     public static void calculateInitialSecrets(QuicContext context)
             throws CryptoException, NoSuchAlgorithmException {
         LOGGER.debug("Initialize Quic Initial Secrets");
+
         HKDFAlgorithm hkdfAlgorithm = context.getInitialHKDFAlgorithm();
         Mac mac = Mac.getInstance(hkdfAlgorithm.getMacAlgorithm().getJavaName());
 
@@ -163,7 +153,6 @@ public class QuicPacketCryptoComputations extends ModifiableVariableHolder {
                         context.getFirstDestinationConnectionId()));
 
         QuicVersion version = context.getQuicVersion();
-
         if (version == QuicVersion.NEGOTIATION_VERSION) {
             // There are no initial secrets, version negotiation packets are unencrypted
             throw new UnsupportedOperationException(
@@ -222,14 +211,11 @@ public class QuicPacketCryptoComputations extends ModifiableVariableHolder {
     /**
      * Calculates all handshake client and server secrets including key, IV, and the key for header
      * protection.
-     *
-     * @param context
-     * @throws CryptoException
-     * @throws NoSuchAlgorithmException
      */
     public static void calculateHandshakeSecrets(QuicContext context)
             throws NoSuchPaddingException, NoSuchAlgorithmException, CryptoException {
         LOGGER.debug("Initialize Quic Handshake Secrets");
+
         context.setAeadCipher(
                 Cipher.getInstance(
                         AlgorithmResolver.getCipher(
@@ -237,14 +223,20 @@ public class QuicPacketCryptoComputations extends ModifiableVariableHolder {
                                                 .getTlsContext()
                                                 .getSelectedCipherSuite())
                                 .getJavaName()));
-        // TODO: maybe move to handler
+
+        int keyLength = 16;
         switch (context.getContext().getTlsContext().getSelectedCipherSuite()) {
             case TLS_AES_128_CCM_SHA256:
             case TLS_AES_128_GCM_SHA256:
+                keyLength = 16;
+                context.setHeaderProtectionCipher(Cipher.getInstance("AES/ECB/NoPadding"));
+                break;
             case TLS_AES_256_GCM_SHA384:
+                keyLength = 32;
                 context.setHeaderProtectionCipher(Cipher.getInstance("AES/ECB/NoPadding"));
                 break;
             case TLS_CHACHA20_POLY1305_SHA256:
+                keyLength = 32;
                 context.setHeaderProtectionCipher(Cipher.getInstance("ChaCha20"));
                 break;
         }
@@ -254,20 +246,6 @@ public class QuicPacketCryptoComputations extends ModifiableVariableHolder {
                         context.getContext().getTlsContext().getSelectedCipherSuite()));
 
         HKDFAlgorithm hkdfAlgorithm = context.getHkdfAlgorithm();
-
-        int keyLength = 16;
-
-        switch (context.getContext().getTlsContext().getSelectedCipherSuite()) {
-            case TLS_AES_128_CCM_SHA256:
-            case TLS_AES_128_GCM_SHA256:
-                keyLength = 16;
-                break;
-            case TLS_AES_256_GCM_SHA384:
-            case TLS_CHACHA20_POLY1305_SHA256:
-                keyLength = 32;
-                break;
-        }
-
         QuicVersion version = context.getQuicVersion();
 
         // client
@@ -300,18 +278,12 @@ public class QuicPacketCryptoComputations extends ModifiableVariableHolder {
     /**
      * Calculates all application client and server secrets including key, IV, and the key for
      * header protection.
-     *
-     * @param context
-     * @throws CryptoException
-     * @throws NoSuchAlgorithmException
      */
     public static void calculateApplicationSecrets(QuicContext context)
             throws NoSuchPaddingException, NoSuchAlgorithmException, CryptoException {
         LOGGER.debug("Initialize Quic Application Secrets");
-        HKDFAlgorithm hkdfAlgorithm = context.getHkdfAlgorithm();
 
         int keyLength = 16;
-
         switch (context.getContext().getTlsContext().getSelectedCipherSuite()) {
             case TLS_AES_128_CCM_SHA256:
             case TLS_AES_128_GCM_SHA256:
@@ -323,6 +295,7 @@ public class QuicPacketCryptoComputations extends ModifiableVariableHolder {
                 break;
         }
 
+        HKDFAlgorithm hkdfAlgorithm = context.getHkdfAlgorithm();
         QuicVersion version = context.getQuicVersion();
 
         // client
@@ -352,9 +325,19 @@ public class QuicPacketCryptoComputations extends ModifiableVariableHolder {
         context.setApplicationSecretsInitialized(true);
     }
 
+    /**
+     * Calculates all zero rtt client and server secrets including key, IV, and the key for header
+     * protection.
+     *
+     * @param context
+     * @throws NoSuchPaddingException
+     * @throws CryptoException
+     * @throws NoSuchAlgorithmException
+     */
     public static void calculate0RTTSecrets(QuicContext context)
             throws CryptoException, NoSuchPaddingException, NoSuchAlgorithmException {
         LOGGER.debug("Initialize Quic 0-RTT Secrets");
+
         context.setZeroRTTCipherSuite(
                 context.getContext().getTlsContext().getEarlyDataCipherSuite());
         context.setZeroRTTAeadCipher(
@@ -364,14 +347,20 @@ public class QuicPacketCryptoComputations extends ModifiableVariableHolder {
                                                 .getTlsContext()
                                                 .getEarlyDataCipherSuite())
                                 .getJavaName()));
-        // TODO: maybe move to handler
+
+        int keyLength = 16;
         switch (context.getZeroRTTCipherSuite()) {
             case TLS_AES_128_CCM_SHA256:
             case TLS_AES_128_GCM_SHA256:
+                keyLength = 16;
+                context.setZeroRTTHeaderProtectionCipher(Cipher.getInstance("AES/ECB/NoPadding"));
+                break;
             case TLS_AES_256_GCM_SHA384:
+                keyLength = 32;
                 context.setZeroRTTHeaderProtectionCipher(Cipher.getInstance("AES/ECB/NoPadding"));
                 break;
             case TLS_CHACHA20_POLY1305_SHA256:
+                keyLength = 32;
                 context.setZeroRTTHeaderProtectionCipher(Cipher.getInstance("ChaCha20"));
                 break;
         }
@@ -380,20 +369,6 @@ public class QuicPacketCryptoComputations extends ModifiableVariableHolder {
                 AlgorithmResolver.getHKDFAlgorithm(context.getZeroRTTCipherSuite()));
 
         HKDFAlgorithm hkdfAlgorithm = context.getZeroRTTHKDFAlgorithm();
-
-        int keyLength = 16;
-
-        switch (context.getZeroRTTCipherSuite()) {
-            case TLS_AES_128_CCM_SHA256:
-            case TLS_AES_128_GCM_SHA256:
-                keyLength = 16;
-                break;
-            case TLS_AES_256_GCM_SHA384:
-            case TLS_CHACHA20_POLY1305_SHA256:
-                keyLength = 32;
-                break;
-        }
-
         QuicVersion version = context.getQuicVersion();
 
         // client

@@ -21,13 +21,14 @@ public class OneRTTPacketParser extends QuicPacketParser<OneRTTPacket> {
 
     @Override
     public void parse(OneRTTPacket packet) {
-        // OneRTT Packets do not have a DCID Length Field. Therefore you need to set its Length from
-        // the context
+        // 0-RTT packets do not have a DCID Length field. Therefore we need to set its length from
+        // the context.
         packet.setDestinationConnectionIdLength((byte) context.getSourceConnectionId().length);
         parseDestinationConnectionId(packet);
+
+        // packetlength must be "guessed" since short header packets do not have a length field.
+        // We assume that the length is equal to the length of the UDP datagram.
         try {
-            // packetlength must be "guessed" since short header packets do not have a length field
-            // we assume that the length is equal to the length of the UDP datagram
             packet.setPacketLength(getStream().available());
             parseProtectedPacketNumberAndPayload(packet);
         } catch (IOException e) {

@@ -24,24 +24,41 @@ public class HandshakePacketPreparator extends LongHeaderPacketPreparator<Handsh
 
     public HandshakePacketPreparator(Chooser chooser, HandshakePacket packet) {
         super(chooser, packet);
-        this.packet = packet;
     }
 
     @Override
     public void prepare() {
-        packet.setUnprotectedFlags(
-                QuicPacketType.HANDSHAKE_PACKET.getHeader(context.getQuicVersion()));
+        LOGGER.debug("Preparing Handshake Packet");
+        prepareUnprotectedFlags();
+        calculateHandshakeSecrets();
+        prepareUnprotectedPacketNumber();
+        prepareLongHeaderPacket();
+    }
+
+    private void prepareUnprotectedPacketNumber() {
+        if (packet.getUnprotectedPacketNumber() == null) {
+            packet.setUnprotectedPacketNumber(context.getHandshakePacketPacketNumber());
+            context.setHandshakePacketPacketNumber(context.getHandshakePacketPacketNumber() + 1);
+            LOGGER.debug(
+                    "Unprotected Packet Number: {}",
+                    packet.getUnprotectedPacketNumber().getValue());
+        }
+    }
+
+    // TODO: move to handler?
+    private void calculateHandshakeSecrets() {
         try {
             if (!context.isHandshakeSecretsInitialized()) {
                 QuicPacketCryptoComputations.calculateHandshakeSecrets(context);
             }
         } catch (NoSuchAlgorithmException | NoSuchPaddingException | CryptoException e) {
-            LOGGER.error(e);
+            LOGGER.error("Could not calculate handshake secrets: {}", e);
         }
-        if (packet.getUnprotectedPacketNumber() == null) {
-            packet.setUnprotectedPacketNumber(context.getHandshakePacketPacketNumber());
-            context.setHandshakePacketPacketNumber(context.getHandshakePacketPacketNumber() + 1);
-        }
-        prepareLongHeaderPacket();
+    }
+
+    private void prepareUnprotectedFlags() {
+        packet.setUnprotectedFlags(
+                QuicPacketType.HANDSHAKE_PACKET.getHeader(context.getQuicVersion()));
+        LOGGER.debug("Unprotected Flags: {}", packet.getUnprotectedFlags().getValue());
     }
 }

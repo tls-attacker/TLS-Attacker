@@ -8,20 +8,17 @@
  */
 package de.rub.nds.tlsattacker.core.quic.serializer.packet;
 
-import de.rub.nds.tlsattacker.core.quic.packet.OneRTTPacket;
+import de.rub.nds.tlsattacker.core.quic.packet.RetryPacket;
 
-public class OneRTTPacketSerializer extends QuicPacketSerializer<OneRTTPacket> {
+public class RetryPacketSerializer extends LongHeaderPacketSerializer<RetryPacket> {
 
-    public OneRTTPacketSerializer(OneRTTPacket packet) {
+    public RetryPacketSerializer(RetryPacket packet) {
         super(packet);
     }
 
     @Override
     protected byte[] serializeBytes() {
-        writeProtectedFlags(packet);
-        writeDestinationConnectionId(packet);
-        writeProtectedPacketNumber(packet);
-        writeProtectedPayload(packet);
-        return getAlreadySerialized();
+        // TODO
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

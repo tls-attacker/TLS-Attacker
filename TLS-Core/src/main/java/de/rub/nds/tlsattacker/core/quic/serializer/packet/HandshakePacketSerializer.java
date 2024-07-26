@@ -12,11 +12,8 @@ import de.rub.nds.tlsattacker.core.quic.packet.HandshakePacket;
 
 public class HandshakePacketSerializer extends LongHeaderPacketSerializer<HandshakePacket> {
 
-    private final HandshakePacket packet;
-
     public HandshakePacketSerializer(HandshakePacket packet) {
         super(packet);
-        this.packet = packet;
     }
 
     @Override

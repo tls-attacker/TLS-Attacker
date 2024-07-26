@@ -23,23 +23,34 @@ public class OneRTTPacketPreparator extends QuicPacketPreparator<OneRTTPacket> {
 
     public OneRTTPacketPreparator(Chooser chooser, OneRTTPacket packet) {
         super(chooser, packet);
-        this.packet = packet;
     }
 
     @Override
     public void prepare() {
+        LOGGER.debug("Preparing 1-RTT Packet");
+        calculateApplicationSecrets();
+        prepareUnprotectedPacketNumber();
+        prepareQuicPacket();
+    }
+
+    private void prepareUnprotectedPacketNumber() {
+        if (packet.getUnprotectedPacketNumber() == null) {
+            packet.setUnprotectedPacketNumber(context.getOneRTTPacketPacketNumber());
+            context.setOneRTTPacketPacketNumber(context.getOneRTTPacketPacketNumber() + 1);
+            LOGGER.debug(
+                    "Unprotected Packet Number: {}",
+                    packet.getUnprotectedPacketNumber().getValue());
+        }
+    }
+
+    // TODO: move to handler?
+    private void calculateApplicationSecrets() {
         try {
             if (!context.isApplicationSecretsInitialized()) {
                 QuicPacketCryptoComputations.calculateApplicationSecrets(context);
             }
         } catch (NoSuchAlgorithmException | NoSuchPaddingException | CryptoException e) {
-            LOGGER.error(e);
+            LOGGER.error("Could not calculate application secrets: {}", e);
         }
-
-        if (packet.getUnprotectedPacketNumber() == null) {
-            packet.setUnprotectedPacketNumber(context.getOneRTTPacketPacketNumber());
-            context.setOneRTTPacketPacketNumber(context.getOneRTTPacketPacketNumber() + 1);
-        }
-        prepareQuicPacket();
     }
 }

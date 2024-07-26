@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.core.quic.frame.NewConnectionIdFrame;
 import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
 
 public class NewConnectionIdFrameHandler extends QuicFrameHandler<NewConnectionIdFrame> {
+
     public NewConnectionIdFrameHandler(QuicContext context) {
         super(context);
     }
