@@ -28,9 +28,14 @@ import javax.crypto.spec.SecretKeySpec;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * The QuicEncryptor encrypts {@link QuicPacket} objects. It uses the {@link QuicContext} to get the
+ * necessary keys and cipher.
+ */
 public class QuicEncryptor {
 
     private static final Logger LOGGER = LogManager.getLogger();
+
     private final QuicContext context;
 
     public QuicEncryptor(QuicContext context) {
@@ -73,7 +78,7 @@ public class QuicEncryptor {
                         context, packet.getHeaderProtectionSample()));
     }
 
-    public void addHeaderProtection(
+    private void addHeaderProtection(
             QuicPacket packet,
             byte[] serverHeaderProtectionMask,
             byte[] clientHeaderProtectionMask) {
@@ -109,27 +114,6 @@ public class QuicEncryptor {
             result[i] = (byte) (unprotectedPacketNumber[i] ^ headerProtectionMask[i + 1]);
         }
         packet.setProtectedPacketNumber(result);
-    }
-
-    private byte[] aeadEncrypt(
-            byte[] associatedData, byte[] plaintext, byte[] nonce, byte[] key, Cipher aeadCipher)
-            throws InvalidAlgorithmParameterException,
-                    InvalidKeyException,
-                    IllegalBlockSizeException,
-                    BadPaddingException {
-        AlgorithmParameterSpec parameterSpec;
-        String algo;
-        if (aeadCipher.getAlgorithm().equals("ChaCha20-Poly1305")) {
-            algo = "ChaCha20";
-            parameterSpec = new IvParameterSpec(nonce);
-        } else {
-            algo = "AES";
-            parameterSpec = new GCMParameterSpec(128, nonce);
-        }
-        aeadCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key, algo), parameterSpec);
-        aeadCipher.updateAAD(associatedData);
-
-        return aeadCipher.doFinal(plaintext);
     }
 
     public void encryptInitialPacket(InitialPacket packet) throws CryptoException {
@@ -172,7 +156,7 @@ public class QuicEncryptor {
                 context.getZeroRTTAeadCipher());
     }
 
-    public void encrypt(
+    private void encrypt(
             QuicPacket packet,
             byte[] serverIv,
             byte[] serverKey,
@@ -181,7 +165,6 @@ public class QuicEncryptor {
             Cipher cipher)
             throws CryptoException {
         ConnectionEndType connectionEndType = context.getTalkingConnectionEndType();
-
         byte[] encryptionIv;
         byte[] encryptionKey;
 
@@ -229,5 +212,25 @@ public class QuicEncryptor {
                 | InvalidAlgorithmParameterException ex) {
             throw new CryptoException("Could not encrypt " + packet.getPacketType().getName(), ex);
         }
+    }
+
+    private byte[] aeadEncrypt(
+            byte[] associatedData, byte[] plaintext, byte[] nonce, byte[] key, Cipher aeadCipher)
+            throws InvalidAlgorithmParameterException,
+                    InvalidKeyException,
+                    IllegalBlockSizeException,
+                    BadPaddingException {
+        AlgorithmParameterSpec parameterSpec;
+        String algo;
+        if (aeadCipher.getAlgorithm().equals("ChaCha20-Poly1305")) {
+            algo = "ChaCha20";
+            parameterSpec = new IvParameterSpec(nonce);
+        } else {
+            algo = "AES";
+            parameterSpec = new GCMParameterSpec(128, nonce);
+        }
+        aeadCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key, algo), parameterSpec);
+        aeadCipher.updateAAD(associatedData);
+        return aeadCipher.doFinal(plaintext);
     }
 }

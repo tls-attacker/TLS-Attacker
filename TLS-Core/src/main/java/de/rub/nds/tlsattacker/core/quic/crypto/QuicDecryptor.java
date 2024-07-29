@@ -30,6 +30,10 @@ import javax.crypto.spec.SecretKeySpec;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * The QuicDecryptor decrypts {@link QuicPacket} objects. It uses the {@link QuicContext} to get the
+ * necessary keys and cipher.
+ */
 public class QuicDecryptor {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -40,47 +44,54 @@ public class QuicDecryptor {
         this.context = context;
     }
 
-    public void removeHeaderProtection(QuicPacket packet) throws CryptoException {
-        ConnectionEndType connectionEndType = context.getTalkingConnectionEndType();
-        byte[] clientHeaderProtectionMask;
-        byte[] serverHeaderProtectionMask;
+    public void removeHeaderProtectionInitial(InitialPacket packet) throws CryptoException {
+        this.removeHeaderProtection(
+                packet,
+                QuicPacketCryptoComputations.generateInitialServerHeaderProtectionMask(
+                        context, packet.getHeaderProtectionSample()),
+                QuicPacketCryptoComputations.generateInitialClientHeaderProtectionMask(
+                        context, packet.getHeaderProtectionSample()));
+    }
 
-        switch (packet.getPacketType()) {
-            case INITIAL_PACKET:
-                clientHeaderProtectionMask =
-                        QuicPacketCryptoComputations.generateInitialClientHeaderProtectionMask(
-                                context, packet.getHeaderProtectionSample());
-                serverHeaderProtectionMask =
-                        QuicPacketCryptoComputations.generateInitialServerHeaderProtectionMask(
-                                context, packet.getHeaderProtectionSample());
-                break;
-            case HANDSHAKE_PACKET:
-                clientHeaderProtectionMask =
-                        QuicPacketCryptoComputations.generateHandshakeClientHeaderProtectionMask(
-                                context, packet.getHeaderProtectionSample());
-                serverHeaderProtectionMask =
-                        QuicPacketCryptoComputations.generateHandshakeServerHeaderProtectionMask(
-                                context, packet.getHeaderProtectionSample());
-                break;
-            case ONE_RTT_PACKET:
-                clientHeaderProtectionMask =
-                        QuicPacketCryptoComputations.generateApplicationClientHeaderProtectionMask(
-                                context, packet.getHeaderProtectionSample());
-                serverHeaderProtectionMask =
-                        QuicPacketCryptoComputations.generateApplicationServerHeaderProtectionMask(
-                                context, packet.getHeaderProtectionSample());
-                break;
-            default:
-                return;
-        }
+    public void removeHeaderProtectionHandshake(HandshakePacket packet) throws CryptoException {
+        this.removeHeaderProtection(
+                packet,
+                QuicPacketCryptoComputations.generateHandshakeServerHeaderProtectionMask(
+                        context, packet.getHeaderProtectionSample()),
+                QuicPacketCryptoComputations.generateHandshakeClientHeaderProtectionMask(
+                        context, packet.getHeaderProtectionSample()));
+    }
+
+    public void removeHeaderProtectionZeroRTT(QuicPacket packet) throws CryptoException {
+        this.removeHeaderProtection(
+                packet,
+                QuicPacketCryptoComputations.generateZeroRTTServerHeaderProtectionMask(
+                        context, packet.getHeaderProtectionSample()),
+                QuicPacketCryptoComputations.generateZeroRTTClientHeaderProtectionMask(
+                        context, packet.getHeaderProtectionSample()));
+    }
+
+    public void removeHeaderProtectionApplication(QuicPacket packet) throws CryptoException {
+        this.removeHeaderProtection(
+                packet,
+                QuicPacketCryptoComputations.generateApplicationServerHeaderProtectionMask(
+                        context, packet.getHeaderProtectionSample()),
+                QuicPacketCryptoComputations.generateApplicationClientHeaderProtectionMask(
+                        context, packet.getHeaderProtectionSample()));
+    }
+
+    public void removeHeaderProtection(
+            QuicPacket packet,
+            byte[] serverHeaderProtectionMask,
+            byte[] clientHeaderProtectionMask) {
+        ConnectionEndType connectionEndType = context.getTalkingConnectionEndType();
+        byte[] headerProtectionMask;
 
         // when attempting to read echoed ClientHello messages we have to use our keys for static
         // decryption
         if (context.getConfig().isEchoQuic()) {
             connectionEndType = connectionEndType.getPeer();
         }
-
-        byte[] headerProtectionMask;
 
         switch (connectionEndType) {
             case SERVER:
@@ -97,6 +108,7 @@ public class QuicDecryptor {
         byte unprotectedFlags;
         byte flags = packet.getProtectedFlags().getValue();
         byte hpMask = headerProtectionMask[0];
+
         if (QuicPacketType.isShortHeaderPacket(flags)) {
             unprotectedFlags = (byte) (flags ^ hpMask & (byte) 0x1f);
         } else {
@@ -104,12 +116,8 @@ public class QuicDecryptor {
         }
         packet.setUnprotectedFlags(unprotectedFlags);
 
-        // remove protection from Packet Number
-
-        // see RFC 9001 - 5.4.1.  Header Protection Application
         int length = (unprotectedFlags & 0x03) + 1;
         packet.setPacketNumberLength(length);
-
         byte[] protectedPacketNumber = new byte[length];
         System.arraycopy(
                 packet.getProtectedPacketNumberAndPayload().getValue(),
@@ -123,36 +131,55 @@ public class QuicDecryptor {
         for (int i = 0; i < packet.getPacketNumberLength().getValue(); i++) {
             result[i] = (byte) (headerProtectionMask[i + 1] ^ protectedPacketNumber[i]);
         }
-
         try {
             packet.protectedHeaderHelper.write(result);
             packet.setUnprotectedPacketNumber(result);
             restorePacketNumber(packet);
-            // recovered packet number is only used for nonce computation
-
         } catch (IOException e) {
             LOGGER.error(e);
         }
     }
 
-    public byte[] aeadDecrypt(
-            byte[] associatedData, byte[] ciphertext, byte[] nonce, byte[] key, Cipher aeadCipher)
-            throws InvalidAlgorithmParameterException,
-                    InvalidKeyException,
-                    IllegalBlockSizeException,
-                    BadPaddingException {
-        String algo;
-        AlgorithmParameterSpec parameterSpec;
-        if (aeadCipher.getAlgorithm().equals("ChaCha20-Poly1305")) {
-            algo = "ChaCha20";
-            parameterSpec = new IvParameterSpec(nonce);
-        } else {
-            algo = "AES";
-            parameterSpec = new GCMParameterSpec(128, nonce);
+    private void restorePacketNumber(QuicPacket packet) {
+        int largest_Pn = 0;
+        switch (packet.getPacketType()) {
+            case INITIAL_PACKET:
+                if (!context.getReceivedInitialPacketNumbers().isEmpty()) {
+                    largest_Pn = context.getReceivedInitialPacketNumbers().getLast();
+                }
+                break;
+            case HANDSHAKE_PACKET:
+                if (!context.getReceivedHandshakePacketNumbers().isEmpty()) {
+                    largest_Pn = context.getReceivedHandshakePacketNumbers().getLast();
+                }
+                break;
+            case ONE_RTT_PACKET:
+                if (!context.getReceivedOneRTTPacketNumbers().isEmpty()) {
+                    largest_Pn = context.getReceivedOneRTTPacketNumbers().getLast();
+                }
+                break;
+            default:
+                break;
         }
-        aeadCipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key, algo), parameterSpec);
-        aeadCipher.updateAAD(associatedData);
-        return aeadCipher.doFinal(ciphertext);
+
+        int truncated_Pn =
+                ArrayConverter.bytesToInt(packet.getUnprotectedPacketNumber().getValue());
+        int pn_nBits = packet.getPacketNumberLength().getValue();
+        long decodedPn = packet.decodePacketNumber(truncated_Pn, largest_Pn, pn_nBits);
+        LOGGER.debug(
+                "Decoded pktNumber: {}, raw pktNumber: {}",
+                decodedPn,
+                ArrayConverter.bytesToInt(packet.getUnprotectedPacketNumber().getValue()));
+
+        packet.setRestoredPacketNumber((int) decodedPn);
+        packet.setPlainPacketNumber((int) decodedPn);
+
+        if (packet.getUnprotectedPacketNumber().getValue().length
+                >= packet.getRestoredPacketNumber().getValue().length) {
+            packet.setRestoredPacketNumber(packet.getUnprotectedPacketNumber().getValue());
+            packet.setPlainPacketNumber(
+                    ArrayConverter.bytesToInt(packet.getUnprotectedPacketNumber().getValue()));
+        }
     }
 
     public void decryptInitialPacket(InitialPacket packet) throws CryptoException {
@@ -185,7 +212,7 @@ public class QuicDecryptor {
                 context.getAeadCipher());
     }
 
-    public void decrypt(
+    private void decrypt(
             QuicPacket packet,
             byte[] serverIv,
             byte[] serverKey,
@@ -194,15 +221,14 @@ public class QuicDecryptor {
             Cipher cipher)
             throws CryptoException {
         ConnectionEndType connectionEndType = context.getTalkingConnectionEndType();
+        byte[] decryptionIv;
+        byte[] decryptionKey;
 
         // when attempting to read echoed ClientHello messages we have to use our keys for static
         // decryption
         if (context.getConfig().isEchoQuic()) {
             connectionEndType = connectionEndType.getPeer();
         }
-
-        byte[] decryptionIv;
-        byte[] decryptionKey;
 
         switch (connectionEndType) {
             case SERVER:
@@ -244,16 +270,10 @@ public class QuicDecryptor {
             nonce[i] = (byte) (decryptionIv[i] ^ paddedPacketNumber[i]);
         }
 
-        // 5.3. AEAD Usage https://www.rfc-editor.org/rfc/rfc9001.html#name-aead-usage
-        // The associated data, A, for the AEAD is the contents of the QUIC header, starting from
-        // the
-        // first byte of either the short or long header, up to and including the unprotected packet
-        // number.
         byte[] associatedData =
                 new byte
                         [packet.offsetToPacketNumber
                                 + packet.getUnprotectedPacketNumber().getValue().length];
-
         System.arraycopy(
                 packet.completeUnprotectedHeader.getValue(),
                 0,
@@ -276,40 +296,23 @@ public class QuicDecryptor {
         }
     }
 
-    protected void restorePacketNumber(QuicPacket packet) {
-        int largest_Pn = 0;
-        if (packet.getPacketType() == QuicPacketType.INITIAL_PACKET) {
-            if (!context.getReceivedInitialPacketNumbers().isEmpty()) {
-                largest_Pn = context.getReceivedInitialPacketNumbers().getLast();
-            }
-        } else if (packet.getPacketType() == QuicPacketType.HANDSHAKE_PACKET) {
-            if (!context.getReceivedHandshakePacketNumbers().isEmpty()) {
-                largest_Pn = context.getReceivedHandshakePacketNumbers().getLast();
-            }
-        } else if (packet.getPacketType() == QuicPacketType.ONE_RTT_PACKET) {
-            if (!context.getReceivedOneRTTPacketNumbers().isEmpty()) {
-                largest_Pn = context.getReceivedOneRTTPacketNumbers().getLast();
-            }
+    public byte[] aeadDecrypt(
+            byte[] associatedData, byte[] ciphertext, byte[] nonce, byte[] key, Cipher aeadCipher)
+            throws InvalidAlgorithmParameterException,
+                    InvalidKeyException,
+                    IllegalBlockSizeException,
+                    BadPaddingException {
+        AlgorithmParameterSpec parameterSpec;
+        String algo;
+        if (aeadCipher.getAlgorithm().equals("ChaCha20-Poly1305")) {
+            algo = "ChaCha20";
+            parameterSpec = new IvParameterSpec(nonce);
+        } else {
+            algo = "AES";
+            parameterSpec = new GCMParameterSpec(128, nonce);
         }
-
-        int truncated_Pn =
-                ArrayConverter.bytesToInt(packet.getUnprotectedPacketNumber().getValue());
-        int pn_nBits = packet.getPacketNumberLength().getValue();
-
-        long decodedPn = packet.decodePacketNumber(truncated_Pn, largest_Pn, pn_nBits);
-        LOGGER.debug(
-                "decoded pktNumber: {}, raw pktNumber: {}",
-                decodedPn,
-                ArrayConverter.bytesToInt(packet.getUnprotectedPacketNumber().getValue()));
-
-        packet.setRestoredPacketNumber((int) decodedPn);
-        packet.setPlainPacketNumber((int) decodedPn);
-
-        if (packet.getUnprotectedPacketNumber().getValue().length
-                >= packet.getRestoredPacketNumber().getValue().length) {
-            packet.setRestoredPacketNumber(packet.getUnprotectedPacketNumber().getValue());
-            packet.setPlainPacketNumber(
-                    ArrayConverter.bytesToInt(packet.getUnprotectedPacketNumber().getValue()));
-        }
+        aeadCipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key, algo), parameterSpec);
+        aeadCipher.updateAAD(associatedData);
+        return aeadCipher.doFinal(ciphertext);
     }
 }
