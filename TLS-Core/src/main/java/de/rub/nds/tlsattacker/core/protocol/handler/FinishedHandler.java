@@ -9,7 +9,11 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.*;
+import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
@@ -44,6 +48,7 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
                     if (!tlsContext.isExtensionNegotiated(ExtensionType.EARLY_DATA)) {
                         setClientRecordCipher(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
                     }
+                    // in case of EARLY_DATA we stick to the EARLY_TRAFFIC_SECRETS
                 } else {
                     setClientRecordCipher(Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS);
                 }
@@ -171,19 +176,30 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
 
     private void setClientRecordCipher(Tls13KeySetType keySetType) {
         tlsContext.setActiveClientKeySetType(keySetType);
-        LOGGER.debug("Setting cipher for client to use " + keySetType);
-        KeySet clientKeySet = getKeySet(tlsContext, tlsContext.getActiveClientKeySetType());
+        KeySet keySet = new KeySet();
+
+        switch (keySetType) {
+            case APPLICATION_TRAFFIC_SECRETS:
+                keySet = getKeySet(tlsContext, tlsContext.getActiveClientKeySetType());
+                break;
+            case HANDSHAKE_TRAFFIC_SECRETS:
+                keySet = tlsContext.getkeySetHandshake();
+                break;
+            default:
+                throw new Error(
+                        "In this state only application_traffic_secrets handshake_traffic_secrets are valid.");
+        }
 
         if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.SERVER) {
             tlsContext
                     .getRecordLayer()
                     .updateDecryptionCipher(
-                            RecordCipherFactory.getRecordCipher(tlsContext, clientKeySet, false));
+                            RecordCipherFactory.getRecordCipher(tlsContext, keySet, false));
         } else {
             tlsContext
                     .getRecordLayer()
                     .updateEncryptionCipher(
-                            RecordCipherFactory.getRecordCipher(tlsContext, clientKeySet, true));
+                            RecordCipherFactory.getRecordCipher(tlsContext, keySet, true));
         }
     }
 }
