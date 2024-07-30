@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
+import de.rub.nds.tcp.TcpStreamContainer;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.http.HttpMessage;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
@@ -17,6 +18,7 @@ import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
+import de.rub.nds.udp.UdpDataPacket;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.LinkedList;
 import java.util.List;
@@ -106,6 +108,17 @@ public class DummyReceivingAction extends MessageAction
 
     public void setExpectedRecords(Record... expectedRecords) {
         this.expectedRecords = List.of(expectedRecords);
+    }
+
+    @Override
+    public List<TcpStreamContainer> getReceivedTcpStreamContainers() {
+        throw new UnsupportedOperationException(
+                "Unimplemented method 'getReceivedTcpStreamContainers'");
+    }
+
+    @Override
+    public List<UdpDataPacket> getReceivedUdpDataPackets() {
+        throw new UnsupportedOperationException("Unimplemented method 'getReceivedUdpDataPackets'");
     }
 
     @Override

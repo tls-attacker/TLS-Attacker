@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
+import de.rub.nds.tcp.TcpStreamContainer;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.http.HttpMessage;
@@ -23,6 +24,7 @@ import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.container.ActionHelperUtil;
+import de.rub.nds.udp.UdpDataPacket;
 import jakarta.xml.bind.annotation.XmlElement;
 import java.io.IOException;
 import java.util.Collections;
@@ -311,6 +313,54 @@ public abstract class CommonForwardAction extends TlsAction
                         ImplementedLayers.RECORD, layerStackSendResult)
                 .stream()
                 .map(container -> (Record) container)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public final List<TcpStreamContainer> getSentTcpStreamContainers() {
+        if (layerStackSendResult == null) {
+            return null;
+        }
+        return ActionHelperUtil.getDataContainersForLayer(
+                        ImplementedLayers.TCP, layerStackSendResult)
+                .stream()
+                .map(container -> (TcpStreamContainer) container)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public final List<UdpDataPacket> getSentUdpDataPackets() {
+        if (layerStackSendResult == null) {
+            return null;
+        }
+        return ActionHelperUtil.getDataContainersForLayer(
+                        ImplementedLayers.UDP, layerStackSendResult)
+                .stream()
+                .map(container -> (UdpDataPacket) container)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<TcpStreamContainer> getReceivedTcpStreamContainers() {
+        if (layerStackReceiveResult == null) {
+            return null;
+        }
+        return ActionHelperUtil.getDataContainersForLayer(
+                        ImplementedLayers.TCP, layerStackReceiveResult)
+                .stream()
+                .map(container -> (TcpStreamContainer) container)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<UdpDataPacket> getReceivedUdpDataPackets() {
+        if (layerStackReceiveResult == null) {
+            return null;
+        }
+        return ActionHelperUtil.getDataContainersForLayer(
+                        ImplementedLayers.UDP, layerStackReceiveResult)
+                .stream()
+                .map(container -> (UdpDataPacket) container)
                 .collect(Collectors.toList());
     }
 }

@@ -11,11 +11,8 @@ package de.rub.nds.tlsattacker.transport.udp.proxy;
 import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ProxyableTransportHandler;
 import de.rub.nds.tlsattacker.transport.udp.ClientUdpTransportHandler;
-import de.rub.nds.tlsattacker.transport.udp.stream.UdpInputStream;
-import de.rub.nds.tlsattacker.transport.udp.stream.UdpOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PushbackInputStream;
+import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 
 /**
@@ -28,8 +25,6 @@ public class ProxyClientUdpTransportHandler extends ClientUdpTransportHandler
         implements ProxyableTransportHandler {
 
     protected DatagramSocket controlSocket;
-    protected OutputStream controlOutStream;
-    protected PushbackInputStream controlInStream;
     protected String proxyDataHostName = "127.0.0.1";
     protected int proxyDataPort = 4444;
     protected String proxyControlHostName = "127.0.0.1";
@@ -59,19 +54,14 @@ public class ProxyClientUdpTransportHandler extends ClientUdpTransportHandler
     public void initialize() throws IOException {
         controlSocket = new DatagramSocket();
         controlSocket.setSoTimeout((int) timeout);
-        controlInStream = new PushbackInputStream(new UdpInputStream(controlSocket, true));
-        controlOutStream =
-                new UdpOutputStream(controlSocket, proxyControlHostName, proxyControlPort);
 
         socket = new DatagramSocket();
         socket.setSoTimeout((int) timeout);
-        setStreams(
-                new PushbackInputStream(new UdpInputStream(socket, true)),
-                new UdpOutputStream(socket, proxyDataHostName, proxyDataPort));
 
         /* tell the proxy where the real server is */
-        controlOutStream.write((hostname + ":" + Integer.toString(port)).getBytes());
-        controlOutStream.flush();
+        byte[] message = (hostname + ":" + Integer.toString(port)).getBytes();
+        DatagramPacket packet = new DatagramPacket(message, message.length);
+        controlSocket.send(packet);
     }
 
     @Override
@@ -80,8 +70,6 @@ public class ProxyClientUdpTransportHandler extends ClientUdpTransportHandler
             throw new IOException("Transporthandler is not initalized!");
         }
         socket.close();
-        inStream.close();
-        outStream.close();
         if (controlSocket == null) {
             throw new IOException("Transport handler is not initialized!");
         }

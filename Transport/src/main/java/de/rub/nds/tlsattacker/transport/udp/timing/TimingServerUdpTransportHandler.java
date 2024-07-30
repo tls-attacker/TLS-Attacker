@@ -19,8 +19,8 @@ public class TimingServerUdpTransportHandler extends ServerUdpTransportHandler
         super(con);
     }
 
-    public TimingServerUdpTransportHandler(long firstTimeout, long timeout, int port) {
-        super(firstTimeout, timeout, port);
+    public TimingServerUdpTransportHandler(long timeout, int port) {
+        super(timeout, port);
     }
 
     @Override

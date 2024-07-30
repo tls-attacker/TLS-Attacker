@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.protocol.exception.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.SpecificSendLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.printer.LogPrinter;
@@ -103,7 +104,11 @@ public class PopAndSendAction extends CommonSendAction {
                 messages.add(messageBuffer.pop());
             }
         }
-        return ActionHelperUtil.createSendConfiguration(
-                tlsContext, messages, null, null, null, null, null);
+
+        List<LayerConfiguration<?>> configurationList = new LinkedList<>();
+        configurationList.add(
+                new SpecificSendLayerConfiguration<>(ImplementedLayers.MESSAGE, messages));
+        return ActionHelperUtil.sortAndAddOptions(
+                tlsContext.getLayerStack(), true, getActionOptions(), configurationList);
     }
 }

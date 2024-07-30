@@ -10,10 +10,7 @@ package de.rub.nds.tlsattacker.transport.udp;
 
 import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import de.rub.nds.tlsattacker.transport.udp.stream.UdpInputStream;
-import de.rub.nds.tlsattacker.transport.udp.stream.UdpOutputStream;
 import java.io.IOException;
-import java.io.PushbackInputStream;
 import java.net.DatagramSocket;
 
 public class ServerUdpTransportHandler extends UdpTransportHandler {
@@ -23,8 +20,8 @@ public class ServerUdpTransportHandler extends UdpTransportHandler {
         this.port = con.getPort();
     }
 
-    public ServerUdpTransportHandler(long firstTimeout, long timeout, int port) {
-        super(firstTimeout, timeout, ConnectionEndType.SERVER);
+    public ServerUdpTransportHandler(long timeout, int port) {
+        super(timeout, ConnectionEndType.SERVER);
         this.port = port;
     }
 
@@ -40,9 +37,6 @@ public class ServerUdpTransportHandler extends UdpTransportHandler {
     @Override
     public void preInitialize() throws IOException {
         socket = new DatagramSocket(port);
-        setStreams(
-                new PushbackInputStream(new UdpInputStream(socket, true)),
-                new UdpOutputStream(socket));
         cachedSocketState = null;
     }
 
