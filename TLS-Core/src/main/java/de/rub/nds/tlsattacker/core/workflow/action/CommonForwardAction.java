@@ -54,7 +54,8 @@ public abstract class CommonForwardAction extends TlsAction
     @XmlElement(name = "sendResult")
     private LayerStackProcessingResult layerStackSendResult;
 
-    public CommonForwardAction() {}
+    public CommonForwardAction() {
+    }
 
     public CommonForwardAction(String receiveFromAlias, String forwardToAlias) {
         this.receiveFromAlias = receiveFromAlias;
@@ -92,18 +93,25 @@ public abstract class CommonForwardAction extends TlsAction
         if (layerConfigurationList == null) {
             LOGGER.info("Not receiving messages");
         } else {
-            LOGGER.info(
-                    "Receiving messages ({}): {}",
-                    receiveFromAlias,
+            LOGGER.debug("Forwarding... (" + this.getClass().getSimpleName() + ")");
+            layerStackReceiveResult = receiveFromContext.getLayerStack().receiveData(layerConfigurationList);
+            LOGGER.debug(
+                    "Receive Expected({}): {}", receiveFromAlias,
                     LogPrinter.toHumanReadableOneLine(layerConfigurationList, LOGGER.getLevel()));
-            layerStackReceiveResult =
-                    receiveFromContext.getLayerStack().receiveData(layerConfigurationList);
+            LOGGER.info(
+                    "Received Messages: {}",
+                    LogPrinter.toHumanReadableMultiLine(
+                            layerStackReceiveResult, LOGGER.getLevel()));
         }
         layerConfigurationList = createSendConfiguration(state, layerStackReceiveResult);
 
         try {
-            layerStackSendResult =
-                    forwardToContext.getLayerStack().sendData(layerConfigurationList);
+            LOGGER.info(
+                "Sending messages ({}): {}",
+                forwardToAlias,
+                LogPrinter.toHumanReadableOneLine(layerConfigurationList, LOGGER.getLevel()));
+            layerStackSendResult = forwardToContext.getLayerStack().sendData(layerConfigurationList);
+            
         } catch (IOException e) {
             forwardToContext.setReceivedTransportHandlerException(true);
             LOGGER.debug("Failed execution", e);
@@ -193,7 +201,7 @@ public abstract class CommonForwardAction extends TlsAction
             return null;
         }
         return ActionHelperUtil.getDataContainersForLayer(
-                        ImplementedLayers.MESSAGE, layerStackReceiveResult)
+                ImplementedLayers.MESSAGE, layerStackReceiveResult)
                 .stream()
                 .map(container -> (ProtocolMessage) container)
                 .collect(Collectors.toList());
@@ -205,7 +213,7 @@ public abstract class CommonForwardAction extends TlsAction
             return null;
         }
         return ActionHelperUtil.getDataContainersForLayer(
-                        ImplementedLayers.SSL2, layerStackReceiveResult)
+                ImplementedLayers.SSL2, layerStackReceiveResult)
                 .stream()
                 .map(container -> (SSL2Message) container)
                 .collect(Collectors.toList());
@@ -217,7 +225,7 @@ public abstract class CommonForwardAction extends TlsAction
             return null;
         }
         return ActionHelperUtil.getDataContainersForLayer(
-                        ImplementedLayers.RECORD, layerStackReceiveResult)
+                ImplementedLayers.RECORD, layerStackReceiveResult)
                 .stream()
                 .map(container -> (Record) container)
                 .collect(Collectors.toList());
@@ -229,7 +237,7 @@ public abstract class CommonForwardAction extends TlsAction
             return null;
         }
         return ActionHelperUtil.getDataContainersForLayer(
-                        ImplementedLayers.DTLS_FRAGMENT, layerStackReceiveResult)
+                ImplementedLayers.DTLS_FRAGMENT, layerStackReceiveResult)
                 .stream()
                 .map(container -> (DtlsHandshakeMessageFragment) container)
                 .collect(Collectors.toList());
@@ -241,7 +249,7 @@ public abstract class CommonForwardAction extends TlsAction
             return null;
         }
         return ActionHelperUtil.getDataContainersForLayer(
-                        ImplementedLayers.HTTP, layerStackReceiveResult)
+                ImplementedLayers.HTTP, layerStackReceiveResult)
                 .stream()
                 .map(container -> (HttpMessage) container)
                 .collect(Collectors.toList());
@@ -253,7 +261,7 @@ public abstract class CommonForwardAction extends TlsAction
             return null;
         }
         return ActionHelperUtil.getDataContainersForLayer(
-                        ImplementedLayers.QUICFRAME, layerStackReceiveResult)
+                ImplementedLayers.QUICFRAME, layerStackReceiveResult)
                 .stream()
                 .map(container -> (QuicFrame) container)
                 .collect(Collectors.toList());
@@ -265,7 +273,7 @@ public abstract class CommonForwardAction extends TlsAction
             return null;
         }
         return ActionHelperUtil.getDataContainersForLayer(
-                        ImplementedLayers.QUICPACKET, layerStackReceiveResult)
+                ImplementedLayers.QUICPACKET, layerStackReceiveResult)
                 .stream()
                 .map(container -> (QuicPacket) container)
                 .collect(Collectors.toList());
@@ -277,7 +285,7 @@ public abstract class CommonForwardAction extends TlsAction
             return null;
         }
         return ActionHelperUtil.getDataContainersForLayer(
-                        ImplementedLayers.DTLS_FRAGMENT, layerStackSendResult)
+                ImplementedLayers.DTLS_FRAGMENT, layerStackSendResult)
                 .stream()
                 .map(container -> (DtlsHandshakeMessageFragment) container)
                 .collect(Collectors.toList());
@@ -289,7 +297,7 @@ public abstract class CommonForwardAction extends TlsAction
             return null;
         }
         return ActionHelperUtil.getDataContainersForLayer(
-                        ImplementedLayers.MESSAGE, layerStackSendResult)
+                ImplementedLayers.MESSAGE, layerStackSendResult)
                 .stream()
                 .map(container -> (ProtocolMessage) container)
                 .collect(Collectors.toList());
@@ -301,7 +309,7 @@ public abstract class CommonForwardAction extends TlsAction
             return null;
         }
         return ActionHelperUtil.getDataContainersForLayer(
-                        ImplementedLayers.SSL2, layerStackSendResult)
+                ImplementedLayers.SSL2, layerStackSendResult)
                 .stream()
                 .map(container -> (SSL2Message) container)
                 .collect(Collectors.toList());
@@ -313,7 +321,7 @@ public abstract class CommonForwardAction extends TlsAction
             return null;
         }
         return ActionHelperUtil.getDataContainersForLayer(
-                        ImplementedLayers.QUICFRAME, layerStackSendResult)
+                ImplementedLayers.QUICFRAME, layerStackSendResult)
                 .stream()
                 .map(container -> (QuicFrame) container)
                 .collect(Collectors.toList());
@@ -325,7 +333,7 @@ public abstract class CommonForwardAction extends TlsAction
             return null;
         }
         return ActionHelperUtil.getDataContainersForLayer(
-                        ImplementedLayers.QUICPACKET, layerStackSendResult)
+                ImplementedLayers.QUICPACKET, layerStackSendResult)
                 .stream()
                 .map(container -> (QuicPacket) container)
                 .collect(Collectors.toList());
@@ -337,7 +345,7 @@ public abstract class CommonForwardAction extends TlsAction
             return null;
         }
         return ActionHelperUtil.getDataContainersForLayer(
-                        ImplementedLayers.RECORD, layerStackSendResult)
+                ImplementedLayers.RECORD, layerStackSendResult)
                 .stream()
                 .map(container -> (Record) container)
                 .collect(Collectors.toList());
@@ -349,7 +357,7 @@ public abstract class CommonForwardAction extends TlsAction
             return null;
         }
         return ActionHelperUtil.getDataContainersForLayer(
-                        ImplementedLayers.TCP, layerStackSendResult)
+                ImplementedLayers.TCP, layerStackSendResult)
                 .stream()
                 .map(container -> (TcpStreamContainer) container)
                 .collect(Collectors.toList());
@@ -361,7 +369,7 @@ public abstract class CommonForwardAction extends TlsAction
             return null;
         }
         return ActionHelperUtil.getDataContainersForLayer(
-                        ImplementedLayers.UDP, layerStackSendResult)
+                ImplementedLayers.UDP, layerStackSendResult)
                 .stream()
                 .map(container -> (UdpDataPacket) container)
                 .collect(Collectors.toList());
@@ -373,7 +381,7 @@ public abstract class CommonForwardAction extends TlsAction
             return null;
         }
         return ActionHelperUtil.getDataContainersForLayer(
-                        ImplementedLayers.TCP, layerStackReceiveResult)
+                ImplementedLayers.TCP, layerStackReceiveResult)
                 .stream()
                 .map(container -> (TcpStreamContainer) container)
                 .collect(Collectors.toList());
@@ -385,7 +393,7 @@ public abstract class CommonForwardAction extends TlsAction
             return null;
         }
         return ActionHelperUtil.getDataContainersForLayer(
-                        ImplementedLayers.UDP, layerStackReceiveResult)
+                ImplementedLayers.UDP, layerStackReceiveResult)
                 .stream()
                 .map(container -> (UdpDataPacket) container)
                 .collect(Collectors.toList());
