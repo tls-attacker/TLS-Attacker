@@ -163,7 +163,7 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
                 if (sendingAction.getAllSendingAliases() != null
                         && !Collections.disjoint(
                                 receivingAliases, sendingAction.getAllSendingAliases())) {
-                    LOGGER.debug("Performing retransmission for action {}", sendingAction);
+                    LOGGER.info("Performing retransmission for action {}", sendingAction);
                     executeRetransmission(sendingAction);
                 }
             }
