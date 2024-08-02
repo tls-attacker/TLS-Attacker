@@ -16,6 +16,9 @@ public class RCPTCommandPreparator extends SmtpCommandPreparator<SmtpRCPTCommand
         super(context.getChooser(), command);
     }
 
+    /**
+     * Prepares a RCPT command by setting verb and parameters.
+     */
     @Override
     public void prepare() {
         this.getObject().setVerb("RCPT");

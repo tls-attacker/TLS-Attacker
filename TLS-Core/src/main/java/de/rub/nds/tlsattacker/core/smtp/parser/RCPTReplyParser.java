@@ -14,6 +14,10 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * Parser to parse message into RCPT reply object, which contains the reply code and message.
+ * If the reply message does not follow that syntax, the validReply parameter is set to False.
+ */
 public class RCPTReplyParser extends SmtpReplyParser<SmtpRCPTReply> {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -30,17 +34,17 @@ public class RCPTReplyParser extends SmtpReplyParser<SmtpRCPTReply> {
 
         if (lines.isEmpty()) {
             LOGGER.trace("Reply is empty");
-            smtpRCPTReply.setValid(false);
+            smtpRCPTReply.setValidReply(false);
             return;
         }
 
-        // parse into reply message object
+        // parse reply code, which should be the first 3 digits
         int replyCode = 0;
         try {
             replyCode = Integer.parseInt(lines.get(0).substring(0, 3));
         } catch (NumberFormatException e) {
             LOGGER.trace("Could not parse RCPTReply code: {}", e.getMessage());
-            smtpRCPTReply.setValid(false);
+            smtpRCPTReply.setValidReply(false);
             return;
         }
 
@@ -48,17 +52,17 @@ public class RCPTReplyParser extends SmtpReplyParser<SmtpRCPTReply> {
         smtpRCPTReply.setReplyLines(lines);
 
         // all valid codes
-        Integer[] validCodes = {250, 251};
+        Integer[] successCodes = {250, 251};
         Integer[] errorCodes = {550, 551, 552, 553, 450, 451, 452, 503, 455, 555};
 
-        if (List.of(validCodes).contains(replyCode)) {
-            smtpRCPTReply.setValid(true);
+        if (List.of(successCodes).contains(replyCode)) {
+            smtpRCPTReply.setValidReply(true);
             LOGGER.trace("RCPTReply fine. {}", lines);
         } else if (List.of(errorCodes).contains(replyCode)) {
-            smtpRCPTReply.setValid(true);
+            smtpRCPTReply.setValidReply(true);
             LOGGER.trace("Error code in RCPTReply. {}", lines);
         } else {
-            smtpRCPTReply.setValid(false);
+            smtpRCPTReply.setValidReply(false);
             LOGGER.trace("Could not parse RCPTReply. {}", lines);
         }
     }

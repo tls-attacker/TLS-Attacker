@@ -18,6 +18,9 @@ public class RCPTReplyPreparator extends SmtpReplyPreparator<SmtpRCPTReply> {
         super(context.getChooser(), reply);
     }
 
+    /**
+     * Prepares a RCPT reply by setting reply code and reply lines.
+     */
     @Override
     public void prepare() {
         this.getObject().setReplyCode(this.getObject().getReplyCode());

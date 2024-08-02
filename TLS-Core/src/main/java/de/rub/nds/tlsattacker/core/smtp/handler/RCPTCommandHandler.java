@@ -17,6 +17,11 @@ public class RCPTCommandHandler extends SmtpCommandHandler<SmtpRCPTCommand> {
         super(smtpContext);
     }
 
+    /**
+     * Save recipientBuffer from an RCPT message in context.
+     *
+     * @param smtpRCPTCommand The message containing the recipient
+     */
     @Override
     public void adjustContextSpecific(SmtpRCPTCommand smtpRCPTCommand) {
         List<String> recipients = this.getContext().getRecipientBuffer();

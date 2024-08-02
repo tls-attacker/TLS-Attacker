@@ -22,6 +22,11 @@ import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Tests for RCPT command.
+ *
+ * Includes parsing of valid and invalid syntax, serialization, and handler.
+ */
 public class RCPTCommandTest {
     @Test
     void testParsePostmaster() {
@@ -65,6 +70,9 @@ public class RCPTCommandTest {
         assertEquals("RCPT", rcpt.getVerb());
         assertEquals("<@rub.com,@tue.nl:seal@abc.def.ghi>", rcpt.getParameters());
         assertEquals("@rub.com,@tue.nl:seal@abc.def.ghi", rcpt.getRecipient());
+        assertEquals("@rub.com", rcpt.getHops()[0]);
+        assertEquals("@tue.nl", rcpt.getHops()[1]);
+        assertEquals(2, rcpt.getHops().length);
         assertTrue(rcpt.isValidRecipient());
     }
 
@@ -80,6 +88,9 @@ public class RCPTCommandTest {
         assertEquals("RCPT", rcpt.getVerb());
         assertEquals("<@hosta.int,@jkl.org:userc@d.bar.org>", rcpt.getParameters());
         assertEquals("@hosta.int,@jkl.org:userc@d.bar.org", rcpt.getRecipient());
+        assertEquals("@hosta.int", rcpt.getHops()[0]);
+        assertEquals("@jkl.org", rcpt.getHops()[1]);
+        assertEquals(2, rcpt.getHops().length);
         assertTrue(rcpt.isValidRecipient());
     }
 
@@ -185,7 +196,7 @@ public class RCPTCommandTest {
     }
 
     @Test
-    public void testHandle() {
+    public void testHandler() {
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
         SmtpRCPTCommand rcptCommand = new SmtpRCPTCommand("seal@upb.de");
         Handler handler = rcptCommand.getHandler(context);

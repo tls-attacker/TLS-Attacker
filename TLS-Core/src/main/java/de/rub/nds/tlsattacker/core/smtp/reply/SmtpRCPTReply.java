@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.smtp.reply;
 
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
+import de.rub.nds.tlsattacker.core.smtp.handler.RCPTReplyHandler;
 import de.rub.nds.tlsattacker.core.smtp.parser.RCPTReplyParser;
 import de.rub.nds.tlsattacker.core.smtp.preparator.RCPTReplyPreparator;
 import jakarta.xml.bind.annotation.XmlRootElement;
@@ -16,12 +17,18 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class represents an SMTP RCPT reply, which indicates the server's
+ * response to a previous RCPT command. The reply message contains a reply code and
+ * additional human-readable information. When the reply does not follow
+ * that syntax, the valid parameter is set to False.
+ */
 @XmlRootElement
 public class SmtpRCPTReply extends SmtpReply {
     private String message;
 
     // TODO: move to SmtpReply class
-    private boolean valid = true;
+    private boolean validReply = true;
 
     public SmtpRCPTReply() {
         super();
@@ -52,12 +59,16 @@ public class SmtpRCPTReply extends SmtpReply {
         this.message = message;
     }
 
-    public boolean isValid() {
-        return valid;
+    public boolean isValidReply() {
+        return validReply;
     }
 
-    public void setValid(boolean valid) {
-        this.valid = valid;
+    public void setValidReply(boolean validReply) {
+        this.validReply = validReply;
+    }
+
+    public RCPTReplyHandler getHandler(SmtpContext context) {
+        return new RCPTReplyHandler(context);
     }
 
     @Override
