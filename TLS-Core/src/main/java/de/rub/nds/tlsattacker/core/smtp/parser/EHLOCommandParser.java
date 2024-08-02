@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.smtp.parser;
 
+import de.rub.nds.protocol.exception.ParserException;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpEHLOCommand;
 import java.io.InputStream;
 import org.bouncycastle.util.IPAddress;
@@ -19,14 +20,17 @@ public class EHLOCommandParser extends SmtpCommandParser<SmtpEHLOCommand> {
 
     @Override
     public void parseArguments(SmtpEHLOCommand command, String arguments) {
-        if (IPAddress.isValid(arguments)) {
-            command.setHasAddressLiteral(true);
+        if (arguments == null) {
+            throw new ParserException("EHLO command requires parameters.");
         }
-        command.setDomain(arguments);
-    }
-
-    @Override
-    public boolean hasParameters() {
-        return true;
+        if (arguments.startsWith("[") && arguments.endsWith("]")) {
+            String address = arguments.substring(1, arguments.length() - 1);
+            command.setClientIdentity(address);
+            if (IPAddress.isValid(address)) {
+                command.setHasAddressLiteral(true);
+            }
+        } else {
+            command.setClientIdentity(arguments);
+        }
     }
 }

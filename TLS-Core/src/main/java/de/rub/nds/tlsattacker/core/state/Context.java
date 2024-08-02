@@ -90,9 +90,13 @@ public class Context {
         this.httpContext = httpContext;
     }
 
-    public SmtpContext getSmtpContext() { return smtpContext;}
+    public SmtpContext getSmtpContext() {
+        return smtpContext;
+    }
 
-    public void setSmtpContext(SmtpContext smtpContext) { this.smtpContext = smtpContext;}
+    public void setSmtpContext(SmtpContext smtpContext) {
+        this.smtpContext = smtpContext;
+    }
 
     public TlsContext getTlsContext() {
         return tlsContext;

@@ -800,8 +800,7 @@ public class Config implements Serializable {
 
     private Boolean quicRetryFlowRequired = false;
 
-    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
-    private byte[] quicVersion = QuicVersion.VERSION_1.getByteValue();
+    private QuicVersion quicVersion = QuicVersion.VERSION_1;
 
     private Boolean stopActionsAfterWarning = false;
 
@@ -1060,13 +1059,6 @@ public class Config implements Serializable {
     /** requestPath to use in https requests */
     @XmlJavaTypeAdapter(IllegalStringAdapter.class)
     private String defaultHttpsRequestPath = "/robots.txt";
-
-
-    private List<String> DefaultReversePathBuffer = new ArrayList<>();
-
-    private List<String> DefaultforwardPathBuffer = new ArrayList<>();
-
-    private StringBuilder DefaultmailDataBuffer = new StringBuilder();
 
     private StarttlsType starttlsType = StarttlsType.NONE;
 
@@ -1542,11 +1534,11 @@ public class Config implements Serializable {
         this.expectHandshakeDoneQuicFrame = expectHandshakeDoneQuicFrame;
     }
 
-    public byte[] getQuicVersion() {
+    public QuicVersion getQuicVersion() {
         return quicVersion;
     }
 
-    public void setQuicVersion(byte[] quicVersion) {
+    public void setQuicVersion(QuicVersion quicVersion) {
         this.quicVersion = quicVersion;
     }
 
@@ -1685,30 +1677,6 @@ public class Config implements Serializable {
 
     public void setDefaultHttpsRequestPath(String defaultHttpsRequestPath) {
         this.defaultHttpsRequestPath = defaultHttpsRequestPath;
-    }
-
-    public List<String> getDefaultReversePathBuffer() {
-        return DefaultReversePathBuffer;
-    }
-
-    public void setDefaultReversePathBuffer(List<String> defaultReversePathBuffer) {
-        this.DefaultReversePathBuffer = defaultReversePathBuffer;
-    }
-
-    public List<String> getDefaultforwardPathBuffer() {
-        return DefaultforwardPathBuffer;
-    }
-
-    public void setDefaultforwardPathBuffer(List<String> defaultforwardPathBuffer) {
-        this.DefaultforwardPathBuffer = defaultforwardPathBuffer;
-    }
-
-    public StringBuilder getDefaultmailDataBuffer() {
-        return DefaultmailDataBuffer;
-    }
-
-    public void setDefaultmailDataBuffer(StringBuilder defaultmailDataBuffer) {
-        this.DefaultmailDataBuffer = defaultmailDataBuffer;
     }
 
     public Boolean isUseFreshRandom() {

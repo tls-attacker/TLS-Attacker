@@ -1,11 +1,79 @@
+/*
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
+ *
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
+ */
 package de.rub.nds.tlsattacker.core.smtp.parser;
 
+import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpReply;
-
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
-public abstract class SmtpReplyParser<ReplyT extends SmtpReply> extends SmtpMessageParser<ReplyT> {
+public class SmtpReplyParser<ReplyT extends SmtpReply> extends SmtpMessageParser<ReplyT> {
     public SmtpReplyParser(InputStream stream) {
         super(stream);
+    }
+
+    /**
+     * Default implementation of the parse method. Only the status code is parsed.
+     *
+     * @param replyT object that should be filled with content
+     */
+    @Override
+    public void parse(ReplyT replyT) {
+        String line = parseSingleLine();
+        String[] replyParts = line.split(" ", 2);
+        if (replyParts.length < 2) {
+            throw new ParserException(
+                    "Could not parse SmtpReply. Expected at least 2 parts in the reply but got: "
+                            + line);
+        }
+        try {
+            replyT.setReplyCode(Integer.parseInt(replyParts[0]));
+        } catch (NumberFormatException e) {
+            throw new ParserException(
+                    "Could not parse SmtpReply. Could not parse reply code: " + replyParts[0]);
+        }
+        parseMessage(replyT, replyParts[1]);
+    }
+
+    public void parseMessage(ReplyT replyT, String message) {
+        replyT.setHumanReadableMessage(message);
+    }
+
+    /**
+     * Reads the whole reply from the input stream. The reply is terminated by a line with Status
+     * code space and message. If a reply does not fulfill this condition, a ParserException is
+     * thrown. TODO: That means lines are lost if the reply is not terminated by a line with Status
+     * code space and message. TODO: make sure that classes calling this are aware
+     *
+     * @return
+     */
+    public List<String> readWholeReply() {
+        List<String> lines = new ArrayList<>();
+        String line;
+        while ((line = parseSingleLine()) != null) {
+            lines.add(line);
+            if (isEndOfReply(line)) {
+                break;
+            }
+            if (!isPartOfMultilineReply(line)) {
+                throw new ParserException("Expected multiline reply but got: " + line);
+            }
+        }
+        return lines;
+    }
+
+    public boolean isPartOfMultilineReply(String line) {
+        return line.matches("\\d{3}-.*");
+    }
+
+    public boolean isEndOfReply(String line) {
+        return line.matches("\\d{3} .*");
     }
 }

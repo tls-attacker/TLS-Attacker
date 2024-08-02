@@ -11,38 +11,84 @@ package de.rub.nds.tlsattacker.core.smtp.reply;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.*;
 import de.rub.nds.tlsattacker.core.smtp.handler.SmtpMessageHandler;
+import de.rub.nds.tlsattacker.core.smtp.handler.SmtpReplyHandler;
 import de.rub.nds.tlsattacker.core.smtp.parser.SmtpMessageParser;
+import de.rub.nds.tlsattacker.core.smtp.parser.SmtpReplyParser;
 import de.rub.nds.tlsattacker.core.smtp.preparator.SmtpMessagePreparator;
+import de.rub.nds.tlsattacker.core.smtp.preparator.SmtpReplyPreparator;
 import de.rub.nds.tlsattacker.core.smtp.serializer.SmtpMessageSerializer;
-
+import de.rub.nds.tlsattacker.core.smtp.serializer.SmtpReplySerializer;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
+@XmlRootElement
 public class SmtpReply extends SmtpMessage {
+
+    protected int replyCode;
+    protected List<String> replyLines;
+
+    // this is the human readable message part associated with the reply code
+    // for a single line reply, this is the only line in the replyLines list
+    protected String humanReadableMessage;
+
+    public SmtpReply() {
+        this.replyLines = new ArrayList<>();
+    }
+
+    public SmtpReply(int replyCode, List<String> replyLines) {
+        this.replyCode = replyCode;
+        this.replyLines = replyLines;
+    }
 
     @Override
     public SmtpMessageHandler<? extends SmtpMessage> getHandler(SmtpContext smtpContext) {
-        return null;
+        return new SmtpReplyHandler<>(smtpContext);
     }
 
     @Override
     public SmtpMessageParser<? extends SmtpMessage> getParser(
             SmtpContext context, InputStream stream) {
-        return null;
+        return new SmtpReplyParser<>(stream);
     }
 
     @Override
     public SmtpMessagePreparator<? extends SmtpMessage> getPreparator(SmtpContext context) {
-        return null;
-        //return new SmtpMessagePreparator<>(context.getChooser(), this);
+        return new SmtpReplyPreparator<>(context.getChooser(), this);
     }
 
     @Override
     public SmtpMessageSerializer<? extends SmtpMessage> getSerializer(SmtpContext context) {
-        return null;
+        return new SmtpReplySerializer<>(context, this);
     }
 
     @Override
     public String toShortString() {
         return "";
+    }
+
+    public int getReplyCode() {
+        return replyCode;
+    }
+
+    public void setReplyCode(int replyCode) {
+        this.replyCode = replyCode;
+    }
+
+    public List<String> getReplyLines() {
+        return replyLines;
+    }
+
+    public void setReplyLines(List<String> replyLines) {
+        this.replyLines = replyLines;
+    }
+
+    public String getHumanReadableMessage() {
+        return humanReadableMessage;
+    }
+
+    public void setHumanReadableMessage(String humanReadableMessage) {
+        this.humanReadableMessage = humanReadableMessage;
     }
 }

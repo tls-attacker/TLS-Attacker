@@ -28,7 +28,6 @@ public class HandshakePacket extends LongHeaderPacket {
 
     public HandshakePacket() {
         super(QuicPacketType.HANDSHAKE_PACKET);
-        this.setUnprotectedFlags(QuicPacketType.HANDSHAKE_PACKET.getHeader());
         this.packetSecret = QuicCryptoSecrets.HANDSHAKE_SECRET;
     }
 

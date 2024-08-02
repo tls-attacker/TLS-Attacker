@@ -90,7 +90,15 @@ public class ForwardMessagesAction extends CommonForwardAction {
     protected List<LayerConfiguration<?>> createReceiveConfiguration(State state) {
         TlsContext tlsContext = state.getTlsContext(getReceiveFromAlias());
         return ActionHelperUtil.createReceiveLayerConfiguration(
-                tlsContext, getActionOptions(), expectedMessages, null, null, null, null, null);
+                tlsContext,
+                getActionOptions(),
+                expectedMessages,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null);
     }
 
     @Override
@@ -104,6 +112,6 @@ public class ForwardMessagesAction extends CommonForwardAction {
         }
 
         return ActionHelperUtil.createSendConfiguration(
-                tlsContext, receivedMessages, null, null, null, null, null);
+                tlsContext, receivedMessages, null, null, null, null, null, null);
     }
 }

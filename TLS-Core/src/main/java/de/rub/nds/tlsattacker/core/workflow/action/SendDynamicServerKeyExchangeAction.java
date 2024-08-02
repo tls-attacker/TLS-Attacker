@@ -78,7 +78,14 @@ public class SendDynamicServerKeyExchangeAction extends CommonSendAction {
                                 AlgorithmResolver.getKeyExchangeAlgorithm(selectedCipherSuite));
         if (serverKeyExchangeMessage != null) {
             return ActionHelperUtil.createSendConfiguration(
-                    tlsContext, List.of(serverKeyExchangeMessage), null, null, null, null, null);
+                    tlsContext,
+                    List.of(serverKeyExchangeMessage),
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null);
         } else {
             return null;
         }

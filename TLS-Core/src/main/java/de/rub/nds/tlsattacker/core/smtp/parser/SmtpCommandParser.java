@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.smtp.parser;
 
-import de.rub.nds.protocol.exception.ParserException;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpCommand;
 import java.io.InputStream;
 
@@ -24,47 +23,24 @@ public class SmtpCommandParser<CommandT extends SmtpCommand> extends SmtpMessage
         String line = parseSingleLine();
         // throws EndOfStreamException if no LF is found
 
-        if (getBytesLeft() > 0) {
-            throw new ParserException(
-                    "Could not parse as SmtpCommand: Multiple commands in one message are not supported");
-        }
         // 4.1.1 In the interest of improved interoperability, SMTP receivers SHOULD tolerate
         // trailing white space before the terminating <CRLF>.
-        String actualCommand = line.substring(0, line.length() - 2).trim();
-        if (hasParameters()) {
-            if (!actualCommand.contains(" ")) {
-                throw new ParserException(
-                        "Command does not contain any arguments although it was expected");
-            }
-            String[] verbAndParams = actualCommand.split(" ", 2);
-            smtpCommand.setVerb(verbAndParams[0]);
+        String actualCommand = line.trim();
+        String[] verbAndParams = actualCommand.split(" ", 2);
+        smtpCommand.setVerb(verbAndParams[0]);
+        if (verbAndParams.length == 2) {
             smtpCommand.setParameters(verbAndParams[1]);
-            parseArguments(smtpCommand, verbAndParams[1]);
-        } else {
-            smtpCommand.setVerb(actualCommand);
         }
+        parseArguments(smtpCommand, smtpCommand.getParameters());
     }
+
     /**
      * Parses the arguments of the SmtpCommand. This method needs to be implemented by subclasses,
-     * if the command has any arguments.
-     * Is only called if hasArguments() evaluates as true.
+     * if the command has any arguments. Implementations should throw a ParserException if the
+     * arguments are not valid. Implementors are responsible for checking arguments for nullness.
      *
      * @param command a CommandT object only partially initialized by Method parse
      * @param arguments parameter string containing everything after first space
      */
-    public void parseArguments(CommandT command, String arguments) {
-        throw new UnsupportedOperationException(
-                "You need to subclass SmtpCommandParser and implement this method, if the command has any arguments.");
-    }
-
-    /**
-     * Evaluate whether the command type to be parsed expects parameters
-     * You need to subclass SmtpCommandParser and implement this method, if the command has any
-     * arguments.
-     *
-     * @return true if parsed command expects parameters; false otherwise
-     */
-    public boolean hasParameters() {
-        return false;
-    }
+    public void parseArguments(CommandT command, String arguments) {}
 }

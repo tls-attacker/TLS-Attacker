@@ -1,3 +1,11 @@
+/*
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
+ *
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
+ */
 package de.rub.nds.tlsattacker.core.smtp.preparator;
 
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
@@ -10,6 +18,11 @@ public class EHLOCommandPreparator extends SmtpCommandPreparator<SmtpEHLOCommand
 
     @Override
     public void prepare() {
-        this.getCommand().setVerb("EHLO");
+        this.getObject().setVerb("EHLO");
+        if (this.getObject().hasAddressLiteral()) {
+            this.getObject().setParameters("[" + this.getObject().getClientIdentity() + "]");
+        } else {
+            this.getObject().setParameters(this.getObject().getClientIdentity());
+        }
     }
 }

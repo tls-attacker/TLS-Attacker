@@ -18,7 +18,8 @@ import de.rub.nds.tlsattacker.core.smtp.command.SmtpCommand;
    When there are no parameters, the command is serialized as "COMMAND<CRLF>".
    This is according to the SMTP protocol as defined in RFC 5321.
 */
-public class SmtpCommandSerializer<CommandT extends SmtpCommand> extends SmtpMessageSerializer<CommandT> {
+public class SmtpCommandSerializer<CommandT extends SmtpCommand>
+        extends SmtpMessageSerializer<CommandT> {
 
     // modeled after their usage in RFC 5321
     private static final String SP = " ";
@@ -34,11 +35,14 @@ public class SmtpCommandSerializer<CommandT extends SmtpCommand> extends SmtpMes
     @Override
     protected byte[] serializeBytes() {
         StringBuilder builder = new StringBuilder();
-        builder.append(this.command.getVerb());
-        if (this.command.getParameters() != null) {
-            builder.append(SP);
-            builder.append(this.command.getParameters());
-        }
+
+        boolean verbExists = this.command.getVerb() != null;
+        boolean parametersExist = this.command.getParameters() != null;
+
+        if (verbExists) builder.append(this.command.getVerb());
+        if (verbExists && parametersExist) builder.append(SP);
+        if (parametersExist) builder.append(this.command.getParameters());
+
         builder.append(CRLF);
         byte[] output = builder.toString().getBytes();
         appendBytes(output);

@@ -46,6 +46,7 @@ public class SendRecordsFromLastFlightAction extends CommonSendAction {
                 duplicatedRecords,
                 null,
                 null,
+                null,
                 null);
     }
 

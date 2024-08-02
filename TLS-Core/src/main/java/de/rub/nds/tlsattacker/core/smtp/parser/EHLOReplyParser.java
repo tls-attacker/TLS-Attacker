@@ -1,13 +1,25 @@
+/*
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
+ *
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
+ */
 package de.rub.nds.tlsattacker.core.smtp.parser;
 
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.smtp.extensions.*;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpEHLOReply;
-
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class EHLOReplyParser extends SmtpReplyParser<SmtpEHLOReply> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public EHLOReplyParser(InputStream stream) {
         super(stream);
@@ -15,58 +27,58 @@ public class EHLOReplyParser extends SmtpReplyParser<SmtpEHLOReply> {
 
     @Override
     public void parse(SmtpEHLOReply smtpEHLOReply) {
-        List<String> lines = parseAllLines();
-
-        //only the last line can be '250 ' the others must be '250-', check for both
-        if(!lines.get(lines.size() - 1).startsWith("250 ")) {
-            throw new ParserException("Could not parse EHLOReply. Expected '250 ' for final line but got: " + lines.get(lines.size() - 1));
-        }
-        for(int i = 1; i < lines.size() - 1; i++) {
-            if(!lines.get(i).startsWith("250-")) {
-                throw new ParserException("Could not parse EHLOReply. Expected '250-' for multiline but got: " + lines.get(i));
-            }
-        }
+        List<String> lines = readWholeReply();
+        int statusCode = Integer.parseInt(lines.get(0).substring(0, 3));
+        smtpEHLOReply.setReplyCode(statusCode);
 
         String domainAndGreeting = lines.get(0);
-        //in both cases the first is almost the same
+        // in both cases the first is almost the same
         String[] parts = domainAndGreeting.substring(4).split(" ", 2);
-        if(parts.length == 1) {
+        if (parts.length == 1) {
             smtpEHLOReply.setDomain(parts[0]);
-        } else if(parts.length == 2) {
+        } else if (parts.length == 2) {
             smtpEHLOReply.setDomain(parts[0]);
             smtpEHLOReply.setGreeting(parts[1]);
         } else {
-            throw new ParserException("Could not parse EHLOReply. Malformed 250: " + domainAndGreeting);
+            // TODO: note as Human Readable Message still
         }
-
-        if(lines.size() > 1) {
-            for(int i = 1; i < lines.size(); i++) {
-                SmtpServiceExtension extension = parseKeyword(lines.get(i).substring(4));
-                smtpEHLOReply.getExtensions().add(extension);
+        for (String line : lines.subList(1, lines.size())) {
+            int statusCodeLine = Integer.parseInt(line.substring(0, 3));
+            if (statusCode != statusCodeLine) {
+                LOGGER.warn(
+                        "Parsing EHLOReply found inconsistent status codes in multiline reply{} != {}",
+                        statusCode,
+                        statusCodeLine);
             }
+            String keyword = line.substring(4);
+            SmtpServiceExtension extension = parseKeyword(keyword);
+            smtpEHLOReply.getExtensions().add(extension);
         }
     }
+
     public SmtpServiceExtension parseKeyword(String keyword) {
-        //just ehlo-line
+        // just ehlo-line
         String[] parts = keyword.split(" ", 2);
         String ehloKeyword = parts[0];
         String parameters;
-        if(parts.length > 1) {
+        if (parts.length > 1) {
             parameters = parts[1];
         } else {
             parameters = "";
         }
-        switch(ehloKeyword) {
+        switch (ehloKeyword) {
+            case "8BITMIME":
+                return new _8BITMIMEExtension();
             case "ATRN":
                 return new ATRNExtension();
             case "AUTH":
-                // TODO: AUTH can have a parameter
-                return new AUTHExtension();
+                String[] sasl = parameters.split(" ");
+                return new AUTHExtension(new ArrayList<>(List.of(sasl)));
             case "BINARYMIME":
                 return new BINARYMIMEExtension();
             case "BURL":
-                //TODO: BURL can have a parameter
-                return new BURLExtension();
+                // TODO: BURL parameter not understood in any way
+                return new BURLExtension(parameters);
             case "CHECKPOINT":
                 return new CHECKPOINTExtension();
             case "CHUNKING":
@@ -92,13 +104,13 @@ public class EHLOReplyParser extends SmtpReplyParser<SmtpEHLOReply> {
             case "LIMITS":
                 return new LIMITSExtension();
             case "MT-PRIORITY":
-                //TODO: MT-PRIORITY can have a parameter
-                return new MT_PRIORITYExtension();
+                // TODO: MT_PRIORITY parameter not understood in any way
+                return new MT_PRIORITYExtension(parameters);
             case "MTRK":
                 return new MTRKExtension();
             case "NO-SOLICITING":
-                //TODO: NO-SOLICITING can have a parameter
-                return new NO_SOLICITINGExtension();
+                // TODO: NO-SOLICITING parameter not understood in any way
+                return new NO_SOLICITINGExtension(parameters);
             case "PIPELINING":
                 return new PIPELININGExtension();
             case "REQUIRETLS":
@@ -110,8 +122,9 @@ public class EHLOReplyParser extends SmtpReplyParser<SmtpEHLOReply> {
             case "SEND":
                 return new SENDExtension();
             case "SIZE":
-                //TODO: SIZE can have a parameter
-                return new SIZEExtension();
+                // TODO: SIZE can have a parameter
+                int size = Integer.parseInt(parameters);
+                return new SIZEExtension(size);
             case "SMTPUTF8":
                 return new SMTPUTF8Extension();
             case "SOML":
@@ -127,12 +140,12 @@ public class EHLOReplyParser extends SmtpReplyParser<SmtpEHLOReply> {
             case "VERB":
                 return new VERBExtension();
             default:
-                if(keyword.startsWith("X") || keyword.startsWith("x")) {
+                if (keyword.startsWith("X") || keyword.startsWith("x")) {
                     return new LocalSmtpServiceExtension(ehloKeyword, parameters);
                 } else {
-                    throw new ParserException("Could not parse EHLOReply. Unknown EHLO keyword: " + ehloKeyword);
+                    throw new ParserException(
+                            "Could not parse EHLOReply. Unknown EHLO keyword: " + ehloKeyword);
                 }
         }
     }
-
 }
