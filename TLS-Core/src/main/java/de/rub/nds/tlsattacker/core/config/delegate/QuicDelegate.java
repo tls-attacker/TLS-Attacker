@@ -29,6 +29,10 @@ public class QuicDelegate extends Delegate {
 
     public QuicDelegate() {}
 
+    public QuicDelegate(boolean isQuic) {
+        this.quic = isQuic;
+    }
+
     public boolean isQuic() {
         return quic;
     }
