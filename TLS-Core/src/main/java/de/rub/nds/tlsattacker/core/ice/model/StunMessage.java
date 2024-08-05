@@ -180,4 +180,11 @@ public class StunMessage extends IceMessage {
         }
         return classType + ":" + methodType + "(" + stringBuilder.toString().trim() + ")";
     }
+
+    @Override
+    public String toString() {
+        return toShortString();
+    }
+
+    
 }
