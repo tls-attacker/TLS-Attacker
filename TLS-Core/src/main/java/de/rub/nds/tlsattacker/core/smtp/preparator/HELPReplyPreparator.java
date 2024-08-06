@@ -19,6 +19,9 @@ public class HELPReplyPreparator extends SmtpReplyPreparator<SmtpHELPReply> {
         super(context.getChooser(), reply);
     }
 
+    /**
+     * Prepares a HELP reply by setting reply code and reply lines.
+     */
     @Override
     public void prepare() {
         this.getObject().setReplyCode(this.getObject().getReplyCode());

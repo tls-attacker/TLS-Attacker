@@ -12,6 +12,9 @@ public class HELPCommandPreparator extends SmtpCommandPreparator<SmtpHELPCommand
         super(context.getChooser(), command);
     }
 
+    /**
+     * Prepares a HELP command by setting verb.
+     */
     @Override
     public void prepare() {
         this.getObject().setVerb("HELP");

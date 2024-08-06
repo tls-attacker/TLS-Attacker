@@ -23,6 +23,11 @@ import java.nio.charset.StandardCharsets;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * Tests for HELP command.
+ *
+ * Includes parsing of valid and invalid syntax, serialization, and handler.
+ */
 public class HELPCommandTest {
     @Test
     void testParse() {
@@ -84,7 +89,7 @@ public class HELPCommandTest {
     @Test
     void testHandler() {
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
-        SmtpHELPCommand HELPCommand = new SmtpHELPCommand("seal@upb.de");
+        SmtpHELPCommand HELPCommand = new SmtpHELPCommand("RCPT");
         Handler handler = HELPCommand.getHandler(context);
         handler.adjustContext(HELPCommand);
 

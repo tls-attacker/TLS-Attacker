@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
+import de.rub.nds.tlsattacker.core.layer.data.Handler;
 import de.rub.nds.tlsattacker.core.smtp.parser.HELPReplyParser;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -23,6 +24,11 @@ import java.nio.charset.StandardCharsets;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Tests for HELP reply.
+ *
+ * Includes parsing of valid and invalid syntax, serialization, and handler.
+ */
 class HELPReplyTest {
     @Test
     public void testSerialize() {
@@ -68,6 +74,28 @@ class HELPReplyTest {
     }
 
     @Test
+    void testParseValidMultiline() {
+        String stringMessage =
+            "214-Commands supported:\r\n"
+            + "214-HELO EHLO MAIL RCPT\r\n"
+            + "214-DATA RSET VRFY NOOP\r\n"
+            + "214-QUIT HELP EXPN TURN\r\n"
+            + "214-AUTH\r\n"
+            + "214 End of HELP info\r\n";
+
+        SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
+        SmtpHELPReply helpReply = new SmtpHELPReply();
+        HELPReplyParser parser =
+                helpReply.getParser(
+                        context,
+                        new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
+        parser.parse(helpReply);
+
+        assertEquals(214, helpReply.getReplyCode());
+        assertTrue(helpReply.isValidReply());
+    }
+
+    @Test
     void testParseInvalidReplyCode() {
         String[] invalidReplies = {
                 "321 No such user here\r\n",
@@ -98,5 +126,16 @@ class HELPReplyTest {
             SmtpHELPReply HELP = new SmtpHELPReply();
             assertThrows(ParserException.class, () -> parser.parse(HELP));
         }
+    }
+
+    @Test
+    public void testHandle() {
+        SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
+        SmtpHELPReply reply = new SmtpHELPReply();
+        Handler handler = reply.getHandler(context);
+
+        assertTrue(context.getForwardPathBuffer().isEmpty());
+        assertTrue(context.getReversePathBuffer().isEmpty());
+        assertTrue(context.getMailDataBuffer().isEmpty());
     }
 }

@@ -13,6 +13,10 @@ import org.bouncycastle.util.IPAddress;
 
 import java.io.InputStream;
 
+/**
+ * Parser to parse message into HELP command, which contains the command and
+ * optionally a subject as for example the name of a command.
+ */
 public class HELPCommandParser extends SmtpCommandParser<SmtpHELPCommand> {
     public HELPCommandParser(InputStream stream) {
         super(stream);

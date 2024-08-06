@@ -9,9 +9,9 @@ import java.io.InputStream;
 
 /**
  * The HELP response contains helpful information for the client.
- * It consists of a reply code and human-readable messaqe. If the
+ * It consists of a reply code and human-readable message. If the
  * reply does not follow that syntax, the validSyntax parameter is
- * set to False.
+ * set to False. HELP replies can be single or multi-line.
  */
 public class SmtpHELPReply extends SmtpReply {
     private boolean validReply;
