@@ -87,12 +87,14 @@ public class DTLSWorkflowExecutor extends WorkflowExecutor {
             }
 
             if (!action.executedAsPlanned() && action instanceof ReceivingAction) {
-                if (config.isStopTraceAfterUnexpected()) {
-                    LOGGER.debug("Skipping all Actions, action did not execute as planned.");
-                    break;
-                } else if (retransmissions == config.getMaxUDPRetransmissions()) {
-                    LOGGER.debug("Hit max retransmissions, stopping workflow");
-                    break;
+                if (retransmissions == config.getMaxUDPRetransmissions()) {
+                    LOGGER.debug("Hit max retransmissions.");
+                    if (config.isStopTraceAfterUnexpected()) {
+                        LOGGER.debug("Skipping all Actions, action did not execute as planned.");
+                        break;
+                    } else {
+                        LOGGER.debug("Moving on.");
+                    }
                 } else {
                     LOGGER.trace(
                             "Stepping back index to perform retransmission. From index: {}", index);
