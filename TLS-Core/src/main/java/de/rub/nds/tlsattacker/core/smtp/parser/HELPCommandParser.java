@@ -20,11 +20,12 @@ public class HELPCommandParser extends SmtpCommandParser<SmtpHELPCommand> {
 
     @Override
     public void parseArguments(SmtpHELPCommand command, String arguments) {
-        command.setSubject(arguments);
-    }
-
-    @Override
-    public boolean hasParameters() {
-        return true;
+        if (arguments == null || arguments.isEmpty()){
+            command.setSubject("");
+        }
+        else{
+            command.setSubject(arguments);
+        }
+        command.setValidParsing(true);
     }
 }

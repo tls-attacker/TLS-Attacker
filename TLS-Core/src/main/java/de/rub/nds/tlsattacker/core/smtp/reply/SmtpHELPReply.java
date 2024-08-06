@@ -1,19 +1,44 @@
 package de.rub.nds.tlsattacker.core.smtp.reply;
 
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
-import de.rub.nds.tlsattacker.core.smtp.extensions.SmtpServiceExtension;
+import de.rub.nds.tlsattacker.core.smtp.handler.HELPReplyHandler;
 import de.rub.nds.tlsattacker.core.smtp.parser.HELPReplyParser;
+import de.rub.nds.tlsattacker.core.smtp.preparator.HELPReplyPreparator;
 
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 
+/**
+ * The HELP response contains helpful information for the client.
+ * It consists of a reply code and human-readable messaqe. If the
+ * reply does not follow that syntax, the validSyntax parameter is
+ * set to False.
+ */
 public class SmtpHELPReply extends SmtpReply {
-    private int replyCode;
-    private String replyMessage;
+    private boolean validReply;
+
+    private String helpMessage;
 
     public SmtpHELPReply() {
         super();
+        this.validReply = true;
+        this.replyCode = 214;
+        this.helpMessage = "Commands: HELO EHLO MAIL RCPT DATA VRFY NOOP QUIT HELP EXPN";
+    }
+
+    public String getHelpMessage() {
+        return helpMessage;
+    }
+
+    public void setHelpMessage(String helpMessage) {
+        this.helpMessage = helpMessage;
+    }
+
+    public boolean isValidReply() {
+        return validReply;
+    }
+
+    public void setValidReply(boolean validReply) {
+        this.validReply = validReply;
     }
 
     @Override
@@ -21,20 +46,12 @@ public class SmtpHELPReply extends SmtpReply {
         return new HELPReplyParser(stream);
     }
 
-    public int getReplyCode() {
-        return replyCode;
+    public HELPReplyPreparator getPreparator(SmtpContext context) {
+        return new HELPReplyPreparator(context, this);
     }
 
-    public void setReplyCode(int replyCode) {
-        this.replyCode = replyCode;
-    }
-
-    public String getReplyMessage() {
-        return replyMessage;
-    }
-
-    public void setReplyMessage(String replyMessage) {
-        this.replyMessage = replyMessage;
+    public HELPReplyHandler getHandler(SmtpContext context) {
+        return new HELPReplyHandler(context);
     }
 }
 

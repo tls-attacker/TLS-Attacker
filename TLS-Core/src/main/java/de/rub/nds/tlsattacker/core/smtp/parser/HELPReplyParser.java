@@ -1,36 +1,39 @@
 package de.rub.nds.tlsattacker.core.smtp.parser;
 
-import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpHELPReply;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.InputStream;
 import java.util.List;
 
 public class HELPReplyParser extends SmtpReplyParser<SmtpHELPReply> {
+    private static final Logger LOGGER = LogManager.getLogger();
+
     public HELPReplyParser(InputStream stream) {
         super(stream);
     }
 
     @Override
     public void parse(SmtpHELPReply smtpHELPReply) {
-        List<String> lines = parseAllLines();
+        super.parse(smtpHELPReply);
 
-        String firstLine = lines.get(0);
-        // help type reply has code 214 and is followed by the requested information
-        if((firstLine.startsWith("211 ")) || (firstLine.startsWith("214 "))) {
-            throw new ParserException("Could not parse HELPReply. Expected '250 ' for final line but got: " + lines.get(lines.size() - 1));
-        }
+        Integer[] successCodes = {211, 214};
+        Integer[] errorCodes = {502, 504};
+        int replyCode = smtpHELPReply.getReplyCode();
+        List<String> lines = smtpHELPReply.getReplyLines();
 
-        String domainAndGreeting = lines.get(0);
-        //in both cases the first is almost the same
-        String[] parts = domainAndGreeting.substring(4).split(" ", 2);
-        if(parts.length == 1) {
-            smtpHELPReply.setDomain(parts[0]);
-        } else if(parts.length == 2) {
-            smtpHELPReply.setDomain(parts[0]);
-            smtpHELPReply.setGreeting(parts[1]);
+        smtpHELPReply.setHelpMessage(String.join("", lines));
+
+        if (List.of(successCodes).contains(replyCode)){
+            smtpHELPReply.setValidReply(true);
+            LOGGER.trace("Success code in HELPReply. {}", lines);
+        } else if (List.of(errorCodes).contains(replyCode)) {
+            smtpHELPReply.setValidReply(true);
+            LOGGER.trace("Error code in HELPReply. {}", lines);
         } else {
-            throw new ParserException("Could not parse HELPReply. Malformed 250: " + domainAndGreeting);
+            smtpHELPReply.setValidReply(false);
+            LOGGER.trace("Could not parse HELPReply. {}", lines);
         }
     }
 }

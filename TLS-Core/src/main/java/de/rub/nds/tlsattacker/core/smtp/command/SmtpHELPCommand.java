@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.smtp.command;
 
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
+import de.rub.nds.tlsattacker.core.smtp.handler.HELPCommandHandler;
 import de.rub.nds.tlsattacker.core.smtp.parser.HELPCommandParser;
 import de.rub.nds.tlsattacker.core.smtp.preparator.HELPCommandPreparator;
 import org.bouncycastle.util.IPAddress;
@@ -18,17 +19,21 @@ import java.io.InputStream;
 /**
  * This command causes the server to send helpful information to the client.
  * The command MAY take an argument (e.g., any command name) and return more
- * specific information as a response.
+ * specific information as a response. When the content is not following the
+ * RFC 5321 syntax, the validParsing parameter is set to False.
  */
 public class SmtpHELPCommand extends SmtpCommand {
+    private static final String COMMAND = "HELP";
     private String subject;
 
+    private boolean validParsing;
+
     public SmtpHELPCommand() {
-        super("HELP", null);
+        super(COMMAND, null);
     }
 
     public SmtpHELPCommand(String subject) {
-        super("HELP", subject);
+        super(COMMAND, subject);
     }
 
     @Override
@@ -36,6 +41,14 @@ public class SmtpHELPCommand extends SmtpCommand {
         return super.toCompactString();
     }
 
+    public boolean isValidParsing() {
+        return validParsing;
+    }
+
+    public void setValidParsing(boolean validParsing) {
+        this.validParsing = validParsing;
+    }
+    
     public String getSubject() {
         return subject;
     }
@@ -52,5 +65,10 @@ public class SmtpHELPCommand extends SmtpCommand {
     @Override
     public HELPCommandPreparator getPreparator(SmtpContext context) {
         return new HELPCommandPreparator(context, this);
+    }
+
+    @Override
+    public HELPCommandHandler getHandler(SmtpContext smtpContext) {
+        return new HELPCommandHandler(smtpContext);
     }
 }
