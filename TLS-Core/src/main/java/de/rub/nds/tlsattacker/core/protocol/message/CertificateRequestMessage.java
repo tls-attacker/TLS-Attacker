@@ -33,7 +33,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @XmlRootElement(name = "CertificateRequest")
-public class CertificateRequestMessage extends HandshakeMessage<CertificateRequestMessage> {
+public class CertificateRequestMessage extends HandshakeMessage {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -229,6 +229,7 @@ public class CertificateRequestMessage extends HandshakeMessage<CertificateReque
                                 signatureHashAlgorithms.getValue());
                 for (SignatureAndHashAlgorithm algo : signatureAndHashAlgorithms) {
                     sb.append(algo.name());
+                    sb.append(", ");
                 }
             } catch (Exception e) {
                 LOGGER.debug(e);

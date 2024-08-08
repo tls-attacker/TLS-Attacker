@@ -9,6 +9,8 @@
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.modifiablevariable.util.ModifiableVariableField;
+import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
+import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import de.rub.nds.tlsattacker.core.workflow.modifiableVariable.ModvarHelper;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
@@ -26,8 +28,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-import javax.xml.XMLConstants;
+import java.util.Set;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -36,12 +39,12 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.xml.sax.SAXException;
+import org.reflections.Reflections;
+import org.reflections.util.ClasspathHelper;
+import org.reflections.util.ConfigurationBuilder;
+import org.reflections.util.FilterBuilder;
 
 public class WorkflowTraceSerializer {
 
@@ -50,11 +53,41 @@ public class WorkflowTraceSerializer {
     /** context initialization is expensive, we need to do that only once */
     private static JAXBContext context;
 
-    static synchronized JAXBContext getJAXBContext() throws JAXBException, IOException {
+    public static synchronized JAXBContext getJAXBContext() throws JAXBException, IOException {
         if (context == null) {
-            context = JAXBContext.newInstance(WorkflowTrace.class);
+            // TODO we could do this scanning during building and then just collect the
+            // results
+            // TODO it would also be good if we didn't have to hardcode the package name
+            // here, but I could not get it work without it. Hours wasted: 3
+            String packageName = "de.rub";
+            Reflections reflections =
+                    new Reflections(
+                            new ConfigurationBuilder()
+                                    .setUrls(ClasspathHelper.forPackage(packageName))
+                                    .filterInputsBy(
+                                            new FilterBuilder().includePackage(packageName)));
+            Set<Class<? extends TlsAction>> tlsActionClasses =
+                    reflections.getSubTypesOf(TlsAction.class);
+            Set<Class<?>> classes = new HashSet<>();
+            classes.add(WorkflowTrace.class);
+            classes.addAll(tlsActionClasses);
+
+            Set<Class<? extends DataContainer>> dataContainers =
+                    reflections.getSubTypesOf(DataContainer.class);
+            classes.addAll(dataContainers);
+
+            LOGGER.debug("Registering Classes in JAXBContext of WorkflowTraceSerializer:");
+            for (Class<?> tempClass : classes) {
+                LOGGER.debug(tempClass.getName());
+            }
+            context = JAXBContext.newInstance(classes.toArray(new Class[classes.size()]));
         }
         return context;
+    }
+
+    public static synchronized void setJAXBContext(JAXBContext context)
+            throws JAXBException, IOException {
+        WorkflowTraceSerializer.context = context;
     }
 
     /**
@@ -110,7 +143,7 @@ public class WorkflowTraceSerializer {
                             .replaceAll("\r?\n", System.lineSeparator())
                             .getBytes(StandardCharsets.UTF_8));
         } catch (TransformerException E) {
-            LOGGER.error(E);
+            throw new JAXBException(E);
         }
     }
 
@@ -158,8 +191,8 @@ public class WorkflowTraceSerializer {
                     trace.setName(file.getAbsolutePath());
                     list.add(trace);
                 } catch (JAXBException | IOException | XMLStreamException ex) {
-                    LOGGER.warn("Could not read " + file.getAbsolutePath() + " from Folder.");
-                    LOGGER.debug(ex.getLocalizedMessage(), ex);
+                    LOGGER.warn("Could not read {} from folder", file.getAbsolutePath());
+                    LOGGER.debug(ex);
                 }
             }
             return list;
@@ -191,13 +224,13 @@ public class WorkflowTraceSerializer {
                         }
                     });
 
-            String xsd_source =
-                    WorkflowTraceSchemaGenerator.AccumulatingSchemaOutputResolver.mapSystemIds();
+            // String xsd_source =
+            //        WorkflowTraceSchemaGenerator.AccumulatingSchemaOutputResolver.mapSystemIds();
             XMLInputFactory xif = XMLInputFactory.newFactory();
             xif.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
             xif.setProperty(XMLInputFactory.SUPPORT_DTD, false);
             XMLStreamReader xsr = xif.createXMLStreamReader(inputStream);
-
+            /* Deactivated Schema validation
             SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
             try (InputStream schemaInputStream =
                     WorkflowTraceSerializer.class.getResourceAsStream("/" + xsd_source)) {
@@ -205,9 +238,11 @@ public class WorkflowTraceSerializer {
                 configSchema.newValidator();
                 unmarshaller.setSchema(configSchema);
             }
+             */
             WorkflowTrace wt = (WorkflowTrace) unmarshaller.unmarshal(xsr);
             ModvarHelper helper = new ModvarHelper();
-            List<ModifiableVariableField> allSentFields = helper.getAllSentFields(wt);
+            List<ModifiableVariableField> allSentFields =
+                    helper.getAllStaticallyConfiguredSentFields(wt);
             for (ModifiableVariableField field : allSentFields) {
                 if (field.getModifiableVariable() != null
                         && field.getModifiableVariable().getOriginalValue() != null) {
@@ -217,7 +252,7 @@ public class WorkflowTraceSerializer {
                 }
             }
             return wt;
-        } catch (IllegalArgumentException | IllegalAccessException | SAXException ex) {
+        } catch (IllegalArgumentException | IllegalAccessException ex) {
             throw new RuntimeException(ex);
         }
     }
@@ -230,6 +265,7 @@ public class WorkflowTraceSerializer {
      */
     public static List<WorkflowTrace> secureReadFolder(File f) {
         if (f.isDirectory()) {
+            LOGGER.debug("Reading WorkflowTraces from folder: {}", f.getAbsolutePath());
             ArrayList<WorkflowTrace> list = new ArrayList<>();
             for (File file : f.listFiles()) {
                 if (file.getName().startsWith(".")) {
@@ -238,12 +274,12 @@ public class WorkflowTraceSerializer {
                 }
                 WorkflowTrace trace;
                 try (FileInputStream fis = new FileInputStream(file)) {
+                    LOGGER.debug("Reading WorkflowTrace from file: {}", file.getAbsolutePath());
                     trace = WorkflowTraceSerializer.secureRead(fis);
                     trace.setName(file.getAbsolutePath());
                     list.add(trace);
                 } catch (JAXBException | IOException | XMLStreamException ex) {
-                    LOGGER.warn("Could not read " + file.getAbsolutePath() + " from Folder.");
-                    LOGGER.debug(ex.getLocalizedMessage(), ex);
+                    LOGGER.warn("Could not read {} from Folder.", ex);
                 }
             }
             return list;

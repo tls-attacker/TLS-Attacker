@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ReceiveTillLayerConfiguration<Container extends DataContainer>
+public class ReceiveTillLayerConfiguration<Container extends DataContainer<?>>
         extends ReceiveLayerConfiguration<Container> {
 
     private boolean processTrailingContainers = true;
@@ -100,5 +100,15 @@ public class ReceiveTillLayerConfiguration<Container extends DataContainer>
 
     public int getMaxNumberOfQuicPacketsToReceive() {
         return maxNumberOfQuicPacketsToReceive;
+    }
+
+    @Override
+    public String toCompactString() {
+        return "("
+                + getLayerType().getName()
+                + ") ReceiveTill:"
+                + getContainerList().stream()
+                        .map(DataContainer::toCompactString)
+                        .collect(Collectors.joining(","));
     }
 }

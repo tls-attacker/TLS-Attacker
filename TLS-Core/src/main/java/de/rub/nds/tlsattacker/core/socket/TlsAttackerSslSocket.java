@@ -30,7 +30,7 @@ import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.DefaultWorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceUtil;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceResultUtil;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveTillAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendDynamicClientKeyExchangeAction;
@@ -191,7 +191,6 @@ public class TlsAttackerSslSocket extends SSLSocket {
         StreamTransportHandler streamTransportHandler =
                 new StreamTransportHandler(
                         timeout,
-                        timeout,
                         ConnectionEndType.CLIENT,
                         super.getInputStream(),
                         super.getOutputStream());
@@ -203,8 +202,8 @@ public class TlsAttackerSslSocket extends SSLSocket {
         if (trace.executedAsPlanned()) {
             ServerHelloMessage msg =
                     (ServerHelloMessage)
-                            WorkflowTraceUtil.getFirstReceivedMessage(
-                                    HandshakeMessageType.SERVER_HELLO, trace);
+                            WorkflowTraceResultUtil.getFirstReceivedMessage(
+                                    trace, HandshakeMessageType.SERVER_HELLO);
             if (msg.hasTls13HelloRetryRequestRandom()) {
 
                 config.setDefaultClientNamedGroups(state.getTlsContext().getSelectedGroup());
@@ -230,7 +229,8 @@ public class TlsAttackerSslSocket extends SSLSocket {
 
     private void finishHandshake(WorkflowTrace trace)
             throws RuntimeException, WorkflowExecutionException {
-        if (!WorkflowTraceUtil.didReceiveMessage(HandshakeMessageType.SERVER_HELLO_DONE, trace)) {
+        if (!WorkflowTraceResultUtil.didReceiveMessage(
+                trace, HandshakeMessageType.SERVER_HELLO_DONE)) {
             ReceiveTillAction receiveTillAction =
                     new ReceiveTillAction("client", new ServerHelloDoneMessage());
             receiveTillAction.execute(state);
@@ -250,7 +250,7 @@ public class TlsAttackerSslSocket extends SSLSocket {
     }
 
     private void finishHandshakeTls13(WorkflowTrace trace) throws RuntimeException {
-        if (!WorkflowTraceUtil.didReceiveMessage(HandshakeMessageType.FINISHED, trace)) {
+        if (!WorkflowTraceResultUtil.didReceiveMessage(trace, HandshakeMessageType.FINISHED)) {
             ReceiveTillAction receiveTillAction =
                     new ReceiveTillAction("client", new FinishedMessage());
             receiveTillAction.execute(state);

@@ -16,8 +16,11 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ClientHelloPreparator;
 import de.rub.nds.tlsattacker.util.tests.TestCategories;
+import jakarta.xml.bind.JAXBException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.xml.stream.XMLStreamException;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -108,7 +111,8 @@ public class RemBufferedChCiphersActionTest extends AbstractActionTest<RemBuffer
     @Test
     @Tag(TestCategories.SLOW_TEST)
     @Override
-    public void testMarshalingAndUnmarshalingFilledObjectYieldsEqualObject() {
+    public void testMarshalingAndUnmarshalingFilledObjectYieldsEqualObject()
+            throws JAXBException, IOException, XMLStreamException {
         action.setRemoveCiphers(
                 CipherSuite.TLS_AES_128_CCM_SHA256, CipherSuite.TLS_DH_anon_WITH_SEED_CBC_SHA);
         super.testMarshalingAndUnmarshalingFilledObjectYieldsEqualObject();

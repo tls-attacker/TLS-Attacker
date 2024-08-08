@@ -34,8 +34,8 @@ public abstract class TcpTransportHandler extends TransportHandler {
         srcPort = con.getSourcePort();
     }
 
-    public TcpTransportHandler(long firstTimeout, long timeout, ConnectionEndType type) {
-        super(firstTimeout, timeout, type);
+    public TcpTransportHandler(long timeout, ConnectionEndType type) {
+        super(timeout, type);
     }
 
     /**

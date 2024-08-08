@@ -16,7 +16,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /** Print the extensions proposed by the client in ClientHello. */
-@XmlRootElement
+@XmlRootElement(name = "PrintProposedExtensions")
 public class PrintProposedExtensionsAction extends ConnectionBoundAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -30,7 +30,7 @@ public class PrintProposedExtensionsAction extends ConnectionBoundAction {
     @Override
     public void execute(State state) throws ActionExecutionException {
         TlsContext ctx = state.getContext(connectionAlias).getTlsContext();
-        LOGGER.info("Proposed extensions: " + ctx.getProposedExtensions());
+        LOGGER.info("Proposed extensions: {}", ctx.getProposedExtensions());
     }
 
     @Override

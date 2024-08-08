@@ -8,10 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.layer.data;
 
+import de.rub.nds.tlsattacker.core.layer.context.LayerContext;
+
 /**
  * @param <T> The Object that should be Handled
  */
-public interface Handler<T> {
+public abstract class Handler<T extends DataContainer<? extends LayerContext>> {
 
-    void adjustContext(T object);
+    public abstract void adjustContext(T container);
 }

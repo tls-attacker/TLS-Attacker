@@ -10,15 +10,11 @@ package de.rub.nds.tlsattacker.core.layer.data;
 
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * @param <T> The Object that should be prepared
  */
 public abstract class Preparator<T> {
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     protected final Chooser chooser;
     private final T object;
@@ -33,14 +29,7 @@ public abstract class Preparator<T> {
 
     public abstract void prepare();
 
-    /**
-     * If clientMode is active, the prepareAfterParse method will compute all the values as though
-     * the client parsed this Method. This is mostly only useful if you are reparsing or doing
-     * something really crazy. For any normal use case this should be set to false;
-     *
-     * @param clientMode
-     */
-    public void prepareAfterParse(boolean clientMode) {}
+    public void prepareAfterParse() {}
 
     public T getObject() {
         return object;

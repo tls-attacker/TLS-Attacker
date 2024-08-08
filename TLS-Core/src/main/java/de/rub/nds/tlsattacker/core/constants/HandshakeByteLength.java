@@ -101,6 +101,9 @@ public class HandshakeByteLength {
     /** Length of an elliptic curve field */
     public static final int ELLIPTIC_CURVE = 1;
 
+    /** Length of a named group constant */
+    public static final int NAMED_GROUP = 2;
+
     /** Length of the cookie field in DTLS ClientHello and ClientHelloVerify messages. */
     public static final int DTLS_HANDSHAKE_COOKIE_LENGTH = 1;
 

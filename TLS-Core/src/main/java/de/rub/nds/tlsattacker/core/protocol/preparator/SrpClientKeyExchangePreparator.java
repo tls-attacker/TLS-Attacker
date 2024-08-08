@@ -200,7 +200,6 @@ public class SrpClientKeyExchangePreparator
     }
 
     private BigInteger calculateSRP6Multiplier(BigInteger modulus, BigInteger generator) {
-        BigInteger srp6Multiplier;
         byte[] paddedGenerator = calculatePadding(modulus, generator);
         byte[] hashInput =
                 ArrayConverter.concatenate(
@@ -256,24 +255,22 @@ public class SrpClientKeyExchangePreparator
     }
 
     @Override
-    public void prepareAfterParse(boolean clientMode) {
-        if (!clientMode) {
-            BigInteger privateKey = chooser.getSRPServerPrivateKey();
-            BigInteger clientPublic = new BigInteger(1, msg.getPublicKey().getValue());
-            msg.prepareComputations();
-            premasterSecret =
-                    calculatePremasterSecretServer(
-                            chooser.getSRPModulus(),
-                            chooser.getSRPGenerator(),
-                            privateKey,
-                            chooser.getSRPServerPublicKey(),
-                            clientPublic,
-                            chooser.getSRPServerSalt(),
-                            chooser.getSRPIdentity(),
-                            chooser.getSRPPassword());
-            preparePremasterSecret(msg);
-            prepareClientServerRandom(msg);
-        }
+    public void prepareAfterParse() {
+        BigInteger privateKey = chooser.getSRPServerPrivateKey();
+        BigInteger clientPublic = new BigInteger(1, msg.getPublicKey().getValue());
+        msg.prepareComputations();
+        premasterSecret =
+                calculatePremasterSecretServer(
+                        chooser.getSRPModulus(),
+                        chooser.getSRPGenerator(),
+                        privateKey,
+                        chooser.getSRPServerPublicKey(),
+                        clientPublic,
+                        chooser.getSRPServerSalt(),
+                        chooser.getSRPIdentity(),
+                        chooser.getSRPPassword());
+        preparePremasterSecret(msg);
+        prepareClientServerRandom(msg);
     }
 
     private void setComputationPrivateKey(SrpClientKeyExchangeMessage msg) {

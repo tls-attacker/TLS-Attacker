@@ -16,7 +16,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceSerializer;
-import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.util.tests.TestCategories;
@@ -49,12 +48,14 @@ public class XmlSerializationIT {
 
             assertEquals(
                     1,
-                    ((MessageAction) newWorkflowTrace.getTlsActions().get(0)).getMessages().size(),
+                    ((SendAction) newWorkflowTrace.getTlsActions().get(0))
+                            .getConfiguredMessages()
+                            .size(),
                     "Message failed: " + message.getClass().getName());
             assertEquals(
                     message.getClass(),
-                    ((MessageAction) newWorkflowTrace.getTlsActions().get(0))
-                            .getMessages()
+                    ((SendAction) newWorkflowTrace.getTlsActions().get(0))
+                            .getConfiguredMessages()
                             .get(0)
                             .getClass(),
                     "Message failed: " + message.getClass().getName());
@@ -95,12 +96,14 @@ public class XmlSerializationIT {
 
             assertEquals(
                     1,
-                    ((MessageAction) newWorkflowTrace.getTlsActions().get(0)).getMessages().size(),
+                    ((SendAction) newWorkflowTrace.getTlsActions().get(0))
+                            .getConfiguredMessages()
+                            .size(),
                     "Extension failed: " + extension.getClass().getName());
             HandshakeMessage handshakeMessage =
                     (HandshakeMessage)
-                            (((MessageAction) newWorkflowTrace.getTlsActions().get(0))
-                                    .getMessages()
+                            (((SendAction) newWorkflowTrace.getTlsActions().get(0))
+                                    .getConfiguredMessages()
                                     .get(0));
             assertNotNull(handshakeMessage);
             assertEquals(

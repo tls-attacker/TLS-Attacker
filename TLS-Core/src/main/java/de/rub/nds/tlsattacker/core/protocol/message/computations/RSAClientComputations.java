@@ -10,13 +10,11 @@ package de.rub.nds.tlsattacker.core.protocol.message.computations;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
+import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.math.BigInteger;
 
 public class RSAClientComputations extends KeyExchangeComputations {
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.KEY_MATERIAL)
     private ModifiableByteArray premasterSecretProtocolVersion;
@@ -28,6 +26,12 @@ public class RSAClientComputations extends KeyExchangeComputations {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PADDING)
     private ModifiableByteArray padding;
+
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
+    private ModifiableBigInteger modulus;
+
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
+    private ModifiableBigInteger publicExponent;
 
     public RSAClientComputations() {}
 
@@ -69,5 +73,30 @@ public class RSAClientComputations extends KeyExchangeComputations {
         this.premasterSecretProtocolVersion =
                 ModifiableVariableFactory.safelySetValue(
                         this.premasterSecretProtocolVersion, premasterSecretProtocolVersion);
+    }
+
+    public ModifiableBigInteger getModulus() {
+        return modulus;
+    }
+
+    public void setModulus(ModifiableBigInteger modulus) {
+        this.modulus = modulus;
+    }
+
+    public void setModulus(BigInteger modulus) {
+        this.modulus = ModifiableVariableFactory.safelySetValue(this.modulus, modulus);
+    }
+
+    public ModifiableBigInteger getPublicExponent() {
+        return publicExponent;
+    }
+
+    public void setPublicExponent(ModifiableBigInteger publicExponent) {
+        this.publicExponent = publicExponent;
+    }
+
+    public void setPublicExponent(BigInteger publicExponent) {
+        this.publicExponent =
+                ModifiableVariableFactory.safelySetValue(this.publicExponent, publicExponent);
     }
 }

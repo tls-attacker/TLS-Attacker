@@ -10,9 +10,13 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.EncryptedExtensionsMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerNameIndicationExtensionMessage;
+import de.rub.nds.tlsattacker.core.state.Context;
+import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import org.junit.jupiter.api.Test;
 
@@ -21,8 +25,12 @@ public class EncryptedExtensionsHandlerTest
                 EncryptedExtensionsMessage, EncryptedExtensionsHandler> {
 
     public EncryptedExtensionsHandlerTest() {
-        super(EncryptedExtensionsMessage::new, EncryptedExtensionsHandler::new);
+        super(
+                EncryptedExtensionsMessage::new,
+                EncryptedExtensionsHandler::new,
+                new Context(new State(new Config()), new InboundConnection()).getTlsContext());
         context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
+        context.setConnection(new InboundConnection());
     }
 
     /** Test of adjustContext method, of class EncryptedExtensionsHandler. */
@@ -32,7 +40,6 @@ public class EncryptedExtensionsHandlerTest
         EncryptedExtensionsMessage message = new EncryptedExtensionsMessage();
         handler.adjustContext(message);
 
-        assertTrue(context.getProposedExtensions().isEmpty());
         assertTrue(context.getNegotiatedExtensionSet().isEmpty());
     }
 

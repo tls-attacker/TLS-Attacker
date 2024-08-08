@@ -139,7 +139,7 @@ public class NewSessionTicketPreparator
     }
 
     @Override
-    public void prepareAfterParse(boolean clientMode) {
+    public void prepareAfterParse() {
         if (chooser.getSelectedProtocolVersion().is13()) {
             msg.setIncludeInDigest(false);
         }

@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.layer.constant.LayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.constant.StackConfiguration;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.util.tests.TestCategories;
 import org.junit.jupiter.api.Tag;
@@ -67,6 +67,6 @@ public class ClientHttpHandshakeIT extends AbstractHandshakeIT {
                 addExtendedMasterSecret,
                 addEncryptThenMac,
                 protocolVersion);
-        config.setDefaultLayerConfiguration(LayerConfiguration.HTTPS);
+        config.setDefaultLayerConfiguration(StackConfiguration.HTTPS);
     }
 }

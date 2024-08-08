@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Objects;
 
 @XmlRootElement(name = "ACK")
-public class AckMessage extends ProtocolMessage<AckMessage> {
+public class AckMessage extends ProtocolMessage {
 
     private List<RecordNumber> recordNumbers;
 

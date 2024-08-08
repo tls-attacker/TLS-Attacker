@@ -32,8 +32,8 @@ public class CertificateStatusRequestExtensionHandler
                     CertificateStatusRequestType.getCertificateStatusRequestType(
                             message.getCertificateStatusRequestType().getValue()));
             LOGGER.debug(
-                    "Adjusted the Certificate Status Request Type in the TLSContext to "
-                            + tlsContext.getCertificateStatusRequestExtensionRequestType());
+                    "Adjusted the Certificate Status Request Type in the TLSContext to {}",
+                    tlsContext.getCertificateStatusRequestExtensionRequestType());
             tlsContext.setCertificateStatusRequestExtensionRequestExtension(
                     message.getRequestExtension().getValue());
             LOGGER.debug(

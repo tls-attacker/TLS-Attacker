@@ -8,11 +8,14 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CachedInfoExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.CachedInfoExtensionParserTest;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.CachedInfoExtensionPreparator;
+import de.rub.nds.tlsattacker.core.state.Context;
+import de.rub.nds.tlsattacker.core.state.State;
 import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.provider.Arguments;
@@ -42,7 +45,11 @@ public class CachedInfoExtensionSerializerTest
         super.setExtensionMessageSpecific(providedAdditionalValues, providedMessageSpecificValues);
 
         CachedInfoExtensionPreparator preparator =
-                new CachedInfoExtensionPreparator(new TlsContext().getChooser(), message);
+                new CachedInfoExtensionPreparator(
+                        new Context(new State(new Config()), new InboundConnection())
+                                .getTlsContext()
+                                .getChooser(),
+                        message);
         preparator.prepare();
     }
 }

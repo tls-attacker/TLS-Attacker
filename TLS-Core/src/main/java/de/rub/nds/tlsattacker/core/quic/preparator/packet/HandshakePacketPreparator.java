@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.quic.preparator.packet;
 
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
+import de.rub.nds.tlsattacker.core.quic.constants.QuicPacketType;
 import de.rub.nds.tlsattacker.core.quic.packet.HandshakePacket;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacketCryptoComputations;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
@@ -28,6 +29,8 @@ public class HandshakePacketPreparator extends LongHeaderPacketPreparator<Handsh
 
     @Override
     public void prepare() {
+        packet.setUnprotectedFlags(
+                QuicPacketType.HANDSHAKE_PACKET.getHeader(context.getQuicVersion()));
         try {
             if (!context.isHandshakeSecretsInitialized()) {
                 QuicPacketCryptoComputations.calculateHandshakeSecrets(context);

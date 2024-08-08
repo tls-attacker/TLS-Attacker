@@ -22,13 +22,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @XmlRootElement
-public class HandshakePacket extends LongHeaderPacket<HandshakePacket> {
+public class HandshakePacket extends LongHeaderPacket {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     public HandshakePacket() {
         super(QuicPacketType.HANDSHAKE_PACKET);
-        this.setUnprotectedFlags(QuicPacketType.HANDSHAKE_PACKET.getHeader());
         this.packetSecret = QuicCryptoSecrets.HANDSHAKE_SECRET;
     }
 

@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
@@ -23,7 +22,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public abstract class CoreClientHelloPreparator<T extends CoreClientHelloMessage<?>>
+public abstract class CoreClientHelloPreparator<T extends CoreClientHelloMessage>
         extends HelloMessagePreparator<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -83,8 +82,7 @@ public abstract class CoreClientHelloPreparator<T extends CoreClientHelloMessage
         } else {
             msg.setSessionId(chooser.getServerSessionId());
         }
-        LOGGER.debug(
-                "SessionId: " + ArrayConverter.bytesToHexString(msg.getSessionId().getValue()));
+        LOGGER.debug("SessionId: {}", msg.getSessionId().getValue());
     }
 
     private boolean isDTLS() {
@@ -127,9 +125,7 @@ public abstract class CoreClientHelloPreparator<T extends CoreClientHelloMessage
         } else {
             msg.setProtocolVersion(chooser.getConfig().getHighestProtocolVersion().getValue());
         }
-        LOGGER.debug(
-                "ProtocolVersion: "
-                        + ArrayConverter.bytesToHexString(msg.getProtocolVersion().getValue()));
+        LOGGER.debug("ProtocolVersion: {}", msg.getProtocolVersion().getValue());
     }
 
     private void prepareCompressions(T msg) {
@@ -140,9 +136,7 @@ public abstract class CoreClientHelloPreparator<T extends CoreClientHelloMessage
                     convertCompressions(
                             chooser.getConfig().getDefaultClientSupportedCompressionMethods()));
         }
-        LOGGER.debug(
-                "Compressions: "
-                        + ArrayConverter.bytesToHexString(msg.getCompressions().getValue()));
+        LOGGER.debug("Compressions: {}", msg.getCompressions().getValue());
     }
 
     private void prepareCompressionLength(T msg) {
@@ -153,9 +147,7 @@ public abstract class CoreClientHelloPreparator<T extends CoreClientHelloMessage
     private void prepareCipherSuites(T msg) {
         msg.setCipherSuites(
                 convertCipherSuites(chooser.getConfig().getDefaultClientSupportedCipherSuites()));
-        LOGGER.debug(
-                "CipherSuites: "
-                        + ArrayConverter.bytesToHexString(msg.getCipherSuites().getValue()));
+        LOGGER.debug("CipherSuites: {}", msg.getCipherSuites().getValue());
     }
 
     private void prepareCipherSuitesLength(T msg) {
@@ -173,7 +165,7 @@ public abstract class CoreClientHelloPreparator<T extends CoreClientHelloMessage
         } else {
             msg.setCookie(chooser.getDtlsCookie());
         }
-        LOGGER.debug("Cookie: " + ArrayConverter.bytesToHexString(msg.getCookie().getValue()));
+        LOGGER.debug("Cookie: {}", msg.getCookie().getValue());
     }
 
     private void prepareCookieLength(T msg) {

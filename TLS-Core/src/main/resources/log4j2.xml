@@ -18,7 +18,7 @@
 	<Logger name="com.openpojo.log.LoggerFactory" level="Off">
 		<AppenderRef ref="Direct"/>	
 	</Logger>
-        <Root level="DEBUG">
+        <Root level="INFO">
             <AppenderRef ref="DEBUG"/>
         </Root>
     </Loggers>

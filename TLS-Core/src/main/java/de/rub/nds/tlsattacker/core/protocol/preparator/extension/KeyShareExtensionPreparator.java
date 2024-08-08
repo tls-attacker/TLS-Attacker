@@ -74,7 +74,8 @@ public class KeyShareExtensionPreparator extends ExtensionPreparator<KeyShareExt
                 } else {
                     KeyShareEntry keyShareEntry =
                             new KeyShareEntry(
-                                    i.getGroup(), chooser.getConfig().getKeySharePrivate());
+                                    i.getGroup(),
+                                    chooser.getConfig().getDefaultKeySharePrivateKey(i.getGroup()));
                     serverList.add(keyShareEntry);
                 }
                 break;
@@ -86,7 +87,9 @@ public class KeyShareExtensionPreparator extends ExtensionPreparator<KeyShareExt
             KeyShareEntry keyShareEntry =
                     new KeyShareEntry(
                             chooser.getConfig().getDefaultSelectedNamedGroup(),
-                            chooser.getConfig().getKeySharePrivate());
+                            chooser.getConfig()
+                                    .getDefaultKeySharePrivateKey(
+                                            chooser.getConfig().getDefaultSelectedNamedGroup()));
             serverList.add(keyShareEntry);
         }
         return serverList;

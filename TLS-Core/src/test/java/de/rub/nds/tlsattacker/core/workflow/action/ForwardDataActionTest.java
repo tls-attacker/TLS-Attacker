@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
@@ -63,14 +63,14 @@ public class ForwardDataActionTest extends AbstractActionTest<ForwardDataAction>
 
     @Test
     public void executingWithNullAliasThrowsException() throws Exception {
-        ForwardRecordsAction action = new ForwardRecordsAction(null, ctx2Alias);
-        assertThrows(WorkflowExecutionException.class, () -> action.execute(state));
+        ForwardDataAction action = new ForwardDataAction(null, ctx2Alias);
+        assertThrows(ActionExecutionException.class, () -> action.execute(state));
     }
 
     @Test
     public void executingWithEmptyAliasThrowsException() throws Exception {
-        ForwardRecordsAction action = new ForwardRecordsAction("", ctx2Alias);
-        assertThrows(WorkflowExecutionException.class, () -> action.execute(state));
+        ForwardDataAction action = new ForwardDataAction("", ctx2Alias);
+        assertThrows(ActionExecutionException.class, () -> action.execute(state));
     }
 
     @Test
@@ -88,7 +88,6 @@ public class ForwardDataActionTest extends AbstractActionTest<ForwardDataAction>
             pw.println("        <alias>ctx2</alias>");
             pw.println("    </InboundConnection>");
             pw.println("    <ForwardData>");
-            pw.println("        <actionOptions/>");
             pw.println("        <from>ctx1</from>");
             pw.println("        <to>ctx2</to>");
             pw.println("    </ForwardData>");

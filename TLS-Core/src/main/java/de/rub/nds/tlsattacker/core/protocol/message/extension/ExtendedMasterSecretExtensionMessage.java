@@ -25,8 +25,7 @@ import java.io.InputStream;
  * <p>This extension is defined in RFC7627
  */
 @XmlRootElement(name = "ExtendedMasterSecretExtension")
-public class ExtendedMasterSecretExtensionMessage
-        extends ExtensionMessage<ExtendedMasterSecretExtensionMessage> {
+public class ExtendedMasterSecretExtensionMessage extends ExtensionMessage {
 
     public ExtendedMasterSecretExtensionMessage() {
         super(ExtensionType.EXTENDED_MASTER_SECRET);

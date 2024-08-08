@@ -19,11 +19,8 @@ public class SupplementalDataPreparator
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final SupplementalDataMessage msg;
-
     public SupplementalDataPreparator(Chooser chooser, SupplementalDataMessage message) {
         super(chooser, message);
-        this.msg = message;
     }
 
     @Override

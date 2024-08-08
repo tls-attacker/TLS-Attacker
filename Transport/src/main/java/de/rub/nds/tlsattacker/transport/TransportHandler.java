@@ -17,18 +17,10 @@ import java.io.OutputStream;
 import java.io.PushbackInputStream;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public abstract class TransportHandler {
 
-    private static final Logger LOGGER = LogManager.getLogger();
-
     protected long timeout;
-
-    protected long firstTimeout;
-
-    protected boolean firstReceived;
 
     protected OutputStream outStream;
 
@@ -45,14 +37,12 @@ public abstract class TransportHandler {
     protected boolean useIpv6 = false;
 
     public TransportHandler(Connection con) {
-        this.firstTimeout = con.getFirstTimeout();
         this.connectionEndType = con.getLocalConnectionEndType();
         this.timeout = con.getTimeout();
         this.useIpv6 = con.getUseIpv6();
     }
 
-    public TransportHandler(long firstTimeout, long timeout, ConnectionEndType type) {
-        this.firstTimeout = firstTimeout;
+    public TransportHandler(long timeout, ConnectionEndType type) {
         this.timeout = timeout;
         this.connectionEndType = type;
     }
@@ -95,12 +85,7 @@ public abstract class TransportHandler {
 
     @SuppressWarnings({"checkstyle:EmptyCatchBlock", "CheckStyle"})
     public byte[] fetchData() throws IOException {
-        if (firstReceived) {
-            setTimeout(firstTimeout);
-        } else {
-            setTimeout(timeout);
-        }
-        firstReceived = false;
+        setTimeout(timeout);
         try {
             if (inStream.available() != 0) {
                 byte[] data = new byte[inStream.available()];

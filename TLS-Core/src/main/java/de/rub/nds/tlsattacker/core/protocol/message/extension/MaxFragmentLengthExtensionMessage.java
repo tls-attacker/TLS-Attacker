@@ -12,7 +12,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.MaxFragmentLengthExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.MaxFragmentLengthExtensionParser;
@@ -23,10 +22,7 @@ import java.io.InputStream;
 
 /** Maximum Fragment Length Extension described in rfc3546 */
 @XmlRootElement(name = "MaxFragmentLengthExtension")
-public class MaxFragmentLengthExtensionMessage
-        extends ExtensionMessage<MaxFragmentLengthExtensionMessage> {
-
-    private MaxFragmentLength maxFragmentLengthConfig;
+public class MaxFragmentLengthExtensionMessage extends ExtensionMessage {
 
     /** Maximum fragment length value described in rfc3546 */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)

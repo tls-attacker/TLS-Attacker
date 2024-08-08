@@ -72,7 +72,7 @@ public class CertificateRequestHandler extends HandshakeMessageHandler<Certifica
             }
         }
         tlsContext.setServerSupportedSignatureAndHashAlgorithms(algoList);
-        LOGGER.debug("Set ServerSupportedSignatureAndHashAlgorithms to " + algoList.toString());
+        LOGGER.debug("Set ServerSupportedSignatureAndHashAlgorithms to {}", algoList);
     }
 
     private void adjustDistinguishedNames(CertificateRequestMessage message) {
@@ -90,7 +90,7 @@ public class CertificateRequestHandler extends HandshakeMessageHandler<Certifica
         List<ClientCertificateType> clientCertTypes =
                 convertClientCertificateTypes(message.getClientCertificateTypes().getValue());
         tlsContext.setClientCertificateTypes(clientCertTypes);
-        LOGGER.debug("Set ClientCertificateType in Context to " + clientCertTypes.toString());
+        LOGGER.debug("Set ClientCertificateType in Context to {} ", clientCertTypes);
     }
 
     private List<ClientCertificateType> convertClientCertificateTypes(byte[] bytesToConvert) {
@@ -98,7 +98,7 @@ public class CertificateRequestHandler extends HandshakeMessageHandler<Certifica
         for (byte b : bytesToConvert) {
             ClientCertificateType type = ClientCertificateType.getClientCertificateType(b);
             if (type == null) {
-                LOGGER.warn("Cannot convert:" + b + " to a ClientCertificateType");
+                LOGGER.warn("Cannot convert: {} to a ClientCertificateType", b);
             } else {
                 list.add(type);
             }

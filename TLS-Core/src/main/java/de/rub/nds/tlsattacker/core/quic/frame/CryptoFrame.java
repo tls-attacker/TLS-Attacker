@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.quic.frame;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.modifiablevariable.mlong.ModifiableLong;
+import de.rub.nds.modifiablevariable.longint.ModifiableLong;
 import de.rub.nds.tlsattacker.core.quic.constants.QuicFrameType;
 import de.rub.nds.tlsattacker.core.quic.handler.frame.CryptoFrameHandler;
 import de.rub.nds.tlsattacker.core.quic.parser.frame.CryptoFrameParser;
@@ -23,7 +23,7 @@ import java.io.InputStream;
 import java.util.Arrays;
 
 @XmlRootElement
-public class CryptoFrame extends QuicFrame<CryptoFrame> {
+public class CryptoFrame extends QuicFrame {
 
     /**
      * A variable-length integer specifying the byte offset in the stream for the data in this

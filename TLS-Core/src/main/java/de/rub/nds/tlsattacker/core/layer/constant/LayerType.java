@@ -19,4 +19,6 @@ public interface LayerType {
     public default boolean equals(LayerType other) {
         return other.getName().equals(this.getName());
     }
+
+    public Class<?> getBaseContainerClass();
 }

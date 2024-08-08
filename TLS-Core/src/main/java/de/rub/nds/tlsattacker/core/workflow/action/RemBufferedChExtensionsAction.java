@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.protocol.exception.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
@@ -39,7 +40,7 @@ import org.apache.logging.log4j.Logger;
  * prepared from context, but partially rely on config values. Thus preventing us to modify values
  * in context and re-creating a CH for forwarding.
  */
-@XmlRootElement
+@XmlRootElement(name = "RemBufferedChExtensions")
 public class RemBufferedChExtensionsAction extends ConnectionBoundAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -108,13 +109,14 @@ public class RemBufferedChExtensionsAction extends ConnectionBoundAction {
             try {
                 type = ext.getExtensionTypeConstant();
                 if (removeExtensions.contains(type)) {
-                    LOGGER.debug("Removing " + type + " extensions from " + msgName);
+                    LOGGER.debug("Removing {} extensions from {}", type, msgName);
                     markedForRemoval.add(ext);
                 } else {
                     newExtensionBytes.write(ext.getExtensionBytes().getValue());
                 }
             } catch (IOException ex) {
-                throw new ActionExecutionException("Could not write ExtensionBytes to byte[]", ex);
+                throw new WorkflowExecutionException(
+                        "Could not write ExtensionBytes to byte[]", ex);
             }
         }
         ch.setExtensionBytes(newExtensionBytes.toByteArray());
@@ -125,7 +127,7 @@ public class RemBufferedChExtensionsAction extends ConnectionBoundAction {
         ch.setExtensionsLength(newExtLength);
 
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Modified extensions in " + msgName + ":\n" + summarizeExtensions(ch));
+            LOGGER.debug("Modified extensions in {}:\n{}", msgName, summarizeExtensions(ch));
         }
     }
 

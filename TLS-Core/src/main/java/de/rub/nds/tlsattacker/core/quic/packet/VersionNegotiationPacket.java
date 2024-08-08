@@ -24,7 +24,7 @@ import java.util.List;
  * not supported by the server. It is only sent by servers.
  */
 @XmlRootElement
-public class VersionNegotiationPacket extends LongHeaderPacket<VersionNegotiationPacket> {
+public class VersionNegotiationPacket extends LongHeaderPacket {
 
     private List<byte[]> supportedVersions;
 

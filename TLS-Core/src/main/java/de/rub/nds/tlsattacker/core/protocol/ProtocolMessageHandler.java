@@ -17,7 +17,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public abstract class ProtocolMessageHandler<MessageT extends ProtocolMessage>
-        implements Handler<MessageT> {
+        extends Handler<MessageT> {
 
     protected static final Logger LOGGER = LogManager.getLogger();
     /** context */
@@ -27,14 +27,7 @@ public abstract class ProtocolMessageHandler<MessageT extends ProtocolMessage>
         this.tlsContext = tlsContext;
     }
 
-    /**
-     * Performs additional preparations after parsing the message (e.g. ESNI decryption/parsing).
-     *
-     * @param message
-     */
-    public void prepareAfterParse(MessageT message) {}
-
-    public void updateDigest(ProtocolMessage message, boolean goingToBeSent) {
+    public void updateDigest(MessageT message, boolean goingToBeSent) {
         if (!(message instanceof HandshakeMessage)) {
             return;
         }
@@ -54,8 +47,16 @@ public abstract class ProtocolMessageHandler<MessageT extends ProtocolMessage>
         } else {
             tlsContext.getDigest().append(message.getCompleteResultingMessage().getValue());
         }
-        LOGGER.debug("Included in digest: " + message.toCompactString());
+        LOGGER.debug("Included in digest: {}", message.toCompactString());
     }
 
     public void adjustContextAfterSerialize(MessageT message) {}
+
+    public void adjustContextBeforeParse(MessageT message) {}
+
+    public void adjustContextAfterParse(MessageT message) {}
+
+    public void adjustContextAfterPrepare(MessageT message) {}
+
+    public void adjustContextBeforePrepare(MessageT message) {}
 }

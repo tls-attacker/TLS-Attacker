@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Objects;
 
 @XmlRootElement(name = "EncryptedExtensions")
-public class EncryptedExtensionsMessage extends HandshakeMessage<EncryptedExtensionsMessage> {
+public class EncryptedExtensionsMessage extends HandshakeMessage {
 
     public EncryptedExtensionsMessage() {
         super(HandshakeMessageType.ENCRYPTED_EXTENSIONS);

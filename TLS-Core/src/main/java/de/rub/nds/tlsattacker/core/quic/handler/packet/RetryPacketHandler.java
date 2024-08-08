@@ -55,7 +55,6 @@ public class RetryPacketHandler extends LongHeaderPacketHandler<RetryPacket> {
         tlsContext.setProposedAlpnProtocols(null);
         tlsContext.setSelectedSignatureAndHashAlgorithm(null);
         tlsContext.setLastClientHello(null);
-        tlsContext.setChooser(null);
         tlsContext.getProposedExtensions().clear();
         tlsContext.setInnerClientHello(null);
 

@@ -125,7 +125,7 @@ public class State {
         workflowTrace.setDirty(false);
 
         for (AliasedConnection con : workflowTrace.getConnections()) {
-            Context ctx = new Context(config, con);
+            Context ctx = new Context(this, con);
             LayerStack layerStack =
                     LayerStackFactory.createLayerStack(config.getDefaultLayerConfiguration(), ctx);
             ctx.setLayerStack(layerStack);
@@ -141,8 +141,8 @@ public class State {
 
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
         trace = factory.createWorkflowTrace(config.getWorkflowTraceType(), runningMode);
-        LOGGER.debug("Created new " + config.getWorkflowTraceType() + " workflow trace");
-        LOGGER.debug("Workflow trace: " + trace.toString());
+        LOGGER.debug("Created new {} workflow trace", config.getWorkflowTraceType());
+        LOGGER.debug("Workflow trace: {}", trace.toString());
 
         if (trace == null) {
             throw new ConfigurationException("Could not load workflow trace");
@@ -307,18 +307,6 @@ public class State {
                 filter.postFilter(trace, originalWorkflowTrace);
             }
         }
-    }
-
-    private void assertWorkflowTraceNotNull(String operationName) {
-        if (workflowTrace != null) {
-            return;
-        }
-
-        StringBuilder err = new StringBuilder("No workflow trace loaded.");
-        if (operationName != null && !operationName.isEmpty()) {
-            err.append(" Operation ").append(operationName).append(" not permitted");
-        }
-        throw new ConfigurationException(err.toString());
     }
 
     public long getStartTimestamp() {

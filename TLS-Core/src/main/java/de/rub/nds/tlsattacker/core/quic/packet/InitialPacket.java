@@ -33,7 +33,7 @@ import org.apache.logging.log4j.Logger;
  * direction.
  */
 @XmlRootElement
-public class InitialPacket extends LongHeaderPacket<InitialPacket> {
+public class InitialPacket extends LongHeaderPacket {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -55,7 +55,6 @@ public class InitialPacket extends LongHeaderPacket<InitialPacket> {
 
     public InitialPacket() {
         super(QuicPacketType.INITIAL_PACKET);
-        this.setUnprotectedFlags(QuicPacketType.INITIAL_PACKET.getHeader());
         this.packetSecret = QuicCryptoSecrets.INITIAL_SECRET;
     }
 

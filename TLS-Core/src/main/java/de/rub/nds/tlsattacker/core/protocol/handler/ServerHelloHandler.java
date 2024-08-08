@@ -9,18 +9,28 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.*;
+import de.rub.nds.protocol.crypto.CyclicGroup;
+import de.rub.nds.protocol.crypto.ec.EllipticCurve;
+import de.rub.nds.protocol.crypto.ec.Point;
+import de.rub.nds.protocol.crypto.ec.PointFormatter;
+import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.core.constants.Bits;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
+import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.crypto.KeyShareCalculator;
 import de.rub.nds.tlsattacker.core.crypto.MessageDigestCollector;
-import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
-import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
-import de.rub.nds.tlsattacker.core.crypto.ec.Point;
-import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.crypto.hpke.HpkeUtil;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import de.rub.nds.tlsattacker.core.layer.constant.LayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.constant.StackConfiguration;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
@@ -87,7 +97,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                     setServerRecordCipher();
                 }
                 if (tlsContext.getConfig().getDefaultLayerConfiguration()
-                        == LayerConfiguration.QUIC) {
+                        == StackConfiguration.QUIC) {
                     try {
                         QuicPacketCryptoComputations.calculateHandshakeSecrets(
                                 tlsContext.getContext().getQuicContext());
@@ -288,7 +298,10 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
             byte[] sharedSecret = new byte[macLength];
             // if PSK_only mode is selected, the keyShare will be null, and there is no sharedSecret
             if (keyShareStoreEntry != null) {
-                BigInteger privateKey = tlsContext.getConfig().getKeySharePrivate();
+                BigInteger privateKey =
+                        tlsContext
+                                .getConfig()
+                                .getDefaultKeySharePrivateKey(keyShareStoreEntry.getGroup());
                 if (tlsContext.getChooser().getSelectedCipherSuite().isPWD()) {
                     sharedSecret = computeSharedPWDSecret(keyShareStoreEntry);
                 } else {
@@ -339,7 +352,13 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 
     private byte[] computeSharedPWDSecret(KeyShareStoreEntry keyShare) throws CryptoException {
         Chooser chooser = tlsContext.getChooser();
-        EllipticCurve curve = CurveFactory.getCurve(keyShare.getGroup());
+        CyclicGroup<?> group = keyShare.getGroup().getGroupParameters().getGroup();
+        if (!(group instanceof EllipticCurve)) {
+            LOGGER.warn("Cannot compute sharedPwdSecret for non-EC group. Returning new byte[]");
+            return new byte[0];
+        }
+
+        EllipticCurve curve = (EllipticCurve) group;
         DragonFlyKeyShareEntryParser parser =
                 new DragonFlyKeyShareEntryParser(
                         new ByteArrayInputStream(keyShare.getPublicKey()), keyShare.getGroup());
@@ -348,7 +367,8 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         int curveSize = curve.getModulus().bitLength();
         Point keySharePoint =
                 PointFormatter.fromRawFormat(
-                        keyShare.getGroup(), dragonFlyKeyShareEntry.getRawPublicKey());
+                        keyShare.getGroup().getGroupParameters(),
+                        dragonFlyKeyShareEntry.getRawPublicKey());
 
         BigInteger scalar = dragonFlyKeyShareEntry.getScalar();
         Point passwordElement =
@@ -471,20 +491,17 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         // digest clientHello and serverHello
         MessageDigestCollector echDigest = new MessageDigestCollector();
 
-        LOGGER.debug("ClientHelloInner: " + ArrayConverter.bytesToHexString(lastClientHello));
-        LOGGER.debug("ServerHello: " + ArrayConverter.bytesToHexString(serverHello));
+        LOGGER.debug("ClientHelloInner: {}", lastClientHello);
+        LOGGER.debug("ServerHello: {}", serverHello);
         echDigest.append(lastClientHello);
         echDigest.append(serverHello);
-        LOGGER.debug(
-                "Complete resulting digest: "
-                        + ArrayConverter.bytesToHexString(echDigest.getRawBytes()));
+        LOGGER.debug("Complete resulting digest: {}", echDigest.getRawBytes());
 
         Chooser chooser = tlsContext.getChooser();
         byte[] transcriptEchConf =
                 echDigest.digest(
                         chooser.getSelectedProtocolVersion(), chooser.getSelectedCipherSuite());
-        LOGGER.debug(
-                "Transcript Ech Config: " + ArrayConverter.bytesToHexString(transcriptEchConf));
+        LOGGER.debug("Transcript Ech Config: {}", transcriptEchConf);
         return transcriptEchConf;
     }
 
@@ -501,7 +518,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
             byte[] extract =
                     HKDFunction.extract(
                             hkdfAlgorithm, null, innerClientHello.getRandom().getValue());
-            LOGGER.debug("Extract: " + ArrayConverter.bytesToHexString(extract));
+            LOGGER.debug("Extract: {}", extract);
             byte[] acceptConfirmationClient =
                     HKDFunction.expandLabel(
                             hkdfAlgorithm,
@@ -510,12 +527,8 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                             transcriptEchConf,
                             8,
                             chooser.getSelectedProtocolVersion());
-            LOGGER.debug(
-                    "Accept Confirmation Calculated: "
-                            + ArrayConverter.bytesToHexString(acceptConfirmationClient));
-            LOGGER.debug(
-                    "Accept Confirmation Received: "
-                            + ArrayConverter.bytesToHexString(acceptConfirmationServer));
+            LOGGER.debug("Accept Confirmation Calculated: {}", acceptConfirmationClient);
+            LOGGER.debug("Accept Confirmation Received: {}", acceptConfirmationServer);
             if (Arrays.equals(acceptConfirmationClient, acceptConfirmationServer)) {
                 // mark ECH support in context
                 tlsContext.setSupportsECH(true);
@@ -523,7 +536,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                 ClientHelloHandler clientHelloHandler = new ClientHelloHandler(tlsContext);
                 clientHelloHandler.adjustContext(innerClientHello);
                 chooser.getContext().getTlsContext().getDigest().reset();
-                updateDigest(innerClientHello, false);
+                clientHelloHandler.updateDigest(innerClientHello, false);
                 updateDigest(message, false);
                 LOGGER.info("Server supports ECH");
             }
@@ -608,17 +621,18 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
             if (tlsContext.getChooser().getSelectedCipherSuite().isPWD()) {
                 publicPoint =
                         PointFormatter.fromRawFormat(
-                                selectedKeyShareStore.getGroup(),
+                                selectedKeyShareStore.getGroup().getGroupParameters(),
                                 selectedKeyShareStore.getPublicKey());
             } else {
                 publicPoint =
                         PointFormatter.formatFromByteArray(
-                                selectedKeyShareStore.getGroup(),
+                                selectedKeyShareStore.getGroup().getGroupParameters(),
                                 selectedKeyShareStore.getPublicKey());
             }
-            tlsContext.setServerEcPublicKey(publicPoint);
+            tlsContext.setServerEphemeralEcPublicKey(publicPoint);
         } else {
-            tlsContext.setServerDhPublicKey(new BigInteger(selectedKeyShareStore.getPublicKey()));
+            tlsContext.setServerEphemeralDhPublicKey(
+                    new BigInteger(selectedKeyShareStore.getPublicKey()));
         }
 
         return selectedKeyShareStore;

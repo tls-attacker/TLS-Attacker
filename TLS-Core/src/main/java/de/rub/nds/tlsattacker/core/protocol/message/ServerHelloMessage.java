@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.Objects;
 
 @XmlRootElement(name = "ServerHello")
-public class ServerHelloMessage extends HelloMessage<ServerHelloMessage> {
+public class ServerHelloMessage extends HelloMessage {
 
     private static final byte[] HELLO_RETRY_REQUEST_RANDOM =
             new byte[] {

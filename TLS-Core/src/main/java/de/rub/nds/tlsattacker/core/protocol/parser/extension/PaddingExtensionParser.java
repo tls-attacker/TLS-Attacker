@@ -8,8 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import static de.rub.nds.modifiablevariable.util.ArrayConverter.bytesToHexString;
-
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PaddingExtensionMessage;
 import java.io.InputStream;
@@ -28,7 +26,6 @@ public class PaddingExtensionParser extends ExtensionParser<PaddingExtensionMess
     public void parse(PaddingExtensionMessage msg) {
         msg.setPaddingBytes(parseByteArrayField(getBytesLeft()));
         LOGGER.debug(
-                "The padding extension parser parsed the padding bytes "
-                        + bytesToHexString(msg.getPaddingBytes()));
+                "The padding extension parser parsed the padding bytes {}", msg.getPaddingBytes());
     }
 }

@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.quic.frame;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.modifiablevariable.mlong.ModifiableLong;
+import de.rub.nds.modifiablevariable.longint.ModifiableLong;
 import de.rub.nds.tlsattacker.core.constants.AlertDescription;
 import de.rub.nds.tlsattacker.core.quic.constants.QuicFrameType;
 import de.rub.nds.tlsattacker.core.quic.constants.QuicTransportErrorCodes;
@@ -25,7 +25,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 @XmlRootElement
-public class ConnectionCloseFrame extends QuicFrame<ConnectionCloseFrame> {
+public class ConnectionCloseFrame extends QuicFrame {
 
     /**
      * A variable-length integer that indicates the reason for closing this connection. A

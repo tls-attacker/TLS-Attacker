@@ -139,10 +139,16 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
                     "Sending record without a LayerProcessing hint. Using \"UNKNOWN\" as the type");
         }
 
+        int maxDataSize;
+        if (context.getConfig().isRespectPeerRecordSizeLimitations()) {
+            maxDataSize = context.getChooser().getPeerReceiveLimit();
+        } else {
+            maxDataSize = context.getConfig().getDefaultMaxRecordData();
+        }
         // Generate records
         CleanRecordByteSeperator separator =
                 new CleanRecordByteSeperator(
-                        context.getChooser().getOutboundMaxRecordDataSize(),
+                        maxDataSize,
                         new ByteArrayInputStream(data),
                         context.getConfig().isCreateRecordsDynamically());
         List<Record> records = new LinkedList<>();
@@ -164,7 +170,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
                     int recordData =
                             (nextRecord.getMaxRecordLengthConfig() != null
                                     ? nextRecord.getMaxRecordLengthConfig()
-                                    : context.getChooser().getOutboundMaxRecordDataSize());
+                                    : maxDataSize);
                     dataToBeSent -= recordData;
                 }
             }
@@ -272,7 +278,8 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
             }
         } catch (EndOfStreamException ex) {
             setUnreadBytes(parser.getAlreadyParsed());
-            LOGGER.debug("Reached end of stream, cannot parse more records", ex);
+            LOGGER.debug("Reached end of stream, cannot parse more records");
+            LOGGER.trace(ex);
             throw ex;
         }
     }

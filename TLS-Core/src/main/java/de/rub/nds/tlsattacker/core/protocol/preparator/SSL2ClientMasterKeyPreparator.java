@@ -47,11 +47,10 @@ public class SSL2ClientMasterKeyPreparator
         prepareKeyArg(message);
         prepareKeyArgLength(message);
 
-        LOGGER.debug("RSA Modulus: " + chooser.getServerRsaModulus().toString());
+        LOGGER.debug("RSA Modulus: {}", chooser.getServerX509Chooser().getSubjectRsaModulus());
 
         prepareRSACiphertext(message);
 
-        final int lengthFieldLength = 2;
         int length = SSL2ByteLength.MESSAGE_TYPE;
         length += message.getCipherKind().getValue().length;
         length += message.getClearKeyData().getValue().length + SSL2ByteLength.CLEAR_KEY_LENGTH;
@@ -165,7 +164,8 @@ public class SSL2ClientMasterKeyPreparator
         preparePremasterSecret(message);
 
         // the number of random bytes in the pkcs1 message
-        int keyByteLength = chooser.getServerRsaModulus().bitLength() / Bits.IN_A_BYTE;
+        int keyByteLength =
+                chooser.getServerX509Chooser().getSubjectRsaModulus().bitLength() / Bits.IN_A_BYTE;
 
         int unpaddedLength = message.getComputations().getPremasterSecret().getValue().length;
 
@@ -186,11 +186,13 @@ public class SSL2ClientMasterKeyPreparator
         BigInteger biPaddedPremasterSecret = new BigInteger(1, paddedPremasterSecret);
         BigInteger biEncrypted =
                 biPaddedPremasterSecret.modPow(
-                        chooser.getServerRSAPublicKey(), chooser.getServerRsaModulus());
+                        chooser.getServerX509Chooser().getSubjectRsaPublicExponent(),
+                        chooser.getServerX509Chooser().getSubjectRsaModulus());
         encryptedPremasterSecret =
                 ArrayConverter.bigIntegerToByteArray(
                         biEncrypted,
-                        chooser.getServerRsaModulus().bitLength() / Bits.IN_A_BYTE,
+                        chooser.getServerX509Chooser().getSubjectRsaModulus().bitLength()
+                                / Bits.IN_A_BYTE,
                         true);
         prepareEncryptedKeyData(message);
         prepareEncryptedKeyDataLength(message);

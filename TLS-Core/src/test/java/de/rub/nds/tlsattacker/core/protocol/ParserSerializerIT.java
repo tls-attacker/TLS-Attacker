@@ -11,10 +11,15 @@ package de.rub.nds.tlsattacker.core.protocol;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.data.Parser;
+import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import de.rub.nds.tlsattacker.core.protocol.message.*;
+import de.rub.nds.tlsattacker.core.state.Context;
+import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.util.tests.TestCategories;
 import java.io.ByteArrayInputStream;
 import java.lang.reflect.InvocationTargetException;
@@ -41,17 +46,16 @@ public class ParserSerializerIT extends GenericParserSerializerTest {
                     InvocationTargetException {
         Random r = new Random(42);
         for (int i = 0; i < 10000; i++) {
-            int random = r.nextInt(20);
             ProtocolMessage message = null;
-            TlsContext tlsContext = new TlsContext();
+            TlsContext tlsContext =
+                    new Context(new State(config), new InboundConnection()).getTlsContext();
             byte[] bytesToParse = null;
             try {
                 int length = r.nextInt(1000);
                 bytesToParse = new byte[length];
                 r.nextBytes(bytesToParse);
-                int start = r.nextInt(100);
                 message = getRandomMessage(r);
-                ProtocolMessageParser parser =
+                Parser parser =
                         message.getParser(tlsContext, new ByteArrayInputStream(bytesToParse));
                 parser.parse(message);
             } catch (ParserException | EndOfStreamException E) {
@@ -63,14 +67,12 @@ public class ParserSerializerIT extends GenericParserSerializerTest {
                 continue;
             }
             message.getPreparator(tlsContext);
-            ProtocolMessageSerializer<? extends ProtocolMessage> serializer =
-                    message.getSerializer(tlsContext);
+            Serializer<? extends ProtocolMessage> serializer = message.getSerializer(tlsContext);
             byte[] result = serializer.serialize();
             LOGGER.debug(message.toString());
             LOGGER.debug("Bytes to parse:\t{}", bytesToParse);
             LOGGER.debug("Result:\t{}", result);
-            ProtocolMessageParser parser2 =
-                    message.getParser(tlsContext, new ByteArrayInputStream(result));
+            Parser parser2 = message.getParser(tlsContext, new ByteArrayInputStream(result));
             ProtocolMessage serialized = message.getClass().getConstructor().newInstance();
             parser2.parse(serialized);
             LOGGER.debug(serialized.toString());

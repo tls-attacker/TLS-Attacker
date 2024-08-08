@@ -8,8 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import static de.rub.nds.modifiablevariable.util.ArrayConverter.bytesToHexString;
-
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignedCertificateTimestampExtensionMessage;
 import java.io.InputStream;
@@ -34,7 +32,7 @@ public class SignedCertificateTimestampExtensionParser
     public void parse(SignedCertificateTimestampExtensionMessage msg) {
         msg.setSignedTimestamp(parseByteArrayField(getBytesLeft()));
         LOGGER.debug(
-                "The signed certificate timestamp extension parser parsed the value "
-                        + bytesToHexString(msg.getSignedTimestamp()));
+                "The signed certificate timestamp extension parser parsed the value {}",
+                msg.getSignedTimestamp());
     }
 }

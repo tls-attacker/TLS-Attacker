@@ -27,7 +27,7 @@ import org.apache.logging.log4j.Logger;
  * negotiated.
  */
 @XmlRootElement
-public class OneRTTPacket extends QuicPacket<OneRTTPacket> {
+public class OneRTTPacket extends QuicPacket {
 
     private static final Logger LOGGER = LogManager.getLogger();
 

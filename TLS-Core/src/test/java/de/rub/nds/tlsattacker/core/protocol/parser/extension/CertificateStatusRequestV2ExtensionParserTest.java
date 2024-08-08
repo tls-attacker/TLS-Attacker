@@ -9,14 +9,19 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import static de.rub.nds.modifiablevariable.util.ArrayConverter.hexStringToByteArray;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
+import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestV2ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.RequestItemV2;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.ResponderId;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.RequestItemV2Preparator;
+import de.rub.nds.tlsattacker.core.state.Context;
+import de.rub.nds.tlsattacker.core.state.State;
 import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Named;
@@ -92,7 +97,11 @@ public class CertificateStatusRequestV2ExtensionParserTest
             itemActual = listActual.get(i);
 
             RequestItemV2Preparator preparator =
-                    new RequestItemV2Preparator(new TlsContext().getChooser(), itemExpected);
+                    new RequestItemV2Preparator(
+                            new Context(new State(new Config()), new InboundConnection())
+                                    .getTlsContext()
+                                    .getChooser(),
+                            itemExpected);
             preparator.prepare();
 
             assertArrayEquals(

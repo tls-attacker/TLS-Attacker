@@ -19,8 +19,11 @@ import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ClientHelloPreparator;
 import de.rub.nds.tlsattacker.util.tests.TestCategories;
+import jakarta.xml.bind.JAXBException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.xml.stream.XMLStreamException;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -154,7 +157,8 @@ public class RemBufferedChExtensionsActionTest
     @Test
     @Tag(TestCategories.SLOW_TEST)
     @Override
-    public void testMarshalingAndUnmarshalingFilledObjectYieldsEqualObject() {
+    public void testMarshalingAndUnmarshalingFilledObjectYieldsEqualObject()
+            throws JAXBException, IOException, XMLStreamException {
         action.setRemoveExtensions(ExtensionType.TOKEN_BINDING, ExtensionType.ALPN);
         super.testMarshalingAndUnmarshalingFilledObjectYieldsEqualObject();
     }

@@ -36,7 +36,6 @@ public class ThreadedServerWorkflowExecutor extends WorkflowExecutor {
     private static final int POOL_SIZE = 3;
 
     private ServerSocket serverSocket;
-    private final InetAddress bindAddr;
     private final int bindPort;
     private List<Socket> sockets = new ArrayList<>();
     private boolean killed = true;
@@ -63,13 +62,10 @@ public class ThreadedServerWorkflowExecutor extends WorkflowExecutor {
                 // option, like loopback
                 tempBindAddr = InetAddress.getLoopbackAddress();
             }
-            bindAddr = tempBindAddr;
             // Java did not allow me to set the bindAddr field in the
             // *single line* try block and the catch block at the same
             // time, because it might already be set...
             // So now we have a temporary variable as a workaround
-        } else {
-            bindAddr = null;
         }
         this.pool = pool;
         addHook();
@@ -152,12 +148,12 @@ public class ThreadedServerWorkflowExecutor extends WorkflowExecutor {
             }
             sockets.remove(socket);
         } catch (IOException e) {
-            LOGGER.debug("Failed to close socket " + socket);
+            LOGGER.debug("Failed to close socket {}", socket);
         }
     }
 
     private void initialize() {
-        LOGGER.info("Initializing server connection end at port " + bindPort);
+        LOGGER.info("Initializing server connection end at port {}", bindPort);
         if ((serverSocket != null) && (!serverSocket.isClosed())) {
             LOGGER.debug("Server socket already initialized");
             return;
@@ -179,7 +175,7 @@ public class ThreadedServerWorkflowExecutor extends WorkflowExecutor {
 
     private synchronized void closeSockets() {
         for (Socket s : sockets.toArray(new Socket[] {})) {
-            LOGGER.debug("Closing socket " + s);
+            LOGGER.debug("Closing socket {}", s);
             clientDone(s);
         }
 

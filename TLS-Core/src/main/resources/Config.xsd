@@ -641,7 +641,7 @@
       <xs:element name="expectHandshakeDoneQuicFrame" type="xs:boolean" minOccurs="0"/>
       <xs:element name="isQuic" type="xs:boolean" minOccurs="0"/>
       <xs:element name="quicRetryFlowRequired" type="xs:boolean" minOccurs="0"/>
-      <xs:element name="quicVersion" type="xs:string" minOccurs="0"/>
+      <xs:element name="quicVersion" type="quicVersion" minOccurs="0"/>
       <xs:element name="stopActionsAfterWarning" type="xs:boolean" minOccurs="0"/>
       <xs:element name="defaultSelectedCipherSuite" type="cipherSuite" minOccurs="0"/>
       <xs:element name="defaultSelectedServerCertificateType" type="certificateType" minOccurs="0"/>
@@ -716,10 +716,10 @@
       <xs:element name="defaultAlertDescription" type="alertDescription" minOccurs="0"/>
       <xs:element name="defaultAlertLevel" type="alertLevel" minOccurs="0"/>
       <xs:element name="defaultEcCertificateCurve" type="namedGroup" minOccurs="0"/>
-      <xs:element name="defaultClientEcPublicKey" type="point" minOccurs="0"/>
-      <xs:element name="defaultServerEcPublicKey" type="point" minOccurs="0"/>
       <xs:element name="defaultServerEcPrivateKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultServerEcPublicKey" type="point" minOccurs="0"/>
       <xs:element name="defaultClientEcPrivateKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultClientEcPublicKey" type="point" minOccurs="0"/>
       <xs:element name="defaultServerRSAModulus" type="xs:integer" minOccurs="0"/>
       <xs:element name="defaultClientRSAModulus" type="xs:integer" minOccurs="0"/>
       <xs:element name="defaultServerRSAPublicKey" type="xs:integer" minOccurs="0"/>
@@ -781,8 +781,8 @@
       <xs:element name="tls13BackwardsCompatibilityMode" type="xs:boolean" minOccurs="0"/>
       <xs:element name="defaultClientPWDUsername" type="xs:string" minOccurs="0"/>
       <xs:element name="defaultPWDProtectGroup" type="namedGroup" minOccurs="0"/>
-      <xs:element name="defaultServerPWDProtectPublicKey" type="point" minOccurs="0"/>
       <xs:element name="defaultServerPWDProtectPrivateKey" type="xs:integer" minOccurs="0"/>
+      <xs:element name="defaultServerPWDProtectPublicKey" type="point" minOccurs="0"/>
       <xs:element name="defaultServerPWDProtectRandomSecret" type="xs:integer" minOccurs="0"/>
       <xs:element name="defaultPWDPassword" type="xs:string" minOccurs="0"/>
       <xs:element name="defaultPWDIterations" type="xs:int" minOccurs="0"/>
@@ -1043,7 +1043,6 @@
       <xs:element name="proxyControlPort" type="xs:int" minOccurs="0"/>
       <xs:element name="proxyControlHostname" type="xs:string" minOccurs="0"/>
       <xs:element name="timeout" type="xs:int" minOccurs="0"/>
-      <xs:element name="firstTimeout" type="xs:int" minOccurs="0"/>
       <xs:element name="connectionTimeout" type="xs:int" minOccurs="0"/>
       <xs:element name="transportHandlerType" type="transportHandlerType" minOccurs="0"/>
       <xs:element name="sourcePort" type="xs:int" minOccurs="0"/>
@@ -4451,6 +4450,16 @@
       <xs:enumeration value="THREADED_SERVER"/>
       <xs:enumeration value="DTLS"/>
       <xs:enumeration value="QUIC"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="quicVersion">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="VERSION_1"/>
+      <xs:enumeration value="VERSION_2"/>
+      <xs:enumeration value="NEGOTIATION_VERSION"/>
+      <xs:enumeration value="NULL_VERSION"/>
+      <xs:enumeration value="UNKNOWN"/>
     </xs:restriction>
   </xs:simpleType>
 

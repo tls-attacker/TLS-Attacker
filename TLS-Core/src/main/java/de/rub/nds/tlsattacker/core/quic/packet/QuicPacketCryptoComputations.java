@@ -8,12 +8,13 @@
  */
 package de.rub.nds.tlsattacker.core.quic.packet;
 
-import de.rub.nds.asn1.model.ModifiableVariableHolder;
+import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
+import de.rub.nds.tlsattacker.core.quic.constants.QuicVersion;
 import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -162,6 +163,14 @@ public class QuicPacketCryptoComputations extends ModifiableVariableHolder {
                         context.getInitialSalt(),
                         context.getFirstDestinationConnectionId()));
 
+        QuicVersion version = context.getQuicVersion();
+
+        if (version == QuicVersion.NEGOTIATION_VERSION) {
+            // There are no initial secrets, version negotiation packets are unencrypted
+            throw new UnsupportedOperationException(
+                    "Version Negotiation Packets do not have initial secrets. They are not encrypted.");
+        }
+
         // client
         context.setInitialClientSecret(
                 HKDFunction.expandLabel(
@@ -173,12 +182,18 @@ public class QuicPacketCryptoComputations extends ModifiableVariableHolder {
                         ProtocolVersion.TLS13));
         context.setInitialClientKey(
                 deriveKeyFromSecret(
-                        hkdfAlgorithm, context.getInitialClientSecret(), INITIAL_KEY_LENGTH));
+                        version,
+                        hkdfAlgorithm,
+                        context.getInitialClientSecret(),
+                        INITIAL_KEY_LENGTH));
         context.setInitialClientIv(
-                deriveIvFromSecret(hkdfAlgorithm, context.getInitialClientSecret()));
+                deriveIvFromSecret(version, hkdfAlgorithm, context.getInitialClientSecret()));
         context.setInitialClientHeaderProtectionKey(
                 deriveHeaderProtectionKeyFromSecret(
-                        hkdfAlgorithm, context.getInitialClientSecret(), INITIAL_KEY_LENGTH));
+                        version,
+                        hkdfAlgorithm,
+                        context.getInitialClientSecret(),
+                        INITIAL_KEY_LENGTH));
 
         // server
         context.setInitialServerSecret(
@@ -191,12 +206,18 @@ public class QuicPacketCryptoComputations extends ModifiableVariableHolder {
                         ProtocolVersion.TLS13));
         context.setInitialServerKey(
                 deriveKeyFromSecret(
-                        hkdfAlgorithm, context.getInitialServerSecret(), INITIAL_KEY_LENGTH));
+                        version,
+                        hkdfAlgorithm,
+                        context.getInitialServerSecret(),
+                        INITIAL_KEY_LENGTH));
         context.setInitialServerIv(
-                deriveIvFromSecret(hkdfAlgorithm, context.getInitialServerSecret()));
+                deriveIvFromSecret(version, hkdfAlgorithm, context.getInitialServerSecret()));
         context.setInitialServerHeaderProtectionKey(
                 deriveHeaderProtectionKeyFromSecret(
-                        hkdfAlgorithm, context.getInitialServerSecret(), INITIAL_KEY_LENGTH));
+                        version,
+                        hkdfAlgorithm,
+                        context.getInitialServerSecret(),
+                        INITIAL_KEY_LENGTH));
 
         context.setInitialSecretsInitialized(true);
     }
@@ -250,27 +271,31 @@ public class QuicPacketCryptoComputations extends ModifiableVariableHolder {
                 break;
         }
 
+        QuicVersion version = context.getQuicVersion();
+
         // client
         context.setHandshakeClientSecret(
                 context.getContext().getTlsContext().getClientHandshakeTrafficSecret());
         context.setHandshakeClientKey(
-                deriveKeyFromSecret(hkdfAlgorithm, context.getHandshakeClientSecret(), keyLength));
+                deriveKeyFromSecret(
+                        version, hkdfAlgorithm, context.getHandshakeClientSecret(), keyLength));
         context.setHandshakeClientIv(
-                deriveIvFromSecret(hkdfAlgorithm, context.getHandshakeClientSecret()));
+                deriveIvFromSecret(version, hkdfAlgorithm, context.getHandshakeClientSecret()));
         context.setHandshakeClientHeaderProtectionKey(
                 deriveHeaderProtectionKeyFromSecret(
-                        hkdfAlgorithm, context.getHandshakeClientSecret(), keyLength));
+                        version, hkdfAlgorithm, context.getHandshakeClientSecret(), keyLength));
 
         // server
         context.setHandshakeServerSecret(
                 context.getContext().getTlsContext().getServerHandshakeTrafficSecret());
         context.setHandshakeServerKey(
-                deriveKeyFromSecret(hkdfAlgorithm, context.getHandshakeServerSecret(), keyLength));
+                deriveKeyFromSecret(
+                        version, hkdfAlgorithm, context.getHandshakeServerSecret(), keyLength));
         context.setHandshakeServerIv(
-                deriveIvFromSecret(hkdfAlgorithm, context.getHandshakeServerSecret()));
+                deriveIvFromSecret(version, hkdfAlgorithm, context.getHandshakeServerSecret()));
         context.setHandshakeServerHeaderProtectionKey(
                 deriveHeaderProtectionKeyFromSecret(
-                        hkdfAlgorithm, context.getHandshakeServerSecret(), keyLength));
+                        version, hkdfAlgorithm, context.getHandshakeServerSecret(), keyLength));
 
         context.setHandshakeSecretsInitialized(true);
     }
@@ -301,29 +326,31 @@ public class QuicPacketCryptoComputations extends ModifiableVariableHolder {
                 break;
         }
 
+        QuicVersion version = context.getQuicVersion();
+
         // client
         context.setApplicationClientSecret(
                 context.getContext().getTlsContext().getClientApplicationTrafficSecret());
         context.setApplicationClientKey(
                 deriveKeyFromSecret(
-                        hkdfAlgorithm, context.getApplicationClientSecret(), keyLength));
+                        version, hkdfAlgorithm, context.getApplicationClientSecret(), keyLength));
         context.setApplicationClientIv(
-                deriveIvFromSecret(hkdfAlgorithm, context.getApplicationClientSecret()));
+                deriveIvFromSecret(version, hkdfAlgorithm, context.getApplicationClientSecret()));
         context.setApplicationClientHeaderProtectionKey(
                 deriveHeaderProtectionKeyFromSecret(
-                        hkdfAlgorithm, context.getApplicationClientSecret(), keyLength));
+                        version, hkdfAlgorithm, context.getApplicationClientSecret(), keyLength));
 
         // server
         context.setApplicationServerSecret(
                 context.getContext().getTlsContext().getServerApplicationTrafficSecret());
         context.setApplicationServerKey(
                 deriveKeyFromSecret(
-                        hkdfAlgorithm, context.getApplicationServerSecret(), keyLength));
+                        version, hkdfAlgorithm, context.getApplicationServerSecret(), keyLength));
         context.setApplicationServerIv(
-                deriveIvFromSecret(hkdfAlgorithm, context.getApplicationServerSecret()));
+                deriveIvFromSecret(version, hkdfAlgorithm, context.getApplicationServerSecret()));
         context.setApplicationServerHeaderProtectionKey(
                 deriveHeaderProtectionKeyFromSecret(
-                        hkdfAlgorithm, context.getApplicationServerSecret(), keyLength));
+                        version, hkdfAlgorithm, context.getApplicationServerSecret(), keyLength));
 
         context.setApplicationSecretsInitialized(true);
     }
@@ -370,59 +397,66 @@ public class QuicPacketCryptoComputations extends ModifiableVariableHolder {
                 break;
         }
 
+        QuicVersion version = context.getQuicVersion();
+
         // client
         context.setZeroRTTClientSecret(
                 context.getContext().getTlsContext().getClientEarlyTrafficSecret());
         context.setZeroRTTClientKey(
-                deriveKeyFromSecret(hkdfAlgorithm, context.getZeroRTTClientSecret(), keyLength));
+                deriveKeyFromSecret(
+                        version, hkdfAlgorithm, context.getZeroRTTClientSecret(), keyLength));
         context.setZeroRTTClientIv(
-                deriveIvFromSecret(hkdfAlgorithm, context.getZeroRTTClientSecret()));
+                deriveIvFromSecret(version, hkdfAlgorithm, context.getZeroRTTClientSecret()));
         context.setZeroRTTClientHeaderProtectionKey(
                 deriveHeaderProtectionKeyFromSecret(
-                        hkdfAlgorithm, context.getZeroRTTClientSecret(), keyLength));
+                        version, hkdfAlgorithm, context.getZeroRTTClientSecret(), keyLength));
 
         // server
         context.setZeroRTTServerSecret(
                 context.getContext().getTlsContext().getClientEarlyTrafficSecret());
         context.setZeroRTTServerKey(
-                deriveKeyFromSecret(hkdfAlgorithm, context.getZeroRTTServerSecret(), keyLength));
+                deriveKeyFromSecret(
+                        version, hkdfAlgorithm, context.getZeroRTTServerSecret(), keyLength));
         context.setZeroRTTServerIv(
-                deriveIvFromSecret(hkdfAlgorithm, context.getZeroRTTServerSecret()));
+                deriveIvFromSecret(version, hkdfAlgorithm, context.getZeroRTTServerSecret()));
         context.setZeroRTTServerHeaderProtectionKey(
                 deriveHeaderProtectionKeyFromSecret(
-                        hkdfAlgorithm, context.getZeroRTTServerSecret(), keyLength));
+                        version, hkdfAlgorithm, context.getZeroRTTServerSecret(), keyLength));
 
         context.setZeroRTTSecretsInitialized(true);
     }
 
     private static byte[] deriveKeyFromSecret(
-            HKDFAlgorithm hkdfAlgorithm, byte[] secret, int keyLength) throws CryptoException {
+            QuicVersion version, HKDFAlgorithm hkdfAlgorithm, byte[] secret, int keyLength)
+            throws CryptoException {
         return HKDFunction.expandLabel(
                 hkdfAlgorithm,
                 secret,
-                HKDFunction.QUIC_KEY,
+                version.getKeyLabel(),
                 new byte[0],
                 keyLength,
                 ProtocolVersion.TLS13);
     }
 
-    private static byte[] deriveIvFromSecret(HKDFAlgorithm hkdfAlgorithm, byte[] secret)
+    private static byte[] deriveIvFromSecret(
+            QuicVersion version, HKDFAlgorithm hkdfAlgorithm, byte[] secret)
             throws CryptoException {
         return HKDFunction.expandLabel(
                 hkdfAlgorithm,
                 secret,
-                HKDFunction.QUIC_IV,
+                version.getIvLabel(),
                 new byte[0],
                 IV_LENGTH,
                 ProtocolVersion.TLS13);
     }
 
     private static byte[] deriveHeaderProtectionKeyFromSecret(
-            HKDFAlgorithm hkdfAlgorithm, byte[] secret, int keyLength) throws CryptoException {
+            QuicVersion version, HKDFAlgorithm hkdfAlgorithm, byte[] secret, int keyLength)
+            throws CryptoException {
         return HKDFunction.expandLabel(
                 hkdfAlgorithm,
                 secret,
-                HKDFunction.QUIC_HP,
+                version.getHeaderProtectionLabel(),
                 new byte[0],
                 keyLength,
                 ProtocolVersion.TLS13);

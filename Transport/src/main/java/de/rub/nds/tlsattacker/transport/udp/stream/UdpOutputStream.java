@@ -56,10 +56,12 @@ public class UdpOutputStream extends OutputStream {
         byte[] outData = new byte[index];
         System.arraycopy(dataBuffer, 0, outData, 0, index);
         DatagramPacket packet;
-        if (socket.isConnected()) {
+        packet = new DatagramPacket(outData, index);
+
+        if (!socket.isConnected()) {
             packet = new DatagramPacket(outData, index);
-        } else {
-            packet = new DatagramPacket(outData, index, InetAddress.getByName(hostname), port);
+            packet.setPort(port);
+            packet.setAddress(InetAddress.getByName(hostname));
         }
         socket.send(packet);
         index = 0;

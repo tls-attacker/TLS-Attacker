@@ -12,23 +12,33 @@ import static org.apache.commons.lang3.StringUtils.join;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
-import de.rub.nds.tlsattacker.core.certificate.CertificateKeyPair;
-import de.rub.nds.tlsattacker.core.certificate.PemUtil;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.crypto.keys.CustomPrivateKey;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.core.util.CertificateUtils;
 import de.rub.nds.tlsattacker.core.util.JKSLoader;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.util.KeystoreHandler;
+import de.rub.nds.x509attacker.config.X509CertificateConfig;
+import de.rub.nds.x509attacker.constants.X509NamedCurve;
+import de.rub.nds.x509attacker.filesystem.CertificateBytes;
+import de.rub.nds.x509attacker.filesystem.CertificateIo;
+import de.rub.nds.x509attacker.signatureengine.keyparsers.PemUtil;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.security.*;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+import java.security.interfaces.DSAPrivateKey;
+import java.security.interfaces.ECPrivateKey;
+import java.security.interfaces.RSAPrivateKey;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import javax.crypto.interfaces.DHPrivateKey;
 import org.bouncycastle.crypto.tls.Certificate;
 
 public class CertificateDelegate extends Delegate {
@@ -104,28 +114,19 @@ public class CertificateDelegate extends Delegate {
         PrivateKey privateKey = null;
         if (key != null) {
             LOGGER.debug("Loading private key");
-            try {
-                privateKey = PemUtil.readPrivateKey(new File(key));
-                CustomPrivateKey customPrivateKey =
-                        CertificateUtils.parseCustomPrivateKey(privateKey);
-                customPrivateKey.adjustInConfig(config, ConnectionEndType.CLIENT);
-                customPrivateKey.adjustInConfig(config, ConnectionEndType.SERVER);
-
-            } catch (IOException ex) {
-                LOGGER.warn("Could not read private key", ex);
-            }
+            privateKey = PemUtil.readPrivateKey(new File(key));
+            adjustPrivateKey(config.getCertificateChainConfig().get(0), privateKey);
         }
         if (certificate != null) {
-            LOGGER.debug("Loading certificate");
+            if (privateKey == null) {
+                LOGGER.warn("Certificate provided without chain");
+            }
+            LOGGER.debug("Loading certificate chain");
             try {
-                Certificate cert = PemUtil.readCertificate(new File(certificate));
-                if (privateKey != null) {
-                    config.setDefaultExplicitCertificateKeyPair(
-                            new CertificateKeyPair(cert, privateKey));
-                } else {
-                    config.setDefaultExplicitCertificateKeyPair(new CertificateKeyPair(cert));
-                }
-                config.setAutoSelectCertificate(false);
+                List<CertificateBytes> byteList =
+                        CertificateIo.readPemCertificateByteList(
+                                new FileInputStream(new File(certificate)));
+                config.setDefaultExplicitCertificateChain(byteList);
             } catch (Exception ex) {
                 LOGGER.warn("Could not read certificate", ex);
             }
@@ -145,32 +146,48 @@ public class CertificateDelegate extends Delegate {
                             + join(mandatoryParameters.keySet()));
         }
         try {
-            ConnectionEndType type;
-            switch (config.getDefaultRunningMode()) {
-                case CLIENT:
-                    type = ConnectionEndType.CLIENT;
-                    break;
-                case MITM:
-                    throw new ConfigurationException(
-                            "CertificateDelegate is not allowed for MitM running mode");
-                case SERVER:
-                    type = ConnectionEndType.SERVER;
-                    break;
-                default:
-                    throw new ConfigurationException("Unknown RunningMode");
-            }
             KeyStore store = KeystoreHandler.loadKeyStore(keystore, password);
             Certificate cert = JKSLoader.loadTLSCertificate(store, alias);
             privateKey = (PrivateKey) store.getKey(alias, password.toCharArray());
-            CertificateKeyPair pair = new CertificateKeyPair(cert, privateKey);
-            pair.adjustInConfig(config, type);
-            config.setAutoSelectCertificate(false);
+            List<CertificateBytes> byteList = new LinkedList<>();
+            for (org.bouncycastle.asn1.x509.Certificate tempCert : cert.getCertificateList()) {
+                byteList.add(new CertificateBytes(tempCert.getEncoded()));
+            }
+
+            config.setDefaultExplicitCertificateChain(byteList);
+            adjustPrivateKey(config.getCertificateChainConfig().get(0), privateKey);
         } catch (UnrecoverableKeyException
                 | KeyStoreException
                 | IOException
                 | NoSuchAlgorithmException
                 | CertificateException ex) {
             throw new ConfigurationException("Could not load private Key from Keystore", ex);
+        }
+    }
+
+    private void adjustPrivateKey(X509CertificateConfig config, PrivateKey privateKey) {
+        if (privateKey instanceof RSAPrivateKey) {
+            RSAPrivateKey rsaKey = (RSAPrivateKey) privateKey;
+            config.setRsaPrivateKey(rsaKey.getPrivateExponent());
+            config.setRsaModulus(rsaKey.getModulus());
+        } else if (privateKey instanceof DSAPrivateKey) {
+            DSAPrivateKey dsaKey = (DSAPrivateKey) privateKey;
+            config.setDsaGenerator(dsaKey.getParams().getG());
+            config.setDsaPrimeP(dsaKey.getParams().getP());
+            config.setDsaPrimeQ(dsaKey.getParams().getQ());
+            config.setDsaPrivateKey(dsaKey.getX());
+        } else if (privateKey instanceof DHPrivateKey) {
+            DHPrivateKey dhKey = (DHPrivateKey) privateKey;
+            config.setDhPrivateKey(dhKey.getX());
+            config.setDhModulus(dhKey.getParams().getP());
+            config.setDhGenerator(dhKey.getParams().getG());
+        } else if (privateKey instanceof ECPrivateKey) {
+            ECPrivateKey ecKey = (ECPrivateKey) privateKey;
+            config.setEcPrivateKey(ecKey.getS());
+            config.setDefaultSubjectNamedCurve(X509NamedCurve.getX509NamedCurve(ecKey));
+        } else {
+            throw new UnsupportedOperationException(
+                    "This private key is not supporter:" + key.toString());
         }
     }
 }

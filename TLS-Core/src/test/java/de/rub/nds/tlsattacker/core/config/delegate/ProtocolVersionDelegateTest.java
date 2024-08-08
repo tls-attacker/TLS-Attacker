@@ -89,6 +89,6 @@ public class ProtocolVersionDelegateTest extends AbstractDelegateTest<ProtocolVe
         Config config = Config.createConfig();
         Config config2 = Config.createConfig();
         delegate.applyDelegate(config);
-        assertTrue(EqualsBuilder.reflectionEquals(config, config2, "keyStore", "ourCertificate"));
+        assertTrue(EqualsBuilder.reflectionEquals(config, config2, "certificateChainConfig"));
     }
 }

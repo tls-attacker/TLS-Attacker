@@ -8,9 +8,25 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.chooser;
 
+import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.*;
-import de.rub.nds.tlsattacker.core.crypto.ec.Point;
+import de.rub.nds.tlsattacker.core.constants.CertificateType;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
+import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
+import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
+import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
+import de.rub.nds.tlsattacker.core.constants.EsniDnsKeyRecordVersion;
+import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
+import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
+import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.constants.SSL2CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.SrtpProtectionProfile;
+import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
+import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EchConfig;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
@@ -20,6 +36,7 @@ import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
+import de.rub.nds.x509attacker.chooser.X509Chooser;
 import java.math.BigInteger;
 import java.util.List;
 
@@ -42,6 +59,14 @@ public abstract class Chooser {
         return context;
     }
 
+    public X509Chooser getServerX509Chooser() {
+        return context.getTlsContext().getServerX509Context().getChooser();
+    }
+
+    public X509Chooser getClientX509Chooser() {
+        return context.getTlsContext().getClientX509Context().getChooser();
+    }
+
     public abstract List<ECPointFormat> getClientSupportedPointFormats();
 
     public abstract SignatureAndHashAlgorithm getSelectedSigHashAlgorithm();
@@ -61,8 +86,6 @@ public abstract class Chooser {
     public abstract byte[] getDistinguishedNames();
 
     public abstract List<ClientCertificateType> getClientCertificateTypes();
-
-    public abstract MaxFragmentLength getMaxFragmentLength();
 
     public abstract Integer getMaxEarlyDataSize();
 
@@ -124,37 +147,25 @@ public abstract class Chooser {
 
     public abstract List<TokenBindingKeyParameters> getTokenBindingKeyParameters();
 
-    public abstract BigInteger getServerDhModulus();
+    public abstract BigInteger getServerEphemeralDhModulus();
 
-    public abstract BigInteger getServerDhGenerator();
+    public abstract BigInteger getServerEphemeralDhGenerator();
 
-    public abstract BigInteger getClientDhModulus();
+    public abstract BigInteger getServerEphemeralDhPrivateKey();
 
-    public abstract BigInteger getClientDhGenerator();
+    public abstract BigInteger getClientEphemeralDhPrivateKey();
 
-    public abstract BigInteger getServerDhPrivateKey();
+    public abstract BigInteger getServerEphemeralDhPublicKey();
 
-    public abstract BigInteger getClientDhPrivateKey();
-
-    public abstract BigInteger getServerDhPublicKey();
-
-    public abstract BigInteger getClientDhPublicKey();
+    public abstract BigInteger getClientEphemeralDhPublicKey();
 
     public abstract GOSTCurve getSelectedGostCurve();
 
     public abstract BigInteger getSRPModulus();
 
-    public abstract BigInteger getPSKModulus();
-
     public abstract byte[] getPSKIdentity();
 
     public abstract byte[] getPSKIdentityHint();
-
-    public abstract BigInteger getPSKServerPrivateKey();
-
-    public abstract BigInteger getPSKServerPublicKey();
-
-    public abstract BigInteger getPSKGenerator();
 
     public abstract BigInteger getSRPGenerator();
 
@@ -172,27 +183,21 @@ public abstract class Chooser {
 
     public abstract byte[] getSRPIdentity();
 
-    public abstract BigInteger getServerEcPrivateKey();
+    public abstract BigInteger getServerEphemeralEcPrivateKey();
 
-    public abstract BigInteger getClientEcPrivateKey();
+    public abstract BigInteger getClientEphemeralEcPrivateKey();
 
     public abstract NamedGroup getSelectedNamedGroup();
 
-    public abstract NamedGroup getEcCertificateCurve();
+    public abstract Point getClientEphemeralEcPublicKey();
 
-    public abstract Point getClientEcPublicKey();
-
-    public abstract Point getServerEcPublicKey();
+    public abstract Point getServerEphemeralEcPublicKey();
 
     public abstract EllipticCurveType getEcCurveType();
 
-    public abstract BigInteger getClientRsaModulus();
+    public abstract BigInteger getServerEphemeralRsaExportModulus();
 
-    public abstract BigInteger getServerRsaModulus();
-
-    public abstract BigInteger getServerRSAPublicKey();
-
-    public abstract BigInteger getClientRSAPublicKey();
+    public abstract BigInteger getServerEphemeralRsaExportPublicKey();
 
     public abstract byte[] getCertificateRequestContext();
 
@@ -204,9 +209,7 @@ public abstract class Chooser {
 
     public abstract byte[] getServerApplicationTrafficSecret();
 
-    public abstract BigInteger getClientRSAPrivateKey();
-
-    public abstract BigInteger getServerRSAPrivateKey();
+    public abstract BigInteger getServerEphemeralRsaExportPrivateKey();
 
     public abstract Connection getConnection();
 
@@ -244,26 +247,6 @@ public abstract class Chooser {
 
     public abstract KeyShareStoreEntry getServerKeyShare();
 
-    public abstract BigInteger getDsaClientPublicKey();
-
-    public abstract BigInteger getDsaClientPrivateKey();
-
-    public abstract BigInteger getDsaClientPrimeP();
-
-    public abstract BigInteger getDsaClientPrimeQ();
-
-    public abstract BigInteger getDsaClientGenerator();
-
-    public abstract BigInteger getDsaServerPublicKey();
-
-    public abstract BigInteger getDsaServerPrivateKey();
-
-    public abstract BigInteger getDsaServerPrimeP();
-
-    public abstract BigInteger getDsaServerPrimeQ();
-
-    public abstract BigInteger getDsaServerGenerator();
-
     public abstract byte[] getHandshakeSecret();
 
     public abstract String getClientPWDUsername();
@@ -296,13 +279,78 @@ public abstract class Chooser {
 
     public abstract byte[] getLastClientHello();
 
-    public abstract Integer getOutboundRecordSizeLimit();
+    /**
+     * Always returns the correct value depending on the selected cipher suites
+     *
+     * @return
+     */
+    public abstract BigInteger getRsaKeyExchangePublicExponent();
 
-    public abstract Integer getInboundRecordSizeLimit();
+    /**
+     * Always returns the correct value depending on the selected cipher suites
+     *
+     * @return
+     */
+    public abstract BigInteger getRsaKeyExchangeModulus();
 
-    public abstract Integer getOutboundMaxRecordDataSize();
+    /**
+     * Always returns the correct value depending on the selected cipher suites
+     *
+     * @return
+     */
+    public abstract BigInteger getRsaKeyExchangePrivateKey();
 
-    public abstract Integer getInboundMaxRecordDataSize();
+    /**
+     * Always returns the correct value depending on the selected cipher suites
+     *
+     * @return
+     */
+    public abstract BigInteger getDhKeyExchangePeerPublicKey();
+
+    /**
+     * Always returns the correct value depending on the selected cipher suites
+     *
+     * @return
+     */
+    public abstract BigInteger getDhKeyExchangeModulus();
+
+    /**
+     * Always returns the correct value depending on the selected cipher suites
+     *
+     * @return
+     */
+    public abstract BigInteger getDhKeyExchangeGenerator();
+
+    /**
+     * Always returns the correct value depending on the selected cipher suites
+     *
+     * @return
+     */
+    public abstract BigInteger getDhKeyExchangePrivateKey();
+
+    /**
+     * Always returns the correct value depending on the selected cipher suites
+     *
+     * @return
+     */
+    public abstract Point getEcKeyExchangePeerPublicKey();
+
+    /**
+     * Always returns the correct value depending on the selected cipher suites
+     *
+     * @return
+     */
+    public abstract BigInteger getEcKeyExchangePrivateKey();
+
+    /**
+     * Always returns the correct value depending on the selected cipher suites
+     *
+     * @param keyStoreGroup
+     * @return
+     */
+    public abstract BigInteger getKeySharePrivateKey(NamedGroup keyStoreGroup);
+
+    public abstract Integer getPeerReceiveLimit();
 
     public abstract EchConfig getEchConfig();
 
@@ -311,4 +359,6 @@ public abstract class Chooser {
     public abstract KeyShareEntry getEchServerKeyShareEntry();
 
     public abstract Integer getNumberOfRequestedConnectionIds();
+
+    public abstract SrtpProtectionProfile getSelectedSrtpProtectionProfile();
 }

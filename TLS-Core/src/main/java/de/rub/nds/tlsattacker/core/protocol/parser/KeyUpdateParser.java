@@ -36,6 +36,6 @@ public class KeyUpdateParser extends HandshakeMessageParser<KeyUpdateMessage> {
         } else {
             msg.setRequestMode(KeyUpdateRequest.UPDATE_NOT_REQUESTED);
         }
-        LOGGER.debug("KeyUpdateValue: " + msg.getRequestMode().getValue());
+        LOGGER.debug("KeyUpdateValue: {}", msg.getRequestMode().getValue());
     }
 }

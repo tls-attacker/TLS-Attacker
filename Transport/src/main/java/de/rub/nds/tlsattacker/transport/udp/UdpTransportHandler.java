@@ -30,14 +30,16 @@ public abstract class UdpTransportHandler extends TransportHandler {
     }
 
     public UdpTransportHandler(long firstTimeout, long timeout, ConnectionEndType type) {
-        super(firstTimeout, timeout, type);
+        super(timeout, type);
     }
 
     @Override
     public void setTimeout(long timeout) {
         try {
             this.timeout = timeout;
-            socket.setSoTimeout((int) timeout);
+            if (socket != null) {
+                socket.setSoTimeout((int) timeout);
+            }
         } catch (SocketException ex) {
             LOGGER.error("Could not adjust socket timeout", ex);
         }

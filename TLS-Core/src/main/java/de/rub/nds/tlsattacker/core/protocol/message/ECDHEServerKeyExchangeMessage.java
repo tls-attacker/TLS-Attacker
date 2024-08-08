@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
@@ -16,7 +17,6 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.ECDHEServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.ECDHEServerComputations;
 import de.rub.nds.tlsattacker.core.protocol.parser.ECDHEServerKeyExchangeParser;
@@ -27,8 +27,7 @@ import java.io.InputStream;
 import java.util.List;
 
 @XmlRootElement(name = "ECDHEServerKeyExchange")
-public class ECDHEServerKeyExchangeMessage<Self extends ECDHEServerKeyExchangeMessage<?>>
-        extends ServerKeyExchangeMessage<Self> {
+public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     protected ModifiableByte curveType;
@@ -108,13 +107,13 @@ public class ECDHEServerKeyExchangeMessage<Self extends ECDHEServerKeyExchangeMe
     }
 
     @Override
-    public ECDHEServerComputations getComputations() {
+    public ECDHEServerComputations getKeyExchangeComputations() {
         return computations;
     }
 
     @Override
     public ECDHEServerKeyExchangeHandler getHandler(TlsContext tlsContext) {
-        return new ECDHEServerKeyExchangeHandler<>(tlsContext);
+        return new ECDHEServerKeyExchangeHandler(tlsContext);
     }
 
     @Override
@@ -149,7 +148,7 @@ public class ECDHEServerKeyExchangeMessage<Self extends ECDHEServerKeyExchangeMe
     }
 
     @Override
-    public void prepareComputations() {
+    public void prepareKeyExchangeComputations() {
         if (computations == null) {
             computations = new ECDHEServerComputations();
         }

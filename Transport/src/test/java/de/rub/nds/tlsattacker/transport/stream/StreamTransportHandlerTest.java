@@ -31,7 +31,7 @@ public class StreamTransportHandlerTest {
         inputStream = new ByteArrayInputStream(new byte[] {4, 3, 2, 1});
         handler =
                 new StreamTransportHandler(
-                        100, 100, ConnectionEndType.CLIENT, inputStream, outputStream);
+                        100, ConnectionEndType.CLIENT, inputStream, outputStream);
     }
 
     /** Test of closeConnection method, of class StreamTransportHandler. */

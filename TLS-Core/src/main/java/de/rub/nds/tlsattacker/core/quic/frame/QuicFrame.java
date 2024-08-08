@@ -9,10 +9,10 @@
 package de.rub.nds.tlsattacker.core.quic.frame;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
-import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.quic.constants.QuicFrameType;
 import de.rub.nds.tlsattacker.core.quic.handler.frame.QuicFrameHandler;
 import de.rub.nds.tlsattacker.core.quic.parser.frame.QuicFrameParser;
@@ -20,24 +20,11 @@ import de.rub.nds.tlsattacker.core.quic.preparator.frame.QuicFramePreparator;
 import de.rub.nds.tlsattacker.core.quic.serializer.frame.QuicFrameSerializer;
 import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
 import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlSeeAlso;
 import java.io.InputStream;
 
-@XmlSeeAlso({
-    AckFrame.class,
-    ConnectionCloseFrame.class,
-    CryptoFrame.class,
-    HandshakeDoneFrame.class,
-    NewConnectionIdFrame.class,
-    NewTokenFrame.class,
-    PaddingFrame.class,
-    PathChallengeFrame.class,
-    PathResponseFrame.class,
-    PingFrame.class
-})
 @XmlRootElement
-public abstract class QuicFrame<T extends QuicFrame<T>> extends ModifiableVariableHolder
-        implements DataContainer<T, QuicContext> {
+public abstract class QuicFrame extends ModifiableVariableHolder
+        implements DataContainer<QuicContext> {
 
     @ModifiableVariableProperty ModifiableByte frameType;
 
@@ -65,14 +52,14 @@ public abstract class QuicFrame<T extends QuicFrame<T>> extends ModifiableVariab
     }
 
     @Override
-    public abstract QuicFrameHandler<T> getHandler(QuicContext context);
+    public abstract QuicFrameHandler getHandler(QuicContext context);
 
     @Override
-    public abstract QuicFrameSerializer<T> getSerializer(QuicContext context);
+    public abstract QuicFrameSerializer getSerializer(QuicContext context);
 
     @Override
-    public abstract QuicFramePreparator<T> getPreparator(QuicContext context);
+    public abstract QuicFramePreparator getPreparator(QuicContext context);
 
     @Override
-    public abstract QuicFrameParser<T> getParser(QuicContext context, InputStream stream);
+    public abstract QuicFrameParser getParser(QuicContext context, InputStream stream);
 }

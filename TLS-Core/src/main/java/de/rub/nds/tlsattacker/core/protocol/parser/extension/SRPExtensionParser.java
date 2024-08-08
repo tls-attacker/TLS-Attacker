@@ -12,12 +12,8 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SRPExtensionMessage;
 import java.io.InputStream;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class SRPExtensionParser extends ExtensionParser<SRPExtensionMessage> {
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     public SRPExtensionParser(InputStream stream, TlsContext tlsContext) {
         super(stream, tlsContext);

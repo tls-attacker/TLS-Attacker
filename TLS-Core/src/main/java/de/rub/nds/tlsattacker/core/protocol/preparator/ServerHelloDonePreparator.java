@@ -17,11 +17,8 @@ public class ServerHelloDonePreparator extends HandshakeMessagePreparator<Server
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final ServerHelloDoneMessage message;
-
     public ServerHelloDonePreparator(Chooser chooser, ServerHelloDoneMessage message) {
         super(chooser, message);
-        this.message = message;
     }
 
     @Override

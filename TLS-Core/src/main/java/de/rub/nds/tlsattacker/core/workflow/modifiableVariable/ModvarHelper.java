@@ -9,16 +9,17 @@
 package de.rub.nds.tlsattacker.core.workflow.modifiableVariable;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
+import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.modifiablevariable.util.ModifiableVariableAnalyzer;
 import de.rub.nds.modifiablevariable.util.ModifiableVariableField;
 import de.rub.nds.modifiablevariable.util.ModifiableVariableListHolder;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.modifiablevariable.util.ReflectionHelper;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceUtil;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceConfigurationUtil;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceResultUtil;
 import java.lang.reflect.Field;
 import java.util.LinkedList;
 import java.util.List;
@@ -69,7 +70,7 @@ public class ModvarHelper {
 
     public List<ModifiableVariableField> getAllNonNullSentFields(WorkflowTrace trace) {
         List<ModifiableVariableListHolder> holderList =
-                getSendModifiableVariableHoldersRecursively(trace);
+                getStaticallyConfiguredSendModifiableVariableHoldersRecursively(trace);
         List<ModifiableVariableField> allFields = new LinkedList<>();
         for (ModifiableVariableListHolder holder : holderList) {
             for (Field field : holder.getFields()) {
@@ -91,9 +92,9 @@ public class ModvarHelper {
         return filteredList;
     }
 
-    public List<ModifiableVariableField> getAllSentFields(WorkflowTrace trace) {
+    public List<ModifiableVariableField> getAllStaticallyConfiguredSentFields(WorkflowTrace trace) {
         List<ModifiableVariableListHolder> holderList =
-                getSendModifiableVariableHoldersRecursively(trace);
+                getStaticallyConfiguredSendModifiableVariableHoldersRecursively(trace);
         List<ModifiableVariableField> allFields = new LinkedList<>();
         for (ModifiableVariableListHolder holder : holderList) {
             for (Field field : holder.getFields()) {
@@ -111,7 +112,7 @@ public class ModvarHelper {
      * @return A list of all ModifieableVariableHolders
      */
     public List<ModifiableVariableHolder> getSentModifiableVariableHolders(WorkflowTrace trace) {
-        List<ProtocolMessage> protocolMessages = WorkflowTraceUtil.getAllSendMessages(trace);
+        List<ProtocolMessage> protocolMessages = WorkflowTraceResultUtil.getAllSentMessages(trace);
         List<ModifiableVariableHolder> result = new LinkedList<>();
         for (ProtocolMessage pm : protocolMessages) {
             result.addAll(pm.getAllModifiableVariableHolders());
@@ -127,7 +128,8 @@ public class ModvarHelper {
      */
     public List<ModifiableVariableListHolder> getReceivedModifiableVariableHoldersRecursively(
             WorkflowTrace trace) {
-        List<ProtocolMessage> protocolMessages = WorkflowTraceUtil.getAllReceivedMessages(trace);
+        List<ProtocolMessage> protocolMessages =
+                WorkflowTraceResultUtil.getAllReceivedMessages(trace);
         List<ModifiableVariableListHolder> result = new LinkedList<>();
         for (ProtocolMessage pm : protocolMessages) {
             result.addAll(
@@ -137,9 +139,10 @@ public class ModvarHelper {
         return result;
     }
 
-    public List<ModifiableVariableListHolder> getSendModifiableVariableHoldersRecursively(
-            WorkflowTrace trace) {
-        List<ProtocolMessage> protocolMessages = WorkflowTraceUtil.getAllSendMessages(trace);
+    public List<ModifiableVariableListHolder>
+            getStaticallyConfiguredSendModifiableVariableHoldersRecursively(WorkflowTrace trace) {
+        List<ProtocolMessage> protocolMessages =
+                WorkflowTraceConfigurationUtil.getAllStaticConfiguredSendMessages(trace);
         List<ModifiableVariableListHolder> result = new LinkedList<>();
         for (ProtocolMessage pm : protocolMessages) {
             result.addAll(

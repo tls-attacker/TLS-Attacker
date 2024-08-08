@@ -11,11 +11,9 @@ package de.rub.nds.tlsattacker.core.state;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.constants.ChooserType;
-import de.rub.nds.tlsattacker.core.constants.RunningModeType;
-import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.layer.LayerStack;
 import de.rub.nds.tlsattacker.core.layer.LayerStackFactory;
-import de.rub.nds.tlsattacker.core.layer.constant.LayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.constant.StackConfiguration;
 import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
 import de.rub.nds.tlsattacker.core.layer.context.TcpContext;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
@@ -26,8 +24,6 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * Contains runtime information about a connection. With the introduction of the layer system all
@@ -36,8 +32,6 @@ import org.apache.logging.log4j.Logger;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Context {
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     /** TODO: Replace with standard values in layer contexts */
     private Chooser chooser;
@@ -62,36 +56,19 @@ public class Context {
     /** The end point of the connection that this context represents. */
     private AliasedConnection connection;
 
-    public Context(Config config) {
+    /** The state which this context belongs to */
+    private State state;
+
+    public Context(State state, AliasedConnection connection) {
+        this.state = state;
+        this.config = state.getConfig();
         this.chooser = ChooserFactory.getChooser(ChooserType.DEFAULT, this, config);
-        this.config = config;
-        RunningModeType mode = config.getDefaultRunningMode();
-        if (null == mode) {
-            throw new ConfigurationException("Cannot create connection, running mode not set");
-        } else {
-            switch (mode) {
-                case CLIENT:
-                    this.connection = config.getDefaultClientConnection();
-                    break;
-                case SERVER:
-                    this.connection = config.getDefaultServerConnection();
-                    break;
-                default:
-                    throw new ConfigurationException(
-                            "Cannot create connection for unknown running mode "
-                                    + "'"
-                                    + mode
-                                    + "'");
-            }
-        }
+        this.connection = connection;
         prepareWithLayers(config.getDefaultLayerConfiguration());
     }
 
-    public Context(Config config, AliasedConnection connection) {
-        this.chooser = ChooserFactory.getChooser(ChooserType.DEFAULT, this, config);
-        this.config = config;
-        this.connection = connection;
-        prepareWithLayers(config.getDefaultLayerConfiguration());
+    public State getState() {
+        return state;
     }
 
     public TcpContext getTcpContext() {
@@ -190,7 +167,7 @@ public class Context {
         this.tlsContext = tlsContext;
     }
 
-    public void prepareWithLayers(LayerConfiguration type) {
+    public void prepareWithLayers(StackConfiguration type) {
         tlsContext = new TlsContext(this);
         httpContext = new HttpContext(this);
         tcpContext = new TcpContext(this);

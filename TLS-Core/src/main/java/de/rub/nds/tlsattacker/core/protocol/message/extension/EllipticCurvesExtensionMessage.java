@@ -26,8 +26,7 @@ import java.io.InputStream;
  * extension
  */
 @XmlRootElement(name = "EllipticCurves")
-public class EllipticCurvesExtensionMessage
-        extends ExtensionMessage<EllipticCurvesExtensionMessage> {
+public class EllipticCurvesExtensionMessage extends ExtensionMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger supportedGroupsLength;

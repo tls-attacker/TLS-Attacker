@@ -14,6 +14,7 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -22,6 +23,8 @@ import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2Message;
+import de.rub.nds.tlsattacker.core.state.Context;
+import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.util.tests.TestCategories;
 import java.io.ByteArrayInputStream;
@@ -58,7 +61,7 @@ public class CyclicParserSerializerTest {
 
     @BeforeEach
     public void setUp() {
-        context = new TlsContext();
+        context = new Context(new State(new Config()), new OutboundConnection()).getTlsContext();
     }
 
     public static Stream<Arguments> provideParserSerializerTestVectors() {
@@ -195,7 +198,7 @@ public class CyclicParserSerializerTest {
         try {
             preparator.prepare();
         } catch (UnsupportedOperationException e) {
-            LOGGER.info("Preparator for test " + testName + " is not yet supported");
+            LOGGER.info("Preparator for test {} is not yet supported", testName);
             throw new TestAbortedException(
                     "Preparator for test " + testName + " is not yet supported");
         }
@@ -222,7 +225,7 @@ public class CyclicParserSerializerTest {
         try {
             parser.parse(message);
         } catch (UnsupportedOperationException e) {
-            LOGGER.info("Parser for test " + testName + " is not yet supported");
+            LOGGER.info("Parser for test {} is not yet supported", testName);
             throw new TestAbortedException("Parser for test " + testName + " is not yet supported");
         } catch (EndOfStreamException eos) {
             LOGGER.info("EOS");
@@ -301,7 +304,7 @@ public class CyclicParserSerializerTest {
                 }
             }
         }
-        LOGGER.warn("Could not find Constructor: " + someClass.getSimpleName());
+        LOGGER.warn("Could not find Constructor: {}", someClass.getSimpleName());
         return null;
     }
 
@@ -311,7 +314,7 @@ public class CyclicParserSerializerTest {
                 return c;
             }
         }
-        LOGGER.warn("Could not find Constructor: " + someClass.getSimpleName());
+        LOGGER.warn("Could not find Constructor: {}", someClass.getSimpleName());
         return null;
     }
 }

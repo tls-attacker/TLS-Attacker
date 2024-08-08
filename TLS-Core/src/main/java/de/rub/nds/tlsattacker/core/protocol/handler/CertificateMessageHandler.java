@@ -8,31 +8,27 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.certificate.CertificateKeyPair;
+import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
+import de.rub.nds.protocol.crypto.ec.Point;
+import de.rub.nds.protocol.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.constants.CertificateType;
-import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.crypto.ec.Point;
-import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
-import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.layer.data.Handler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificateEntry;
-import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificatePair;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import de.rub.nds.x509attacker.context.X509Context;
+import de.rub.nds.x509attacker.x509.X509CertificateChain;
+import de.rub.nds.x509attacker.x509.model.X509Certificate;
+import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.DERBitString;
 import org.bouncycastle.asn1.DLSequence;
-import org.bouncycastle.crypto.tls.Certificate;
 
 public class CertificateMessageHandler extends HandshakeMessageHandler<CertificateMessage> {
 
@@ -77,14 +73,13 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
                         DERBitString publicKey = (DERBitString) dlSeq.getObjectAt(1);
                         byte[] pointBytes = publicKey.getBytes();
                         Point publicKeyPoint =
-                                PointFormatter.formatFromByteArray(group, pointBytes);
-                        if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.SERVER) {
-                            // TODO: this needs to be a new field in the context
-                            tlsContext.setServerEcPublicKey(publicKeyPoint);
-                        } else {
-                            // TODO: this needs to be a new field in the context
-                            tlsContext.setClientEcPublicKey(publicKeyPoint);
-                        }
+                                PointFormatter.formatFromByteArray(
+                                        (NamedEllipticCurveParameters) group.getGroupParameters(),
+                                        pointBytes);
+                        // This uses the x509 context, its technically not correct but for usability
+                        // its beneficial
+                        tlsContext.getTalkingX509Context().setSubjectEcPublicKey(publicKeyPoint);
+
                     } else {
                         throw new UnsupportedOperationException(
                                 "We currently do only support EC raw public keys. Sorry...");
@@ -95,100 +90,45 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
                 break;
             case X509:
                 LOGGER.debug("Adjusting context for x509 certificate message");
-                Certificate cert;
-                if (tlsContext.getChooser().getSelectedProtocolVersion().is13()) {
-                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                    int certificatesLength = 0;
-                    try {
-                        for (CertificatePair pair : message.getCertificatesList()) {
-
-                            stream.write(
-                                    ArrayConverter.intToBytes(
-                                            pair.getCertificateLength().getValue(),
-                                            HandshakeByteLength.CERTIFICATE_LENGTH));
-                            stream.write(pair.getCertificate().getValue());
-                            certificatesLength +=
-                                    pair.getCertificateLength().getValue()
-                                            + HandshakeByteLength.CERTIFICATE_LENGTH;
-                        }
-                    } catch (IOException ex) {
-                        throw new AdjustmentException(
-                                "Could not concatenate certificates bytes", ex);
-                    }
-                    cert = parseCertificate(certificatesLength, stream.toByteArray());
-                } else {
-                    cert =
-                            parseCertificate(
-                                    message.getCertificatesListLength().getValue(),
-                                    message.getCertificatesListBytes().getValue());
-                }
-                if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
-                    LOGGER.debug("Setting ClientCertificate in Context");
-                    tlsContext.setClientCertificate(cert);
-                } else {
-                    LOGGER.debug("Setting ServerCertificate in Context");
-                    tlsContext.setServerCertificate(cert);
-                }
-                if (message.getCertificateKeyPair() != null) {
-                    LOGGER.debug("Found a certificate key pair. Adjusting in context");
-                    message.getCertificateKeyPair()
-                            .adjustInContext(tlsContext, tlsContext.getTalkingConnectionEndType());
-                } else if (cert != null) {
-                    if (cert.isEmpty()) {
-                        LOGGER.debug("Certificate is empty - no adjustments");
+                X509CertificateChain certificateChain = new X509CertificateChain();
+                List<CertificateEntry> certificateEntryList = message.getCertificateEntryList();
+                for (CertificateEntry entry : certificateEntryList) {
+                    X509Certificate x509certificate = entry.getX509certificate();
+                    if (x509certificate != null) {
+                        certificateChain.addCertificate(x509certificate);
                     } else {
-                        LOGGER.debug("No CertificatekeyPair found, creating new one");
-                        CertificateKeyPair pair = new CertificateKeyPair(cert);
-                        message.setCertificateKeyPair(pair);
-                        message.getCertificateKeyPair()
-                                .adjustInContext(
-                                        tlsContext, tlsContext.getTalkingConnectionEndType());
+                        LOGGER.warn("Unparseable certificate entry in chain. Skipping in context");
                     }
-
-                } else {
-                    LOGGER.debug("Certificate not parsable - no adjustments");
                 }
 
+                if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
+                    LOGGER.debug("Setting ClientCertificateChain in Context");
+                    tlsContext.setClientCertificateChain(certificateChain);
+                } else {
+                    LOGGER.debug("Setting ServerCertificateChain in Context");
+                    tlsContext.setServerCertificateChain(certificateChain);
+                }
                 if (tlsContext.getChooser().getSelectedProtocolVersion().is13()) {
                     adjustCertExtensions(message);
                 }
                 break;
+
             default:
                 throw new UnsupportedOperationException("Unsupported CertificateType!");
         }
     }
 
-    private Certificate parseCertificate(int lengthBytes, byte[] bytesToParse) {
-        try {
-            ByteArrayInputStream stream =
-                    new ByteArrayInputStream(
-                            ArrayConverter.concatenate(
-                                    ArrayConverter.intToBytes(
-                                            lengthBytes, HandshakeByteLength.CERTIFICATES_LENGTH),
-                                    bytesToParse));
-            return Certificate.parse(stream);
-        } catch (Exception e) {
-            // This could really be anything. From classCast exception to
-            // Arrayindexoutofbounds
-            LOGGER.warn(
-                    "Could not parse Certificate bytes into Certificate object: {}",
-                    bytesToParse,
-                    e);
-            LOGGER.debug(e);
-            return null;
+    private void adjustCertExtensions(CertificateMessage certificateMessage) {
+        for (CertificateEntry pair : certificateMessage.getCertificateEntryList()) {
+            for (ExtensionMessage extensionMessage : pair.getExtensionList()) {
+                ExtensionHandler handler = extensionMessage.getHandler(tlsContext);
+                handler.adjustContext(extensionMessage);
+            }
         }
     }
 
-    private void adjustCertExtensions(CertificateMessage message) {
-        if (message.getCertificatesListAsEntry() != null) {
-            for (CertificateEntry entry : message.getCertificatesListAsEntry()) {
-                if (entry.getExtensions() != null) {
-                    for (ExtensionMessage extension : entry.getExtensions()) {
-                        Handler handler = extension.getHandler(tlsContext);
-                        handler.adjustContext(extension);
-                    }
-                }
-            }
-        }
+    @Override
+    public void adjustContextBeforeParse(CertificateMessage message) {
+        tlsContext.setTalkingX509Context(new X509Context());
     }
 }

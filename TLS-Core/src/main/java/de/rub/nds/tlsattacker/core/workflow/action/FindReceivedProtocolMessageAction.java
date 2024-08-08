@@ -10,9 +10,8 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceUtil;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceResultUtil;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,7 +23,7 @@ import org.apache.logging.log4j.Logger;
  * stored in "found" field. Prints "Found Type.name (Type.value)" for the first message found and
  * quits. Prints nothing if no message of given type was received.
  */
-@XmlRootElement
+@XmlRootElement(name = "FindReceivedProtocolMessage")
 public class FindReceivedProtocolMessageAction extends ConnectionBoundAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -46,8 +45,9 @@ public class FindReceivedProtocolMessageAction extends ConnectionBoundAction {
 
     @Override
     public void execute(State state) throws ActionExecutionException {
-        TlsContext ctx = state.getContext(getConnectionAlias()).getTlsContext();
-        found = WorkflowTraceUtil.didReceiveMessage(protocolMessageType, state.getWorkflowTrace());
+        found =
+                WorkflowTraceResultUtil.didReceiveMessage(
+                        state.getWorkflowTrace(), protocolMessageType);
         if (found) {
             LOGGER.info(
                     "Found "

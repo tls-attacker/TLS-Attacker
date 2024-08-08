@@ -12,8 +12,9 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
+import de.rub.nds.protocol.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.protocol.message.PWDServerKeyExchangeMessage;
 import java.math.BigInteger;
 import org.junit.jupiter.api.Test;
@@ -47,7 +48,10 @@ public class PWDServerKeyExchangeHandlerTest
 
         assertArrayEquals(
                 ArrayConverter.bigIntegerToByteArray(
-                        PointFormatter.formatFromByteArray(NamedGroup.BRAINPOOLP256R1, element)
+                        PointFormatter.formatFromByteArray(
+                                        (NamedEllipticCurveParameters)
+                                                NamedGroup.BRAINPOOLP256R1.getGroupParameters(),
+                                        element)
                                 .getFieldX()
                                 .getData()),
                 ArrayConverter.bigIntegerToByteArray(

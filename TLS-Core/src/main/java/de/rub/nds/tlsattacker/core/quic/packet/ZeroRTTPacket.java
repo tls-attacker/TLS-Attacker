@@ -19,11 +19,10 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
 @XmlRootElement
-public class ZeroRTTPacket extends LongHeaderPacket<ZeroRTTPacket> {
+public class ZeroRTTPacket extends LongHeaderPacket {
 
     public ZeroRTTPacket() {
         super(QuicPacketType.ZERO_RTT_PACKET);
-        this.setUnprotectedFlags(QuicPacketType.ZERO_RTT_PACKET.getHeader());
         this.packetSecret = QuicCryptoSecrets.APPLICATION_SECRET;
     }
 

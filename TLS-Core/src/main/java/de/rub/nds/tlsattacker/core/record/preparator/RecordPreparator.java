@@ -97,7 +97,7 @@ public class RecordPreparator extends Preparator<Record> {
 
     private void prepareContentType(Record record) {
         record.setContentType(type.getValue());
-        LOGGER.debug("ContentType: " + type.getValue());
+        LOGGER.debug("ContentType: {}", type.getValue());
         prepareContentMessageType(type);
     }
 
@@ -115,7 +115,7 @@ public class RecordPreparator extends Preparator<Record> {
 
     private void prepareLength(Record record) {
         record.setLength(record.getProtocolMessageBytes().getValue().length);
-        LOGGER.debug("Length: " + record.getLength().getValue());
+        LOGGER.debug("Length: {}", record.getLength().getValue());
     }
 
     protected void prepareContentMessageType(ProtocolMessageType type) {

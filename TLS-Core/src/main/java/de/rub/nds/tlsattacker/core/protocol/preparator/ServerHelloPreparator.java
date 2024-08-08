@@ -113,9 +113,7 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
             }
             msg.setSelectedCipherSuite(selectedSuite.getByteValue());
         }
-        LOGGER.debug(
-                "SelectedCipherSuite: "
-                        + ArrayConverter.bytesToHexString(msg.getSelectedCipherSuite().getValue()));
+        LOGGER.debug("SelectedCipherSuite: {}", msg.getSelectedCipherSuite().getValue());
     }
 
     private void prepareCompressionMethod() {
@@ -148,8 +146,7 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
         } else {
             msg.setSessionId(chooser.getServerSessionId());
         }
-        LOGGER.debug(
-                "SessionID: " + ArrayConverter.bytesToHexString(msg.getSessionId().getValue()));
+        LOGGER.debug("SessionID: {}", msg.getSessionId().getValue());
     }
 
     private void prepareProtocolVersion() {
@@ -188,9 +185,7 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
                 msg.setProtocolVersion(chooser.getSelectedProtocolVersion().getValue());
             }
         }
-        LOGGER.debug(
-                "ProtocolVersion: "
-                        + ArrayConverter.bytesToHexString(msg.getProtocolVersion().getValue()));
+        LOGGER.debug("ProtocolVersion: {}", msg.getProtocolVersion().getValue());
     }
 
     protected void prepareEchRandom() {
@@ -219,26 +214,23 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
 
         // digest clientHello and serverHello
         MessageDigestCollector echDigest = new MessageDigestCollector();
-        LOGGER.debug("ClientHelloInner: " + ArrayConverter.bytesToHexString(clientHelloInner));
-        LOGGER.debug("ServerHello: " + ArrayConverter.bytesToHexString(serverHello));
+        LOGGER.debug("ClientHelloInner: {}", clientHelloInner);
+        LOGGER.debug("ServerHello: {}", serverHello);
         echDigest.append(clientHelloInner);
         echDigest.append(serverHello);
-        LOGGER.debug(
-                "Complete resulting digest: "
-                        + ArrayConverter.bytesToHexString(echDigest.getRawBytes()));
+        LOGGER.debug("Complete resulting digest: {}", echDigest.getRawBytes());
 
         byte[] transcriptEchConf =
                 echDigest.digest(
                         chooser.getSelectedProtocolVersion(), chooser.getSelectedCipherSuite());
-        LOGGER.debug(
-                "Transcript Ech Config: " + ArrayConverter.bytesToHexString(transcriptEchConf));
+        LOGGER.debug("Transcript Ech Config: {}", transcriptEchConf);
 
         // compute accept_confirmation
         HKDFAlgorithm hkdfAlgorithm =
                 chooser.getEchConfig().getHpkeKeyDerivationFunction().getHkdfAlgorithm();
         try {
             byte[] extract = HKDFunction.extract(hkdfAlgorithm, null, clientRandom);
-            LOGGER.debug("Extract: " + ArrayConverter.bytesToHexString(extract));
+            LOGGER.debug("Extract: {}", extract);
             acceptConfirmation =
                     HKDFunction.expandLabel(
                             hkdfAlgorithm,
@@ -247,8 +239,7 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
                             transcriptEchConf,
                             8,
                             chooser.getSelectedProtocolVersion());
-            LOGGER.debug(
-                    "Accept Confirmation: " + ArrayConverter.bytesToHexString(acceptConfirmation));
+            LOGGER.debug("Accept Confirmation: {}", acceptConfirmation);
         } catch (CryptoException e) {
             LOGGER.warn("Could not calculate accept confirmation");
         }

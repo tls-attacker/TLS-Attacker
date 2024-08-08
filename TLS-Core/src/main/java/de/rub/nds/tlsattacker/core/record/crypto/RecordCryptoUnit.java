@@ -53,7 +53,7 @@ public abstract class RecordCryptoUnit {
         if (recordCipherList.size() > epoch && recordCipherList.get(epoch) != null) {
             return recordCipherList.get(epoch);
         } else {
-            LOGGER.warn("Got no RecordCipher for epoch: " + epoch + ". Using epoch 0 cipher");
+            LOGGER.warn("Got no RecordCipher for epoch: {}. Using epoch 0 cipher", epoch);
             return recordCipherList.get(0);
         }
     }

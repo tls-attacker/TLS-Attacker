@@ -30,13 +30,13 @@ public class ServerTcpTransportHandler extends TcpTransportHandler {
     }
 
     public ServerTcpTransportHandler(long firstTimeout, long timeout, int port) {
-        super(firstTimeout, timeout, ConnectionEndType.SERVER);
+        super(timeout, ConnectionEndType.SERVER);
         this.srcPort = port;
     }
 
     public ServerTcpTransportHandler(long firstTimeout, long timeout, ServerSocket serverSocket)
             throws IOException {
-        super(firstTimeout, timeout, ConnectionEndType.SERVER);
+        super(timeout, ConnectionEndType.SERVER);
         this.srcPort = serverSocket.getLocalPort();
         this.serverSocket = serverSocket;
         socketManagement = SocketManagement.EXTERNAL_SERVER_SOCKET;

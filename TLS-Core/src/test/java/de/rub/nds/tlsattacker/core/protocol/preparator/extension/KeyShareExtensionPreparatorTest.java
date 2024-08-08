@@ -61,6 +61,7 @@ public class KeyShareExtensionPreparatorTest
     /** Test of prepare method, of class KeyShareExtensionPreparator. */
     @Test
     public void testPreparePWD() {
+        context.setConnection(context.getConfig().getDefaultClientConnection());
         context.setSelectedCipherSuite(CipherSuite.TLS_ECCPWD_WITH_AES_128_GCM_SHA256);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS13);
         List<KeyShareEntry> keyShareList = new LinkedList<>();

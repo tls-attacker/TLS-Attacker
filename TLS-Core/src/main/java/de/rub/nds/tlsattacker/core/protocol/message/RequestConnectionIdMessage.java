@@ -22,7 +22,7 @@ import java.io.InputStream;
 import java.util.Objects;
 
 @XmlRootElement(name = "RequestConnectionId")
-public class RequestConnectionIdMessage extends HandshakeMessage<RequestConnectionIdMessage> {
+public class RequestConnectionIdMessage extends HandshakeMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.NONE)
     ModifiableInteger numberOfConnectionIds;

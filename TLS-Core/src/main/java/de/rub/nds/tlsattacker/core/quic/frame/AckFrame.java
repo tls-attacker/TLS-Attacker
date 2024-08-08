@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.quic.frame;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
-import de.rub.nds.modifiablevariable.mlong.ModifiableLong;
+import de.rub.nds.modifiablevariable.longint.ModifiableLong;
 import de.rub.nds.tlsattacker.core.quic.constants.QuicFrameType;
 import de.rub.nds.tlsattacker.core.quic.handler.frame.AckFrameHandler;
 import de.rub.nds.tlsattacker.core.quic.parser.frame.AckFrameParser;
@@ -21,7 +21,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
 @XmlRootElement
-public class AckFrame extends QuicFrame<AckFrame> {
+public class AckFrame extends QuicFrame {
 
     /**
      * A variable-length integer representing the largest packet number the peer is acknowledging;
@@ -59,6 +59,10 @@ public class AckFrame extends QuicFrame<AckFrame> {
 
     public AckFrame() {
         super(QuicFrameType.ACK_FRAME);
+    }
+
+    protected AckFrame(QuicFrameType frameType) {
+        super(frameType);
     }
 
     public void setLargestAcknowledged(ModifiableLong largestAcknowledged) {

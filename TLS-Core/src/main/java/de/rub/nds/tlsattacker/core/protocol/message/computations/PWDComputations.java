@@ -9,11 +9,19 @@
 package de.rub.nds.tlsattacker.core.protocol.message.computations;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.*;
+import de.rub.nds.protocol.crypto.CyclicGroup;
+import de.rub.nds.protocol.crypto.ec.EllipticCurve;
+import de.rub.nds.protocol.crypto.ec.Point;
+import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.core.constants.Bits;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.crypto.PseudoRandomFunction;
-import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
-import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.util.StaticTicketCrypto;
@@ -37,16 +45,19 @@ public class PWDComputations extends KeyExchangeComputations {
      * Computes the password element for TLS_ECCPWD according to RFC 8492
      *
      * @param chooser
-     * @param curve The curve that the generated point should fall on
+     * @param group The curve that the generated point should fall on
      * @return
      * @throws CryptoException
      */
-    public static Point computePasswordElement(Chooser chooser, EllipticCurve curve)
+    public static Point computePasswordElement(Chooser chooser, CyclicGroup<?> group)
             throws CryptoException {
         MacAlgorithm randomFunction = getMacAlgorithm(chooser.getSelectedCipherSuite());
-
-        BigInteger prime = curve.getModulus();
-
+        if (!(group instanceof EllipticCurve)) {
+            LOGGER.debug(
+                    "Can only compute the password element for elliptic curves. Returning default point");
+            return new Point();
+        }
+        EllipticCurve curve = (EllipticCurve) group;
         byte[] base;
         byte[] salt = chooser.getContext().getTlsContext().getServerPWDSalt();
         if (salt == null && chooser.getSelectedProtocolVersion() != ProtocolVersion.TLS13) {
@@ -90,11 +101,13 @@ public class PWDComputations extends KeyExchangeComputations {
                     ArrayConverter.concatenate(
                             base,
                             ArrayConverter.intToBytes(counter, 1),
-                            ArrayConverter.bigIntegerToByteArray(prime));
+                            ArrayConverter.bigIntegerToByteArray(curve.getModulus()));
             byte[] seed = StaticTicketCrypto.generateHMAC(randomFunction, seedInput, new byte[4]);
             byte[] tmp = prf(chooser, seed, context, n);
             BigInteger tmpX =
-                    new BigInteger(1, tmp).mod(prime.subtract(BigInteger.ONE)).add(BigInteger.ONE);
+                    new BigInteger(1, tmp)
+                            .mod(curve.getModulus().subtract(BigInteger.ONE))
+                            .add(BigInteger.ONE);
             Point tempPoint = curve.createAPointOnCurve(tmpX);
 
             if (!found && curve.isOnCurve(tempPoint)) {
@@ -192,7 +205,14 @@ public class PWDComputations extends KeyExchangeComputations {
     }
 
     public static PWDKeyMaterial generateKeyMaterial(
-            EllipticCurve curve, Point passwordElement, Chooser chooser) {
+            CyclicGroup<?> group, Point passwordElement, Chooser chooser) {
+        if (!(group instanceof EllipticCurve)) {
+            LOGGER.debug(
+                    "Can only compute the password element for elliptic curves. Returning Empty PWDKeyMaterial");
+            return new PWDKeyMaterial();
+        }
+        EllipticCurve curve = (EllipticCurve) group;
+
         BigInteger mask;
         PWDKeyMaterial keyMaterial = new PWDKeyMaterial();
         if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {

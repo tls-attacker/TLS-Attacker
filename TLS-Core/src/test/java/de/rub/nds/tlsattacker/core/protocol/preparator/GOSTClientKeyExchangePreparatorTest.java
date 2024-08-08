@@ -11,9 +11,10 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
+import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
-import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.protocol.message.GOSTClientKeyExchangeMessage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -68,25 +69,27 @@ public class GOSTClientKeyExchangePreparatorTest
                         new JcaPEMKeyConverter().getPublicKey(cert.getSubjectPublicKeyInfo());
         GOSTCurve curve = GOSTCurve.fromNamedSpec((ECNamedCurveSpec) publicKey.getParams());
         context.setSelectedGostCurve(curve);
-        context.setClientEcPublicKey(
+        context.setClientEphemeralEcPublicKey(
                 Point.createPoint(
                         new BigInteger(
                                 "10069287008658366627190983283629950164812876811521243982114767082045824150473125516608530551778844996599072529376320668260150663514143959293374556657645673"),
                         new BigInteger(
                                 "4228377264366878847378418012458228511431314506811669878991142841071421303960493802009018251089924600277704518780058414193146250040620726620722848816814410"),
-                        curve));
+                        (NamedEllipticCurveParameters) curve.getGroupParameters()));
         ECPoint q = publicKey.getQ();
         Point ecPoint =
                 Point.createPoint(
-                        q.getRawXCoord().toBigInteger(), q.getRawYCoord().toBigInteger(), curve);
+                        q.getRawXCoord().toBigInteger(),
+                        q.getRawYCoord().toBigInteger(),
+                        (NamedEllipticCurveParameters) curve.getGroupParameters());
 
-        context.setServerEcPublicKey(ecPoint);
+        context.setServerEphemeralEcPublicKey(ecPoint);
 
         BigInteger s =
                 new BigInteger(
                         "9E861AD6F9061ADC8D94634E3C27DADF415EAE3FEA8AF1BAA803DDD4DAA20E1D57BAA0B9F48B664A9C17C778478238FA936B0DC331328EB6BB76E057CB2FE24C",
                         16);
-        context.setClientEcPrivateKey(s);
+        context.setClientEphemeralEcPrivateKey(s);
 
         createNewMessageAndPreparator(true);
         preparator.prepare();

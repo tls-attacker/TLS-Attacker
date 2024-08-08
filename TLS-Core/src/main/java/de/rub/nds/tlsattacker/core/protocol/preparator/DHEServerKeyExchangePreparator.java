@@ -9,20 +9,17 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.protocol.constants.FfdhGroupParameters;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
-import de.rub.nds.tlsattacker.core.crypto.SignatureCalculator;
-import de.rub.nds.tlsattacker.core.crypto.ffdh.FFDHEGroup;
-import de.rub.nds.tlsattacker.core.crypto.ffdh.GroupFactory;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class DHEServerKeyExchangePreparator<T extends DHEServerKeyExchangeMessage<?>>
+public class DHEServerKeyExchangePreparator<T extends DHEServerKeyExchangeMessage>
         extends ServerKeyExchangePreparator<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -47,42 +44,36 @@ public class DHEServerKeyExchangePreparator<T extends DHEServerKeyExchangeMessag
         // Compute PublicKeys
         preparePublicKey(msg);
         prepareDheParams();
-        selectedSignatureHashAlgo = chooser.getSelectedSigHashAlgorithm();
+        selectedSignatureHashAlgo = chooseSignatureAndHashAlgorithm();
         prepareSignatureAndHashAlgorithm(msg);
-        signature = new byte[0];
-        try {
-            signature = generateSignature(selectedSignatureHashAlgo);
-        } catch (CryptoException e) {
-            LOGGER.warn("Could not generate Signature! Using empty one instead!", e);
-        }
+        signature = generateSignature(selectedSignatureHashAlgo, generateToBeSigned());
         prepareSignature(msg);
         prepareSignatureLength(msg);
     }
 
     protected void setDheParams() {
-        msg.prepareComputations();
-        NamedGroup ffdheGroup = getMatchingNamedGroup();
-        if (ffdheGroup == null) {
+        msg.prepareKeyExchangeComputations();
+        NamedGroup ffdhGroup = getMatchingNamedGroup();
+        if (ffdhGroup == null) {
             setComputedGenerator(msg);
             setComputedModulus(msg);
         } else {
-            setNamedGroupParameters(msg, ffdheGroup);
+            setNamedGroupParameters(msg, ffdhGroup);
         }
         setComputedPrivateKey(msg);
     }
 
     protected void setDheExportParams() {
-        msg.prepareComputations();
-        msg.getComputations().setGenerator(chooser.getConfig().getDefaultServerDhExportGenerator());
-        LOGGER.debug(
-                "Generator: 0x" + msg.getComputations().getGenerator().getValue().toString(16));
-        msg.getComputations().setModulus(chooser.getConfig().getDefaultServerDhExportModulus());
-        LOGGER.debug(
-                "Modulus used for Computations: 0x"
-                        + msg.getComputations().getModulus().getValue().toString(16));
-        msg.getComputations()
+        msg.prepareKeyExchangeComputations();
+        msg.getKeyExchangeComputations()
+                .setGenerator(chooser.getConfig().getDefaultServerDhExportGenerator());
+        LOGGER.debug("Generator: {}", msg.getKeyExchangeComputations().getGenerator().getValue());
+        msg.getKeyExchangeComputations()
+                .setModulus(chooser.getConfig().getDefaultServerDhExportModulus());
+        LOGGER.debug("Modulus: {}", msg.getKeyExchangeComputations().getModulus().getValue());
+        msg.getKeyExchangeComputations()
                 .setPrivateKey(chooser.getConfig().getDefaultServerDhExportPrivateKey());
-        LOGGER.debug("PrivateKey: " + msg.getComputations().getPrivateKey().getValue());
+        LOGGER.debug("PrivateKey: {}", msg.getKeyExchangeComputations().getPrivateKey().getValue());
     }
 
     protected void prepareDheParams() {
@@ -110,42 +101,38 @@ public class DHEServerKeyExchangePreparator<T extends DHEServerKeyExchangeMessag
                                 HandshakeByteLength.DH_PUBLICKEY_LENGTH),
                         msg.getPublicKey().getValue());
         return ArrayConverter.concatenate(
-                msg.getComputations().getClientServerRandom().getValue(), dhParams);
-    }
-
-    protected byte[] generateSignature(SignatureAndHashAlgorithm algorithm) throws CryptoException {
-        return SignatureCalculator.generateSignature(algorithm, chooser, generateToBeSigned());
+                msg.getKeyExchangeComputations().getClientServerRandom().getValue(), dhParams);
     }
 
     protected void prepareGenerator(T msg) {
-        msg.setGenerator(msg.getComputations().getGenerator().getByteArray());
+        msg.setGenerator(msg.getKeyExchangeComputations().getGenerator().getByteArray());
         LOGGER.debug("Generator: {}", msg.getGenerator().getValue());
     }
 
     protected void prepareModulus(T msg) {
-        msg.setModulus(msg.getComputations().getModulus().getByteArray());
+        msg.setModulus(msg.getKeyExchangeComputations().getModulus().getByteArray());
         LOGGER.debug("Modulus: {}", msg.getModulus().getValue());
     }
 
     protected void prepareGeneratorLength(T msg) {
         msg.setGeneratorLength(msg.getGenerator().getValue().length);
-        LOGGER.debug("Generator Length: " + msg.getGeneratorLength().getValue());
+        LOGGER.debug("Generator Length: {}", msg.getGeneratorLength().getValue());
     }
 
     protected void prepareModulusLength(T msg) {
         msg.setModulusLength(msg.getModulus().getValue().length);
-        LOGGER.debug("Modulus Length: " + msg.getModulusLength().getValue());
+        LOGGER.debug("Modulus Length: {}", msg.getModulusLength().getValue());
     }
 
     protected void preparePublicKey(T msg) {
-        BigInteger publicKey = chooser.getServerDhPublicKey();
+        BigInteger publicKey = chooser.getServerEphemeralDhPublicKey();
         try {
 
-            BigInteger generator = msg.getComputations().getGenerator().getValue();
+            BigInteger generator = msg.getKeyExchangeComputations().getGenerator().getValue();
             publicKey =
                     generator.modPow(
-                            msg.getComputations().getPrivateKey().getValue(),
-                            msg.getComputations().getModulus().getValue());
+                            msg.getKeyExchangeComputations().getPrivateKey().getValue(),
+                            msg.getKeyExchangeComputations().getModulus().getValue());
         } catch (Exception e) {
             LOGGER.warn("Could not compute public key", e);
         }
@@ -155,26 +142,26 @@ public class DHEServerKeyExchangePreparator<T extends DHEServerKeyExchangeMessag
 
     protected void preparePublicKeyLength(T msg) {
         msg.setPublicKeyLength(msg.getPublicKey().getValue().length);
-        LOGGER.debug("PublicKeyLength: " + msg.getPublicKeyLength().getValue());
+        LOGGER.debug("PublicKeyLength: {}", msg.getPublicKeyLength().getValue());
     }
 
     protected void setComputedPrivateKey(T msg) {
-        msg.getComputations().setPrivateKey(chooser.getServerDhPrivateKey());
-        LOGGER.debug("PrivateKey: " + msg.getComputations().getPrivateKey().getValue());
+        msg.getKeyExchangeComputations().setPrivateKey(chooser.getServerEphemeralDhPrivateKey());
+        LOGGER.debug("PrivateKey: {}", msg.getKeyExchangeComputations().getPrivateKey().getValue());
     }
 
     protected void setComputedModulus(T msg) {
-        msg.getComputations().setModulus(chooser.getServerDhModulus());
+        msg.getKeyExchangeComputations().setModulus(chooser.getServerEphemeralDhModulus());
         LOGGER.debug(
-                "Modulus used for Computations: 0x"
-                        + msg.getComputations().getModulus().getValue().toString(16));
+                "Modulus used for Computations: {}",
+                msg.getKeyExchangeComputations().getModulus().getValue().toString(16));
     }
 
     protected void setComputedGenerator(T msg) {
-        msg.getComputations().setGenerator(chooser.getServerDhGenerator());
+        msg.getKeyExchangeComputations().setGenerator(chooser.getServerEphemeralDhGenerator());
         LOGGER.debug(
-                "Generator used for Computations: 0x"
-                        + msg.getComputations().getGenerator().getValue().toString(16));
+                "Generator used for Computations: {}",
+                msg.getKeyExchangeComputations().getGenerator().getValue().toString(16));
     }
 
     protected void prepareSignatureAndHashAlgorithm(T msg) {
@@ -183,30 +170,31 @@ public class DHEServerKeyExchangePreparator<T extends DHEServerKeyExchangeMessag
     }
 
     protected void prepareClientServerRandom(T msg) {
-        msg.getComputations()
+        msg.getKeyExchangeComputations()
                 .setClientServerRandom(
                         ArrayConverter.concatenate(
                                 chooser.getClientRandom(), chooser.getServerRandom()));
         LOGGER.debug(
-                "ClientServerRandom: {}", msg.getComputations().getClientServerRandom().getValue());
+                "ClientServerRandom: {}",
+                msg.getKeyExchangeComputations().getClientServerRandom().getValue());
     }
 
     protected void prepareSignature(T msg) {
         msg.setSignature(signature);
-        LOGGER.debug("signature: {}", msg.getSignature().getValue());
+        LOGGER.debug("Signature: {}", msg.getSignature().getValue());
     }
 
     protected void prepareSignatureLength(T msg) {
         msg.setSignatureLength(msg.getSignature().getValue().length);
-        LOGGER.debug("SignatureLength: " + msg.getSignatureLength().getValue());
+        LOGGER.debug("SignatureLength: {}", msg.getSignatureLength().getValue());
     }
 
     private void setNamedGroupParameters(T msg, NamedGroup chosenGroup) {
         LOGGER.debug(
                 "Negotiating NamedGroup {} for Server Key Exchange message", chosenGroup.name());
-        FFDHEGroup ffdheGroup = GroupFactory.getGroup(chosenGroup);
-        msg.getComputations().setGenerator(ffdheGroup.getG());
-        msg.getComputations().setModulus(ffdheGroup.getP());
+        FfdhGroupParameters ffdhGroup = (FfdhGroupParameters) chosenGroup.getGroupParameters();
+        msg.getKeyExchangeComputations().setGenerator(ffdhGroup.getGenerator());
+        msg.getKeyExchangeComputations().setModulus(ffdhGroup.getModulus());
     }
 
     private NamedGroup getMatchingNamedGroup() {

@@ -21,8 +21,6 @@ import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.layer.data.Handler;
-import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.hints.QuicFrameLayerHint;
@@ -31,8 +29,11 @@ import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerInputStream;
 import de.rub.nds.tlsattacker.core.protocol.MessageFactory;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageSerializer;
+import de.rub.nds.tlsattacker.core.protocol.handler.HandshakeMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.*;
+import de.rub.nds.tlsattacker.core.protocol.parser.HandshakeMessageParser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -90,12 +91,14 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
     private void processMessage(
             ProtocolMessage message, ByteArrayOutputStream collectedMessageStream)
             throws IOException {
-        ProtocolMessageSerializer serializer = message.getSerializer(context);
+        ProtocolMessageSerializer<? extends ProtocolMessage> serializer =
+                message.getSerializer(context);
         byte[] serializedMessage = serializer.serialize();
         message.setCompleteResultingMessage(serializedMessage);
-        message.getHandler(context).updateDigest(message, true);
+        ProtocolMessageHandler handler = message.getHandler(context);
+        handler.updateDigest(message, true);
         if (message.getAdjustContext()) {
-            message.getHandler(context).adjustContext(message);
+            handler.adjustContext(message);
         }
         collectedMessageStream.writeBytes(message.getCompleteResultingMessage().getValue());
         if (mustFlushCollectedMessagesImmediately(message)) {
@@ -106,7 +109,7 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
                     message.getProtocolMessageType(), collectedMessageStream, isFirstMessage);
         }
         if (message.getAdjustContext()) {
-            message.getHandler(context).adjustContextAfterSerialize(message);
+            handler.adjustContextAfterSerialize(message);
         }
     }
 
@@ -238,9 +241,11 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
                 // receive until the layer configuration is satisfied or no data is left
             } while (shouldContinueProcessing());
         } catch (TimeoutException ex) {
-            LOGGER.debug(ex);
+            LOGGER.debug("Received a timeout");
+            LOGGER.trace(ex);
         } catch (EndOfStreamException ex) {
-            LOGGER.debug("Reached end of stream, cannot parse more messages", ex);
+            LOGGER.debug("Reached end of stream, cannot parse more messages");
+            LOGGER.trace(ex);
         }
 
         return getLayerResult();
@@ -307,7 +312,7 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
      * @throws IOException
      */
     private void readHandshakeProtocolData() {
-        byte[] readBytes = new byte[0];
+        ByteArrayOutputStream readBytesStream = new ByteArrayOutputStream();
         byte type;
         int length;
         byte[] payload;
@@ -316,7 +321,7 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
         try {
             handshakeStream = getLowerLayer().getDataStream();
             type = handshakeStream.readByte();
-            readBytes = ArrayConverter.concatenate(readBytes, new byte[] {type});
+            readBytesStream.write(new byte[] {type});
             handshakeMessage =
                     MessageFactory.generateHandshakeMessage(
                             HandshakeMessageType.getMessageType(type), context);
@@ -324,19 +329,21 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
             byte[] lengthBytes =
                     handshakeStream.readChunk(HandshakeByteLength.MESSAGE_LENGTH_FIELD);
             length = ArrayConverter.bytesToInt(lengthBytes);
-            readBytes = ArrayConverter.concatenate(readBytes, lengthBytes);
+            readBytesStream.write(lengthBytes);
             handshakeMessage.setLength(length);
             payload = handshakeStream.readChunk(length);
-            readBytes = ArrayConverter.concatenate(readBytes, payload);
+            readBytesStream.write(payload);
 
         } catch (IOException ex) {
             LOGGER.error("Could not parse message header. Setting bytes as unread: ", ex);
             // not being able to parse the header leaves us with unreadable bytes
             // append instead of replace because we can read multiple messages in one read action
-            setUnreadBytes(ArrayConverter.concatenate(this.getUnreadBytes(), readBytes));
+            setUnreadBytes(
+                    ArrayConverter.concatenate(
+                            this.getUnreadBytes(), readBytesStream.toByteArray()));
             return;
         }
-        Handler handler = handshakeMessage.getHandler(context);
+        HandshakeMessageHandler handler = handshakeMessage.getHandler(context);
         handshakeMessage.setMessageContent(payload);
 
         try {
@@ -346,21 +353,23 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
                             ArrayConverter.intToBytes(
                                     length, HandshakeByteLength.MESSAGE_LENGTH_FIELD),
                             payload));
-            Parser parser = handshakeMessage.getParser(context, new ByteArrayInputStream(payload));
+            HandshakeMessageParser parser =
+                    handshakeMessage.getParser(context, new ByteArrayInputStream(payload));
             parser.parse(handshakeMessage);
             Preparator preparator = handshakeMessage.getPreparator(context);
-            preparator.prepareAfterParse(false); // TODO REMOVE THIS CLIENTMODE FLAG
+            preparator.prepareAfterParse();
             if (context.getChooser().getSelectedProtocolVersion().isDTLS()) {
                 handshakeMessage.setMessageSequence(
                         ((RecordLayerHint) handshakeStream.getHint()).getMessageSequence());
             }
-            handshakeMessage.getHandler(context).updateDigest(handshakeMessage, false);
+            handler.updateDigest(handshakeMessage, false);
             handler.adjustContext(handshakeMessage);
             addProducedContainer(handshakeMessage);
         } catch (RuntimeException ex) {
             LOGGER.warn(
                     "Failed to parse HandshakeMessage using assumed type {}",
                     HandshakeMessageType.getMessageType(type));
+            LOGGER.trace(ex);
             // not being able to handle the handshake message results in an UnknownMessageContainer
             UnknownHandshakeMessage message = new UnknownHandshakeMessage();
             message.setAssumedType(type);
@@ -415,16 +424,18 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
             }
             // receive until the layer configuration is satisfied or no data is left
         } catch (TimeoutException ex) {
-            LOGGER.debug(ex);
+            LOGGER.debug("Received a timeout");
+            LOGGER.trace(ex);
         } catch (EndOfStreamException ex) {
-            LOGGER.debug("Reached end of stream, cannot parse more messages", ex);
+            LOGGER.debug("Reached end of stream, cannot parse more messages");
+            LOGGER.trace(ex);
         }
     }
 
     public void passToHigherLayer(ApplicationMessage receivedAppData, LayerProcessingHint hint) {
         LOGGER.debug(
                 "Passing the following Application Data to higher layer: {}",
-                ArrayConverter.bytesToHexString(receivedAppData.getData().getValue()));
+                receivedAppData.getData().getValue());
         if (currentInputStream == null) {
             currentInputStream = new HintedLayerInputStream(hint, this);
         } else {

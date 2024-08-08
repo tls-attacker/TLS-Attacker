@@ -11,9 +11,9 @@ if there is only one connection defined in the workflow trace.
         <alias>client</alias>
     </OutboundConnection>
     <Send>
-        <messages>
+        <configuredMessages>
             <ClientHello/>
-        </messages>
+        </configuredMessages>
     </Send>
 </workflowTrace>
 
@@ -25,22 +25,15 @@ if there is only one connection defined in the workflow trace.
         <port>443</port>
         <hostname>localhost</hostname>
         <timeout>1000</timeout>
-        <firstTimeout>1000</firstTimeout>
         <connectionTimeout>8000</connectionTimeout>
         <transportHandlerType>TCP</transportHandlerType>
         <useIpv6>false</useIpv6>
     </OutboundConnection>
     <Send>
-        <actionOptions/>
         <connectionAlias>client</connectionAlias>
-        <messages>
+        <configuredMessages>
             <ClientHello/>
-        </messages>
-        <httpMessages/>
-        <records/>
-        <fragments/>
-        <quicFrames/>
-        <quicPackets/>
+        </configuredMessages>
     </Send>
 </workflowTrace>
 
@@ -50,9 +43,8 @@ if there is only one connection defined in the workflow trace.
         <alias>client</alias>
     </OutboundConnection>
     <Send>
-        <actionOptions/>
-        <messages>
+        <configuredMessages>
             <ClientHello/>
-        </messages>
+        </configuredMessages>
     </Send>
 </workflowTrace>

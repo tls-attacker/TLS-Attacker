@@ -11,8 +11,10 @@ package de.rub.nds.tlsattacker.core.http;
 import static org.junit.Assert.assertEquals;
 
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
 import de.rub.nds.tlsattacker.core.state.Context;
+import de.rub.nds.tlsattacker.core.state.State;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.Charset;
 import org.junit.Before;
@@ -26,7 +28,7 @@ public class HttpRequestHandlerTest {
 
     @Before
     public void setUp() {
-        context = new HttpContext(new Context(new Config()));
+        context = new Context(new State(new Config()), new OutboundConnection()).getHttpContext();
 
         String rawMessage =
                 "GET /index.html HTTP/1.1\r\nUser-Agent: Test\r\nHost: www.rub.de\r\n\r\n";

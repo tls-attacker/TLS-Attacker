@@ -268,8 +268,9 @@ public enum ExtensionType {
             case QUIC_TRANSPORT_PARAMETERS:
             case RECORD_SIZE_LIMIT:
                 return true;
+            default:
+                return false;
         }
-        return false;
     }
 
     public static List<ExtensionType> getNonTls13Extensions() {

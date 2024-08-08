@@ -8,8 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.state.parser;
 
-import static de.rub.nds.modifiablevariable.util.ArrayConverter.bytesToHexString;
-
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
@@ -44,9 +42,7 @@ public class SessionTicketParser extends Parser<SessionTicket> {
 
     private void parseKeyName(SessionTicket sessionTicket) {
         sessionTicket.setKeyName(parseByteArrayField(configTicketKeyName.length));
-        LOGGER.debug(
-                "Parsed session ticket key name {} ",
-                () -> bytesToHexString(sessionTicket.getKeyName().getValue()));
+        LOGGER.debug("Parsed session ticket key name {} ", sessionTicket.getKeyName().getValue());
         if (!Arrays.equals(sessionTicket.getKeyName().getValue(), configTicketKeyName)) {
             LOGGER.warn(
                     "Parsed session ticket key name does not match expected key name - subsequent parsing will probably fail");

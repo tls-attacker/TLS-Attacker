@@ -10,12 +10,12 @@ package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.PskServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.PSKPremasterComputations;
 import de.rub.nds.tlsattacker.core.protocol.parser.PskServerKeyExchangeParser;
@@ -26,8 +26,7 @@ import java.io.InputStream;
 import java.util.List;
 
 @XmlRootElement(name = "PskServerKeyExchange")
-public class PskServerKeyExchangeMessage
-        extends ServerKeyExchangeMessage<PskServerKeyExchangeMessage> {
+public class PskServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
     @HoldsModifiableVariable protected PSKPremasterComputations computations;
 
@@ -67,7 +66,7 @@ public class PskServerKeyExchangeMessage
     }
 
     @Override
-    public PSKPremasterComputations getComputations() {
+    public PSKPremasterComputations getKeyExchangeComputations() {
         return computations;
     }
 
@@ -122,8 +121,8 @@ public class PskServerKeyExchangeMessage
     }
 
     @Override
-    public void prepareComputations() {
-        if (getComputations() == null) {
+    public void prepareKeyExchangeComputations() {
+        if (getKeyExchangeComputations() == null) {
             computations = new PSKPremasterComputations();
         }
     }

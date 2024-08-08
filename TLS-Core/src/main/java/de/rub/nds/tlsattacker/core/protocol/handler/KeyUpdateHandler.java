@@ -121,12 +121,12 @@ public class KeyUpdateHandler extends HandshakeMessageHandler<KeyUpdateMessage> 
             if (tlsContext.getChooser().getTalkingConnectionEnd() == ConnectionEndType.CLIENT) {
 
                 tlsContext.setActiveClientKeySetType(keySetType);
-                LOGGER.debug("Setting cipher for client to use " + keySetType);
+                LOGGER.debug("Setting cipher for client to use {}", keySetType);
                 keySet = getKeySet(tlsContext, tlsContext.getActiveClientKeySetType());
 
             } else {
                 tlsContext.setActiveServerKeySetType(keySetType);
-                LOGGER.debug("Setting cipher for server to use " + keySetType);
+                LOGGER.debug("Setting cipher for server to use {}", keySetType);
                 keySet = getKeySet(tlsContext, tlsContext.getActiveServerKeySetType());
             }
 

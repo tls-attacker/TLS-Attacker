@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.quic.preparator.packet;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.quic.constants.MiscRfcConstants;
 import de.rub.nds.tlsattacker.core.quic.constants.QuicPacketByteLength;
+import de.rub.nds.tlsattacker.core.quic.constants.QuicPacketType;
 import de.rub.nds.tlsattacker.core.quic.packet.InitialPacket;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacketCryptoComputations;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
@@ -29,6 +30,8 @@ public class InitialPacketPreparator extends LongHeaderPacketPreparator<InitialP
 
     @Override
     public void prepare() {
+        packet.setUnprotectedFlags(
+                QuicPacketType.INITIAL_PACKET.getHeader(context.getQuicVersion()));
         if (!context.isInitialSecretsInitialized()) {
             try {
                 QuicPacketCryptoComputations.calculateInitialSecrets(context);

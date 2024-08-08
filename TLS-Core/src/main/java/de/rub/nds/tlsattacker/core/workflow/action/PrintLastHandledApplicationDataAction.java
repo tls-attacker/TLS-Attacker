@@ -22,7 +22,7 @@ import org.apache.logging.log4j.Logger;
  * the raw byte values of the application data as a hex string. An charset for simple encoding can
  * be given to get readable output
  */
-@XmlRootElement
+@XmlRootElement(name = "PrintLastHandledApplicationData")
 public class PrintLastHandledApplicationDataAction extends ConnectionBoundAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -60,7 +60,7 @@ public class PrintLastHandledApplicationDataAction extends ConnectionBoundAction
             } else {
                 lastHandledApplicationData = ArrayConverter.bytesToHexString(rawBytes);
             }
-            LOGGER.info("Last handled application data: " + lastHandledApplicationData);
+            LOGGER.info("Last handled application data: {}", lastHandledApplicationData);
         } else {
             LOGGER.info("Did not receive application data yet");
         }

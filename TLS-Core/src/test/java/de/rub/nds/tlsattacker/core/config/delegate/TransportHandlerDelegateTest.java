@@ -79,7 +79,7 @@ public class TransportHandlerDelegateTest extends AbstractDelegateTest<Transport
         delegate.applyDelegate(config);
         assertTrue(
                 EqualsBuilder.reflectionEquals(
-                        config, config2, "keyStore", "ourCertificate", "echConfig")); // little
+                        config, config2, "certificateChainConfig")); // little
         // ugly
     }
 }

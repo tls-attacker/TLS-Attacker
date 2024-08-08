@@ -32,8 +32,8 @@ public class PskDheServerKeyExchangeHandlerTest
         message.setGenerator(BigInteger.ONE.toByteArray());
         message.setPublicKey(new byte[] {0, 1, 2, 3});
         context.setSelectedCipherSuite(CipherSuite.TLS_DHE_PSK_WITH_AES_128_CBC_SHA);
-        message.prepareComputations();
-        message.getComputations().setPrivateKey(BigInteger.ZERO);
+        message.prepareKeyExchangeComputations();
+        message.getKeyExchangeComputations().setPrivateKey(BigInteger.ZERO);
         handler.adjustContext(message);
         assertNull(context.getPreMasterSecret());
     }

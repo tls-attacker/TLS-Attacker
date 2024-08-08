@@ -71,7 +71,7 @@ public class RecordSerializer extends Serializer<Record> {
 
     private void writeContentType(Record record) {
         appendByte(record.getContentType().getValue());
-        LOGGER.debug("ContentType: " + record.getContentType().getValue());
+        LOGGER.debug("ContentType: {}", record.getContentType().getValue());
     }
 
     private void writeProtocolVersion(Record record) {
@@ -81,7 +81,7 @@ public class RecordSerializer extends Serializer<Record> {
 
     private void writeLength(Record record) {
         appendInt(record.getLength().getValue(), RecordByteLength.RECORD_LENGTH);
-        LOGGER.debug("Length: " + record.getLength().getValue());
+        LOGGER.debug("Length: {}", record.getLength().getValue());
     }
 
     private void writeConnectionId(Record record) {
@@ -91,13 +91,13 @@ public class RecordSerializer extends Serializer<Record> {
 
     private void writeEpoch(Record record) {
         appendInt(record.getEpoch().getValue(), RecordByteLength.DTLS_EPOCH);
-        LOGGER.debug("Epoch: " + record.getEpoch().getValue());
+        LOGGER.debug("Epoch: {}", record.getEpoch().getValue());
     }
 
     private void writeSequenceNumber(Record record) {
         appendBigInteger(
                 record.getSequenceNumber().getValue(), RecordByteLength.DTLS_SEQUENCE_NUMBER);
-        LOGGER.debug("SequenceNumber: " + record.getSequenceNumber().getValue());
+        LOGGER.debug("SequenceNumber: {}", record.getSequenceNumber().getValue());
     }
 
     private void writeProtocolMessageBytes(Record record) {

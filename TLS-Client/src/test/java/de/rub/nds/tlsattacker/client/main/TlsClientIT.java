@@ -8,11 +8,13 @@
  */
 package de.rub.nds.tlsattacker.client.main;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import de.rub.nds.modifiablevariable.util.BadRandom;
-import de.rub.nds.tls.subject.TestCategories;
 import de.rub.nds.tlsattacker.client.config.ClientCommandConfig;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
@@ -20,8 +22,8 @@ import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.TimeoutDelegate;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.constants.PublicKeyAlgorithm;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.util.BasicTlsServer;
 import de.rub.nds.tlsattacker.core.util.KeyStoreGenerator;
@@ -30,12 +32,22 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.util.FixedTimeProvider;
 import de.rub.nds.tlsattacker.util.TimeHelper;
+import de.rub.nds.tlsattacker.util.tests.TestCategories;
+import de.rub.nds.x509attacker.constants.X509PublicKeyType;
 import java.io.IOException;
-import java.security.*;
+import java.security.InvalidKeyException;
+import java.security.KeyManagementException;
+import java.security.KeyPair;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.Security;
+import java.security.SignatureException;
+import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -83,7 +95,7 @@ public class TlsClientIT {
                     NoSuchProviderException,
                     OperatorCreationException,
                     KeyManagementException {
-        startBasicTlsServer(PublicKeyAlgorithm.RSA);
+        startBasicTlsServer(X509PublicKeyType.RSA);
         assumeTrue(
                 tlsServer.getEnabledProtocolVersions().contains(protocolVersion),
                 "The TLS server used for testing does not support the protocol version to test, all supported versions: "
@@ -95,11 +107,14 @@ public class TlsClientIT {
                         .filter(
                                 cs ->
                                         isCipherSuiteTestable(
-                                                PublicKeyAlgorithm.RSA,
+                                                KeyExchangeAlgorithm.RSA,
                                                 config,
                                                 cs,
                                                 List.of(tlsServer.getCipherSuites())))
                         .collect(Collectors.toList());
+        for (CipherSuite suite : testableCipherSuites) {
+            System.out.println(suite);
+        }
         assertAll(
                 testableCipherSuites.stream()
                         .map(cs -> () -> executeHandshakeWorkflowWithCipherSuite(config, cs)));
@@ -121,7 +136,7 @@ public class TlsClientIT {
                     InvalidKeyException,
                     NoSuchProviderException,
                     KeyManagementException {
-        startBasicTlsServer(PublicKeyAlgorithm.EC);
+        startBasicTlsServer(X509PublicKeyType.ECDH_ECDSA);
         assumeTrue(
                 tlsServer.getEnabledProtocolVersions().contains(protocolVersion),
                 "The TLS server used for testing does not support the protocol version to test, all supported versions: "
@@ -133,7 +148,7 @@ public class TlsClientIT {
                         .filter(
                                 cs ->
                                         isCipherSuiteTestable(
-                                                PublicKeyAlgorithm.EC,
+                                                KeyExchangeAlgorithm.ECDHE_ECDSA,
                                                 config,
                                                 cs,
                                                 List.of(tlsServer.getCipherSuites())))
@@ -143,7 +158,7 @@ public class TlsClientIT {
                         .map(cs -> () -> executeHandshakeWorkflowWithCipherSuite(config, cs)));
     }
 
-    public void startBasicTlsServer(PublicKeyAlgorithm algorithm)
+    public void startBasicTlsServer(X509PublicKeyType x509PublicKeyType)
             throws UnrecoverableKeyException,
                     CertificateException,
                     KeyStoreException,
@@ -156,15 +171,17 @@ public class TlsClientIT {
                     OperatorCreationException {
         TimeHelper.setProvider(new FixedTimeProvider(0));
         KeyPair k = null;
-        switch (algorithm) {
+        switch (x509PublicKeyType) {
             case RSA:
                 k = KeyStoreGenerator.createRSAKeyPair(1024, random);
                 break;
-            case EC:
+            case ECDH_ECDSA:
                 k = KeyStoreGenerator.createECKeyPair(256, random);
                 break;
             default:
-                fail("Unable to start basic TLS server for public key algorithm " + algorithm);
+                fail(
+                        "Unable to start basic TLS server for public key algorithm "
+                                + x509PublicKeyType);
         }
         KeyStore ks = KeyStoreGenerator.createKeyStore(k, random);
         tlsServer = new BasicTlsServer(ks, KeyStoreGenerator.PASSWORD, "TLS", 0);
@@ -186,23 +203,22 @@ public class TlsClientIT {
     }
 
     private boolean isCipherSuiteTestable(
-            PublicKeyAlgorithm algorithm,
+            KeyExchangeAlgorithm keyExchangeAlgorithm,
             Config config,
             CipherSuite cs,
             List<String> serverSupportedCipherSuites) {
         if (cs.name().toUpperCase().contains("NULL") || cs.name().toUpperCase().contains("ANON")) {
             return false;
         }
-        Set<PublicKeyAlgorithm> requiredAlgorithms =
-                AlgorithmResolver.getRequiredKeystoreAlgorithms(cs);
-        requiredAlgorithms.remove(algorithm);
+        KeyExchangeAlgorithm kex = AlgorithmResolver.getKeyExchangeAlgorithm(cs);
+
         final boolean serverSupportsCipherSuite =
                 serverSupportedCipherSuites.contains(cs.toString());
         final boolean cipherSuiteIsSupportedByProtocolVersion =
                 cs.isSupportedInProtocol(config.getHighestProtocolVersion());
         return serverSupportsCipherSuite
                 && cipherSuiteIsSupportedByProtocolVersion
-                && requiredAlgorithms.isEmpty();
+                && kex == keyExchangeAlgorithm;
     }
 
     private void executeHandshakeWorkflowWithCipherSuite(Config config, CipherSuite cs) {

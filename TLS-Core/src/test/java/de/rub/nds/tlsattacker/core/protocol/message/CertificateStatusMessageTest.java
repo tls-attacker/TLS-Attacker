@@ -14,7 +14,7 @@ import org.junit.jupiter.params.provider.Arguments;
 public class CertificateStatusMessageTest extends AbstractMessageTest<CertificateStatusMessage> {
 
     public CertificateStatusMessageTest() {
-        super(CertificateStatusMessage::new, "CertificateStatusMessage:\n" + " %s");
+        super(CertificateStatusMessage::new, "CertificateStatusMessage");
     }
 
     public static Stream<Arguments> provideToStringTestVectors() {

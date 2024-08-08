@@ -140,10 +140,10 @@ public class CertificateDelegateTest extends AbstractDelegateTest<CertificateDel
                 args[3], delegate.getPassword(), "Password parameter gets not parsed correctly");
         assertEquals(args[5], delegate.getAlias(), "Alias parameter gets not parsed correctly");
         Config config = Config.createConfig();
-        config.setDefaultExplicitCertificateKeyPair(null);
+        config.setDefaultExplicitCertificateChain(null);
         delegate.applyDelegate(config);
         assertNotNull(
-                config.getDefaultExplicitCertificateKeyPair(), "Certificate could not be loaded");
+                config.getDefaultExplicitCertificateChain(), "Certificate could not be loaded");
     }
 
     @Test
@@ -158,7 +158,7 @@ public class CertificateDelegateTest extends AbstractDelegateTest<CertificateDel
                 args[1], delegate.getPassword(), "Password parameter gets not parsed correctly");
         assertEquals(args[3], delegate.getAlias(), "Alias parameter gets not parsed correctly");
         Config config = Config.createConfig();
-        config.setDefaultExplicitCertificateKeyPair(null);
+        config.setDefaultExplicitCertificateChain(null);
 
         ParameterException exception =
                 assertThrows(ParameterException.class, () -> delegate.applyDelegate(config));
@@ -216,6 +216,6 @@ public class CertificateDelegateTest extends AbstractDelegateTest<CertificateDel
         Config config = Config.createConfig();
         Config config2 = Config.createConfig();
         delegate.applyDelegate(config);
-        assertTrue(EqualsBuilder.reflectionEquals(config, config2));
+        assertTrue(EqualsBuilder.reflectionEquals(config, config2, "certificateChainConfig"));
     }
 }

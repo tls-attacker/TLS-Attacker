@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
-import de.rub.nds.tlsattacker.core.layer.constant.LayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.constant.StackConfiguration;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
@@ -227,7 +227,7 @@ public class ConfigTest {
 
     @Test
     public void generateHttpsConfig() {
-        config.setDefaultLayerConfiguration(LayerConfiguration.HTTPS);
+        config.setDefaultLayerConfiguration(StackConfiguration.HTTPS);
         config.setWorkflowTraceType(WorkflowTraceType.DYNAMIC_HTTPS);
         ConfigIO.write(config, new File(RESOURCE_CONFIG_DIR, "https.config"));
     }
@@ -382,7 +382,7 @@ public class ConfigTest {
     @Test
     public void generateSSL2Config() {
         config.setHighestProtocolVersion(ProtocolVersion.SSL2);
-        config.setDefaultLayerConfiguration(LayerConfiguration.SSL2);
+        config.setDefaultLayerConfiguration(StackConfiguration.SSL2);
         ArrayList<ProtocolVersion> protocolVersions = new ArrayList<>();
         protocolVersions.add(ProtocolVersion.SSL2);
         config.setSupportedVersions(protocolVersions);
@@ -409,7 +409,7 @@ public class ConfigTest {
         setUpBasicTls13Config(config);
         config.setHighestProtocolVersion(ProtocolVersion.DTLS13);
         config.setSupportedVersions(ProtocolVersion.DTLS13);
-        config.setDefaultLayerConfiguration(LayerConfiguration.DTLS);
+        config.setDefaultLayerConfiguration(StackConfiguration.DTLS);
         config.setWorkflowExecutorType(WorkflowExecutorType.DTLS);
         config.setFinishWithCloseNotify(true);
         config.setIgnoreRetransmittedCssInDtls(true);

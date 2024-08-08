@@ -15,78 +15,21 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.layer.Message;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.protocol.message.*;
+import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
+import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlSeeAlso;
 import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.InputStream;
-import java.lang.reflect.Field;
 import java.util.List;
-import java.util.Random;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlSeeAlso({
-    ProtocolMessage.class,
-    CertificateMessage.class,
-    CertificateVerifyMessage.class,
-    CertificateRequestMessage.class,
-    ClientHelloMessage.class,
-    HelloVerifyRequestMessage.class,
-    DHClientKeyExchangeMessage.class,
-    DHEServerKeyExchangeMessage.class,
-    ECDHClientKeyExchangeMessage.class,
-    ECDHEServerKeyExchangeMessage.class,
-    PskClientKeyExchangeMessage.class,
-    FinishedMessage.class,
-    RSAClientKeyExchangeMessage.class,
-    GOSTClientKeyExchangeMessage.class,
-    ServerHelloDoneMessage.class,
-    ServerHelloMessage.class,
-    AlertMessage.class,
-    AckMessage.class,
-    NewSessionTicketMessage.class,
-    KeyUpdateMessage.class,
-    ApplicationMessage.class,
-    ChangeCipherSpecMessage.class,
-    SSL2ClientHelloMessage.class,
-    SSL2ClientMasterKeyMessage.class,
-    SSL2Message.class,
-    SSL2ServerHelloMessage.class,
-    SSL2ServerVerifyMessage.class,
-    UnknownSSL2Message.class,
-    UnknownMessage.class,
-    UnknownHandshakeMessage.class,
-    HelloRequestMessage.class,
-    HeartbeatMessage.class,
-    SupplementalDataMessage.class,
-    EncryptedExtensionsMessage.class,
-    PskClientKeyExchangeMessage.class,
-    PskDhClientKeyExchangeMessage.class,
-    PskDheServerKeyExchangeMessage.class,
-    PskEcDhClientKeyExchangeMessage.class,
-    PskEcDheServerKeyExchangeMessage.class,
-    PskRsaClientKeyExchangeMessage.class,
-    SrpClientKeyExchangeMessage.class,
-    SrpServerKeyExchangeMessage.class,
-    EndOfEarlyDataMessage.class,
-    DtlsHandshakeMessageFragment.class,
-    PWDServerKeyExchangeMessage.class,
-    RSAServerKeyExchangeMessage.class,
-    PWDClientKeyExchangeMessage.class,
-    PskServerKeyExchangeMessage.class,
-    CertificateStatusMessage.class,
-    EmptyClientKeyExchangeMessage.class,
-    NewConnectionIdMessage.class,
-    RequestConnectionIdMessage.class,
-    EncryptedClientHelloMessage.class
-})
-public abstract class ProtocolMessage<Self extends ProtocolMessage<?>>
-        extends Message<Self, TlsContext> {
+public abstract class ProtocolMessage extends Message<TlsContext> {
 
     @XmlTransient protected boolean goingToBeSentDefault = true;
     @XmlTransient protected boolean requiredDefault = true;
     @XmlTransient protected boolean adjustContextDefault = true;
+    @XmlTransient protected boolean shouldPrepareDefault = true;
     /** resulting message */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PLAIN_PROTOCOL_MESSAGE)
     protected ModifiableByteArray completeResultingMessage;
@@ -109,6 +52,15 @@ public abstract class ProtocolMessage<Self extends ProtocolMessage<?>>
 
     public boolean addToTypes(List<ProtocolMessageType> protocolMessageTypes) {
         return protocolMessageTypes.add(getProtocolMessageType());
+    }
+
+    public void setShouldPrepareDefault(boolean shouldPrepare) {
+        this.shouldPrepareDefault = shouldPrepare;
+    }
+
+    @Override
+    public boolean shouldPrepare() {
+        return shouldPrepareDefault;
     }
 
     @Override
@@ -137,19 +89,6 @@ public abstract class ProtocolMessage<Self extends ProtocolMessage<?>>
 
     public void setGoingToBeSent(ModifiableBoolean goingToBeSent) {
         this.goingToBeSent = goingToBeSent;
-    }
-
-    @Override
-    public List<ModifiableVariableHolder> getAllModifiableVariableHolders() {
-        List<ModifiableVariableHolder> holders = super.getAllModifiableVariableHolders();
-        return holders;
-    }
-
-    @Override
-    public Field getRandomModifiableVariableField(Random random) {
-        List<Field> fields = getAllModifiableVariableFields();
-        int randomField = random.nextInt(fields.size());
-        return fields.get(randomField);
     }
 
     public ModifiableByteArray getCompleteResultingMessage() {
@@ -182,19 +121,6 @@ public abstract class ProtocolMessage<Self extends ProtocolMessage<?>>
                 ModifiableVariableFactory.safelySetValue(this.adjustContext, adjustContext);
     }
 
-    @Override
-    public abstract ProtocolMessageHandler<Self> getHandler(TlsContext tlsContext);
-
-    @Override
-    public abstract ProtocolMessageSerializer<Self> getSerializer(TlsContext tlsContext);
-
-    @Override
-    public abstract ProtocolMessagePreparator<Self> getPreparator(TlsContext tlsContext);
-
-    @Override
-    public abstract ProtocolMessageParser<Self> getParser(
-            TlsContext tlsContext, InputStream stream);
-
     public boolean isHandshakeMessage() {
         return this instanceof HandshakeMessage;
     }
@@ -206,4 +132,20 @@ public abstract class ProtocolMessage<Self extends ProtocolMessage<?>>
     public ProtocolMessageType getProtocolMessageType() {
         return protocolMessageType;
     }
+
+    @Override
+    public abstract ProtocolMessageHandler<? extends ProtocolMessage> getHandler(
+            TlsContext context);
+
+    @Override
+    public abstract ProtocolMessageParser<? extends ProtocolMessage> getParser(
+            TlsContext context, InputStream stream);
+
+    @Override
+    public abstract ProtocolMessagePreparator<? extends ProtocolMessage> getPreparator(
+            TlsContext context);
+
+    @Override
+    public abstract ProtocolMessageSerializer<? extends ProtocolMessage> getSerializer(
+            TlsContext context);
 }

@@ -23,7 +23,6 @@ public class TimingProxyClientTcpTransportHandler extends ClientTcpTransportHand
         implements ProxyableTransportHandler, TimeableTransportHandler {
 
     private static final Logger LOGGER = LogManager.getLogger();
-
     protected Socket controlSocket;
     protected String proxyDataHostName = "127.0.0.1";
     protected int proxyDataPort = 4444;
@@ -115,5 +114,18 @@ public class TimingProxyClientTcpTransportHandler extends ClientTcpTransportHand
     @Override
     public Long getLastMeasurement() {
         return measurement;
+    }
+
+    @Override
+    public boolean isMeasuringActive() {
+        // the proxy does not block when sending, so we are always measuring
+        return true;
+    }
+
+    @Override
+    public void setMeasuringActive(boolean measuringActive) {
+        if (measuringActive == false) {
+            LOGGER.warn("Ignoring deactivation of measuring for proxy-based transport handler.");
+        }
     }
 }

@@ -12,7 +12,7 @@ import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import de.rub.nds.tlsattacker.core.quic.VariableLengthIntegerEncoding;
 import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
 
-public abstract class QuicFrameSerializer<T extends QuicFrame<T>> extends Serializer<T> {
+public abstract class QuicFrameSerializer<T extends QuicFrame> extends Serializer<T> {
 
     protected final T frame;
 

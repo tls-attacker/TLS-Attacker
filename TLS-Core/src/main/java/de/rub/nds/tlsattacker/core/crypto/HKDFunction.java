@@ -66,14 +66,6 @@ public class HKDFunction {
 
     public static final String SERVER_IN = "server in";
 
-    public static final String QUIC_KU = "quic ku";
-
-    public static final String QUIC_KEY = "quic key";
-
-    public static final String QUIC_IV = "quic iv";
-
-    public static final String QUIC_HP = "quic hp";
-
     public static final String SN_KEY = "sn";
 
     /**

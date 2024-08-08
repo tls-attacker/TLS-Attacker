@@ -9,14 +9,13 @@
 package de.rub.nds.tlsattacker.core.state;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
-import java.io.Serializable;
 
-public class SessionTicket extends ModifiableVariableHolder implements Serializable {
+public class SessionTicket extends ModifiableVariableHolder {
     @ModifiableVariableProperty() private ModifiableByteArray keyName;
 
     @ModifiableVariableProperty() private ModifiableByteArray iv;

@@ -164,9 +164,7 @@ public class PseudoRandomFunctionTest {
         int size = 48;
 
         byte[] result1 = TlsUtils.PRF_legacy(secret, label, seed, size);
-        byte[] result2 =
-                PseudoRandomFunction.compute(
-                        PRFAlgorithm.TLS_PRF_LEGACY, secret, label, seed, size);
+        byte[] result2 = PseudoRandomFunction.compute(prfAlgorithm, secret, label, seed, size);
         assertArrayEquals(result1, result2);
 
         /*
