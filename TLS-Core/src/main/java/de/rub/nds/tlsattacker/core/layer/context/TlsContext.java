@@ -419,8 +419,7 @@ public class TlsContext extends LayerContext {
     private final EnumSet<ExtensionType> proposedExtensionSet = EnumSet.noneOf(ExtensionType.class);
 
     /** Contains the TLS extensions proposed by the server. */
-    private final EnumSet<ExtensionType> negotiatedExtensionSet =
-            EnumSet.noneOf(ExtensionType.class);
+    private final EnumSet<ExtensionType> negotiatedExtensionSet = EnumSet.noneOf(ExtensionType.class);
 
     /**
      * The "secure_renegotiation" flag of the Renegotiation Indication Extension as defined in
@@ -513,8 +512,8 @@ public class TlsContext extends LayerContext {
      */
     public TlsContext(Context context) {
         super(context);
-        clientX509Context = new X509Context();
-        serverX509Context = new X509Context();
+        clientX509Context = new X509Context(context.getConfig().getDefaultX509CertificateConfig());
+        serverX509Context = new X509Context(context.getConfig().getDefaultX509CertificateConfig());
         context.setTlsContext(this);
         init();
     }
@@ -539,9 +538,9 @@ public class TlsContext extends LayerContext {
 
     public void resetTalkingX509Context() {
         if (getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
-            clientX509Context = new X509Context();
+            clientX509Context = new X509Context(getContext().getConfig().getDefaultX509CertificateConfig());
         } else {
-            serverX509Context = new X509Context();
+            serverX509Context = new X509Context(getContext().getConfig().getDefaultX509CertificateConfig());
         }
     }
 
@@ -732,8 +731,7 @@ public class TlsContext extends LayerContext {
 
     public void setClientSupportedProtocolVersions(
             ProtocolVersion... clientSupportedProtocolVersions) {
-        this.clientSupportedProtocolVersions =
-                new ArrayList(Arrays.asList(clientSupportedProtocolVersions));
+        this.clientSupportedProtocolVersions = new ArrayList(Arrays.asList(clientSupportedProtocolVersions));
     }
 
     public NamedGroup getSelectedGroup() {
@@ -904,8 +902,8 @@ public class TlsContext extends LayerContext {
 
     public void setClientSupportedSignatureAndHashAlgorithms(
             SignatureAndHashAlgorithm... clientSupportedSignatureAndHashAlgorithms) {
-        this.clientSupportedSignatureAndHashAlgorithms =
-                new ArrayList(Arrays.asList(clientSupportedSignatureAndHashAlgorithms));
+        this.clientSupportedSignatureAndHashAlgorithms = new ArrayList(
+                Arrays.asList(clientSupportedSignatureAndHashAlgorithms));
     }
 
     public List<SignatureAndHashAlgorithm> getClientSupportedCertificateSignAlgorithms() {
@@ -919,8 +917,8 @@ public class TlsContext extends LayerContext {
 
     public void setClientSupportedCertificateSignAlgorithms(
             SignatureAndHashAlgorithm... clientSupportedCertificateSignAlgorithms) {
-        this.clientSupportedCertificateSignAlgorithms =
-                new ArrayList(Arrays.asList(clientSupportedCertificateSignAlgorithms));
+        this.clientSupportedCertificateSignAlgorithms = new ArrayList(
+                Arrays.asList(clientSupportedCertificateSignAlgorithms));
     }
 
     public List<SNIEntry> getClientSNIEntryList() {
@@ -1017,8 +1015,7 @@ public class TlsContext extends LayerContext {
     }
 
     public void setClientSupportedCompressions(CompressionMethod... clientSupportedCompressions) {
-        this.clientSupportedCompressions =
-                new ArrayList(Arrays.asList(clientSupportedCompressions));
+        this.clientSupportedCompressions = new ArrayList(Arrays.asList(clientSupportedCompressions));
     }
 
     public void addDtlsReceivedHandshakeMessageSequences(int sequence) {
@@ -1046,8 +1043,7 @@ public class TlsContext extends LayerContext {
     }
 
     public void setClientSupportedCipherSuites(CipherSuite... clientSupportedCipherSuites) {
-        this.clientSupportedCipherSuites =
-                new ArrayList(Arrays.asList(clientSupportedCipherSuites));
+        this.clientSupportedCipherSuites = new ArrayList(Arrays.asList(clientSupportedCipherSuites));
     }
 
     public List<SignatureAndHashAlgorithm> getServerSupportedSignatureAndHashAlgorithms() {
@@ -1061,8 +1057,8 @@ public class TlsContext extends LayerContext {
 
     public void setServerSupportedSignatureAndHashAlgorithms(
             SignatureAndHashAlgorithm... serverSupportedSignatureAndHashAlgorithms) {
-        this.serverSupportedSignatureAndHashAlgorithms =
-                new ArrayList(Arrays.asList(serverSupportedSignatureAndHashAlgorithms));
+        this.serverSupportedSignatureAndHashAlgorithms = new ArrayList(
+                Arrays.asList(serverSupportedSignatureAndHashAlgorithms));
     }
 
     public List<SignatureAndHashAlgorithm> getServerSupportedCertificateSignAlgorithms() {
@@ -1076,8 +1072,8 @@ public class TlsContext extends LayerContext {
 
     public void setServerSupportedSignatureAlgorithmsCert(
             SignatureAndHashAlgorithm... serverSupportedCertificateSignAlgorithms) {
-        this.serverSupportedCertificateSignAlgorithms =
-                new ArrayList(Arrays.asList(serverSupportedCertificateSignAlgorithms));
+        this.serverSupportedCertificateSignAlgorithms = new ArrayList(
+                Arrays.asList(serverSupportedCertificateSignAlgorithms));
     }
 
     public ProtocolVersion getSelectedProtocolVersion() {
@@ -1379,8 +1375,7 @@ public class TlsContext extends LayerContext {
 
     public void setCertificateStatusRequestExtensionRequestType(
             CertificateStatusRequestType certificateStatusRequestExtensionRequestType) {
-        this.certificateStatusRequestExtensionRequestType =
-                certificateStatusRequestExtensionRequestType;
+        this.certificateStatusRequestExtensionRequestType = certificateStatusRequestExtensionRequestType;
     }
 
     public byte[] getCertificateStatusRequestExtensionResponderIDList() {
@@ -1389,8 +1384,7 @@ public class TlsContext extends LayerContext {
 
     public void setCertificateStatusRequestExtensionResponderIDList(
             byte[] certificateStatusRequestExtensionResponderIDList) {
-        this.certificateStatusRequestExtensionResponderIDList =
-                certificateStatusRequestExtensionResponderIDList;
+        this.certificateStatusRequestExtensionResponderIDList = certificateStatusRequestExtensionResponderIDList;
     }
 
     public byte[] getCertificateStatusRequestExtensionRequestExtension() {
@@ -1399,8 +1393,7 @@ public class TlsContext extends LayerContext {
 
     public void setCertificateStatusRequestExtensionRequestExtension(
             byte[] certificateStatusRequestExtensionRequestExtension) {
-        this.certificateStatusRequestExtensionRequestExtension =
-                certificateStatusRequestExtensionRequestExtension;
+        this.certificateStatusRequestExtensionRequestExtension = certificateStatusRequestExtensionRequestExtension;
     }
 
     public String getSelectedAlpnProtocol() {
