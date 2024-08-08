@@ -11,6 +11,8 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.SpecificSendLayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerKeyExchangeMessage;
@@ -18,6 +20,7 @@ import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.container.ActionHelperUtil;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import java.util.LinkedList;
 import java.util.List;
 
 @XmlRootElement(name = "SendDynamicServerKeyExchange")
@@ -77,8 +80,13 @@ public class SendDynamicServerKeyExchangeAction extends CommonSendAction {
                         .createServerKeyExchangeMessage(
                                 AlgorithmResolver.getKeyExchangeAlgorithm(selectedCipherSuite));
         if (serverKeyExchangeMessage != null) {
-            return ActionHelperUtil.createSendConfiguration(
-                    tlsContext, List.of(serverKeyExchangeMessage), null, null, null, null, null);
+            List<LayerConfiguration<?>> configurationList = new LinkedList<>();
+            configurationList.add(
+                    new SpecificSendLayerConfiguration<>(
+                            ImplementedLayers.MESSAGE, serverKeyExchangeMessage));
+            return ActionHelperUtil.sortAndAddOptions(
+                    tlsContext.getLayerStack(), true, getActionOptions(), configurationList);
+
         } else {
             return null;
         }

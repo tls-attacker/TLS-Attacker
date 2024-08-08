@@ -14,6 +14,8 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.http.HttpMessage;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.SpecificSendLayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.printer.LogPrinter;
@@ -253,14 +255,40 @@ public class SendAction extends CommonSendAction implements StaticSendingAction 
     @Override
     protected List<LayerConfiguration<?>> createLayerConfiguration(State state) {
         TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
-        return ActionHelperUtil.createSendConfiguration(
-                tlsContext,
-                configuredMessages,
-                configuredDtlsHandshakeMessageFragments,
-                configuredRecords,
-                configuredQuicFrames,
-                configuredQuicPackets,
-                configuredHttpMessages);
+        List<LayerConfiguration<?>> configurationList = new LinkedList<>();
+        if (getConfiguredRecords() != null) {
+            configurationList.add(
+                    new SpecificSendLayerConfiguration<>(
+                            ImplementedLayers.RECORD, getConfiguredMessages()));
+        }
+        if (getConfiguredMessages() != null) {
+            configurationList.add(
+                    new SpecificSendLayerConfiguration<>(
+                            ImplementedLayers.MESSAGE, getConfiguredMessages()));
+        }
+        if (getConfiguredDtlsHandshakeMessageFragments() != null) {
+            configurationList.add(
+                    new SpecificSendLayerConfiguration<>(
+                            ImplementedLayers.DTLS_FRAGMENT,
+                            getConfiguredDtlsHandshakeMessageFragments()));
+        }
+        if (getConfiguredHttpMessages() != null) {
+            configurationList.add(
+                    new SpecificSendLayerConfiguration<>(
+                            ImplementedLayers.HTTP, getConfiguredHttpMessages()));
+        }
+        if (getConfiguredQuicFrames() != null) {
+            configurationList.add(
+                    new SpecificSendLayerConfiguration<>(
+                            ImplementedLayers.QUICFRAME, getConfiguredQuicFrames()));
+        }
+        if (getConfiguredQuicPackets() != null) {
+            configurationList.add(
+                    new SpecificSendLayerConfiguration<>(
+                            ImplementedLayers.QUICPACKET, getConfiguredQuicPackets()));
+        }
+        return ActionHelperUtil.sortAndAddOptions(
+                tlsContext.getLayerStack(), true, getActionOptions(), configurationList);
     }
 
     @Override
