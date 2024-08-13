@@ -42,14 +42,12 @@ public class CertificateRequestPreparator
             prepareExtensions();
             prepareExtensionLength();
         } else {
-            certTypes =
-                    convertClientCertificateTypes(chooser.getConfig().getClientCertificateTypes());
+            certTypes = convertClientCertificateTypes(chooser.getConfig().getClientCertificateTypes());
             prepareClientCertificateTypes(certTypes, msg);
             prepareClientCertificateTypesCount(msg);
             prepareDistinguishedNames(msg);
             prepareDistinguishedNamesLength(msg);
-            sigHashAlgos =
-                    convertSigAndHashAlgos(chooser.getServerSupportedSignatureAndHashAlgorithms());
+            sigHashAlgos = convertSigAndHashAlgos(chooser.getServerSupportedSignatureAndHashAlgorithms());
             prepareSignatureHashAlgorithms(msg);
             prepareSignatureHashAlgorithmsLength(msg);
         }

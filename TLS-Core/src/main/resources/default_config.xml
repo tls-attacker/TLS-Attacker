@@ -1183,6 +1183,8 @@
     <defaultApplicationMessageData>Test</defaultApplicationMessageData>
     <clientCertificateTypes>
         <clientCertificateType>RSA_SIGN</clientCertificateType>
+        <clientCertificateType>ECDSA_SIGN</clientCertificateType>
+        <clientCertificateType>DSS_SIGN</clientCertificateType>
     </clientCertificateTypes>
     <heartbeatPayloadLength>256</heartbeatPayloadLength>
     <heartbeatPaddingLength>256</heartbeatPaddingLength>

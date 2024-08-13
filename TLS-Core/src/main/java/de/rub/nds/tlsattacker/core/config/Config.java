@@ -1322,6 +1322,8 @@ public class Config implements Serializable {
         defaultServerNamedGroups = NamedGroup.getImplemented();
         clientCertificateTypes = new LinkedList<>();
         clientCertificateTypes.add(ClientCertificateType.RSA_SIGN);
+        clientCertificateTypes.add(ClientCertificateType.ECDSA_SIGN);
+        clientCertificateTypes.add(ClientCertificateType.DSS_SIGN);
         supportedVersions = new LinkedList<>();
         supportedVersions.add(ProtocolVersion.TLS13);
         defaultTokenBindingKeyParameters = new LinkedList<>();
