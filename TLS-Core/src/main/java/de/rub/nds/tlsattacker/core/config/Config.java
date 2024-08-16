@@ -10,6 +10,24 @@ package de.rub.nds.tlsattacker.core.config;
 
 import static java.nio.charset.StandardCharsets.US_ASCII;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.InputStream;
+import java.io.Serializable;
+import java.lang.reflect.Field;
+import java.math.BigInteger;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.IllegalStringAdapter;
 import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
@@ -70,9 +88,13 @@ import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.core.workflow.filter.FilterType;
+import de.rub.nds.x509attacker.chooser.X509Chooser;
 import de.rub.nds.x509attacker.config.X509CertificateConfig;
 import de.rub.nds.x509attacker.constants.X500AttributeType;
+import de.rub.nds.x509attacker.context.X509Context;
 import de.rub.nds.x509attacker.filesystem.CertificateBytes;
+import de.rub.nds.x509attacker.x509.X509CertificateChain;
+import de.rub.nds.x509attacker.x509.model.X509Certificate;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
@@ -80,22 +102,6 @@ import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.InputStream;
-import java.io.Serializable;
-import java.lang.reflect.Field;
-import java.math.BigInteger;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 @SuppressWarnings("SpellCheckingInspection")
 @XmlRootElement(name = "config")
@@ -1468,6 +1474,16 @@ public class Config implements Serializable {
     public void setDefaultExplicitCertificateChain(
             List<CertificateBytes> defaultExplicitCertificateChain) {
         this.defaultExplicitCertificateChain = defaultExplicitCertificateChain;
+    }
+
+    public void setDefaultExplicitCertificateChain(
+            X509CertificateChain defaultExplicitCertificateChain) {
+        List<CertificateBytes> certBytes = new LinkedList<>();
+        for (X509Certificate cert : defaultExplicitCertificateChain.getCertificateList()) {
+            certBytes.add(new CertificateBytes(cert
+                    .getSerializer(new X509Chooser(getDefaultX509CertificateConfig(), new X509Context())).serialize()));
+        }
+        this.defaultExplicitCertificateChain = certBytes;
     }
 
     public String getDefaultSelectedAlpnProtocol() {

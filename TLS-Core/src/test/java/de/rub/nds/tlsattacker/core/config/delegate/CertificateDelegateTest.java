@@ -15,11 +15,14 @@ import de.rub.nds.modifiablevariable.util.BadRandom;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.util.KeyStoreGenerator;
+import de.rub.nds.x509attacker.filesystem.CertificateBytes;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.*;
 import java.security.cert.CertificateException;
+import java.util.List;
 import java.util.Random;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -111,17 +114,16 @@ public class CertificateDelegateTest extends AbstractDelegateTest<CertificateDel
     @Test
     public void testApplyDelegate(@TempDir File tempDir)
             throws NoSuchAlgorithmException,
-                    CertificateException,
-                    IOException,
-                    InvalidKeyException,
-                    KeyStoreException,
-                    NoSuchProviderException,
-                    SignatureException,
-                    OperatorCreationException {
+            CertificateException,
+            IOException,
+            InvalidKeyException,
+            KeyStoreException,
+            NoSuchProviderException,
+            SignatureException,
+            OperatorCreationException {
         BadRandom random = new BadRandom(new Random(0), null);
-        KeyStore store =
-                KeyStoreGenerator.createKeyStore(
-                        KeyStoreGenerator.createRSAKeyPair(1024, random), random);
+        KeyStore store = KeyStoreGenerator.createKeyStore(
+                KeyStoreGenerator.createRSAKeyPair(1024, random), random);
         File keyStoreFile = new File(tempDir, "key.store");
         try (FileOutputStream fos = new FileOutputStream(keyStoreFile)) {
             store.store(fos, "password".toCharArray());
@@ -139,8 +141,8 @@ public class CertificateDelegateTest extends AbstractDelegateTest<CertificateDel
         assertEquals(
                 args[3], delegate.getPassword(), "Password parameter gets not parsed correctly");
         assertEquals(args[5], delegate.getAlias(), "Alias parameter gets not parsed correctly");
-        Config config = Config.createConfig();
-        config.setDefaultExplicitCertificateChain(null);
+        Config config = new Config();
+        config.setDefaultExplicitCertificateChain((List<CertificateBytes>) null);
         delegate.applyDelegate(config);
         assertNotNull(
                 config.getDefaultExplicitCertificateChain(), "Certificate could not be loaded");
@@ -158,10 +160,9 @@ public class CertificateDelegateTest extends AbstractDelegateTest<CertificateDel
                 args[1], delegate.getPassword(), "Password parameter gets not parsed correctly");
         assertEquals(args[3], delegate.getAlias(), "Alias parameter gets not parsed correctly");
         Config config = Config.createConfig();
-        config.setDefaultExplicitCertificateChain(null);
+        config.setDefaultExplicitCertificateChain((List<CertificateBytes>)null);
 
-        ParameterException exception =
-                assertThrows(ParameterException.class, () -> delegate.applyDelegate(config));
+        ParameterException exception = assertThrows(ParameterException.class, () -> delegate.applyDelegate(config));
         assertTrue(
                 exception
                         .getMessage()
