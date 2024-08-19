@@ -8,17 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.layer.context;
 
-import de.rub.nds.tlsattacker.core.smtp.command.SmtpCommand;
-import de.rub.nds.tlsattacker.core.smtp.command.SmtpEHLOCommand;
-import de.rub.nds.tlsattacker.core.smtp.command.SmtpHELOCommand;
-import de.rub.nds.tlsattacker.core.smtp.command.SmtpInitialGreetingDummy;
-import de.rub.nds.tlsattacker.core.smtp.command.SmtpNOOPCommand;
-import de.rub.nds.tlsattacker.core.smtp.command.SmtpQUITCommand;
-import de.rub.nds.tlsattacker.core.smtp.reply.SmtpEHLOReply;
-import de.rub.nds.tlsattacker.core.smtp.reply.SmtpInitialGreeting;
-import de.rub.nds.tlsattacker.core.smtp.reply.SmtpNOOPReply;
-import de.rub.nds.tlsattacker.core.smtp.reply.SmtpQUITReply;
-import de.rub.nds.tlsattacker.core.smtp.reply.SmtpReply;
+import de.rub.nds.tlsattacker.core.smtp.command.*;
+import de.rub.nds.tlsattacker.core.smtp.reply.*;
 import de.rub.nds.tlsattacker.core.state.Context;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +18,7 @@ public class SmtpContext extends LayerContext {
 
     private List<String> reversePathBuffer = new ArrayList<>();
     private List<String> forwardPathBuffer = new ArrayList<>();
-    private StringBuilder mailDataBuffer = new StringBuilder();
+    private List<String> mailDataBuffer = new ArrayList<>();
     private String clientIdentity;
     private boolean serverOnlySupportsEHLO = false;
 
@@ -49,7 +40,7 @@ public class SmtpContext extends LayerContext {
     public void clearBuffers() {
         reversePathBuffer.clear();
         forwardPathBuffer.clear();
-        mailDataBuffer.setLength(0);
+        mailDataBuffer.clear();
     }
 
     public void insertReversePath(String reversePath) {
@@ -64,7 +55,7 @@ public class SmtpContext extends LayerContext {
         return forwardPathBuffer;
     }
 
-    public StringBuilder getMailDataBuffer() {
+    public List<String> getMailDataBuffer() {
         return mailDataBuffer;
     }
 
@@ -76,7 +67,7 @@ public class SmtpContext extends LayerContext {
         this.forwardPathBuffer = forwardPathBuffer;
     }
 
-    public void setMailDataBuffer(StringBuilder mailDataBuffer) {
+    public void setMailDataBuffer(List<String> mailDataBuffer) {
         this.mailDataBuffer = mailDataBuffer;
     }
 
@@ -109,6 +100,10 @@ public class SmtpContext extends LayerContext {
                 return new SmtpNOOPReply();
             } else if (command instanceof SmtpInitialGreetingDummy) {
                 return new SmtpInitialGreeting();
+            } else if (command instanceof SmtpDATACommand) {
+                return new SmtpDATAReply();
+            } else if (command instanceof SmtpDATAContentCommand) {
+                return new SmtpDATAContentReply();
             } else if (command instanceof SmtpQUITCommand) {
                 return new SmtpQUITReply();
             } else {

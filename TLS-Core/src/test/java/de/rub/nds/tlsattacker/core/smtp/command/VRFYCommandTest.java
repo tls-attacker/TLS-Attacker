@@ -45,7 +45,7 @@ class VRFYCommandTest {
 
     @Test
     void testSerialize() {
-        // given an SmtpEHLOCommand see if getSerializer leads to something worthwhile
+        // given an SmtpEHLOCommand see if getSerializer leads to something worthwhile.
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
         SmtpVRFYCommand vrfy = new SmtpVRFYCommand("\"john@mail.com\"");
         VRFYCommandPreparator preparator = vrfy.getPreparator(context);

@@ -30,10 +30,11 @@ public class VRFYReplyParser extends SmtpReplyParser<SmtpVRFYReply> {
         List<String> replyLines = new LinkedList<>();
 
         for (String line : lines) {
+            // extract as much as we can:
             reply.setReplyCode(Integer.parseInt(line.substring(0, 3)));
 
-            line = line.substring(4);
-            replyLines.add(line);
+            // excluding the reply code:
+            replyLines.add(line.substring(4));
 
             List<Integer[]> mailboxIndices = getMailboxIndices(line);
             addMailboxes(reply, line, mailboxIndices);

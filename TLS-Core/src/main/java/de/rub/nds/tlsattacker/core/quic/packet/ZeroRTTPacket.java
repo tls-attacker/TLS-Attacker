@@ -23,7 +23,6 @@ public class ZeroRTTPacket extends LongHeaderPacket {
 
     public ZeroRTTPacket() {
         super(QuicPacketType.ZERO_RTT_PACKET);
-        this.setUnprotectedFlags(QuicPacketType.ZERO_RTT_PACKET.getHeader());
         this.packetSecret = QuicCryptoSecrets.APPLICATION_SECRET;
     }
 

@@ -18,6 +18,6 @@ public class VRFYReplyPreparator extends SmtpReplyPreparator<SmtpVRFYReply> {
 
     @Override
     public void prepare() {
-        getObject().setReplyLines(getObject().getLineContents());
+        this.getObject().setReplyLines(getObject().getLineContents());
     }
 }

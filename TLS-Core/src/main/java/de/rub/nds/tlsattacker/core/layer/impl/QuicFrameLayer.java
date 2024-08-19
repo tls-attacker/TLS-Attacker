@@ -20,17 +20,7 @@ import de.rub.nds.tlsattacker.core.layer.hints.RecordLayerHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerInputStream;
 import de.rub.nds.tlsattacker.core.quic.constants.QuicFrameType;
 import de.rub.nds.tlsattacker.core.quic.constants.QuicPacketType;
-import de.rub.nds.tlsattacker.core.quic.frame.AckFrame;
-import de.rub.nds.tlsattacker.core.quic.frame.ConnectionCloseFrame;
-import de.rub.nds.tlsattacker.core.quic.frame.CryptoFrame;
-import de.rub.nds.tlsattacker.core.quic.frame.HandshakeDoneFrame;
-import de.rub.nds.tlsattacker.core.quic.frame.NewConnectionIdFrame;
-import de.rub.nds.tlsattacker.core.quic.frame.NewTokenFrame;
-import de.rub.nds.tlsattacker.core.quic.frame.PaddingFrame;
-import de.rub.nds.tlsattacker.core.quic.frame.PathChallengeFrame;
-import de.rub.nds.tlsattacker.core.quic.frame.PingFrame;
-import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
-import de.rub.nds.tlsattacker.core.quic.frame.StreamFrame;
+import de.rub.nds.tlsattacker.core.quic.frame.*;
 import de.rub.nds.tlsattacker.core.quic.serializer.frame.QuicFrameSerializer;
 import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
 import java.io.ByteArrayOutputStream;
@@ -186,7 +176,11 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
 
             switch (frameType) {
                 case ACK_FRAME:
-                    readDataContainer(new AckFrame(), context, dataStream);
+                    readDataContainer(new AckFrame(), context, inputStream);
+                    LOGGER.debug("Read {}", frameType);
+                    break;
+                case ACK_FRAME_WITH_ECN:
+                    readDataContainer(new AckFrameWithEcn(), context, inputStream);
                     LOGGER.debug("Read {}", frameType);
                     break;
                 case CONNECTION_CLOSE_FRAME:
