@@ -26,30 +26,18 @@ public class VRFYReplyParser extends SmtpReplyParser<SmtpVRFYReply> {
 
         for (String line : lines) {
             // extract as much as we can:
-            int replyLineStartIndex = 0;
             String possibleReplyCode = line.substring(0, 3);
 
-            if (isNaturalNumberString(possibleReplyCode)) {
-                reply.setReplyCode(Integer.parseInt(possibleReplyCode));
-                replyLineStartIndex = 3;
-            }
+            reply.setReplyCode(Integer.parseInt(possibleReplyCode));
 
-            replyLines.add(line.substring(replyLineStartIndex));
+            // excluding the reply code:
+            replyLines.add(line.substring(4));
 
             List<Integer[]> mailboxIndices = getMailboxIndices(line);
             addMailboxes(reply, line, mailboxIndices);
         }
 
         reply.setLineContents(replyLines);
-    }
-
-    private boolean isNaturalNumberString(String str) {
-        for (int i = 0; i < str.length(); i++) {
-            char c = str.charAt(i);
-            if (c < 48 || 57 < c) return false;
-        }
-
-        return true;
     }
 
     // str only saved as mailbox if it has <...@...>

@@ -18,7 +18,6 @@ public class VRFYCommandPreparator extends SmtpCommandPreparator<SmtpVRFYCommand
 
     @Override
     public void prepare() {
-        this.getObject().setVerb("VRFY");
         this.getObject().setParameters(this.getObject().getUsername());
     }
 }
