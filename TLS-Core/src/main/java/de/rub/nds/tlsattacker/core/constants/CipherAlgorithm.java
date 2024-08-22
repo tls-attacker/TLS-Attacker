@@ -38,6 +38,7 @@ public enum CipherAlgorithm {
     FORTEZZA_CBC(0, 0, 0, 0), // TODO
     AES_128_CTR(16, 16, 0, 0, "AES/CTR/NoPadding"),
     AES_256_CTR(32, 16, 0, 0, "AES/CTR/NoPadding"),
+    RABBIT_CBC(16, 8, 0, 8), //TODO Not sure this is correct
     SM4_GCM(16, 4, 8, 16, "SM4/GCM/NoPadding"),
     SM4_CCM(16, 4, 8, 16, "SM4/CCM/NoPadding");
 
