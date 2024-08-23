@@ -80,7 +80,7 @@ public class ServerHelloPreparator extends HelloMessagePreparator<ServerHelloMes
             forbiddenExtensionTypes.add(ExtensionType.EC_POINT_FORMATS);
         }
 
-        if (selectedCipherSuite != null && selectedCipherSuite.isTLS13()) {
+        if (selectedCipherSuite != null && selectedCipherSuite.isTls13()) {
             forbiddenExtensionTypes.addAll(ExtensionType.getNonTls13Extensions());
         } else {
             forbiddenExtensionTypes.addAll(ExtensionType.getTls13OnlyExtensions());

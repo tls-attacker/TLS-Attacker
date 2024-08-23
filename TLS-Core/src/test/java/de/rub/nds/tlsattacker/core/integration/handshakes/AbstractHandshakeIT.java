@@ -379,7 +379,7 @@ public abstract class AbstractHandshakeIT {
             config.setIgnoreRetransmittedCssInDtls(true);
             config.setAddRetransmissionsToWorkflowTraceInDtls(false);
         }
-        if (cipherSuite.isTLS13()
+        if (cipherSuite.isTls13()
                 || AlgorithmResolver.getKeyExchangeAlgorithm(cipherSuite).isEC()) {
             config.setAddECPointFormatExtension(Boolean.TRUE);
             config.setAddEllipticCurveExtension(Boolean.TRUE);
@@ -388,7 +388,7 @@ public abstract class AbstractHandshakeIT {
             config.setAddEllipticCurveExtension(Boolean.FALSE);
         }
         config.setWorkflowTraceType(workflowTraceType);
-        if (cipherSuite.isTLS13()) {
+        if (cipherSuite.isTls13()) {
             config.setAddExtendedMasterSecretExtension(false);
             config.setAddEncryptThenMacExtension(false);
             config.setAddSupportedVersionsExtension(true);

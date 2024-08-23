@@ -25,7 +25,7 @@ public class CipherWrapper {
     public static EncryptionCipher getEncryptionCipher(
             CipherSuite cipherSuite, ConnectionEndType connectionEndType, KeySet keySet) {
         CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
-        if (cipherAlg == CipherAlgorithm.GOST_28147_CNT) {
+        if (cipherAlg == CipherAlgorithm.GOST_28147_CNT_IMIT) {
             return new GOST28147Cipher(
                     GOSTUtils.getGostSpec(cipherSuite),
                     keySet.getWriteKey(connectionEndType),
@@ -50,7 +50,7 @@ public class CipherWrapper {
     public static DecryptionCipher getDecryptionCipher(
             CipherSuite cipherSuite, ConnectionEndType connectionEndType, KeySet keySet) {
         CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
-        if (cipherAlg == CipherAlgorithm.GOST_28147_CNT) {
+        if (cipherAlg == CipherAlgorithm.GOST_28147_CNT_IMIT) {
             return new GOST28147Cipher(
                     GOSTUtils.getGostSpec(cipherSuite),
                     keySet.getReadKey(connectionEndType),

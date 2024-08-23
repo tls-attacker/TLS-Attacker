@@ -58,7 +58,7 @@ public class GOST28147Cipher extends BaseCipher {
         (byte) 0x2B
     };
 
-    private final CipherAlgorithm algorithm = CipherAlgorithm.GOST_28147_CNT;
+    private final CipherAlgorithm algorithm = CipherAlgorithm.GOST_28147_CNT_IMIT;
 
     private int keyCount;
 

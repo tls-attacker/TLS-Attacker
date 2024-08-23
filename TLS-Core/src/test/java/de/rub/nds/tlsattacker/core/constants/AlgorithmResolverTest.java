@@ -280,7 +280,7 @@ public class AlgorithmResolverTest {
                         CipherSuite.TLS_RSA_EXPORT1024_WITH_RC4_56_MD5,
                         KeyExchangeAlgorithm.RSA_EXPORT),
                 Arguments.of(
-                        CipherSuite.TLS_RSA_PSK_WITH_AES_256_CBC_SHA, KeyExchangeAlgorithm.PSK_RSA),
+                        CipherSuite.TLS_RSA_PSK_WITH_AES_256_CBC_SHA, KeyExchangeAlgorithm.RSA_PSK),
                 Arguments.of(CipherSuite.TLS_RSA_WITH_AES_128_GCM_SHA256, KeyExchangeAlgorithm.RSA),
                 Arguments.of(
                         CipherSuite.TLS_SRP_SHA_DSS_WITH_AES_256_CBC_SHA,
@@ -381,7 +381,7 @@ public class AlgorithmResolverTest {
                         CipherSuite.TLS_RSA_WITH_ARIA_256_GCM_SHA384, CipherAlgorithm.ARIA_256_GCM),
                 Arguments.of(
                         CipherSuite.TLS_GOSTR341094_WITH_28147_CNT_IMIT,
-                        CipherAlgorithm.GOST_28147_CNT),
+                        CipherAlgorithm.GOST_28147_CNT_IMIT),
                 Arguments.of(
                         CipherSuite.TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256,
                         CipherAlgorithm.CHACHA20_POLY1305),

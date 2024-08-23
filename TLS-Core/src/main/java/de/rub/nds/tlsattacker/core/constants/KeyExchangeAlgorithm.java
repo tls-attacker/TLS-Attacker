@@ -16,7 +16,7 @@ public enum KeyExchangeAlgorithm {
     DH_ANON,
     RSA,
     RSA_EXPORT,
-    PSK_RSA,
+    RSA_PSK,
     DH_DSS,
     DH_RSA,
     KRB5,
@@ -37,7 +37,7 @@ public enum KeyExchangeAlgorithm {
     ECMQV_ECNRA,
     ECDH_ECNRA,
     CECPQ1_ECDSA,
-    ECCPWD;
+    ECCPWD, CECPQ1_RSA, GOSTR341112_256;
 
     public boolean isKeyExchangeRsa() {
         switch (this) {
@@ -171,7 +171,7 @@ public enum KeyExchangeAlgorithm {
             case FORTEZZA_KEA: // I dont know if this is correct actually
             case KRB5:
             case PSK:
-            case PSK_RSA:
+            case RSA_PSK:
             case ECDHE_PSK:
             case DHE_PSK:
             case ECCPWD:

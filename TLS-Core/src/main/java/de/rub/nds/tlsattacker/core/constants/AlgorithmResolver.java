@@ -89,7 +89,7 @@ public class AlgorithmResolver {
     }
 
     public static KeyExchangeAlgorithm getKeyExchangeAlgorithm(CipherSuite cipherSuite) {
-        if (cipherSuite.isTLS13()
+        if (cipherSuite.isTls13()
                 || cipherSuite == CipherSuite.TLS_FALLBACK_SCSV
                 || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV) {
             return null;
@@ -100,7 +100,7 @@ public class AlgorithmResolver {
         } else if (cipher.contains("TLS_RSA_EXPORT")) {
             return KeyExchangeAlgorithm.RSA_EXPORT;
         } else if (cipher.contains("TLS_RSA_PSK_")) {
-            return KeyExchangeAlgorithm.PSK_RSA;
+            return KeyExchangeAlgorithm.RSA_PSK;
         } else if (cipher.startsWith("TLS_DH_DSS_")) {
             return KeyExchangeAlgorithm.DH_DSS;
         } else if (cipher.startsWith("TLS_DH_RSA_")) {
@@ -180,7 +180,7 @@ public class AlgorithmResolver {
             case RSA:
             case RSA_EXPORT:
             case SRP_SHA_RSA:
-            case PSK_RSA:
+            case RSA_PSK:
                 return new X509PublicKeyType[] {X509PublicKeyType.RSA};
             case DH_RSA:
             case DH_DSS:
@@ -273,7 +273,7 @@ public class AlgorithmResolver {
         } else if (cipher.contains("ARIA_256_GCM")) {
             return CipherAlgorithm.ARIA_256_GCM;
         } else if (cipher.contains("28147_CNT")) {
-            return CipherAlgorithm.GOST_28147_CNT;
+            return CipherAlgorithm.GOST_28147_CNT_IMIT;
         } else if (cipher.contains("SM4_GCM")) {
             return CipherAlgorithm.SM4_GCM;
         } else if (cipher.contains("SM4_CCM")) {
@@ -433,7 +433,7 @@ public class AlgorithmResolver {
             case RSA:
             case RSA_EXPORT:
             case SRP_SHA_RSA:
-            case PSK_RSA:
+            case RSA_PSK:
                 return SignatureAlgorithm.RSA_PKCS1;
             case ECDHE_ECDSA:
             case ECDH_ECDSA:

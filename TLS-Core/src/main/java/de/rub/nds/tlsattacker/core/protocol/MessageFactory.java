@@ -133,7 +133,7 @@ public class MessageFactory {
                 return new PskDhClientKeyExchangeMessage();
             case ECDHE_PSK:
                 return new PskEcDhClientKeyExchangeMessage();
-            case PSK_RSA:
+            case RSA_PSK:
                 return new PskRsaClientKeyExchangeMessage();
             case PSK:
                 return new PskClientKeyExchangeMessage();
