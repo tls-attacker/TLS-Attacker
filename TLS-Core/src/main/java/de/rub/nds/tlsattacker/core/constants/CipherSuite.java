@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.protocol.constants.HashAlgorithm;
@@ -864,17 +865,8 @@ public enum CipherSuite {
         this.hashAlgorithm = null;
         this.cipherType = null;
         this.isRealCipherSuite = false;
-        this.export= false;
-        this.tls13 = true; 
-    }
-
-    public static CipherSuite getRandom(Random random) {
-        CipherSuite c = null;
-        while (c == null) {
-            Object[] o = MAP.values().toArray();
-            c = (CipherSuite) o[random.nextInt(o.length)];
-        }
-        return c;
+        this.export = false;
+        this.tls13 = true;
     }
 
     static {
@@ -911,11 +903,7 @@ public enum CipherSuite {
     }
 
     public boolean isRealCipherSuite() {
-        if (isSCSV() || isGrease()) {
-            return false;
-        } else {
-            return true;
-        }
+        return isRealCipherSuite;
     }
 
     public static CipherSuite getCipherSuite(byte[] value) {
@@ -942,7 +930,7 @@ public enum CipherSuite {
      * @return True if the cipher suite is Ephemeral
      */
     public boolean isEphemeral() {
-        return this.name().contains("DHE_") || this.isAnon() || this.isPWD() || this.isTls13();
+        return keyExchangeAlgorithm.isKeyExchangeEphemeral() || this.isPWD() || this.isTls13();
     }
 
     public boolean isPskOrDhPsk() {
@@ -954,11 +942,7 @@ public enum CipherSuite {
     }
 
     public boolean isPsk() {
-        return this.name().contains("PSK");
-    }
-
-    public boolean isSrpSha() {
-        return this.name().contains("SRP_SHA");
+        return keyExchangeAlgorithm.isPsk();
     }
 
     public boolean isSrp() {
@@ -990,8 +974,7 @@ public enum CipherSuite {
     }
 
     public Boolean isUsingPadding(ProtocolVersion protocolVersion) {
-        CipherType type = AlgorithmResolver.getCipherType(this);
-        switch (type) {
+        switch (cipherType) {
             case STREAM:
                 return false;
             case BLOCK:
@@ -1028,7 +1011,7 @@ public enum CipherSuite {
     }
 
     public boolean isSCSV() {
-        return (this.name().contains("SCSV"));
+        return !isRealCipherSuite && !isGrease();
     }
 
     public boolean isGCM() {
@@ -1488,37 +1471,27 @@ public enum CipherSuite {
     }
 
     public static List<CipherSuite> getEsniImplemented() {
-        List<CipherSuite> list = new LinkedList();
+        List<CipherSuite> list = new LinkedList<>();
         list.add(CipherSuite.TLS_AES_128_GCM_SHA256);
         list.add(CipherSuite.TLS_AES_256_GCM_SHA384);
         list.add(CipherSuite.TLS_CHACHA20_POLY1305_SHA256);
         list.add(CipherSuite.TLS_AES_128_CCM_SHA256);
         list.add(CipherSuite.TLS_AES_128_CCM_8_SHA256);
+        return list;
+    }
+
+    public static List<CipherSuite> getAllCipherSuites() {
+        List<CipherSuite> list = new LinkedList<>();
+        list.addAll(Arrays.asList(values()));
         return list;
     }
 
     public static List<CipherSuite> getTls13CipherSuites() {
-        List<CipherSuite> list = new LinkedList();
-        list.add(CipherSuite.TLS_AES_128_GCM_SHA256);
-        list.add(CipherSuite.TLS_AES_256_GCM_SHA384);
-        list.add(CipherSuite.TLS_CHACHA20_POLY1305_SHA256);
-        list.add(CipherSuite.TLS_AES_128_CCM_SHA256);
-        list.add(CipherSuite.TLS_AES_128_CCM_8_SHA256);
-        list.add(TLS_SM4_GCM_SM3);
-        list.add(TLS_SM4_CCM_SM3);
-        return list;
+        return getAllCipherSuites().stream().filter(CipherSuite::isTls13).collect(Collectors.toList());
     }
 
     public static List<CipherSuite> getImplementedTls13CipherSuites() {
-        List<CipherSuite> list = new LinkedList();
-        list.add(CipherSuite.TLS_AES_128_GCM_SHA256);
-        list.add(CipherSuite.TLS_AES_256_GCM_SHA384);
-        list.add(CipherSuite.TLS_CHACHA20_POLY1305_SHA256);
-        list.add(CipherSuite.TLS_AES_128_CCM_SHA256);
-        list.add(CipherSuite.TLS_AES_128_CCM_8_SHA256);
-        list.add(TLS_SM4_GCM_SM3);
-        list.add(TLS_SM4_CCM_SM3);
-        return list;
+        return getImplemented().stream().filter(CipherSuite::isTls13).collect(Collectors.toList());
     }
 
     public static List<CipherSuite> getNotImplemented() {
@@ -1537,40 +1510,55 @@ public enum CipherSuite {
      * @return True if the Ciphersuite is supported in TLS 1.3
      */
     public boolean isTls13() {
-        return (this.getByteValue()[0] == (byte) 0x13 && this.getByteValue()[1] != (byte) 0x00)
-                || this.isSM();
+        return tls13;
+    }
+
+    public CipherType getCipherType() {
+        return cipherType;
+    }
+
+    public CipherAlgorithm getCipherAlgorithm() {
+        return cipherAlgorithm;
+    }
+
+    public KeyExchangeAlgorithm getKeyExchangeAlgorithm() {
+        return keyExchangeAlgorithm;
+    }
+
+    public HashAlgorithm getHashAlgorithm() {
+        return hashAlgorithm;
     }
 
     public boolean isImplemented() {
         return getImplemented().contains(this);
     }
 
-    public boolean isSHA() {
-        return this.name().endsWith("SHA");
+    public boolean isSHA1() {
+        return hashAlgorithm == HashAlgorithm.SHA1;
     }
 
     public boolean isSHA256() {
-        return this.name().contains("SHA256");
-    }
-
-    public boolean isChachaPoly() {
-        return this.name().contains("CHACHA");
+        return hashAlgorithm == HashAlgorithm.SHA256;
     }
 
     public boolean isSHA384() {
-        return this.name().contains("SHA384");
+        return hashAlgorithm == HashAlgorithm.SHA384;
     }
 
     public boolean isSHA512() {
-        return this.name().contains("SHA512");
+        return hashAlgorithm == HashAlgorithm.SHA512;
+    }
+
+    public boolean isChachaPoly() {
+        return cipherAlgorithm == CipherAlgorithm.CHACHA20_POLY1305;
     }
 
     public boolean isECDSA() {
-        return this.name().contains("ECDSA");
+        return keyExchangeAlgorithm != null && keyExchangeAlgorithm.isEcdsa();
     }
 
     public boolean isAnon() {
-        return this.name().contains("anon");
+        return keyExchangeAlgorithm != null && keyExchangeAlgorithm.isAnon();
     }
 
     public boolean isNull() {
@@ -1578,15 +1566,15 @@ public enum CipherSuite {
     }
 
     public boolean isPWD() {
-        return this.name().contains("PWD");
+        return keyExchangeAlgorithm == KeyExchangeAlgorithm.ECCPWD;
     }
 
     public boolean isDSS() {
-        return this.name().contains("DSS");
+        return keyExchangeAlgorithm != null && keyExchangeAlgorithm.isDss();
     }
 
     public boolean isGOST() {
-        return this.name().contains("GOST");
+        return keyExchangeAlgorithm != null && keyExchangeAlgorithm.isGost();
     }
 
     public boolean isSM() {
@@ -1599,6 +1587,6 @@ public enum CipherSuite {
     }
 
     public boolean requiresServerCertificateMessage() {
-        return !this.isSrpSha() && !this.isPskOrDhPsk() && !this.isAnon() && !this.isPWD();
+        return !this.isSrp() && !this.isPskOrDhPsk() && !this.isAnon() && !this.isPWD();
     }
 }
