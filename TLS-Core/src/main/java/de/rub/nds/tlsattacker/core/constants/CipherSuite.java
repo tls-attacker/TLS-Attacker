@@ -240,9 +240,9 @@ public enum CipherSuite {
             CipherAlgorithm.AES_128_CBC, HashAlgorithm.SHA256, false, false),
     TLS_DH_anon_WITH_AES_256_CBC_SHA256(0x006D, CipherType.BLOCK, KeyExchangeAlgorithm.DH_ANON,
             CipherAlgorithm.AES_256_CBC, HashAlgorithm.SHA256, false, false),
-    TLS_GOSTR341094_WITH_28147_CNT_IMIT(0x0080, CipherType.BLOCK, KeyExchangeAlgorithm.VKO_GOST01,
+    TLS_GOSTR341094_WITH_28147_CNT_IMIT(0x0080, CipherType.STREAM, KeyExchangeAlgorithm.VKO_GOST01,
             CipherAlgorithm.GOST_28147_CNT_IMIT, HashAlgorithm.GOST_R3411_94, false, false),
-    TLS_GOSTR341001_WITH_28147_CNT_IMIT(0x0081, CipherType.BLOCK, KeyExchangeAlgorithm.VKO_GOST12,
+    TLS_GOSTR341001_WITH_28147_CNT_IMIT(0x0081, CipherType.STREAM, KeyExchangeAlgorithm.VKO_GOST12,
             CipherAlgorithm.GOST_28147_CNT_IMIT, HashAlgorithm.GOST_R3411_94, false, false),
     TLS_GOSTR341094_WITH_NULL_GOSTR3411(0x0082, CipherType.STREAM, KeyExchangeAlgorithm.VKO_GOST01,
             CipherAlgorithm.NULL, HashAlgorithm.GOST_R3411_94, false, false),
@@ -818,9 +818,9 @@ public enum CipherSuite {
     GREASE_13(0xDADA, true),
     GREASE_14(0xEAEA, true),
     GREASE_15(0xFAFA, true),
-    TLS_GOSTR341112_256_WITH_28147_CNT_IMIT(0xFF85, CipherType.BLOCK, KeyExchangeAlgorithm.GOSTR341112_256,
+    TLS_GOSTR341112_256_WITH_28147_CNT_IMIT(0xFF85, CipherType.STREAM, KeyExchangeAlgorithm.GOSTR341112_256,
             CipherAlgorithm.GOST_28147_CNT_IMIT, HashAlgorithm.GOST_R3411_12, false, false),
-    TLS_GOSTR341112_256_WITH_NULL_GOSTR3411(0xFF87, CipherType.BLOCK, KeyExchangeAlgorithm.GOSTR341112_256,
+    TLS_GOSTR341112_256_WITH_NULL_GOSTR3411(0xFF87, CipherType.STREAM, KeyExchangeAlgorithm.GOSTR341112_256,
             CipherAlgorithm.NULL, HashAlgorithm.GOST_R3411_12, false, false),;
 
     private int value;

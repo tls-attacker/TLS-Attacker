@@ -469,13 +469,6 @@ public class AlgorithmResolverTest {
                         CipherSuite.TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256, CipherType.AEAD));
     }
 
-    /** Test of getCipherType method, of class AlgorithmResolver. */
-    @ParameterizedTest
-    @MethodSource("provideGetCipherTypeTestVectors")
-    public void testGetCipherType(CipherSuite providedCipherSuite, CipherType expectedCipherType) {
-        assertSame(expectedCipherType, AlgorithmResolver.getCipherType(providedCipherSuite));
-    }
-
     @ParameterizedTest
     @EnumSource(
             value = CipherSuite.class,
@@ -486,23 +479,6 @@ public class AlgorithmResolverTest {
                 () -> AlgorithmResolver.getCipher(providedCipherSuite));
     }
 
-    @ParameterizedTest
-    @EnumSource(
-            value = CipherSuite.class,
-            // These values are known to throw an UnsupportedOperationException and are therefore
-            // excluded
-            names = {
-                "TLS_FALLBACK_SCSV",
-                "TLS_EMPTY_RENEGOTIATION_INFO_SCSV",
-                "TLS_RSA_WITH_RABBIT_CBC_SHA",
-                "GREASE_[0-9]*"
-            },
-            mode = EnumSource.Mode.MATCH_NONE)
-    public void testGetCipherTypeDoesNotThrow(CipherSuite providedCipherSuite) {
-        // Checks that we can retrieve the cipher type of the provided cipher suite without
-        // exceptions
-        assertDoesNotThrow(() -> AlgorithmResolver.getCipherType(providedCipherSuite));
-    }
 
     /**
      * Provides test vectors of format (providedProtocolVersion, providedCipherSuite,

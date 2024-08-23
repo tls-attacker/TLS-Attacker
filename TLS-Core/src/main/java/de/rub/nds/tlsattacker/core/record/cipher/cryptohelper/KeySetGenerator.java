@@ -214,7 +214,7 @@ public class KeySetGenerator {
 
     private static int getSecretSetSize(ProtocolVersion protocolVersion, CipherSuite cipherSuite)
             throws CryptoException {
-        switch (AlgorithmResolver.getCipherType(cipherSuite)) {
+        switch (cipherSuite.getCipherType()) {
             case AEAD:
                 return getAeadSecretSetSize(protocolVersion, cipherSuite);
             case BLOCK:

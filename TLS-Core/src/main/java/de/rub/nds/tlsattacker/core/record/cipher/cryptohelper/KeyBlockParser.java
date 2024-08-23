@@ -39,18 +39,18 @@ public class KeyBlockParser extends Parser<KeySet> {
 
     @Override
     public void parse(KeySet keys) {
-        if (AlgorithmResolver.getCipherType(suite) != CipherType.AEAD) {
+        if (suite.getCipherType() != CipherType.AEAD) {
             parseClientWriteMacSecret(keys);
             parseServerWriteMacSecret(keys);
         }
         parseClientWriteKey(keys);
         parseServerWriteKey(keys);
-        if ((AlgorithmResolver.getCipherType(suite) == CipherType.BLOCK
+        if ((suite.getCipherType() == CipherType.BLOCK
                         && !version.usesExplicitIv())
                 || suite.isSteamCipherWithIV()) {
             parseClientWriteIvBlock(keys);
             parseServerWriteIvBlock(keys);
-        } else if (AlgorithmResolver.getCipherType(suite) == CipherType.AEAD) {
+        } else if (suite.getCipherType() == CipherType.AEAD) {
             parseClientWriteIvAead(keys);
             parseServerWriteIvAead(keys);
         }

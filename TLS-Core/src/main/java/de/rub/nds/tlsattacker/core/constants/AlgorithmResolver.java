@@ -308,42 +308,10 @@ public class AlgorithmResolver {
         return BulkCipherAlgorithm.getBulkCipherAlgorithm(cipherSuite);
     }
 
-    /**
-     * @param cipherSuite The Cipher suite for which the CipherType should be selected
-     * @return The CipherType of the Cipher suite
-     */
-    public static CipherType getCipherType(CipherSuite cipherSuite) {
-        String cs = cipherSuite.toString().toUpperCase();
-        if (cipherSuite.isGCM()
-                || cipherSuite.isCCM()
-                || cipherSuite.isOCB()
-                || cipherSuite.usesStrictExplicitIv()) {
-            return CipherType.AEAD;
-        } else if (cs.contains("AES")
-                || cs.contains("DES")
-                || cs.contains("IDEA")
-                || cs.contains("WITH_FORTEZZA")
-                || cs.contains("CAMELLIA")
-                || cs.contains("WITH_SEED")
-                || cs.contains("WITH_ARIA")
-                || cs.contains("RC2")) {
-            return CipherType.BLOCK;
-        } else if (cs.contains("RC4") || cs.contains("WITH_NULL") || cs.contains("28147_CNT")) {
-            return CipherType.STREAM;
-        }
-        if (cipherSuite == CipherSuite.TLS_FALLBACK_SCSV
-                || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV) {
-            throw new UnsupportedOperationException(
-                    "The CipherSuite:" + cipherSuite.name() + " does not specify a CipherType");
-        }
-        throw new UnsupportedOperationException(
-                "Cipher suite " + cipherSuite + " is not supported yet.");
-    }
-
     public static MacAlgorithm getMacAlgorithm(
             ProtocolVersion protocolVersion, CipherSuite cipherSuite) {
         MacAlgorithm result = null;
-        if (getCipherType(cipherSuite) == CipherType.AEAD) {
+        if (cipherSuite.getCipherType() == CipherType.AEAD) {
             result = MacAlgorithm.AEAD;
         } else {
             String cipher = cipherSuite.toString();

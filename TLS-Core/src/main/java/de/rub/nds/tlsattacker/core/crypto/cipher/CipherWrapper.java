@@ -38,7 +38,7 @@ public class CipherWrapper {
             return new JavaCipher(
                     cipherAlg,
                     keySet.getWriteKey(connectionEndType),
-                    AlgorithmResolver.getCipherType(cipherSuite) == CipherType.STREAM);
+                    cipherSuite.getCipherType() == CipherType.STREAM);
         } else if (cipherAlg == CipherAlgorithm.NULL) {
             return new NullCipher();
         } else {
@@ -63,7 +63,7 @@ public class CipherWrapper {
             return new JavaCipher(
                     cipherAlg,
                     keySet.getReadKey(connectionEndType),
-                    AlgorithmResolver.getCipherType(cipherSuite) == CipherType.STREAM);
+                    cipherSuite.getCipherType() == CipherType.STREAM);
         } else if (cipherAlg == CipherAlgorithm.NULL) {
             return new NullCipher();
         } else {
