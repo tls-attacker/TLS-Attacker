@@ -53,6 +53,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -477,7 +478,7 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
     }
 
     public InitialPacket decryptIntitialPacket(InitialPacket packet) throws CryptoException {
-        decryptor.removeHeaderProtection(packet);
+        decryptor.removeHeaderProtectionInitial(packet);
         packet.convertCompleteProtectedHeader();
         decryptor.decryptInitialPacket(packet);
         context.addReceivedInitialPacketNumber(packet.getPlainPacketNumber());
@@ -494,7 +495,7 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
     }
 
     public HandshakePacket decryptHandshakePacket(HandshakePacket packet) throws CryptoException {
-        decryptor.removeHeaderProtection(packet);
+        decryptor.removeHeaderProtectionHandshake(packet);
         packet.convertCompleteProtectedHeader();
         decryptor.decryptHandshakePacket(packet);
         context.addReceivedHandshakePacketNumber(packet.getPlainPacketNumber());
@@ -517,7 +518,7 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
         addProducedContainer(packet);
         LOGGER.info(
                 "Read VN packet, supported versions: {}",
-                packet.getSupportedVersions().stream()
+                Stream.of(packet.getSupportedVersions().getValue())
                         .map(
                                 v ->
                                         QuicVersion.getVersionNameFromBytes(v)
@@ -529,7 +530,7 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
     }
 
     public OneRTTPacket decryptOneRTTPacket(OneRTTPacket packet) throws CryptoException {
-        decryptor.removeHeaderProtection(packet);
+        decryptor.removeHeaderProtectionApplication(packet);
         packet.convertCompleteProtectedHeader();
         decryptor.decryptApplicationPacket(packet);
         context.addReceivedOneRTTPacketNumber(packet.getPlainPacketNumber());
