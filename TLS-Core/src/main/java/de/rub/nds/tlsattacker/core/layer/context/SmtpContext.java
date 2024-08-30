@@ -89,6 +89,9 @@ public class SmtpContext extends LayerContext {
 
     public SmtpReply getExpectedNextReplyType() {
         SmtpCommand command = getLastCommand();
+        return getExpectedReplyType(command);
+    }
+    public static SmtpReply getExpectedReplyType(SmtpCommand command) {
         if (command == null) {
             return null;
         } else {
@@ -106,6 +109,8 @@ public class SmtpContext extends LayerContext {
                 return new SmtpDATAContentReply();
             } else if (command instanceof SmtpQUITCommand) {
                 return new SmtpQUITReply();
+            } else if (command instanceof SmtpSTARTTLSCommand){
+                return new SmtpSTARTTLSReply();
             } else {
                 throw new UnsupportedOperationException(
                         "No reply implemented for :" + command.getClass());

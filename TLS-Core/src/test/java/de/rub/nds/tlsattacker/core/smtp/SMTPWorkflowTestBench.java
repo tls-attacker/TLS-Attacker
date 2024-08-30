@@ -14,11 +14,8 @@ import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.layer.*;
 import de.rub.nds.tlsattacker.core.layer.constant.StackConfiguration;
-import de.rub.nds.tlsattacker.core.smtp.command.SmtpEHLOCommand;
-import de.rub.nds.tlsattacker.core.smtp.command.SmtpHELOCommand;
-import de.rub.nds.tlsattacker.core.smtp.reply.SmtpEHLOReply;
-import de.rub.nds.tlsattacker.core.smtp.reply.SmtpInitialGreeting;
-import de.rub.nds.tlsattacker.core.smtp.reply.SmtpReply;
+import de.rub.nds.tlsattacker.core.smtp.command.*;
+import de.rub.nds.tlsattacker.core.smtp.reply.*;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
@@ -51,7 +48,7 @@ public class SMTPWorkflowTestBench {
     public void testWorkFlow() throws IOException, JAXBException {
         Security.addProvider(new BouncyCastleProvider());
         Config config = Config.createConfig();
-        config.setDefaultClientConnection(new OutboundConnection(4443, "localhost"));
+        config.setDefaultClientConnection(new OutboundConnection(2525, "localhost"));
         config.setDefaultLayerConfiguration(StackConfiguration.SMTP);
 
         WorkflowTrace trace = new WorkflowTrace();
@@ -60,6 +57,8 @@ public class SMTPWorkflowTestBench {
         trace.addTlsAction(new ReceiveAction(initialGreeting));
         trace.addTlsAction(new SendAction(new SmtpEHLOCommand("seal.upb.de")));
         trace.addTlsAction(new ReceiveAction(new SmtpEHLOReply()));
+        trace.addTlsAction(new SendAction(new SmtpNOOPCommand()));
+        trace.addTlsAction(new ReceiveAction(new SmtpNOOPReply()));
         State state = new State(config, trace);
 
         WorkflowExecutor workflowExecutor =
@@ -119,15 +118,23 @@ public class SMTPWorkflowTestBench {
     public void testWorkFlowSTARTTLS() throws IOException, JAXBException {
         Security.addProvider(new BouncyCastleProvider());
         Config config = Config.createConfig();
-        config.setDefaultClientConnection(new OutboundConnection(4443, "localhost"));
+        config.setDefaultClientConnection(new OutboundConnection(2525, "localhost"));
         config.setDefaultLayerConfiguration(StackConfiguration.SMTP);
 
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
         WorkflowTrace trace = factory.createWorkflowTrace(WorkflowTraceType.DYNAMIC_HANDSHAKE, RunningModeType.CLIENT);
 
-        trace.addTlsAction(new ReceiveAction(new SmtpInitialGreeting()));
+        trace.addTlsAction(0, new ReceiveAction(new SmtpInitialGreeting()));
+        trace.addTlsAction(1, new SendAction(new SmtpEHLOCommand("seal.upb.de")));
+        trace.addTlsAction(2, new ReceiveAction(new SmtpEHLOReply()));
+        trace.addTlsAction(3, new SendAction(new SmtpSTARTTLSCommand()));
+        trace.addTlsAction(4, new ReceiveAction(new SmtpSTARTTLSReply()));
+        trace.addTlsAction(5, new STARTTLSAction());
+
         trace.addTlsAction(new SendAction(new SmtpEHLOCommand("seal.upb.de")));
         trace.addTlsAction(new ReceiveAction(new SmtpEHLOReply()));
+        trace.addTlsAction(new SendAction(new SmtpQUITCommand()));
+        trace.addTlsAction(new ReceiveAction(new SmtpQUITReply()));
 
         System.out.println(trace);
         State state = new State(config, trace);
