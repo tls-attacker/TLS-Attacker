@@ -20,7 +20,7 @@ import de.rub.nds.tlsattacker.core.quic.serializer.frame.CryptoFrameSerializer;
 import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
-import java.util.Arrays;
+import java.util.Objects;
 
 /** A CRYPTO frame (type=0x06) is used to transmit cryptographic handshake messages. */
 @XmlRootElement
@@ -33,6 +33,9 @@ public class CryptoFrame extends QuicFrame {
     @ModifiableVariableProperty protected ModifiableByteArray cryptoData;
 
     private int maxFrameLengthConfig;
+    private byte[] cryptoDataConfig;
+    private long offsetConfig;
+    private long lengthConfig;
 
     public CryptoFrame() {
         super(QuicFrameType.CRYPTO_FRAME);
@@ -41,6 +44,13 @@ public class CryptoFrame extends QuicFrame {
     public CryptoFrame(int maxFrameLengthConfig) {
         super(QuicFrameType.CRYPTO_FRAME);
         this.maxFrameLengthConfig = maxFrameLengthConfig;
+    }
+
+    public CryptoFrame(byte[] cryptoDataConfig, long offsetConfig, long lengthConfig) {
+        super(QuicFrameType.CRYPTO_FRAME);
+        this.cryptoDataConfig = cryptoDataConfig;
+        this.offsetConfig = offsetConfig;
+        this.lengthConfig = lengthConfig;
     }
 
     @Override
@@ -115,31 +125,27 @@ public class CryptoFrame extends QuicFrame {
         this.maxFrameLengthConfig = maxFrameLengthConfig;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+    public byte[] getCryptoDataConfig() {
+        return cryptoDataConfig;
+    }
 
-        CryptoFrame that = (CryptoFrame) o;
+    public void setCryptoDataConfig(byte[] cryptoDataConfig) {
+        this.cryptoDataConfig = cryptoDataConfig;
+    }
 
-        if ((offset == null) != (that.offset == null)) {
-            return false;
-        }
+    public long getOffsetConfig() {
+        return offsetConfig;
+    }
 
-        if ((length == null) != (that.offset == null)) {
-            return false;
-        }
+    public void setOffsetConfig(long offsetConfig) {
+        this.offsetConfig = offsetConfig;
+    }
 
-        if (offset != null && !offset.getValue().equals(that.offset.getValue())) {
-            return false;
-        }
-        if (length != null && !length.getValue().equals(that.length.getValue())) {
-            return false;
-        }
-        return Arrays.equals(cryptoData.getValue(), that.cryptoData.getValue());
+    public long getLengthConfig() {
+        return lengthConfig;
+    }
+
+    public void setLengthConfig(long lengthConfig) {
+        this.lengthConfig = lengthConfig;
     }
 }

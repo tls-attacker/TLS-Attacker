@@ -24,7 +24,31 @@ public class StreamFramePreparator extends QuicFramePreparator<StreamFrame> {
     @Override
     public void prepare() {
         LOGGER.debug("Preparing STREAM Frame");
+        prepareData(getObject());
+        prepareLengthData(getObject());
+        prepareOffsetData(getObject());
+        prepareStreamId(getObject());
         prepareFrameType(getObject());
+    }
+
+    protected void prepareData(StreamFrame frame) {
+        frame.setData(frame.getDataConfig());
+        LOGGER.debug("Crypto Data: {}", frame.getData().getValue());
+    }
+
+    protected void prepareLengthData(StreamFrame frame) {
+        frame.setLength(frame.getLengthConfig());
+        LOGGER.debug("Length: {}", frame.getLength().getValue());
+    }
+
+    protected void prepareOffsetData(StreamFrame frame) {
+        frame.setOffset(frame.getOffsetConfig());
+        LOGGER.debug("Offset: {}", frame.getOffset().getValue());
+    }
+
+    protected void prepareStreamId(StreamFrame frame) {
+        frame.setStreamId(frame.getStreamIdConfig());
+        LOGGER.debug("Stream ID: {}", frame.getStreamId().getValue());
     }
 
     protected void prepareFrameType(StreamFrame frame) {
@@ -37,7 +61,7 @@ public class StreamFramePreparator extends QuicFramePreparator<StreamFrame> {
         if (frame.getLength() != null) {
             quicFrameType |= 0b00000010;
         }
-        if (frame.isFinalFrame()) {
+        if (frame.isFinalFrameConfig()) {
             quicFrameType |= 0b00000001;
         }
         frame.setFrameType(quicFrameType);

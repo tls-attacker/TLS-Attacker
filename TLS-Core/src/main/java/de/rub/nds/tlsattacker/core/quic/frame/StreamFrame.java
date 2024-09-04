@@ -33,26 +33,31 @@ public class StreamFrame extends QuicFrame {
 
     @ModifiableVariableProperty protected ModifiableByteArray data;
 
-    protected boolean isFinalFrame;
+    private int streamIdConfig;
+    private byte[] dataConfig;
+    private int lengthConfig;
+    private int offsetConfig;
+    private boolean finalFrameConfig;
 
     public StreamFrame() {
         super(QuicFrameType.STREAM_FRAME);
     }
 
-    public StreamFrame(byte[] data, int streamId, boolean isFinalFrame) {
-        this();
-        setData(data);
-        setLength(data.length);
-        setStreamId(streamId);
-        setFinalFrame(isFinalFrame);
-    }
-
-    public StreamFrame(byte[] data, int streamId) {
-        this(data, streamId, false);
-    }
-
     public StreamFrame(QuicFrameType frameType) {
         super(frameType);
+    }
+
+    public StreamFrame(byte[] dataConfig, int streamIdConfig, boolean finalFrameConfig) {
+        this();
+        this.dataConfig = dataConfig;
+        this.streamIdConfig = streamIdConfig;
+        this.lengthConfig = dataConfig.length;
+        this.finalFrameConfig = finalFrameConfig;
+        this.offsetConfig = 0;
+    }
+
+    public StreamFrame(byte[] dataConfig, int streamIdConfig) {
+        this(dataConfig, streamIdConfig, false);
     }
 
     @Override
@@ -107,11 +112,43 @@ public class StreamFrame extends QuicFrame {
         this.data = ModifiableVariableFactory.safelySetValue(this.data, data);
     }
 
-    public boolean isFinalFrame() {
-        return isFinalFrame;
+    public int getStreamIdConfig() {
+        return streamIdConfig;
     }
 
-    public void setFinalFrame(boolean finalFrame) {
-        this.isFinalFrame = finalFrame;
+    public void setStreamIdConfig(int streamIdConfig) {
+        this.streamIdConfig = streamIdConfig;
+    }
+
+    public byte[] getDataConfig() {
+        return dataConfig;
+    }
+
+    public void setDataConfig(byte[] dataConfig) {
+        this.dataConfig = dataConfig;
+    }
+
+    public int getLengthConfig() {
+        return lengthConfig;
+    }
+
+    public void setLengthConfig(int lengthConfig) {
+        this.lengthConfig = lengthConfig;
+    }
+
+    public int getOffsetConfig() {
+        return offsetConfig;
+    }
+
+    public void setOffsetConfig(int offsetConfig) {
+        this.offsetConfig = offsetConfig;
+    }
+
+    public boolean isFinalFrameConfig() {
+        return finalFrameConfig;
+    }
+
+    public void setFinalFrameConfig(boolean finalFrameConfig) {
+        this.finalFrameConfig = finalFrameConfig;
     }
 }
