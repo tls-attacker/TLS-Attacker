@@ -8,9 +8,18 @@
  */
 package de.rub.nds.tlsattacker.core.layer.impl;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import static de.rub.nds.tlsattacker.core.quic.constants.QuicPacketType.HANDSHAKE_PACKET;
+import static de.rub.nds.tlsattacker.core.quic.constants.QuicPacketType.INITIAL_PACKET;
+import static de.rub.nds.tlsattacker.core.quic.constants.QuicPacketType.ONE_RTT_PACKET;
+import static de.rub.nds.tlsattacker.core.quic.constants.QuicPacketType.RETRY_PACKET;
+import static de.rub.nds.tlsattacker.core.quic.constants.QuicPacketType.UNKNOWN;
+import static de.rub.nds.tlsattacker.core.quic.constants.QuicPacketType.VERSION_NEGOTIATION;
+import static de.rub.nds.tlsattacker.core.quic.constants.QuicPacketType.ZERO_RTT_PACKET;
+
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoRuntimeException;
+import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
+import de.rub.nds.tlsattacker.core.exceptions.TimeoutException;
 import de.rub.nds.tlsattacker.core.layer.AcknowledgingProtocolLayer;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
@@ -30,19 +39,6 @@ import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.quic.packet.RetryPacket;
 import de.rub.nds.tlsattacker.core.quic.packet.VersionNegotiationPacket;
 import de.rub.nds.tlsattacker.core.quic.packet.ZeroRTTPacket;
-import de.rub.nds.tlsattacker.core.quic.parser.packet.HandshakePacketParser;
-import de.rub.nds.tlsattacker.core.quic.parser.packet.InitialPacketParser;
-import de.rub.nds.tlsattacker.core.quic.parser.packet.OneRTTPacketParser;
-import de.rub.nds.tlsattacker.core.quic.parser.packet.RetryPacketParser;
-import de.rub.nds.tlsattacker.core.quic.parser.packet.VersionNegotiationPacketParser;
-import de.rub.nds.tlsattacker.core.quic.preparator.packet.HandshakePacketPreparator;
-import de.rub.nds.tlsattacker.core.quic.preparator.packet.InitialPacketPreparator;
-import de.rub.nds.tlsattacker.core.quic.preparator.packet.OneRTTPacketPreparator;
-import de.rub.nds.tlsattacker.core.quic.preparator.packet.ZeroRTTPacketPreparator;
-import de.rub.nds.tlsattacker.core.quic.serializer.packet.HandshakePacketSerializer;
-import de.rub.nds.tlsattacker.core.quic.serializer.packet.InitialPacketSerializer;
-import de.rub.nds.tlsattacker.core.quic.serializer.packet.OneRTTPacketSerializer;
-import de.rub.nds.tlsattacker.core.quic.serializer.packet.ZeroRTTPacketSerializer;
 import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -51,14 +47,20 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * The QuicPacketLayer encrypts and encapsulates QUIC frames into QUIC packets. It sends the packets
+ * using the lower layer.
+ */
 public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerHint, QuicPacket> {
 
     private static final Logger LOGGER = LogManager.getLogger();
+
     private final QuicContext context;
 
     private final QuicDecryptor decryptor;
@@ -77,155 +79,171 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
                                 receivedPacketBuffer.put(quicPacketType, new ArrayList<>()));
     }
 
-    public void clearReceivedPacketBuffer() {
-        receivedPacketBuffer.values().forEach(ArrayList::clear);
-    }
-
+    /**
+     * Sends the given packets of this layer using the lower layer.
+     *
+     * @return LayerProcessingResult A result object storing information about sending the data
+     * @throws IOException When the data cannot be sent
+     */
     @Override
     public LayerProcessingResult sendConfiguration() throws IOException {
         LayerConfiguration<QuicPacket> configuration = getLayerConfiguration();
         if (configuration != null && configuration.getContainerList() != null) {
-            for (QuicPacket p : configuration.getContainerList()) {
-                if (p.getProtectedPayload().getValue() != null) {
-                    switch (p.getPacketType()) {
-                        case INITIAL_PACKET:
-                        case HANDSHAKE_PACKET:
-                        case ONE_RTT_PACKET:
-                        case ZERO_RTT_PACKET:
-                            getLowerLayer().sendData(null, p.getSerializer(context).serialize());
-                            LOGGER.debug("Send {}", p.getPacketType().getName());
-                            break;
-                        case RETRY_PACKET:
-                            throw new UnsupportedOperationException(
-                                    "Retry Packet - Not supported yet.");
-                        case UNKNOWN:
-                            throw new UnsupportedOperationException(
-                                    "Unknown Packet - Not supported yet.");
-                        default:
-                            break;
-                    }
-                } else {
-                    LOGGER.error("Can not send configured packet as it is not encrypted yet.");
+            for (QuicPacket packet : getUnprocessedConfiguredContainers()) {
+                // TODO: Encrypt packets
+                if (isEmptyPacket(packet)) {
+                    continue;
+                }
+                try {
+                    byte[] bytes = writePacket(packet);
+                    addProducedContainer(packet);
+                    getLowerLayer().sendData(null, bytes);
+                } catch (CryptoException ex) {
+                    LOGGER.error("TODO");
                 }
             }
-            setLayerConfiguration(null);
         }
         return getLayerResult();
     }
 
+    /**
+     * Sends data from an upper layer using the lower layer. Puts the given bytes into packets and
+     * sends those.
+     *
+     * @param hint Hint for the layer
+     * @param data The data to send
+     * @return LayerProcessingResult A result object containing information about the sent packets
+     * @throws IOException When the data cannot be sent
+     */
     @Override
     public LayerProcessingResult sendData(QuicPacketLayerHint hint, byte[] data)
             throws IOException {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        LayerConfiguration<QuicPacket> configuration = getLayerConfiguration();
+        QuicPacketType type = QuicPacketType.UNKNOWN;
+        if (hint != null && hint.getQuicPacketType() != null) {
+            type = hint.getQuicPacketType();
+        } else {
+            LOGGER.warn("TODO");
+        }
+
+        List<QuicPacket> givenPackets = getUnprocessedConfiguredContainers();
         try {
-            if (hint != null && hint.getQuicPacketType() != null) {
-                switch (hint.getQuicPacketType()) {
+            // TODO: Ignoring hint
+            if (getLayerConfiguration().getContainerList() != null && givenPackets.size() > 0) {
+                QuicPacket packet = givenPackets.get(0);
+                byte[] bytes = writePacket(data, packet);
+                addProducedContainer(packet);
+                getLowerLayer().sendData(null, bytes);
+            } else {
+                switch (type) {
                     case INITIAL_PACKET:
                         InitialPacket initialPacket = new InitialPacket();
-                        stream.writeBytes(writeInitialPacket(data, initialPacket));
-                        LOGGER.debug("Send initial packet");
+                        byte[] initialPacketBytes = writePacket(data, initialPacket);
+                        addProducedContainer(initialPacket);
+                        getLowerLayer().sendData(null, initialPacketBytes);
                         break;
                     case HANDSHAKE_PACKET:
                         HandshakePacket handshakePacket = new HandshakePacket();
-                        stream.writeBytes(writeHandshakePacket(data, handshakePacket));
-                        LOGGER.debug("Send handshake packet");
+                        byte[] handshakePacketBytes = writePacket(data, handshakePacket);
+                        addProducedContainer(handshakePacket);
+                        getLowerLayer().sendData(null, handshakePacketBytes);
                         break;
                     case ONE_RTT_PACKET:
                         OneRTTPacket oneRTTPacket = new OneRTTPacket();
-                        stream.writeBytes(writeOneRTTPacket(data, oneRTTPacket));
-                        LOGGER.debug("Send one rtt packet");
+                        byte[] oneRTTPacketBytes = writePacket(data, oneRTTPacket);
+                        addProducedContainer(oneRTTPacket);
+                        getLowerLayer().sendData(null, oneRTTPacketBytes);
                         break;
                     case ZERO_RTT_PACKET:
                         ZeroRTTPacket zeroRTTPacket = new ZeroRTTPacket();
-                        stream.writeBytes(writeZeroRTTPacket(data, zeroRTTPacket));
-                        LOGGER.debug("Send zero rtt packet");
+                        byte[] zeroRTTPacketBytes = writePacket(data, zeroRTTPacket);
+                        addProducedContainer(zeroRTTPacket);
+                        getLowerLayer().sendData(null, zeroRTTPacketBytes);
+                        break;
+                    case RETRY_PACKET:
+                        throw new UnsupportedOperationException(
+                                "Retry Packet - Not supported yet.");
+                    case VERSION_NEGOTIATION:
+                        throw new UnsupportedOperationException(
+                                "Version Negotiation Packet - Not supported yet.");
+                    case UNKNOWN:
+                        throw new UnsupportedOperationException(
+                                "Unknown Packet - Not supported yet.");
+                    default:
                         break;
                 }
-                getLowerLayer().sendData(null, stream.toByteArray());
-                stream.flush();
-                setLayerConfiguration(null);
-            } else if (configuration != null && configuration.getContainerList() != null) {
-                for (QuicPacket p : configuration.getContainerList()) {
-                    switch (p.getPacketType()) {
-                        case INITIAL_PACKET:
-                            stream.writeBytes(writeInitialPacket(data, (InitialPacket) p));
-                            break;
-                        case HANDSHAKE_PACKET:
-                            stream.writeBytes(writeHandshakePacket(data, (HandshakePacket) p));
-                            break;
-                        case ONE_RTT_PACKET:
-                            stream.writeBytes(writeOneRTTPacket(data, (OneRTTPacket) p));
-                            break;
-                        case ZERO_RTT_PACKET:
-                            stream.writeBytes(writeZeroRTTPacket(data, (ZeroRTTPacket) p));
-                        case RETRY_PACKET:
-                            throw new UnsupportedOperationException(
-                                    "Retry Packet - Not supported yet.");
-                        case UNKNOWN:
-                            throw new UnsupportedOperationException(
-                                    "Unknown Packet - Not supported yet.");
-
-                        default:
-                            break;
-                    }
-                }
-                getLowerLayer().sendData(null, stream.toByteArray());
-                stream.flush();
-                setLayerConfiguration(null);
             }
-        } catch (CryptoException e) {
-            LOGGER.error("Could not send data: ", e);
+        } catch (CryptoException ex) {
+            LOGGER.error("TODO");
         }
         return getLayerResult();
     }
 
+    /**
+     * Receives data from the lower layer.
+     *
+     * @return LayerProcessingResult A result object containing information about the received data.
+     */
     @Override
     public LayerProcessingResult receiveData() {
-        LOGGER.debug("Receive Data");
         try {
-            InputStream dataStream = getLowerLayer().getDataStream();
-            readPackets(dataStream);
-
-        } catch (IOException e) {
-            // the lower layer does not give us any data so we can simply return here
-            LOGGER.warn("The lower layer did not produce a data stream: ", e);
+            InputStream dataStream;
+            do {
+                try {
+                    dataStream = getLowerLayer().getDataStream();
+                    readPackets(dataStream);
+                } catch (IOException ex) {
+                    LOGGER.warn("The lower layer did not produce a data stream: ", ex);
+                    return getLayerResult();
+                }
+            } while (shouldContinueProcessing());
+        } catch (TimeoutException ex) {
+            LOGGER.debug("Received a timeout");
+            LOGGER.trace(ex);
+        } catch (EndOfStreamException ex) {
+            LOGGER.debug("Reached end of stream, cannot parse more messages");
+            LOGGER.trace(ex);
         }
         return getLayerResult();
     }
 
+    /**
+     * Receive more data for the upper layer using the lower layer.
+     *
+     * @param hint This hint from the calling layer specifies which data its wants to read.
+     * @throws IOException When no data can be read
+     */
     @Override
     public void receiveMoreDataForHint(LayerProcessingHint hint) throws IOException {
-        LOGGER.debug("Receive Data for Hint {}", hint);
-        InputStream dataStream = getLowerLayer().getDataStream();
-        readPackets(dataStream);
+        try {
+            InputStream dataStream;
+            try {
+                dataStream = getLowerLayer().getDataStream();
+                // TODO: for now we ignore the hint
+                readPackets(dataStream);
+            } catch (IOException ex) {
+                LOGGER.warn("The lower layer did not produce a data stream: ", ex);
+            }
+        } catch (TimeoutException ex) {
+            LOGGER.debug("Received a timeout");
+            LOGGER.trace(ex);
+        } catch (EndOfStreamException ex) {
+            LOGGER.debug("Reached end of stream, cannot parse more messages");
+            LOGGER.trace(ex);
+        }
     }
 
+    /** Reads all packets in one UDP datagram and add to packet buffer. */
     private void readPackets(InputStream dataStream) throws IOException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        /*
-         Long Header Packet:
-           Header Form (1) = 1,
-           Fixed Bit (1) = 1,
-           Long Packet Type (2),
-           Type-Specific Bits (4),
-         Short Header Packet:
-           Header Form (1) = 0,
-           Fixed Bit (1) = 1,
-           Spin Bit (1),
-           Reserved Bits (2),
-           Key Phase (1),
-        */
-        // read all packets in one udp datagram and add to buffer
-        int firstByte = dataStream.read();
 
-        // if the first byte is 0 -> UDP padding
+        int firstByte = dataStream.read();
         if (firstByte == 0x00) {
-            // read all available data
+            // If the first byte is 0, it indicates UDP padding. In this case, read all available
+            // data.
             dataStream.readNBytes(dataStream.available());
         } else {
-            // the quic version needs to be parsed to determine the packet type as the version
-            // negotiation packet can only be identified by the version being 0
+            // The QUIC version needs to be parsed to determine the packet type, as the version
+            // negotiation packet can only be identified by the version being 0.
             byte[] versionBytes = new byte[] {};
             QuicPacketType packetType;
             if (QuicPacketType.isLongHeaderPacket(firstByte)) {
@@ -235,10 +253,9 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
                     packetType = QuicPacketType.VERSION_NEGOTIATION;
                 } else {
                     packetType = QuicPacketType.getPacketTypeFromFirstByte(quicVersion, firstByte);
-
                     if (quicVersion != context.getQuicVersion()
                             && packetType != QuicPacketType.VERSION_NEGOTIATION) {
-                        LOGGER.error("Received packet with unexpected version, ignoring it.");
+                        LOGGER.warn("Received packet with unexpected QUIC version, ignoring it.");
                         packetType = QuicPacketType.UNKNOWN;
                     }
                 }
@@ -248,8 +265,7 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
                                 context.getQuicVersion(), firstByte);
             }
 
-            LOGGER.debug("Read {}", packetType);
-
+            // Store the packet in the buffer for further processing.
             switch (packetType) {
                 case INITIAL_PACKET:
                     receivedPacketBuffer
@@ -261,131 +277,48 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
                             .get(packetType)
                             .add(readHandshakePacket(firstByte, versionBytes, dataStream));
                     break;
-                case RETRY_PACKET:
-                    readRetryPacket(dataStream);
-                    break;
                 case ONE_RTT_PACKET:
                     receivedPacketBuffer
                             .get(packetType)
                             .add(readOneRTTPacket(firstByte, dataStream));
                     break;
-                case VERSION_NEGOTIATION:
-                    readVersionNegotiationPacket(dataStream);
+                case ZERO_RTT_PACKET:
+                    throw new UnsupportedOperationException("Unknown Packet - Not supported yet.");
+
+                case RETRY_PACKET:
+                    receivedPacketBuffer.get(packetType).add(readRetryPacket(dataStream));
                     break;
+                case VERSION_NEGOTIATION:
+                    receivedPacketBuffer
+                            .get(packetType)
+                            .add(readVersionNegotiationPacket(dataStream));
+                    break;
+                case UNKNOWN:
+                    throw new UnsupportedOperationException("Unknown Packet - Not supported yet.");
                 default:
                     break;
             }
         }
-        try {
-            // go over buffer, check which packets can be decrypted, decrypt initial packets first
-            // then
-            // handshake then application packets, decrypt packet with smallest packet number first
-            if (!receivedPacketBuffer.get(QuicPacketType.INITIAL_PACKET).isEmpty()
-                    && context.isInitialSecretsInitialized()) {
-                // decrypt encrypted packets and sort by packet number
-                receivedPacketBuffer.computeIfPresent(
-                        QuicPacketType.INITIAL_PACKET,
-                        (k, v) ->
-                                (ArrayList<QuicPacket>)
-                                        v.stream()
-                                                .map(
-                                                        p -> {
-                                                            try {
-                                                                return p.getUnprotectedPayload()
-                                                                                == null
-                                                                        ? decryptIntitialPacket(
-                                                                                (InitialPacket) p)
-                                                                        : p;
-                                                            } catch (CryptoException e) {
-                                                                throw new CryptoRuntimeException(e);
-                                                            }
-                                                        })
-                                                .sorted(
-                                                        Comparator.comparingInt(
-                                                                QuicPacket::getPlainPacketNumber))
-                                                .collect(Collectors.toList()));
-            }
-            if (!receivedPacketBuffer.get(QuicPacketType.HANDSHAKE_PACKET).isEmpty()
-                    && context.isHandshakeSecretsInitialized()) {
-                // decrypt encrypted packets and sort by packet number
-                receivedPacketBuffer.computeIfPresent(
-                        QuicPacketType.HANDSHAKE_PACKET,
-                        (k, v) ->
-                                (ArrayList<QuicPacket>)
-                                        v.stream()
-                                                .map(
-                                                        p -> {
-                                                            try {
-                                                                return p.getUnprotectedPayload()
-                                                                                == null
-                                                                        ? decryptHandshakePacket(
-                                                                                (HandshakePacket) p)
-                                                                        : p;
-                                                            } catch (CryptoException e) {
-                                                                throw new CryptoRuntimeException(e);
-                                                            }
-                                                        })
-                                                .sorted(
-                                                        Comparator.comparingInt(
-                                                                QuicPacket::getPlainPacketNumber))
-                                                .collect(Collectors.toList()));
-            }
-            if (!receivedPacketBuffer.get(QuicPacketType.ONE_RTT_PACKET).isEmpty()
-                    && context.isApplicationSecretsInitialized()) {
-                // decrypt encrypted packets and sort by packet number
-                receivedPacketBuffer.computeIfPresent(
-                        QuicPacketType.ONE_RTT_PACKET,
-                        (k, v) ->
-                                (ArrayList<QuicPacket>)
-                                        v.stream()
-                                                .map(
-                                                        p -> {
-                                                            try {
-                                                                return p.getUnprotectedPayload()
-                                                                                == null
-                                                                        ? decryptOneRTTPacket(
-                                                                                (OneRTTPacket) p)
-                                                                        : p;
-                                                            } catch (CryptoException e) {
-                                                                throw new CryptoRuntimeException(e);
-                                                            }
-                                                        })
-                                                .sorted(
-                                                        Comparator.comparingInt(
-                                                                QuicPacket::getPlainPacketNumber))
-                                                .collect(Collectors.toList()));
-            }
 
+        // Iterate over the buffer to identify which packets can be decrypted. Decrypt initial
+        // packets first, followed by handshake packets, and then application packets. Within each
+        // type, decrypt the packet with the smallest packet number first.
+        decryptInitialPacketsInBuffer();
+        decryptHandshakePacketsInBuffer();
+        decryptOneRRTPacketsInBuffer();
+
+        // Pass the next possible packet to the upper layer ({@link QuicFrameLayer}) for further
+        // processing.
+        QuicPacketType packetTypeToProcess = getPacketTypeToProcessNext();
+        if (packetTypeToProcess != null) {
+            ArrayList<QuicPacket> packets = receivedPacketBuffer.get(packetTypeToProcess);
+            QuicPacket packet = packets.remove(0);
             LOGGER.debug(
-                    "Packet Buffer: {}",
-                    receivedPacketBuffer.entrySet().stream()
-                            .filter(e -> !e.getValue().isEmpty())
-                            .map(
-                                    e ->
-                                            e.getKey()
-                                                    + ": "
-                                                    + e.getValue().stream()
-                                                            .map(QuicPacket::getPlainPacketNumber)
-                                                            .collect(Collectors.toList()))
-                            .collect(Collectors.joining(",\n")));
+                    "Processing {} Packet: {}", packetTypeToProcess, packet.getPlainPacketNumber());
+            receivedPacketBuffer.put(packetTypeToProcess, packets);
 
-            QuicPacketType packetTypeToProcess = getPacketTypeToProcessNext();
-
-            if (packetTypeToProcess != null) {
-                ArrayList<QuicPacket> packets = receivedPacketBuffer.get(packetTypeToProcess);
-                QuicPacket packet = packets.remove(0);
-                LOGGER.debug(
-                        "Processing {} Packet: {}",
-                        packetTypeToProcess,
-                        packet.getPlainPacketNumber());
-                receivedPacketBuffer.put(packetTypeToProcess, packets);
-
-                outputStream.write(packet.getUnprotectedPayload().getValue());
-                context.getReceivedPackets().add(packet.getPacketType());
-            }
-
-        } catch (CryptoRuntimeException e) {
-            LOGGER.error("Could not decrypt packet", e);
+            outputStream.write(packet.getUnprotectedPayload().getValue());
+            context.getReceivedPackets().add(packet.getPacketType());
         }
 
         if (currentInputStream == null) {
@@ -394,7 +327,218 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
         } else {
             currentInputStream.extendStream(outputStream.toByteArray());
         }
+
         outputStream.flush();
+    }
+
+    private byte[] writePacket(byte[] data, QuicPacket packet) throws CryptoException {
+        packet.setUnprotectedPayload(data);
+        return writePacket(packet);
+    }
+
+    private byte[] writePacket(QuicPacket packet) throws CryptoException {
+        switch (packet.getPacketType()) {
+            case INITIAL_PACKET:
+                return writeInitialPacket((InitialPacket) packet);
+            case HANDSHAKE_PACKET:
+                return writeHandshakePacket((HandshakePacket) packet);
+            case ONE_RTT_PACKET:
+                return writeOneRTTPacket((OneRTTPacket) packet);
+            case ZERO_RTT_PACKET:
+                return writeZeroRTTPacket((ZeroRTTPacket) packet);
+            case RETRY_PACKET:
+                throw new UnsupportedOperationException("Retry Packet - Not supported yet.");
+            case VERSION_NEGOTIATION:
+                throw new UnsupportedOperationException(
+                        "Version Negotiation Packet - Not supported yet.");
+            case UNKNOWN:
+                throw new UnsupportedOperationException("Unknown Packet - Not supported yet.");
+            default:
+                return null;
+        }
+    }
+
+    private byte[] writeInitialPacket(InitialPacket packet) throws CryptoException {
+        packet.getPreparator(context).prepare();
+        encryptor.encryptInitialPacket(packet);
+        packet.updateFlagsWithEncodedPacketNumber();
+        encryptor.addHeaderProtectionInitial(packet);
+        return packet.getSerializer(context).serialize();
+    }
+
+    private byte[] writeHandshakePacket(HandshakePacket packet) throws CryptoException {
+        packet.getPreparator(context).prepare();
+        encryptor.encryptHandshakePacket(packet);
+        packet.updateFlagsWithEncodedPacketNumber();
+        encryptor.addHeaderProtectionHandshake(packet);
+        return packet.getSerializer(context).serialize();
+    }
+
+    private byte[] writeOneRTTPacket(OneRTTPacket packet) throws CryptoException {
+        packet.getPreparator(context).prepare();
+        encryptor.encryptApplicationPacket(packet);
+        packet.updateFlagsWithEncodedPacketNumber();
+        encryptor.addHeaderProtectionApplication(packet);
+        return packet.getSerializer(context).serialize();
+    }
+
+    private byte[] writeZeroRTTPacket(ZeroRTTPacket packet) throws CryptoException {
+        packet.getPreparator(context).prepare();
+        encryptor.encryptZeroRTTPacket(packet);
+        packet.updateFlagsWithEncodedPacketNumber();
+        encryptor.addHeaderProtectionZeroRTT(packet);
+        return packet.getSerializer(context).serialize();
+    }
+
+    private InitialPacket readInitialPacket(
+            int flags, byte[] versionBytes, InputStream dataStream) {
+        InitialPacket packet = new InitialPacket(((byte) flags), versionBytes);
+        packet.getParser(context, dataStream).parse(packet);
+        return packet;
+    }
+
+    private InitialPacket decryptIntitialPacket(InitialPacket packet) throws CryptoException {
+        decryptor.removeHeaderProtectionInitial(packet);
+        packet.convertCompleteProtectedHeader();
+        decryptor.decryptInitialPacket(packet);
+        context.addReceivedInitialPacketNumber(packet.getPlainPacketNumber());
+        packet.getHandler(context).adjustContext(packet);
+        addProducedContainer(packet);
+        return packet;
+    }
+
+    private HandshakePacket readHandshakePacket(
+            int flags, byte[] versionBytes, InputStream dataStream) {
+        HandshakePacket packet = new HandshakePacket((byte) flags, versionBytes);
+        packet.getParser(context, dataStream).parse(packet);
+        return packet;
+    }
+
+    private HandshakePacket decryptHandshakePacket(HandshakePacket packet) throws CryptoException {
+        decryptor.removeHeaderProtectionHandshake(packet);
+        packet.convertCompleteProtectedHeader();
+        decryptor.decryptHandshakePacket(packet);
+        context.addReceivedHandshakePacketNumber(packet.getPlainPacketNumber());
+        packet.getHandler(context).adjustContext(packet);
+        addProducedContainer(packet);
+        return packet;
+    }
+
+    private OneRTTPacket readOneRTTPacket(int flags, InputStream dataStream) {
+        OneRTTPacket packet = new OneRTTPacket((byte) flags);
+        packet.getParser(context, dataStream).parse(packet);
+        return packet;
+    }
+
+    private OneRTTPacket decryptOneRTTPacket(OneRTTPacket packet) throws CryptoException {
+        decryptor.removeHeaderProtectionApplication(packet);
+        packet.convertCompleteProtectedHeader();
+        decryptor.decryptApplicationPacket(packet);
+        context.addReceivedOneRTTPacketNumber(packet.getPlainPacketNumber());
+        packet.getHandler(context).adjustContext(packet);
+        addProducedContainer(packet);
+        return packet;
+    }
+
+    private RetryPacket readRetryPacket(InputStream dataStream) {
+        RetryPacket packet = new RetryPacket();
+        packet.getParser(context, dataStream).parse(packet);
+        packet.getHandler(context).adjustContext(packet);
+        addProducedContainer(packet);
+        return packet;
+    }
+
+    private VersionNegotiationPacket readVersionNegotiationPacket(InputStream dataStream) {
+        VersionNegotiationPacket packet = new VersionNegotiationPacket();
+        packet.getParser(context, dataStream).parse(packet);
+        packet.getHandler(context).adjustContext(packet);
+        addProducedContainer(packet);
+        return packet;
+    }
+
+    private void decryptInitialPacketsInBuffer() {
+        if (!receivedPacketBuffer.get(QuicPacketType.INITIAL_PACKET).isEmpty()
+                && context.isInitialSecretsInitialized()) {
+            receivedPacketBuffer.computeIfPresent(
+                    QuicPacketType.INITIAL_PACKET,
+                    (packetType, packets) ->
+                            (ArrayList<QuicPacket>)
+                                    packets.stream()
+                                            .map(
+                                                    packet -> {
+                                                        try {
+                                                            return packet.getUnprotectedPayload()
+                                                                            == null
+                                                                    ? decryptIntitialPacket(
+                                                                            (InitialPacket) packet)
+                                                                    : packet;
+                                                        } catch (CryptoException ex) {
+                                                            throw new CryptoRuntimeException(
+                                                                    "Could not decrypt packet", ex);
+                                                        }
+                                                    })
+                                            .sorted(
+                                                    Comparator.comparingInt(
+                                                            QuicPacket::getPlainPacketNumber))
+                                            .collect(Collectors.toList()));
+        }
+    }
+
+    private void decryptHandshakePacketsInBuffer() {
+        if (!receivedPacketBuffer.get(QuicPacketType.HANDSHAKE_PACKET).isEmpty()
+                && context.isHandshakeSecretsInitialized()) {
+            receivedPacketBuffer.computeIfPresent(
+                    QuicPacketType.HANDSHAKE_PACKET,
+                    (packetType, packets) ->
+                            (ArrayList<QuicPacket>)
+                                    packets.stream()
+                                            .map(
+                                                    packet -> {
+                                                        try {
+                                                            return packet.getUnprotectedPayload()
+                                                                            == null
+                                                                    ? decryptHandshakePacket(
+                                                                            (HandshakePacket)
+                                                                                    packet)
+                                                                    : packet;
+                                                        } catch (CryptoException ex) {
+                                                            throw new CryptoRuntimeException(
+                                                                    "Could not decrypt packet", ex);
+                                                        }
+                                                    })
+                                            .sorted(
+                                                    Comparator.comparingInt(
+                                                            QuicPacket::getPlainPacketNumber))
+                                            .collect(Collectors.toList()));
+        }
+    }
+
+    private void decryptOneRRTPacketsInBuffer() {
+        if (!receivedPacketBuffer.get(QuicPacketType.ONE_RTT_PACKET).isEmpty()
+                && context.isApplicationSecretsInitialized()) {
+            receivedPacketBuffer.computeIfPresent(
+                    QuicPacketType.ONE_RTT_PACKET,
+                    (packetType, packets) ->
+                            (ArrayList<QuicPacket>)
+                                    packets.stream()
+                                            .map(
+                                                    packet -> {
+                                                        try {
+                                                            return packet.getUnprotectedPayload()
+                                                                            == null
+                                                                    ? decryptOneRTTPacket(
+                                                                            (OneRTTPacket) packet)
+                                                                    : packet;
+                                                        } catch (CryptoException ex) {
+                                                            throw new CryptoRuntimeException(
+                                                                    "Could not decrypt packet", ex);
+                                                        }
+                                                    })
+                                            .sorted(
+                                                    Comparator.comparingInt(
+                                                            QuicPacket::getPlainPacketNumber))
+                                            .collect(Collectors.toList()));
+        }
     }
 
     private QuicPacketType getPacketTypeToProcessNext() {
@@ -413,154 +557,34 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
         return null;
     }
 
-    public byte[] writeInitialPacket(byte[] data, InitialPacket packet) throws CryptoException {
-        packet.setUnprotectedPayload(data);
-
-        InitialPacketSerializer packetSerializer = packet.getSerializer(context);
-        InitialPacketPreparator preparator = packet.getPreparator(context);
-        preparator.prepare();
-
-        encryptor.encryptInitialPacket(packet);
-        packet.updateFlagsWithEncodedPacketNumber();
-        encryptor.addHeaderProtectionInitial(packet);
-        addProducedContainer(packet);
-        return packetSerializer.serialize();
+    /** Checks if the packet contains (unencrypted) payload. */
+    private boolean isEmptyPacket(QuicPacket packet) {
+        return !context.getConfig().isUseAllProvidedQuicPackets()
+                && packet.getUnprotectedPayload() != null
+                && packet.getUnprotectedPayload().getValue().length == 0;
     }
 
-    public byte[] writeHandshakePacket(byte[] data, HandshakePacket packet) throws CryptoException {
-        packet.setUnprotectedPayload(data);
-
-        HandshakePacketSerializer packetSerializer = packet.getSerializer(context);
-        HandshakePacketPreparator preparator = packet.getPreparator(context);
-        preparator.prepare();
-
-        encryptor.encryptHandshakePacket(packet);
-        packet.updateFlagsWithEncodedPacketNumber();
-        encryptor.addHeaderProtectionHandshake(packet);
-        addProducedContainer(packet);
-        return packetSerializer.serialize();
-    }
-
-    public byte[] writeOneRTTPacket(byte[] data, OneRTTPacket packet) throws CryptoException {
-        packet.setUnprotectedPayload(data);
-
-        OneRTTPacketSerializer packetSerializer = packet.getSerializer(context);
-        OneRTTPacketPreparator preparator = packet.getPreparator(context);
-        preparator.prepare();
-
-        encryptor.encryptApplicationPacket(packet);
-        packet.updateFlagsWithEncodedPacketNumber();
-        encryptor.addHeaderProtectionApplication(packet);
-        addProducedContainer(packet);
-        return packetSerializer.serialize();
-    }
-
-    public byte[] writeZeroRTTPacket(byte[] data, ZeroRTTPacket packet) throws CryptoException {
-        packet.setUnprotectedPayload(data);
-
-        ZeroRTTPacketSerializer packetSerializer = packet.getSerializer(context);
-        ZeroRTTPacketPreparator preparator = packet.getPreparator(context);
-        preparator.prepare();
-
-        encryptor.encryptZeroRTTPacket(packet);
-        packet.updateFlagsWithEncodedPacketNumber();
-        encryptor.addHeaderProtectionZeroRTT(packet);
-        addProducedContainer(packet);
-        return packetSerializer.serialize();
-    }
-
-    public InitialPacket readInitialPacket(int flags, byte[] versionBytes, InputStream dataStream) {
-        InitialPacket packet = new InitialPacket(((byte) flags), versionBytes);
-        InitialPacketParser parser = packet.getParser(context, dataStream);
-        parser.parse(packet);
-        return packet;
-    }
-
-    public InitialPacket decryptIntitialPacket(InitialPacket packet) throws CryptoException {
-        decryptor.removeHeaderProtection(packet);
-        packet.convertCompleteProtectedHeader();
-        decryptor.decryptInitialPacket(packet);
-        context.addReceivedInitialPacketNumber(packet.getPlainPacketNumber());
-        addProducedContainer(packet);
-        return packet;
-    }
-
-    public HandshakePacket readHandshakePacket(
-            int flags, byte[] versionBytes, InputStream dataStream) {
-        HandshakePacket packet = new HandshakePacket((byte) flags, versionBytes);
-        HandshakePacketParser parser = packet.getParser(context, dataStream);
-        parser.parse(packet);
-        return packet;
-    }
-
-    public HandshakePacket decryptHandshakePacket(HandshakePacket packet) throws CryptoException {
-        decryptor.removeHeaderProtection(packet);
-        packet.convertCompleteProtectedHeader();
-        decryptor.decryptHandshakePacket(packet);
-        context.addReceivedHandshakePacketNumber(packet.getPlainPacketNumber());
-        addProducedContainer(packet);
-        return packet;
-    }
-
-    public OneRTTPacket readOneRTTPacket(int flags, InputStream dataStream) {
-        OneRTTPacket packet = new OneRTTPacket((byte) flags);
-        OneRTTPacketParser parser = packet.getParser(context, dataStream);
-        parser.parse(packet);
-        return packet;
-    }
-
-    public VersionNegotiationPacket readVersionNegotiationPacket(InputStream dataStream) {
-        VersionNegotiationPacket packet = new VersionNegotiationPacket();
-        VersionNegotiationPacketParser parser = packet.getParser(context, dataStream);
-        parser.parse(packet);
-        packet.getHandler(context).adjustContext(packet);
-        addProducedContainer(packet);
-        LOGGER.info(
-                "Read VN packet, supported versions: {}",
-                packet.getSupportedVersions().stream()
-                        .map(
-                                v ->
-                                        QuicVersion.getVersionNameFromBytes(v)
-                                                + " ("
-                                                + ArrayConverter.bytesToHexString(v)
-                                                + ")")
-                        .collect(Collectors.toList()));
-        return packet;
-    }
-
-    public OneRTTPacket decryptOneRTTPacket(OneRTTPacket packet) throws CryptoException {
-        decryptor.removeHeaderProtection(packet);
-        packet.convertCompleteProtectedHeader();
-        decryptor.decryptApplicationPacket(packet);
-        context.addReceivedOneRTTPacketNumber(packet.getPlainPacketNumber());
-        addProducedContainer(packet);
-        return packet;
-    }
-
-    public RetryPacket readRetryPacket(InputStream dataStream) {
-        RetryPacket packet = new RetryPacket();
-        RetryPacketParser parser = packet.getParser(context, dataStream);
-        parser.parse(packet);
-        packet.getHandler(context).adjustContext(packet);
-        addProducedContainer(packet);
-        return packet;
-    }
-
+    /** TODO */
     @Override
     public void sendAck(byte[] data) {
         context.setTalkingConnectionEndType(context.getConnection().getLocalConnectionEndType());
         try {
             if (context.getReceivedPackets().getLast() == QuicPacketType.INITIAL_PACKET) {
-                getLowerLayer().sendData(null, writeInitialPacket(data, new InitialPacket()));
+                getLowerLayer().sendData(null, writePacket(data, new InitialPacket()));
             } else if (context.getReceivedPackets().getLast() == QuicPacketType.HANDSHAKE_PACKET) {
-                getLowerLayer().sendData(null, writeHandshakePacket(data, new HandshakePacket()));
+                getLowerLayer().sendData(null, writePacket(data, new HandshakePacket()));
             } else if (context.getReceivedPackets().getLast() == QuicPacketType.ONE_RTT_PACKET) {
-                getLowerLayer().sendData(null, writeOneRTTPacket(data, new OneRTTPacket()));
+                getLowerLayer().sendData(null, writePacket(data, new OneRTTPacket()));
             }
         } catch (IOException | CryptoException e) {
             LOGGER.error("Could not send ACK", e);
         }
         context.setTalkingConnectionEndType(
                 context.getConnection().getLocalConnectionEndType().getPeer());
+    }
+
+    /** Clears the packet buffer. This function is typically used when resetting the connection. */
+    public void clearReceivedPacketBuffer() {
+        receivedPacketBuffer.values().forEach(ArrayList::clear);
     }
 }

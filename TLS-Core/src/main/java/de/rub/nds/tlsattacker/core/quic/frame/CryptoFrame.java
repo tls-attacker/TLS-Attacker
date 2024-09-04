@@ -20,7 +20,6 @@ import de.rub.nds.tlsattacker.core.quic.serializer.frame.CryptoFrameSerializer;
 import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
-import java.util.Objects;
 
 /** A CRYPTO frame (type=0x06) is used to transmit cryptographic handshake messages. */
 @XmlRootElement

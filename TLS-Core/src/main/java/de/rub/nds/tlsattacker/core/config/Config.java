@@ -1051,6 +1051,8 @@ public class Config implements Serializable {
 
     private Boolean useAllProvidedRecords = false;
 
+    private Boolean useAllProvidedQuicPackets = false;
+
     /**
      * requestPath to use in LocationHeader if none is saved during the connection, e.g. no received
      * HttpRequestMessage or httpParsing is disabled
@@ -1705,6 +1707,14 @@ public class Config implements Serializable {
 
     public void setUseAllProvidedRecords(Boolean useAllProvidedRecords) {
         this.useAllProvidedRecords = useAllProvidedRecords;
+    }
+
+    public Boolean isUseAllProvidedQuicPackets() {
+        return useAllProvidedQuicPackets;
+    }
+
+    public void setUseAllProvidedQuicPackets(Boolean useAllProvidedQuicPackets) {
+        this.useAllProvidedQuicPackets = useAllProvidedQuicPackets;
     }
 
     public byte[] getDefaultServerRenegotiationInfo() {
