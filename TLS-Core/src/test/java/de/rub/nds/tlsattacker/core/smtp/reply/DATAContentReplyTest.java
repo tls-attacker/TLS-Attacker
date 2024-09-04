@@ -12,7 +12,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
-import de.rub.nds.tlsattacker.core.layer.data.Handler;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import de.rub.nds.tlsattacker.core.smtp.parser.reply.SmtpGenericReplyParser;
 import de.rub.nds.tlsattacker.core.smtp.reply.generic.multiline.SmtpDATAContentReply;
@@ -38,16 +37,16 @@ public class DATAContentReplyTest {
             "550 noMailbox\r\n"
         };
 
-        for (int i = 0; i < validReplies.length; i++) {
-            String reply = validReplies[i];
-
+        for (String reply : validReplies) {
             SmtpGenericReplyParser<SmtpGenericMultilineReply> parser =
                     new SmtpGenericReplyParser<>(
                             new ByteArrayInputStream(reply.getBytes(StandardCharsets.UTF_8)));
             SmtpDATAContentReply dataContentReply = new SmtpDATAContentReply();
             parser.parse(dataContentReply);
             assertEquals(Integer.parseInt(reply.substring(0, 3)), dataContentReply.getReplyCode());
-            assertEquals(reply.substring(4, reply.length()-2), dataContentReply.getHumanReadableMessages().get(0));
+            assertEquals(
+                    reply.substring(4, reply.length() - 2),
+                    dataContentReply.getHumanReadableMessages().get(0));
         }
     }
 
@@ -64,7 +63,7 @@ public class DATAContentReplyTest {
         assertEquals("250 OK\r\n", serializer.getOutputStream().toString());
     }
 
-    // TODO: handler is unused here. should be fixed probably?
+    /* TODO: this doesn't actually test handle i think
     @Test
     public void testHandle() {
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
@@ -75,4 +74,5 @@ public class DATAContentReplyTest {
         assertTrue(context.getReversePathBuffer().isEmpty());
         assertTrue(context.getMailDataBuffer().isEmpty());
     }
+     */
 }

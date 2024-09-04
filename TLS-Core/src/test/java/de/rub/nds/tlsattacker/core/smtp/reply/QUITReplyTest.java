@@ -13,7 +13,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
-import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import de.rub.nds.tlsattacker.core.smtp.parser.reply.SmtpGenericReplyParser;
 import de.rub.nds.tlsattacker.core.smtp.reply.generic.singleline.SmtpQUITReply;
 import de.rub.nds.tlsattacker.core.state.Context;
@@ -27,7 +26,6 @@ public class QUITReplyTest {
     void testParse() {
         String message = "221 byebye\r\n";
 
-        SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
         SmtpQUITReply quitReply = new SmtpQUITReply();
         SmtpGenericReplyParser<SmtpQUITReply> parser =
                 new SmtpGenericReplyParser<>(
