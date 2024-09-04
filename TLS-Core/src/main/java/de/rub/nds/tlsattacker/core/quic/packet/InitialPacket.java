@@ -48,6 +48,12 @@ public class InitialPacket extends LongHeaderPacket {
         this.packetSecret = QuicCryptoSecrets.INITIAL_SECRET;
     }
 
+    public InitialPacket(byte[] unprotectedPayload) {
+        super(QuicPacketType.INITIAL_PACKET);
+        this.packetSecret = QuicCryptoSecrets.INITIAL_SECRET;
+        setUnprotectedPayload(unprotectedPayload);
+    }
+
     public InitialPacket(byte flags, byte[] versionBytes) {
         super(QuicPacketType.INITIAL_PACKET);
         this.setProtectedFlags(flags);
