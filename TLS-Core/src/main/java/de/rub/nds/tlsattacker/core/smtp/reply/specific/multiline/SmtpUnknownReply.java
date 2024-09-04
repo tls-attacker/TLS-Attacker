@@ -12,9 +12,7 @@ import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.SmtpMessage;
 import de.rub.nds.tlsattacker.core.smtp.parser.SmtpMessageParser;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpReply;
-
 import java.io.InputStream;
-import java.util.List;
 
 public class SmtpUnknownReply extends SmtpReply {
 

@@ -64,22 +64,28 @@ public class SmtpEHLOReply extends SmtpReply {
         char CR = '\r';
         char LF = '\n';
 
+        boolean hasExtensions = !this.extensions.isEmpty();
+
         StringBuilder sb = new StringBuilder();
 
-        String replyCodePrefix = this.replyCode != null ? String.valueOf(this.replyCode) + DASH : "";
-
-        sb.append(replyCodePrefix);
+        sb.append(this.replyCode);
+        sb.append(hasExtensions ? DASH : SP);
         sb.append(this.domain);
         if (this.greeting != null) {
-            sb.append(' ');
+            sb.append(SP);
             sb.append(this.greeting);
         }
+        sb.append(CR);
         sb.append(LF);
+
+        if (!hasExtensions) return sb.toString();
 
         for (int i = 0; i < this.extensions.size() - 1; i++) {
             SmtpServiceExtension ext = this.extensions.get(i);
-            sb.append(replyCodePrefix);
+            sb.append(this.replyCode);
+            sb.append(DASH);
             sb.append(ext.toString());
+            sb.append(CR);
             sb.append(LF);
         }
 

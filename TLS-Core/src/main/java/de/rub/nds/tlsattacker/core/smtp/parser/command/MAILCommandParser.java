@@ -12,7 +12,6 @@ import de.rub.nds.tlsattacker.core.smtp.command.SmtpMAILCommand;
 import de.rub.nds.tlsattacker.core.smtp.extensions.SmtpServiceExtension;
 import de.rub.nds.tlsattacker.core.smtp.parameters.SmtpParameters;
 import de.rub.nds.tlsattacker.core.smtp.parser.SmtpSyntaxParser;
-
 import java.io.InputStream;
 
 public class MAILCommandParser extends SmtpCommandParser<SmtpMAILCommand> {

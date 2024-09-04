@@ -11,14 +11,11 @@ package de.rub.nds.tlsattacker.core.smtp.parser.reply;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.smtp.parser.SmtpMessageParser;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpReply;
-import de.rub.nds.tlsattacker.core.smtp.reply.generic.multiline.SmtpGenericMultilineReply;
-import de.rub.nds.tlsattacker.core.smtp.reply.generic.singleline.SmtpGenericSingleLineReply;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public abstract class SmtpReplyParser<ReplyT extends SmtpReply> extends SmtpMessageParser<ReplyT> {
     private static final Logger LOGGER = LogManager.getLogger();
@@ -57,13 +54,13 @@ public abstract class SmtpReplyParser<ReplyT extends SmtpReply> extends SmtpMess
         replyT.setReplyCode(replyCode);
     }
 
-    public void checkReplyCodeConsistency(int replyCode, String line) {
-        int foundReplyCode = this.toInteger(line);
+    public void checkReplyCodeConsistency(int replyCode, String replyCodeString) {
+        int foundReplyCode = this.toInteger(replyCodeString);
         if (foundReplyCode != replyCode) {
             LOGGER.warn(
                     "Parsing EHLOReply found inconsistent status codes in multiline reply{} != {}",
                     replyCode,
-                    line);
+                    replyCodeString);
         }
     }
 
@@ -71,10 +68,10 @@ public abstract class SmtpReplyParser<ReplyT extends SmtpReply> extends SmtpMess
         try {
             return Integer.parseInt(str);
         } catch (NumberFormatException ex) {
-            throw new ParserException("Could not parse SmtpReply. Could not parse reply code:" + str);
+            throw new ParserException(
+                    "Could not parse SmtpReply. Could not parse reply code:" + str);
         }
     }
-
 
     public boolean isPartOfMultilineReply(String line) {
         return line.matches("\\d{3}-.*");

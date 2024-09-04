@@ -17,5 +17,4 @@ public class SmtpQUITReply extends SmtpGenericSingleLineReply {
     public QUITReplyHandler getHandler(SmtpContext context) {
         return new QUITReplyHandler(context);
     }
-
 }

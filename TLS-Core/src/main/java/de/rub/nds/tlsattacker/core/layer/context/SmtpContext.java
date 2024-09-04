@@ -10,11 +10,11 @@ package de.rub.nds.tlsattacker.core.layer.context;
 
 import de.rub.nds.tlsattacker.core.smtp.command.*;
 import de.rub.nds.tlsattacker.core.smtp.reply.*;
+import de.rub.nds.tlsattacker.core.smtp.reply.generic.multiline.SmtpDATAContentReply;
 import de.rub.nds.tlsattacker.core.smtp.reply.generic.singleline.SmtpDATAReply;
 import de.rub.nds.tlsattacker.core.smtp.reply.generic.singleline.SmtpInitialGreeting;
 import de.rub.nds.tlsattacker.core.smtp.reply.generic.singleline.SmtpNOOPReply;
 import de.rub.nds.tlsattacker.core.smtp.reply.generic.singleline.SmtpQUITReply;
-import de.rub.nds.tlsattacker.core.smtp.reply.generic.multiline.SmtpDATAContentReply;
 import de.rub.nds.tlsattacker.core.smtp.reply.specific.multiline.SmtpEHLOReply;
 import de.rub.nds.tlsattacker.core.state.Context;
 import java.util.ArrayList;

@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.core.smtp.parser.reply;
 
 import de.rub.nds.tlsattacker.core.smtp.reply.specific.multiline.SmtpVRFYReply;
 import java.io.InputStream;
-import java.util.LinkedList;
 import java.util.List;
 
 public class VRFYReplyParser extends SmtpReplyParser<SmtpVRFYReply> {
@@ -24,16 +23,16 @@ public class VRFYReplyParser extends SmtpReplyParser<SmtpVRFYReply> {
         List<String> lines = readWholeReply();
 
         for (int i = 0; i < lines.size(); i++) {
-            String line = lines.get(0);
+            String line = lines.get(i);
 
             if (i == 0) this.parseReplyCode(reply, line);
-            else this.checkReplyCodeConsistency(reply.getReplyCode(), line);
+            else this.checkReplyCodeConsistency(reply.getReplyCode(), line.substring(0, 3));
 
             if (line.length() <= 4) continue;
 
             int mailboxStartIndex = findMailboxStartIndex(line.substring(4)) + 4;
             if (mailboxStartIndex != -1) {
-                String username = line.substring(4, mailboxStartIndex);
+                String username = line.substring(4, mailboxStartIndex - 1); // minus delimiter
                 String mailbox = line.substring(mailboxStartIndex);
 
                 reply.addData(username, mailbox);

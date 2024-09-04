@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.core.smtp.parser.command;
 
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpCommand;
 import de.rub.nds.tlsattacker.core.smtp.parser.SmtpMessageParser;
-
 import java.io.InputStream;
 
 public class SmtpCommandParser<CommandT extends SmtpCommand> extends SmtpMessageParser<CommandT> {

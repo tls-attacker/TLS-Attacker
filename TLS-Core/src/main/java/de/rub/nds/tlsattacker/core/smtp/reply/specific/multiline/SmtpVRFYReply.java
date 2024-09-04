@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.smtp.reply.specific.multiline;
 
-import com.beust.ah.A;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.SmtpMessage;
 import de.rub.nds.tlsattacker.core.smtp.parser.SmtpMessageParser;
@@ -51,12 +50,14 @@ public class SmtpVRFYReply extends SmtpReply {
 
         StringBuilder sb = new StringBuilder();
 
-        String replyCodePrefix = this.replyCode != null ? String.valueOf(this.replyCode) + DASH : "";
+        String replyCodePrefix =
+                this.replyCode != null ? String.valueOf(this.replyCode) + DASH : "";
 
         for (int i = 0; i < this.data.size() - 1; i++) {
             SmtpVRFYData vrfyData = this.data.get(i);
             sb.append(replyCodePrefix);
             sb.append(vrfyData.toString());
+            sb.append(CR);
             sb.append(LF);
         }
 

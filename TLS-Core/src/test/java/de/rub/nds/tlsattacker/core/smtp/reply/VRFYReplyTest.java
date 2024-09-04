@@ -12,7 +12,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
-import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import de.rub.nds.tlsattacker.core.smtp.parser.reply.VRFYReplyParser;
 import de.rub.nds.tlsattacker.core.smtp.reply.specific.multiline.SmtpVRFYReply;
@@ -26,7 +25,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.ValueSource;
 
 class VRFYReplyTest {
     @ParameterizedTest
@@ -49,7 +47,10 @@ class VRFYReplyTest {
 
     static Stream<Arguments> provideValidReplies() {
         return Stream.of(
-                Arguments.of("250 John <john@mail.com>\r\n", List.of("John"), List.of("<john@mail.com>")),
+                Arguments.of(
+                        "250 John <john@mail.com>\r\n",
+                        List.of("John"),
+                        List.of("<john@mail.com>")),
                 Arguments.of(
                         "553-John Doe <john.doe@mail.com>\r\n553 Jane Doe <jane.doe@mail.com>\r\n",
                         List.of("John Doe", "Jane Doe"),

@@ -14,8 +14,6 @@ import de.rub.nds.tlsattacker.core.smtp.reply.specific.multiline.SmtpEHLOReply;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class EHLOReplyParser extends SmtpReplyParser<SmtpEHLOReply> {
 
@@ -42,7 +40,6 @@ public class EHLOReplyParser extends SmtpReplyParser<SmtpEHLOReply> {
                 // TODO: create unknown reply of some kind (see: SmtpGenericReplyParser).
             }
         }
-
 
         for (String line : lines.subList(1, lines.size())) {
             this.checkReplyCodeConsistency(smtpEHLOReply.getReplyCode(), line.substring(0, 3));
