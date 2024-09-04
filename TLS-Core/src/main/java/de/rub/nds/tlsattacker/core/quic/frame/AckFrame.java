@@ -41,10 +41,12 @@ public class AckFrame extends QuicFrame {
 
     public AckFrame() {
         super(QuicFrameType.ACK_FRAME);
+        ackEliciting = false;
     }
 
     protected AckFrame(QuicFrameType frameType) {
         super(frameType);
+        ackEliciting = false;
     }
 
     @Override

@@ -41,6 +41,7 @@ public class ConnectionCloseFrame extends QuicFrame {
 
     public ConnectionCloseFrame() {
         super(QuicFrameType.CONNECTION_CLOSE_FRAME);
+        ackEliciting = false;
         this.setReasonPhraseLength(0);
         this.setTriggerFrameType(0);
     }
