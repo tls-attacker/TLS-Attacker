@@ -12,6 +12,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.*;
 
 import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
+import de.rub.nds.tlsattacker.core.smtp.parser.reply.SmtpGenericReplyParser;
+import de.rub.nds.tlsattacker.core.smtp.parser.reply.SmtpReplyParser;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpReply;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -26,14 +28,14 @@ public class SmtpReplyParserTest {
     @ParameterizedTest
     @ValueSource(strings = {"404 blabla", "111 ASDSADAS ASDSAD ASDASD", "000 k", "250 OK"})
     void isValidReplyEnd(String input) {
-        SmtpReplyParser<?> parser = new SmtpReplyParser<>(InputStream.nullInputStream());
+        SmtpReplyParser<?> parser = new SmtpGenericReplyParser<>(InputStream.nullInputStream());
         assert parser.isEndOfReply(input);
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"404blabla", "111-", "666"})
     void isInvalidReplyEnd(String input) {
-        SmtpReplyParser<?> parser = new SmtpReplyParser<>(InputStream.nullInputStream());
+        SmtpReplyParser<?> parser = new SmtpGenericReplyParser<>(InputStream.nullInputStream());
         assertFalse(parser.isEndOfReply(input));
     }
 
@@ -41,8 +43,9 @@ public class SmtpReplyParserTest {
     void readSingleLineReply() {
         String input = "250 OK\r\n250 OK\r\n";
         SmtpReplyParser<?> parser =
-                new SmtpReplyParser<SmtpReply>(
+                new SmtpGenericReplyParser<>(
                         new ByteArrayInputStream(input.getBytes(StandardCharsets.UTF_8)));
+
         List<String> lines = parser.readWholeReply();
         assertEquals(1, lines.size());
         String firstLine = lines.get(0);
@@ -53,7 +56,7 @@ public class SmtpReplyParserTest {
     void readMultilineReply() {
         String input = "250-OK\r\n250 OK\r\n";
         SmtpReplyParser<?> parser =
-                new SmtpReplyParser<SmtpReply>(
+                new SmtpGenericReplyParser<>(
                         new ByteArrayInputStream(input.getBytes(StandardCharsets.UTF_8)));
         List<String> lines = parser.readWholeReply();
         assertEquals(2, lines.size());
@@ -64,7 +67,7 @@ public class SmtpReplyParserTest {
     void readInvalidMultilineReply() {
         String input = "250-OK\r\n250-OK\r\n";
         SmtpReplyParser<?> parser =
-                new SmtpReplyParser<SmtpReply>(
+                new SmtpGenericReplyParser<>(
                         new ByteArrayInputStream(input.getBytes(StandardCharsets.UTF_8)));
         assertThrows(EndOfStreamException.class, parser::readWholeReply);
     }

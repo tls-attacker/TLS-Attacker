@@ -1,0 +1,94 @@
+/*
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
+ *
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
+ */
+package de.rub.nds.tlsattacker.core.smtp.reply.specific.multiline;
+
+import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
+import de.rub.nds.tlsattacker.core.smtp.extensions.SmtpServiceExtension;
+import de.rub.nds.tlsattacker.core.smtp.parser.reply.EHLOReplyParser;
+import de.rub.nds.tlsattacker.core.smtp.reply.SmtpReply;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+@XmlRootElement
+public class SmtpEHLOReply extends SmtpReply {
+    private String domain;
+    private String greeting;
+    private List<SmtpServiceExtension> extensions;
+
+    public SmtpEHLOReply() {
+        super(250);
+        this.extensions = new ArrayList<>();
+    }
+
+    @Override
+    public EHLOReplyParser getParser(SmtpContext context, InputStream stream) {
+        return new EHLOReplyParser(stream);
+    }
+
+    public String getGreeting() {
+        return greeting;
+    }
+
+    public void setGreeting(String greeting) {
+        this.greeting = greeting;
+    }
+
+    public String getDomain() {
+        return domain;
+    }
+
+    public void setDomain(String domain) {
+        this.domain = domain;
+    }
+
+    public List<SmtpServiceExtension> getExtensions() {
+        return extensions;
+    }
+
+    public void setExtensions(List<SmtpServiceExtension> extensions) {
+        this.extensions = extensions;
+    }
+
+    @Override
+    public String toString() {
+        char SP = ' ';
+        char DASH = '-';
+        char CR = '\r';
+        char LF = '\n';
+
+        StringBuilder sb = new StringBuilder();
+
+        String replyCodePrefix = this.replyCode != null ? String.valueOf(this.replyCode) + DASH : "";
+
+        sb.append(replyCodePrefix);
+        sb.append(this.domain);
+        if (this.greeting != null) {
+            sb.append(' ');
+            sb.append(this.greeting);
+        }
+        sb.append(LF);
+
+        for (int i = 0; i < this.extensions.size() - 1; i++) {
+            SmtpServiceExtension ext = this.extensions.get(i);
+            sb.append(replyCodePrefix);
+            sb.append(ext.toString());
+            sb.append(LF);
+        }
+
+        sb.append(this.replyCode);
+        sb.append(SP);
+        sb.append(this.extensions.get(this.extensions.size() - 1).toString());
+        sb.append(CR);
+        sb.append(LF);
+
+        return sb.toString();
+    }
+}

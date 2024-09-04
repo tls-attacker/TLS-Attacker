@@ -16,6 +16,8 @@ import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
+import de.rub.nds.tlsattacker.core.smtp.parser.reply.SmtpGenericReplyParser;
+import de.rub.nds.tlsattacker.core.smtp.reply.generic.singleline.SmtpQUITReply;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import java.io.ByteArrayInputStream;
@@ -29,10 +31,9 @@ public class QUITReplyTest {
 
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
         SmtpQUITReply quitReply = new SmtpQUITReply();
-        Parser parser =
-                quitReply.getParser(
-                        context,
-                        new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
+        SmtpGenericReplyParser<SmtpQUITReply> parser =
+                new SmtpGenericReplyParser<>(new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
+
         parser.parse(quitReply);
         assertEquals(221, quitReply.getReplyCode());
         assertEquals("byebye", quitReply.getHumanReadableMessage());
@@ -42,9 +43,8 @@ public class QUITReplyTest {
     void testSerialize() {
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
         SmtpQUITReply quitReply = new SmtpQUITReply();
-        Preparator preparator = quitReply.getPreparator(context);
-        preparator.prepare();
-        Serializer serializer = quitReply.getSerializer(context);
+
+        Serializer<?> serializer = quitReply.getSerializer(context);
         serializer.serialize();
         assertEquals("221 arf arf\r\n", serializer.getOutputStream().toString());
     }

@@ -14,7 +14,9 @@ import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
-import de.rub.nds.tlsattacker.core.smtp.parser.DATAReplyParser;
+import de.rub.nds.tlsattacker.core.smtp.parser.reply.SmtpGenericReplyParser;
+import de.rub.nds.tlsattacker.core.smtp.reply.generic.singleline.SmtpDATAReply;
+import de.rub.nds.tlsattacker.core.smtp.reply.generic.singleline.SmtpGenericSingleLineReply;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import java.io.ByteArrayInputStream;
@@ -27,30 +29,25 @@ public class DATAReplyTest {
     void testParse() {
         String message = "354 Start mail input; end with <CRLF>.<CRLF>\r\n";
 
-        SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
         SmtpDATAReply dataReply = new SmtpDATAReply();
-        DATAReplyParser dataReplyParser =
-                dataReply.getParser(
-                        context,
-                        new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
+        SmtpGenericReplyParser<SmtpDATAReply> dataReplyParser =
+                new SmtpGenericReplyParser<>(new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
+
         dataReplyParser.parse(dataReply);
         assertEquals(354, dataReply.getReplyCode());
-        assertEquals(
-                "Start mail input; end with <CRLF>.<CRLF>", dataReply.getLineContents().get(0));
+        assertEquals("Start mail input; end with <CRLF>.<CRLF>", dataReply.getHumanReadableMessage());
     }
 
     @Test
-    void invalidParse() {
+    void testInvalidParse() {
         String message = "111 test\r\n";
-        SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
         SmtpDATAReply dataReply = new SmtpDATAReply();
-        DATAReplyParser dataReplyParser =
-                dataReply.getParser(
-                        context,
-                        new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
+        SmtpGenericReplyParser<SmtpDATAReply> dataReplyParser =
+                new SmtpGenericReplyParser<>(new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
 
         assertDoesNotThrow(() -> dataReplyParser.parse(dataReply));
         assertEquals(dataReply.getReplyCode(), 111);
+        assertEquals(dataReply.getHumanReadableMessage(), "test");
     }
 
     @Test
@@ -58,10 +55,9 @@ public class DATAReplyTest {
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
         SmtpDATAReply dataReply = new SmtpDATAReply();
         dataReply.setReplyCode(354);
-        dataReply.setLineContents(List.of("Start mail input; end with <CRLF>.<CRLF>"));
-        Preparator preparator = dataReply.getPreparator(context);
-        preparator.prepare();
-        Serializer serializer = dataReply.getSerializer(context);
+        dataReply.setHumanReadableMessage("Start mail input; end with <CRLF>.<CRLF>");
+
+        Serializer<?> serializer = dataReply.getSerializer(context);
         serializer.serialize();
         assertEquals(
                 "354 Start mail input; end with <CRLF>.<CRLF>\r\n",

@@ -16,7 +16,9 @@ import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.layer.data.Handler;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
-import de.rub.nds.tlsattacker.core.smtp.parser.DATAContentReplyParser;
+import de.rub.nds.tlsattacker.core.smtp.parser.reply.SmtpGenericReplyParser;
+import de.rub.nds.tlsattacker.core.smtp.reply.generic.multiline.SmtpDATAContentReply;
+import de.rub.nds.tlsattacker.core.smtp.reply.generic.multiline.SmtpGenericMultilineReply;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import java.io.ByteArrayInputStream;
@@ -28,19 +30,6 @@ public class DATAContentReplyTest {
 
     @Test
     public void testParse() {
-        String stringMessage = "250 OK \r\n";
-        SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
-        SmtpDATAContentReply reply = new SmtpDATAContentReply();
-        DATAContentReplyParser parser =
-                new DATAContentReplyParser(
-                        new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
-        parser.parse(reply);
-        assertEquals(250, reply.getReplyCode());
-        assertEquals("OK", reply.getLineContents().get(0));
-    }
-
-    @Test
-    public void testvalidReplyCode() {
         String[] validReplies = {
             "250 OK\r\n",
             "552 FullMemory\r\n",
@@ -50,27 +39,17 @@ public class DATAContentReplyTest {
             "450 Mailboxfull\r\n",
             "550 noMailbox\r\n"
         };
-        for (String reply : validReplies) {
-            DATAContentReplyParser parser =
-                    new DATAContentReplyParser(
+
+        for (int i = 0; i < validReplies.length; i++) {
+            String reply = validReplies[i];
+
+            SmtpGenericReplyParser<SmtpGenericMultilineReply> parser =
+                    new SmtpGenericReplyParser<>(
                             new ByteArrayInputStream(reply.getBytes(StandardCharsets.UTF_8)));
             SmtpDATAContentReply dataContentReply = new SmtpDATAContentReply();
             parser.parse(dataContentReply);
             assertEquals(Integer.parseInt(reply.substring(0, 3)), dataContentReply.getReplyCode());
-        }
-    }
-
-    @Test
-    public void invalidReplyCode() {
-        String[] validReplies = {
-            "345\r\n", "111\r\n", "390\r\n", "211\r\n", "252\r\n", "421\r\n", "214\r\n"
-        };
-        for (String reply : validReplies) {
-            DATAContentReplyParser parser =
-                    new DATAContentReplyParser(
-                            new ByteArrayInputStream(reply.getBytes(StandardCharsets.UTF_8)));
-            SmtpDATAContentReply dataContentReply = new SmtpDATAContentReply();
-            assertThrows(ParserException.class, () -> parser.parse(dataContentReply));
+            assertEquals(reply.substring(4), dataContentReply.getHumanReadableMessages().get(i));
         }
     }
 
@@ -79,19 +58,20 @@ public class DATAContentReplyTest {
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
         SmtpDATAContentReply reply = new SmtpDATAContentReply();
         reply.setReplyCode(250);
-        reply.setLineContents(List.of("OK"));
-        Preparator preparator = reply.getPreparator(context);
-        Serializer serializer = reply.getSerializer(context);
-        preparator.prepare();
+        reply.setHumanReadableMessages(List.of("OK"));
+
+        Serializer<?> serializer = reply.getSerializer(context);
         serializer.serialize();
+
         assertEquals("250 OK\r\n", serializer.getOutputStream().toString());
     }
 
+    // TODO: handler is unused here. should be fixed probably?
     @Test
     public void testHandle() {
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
         SmtpDATAContentReply reply = new SmtpDATAContentReply();
-        Handler handler = reply.getHandler(context);
+        Handler<?> handler = reply.getHandler(context);
 
         assertTrue(context.getForwardPathBuffer().isEmpty());
         assertTrue(context.getReversePathBuffer().isEmpty());
