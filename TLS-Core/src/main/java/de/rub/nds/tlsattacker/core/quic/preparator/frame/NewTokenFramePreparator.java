@@ -10,8 +10,12 @@ package de.rub.nds.tlsattacker.core.quic.preparator.frame;
 
 import de.rub.nds.tlsattacker.core.quic.frame.NewTokenFrame;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class NewTokenFramePreparator extends QuicFramePreparator<NewTokenFrame> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public NewTokenFramePreparator(Chooser chooser, NewTokenFrame object) {
         super(chooser, object);
@@ -19,6 +23,18 @@ public class NewTokenFramePreparator extends QuicFramePreparator<NewTokenFrame> 
 
     @Override
     public void prepare() {
-        // TODO
+        LOGGER.debug("Preparing NEW_TOKEN Frame");
+        prepareToken(getObject());
+        prepareTokenLength(getObject());
+    }
+
+    protected void prepareToken(NewTokenFrame frame) {
+        frame.setToken(chooser.getContext().getConfig().getDefaultQuicPathChallange());
+        LOGGER.debug("Token: {}", frame.getToken().getValue());
+    }
+
+    protected void prepareTokenLength(NewTokenFrame frame) {
+        frame.setTokenLength(frame.getToken().getValue().length);
+        LOGGER.debug("Token Length: {}", frame.getTokenLength().getValue());
     }
 }

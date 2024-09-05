@@ -804,6 +804,12 @@ public class Config implements Serializable {
 
     private QuicVersion quicVersion = QuicVersion.VERSION_1;
 
+    private byte[] defaultQuicNewToken =
+            ArrayConverter.hexStringToByteArray(
+                    "AABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFF");
+
+    private byte[] defaultQuicPathChallange = ArrayConverter.hexStringToByteArray("AABBCCDD");
+
     private Boolean stopActionsAfterWarning = false;
 
     /** This CipherSuite will be used if no cipherSuite has been negotiated yet */
@@ -4225,5 +4231,21 @@ public class Config implements Serializable {
 
     public void setQuicRetryFlowRequired(Boolean quicRetryFlowRequired) {
         this.quicRetryFlowRequired = quicRetryFlowRequired;
+    }
+
+    public byte[] getDefaultQuicPathChallange() {
+        return defaultQuicPathChallange;
+    }
+
+    public void setDefaultQuicPathChallange(byte[] defaultQuicPathChallange) {
+        this.defaultQuicPathChallange = defaultQuicPathChallange;
+    }
+
+    public byte[] getDefaultQuicNewToken() {
+        return defaultQuicNewToken;
+    }
+
+    public void setDefaultQuicNewToken(byte[] defaultQuicNewToken) {
+        this.defaultQuicNewToken = defaultQuicNewToken;
     }
 }
