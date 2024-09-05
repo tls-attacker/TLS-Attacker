@@ -12,10 +12,10 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.quic.constants.QuicFrameType;
-import de.rub.nds.tlsattacker.core.quic.handler.frame.QuicFrameHandler;
-import de.rub.nds.tlsattacker.core.quic.parser.frame.QuicFrameParser;
-import de.rub.nds.tlsattacker.core.quic.preparator.frame.QuicFramePreparator;
-import de.rub.nds.tlsattacker.core.quic.serializer.frame.QuicFrameSerializer;
+import de.rub.nds.tlsattacker.core.quic.handler.frame.DataBlockedFrameHandler;
+import de.rub.nds.tlsattacker.core.quic.parser.frame.DataBlockedFrameParser;
+import de.rub.nds.tlsattacker.core.quic.preparator.frame.DataBlockedFramePreparator;
+import de.rub.nds.tlsattacker.core.quic.serializer.frame.DataBlockedFrameSerializer;
 import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
@@ -37,27 +37,23 @@ public class DataBlockedFrame extends QuicFrame {
     }
 
     @Override
-    public QuicFrameHandler getHandler(QuicContext context) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from
-        // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public DataBlockedFrameHandler getHandler(QuicContext context) {
+        return new DataBlockedFrameHandler(context);
     }
 
     @Override
-    public QuicFrameSerializer getSerializer(QuicContext context) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from
-        // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public DataBlockedFrameSerializer getSerializer(QuicContext context) {
+        return new DataBlockedFrameSerializer(this);
     }
 
     @Override
-    public QuicFramePreparator getPreparator(QuicContext context) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from
-        // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public DataBlockedFramePreparator getPreparator(QuicContext context) {
+        return new DataBlockedFramePreparator(context.getChooser(), this);
     }
 
     @Override
-    public QuicFrameParser getParser(QuicContext context, InputStream stream) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from
-        // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public DataBlockedFrameParser getParser(QuicContext context, InputStream stream) {
+        return new DataBlockedFrameParser(stream);
     }
 
     public ModifiableInteger getMaximumData() {
