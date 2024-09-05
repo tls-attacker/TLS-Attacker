@@ -39,15 +39,21 @@ public class ConnectionCloseFrame extends QuicFrame {
 
     @ModifiableVariableProperty private ModifiableByteArray reasonPhrase;
 
-    public ConnectionCloseFrame() {
-        super(QuicFrameType.CONNECTION_CLOSE_FRAME);
+    private ConnectionCloseFrame() {}
+
+    public ConnectionCloseFrame(boolean isQuicLayer) {
+        if (isQuicLayer) {
+            setFrameType(QuicFrameType.CONNECTION_CLOSE_QUIC_FRAME);
+        } else {
+            setFrameType(QuicFrameType.CONNECTION_CLOSE_APPLICATION_FRAME);
+        }
         ackEliciting = false;
         this.setReasonPhraseLength(0);
         this.setTriggerFrameType(0);
     }
 
     public ConnectionCloseFrame(long errorCode) {
-        this();
+        this(true);
         this.errorCode = ModifiableVariableFactory.safelySetValue(this.errorCode, errorCode);
     }
 

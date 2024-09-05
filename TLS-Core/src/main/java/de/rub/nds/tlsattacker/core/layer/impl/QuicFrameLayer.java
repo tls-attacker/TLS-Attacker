@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.layer.impl;
 
-import static de.rub.nds.tlsattacker.core.quic.constants.QuicFrameType.CONNECTION_CLOSE_FRAME;
+import static de.rub.nds.tlsattacker.core.quic.constants.QuicFrameType.CONNECTION_CLOSE_QUIC_FRAME;
 import static de.rub.nds.tlsattacker.core.quic.constants.QuicFrameType.CRYPTO_FRAME;
 import static de.rub.nds.tlsattacker.core.quic.constants.QuicFrameType.PATH_CHALLENGE_FRAME;
 import static de.rub.nds.tlsattacker.core.quic.constants.QuicFrameType.PATH_RESPONSE_FRAME;
@@ -285,8 +285,12 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
                     readDataContainer(new AckFrame(), context, inputStream);
                     isAckEliciting = false;
                     break;
-                case CONNECTION_CLOSE_FRAME:
-                    readDataContainer(new ConnectionCloseFrame(), context, inputStream);
+                case CONNECTION_CLOSE_QUIC_FRAME:
+                    readDataContainer(new ConnectionCloseFrame(true), context, inputStream);
+                    isAckEliciting = false;
+                    break;
+                case CONNECTION_CLOSE_APPLICATION_FRAME:
+                    readDataContainer(new ConnectionCloseFrame(false), context, inputStream);
                     isAckEliciting = false;
                     break;
                 case CRYPTO_FRAME:
@@ -421,7 +425,7 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
             case PADDING_FRAME:
             case HANDSHAKE_DONE_FRAME:
             case CRYPTO_FRAME:
-            case CONNECTION_CLOSE_FRAME:
+            case CONNECTION_CLOSE_QUIC_FRAME:
                 // TODO: Klasse mit Config Fäldern adden, wie Crypto Packets
             case ACK_FRAME:
             case PING_FRAME:
