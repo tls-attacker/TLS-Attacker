@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.quic.serializer.frame;
 
+import de.rub.nds.tlsattacker.core.quic.constants.QuicFrameType;
 import de.rub.nds.tlsattacker.core.quic.frame.ConnectionCloseFrame;
 import de.rub.nds.tlsattacker.core.quic.util.VariableLengthIntegerEncoding;
 import org.apache.logging.log4j.LogManager;
@@ -25,7 +26,10 @@ public class ConnectionCloseFrameSerializer extends QuicFrameSerializer<Connecti
     protected byte[] serializeBytes() {
         writeFrameType();
         writeErrorCode();
-        writeTriggerFrameType();
+        QuicFrameType frameType = QuicFrameType.getFrameType(frame.getFrameType().getValue());
+        if (frameType == QuicFrameType.CONNECTION_CLOSE_QUIC_FRAME) {
+            writeTriggerFrameType();
+        }
         writeReasonPhraseLength();
         writeReasonPhrase();
         return getAlreadySerialized();

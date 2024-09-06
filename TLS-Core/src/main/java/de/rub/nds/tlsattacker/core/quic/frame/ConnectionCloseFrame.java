@@ -39,6 +39,11 @@ public class ConnectionCloseFrame extends QuicFrame {
 
     @ModifiableVariableProperty private ModifiableByteArray reasonPhrase;
 
+    private long errorCodeConfig;
+    private long triggerFrameTypeConfig;
+    private long reasonPhraseLengthConfig;
+    private byte[] reasonPhraseConfig;
+
     private ConnectionCloseFrame() {}
 
     public ConnectionCloseFrame(boolean isQuicLayer) {
@@ -48,24 +53,25 @@ public class ConnectionCloseFrame extends QuicFrame {
             setFrameType(QuicFrameType.CONNECTION_CLOSE_APPLICATION_FRAME);
         }
         ackEliciting = false;
-        this.setReasonPhraseLength(0);
-        this.setTriggerFrameType(0);
     }
 
-    public ConnectionCloseFrame(long errorCode) {
+    public ConnectionCloseFrame(long errorCodeConfig) {
         this(true);
-        this.errorCode = ModifiableVariableFactory.safelySetValue(this.errorCode, errorCode);
+        this.errorCodeConfig = errorCodeConfig;
     }
 
-    public ConnectionCloseFrame(long errorCode, String reasonPhrase) {
-        this(errorCode);
-        this.setReasonPhrase(reasonPhrase.getBytes(StandardCharsets.UTF_8));
-        this.setReasonPhraseLength(this.reasonPhrase.getValue().length);
+    public ConnectionCloseFrame(int errorCodeConfig, String reasonPhraseConfig) {
+        this(errorCodeConfig);
+        this.reasonPhraseConfig = reasonPhraseConfig.getBytes(StandardCharsets.UTF_8);
+        this.reasonPhraseLengthConfig = this.reasonPhraseConfig.length;
     }
 
-    public ConnectionCloseFrame(int errorCode, String reasonPhrase, long triggerFrameType) {
-        this(errorCode, reasonPhrase);
-        this.setTriggerFrameType(triggerFrameType);
+    public ConnectionCloseFrame(
+            int errorCodeConfig, long triggerFrameTypeConfig, String reasonPhraseConfig) {
+        this(errorCodeConfig);
+        this.reasonPhraseConfig = reasonPhraseConfig.getBytes(StandardCharsets.UTF_8);
+        this.reasonPhraseLengthConfig = this.reasonPhraseConfig.length;
+        this.triggerFrameTypeConfig = triggerFrameTypeConfig;
     }
 
     @Override
@@ -134,6 +140,38 @@ public class ConnectionCloseFrame extends QuicFrame {
     public void setReasonPhrase(byte[] reasonPhrase) {
         this.reasonPhrase =
                 ModifiableVariableFactory.safelySetValue(this.reasonPhrase, reasonPhrase);
+    }
+
+    public long getErrorCodeConfig() {
+        return errorCodeConfig;
+    }
+
+    public void setErrorCodeConfig(long errorCodeConfig) {
+        this.errorCodeConfig = errorCodeConfig;
+    }
+
+    public long getTriggerFrameTypeConfig() {
+        return triggerFrameTypeConfig;
+    }
+
+    public void setTriggerFrameTypeConfig(long triggerFrameTypeConfig) {
+        this.triggerFrameTypeConfig = triggerFrameTypeConfig;
+    }
+
+    public long getReasonPhraseLengthConfig() {
+        return reasonPhraseLengthConfig;
+    }
+
+    public void setReasonPhraseLengthConfig(long reasonPhraseLengthConfig) {
+        this.reasonPhraseLengthConfig = reasonPhraseLengthConfig;
+    }
+
+    public byte[] getReasonPhraseConfig() {
+        return reasonPhraseConfig;
+    }
+
+    public void setReasonPhraseConfig(byte[] reasonPhraseConfig) {
+        this.reasonPhraseConfig = reasonPhraseConfig;
     }
 
     @Override

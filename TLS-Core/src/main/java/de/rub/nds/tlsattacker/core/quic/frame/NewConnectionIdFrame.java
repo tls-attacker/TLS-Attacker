@@ -39,6 +39,12 @@ public class NewConnectionIdFrame extends QuicFrame {
 
     @ModifiableVariableProperty protected ModifiableByteArray statelessResetToken;
 
+    private long sequenceNumberConfig;
+    private long retirePriorToConfig;
+    private int lengthConfig;
+    private byte[] connectionIdConfig;
+    private byte[] statelessResetTokenConfig;
+
     public static final int STATELESS_RESET_TOKEN_LENGTH = 16;
 
     public static final int CONNECTION_ID_LENGTH_FIELD = 1;
@@ -118,5 +124,45 @@ public class NewConnectionIdFrame extends QuicFrame {
         this.statelessResetToken =
                 ModifiableVariableFactory.safelySetValue(
                         this.statelessResetToken, statelessResetToken);
+    }
+
+    public long getSequenceNumberConfig() {
+        return sequenceNumberConfig;
+    }
+
+    public void setSequenceNumberConfig(long sequenceNumberConfig) {
+        this.sequenceNumberConfig = sequenceNumberConfig;
+    }
+
+    public long getRetirePriorToConfig() {
+        return retirePriorToConfig;
+    }
+
+    public void setRetirePriorToConfig(long retirePriorToConfig) {
+        this.retirePriorToConfig = retirePriorToConfig;
+    }
+
+    public int getLengthConfig() {
+        return lengthConfig;
+    }
+
+    public void setLengthConfig(int lengthConfig) {
+        this.lengthConfig = lengthConfig;
+    }
+
+    public byte[] getConnectionIdConfig() {
+        return connectionIdConfig;
+    }
+
+    public void setConnectionIdConfig(byte[] connectionIdConfig) {
+        this.connectionIdConfig = connectionIdConfig;
+    }
+
+    public byte[] getStatelessResetTokenConfig() {
+        return statelessResetTokenConfig;
+    }
+
+    public void setStatelessResetTokenConfig(byte[] statelessResetTokenConfig) {
+        this.statelessResetTokenConfig = statelessResetTokenConfig;
     }
 }
