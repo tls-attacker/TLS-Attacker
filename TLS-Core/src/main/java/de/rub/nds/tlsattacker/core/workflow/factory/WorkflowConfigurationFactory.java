@@ -1376,7 +1376,7 @@ public class WorkflowConfigurationFactory {
                         config, connection, ConnectionEndType.CLIENT, new PingFrame()));
         trace.addTlsAction(
                 MessageActionFactory.createQuicAction(
-                        config, connection, ConnectionEndType.SERVER, new AckFrame()));
+                        config, connection, ConnectionEndType.SERVER, new AckFrame(false)));
         return trace;
     }
 

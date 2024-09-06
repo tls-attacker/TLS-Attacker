@@ -37,15 +37,28 @@ public class AckFrame extends QuicFrame {
 
     @ModifiableVariableProperty protected ModifiableLong firstACKRange;
 
-    @ModifiableVariableProperty protected ModifiableLong packetNumberSpace;
+    @ModifiableVariableProperty protected ModifiableLong ect0;
 
-    public AckFrame() {
-        super(QuicFrameType.ACK_FRAME);
-        ackEliciting = false;
-    }
+    @ModifiableVariableProperty protected ModifiableLong ect1;
 
-    protected AckFrame(QuicFrameType frameType) {
-        super(frameType);
+    @ModifiableVariableProperty protected ModifiableLong ecnCe;
+
+    private long largestAcknowledgedConfig;
+    private long ackDelayConfig;
+    private long ackRangeCountConfig;
+    private long firstACKRangeConfig;
+    private long ect0Config;
+    private long ect1Config;
+    private long ecnCeConfig;
+
+    private AckFrame() {}
+
+    public AckFrame(boolean withECN) {
+        if (withECN) {
+            setFrameType(QuicFrameType.ACK_FRAME_WITH_ECN);
+        } else {
+            setFrameType(QuicFrameType.ACK_FRAME);
+        }
         ackEliciting = false;
     }
 
@@ -141,22 +154,107 @@ public class AckFrame extends QuicFrame {
         return firstACKRange;
     }
 
-    public void setPacketNumberSpace(ModifiableLong packetNumberSpace) {
-        this.packetNumberSpace = packetNumberSpace;
+    public ModifiableLong getEct0() {
+        return ect0;
     }
 
-    public void setPacketNumberSpace(long packetNumberSpace) {
-        this.packetNumberSpace =
-                ModifiableVariableFactory.safelySetValue(this.packetNumberSpace, packetNumberSpace);
+    public void setEct0(ModifiableLong ect0) {
+        this.ect0 = ect0;
     }
 
-    public void setPacketNumberSpace(int packetNumberSpace) {
-        this.packetNumberSpace =
-                ModifiableVariableFactory.safelySetValue(
-                        this.packetNumberSpace, (long) packetNumberSpace);
+    public void setEct0(long ect0) {
+        this.ect0 = ModifiableVariableFactory.safelySetValue(this.ect0, ect0);
     }
 
-    public ModifiableLong getPacketNumberSpace() {
-        return packetNumberSpace;
+    public void setEct0(int ect0) {
+        this.ect0 = ModifiableVariableFactory.safelySetValue(this.ect0, (long) ect0);
+    }
+
+    public ModifiableLong getEct1() {
+        return ect1;
+    }
+
+    public void setEct1(ModifiableLong ect1) {
+        this.ect1 = ect1;
+    }
+
+    public void setEct1(long ect1) {
+        this.ect1 = ModifiableVariableFactory.safelySetValue(this.ect1, ect1);
+    }
+
+    public void setEct1(int ect1) {
+        this.ect1 = ModifiableVariableFactory.safelySetValue(this.ect1, (long) ect1);
+    }
+
+    public ModifiableLong getEcnCe() {
+        return ecnCe;
+    }
+
+    public void setEcnCe(ModifiableLong ecnCe) {
+        this.ecnCe = ecnCe;
+    }
+
+    public void setEcnCe(long ecnCe) {
+        this.ecnCe = ModifiableVariableFactory.safelySetValue(this.ecnCe, ecnCe);
+    }
+
+    public void setEcnCe(int ecnCe) {
+        this.ecnCe = ModifiableVariableFactory.safelySetValue(this.ecnCe, (long) ecnCe);
+    }
+
+    public long getLargestAcknowledgedConfig() {
+        return largestAcknowledgedConfig;
+    }
+
+    public void setLargestAcknowledgedConfig(long largestAcknowledgedConfig) {
+        this.largestAcknowledgedConfig = largestAcknowledgedConfig;
+    }
+
+    public long getAckDelayConfig() {
+        return ackDelayConfig;
+    }
+
+    public void setAckDelayConfig(long ackDelayConfig) {
+        this.ackDelayConfig = ackDelayConfig;
+    }
+
+    public long getAckRangeCountConfig() {
+        return ackRangeCountConfig;
+    }
+
+    public void setAckRangeCountConfig(long ackRangeCountConfig) {
+        this.ackRangeCountConfig = ackRangeCountConfig;
+    }
+
+    public long getFirstACKRangeConfig() {
+        return firstACKRangeConfig;
+    }
+
+    public void setFirstACKRangeConfig(long firstACKRangeConfig) {
+        this.firstACKRangeConfig = firstACKRangeConfig;
+    }
+
+    public long getEct0Config() {
+        return ect0Config;
+    }
+
+    public void setEct0Config(long ect0Config) {
+        this.ect0Config = ect0Config;
+    }
+
+    public long getEct1Config() {
+        return ect1Config;
+    }
+
+    public void setEct1Config(long ect1Config) {
+        this.ect1Config = ect1Config;
+    }
+
+    public long getEcnCeConfig() {
+        return ecnCeConfig;
+    }
+
+    public void setEcnCeConfig(long ecnCeConfig) {
+        this.ecnCeConfig = ecnCeConfig;
     }
 }

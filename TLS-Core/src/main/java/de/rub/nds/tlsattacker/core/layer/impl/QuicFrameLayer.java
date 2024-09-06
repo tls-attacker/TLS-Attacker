@@ -282,7 +282,11 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
             QuicFrameType frameType = QuicFrameType.getFrameType((byte) firstByte);
             switch (frameType) {
                 case ACK_FRAME:
-                    readDataContainer(new AckFrame(), context, inputStream);
+                    readDataContainer(new AckFrame(false), context, inputStream);
+                    isAckEliciting = false;
+                    break;
+                case ACK_FRAME_WITH_ECN:
+                    readDataContainer(new AckFrame(true), context, inputStream);
                     isAckEliciting = false;
                     break;
                 case CONNECTION_CLOSE_QUIC_FRAME:
@@ -460,7 +464,7 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
     /** TODO */
     @Override
     public void sendAck(byte[] data) {
-        AckFrame frame = new AckFrame();
+        AckFrame frame = new AckFrame(false);
         if (context.getReceivedPackets().getLast() == QuicPacketType.INITIAL_PACKET) {
             frame.setLargestAcknowledged(context.getReceivedInitialPacketNumbers().getLast());
             LOGGER.debug(

@@ -8,8 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.quic.serializer.frame;
 
+import de.rub.nds.tlsattacker.core.quic.constants.QuicFrameType;
 import de.rub.nds.tlsattacker.core.quic.frame.AckFrame;
-import de.rub.nds.tlsattacker.core.quic.frame.AckFrameWithEcn;
 import de.rub.nds.tlsattacker.core.quic.util.VariableLengthIntegerEncoding;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,8 +29,9 @@ public class AckFrameSerializer extends QuicFrameSerializer<AckFrame> {
         writeAckDelay();
         writeAckRangeCount();
         writeFirstAckRange();
-        if (frame instanceof AckFrameWithEcn) {
-            writeEcn();
+        QuicFrameType frameType = QuicFrameType.getFrameType(frame.getFrameType().getValue());
+        if (frameType == QuicFrameType.ACK_FRAME_WITH_ECN) {
+            writeEcnCounts();
         }
         return getAlreadySerialized();
     }
@@ -63,19 +64,18 @@ public class AckFrameSerializer extends QuicFrameSerializer<AckFrame> {
         LOGGER.debug("First ACK Range: {}", frame.getFirstACKRange().getValue());
     }
 
-    private void writeEcn() {
-        AckFrameWithEcn frameEcn = (AckFrameWithEcn) frame;
+    private void writeEcnCounts() {
         appendBytes(
                 VariableLengthIntegerEncoding.encodeVariableLengthInteger(
-                        frameEcn.getEct0().getValue()));
-        LOGGER.debug("ECT0 Count: {}", frameEcn.getEct0().getValue());
+                        frame.getEct0().getValue()));
+        LOGGER.debug("ECT0 Count: {}", frame.getEct0().getValue());
         appendBytes(
                 VariableLengthIntegerEncoding.encodeVariableLengthInteger(
-                        frameEcn.getEct1().getValue()));
-        LOGGER.debug("ECT1 Count: {}", frameEcn.getEct1().getValue());
+                        frame.getEct1().getValue()));
+        LOGGER.debug("ECT1 Count: {}", frame.getEct1().getValue());
         appendBytes(
                 VariableLengthIntegerEncoding.encodeVariableLengthInteger(
-                        frameEcn.getEcnCe().getValue()));
-        LOGGER.debug("ECT-CE Count: {}", frameEcn.getEcnCe().getValue());
+                        frame.getEcnCe().getValue()));
+        LOGGER.debug("ECT-CE Count: {}", frame.getEcnCe().getValue());
     }
 }

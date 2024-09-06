@@ -8,8 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.quic.parser.frame;
 
+import de.rub.nds.tlsattacker.core.quic.constants.QuicFrameType;
 import de.rub.nds.tlsattacker.core.quic.frame.AckFrame;
-import de.rub.nds.tlsattacker.core.quic.frame.AckFrameWithEcn;
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,16 +18,8 @@ public class AckFrameParser extends QuicFrameParser<AckFrame> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final boolean hasEcn;
-
     public AckFrameParser(InputStream stream) {
         super(stream);
-        this.hasEcn = false;
-    }
-
-    public AckFrameParser(InputStream stream, boolean hasEcn) {
-        super(stream);
-        this.hasEcn = hasEcn;
     }
 
     @Override
@@ -41,8 +33,9 @@ public class AckFrameParser extends QuicFrameParser<AckFrame> {
             parseVariableLengthInteger();
             parseVariableLengthInteger();
         }
-        if (hasEcn) {
-            parseEcnCounts((AckFrameWithEcn) frame);
+        QuicFrameType frameType = QuicFrameType.getFrameType(frame.getFrameType().getValue());
+        if (frameType == QuicFrameType.ACK_FRAME_WITH_ECN) {
+            parseEcnCounts(frame);
         }
     }
 
@@ -66,7 +59,7 @@ public class AckFrameParser extends QuicFrameParser<AckFrame> {
         LOGGER.debug("First ACK Range: {}", frame.getFirstACKRange().getValue());
     }
 
-    protected void parseEcnCounts(AckFrameWithEcn frame) {
+    protected void parseEcnCounts(AckFrame frame) {
         frame.setEct0(parseVariableLengthInteger());
         LOGGER.debug("ECT0 Count: {}", frame.getEct0().getValue());
         frame.setEct1(parseVariableLengthInteger());
