@@ -152,7 +152,7 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
                             stream = new ByteArrayOutputStream();
                             stream.writeBytes(writeFrame(frame));
                             addProducedContainer(frame);
-                            // TODO: Option einfügen und alles zusammen senden
+                            // TODO: Add option to pass everything together to the next layer
                             getLowerLayer().sendData(packetLayerHint, stream.toByteArray());
 
                             offset += toCopy;
@@ -160,7 +160,7 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
                                 break;
                             }
                         }
-                        // Not enough crypto frames possible
+                        // Not enough crypto frames
                         for (; offset < data.length; offset += MAX_FRAME_SIZE) {
                             byte[] payload =
                                     Arrays.copyOfRange(
@@ -171,7 +171,7 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
                             stream = new ByteArrayOutputStream();
                             stream.writeBytes(writeFrame(frame));
                             addProducedContainer(frame);
-                            // TODO: Option einfügen und alles zusammen senden
+                            // TODO: Add option to pass everything together to the next layer
                             getLowerLayer().sendData(packetLayerHint, stream.toByteArray());
                         }
                     } else {
@@ -186,13 +186,13 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
                             stream = new ByteArrayOutputStream();
                             stream.writeBytes(writeFrame(frame));
                             addProducedContainer(frame);
-                            // TODO: Option einfügen und alles zusammen senden
+                            // TODO: Add option to pass everything together to the next layer
                             getLowerLayer().sendData(packetLayerHint, stream.toByteArray());
                         }
                     }
                     break;
-                    // TODO: Nutze vorhandene STREAM Frames aus der Configuration
                 case APPLICATION_DATA:
+                    // TODO: Use existing STREAM frames from the configuration first
                     // prepare hint
                     if (context.isApplicationSecretsInitialized()) {
                         packetLayerHint = new QuicPacketLayerHint(QuicPacketType.ONE_RTT_PACKET);
@@ -212,7 +212,8 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
                     break;
             }
         } else {
-            LOGGER.warn("TODO");
+            throw new UnsupportedOperationException(
+                    "No QuicFrameLayerHint passed - Not supported yet.");
         }
         return getLayerResult();
     }
@@ -257,7 +258,7 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
             InputStream dataStream;
             try {
                 dataStream = getLowerLayer().getDataStream();
-                // TODO: for now we ignore the hint
+                // For now, we ignore the hint
                 readFrames(dataStream);
             } catch (IOException ex) {
                 LOGGER.warn("The lower layer did not produce a data stream: ", ex);
@@ -425,28 +426,8 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
     }
 
     private byte[] writeFrame(QuicFrame frame) {
-        switch (QuicFrameType.getFrameType(frame.getFrameType().getValue())) {
-            case PADDING_FRAME:
-            case HANDSHAKE_DONE_FRAME:
-            case CRYPTO_FRAME:
-            case CONNECTION_CLOSE_QUIC_FRAME:
-                // TODO: Klasse mit Config Fäldern adden, wie Crypto Packets
-            case ACK_FRAME:
-            case PING_FRAME:
-            case PATH_RESPONSE_FRAME:
-            case STREAM_FRAME:
-            case STREAM_FRAME_FIN:
-            case STREAM_FRAME_LEN:
-            case STREAM_FRAME_LEN_FIN:
-            case STREAM_FRAME_OFF:
-            case STREAM_FRAME_OFF_FIN:
-            case STREAM_FRAME_OFF_LEN:
-            case STREAM_FRAME_OFF_LEN_FIN:
-                frame.getPreparator(context).prepare();
-                return frame.getSerializer(context).serialize();
-            default:
-                return null;
-        }
+        frame.getPreparator(context).prepare();
+        return frame.getSerializer(context).serialize();
     }
 
     private QuicPacketLayerHint getHintForFrame() {
@@ -461,7 +442,6 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
         return null;
     }
 
-    /** TODO */
     @Override
     public void sendAck(byte[] data) {
         AckFrame frame = new AckFrame(false);

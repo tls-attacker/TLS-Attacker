@@ -90,7 +90,6 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
         LayerConfiguration<QuicPacket> configuration = getLayerConfiguration();
         if (configuration != null && configuration.getContainerList() != null) {
             for (QuicPacket packet : getUnprocessedConfiguredContainers()) {
-                // TODO: Encrypt packets
                 if (isEmptyPacket(packet)) {
                     continue;
                 }
@@ -99,7 +98,7 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
                     addProducedContainer(packet);
                     getLowerLayer().sendData(null, bytes);
                 } catch (CryptoException ex) {
-                    LOGGER.error("TODO");
+                    LOGGER.error(ex);
                 }
             }
         }
@@ -122,13 +121,14 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
         if (hint != null && hint.getQuicPacketType() != null) {
             type = hint.getQuicPacketType();
         } else {
-            LOGGER.warn("TODO");
+            LOGGER.warn(
+                    "Sending packet without a LayerProcessing hint. Using UNKNOWN as the type.");
         }
 
         List<QuicPacket> givenPackets = getUnprocessedConfiguredContainers();
         try {
-            // TODO: Ignoring hint
             if (getLayerConfiguration().getContainerList() != null && givenPackets.size() > 0) {
+                // If a configuration is provided, the hint will be ignored.
                 QuicPacket packet = givenPackets.get(0);
                 byte[] bytes = writePacket(data, packet);
                 addProducedContainer(packet);
@@ -173,7 +173,7 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
                 }
             }
         } catch (CryptoException ex) {
-            LOGGER.error("TODO");
+            LOGGER.error(ex);
         }
         return getLayerResult();
     }
@@ -218,7 +218,7 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
             InputStream dataStream;
             try {
                 dataStream = getLowerLayer().getDataStream();
-                // TODO: for now we ignore the hint
+                // For now, we ignore the hint.
                 readPackets(dataStream);
             } catch (IOException ex) {
                 LOGGER.warn("The lower layer did not produce a data stream: ", ex);
@@ -564,7 +564,6 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
                 && packet.getUnprotectedPayload().getValue().length == 0;
     }
 
-    /** TODO */
     @Override
     public void sendAck(byte[] data) {
         context.setTalkingConnectionEndType(context.getConnection().getLocalConnectionEndType());
