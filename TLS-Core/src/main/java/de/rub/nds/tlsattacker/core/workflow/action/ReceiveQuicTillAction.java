@@ -10,6 +10,9 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.ReceiveTillLayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.SpecificReceiveLayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
@@ -21,6 +24,7 @@ import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -75,10 +79,37 @@ public class ReceiveQuicTillAction extends CommonReceiveAction {
         this.expectedQuicPackets = expectedQuicPackets;
     }
 
+    public List<QuicFrame> getExpectedQuicFrames() {
+        return expectedQuicFrames;
+    }
+
+    public void setExpectedQuicFrames(List<QuicFrame> expectedQuicFrames) {
+        this.expectedQuicFrames = expectedQuicFrames;
+    }
+
+    public List<QuicPacket> getExpectedQuicPackets() {
+        return expectedQuicPackets;
+    }
+
+    public void setExpectedQuicPackets(List<QuicPacket> expectedQuicPackets) {
+        this.expectedQuicPackets = expectedQuicPackets;
+    }
+
     @Override
     protected List<LayerConfiguration<?>> createLayerConfiguration(State state) {
         TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
-        return ActionHelperUtil.createReceiveTillConfiguration(
-                tlsContext, expectedQuicFrames, expectedQuicPackets);
+        List<LayerConfiguration<?>> configurationList = new LinkedList<>();
+        if (expectedQuicFrames != null) {
+            configurationList.add(
+                    new ReceiveTillLayerConfiguration<>(
+                            ImplementedLayers.QUICFRAME, expectedQuicFrames));
+        }
+        if (expectedQuicPackets != null) {
+            configurationList.add(
+                    new SpecificReceiveLayerConfiguration<>(
+                            ImplementedLayers.QUICPACKET, expectedQuicPackets));
+        }
+        return ActionHelperUtil.sortAndAddOptions(
+                tlsContext.getLayerStack(), false, getActionOptions(), configurationList);
     }
 }

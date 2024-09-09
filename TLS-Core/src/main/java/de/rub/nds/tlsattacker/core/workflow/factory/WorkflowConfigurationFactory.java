@@ -662,7 +662,10 @@ public class WorkflowConfigurationFactory {
     public void appendHttpMessages(AliasedConnection connection, WorkflowTrace trace) {
         MessageAction action =
                 MessageActionFactory.createHttpAction(
-                        config, connection, ConnectionEndType.CLIENT, new HttpRequestMessage());
+                        config,
+                        connection,
+                        ConnectionEndType.CLIENT,
+                        new HttpRequestMessage(config));
         trace.addTlsAction(action);
         action =
                 MessageActionFactory.createHttpAction(

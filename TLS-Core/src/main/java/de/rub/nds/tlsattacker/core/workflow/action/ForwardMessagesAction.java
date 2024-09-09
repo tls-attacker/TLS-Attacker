@@ -11,6 +11,9 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerStackProcessingResult;
+import de.rub.nds.tlsattacker.core.layer.SpecificReceiveLayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.SpecificSendLayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -20,6 +23,7 @@ import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 @XmlRootElement(name = "ForwardMessages")
@@ -89,8 +93,12 @@ public class ForwardMessagesAction extends CommonForwardAction {
     @Override
     protected List<LayerConfiguration<?>> createReceiveConfiguration(State state) {
         TlsContext tlsContext = state.getTlsContext(getReceiveFromAlias());
-        return ActionHelperUtil.createReceiveLayerConfiguration(
-                tlsContext, getActionOptions(), expectedMessages, null, null, null, null, null);
+        List<LayerConfiguration<?>> configurationList = new LinkedList<>();
+        configurationList.add(
+                new SpecificReceiveLayerConfiguration<>(
+                        ImplementedLayers.MESSAGE, expectedMessages));
+        return ActionHelperUtil.sortAndAddOptions(
+                tlsContext.getLayerStack(), false, getActionOptions(), configurationList);
     }
 
     @Override
@@ -103,7 +111,10 @@ public class ForwardMessagesAction extends CommonForwardAction {
                     false); // Do not recompute the messages on the message layer
         }
 
-        return ActionHelperUtil.createSendConfiguration(
-                tlsContext, receivedMessages, null, null, null, null, null);
+        List<LayerConfiguration<?>> configurationList = new LinkedList<>();
+        configurationList.add(
+                new SpecificSendLayerConfiguration<>(ImplementedLayers.MESSAGE, receivedMessages));
+        return ActionHelperUtil.sortAndAddOptions(
+                tlsContext.getLayerStack(), true, getActionOptions(), configurationList);
     }
 }
