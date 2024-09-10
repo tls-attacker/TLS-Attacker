@@ -22,8 +22,8 @@ import static de.rub.nds.tlsattacker.core.quic.constants.QuicFrameType.STREAM_FR
 import static de.rub.nds.tlsattacker.core.quic.constants.QuicFrameType.STREAM_FRAME_OFF_LEN;
 import static de.rub.nds.tlsattacker.core.quic.constants.QuicFrameType.STREAM_FRAME_OFF_LEN_FIN;
 
+import de.rub.nds.protocol.exception.EndOfStreamException;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
 import de.rub.nds.tlsattacker.core.exceptions.TimeoutException;
 import de.rub.nds.tlsattacker.core.layer.AcknowledgingProtocolLayer;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;

@@ -16,9 +16,9 @@ import static de.rub.nds.tlsattacker.core.quic.constants.QuicPacketType.UNKNOWN;
 import static de.rub.nds.tlsattacker.core.quic.constants.QuicPacketType.VERSION_NEGOTIATION;
 import static de.rub.nds.tlsattacker.core.quic.constants.QuicPacketType.ZERO_RTT_PACKET;
 
+import de.rub.nds.protocol.exception.EndOfStreamException;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoRuntimeException;
-import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
 import de.rub.nds.tlsattacker.core.exceptions.TimeoutException;
 import de.rub.nds.tlsattacker.core.layer.AcknowledgingProtocolLayer;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
