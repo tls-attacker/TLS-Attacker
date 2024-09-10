@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class FakeTransportHandler extends TcpTransportHandler {
+public class FakeTcpTransportHandler extends TcpTransportHandler {
 
     /** Data that will be returned on a fetchData() call */
     private ByteArrayOutputStream outputStream;
@@ -25,7 +25,7 @@ public class FakeTransportHandler extends TcpTransportHandler {
 
     private Boolean opened = false;
 
-    public FakeTransportHandler(ConnectionEndType type) {
+    public FakeTcpTransportHandler(ConnectionEndType type) {
         super(0, type);
         inputStream = new ByteArrayInputStream(new byte[0]);
         outputStream = new ByteArrayOutputStream();
