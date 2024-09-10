@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class UdpFakeTransportHandler extends UdpTransportHandler {
+public class FakeUdpTransportHandler extends UdpTransportHandler {
 
     private ByteArrayOutputStream outputStream;
 
@@ -24,8 +24,8 @@ public class UdpFakeTransportHandler extends UdpTransportHandler {
 
     private Boolean opened = false;
 
-    public UdpFakeTransportHandler(ConnectionEndType type) {
-        super(0, 0, type);
+    public FakeUdpTransportHandler(ConnectionEndType type) {
+        super(0, type);
         inputStream = new ByteArrayInputStream(new byte[0]);
         outputStream = new ByteArrayOutputStream();
     }
@@ -75,12 +75,10 @@ public class UdpFakeTransportHandler extends UdpTransportHandler {
     @Override
     public void preInitialize() {}
 
-    @Override
     public OutputStream getOutputStream() {
         return outputStream;
     }
 
-    @Override
     public InputStream getInputStream() {
         return inputStream;
     }

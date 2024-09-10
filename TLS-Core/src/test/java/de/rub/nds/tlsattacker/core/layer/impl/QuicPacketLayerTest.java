@@ -26,7 +26,7 @@ import de.rub.nds.tlsattacker.core.quic.packet.QuicPacketCryptoComputations;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
-import de.rub.nds.tlsattacker.core.unittest.helper.UdpFakeTransportHandler;
+import de.rub.nds.tlsattacker.core.unittest.helper.FakeUdpTransportHandler;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.Security;
@@ -43,7 +43,7 @@ public class QuicPacketLayerTest {
     private Config config;
     private TlsContext tlsContext;
     private QuicContext quicContext;
-    private UdpFakeTransportHandler transportHandler;
+    private FakeUdpTransportHandler transportHandler;
 
     private final byte[] sourceConnectionId =
             ArrayConverter.hexStringToByteArray("1d541e5371a5e1c6c481b6d7b07f0961");
@@ -71,7 +71,7 @@ public class QuicPacketLayerTest {
         tlsContext = context.getTlsContext();
         quicContext = context.getQuicContext();
 
-        transportHandler = new UdpFakeTransportHandler(null);
+        transportHandler = new FakeUdpTransportHandler(null);
         tlsContext.setTransportHandler(transportHandler);
 
         quicContext.setSourceConnectionId(sourceConnectionId);
