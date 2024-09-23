@@ -143,7 +143,7 @@ public class SMTPWorkflowTestBench {
         trace.addTlsAction(new STARTTLSAction());
 
 //        trace.addTlsAction(new SendAction(new SmtpEHLOCommand("commandinjection.seal.upb.de")));
-        trace.addTlsAction(new SendAsciiAction("abc", "ascii"));
+//        trace.addTlsAction(new SendAsciiAction("abc", "ascii"));
         //trace.addTlsAction(new ReceiveAction(new SmtpEHLOReply()));
 
         trace.addTlsAction(new STARTTLSAction());

@@ -246,12 +246,13 @@ public class LayerStack {
     }
 
     /**
-     * Removes a layer from the layer stack at the specified index.
+     * Removes a layer from the layer stack by its layerType.
      * WARNING: This is a paradigm shift from the previously immutable layer stack and should be used with caution.
      * The method
      * @param layerType The type of the layer to be removed
+     * @return The removed layer
      */
-    public void removeLayer(Class<? extends ProtocolLayer> layerType) {
+    public ProtocolLayer removeLayer(Class<? extends ProtocolLayer> layerType) {
         ProtocolLayer layer = getLayer(layerType);
         if(layer == null) {
             throw new IllegalArgumentException("Layer not found");
@@ -263,5 +264,6 @@ public class LayerStack {
             layer.getLowerLayer().setHigherLayer(layer.getHigherLayer());
         }
         layerList.remove(layer);
+        return layer;
     }
 }
