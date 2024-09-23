@@ -64,6 +64,9 @@ public abstract class QuicPacket extends ModifiableVariableHolder
     public int offsetToPacketNumber;
     protected int padding;
 
+    private long lastSend;
+    private boolean hasBeenResent;
+
     public QuicPacket() {}
 
     public QuicPacket(QuicPacketType packetType) {
@@ -400,5 +403,21 @@ public abstract class QuicPacket extends ModifiableVariableHolder
 
     public int getPadding() {
         return padding;
+    }
+
+    public long getLastSend() {
+        return lastSend;
+    }
+
+    public void setLastSend(long lastSend) {
+        this.lastSend = lastSend;
+    }
+
+    public boolean wasResend() {
+        return hasBeenResent;
+    }
+
+    public void setHasBeenResent() {
+        this.hasBeenResent = true;
     }
 }

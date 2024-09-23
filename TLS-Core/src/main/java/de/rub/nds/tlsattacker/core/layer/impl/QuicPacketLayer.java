@@ -32,6 +32,7 @@ import de.rub.nds.tlsattacker.core.quic.constants.QuicPacketType;
 import de.rub.nds.tlsattacker.core.quic.constants.QuicVersion;
 import de.rub.nds.tlsattacker.core.quic.crypto.QuicDecryptor;
 import de.rub.nds.tlsattacker.core.quic.crypto.QuicEncryptor;
+import de.rub.nds.tlsattacker.core.quic.frame.AckFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.HandshakePacket;
 import de.rub.nds.tlsattacker.core.quic.packet.InitialPacket;
 import de.rub.nds.tlsattacker.core.quic.packet.OneRTTPacket;
@@ -43,13 +44,9 @@ import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -67,6 +64,8 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
     private final QuicEncryptor encryptor;
 
     private final Map<QuicPacketType, ArrayList<QuicPacket>> receivedPacketBuffer = new HashMap<>();
+
+    private List<Pair<QuicPacket, byte[]>> unacknowledgedQuicPackets = new ArrayList<>();
 
     public QuicPacketLayer(QuicContext context) {
         super(ImplementedLayers.QUICPACKET);
@@ -95,6 +94,8 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
                 }
                 try {
                     byte[] bytes = writePacket(packet);
+                    unacknowledgedQuicPackets.add(Pair.of(packet, bytes));
+                    packet.setLastSend(System.currentTimeMillis());
                     addProducedContainer(packet);
                     getLowerLayer().sendData(null, bytes);
                 } catch (CryptoException ex) {
@@ -191,12 +192,15 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
                 try {
                     dataStream = getLowerLayer().getDataStream();
                     readPackets(dataStream);
+                    lastPacketReception = System.currentTimeMillis();
                 } catch (IOException ex) {
+                    handleTimeout();
                     LOGGER.warn("The lower layer did not produce a data stream: ", ex);
                     return getLayerResult();
                 }
             } while (shouldContinueProcessing());
         } catch (TimeoutException ex) {
+            handleTimeout();
             LOGGER.debug("Received a timeout");
             LOGGER.trace(ex);
         } catch (EndOfStreamException ex) {
@@ -220,16 +224,59 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
                 dataStream = getLowerLayer().getDataStream();
                 // For now, we ignore the hint.
                 readPackets(dataStream);
+                lastPacketReception = System.currentTimeMillis();
             } catch (IOException ex) {
+                handleTimeout();
                 LOGGER.warn("The lower layer did not produce a data stream: ", ex);
             }
         } catch (TimeoutException ex) {
+            handleTimeout();
             LOGGER.debug("Received a timeout");
             LOGGER.trace(ex);
         } catch (EndOfStreamException ex) {
             LOGGER.debug("Reached end of stream, cannot parse more messages");
             LOGGER.trace(ex);
         }
+    }
+
+    private long lastPacketReception = System.currentTimeMillis();
+    private boolean abortProcessingDueToTimeout = false;
+
+    private void handleTimeout() {
+        /*TODO: Chose arbitrary resend times, not the ones from the RFC. This seems fine as we don't care about
+        performance that much but we'd like re reduce complexity. */
+        LOGGER.debug("Handling TimeoutException");
+        for (Pair<QuicPacket, byte[]> unacknowledgedPacket : unacknowledgedQuicPackets) {
+            if (unacknowledgedPacket.getLeft().getLastSend() < System.currentTimeMillis() - 10000) {
+                if (!unacknowledgedPacket.getLeft().wasResend()) {
+                    try {
+                        getLowerLayer().sendData(null, unacknowledgedPacket.getRight());
+                        unacknowledgedPacket.getLeft().setLastSend(System.currentTimeMillis());
+                        unacknowledgedPacket.getLeft().setHasBeenResent();
+                    } catch (IOException e) {
+                        LOGGER.warn("Could not resend packet, closing connection");
+                        abortProcessingDueToTimeout = true;
+                    }
+                } else {
+                    LOGGER.debug(
+                            "Packet was resent, yet still not acknowledged. Closing connection.");
+                    abortProcessingDueToTimeout = true;
+                }
+            }
+        }
+        if (unacknowledgedQuicPackets.isEmpty()
+                && lastPacketReception < System.currentTimeMillis() - 10000) {
+            abortProcessingDueToTimeout = true;
+        }
+        if (abortProcessingDueToTimeout) {
+            LOGGER.debug(
+                    "Determined, that we should abort processing and terminate, as the timeout persists.");
+        }
+    }
+
+    @Override
+    public boolean shouldContinueProcessing() {
+        return super.shouldContinueProcessing() && !abortProcessingDueToTimeout;
     }
 
     /** Reads all packets in one UDP datagram and add to packet buffer. */
@@ -333,7 +380,10 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
 
     private byte[] writePacket(byte[] data, QuicPacket packet) throws CryptoException {
         packet.setUnprotectedPayload(data);
-        return writePacket(packet);
+        byte[] packetData = writePacket(packet);
+        unacknowledgedQuicPackets.add(Pair.of(packet, packetData));
+        packet.setLastSend(System.currentTimeMillis());
+        return packetData;
     }
 
     private byte[] writePacket(QuicPacket packet) throws CryptoException {
@@ -585,5 +635,30 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
     /** Clears the packet buffer. This function is typically used when resetting the connection. */
     public void clearReceivedPacketBuffer() {
         receivedPacketBuffer.values().forEach(ArrayList::clear);
+        unacknowledgedQuicPackets.clear();
+    }
+
+    public void handleAcknowledgement(AckFrame object) {
+        List<Pair> packetsToRemove = new ArrayList<>();
+        for (Pair<QuicPacket, byte[]> unacknowledgedPacket : unacknowledgedQuicPackets) {
+            if (unacknowledgedPacket.getKey().getPlainPacketNumber()
+                            >= object.getLargestAcknowledged().getValue()
+                                    - object.getFirstACKRange().getValue()
+                    && unacknowledgedPacket.getKey().getPlainPacketNumber()
+                            <= object.getLargestAcknowledged().getValue()) {
+                packetsToRemove.add(unacknowledgedPacket);
+            }
+        }
+        unacknowledgedQuicPackets.removeAll(packetsToRemove);
+
+        System.out.println(
+                "Received ack with range ("
+                        + (object.getLargestAcknowledged().getValue()
+                                - object.getFirstACKRange().getValue())
+                        + " , "
+                        + object.getLargestAcknowledged().getValue()
+                        + "), there are now "
+                        + unacknowledgedQuicPackets.size()
+                        + " unacknowledges packets remaining!");
     }
 }
