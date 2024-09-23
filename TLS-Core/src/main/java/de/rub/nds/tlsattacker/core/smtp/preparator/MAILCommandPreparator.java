@@ -19,7 +19,8 @@ public class MAILCommandPreparator extends SmtpCommandPreparator<SmtpMAILCommand
 
     @Override
     public void prepare() {
-        this.getObject().setVerb("MAIL");
+        // MAIL FROM: <reverse-path> [SP <mail-parameters> ] <CRLF>
+        this.getObject().setVerb("MAIL FROM:");
         StringBuilder pars = new StringBuilder(this.getObject().getParameters());
         if (this.getObject().getMAILparameters() != null) {
             for (SmtpParameters MAILparameters : this.getObject().getMAILparameters()) {

@@ -23,7 +23,7 @@ import org.bouncycastle.util.IPAddress;
  */
 @XmlRootElement
 public class SmtpEHLOCommand extends SmtpCommand {
-    private String clientIdentity;
+    private String clientIdentity = "seal.upb.de";
     private boolean hasAddressLiteral = false;
 
     public SmtpEHLOCommand() {
