@@ -118,6 +118,8 @@ public class SMTPWorkflowTestBench {
     public void testWorkFlowSTARTTLS() throws IOException, JAXBException {
         Security.addProvider(new BouncyCastleProvider());
         Config config = Config.createConfig();
+        config.setKeylogFilePath("/tmp/keylog.log");
+        config.setWriteKeylogFile(true);
         config.setDefaultClientConnection(new OutboundConnection(2525, "localhost"));
         config.setDefaultLayerConfiguration(StackConfiguration.SMTP);
 
@@ -133,6 +135,19 @@ public class SMTPWorkflowTestBench {
 
         trace.addTlsAction(new SendAction(new SmtpEHLOCommand("seal.upb.de")));
         trace.addTlsAction(new ReceiveAction(new SmtpEHLOReply()));
+        trace.addTlsAction(new SendAction(new SmtpMAILCommand("<tim@test.de>")));
+        trace.addTlsAction(new ReceiveAction(new SmtpMAILReply()));
+//        trace.addTlsAction(new SendAction(new SmtpQUITCommand()));
+//        trace.addTlsAction(new ReceiveAction(new SmtpQUITReply()));
+
+        trace.addTlsAction(new STARTTLSAction());
+
+//        trace.addTlsAction(new SendAction(new SmtpEHLOCommand("commandinjection.seal.upb.de")));
+        trace.addTlsAction(new SendAsciiAction("abc", "ascii"));
+        //trace.addTlsAction(new ReceiveAction(new SmtpEHLOReply()));
+
+        trace.addTlsAction(new STARTTLSAction());
+
         trace.addTlsAction(new SendAction(new SmtpQUITCommand()));
         trace.addTlsAction(new ReceiveAction(new SmtpQUITReply()));
 
@@ -157,14 +172,14 @@ public class SMTPWorkflowTestBench {
     }
 
     @Test
-    void testHTTPWorkflow() throws JAXBException, IOException {
+    void testSMTPSTARTTLSWorkflowFromFactory() throws JAXBException, IOException {
         Security.addProvider(new BouncyCastleProvider());
         Config config = Config.createConfig();
-        config.setDefaultClientConnection(new OutboundConnection(8443, "localhost"));
-        config.setDefaultLayerConfiguration(StackConfiguration.HTTPS);
+        config.setDefaultClientConnection(new OutboundConnection(2525, "localhost"));
+        config.setDefaultLayerConfiguration(StackConfiguration.SMTP);
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
         WorkflowTrace trace =
-                factory.createWorkflowTrace(WorkflowTraceType.HTTPS, RunningModeType.CLIENT);
+                factory.createWorkflowTrace(WorkflowTraceType.SMTP_STARTTLS, RunningModeType.CLIENT);
         State state = new State(config, trace);
 
         WorkflowExecutor workflowExecutor =

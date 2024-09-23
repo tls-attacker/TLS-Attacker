@@ -56,6 +56,7 @@ public class MessageActionFactory {
         action.setConnectionAlias(connection.getAlias());
         return action;
     }
+
     public static MessageAction createSmtpAction(
             Config tlsConfig,
             AliasedConnection connection,
