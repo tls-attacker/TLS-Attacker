@@ -33,8 +33,6 @@ public class InitialPacketParser extends LongHeaderPacketParser<InitialPacket> {
         parseToken(packet);
         parsePacketLength(packet);
         parseProtectedPacketNumberAndPayload(packet);
-        // TODO: move to handler?
-        context.setDestinationConnectionId(packet.getSourceConnectionId().getValue());
     }
 
     protected void parseTokenLength(InitialPacket packet) {

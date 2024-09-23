@@ -8,13 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.quic.preparator.packet;
 
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.quic.constants.QuicPacketType;
 import de.rub.nds.tlsattacker.core.quic.packet.HandshakePacket;
-import de.rub.nds.tlsattacker.core.quic.packet.QuicPacketCryptoComputations;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import java.security.NoSuchAlgorithmException;
-import javax.crypto.NoSuchPaddingException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -30,7 +26,6 @@ public class HandshakePacketPreparator extends LongHeaderPacketPreparator<Handsh
     public void prepare() {
         LOGGER.debug("Preparing Handshake Packet");
         prepareUnprotectedFlags();
-        calculateHandshakeSecrets();
         prepareUnprotectedPacketNumber();
         prepareLongHeaderPacket();
     }
@@ -42,17 +37,6 @@ public class HandshakePacketPreparator extends LongHeaderPacketPreparator<Handsh
             LOGGER.debug(
                     "Unprotected Packet Number: {}",
                     packet.getUnprotectedPacketNumber().getValue());
-        }
-    }
-
-    // TODO: move to handler?
-    private void calculateHandshakeSecrets() {
-        try {
-            if (!context.isHandshakeSecretsInitialized()) {
-                QuicPacketCryptoComputations.calculateHandshakeSecrets(context);
-            }
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | CryptoException e) {
-            LOGGER.error("Could not calculate handshake secrets: {}", e);
         }
     }
 

@@ -8,14 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.quic.preparator.packet;
 
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.quic.constants.MiscRfcConstants;
 import de.rub.nds.tlsattacker.core.quic.constants.QuicPacketByteLength;
 import de.rub.nds.tlsattacker.core.quic.constants.QuicPacketType;
 import de.rub.nds.tlsattacker.core.quic.packet.InitialPacket;
-import de.rub.nds.tlsattacker.core.quic.packet.QuicPacketCryptoComputations;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import java.security.NoSuchAlgorithmException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -31,7 +28,6 @@ public class InitialPacketPreparator extends LongHeaderPacketPreparator<InitialP
     public void prepare() {
         LOGGER.debug("Preparing Inital Packet");
         prepareUnprotectedFlags();
-        calculateInitialSecrets();
         prepareUnprotectedPacketNumber();
         prepareToken();
         prepareLongHeaderPacket();
@@ -56,17 +52,6 @@ public class InitialPacketPreparator extends LongHeaderPacketPreparator<InitialP
             LOGGER.debug(
                     "Unprotected Packet Number: {}",
                     packet.getUnprotectedPacketNumber().getValue());
-        }
-    }
-
-    // TODO: move to handler?
-    private void calculateInitialSecrets() {
-        try {
-            if (!context.isInitialSecretsInitialized()) {
-                QuicPacketCryptoComputations.calculateInitialSecrets(context);
-            }
-        } catch (NoSuchAlgorithmException | CryptoException e) {
-            LOGGER.error("Could not calculate initial secrets: {}", e);
         }
     }
 
