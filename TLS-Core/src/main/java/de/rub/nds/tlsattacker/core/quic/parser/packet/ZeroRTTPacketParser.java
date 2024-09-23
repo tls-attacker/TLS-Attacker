@@ -26,7 +26,5 @@ public class ZeroRTTPacketParser extends LongHeaderPacketParser<ZeroRTTPacket> {
         parseSourceConnectionId(packet);
         parsePacketLength(packet);
         parseProtectedPacketNumberAndPayload(packet);
-        // TODO: move to handler?
-        context.setDestinationConnectionId(packet.getSourceConnectionId().getValue());
     }
 }

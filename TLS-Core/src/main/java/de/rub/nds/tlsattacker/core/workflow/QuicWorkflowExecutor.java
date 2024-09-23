@@ -113,7 +113,7 @@ public class QuicWorkflowExecutor extends WorkflowExecutor {
                 sendConnectionCloseFrame(
                         state.getContext().getQuicContext().isApplicationSecretsInitialized());
             } catch (IOException ex) {
-                LOGGER.error("Error while sending ConnectionCloseFrame", ex);
+                LOGGER.warn("Error while sending ConnectionCloseFrame", ex);
             }
         }
 
