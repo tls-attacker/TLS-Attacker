@@ -23,8 +23,12 @@ import de.rub.nds.tlsattacker.core.quic.packet.RetryPacket;
 import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class RetryPacketHandler extends LongHeaderPacketHandler<RetryPacket> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public RetryPacketHandler(QuicContext quicContext) {
         super(quicContext);
@@ -65,7 +69,7 @@ public class RetryPacketHandler extends LongHeaderPacketHandler<RetryPacket> {
         try {
             QuicPacketCryptoComputations.calculateInitialSecrets(quicContext);
         } catch (CryptoException | NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
+            LOGGER.error("Could not initial secrets: {}", e);
         }
     }
 }

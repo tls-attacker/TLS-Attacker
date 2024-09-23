@@ -8,13 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.quic.preparator.packet;
 
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.quic.constants.QuicPacketType;
-import de.rub.nds.tlsattacker.core.quic.packet.QuicPacketCryptoComputations;
 import de.rub.nds.tlsattacker.core.quic.packet.ZeroRTTPacket;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import java.security.NoSuchAlgorithmException;
-import javax.crypto.NoSuchPaddingException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -30,7 +26,6 @@ public class ZeroRTTPacketPreparator extends LongHeaderPacketPreparator<ZeroRTTP
     public void prepare() {
         LOGGER.debug("Preparing 0-RTT Packet");
         prepareUnprotectedFlags();
-        calculateZeroRTTSecrets();
         prepareUnprotectedPacketNumber();
         prepareLongHeaderPacket();
     }
@@ -43,17 +38,6 @@ public class ZeroRTTPacketPreparator extends LongHeaderPacketPreparator<ZeroRTTP
         }
         LOGGER.debug(
                 "Unprotected Packet Number: {}", packet.getUnprotectedPacketNumber().getValue());
-    }
-
-    // TODO: move to handler?
-    private void calculateZeroRTTSecrets() {
-        try {
-            if (!context.isZeroRTTSecretsInitialized()) {
-                QuicPacketCryptoComputations.calculate0RTTSecrets(context);
-            }
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | CryptoException e) {
-            LOGGER.error("Could not calculate 0-RTT secrets: {}", e);
-        }
     }
 
     private void prepareUnprotectedFlags() {
