@@ -272,11 +272,6 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
         }
     }
 
-    @Override
-    public boolean shouldContinueProcessing() {
-        return super.shouldContinueProcessing() && getLowerLayer().shouldContinueProcessing();
-    }
-
     /** Reads all frames in one QUIC packet and add to frame buffer. */
     private void readFrames(InputStream dataStream) throws IOException {
         PushbackInputStream inputStream = new PushbackInputStream(dataStream);
@@ -449,7 +444,6 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
 
     @Override
     public void sendAck(byte[] data) {
-        if (context.getReceivedPackets().isEmpty()) return;
         AckFrame frame = new AckFrame(false);
         if (context.getReceivedPackets().getLast() == QuicPacketType.INITIAL_PACKET) {
             frame.setLargestAcknowledged(context.getReceivedInitialPacketNumbers().getLast());
