@@ -481,7 +481,7 @@ public abstract class AbstractHandshakeIT {
                 + workflowTraceType
                 + " EncryptThenMac="
                 + addEncryptThenMac
-                + " ExtendedMasterSecert="
+                + " ExtendedMasterSecret="
                 + addExtendedMasterSecret;
     }
 }
