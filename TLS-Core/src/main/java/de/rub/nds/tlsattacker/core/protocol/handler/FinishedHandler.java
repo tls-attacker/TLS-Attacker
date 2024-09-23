@@ -197,7 +197,7 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
         tlsContext.setActiveClientKeySetType(keySetType);
         LOGGER.debug("Setting cipher for client to use {}", keySetType);
 
-        KeySet keySet = new KeySet();
+        KeySet keySet;
 
         switch (keySetType) {
             case APPLICATION_TRAFFIC_SECRETS:
@@ -207,8 +207,8 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
                 keySet = tlsContext.getkeySetHandshake();
                 break;
             default:
-                throw new Error(
-                        "In this state only application_traffic_secrets handshake_traffic_secrets are valid.");
+                throw new IllegalArgumentException(
+                        "In this state, only APPLICATION_TRAFFIC_SECRETS and HANDSHAKE_TRAFFIC_SECRETS are valid.");
         }
 
         if (tlsContext.getRecordLayer() != null) {
