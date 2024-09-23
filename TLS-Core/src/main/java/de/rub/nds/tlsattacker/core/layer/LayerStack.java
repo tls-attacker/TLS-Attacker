@@ -216,6 +216,14 @@ public class LayerStack {
         return Collections.unmodifiableList(layerList);
     }
 
+    /**
+     * Adds a new layer to a specific position in the layer stack. The new layer will be inserted
+     * between the layer at the specified index and the layer at the index - 1.
+     * If the index is 0, the new layer will be the highest layer.
+     * WARNING: This is a paradigm shift from the previously immutable layer stack and should be used with caution.
+     * @param newLayer The new layer to be inserted
+     * @param index The index at which the new layer should be inserted
+     */
     public void insertLayer(ProtocolLayer newLayer, int index) {
         if(index < 0 || index > layerList.size() - 1) {
             throw new IllegalArgumentException("Layer index out of bounds");
@@ -235,5 +243,25 @@ public class LayerStack {
         //the getter explicitly returns an unmodifiable list
         //just be aware that this is janky :)
         this.layerList.add(index, newLayer);
+    }
+
+    /**
+     * Removes a layer from the layer stack at the specified index.
+     * WARNING: This is a paradigm shift from the previously immutable layer stack and should be used with caution.
+     * The method
+     * @param layerType The type of the layer to be removed
+     */
+    public void removeLayer(Class<? extends ProtocolLayer> layerType) {
+        ProtocolLayer layer = getLayer(layerType);
+        if(layer == null) {
+            throw new IllegalArgumentException("Layer not found");
+        }
+        if(layer.getHigherLayer() != null) {
+            layer.getHigherLayer().setLowerLayer(layer.getLowerLayer());
+        }
+        if(layer.getLowerLayer() != null) {
+            layer.getLowerLayer().setHigherLayer(layer.getHigherLayer());
+        }
+        layerList.remove(layer);
     }
 }

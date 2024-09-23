@@ -12,6 +12,12 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * This action toggles the MessageLayer and RecordLayer to the LayerStack to enable opportunistic TLS communication.
+ * If the MessageLayer and RecordLayer are already present in the LayerStack, they will be removed.
+ * Even though it does not transmit the actual application-specific STARTTLS command, it should only be used in protocols that support a form of STARTTLS command.
+ * Currently, only SMTP is supported.
+ */
 @XmlRootElement
 public class STARTTLSAction extends ConnectionBoundAction {
     protected static final Logger LOGGER = LogManager.getLogger();
@@ -22,7 +28,7 @@ public class STARTTLSAction extends ConnectionBoundAction {
     @Override
     public void execute(State state) throws ActionExecutionException {
         LayerType topLevelType = state.getContext().getLayerStack().getHighestLayer().getLayerType();
-        if(topLevelType != ImplementedLayers.SMTP) {
+        if (topLevelType != ImplementedLayers.SMTP) {
             throw new ActionExecutionException("STARTTLS is not defined for this protocol");
         }
         if (isExecuted()) {
@@ -33,9 +39,18 @@ public class STARTTLSAction extends ConnectionBoundAction {
         int targetedLayerIndex = layerStack.getLayersInStack().indexOf(topLevelType);
 
         TlsContext tlsContext = state.getTlsContext();
-        layerStack.insertLayer(new RecordLayer(tlsContext), targetedLayerIndex + 1);
-        layerStack.insertLayer(new MessageLayer(tlsContext), targetedLayerIndex + 1);
-        setExecuted(true);
+        if (layerStack.getLayersInStack().contains(ImplementedLayers.MESSAGE) && layerStack.getLayersInStack().contains(ImplementedLayers.RECORD)) {
+            layerStack.removeLayer(RecordLayer.class);
+            layerStack.removeLayer(MessageLayer.class);
+            setExecuted(true);
+        } else if (!layerStack.getLayersInStack().contains(ImplementedLayers.MESSAGE) && !layerStack.getLayersInStack().contains(ImplementedLayers.RECORD)) {
+            layerStack.insertLayer(new RecordLayer(tlsContext), targetedLayerIndex + 1);
+            layerStack.insertLayer(new MessageLayer(tlsContext), targetedLayerIndex + 1);
+            setExecuted(true);
+        } else {
+            // not sure why anyone would do this, but we do not meddle with such weird constructions where only one of the two exists
+            throw new ActionExecutionException("Only one of the two TLS layers is present in the LayerStack - not suitable for STARTTLS toggle");
+        }
     }
 
     @Override
