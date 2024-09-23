@@ -11,6 +11,8 @@ package de.rub.nds.tlsattacker.core.layer;
 import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Wrapper class for {@link LayerProcessingResult}. Makes results of multiple layers available for a
@@ -18,16 +20,24 @@ import java.util.List;
  */
 public class LayerStackProcessingResult {
 
-    private final List<LayerProcessingResult> layerProcessingResultList;
+    private static final Logger LOGGER = LogManager.getLogger();
+
+    private final List<LayerProcessingResult<?>> layerProcessingResultList;
 
     // whether any layer has unreadBytes
     private boolean hasUnreadBytes;
 
     private final List<LayerType> layersWithUnreadBytes = new LinkedList<>();
 
-    public LayerStackProcessingResult(List<LayerProcessingResult> layerProcessingResultList) {
+    /** Private no-arg constructor to please JAXB */
+    @SuppressWarnings("unused")
+    private LayerStackProcessingResult() {
+        layerProcessingResultList = null;
+    }
+
+    public LayerStackProcessingResult(List<LayerProcessingResult<?>> layerProcessingResultList) {
         this.layerProcessingResultList = layerProcessingResultList;
-        for (LayerProcessingResult layerProcessingResult : layerProcessingResultList) {
+        for (LayerProcessingResult<?> layerProcessingResult : layerProcessingResultList) {
             if (layerProcessingResult.getUnreadBytes().length != 0) {
                 layersWithUnreadBytes.add(layerProcessingResult.getLayerType());
                 hasUnreadBytes = true;
@@ -35,13 +45,13 @@ public class LayerStackProcessingResult {
         }
     }
 
-    public List<LayerProcessingResult> getLayerProcessingResultList() {
+    public List<LayerProcessingResult<?>> getLayerProcessingResultList() {
         return layerProcessingResultList;
     }
 
-    public LayerProcessingResult getResultForLayer(LayerType layerType) {
+    public LayerProcessingResult<?> getResultForLayer(LayerType layerType) {
         if (layerProcessingResultList != null) {
-            for (LayerProcessingResult layerResult : layerProcessingResultList) {
+            for (LayerProcessingResult<?> layerResult : layerProcessingResultList) {
                 if (layerResult.getLayerType().equals(layerType)) {
                     return layerResult;
                 }
@@ -56,5 +66,18 @@ public class LayerStackProcessingResult {
 
     public List<LayerType> getLayersWithUnreadBytes() {
         return layersWithUnreadBytes;
+    }
+
+    public boolean executedAsPlanned() {
+        for (LayerProcessingResult<?> result : layerProcessingResultList) {
+            if (!result.isExecutedAsPlanned()) {
+                LOGGER.warn(
+                        "{} failed: Layer {}, did not execute as planned",
+                        this.getClass().getSimpleName(),
+                        result.getLayerType());
+                return false;
+            }
+        }
+        return true;
     }
 }

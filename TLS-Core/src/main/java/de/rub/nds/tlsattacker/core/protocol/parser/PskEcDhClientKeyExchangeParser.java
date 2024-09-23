@@ -32,7 +32,7 @@ public class PskEcDhClientKeyExchangeParser
 
     @Override
     public void parse(PskEcDhClientKeyExchangeMessage msg) {
-        LOGGER.debug("Parsing PSKECDHClientKeyExchangeMessage");
+        LOGGER.debug("Parsing PskEcDhClientKeyExchangeMessage");
         parsePskIdentityLength(msg);
         parsePskIdentity(msg);
         super.parseEcDhParams(msg);
@@ -45,7 +45,7 @@ public class PskEcDhClientKeyExchangeParser
      */
     private void parsePskIdentityLength(PskEcDhClientKeyExchangeMessage msg) {
         msg.setIdentityLength(parseIntField(HandshakeByteLength.PSK_IDENTITY_LENGTH));
-        LOGGER.debug("PSK-IdentityLength: " + msg.getIdentityLength().getValue());
+        LOGGER.debug("PSK-IdentityLength: {}", msg.getIdentityLength().getValue());
     }
 
     /**

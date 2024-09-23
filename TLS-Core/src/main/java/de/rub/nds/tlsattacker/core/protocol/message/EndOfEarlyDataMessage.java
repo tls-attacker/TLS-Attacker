@@ -19,7 +19,7 @@ import java.io.InputStream;
 
 /** RFC draft-ietf-tls-tls13-21 */
 @XmlRootElement(name = "EndOfEarlyData")
-public class EndOfEarlyDataMessage extends HandshakeMessage<EndOfEarlyDataMessage> {
+public class EndOfEarlyDataMessage extends HandshakeMessage {
 
     public EndOfEarlyDataMessage() {
         super(HandshakeMessageType.END_OF_EARLY_DATA);
@@ -43,6 +43,13 @@ public class EndOfEarlyDataMessage extends HandshakeMessage<EndOfEarlyDataMessag
     @Override
     public EndOfEarlyDataSerializer getSerializer(TlsContext tlsContext) {
         return new EndOfEarlyDataSerializer(this);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("EndOfEarlyDataMessage: <empty>");
+        return sb.toString();
     }
 
     @Override

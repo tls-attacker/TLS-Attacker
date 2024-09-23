@@ -13,6 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.EsniVersion;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
@@ -21,6 +22,8 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EsniKeyRecord;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareStoreEntry;
+import de.rub.nds.tlsattacker.core.state.Context;
+import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
 import java.util.List;
@@ -38,7 +41,7 @@ public class EsniKeyRecordParserTest {
     @BeforeEach
     public void setUp() {
         this.config = Config.createConfig();
-        this.tlsContext = new TlsContext(config);
+        this.tlsContext = new Context(new State(config), new InboundConnection()).getTlsContext();
         this.tlsContext.setTalkingConnectionEndType(ConnectionEndType.SERVER);
     }
 

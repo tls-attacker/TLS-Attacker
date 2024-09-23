@@ -8,56 +8,103 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
+import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
+import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.http.HttpMessage;
+import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.SpecificSendLayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
+import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
+import de.rub.nds.tlsattacker.core.printer.LogPrinter;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
+import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
+import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
+import de.rub.nds.tlsattacker.core.workflow.container.ActionHelperUtil;
+import jakarta.xml.bind.annotation.XmlElementRef;
+import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlRootElement;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /** todo print configured records */
-@XmlRootElement
-public class SendAction extends MessageAction implements SendingAction {
+@XmlRootElement(name = "Send")
+public class SendAction extends CommonSendAction implements StaticSendingAction {
 
-    private static final Logger LOGGER = LogManager.getLogger();
+    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
+    protected List<ProtocolMessage> configuredMessages;
 
-    public SendAction() {
-        super();
+    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
+    protected List<DtlsHandshakeMessageFragment> configuredDtlsHandshakeMessageFragments;
+
+    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
+    protected List<Record> configuredRecords;
+
+    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
+    protected List<HttpMessage> configuredHttpMessages;
+
+    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
+    protected List<QuicFrame> configuredQuicFrames;
+
+    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
+    protected List<QuicPacket> configuredQuicPackets;
+
+    public SendAction() {}
+
+    public SendAction(
+            List<ProtocolMessage> configuredMessages,
+            List<QuicFrame> configuredQuicFrames,
+            List<QuicPacket> configuredQuicPackets) {
+        this.configuredMessages = configuredMessages;
+        this.configuredQuicFrames = configuredQuicFrames;
+        this.configuredQuicPackets = configuredQuicPackets;
     }
 
-    public SendAction(ActionOption option, List<ProtocolMessage> messages) {
-        super(messages);
-
+    public SendAction(
+            ActionOption option,
+            List<ProtocolMessage> configuredMessages,
+            List<QuicFrame> configuredQuicFrames,
+            List<QuicPacket> configuredQuicPackets) {
+        this(configuredMessages, configuredQuicFrames, configuredQuicPackets);
         if (option != null) {
             this.addActionOption(option);
         }
     }
 
-    public SendAction(List<ProtocolMessage> messages) {
-        this((ActionOption) null, messages);
+    public SendAction(ActionOption option, List<ProtocolMessage> configuredMessages) {
+        this(configuredMessages);
+        if (option != null) {
+            this.addActionOption(option);
+        }
+    }
+
+    public SendAction(ActionOption option, ProtocolMessage... configuredMessages) {
+        this(option, new ArrayList<>(Arrays.asList(configuredMessages)));
+    }
+
+    public SendAction(List<ProtocolMessage> configuredMessages) {
+        this.configuredMessages = configuredMessages;
+    }
+
+    public SendAction(QuicPacket... configuredQuicPackets) {
+        this.configuredQuicPackets = new ArrayList<>(Arrays.asList(configuredQuicPackets));
+    }
+
+    public SendAction(QuicFrame... configuredQuicFrames) {
+        this.configuredQuicFrames = new ArrayList<>(Arrays.asList(configuredQuicFrames));
     }
 
     public SendAction(HttpMessage... httpMessage) {
-        this.setHttpMessages(new ArrayList<>(Arrays.asList(httpMessage)));
-    }
-
-    public SendAction(ActionOption option, ProtocolMessage... messages) {
-        this(option, new ArrayList<>(Arrays.asList(messages)));
+        this.configuredHttpMessages = new ArrayList<>(Arrays.asList(httpMessage));
     }
 
     public SendAction(ProtocolMessage... messages) {
@@ -68,187 +115,204 @@ public class SendAction extends MessageAction implements SendingAction {
         super(connectionAlias);
     }
 
-    public SendAction(String connectionAlias, List<ProtocolMessage> messages) {
-        super(connectionAlias, messages);
+    public SendAction(String connectionAlias, List<ProtocolMessage> configuredMessages) {
+        super(connectionAlias);
+        this.configuredMessages = configuredMessages;
     }
 
-    public SendAction(String connectionAlias, ProtocolMessage... messages) {
-        super(connectionAlias, new ArrayList<>(Arrays.asList(messages)));
+    public SendAction(String connectionAlias, ProtocolMessage... configuredMessages) {
+        this(connectionAlias);
+        this.configuredMessages = new ArrayList<>(Arrays.asList(configuredMessages));
     }
 
-    @Override
-    public void execute(State state) throws ActionExecutionException {
-        TlsContext tlsContext = state.getContext(connectionAlias).getTlsContext();
+    public List<ProtocolMessage> getConfiguredMessages() {
+        return configuredMessages;
+    }
 
-        if (isExecuted()) {
-            throw new ActionExecutionException("Action already executed!");
-        }
+    public void setConfiguredMessages(List<ProtocolMessage> configuredMessages) {
+        this.configuredMessages = configuredMessages;
+    }
 
-        String sending = getReadableString(messages);
-        if (hasDefaultAlias()) {
-            LOGGER.info("Sending messages: " + sending);
-        } else {
-            LOGGER.info("Sending messages (" + connectionAlias + "): " + sending);
-        }
+    public void setConfiguredMessages(ProtocolMessage... configuredMessages) {
+        this.configuredMessages = new ArrayList<>(Arrays.asList(configuredMessages));
+    }
 
-        try {
-            send(tlsContext, messages, fragments, records, httpMessages);
-            setExecuted(true);
-        } catch (IOException e) {
-            if (!getActionOptions().contains(ActionOption.MAY_FAIL)) {
-                tlsContext.setReceivedTransportHandlerException(true);
-                LOGGER.debug(e);
-            }
-            setExecuted(getActionOptions().contains(ActionOption.MAY_FAIL));
-        }
+    public List<DtlsHandshakeMessageFragment> getConfiguredDtlsHandshakeMessageFragments() {
+        return configuredDtlsHandshakeMessageFragments;
+    }
+
+    public void setConfiguredDtlsHandshakeMessageFragments(
+            List<DtlsHandshakeMessageFragment> configuredDtlsHandshakeMessageFragment) {
+        this.configuredDtlsHandshakeMessageFragments = configuredDtlsHandshakeMessageFragment;
+    }
+
+    public List<Record> getConfiguredRecords() {
+        return configuredRecords;
+    }
+
+    public void setConfiguredRecords(List<Record> configuredRecords) {
+        this.configuredRecords = configuredRecords;
+    }
+
+    public List<HttpMessage> getConfiguredHttpMessages() {
+        return configuredHttpMessages;
+    }
+
+    public void setConfiguredHttpMessages(List<HttpMessage> configuredHttpMessages) {
+        this.configuredHttpMessages = configuredHttpMessages;
+    }
+
+    public List<QuicFrame> getConfiguredQuicFrames() {
+        return configuredQuicFrames;
+    }
+
+    public void setConfiguredQuicFrames(List<QuicFrame> configuredQuicFrames) {
+        this.configuredQuicFrames = configuredQuicFrames;
+    }
+
+    public List<QuicPacket> getConfiguredQuicPackets() {
+        return configuredQuicPackets;
+    }
+
+    public void setConfiguredQuicPackets(List<QuicPacket> configuredQuicPackets) {
+        this.configuredQuicPackets = configuredQuicPackets;
     }
 
     @Override
     public String toString() {
-        StringBuilder sb;
-        if (isExecuted()) {
-            sb = new StringBuilder("Send Action:\n");
-        } else {
-            sb = new StringBuilder("Send Action: (not executed)\n");
-        }
-        sb.append("\tMessages:");
-        if (messages != null) {
-            for (ProtocolMessage message : messages) {
-                sb.append(message.toCompactString());
-                sb.append(", ");
-            }
-            sb.append("\n");
-        } else {
-            sb.append("null (no messages set)");
-        }
-        return sb.toString();
+        return "SendAction: "
+                + (isExecuted() ? "\n" : "(not executed)\n")
+                + "\tMessages: "
+                + LogPrinter.toHumanReadableMultiLineContainerListArray(
+                        getConfiguredDataContainerLists());
     }
 
     @Override
     public String toCompactString() {
-        StringBuilder sb = new StringBuilder(super.toCompactString());
-        if ((messages != null) && (!messages.isEmpty())) {
-            sb.append(" (");
-            for (ProtocolMessage message : messages) {
-                sb.append(message.toCompactString());
-                sb.append(",");
-            }
-            sb.deleteCharAt(sb.lastIndexOf(",")).append(")");
-        } else {
-            sb.append(" (no messages set)");
-        }
-        return sb.toString();
-    }
-
-    @Override
-    public boolean executedAsPlanned() {
-        return isExecuted();
-    }
-
-    @Override
-    public void setRecords(List<Record> records) {
-        this.records = records;
-    }
-
-    @Override
-    public void setFragments(List<DtlsHandshakeMessageFragment> fragments) {
-        this.fragments = fragments;
+        return super.toCompactString()
+                + LogPrinter.toHumanReadableMultiLineContainerListArray(
+                        getConfiguredDataContainerLists());
     }
 
     @Override
     public void reset() {
+        super.reset();
         List<ModifiableVariableHolder> holders = new LinkedList<>();
-        if (messages != null) {
-            for (ProtocolMessage message : messages) {
+        if (configuredMessages != null) {
+            for (ProtocolMessage message : configuredMessages) {
                 holders.addAll(message.getAllModifiableVariableHolders());
             }
         }
-        if (getRecords() != null) {
-            for (Record record : getRecords()) {
+        if (configuredRecords != null) {
+            for (Record record : configuredRecords) {
                 holders.addAll(record.getAllModifiableVariableHolders());
             }
         }
-        if (getFragments() != null) {
-            for (DtlsHandshakeMessageFragment fragment : getFragments()) {
+        if (configuredDtlsHandshakeMessageFragments != null) {
+            for (DtlsHandshakeMessageFragment fragment : configuredDtlsHandshakeMessageFragments) {
                 holders.addAll(fragment.getAllModifiableVariableHolders());
             }
         }
-        if (getHttpMessages() != null) {
-            for (HttpMessage msg : getHttpMessages()) {
+        if (configuredHttpMessages != null) {
+            for (HttpMessage msg : configuredHttpMessages) {
                 holders.addAll(msg.getAllModifiableVariableHolders());
             }
         }
+        if (configuredQuicFrames != null) {
+            for (QuicFrame frames : configuredQuicFrames) {
+                holders.addAll(frames.getAllModifiableVariableHolders());
+            }
+        }
+        if (configuredQuicPackets != null) {
+            for (QuicPacket packets : configuredQuicPackets) {
+                holders.addAll(packets.getAllModifiableVariableHolders());
+            }
+        }
+
         for (ModifiableVariableHolder holder : holders) {
             holder.reset();
         }
-        setExecuted(null);
     }
 
-    @Override
-    public List<ProtocolMessage> getSendMessages() {
-        return messages;
-    }
-
-    @Override
-    public List<Record> getSendRecords() {
-        return records;
-    }
-
-    @Override
-    public List<DtlsHandshakeMessageFragment> getSendFragments() {
-        return fragments;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final SendAction other = (SendAction) obj;
-        if (!Objects.equals(this.messages, other.messages)) {
-            return false;
-        }
-        if (!Objects.equals(this.records, other.records)) {
-            return false;
-        }
-        if (!Objects.equals(this.fragments, other.fragments)) {
-            return false;
-        }
-        return super.equals(obj);
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = super.hashCode();
-        hash = 67 * hash + Objects.hashCode(this.messages);
-        hash = 67 * hash + Objects.hashCode(this.records);
-        hash = 67 * hash + Objects.hashCode(this.fragments);
-        return hash;
-    }
-
-    @Override
     public List<ProtocolMessageType> getGoingToSendProtocolMessageTypes() {
         List<ProtocolMessageType> protocolMessageTypes = new ArrayList<>();
-        for (ProtocolMessage msg : messages) {
+        for (ProtocolMessage msg : configuredMessages) {
             protocolMessageTypes.add(msg.getProtocolMessageType());
         }
         return protocolMessageTypes;
     }
 
-    @Override
     public List<HandshakeMessageType> getGoingToSendHandshakeMessageTypes() {
         List<HandshakeMessageType> handshakeMessageTypes = new ArrayList<>();
-        for (ProtocolMessage msg : messages) {
+        for (ProtocolMessage msg : configuredMessages) {
             if (msg instanceof HandshakeMessage) {
                 handshakeMessageTypes.add(((HandshakeMessage) msg).getHandshakeMessageType());
             }
         }
         return handshakeMessageTypes;
+    }
+
+    @Override
+    protected List<LayerConfiguration<?>> createLayerConfiguration(State state) {
+        TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
+        List<LayerConfiguration<?>> configurationList = new LinkedList<>();
+        if (getConfiguredRecords() != null) {
+            configurationList.add(
+                    new SpecificSendLayerConfiguration<>(
+                            ImplementedLayers.RECORD, getConfiguredMessages()));
+        }
+        if (getConfiguredMessages() != null) {
+            configurationList.add(
+                    new SpecificSendLayerConfiguration<>(
+                            ImplementedLayers.MESSAGE, getConfiguredMessages()));
+        }
+        if (getConfiguredDtlsHandshakeMessageFragments() != null) {
+            configurationList.add(
+                    new SpecificSendLayerConfiguration<>(
+                            ImplementedLayers.DTLS_FRAGMENT,
+                            getConfiguredDtlsHandshakeMessageFragments()));
+        }
+        if (getConfiguredHttpMessages() != null) {
+            configurationList.add(
+                    new SpecificSendLayerConfiguration<>(
+                            ImplementedLayers.HTTP, getConfiguredHttpMessages()));
+        }
+        if (getConfiguredQuicFrames() != null) {
+            configurationList.add(
+                    new SpecificSendLayerConfiguration<>(
+                            ImplementedLayers.QUICFRAME, getConfiguredQuicFrames()));
+        }
+        if (getConfiguredQuicPackets() != null) {
+            configurationList.add(
+                    new SpecificSendLayerConfiguration<>(
+                            ImplementedLayers.QUICPACKET, getConfiguredQuicPackets()));
+        }
+        return ActionHelperUtil.sortAndAddOptions(
+                tlsContext.getLayerStack(), true, getActionOptions(), configurationList);
+    }
+
+    @Override
+    public List<List<DataContainer<?>>> getConfiguredDataContainerLists() {
+        List<List<DataContainer<?>>> dataContainerLists = new LinkedList<>();
+        if (configuredHttpMessages != null) {
+            dataContainerLists.add((List<DataContainer<?>>) (List<?>) configuredHttpMessages);
+        }
+        if (configuredMessages != null) {
+            dataContainerLists.add((List<DataContainer<?>>) (List<?>) configuredMessages);
+        }
+        if (configuredDtlsHandshakeMessageFragments != null) {
+            dataContainerLists.add(
+                    (List<DataContainer<?>>) (List<?>) configuredDtlsHandshakeMessageFragments);
+        }
+        if (configuredRecords != null) {
+            dataContainerLists.add((List<DataContainer<?>>) (List<?>) configuredRecords);
+        }
+        if (configuredQuicFrames != null) {
+            dataContainerLists.add((List<DataContainer<?>>) (List<?>) configuredQuicFrames);
+        }
+        if (configuredQuicPackets != null) {
+            dataContainerLists.add((List<DataContainer<?>>) (List<?>) configuredQuicPackets);
+        }
+        return dataContainerLists;
     }
 }

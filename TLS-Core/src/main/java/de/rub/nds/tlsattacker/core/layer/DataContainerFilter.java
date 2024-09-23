@@ -8,9 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.layer;
 
+import de.rub.nds.tlsattacker.core.layer.context.LayerContext;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 
-public abstract class DataContainerFilter {
+public abstract class DataContainerFilter<Context extends LayerContext> {
 
-    public abstract boolean filterApplies(DataContainer container);
+    public abstract boolean filterApplies(DataContainer<Context> container);
 }

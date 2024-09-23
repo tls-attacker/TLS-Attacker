@@ -9,15 +9,13 @@
 package de.rub.nds.tlsattacker.transport.stream;
 
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import de.rub.nds.tlsattacker.transport.TransportHandler;
+import de.rub.nds.tlsattacker.transport.StreambasedTransportHandler;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PushbackInputStream;
 
-public class StreamTransportHandler extends TransportHandler {
-
-    private final InputStream inputStream;
+public class StreamTransportHandler extends StreambasedTransportHandler {
 
     private final OutputStream outputStream;
 
@@ -26,15 +24,13 @@ public class StreamTransportHandler extends TransportHandler {
     private boolean closed = false;
 
     public StreamTransportHandler(
-            long firstTimeout,
             long timeout,
             ConnectionEndType type,
             InputStream inputStream,
             OutputStream outputStream) {
-        super(firstTimeout, timeout, type);
-        this.inputStream = inputStream;
+        super(timeout, type);
         this.outputStream = outputStream;
-        timeoutableInputStream = new TimeoutableInputStream(inputStream, timeout);
+        this.timeoutableInputStream = new TimeoutableInputStream(inputStream, timeout);
     }
 
     @Override
@@ -55,17 +51,6 @@ public class StreamTransportHandler extends TransportHandler {
             throw new IOException("Could not close StreamTransportHandler. Not Initialised");
         }
         closed = true;
-    }
-
-    @Override
-    public void preInitialize() throws IOException {
-        // nothing to do here
-    }
-
-    @Override
-    public void initialize() throws IOException {
-        cachedSocketState = null;
-        setStreams(new PushbackInputStream(timeoutableInputStream), outputStream);
     }
 
     public InputStream getInputStream() {
@@ -90,5 +75,16 @@ public class StreamTransportHandler extends TransportHandler {
     public void setTimeout(long timeout) {
         this.timeout = timeout;
         timeoutableInputStream.setTimeout(timeout);
+    }
+
+    @Override
+    public void preInitialize() throws IOException {
+        // Nothing to do here
+    }
+
+    @Override
+    public void initialize() throws IOException {
+        cachedSocketState = null;
+        setStreams(new PushbackInputStream(timeoutableInputStream), outputStream);
     }
 }

@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
@@ -16,15 +17,14 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
-import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.quic.QuicTransportParametersExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import jakarta.xml.bind.annotation.XmlSeeAlso;
 import java.io.InputStream;
-import java.io.Serializable;
 
 @XmlSeeAlso({
     EncryptedServerNameIndicationExtensionMessage.class,
@@ -74,10 +74,11 @@ import java.io.Serializable;
     SRPExtensionMessage.class,
     CachedInfoExtensionMessage.class,
     ConnectionIdExtensionMessage.class,
+    QuicTransportParametersExtensionMessage.class,
     EncryptedClientHelloExtensionMessage.class
 })
-public abstract class ExtensionMessage<Self extends ExtensionMessage<?>>
-        extends ModifiableVariableHolder implements Serializable, DataContainer<Self, TlsContext> {
+public abstract class ExtensionMessage extends ModifiableVariableHolder
+        implements DataContainer<TlsContext> {
 
     protected ExtensionType extensionTypeConstant;
 
@@ -155,18 +156,6 @@ public abstract class ExtensionMessage<Self extends ExtensionMessage<?>>
         return sb.toString();
     }
 
-    @Override
-    public abstract ExtensionHandler<Self> getHandler(TlsContext tlsContext);
-
-    @Override
-    public abstract ExtensionSerializer<Self> getSerializer(TlsContext tlsContext);
-
-    @Override
-    public abstract ExtensionPreparator<Self> getPreparator(TlsContext tlsContext);
-
-    @Override
-    public abstract ExtensionParser<Self> getParser(TlsContext tlsContext, InputStream stream);
-
     public ModifiableByteArray getExtensionContent() {
         return extensionContent;
     }
@@ -179,4 +168,19 @@ public abstract class ExtensionMessage<Self extends ExtensionMessage<?>>
         this.extensionContent =
                 ModifiableVariableFactory.safelySetValue(this.extensionContent, content);
     }
+
+    @Override
+    public abstract ExtensionHandler<? extends ExtensionMessage> getHandler(TlsContext context);
+
+    @Override
+    public abstract ExtensionParser<? extends ExtensionMessage> getParser(
+            TlsContext context, InputStream stream);
+
+    @Override
+    public abstract ExtensionPreparator<? extends ExtensionMessage> getPreparator(
+            TlsContext context);
+
+    @Override
+    public abstract ExtensionSerializer<? extends ExtensionMessage> getSerializer(
+            TlsContext context);
 }

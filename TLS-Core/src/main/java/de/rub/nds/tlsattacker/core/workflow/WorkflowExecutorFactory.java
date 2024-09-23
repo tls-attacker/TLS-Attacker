@@ -21,6 +21,8 @@ public class WorkflowExecutorFactory {
                 return new ThreadedServerWorkflowExecutor(state);
             case DTLS:
                 return new DTLSWorkflowExecutor(state);
+            case QUIC:
+                return new QuicWorkflowExecutor(state);
             default:
                 throw new UnsupportedOperationException(type.name() + " not yet implemented");
         }

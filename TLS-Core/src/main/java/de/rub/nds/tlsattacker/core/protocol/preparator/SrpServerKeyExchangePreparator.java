@@ -9,15 +9,13 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.protocol.constants.HashAlgorithm;
+import de.rub.nds.protocol.crypto.hash.HashCalculator;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
-import de.rub.nds.tlsattacker.core.crypto.SignatureCalculator;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.protocol.message.SrpServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -38,19 +36,19 @@ public class SrpServerKeyExchangePreparator
 
     @Override
     public void prepareHandshakeMessageContents() {
-        msg.prepareComputations();
+        msg.prepareKeyExchangeComputations();
         setComputedModulus(msg);
         setComputedGenerator(msg);
         setComputedSalt(msg);
         setComputedPrivateKey(msg);
         setSRPIdentity(msg);
         setSRPPassword(msg);
-        BigInteger modulus = msg.getComputations().getModulus().getValue();
-        BigInteger generator = msg.getComputations().getGenerator().getValue();
-        BigInteger privateKey = msg.getComputations().getPrivateKey().getValue();
-        byte[] identity = msg.getComputations().getSRPIdentity().getValue();
-        byte[] password = msg.getComputations().getSRPPassword().getValue();
-        byte[] salt = msg.getComputations().getSalt().getValue();
+        BigInteger modulus = msg.getKeyExchangeComputations().getModulus().getValue();
+        BigInteger generator = msg.getKeyExchangeComputations().getGenerator().getValue();
+        BigInteger privateKey = msg.getKeyExchangeComputations().getPrivateKey().getValue();
+        byte[] identity = msg.getKeyExchangeComputations().getSRPIdentity().getValue();
+        byte[] password = msg.getKeyExchangeComputations().getSRPPassword().getValue();
+        byte[] salt = msg.getKeyExchangeComputations().getSalt().getValue();
 
         // Compute PublicKey
         publicKey = generatePublicKey(modulus, generator, privateKey, identity, password, salt);
@@ -63,15 +61,11 @@ public class SrpServerKeyExchangePreparator
         prepareSaltLength(msg);
         preparePublicKey(msg);
         preparePublicKeyLength(msg);
-        selectedSignatureHashAlgo = chooser.getSelectedSigHashAlgorithm();
+        selectedSignatureHashAlgo = chooseSignatureAndHashAlgorithm();
         prepareSignatureAndHashAlgorithm(msg);
         prepareClientServerRandom(msg);
-        signature = new byte[0];
-        try {
-            signature = generateSignature(selectedSignatureHashAlgo);
-        } catch (CryptoException e) {
-            LOGGER.warn("Could not generate Signature! Using empty one instead!", e);
-        }
+        signature = generateSignature(selectedSignatureHashAlgo, generateToBeSigned());
+
         prepareSignature(msg);
         prepareSignatureLength(msg);
     }
@@ -83,7 +77,6 @@ public class SrpServerKeyExchangePreparator
             byte[] identity,
             byte[] password,
             byte[] salt) {
-        BigInteger publicKey;
         BigInteger k = calculateSRP6Multiplier(modulus, generator);
         BigInteger x = calculateX(salt, identity, password);
         BigInteger v;
@@ -111,35 +104,23 @@ public class SrpServerKeyExchangePreparator
                 ArrayConverter.concatenate(
                         identity, ArrayConverter.hexStringToByteArray("3A"), password);
         LOGGER.debug("HashInput for hashInput1: {}", hashInput1);
-        byte[] hashOutput1 = shaSum(hashInput1);
+        byte[] hashOutput1 = HashCalculator.compute(hashInput1, HashAlgorithm.SHA1);
         LOGGER.debug("HashValue for hashInput1: {}", hashOutput1);
         byte[] hashInput2 = ArrayConverter.concatenate(salt, hashOutput1);
         LOGGER.debug("HashInput for hashInput2: {}", hashInput2);
-        byte[] hashOutput2 = shaSum(hashInput2);
+        byte[] hashOutput2 = HashCalculator.compute(hashInput2, HashAlgorithm.SHA1);
         LOGGER.debug("HashValue for hashInput2: {}", hashOutput2);
         return new BigInteger(1, hashOutput2);
     }
 
     private BigInteger calculateSRP6Multiplier(BigInteger modulus, BigInteger generator) {
-        BigInteger srp6Multiplier;
         byte[] paddedGenerator = calculatePadding(modulus, generator);
         byte[] hashInput =
                 ArrayConverter.concatenate(
                         ArrayConverter.bigIntegerToByteArray(modulus), paddedGenerator);
         LOGGER.debug("HashInput SRP6Multi: {}", hashInput);
-        byte[] hashOutput = shaSum(hashInput);
+        byte[] hashOutput = HashCalculator.compute(hashInput, HashAlgorithm.SHA1);
         return new BigInteger(1, hashOutput);
-    }
-
-    public byte[] shaSum(byte[] toHash) {
-        MessageDigest dig = null;
-        try {
-            dig = MessageDigest.getInstance("SHA-1");
-        } catch (NoSuchAlgorithmException ex) {
-            LOGGER.warn(ex);
-        }
-        dig.update(toHash);
-        return dig.digest();
     }
 
     private byte[] calculatePadding(BigInteger modulus, BigInteger toPad) {
@@ -178,20 +159,16 @@ public class SrpServerKeyExchangePreparator
                                 HandshakeByteLength.SRP_PUBLICKEY_LENGTH),
                         msg.getPublicKey().getValue());
         return ArrayConverter.concatenate(
-                msg.getComputations().getClientServerRandom().getValue(), srpParams);
-    }
-
-    private byte[] generateSignature(SignatureAndHashAlgorithm algorithm) throws CryptoException {
-        return SignatureCalculator.generateSignature(algorithm, chooser, generateToBeSigned());
+                msg.getKeyExchangeComputations().getClientServerRandom().getValue(), srpParams);
     }
 
     private void prepareGenerator(SrpServerKeyExchangeMessage msg) {
-        msg.setGenerator(msg.getComputations().getGenerator().getByteArray());
+        msg.setGenerator(msg.getKeyExchangeComputations().getGenerator().getByteArray());
         LOGGER.debug("Generator: {}", msg.getGenerator().getValue());
     }
 
     private void prepareModulus(SrpServerKeyExchangeMessage msg) {
-        msg.setModulus(msg.getComputations().getModulus().getByteArray());
+        msg.setModulus(msg.getKeyExchangeComputations().getModulus().getByteArray());
         LOGGER.debug("Modulus: {}", msg.getModulus().getValue());
     }
 
@@ -201,18 +178,18 @@ public class SrpServerKeyExchangePreparator
     }
 
     private void prepareSalt(SrpServerKeyExchangeMessage msg) {
-        msg.setSalt(msg.getComputations().getSalt());
+        msg.setSalt(msg.getKeyExchangeComputations().getSalt());
         LOGGER.debug("Salt: {}", msg.getSalt().getValue());
     }
 
     private void prepareSaltLength(SrpServerKeyExchangeMessage msg) {
         msg.setSaltLength(msg.getSalt().getValue().length);
-        LOGGER.debug("Salt Length: " + msg.getSaltLength().getValue());
+        LOGGER.debug("Salt Length: {}", msg.getSaltLength().getValue());
     }
 
     private void prepareModulusLength(SrpServerKeyExchangeMessage msg) {
         msg.setModulusLength(msg.getModulus().getValue().length);
-        LOGGER.debug("Modulus Length: " + msg.getModulusLength().getValue());
+        LOGGER.debug("Modulus Length: {}", msg.getModulusLength().getValue());
     }
 
     private void preparePublicKey(SrpServerKeyExchangeMessage msg) {
@@ -226,39 +203,41 @@ public class SrpServerKeyExchangePreparator
     }
 
     private void setComputedPrivateKey(SrpServerKeyExchangeMessage msg) {
-        msg.getComputations().setPrivateKey(chooser.getSRPServerPrivateKey());
-        LOGGER.debug("PrivateKey: " + msg.getComputations().getPrivateKey().getValue());
+        msg.getKeyExchangeComputations().setPrivateKey(chooser.getSRPServerPrivateKey());
+        LOGGER.debug("PrivateKey: {}", msg.getKeyExchangeComputations().getPrivateKey().getValue());
     }
 
     private void setComputedModulus(SrpServerKeyExchangeMessage msg) {
-        msg.getComputations().setModulus(chooser.getSRPModulus());
+        msg.getKeyExchangeComputations().setModulus(chooser.getSRPModulus());
         LOGGER.debug(
-                "Modulus used for Computations: 0x"
-                        + msg.getComputations().getModulus().getValue().toString(16));
+                "Modulus used for Computations: {}",
+                msg.getKeyExchangeComputations().getModulus().getValue().toString(16));
     }
 
     private void setSRPIdentity(SrpServerKeyExchangeMessage msg) {
-        msg.getComputations().setSRPIdentity(chooser.getSRPIdentity());
+        msg.getKeyExchangeComputations().setSRPIdentity(chooser.getSRPIdentity());
         LOGGER.debug(
-                "SRP Identity used for Computations: " + msg.getComputations().getSRPIdentity());
+                "SRP Identity used for Computations: {}",
+                msg.getKeyExchangeComputations().getSRPIdentity());
     }
 
     private void setSRPPassword(SrpServerKeyExchangeMessage msg) {
-        msg.getComputations().setSRPPassword(chooser.getSRPPassword());
+        msg.getKeyExchangeComputations().setSRPPassword(chooser.getSRPPassword());
         LOGGER.debug(
-                "SRP Password used for Computations: " + msg.getComputations().getSRPPassword());
+                "SRP Password used for Computations: {}",
+                msg.getKeyExchangeComputations().getSRPPassword());
     }
 
     private void setComputedSalt(SrpServerKeyExchangeMessage msg) {
-        msg.getComputations().setSalt(chooser.getSRPServerSalt());
-        LOGGER.debug("Salt used for Computations: " + msg.getComputations().getSalt());
+        msg.getKeyExchangeComputations().setSalt(chooser.getSRPServerSalt());
+        LOGGER.debug("Salt used for Computations: {}", msg.getKeyExchangeComputations().getSalt());
     }
 
     private void setComputedGenerator(SrpServerKeyExchangeMessage msg) {
-        msg.getComputations().setGenerator(chooser.getSRPGenerator());
+        msg.getKeyExchangeComputations().setGenerator(chooser.getSRPGenerator());
         LOGGER.debug(
-                "Generator used for Computations: 0x"
-                        + msg.getComputations().getGenerator().getValue().toString(16));
+                "Generator used for Computations: {}",
+                msg.getKeyExchangeComputations().getGenerator().getValue().toString(16));
     }
 
     private void prepareSignatureAndHashAlgorithm(SrpServerKeyExchangeMessage msg) {
@@ -267,21 +246,23 @@ public class SrpServerKeyExchangePreparator
     }
 
     private void prepareClientServerRandom(SrpServerKeyExchangeMessage msg) {
-        msg.getComputations()
+        msg.getKeyExchangeComputations()
                 .setClientServerRandom(
                         ArrayConverter.concatenate(
                                 chooser.getClientRandom(), chooser.getServerRandom()));
         LOGGER.debug(
-                "ClientServerRandom: {}", msg.getComputations().getClientServerRandom().getValue());
+                "ClientServerRandom: {}",
+                ArrayConverter.bytesToHexString(
+                        msg.getKeyExchangeComputations().getClientServerRandom().getValue()));
     }
 
     private void prepareSignature(SrpServerKeyExchangeMessage msg) {
         msg.setSignature(signature);
-        LOGGER.debug("signature: {}", msg.getSignature().getValue());
+        LOGGER.debug("Signature: {}", msg.getSignature().getValue());
     }
 
     private void prepareSignatureLength(SrpServerKeyExchangeMessage msg) {
         msg.setSignatureLength(msg.getSignature().getValue().length);
-        LOGGER.debug("SignatureLength: " + msg.getSignatureLength().getValue());
+        LOGGER.debug("SignatureLength: {}", msg.getSignatureLength().getValue());
     }
 }

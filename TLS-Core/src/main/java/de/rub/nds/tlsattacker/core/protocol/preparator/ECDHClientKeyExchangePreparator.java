@@ -9,16 +9,22 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.protocol.crypto.CyclicGroup;
+import de.rub.nds.protocol.crypto.ec.EllipticCurve;
+import de.rub.nds.protocol.crypto.ec.EllipticCurveSECP256R1;
+import de.rub.nds.protocol.crypto.ec.Point;
+import de.rub.nds.protocol.crypto.ec.PointFormatter;
+import de.rub.nds.protocol.crypto.ec.RFC7748Curve;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.crypto.ec.*;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMessage<?>>
+public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMessage>
         extends ClientKeyExchangePreparator<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -38,7 +44,7 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
         msg.prepareComputations();
         setSerializedPublicKey();
         prepareSerializedPublicKeyLength(msg);
-        prepareAfterParse(true);
+        prepareAfterParse();
     }
 
     protected byte[] computePremasterSecret(
@@ -68,7 +74,7 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
 
     protected void prepareSerializedPublicKeyLength(T msg) {
         msg.setPublicKeyLength(msg.getPublicKey().getValue().length);
-        LOGGER.debug("SerializedPublicKeyLength: " + msg.getPublicKeyLength().getValue());
+        LOGGER.debug("SerializedPublicKeyLength: {}", msg.getPublicKeyLength().getValue());
     }
 
     protected void preparePremasterSecret(T msg) {
@@ -84,23 +90,31 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
     }
 
     @Override
-    public void prepareAfterParse(boolean clientMode) {
+    public void prepareAfterParse() {
         msg.prepareComputations();
         prepareClientServerRandom(msg);
         NamedGroup usedGroup = getSuitableNamedGroup();
-        LOGGER.debug("PMS used Group: " + usedGroup.name());
+        LOGGER.debug("PMS used Group: {}", usedGroup.name());
         if (msg.getComputations().getPrivateKey() == null) {
-            setComputationPrivateKey(msg, clientMode);
+            setComputationPrivateKey(msg);
         }
-        EllipticCurve curve = CurveFactory.getCurve(usedGroup);
         Point publicKey;
-
-        if (clientMode) {
-            publicKey = chooser.getServerEcPublicKey();
-        } else {
+        CyclicGroup<?> group = usedGroup.getGroupParameters().getGroup();
+        if (chooser.getConnectionEndType() == ConnectionEndType.SERVER) {
             publicKey =
-                    PointFormatter.formatFromByteArray(usedGroup, msg.getPublicKey().getValue());
+                    PointFormatter.formatFromByteArray(
+                            usedGroup.getGroupParameters(), msg.getPublicKey().getValue());
+        } else {
+            publicKey = chooser.getEcKeyExchangePeerPublicKey();
         }
+        EllipticCurve curve;
+        if (group instanceof EllipticCurve) {
+            curve = (EllipticCurve) group;
+        } else {
+            LOGGER.warn("Selected group is not an EllipticCurve. Using SECP256R1");
+            curve = new EllipticCurveSECP256R1();
+        }
+
         premasterSecret =
                 computePremasterSecret(
                         curve, publicKey, msg.getComputations().getPrivateKey().getValue());
@@ -109,14 +123,24 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
 
     private void setSerializedPublicKey() {
         NamedGroup usedGroup = getSuitableNamedGroup();
-        LOGGER.debug("PublicKey used Group: " + usedGroup.name());
+
+        CyclicGroup<?> group = usedGroup.getGroupParameters().getGroup();
+        EllipticCurve curve;
+        if (group instanceof EllipticCurve) {
+            curve = (EllipticCurve) group;
+        } else {
+            LOGGER.warn("Selected group is not an EllipticCurve. Using SECP256R1");
+            curve = new EllipticCurveSECP256R1();
+        }
+
+        LOGGER.debug("PublicKey used Group: {}", usedGroup.name());
         ECPointFormat pointFormat = chooser.getConfig().getDefaultSelectedPointFormat();
-        LOGGER.debug("EC Point format: " + pointFormat.name());
-        setComputationPrivateKey(msg, true);
+        LOGGER.debug("EC Point format: {}", pointFormat.name());
+        setComputationPrivateKey(msg);
         byte[] publicKeyBytes;
         BigInteger privateKey = msg.getComputations().getPrivateKey().getValue();
-        EllipticCurve curve = CurveFactory.getCurve(usedGroup);
-        if (usedGroup == NamedGroup.ECDH_X25519 || usedGroup == NamedGroup.ECDH_X448) {
+
+        if (curve instanceof RFC7748Curve) {
             RFC7748Curve rfcCurve = (RFC7748Curve) curve;
             publicKeyBytes = rfcCurve.computePublicKey(privateKey);
         } else {
@@ -127,14 +151,16 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
                     curve.getPoint(
                             msg.getComputations().getPublicKeyX().getValue(),
                             msg.getComputations().getPublicKeyY().getValue());
-            publicKeyBytes = PointFormatter.formatToByteArray(usedGroup, publicKey, pointFormat);
+            publicKeyBytes =
+                    PointFormatter.formatToByteArray(
+                            usedGroup.getGroupParameters(), publicKey, pointFormat.getFormat());
         }
         msg.setPublicKey(publicKeyBytes);
     }
 
     private NamedGroup getSuitableNamedGroup() {
         NamedGroup usedGroup = chooser.getSelectedNamedGroup();
-        if (!usedGroup.isCurve() || usedGroup.isGost()) {
+        if (!usedGroup.isEcGroup() || usedGroup.isGost()) {
             usedGroup = NamedGroup.SECP256R1;
             LOGGER.warn(
                     "Selected NamedGroup {} is not suitable for ECDHClientKeyExchange message. Using {} instead.",
@@ -144,16 +170,10 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
         return usedGroup;
     }
 
-    protected void setComputationPrivateKey(T msg, boolean clientMode) {
-        if (clientMode) {
-            LOGGER.debug("Using Client PrivateKey");
-            msg.getComputations().setPrivateKey(chooser.getClientEcPrivateKey());
-        } else {
-            LOGGER.debug("Using Server PrivateKey");
-            msg.getComputations().setPrivateKey(chooser.getServerEcPrivateKey());
-        }
+    protected void setComputationPrivateKey(T msg) {
+        LOGGER.debug("Preparing client key");
+        msg.getComputations().setPrivateKey(chooser.getEcKeyExchangePrivateKey());
         LOGGER.debug(
-                "Computation PrivateKey: "
-                        + msg.getComputations().getPrivateKey().getValue().toString());
+                "Computation PrivateKey: {}", msg.getComputations().getPrivateKey().getValue());
     }
 }

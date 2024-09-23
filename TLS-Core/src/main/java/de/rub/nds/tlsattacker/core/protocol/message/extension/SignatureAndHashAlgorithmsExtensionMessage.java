@@ -23,8 +23,7 @@ import java.io.InputStream;
 
 /** This extension is defined in RFC5246 */
 @XmlRootElement(name = "SignatureAndHashAlgorithmsExtension")
-public class SignatureAndHashAlgorithmsExtensionMessage
-        extends ExtensionMessage<SignatureAndHashAlgorithmsExtensionMessage> {
+public class SignatureAndHashAlgorithmsExtensionMessage extends ExtensionMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger signatureAndHashAlgorithmsLength;

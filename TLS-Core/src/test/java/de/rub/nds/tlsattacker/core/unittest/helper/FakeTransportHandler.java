@@ -26,12 +26,12 @@ public class FakeTransportHandler extends TcpTransportHandler {
     private Boolean opened = false;
 
     public FakeTransportHandler(ConnectionEndType type) {
-        super(0, 0, type);
+        super(0, type);
         inputStream = new ByteArrayInputStream(new byte[0]);
         outputStream = new ByteArrayOutputStream();
     }
 
-    public byte[] getSendByte() {
+    public byte[] getSentBytes() {
         return outputStream.toByteArray();
     }
 
@@ -82,34 +82,6 @@ public class FakeTransportHandler extends TcpTransportHandler {
     public void preInitialize() {}
 
     @Override
-    public Integer getSrcPort() {
-        throw new UnsupportedOperationException(
-                "Not supported yet."); // To change body of generated methods, choose
-        // Tools | Templates.
-    }
-
-    @Override
-    public void setSrcPort(int port) {
-        throw new UnsupportedOperationException(
-                "Not supported yet."); // To change body of generated methods, choose
-        // Tools | Templates.
-    }
-
-    @Override
-    public Integer getDstPort() {
-        throw new UnsupportedOperationException(
-                "Not supported yet."); // To change body of generated methods, choose
-        // Tools | Templates.
-    }
-
-    @Override
-    public void setDstPort(int port) {
-        throw new UnsupportedOperationException(
-                "Not supported yet."); // To change body of generated methods, choose
-        // Tools | Templates.
-    }
-
-    @Override
     public OutputStream getOutputStream() {
         return outputStream;
     }
@@ -117,5 +89,25 @@ public class FakeTransportHandler extends TcpTransportHandler {
     @Override
     public InputStream getInputStream() {
         return inputStream;
+    }
+
+    @Override
+    public Integer getDstPort() {
+        return -1;
+    }
+
+    @Override
+    public Integer getSrcPort() {
+        return -1;
+    }
+
+    @Override
+    public void setDstPort(int port) {
+        // Nothing to do
+    }
+
+    @Override
+    public void setSrcPort(int port) {
+        // Nothing to do
     }
 }

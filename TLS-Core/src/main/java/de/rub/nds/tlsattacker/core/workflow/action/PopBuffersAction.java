@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.state.State;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement
+@XmlRootElement(name = "PopBuffers")
 public class PopBuffersAction extends ConnectionBoundAction {
 
     public PopBuffersAction() {

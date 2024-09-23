@@ -51,10 +51,7 @@ public class EncryptedClientHelloExtensionSerializer
 
     private void writeEchClientHelloType(EncryptedClientHelloExtensionMessage msg) {
         appendBytes(msg.getEchClientHelloType().getByteValue());
-        LOGGER.debug(
-                "Write EchClientHelloType: "
-                        + ArrayConverter.bytesToHexString(
-                                msg.getEchClientHelloType().getByteValue()));
+        LOGGER.debug("Write EchClientHelloType: {}", msg.getEchClientHelloType().getByteValue());
     }
 
     private void writeHpkeCipherSuite(EncryptedClientHelloExtensionMessage msg) {
@@ -64,53 +61,43 @@ public class EncryptedClientHelloExtensionSerializer
         appendBytes(keyDerivationFunction.getByteValue());
         appendBytes(aeadFunction.getByteValue());
         LOGGER.debug(
-                "HPKE Ciphersuite: "
-                        + ArrayConverter.bytesToHexString(
-                                ArrayConverter.concatenate(
-                                        keyDerivationFunction.getByteValue(),
-                                        aeadFunction.getByteValue())));
+                "HPKE Ciphersuite: {}",
+                ArrayConverter.concatenate(
+                        keyDerivationFunction.getByteValue(), aeadFunction.getByteValue()));
     }
 
     private void writeConfigId(EncryptedClientHelloExtensionMessage msg) {
         appendBytes(msg.getConfigId().getByteArray(ExtensionByteLength.ECH_CONFIG_ID));
         LOGGER.debug(
-                "Config Id: "
-                        + ArrayConverter.bytesToHexString(
-                                msg.getConfigId().getByteArray(ExtensionByteLength.ECH_CONFIG_ID)));
+                "Config Id: {}", msg.getConfigId().getByteArray(ExtensionByteLength.ECH_CONFIG_ID));
     }
 
     private void writeEncLen(EncryptedClientHelloExtensionMessage msg) {
         appendBytes(msg.getEncLength().getByteArray(ExtensionByteLength.ECH_ENC_LENGTH));
         LOGGER.debug(
-                "Enc Length: "
-                        + ArrayConverter.bytesToHexString(
-                                msg.getEncLength()
-                                        .getByteArray(ExtensionByteLength.ECH_ENC_LENGTH)));
+                "Enc Length: {}",
+                msg.getEncLength().getByteArray(ExtensionByteLength.ECH_ENC_LENGTH));
     }
 
     private void writeEnc(EncryptedClientHelloExtensionMessage msg) {
         appendBytes(msg.getEnc().getValue());
-        LOGGER.debug("Enc: " + ArrayConverter.bytesToHexString(msg.getEnc().getValue()));
+        LOGGER.debug("Enc: {}", msg.getEnc().getValue());
     }
 
     private void writePayloadLen(EncryptedClientHelloExtensionMessage msg) {
         appendBytes(msg.getPayloadLength().getByteArray(ExtensionByteLength.ECH_PAYLOAD_LENGTH));
         LOGGER.debug(
-                "Payload Length: "
-                        + ArrayConverter.bytesToHexString(
-                                msg.getPayloadLength()
-                                        .getByteArray(ExtensionByteLength.ECH_PAYLOAD_LENGTH)));
+                "Payload Length: {}",
+                msg.getPayloadLength().getByteArray(ExtensionByteLength.ECH_PAYLOAD_LENGTH));
     }
 
     private void writePayload(EncryptedClientHelloExtensionMessage msg) {
         appendBytes(msg.getPayload().getValue());
-        LOGGER.debug("Payload: " + ArrayConverter.bytesToHexString(msg.getPayload().getValue()));
+        LOGGER.debug("Payload: {}", msg.getPayload().getValue());
     }
 
     private void writeAcceptConfirmation(EncryptedClientHelloExtensionMessage msg) {
         appendBytes(msg.getAcceptConfirmation().getValue());
-        LOGGER.debug(
-                "Accept Confirmation: "
-                        + ArrayConverter.bytesToHexString(msg.getAcceptConfirmation().getValue()));
+        LOGGER.debug("Accept Confirmation: {}", msg.getAcceptConfirmation().getValue());
     }
 }

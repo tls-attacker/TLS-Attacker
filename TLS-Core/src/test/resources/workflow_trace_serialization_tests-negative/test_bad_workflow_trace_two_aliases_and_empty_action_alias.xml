@@ -13,13 +13,13 @@
     </OutboundConnection>
     <Send>
         <connectionAlias>UnknownAlias</connectionAlias>
-        <messages>
+        <configuredMessages>
             <ClientHello>
                 <extensions>
                     <ECPointFormat/>
                     <EllipticCurves/>
                 </extensions>
             </ClientHello>
-        </messages>
+        </configuredMessages>
     </Send>
 </workflowTrace>

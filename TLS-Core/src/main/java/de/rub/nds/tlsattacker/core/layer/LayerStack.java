@@ -10,12 +10,14 @@ package de.rub.nds.tlsattacker.core.layer;
 
 import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
+import de.rub.nds.tlsattacker.core.layer.impl.QuicFrameLayer;
 import de.rub.nds.tlsattacker.core.state.Context;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -63,7 +65,7 @@ public class LayerStack {
     }
 
     public ProtocolLayer getHighestLayer() {
-        return getLayerList().get(0);
+        return getTopConfiguredLayer();
     }
 
     public ProtocolLayer getLowestLayer() {
@@ -80,7 +82,7 @@ public class LayerStack {
      *     contain any messages the peer sends back.
      * @throws IOException If any layer fails to send its data.
      */
-    public LayerStackProcessingResult sendData(List<LayerConfiguration> layerConfigurationList)
+    public LayerStackProcessingResult sendData(List<LayerConfiguration<?>> layerConfigurationList)
             throws IOException {
         LOGGER.debug("Sending Data");
         if (getLayerList().size() != layerConfigurationList.size()) {
@@ -104,7 +106,7 @@ public class LayerStack {
         }
 
         // Gather results
-        List<LayerProcessingResult> resultList = new LinkedList<>();
+        List<LayerProcessingResult<?>> resultList = new LinkedList<>();
         getLayerList()
                 .forEach(
                         layer -> {
@@ -123,7 +125,8 @@ public class LayerStack {
      *     contain any messages the peer sends back. If any layer fails to receive the specified
      *     data.
      */
-    public LayerStackProcessingResult receiveData(List<LayerConfiguration> layerConfigurationList) {
+    public LayerStackProcessingResult receiveData(
+            List<LayerConfiguration<?>> layerConfigurationList) {
         LOGGER.debug("Receiving Data");
         if (getLayerList().size() != layerConfigurationList.size()) {
             throw new RuntimeException(
@@ -140,11 +143,43 @@ public class LayerStack {
         }
         context.setTalkingConnectionEndType(
                 context.getConnection().getLocalConnectionEndType().getPeer());
-        getLayerList().get(0).receiveData();
+
+        ProtocolLayer topLayer = getTopConfiguredLayer();
+        topLayer.receiveData();
+
+        // for quic frame specific actions like the ReceiveQuicTillAction receive data until
+        // configuration is satisfied
+        // if maxNumberOfQuicPacketsToReceive is set in layer config the receive function is only
+        // called that many times
+        // for each receiveData call on the frame layer exactly one packet is processed on the
+        // packet layer
+        Optional<ProtocolLayer> quicFrameLayer =
+                getLayerList().stream().filter(x -> x instanceof QuicFrameLayer).findFirst();
+        if (quicFrameLayer.isPresent()
+                && quicFrameLayer.get().getLayerConfiguration()
+                        instanceof ReceiveTillLayerConfiguration) {
+            int remainingTries =
+                    ((ReceiveTillLayerConfiguration<?>)
+                                    quicFrameLayer.get().getLayerConfiguration())
+                            .getMaxNumberOfQuicPacketsToReceive();
+            if (remainingTries > 0) {
+                while (remainingTries > 0 && quicFrameLayer.get().shouldContinueProcessing()) {
+                    quicFrameLayer.get().receiveData();
+                    remainingTries--;
+                }
+            } else {
+                while (quicFrameLayer.get().shouldContinueProcessing()) {
+                    quicFrameLayer.get().receiveData();
+                }
+            }
+        }
+
         // reverse order
         for (int i = getLayerList().size() - 1; i >= 0; i--) {
             ProtocolLayer layer = getLayerList().get(i);
-            if (layer.getLayerConfiguration() != null && !layer.executedAsPlanned()) {
+            if (layer.getLayerConfiguration() != null
+                    && !(layer.getLayerConfiguration() instanceof IgnoreLayerConfiguration)
+                    && !layer.executedAsPlanned()) {
                 try {
                     layer.receiveData();
                 } catch (UnsupportedOperationException e) {
@@ -156,7 +191,25 @@ public class LayerStack {
                 }
             }
         }
+
         return gatherResults();
+    }
+
+    /**
+     * Returns the top layer that is not ignored. If all layers are ignored, we throw a
+     * RuntimeException.
+     *
+     * @return
+     */
+    private ProtocolLayer getTopConfiguredLayer() {
+        for (int i = 0; i < getLayerList().size(); i++) {
+            ProtocolLayer layer = getLayerList().get(i);
+            if (layer.getLayerConfiguration() != null
+                    && !(layer.getLayerConfiguration() instanceof IgnoreLayerConfiguration)) {
+                return layer;
+            }
+        }
+        throw new RuntimeException("No configured layer found. All layers are ignored.");
     }
 
     /**
@@ -167,7 +220,7 @@ public class LayerStack {
      */
     public LayerStackProcessingResult gatherResults() {
         // Gather results
-        List<LayerProcessingResult> resultList = new LinkedList<>();
+        List<LayerProcessingResult<?>> resultList = new LinkedList<>();
         getLayerList().forEach(tempLayer -> resultList.add(tempLayer.getLayerResult()));
         return new LayerStackProcessingResult(resultList);
     }

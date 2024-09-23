@@ -74,7 +74,7 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
                     new KeyShareStoreEntry(
                             ksEntryList.get(0).getGroup(), ksEntryList.get(0).getPublicKey()));
             NamedGroup selectedGroup = tlsContext.getServerKeyShareStoreEntry().getGroup();
-            LOGGER.debug("Setting selected NamedGroup in context to " + selectedGroup);
+            LOGGER.debug("Setting selected NamedGroup in context to {}", selectedGroup);
             tlsContext.setSelectedGroup(selectedGroup);
         }
     }
@@ -83,8 +83,8 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
         if (!message.getKeyShareList().isEmpty()) {
             NamedGroup selectedGroup = message.getKeyShareList().get(0).getGroupConfig();
             LOGGER.debug(
-                    "Setting selected NamedGroup from HelloRetryRequest in context to "
-                            + selectedGroup);
+                    "Setting selected NamedGroup from HelloRetryRequest in context to {}",
+                    selectedGroup);
             tlsContext.setSelectedGroup(selectedGroup);
         }
     }

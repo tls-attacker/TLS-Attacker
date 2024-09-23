@@ -8,8 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
+import de.rub.nds.protocol.exception.PreparationException;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
-import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientEsniInner;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
@@ -70,7 +70,7 @@ public class ClientEsniInnerPreparator extends Preparator<ClientEsniInner> {
 
     private void prepareServerNameListLength(ClientEsniInner msg) {
         msg.setServerNameListLength(msg.getServerNameListBytes().getValue().length);
-        LOGGER.debug("ServerNameListLength: " + msg.getServerNameListLength().getValue());
+        LOGGER.debug("ServerNameListLength: {}", msg.getServerNameListLength().getValue());
     }
 
     private void preparePadding(ClientEsniInner msg) {
@@ -90,7 +90,7 @@ public class ClientEsniInnerPreparator extends Preparator<ClientEsniInner> {
             padding = new byte[0];
         }
         msg.setPadding(padding);
-        LOGGER.debug("paddedLength: " + paddedLength);
+        LOGGER.debug("PaddedLength: {}", paddedLength);
         LOGGER.debug("Padding: {}", msg.getPadding().getValue());
     }
 }

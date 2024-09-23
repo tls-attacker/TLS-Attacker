@@ -8,8 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.layer;
 
-import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
-import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
+import de.rub.nds.protocol.exception.EndOfStreamException;
+import de.rub.nds.protocol.exception.PreparationException;
 import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
 import de.rub.nds.tlsattacker.core.layer.context.LayerContext;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
@@ -19,6 +19,7 @@ import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Predicate;
@@ -248,7 +249,29 @@ public abstract class ProtocolLayer<
         try {
             parser.parse(container);
             Preparator preparator = container.getPreparator(context);
-            preparator.prepareAfterParse(false); // TODO REMOVE THIS CLIENTMODE FLAG
+            preparator.prepareAfterParse();
+            Handler handler = container.getHandler(context);
+            handler.adjustContext(container);
+            addProducedContainer(container);
+        } catch (RuntimeException ex) {
+            setUnreadBytes(parser.getAlreadyParsed());
+        }
+    }
+
+    /**
+     * Parses and handles content from a container.
+     *
+     * @param container The container to handle.
+     * @param context The context of the connection. Keeps parsed and handled values.
+     */
+    protected void readDataContainer(
+            Container container, LayerContext context, InputStream inputStream) {
+        Parser parser = container.getParser(context, inputStream);
+
+        try {
+            parser.parse(container);
+            Preparator preparator = container.getPreparator(context);
+            preparator.prepareAfterParse();
             Handler handler = container.getHandler(context);
             handler.adjustContext(container);
             addProducedContainer(container);
@@ -266,17 +289,19 @@ public abstract class ProtocolLayer<
     }
 
     public boolean prepareDataContainer(DataContainer dataContainer, LayerContext context) {
-        Preparator preparator = dataContainer.getPreparator(context);
-        try {
-            preparator.prepare();
-            preparator.afterPrepare();
-        } catch (PreparationException ex) {
-            LOGGER.error(
-                    "Could not prepare message "
-                            + dataContainer.toString()
-                            + ". Therefore, we skip it: ",
-                    ex);
-            return false;
+        if (dataContainer.shouldPrepare()) {
+            Preparator<?> preparator = dataContainer.getPreparator(context);
+            try {
+                preparator.prepare();
+                preparator.afterPrepare();
+            } catch (PreparationException ex) {
+                LOGGER.error(
+                        "Could not prepare message "
+                                + dataContainer.toString()
+                                + ". Therefore, we skip it: ",
+                        ex);
+                return false;
+            }
         }
         return true;
     }

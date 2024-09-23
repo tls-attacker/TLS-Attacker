@@ -45,7 +45,7 @@ public class PskDhClientKeyExchangeParser
      */
     private void parsePskIdentityLength(PskDhClientKeyExchangeMessage msg) {
         msg.setIdentityLength(parseIntField(HandshakeByteLength.PSK_IDENTITY_LENGTH));
-        LOGGER.debug("PSK-IdentityLength: " + msg.getIdentityLength().getValue());
+        LOGGER.debug("PSK-IdentityLength: {}", msg.getIdentityLength().getValue());
     }
 
     /**

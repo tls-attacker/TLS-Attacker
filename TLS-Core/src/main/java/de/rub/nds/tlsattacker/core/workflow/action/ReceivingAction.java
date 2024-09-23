@@ -8,30 +8,34 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tcp.TcpStreamContainer;
 import de.rub.nds.tlsattacker.core.http.HttpMessage;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
+import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
+import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.record.Record;
-import java.util.ArrayList;
+import de.rub.nds.udp.UdpDataPacket;
 import java.util.List;
+import java.util.Set;
 
 public interface ReceivingAction {
 
-    public abstract List<ProtocolMessage> getReceivedMessages();
+    List<ProtocolMessage> getReceivedMessages();
 
-    public abstract List<Record> getReceivedRecords();
+    List<Record> getReceivedRecords();
 
-    public abstract List<DtlsHandshakeMessageFragment> getReceivedFragments();
+    List<DtlsHandshakeMessageFragment> getReceivedFragments();
 
-    public abstract List<HttpMessage> getReceivedHttpMessages();
+    List<HttpMessage> getReceivedHttpMessages();
 
-    public default List<ProtocolMessageType> getGoingToReceiveProtocolMessageTypes() {
-        return new ArrayList<>();
-    }
+    List<QuicFrame> getReceivedQuicFrames();
 
-    public default List<HandshakeMessageType> getGoingToReceiveHandshakeMessageTypes() {
-        return new ArrayList<>();
-    }
+    List<QuicPacket> getReceivedQuicPackets();
+
+    List<TcpStreamContainer> getReceivedTcpStreamContainers();
+
+    List<UdpDataPacket> getReceivedUdpDataPackets();
+
+    public abstract Set<String> getAllReceivingAliases();
 }

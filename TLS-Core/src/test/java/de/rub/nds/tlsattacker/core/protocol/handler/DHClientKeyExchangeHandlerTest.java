@@ -20,8 +20,7 @@ import org.junit.jupiter.api.Test;
 
 public class DHClientKeyExchangeHandlerTest
         extends AbstractProtocolMessageHandlerTest<
-                DHClientKeyExchangeMessage<?>,
-                ClientKeyExchangeHandler<DHClientKeyExchangeMessage<?>>> {
+                DHClientKeyExchangeMessage, ClientKeyExchangeHandler<DHClientKeyExchangeMessage>> {
 
     public DHClientKeyExchangeHandlerTest() {
         super(DHClientKeyExchangeMessage::new, DHClientKeyExchangeHandler::new);
@@ -53,6 +52,6 @@ public class DHClientKeyExchangeHandlerTest
                 ArrayConverter.hexStringToByteArray(
                         "4a0a7f6a0598acb36684359e1a19d848ab03b3ba1167430471166d94dcf8315d1c4290c9d9e40c50ae834df7b4f4bdef"),
                 context.getMasterSecret());
-        assertEquals(context.getClientDhPublicKey(), BigInteger.ONE);
+        assertEquals(context.getClientEphemeralDhPublicKey(), BigInteger.ONE);
     }
 }

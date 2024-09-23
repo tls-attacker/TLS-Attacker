@@ -11,10 +11,12 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+@XmlRootElement(name = "ChangeServerRsaParameters")
 public class ChangeServerRsaParametersAction extends ConnectionBoundAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -38,9 +40,9 @@ public class ChangeServerRsaParametersAction extends ConnectionBoundAction {
             throw new WorkflowExecutionException("Action already executed!");
         }
 
-        state.getTlsContext().setServerRSAModulus(modulus);
-        state.getTlsContext().setServerRSAPublicKey(publicExponent);
-        state.getTlsContext().setServerRSAPrivateKey(privateExponent);
+        state.getTlsContext().getServerX509Context().setSubjectRsaModulus(modulus);
+        state.getTlsContext().getServerX509Context().setSubjectRsaPublicExponent(publicExponent);
+        state.getTlsContext().getServerX509Context().setSubjectRsaPrivateKey(privateExponent);
 
         setExecuted(true);
         LOGGER.info("Changed server RSA parameters");

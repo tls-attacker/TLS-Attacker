@@ -48,18 +48,18 @@ public class DtlsHandshakeMessageFragmentSerializer
     private void writeMessageSequence() {
         appendInt(
                 message.getMessageSequence().getValue(), HandshakeByteLength.DTLS_MESSAGE_SEQUENCE);
-        LOGGER.debug("SequenceNumber: " + message.getMessageSequence().getValue());
+        LOGGER.debug("SequenceNumber: {}", message.getMessageSequence().getValue());
     }
 
     /** Writes the FragmentOffset of the HandshakeMessage into the final byte[] */
     private void writeFragmentOffset() {
         appendInt(message.getFragmentOffset().getValue(), HandshakeByteLength.DTLS_FRAGMENT_OFFSET);
-        LOGGER.debug("FragmentOffset: " + message.getFragmentOffset().getValue());
+        LOGGER.debug("FragmentOffset: {}", message.getFragmentOffset().getValue());
     }
 
     /** Writes the FragmentLength of the HandshakeMessage into the final byte[] */
     private void writeFragmentLength() {
         appendInt(message.getFragmentLength().getValue(), HandshakeByteLength.DTLS_FRAGMENT_LENGTH);
-        LOGGER.debug("FragmentLength: " + message.getFragmentLength().getValue());
+        LOGGER.debug("FragmentLength: {}", message.getFragmentLength().getValue());
     }
 }

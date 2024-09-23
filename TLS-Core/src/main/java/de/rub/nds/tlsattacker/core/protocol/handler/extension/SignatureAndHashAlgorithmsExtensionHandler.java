@@ -30,22 +30,6 @@ public class SignatureAndHashAlgorithmsExtensionHandler
         List<SignatureAndHashAlgorithm> algoList =
                 SignatureAndHashAlgorithm.getSignatureAndHashAlgorithms(algoBytes);
         tlsContext.setClientSupportedSignatureAndHashAlgorithms(algoList);
-        LOGGER.debug("Client supported signatureAndHashAlgorithms: " + algoList);
-        adjustSelectedSignatureAndHashAlgorithm();
-    }
-
-    private void adjustSelectedSignatureAndHashAlgorithm() {
-        for (SignatureAndHashAlgorithm algo :
-                tlsContext.getChooser().getClientSupportedSignatureAndHashAlgorithms()) {
-            if (tlsContext
-                    .getChooser()
-                    .getServerSupportedSignatureAndHashAlgorithms()
-                    .contains(algo)) {
-                tlsContext.setSelectedSignatureAndHashAlgorithm(algo);
-                LOGGER.debug("Adjusting selected signature and hash algorithm to: " + algo.name());
-                return;
-            }
-        }
-        LOGGER.warn("Client and Server have no signature and hash algorithm in common");
+        LOGGER.debug("Client supported signatureAndHashAlgorithms: {}", algoList);
     }
 }

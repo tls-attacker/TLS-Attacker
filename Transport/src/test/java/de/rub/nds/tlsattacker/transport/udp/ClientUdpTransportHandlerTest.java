@@ -10,12 +10,14 @@ package de.rub.nds.tlsattacker.transport.udp;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.SocketTimeoutException;
 import org.junit.jupiter.api.Test;
 
 public class ClientUdpTransportHandlerTest {
@@ -27,7 +29,7 @@ public class ClientUdpTransportHandlerTest {
         try (DatagramSocket testSocket = new DatagramSocket()) {
             ClientUdpTransportHandler udpTH =
                     new ClientUdpTransportHandler(
-                            1, 1, localhost.getHostName(), testSocket.getLocalPort());
+                            1, localhost.getHostAddress(), testSocket.getLocalPort());
 
             udpTH.initialize();
 
@@ -52,7 +54,7 @@ public class ClientUdpTransportHandlerTest {
         try (DatagramSocket testSocket = new DatagramSocket()) {
             ClientUdpTransportHandler udpTH =
                     new ClientUdpTransportHandler(
-                            1, 1, localhost.getHostName(), testSocket.getLocalPort());
+                            1, localhost.getHostAddress(), testSocket.getLocalPort());
 
             udpTH.initialize();
             testSocket.connect(localhost, udpTH.getSrcPort());
@@ -88,14 +90,11 @@ public class ClientUdpTransportHandlerTest {
     @Test
     public void testFetchTimeout() throws Exception {
         ClientUdpTransportHandler udpTH =
-                new ClientUdpTransportHandler(1, 1, localhost.getHostName(), 12345);
+                new ClientUdpTransportHandler(1, localhost.getHostAddress(), 12345);
         udpTH.initialize();
 
-        byte[] rxData;
-        rxData = udpTH.fetchData();
-        assertEquals(0, rxData.length);
-        rxData = udpTH.fetchData();
-        assertEquals(0, rxData.length);
+        assertThrows(SocketTimeoutException.class, udpTH::fetchData);
+        assertThrows(SocketTimeoutException.class, udpTH::fetchData);
         udpTH.closeConnection();
     }
 }

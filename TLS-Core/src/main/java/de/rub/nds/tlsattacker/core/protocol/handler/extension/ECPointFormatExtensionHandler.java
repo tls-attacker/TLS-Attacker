@@ -34,7 +34,7 @@ public class ECPointFormatExtensionHandler extends ExtensionHandler<ECPointForma
             if (format != null) {
                 formatList.add(format);
             } else {
-                LOGGER.warn("Unknown ECPointFormat:" + b);
+                LOGGER.warn("Unknown ECPointFormat: {}", b);
             }
         }
         if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {

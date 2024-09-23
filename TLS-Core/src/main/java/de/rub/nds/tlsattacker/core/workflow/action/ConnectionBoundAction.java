@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlTransient;
@@ -33,6 +34,15 @@ public abstract class ConnectionBoundAction extends TlsAction {
 
     public ConnectionBoundAction(String alias) {
         this.connectionAlias = alias;
+    }
+
+    public ConnectionBoundAction(Set<ActionOption> actionOptions, String alias) {
+        super(actionOptions);
+        this.connectionAlias = alias;
+    }
+
+    public ConnectionBoundAction(Set<ActionOption> actionOptions) {
+        super(actionOptions);
     }
 
     public String getConnectionAlias() {

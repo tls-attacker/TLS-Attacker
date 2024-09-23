@@ -8,8 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
-import static de.rub.nds.modifiablevariable.util.ArrayConverter.bytesToHexString;
-
 import de.rub.nds.tlsattacker.core.constants.CertificateStatusRequestType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestExtensionMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
@@ -42,13 +40,13 @@ public class CertificateStatusRequestExtensionPreparator
                 chooser.getConfig().getCertificateStatusRequestExtensionResponderIDList());
         msg.setResponderIDListLength(msg.getResponderIDList().getValue().length);
         LOGGER.debug(
-                "Prepared the CertificateStatusRequestExtension with responder ID list "
-                        + bytesToHexString(msg.getResponderIDList()));
+                "Prepared the CertificateStatusRequestExtension with responder ID list {}",
+                msg.getResponderIDList());
         msg.setRequestExtension(
                 chooser.getConfig().getCertificateStatusRequestExtensionRequestExtension());
         msg.setRequestExtensionLength(msg.getRequestExtension().getValue().length);
         LOGGER.debug(
-                "Prepared the CertificateStatusRequestExtension with request extension "
-                        + bytesToHexString(msg.getRequestExtension()));
+                "Prepared the CertificateStatusRequestExtension with request extension {}",
+                msg.getRequestExtension());
     }
 }

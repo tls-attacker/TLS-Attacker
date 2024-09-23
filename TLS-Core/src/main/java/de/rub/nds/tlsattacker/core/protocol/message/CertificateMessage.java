@@ -14,26 +14,24 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.certificate.CertificateKeyPair;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.CertificateMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificateEntry;
-import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificatePair;
 import de.rub.nds.tlsattacker.core.protocol.parser.CertificateMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.CertificateMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateMessageSerializer;
+import de.rub.nds.x509attacker.x509.model.X509Certificate;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
 @XmlRootElement(name = "Certificate")
-public class CertificateMessage extends HandshakeMessage<CertificateMessage> {
+public class CertificateMessage extends HandshakeMessage {
 
     /** request context length */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
@@ -49,19 +47,9 @@ public class CertificateMessage extends HandshakeMessage<CertificateMessage> {
     @ModifiableVariableProperty private ModifiableByteArray certificatesListBytes;
 
     @HoldsModifiableVariable
-    // this allows users to also send empty certificates
-    private List<CertificatePair> certificatesList;
-
-    @HoldsModifiableVariable
     @XmlElementWrapper
-    @XmlElement(name = "certificatesListConfig")
-    private List<CertificatePair> certificateListConfig;
-
-    @HoldsModifiableVariable private List<CertificateEntry> certificatesListAsEntry;
-
-    @XmlTransient
-    // TODO should this be transient?
-    private CertificateKeyPair certificateKeyPair;
+    @XmlElement(name = "certificatesList")
+    private List<CertificateEntry> certificateEntryList;
 
     public CertificateMessage() {
         super(HandshakeMessageType.CERTIFICATE);
@@ -93,36 +81,6 @@ public class CertificateMessage extends HandshakeMessage<CertificateMessage> {
                 ModifiableVariableFactory.safelySetValue(certificatesListBytes, array);
     }
 
-    public List<CertificatePair> getCertificatesList() {
-        return certificatesList;
-    }
-
-    public void setCertificatesList(List<CertificatePair> certificatesList) {
-        this.certificatesList = certificatesList;
-    }
-
-    public void addCertificateList(CertificatePair certificatePair) {
-        if (this.certificatesList == null) {
-            certificatesList = new LinkedList<>();
-        }
-        this.certificatesList.add(certificatePair);
-    }
-
-    public void addCertificateList(CertificateEntry certificateEntry) {
-        if (this.certificatesListAsEntry == null) {
-            certificatesListAsEntry = new LinkedList<>();
-        }
-        this.certificatesListAsEntry.add(certificateEntry);
-    }
-
-    public List<CertificateEntry> getCertificatesListAsEntry() {
-        return certificatesListAsEntry;
-    }
-
-    public void setCertificatesListAsEntry(List<CertificateEntry> certificatesListAsEntry) {
-        this.certificatesListAsEntry = certificatesListAsEntry;
-    }
-
     public ModifiableInteger getRequestContextLength() {
         return requestContextLength;
     }
@@ -150,14 +108,6 @@ public class CertificateMessage extends HandshakeMessage<CertificateMessage> {
 
     public boolean hasRequestContext() {
         return requestContextLength.getValue() > 0;
-    }
-
-    public CertificateKeyPair getCertificateKeyPair() {
-        return certificateKeyPair;
-    }
-
-    public void setCertificateKeyPair(CertificateKeyPair certificateKeyPair) {
-        this.certificateKeyPair = certificateKeyPair;
     }
 
     @Override
@@ -205,25 +155,30 @@ public class CertificateMessage extends HandshakeMessage<CertificateMessage> {
         return new CertificateMessageHandler(tlsContext);
     }
 
-    public List<CertificatePair> getCertificateListConfig() {
-        return certificateListConfig;
+    public List<CertificateEntry> getCertificateEntryList() {
+        return certificateEntryList;
     }
 
-    public void setCertificateListConfig(List<CertificatePair> certificateListConfig) {
-        this.certificateListConfig = certificateListConfig;
+    public void setCertificateEntryList(List<CertificateEntry> certificateEntryList) {
+        this.certificateEntryList = certificateEntryList;
+    }
+
+    public List<X509Certificate> getX509CertificateListFromEntries() {
+        List<X509Certificate> x509CertificateList = new LinkedList<>();
+        for (CertificateEntry entry : certificateEntryList) {
+            x509CertificateList.add(entry.getX509certificate());
+        }
+        return x509CertificateList;
     }
 
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 97 * hash + Objects.hashCode(this.requestContextLength);
-        hash = 97 * hash + Objects.hashCode(this.requestContext);
-        hash = 97 * hash + Objects.hashCode(this.certificatesListLength);
-        hash = 97 * hash + Objects.hashCode(this.certificatesListBytes);
-        hash = 97 * hash + Objects.hashCode(this.certificatesList);
-        hash = 97 * hash + Objects.hashCode(this.certificateListConfig);
-        hash = 97 * hash + Objects.hashCode(this.certificatesListAsEntry);
-        hash = 97 * hash + Objects.hashCode(this.certificateKeyPair);
+        hash = 41 * hash + Objects.hashCode(this.requestContextLength);
+        hash = 41 * hash + Objects.hashCode(this.requestContext);
+        hash = 41 * hash + Objects.hashCode(this.certificatesListLength);
+        hash = 41 * hash + Objects.hashCode(this.certificatesListBytes);
+        hash = 41 * hash + Objects.hashCode(this.certificateEntryList);
         return hash;
     }
 
@@ -251,15 +206,6 @@ public class CertificateMessage extends HandshakeMessage<CertificateMessage> {
         if (!Objects.equals(this.certificatesListBytes, other.certificatesListBytes)) {
             return false;
         }
-        if (!Objects.equals(this.certificatesList, other.certificatesList)) {
-            return false;
-        }
-        if (!Objects.equals(this.certificateListConfig, other.certificateListConfig)) {
-            return false;
-        }
-        if (!Objects.equals(this.certificatesListAsEntry, other.certificatesListAsEntry)) {
-            return false;
-        }
-        return Objects.equals(this.certificateKeyPair, other.certificateKeyPair);
+        return Objects.equals(this.certificateEntryList, other.certificateEntryList);
     }
 }

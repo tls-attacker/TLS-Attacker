@@ -8,7 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
@@ -17,6 +19,7 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.util.tests.TestCategories;
 import jakarta.xml.bind.JAXBException;
 import java.io.IOException;
+import javax.xml.stream.XMLStreamException;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -31,7 +34,7 @@ abstract class AbstractActionTest<T extends TlsAction> {
     protected State state;
 
     AbstractActionTest(T action, Class<T> actionClass) {
-        this.config = Config.createConfig();
+        this.config = new Config();
         this.action = action;
         this.actionClass = actionClass;
         createWorkflowTraceAndState();
@@ -75,13 +78,15 @@ abstract class AbstractActionTest<T extends TlsAction> {
 
     @Test
     @Tag(TestCategories.SLOW_TEST)
-    public void testMarshalingAndUnmarshalingEmptyObjectYieldsEqualObject() {
+    public void testMarshalingAndUnmarshalingEmptyObjectYieldsEqualObject()
+            throws JAXBException, IOException, XMLStreamException {
         ActionTestUtils.marshalingAndUnmarshalingEmptyObjectYieldsEqualObject(actionClass);
     }
 
     @Test
     @Tag(TestCategories.SLOW_TEST)
-    public void testMarshalingAndUnmarshalingFilledObjectYieldsEqualObject() {
+    public void testMarshalingAndUnmarshalingFilledObjectYieldsEqualObject()
+            throws JAXBException, IOException, XMLStreamException {
         ActionTestUtils.marshalingAndUnmarshalingFilledObjectYieldsEqualObject(action);
     }
 }

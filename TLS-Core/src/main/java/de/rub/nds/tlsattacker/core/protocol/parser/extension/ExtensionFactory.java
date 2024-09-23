@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.*;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.quic.QuicTransportParametersExtensionMessage;
 
 public class ExtensionFactory {
 
@@ -97,6 +98,8 @@ public class ExtensionFactory {
                 return new PWDClearExtensionMessage();
             case CONNECTION_ID:
                 return new ConnectionIdExtensionMessage();
+            case QUIC_TRANSPORT_PARAMETERS:
+                return new QuicTransportParametersExtensionMessage();
             case GREASE_00:
             case GREASE_01:
             case GREASE_02:

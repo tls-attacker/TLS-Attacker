@@ -34,7 +34,7 @@ import org.apache.logging.log4j.Logger;
  * @param <T> Object type of the field inside the {@link TlsContext}
  */
 @XmlSeeAlso(TlsContext.class)
-@XmlRootElement
+@XmlRootElement(name = "ChangeContextValue")
 public class ChangeContextValueAction<T> extends ConnectionBoundAction {
 
     private static final Logger LOGGER = LogManager.getLogger();

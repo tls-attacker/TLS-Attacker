@@ -8,11 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.protocol.exception.PreparationException;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
@@ -42,7 +41,7 @@ import org.apache.logging.log4j.Logger;
 /**
  * @param <T> The HandshakeMessage that should be prepared
  */
-public abstract class HandshakeMessagePreparator<T extends HandshakeMessage<?>>
+public abstract class HandshakeMessagePreparator<T extends HandshakeMessage>
         extends ProtocolMessagePreparator<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -53,19 +52,17 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage<?>>
 
     protected void prepareMessageLength(int length) {
         message.setLength(length);
-        LOGGER.debug("Length: " + message.getLength().getValue());
+        LOGGER.debug("Length: {}", message.getLength().getValue());
     }
 
     private void prepareMessageType(HandshakeMessageType type) {
         message.setType(type.getValue());
-        LOGGER.debug("Type: " + message.getType().getValue());
+        LOGGER.debug("Type: {}", message.getType().getValue());
     }
 
     private void prepareMessageContent(byte[] content) {
         message.setMessageContent(content);
-        LOGGER.debug(
-                "Handshake message content: "
-                        + ArrayConverter.bytesToHexString(message.getMessageContent().getValue()));
+        LOGGER.debug("Handshake message content: {}", message.getMessageContent().getValue());
     }
 
     @Override
@@ -139,7 +136,6 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage<?>>
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         if (message.getExtensions() != null) {
             for (ExtensionMessage extensionMessage : message.getExtensions()) {
-                HandshakeMessageType handshakeMessageType = message.getHandshakeMessageType();
                 if (extensionMessage instanceof KeyShareExtensionMessage
                         && message instanceof ServerHelloMessage) {
                     ServerHelloMessage serverHello = (ServerHelloMessage) message;
@@ -157,9 +153,7 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage<?>>
             }
         }
         message.setExtensionBytes(stream.toByteArray());
-        LOGGER.debug(
-                "ExtensionBytes: "
-                        + ArrayConverter.bytesToHexString(message.getExtensionBytes().getValue()));
+        LOGGER.debug("ExtensionBytes: {}", message.getExtensionBytes().getValue());
     }
 
     protected void afterPrepareExtensions() {
@@ -206,13 +200,11 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage<?>>
         }
         message.setExtensionBytes(stream.toByteArray());
         prepareEncapsulatingFields();
-        LOGGER.debug(
-                "ExtensionBytes: "
-                        + ArrayConverter.bytesToHexString(message.getExtensionBytes().getValue()));
+        LOGGER.debug("ExtensionBytes: {}", message.getExtensionBytes().getValue());
     }
 
     protected void prepareExtensionLength() {
         message.setExtensionsLength(message.getExtensionBytes().getValue().length);
-        LOGGER.debug("ExtensionLength: " + message.getExtensionsLength().getValue());
+        LOGGER.debug("ExtensionLength: {}", message.getExtensionsLength().getValue());
     }
 }

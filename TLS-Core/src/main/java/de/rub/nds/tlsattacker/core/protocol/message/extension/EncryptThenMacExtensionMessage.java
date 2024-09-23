@@ -19,8 +19,7 @@ import java.io.InputStream;
 
 /** RFC7366 */
 @XmlRootElement(name = "EncryptThenMacExtension")
-public class EncryptThenMacExtensionMessage
-        extends ExtensionMessage<EncryptThenMacExtensionMessage> {
+public class EncryptThenMacExtensionMessage extends ExtensionMessage {
 
     public EncryptThenMacExtensionMessage() {
         super(ExtensionType.ENCRYPT_THEN_MAC);

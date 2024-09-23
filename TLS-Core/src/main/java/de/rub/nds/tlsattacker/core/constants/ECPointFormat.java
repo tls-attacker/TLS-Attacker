@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
+import de.rub.nds.protocol.constants.PointFormat;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,18 +19,20 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public enum ECPointFormat {
-    UNCOMPRESSED((byte) 0),
-    ANSIX962_COMPRESSED_PRIME((byte) 1),
-    ANSIX962_COMPRESSED_CHAR2((byte) 2);
+    UNCOMPRESSED((byte) 0, PointFormat.UNCOMPRESSED),
+    ANSIX962_COMPRESSED_PRIME((byte) 1, PointFormat.COMPRESSED),
+    ANSIX962_COMPRESSED_CHAR2((byte) 2, PointFormat.COMPRESSED);
 
     private byte value;
-
-    private static final Map<Byte, ECPointFormat> MAP;
+    private PointFormat format;
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private ECPointFormat(byte value) {
+    private static final Map<Byte, ECPointFormat> MAP;
+
+    private ECPointFormat(byte value, PointFormat format) {
         this.value = value;
+        this.format = format;
     }
 
     static {
@@ -41,6 +44,10 @@ public enum ECPointFormat {
 
     public static ECPointFormat getECPointFormat(byte value) {
         return MAP.get(value);
+    }
+
+    public PointFormat getFormat() {
+        return format;
     }
 
     public byte getValue() {

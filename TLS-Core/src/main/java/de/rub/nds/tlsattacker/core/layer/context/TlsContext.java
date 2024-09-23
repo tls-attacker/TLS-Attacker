@@ -10,11 +10,32 @@ package de.rub.nds.tlsattacker.core.layer.context;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.BadRandom;
+import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.*;
+import de.rub.nds.tlsattacker.core.constants.AuthzDataFormat;
+import de.rub.nds.tlsattacker.core.constants.CertificateStatusRequestType;
+import de.rub.nds.tlsattacker.core.constants.CertificateType;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
+import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
+import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
+import de.rub.nds.tlsattacker.core.constants.EsniDnsKeyRecordVersion;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
+import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
+import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
+import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.constants.PskKeyExchangeMode;
+import de.rub.nds.tlsattacker.core.constants.SSL2CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.SrtpProtectionProfile;
+import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
+import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
+import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
+import de.rub.nds.tlsattacker.core.constants.UserMappingExtensionHintType;
 import de.rub.nds.tlsattacker.core.crypto.MessageDigestCollector;
-import de.rub.nds.tlsattacker.core.crypto.ec.Point;
-import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.layer.impl.DtlsFragmentLayer;
 import de.rub.nds.tlsattacker.core.layer.impl.RecordLayer;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
@@ -37,21 +58,24 @@ import de.rub.nds.tlsattacker.core.state.session.IdSession;
 import de.rub.nds.tlsattacker.core.state.session.Session;
 import de.rub.nds.tlsattacker.core.state.session.TicketSession;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import de.rub.nds.x509attacker.context.X509Context;
+import de.rub.nds.x509attacker.x509.X509CertificateChain;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import java.math.BigInteger;
-import java.util.*;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.bouncycastle.crypto.tls.Certificate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
 
 /** Holds all runtime variables of the TLSLayer. */
 @XmlAccessorType(XmlAccessType.FIELD)
 public class TlsContext extends LayerContext {
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     private List<Session> sessionList;
 
@@ -146,10 +170,10 @@ public class TlsContext extends LayerContext {
     private byte[] ssl2Iv;
 
     /** Server certificate parsed from the server certificate message. */
-    private Certificate serverCertificate;
+    private X509CertificateChain serverCertificateChain;
 
     /** Client certificate parsed from the client certificate message. */
-    private Certificate clientCertificate;
+    private X509CertificateChain clientCertificateChain;
 
     /** Collects messages for computation of the Finished and CertificateVerify hashes */
     private MessageDigestCollector digest;
@@ -175,8 +199,6 @@ public class TlsContext extends LayerContext {
     private List<SignatureAndHashAlgorithm> serverSupportedCertificateSignAlgorithms;
 
     private HeartbeatMode heartbeatMode;
-
-    private SignatureAndHashAlgorithm selectedSigHashAlgorithm;
 
     private boolean cachedInfoExtensionClientState;
 
@@ -210,11 +232,13 @@ public class TlsContext extends LayerContext {
     /** This is the user identifier of the SRP extension */
     private byte[] secureRemotePasswordExtensionIdentifier;
 
-    /** These are the protection profiles of the SRTP extension */
-    private List<SrtpProtectionProfiles> secureRealTimeTransportProtocolProtectionProfiles;
-
     /** This is the master key identifier of the SRTP extension */
     private byte[] secureRealTimeProtocolMasterKeyIdentifier;
+
+    /** These are the protection profiles supported by the client */
+    private List<SrtpProtectionProfile> clientSupportedSrtpProtectionProfiles;
+
+    private SrtpProtectionProfile selectedSrtpProtectionProfile;
 
     /** User mapping extension hint type */
     private UserMappingExtensionHintType userMappingExtensionHintType;
@@ -225,31 +249,25 @@ public class TlsContext extends LayerContext {
     /** Server authz extension data format list */
     private List<AuthzDataFormat> serverAuthzDataFormatList;
 
-    private BigInteger serverDhGenerator;
+    /** This is only the ephemeral generator */
+    private BigInteger serverEphemeralDhGenerator;
 
-    private BigInteger serverDhModulus;
+    /** This is only the ephemeral modulus */
+    private BigInteger serverEphemeralDhModulus;
 
-    private BigInteger clientDhGenerator;
+    /** This is only the ephemeral private key */
+    private BigInteger serverEphemeralDhPrivateKey;
 
-    private BigInteger clientDhModulus;
+    /** This is only the ephemeral public key */
+    private BigInteger serverEphemeralDhPublicKey;
 
-    private BigInteger serverDhPrivateKey;
+    /** This is only the 'ephemeral' private key */
+    private BigInteger clientEphemeralDhPrivateKey;
 
-    private BigInteger serverDhPublicKey;
-
-    private BigInteger clientDhPrivateKey;
-
-    private BigInteger clientDhPublicKey;
+    /** This is only the ephemeral modulus */
+    private BigInteger clientEphemeralDhPublicKey;
 
     private BigInteger srpModulus;
-
-    private BigInteger pskModulus;
-
-    private BigInteger serverPSKPrivateKey;
-
-    private BigInteger serverPSKPublicKey;
-
-    private BigInteger pskGenerator;
 
     private BigInteger srpGenerator;
 
@@ -275,49 +293,26 @@ public class TlsContext extends LayerContext {
 
     private NamedGroup selectedGroup;
 
-    private NamedGroup ecCertificateCurve;
+    /** This is only the 'ephemeral' key */
+    private Point clientEphemeralEcPublicKey;
 
-    private NamedGroup ecCertificateSignatureCurve;
+    /** This is only the 'ephemeral' key */
+    private Point serverEphemeralEcPublicKey;
 
-    private Point clientEcPublicKey;
+    /** This is only the 'ephemeral' key */
+    private BigInteger serverEphemeralEcPrivateKey;
 
-    private Point serverEcPublicKey;
+    /** This is only the 'ephemeral' key */
+    private BigInteger clientEphemeralEcPrivateKey;
 
-    private BigInteger serverEcPrivateKey;
+    /** This is only the 'ephemeral' key for RSA export */
+    private BigInteger serverEphemeralRsaExportModulus;
 
-    private BigInteger clientEcPrivateKey;
+    /** This is only the 'ephemeral' key for RSA export */
+    private BigInteger serverEphemeralRsaExportPublicKey;
 
-    private BigInteger clientRsaModulus;
-
-    private BigInteger serverRSAModulus;
-
-    private BigInteger serverRSAPublicKey;
-
-    private BigInteger clientRSAPublicKey;
-
-    private BigInteger serverRSAPrivateKey;
-
-    private BigInteger clientRSAPrivateKey;
-
-    private BigInteger clientDsaPrivateKey;
-
-    private BigInteger serverDsaPrivateKey;
-
-    private BigInteger serverDsaPrimeP;
-
-    private BigInteger serverDsaPrimeQ;
-
-    private BigInteger serverDsaGenerator;
-
-    private BigInteger serverDsaPublicKey;
-
-    private BigInteger clientDsaPublicKey;
-
-    private BigInteger clientDsaPrimeP;
-
-    private BigInteger clientDsaPrimeQ;
-
-    private BigInteger clientDsaGenerator;
+    /** This is only the 'ephemeral' key for RSA export */
+    private BigInteger serverEphemeralRsaExportPrivateKey;
 
     private List<NamedGroup> clientNamedGroupsList;
 
@@ -390,7 +385,7 @@ public class TlsContext extends LayerContext {
     private byte[] serverPWDSalt;
 
     /** Password Element for TLS_ECCPWD */
-    private Point pwdpe;
+    private Point pwdPasswordElement;
 
     private BigInteger clientPWDPrivate;
 
@@ -419,8 +414,6 @@ public class TlsContext extends LayerContext {
     private LinkedList<Record> recordBuffer;
 
     private LinkedList<DtlsHandshakeMessageFragment> fragmentBuffer;
-
-    private Chooser chooser;
 
     /** Contains the TLS extensions proposed by the client. */
     private final EnumSet<ExtensionType> proposedExtensionSet = EnumSet.noneOf(ExtensionType.class);
@@ -494,8 +487,6 @@ public class TlsContext extends LayerContext {
 
     private Long esniNotAfter;
 
-    private List<ExtensionType> esniExtensions;
-
     /**
      * Both methods of limiting record size as defined in RFC 3546 (MaximumFragmentLength extension)
      * and RFC 8449 (RecordSizeLimit extension)
@@ -503,18 +494,16 @@ public class TlsContext extends LayerContext {
     private MaxFragmentLength maxFragmentLength;
 
     private Integer outboundRecordSizeLimit;
+    private Integer inboundRecordSizeLimit;
+
+    private Integer peerReceiveLimit;
 
     private byte[] writeConnectionId;
 
     private byte[] readConnectionID;
 
-    public TlsContext() {
-        this(new Context(new Config()));
-    }
-
-    public TlsContext(Config config) {
-        this(new Context(config));
-    }
+    private X509Context clientX509Context;
+    private X509Context serverX509Context;
 
     /**
      * This constructor assumes that the config holds exactly one connection end. This is usually
@@ -524,16 +513,79 @@ public class TlsContext extends LayerContext {
      */
     public TlsContext(Context context) {
         super(context);
+        clientX509Context = new X509Context();
+        serverX509Context = new X509Context();
         context.setTlsContext(this);
-        RunningModeType mode = getConfig().getDefaultRunningMode();
-        if (null == mode) {
-            throw new ConfigurationException("Cannot create connection, running mode not set");
+        init();
+    }
+
+    public List<SrtpProtectionProfile> getClientSupportedSrtpProtectionProfiles() {
+        return this.clientSupportedSrtpProtectionProfiles;
+    }
+
+    public void setClientSupportedSrtpProtectionProfiles(
+            List<SrtpProtectionProfile> clientSupportedSrtpProtectionProfiles) {
+        this.clientSupportedSrtpProtectionProfiles = clientSupportedSrtpProtectionProfiles;
+    }
+
+    public SrtpProtectionProfile getSelectedSrtpProtectionProfile() {
+        return this.selectedSrtpProtectionProfile;
+    }
+
+    public void setSelectedSrtpProtectionProfile(
+            SrtpProtectionProfile selectedSrtpProtectionProfile) {
+        this.selectedSrtpProtectionProfile = selectedSrtpProtectionProfile;
+    }
+
+    public void resetTalkingX509Context() {
+        if (getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
+            clientX509Context = new X509Context();
         } else {
-            init();
+            serverX509Context = new X509Context();
         }
     }
 
-    private void init() {
+    public X509Context getTalkingX509Context() {
+        if (getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
+            return clientX509Context;
+        } else {
+            return serverX509Context;
+        }
+    }
+
+    public X509Context getPeerX509Context() {
+        if (getTalkingConnectionEndType() != ConnectionEndType.CLIENT) {
+            return clientX509Context;
+        } else {
+            return serverX509Context;
+        }
+    }
+
+    public void setTalkingX509Context(X509Context context) {
+        if (getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
+            clientX509Context = context;
+        } else {
+            serverX509Context = context;
+        }
+    }
+
+    public X509Context getClientX509Context() {
+        return clientX509Context;
+    }
+
+    public void setClientX509Context(X509Context clientX509Context) {
+        this.clientX509Context = clientX509Context;
+    }
+
+    public X509Context getServerX509Context() {
+        return serverX509Context;
+    }
+
+    public void setServerX509Context(X509Context serverX509Context) {
+        this.serverX509Context = serverX509Context;
+    }
+
+    public void init() {
         digest = new MessageDigestCollector();
         sessionList = new LinkedList<>();
         if (getConfig().isStealthMode()) {
@@ -550,12 +602,7 @@ public class TlsContext extends LayerContext {
     }
 
     public Chooser getChooser() {
-        if (chooser == null) {
-            chooser =
-                    ChooserFactory.getChooser(
-                            getConfig().getChooserType(), this.getContext(), getConfig());
-        }
-        return chooser;
+        return getContext().getChooser();
     }
 
     public CertificateType getSelectedClientCertificateType() {
@@ -689,76 +736,12 @@ public class TlsContext extends LayerContext {
                 new ArrayList(Arrays.asList(clientSupportedProtocolVersions));
     }
 
-    public BigInteger getClientRsaModulus() {
-        return clientRsaModulus;
-    }
-
-    public void setClientRsaModulus(BigInteger clientRsaModulus) {
-        this.clientRsaModulus = clientRsaModulus;
-    }
-
-    public BigInteger getServerRSAModulus() {
-        return serverRSAModulus;
-    }
-
-    public void setServerRSAModulus(BigInteger serverRSAModulus) {
-        this.serverRSAModulus = serverRSAModulus;
-    }
-
-    public BigInteger getServerRSAPublicKey() {
-        return serverRSAPublicKey;
-    }
-
-    public void setServerRSAPublicKey(BigInteger serverRSAPublicKey) {
-        this.serverRSAPublicKey = serverRSAPublicKey;
-    }
-
-    public BigInteger getClientRSAPublicKey() {
-        return clientRSAPublicKey;
-    }
-
-    public void setClientRSAPublicKey(BigInteger clientRSAPublicKey) {
-        this.clientRSAPublicKey = clientRSAPublicKey;
-    }
-
-    public BigInteger getServerEcPrivateKey() {
-        return serverEcPrivateKey;
-    }
-
-    public void setServerEcPrivateKey(BigInteger serverEcPrivateKey) {
-        this.serverEcPrivateKey = serverEcPrivateKey;
-    }
-
-    public BigInteger getClientEcPrivateKey() {
-        return clientEcPrivateKey;
-    }
-
-    public void setClientEcPrivateKey(BigInteger clientEcPrivateKey) {
-        this.clientEcPrivateKey = clientEcPrivateKey;
-    }
-
     public NamedGroup getSelectedGroup() {
         return selectedGroup;
     }
 
     public void setSelectedGroup(NamedGroup selectedCurve) {
         this.selectedGroup = selectedCurve;
-    }
-
-    public Point getClientEcPublicKey() {
-        return clientEcPublicKey;
-    }
-
-    public void setClientEcPublicKey(Point clientEcPublicKey) {
-        this.clientEcPublicKey = clientEcPublicKey;
-    }
-
-    public Point getServerEcPublicKey() {
-        return serverEcPublicKey;
-    }
-
-    public void setServerEcPublicKey(Point serverEcPublicKey) {
-        this.serverEcPublicKey = serverEcPublicKey;
     }
 
     public BigInteger getSRPGenerator() {
@@ -791,38 +774,6 @@ public class TlsContext extends LayerContext {
 
     public void setPSKIdentityHint(byte[] pskIdentityHint) {
         this.pskIdentityHint = pskIdentityHint;
-    }
-
-    public BigInteger getPSKModulus() {
-        return pskModulus;
-    }
-
-    public void setPSKModulus(BigInteger pskModulus) {
-        this.pskModulus = pskModulus;
-    }
-
-    public BigInteger getServerPSKPrivateKey() {
-        return serverPSKPrivateKey;
-    }
-
-    public void setServerPSKPrivateKey(BigInteger serverPSKPrivateKey) {
-        this.serverPSKPrivateKey = serverPSKPrivateKey;
-    }
-
-    public BigInteger getServerPSKPublicKey() {
-        return serverPSKPublicKey;
-    }
-
-    public void setServerPSKPublicKey(BigInteger serverPSKPublicKey) {
-        this.serverPSKPublicKey = serverPSKPublicKey;
-    }
-
-    public BigInteger getPSKGenerator() {
-        return pskGenerator;
-    }
-
-    public void setPSKGenerator(BigInteger pskGenerator) {
-        this.pskGenerator = pskGenerator;
     }
 
     public BigInteger getServerSRPPublicKey() {
@@ -887,54 +838,6 @@ public class TlsContext extends LayerContext {
 
     public void setSRPIdentity(byte[] srpIdentity) {
         this.srpIdentity = srpIdentity;
-    }
-
-    public BigInteger getServerDhGenerator() {
-        return serverDhGenerator;
-    }
-
-    public void setServerDhGenerator(BigInteger dhGenerator) {
-        this.serverDhGenerator = dhGenerator;
-    }
-
-    public BigInteger getServerDhModulus() {
-        return serverDhModulus;
-    }
-
-    public void setServerDhModulus(BigInteger serverDhModulus) {
-        this.serverDhModulus = serverDhModulus;
-    }
-
-    public BigInteger getServerDhPublicKey() {
-        return serverDhPublicKey;
-    }
-
-    public void setServerDhPublicKey(BigInteger serverDhPublicKey) {
-        this.serverDhPublicKey = serverDhPublicKey;
-    }
-
-    public BigInteger getClientDhPrivateKey() {
-        return clientDhPrivateKey;
-    }
-
-    public void setClientDhPrivateKey(BigInteger clientDhPrivateKey) {
-        this.clientDhPrivateKey = clientDhPrivateKey;
-    }
-
-    public BigInteger getClientDhPublicKey() {
-        return clientDhPublicKey;
-    }
-
-    public void setClientDhPublicKey(BigInteger clientDhPublicKey) {
-        this.clientDhPublicKey = clientDhPublicKey;
-    }
-
-    public BigInteger getServerDhPrivateKey() {
-        return serverDhPrivateKey;
-    }
-
-    public void setServerDhPrivateKey(BigInteger serverDhPrivateKey) {
-        this.serverDhPrivateKey = serverDhPrivateKey;
     }
 
     public GOSTCurve getServerGost01Curve() {
@@ -1311,24 +1214,28 @@ public class TlsContext extends LayerContext {
         this.ssl2Iv = ssl2Iv;
     }
 
-    public Certificate getServerCertificate() {
-        return serverCertificate;
+    public X509CertificateChain getServerCertificateChain() {
+        return serverCertificateChain;
     }
 
-    public void setServerCertificate(Certificate serverCertificate) {
-        this.serverCertificate = serverCertificate;
+    public void setServerCertificateChain(X509CertificateChain serverCertificateChain) {
+        this.serverCertificateChain = serverCertificateChain;
     }
 
-    public Certificate getClientCertificate() {
-        return clientCertificate;
+    public X509CertificateChain getClientCertificateChain() {
+        return clientCertificateChain;
     }
 
-    public void setClientCertificate(Certificate clientCertificate) {
-        this.clientCertificate = clientCertificate;
+    public void setClientCertificateChain(X509CertificateChain clientCertificateChain) {
+        this.clientCertificateChain = clientCertificateChain;
     }
 
     public MessageDigestCollector getDigest() {
         return digest;
+    }
+
+    public void setDigest(MessageDigestCollector digest) {
+        this.digest = digest;
     }
 
     public byte[] getDtlsCookie() {
@@ -1521,16 +1428,6 @@ public class TlsContext extends LayerContext {
         this.secureRemotePasswordExtensionIdentifier = secureRemotePasswordExtensionIdentifier;
     }
 
-    public List<SrtpProtectionProfiles> getSecureRealTimeTransportProtocolProtectionProfiles() {
-        return secureRealTimeTransportProtocolProtectionProfiles;
-    }
-
-    public void setSecureRealTimeTransportProtocolProtectionProfiles(
-            List<SrtpProtectionProfiles> secureRealTimeTransportProtocolProtectionProfiles) {
-        this.secureRealTimeTransportProtocolProtectionProfiles =
-                secureRealTimeTransportProtocolProtectionProfiles;
-    }
-
     public byte[] getSecureRealTimeProtocolMasterKeyIdentifier() {
         return secureRealTimeProtocolMasterKeyIdentifier;
     }
@@ -1630,22 +1527,6 @@ public class TlsContext extends LayerContext {
 
     public void setStatusRequestV2RequestList(List<RequestItemV2> statusRequestV2RequestList) {
         this.statusRequestV2RequestList = statusRequestV2RequestList;
-    }
-
-    public BigInteger getServerRSAPrivateKey() {
-        return serverRSAPrivateKey;
-    }
-
-    public void setServerRSAPrivateKey(BigInteger serverRSAPrivateKey) {
-        this.serverRSAPrivateKey = serverRSAPrivateKey;
-    }
-
-    public BigInteger getClientRSAPrivateKey() {
-        return clientRSAPrivateKey;
-    }
-
-    public void setClientRSAPrivateKey(BigInteger clientRSAPrivateKey) {
-        this.clientRSAPrivateKey = clientRSAPrivateKey;
     }
 
     public Random getRandom() {
@@ -1903,7 +1784,7 @@ public class TlsContext extends LayerContext {
     }
 
     public Tls13KeySetType getActiveKeySetTypeRead() {
-        if (chooser.getConnectionEndType() == ConnectionEndType.SERVER) {
+        if (getChooser().getConnectionEndType() == ConnectionEndType.SERVER) {
             return activeClientKeySetType;
         } else {
             return activeServerKeySetType;
@@ -1911,7 +1792,7 @@ public class TlsContext extends LayerContext {
     }
 
     public Tls13KeySetType getActiveKeySetTypeWrite() {
-        if (chooser.getConnectionEndType() == ConnectionEndType.SERVER) {
+        if (getChooser().getConnectionEndType() == ConnectionEndType.SERVER) {
             return activeServerKeySetType;
         } else {
             return activeClientKeySetType;
@@ -1940,110 +1821,6 @@ public class TlsContext extends LayerContext {
         this.receivedTransportHandlerException = receivedTransportHandlerException;
     }
 
-    public NamedGroup getEcCertificateCurve() {
-        return ecCertificateCurve;
-    }
-
-    public void setEcCertificateCurve(NamedGroup ecCertificateCurve) {
-        this.ecCertificateCurve = ecCertificateCurve;
-    }
-
-    public BigInteger getClientDhGenerator() {
-        return clientDhGenerator;
-    }
-
-    public void setClientDhGenerator(BigInteger clientDhGenerator) {
-        this.clientDhGenerator = clientDhGenerator;
-    }
-
-    public BigInteger getClientDhModulus() {
-        return clientDhModulus;
-    }
-
-    public void setClientDhModulus(BigInteger clientDhModulus) {
-        this.clientDhModulus = clientDhModulus;
-    }
-
-    public BigInteger getClientDsaPrivateKey() {
-        return clientDsaPrivateKey;
-    }
-
-    public void setClientDsaPrivateKey(BigInteger clientDsaPrivateKey) {
-        this.clientDsaPrivateKey = clientDsaPrivateKey;
-    }
-
-    public BigInteger getServerDsaPrivateKey() {
-        return serverDsaPrivateKey;
-    }
-
-    public void setServerDsaPrivateKey(BigInteger serverDsaPrivateKey) {
-        this.serverDsaPrivateKey = serverDsaPrivateKey;
-    }
-
-    public BigInteger getServerDsaPrimeP() {
-        return serverDsaPrimeP;
-    }
-
-    public void setServerDsaPrimeP(BigInteger serverDsaPrimeP) {
-        this.serverDsaPrimeP = serverDsaPrimeP;
-    }
-
-    public BigInteger getServerDsaPrimeQ() {
-        return serverDsaPrimeQ;
-    }
-
-    public void setServerDsaPrimeQ(BigInteger serverDsaPrimeQ) {
-        this.serverDsaPrimeQ = serverDsaPrimeQ;
-    }
-
-    public BigInteger getServerDsaGenerator() {
-        return serverDsaGenerator;
-    }
-
-    public void setServerDsaGenerator(BigInteger serverDsaGenerator) {
-        this.serverDsaGenerator = serverDsaGenerator;
-    }
-
-    public BigInteger getServerDsaPublicKey() {
-        return serverDsaPublicKey;
-    }
-
-    public void setServerDsaPublicKey(BigInteger serverDsaPublicKey) {
-        this.serverDsaPublicKey = serverDsaPublicKey;
-    }
-
-    public BigInteger getClientDsaPublicKey() {
-        return clientDsaPublicKey;
-    }
-
-    public void setClientDsaPublicKey(BigInteger clientDsaPublicKey) {
-        this.clientDsaPublicKey = clientDsaPublicKey;
-    }
-
-    public BigInteger getClientDsaPrimeP() {
-        return clientDsaPrimeP;
-    }
-
-    public void setClientDsaPrimeP(BigInteger clientDsaPrimeP) {
-        this.clientDsaPrimeP = clientDsaPrimeP;
-    }
-
-    public BigInteger getClientDsaPrimeQ() {
-        return clientDsaPrimeQ;
-    }
-
-    public void setClientDsaPrimeQ(BigInteger clientDsaPrimeQ) {
-        this.clientDsaPrimeQ = clientDsaPrimeQ;
-    }
-
-    public BigInteger getClientDsaGenerator() {
-        return clientDsaGenerator;
-    }
-
-    public void setClientDsaGenerator(BigInteger clientDsaGenerator) {
-        this.clientDsaGenerator = clientDsaGenerator;
-    }
-
     public void setClientPWDUsername(String username) {
         this.clientPWDUsername = username;
     }
@@ -2060,12 +1837,12 @@ public class TlsContext extends LayerContext {
         return serverPWDSalt;
     }
 
-    public Point getPWDPE() {
-        return pwdpe;
+    public Point getPwdPasswordElement() {
+        return pwdPasswordElement;
     }
 
-    public void setPWDPE(Point pwdpe) {
-        this.pwdpe = pwdpe;
+    public void setPwdPasswordElement(Point pwdPasswordElement) {
+        this.pwdPasswordElement = pwdPasswordElement;
     }
 
     public BigInteger getClientPWDPrivate() {
@@ -2244,14 +2021,6 @@ public class TlsContext extends LayerContext {
         this.esniNotAfter = esniKeysNotAfter;
     }
 
-    public NamedGroup getEcCertificateSignatureCurve() {
-        return ecCertificateSignatureCurve;
-    }
-
-    public void setEcCertificateSignatureCurve(NamedGroup ecCertificateSignatureCurve) {
-        this.ecCertificateSignatureCurve = ecCertificateSignatureCurve;
-    }
-
     public byte[] getLastClientHello() {
         return lastClientHello;
     }
@@ -2305,57 +2074,8 @@ public class TlsContext extends LayerContext {
         return !(this.getRecordLayer().getDecryptorCipher() instanceof RecordNullCipher);
     }
 
-    public Integer getOutboundMaxRecordDataSize() {
-        return getMaxRecordDataSize(chooser.getOutboundRecordSizeLimit());
-    }
-
-    public Integer getInboundMaxRecordDataSize() {
-        return getMaxRecordDataSize(chooser.getInboundRecordSizeLimit());
-    }
-
-    /**
-     * Calculates the record data size limit for the current connection direction with respect to
-     * extensions and the current encryption status.
-     *
-     * <p>Disclaimer: this is not 100% accurate for TLS 1.3 since the actual padding length can be
-     * slightly different (compared to configured additional padding length) depending on the
-     * ciphers block size. I don't think it is necessary to introduce this additional complexity.
-     * Revisit if we run into problems with an implementation.
-     *
-     * @param recordSizeLimit the record_size_limit extension value for the current connection
-     *     direction
-     * @return the record data size limit for the target connection end type
-     */
-    private Integer getMaxRecordDataSize(Integer recordSizeLimit) {
-        // max_fragment_length extension applies to all records if record_size_limit extension is
-        // not active
-        if (!isRecordSizeLimitExtensionActive() && maxFragmentLength != null) {
-            return MaxFragmentLength.getIntegerRepresentation(maxFragmentLength);
-        }
-
-        // record_size_limit extension applies only to encrypted records
-        if (!isRecordSizeLimitExtensionActive() || !isRecordEncryptionActive()) {
-            return getConfig().getDefaultMaxRecordData();
-        }
-
-        Integer maxRecordDataSize = recordSizeLimit;
-        // for TLS 1.3, record_size_limit covers the whole TLSInnerPlaintext
-        // -> we need to reserve space for the content type (1 byte) and possibly additional padding
-        if (chooser.getSelectedProtocolVersion().isTLS13()) {
-            maxRecordDataSize -= 1;
-            maxRecordDataSize -= getConfig().getDefaultAdditionalPadding();
-        }
-        // poorly configured combination of record_size_limit extension and TLS 1.3 additional
-        // padding
-        if (maxRecordDataSize < 0) {
-            LOGGER.warn(
-                    "Calculated record data size limit is too low ("
-                            + maxRecordDataSize
-                            + "), setting to zero");
-            return 0;
-        }
-
-        return maxRecordDataSize;
+    public Integer getInboundRecordSizeLimit() {
+        return inboundRecordSizeLimit;
     }
 
     public int getWriteEpoch() {
@@ -2420,5 +2140,118 @@ public class TlsContext extends LayerContext {
 
     public void setReadConnectionId(byte[] readConnectionID) {
         this.readConnectionID = readConnectionID;
+    }
+
+    public BigInteger getServerEphemeralDhGenerator() {
+        return serverEphemeralDhGenerator;
+    }
+
+    public void setServerEphemeralDhGenerator(BigInteger serverEphemeralDhGenerator) {
+        this.serverEphemeralDhGenerator = serverEphemeralDhGenerator;
+    }
+
+    public BigInteger getServerEphemeralDhModulus() {
+        return serverEphemeralDhModulus;
+    }
+
+    public void setServerEphemeralDhModulus(BigInteger serverEphemeralDhModulus) {
+        this.serverEphemeralDhModulus = serverEphemeralDhModulus;
+    }
+
+    public BigInteger getServerEphemeralDhPrivateKey() {
+        return serverEphemeralDhPrivateKey;
+    }
+
+    public void setServerEphemeralDhPrivateKey(BigInteger serverEphemeralDhPrivateKey) {
+        this.serverEphemeralDhPrivateKey = serverEphemeralDhPrivateKey;
+    }
+
+    public BigInteger getServerEphemeralDhPublicKey() {
+        return serverEphemeralDhPublicKey;
+    }
+
+    public void setServerEphemeralDhPublicKey(BigInteger serverEphemeralDhPublicKey) {
+        this.serverEphemeralDhPublicKey = serverEphemeralDhPublicKey;
+    }
+
+    public BigInteger getClientEphemeralDhPrivateKey() {
+        return clientEphemeralDhPrivateKey;
+    }
+
+    public void setClientEphemeralDhPrivateKey(BigInteger clientEphemeralDhPrivateKey) {
+        this.clientEphemeralDhPrivateKey = clientEphemeralDhPrivateKey;
+    }
+
+    public BigInteger getClientEphemeralDhPublicKey() {
+        return clientEphemeralDhPublicKey;
+    }
+
+    public void setClientEphemeralDhPublicKey(BigInteger clientEphemeralDhPublicKey) {
+        this.clientEphemeralDhPublicKey = clientEphemeralDhPublicKey;
+    }
+
+    public Point getClientEphemeralEcPublicKey() {
+        return clientEphemeralEcPublicKey;
+    }
+
+    public void setClientEphemeralEcPublicKey(Point clientEphemeralEcPublicKey) {
+        this.clientEphemeralEcPublicKey = clientEphemeralEcPublicKey;
+    }
+
+    public Point getServerEphemeralEcPublicKey() {
+        return serverEphemeralEcPublicKey;
+    }
+
+    public void setServerEphemeralEcPublicKey(Point serverEphemeralEcPublicKey) {
+        this.serverEphemeralEcPublicKey = serverEphemeralEcPublicKey;
+    }
+
+    public BigInteger getServerEphemeralEcPrivateKey() {
+        return serverEphemeralEcPrivateKey;
+    }
+
+    public void setServerEphemeralEcPrivateKey(BigInteger serverEphemeralEcPrivateKey) {
+        this.serverEphemeralEcPrivateKey = serverEphemeralEcPrivateKey;
+    }
+
+    public BigInteger getClientEphemeralEcPrivateKey() {
+        return clientEphemeralEcPrivateKey;
+    }
+
+    public void setClientEphemeralEcPrivateKey(BigInteger clientEphemeralEcPrivateKey) {
+        this.clientEphemeralEcPrivateKey = clientEphemeralEcPrivateKey;
+    }
+
+    public BigInteger getServerEphemeralRsaExportModulus() {
+        return serverEphemeralRsaExportModulus;
+    }
+
+    public void setServerEphemeralRsaExportModulus(BigInteger serverEphemeralRsaExportModulus) {
+        this.serverEphemeralRsaExportModulus = serverEphemeralRsaExportModulus;
+    }
+
+    public BigInteger getServerEphemeralRsaExportPublicKey() {
+        return serverEphemeralRsaExportPublicKey;
+    }
+
+    public void setServerEphemeralRsaExportPublicKey(BigInteger serverEphemeralRsaExportPublicKey) {
+        this.serverEphemeralRsaExportPublicKey = serverEphemeralRsaExportPublicKey;
+    }
+
+    public BigInteger getServerEphemeralRsaExportPrivateKey() {
+        return serverEphemeralRsaExportPrivateKey;
+    }
+
+    public void setServerEphemeralRsaExportPrivateKey(
+            BigInteger serverEphemeralRsaExportPrivateKey) {
+        this.serverEphemeralRsaExportPrivateKey = serverEphemeralRsaExportPrivateKey;
+    }
+
+    public Integer getPeerReceiveLimit() {
+        return peerReceiveLimit;
+    }
+
+    public void setPeerReceiveLimit(Integer peerReceiveLimit) {
+        this.peerReceiveLimit = peerReceiveLimit;
     }
 }

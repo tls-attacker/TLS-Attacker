@@ -11,8 +11,13 @@ package de.rub.nds.tlsattacker.core.http.header;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.http.header.preparator.ContentLengthHeaderPreparator;
+import de.rub.nds.tlsattacker.core.http.header.serializer.HttpHeaderSerializer;
 import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
+import de.rub.nds.tlsattacker.core.layer.data.Handler;
+import de.rub.nds.tlsattacker.core.layer.data.Parser;
+import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import jakarta.xml.bind.annotation.XmlTransient;
+import java.io.InputStream;
 
 public class ContentLengthHeader extends HttpHeader {
 
@@ -45,5 +50,20 @@ public class ContentLengthHeader extends HttpHeader {
 
     public void setConfigLength(int configLength) {
         this.configLength = configLength;
+    }
+
+    @Override
+    public Parser<?> getParser(HttpContext context, InputStream stream) {
+        return null; // TODO Parser is not used
+    }
+
+    @Override
+    public Serializer<?> getSerializer(HttpContext context) {
+        return new HttpHeaderSerializer(this);
+    }
+
+    @Override
+    public Handler<?> getHandler(HttpContext context) {
+        return null;
     }
 }

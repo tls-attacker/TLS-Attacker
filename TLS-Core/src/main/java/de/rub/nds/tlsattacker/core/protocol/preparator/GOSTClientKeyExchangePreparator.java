@@ -9,17 +9,19 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.protocol.crypto.CyclicGroup;
+import de.rub.nds.protocol.crypto.ec.EllipticCurve;
+import de.rub.nds.protocol.crypto.ec.EllipticCurveSECP256R1;
+import de.rub.nds.protocol.crypto.ec.Point;
+import de.rub.nds.protocol.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
-import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
-import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
-import de.rub.nds.tlsattacker.core.crypto.ec.Point;
-import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.crypto.gost.GOST28147WrapEngine;
 import de.rub.nds.tlsattacker.core.crypto.gost.TLSGostKeyTransportBlob;
 import de.rub.nds.tlsattacker.core.protocol.message.GOSTClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.util.GOSTUtils;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.GeneralSecurityException;
@@ -71,25 +73,26 @@ public abstract class GOSTClientKeyExchangePreparator
 
     @Override
     protected void prepareHandshakeMessageContents() {
-        prepareAfterParse(true);
+        prepareAfterParse();
     }
 
     @Override
-    public void prepareAfterParse(boolean clientMode) {
+    public void prepareAfterParse() {
         try {
-            LOGGER.debug("Preparing GOST EC VKO. Client mode: " + clientMode);
+            LOGGER.debug("Preparing GOST EC VKO.");
+            LOGGER.warn(
+                    "You ran into old buggy code of TLS-Attacker - this is likely not functional");
+            if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
+                msg.prepareComputations();
+                prepareClientServerRandom();
+                prepareUkm();
 
-            msg.prepareComputations();
-            prepareClientServerRandom();
-            prepareUkm();
-
-            if (clientMode) {
                 preparePms();
-                msg.getComputations().setPrivateKey(chooser.getClientEcPrivateKey());
+                msg.getComputations().setPrivateKey(chooser.getClientEphemeralEcPrivateKey());
                 prepareEphemeralKey();
                 prepareKek(
                         msg.getComputations().getPrivateKey().getValue(),
-                        chooser.getServerEcPublicKey());
+                        chooser.getServerEphemeralEcPublicKey());
                 prepareEncryptionParams();
                 prepareCek();
                 prepareKeyBlob();
@@ -97,7 +100,10 @@ public abstract class GOSTClientKeyExchangePreparator
                 TLSGostKeyTransportBlob transportBlob =
                         TLSGostKeyTransportBlob.getInstance(msg.getKeyTransportBlob().getValue());
                 LOGGER.debug(
-                        "Received GOST key blob: " + ASN1Dump.dumpAsString(transportBlob, true));
+                        "Received GOST key blob: {}", ASN1Dump.dumpAsString(transportBlob, true));
+                TLSGostKeyTransportBlob.getInstance(msg.getKeyTransportBlob().getValue());
+                LOGGER.debug(
+                        "Received GOST key blob: {}", ASN1Dump.dumpAsString(transportBlob, true));
 
                 GostR3410KeyTransport keyBlob = transportBlob.getKeyBlob();
                 if (!Arrays.equals(
@@ -106,11 +112,9 @@ public abstract class GOSTClientKeyExchangePreparator
                     LOGGER.warn("Client UKM != Server UKM");
                 }
 
-                SubjectPublicKeyInfo ephemeralKey =
-                        keyBlob.getTransportParameters().getEphemeralPublicKey();
-                Point publicKey = chooser.getClientEcPublicKey();
+                Point publicKey = chooser.getClientEphemeralEcPublicKey();
 
-                prepareKek(chooser.getServerEcPrivateKey(), publicKey);
+                prepareKek(chooser.getServerEphemeralEcPrivateKey(), publicKey);
 
                 byte[] wrapped =
                         ArrayConverter.concatenate(
@@ -150,7 +154,15 @@ public abstract class GOSTClientKeyExchangePreparator
 
     private void prepareKek(BigInteger privateKey, Point publicKey)
             throws GeneralSecurityException {
-        EllipticCurve curve = CurveFactory.getCurve(chooser.getSelectedGostCurve());
+        CyclicGroup<?> group = chooser.getSelectedGostCurve().getGroupParameters().getGroup();
+        EllipticCurve curve;
+        if (group instanceof EllipticCurve) {
+            curve = (EllipticCurve) group;
+        } else {
+            LOGGER.warn("Selected group is not an EllipticCurve. Using SECP256R1");
+            curve = new EllipticCurveSECP256R1();
+        }
+
         Point sharedPoint = curve.mult(privateKey, publicKey);
         if (sharedPoint == null) {
             LOGGER.warn("GOST shared point is null - using base point instead");
@@ -168,9 +180,9 @@ public abstract class GOSTClientKeyExchangePreparator
     private void preparePms() {
         byte[] pms = chooser.getContext().getTlsContext().getPreMasterSecret();
         if (pms != null) {
-            LOGGER.debug("Using preset PreMasterSecret from context.");
+            LOGGER.debug("Using preset PreMasterSecret from context");
         } else {
-            LOGGER.debug("Generating random PreMasterSecret.");
+            LOGGER.debug("Generating random PreMasterSecret");
             pms = new byte[32];
             chooser.getContext().getTlsContext().getRandom().nextBytes(pms);
         }
@@ -179,9 +191,16 @@ public abstract class GOSTClientKeyExchangePreparator
     }
 
     private void prepareEphemeralKey() {
-        EllipticCurve curve = CurveFactory.getCurve(chooser.getSelectedGostCurve());
-        LOGGER.debug("Using key from context.");
-        msg.getComputations().setPrivateKey(chooser.getClientEcPrivateKey());
+        CyclicGroup<?> group = chooser.getSelectedGostCurve().getGroupParameters().getGroup();
+        EllipticCurve curve;
+        if (group instanceof EllipticCurve) {
+            curve = (EllipticCurve) group;
+        } else {
+            LOGGER.warn("Selected group is not an EllipticCurve. Using SECP256R1");
+            curve = new EllipticCurveSECP256R1();
+        }
+        LOGGER.debug("Using key from context");
+        msg.getComputations().setPrivateKey(chooser.getClientEphemeralEcPrivateKey());
         Point publicKey =
                 curve.mult(msg.getComputations().getPrivateKey().getValue(), curve.getBasePoint());
         msg.getComputations().setClientPublicKey(publicKey);
@@ -266,7 +285,7 @@ public abstract class GOSTClientKeyExchangePreparator
                     Point.createPoint(
                             msg.getComputations().getClientPublicKeyX().getValue(),
                             msg.getComputations().getClientPublicKeyY().getValue(),
-                            chooser.getSelectedGostCurve());
+                            chooser.getSelectedGostCurve().getGroupParameters());
             SubjectPublicKeyInfo ephemeralKey =
                     SubjectPublicKeyInfo.getInstance(
                             GOSTUtils.generatePublicKey(chooser.getSelectedGostCurve(), ecPoint)
@@ -287,7 +306,7 @@ public abstract class GOSTClientKeyExchangePreparator
             DERSequence proxyKeyBlobs = (DERSequence) DERSequence.getInstance(getProxyKeyBlobs());
             TLSGostKeyTransportBlob blob = new TLSGostKeyTransportBlob(transport, proxyKeyBlobs);
             msg.setKeyTransportBlob(blob.getEncoded());
-            LOGGER.debug("GOST key blob: " + ASN1Dump.dumpAsString(blob, true));
+            LOGGER.debug("GOST key blob: {}", ASN1Dump.dumpAsString(blob, true));
         } catch (Exception e) {
             msg.setKeyTransportBlob(new byte[0]);
             LOGGER.warn("Could not compute correct GOST key blob: using byte[0]");

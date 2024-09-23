@@ -24,11 +24,11 @@ Test a MITM workflow trace
     </Receive>
     <Send>
         <connectionAlias>server</connectionAlias>
-        <messages>
+        <configuredMessages>
             <ServerHello/>
             <Certificate/>
             <ServerHelloDone/>
-        </messages>
+        </configuredMessages>
     </Send>
     <Receive>
         <connectionAlias>server</connectionAlias>
@@ -40,16 +40,16 @@ Test a MITM workflow trace
     </Receive>
     <Send>
         <connectionAlias>server</connectionAlias>
-        <messages>
+        <configuredMessages>
             <ChangeCipherSpec/>
             <Finished/>
-        </messages>
+        </configuredMessages>
     </Send>
     <Send>
         <connectionAlias>client</connectionAlias>
-        <messages>
+        <configuredMessages>
             <ClientHello/>
-        </messages>
+        </configuredMessages>
     </Send>
     <Receive>
         <connectionAlias>client</connectionAlias>
@@ -61,11 +61,11 @@ Test a MITM workflow trace
     </Receive>
     <Send>
         <connectionAlias>client</connectionAlias>
-        <messages>
+        <configuredMessages>
             <RSAClientKeyExchange/>
             <ChangeCipherSpec/>
             <Finished/>
-        </messages>
+        </configuredMessages>
     </Send>
     <Receive>
         <connectionAlias>client</connectionAlias>
@@ -89,9 +89,9 @@ Test a MITM workflow trace
         <port>443</port>
         <hostname>localhost</hostname>
         <timeout>1000</timeout>
-        <firstTimeout>1000</firstTimeout>
         <connectionTimeout>8000</connectionTimeout>
         <transportHandlerType>TCP</transportHandlerType>
+        <useIpv6>false</useIpv6>
     </InboundConnection>
     <OutboundConnection>
         <alias>client</alias>
@@ -99,78 +99,49 @@ Test a MITM workflow trace
         <port>443</port>
         <hostname>localhost</hostname>
         <timeout>1000</timeout>
-        <firstTimeout>1000</firstTimeout>
         <connectionTimeout>8000</connectionTimeout>
         <transportHandlerType>TCP</transportHandlerType>
+        <useIpv6>false</useIpv6>
     </OutboundConnection>
     <Receive>
-        <actionOptions/>
         <connectionAlias>server</connectionAlias>
-        <messages/>
-        <httpMessages/>
-        <records/>
-        <fragments/>
         <expectedMessages>
             <ClientHello/>
         </expectedMessages>
-        <expectedHttpMessages/>
     </Receive>
     <Send>
-        <actionOptions/>
         <connectionAlias>server</connectionAlias>
-        <messages>
+        <configuredMessages>
             <ServerHello>
                 <autoSetHelloRetryModeInKeyShare>true</autoSetHelloRetryModeInKeyShare>
             </ServerHello>
             <Certificate/>
             <ServerHelloDone/>
-        </messages>
-        <httpMessages/>
-        <records/>
-        <fragments/>
+        </configuredMessages>
     </Send>
     <Receive>
-        <actionOptions/>
         <connectionAlias>server</connectionAlias>
-        <messages/>
-        <httpMessages/>
-        <records/>
-        <fragments/>
         <expectedMessages>
             <RSAClientKeyExchange/>
             <ChangeCipherSpec/>
             <Finished/>
         </expectedMessages>
-        <expectedHttpMessages/>
     </Receive>
     <Send>
-        <actionOptions/>
         <connectionAlias>server</connectionAlias>
-        <messages>
+        <configuredMessages>
             <ChangeCipherSpec/>
             <Finished/>
-        </messages>
-        <httpMessages/>
-        <records/>
-        <fragments/>
+        </configuredMessages>
     </Send>
     <Send>
-        <actionOptions/>
         <connectionAlias>client</connectionAlias>
-        <messages>
+        <configuredMessages>
             <ClientHello/>
-        </messages>
-        <httpMessages/>
-        <records/>
-        <fragments/>
+        </configuredMessages>
     </Send>
     <Receive>
-        <actionOptions/>
         <connectionAlias>client</connectionAlias>
-        <messages/>
-        <httpMessages/>
-        <records/>
-        <fragments/>
         <expectedMessages>
             <ServerHello>
                 <autoSetHelloRetryModeInKeyShare>true</autoSetHelloRetryModeInKeyShare>
@@ -178,35 +149,23 @@ Test a MITM workflow trace
             <Certificate/>
             <ServerHelloDone/>
         </expectedMessages>
-        <expectedHttpMessages/>
     </Receive>
     <Send>
-        <actionOptions/>
         <connectionAlias>client</connectionAlias>
-        <messages>
+        <configuredMessages>
             <RSAClientKeyExchange/>
             <ChangeCipherSpec/>
             <Finished/>
-        </messages>
-        <httpMessages/>
-        <records/>
-        <fragments/>
+        </configuredMessages>
     </Send>
     <Receive>
-        <actionOptions/>
         <connectionAlias>client</connectionAlias>
-        <messages/>
-        <httpMessages/>
-        <records/>
-        <fragments/>
         <expectedMessages>
             <ChangeCipherSpec/>
             <Finished/>
         </expectedMessages>
-        <expectedHttpMessages/>
     </Receive>
     <PrintLastHandledApplicationData>
-        <actionOptions/>
         <connectionAlias>server</connectionAlias>
         <stringEncoding>US-ASCII</stringEncoding>
     </PrintLastHandledApplicationData>
@@ -225,25 +184,22 @@ Test a MITM workflow trace
         <hostname>localhost</hostname>
     </OutboundConnection>
     <Receive>
-        <actionOptions/>
         <connectionAlias>server</connectionAlias>
         <expectedMessages>
             <ClientHello/>
         </expectedMessages>
     </Receive>
     <Send>
-        <actionOptions/>
         <connectionAlias>server</connectionAlias>
-        <messages>
+        <configuredMessages>
             <ServerHello>
                 <autoSetHelloRetryModeInKeyShare>true</autoSetHelloRetryModeInKeyShare>
             </ServerHello>
             <Certificate/>
             <ServerHelloDone/>
-        </messages>
+        </configuredMessages>
     </Send>
     <Receive>
-        <actionOptions/>
         <connectionAlias>server</connectionAlias>
         <expectedMessages>
             <RSAClientKeyExchange/>
@@ -252,22 +208,19 @@ Test a MITM workflow trace
         </expectedMessages>
     </Receive>
     <Send>
-        <actionOptions/>
         <connectionAlias>server</connectionAlias>
-        <messages>
+        <configuredMessages>
             <ChangeCipherSpec/>
             <Finished/>
-        </messages>
+        </configuredMessages>
     </Send>
     <Send>
-        <actionOptions/>
         <connectionAlias>client</connectionAlias>
-        <messages>
+        <configuredMessages>
             <ClientHello/>
-        </messages>
+        </configuredMessages>
     </Send>
     <Receive>
-        <actionOptions/>
         <connectionAlias>client</connectionAlias>
         <expectedMessages>
             <ServerHello>
@@ -278,16 +231,14 @@ Test a MITM workflow trace
         </expectedMessages>
     </Receive>
     <Send>
-        <actionOptions/>
         <connectionAlias>client</connectionAlias>
-        <messages>
+        <configuredMessages>
             <RSAClientKeyExchange/>
             <ChangeCipherSpec/>
             <Finished/>
-        </messages>
+        </configuredMessages>
     </Send>
     <Receive>
-        <actionOptions/>
         <connectionAlias>client</connectionAlias>
         <expectedMessages>
             <ChangeCipherSpec/>
@@ -295,7 +246,6 @@ Test a MITM workflow trace
         </expectedMessages>
     </Receive>
     <PrintLastHandledApplicationData>
-        <actionOptions/>
         <connectionAlias>server</connectionAlias>
         <stringEncoding>US-ASCII</stringEncoding>
     </PrintLastHandledApplicationData>

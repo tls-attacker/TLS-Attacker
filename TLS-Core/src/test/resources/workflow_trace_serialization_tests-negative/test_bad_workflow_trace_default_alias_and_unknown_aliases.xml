@@ -16,13 +16,13 @@
         <port>443</port>
     </InboundConnection>        
     <Receive>
-        <messages>
+        <expectedMessages>
             <ClientHello>
                 <extensions>
                     <ECPointFormat/>
                     <EllipticCurves/>
                 </extensions>
             </ClientHello>
-        </messages>
+        </expectedMessages>
     </Receive>
 </workflowTrace>

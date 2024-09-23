@@ -426,7 +426,7 @@ public final class RecordBlockCipher extends RecordCipher {
             return padding.length == padding[padding.length - 1] + 1;
         }
         for (int i = 0; i < padding.length; i++) {
-            if (padding[i] != padding.length - 1) {
+            if (ArrayConverter.byteToUnsignedInt(padding[i]) != padding.length - 1) {
                 LOGGER.debug("Padding is invalid");
                 return false;
             }

@@ -24,7 +24,7 @@ import org.apache.logging.log4j.Logger;
  * <p>Call adjustContext() for each message in the context. Does not remove the messages from buffer
  * after execution.
  */
-@XmlRootElement
+@XmlRootElement(name = "ApplyBufferedMessages")
 public class ApplyBufferedMessagesAction extends ConnectionBoundAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -47,7 +47,7 @@ public class ApplyBufferedMessagesAction extends ConnectionBoundAction {
             LOGGER.debug("Empty buffer, no messages to apply");
         } else {
             for (ProtocolMessage msg : messages) {
-                LOGGER.debug("Applying buffered " + msg.toCompactString() + " to context " + ctx);
+                LOGGER.debug("Applying buffered {} to context {}", msg.toCompactString(), ctx);
                 ProtocolMessageHandler h = msg.getHandler(ctx);
                 h.adjustContext(msg);
             }

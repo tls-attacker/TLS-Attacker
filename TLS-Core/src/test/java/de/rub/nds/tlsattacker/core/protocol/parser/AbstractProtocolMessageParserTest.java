@@ -8,14 +8,20 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import de.rub.nds.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageParser;
+import de.rub.nds.tlsattacker.core.state.Context;
+import de.rub.nds.tlsattacker.core.state.State;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
@@ -53,7 +59,7 @@ abstract class AbstractProtocolMessageParserTest<
         this.parserConstructor = null;
         this.messageGetters = messageGetters;
         this.config = Config.createConfig();
-        this.tlsContext = new TlsContext(config);
+        this.tlsContext = new Context(new State(config), new InboundConnection()).getTlsContext();
         this.messageClass = messageClass;
     }
 
@@ -65,7 +71,7 @@ abstract class AbstractProtocolMessageParserTest<
         this.parserConstructorWithContext = null;
         this.messageGetters = messageGetters;
         this.config = Config.createConfig();
-        this.tlsContext = new TlsContext(config);
+        this.tlsContext = new Context(new State(config), new InboundConnection()).getTlsContext();
         this.messageClass = messageClass;
     }
 

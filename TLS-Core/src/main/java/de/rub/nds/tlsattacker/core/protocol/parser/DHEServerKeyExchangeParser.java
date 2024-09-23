@@ -12,7 +12,6 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
 import java.io.InputStream;
-import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -67,7 +66,7 @@ public class DHEServerKeyExchangeParser<T extends DHEServerKeyExchangeMessage>
      */
     private void parsePLength(DHEServerKeyExchangeMessage msg) {
         msg.setModulusLength(parseIntField(HandshakeByteLength.DH_MODULUS_LENGTH));
-        LOGGER.debug("pLength: " + msg.getModulusLength().getValue());
+        LOGGER.debug("pLength: {}", msg.getModulusLength().getValue());
     }
 
     /**
@@ -77,7 +76,7 @@ public class DHEServerKeyExchangeParser<T extends DHEServerKeyExchangeMessage>
      */
     private void parseP(DHEServerKeyExchangeMessage msg) {
         msg.setModulus(parseByteArrayField(msg.getModulusLength().getValue()));
-        LOGGER.debug("P: " + Arrays.toString(msg.getModulus().getValue()));
+        LOGGER.debug("P: {}", msg.getModulus().getValue());
     }
 
     /**
@@ -87,7 +86,7 @@ public class DHEServerKeyExchangeParser<T extends DHEServerKeyExchangeMessage>
      */
     private void parseGLength(DHEServerKeyExchangeMessage msg) {
         msg.setGeneratorLength(parseIntField(HandshakeByteLength.DH_GENERATOR_LENGTH));
-        LOGGER.debug("gLength: " + msg.getGeneratorLength().getValue());
+        LOGGER.debug("gLength: {}", msg.getGeneratorLength().getValue());
     }
 
     /**
@@ -97,7 +96,7 @@ public class DHEServerKeyExchangeParser<T extends DHEServerKeyExchangeMessage>
      */
     private void parseG(DHEServerKeyExchangeMessage msg) {
         msg.setGenerator(parseByteArrayField(msg.getGeneratorLength().getValue()));
-        LOGGER.debug("G: " + Arrays.toString(msg.getGenerator().getValue()));
+        LOGGER.debug("G: {}", msg.getGenerator().getValue());
     }
 
     /**
@@ -107,7 +106,7 @@ public class DHEServerKeyExchangeParser<T extends DHEServerKeyExchangeMessage>
      */
     private void parseSerializedPublicKeyLength(DHEServerKeyExchangeMessage msg) {
         msg.setPublicKeyLength(parseIntField(HandshakeByteLength.DH_PUBLICKEY_LENGTH));
-        LOGGER.debug("SerializedPublicKeyLength: " + msg.getPublicKeyLength().getValue());
+        LOGGER.debug("SerializedPublicKeyLength: {}", msg.getPublicKeyLength().getValue());
     }
 
     /**
@@ -139,7 +138,7 @@ public class DHEServerKeyExchangeParser<T extends DHEServerKeyExchangeMessage>
      */
     private void parseSignatureLength(DHEServerKeyExchangeMessage msg) {
         msg.setSignatureLength(parseIntField(HandshakeByteLength.SIGNATURE_LENGTH));
-        LOGGER.debug("SignatureLength: " + msg.getSignatureLength().getValue());
+        LOGGER.debug("SignatureLength: {}", msg.getSignatureLength().getValue());
     }
 
     /**

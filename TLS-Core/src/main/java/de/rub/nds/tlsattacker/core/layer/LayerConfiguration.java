@@ -63,4 +63,6 @@ public abstract class LayerConfiguration<Container extends DataContainer> {
     public LayerType getLayerType() {
         return layerType;
     }
+
+    public abstract String toCompactString();
 }

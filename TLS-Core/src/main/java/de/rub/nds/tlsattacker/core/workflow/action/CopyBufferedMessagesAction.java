@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement
+@XmlRootElement(name = "CopyBufferedMessages")
 public class CopyBufferedMessagesAction extends CopyContextFieldAction {
 
     public CopyBufferedMessagesAction() {}
@@ -34,5 +34,17 @@ public class CopyBufferedMessagesAction extends CopyContextFieldAction {
     @Override
     public void reset() {
         setExecuted(false);
+    }
+
+    @Override
+    public String toString() {
+        return "CopyBufferedMessagesAction:"
+                + "from="
+                + getSrcContextAlias()
+                + " to="
+                + getDstContextAlias()
+                + "(executed="
+                + isExecuted()
+                + ")";
     }
 }

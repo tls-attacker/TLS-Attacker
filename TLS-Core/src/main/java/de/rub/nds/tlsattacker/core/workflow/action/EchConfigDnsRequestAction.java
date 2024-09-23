@@ -8,13 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.SvcbType;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EchConfig;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.EchConfigParser;
 import de.rub.nds.tlsattacker.core.state.State;
 import jakarta.xml.bind.annotation.XmlRootElement;
@@ -33,8 +31,6 @@ import org.xbill.DNS.Record;
 @XmlRootElement
 public class EchConfigDnsRequestAction extends TlsAction {
     private static final Logger LOGGER = LogManager.getLogger();
-
-    private List<ExtensionMessage> extensions;
 
     private TlsContext tlsContext;
     private Config tlsConfig;
@@ -80,17 +76,17 @@ public class EchConfigDnsRequestAction extends TlsAction {
         echConfigs.addAll(getEchConfigsForAnswer(domainName, answer));
 
         if (!echConfigs.isEmpty()) {
-            LOGGER.info("ECH config found for " + domainName);
+            LOGGER.info("ECH config found for {}", domainName);
             tlsContext.setEchConfig(echConfigs.get(0));
             setExecuted(true);
             return;
         }
 
         // if we did not receive configs for the specified hostname try the referred authority
-        LOGGER.warn("No ECH Configs available for " + hostname + ". Trying authority server.");
+        LOGGER.warn("No ECH Configs available for {}. Trying authority server.", hostname);
         domainName = getAuthorityForAnswer(answer);
         if (domainName == null) {
-            LOGGER.warn("No authority server given for " + hostname);
+            LOGGER.warn("No authority server given for {}", hostname);
             setExecuted(true);
             return;
         }
@@ -113,11 +109,11 @@ public class EchConfigDnsRequestAction extends TlsAction {
         echConfigs.addAll(getEchConfigsForAnswer(domainName, answer));
 
         if (!echConfigs.isEmpty()) {
-            LOGGER.info("ECH config found for " + domainName);
+            LOGGER.info("ECH config found for {}", domainName);
             tlsContext.setEchConfig(echConfigs.get(0));
         } else {
             // still no ECH entry on referred server
-            LOGGER.warn("No ECH Configs available for " + hostname);
+            LOGGER.warn("No ECH Configs available for {}", hostname);
         }
         setExecuted(true);
     }
@@ -188,8 +184,8 @@ public class EchConfigDnsRequestAction extends TlsAction {
                             + echConfigsStr);
             return echConfigs;
         }
-        LOGGER.debug("echConfigStr :" + echConfigsStr);
-        LOGGER.debug("echConfigBytes: " + ArrayConverter.bytesToHexString(echConfigBytes));
+        LOGGER.debug("echConfigStr: {}", echConfigsStr);
+        LOGGER.debug("echConfigBytes: {}", echConfigBytes);
 
         EchConfigParser echConfigParser =
                 new EchConfigParser(new ByteArrayInputStream(echConfigBytes), tlsContext);
@@ -212,7 +208,7 @@ public class EchConfigDnsRequestAction extends TlsAction {
         Message message = Message.newQuery(record);
         Message answer;
 
-        LOGGER.debug("Sending DNS request to get ECH Config for: " + domainName);
+        LOGGER.debug("Sending DNS request to get ECH Config for: {}", domainName);
         // send Message and read answer
         answer = resolver.send(message);
         return answer;

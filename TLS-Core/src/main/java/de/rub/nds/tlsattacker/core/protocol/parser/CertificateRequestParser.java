@@ -13,7 +13,6 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
 import java.io.InputStream;
-import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -62,7 +61,7 @@ public class CertificateRequestParser extends HandshakeMessageParser<Certificate
         msg.setClientCertificateTypesCount(
                 parseIntField(HandshakeByteLength.CERTIFICATES_TYPES_COUNT));
         LOGGER.debug(
-                "ClientCertificateTypesCount: " + msg.getClientCertificateTypesCount().getValue());
+                "ClientCertificateTypesCount: {}", msg.getClientCertificateTypesCount().getValue());
     }
 
     /**
@@ -73,9 +72,7 @@ public class CertificateRequestParser extends HandshakeMessageParser<Certificate
     private void parseClientCertificateTypes(CertificateRequestMessage msg) {
         msg.setClientCertificateTypes(
                 parseByteArrayField(msg.getClientCertificateTypesCount().getValue()));
-        LOGGER.debug(
-                "ClientCertificateTypes: "
-                        + Arrays.toString(msg.getClientCertificateTypes().getValue()));
+        LOGGER.debug("ClientCertificateTypes: {}", msg.getClientCertificateTypes().getValue());
     }
 
     /**
@@ -87,8 +84,8 @@ public class CertificateRequestParser extends HandshakeMessageParser<Certificate
         msg.setSignatureHashAlgorithmsLength(
                 parseIntField(HandshakeByteLength.SIGNATURE_HASH_ALGORITHMS_LENGTH));
         LOGGER.debug(
-                "SignatureHashAlgorithmsLength: "
-                        + msg.getSignatureHashAlgorithmsLength().getValue());
+                "SignatureHashAlgorithmsLength: {}",
+                msg.getSignatureHashAlgorithmsLength().getValue());
     }
 
     /**
@@ -138,8 +135,8 @@ public class CertificateRequestParser extends HandshakeMessageParser<Certificate
         msg.setCertificateRequestContextLength(
                 parseIntField(HandshakeByteLength.CERTIFICATE_REQUEST_CONTEXT_LENGTH));
         LOGGER.debug(
-                "CertificateRequestContextLength: "
-                        + msg.getCertificateRequestContextLength().getValue());
+                "CertificateRequestContextLength: {}",
+                msg.getCertificateRequestContextLength().getValue());
     }
 
     private void parseCertificateRequestContext(CertificateRequestMessage msg) {

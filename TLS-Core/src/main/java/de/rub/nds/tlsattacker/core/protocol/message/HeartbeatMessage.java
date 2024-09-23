@@ -27,7 +27,7 @@ import java.io.InputStream;
 import java.util.Objects;
 
 @XmlRootElement(name = "Heartbeat")
-public class HeartbeatMessage extends ProtocolMessage<HeartbeatMessage> {
+public class HeartbeatMessage extends ProtocolMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     ModifiableByte heartbeatMessageType;

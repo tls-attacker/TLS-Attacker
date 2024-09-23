@@ -28,7 +28,7 @@ import java.util.List;
 
 /** RFC7924 */
 @XmlRootElement(name = "CachedInfoExtension")
-public class CachedInfoExtensionMessage extends ExtensionMessage<CachedInfoExtensionMessage> {
+public class CachedInfoExtensionMessage extends ExtensionMessage {
 
     @ModifiableVariableProperty private ModifiableInteger cachedInfoLength;
     @HoldsModifiableVariable private List<CachedObject> cachedInfo;

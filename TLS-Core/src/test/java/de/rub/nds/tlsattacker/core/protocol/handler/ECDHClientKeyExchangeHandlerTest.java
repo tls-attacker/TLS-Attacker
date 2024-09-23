@@ -11,10 +11,11 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
+import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ECDHClientKeyExchangePreparator;
 import java.math.BigInteger;
@@ -22,8 +23,8 @@ import org.junit.jupiter.api.Test;
 
 public class ECDHClientKeyExchangeHandlerTest
         extends AbstractProtocolMessageHandlerTest<
-                ECDHClientKeyExchangeMessage<?>,
-                ClientKeyExchangeHandler<ECDHClientKeyExchangeMessage<?>>> {
+                ECDHClientKeyExchangeMessage,
+                ClientKeyExchangeHandler<ECDHClientKeyExchangeMessage>> {
 
     public ECDHClientKeyExchangeHandlerTest() {
         super(ECDHClientKeyExchangeMessage::new, ECDHClientKeyExchangeHandler::new);
@@ -34,23 +35,23 @@ public class ECDHClientKeyExchangeHandlerTest
     @Override
     public void testadjustContext() {
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
-        context.setSelectedCipherSuite(CipherSuite.TLS_ECDH_RSA_WITH_AES_128_CBC_SHA256);
+        context.setSelectedCipherSuite(CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256);
         context.setClientRandom(new byte[] {});
         context.setServerRandom(new byte[] {});
         // set server ECDH-parameters
         context.getConfig().setDefaultSelectedNamedGroup(NamedGroup.SECP192R1);
         context.setSelectedGroup(NamedGroup.SECP192R1);
-        context.setServerEcPublicKey(
+        context.setServerEphemeralEcPublicKey(
                 Point.createPoint(
                         new BigInteger(
                                 "1336698681267683560144780033483217462176613397209956026562"),
                         new BigInteger(
                                 "4390496211885670837594012513791855863576256216444143941964"),
-                        NamedGroup.SECP192R1));
-        context.getConfig().setDefaultClientEcPrivateKey(new BigInteger("3"));
-        context.getConfig().setDefaultServerEcPrivateKey(new BigInteger("3"));
-        ECDHClientKeyExchangeMessage<?> message = new ECDHClientKeyExchangeMessage<>();
-        ECDHClientKeyExchangePreparator<ECDHClientKeyExchangeMessage<?>> prep =
+                        (NamedEllipticCurveParameters) NamedGroup.SECP192R1.getGroupParameters()));
+        context.getConfig().setDefaultClientEphemeralEcPrivateKey(new BigInteger("3"));
+        context.getConfig().setDefaultServerEphemeralEcPrivateKey(new BigInteger("3"));
+        ECDHClientKeyExchangeMessage message = new ECDHClientKeyExchangeMessage();
+        ECDHClientKeyExchangePreparator<ECDHClientKeyExchangeMessage> prep =
                 new ECDHClientKeyExchangePreparator<>(context.getChooser(), message);
         prep.prepare();
         handler.adjustContext(message);

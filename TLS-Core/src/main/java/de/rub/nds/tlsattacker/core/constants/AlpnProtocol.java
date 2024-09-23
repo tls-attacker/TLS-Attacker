@@ -48,7 +48,9 @@ public enum AlpnProtocol {
     OASIS_MQTT("mqtt", "MQTT"),
     DNS_OVER_TLS("dot", "DNS-over-TLS"),
     NTSKE_1("ntske/1", "NTSKE"),
-    SUN_RPC("sunrpc", "SunRPC");
+    SUN_RPC("sunrpc", "SunRPC"),
+    HTTP3("h3", "HTTP/3 over QUIC"),
+    DOQ("doq", "DNS over QUIC");
 
     private final String constant;
     private final String printableName;

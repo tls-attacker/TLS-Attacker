@@ -9,8 +9,8 @@
 package de.rub.nds.tlsattacker.core.layer.data;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
-import de.rub.nds.tlsattacker.core.exceptions.ParserException;
+import de.rub.nds.protocol.exception.EndOfStreamException;
+import de.rub.nds.protocol.exception.ParserException;
 import de.rub.nds.tlsattacker.core.exceptions.TimeoutException;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -30,6 +30,12 @@ public abstract class Parser<T> {
     private static final Logger LOGGER = LogManager.getLogger();
 
     private final InputStream stream;
+
+    /**
+     * quicBuffer is used as a helper to construct the original QuicHeader for PacketDecryption.
+     * there might be a nicer solution.
+     */
+    protected ByteArrayOutputStream quicBuffer = new ByteArrayOutputStream();
 
     /** Not so nice... */
     private final ByteArrayOutputStream outputStream;
@@ -180,5 +186,26 @@ public abstract class Parser<T> {
      */
     protected InputStream getStream() {
         return stream;
+    }
+
+    /**
+     * Parses the VariableLengthInteger from the InputStream
+     *
+     * @return [0] the Integer Value [1] the size in bytes of the encoded Integer Value (Used for
+     *     Packet Decryption)
+     */
+    protected long parseVariableLengthInteger() {
+        byte b = parseByteField(1);
+        quicBuffer.write(b);
+        long v = b;
+        byte prefix = (byte) ((v & 0xff) >> 6);
+        byte length = (byte) ((1 & 0xff) << prefix);
+        v = (byte) v & 0x3f;
+        for (int i = 0; i < length - 1; i++) {
+            b = parseByteField(1);
+            quicBuffer.write(b);
+            v = (v << 8) + (b & 0xff);
+        }
+        return v;
     }
 }

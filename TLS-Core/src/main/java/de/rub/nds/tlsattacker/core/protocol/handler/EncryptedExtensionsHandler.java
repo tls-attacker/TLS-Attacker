@@ -17,8 +17,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * This handler processes the EncryptedExtension messages, as defined in <a
- * href="https://tools.ietf.org/html/draft-ietf-tls-tls13-21#section-4.3.1">draft-ietf-tls-tls13-21
+ * This handler processes the EncryptedExtension messages, as defined in <a href=
+ * "https://tools.ietf.org/html/draft-ietf-tls-tls13-21#section-4.3.1">draft-ietf-tls-tls13-21
  * Section 4.3.1</a>
  */
 public class EncryptedExtensionsHandler

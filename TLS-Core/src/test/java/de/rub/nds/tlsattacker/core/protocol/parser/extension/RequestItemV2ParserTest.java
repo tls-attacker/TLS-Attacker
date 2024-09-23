@@ -12,10 +12,13 @@ import static de.rub.nds.modifiablevariable.util.ArrayConverter.hexStringToByteA
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.RequestItemV2;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.ResponderId;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ResponderIdPreparator;
+import de.rub.nds.tlsattacker.core.state.Context;
+import de.rub.nds.tlsattacker.core.state.State;
 import java.io.ByteArrayInputStream;
 import java.util.List;
 import java.util.stream.Stream;
@@ -75,7 +78,11 @@ public class RequestItemV2ParserTest {
             itemExpected = listExpected.get(i);
             itemActual = listActual.get(i);
             ResponderIdPreparator preparator =
-                    new ResponderIdPreparator(new TlsContext().getChooser(), itemExpected);
+                    new ResponderIdPreparator(
+                            new Context(new State(new Config()), new InboundConnection())
+                                    .getTlsContext()
+                                    .getChooser(),
+                            itemExpected);
             preparator.prepare();
 
             assertEquals(

@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.util.List;
 
 public class SendActionTest extends AbstractActionTest<SendAction> {
 
@@ -24,7 +25,7 @@ public class SendActionTest extends AbstractActionTest<SendAction> {
         alert.setConfig(AlertLevel.FATAL, AlertDescription.DECRYPT_ERROR);
         alert.setDescription(AlertDescription.DECODE_ERROR.getValue());
         alert.setLevel(AlertLevel.FATAL.getValue());
-        action.setMessages(alert);
+        action.setConfiguredMessages(List.of(alert));
 
         TlsContext context = state.getTlsContext();
         context.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);

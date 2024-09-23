@@ -9,19 +9,18 @@
 package de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
-import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import java.io.Serializable;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-public class TrustedAuthority extends ModifiableVariableHolder implements Serializable {
+public class TrustedAuthority extends ModifiableVariableHolder {
 
     @ModifiableVariableProperty private ModifiableByte identifierType;
     @ModifiableVariableProperty private ModifiableByteArray sha1Hash;

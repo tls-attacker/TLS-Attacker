@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.record.cipher;
 import static org.junit.jupiter.api.Assertions.*;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
@@ -21,6 +22,8 @@ import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
+import de.rub.nds.tlsattacker.core.state.Context;
+import de.rub.nds.tlsattacker.core.state.State;
 import java.math.BigInteger;
 import java.security.Security;
 import java.util.stream.Stream;
@@ -148,7 +151,8 @@ public class RecordAEADCipherTest {
 
     @BeforeEach
     public void setUp() {
-        this.context = new TlsContext();
+        this.context =
+                new Context(new State(new Config()), new InboundConnection()).getTlsContext();
         this.keySet = new KeySet();
         this.record = new Record();
     }

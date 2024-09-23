@@ -9,28 +9,38 @@
 package de.rub.nds.tlsattacker.core.record;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.layer.data.*;
-import de.rub.nds.tlsattacker.core.protocol.*;
+import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
+import de.rub.nds.tlsattacker.core.layer.data.Handler;
 import de.rub.nds.tlsattacker.core.record.compressor.RecordCompressor;
 import de.rub.nds.tlsattacker.core.record.crypto.Encryptor;
 import de.rub.nds.tlsattacker.core.record.parser.RecordParser;
 import de.rub.nds.tlsattacker.core.record.preparator.RecordPreparator;
 import de.rub.nds.tlsattacker.core.record.serializer.RecordSerializer;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.util.List;
 import java.util.Objects;
 
-public class Record extends ModifiableVariableHolder implements DataContainer<Record, TlsContext> {
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
+public class Record extends ModifiableVariableHolder implements DataContainer<TlsContext> {
+
+    @XmlTransient protected boolean shouldPrepareDefault = true;
 
     /** maximum length configuration for this record */
     private Integer maxRecordLengthConfig;
@@ -87,6 +97,15 @@ public class Record extends ModifiableVariableHolder implements DataContainer<Re
 
     public Record(Integer maxRecordLengthConfig) {
         this.maxRecordLengthConfig = maxRecordLengthConfig;
+    }
+
+    @Override
+    public boolean shouldPrepare() {
+        return shouldPrepareDefault;
+    }
+
+    public void setShouldPrepare(boolean shouldPrepare) {
+        this.shouldPrepareDefault = shouldPrepare;
     }
 
     public ModifiableInteger getLength() {
@@ -271,6 +290,18 @@ public class Record extends ModifiableVariableHolder implements DataContainer<Re
     }
 
     @Override
+    public String toCompactString() {
+        return "Record{"
+                + "contentType="
+                + contentType.getValue()
+                + ", protocolVersion="
+                + ArrayConverter.bytesToHexString(protocolVersion.getValue())
+                + ", length="
+                + length.getValue()
+                + '}';
+    }
+
+    @Override
     public int hashCode() {
         int hash = 7;
         hash = 29 * hash + Objects.hashCode(this.contentType);
@@ -351,9 +382,7 @@ public class Record extends ModifiableVariableHolder implements DataContainer<Re
     }
 
     @Override
-    public Handler getHandler(TlsContext tlsContext) {
-        throw new UnsupportedOperationException(
-                "Not supported yet."); // To change body of generated methods, choose
-        // Tools | Templates.
+    public Handler<Record> getHandler(TlsContext tlsContext) {
+        return null; // TODO
     }
 }

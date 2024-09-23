@@ -18,6 +18,7 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import jakarta.xml.bind.JAXBException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import javax.xml.stream.XMLStreamException;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
@@ -40,7 +41,7 @@ public class GenericReceiveAsciiActionTest extends AbstractActionTest<GenericRec
     /** Test of execute method, of class GenericReceiveAsciiAction. */
     @Test
     @Override
-    @Disabled("ASCI Actions are notfully implemented for layer system")
+    @Disabled("ASCII Actions are notfully implemented for layer system")
     public void testExecute() throws Exception {
         ((FakeTransportHandler) context.getTransportHandler()).setFetchableByte(asciiToCheck);
         super.testExecute();
@@ -48,7 +49,7 @@ public class GenericReceiveAsciiActionTest extends AbstractActionTest<GenericRec
     }
 
     @Test
-    @Disabled("ASCI Actions are notfully implemented for layer system")
+    @Disabled("ASCII Actions are notfully implemented for layer system")
     public void testExecuteOnUnknownEncoding() {
         ((FakeTransportHandler) context.getTransportHandler()).setFetchableByte(asciiToCheck);
         GenericReceiveAsciiAction action = new GenericReceiveAsciiAction("DefinitelyNotAnEncoding");
@@ -57,11 +58,11 @@ public class GenericReceiveAsciiActionTest extends AbstractActionTest<GenericRec
     }
 
     @Override
-    @Disabled("ASCI Actions are notfully implemented for layer system")
+    @Disabled("ASCII Actions are notfully implemented for layer system")
     public void testReset() {}
 
     @Override
-    @Disabled("ASCI Actions are notfully implemented for layer system")
+    @Disabled("ASCII Actions are notfully implemented for layer system")
     public void testDoubleExecuteThrowsActionExecutionException() {}
 
     @Override
@@ -70,19 +71,21 @@ public class GenericReceiveAsciiActionTest extends AbstractActionTest<GenericRec
     }
 
     @Override
-    @Disabled("ASCI Actions are notfully implemented for layer system")
-    public void testMarshalingAndUnmarshalingFilledObjectYieldsEqualObject() {
+    @Disabled("ASCII Actions are notfully implemented for layer system")
+    public void testMarshalingAndUnmarshalingFilledObjectYieldsEqualObject()
+            throws JAXBException, IOException, XMLStreamException {
         super.testMarshalingAndUnmarshalingFilledObjectYieldsEqualObject();
     }
 
     @Override
-    @Disabled("ASCI Actions are notfully implemented for layer system")
-    public void testMarshalingAndUnmarshalingEmptyObjectYieldsEqualObject() {
+    @Disabled("ASCII Actions are notfully implemented for layer system")
+    public void testMarshalingAndUnmarshalingEmptyObjectYieldsEqualObject()
+            throws JAXBException, IOException, XMLStreamException {
         super.testMarshalingAndUnmarshalingEmptyObjectYieldsEqualObject();
     }
 
     @Override
-    @Disabled("ASCI Actions are notfully implemented for layer system")
+    @Disabled("ASCII Actions are notfully implemented for layer system")
     public void testMarshalingEmptyActionYieldsMinimalOutput() throws JAXBException, IOException {
         super.testMarshalingEmptyActionYieldsMinimalOutput();
     }

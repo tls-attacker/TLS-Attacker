@@ -14,11 +14,55 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ReceiveTillLayerConfiguration<Container extends DataContainer>
+public class ReceiveTillLayerConfiguration<Container extends DataContainer<?>>
         extends ReceiveLayerConfiguration<Container> {
 
-    public ReceiveTillLayerConfiguration(LayerType layerType, Container expectedContainer) {
-        super(layerType, Arrays.asList(expectedContainer));
+    private boolean processTrailingContainers = true;
+
+    private int maxNumberOfQuicPacketsToReceive;
+
+    public ReceiveTillLayerConfiguration(LayerType layerType, Container... expectedContainers) {
+        super(layerType, Arrays.asList(expectedContainers));
+    }
+
+    public ReceiveTillLayerConfiguration(LayerType layerType, List<Container> expectedContainers) {
+        super(layerType, expectedContainers);
+    }
+
+    public ReceiveTillLayerConfiguration(
+            LayerType layerType,
+            boolean processTrailingContainers,
+            Container... expectedContainers) {
+        this(layerType, processTrailingContainers, Arrays.asList(expectedContainers));
+    }
+
+    public ReceiveTillLayerConfiguration(
+            LayerType layerType,
+            boolean processTrailingContainers,
+            List<Container> expectedContainers) {
+        super(layerType, expectedContainers);
+        this.processTrailingContainers = processTrailingContainers;
+    }
+
+    public ReceiveTillLayerConfiguration(
+            LayerType layerType,
+            boolean processTrailingContainers,
+            int maxNumberOfQuicPacketsToReceive,
+            Container... expectedContainers) {
+        this(
+                layerType,
+                processTrailingContainers,
+                maxNumberOfQuicPacketsToReceive,
+                Arrays.asList(expectedContainers));
+    }
+
+    public ReceiveTillLayerConfiguration(
+            LayerType layerType,
+            boolean processTrailingContainers,
+            int maxNumberOfQuicPacketsToReceive,
+            List<Container> expectedContainers) {
+        this(layerType, processTrailingContainers, expectedContainers);
+        this.maxNumberOfQuicPacketsToReceive = maxNumberOfQuicPacketsToReceive;
     }
 
     /**
@@ -51,6 +95,20 @@ public class ReceiveTillLayerConfiguration<Container extends DataContainer>
 
     @Override
     public boolean isProcessTrailingContainers() {
-        return true;
+        return processTrailingContainers;
+    }
+
+    public int getMaxNumberOfQuicPacketsToReceive() {
+        return maxNumberOfQuicPacketsToReceive;
+    }
+
+    @Override
+    public String toCompactString() {
+        return "("
+                + getLayerType().getName()
+                + ") ReceiveTill:"
+                + getContainerList().stream()
+                        .map(DataContainer::toCompactString)
+                        .collect(Collectors.joining(","));
     }
 }

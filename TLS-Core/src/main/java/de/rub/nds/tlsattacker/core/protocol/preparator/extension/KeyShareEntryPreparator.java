@@ -9,13 +9,12 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.Bits;
+import de.rub.nds.protocol.crypto.CyclicGroup;
+import de.rub.nds.protocol.crypto.ec.Point;
+import de.rub.nds.protocol.crypto.ec.PointFormatter;
+import de.rub.nds.protocol.exception.PreparationException;
 import de.rub.nds.tlsattacker.core.crypto.KeyShareCalculator;
-import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
-import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
-import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.PWDComputations;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
@@ -53,34 +52,31 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
     }
 
     private void preparePWDKeyShare() throws CryptoException {
-        EllipticCurve curve = CurveFactory.getCurve(entry.getGroupConfig());
-        Point passwordElement = PWDComputations.computePasswordElement(chooser, curve);
+        LOGGER.debug("Using curve: {}", entry.getGroupConfig());
+        CyclicGroup<?> group = entry.getGroupConfig().getGroupParameters().getGroup();
+        Point passwordElement = PWDComputations.computePasswordElement(chooser, group);
         PWDComputations.PWDKeyMaterial keyMaterial =
-                PWDComputations.generateKeyMaterial(curve, passwordElement, chooser);
-        int curveSize = curve.getModulus().bitLength() / Bits.IN_A_BYTE;
+                PWDComputations.generateKeyMaterial(group, passwordElement, chooser);
         entry.setPrivateKey(keyMaterial.privateKeyScalar);
         byte[] serializedScalar = ArrayConverter.bigIntegerToByteArray(keyMaterial.scalar);
         entry.setPublicKey(
                 ArrayConverter.concatenate(
-                        ArrayConverter.bigIntegerToByteArray(
-                                keyMaterial.element.getFieldX().getData(), curveSize, true),
-                        ArrayConverter.bigIntegerToByteArray(
-                                keyMaterial.element.getFieldY().getData(), curveSize, true),
+                        PointFormatter.toRawFormat(keyMaterial.element),
                         ArrayConverter.intToBytes(serializedScalar.length, 1),
                         serializedScalar));
         LOGGER.debug("KeyShare: {}", entry.getPublicKey().getValue());
         LOGGER.debug(
                 "PasswordElement.x: {}",
-                () -> ArrayConverter.bigIntegerToByteArray(passwordElement.getFieldX().getData()));
+                ArrayConverter.bigIntegerToByteArray(passwordElement.getFieldX().getData()));
     }
 
     private void prepareKeyShare() {
         if (entry.getPrivateKey() == null) {
             if (chooser.getConnectionEndType().equals(ConnectionEndType.CLIENT)) {
-                entry.setPrivateKey(chooser.getClientEcPrivateKey());
+                entry.setPrivateKey(chooser.getClientEphemeralEcPrivateKey());
             }
             if (chooser.getConnectionEndType().equals(ConnectionEndType.SERVER)) {
-                entry.setPrivateKey(chooser.getServerEcPrivateKey());
+                entry.setPrivateKey(chooser.getServerEphemeralEcPrivateKey());
             }
         }
         byte[] serializedPoint =
@@ -100,6 +96,6 @@ public class KeyShareEntryPreparator extends Preparator<KeyShareEntry> {
 
     private void prepareKeyShareLength() {
         entry.setPublicKeyLength(entry.getPublicKey().getValue().length);
-        LOGGER.debug("KeyShareLength: " + entry.getPublicKeyLength().getValue());
+        LOGGER.debug("KeyShareLength: {}", entry.getPublicKeyLength().getValue());
     }
 }

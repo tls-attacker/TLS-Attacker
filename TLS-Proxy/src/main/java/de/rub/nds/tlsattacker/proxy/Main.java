@@ -9,14 +9,13 @@
 package de.rub.nds.tlsattacker.proxy;
 
 import com.beust.jcommander.JCommander;
+import de.rub.nds.tlsattacker.core.util.ProviderUtil;
 import java.io.IOException;
-import java.security.Security;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 public class Main {
 
     public static void main(String[] args) throws IOException {
-        Security.addProvider(new BouncyCastleProvider());
+        ProviderUtil.addBouncyCastleProvider();
         ProxyConfig proxyConfig = new ProxyConfig();
         JCommander jc = new JCommander(proxyConfig);
         jc.parse(args);

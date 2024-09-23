@@ -10,11 +10,9 @@ package de.rub.nds.tlsattacker.transport.udp;
 
 import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import de.rub.nds.tlsattacker.transport.udp.stream.UdpInputStream;
-import de.rub.nds.tlsattacker.transport.udp.stream.UdpOutputStream;
 import java.io.IOException;
-import java.io.PushbackInputStream;
 import java.net.DatagramSocket;
+import java.net.InetSocketAddress;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,20 +20,23 @@ public class ClientUdpTransportHandler extends UdpTransportHandler {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    protected final String hostname;
+    protected String ipAddress;
+
+    protected String hostname;
 
     protected Integer sourcePort;
 
-    public ClientUdpTransportHandler(Connection connection) {
-        super(connection.getFirstTimeout(), connection.getTimeout(), ConnectionEndType.CLIENT);
-        this.hostname = connection.getHostname();
-        this.port = connection.getPort();
-        this.sourcePort = connection.getSourcePort();
+    public ClientUdpTransportHandler(Connection con) {
+        super(con);
+        this.ipAddress = con.getIp();
+        this.hostname = con.getHostname();
+        this.port = con.getPort();
+        this.sourcePort = con.getSourcePort();
     }
 
-    public ClientUdpTransportHandler(long firstTimeout, long timeout, String hostname, int port) {
-        super(firstTimeout, timeout, ConnectionEndType.CLIENT);
-        this.hostname = hostname;
+    public ClientUdpTransportHandler(long timeout, String ipAddress, int port) {
+        super(timeout, ConnectionEndType.CLIENT);
+        this.ipAddress = ipAddress;
         this.port = port;
     }
 
@@ -52,11 +53,10 @@ public class ClientUdpTransportHandler extends UdpTransportHandler {
         } else {
             socket = new DatagramSocket(sourcePort);
         }
+        socket.connect(new InetSocketAddress(ipAddress, port));
         socket.setSoTimeout((int) timeout);
         cachedSocketState = null;
-        setStreams(
-                new PushbackInputStream(new UdpInputStream(socket, true)),
-                new UdpOutputStream(socket, hostname, port));
+        this.initialized = true;
     }
 
     @Override

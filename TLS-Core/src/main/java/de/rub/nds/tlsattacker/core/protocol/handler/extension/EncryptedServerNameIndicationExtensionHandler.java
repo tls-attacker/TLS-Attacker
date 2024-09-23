@@ -16,6 +16,7 @@ import org.apache.logging.log4j.Logger;
 public class EncryptedServerNameIndicationExtensionHandler
         extends ExtensionHandler<EncryptedServerNameIndicationExtensionMessage> {
 
+    @SuppressWarnings("unused")
     private static final Logger LOGGER = LogManager.getLogger();
 
     public EncryptedServerNameIndicationExtensionHandler(TlsContext context) {

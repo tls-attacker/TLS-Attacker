@@ -8,9 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.util;
 
+import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
-import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import java.math.BigInteger;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
@@ -42,12 +42,12 @@ public class GOSTUtils {
     }
 
     public static BCECGOST3410PrivateKey generate01PrivateKey(GOSTCurve curve, BigInteger s) {
-        LOGGER.debug("Generating GOST01 private key for " + curve.name());
+        LOGGER.debug("Generating GOST01 private key for {}", curve.name());
         return (BCECGOST3410PrivateKey) generateEcPrivateKey(curve, s, "ECGOST3410");
     }
 
     public static BCECGOST3410_2012PrivateKey generate12PrivateKey(GOSTCurve curve, BigInteger s) {
-        LOGGER.debug("Generating GOST12 private key for " + curve.name());
+        LOGGER.debug("Generating GOST12 private key for {}", curve.name());
         return (BCECGOST3410_2012PrivateKey) generateEcPrivateKey(curve, s, "ECGOST3410-2012");
     }
 
@@ -77,13 +77,13 @@ public class GOSTUtils {
             case GostR3410_2001_CryptoPro_C:
             case GostR3410_2001_CryptoPro_XchA:
             case GostR3410_2001_CryptoPro_XchB:
-                LOGGER.debug("Generating GOST01 public key for " + curve.name());
+                LOGGER.debug("Generating GOST01 public key for {}", curve.name());
                 return (BCECGOST3410PublicKey) convertPointToPublicKey(curve, point, "ECGOST3410");
             case Tc26_Gost_3410_12_256_paramSetA:
             case Tc26_Gost_3410_12_512_paramSetA:
             case Tc26_Gost_3410_12_512_paramSetB:
             case Tc26_Gost_3410_12_512_paramSetC:
-                LOGGER.debug("Generating GOST12 public key for " + curve.name());
+                LOGGER.debug("Generating GOST12 public key for {}", curve.name());
                 return (BCECGOST3410_2012PublicKey)
                         convertPointToPublicKey(curve, point, "ECGOST3410-2012");
             default:

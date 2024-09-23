@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
-import de.rub.nds.tlsattacker.core.constants.NamedGroup;
+import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.KeyShareEntry;
@@ -76,7 +76,7 @@ public class KeyShareExtensionParser extends ExtensionParser<KeyShareExtensionMe
 
     private void parseHRRKeyShare(KeyShareExtensionMessage msg) {
         LOGGER.debug("Parsing KeyShareExtensionMessage as HelloRetryRequest KeyShareExtension");
-        msg.setKeyShareListBytes(parseByteArrayField(NamedGroup.LENGTH));
+        msg.setKeyShareListBytes(parseByteArrayField(HandshakeByteLength.NAMED_GROUP));
         entryList = new LinkedList<>();
         KeyShareEntry entry =
                 parseKeyShareEntry(new ByteArrayInputStream(msg.getKeyShareListBytes().getValue()));

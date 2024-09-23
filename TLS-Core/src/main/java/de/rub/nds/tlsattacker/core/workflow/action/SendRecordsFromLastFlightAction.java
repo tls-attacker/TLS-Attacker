@@ -8,27 +8,20 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
+import de.rub.nds.modifiablevariable.util.Modifiable;
+import de.rub.nds.protocol.util.DeepCopyUtil;
+import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.SpecificSendLayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
-import java.io.IOException;
-import java.util.ArrayList;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.core.workflow.container.ActionHelperUtil;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
-public class SendRecordsFromLastFlightAction extends MessageAction implements SendingAction {
-
-    private static final Logger LOGGER = LogManager.getLogger();
-
-    private int depth;
+public class SendRecordsFromLastFlightAction extends CommonSendAction {
 
     public SendRecordsFromLastFlightAction() {
         super();
@@ -38,122 +31,33 @@ public class SendRecordsFromLastFlightAction extends MessageAction implements Se
         super(connectionAlias);
     }
 
-    public SendRecordsFromLastFlightAction(int depth) {
-        super();
-        this.depth = depth;
-    }
-
-    public SendRecordsFromLastFlightAction(String connectionAlias, int depth) {
-        super(connectionAlias);
-        this.depth = depth;
-    }
-
     @Override
-    public void execute(State state) throws ActionExecutionException {
-        TlsContext tlsContext = state.getContext(connectionAlias).getTlsContext();
-
-        if (isExecuted()) {
-            throw new ActionExecutionException("Action already executed!");
+    protected List<LayerConfiguration<?>> createLayerConfiguration(State state) {
+        List<Record> lastRecords = getLastSendingAction(state.getWorkflowTrace()).getSentRecords();
+        List<Record> duplicatedRecords = DeepCopyUtil.deepCopy(lastRecords);
+        for (int i = 0; i < duplicatedRecords.size(); i++) {
+            duplicatedRecords
+                    .get(i)
+                    .setCleanProtocolMessageBytes(
+                            Modifiable.explicit(
+                                    lastRecords.get(i).getCleanProtocolMessageBytes().getValue()));
         }
-
-        List<SendingAction> sendActions = state.getWorkflowTrace().getSendingActions();
-        int ownIndex = sendActions.indexOf(this);
-        for (int i = depth; i > 0; i--) {
-            records = new ArrayList<>(sendActions.get(ownIndex - i).getSendRecords());
-        }
-
-        String sending = getReadableString(messages);
-        if (hasDefaultAlias()) {
-            LOGGER.info("Executing retransmissions: " + sending);
-        } else {
-            LOGGER.info("Executing retransmissions (" + connectionAlias + "): " + sending);
-        }
-
-        try {
-            tlsContext.getRecordLayer().reencrypt(records);
-            send(tlsContext, new ArrayList<>(), new ArrayList<>(), records, httpMessages);
-            setExecuted(true);
-        } catch (IOException e) {
-            tlsContext.setReceivedTransportHandlerException(true);
-            LOGGER.debug(e);
-            setExecuted(getActionOptions().contains(ActionOption.MAY_FAIL));
-        }
+        List<LayerConfiguration<?>> configurationList = new LinkedList<>();
+        configurationList.add(
+                new SpecificSendLayerConfiguration<>(ImplementedLayers.RECORD, duplicatedRecords));
+        return ActionHelperUtil.sortAndAddOptions(
+                state.getTlsContext(connectionAlias).getLayerStack(),
+                true,
+                getActionOptions(),
+                configurationList);
     }
 
-    @Override
-    public void reset() {
-        List<ModifiableVariableHolder> holders = new LinkedList<>();
-        if (messages != null) {
-            for (ProtocolMessage message : messages) {
-                holders.addAll(message.getAllModifiableVariableHolders());
+    private SendingAction getLastSendingAction(WorkflowTrace trace) {
+        for (int i = 0; i < trace.getSendingActions().size(); i++) {
+            if (trace.getSendingActions().get(i) == this && i != 0) {
+                return trace.getSendingActions().get(i - 1);
             }
         }
-        if (getRecords() != null) {
-            for (Record record : getRecords()) {
-                holders.addAll(record.getAllModifiableVariableHolders());
-            }
-        }
-        if (getFragments() != null) {
-            for (DtlsHandshakeMessageFragment fragment : getFragments()) {
-                holders.addAll(fragment.getAllModifiableVariableHolders());
-            }
-        }
-        for (ModifiableVariableHolder holder : holders) {
-            holder.reset();
-        }
-        setExecuted(null);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final SendAction other = (SendAction) obj;
-        if (!Objects.equals(this.messages, other.messages)) {
-            return false;
-        }
-        if (!Objects.equals(this.records, other.records)) {
-            return false;
-        }
-        if (!Objects.equals(this.fragments, other.fragments)) {
-            return false;
-        }
-        return super.equals(obj);
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = super.hashCode();
-        hash = 67 * hash + Objects.hashCode(this.messages);
-        hash = 67 * hash + Objects.hashCode(this.records);
-        hash = 67 * hash + Objects.hashCode(this.fragments);
-        return hash;
-    }
-
-    @Override
-    public boolean executedAsPlanned() {
-        return isExecuted();
-    }
-
-    @Override
-    public List<ProtocolMessage> getSendMessages() {
-        throw new UnsupportedOperationException("Not supported.");
-    }
-
-    @Override
-    public List<Record> getSendRecords() {
-        return records;
-    }
-
-    @Override
-    public List<DtlsHandshakeMessageFragment> getSendFragments() {
-        throw new UnsupportedOperationException("Not supported.");
+        throw new WorkflowExecutionException("Cannot find last sending action");
     }
 }

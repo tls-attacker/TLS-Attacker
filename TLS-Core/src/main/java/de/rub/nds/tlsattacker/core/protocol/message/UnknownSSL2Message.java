@@ -18,7 +18,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
 @XmlRootElement(name = "UnknownSSL2Message")
-public class UnknownSSL2Message extends SSL2Message<UnknownMessage> {
+public class UnknownSSL2Message extends SSL2Message {
 
     public UnknownSSL2Message() {
         super(SSL2MessageType.SSL_UNKNOWN);

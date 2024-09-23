@@ -69,7 +69,7 @@ public abstract class HelloMessageParser<T extends HelloMessage> extends Handsha
      */
     protected void parseSessionIDLength(HelloMessage message) {
         message.setSessionIdLength(parseIntField(HandshakeByteLength.SESSION_ID_LENGTH));
-        LOGGER.debug("SessionIDLength:" + message.getSessionIdLength().getValue());
+        LOGGER.debug("SessionIDLength: {}", message.getSessionIdLength().getValue());
     }
 
     /**

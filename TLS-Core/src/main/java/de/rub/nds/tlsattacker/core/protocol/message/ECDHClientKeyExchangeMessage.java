@@ -9,8 +9,8 @@
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
+import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.ECDHClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.ECDHClientComputations;
 import de.rub.nds.tlsattacker.core.protocol.parser.ECDHClientKeyExchangeParser;
@@ -21,8 +21,7 @@ import java.io.InputStream;
 import java.util.List;
 
 @XmlRootElement(name = "ECDHClientKeyExchange")
-public class ECDHClientKeyExchangeMessage<Self extends ECDHClientKeyExchangeMessage<?>>
-        extends ClientKeyExchangeMessage<Self> {
+public class ECDHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     @HoldsModifiableVariable protected ECDHClientComputations computations;
 
@@ -44,22 +43,22 @@ public class ECDHClientKeyExchangeMessage<Self extends ECDHClientKeyExchangeMess
 
     @Override
     public ECDHClientKeyExchangeHandler getHandler(TlsContext tlsContext) {
-        return new ECDHClientKeyExchangeHandler<>(tlsContext);
+        return new ECDHClientKeyExchangeHandler(tlsContext);
     }
 
     @Override
     public ECDHClientKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new ECDHClientKeyExchangeParser<>(stream, tlsContext);
+        return new ECDHClientKeyExchangeParser(stream, tlsContext);
     }
 
     @Override
     public ECDHClientKeyExchangePreparator getPreparator(TlsContext tlsContext) {
-        return new ECDHClientKeyExchangePreparator<>(tlsContext.getChooser(), this);
+        return new ECDHClientKeyExchangePreparator(tlsContext.getChooser(), this);
     }
 
     @Override
     public ECDHClientKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
-        return new ECDHClientKeyExchangeSerializer<>(this);
+        return new ECDHClientKeyExchangeSerializer(this);
     }
 
     @Override

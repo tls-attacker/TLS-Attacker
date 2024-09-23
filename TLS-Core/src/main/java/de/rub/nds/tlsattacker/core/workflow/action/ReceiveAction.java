@@ -9,40 +9,65 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.http.HttpMessage;
-import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
+import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.SpecificReceiveLayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
+import de.rub.nds.tlsattacker.core.printer.LogPrinter;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.*;
+import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
+import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
+import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
+import de.rub.nds.tlsattacker.core.workflow.container.ActionHelperUtil;
 import jakarta.xml.bind.annotation.XmlElementRef;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
-@XmlRootElement
-public class ReceiveAction extends CommonReceiveAction implements ReceivingAction {
-
-    private static final Logger LOGGER = LogManager.getLogger();
+@XmlRootElement(name = "Receive")
+public class ReceiveAction extends CommonReceiveAction implements StaticReceivingAction {
 
     @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
-    protected List<ProtocolMessage> expectedMessages = new ArrayList<>();
+    protected List<ProtocolMessage> expectedMessages;
 
     @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
-    protected List<HttpMessage> expectedHttpMessages = new ArrayList<>();
+    protected List<Record> expectedRecords;
+
+    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
+    protected List<DtlsHandshakeMessageFragment> expectedDtlsFragments;
+
+    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
+    protected List<HttpMessage> expectedHttpMessages;
+
+    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
+    protected List<QuicFrame> expectedQuicFrames;
+
+    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
+    protected List<QuicPacket> expectedQuicPackets;
 
     public ReceiveAction() {
         super();
+    }
+
+    public ReceiveAction(
+            Set<ActionOption> actionOptions,
+            List<ProtocolMessage> expectedMessages,
+            List<QuicFrame> expectedQuicFrames,
+            List<QuicPacket> quicPackets) {
+        super();
+        setActionOptions(actionOptions);
+        this.expectedMessages = expectedMessages;
+        this.expectedQuicFrames = expectedQuicFrames;
+        this.expectedQuicPackets = quicPackets;
     }
 
     public ReceiveAction(List<ProtocolMessage> expectedMessages) {
@@ -52,7 +77,51 @@ public class ReceiveAction extends CommonReceiveAction implements ReceivingActio
 
     public ReceiveAction(ProtocolMessage... expectedMessages) {
         super();
-        this.expectedMessages = new ArrayList(Arrays.asList(expectedMessages));
+        this.expectedMessages = new ArrayList<>(Arrays.asList(expectedMessages));
+    }
+
+    public ReceiveAction(QuicFrame... expectedQuicFrames) {
+        super();
+        this.expectedQuicFrames = new ArrayList<>(Arrays.asList(expectedQuicFrames));
+    }
+
+    public ReceiveAction(QuicPacket... expectedQuicPackets) {
+        super();
+        this.expectedQuicPackets = new ArrayList<>(Arrays.asList(expectedQuicPackets));
+    }
+
+    public ReceiveAction(ActionOption actionOption, QuicFrame... expectedQuicFrames) {
+        this(expectedQuicFrames);
+        if (actionOption != null) {
+            this.addActionOption(actionOption);
+        }
+    }
+
+    public ReceiveAction(ActionOption actionOption, QuicPacket... expectedQuicPackets) {
+        this(expectedQuicPackets);
+        if (actionOption != null) {
+            this.addActionOption(actionOption);
+        }
+    }
+
+    public ReceiveAction(
+            ActionOption actionOption,
+            List<QuicFrame> expectedQuicFrames,
+            List<QuicPacket> expectedQuicPackets) {
+        this.expectedQuicFrames = expectedQuicFrames;
+        this.expectedQuicPackets = expectedQuicPackets;
+        if (actionOption != null) {
+            this.addActionOption(actionOption);
+        }
+    }
+
+    public ReceiveAction(
+            Set<ActionOption> actionOptions,
+            List<QuicFrame> expectedQuicFrames,
+            List<QuicPacket> expectedQuicPackets) {
+        this.expectedQuicFrames = expectedQuicFrames;
+        this.expectedQuicPackets = expectedQuicPackets;
+        this.setActionOptions(actionOptions);
     }
 
     public ReceiveAction(
@@ -62,7 +131,7 @@ public class ReceiveAction extends CommonReceiveAction implements ReceivingActio
     }
 
     public ReceiveAction(HttpMessage... expectedHttpMessages) {
-        this.expectedHttpMessages = new ArrayList(Arrays.asList(expectedHttpMessages));
+        this.expectedHttpMessages = new ArrayList<>(Arrays.asList(expectedHttpMessages));
     }
 
     public ReceiveAction(Set<ActionOption> myActionOptions, List<ProtocolMessage> messages) {
@@ -71,14 +140,12 @@ public class ReceiveAction extends CommonReceiveAction implements ReceivingActio
     }
 
     public ReceiveAction(Set<ActionOption> actionOptions, ProtocolMessage... messages) {
-        this(actionOptions, new ArrayList(Arrays.asList(messages)));
+        this(actionOptions, new ArrayList<>(Arrays.asList(messages)));
     }
 
     public ReceiveAction(ActionOption actionOption, List<ProtocolMessage> messages) {
         this(messages);
-        HashSet myActionOptions = new HashSet();
-        myActionOptions.add(actionOption);
-        setActionOptions(myActionOptions);
+        setActionOptions(Set.of(actionOption));
     }
 
     public ReceiveAction(ActionOption actionOption, ProtocolMessage... messages) {
@@ -100,75 +167,29 @@ public class ReceiveAction extends CommonReceiveAction implements ReceivingActio
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("Receive Action:\n");
-
-        sb.append("\tExpected:");
-        if ((expectedMessages != null)) {
-            for (ProtocolMessage message : expectedMessages) {
-                sb.append(message.toCompactString());
-                sb.append(", ");
-            }
-        } else {
-            sb.append(" (no messages set)");
+        String string =
+                getClass().getSimpleName()
+                        + ": "
+                        + (isExecuted() ? "\n" : "(not executed)\n")
+                        + "\tExpected: "
+                        + LogPrinter.toHumanReadableMultiLineContainerListArray(
+                                getExpectedDataContainerLists());
+        if (isExecuted()) {
+            string +=
+                    "\n\tActual: "
+                            + LogPrinter.toHumanReadableMultiLine(getLayerStackProcessingResult());
         }
-        sb.append("\n\tActual:");
-        if ((messages != null) && (!messages.isEmpty())) {
-            for (ProtocolMessage message : messages) {
-                sb.append(message.toCompactString());
-                sb.append(", ");
-            }
-        } else {
-            sb.append(" (no messages set)");
-        }
-        sb.append("\n");
-        return sb.toString();
+        return string;
     }
 
     @Override
     public String toCompactString() {
-        StringBuilder sb = new StringBuilder(super.toCompactString());
-        if ((expectedMessages != null) && (!expectedMessages.isEmpty())) {
-            sb.append(" (");
-            for (ProtocolMessage message : expectedMessages) {
-                sb.append(message.toCompactString());
-                sb.append(",");
-            }
-            sb.deleteCharAt(sb.lastIndexOf(",")).append(")");
-        } else {
-            sb.append(" (no messages set)");
-        }
-        return sb.toString();
+        return LogPrinter.toHumanReadableMultiLineContainerListArray(
+                getExpectedDataContainerLists());
     }
 
-    @Override
-    public boolean executedAsPlanned() {
-        if (getLayerStackProcessingResult() != null) {
-            for (LayerProcessingResult result :
-                    getLayerStackProcessingResult().getLayerProcessingResultList()) {
-                if (!result.isExecutedAsPlanned()) {
-                    return false;
-                }
-            }
-            return true;
-        }
-        return false;
-    }
-
-    @Override
     public List<ProtocolMessage> getExpectedMessages() {
         return expectedMessages;
-    }
-
-    void setReceivedMessages(List<ProtocolMessage> receivedMessages) {
-        this.messages = receivedMessages;
-    }
-
-    void setReceivedRecords(List<Record> receivedRecords) {
-        this.records = receivedRecords;
-    }
-
-    void setReceivedFragments(List<DtlsHandshakeMessageFragment> fragments) {
-        this.fragments = fragments;
     }
 
     public void setExpectedMessages(List<ProtocolMessage> expectedMessages) {
@@ -176,138 +197,108 @@ public class ReceiveAction extends CommonReceiveAction implements ReceivingActio
     }
 
     public void setExpectedMessages(ProtocolMessage... expectedMessages) {
-        this.expectedMessages = new ArrayList(Arrays.asList(expectedMessages));
+        this.expectedMessages = new ArrayList<>(Arrays.asList(expectedMessages));
+    }
+
+    public List<HttpMessage> getExpectedHttpMessages() {
+        return expectedHttpMessages;
+    }
+
+    public void setExpectedHttpMessages(List<HttpMessage> expectedHttpMessages) {
+        this.expectedHttpMessages = expectedHttpMessages;
+    }
+
+    public List<QuicFrame> getExpectedQuicFrames() {
+        return expectedQuicFrames;
+    }
+
+    public void setExpectedQuicFrames(List<QuicFrame> expectedQuicFrames) {
+        this.expectedQuicFrames = expectedQuicFrames;
+    }
+
+    public List<QuicPacket> getExpectedQuicPackets() {
+        return expectedQuicPackets;
+    }
+
+    public void setExpectedQuicPackets(List<QuicPacket> expectedQuicPackets) {
+        this.expectedQuicPackets = expectedQuicPackets;
+    }
+
+    public List<Record> getExpectedRecords() {
+        return expectedRecords;
+    }
+
+    public void setExpectedRecords(List<Record> expectedRecords) {
+        this.expectedRecords = expectedRecords;
+    }
+
+    public List<DtlsHandshakeMessageFragment> getExpectedDtlsFragments() {
+        return expectedDtlsFragments;
+    }
+
+    public void setExpectedDtlsFragments(List<DtlsHandshakeMessageFragment> expectedDtlsFragments) {
+        this.expectedDtlsFragments = expectedDtlsFragments;
     }
 
     @Override
-    public void reset() {
-        messages = null;
-        records = null;
-        fragments = null;
-        setExecuted(false);
-    }
-
-    @Override
-    public List<ProtocolMessage> getReceivedMessages() {
-        return messages;
-    }
-
-    @Override
-    public List<Record> getReceivedRecords() {
-        return records;
-    }
-
-    @Override
-    public List<DtlsHandshakeMessageFragment> getReceivedFragments() {
-        return fragments;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = super.hashCode();
-        hash = 67 * hash + Objects.hashCode(this.expectedMessages);
-        hash = 67 * hash + Objects.hashCode(this.messages);
-        hash = 67 * hash + Objects.hashCode(this.records);
-        hash = 67 * hash + Objects.hashCode(this.fragments);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
+    protected List<LayerConfiguration<?>> createLayerConfiguration(State state) {
+        TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
+        List<LayerConfiguration<?>> configurationList = new LinkedList<>();
+        if (getExpectedRecords() != null) {
+            configurationList.add(
+                    new SpecificReceiveLayerConfiguration<>(
+                            ImplementedLayers.RECORD, getExpectedRecords()));
         }
-        if (obj == null) {
-            return false;
+        if (getExpectedMessages() != null) {
+            configurationList.add(
+                    new SpecificReceiveLayerConfiguration<>(
+                            ImplementedLayers.MESSAGE, getExpectedMessages()));
         }
-        if (getClass() != obj.getClass()) {
-            return false;
+        if (getExpectedDtlsFragments() != null) {
+            configurationList.add(
+                    new SpecificReceiveLayerConfiguration<>(
+                            ImplementedLayers.DTLS_FRAGMENT, getExpectedDtlsFragments()));
         }
-        final ReceiveAction other = (ReceiveAction) obj;
-        if (!Objects.equals(this.expectedMessages, other.expectedMessages)) {
-            return false;
+        if (getExpectedHttpMessages() != null) {
+            configurationList.add(
+                    new SpecificReceiveLayerConfiguration<>(
+                            ImplementedLayers.HTTP, getExpectedHttpMessages()));
         }
-        if (!Objects.equals(this.messages, other.messages)) {
-            return false;
+        if (getExpectedQuicFrames() != null) {
+            configurationList.add(
+                    new SpecificReceiveLayerConfiguration<>(
+                            ImplementedLayers.QUICFRAME, getExpectedQuicFrames()));
         }
-        if (!Objects.equals(this.records, other.records)) {
-            return false;
+        if (getExpectedQuicPackets() != null) {
+            configurationList.add(
+                    new SpecificReceiveLayerConfiguration<>(
+                            ImplementedLayers.QUICPACKET, getExpectedQuicPackets()));
         }
-        if (!Objects.equals(this.fragments, other.fragments)) {
-            return false;
-        }
-        return super.equals(obj);
+        return ActionHelperUtil.sortAndAddOptions(
+                tlsContext.getLayerStack(), false, getActionOptions(), configurationList);
     }
 
     @Override
-    public void normalize() {
-        super.normalize();
-        initEmptyLists();
-    }
-
-    @Override
-    public void normalize(TlsAction defaultAction) {
-        super.normalize(defaultAction);
-        initEmptyLists();
-    }
-
-    @Override
-    public void filter() {
-        super.filter();
-        filterEmptyLists();
-    }
-
-    @Override
-    public void filter(TlsAction defaultCon) {
-        super.filter(defaultCon);
-        filterEmptyLists();
-    }
-
-    private void filterEmptyLists() {
-        if (expectedMessages == null || expectedMessages.isEmpty()) {
-            expectedMessages = null;
+    public List<List<DataContainer<?>>> getExpectedDataContainerLists() {
+        List<List<DataContainer<?>>> dataContainerLists = new LinkedList<>();
+        if (expectedHttpMessages != null) {
+            dataContainerLists.add((List<DataContainer<?>>) (List<?>) expectedHttpMessages);
         }
-        if (expectedHttpMessages == null || expectedHttpMessages.isEmpty()) {
-            expectedHttpMessages = null;
+        if (expectedMessages != null) {
+            dataContainerLists.add((List<DataContainer<?>>) (List<?>) expectedMessages);
         }
-    }
-
-    private void initEmptyLists() {
-        if (expectedMessages == null) {
-            expectedMessages = new ArrayList<>();
+        if (expectedDtlsFragments != null) {
+            dataContainerLists.add((List<DataContainer<?>>) (List<?>) expectedDtlsFragments);
         }
-        if (expectedHttpMessages == null) {
-            expectedHttpMessages = new ArrayList<>();
+        if (expectedRecords != null) {
+            dataContainerLists.add((List<DataContainer<?>>) (List<?>) expectedRecords);
         }
-    }
-
-    @Override
-    public List<ProtocolMessageType> getGoingToReceiveProtocolMessageTypes() {
-        List<ProtocolMessageType> protocolMessageTypes = new ArrayList<>();
-        for (ProtocolMessage msg : expectedMessages) {
-            protocolMessageTypes.add(msg.getProtocolMessageType());
+        if (expectedQuicFrames != null) {
+            dataContainerLists.add((List<DataContainer<?>>) (List<?>) expectedQuicFrames);
         }
-        return protocolMessageTypes;
-    }
-
-    @Override
-    public List<HandshakeMessageType> getGoingToReceiveHandshakeMessageTypes() {
-        List<HandshakeMessageType> handshakeMessageTypes = new ArrayList<>();
-        for (ProtocolMessage msg : expectedMessages) {
-            if (msg instanceof HandshakeMessage) {
-                handshakeMessageTypes.add(((HandshakeMessage) msg).getHandshakeMessageType());
-            }
+        if (expectedQuicPackets != null) {
+            dataContainerLists.add((List<DataContainer<?>>) (List<?>) expectedQuicPackets);
         }
-        return handshakeMessageTypes;
-    }
-
-    @Override
-    protected void distinctReceive(TlsContext tlsContext) {
-        receive(tlsContext, expectedMessages, fragments, records, httpMessages);
-    }
-
-    @Override
-    public List<HttpMessage> getReceivedHttpMessages() {
-        return httpMessages;
+        return dataContainerLists;
     }
 }

@@ -19,6 +19,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair
 import java.net.*;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import org.bouncycastle.util.IPAddress;
 
 public class ClientDelegate extends Delegate {
@@ -59,9 +60,20 @@ public class ClientDelegate extends Delegate {
             con = new OutboundConnection();
             config.setDefaultClientConnection(con);
         }
+        LOGGER.info("Processing client delegate host={} sniHostname={}", host, sniHostname);
         con.setPort(extractedPort);
         if (IPAddress.isValid(extractedHost)) {
             con.setIp(extractedHost);
+            if (IPAddress.isValidIPv6(extractedHost)) {
+                con.setIpv6(extractedHost);
+            } else if (sniHostname != null) {
+                try {
+                    con.setIpv6(getIpv6ForHost(sniHostname));
+                } catch (UnknownHostException ex) {
+                    LOGGER.warn("Could not resolve IPv6 address for host {}", sniHostname);
+                    LOGGER.debug(ex); // Expected exception
+                }
+            }
             setHostname(config, extractedHost, con);
             if (sniHostname != null) {
                 setHostname(config, sniHostname, con);
@@ -73,6 +85,11 @@ public class ClientDelegate extends Delegate {
                 setHostname(config, extractedHost, con);
             }
             con.setIp(getIpForHost(extractedHost));
+            try {
+                con.setIpv6(getIpv6ForHost(extractedHost));
+            } catch (UnknownHostException ex) {
+                LOGGER.warn("Could not resolve IPv6 address for host " + extractedHost, ex);
+            }
         }
     }
 
@@ -122,16 +139,30 @@ public class ClientDelegate extends Delegate {
             InetAddress inetAddress = InetAddress.getByName(host);
             return inetAddress.getHostAddress();
         } catch (UnknownHostException ex) {
-            LOGGER.warn("Could not resolve host \"" + host + "\" returning anyways", ex);
+            LOGGER.warn("Could not resolve host \"{}\" returning anyways", host, ex);
             return host;
         }
+    }
+
+    public String getIpv6ForHost(String host) throws UnknownHostException {
+        // workaround for windows where java does not resolve any domain to ipv6, this allows
+        // testing on windows with local servers
+        if (Objects.equals(host, "localhost")) {
+            return InetAddress.getByName("::1").getHostAddress();
+        }
+        for (InetAddress addr : InetAddress.getAllByName(host)) {
+            if (addr instanceof Inet6Address) {
+                return addr.getHostAddress();
+            }
+        }
+        throw new UnknownHostException();
     }
 
     private String getHostForIp(String ip) {
         try {
             return InetAddress.getByName(ip).getCanonicalHostName();
         } catch (UnknownHostException ex) {
-            LOGGER.warn("Could not perform reverse DNS for \"" + ip + "\"", ex);
+            LOGGER.warn("Could not perform reverse DNS for \"{}\"", ip, ex);
             return ip;
         }
     }

@@ -11,11 +11,13 @@ package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
+import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.SessionTicket;
+import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import org.junit.jupiter.api.Test;
 
@@ -28,9 +30,9 @@ public class SessionTicketTlsExtensionHandlerTest
                 SessionTicketTLSExtensionMessage::new,
                 SessionTicketTLSExtensionHandler::new,
                 () -> {
-                    Config config = Config.createConfig();
+                    Config config = new Config();
                     config.setDefaultRunningMode(RunningModeType.SERVER);
-                    return new TlsContext(config);
+                    return new Context(new State(config), new InboundConnection()).getTlsContext();
                 });
         context.setTalkingConnectionEndType(ConnectionEndType.CLIENT);
     }
