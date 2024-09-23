@@ -10,7 +10,9 @@ package de.rub.nds.tlsattacker.core.integration.handshakes;
 
 import static org.junit.Assume.assumeNotNull;
 
+import com.github.dockerjava.api.async.ResultCallback;
 import com.github.dockerjava.api.exception.DockerException;
+import com.github.dockerjava.api.model.Frame;
 import com.github.dockerjava.api.model.Image;
 import de.rub.nds.tls.subject.ConnectionRole;
 import de.rub.nds.tls.subject.TlsImplementationType;
@@ -186,6 +188,7 @@ public abstract class AbstractHandshakeIT {
                 protocolVersion);
 
         State state = new State(config);
+        modifyWorkflowTrace(state);
         WorkflowExecutor executor =
                 WorkflowExecutorFactory.createWorkflowExecutor(
                         config.getWorkflowExecutorType(), state);
@@ -228,6 +231,7 @@ public abstract class AbstractHandshakeIT {
                 prepareContainer();
                 setConnectionTargetFields(config);
                 state = new State(config);
+                modifyWorkflowTrace(state);
                 executor =
                         WorkflowExecutorFactory.createWorkflowExecutor(
                                 config.getWorkflowExecutorType(), state);
@@ -264,6 +268,7 @@ public abstract class AbstractHandshakeIT {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+        printFailedContainerLogs();
         Assert.fail(
                 "Failed to handshake with "
                         + implementation
@@ -275,6 +280,24 @@ public abstract class AbstractHandshakeIT {
                                 workflowTraceType,
                                 addEncryptThenMac,
                                 addExtendedMasterSecret));
+    }
+
+    private void printFailedContainerLogs() {
+        String dockerId = dockerInstance.getId();
+        System.out.println("Failed container docker logs:");
+        DockerClientManager.getDockerClient()
+                .logContainerCmd(dockerId)
+                .withSince(0)
+                .withStdOut(true)
+                .withStdErr(true)
+                .exec(
+                        new ResultCallback.Adapter<Frame>() {
+                            @Override
+                            public void onNext(Frame frame) {
+                                String log = (new String(frame.getPayload())).trim();
+                                System.out.print(log);
+                            }
+                        });
     }
 
     public Stream<Arguments> provideTestVectors() {
@@ -310,6 +333,10 @@ public abstract class AbstractHandshakeIT {
             }
         }
         return builder.build();
+    }
+
+    protected void modifyWorkflowTrace(State state) {
+        return;
     }
 
     protected NamedGroup[] getNamedGroupsToTest() {
