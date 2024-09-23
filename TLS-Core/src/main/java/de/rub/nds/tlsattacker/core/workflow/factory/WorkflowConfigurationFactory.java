@@ -73,7 +73,6 @@ import de.rub.nds.tlsattacker.core.quic.frame.HandshakeDoneFrame;
 import de.rub.nds.tlsattacker.core.quic.frame.PingFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.RetryPacket;
 import de.rub.nds.tlsattacker.core.quic.packet.VersionNegotiationPacket;
-import de.rub.nds.tlsattacker.core.smtp.SmtpMessage;
 import de.rub.nds.tlsattacker.core.smtp.command.*;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpEHLOReply;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpInitialGreeting;
@@ -628,10 +627,12 @@ public class WorkflowConfigurationFactory {
         appendHttpMessages(connection, trace);
         return trace;
     }
+
     private WorkflowTrace createSmtpStarttlsWorkflow() {
         AliasedConnection connection = getConnection();
         WorkflowTrace trace = createDynamicHandshakeWorkflow(connection);
-        //kind of dirty changing it from the back, but otherwise we have to rework the whole dynamic handshake mechanism
+        // kind of dirty changing it from the back, but otherwise we have to rework the whole
+        // dynamic handshake mechanism
         trace.addTlsAction(0, new ReceiveAction(new SmtpInitialGreeting()));
         trace.addTlsAction(1, new SendAction(new SmtpEHLOCommand("seal.upb.de")));
         trace.addTlsAction(2, new ReceiveAction(new SmtpEHLOReply()));
@@ -645,10 +646,19 @@ public class WorkflowConfigurationFactory {
 
         return trace;
     }
-    private void appendSmtpCommandAndReplyActions(AliasedConnection connection, WorkflowTrace trace, SmtpCommand command) {
-        MessageAction clientAction = MessageActionFactory.createSmtpAction(config, connection, ConnectionEndType.CLIENT, command);
+
+    private void appendSmtpCommandAndReplyActions(
+            AliasedConnection connection, WorkflowTrace trace, SmtpCommand command) {
+        MessageAction clientAction =
+                MessageActionFactory.createSmtpAction(
+                        config, connection, ConnectionEndType.CLIENT, command);
         trace.addTlsAction(clientAction);
-        MessageAction serverAction = MessageActionFactory.createSmtpAction(config, connection, ConnectionEndType.SERVER, SmtpContext.getExpectedReplyType(command));
+        MessageAction serverAction =
+                MessageActionFactory.createSmtpAction(
+                        config,
+                        connection,
+                        ConnectionEndType.SERVER,
+                        SmtpContext.getExpectedReplyType(command));
         trace.addTlsAction(serverAction);
     }
 
@@ -848,7 +858,7 @@ public class WorkflowConfigurationFactory {
         }
         if (!zeroRtt
                 && (Objects.equals(config.getTls13BackwardsCompatibilityMode(), Boolean.TRUE)
-                || connection.getLocalConnectionEndType() == ConnectionEndType.SERVER)) {
+                        || connection.getLocalConnectionEndType() == ConnectionEndType.SERVER)) {
             clientMessages.add(ccsClient);
         }
         serverMessages.add(encExtMsg);

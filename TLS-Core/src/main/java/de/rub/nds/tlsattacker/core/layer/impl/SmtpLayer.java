@@ -15,7 +15,6 @@ import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
-import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.hints.SmtpLayerHint;
@@ -25,7 +24,6 @@ import de.rub.nds.tlsattacker.core.smtp.handler.SmtpMessageHandler;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpReply;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpUnknownReply;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-
 import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -116,9 +114,9 @@ public class SmtpLayer extends ProtocolLayer<SmtpLayerHint, SmtpMessage> {
 
     @Override
     public boolean executedAsPlanned() {
-//        for(DataContainer<SmtpContext> produced : getLayerResult().getUsedContainers()) {
-//
-//        }
+        //        for(DataContainer<SmtpContext> produced : getLayerResult().getUsedContainers()) {
+        //
+        //        }
         return true;
     }
 }

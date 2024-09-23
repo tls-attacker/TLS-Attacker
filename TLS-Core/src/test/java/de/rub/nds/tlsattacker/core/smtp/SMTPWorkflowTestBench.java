@@ -43,6 +43,7 @@ public class SMTPWorkflowTestBench {
     public void changeLoglevel() {
         Configurator.setAllLevels("de.rub.nds.tlsattacker", org.apache.logging.log4j.Level.ALL);
     }
+
     @Disabled
     @Test
     public void testWorkFlow() throws IOException, JAXBException {
@@ -87,8 +88,9 @@ public class SMTPWorkflowTestBench {
         config.setDefaultLayerConfiguration(StackConfiguration.SMTPS);
 
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
-        WorkflowTrace trace = factory.createWorkflowTrace(WorkflowTraceType.DYNAMIC_HANDSHAKE, RunningModeType.CLIENT);
-
+        WorkflowTrace trace =
+                factory.createWorkflowTrace(
+                        WorkflowTraceType.DYNAMIC_HANDSHAKE, RunningModeType.CLIENT);
 
         trace.addTlsAction(new ReceiveAction(new SmtpInitialGreeting()));
         trace.addTlsAction(new SendAction(new SmtpEHLOCommand("seal.upb.de")));
@@ -113,6 +115,7 @@ public class SMTPWorkflowTestBench {
         System.out.println(state.getContext().getLayerStack().getHighestLayer().getLayerResult());
         assert state.getWorkflowTrace().executedAsPlanned();
     }
+
     @Disabled
     @Test
     public void testWorkFlowSTARTTLS() throws IOException, JAXBException {
@@ -124,7 +127,9 @@ public class SMTPWorkflowTestBench {
         config.setDefaultLayerConfiguration(StackConfiguration.SMTP);
 
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
-        WorkflowTrace trace = factory.createWorkflowTrace(WorkflowTraceType.DYNAMIC_HANDSHAKE, RunningModeType.CLIENT);
+        WorkflowTrace trace =
+                factory.createWorkflowTrace(
+                        WorkflowTraceType.DYNAMIC_HANDSHAKE, RunningModeType.CLIENT);
 
         trace.addTlsAction(0, new ReceiveAction(new SmtpInitialGreeting()));
         trace.addTlsAction(1, new SendAction(new SmtpEHLOCommand("seal.upb.de")));
@@ -137,14 +142,15 @@ public class SMTPWorkflowTestBench {
         trace.addTlsAction(new ReceiveAction(new SmtpEHLOReply()));
         trace.addTlsAction(new SendAction(new SmtpMAILCommand("<tim@test.de>")));
         trace.addTlsAction(new ReceiveAction(new SmtpMAILReply()));
-//        trace.addTlsAction(new SendAction(new SmtpQUITCommand()));
-//        trace.addTlsAction(new ReceiveAction(new SmtpQUITReply()));
+        //        trace.addTlsAction(new SendAction(new SmtpQUITCommand()));
+        //        trace.addTlsAction(new ReceiveAction(new SmtpQUITReply()));
 
         trace.addTlsAction(new STARTTLSAction());
 
-//        trace.addTlsAction(new SendAction(new SmtpEHLOCommand("commandinjection.seal.upb.de")));
-//        trace.addTlsAction(new SendAsciiAction("abc", "ascii"));
-        //trace.addTlsAction(new ReceiveAction(new SmtpEHLOReply()));
+        //        trace.addTlsAction(new SendAction(new
+        // SmtpEHLOCommand("commandinjection.seal.upb.de")));
+        trace.addTlsAction(new SendAction(new SmtpNOOPCommand()));
+        // trace.addTlsAction(new ReceiveAction(new SmtpEHLOReply()));
 
         trace.addTlsAction(new STARTTLSAction());
 
@@ -179,7 +185,8 @@ public class SMTPWorkflowTestBench {
         config.setDefaultLayerConfiguration(StackConfiguration.SMTP);
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
         WorkflowTrace trace =
-                factory.createWorkflowTrace(WorkflowTraceType.SMTP_STARTTLS, RunningModeType.CLIENT);
+                factory.createWorkflowTrace(
+                        WorkflowTraceType.SMTP_STARTTLS, RunningModeType.CLIENT);
         State state = new State(config, trace);
 
         WorkflowExecutor workflowExecutor =

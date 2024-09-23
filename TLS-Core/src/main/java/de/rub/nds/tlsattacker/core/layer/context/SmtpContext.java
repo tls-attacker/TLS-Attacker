@@ -93,8 +93,9 @@ public class SmtpContext extends LayerContext {
     }
 
     /**
-     * Given a command return an instance of the Reply object expected fpr ot.
-     * Raises an exception when a command is not implemented.
+     * Given a command return an instance of the Reply object expected fpr ot. Raises an exception
+     * when a command is not implemented.
+     *
      * @param command The command for which to get the expected reply
      * @return The expected reply object
      */

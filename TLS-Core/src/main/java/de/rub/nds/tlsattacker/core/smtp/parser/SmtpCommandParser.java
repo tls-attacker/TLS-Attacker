@@ -12,11 +12,10 @@ import de.rub.nds.tlsattacker.core.smtp.command.SmtpCommand;
 import java.io.InputStream;
 
 /**
- * Parses an SmtpCommand from an InputStream.
- * Supposed to be implemented by subclasses to parse the arguments of the command.
- * Otherwise it is a simple parser for the command verb and parameters.
- * Assumptions:
- * - There is a command verb followed by a space and then parameters ending with CRLF
+ * Parses an SmtpCommand from an InputStream. Supposed to be implemented by subclasses to parse the
+ * arguments of the command. Otherwise it is a simple parser for the command verb and parameters.
+ * Assumptions: - There is a command verb followed by a space and then parameters ending with CRLF
+ *
  * @param <CommandT>
  */
 public class SmtpCommandParser<CommandT extends SmtpCommand> extends SmtpMessageParser<CommandT> {

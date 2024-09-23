@@ -1,3 +1,11 @@
+/*
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
+ *
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
+ */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
@@ -15,21 +23,22 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * This action toggles the MessageLayer and RecordLayer to the LayerStack to enable opportunistic TLS communication.
- * If the MessageLayer and RecordLayer are already present in the LayerStack, they will be removed.
- * Even though it does not transmit the actual application-specific STARTTLS command, it should only be used in protocols that support a form of STARTTLS command.
- * Currently, only SMTP is supported.
+ * This action toggles the MessageLayer and RecordLayer to the LayerStack to enable opportunistic
+ * TLS communication. If the MessageLayer and RecordLayer are already present in the LayerStack,
+ * they will be removed. Even though it does not transmit the actual application-specific STARTTLS
+ * command, it should only be used in protocols that support a form of STARTTLS command. Currently,
+ * only SMTP is supported.
  */
 @XmlRootElement
 public class STARTTLSAction extends ConnectionBoundAction {
     protected static final Logger LOGGER = LogManager.getLogger();
 
-    public STARTTLSAction() {
-    }
+    public STARTTLSAction() {}
 
     @Override
     public void execute(State state) throws ActionExecutionException {
-        LayerType topLevelType = state.getContext().getLayerStack().getHighestLayer().getLayerType();
+        LayerType topLevelType =
+                state.getContext().getLayerStack().getHighestLayer().getLayerType();
         if (topLevelType != ImplementedLayers.SMTP) {
             throw new ActionExecutionException("STARTTLS is not defined for this protocol");
         }
@@ -43,25 +52,29 @@ public class STARTTLSAction extends ConnectionBoundAction {
         TlsContext tlsContext = state.getTlsContext();
         StarttlsContext starttlsContext = state.getStarttlsContext();
 
-        if (layerStack.getLayersInStack().contains(ImplementedLayers.MESSAGE) && layerStack.getLayersInStack().contains(ImplementedLayers.RECORD)) {
+        if (layerStack.getLayersInStack().contains(ImplementedLayers.MESSAGE)
+                && layerStack.getLayersInStack().contains(ImplementedLayers.RECORD)) {
             ProtocolLayer oldRecordLayer = layerStack.removeLayer(RecordLayer.class);
             state.getStarttlsContext().setRecordLayer((RecordLayer) oldRecordLayer);
             ProtocolLayer oldMessageLayer = layerStack.removeLayer(MessageLayer.class);
             state.getStarttlsContext().setMessageLayer((MessageLayer) oldMessageLayer);
             setExecuted(true);
-        } else if (!layerStack.getLayersInStack().contains(ImplementedLayers.MESSAGE) && !layerStack.getLayersInStack().contains(ImplementedLayers.RECORD)) {
-            if(starttlsContext.getMessageLayer() == null) {
+        } else if (!layerStack.getLayersInStack().contains(ImplementedLayers.MESSAGE)
+                && !layerStack.getLayersInStack().contains(ImplementedLayers.RECORD)) {
+            if (starttlsContext.getMessageLayer() == null) {
                 starttlsContext.setMessageLayer(new MessageLayer(tlsContext));
             }
-            if(starttlsContext.getRecordLayer() == null) {
+            if (starttlsContext.getRecordLayer() == null) {
                 starttlsContext.setRecordLayer(new RecordLayer(tlsContext));
             }
             layerStack.insertLayer(starttlsContext.getRecordLayer(), targetedLayerIndex + 1);
             layerStack.insertLayer(starttlsContext.getMessageLayer(), targetedLayerIndex + 1);
             setExecuted(true);
         } else {
-            // not sure why anyone would do this, but we do not meddle with such weird constructions where only one of the two exists
-            throw new ActionExecutionException("Only one of the two TLS layers is present in the LayerStack - not suitable for STARTTLS toggle");
+            // not sure why anyone would do this, but we do not meddle with such weird constructions
+            // where only one of the two exists
+            throw new ActionExecutionException(
+                    "Only one of the two TLS layers is present in the LayerStack - not suitable for STARTTLS toggle");
         }
     }
 

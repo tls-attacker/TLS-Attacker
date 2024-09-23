@@ -15,17 +15,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Parses SmtpReplies from an InputStream.
- * The default implementation only parses the status code and the human readable message.
- * If more complex parsing is needed, the parseMessage method can be overridden.
- * Assumption:
- * - The format for multiline replies requires that every line, except the
- *    last, begin with the reply code, followed immediately by a hyphen,
- *    "-" (also known as minus), followed by text.  The last line will
- *    begin with the reply code, followed immediately by <SP>, optionally
- *    some text, and <CRLF>.
- *  - In a multiline reply, the reply code on each of the lines MUST be the
- *    same.
+ * Parses SmtpReplies from an InputStream. The default implementation only parses the status code
+ * and the human readable message. If more complex parsing is needed, the parseMessage method can be
+ * overridden. Assumption: - The format for multiline replies requires that every line, except the
+ * last, begin with the reply code, followed immediately by a hyphen, "-" (also known as minus),
+ * followed by text. The last line will begin with the reply code, followed immediately by <SP>,
+ * optionally some text, and <CRLF>. - In a multiline reply, the reply code on each of the lines
+ * MUST be the same.
+ *
  * @param <ReplyT>
  */
 public class SmtpReplyParser<ReplyT extends SmtpReply> extends SmtpMessageParser<ReplyT> {

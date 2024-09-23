@@ -218,49 +218,50 @@ public class LayerStack {
 
     /**
      * Adds a new layer to a specific position in the layer stack. The new layer will be inserted
-     * between the layer at the specified index and the layer at the index - 1.
-     * If the index is 0, the new layer will be the highest layer.
-     * WARNING: This is a paradigm shift from the previously immutable layer stack and should be used with caution.
+     * between the layer at the specified index and the layer at the index - 1. If the index is 0,
+     * the new layer will be the highest layer. WARNING: This is a paradigm shift from the
+     * previously immutable layer stack and should be used with caution.
+     *
      * @param newLayer The new layer to be inserted
      * @param index The index at which the new layer should be inserted
      */
     public void insertLayer(ProtocolLayer newLayer, int index) {
-        if(index < 0 || index > layerList.size() - 1) {
+        if (index < 0 || index > layerList.size() - 1) {
             throw new IllegalArgumentException("Layer index out of bounds");
         }
 
-        if(index > 0) {
+        if (index > 0) {
             ProtocolLayer higherLayer = layerList.get(index - 1);
             higherLayer.setLowerLayer(newLayer);
             newLayer.setHigherLayer(higherLayer);
         }
-        if(index < layerList.size()) {
+        if (index < layerList.size()) {
             ProtocolLayer lowerLayer = layerList.get(index);
             newLayer.setLowerLayer(lowerLayer);
             lowerLayer.setHigherLayer(newLayer);
         }
-        //not every List<> implementation supports adding at a specific index
-        //the getter explicitly returns an unmodifiable list
-        //just be aware that this is janky :)
+        // not every List<> implementation supports adding at a specific index
+        // the getter explicitly returns an unmodifiable list
+        // just be aware that this is janky :)
         this.layerList.add(index, newLayer);
     }
 
     /**
-     * Removes a layer from the layer stack by its layerType.
-     * WARNING: This is a paradigm shift from the previously immutable layer stack and should be used with caution.
-     * The method
+     * Removes a layer from the layer stack by its layerType. WARNING: This is a paradigm shift from
+     * the previously immutable layer stack and should be used with caution. The method
+     *
      * @param layerType The type of the layer to be removed
      * @return The removed layer
      */
     public ProtocolLayer removeLayer(Class<? extends ProtocolLayer> layerType) {
         ProtocolLayer layer = getLayer(layerType);
-        if(layer == null) {
+        if (layer == null) {
             throw new IllegalArgumentException("Layer not found");
         }
-        if(layer.getHigherLayer() != null) {
+        if (layer.getHigherLayer() != null) {
             layer.getHigherLayer().setLowerLayer(layer.getLowerLayer());
         }
-        if(layer.getLowerLayer() != null) {
+        if (layer.getLowerLayer() != null) {
             layer.getLowerLayer().setHigherLayer(layer.getHigherLayer());
         }
         layerList.remove(layer);
