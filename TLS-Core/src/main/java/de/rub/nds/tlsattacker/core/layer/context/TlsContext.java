@@ -52,6 +52,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.statusrequestv2.Re
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.Keylogfile;
 import de.rub.nds.tlsattacker.core.state.session.IdSession;
@@ -94,6 +95,9 @@ public class TlsContext extends LayerContext {
 
     /** Early traffic secret used to encrypt early data. */
     private byte[] clientEarlyTrafficSecret;
+
+    /** Handshake traffic secret in case it needs to be precalculated during early data * */
+    private KeySet keySetHandshake;
 
     /** CipherSuite used for early data. */
     private CipherSuite earlyDataCipherSuite;
@@ -1626,6 +1630,20 @@ public class TlsContext extends LayerContext {
 
     public void setUseExtendedMasterSecret(boolean useExtendedMasterSecret) {
         this.useExtendedMasterSecret = useExtendedMasterSecret;
+    }
+
+    /**
+     * @return the keySetHandshake
+     */
+    public KeySet getkeySetHandshake() {
+        return keySetHandshake;
+    }
+
+    /**
+     * @param keySetHandshake the keySetHandshake to set
+     */
+    public void setkeySetHandshake(KeySet keySetHandshake) {
+        this.keySetHandshake = keySetHandshake;
     }
 
     /**
