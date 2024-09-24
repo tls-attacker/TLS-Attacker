@@ -8,13 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.quic.preparator.packet;
 
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.quic.constants.QuicPacketType;
-import de.rub.nds.tlsattacker.core.quic.packet.QuicPacketCryptoComputations;
 import de.rub.nds.tlsattacker.core.quic.packet.ZeroRTTPacket;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import java.security.NoSuchAlgorithmException;
-import javax.crypto.NoSuchPaddingException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -28,20 +24,25 @@ public class ZeroRTTPacketPreparator extends LongHeaderPacketPreparator<ZeroRTTP
 
     @Override
     public void prepare() {
-        packet.setUnprotectedFlags(
-                QuicPacketType.ZERO_RTT_PACKET.getHeader(context.getQuicVersion()));
-        try {
-            if (!context.isZeroRTTSecretsInitialized()) {
-                QuicPacketCryptoComputations.calculate0RTTSecrets(context);
-            }
-        } catch (NoSuchPaddingException | NoSuchAlgorithmException | CryptoException e) {
-            LOGGER.error(e);
-        }
-        // Packet numbers for 0-RTT protected packets use the same space as 1-RTT protected packets.
+        LOGGER.debug("Preparing 0-RTT Packet");
+        prepareUnprotectedFlags();
+        prepareUnprotectedPacketNumber();
+        prepareLongHeaderPacket();
+    }
+
+    private void prepareUnprotectedPacketNumber() {
+        // packet numbers for 0-RTT packets use the same space as 1-RTT protected packets
         if (packet.getUnprotectedPacketNumber() == null) {
             packet.setUnprotectedPacketNumber(context.getOneRTTPacketPacketNumber());
             context.setOneRTTPacketPacketNumber(context.getOneRTTPacketPacketNumber() + 1);
         }
-        prepareLongHeaderPacket();
+        LOGGER.debug(
+                "Unprotected Packet Number: {}", packet.getUnprotectedPacketNumber().getValue());
+    }
+
+    private void prepareUnprotectedFlags() {
+        packet.setUnprotectedFlags(
+                QuicPacketType.ZERO_RTT_PACKET.getHeader(context.getQuicVersion()));
+        LOGGER.debug("Unprotected Flags: {}", packet.getUnprotectedFlags().getValue());
     }
 }

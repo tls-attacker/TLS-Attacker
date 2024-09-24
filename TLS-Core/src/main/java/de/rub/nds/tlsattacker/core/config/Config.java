@@ -734,6 +734,8 @@ public class Config implements Serializable {
      */
     private Integer dtlsMaximumFragmentLength = 1400;
 
+    private Integer quicMaximumFrameSize = 1100;
+
     private WorkflowExecutorType workflowExecutorType = WorkflowExecutorType.DEFAULT;
 
     /** Does not mix messages with different message types in a single record */
@@ -801,6 +803,12 @@ public class Config implements Serializable {
     private Boolean quicRetryFlowRequired = false;
 
     private QuicVersion quicVersion = QuicVersion.VERSION_1;
+
+    private byte[] defaultQuicNewToken =
+            ArrayConverter.hexStringToByteArray(
+                    "AABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFF");
+
+    private byte[] defaultQuicPathChallange = ArrayConverter.hexStringToByteArray("AABBCCDD");
 
     private Boolean stopActionsAfterWarning = false;
 
@@ -1049,6 +1057,8 @@ public class Config implements Serializable {
 
     private Boolean useAllProvidedRecords = false;
 
+    private Boolean useAllProvidedQuicPackets = false;
+
     /**
      * requestPath to use in LocationHeader if none is saved during the connection, e.g. no received
      * HttpRequestMessage or httpParsing is disabled
@@ -1188,7 +1198,7 @@ public class Config implements Serializable {
     /** Supported Groups for EncryptedServerNameIndication extension. */
     @XmlElement(name = "clientSupportedEsniNamedGroup")
     @XmlElementWrapper
-    private List<NamedGroup> clientSupportedEsniNamedGroups = new LinkedList();
+    private List<NamedGroup> clientSupportedEsniNamedGroups = new LinkedList<>();
 
     /** KeyPairs for Server with EncryptedServerNameIndication extension. */
     @XmlElement(name = "esniServerKeyPair")
@@ -1365,10 +1375,13 @@ public class Config implements Serializable {
         defaultClientSupportedCipherSuites.addAll(CipherSuite.getImplemented());
         defaultServerSupportedCipherSuites = new LinkedList<>();
         defaultServerSupportedCipherSuites.addAll(CipherSuite.getImplemented());
+        clientSupportedEsniCipherSuites = new LinkedList<>();
+        clientSupportedEsniCipherSuites.addAll(CipherSuite.getImplemented());
         defaultServerSupportedSSL2CipherSuites = new LinkedList<>();
         defaultServerSupportedSSL2CipherSuites.addAll(Arrays.asList(SSL2CipherSuite.values()));
         defaultClientNamedGroups = NamedGroup.getImplemented();
         defaultServerNamedGroups = NamedGroup.getImplemented();
+        clientSupportedEsniNamedGroups = NamedGroup.getImplemented();
         clientCertificateTypes = new LinkedList<>();
         clientCertificateTypes.add(ClientCertificateType.RSA_SIGN);
         supportedVersions = new LinkedList<>();
@@ -1435,6 +1448,8 @@ public class Config implements Serializable {
         defaultPskSets = new LinkedList<>();
         defaultProposedAlpnProtocols = new LinkedList<>();
         defaultProposedAlpnProtocols.add(AlpnProtocol.HTTP_2.getConstant());
+        defaultQuicTransportParameters = new QuicTransportParameters();
+        defaultQuicTransportParameters = QuicTransportParameters.getDefaultParameters();
     }
 
     public void setDefaultRsaSsaPssSalt(byte[] salt) {
@@ -1701,6 +1716,14 @@ public class Config implements Serializable {
 
     public void setUseAllProvidedRecords(Boolean useAllProvidedRecords) {
         this.useAllProvidedRecords = useAllProvidedRecords;
+    }
+
+    public Boolean isUseAllProvidedQuicPackets() {
+        return useAllProvidedQuicPackets;
+    }
+
+    public void setUseAllProvidedQuicPackets(Boolean useAllProvidedQuicPackets) {
+        this.useAllProvidedQuicPackets = useAllProvidedQuicPackets;
     }
 
     public byte[] getDefaultServerRenegotiationInfo() {
@@ -2009,6 +2032,14 @@ public class Config implements Serializable {
 
     public void setDtlsMaximumFragmentLength(Integer dtlsMaximumFragmentLength) {
         this.dtlsMaximumFragmentLength = dtlsMaximumFragmentLength;
+    }
+
+    public Integer getQuicMaximumFrameSize() {
+        return quicMaximumFrameSize;
+    }
+
+    public void setQuicMaximumFrameSize(Integer quicMaximumFrameSize) {
+        this.quicMaximumFrameSize = quicMaximumFrameSize;
     }
 
     public byte[] getDefaultClientSessionId() {
@@ -4203,5 +4234,21 @@ public class Config implements Serializable {
 
     public void setQuicRetryFlowRequired(Boolean quicRetryFlowRequired) {
         this.quicRetryFlowRequired = quicRetryFlowRequired;
+    }
+
+    public byte[] getDefaultQuicPathChallange() {
+        return defaultQuicPathChallange;
+    }
+
+    public void setDefaultQuicPathChallange(byte[] defaultQuicPathChallange) {
+        this.defaultQuicPathChallange = defaultQuicPathChallange;
+    }
+
+    public byte[] getDefaultQuicNewToken() {
+        return defaultQuicNewToken;
+    }
+
+    public void setDefaultQuicNewToken(byte[] defaultQuicNewToken) {
+        this.defaultQuicNewToken = defaultQuicNewToken;
     }
 }

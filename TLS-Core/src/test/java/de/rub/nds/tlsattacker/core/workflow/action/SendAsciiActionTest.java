@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
+import de.rub.nds.tlsattacker.core.unittest.helper.FakeTcpTransportHandler;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import jakarta.xml.bind.JAXBException;
 import java.io.IOException;
@@ -24,7 +24,7 @@ public class SendAsciiActionTest extends AbstractActionTest<SendAsciiAction> {
     public SendAsciiActionTest() {
         super(new SendAsciiAction("STARTTLS", "US-ASCII"), SendAsciiAction.class);
         TlsContext context = state.getTlsContext();
-        context.setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
+        context.setTransportHandler(new FakeTcpTransportHandler(ConnectionEndType.CLIENT));
     }
 
     /** Test of getAsciiString method, of class SendAsciiAction. */

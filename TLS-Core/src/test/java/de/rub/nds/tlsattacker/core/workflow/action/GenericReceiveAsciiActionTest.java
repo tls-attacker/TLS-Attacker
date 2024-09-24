@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
+import de.rub.nds.tlsattacker.core.unittest.helper.FakeTcpTransportHandler;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import jakarta.xml.bind.JAXBException;
 import java.io.IOException;
@@ -35,7 +35,7 @@ public class GenericReceiveAsciiActionTest extends AbstractActionTest<GenericRec
     public GenericReceiveAsciiActionTest() {
         super(new GenericReceiveAsciiAction("US-ASCII"), GenericReceiveAsciiAction.class);
         context = state.getTlsContext();
-        context.setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
+        context.setTransportHandler(new FakeTcpTransportHandler(ConnectionEndType.CLIENT));
     }
 
     /** Test of execute method, of class GenericReceiveAsciiAction. */
@@ -43,7 +43,7 @@ public class GenericReceiveAsciiActionTest extends AbstractActionTest<GenericRec
     @Override
     @Disabled("ASCII Actions are notfully implemented for layer system")
     public void testExecute() throws Exception {
-        ((FakeTransportHandler) context.getTransportHandler()).setFetchableByte(asciiToCheck);
+        ((FakeTcpTransportHandler) context.getTransportHandler()).setFetchableByte(asciiToCheck);
         super.testExecute();
         assertEquals(new String(asciiToCheck, StandardCharsets.US_ASCII), action.getAsciiText());
     }
@@ -51,7 +51,7 @@ public class GenericReceiveAsciiActionTest extends AbstractActionTest<GenericRec
     @Test
     @Disabled("ASCII Actions are notfully implemented for layer system")
     public void testExecuteOnUnknownEncoding() {
-        ((FakeTransportHandler) context.getTransportHandler()).setFetchableByte(asciiToCheck);
+        ((FakeTcpTransportHandler) context.getTransportHandler()).setFetchableByte(asciiToCheck);
         GenericReceiveAsciiAction action = new GenericReceiveAsciiAction("DefinitelyNotAnEncoding");
         action.execute(state);
         assertFalse(action.isExecuted());

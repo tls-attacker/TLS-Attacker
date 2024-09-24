@@ -307,7 +307,7 @@ public abstract class ProtocolLayer<
     }
 
     public List<Container> getUnprocessedConfiguredContainers() {
-        if (getLayerConfiguration().getContainerList() == null) {
+        if (getLayerConfiguration() == null || getLayerConfiguration().getContainerList() == null) {
             return new LinkedList<>();
         } else if (producedDataContainers == null) {
             return new LinkedList<>(getLayerConfiguration().getContainerList());

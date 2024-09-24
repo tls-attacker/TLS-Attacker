@@ -19,7 +19,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
+import de.rub.nds.tlsattacker.core.unittest.helper.FakeTcpTransportHandler;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeCipherSuiteAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeClientRandomAction;
 import de.rub.nds.tlsattacker.core.workflow.action.DummyReceivingAction;
@@ -37,13 +37,13 @@ public class WorkflowTraceTest {
     private WorkflowTrace trace;
     private Config config;
     private State state;
-    private FakeTransportHandler fakeTransportHandler;
+    private FakeTcpTransportHandler fakeTransportHandler;
 
     @BeforeEach
     public void setUp() {
         config = new Config();
         trace = new WorkflowTrace();
-        fakeTransportHandler = new FakeTransportHandler(null);
+        fakeTransportHandler = new FakeTcpTransportHandler(null);
     }
 
     /** Test of makeGeneric method, of class WorkflowTrace. */

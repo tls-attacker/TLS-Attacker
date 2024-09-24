@@ -12,10 +12,10 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
-import de.rub.nds.tlsattacker.core.quic.VariableLengthIntegerEncoding;
 import de.rub.nds.tlsattacker.core.quic.constants.QuicPacketByteLength;
 import de.rub.nds.tlsattacker.core.quic.constants.QuicPacketType;
 import de.rub.nds.tlsattacker.core.quic.constants.QuicVersion;
+import de.rub.nds.tlsattacker.core.quic.util.VariableLengthIntegerEncoding;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlSeeAlso;
@@ -23,12 +23,7 @@ import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- * Long headers are used for packets that are sent prior to the establishment of 1-RTT keys. Once
- * 1-RTT keys are available, a sender switches to sending packets using the short header (Section
- * 17.3). The long form allows for special packets -- such as the Version Negotiation packet -- to
- * be represented in this uniform fixed-length packet format.
- */
+/** Long headers are used for packets that are sent prior to the establishment of 1-RTT keys. */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlSeeAlso({
     LongHeaderPacket.class,
@@ -42,23 +37,10 @@ public abstract class LongHeaderPacket extends QuicPacket {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /**
-     * The QUIC Version is a 32-bit field that follows the first byte. This field indicates the
-     * version of QUIC that is in use and determines how the rest of the protocol fields are
-     * interpreted.
-     */
     @ModifiableVariableProperty protected ModifiableByteArray quicVersion;
 
-    /**
-     * The byte following the Destination Connection ID contains the length in bytes of the Source
-     * Connection ID field that follows it. This length is encoded as an 8-bit unsigned integer.
-     */
     @ModifiableVariableProperty protected ModifiableByte sourceConnectionIdLength;
 
-    /**
-     * The Source Connection ID field follows the Source Connection ID Length field, which indicates
-     * the length of this field.
-     */
     @ModifiableVariableProperty protected ModifiableByteArray sourceConnectionId;
 
     public LongHeaderPacket(QuicPacketType packetType) {
@@ -86,11 +68,11 @@ public abstract class LongHeaderPacket extends QuicPacket {
             unprotectedHeaderHelper.write(sourceConnectionId.getValue());
             offsetToPacketNumber += sourceConnectionIdLength.getValue();
 
-            byte[] pL =
+            byte[] packetLengthBytes =
                     VariableLengthIntegerEncoding.encodeVariableLengthInteger(
                             packetLength.getValue());
-            unprotectedHeaderHelper.write(pL);
-            offsetToPacketNumber += pL.length;
+            unprotectedHeaderHelper.write(packetLengthBytes);
+            offsetToPacketNumber += packetLengthBytes.length;
 
             unprotectedHeaderHelper.writeBytes(getUnprotectedPacketNumber().getValue());
             offsetToPacketNumber += getUnprotectedPacketNumber().getValue().length;
@@ -98,17 +80,13 @@ public abstract class LongHeaderPacket extends QuicPacket {
             completeUnprotectedHeader =
                     ModifiableVariableFactory.safelySetValue(
                             completeUnprotectedHeader, unprotectedHeaderHelper.toByteArray());
-
         } catch (IOException e) {
             LOGGER.error(e);
         }
     }
 
+    @Override
     public void convertCompleteProtectedHeader() {
-        // Header: Protected Flags + Version + DCID Length + DCID + SCID Length + SCID + Protected
-        // Packet Number
-        // [1 Byte] + [4 Byte] + [1 Byte] + [..] + [1 Byte] + [..] + [1-4 Bytes]
-
         byte[] protectedHeaderBytes = protectedHeaderHelper.toByteArray();
         protectedHeaderBytes[0] = unprotectedFlags.getValue();
         offsetToPacketNumber =
@@ -119,10 +97,13 @@ public abstract class LongHeaderPacket extends QuicPacket {
                         + QuicPacketByteLength.SOURCE_CONNECTION_ID_LENGTH
                         + sourceConnectionId.getValue().length
                         + packetLengthSize;
-
         this.completeUnprotectedHeader =
                 ModifiableVariableFactory.safelySetValue(
                         this.completeUnprotectedHeader, protectedHeaderBytes);
+    }
+
+    public void setSourceConnectionId(ModifiableByteArray sourceConnectionId) {
+        this.sourceConnectionId = sourceConnectionId;
     }
 
     public void setSourceConnectionId(byte[] sourceConnectionId) {
@@ -131,10 +112,18 @@ public abstract class LongHeaderPacket extends QuicPacket {
                         this.sourceConnectionId, sourceConnectionId);
     }
 
+    public void setSourceConnectionIdLength(ModifiableByte sourceConnectionIdLength) {
+        this.sourceConnectionIdLength = sourceConnectionIdLength;
+    }
+
     public void setSourceConnectionIdLength(byte variableLengthInteger) {
         this.sourceConnectionIdLength =
                 ModifiableVariableFactory.safelySetValue(
                         this.sourceConnectionIdLength, variableLengthInteger);
+    }
+
+    public void setQuicVersion(ModifiableByteArray quicVersion) {
+        this.quicVersion = quicVersion;
     }
 
     public void setQuicVersion(byte[] quicVersion) {

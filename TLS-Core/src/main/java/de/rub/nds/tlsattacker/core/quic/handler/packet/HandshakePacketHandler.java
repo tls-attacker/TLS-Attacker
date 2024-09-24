@@ -8,15 +8,32 @@
  */
 package de.rub.nds.tlsattacker.core.quic.handler.packet;
 
+import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.quic.packet.HandshakePacket;
+import de.rub.nds.tlsattacker.core.quic.packet.QuicPacketCryptoComputations;
 import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
+import java.security.NoSuchAlgorithmException;
+import javax.crypto.NoSuchPaddingException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class HandshakePacketHandler extends LongHeaderPacketHandler<HandshakePacket> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public HandshakePacketHandler(QuicContext quicContext) {
         super(quicContext);
     }
 
     @Override
-    public void adjustContext(HandshakePacket object) {}
+    public void adjustContext(HandshakePacket object) {
+        // update quic keys
+        try {
+            if (!quicContext.isHandshakeSecretsInitialized()) {
+                QuicPacketCryptoComputations.calculateHandshakeSecrets(quicContext);
+            }
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | CryptoException e) {
+            LOGGER.error("Could not calculate handshake secrets: {}", e);
+        }
+    }
 }

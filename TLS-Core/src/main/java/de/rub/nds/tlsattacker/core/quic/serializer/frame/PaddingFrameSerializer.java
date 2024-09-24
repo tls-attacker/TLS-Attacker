@@ -9,8 +9,12 @@
 package de.rub.nds.tlsattacker.core.quic.serializer.frame;
 
 import de.rub.nds.tlsattacker.core.quic.frame.PaddingFrame;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class PaddingFrameSerializer extends QuicFrameSerializer<PaddingFrame> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public PaddingFrameSerializer(PaddingFrame frame) {
         super(frame);
@@ -18,7 +22,12 @@ public class PaddingFrameSerializer extends QuicFrameSerializer<PaddingFrame> {
 
     @Override
     protected byte[] serializeBytes() {
-        appendBytes(new byte[frame.getLength()]);
+        writePadding();
         return getAlreadySerialized();
+    }
+
+    protected void writePadding() {
+        appendBytes(new byte[frame.getLength()]);
+        LOGGER.debug("Padding: {}", new byte[frame.getLength()]);
     }
 }

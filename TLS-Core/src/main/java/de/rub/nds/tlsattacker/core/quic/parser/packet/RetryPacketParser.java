@@ -13,8 +13,12 @@ import de.rub.nds.tlsattacker.core.quic.packet.RetryPacket;
 import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
 import java.io.InputStream;
 import java.util.Arrays;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class RetryPacketParser extends LongHeaderPacketParser<RetryPacket> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public RetryPacketParser(InputStream stream, QuicContext context) {
         super(stream, context);
@@ -37,11 +41,13 @@ public class RetryPacketParser extends LongHeaderPacketParser<RetryPacket> {
                         0,
                         tokenAndIntegrityTag.length
                                 - MiscRfcConstants.RETRY_TOKEN_INTEGRITY_TAG_LENGTH));
+        LOGGER.debug("Retry Token: {}", packet.getRetryToken().getValue());
         packet.setRetryIntegrityTag(
                 Arrays.copyOfRange(
                         tokenAndIntegrityTag,
                         tokenAndIntegrityTag.length
                                 - MiscRfcConstants.RETRY_TOKEN_INTEGRITY_TAG_LENGTH,
                         tokenAndIntegrityTag.length));
+        LOGGER.debug("Retry Integrity Tag: {}", packet.getRetryIntegrityTag().getValue());
     }
 }

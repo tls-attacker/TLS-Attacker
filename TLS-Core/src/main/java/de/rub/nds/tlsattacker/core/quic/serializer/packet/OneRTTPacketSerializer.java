@@ -12,11 +12,8 @@ import de.rub.nds.tlsattacker.core.quic.packet.OneRTTPacket;
 
 public class OneRTTPacketSerializer extends QuicPacketSerializer<OneRTTPacket> {
 
-    private final OneRTTPacket packet;
-
     public OneRTTPacketSerializer(OneRTTPacket packet) {
         super(packet);
-        this.packet = packet;
     }
 
     @Override

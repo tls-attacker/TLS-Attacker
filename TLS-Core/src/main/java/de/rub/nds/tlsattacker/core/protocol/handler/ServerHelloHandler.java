@@ -122,6 +122,12 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
     }
 
     private void adjustSelectedCipherSuite(ServerHelloMessage message) {
+        if (tlsContext.getConfig().isEnforceSettings()) {
+            tlsContext.setSelectedCipherSuite(
+                    tlsContext.getConfig().getDefaultSelectedCipherSuite());
+            return;
+        }
+
         CipherSuite suite = null;
         if (message.getSelectedCipherSuite() != null) {
             suite = CipherSuite.getCipherSuite(message.getSelectedCipherSuite().getValue());
