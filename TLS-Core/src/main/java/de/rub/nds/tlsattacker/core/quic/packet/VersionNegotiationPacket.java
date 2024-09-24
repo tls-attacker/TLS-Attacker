@@ -8,16 +8,18 @@
  */
 package de.rub.nds.tlsattacker.core.quic.packet;
 
+import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import de.rub.nds.tlsattacker.core.quic.constants.QuicPacketType;
 import de.rub.nds.tlsattacker.core.quic.handler.packet.VersionNegotiationPacketHandler;
 import de.rub.nds.tlsattacker.core.quic.parser.packet.VersionNegotiationPacketParser;
+import de.rub.nds.tlsattacker.core.quic.preparator.packet.VersionNegotiationPacketPreparator;
+import de.rub.nds.tlsattacker.core.quic.serializer.packet.VersionNegotiationPacketSerializer;
 import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * The Version Negotiation packet is a response to a client packet that contains a version that is
@@ -26,11 +28,10 @@ import java.util.List;
 @XmlRootElement
 public class VersionNegotiationPacket extends LongHeaderPacket {
 
-    private List<byte[]> supportedVersions;
+    private ModifiableByteArray supportedVersions;
 
     public VersionNegotiationPacket() {
         super(QuicPacketType.VERSION_NEGOTIATION);
-        this.supportedVersions = new ArrayList<>();
     }
 
     @Override
@@ -46,12 +47,12 @@ public class VersionNegotiationPacket extends LongHeaderPacket {
 
     @Override
     public Serializer<VersionNegotiationPacket> getSerializer(QuicContext context) {
-        return null;
+        return new VersionNegotiationPacketSerializer(this);
     }
 
     @Override
     public Preparator<VersionNegotiationPacket> getPreparator(QuicContext context) {
-        return null;
+        return new VersionNegotiationPacketPreparator(context.getChooser(), this);
     }
 
     @Override
@@ -59,11 +60,16 @@ public class VersionNegotiationPacket extends LongHeaderPacket {
         return new VersionNegotiationPacketParser(stream, context);
     }
 
-    public void addSupportedVersion(byte[] version) {
-        this.supportedVersions.add(version);
+    public ModifiableByteArray getSupportedVersions() {
+        return supportedVersions;
     }
 
-    public List<byte[]> getSupportedVersions() {
-        return supportedVersions;
+    public void setSupportedVersions(ModifiableByteArray supportedVersions) {
+        this.supportedVersions = supportedVersions;
+    }
+
+    public void setSupportedVersions(byte[] supportedVersions) {
+        this.supportedVersions =
+                ModifiableVariableFactory.safelySetValue(this.supportedVersions, supportedVersions);
     }
 }

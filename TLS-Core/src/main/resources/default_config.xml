@@ -1029,6 +1029,19 @@
     <defaultProposedAlpnProtocols>
         <defaultProposedAlpnProtocol>h2</defaultProposedAlpnProtocol>
     </defaultProposedAlpnProtocols>
+    <defaultQuicTransportParameters>
+        <ackDelayExponent>0</ackDelayExponent>
+        <disableActiveMigration>false</disableActiveMigration>
+        <initialMaxData>2149983648</initialMaxData>
+        <initialMaxStreamDataBidiLocal>2149983648</initialMaxStreamDataBidiLocal>
+        <initialMaxStreamDataBidiRemote>2149983648</initialMaxStreamDataBidiRemote>
+        <initialMaxStreamDataUni>2149983648</initialMaxStreamDataUni>
+        <initialMaxStreamsBidi>2147745792</initialMaxStreamsBidi>
+        <initialMaxStreamsUni>2147745792</initialMaxStreamsUni>
+        <maxAckDelay>2000</maxAckDelay>
+        <maxIdleTimeout>60000</maxIdleTimeout>
+        <maxUdpPayloadSize>65527</maxUdpPayloadSize>
+    </defaultQuicTransportParameters>
     <echoQuic>false</echoQuic>
     <defaultSelectedAlpnProtocol>h2</defaultSelectedAlpnProtocol>
     <secureRemotePasswordExtensionIdentifier>55 73 65 72 4E 61 6D 65</secureRemotePasswordExtensionIdentifier>
@@ -1189,6 +1202,7 @@
     <defaultPaddingExtensionBytes>00 00 00 00 00 00</defaultPaddingExtensionBytes>
     <dtlsDefaultCookieLength>20</dtlsDefaultCookieLength>
     <dtlsMaximumFragmentLength>1400</dtlsMaximumFragmentLength>
+    <quicMaximumFrameSize>1100</quicMaximumFrameSize>
     <workflowExecutorType>DEFAULT</workflowExecutorType>
     <flushOnMessageTypeChange>true</flushOnMessageTypeChange>
     <createFragmentsDynamically>true</createFragmentsDynamically>
@@ -1208,6 +1222,8 @@
     <isQuic>false</isQuic>
     <quicRetryFlowRequired>false</quicRetryFlowRequired>
     <quicVersion>VERSION_1</quicVersion>
+    <defaultQuicNewToken>qrvM3e7/qrvM3e7/qrvM3e7/qrvM3e7/qrvM3e7/</defaultQuicNewToken>
+    <defaultQuicPathChallange>qrvM3Q==</defaultQuicPathChallange>
     <stopActionsAfterWarning>false</stopActionsAfterWarning>
     <defaultSelectedCipherSuite>TLS_RSA_WITH_AES_128_CBC_SHA</defaultSelectedCipherSuite>
     <defaultSelectedServerCertificateType>X509</defaultSelectedServerCertificateType>
@@ -1353,6 +1369,7 @@
     <chooserType>DEFAULT</chooserType>
     <useAllProvidedDtlsFragments>false</useAllProvidedDtlsFragments>
     <useAllProvidedRecords>false</useAllProvidedRecords>
+    <useAllProvidedQuicPackets>false</useAllProvidedQuicPackets>
     <defaultHttpsLocationPath>/</defaultHttpsLocationPath>
     <defaultHttpsRequestPath>/robots.txt</defaultHttpsRequestPath>
     <starttlsType>NONE</starttlsType>

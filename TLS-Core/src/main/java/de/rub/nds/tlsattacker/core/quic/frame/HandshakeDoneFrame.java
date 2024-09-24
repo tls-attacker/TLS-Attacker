@@ -17,7 +17,10 @@ import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
-/** Frame only consists of the frame type. */
+/**
+ * The server uses a HANDSHAKE_DONE frame (type=0x1e) to signal confirmation of the handshake to the
+ * client.
+ */
 @XmlRootElement
 public class HandshakeDoneFrame extends QuicFrame {
 

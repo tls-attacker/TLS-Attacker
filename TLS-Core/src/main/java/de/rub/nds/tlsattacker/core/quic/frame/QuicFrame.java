@@ -26,12 +26,19 @@ import java.io.InputStream;
 public abstract class QuicFrame extends ModifiableVariableHolder
         implements DataContainer<QuicContext> {
 
-    @ModifiableVariableProperty ModifiableByte frameType;
+    protected boolean ackEliciting = true;
+
+    @ModifiableVariableProperty private ModifiableByte frameType;
 
     public QuicFrame() {}
 
     public QuicFrame(QuicFrameType quicFrameType) {
         setFrameType(quicFrameType.getValue());
+    }
+
+    public void setFrameType(QuicFrameType frameType) {
+        this.frameType =
+                ModifiableVariableFactory.safelySetValue(this.frameType, frameType.getValue());
     }
 
     public void setFrameType(ModifiableByte frameType) {
@@ -44,6 +51,10 @@ public abstract class QuicFrame extends ModifiableVariableHolder
 
     public ModifiableByte getFrameType() {
         return this.frameType;
+    }
+
+    public boolean isAckEliciting() {
+        return ackEliciting;
     }
 
     @Override

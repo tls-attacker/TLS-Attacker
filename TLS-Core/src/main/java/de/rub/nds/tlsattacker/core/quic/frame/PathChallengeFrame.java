@@ -29,6 +29,8 @@ public class PathChallengeFrame extends QuicFrame {
 
     @ModifiableVariableProperty protected ModifiableByteArray data;
 
+    public static final int PATH_CHALLENGE_LENGTH = 8;
+
     public PathChallengeFrame() {
         super(QuicFrameType.PATH_CHALLENGE_FRAME);
     }
