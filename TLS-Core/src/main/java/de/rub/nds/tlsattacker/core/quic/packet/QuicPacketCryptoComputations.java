@@ -334,7 +334,7 @@ public class QuicPacketCryptoComputations extends ModifiableVariableHolder {
      * @throws CryptoException
      * @throws NoSuchAlgorithmException
      */
-    public static void calculate0RTTSecrets(QuicContext context)
+    public static void calculateZeroRTTSecrets(QuicContext context)
             throws CryptoException, NoSuchPaddingException, NoSuchAlgorithmException {
         LOGGER.debug("Initialize Quic 0-RTT Secrets");
 

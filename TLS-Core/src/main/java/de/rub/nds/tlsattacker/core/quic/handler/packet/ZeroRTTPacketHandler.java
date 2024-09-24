@@ -33,7 +33,7 @@ public class ZeroRTTPacketHandler extends LongHeaderPacketHandler<ZeroRTTPacket>
         // update quic keys
         try {
             if (!quicContext.isZeroRTTSecretsInitialized()) {
-                QuicPacketCryptoComputations.calculate0RTTSecrets(quicContext);
+                QuicPacketCryptoComputations.calculateZeroRTTSecrets(quicContext);
             }
         } catch (NoSuchAlgorithmException | NoSuchPaddingException | CryptoException e) {
             LOGGER.error("Could not calculate 0-RTT secrets: {}", e);
