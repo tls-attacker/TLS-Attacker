@@ -69,12 +69,12 @@ public class QuicEncryptor {
                         context, packet.getHeaderProtectionSample()));
     }
 
-    public void addHeaderProtectionApplication(QuicPacket packet) throws CryptoException {
+    public void addHeaderProtectionOneRRT(QuicPacket packet) throws CryptoException {
         this.addHeaderProtection(
                 packet,
-                QuicPacketCryptoComputations.generateApplicationServerHeaderProtectionMask(
+                QuicPacketCryptoComputations.generateOneRTTServerHeaderProtectionMask(
                         context, packet.getHeaderProtectionSample()),
-                QuicPacketCryptoComputations.generateApplicationClientHeaderProtectionMask(
+                QuicPacketCryptoComputations.generateOneRRTClientHeaderProtectionMask(
                         context, packet.getHeaderProtectionSample()));
     }
 
@@ -136,7 +136,7 @@ public class QuicEncryptor {
                 context.getAeadCipher());
     }
 
-    public void encryptApplicationPacket(QuicPacket packet) throws CryptoException {
+    public void encryptOneRRTPacket(QuicPacket packet) throws CryptoException {
         this.encrypt(
                 packet,
                 context.getApplicationServerIv(),

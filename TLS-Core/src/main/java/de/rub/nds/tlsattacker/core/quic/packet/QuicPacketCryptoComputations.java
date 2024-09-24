@@ -103,7 +103,7 @@ public class QuicPacketCryptoComputations extends ModifiableVariableHolder {
                 sample);
     }
 
-    public static byte[] generateApplicationClientHeaderProtectionMask(
+    public static byte[] generateOneRRTClientHeaderProtectionMask(
             QuicContext context, byte[] sample) throws CryptoException {
         return generateHeaderProtectionMask(
                 context.getHeaderProtectionCipher(),
@@ -111,7 +111,7 @@ public class QuicPacketCryptoComputations extends ModifiableVariableHolder {
                 sample);
     }
 
-    public static byte[] generateApplicationServerHeaderProtectionMask(
+    public static byte[] generateOneRTTServerHeaderProtectionMask(
             QuicContext context, byte[] sample) throws CryptoException {
         return generateHeaderProtectionMask(
                 context.getHeaderProtectionCipher(),

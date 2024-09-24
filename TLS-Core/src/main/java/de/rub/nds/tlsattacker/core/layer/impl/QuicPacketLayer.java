@@ -376,9 +376,9 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
 
     private byte[] writeOneRTTPacket(OneRTTPacket packet) throws CryptoException {
         packet.getPreparator(context).prepare();
-        encryptor.encryptApplicationPacket(packet);
+        encryptor.encryptOneRRTPacket(packet);
         packet.updateFlagsWithEncodedPacketNumber();
-        encryptor.addHeaderProtectionApplication(packet);
+        encryptor.addHeaderProtectionOneRRT(packet);
         return packet.getSerializer(context).serialize();
     }
 
@@ -431,9 +431,9 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
     }
 
     private OneRTTPacket decryptOneRTTPacket(OneRTTPacket packet) throws CryptoException {
-        decryptor.removeHeaderProtectionApplication(packet);
+        decryptor.removeHeaderProtectionOneRTT(packet);
         packet.convertCompleteProtectedHeader();
-        decryptor.decryptApplicationPacket(packet);
+        decryptor.decryptOneRTTPacket(packet);
         context.addReceivedOneRTTPacketNumber(packet.getPlainPacketNumber());
         packet.getHandler(context).adjustContext(packet);
         addProducedContainer(packet);
