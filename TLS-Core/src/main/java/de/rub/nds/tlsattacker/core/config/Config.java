@@ -1198,7 +1198,7 @@ public class Config implements Serializable {
     /** Supported Groups for EncryptedServerNameIndication extension. */
     @XmlElement(name = "clientSupportedEsniNamedGroup")
     @XmlElementWrapper
-    private List<NamedGroup> clientSupportedEsniNamedGroups = new LinkedList();
+    private List<NamedGroup> clientSupportedEsniNamedGroups = new LinkedList<>();
 
     /** KeyPairs for Server with EncryptedServerNameIndication extension. */
     @XmlElement(name = "esniServerKeyPair")
@@ -1375,10 +1375,13 @@ public class Config implements Serializable {
         defaultClientSupportedCipherSuites.addAll(CipherSuite.getImplemented());
         defaultServerSupportedCipherSuites = new LinkedList<>();
         defaultServerSupportedCipherSuites.addAll(CipherSuite.getImplemented());
+        clientSupportedEsniCipherSuites = new LinkedList<>();
+        clientSupportedEsniCipherSuites.addAll(CipherSuite.getImplemented());
         defaultServerSupportedSSL2CipherSuites = new LinkedList<>();
         defaultServerSupportedSSL2CipherSuites.addAll(Arrays.asList(SSL2CipherSuite.values()));
         defaultClientNamedGroups = NamedGroup.getImplemented();
         defaultServerNamedGroups = NamedGroup.getImplemented();
+        clientSupportedEsniNamedGroups = NamedGroup.getImplemented();
         clientCertificateTypes = new LinkedList<>();
         clientCertificateTypes.add(ClientCertificateType.RSA_SIGN);
         supportedVersions = new LinkedList<>();

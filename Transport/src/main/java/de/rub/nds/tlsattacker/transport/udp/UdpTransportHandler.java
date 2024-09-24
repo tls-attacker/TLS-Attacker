@@ -130,4 +130,20 @@ public abstract class UdpTransportHandler extends PacketbasedTransportHandler {
         }
         return socket.getPort();
     }
+
+    public String getSrcIp() {
+        if (socket == null || socket.getLocalAddress() == null) {
+            return null;
+        } else {
+            return socket.getLocalAddress().getHostAddress();
+        }
+    }
+
+    public String getDstIp() {
+        if (socket == null || socket.getInetAddress() == null) {
+            return null;
+        } else {
+            return socket.getInetAddress().getHostAddress();
+        }
+    }
 }

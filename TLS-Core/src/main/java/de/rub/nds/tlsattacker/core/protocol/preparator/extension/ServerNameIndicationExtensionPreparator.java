@@ -51,7 +51,7 @@ public class ServerNameIndicationExtensionPreparator
     }
 
     public void prepareEntryList() {
-        if (chooser.getConfig().getDefaultSniHostnames().isEmpty()) {
+        if (chooser.getConfig().getDefaultSniHostnames() == null) {
             if (chooser.getConnection().getHostname() == null) {
                 prepareEmptyEntry();
             } else {
