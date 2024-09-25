@@ -273,6 +273,9 @@ public class SendAction extends CommonSendAction implements StaticSendingAction 
         if (getConfiguredMessages() != null) {
             configurationList.add(
                     new SpecificSendLayerConfiguration<>(
+                            ImplementedLayers.SSL2, getConfiguredMessages()));
+            configurationList.add(
+                    new SpecificSendLayerConfiguration<>(
                             ImplementedLayers.MESSAGE, getConfiguredMessages()));
         }
         if (getConfiguredDtlsHandshakeMessageFragments() != null) {
