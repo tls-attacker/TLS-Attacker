@@ -267,9 +267,12 @@ public class SendAction extends CommonSendAction implements StaticSendingAction 
         if (getConfiguredRecords() != null) {
             configurationList.add(
                     new SpecificSendLayerConfiguration<>(
-                            ImplementedLayers.RECORD, getConfiguredMessages()));
+                            ImplementedLayers.RECORD, getConfiguredRecords()));
         }
         if (getConfiguredMessages() != null) {
+            configurationList.add(
+                    new SpecificSendLayerConfiguration<>(
+                            ImplementedLayers.SSL2, getConfiguredMessages()));
             configurationList.add(
                     new SpecificSendLayerConfiguration<>(
                             ImplementedLayers.MESSAGE, getConfiguredMessages()));

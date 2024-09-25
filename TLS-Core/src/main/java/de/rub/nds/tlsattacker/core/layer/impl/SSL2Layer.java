@@ -80,7 +80,6 @@ public class SSL2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
     @Override
     public LayerProcessingResult receiveData() {
-
         try {
             int messageLength = 0;
             byte paddingLength = 0;
@@ -88,10 +87,13 @@ public class SSL2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
             HintedInputStream dataStream = null;
             SSL2MessageType messageType;
             try {
-
                 dataStream = getLowerLayer().getDataStream();
-                totalHeader = dataStream.readNBytes(SSL2ByteLength.LENGTH);
+                if (dataStream.available() == 0) {
+                    LOGGER.debug("Reached end of stream, cannot parse more messages");
+                    return getLayerResult();
+                }
 
+                totalHeader = dataStream.readNBytes(SSL2ByteLength.LENGTH);
                 if (SSL2TotalHeaderLengths.isNoPaddingHeader(totalHeader[0])) {
                     messageLength = resolveUnpaddedMessageLength(totalHeader);
                     paddingLength = 0x00;
@@ -107,7 +109,6 @@ public class SSL2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
             }
 
             SSL2Message message = null;
-
             switch (messageType) {
                 case SSL_CLIENT_HELLO:
                     message = new SSL2ClientHelloMessage();
@@ -124,14 +125,12 @@ public class SSL2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
                 default:
                     message = new UnknownSSL2Message();
             }
-
             message.setType((byte) messageType.getType());
             message.setMessageLength(messageLength);
             message.setPaddingLength((int) paddingLength);
             readDataContainer(message, context);
-
         } catch (TimeoutException ex) {
-            LOGGER.debug(ex);
+            LOGGER.debug("Received a timeout");
         } catch (EndOfStreamException ex) {
             LOGGER.debug("Reached end of stream, cannot parse more messages", ex);
         }
