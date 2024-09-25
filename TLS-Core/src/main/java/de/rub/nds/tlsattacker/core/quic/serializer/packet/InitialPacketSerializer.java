@@ -8,10 +8,14 @@
  */
 package de.rub.nds.tlsattacker.core.quic.serializer.packet;
 
-import de.rub.nds.tlsattacker.core.quic.VariableLengthIntegerEncoding;
 import de.rub.nds.tlsattacker.core.quic.packet.InitialPacket;
+import de.rub.nds.tlsattacker.core.quic.util.VariableLengthIntegerEncoding;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class InitialPacketSerializer extends LongHeaderPacketSerializer<InitialPacket> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public InitialPacketSerializer(InitialPacket packet) {
         super(packet);
@@ -37,11 +41,13 @@ public class InitialPacketSerializer extends LongHeaderPacketSerializer<InitialP
         appendBytes(
                 VariableLengthIntegerEncoding.encodeVariableLengthInteger(
                         packet.getTokenLength().getValue()));
+        LOGGER.debug("Token Length", packet.getTokenLength().getValue());
     }
 
     protected void writeToken(InitialPacket packet) {
         if (packet.getToken() != null) {
             appendBytes(packet.getToken().getValue());
+            LOGGER.debug("Token", packet.getToken().getValue());
         }
     }
 }

@@ -29,6 +29,8 @@ public abstract class LongHeaderPacketParser<T extends LongHeaderPacket>
         byte idLengthBytes = parseByteField(QuicPacketByteLength.SOURCE_CONNECTION_ID_LENGTH);
         packet.setSourceConnectionIdLength(idLengthBytes);
         packet.protectedHeaderHelper.write(idLengthBytes);
+        LOGGER.debug(
+                "Source Connection ID Length", packet.getSourceConnectionIdLength().getValue());
     }
 
     protected void parseSourceConnectionId(T packet) {
@@ -40,5 +42,6 @@ public abstract class LongHeaderPacketParser<T extends LongHeaderPacket>
         } catch (IOException e) {
             LOGGER.error(e);
         }
+        LOGGER.debug("Source Connection ID: {}", packet.getSourceConnectionId().getValue());
     }
 }

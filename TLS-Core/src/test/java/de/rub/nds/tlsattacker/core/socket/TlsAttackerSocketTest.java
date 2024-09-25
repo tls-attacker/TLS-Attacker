@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
+import de.rub.nds.tlsattacker.core.unittest.helper.FakeTcpTransportHandler;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.IOException;
@@ -30,7 +30,7 @@ public class TlsAttackerSocketTest {
     private State state;
     private Context context;
 
-    private FakeTransportHandler transportHandler;
+    private FakeTcpTransportHandler transportHandler;
 
     public TlsAttackerSocketTest() {}
 
@@ -40,7 +40,7 @@ public class TlsAttackerSocketTest {
         state = new State(config, new WorkflowTrace());
         context = state.getContext();
         context.getTlsContext().setSelectedProtocolVersion(ProtocolVersion.TLS12);
-        transportHandler = new FakeTransportHandler(ConnectionEndType.CLIENT);
+        transportHandler = new FakeTcpTransportHandler(ConnectionEndType.CLIENT);
         context.getTcpContext().setTransportHandler(transportHandler);
         socket = new TlsAttackerSocket(state);
     }

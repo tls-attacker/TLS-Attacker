@@ -102,4 +102,20 @@ public abstract class TcpTransportHandler extends StreambasedTransportHandler {
     public abstract Integer getDstPort();
 
     public abstract void setDstPort(int port);
+
+    public String getSrcIp() {
+        if (socket == null || socket.getLocalAddress() == null) {
+            return null;
+        } else {
+            return socket.getLocalAddress().getHostAddress();
+        }
+    }
+
+    public String getDstIp() {
+        if (socket == null || socket.getInetAddress() == null) {
+            return null;
+        } else {
+            return socket.getInetAddress().getHostAddress();
+        }
+    }
 }

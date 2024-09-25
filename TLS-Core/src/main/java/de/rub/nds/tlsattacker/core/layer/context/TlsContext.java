@@ -483,7 +483,7 @@ public class TlsContext extends LayerContext {
 
     private List<KeyShareStoreEntry> esniServerKeyShareEntries;
 
-    private List<CipherSuite> esniServerCipherSuites = new LinkedList();
+    private List<CipherSuite> esniServerCipherSuites;
 
     private Integer esniPaddedLength;
 

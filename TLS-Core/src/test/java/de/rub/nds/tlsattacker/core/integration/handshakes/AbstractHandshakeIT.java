@@ -20,6 +20,7 @@ import de.rub.nds.tls.subject.constants.TransportType;
 import de.rub.nds.tls.subject.docker.*;
 import de.rub.nds.tls.subject.docker.DockerTlsManagerFactory.TlsClientInstanceBuilder;
 import de.rub.nds.tls.subject.docker.DockerTlsManagerFactory.TlsServerInstanceBuilder;
+import de.rub.nds.tls.subject.docker.build.DockerBuilder;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
@@ -111,7 +112,11 @@ public abstract class AbstractHandshakeIT {
     private void prepareContainer() throws DockerException, InterruptedException {
         Image image =
                 DockerTlsManagerFactory.getMatchingImage(
-                        localImages, implementation, version, dockerConnectionRole);
+                        localImages,
+                        implementation,
+                        version,
+                        DockerBuilder.NO_ADDITIONAL_BUILDFLAGS,
+                        dockerConnectionRole);
         getDockerInstance(image);
     }
 
