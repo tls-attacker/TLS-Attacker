@@ -23,7 +23,7 @@ import org.apache.logging.log4j.Logger;
 
 public abstract class UdpTransportHandler extends PacketbasedTransportHandler {
 
-    private Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger();
 
     protected DatagramSocket socket;
 
