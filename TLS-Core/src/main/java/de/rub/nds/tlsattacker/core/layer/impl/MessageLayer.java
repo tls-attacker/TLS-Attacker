@@ -227,7 +227,10 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
      */
     @Override
     public LayerProcessingResult receiveData() {
+        // TODO: change so that all messages are read and interpreted until correct message is received
+
         try {
+            // receive a first data stream
             HintedInputStream dataStream;
             do {
                 try {
@@ -287,12 +290,12 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
 
     private void readAlertProtocolData() {
         AlertMessage message = new AlertMessage();
-        readDataContainer(message, context);
+        readDataContainer(message, context, ((RecordLayer) getLowerLayer()).getAlertStream());
     }
 
     private ApplicationMessage readAppDataProtocolData() {
         ApplicationMessage message = new ApplicationMessage();
-        readDataContainer(message, context);
+        readDataContainer(message, context, ((RecordLayer) getLowerLayer()).getApplicationStream());
         getLowerLayer().removeDrainedInputStream();
         return message;
     }
@@ -308,7 +311,7 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
                 context.addDtlsReceivedChangeCipherSpecEpochs(epoch);
             }
         }
-        readDataContainer(message, context);
+        readDataContainer(message, context, ((RecordLayer) getLowerLayer()).getChangeCipherSpecStream());
     }
 
     /**
@@ -325,7 +328,7 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
         HandshakeMessage handshakeMessage;
         HintedInputStream handshakeStream;
         try {
-            handshakeStream = getLowerLayer().getDataStream();
+            handshakeStream = ((RecordLayer) getLowerLayer()).getHandshakeStream();
             type = handshakeStream.readByte();
             readBytesStream.write(new byte[] {type});
             handshakeMessage =
@@ -386,12 +389,12 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
 
     private void readHeartbeatProtocolData() {
         HeartbeatMessage message = new HeartbeatMessage();
-        readDataContainer(message, context);
+        readDataContainer(message, context, ((RecordLayer) getLowerLayer()).getHeartbeatStream());
     }
 
     private void readUnknownProtocolData() {
         UnknownMessage message = new UnknownMessage();
-        readDataContainer(message, context);
+        readDataContainer(message, context, ((RecordLayer) getLowerLayer()).getUnknownStream());
         getLowerLayer().removeDrainedInputStream();
     }
 

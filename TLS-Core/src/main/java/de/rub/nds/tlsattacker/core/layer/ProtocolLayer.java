@@ -244,6 +244,16 @@ public abstract class ProtocolLayer<
             return;
         }
 
+        readDataContainer(container, context, inputStream);
+    }
+
+    /**
+     * Parses and handles content from a container.
+     *
+     * @param container The container to handle.
+     * @param context The context of the connection. Keeps parsed and handled values.
+     */
+    protected void readDataContainer(Container container, LayerContext context, HintedInputStream inputStream) {
         Parser parser = container.getParser(context, inputStream);
 
         try {

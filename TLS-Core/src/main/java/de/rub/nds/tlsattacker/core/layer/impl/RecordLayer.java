@@ -20,6 +20,7 @@ import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.hints.RecordLayerHint;
+import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerInputStream;
 import de.rub.nds.tlsattacker.core.protocol.parser.cert.CleanRecordByteSeperator;
 import de.rub.nds.tlsattacker.core.record.Record;
@@ -431,5 +432,33 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
     @Override
     public LayerProcessingResult receiveData() {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public HintedInputStream getUnknownStream() {
+        return protocolMessageTypeInputStreams.get(ProtocolMessageType.UNKNOWN);
+    }
+
+    public HintedInputStream getChangeCipherSpecStream() {
+        return protocolMessageTypeInputStreams.get(ProtocolMessageType.CHANGE_CIPHER_SPEC);
+    }
+
+    public HintedInputStream getAlertStream() {
+        return protocolMessageTypeInputStreams.get(ProtocolMessageType.ALERT);
+    }
+
+    public HintedInputStream getHandshakeStream() {
+        return protocolMessageTypeInputStreams.get(ProtocolMessageType.HANDSHAKE);
+    }
+
+    public HintedInputStream getApplicationStream() {
+        return protocolMessageTypeInputStreams.get(ProtocolMessageType.APPLICATION_DATA);
+    }
+
+    public HintedInputStream getHeartbeatStream() {
+        return protocolMessageTypeInputStreams.get(ProtocolMessageType.HEARTBEAT);
+    }
+
+    public HintedInputStream getTLS12CIDStream() {
+        return protocolMessageTypeInputStreams.get(ProtocolMessageType.APPLICATION_DATA);
     }
 }
