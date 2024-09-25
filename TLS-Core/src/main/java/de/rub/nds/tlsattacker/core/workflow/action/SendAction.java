@@ -211,7 +211,8 @@ public class SendAction extends CommonSendAction implements StaticSendingAction 
                 holders.addAll(message.getAllModifiableVariableHolders());
             }
         }
-        if (configuredRecords != null) {
+        // only clean records if they carry messages
+        if (configuredRecords != null && configuredMessages != null) {
             for (Record record : configuredRecords) {
                 holders.addAll(record.getAllModifiableVariableHolders());
             }
@@ -267,7 +268,7 @@ public class SendAction extends CommonSendAction implements StaticSendingAction 
         if (getConfiguredRecords() != null) {
             configurationList.add(
                     new SpecificSendLayerConfiguration<>(
-                            ImplementedLayers.RECORD, getConfiguredMessages()));
+                            ImplementedLayers.RECORD, getConfiguredRecords()));
         }
         if (getConfiguredMessages() != null) {
             configurationList.add(

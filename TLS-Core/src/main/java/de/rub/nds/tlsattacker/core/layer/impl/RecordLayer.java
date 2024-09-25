@@ -20,7 +20,6 @@ import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.hints.RecordLayerHint;
-import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerInputStream;
 import de.rub.nds.tlsattacker.core.protocol.parser.cert.CleanRecordByteSeperator;
 import de.rub.nds.tlsattacker.core.record.Record;
@@ -39,8 +38,10 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -60,6 +61,9 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
     private final RecordCompressor compressor;
     private final RecordDecompressor decompressor;
 
+    protected Map<ProtocolMessageType, HintedLayerInputStream> protocolMessageTypeInputStreams =
+            new HashMap<>();
+
     private int writeEpoch = 0;
     private int readEpoch = 0;
 
@@ -70,6 +74,9 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
         decryptor = new RecordDecryptor(RecordCipherFactory.getNullCipher(context), context);
         compressor = new RecordCompressor(context);
         decompressor = new RecordDecompressor(context);
+        for (ProtocolMessageType type : ProtocolMessageType.values()) {
+            protocolMessageTypeInputStreams.put(type, null);
+        }
     }
 
     /**
@@ -223,64 +230,85 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
         InputStream dataStream = getLowerLayer().getDataStream();
         RecordParser parser =
                 new RecordParser(dataStream, getDecryptorCipher().getState().getVersion(), context);
-        try {
-            Record record = new Record();
-            parser.parse(record);
-            // TODO it would be good to have a record handler here
-            ProtocolVersion protocolVersion =
-                    ProtocolVersion.getProtocolVersion(record.getProtocolVersion().getValue());
-            context.setLastRecordVersion(protocolVersion);
-            decryptor.decrypt(record);
-            decompressor.decompress(record);
-            addProducedContainer(record);
-            RecordLayerHint currentHint;
-            // extract the type of the message we just read
-            if (context.getChooser().getSelectedProtocolVersion().isDTLS()) {
-                currentHint =
-                        new RecordLayerHint(
-                                record.getContentMessageType(),
-                                record.getEpoch().getValue(),
-                                record.getSequenceNumber().getValue().intValue());
-            } else {
-                currentHint = new RecordLayerHint(record.getContentMessageType());
-            }
-            // only set the currentInputStream when we received the expected message
-            if (desiredHint == null || currentHint.equals(desiredHint)) {
+        boolean parsedDesiredHint = false;
+
+        while (!parsedDesiredHint) {
+            try {
+                Record record = new Record();
+                parser.parse(record);
+                // TODO it would be good to have a record handler here
+                ProtocolVersion protocolVersion =
+                        ProtocolVersion.getProtocolVersion(record.getProtocolVersion().getValue());
+                context.setLastRecordVersion(protocolVersion);
+                decryptor.decrypt(record);
+                decompressor.decompress(record);
+                addProducedContainer(record);
+                RecordLayerHint currentHint;
+                // extract the type of the message we just read
+                if (context.getChooser().getSelectedProtocolVersion().isDTLS()) {
+                    currentHint =
+                            new RecordLayerHint(
+                                    record.getContentMessageType(),
+                                    record.getEpoch().getValue(),
+                                    record.getSequenceNumber().getValue().intValue());
+                } else {
+                    currentHint = new RecordLayerHint(record.getContentMessageType());
+                }
+
+                // skip all desired Hint checks if desired Hint is null
+                if (desiredHint == null) {
+                    desiredHint = currentHint;
+                }
+                ProtocolMessageType desiredType = ((RecordLayerHint) desiredHint).getType();
+
+                if (currentHint.equals(desiredHint)) {
+                    parsedDesiredHint = true;
+                }
+
+                // fill both the desired and the actual input streams
+                if (protocolMessageTypeInputStreams.get(desiredType) == null) {
+                    protocolMessageTypeInputStreams.put(
+                            desiredType, new HintedLayerInputStream(desiredHint, this));
+                }
+                if (protocolMessageTypeInputStreams.get(currentHint.getType()) == null) {
+                    protocolMessageTypeInputStreams.put(
+                            currentHint.getType(), new HintedLayerInputStream(desiredHint, this));
+                }
+                nextInputStream = currentInputStream;
+                currentInputStream = protocolMessageTypeInputStreams.get(desiredType);
+
+                // attach data to correct inputStream
+                HintedLayerInputStream receivedStream =
+                        protocolMessageTypeInputStreams.get(currentHint.getType());
+                receivedStream.extendStream(record.getCleanProtocolMessageBytes().getValue());
+            } catch (ParserException e) {
+                setUnreadBytes(parser.getAlreadyParsed());
+                LOGGER.warn(
+                        "Could not parse Record as a Record. Passing data to upper layer as unknown data",
+                        e);
+                if (protocolMessageTypeInputStreams.get(ProtocolMessageType.UNKNOWN) == null) {
+                    protocolMessageTypeInputStreams.put(
+                            ProtocolMessageType.UNKNOWN,
+                            new HintedLayerInputStream(
+                                    new RecordLayerHint(ProtocolMessageType.UNKNOWN), this));
+                }
+                protocolMessageTypeInputStreams
+                        .get(ProtocolMessageType.UNKNOWN)
+                        .extendStream(dataStream.readAllBytes());
                 if (currentInputStream == null) {
-                    // only set new input stream if necessary, extend current stream otherwise
-                    currentInputStream = new HintedLayerInputStream(currentHint, this);
+                    currentInputStream =
+                            protocolMessageTypeInputStreams.get(ProtocolMessageType.UNKNOWN);
                 } else {
-                    currentInputStream.setHint(currentHint);
+                    nextInputStream =
+                            protocolMessageTypeInputStreams.get(ProtocolMessageType.UNKNOWN);
                 }
-                currentInputStream.extendStream(record.getCleanProtocolMessageBytes().getValue());
-            } else {
-                if (nextInputStream == null) {
-                    // only set new input stream if necessary, extend current stream otherwise
-                    nextInputStream = new HintedLayerInputStream(currentHint, this);
-                } else {
-                    nextInputStream.setHint(currentHint);
-                }
-                nextInputStream.extendStream(record.getCleanProtocolMessageBytes().getValue());
+                return;
+            } catch (EndOfStreamException ex) {
+                setUnreadBytes(parser.getAlreadyParsed());
+                LOGGER.debug("Reached end of stream, cannot parse more records");
+                LOGGER.trace(ex);
+                throw ex;
             }
-        } catch (ParserException e) {
-            setUnreadBytes(parser.getAlreadyParsed());
-            LOGGER.warn(
-                    "Could not parse Record as a Record. Passing data to upper layer as unknown data",
-                    e);
-            HintedInputStream tempStream =
-                    new HintedLayerInputStream(
-                            new RecordLayerHint(ProtocolMessageType.UNKNOWN), this);
-            tempStream.extendStream(dataStream.readAllBytes());
-            if (currentInputStream == null) {
-                currentInputStream = tempStream;
-            } else {
-                nextInputStream = tempStream;
-            }
-        } catch (EndOfStreamException ex) {
-            setUnreadBytes(parser.getAlreadyParsed());
-            LOGGER.debug("Reached end of stream, cannot parse more records");
-            LOGGER.trace(ex);
-            throw ex;
         }
     }
 
@@ -342,6 +370,14 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
             }
         }
         return stream.toByteArray();
+    }
+
+    @Override
+    public void clear() {
+        super.clear();
+        for (ProtocolMessageType type : ProtocolMessageType.values()) {
+            protocolMessageTypeInputStreams.put(type, null);
+        }
     }
 
     public void resetEncryptor() {
