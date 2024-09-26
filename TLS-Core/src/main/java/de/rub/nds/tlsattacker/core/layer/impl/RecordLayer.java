@@ -223,44 +223,49 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
         InputStream dataStream = getLowerLayer().getDataStream();
         RecordParser parser =
                 new RecordParser(dataStream, getDecryptorCipher().getState().getVersion(), context);
+        boolean receivedHintRecord = false;
         try {
-            Record record = new Record();
-            parser.parse(record);
-            // TODO it would be good to have a record handler here
-            ProtocolVersion protocolVersion =
-                    ProtocolVersion.getProtocolVersion(record.getProtocolVersion().getValue());
-            context.setLastRecordVersion(protocolVersion);
-            decryptor.decrypt(record);
-            decompressor.decompress(record);
-            addProducedContainer(record);
-            RecordLayerHint currentHint;
-            // extract the type of the message we just read
-            if (context.getChooser().getSelectedProtocolVersion().isDTLS()) {
-                currentHint =
-                        new RecordLayerHint(
-                                record.getContentMessageType(),
-                                record.getEpoch().getValue(),
-                                record.getSequenceNumber().getValue().intValue());
-            } else {
-                currentHint = new RecordLayerHint(record.getContentMessageType());
-            }
-            // only set the currentInputStream when we received the expected message
-            if (desiredHint == null || currentHint.equals(desiredHint)) {
-                if (currentInputStream == null) {
-                    // only set new input stream if necessary, extend current stream otherwise
-                    currentInputStream = new HintedLayerInputStream(currentHint, this);
+            while (!receivedHintRecord) {
+                Record record = new Record();
+                parser.parse(record);
+                // TODO it would be good to have a record handler here
+                ProtocolVersion protocolVersion =
+                        ProtocolVersion.getProtocolVersion(record.getProtocolVersion().getValue());
+                context.setLastRecordVersion(protocolVersion);
+                decryptor.decrypt(record);
+                decompressor.decompress(record);
+                addProducedContainer(record);
+                RecordLayerHint currentHint;
+                // extract the type of the message we just read
+                if (context.getChooser().getSelectedProtocolVersion().isDTLS()) {
+                    currentHint =
+                            new RecordLayerHint(
+                                    record.getContentMessageType(),
+                                    record.getEpoch().getValue(),
+                                    record.getSequenceNumber().getValue().intValue());
                 } else {
-                    currentInputStream.setHint(currentHint);
+                    currentHint = new RecordLayerHint(record.getContentMessageType());
                 }
-                currentInputStream.extendStream(record.getCleanProtocolMessageBytes().getValue());
-            } else {
-                if (nextInputStream == null) {
-                    // only set new input stream if necessary, extend current stream otherwise
-                    nextInputStream = new HintedLayerInputStream(currentHint, this);
+                // only set the currentInputStream when we received the expected message
+                if (desiredHint == null || currentHint.equals(desiredHint)) {
+                    receivedHintRecord = true;
+                    if (currentInputStream == null) {
+                        // only set new input stream if necessary, extend current stream otherwise
+                        currentInputStream = new HintedLayerInputStream(currentHint, this);
+                    } else {
+                        currentInputStream.setHint(currentHint);
+                    }
+                    currentInputStream.extendStream(
+                            record.getCleanProtocolMessageBytes().getValue());
                 } else {
-                    nextInputStream.setHint(currentHint);
+                    if (nextInputStream == null) {
+                        // only set new input stream if necessary, extend current stream otherwise
+                        nextInputStream = new HintedLayerInputStream(currentHint, this);
+                    } else {
+                        nextInputStream.setHint(currentHint);
+                    }
+                    nextInputStream.extendStream(record.getCleanProtocolMessageBytes().getValue());
                 }
-                nextInputStream.extendStream(record.getCleanProtocolMessageBytes().getValue());
             }
         } catch (ParserException e) {
             setUnreadBytes(parser.getAlreadyParsed());

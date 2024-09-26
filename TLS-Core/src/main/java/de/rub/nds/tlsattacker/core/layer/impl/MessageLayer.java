@@ -282,7 +282,6 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
             default:
                 LOGGER.error("Undefined record layer type");
                 break;
-                // TODO: probably replace streams here?
         }
     }
 
