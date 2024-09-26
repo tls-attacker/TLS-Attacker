@@ -114,7 +114,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
                 RecordSerializer serializer = record.getRecordSerializer();
                 byte[] serializedMessage = serializer.serialize();
                 record.setCompleteRecordBytes(serializedMessage);
-                getLowerLayer().sendData(null, serializedMessage);
+                getLowerLayer().sendData(null, record.getCompleteRecordBytes().getValue());
                 addProducedContainer(record);
             }
         }

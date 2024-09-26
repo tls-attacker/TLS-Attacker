@@ -212,7 +212,7 @@ public class SendAction extends CommonSendAction implements StaticSendingAction 
             }
         }
         // only clean records if they carry messages
-        if (configuredRecords != null && configuredMessages != null) {
+        if (configuredRecords != null) {
             for (Record record : configuredRecords) {
                 holders.addAll(record.getAllModifiableVariableHolders());
             }
