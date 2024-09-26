@@ -227,9 +227,6 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
      */
     @Override
     public LayerProcessingResult receiveData() {
-        // TODO: change so that all messages are read and interpreted until correct message is
-        // received
-
         try {
             // receive a first data stream
             HintedInputStream dataStream;
