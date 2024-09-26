@@ -276,7 +276,7 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
     private void readFrames(InputStream dataStream) throws IOException {
         PushbackInputStream inputStream = new PushbackInputStream(dataStream);
         RecordLayerHint recordLayerHint = null;
-        boolean isAckEliciting = true;
+        boolean isAckEliciting = false;
 
         while (inputStream.available() > 0) {
             int firstByte = inputStream.read();
@@ -284,46 +284,49 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
             switch (frameType) {
                 case ACK_FRAME:
                     readDataContainer(new AckFrame(false), context, inputStream);
-                    isAckEliciting = false;
                     break;
                 case ACK_FRAME_WITH_ECN:
                     readDataContainer(new AckFrame(true), context, inputStream);
-                    isAckEliciting = false;
                     break;
                 case CONNECTION_CLOSE_QUIC_FRAME:
                     readDataContainer(new ConnectionCloseFrame(true), context, inputStream);
-                    isAckEliciting = false;
                     break;
                 case CONNECTION_CLOSE_APPLICATION_FRAME:
                     readDataContainer(new ConnectionCloseFrame(false), context, inputStream);
-                    isAckEliciting = false;
                     break;
                 case CRYPTO_FRAME:
                     recordLayerHint = new RecordLayerHint(ProtocolMessageType.HANDSHAKE);
                     CryptoFrame frame = new CryptoFrame();
                     readDataContainer(frame, context, inputStream);
                     cryptoFrameBuffer.add(frame);
+                    isAckEliciting = true;
                     break;
                 case HANDSHAKE_DONE_FRAME:
                     readDataContainer(new HandshakeDoneFrame(), context, inputStream);
+                    isAckEliciting = true;
                     break;
                 case NEW_CONNECTION_ID_FRAME:
                     readDataContainer(new NewConnectionIdFrame(), context, inputStream);
+                    isAckEliciting = true;
                     break;
                 case NEW_TOKEN_FRAME:
                     readDataContainer(new NewTokenFrame(), context, inputStream);
+                    isAckEliciting = true;
                     break;
                 case PADDING_FRAME:
                     readDataContainer(new PaddingFrame(), context, inputStream);
-                    isAckEliciting = false;
                     break;
                 case PATH_CHALLENGE_FRAME:
                     readDataContainer(new PathChallengeFrame(), context, inputStream);
+                    isAckEliciting = true;
+                    break;
                 case PATH_RESPONSE_FRAME:
                     readDataContainer(new PathResponseFrame(), context, inputStream);
+                    isAckEliciting = true;
                     break;
                 case PING_FRAME:
                     readDataContainer(new PingFrame(), context, inputStream);
+                    isAckEliciting = true;
                     break;
                 case STREAM_FRAME:
                 case STREAM_FRAME_OFF_LEN_FIN:
@@ -334,6 +337,7 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
                 case STREAM_FRAME_LEN:
                 case STREAM_FRAME_OFF:
                     readDataContainer(new StreamFrame(frameType), context, inputStream);
+                    isAckEliciting = true;
                     break;
                 default:
                     LOGGER.error("Undefined QUIC frame type");
