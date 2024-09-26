@@ -253,27 +253,6 @@ public abstract class ProtocolLayer<
      * @param container The container to handle.
      * @param context The context of the connection. Keeps parsed and handled values.
      */
-    protected void readDataContainer(Container container, LayerContext context, HintedInputStream inputStream) {
-        Parser parser = container.getParser(context, inputStream);
-
-        try {
-            parser.parse(container);
-            Preparator preparator = container.getPreparator(context);
-            preparator.prepareAfterParse();
-            Handler handler = container.getHandler(context);
-            handler.adjustContext(container);
-            addProducedContainer(container);
-        } catch (RuntimeException ex) {
-            setUnreadBytes(parser.getAlreadyParsed());
-        }
-    }
-
-    /**
-     * Parses and handles content from a container.
-     *
-     * @param container The container to handle.
-     * @param context The context of the connection. Keeps parsed and handled values.
-     */
     protected void readDataContainer(
             Container container, LayerContext context, InputStream inputStream) {
         Parser parser = container.getParser(context, inputStream);

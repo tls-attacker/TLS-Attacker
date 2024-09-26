@@ -227,7 +227,8 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
      */
     @Override
     public LayerProcessingResult receiveData() {
-        // TODO: change so that all messages are read and interpreted until correct message is received
+        // TODO: change so that all messages are read and interpreted until correct message is
+        // received
 
         try {
             // receive a first data stream
@@ -249,6 +250,7 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
                     RecordLayerHint hint = (RecordLayerHint) dataStream.getHint();
                     readMessageForHint(hint);
                 }
+                ((RecordLayer) getLowerLayer()).shiftCurrentInputStream();
                 // receive until the layer configuration is satisfied or no data is left
             } while (shouldContinueProcessing());
         } catch (TimeoutException ex) {
@@ -311,7 +313,8 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
                 context.addDtlsReceivedChangeCipherSpecEpochs(epoch);
             }
         }
-        readDataContainer(message, context, ((RecordLayer) getLowerLayer()).getChangeCipherSpecStream());
+        readDataContainer(
+                message, context, ((RecordLayer) getLowerLayer()).getChangeCipherSpecStream());
     }
 
     /**

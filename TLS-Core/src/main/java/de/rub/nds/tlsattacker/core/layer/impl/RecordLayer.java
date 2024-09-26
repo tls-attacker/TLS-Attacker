@@ -273,7 +273,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
                 }
                 if (protocolMessageTypeInputStreams.get(currentHint.getType()) == null) {
                     protocolMessageTypeInputStreams.put(
-                            currentHint.getType(), new HintedLayerInputStream(desiredHint, this));
+                            currentHint.getType(), new HintedLayerInputStream(currentHint, this));
                 }
                 nextInputStream = currentInputStream;
                 currentInputStream = protocolMessageTypeInputStreams.get(desiredType);
@@ -371,6 +371,41 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
             }
         }
         return stream.toByteArray();
+    }
+
+    /**
+     * Shits another input stream into the currentInputStream to allow the message layer to read
+     * other messages in case of fragmentation and reordering.
+     */
+    protected void shiftCurrentInputStream() {
+        // TODO: With java 17, switch to pattern matching
+        if (currentInputStream == null) {
+            // start somewhere
+            currentInputStream = protocolMessageTypeInputStreams.get(ProtocolMessageType.HANDSHAKE);
+        } else if (((RecordLayerHint) currentInputStream.getHint()).getType()
+                == ProtocolMessageType.HANDSHAKE) {
+            currentInputStream =
+                    protocolMessageTypeInputStreams.get(ProtocolMessageType.APPLICATION_DATA);
+        } else if (((RecordLayerHint) currentInputStream.getHint()).getType()
+                == ProtocolMessageType.APPLICATION_DATA) {
+            currentInputStream = protocolMessageTypeInputStreams.get(ProtocolMessageType.HEARTBEAT);
+        } else if (((RecordLayerHint) currentInputStream.getHint()).getType()
+                == ProtocolMessageType.HEARTBEAT) {
+            currentInputStream = protocolMessageTypeInputStreams.get(ProtocolMessageType.TLS12_CID);
+        } else if (((RecordLayerHint) currentInputStream.getHint()).getType()
+                == ProtocolMessageType.TLS12_CID) {
+            currentInputStream = protocolMessageTypeInputStreams.get(ProtocolMessageType.UNKNOWN);
+        } else if (((RecordLayerHint) currentInputStream.getHint()).getType()
+                == ProtocolMessageType.UNKNOWN) {
+            currentInputStream =
+                    protocolMessageTypeInputStreams.get(ProtocolMessageType.CHANGE_CIPHER_SPEC);
+        } else if (((RecordLayerHint) currentInputStream.getHint()).getType()
+                == ProtocolMessageType.CHANGE_CIPHER_SPEC) {
+            currentInputStream = protocolMessageTypeInputStreams.get(ProtocolMessageType.ALERT);
+        } else if (((RecordLayerHint) currentInputStream.getHint()).getType()
+                == ProtocolMessageType.ALERT) {
+            currentInputStream = protocolMessageTypeInputStreams.get(ProtocolMessageType.HANDSHAKE);
+        }
     }
 
     @Override
