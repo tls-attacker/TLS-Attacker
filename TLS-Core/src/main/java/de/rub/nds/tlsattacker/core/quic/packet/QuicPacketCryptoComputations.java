@@ -143,6 +143,14 @@ public class QuicPacketCryptoComputations extends ModifiableVariableHolder {
             throws CryptoException, NoSuchAlgorithmException {
         LOGGER.debug("Initialize Quic Initial Secrets");
 
+        QuicVersion version = context.getQuicVersion();
+        if (version == QuicVersion.NEGOTIATION_VERSION) {
+            LOGGER.debug(
+                    "Version Negotiation Packets do not have initial secrets. They are not encrypted.");
+            context.setInitialSecretsInitialized(false);
+            return;
+        }
+
         HKDFAlgorithm hkdfAlgorithm = context.getInitialHKDFAlgorithm();
         Mac mac = Mac.getInstance(hkdfAlgorithm.getMacAlgorithm().getJavaName());
 
@@ -151,13 +159,6 @@ public class QuicPacketCryptoComputations extends ModifiableVariableHolder {
                         hkdfAlgorithm,
                         context.getInitialSalt(),
                         context.getFirstDestinationConnectionId()));
-
-        QuicVersion version = context.getQuicVersion();
-        if (version == QuicVersion.NEGOTIATION_VERSION) {
-            // There are no initial secrets, version negotiation packets are unencrypted
-            throw new UnsupportedOperationException(
-                    "Version Negotiation Packets do not have initial secrets. They are not encrypted.");
-        }
 
         // client
         context.setInitialClientSecret(
