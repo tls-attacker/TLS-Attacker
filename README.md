@@ -292,11 +292,11 @@ this gap with hardcoded values (which are equal to the provided default config).
 
 ## Acknowledgements
 
-The following people have contributed code to the TLS-Attacker project:
+We would like to thank everyone who has contributed to TLS-Attacker project.
 
-Felix Lange, Philip Riese, Pierre Tilhaus, Felix Kleine-Wilde, Paul Fiterau Brostean, Jens Carl, Florian Pfützenreuter, Florian Linsner, Asli Yardim, Bastian Haverkamp, Alexander Glasfort, Nils Engelbertz, Mario Korth, Philipp Brinkmann, Joshua Waldner, Kevin Jagla, Felix Dreissig, David Ziemann, Matthias Manfred Geuchen, Christoph Penkert, Nils Hanke, Fabian Albert, Bastian Ebach, Marten Schmidt, Anton Khristoforov, Simon Nachtigall, Till Budde, Malte Poll, Lucas Hartmann, Janis Fliegenschmidt, Matthias Terlinde, Malena Ebert, Alexander Freiherr von Buddenbrock, Tim Reisach, Robert Engel, Raphael Dietrich, Philipp Nieting, Dennis Ziebart, Jan Kaiser, Jonas Thiele, Nils Kafka, Adrian Pinner, Jonas Moos, Niels Pahl, Philipp Wirth, Simon Nattefort, Bjarne Tempel, Philipp Ziemke, Christian Pressler, Conrad Schmidt, Daniel Siegert, Henrik Schaefer, Christian Krug, Christoph Buttler, Patrick Weixler
+A special thanks goes to the following peoples for their notable contributions:
 
-Additionally we would like to thank all the other people who have contributed code to the project.
+Felix Lange, Philip Riese, Pierre Tilhaus, Felix Kleine-Wilde, Paul Fiterau Brostean, Christian Mainka, Jens Carl, Florian Pfützenreuter, Florian Linsner, Asli Yardim, Bastian Haverkamp, Alexander Glasfort, Nils Engelbertz, Mario Korth, Philipp Brinkmann, Joshua Waldner, Kevin Jagla, Felix Dreissig, David Ziemann, Matthias Manfred Geuchen, Christoph Penkert, Nils Hanke, Fabian Albert, Bastian Ebach, Marten Schmidt, Anton Khristoforov, Simon Nachtigall, Till Budde, Malte Poll, Lucas Hartmann, Janis Fliegenschmidt, Matthias Terlinde, Malena Ebert, Alexander Freiherr von Buddenbrock, Tim Reisach, Robert Engel, Raphael Dietrich, Philipp Nieting, Dennis Ziebart, Jan Kaiser, Jonas Thiele, Nils Kafka, Adrian Pinner, Jonas Moos, Niels Pahl, Philipp Wirth, Simon Nattefort, Bjarne Tempel, Philipp Ziemke, Christian Pressler, Conrad Schmidt, Daniel Siegert, Henrik Schaefer, Christian Krug, Christoph Buttler, Patrick Weixler, Nimrod Aviram, Nico Heitmann, Jannik Hölling, Nils Luca Rudminat, Muhammad Abubakar, Panneer Selvam Annadurai, Selami Hoxha, Tim Storm, Rigers Sulku, Florian Bürger, Sebastian Krois
 
 Further contributions and pull requests are welcome.
 
