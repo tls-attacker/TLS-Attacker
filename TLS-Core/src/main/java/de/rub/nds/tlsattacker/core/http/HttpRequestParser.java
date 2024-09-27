@@ -18,9 +18,7 @@ import de.rub.nds.tlsattacker.core.http.header.HttpHeader;
 import de.rub.nds.tlsattacker.core.http.header.LocationHeader;
 import de.rub.nds.tlsattacker.core.http.header.TokenBindingHeader;
 import java.io.InputStream;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
