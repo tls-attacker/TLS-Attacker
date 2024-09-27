@@ -15,7 +15,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -240,13 +239,13 @@ public enum CipherSuite {
             CipherAlgorithm.AES_128_CBC, HashAlgorithm.SHA256, false, false),
     TLS_DH_anon_WITH_AES_256_CBC_SHA256(0x006D, CipherType.BLOCK, KeyExchangeAlgorithm.DH_ANON,
             CipherAlgorithm.AES_256_CBC, HashAlgorithm.SHA256, false, false),
-    TLS_GOSTR341094_WITH_28147_CNT_IMIT(0x0080, CipherType.STREAM, KeyExchangeAlgorithm.VKO_GOST01,
+    TLS_GOSTR341094_WITH_28147_CNT_IMIT(0x0080, CipherType.STREAM, KeyExchangeAlgorithm.VKO_GOST94,
             CipherAlgorithm.GOST_28147_CNT_IMIT, HashAlgorithm.GOST_R3411_94, false, false),
-    TLS_GOSTR341001_WITH_28147_CNT_IMIT(0x0081, CipherType.STREAM, KeyExchangeAlgorithm.VKO_GOST12,
+    TLS_GOSTR341001_WITH_28147_CNT_IMIT(0x0081, CipherType.STREAM, KeyExchangeAlgorithm.VKO_GOST01,
             CipherAlgorithm.GOST_28147_CNT_IMIT, HashAlgorithm.GOST_R3411_94, false, false),
-    TLS_GOSTR341094_WITH_NULL_GOSTR3411(0x0082, CipherType.STREAM, KeyExchangeAlgorithm.VKO_GOST01,
+    TLS_GOSTR341094_WITH_NULL_GOSTR3411(0x0082, CipherType.STREAM, KeyExchangeAlgorithm.VKO_GOST94,
             CipherAlgorithm.NULL, HashAlgorithm.GOST_R3411_94, false, false),
-    TLS_GOSTR341001_WITH_NULL_GOSTR3411(0x0083, CipherType.STREAM, KeyExchangeAlgorithm.VKO_GOST12,
+    TLS_GOSTR341001_WITH_NULL_GOSTR3411(0x0083, CipherType.STREAM, KeyExchangeAlgorithm.VKO_GOST01,
             CipherAlgorithm.NULL, HashAlgorithm.GOST_R3411_94, false, false),
     TLS_RSA_WITH_CAMELLIA_256_CBC_SHA(0x0084, CipherType.BLOCK, KeyExchangeAlgorithm.RSA,
             CipherAlgorithm.CAMELLIA_256_CBC, HashAlgorithm.SHA1, false, false),
@@ -761,21 +760,21 @@ public enum CipherSuite {
     // defined in their name but implicitly use SHA256
     // TODO the draft contaisn more
     UNOFFICIAL_TLS_RSA_WITH_CHACHA20_POLY1305(0xCC12, CipherType.AEAD, KeyExchangeAlgorithm.RSA,
-            CipherAlgorithm.CHACHA20_POLY1305, HashAlgorithm.SHA256, false, false),
+            CipherAlgorithm.UNOFFICIAL_CHACHA20_POLY1305, HashAlgorithm.SHA256, false, false),
     UNOFFICIAL_TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256(0xcc13, CipherType.AEAD, KeyExchangeAlgorithm.ECDHE_RSA,
-            CipherAlgorithm.CHACHA20_POLY1305, HashAlgorithm.SHA256, false, false),
+            CipherAlgorithm.UNOFFICIAL_CHACHA20_POLY1305, HashAlgorithm.SHA256, false, false),
     UNOFFICIAL_TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256(0xcc14, CipherType.AEAD, KeyExchangeAlgorithm.ECDHE_ECDSA,
-            CipherAlgorithm.CHACHA20_POLY1305, HashAlgorithm.SHA256, false, false),
+            CipherAlgorithm.UNOFFICIAL_CHACHA20_POLY1305, HashAlgorithm.SHA256, false, false),
     UNOFFICIAL_TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256(0xcc15, CipherType.AEAD, KeyExchangeAlgorithm.DHE_RSA,
-            CipherAlgorithm.CHACHA20_POLY1305, HashAlgorithm.SHA256, false, false),
+            CipherAlgorithm.UNOFFICIAL_CHACHA20_POLY1305, HashAlgorithm.SHA256, false, false),
     UNOFFICIAL_TLS_DHE_PSK_WITH_CHACHA20_POLY1305_OLD(0xCC16, CipherType.AEAD, KeyExchangeAlgorithm.DHE_PSK,
-            CipherAlgorithm.CHACHA20_POLY1305, HashAlgorithm.SHA256, false, false),
+            CipherAlgorithm.UNOFFICIAL_CHACHA20_POLY1305, HashAlgorithm.SHA256, false, false),
     UNOFFICIAL_TLS_PSK_WITH_CHACHA20_POLY1305_OLD(0xCC17, CipherType.AEAD, KeyExchangeAlgorithm.PSK,
-            CipherAlgorithm.CHACHA20_POLY1305, HashAlgorithm.SHA256, false, false),
+            CipherAlgorithm.UNOFFICIAL_CHACHA20_POLY1305, HashAlgorithm.SHA256, false, false),
     UNOFFICIAL_TLS_ECDHE_PSK_WITH_CHACHA20_POLY1305_OLD(0xCC18, CipherType.AEAD, KeyExchangeAlgorithm.ECDHE_PSK,
-            CipherAlgorithm.CHACHA20_POLY1305, HashAlgorithm.SHA256, false, false),
+            CipherAlgorithm.UNOFFICIAL_CHACHA20_POLY1305, HashAlgorithm.SHA256, false, false),
     UNOFFICIAL_TLS_RSA_PSK_WITH_CHACHA20_POLY1305_OLD(0xCC19, CipherType.AEAD, KeyExchangeAlgorithm.RSA_PSK,
-            CipherAlgorithm.CHACHA20_POLY1305, HashAlgorithm.SHA256, false, false),
+            CipherAlgorithm.UNOFFICIAL_CHACHA20_POLY1305, HashAlgorithm.SHA256, false, false),
     // *************************************************************************
     TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256(0xCCA8, CipherType.AEAD, KeyExchangeAlgorithm.ECDHE_RSA,
             CipherAlgorithm.CHACHA20_POLY1305, HashAlgorithm.SHA256, false, false),
@@ -824,8 +823,6 @@ public enum CipherSuite {
             CipherAlgorithm.NULL, HashAlgorithm.GOST_R3411_12, false, false),;
 
     private int value;
-
-    public static final int EXPORT_SYMMETRIC_KEY_SIZE_BYTES = 5;
 
     private static final Map<Integer, CipherSuite> MAP;
 
@@ -935,26 +932,26 @@ public enum CipherSuite {
 
     public boolean isPskOrDhPsk() {
         if (!this.name().contains("RSA")) {
-            return this.name().contains("PSK");
+            return keyExchangeAlgorithm != null && keyExchangeAlgorithm.isPsk();
         } else {
             return false;
         }
     }
 
     public boolean isPsk() {
-        return keyExchangeAlgorithm.isPsk();
+        return keyExchangeAlgorithm != null && keyExchangeAlgorithm.isPsk();
     }
 
     public boolean isSrp() {
-        return this.name().contains("SRP_");
+        return keyExchangeAlgorithm != null && keyExchangeAlgorithm.isSrp();
     }
 
     public boolean isExport() {
-        return this.name().contains("EXPORT");
+        return export;
     }
 
     public boolean isGrease() {
-        return this.name().contains("GREASE");
+        return grease;
     }
 
     public boolean isExportSymmetricCipher() {

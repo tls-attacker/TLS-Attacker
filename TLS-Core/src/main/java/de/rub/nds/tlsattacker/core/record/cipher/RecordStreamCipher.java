@@ -41,26 +41,22 @@ public class RecordStreamCipher extends RecordCipher {
 
     private void initCipherAndMac() throws UnsupportedOperationException {
         try {
-            encryptCipher =
-                    CipherWrapper.getEncryptionCipher(
-                            getState().getCipherSuite(),
-                            getLocalConnectionEndType(),
-                            getState().getKeySet());
-            decryptCipher =
-                    CipherWrapper.getDecryptionCipher(
-                            getState().getCipherSuite(),
-                            getLocalConnectionEndType(),
-                            getState().getKeySet());
-            readMac =
-                    MacWrapper.getMac(
-                            getState().getVersion(),
-                            getState().getCipherSuite(),
-                            getState().getKeySet().getReadMacSecret(getLocalConnectionEndType()));
-            writeMac =
-                    MacWrapper.getMac(
-                            getState().getVersion(),
-                            getState().getCipherSuite(),
-                            getState().getKeySet().getWriteMacSecret(getLocalConnectionEndType()));
+            encryptCipher = CipherWrapper.getEncryptionCipher(
+                    getState().getCipherSuite(),
+                    getLocalConnectionEndType(),
+                    getState().getKeySet());
+            decryptCipher = CipherWrapper.getDecryptionCipher(
+                    getState().getCipherSuite(),
+                    getLocalConnectionEndType(),
+                    getState().getKeySet());
+            readMac = MacWrapper.getMac(
+                    getState().getVersion(),
+                    getState().getCipherSuite(),
+                    getState().getKeySet().getReadMacSecret(getLocalConnectionEndType()));
+            writeMac = MacWrapper.getMac(
+                    getState().getVersion(),
+                    getState().getCipherSuite(),
+                    getState().getKeySet().getWriteMacSecret(getLocalConnectionEndType()));
         } catch (NoSuchAlgorithmException ex) {
             throw new UnsupportedOperationException(
                     "Cipher not supported: " + getState().getCipherSuite().name(), ex);
@@ -99,8 +95,8 @@ public class RecordStreamCipher extends RecordCipher {
         record.setLength(
                 cleanBytes.length
                         + AlgorithmResolver.getMacAlgorithm(
-                                        getState().getVersion(), getState().getCipherSuite())
-                                .getSize());
+                                getState().getVersion(), getState().getCipherSuite())
+                                .getMacLength());
 
         computations.setAuthenticatedMetaData(
                 collectAdditionalAuthenticatedData(record, getState().getVersion()));
@@ -151,12 +147,11 @@ public class RecordStreamCipher extends RecordCipher {
                         collectAdditionalAuthenticatedData(record, getState().getVersion()));
         byte[] hmac = parser.parseByteArrayField(readMac.getMacLength());
         record.getComputations().setMac(hmac);
-        byte[] calculatedHmac =
-                calculateMac(
-                        ArrayConverter.concatenate(
-                                record.getComputations().getAuthenticatedMetaData().getValue(),
-                                record.getComputations().getAuthenticatedNonMetaData().getValue()),
-                        getTalkingConnectionEndType());
+        byte[] calculatedHmac = calculateMac(
+                ArrayConverter.concatenate(
+                        record.getComputations().getAuthenticatedMetaData().getValue(),
+                        record.getComputations().getAuthenticatedNonMetaData().getValue()),
+                getTalkingConnectionEndType());
         record.getComputations().setMacValid(Arrays.equals(hmac, calculatedHmac));
     }
 

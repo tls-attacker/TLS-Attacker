@@ -46,7 +46,7 @@ public class KeyBlockParser extends Parser<KeySet> {
         parseClientWriteKey(keys);
         parseServerWriteKey(keys);
         if ((suite.getCipherType() == CipherType.BLOCK
-                        && !version.usesExplicitIv())
+                && !version.usesExplicitIv())
                 || suite.isSteamCipherWithIV()) {
             parseClientWriteIvBlock(keys);
             parseServerWriteIvBlock(keys);
@@ -57,7 +57,7 @@ public class KeyBlockParser extends Parser<KeySet> {
     }
 
     private int getAeadSaltSize() {
-        return AEAD_IV_LENGTH - AlgorithmResolver.getCipher(suite).getNonceBytesFromRecord();
+        return AEAD_IV_LENGTH - suite.getCipherAlgorithm().getNonceBytesFromRecord();
     }
 
     private void parseClientWriteIvBlock(KeySet keys) {
@@ -101,18 +101,14 @@ public class KeyBlockParser extends Parser<KeySet> {
     }
 
     private int getMacKeySize() {
-        return AlgorithmResolver.getMacAlgorithm(version, suite).getKeySize();
+        return AlgorithmResolver.getMacAlgorithm(version, suite).getKeySize() ;
     }
 
     private int getKeySize() {
-        if (suite.isExportSymmetricCipher()) {
-            return CipherSuite.EXPORT_SYMMETRIC_KEY_SIZE_BYTES;
-        } else {
-            return AlgorithmResolver.getCipher(suite).getKeySize();
-        }
+        return suite.getCipherAlgorithm().getKeySize();
     }
 
     private int getIVSize() {
-        return AlgorithmResolver.getCipher(suite).getNonceBytesFromHandshake();
+        return suite.getCipherAlgorithm().getNonceBytesFromHandshake();
     }
 }

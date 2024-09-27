@@ -8,34 +8,31 @@
  */
 package de.rub.nds.tlsattacker.core.crypto;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
-import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.MessageFormat;
+
 import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.crypto.Digest;
 import org.bouncycastle.crypto.tls.HashAlgorithm;
 import org.bouncycastle.crypto.tls.TlsUtils;
 import org.bouncycastle.util.Arrays;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.protocol.constants.MacAlgorithm;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+
 /** SSLUtils is a class with static methods that are supposed to calculate SSL-specific data. */
 public class SSLUtils {
 
-    private static final MessageFormat ILLEGAL_MAC_ALGORITHM =
-            new MessageFormat(
-                    "{0}, is not a valid MacAlgorithm for SSLv3, only MD5 and SHA-1 are available.");
+    private static final MessageFormat ILLEGAL_MAC_ALGORITHM = new MessageFormat(
+            "{0}, is not a valid MacAlgorithm for SSLv3, only MD5 and SHA-1 are available.");
 
-    public static final byte[] MD5_PAD1 =
-            ArrayConverter.hexStringToByteArray(StringUtils.repeat("36", 48));
-    public static final byte[] MD5_PAD2 =
-            ArrayConverter.hexStringToByteArray(StringUtils.repeat("5c", 48));
-    public static final byte[] SHA_PAD1 =
-            ArrayConverter.hexStringToByteArray(StringUtils.repeat("36", 40));
-    public static final byte[] SHA_PAD2 =
-            ArrayConverter.hexStringToByteArray(StringUtils.repeat("5c", 40));
+    public static final byte[] MD5_PAD1 = ArrayConverter.hexStringToByteArray(StringUtils.repeat("36", 48));
+    public static final byte[] MD5_PAD2 = ArrayConverter.hexStringToByteArray(StringUtils.repeat("5c", 48));
+    public static final byte[] SHA_PAD1 = ArrayConverter.hexStringToByteArray(StringUtils.repeat("36", 40));
+    public static final byte[] SHA_PAD2 = ArrayConverter.hexStringToByteArray(StringUtils.repeat("5c", 40));
 
     /**
      * Constants for masterSecret and keyBlock generation like 'A', 'BB', 'CC', as stated in
@@ -294,8 +291,7 @@ public class SSLUtils {
      */
     public static byte[] calculateFinishedData(
             byte[] handshakeMessages, byte[] masterSecret, ConnectionEndType connectionEndType) {
-        final byte[] input =
-                ArrayConverter.concatenate(handshakeMessages, getSenderConstant(connectionEndType));
+        final byte[] input = ArrayConverter.concatenate(handshakeMessages, getSenderConstant(connectionEndType));
         return calculateSSLMd5SHASignature(input, masterSecret);
     }
 
@@ -311,16 +307,12 @@ public class SSLUtils {
         try {
             final MessageDigest md5 = MessageDigest.getInstance("MD5");
             final MessageDigest sha = MessageDigest.getInstance("SHA-1");
-            final byte[] innerMD5Content =
-                    ArrayConverter.concatenate(input, masterSecret, MD5_PAD1);
-            final byte[] innerSHAContent =
-                    ArrayConverter.concatenate(input, masterSecret, SHA_PAD1);
+            final byte[] innerMD5Content = ArrayConverter.concatenate(input, masterSecret, MD5_PAD1);
+            final byte[] innerSHAContent = ArrayConverter.concatenate(input, masterSecret, SHA_PAD1);
             final byte[] innerMD5 = md5.digest(innerMD5Content);
             final byte[] innerSHA = sha.digest(innerSHAContent);
-            final byte[] outerMD5Content =
-                    ArrayConverter.concatenate(masterSecret, MD5_PAD2, innerMD5);
-            final byte[] outerSHAContent =
-                    ArrayConverter.concatenate(masterSecret, SHA_PAD2, innerSHA);
+            final byte[] outerMD5Content = ArrayConverter.concatenate(masterSecret, MD5_PAD2, innerMD5);
+            final byte[] outerSHAContent = ArrayConverter.concatenate(masterSecret, SHA_PAD2, innerSHA);
             final byte[] outerMD5 = md5.digest(outerMD5Content);
             final byte[] outerSHA = sha.digest(outerSHAContent);
             return ArrayConverter.concatenate(outerMD5, outerSHA);
@@ -331,7 +323,8 @@ public class SSLUtils {
         }
     }
 
-    private SSLUtils() {}
+    private SSLUtils() {
+    }
 
     /**
      * From RFC-6101:

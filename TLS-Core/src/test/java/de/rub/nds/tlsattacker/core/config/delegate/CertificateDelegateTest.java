@@ -111,17 +111,16 @@ public class CertificateDelegateTest extends AbstractDelegateTest<CertificateDel
     @Test
     public void testApplyDelegate(@TempDir File tempDir)
             throws NoSuchAlgorithmException,
-                    CertificateException,
-                    IOException,
-                    InvalidKeyException,
-                    KeyStoreException,
-                    NoSuchProviderException,
-                    SignatureException,
-                    OperatorCreationException {
+            CertificateException,
+            IOException,
+            InvalidKeyException,
+            KeyStoreException,
+            NoSuchProviderException,
+            SignatureException,
+            OperatorCreationException {
         BadRandom random = new BadRandom(new Random(0), null);
-        KeyStore store =
-                KeyStoreGenerator.createKeyStore(
-                        KeyStoreGenerator.createRSAKeyPair(1024, random), random);
+        KeyStore store = KeyStoreGenerator.createKeyStore(
+                KeyStoreGenerator.createRSAKeyPair(1024, random), random);
         File keyStoreFile = new File(tempDir, "key.store");
         try (FileOutputStream fos = new FileOutputStream(keyStoreFile)) {
             store.store(fos, "password".toCharArray());
@@ -139,7 +138,7 @@ public class CertificateDelegateTest extends AbstractDelegateTest<CertificateDel
         assertEquals(
                 args[3], delegate.getPassword(), "Password parameter gets not parsed correctly");
         assertEquals(args[5], delegate.getAlias(), "Alias parameter gets not parsed correctly");
-        Config config = Config.createConfig();
+        Config config = new Config();
         config.setDefaultExplicitCertificateChain(null);
         delegate.applyDelegate(config);
         assertNotNull(
@@ -157,11 +156,10 @@ public class CertificateDelegateTest extends AbstractDelegateTest<CertificateDel
         assertEquals(
                 args[1], delegate.getPassword(), "Password parameter gets not parsed correctly");
         assertEquals(args[3], delegate.getAlias(), "Alias parameter gets not parsed correctly");
-        Config config = Config.createConfig();
+        Config config = new Config();
         config.setDefaultExplicitCertificateChain(null);
 
-        ParameterException exception =
-                assertThrows(ParameterException.class, () -> delegate.applyDelegate(config));
+        ParameterException exception = assertThrows(ParameterException.class, () -> delegate.applyDelegate(config));
         assertTrue(
                 exception
                         .getMessage()
@@ -179,7 +177,7 @@ public class CertificateDelegateTest extends AbstractDelegateTest<CertificateDel
         args[4] = "-alias";
         args[5] = "default";
         jcommander.parse(args);
-        Config config = Config.createConfig();
+        Config config = new Config();
         assertThrows(ConfigurationException.class, () -> delegate.applyDelegate(config));
     }
 
@@ -193,7 +191,7 @@ public class CertificateDelegateTest extends AbstractDelegateTest<CertificateDel
         args[4] = "-alias";
         args[5] = "notthecorrectalias";
         jcommander.parse(args);
-        Config config = Config.createConfig();
+        Config config = new Config();
         assertThrows(ConfigurationException.class, () -> delegate.applyDelegate(config));
     }
 
@@ -207,14 +205,14 @@ public class CertificateDelegateTest extends AbstractDelegateTest<CertificateDel
         args[4] = "-alias";
         args[5] = "default";
         jcommander.parse(args);
-        Config config = Config.createConfig();
+        Config config = new Config();
         assertThrows(ConfigurationException.class, () -> delegate.applyDelegate(config));
     }
 
     @Test
     public void testNothingSetNothingChanges() {
-        Config config = Config.createConfig();
-        Config config2 = Config.createConfig();
+        Config config = new Config();
+        Config config2 = new Config();
         delegate.applyDelegate(config);
         assertTrue(EqualsBuilder.reflectionEquals(config, config2, "certificateChainConfig"));
     }

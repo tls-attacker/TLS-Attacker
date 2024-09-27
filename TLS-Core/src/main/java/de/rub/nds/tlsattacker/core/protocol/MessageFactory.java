@@ -77,7 +77,10 @@ public class MessageFactory {
 
     private static ServerKeyExchangeMessage getServerKeyExchangeMessage(TlsContext tlsContext) {
         CipherSuite cs = tlsContext.getChooser().getSelectedCipherSuite();
-        KeyExchangeAlgorithm algorithm = AlgorithmResolver.getKeyExchangeAlgorithm(cs);
+        KeyExchangeAlgorithm algorithm = cs.getKeyExchangeAlgorithm();
+        if (algorithm == null) {
+            throw new UnsupportedOperationException("CipherSuite '" + cs + "'does not have a KeyExchangeAlgorithm");
+        }
         switch (algorithm) {
             case ECDHE_ECDSA:
             case ECDH_ECDSA:
@@ -114,7 +117,10 @@ public class MessageFactory {
 
     private static ClientKeyExchangeMessage getClientKeyExchangeMessage(TlsContext tlsContext) {
         CipherSuite cs = tlsContext.getChooser().getSelectedCipherSuite();
-        KeyExchangeAlgorithm algorithm = AlgorithmResolver.getKeyExchangeAlgorithm(cs);
+        KeyExchangeAlgorithm algorithm = cs.getKeyExchangeAlgorithm();
+        if (algorithm == null) {
+            throw new UnsupportedOperationException("CipherSuite '" + cs + "'does not have a KeyExchangeAlgorithm");
+        }
         switch (algorithm) {
             case RSA:
                 return new RSAClientKeyExchangeMessage();
@@ -203,10 +209,8 @@ public class MessageFactory {
     }
 
     private static Set<Class<? extends ExtensionMessage>> getAllNonAbstractExtensionClasses() {
-        Reflections reflections =
-                new Reflections("de.rub.nds.tlsattacker.core.protocol.message.extension");
-        Set<Class<? extends ExtensionMessage>> classes =
-                reflections.getSubTypesOf(ExtensionMessage.class);
+        Reflections reflections = new Reflections("de.rub.nds.tlsattacker.core.protocol.message.extension");
+        Set<Class<? extends ExtensionMessage>> classes = reflections.getSubTypesOf(ExtensionMessage.class);
         Set<Class<? extends ExtensionMessage>> filteredClassSet = new HashSet<>();
         for (Class<? extends ExtensionMessage> someClass : classes) {
             if (!Modifier.isAbstract(someClass.getModifiers())) {
@@ -218,8 +222,7 @@ public class MessageFactory {
 
     private static Set<Class<? extends ProtocolMessage>> getAllNonAbstractProtocolMessageClasses() {
         Reflections reflections = new Reflections("de.rub.nds.tlsattacker.core.protocol.message");
-        Set<Class<? extends ProtocolMessage>> classes =
-                reflections.getSubTypesOf(ProtocolMessage.class);
+        Set<Class<? extends ProtocolMessage>> classes = reflections.getSubTypesOf(ProtocolMessage.class);
         Set<Class<? extends ProtocolMessage>> filteredClassSet = new HashSet<>();
         for (Class<? extends ProtocolMessage> someClass : classes) {
             if (!Modifier.isAbstract(someClass.getModifiers())) {
@@ -239,5 +242,6 @@ public class MessageFactory {
         return extensionMessages.get(r.nextInt(extensionMessages.size()));
     }
 
-    private MessageFactory() {}
+    private MessageFactory() {
+    }
 }

@@ -211,10 +211,9 @@ public class QuicPacketCryptoComputations extends ModifiableVariableHolder {
         LOGGER.debug("Initialize Quic Handshake Secrets");
         context.setAeadCipher(
                 Cipher.getInstance(
-                        AlgorithmResolver.getCipher(
-                                        context.getContext()
-                                                .getTlsContext()
-                                                .getSelectedCipherSuite())
+                        context.getContext()
+                                .getTlsContext()
+                                .getSelectedCipherSuite().getCipherAlgorithm()
                                 .getJavaName()));
         // TODO: maybe move to handler
         switch (context.getContext().getTlsContext().getSelectedCipherSuite()) {
@@ -226,6 +225,9 @@ public class QuicPacketCryptoComputations extends ModifiableVariableHolder {
             case TLS_CHACHA20_POLY1305_SHA256:
                 context.setHeaderProtectionCipher(Cipher.getInstance("ChaCha20"));
                 break;
+        default:
+                LOGGER.warn("Unknown cipher suite: {}. Defaulting to AES.", context.getContext().getTlsContext().getSelectedCipherSuite());
+                context.setHeaderProtectionCipher(Cipher.getInstance("AES/ECB/NoPadding"));
         }
 
         context.setHkdfAlgorithm(
@@ -245,6 +247,9 @@ public class QuicPacketCryptoComputations extends ModifiableVariableHolder {
             case TLS_CHACHA20_POLY1305_SHA256:
                 keyLength = 32;
                 break;
+                default:
+            LOGGER.warn("Unknown cipher suite: {}. Defaulting to AES-128.", context.getContext().getTlsContext().getSelectedCipherSuite());
+                keyLength = 16;
         }
 
         // client
@@ -296,6 +301,9 @@ public class QuicPacketCryptoComputations extends ModifiableVariableHolder {
             case TLS_CHACHA20_POLY1305_SHA256:
                 keyLength = 32;
                 break;
+            default:
+                LOGGER.warn("Unknown cipher suite: {}. Defaulting to AES-128.", context.getContext().getTlsContext().getSelectedCipherSuite());
+                keyLength = 16;
         }
 
         // client
@@ -332,10 +340,9 @@ public class QuicPacketCryptoComputations extends ModifiableVariableHolder {
                 context.getContext().getTlsContext().getEarlyDataCipherSuite());
         context.setZeroRTTAeadCipher(
                 Cipher.getInstance(
-                        AlgorithmResolver.getCipher(
-                                        context.getContext()
-                                                .getTlsContext()
-                                                .getEarlyDataCipherSuite())
+                        context.getContext()
+                                .getTlsContext()
+                                .getEarlyDataCipherSuite().getCipherAlgorithm()
                                 .getJavaName()));
         // TODO: maybe move to handler
         switch (context.getZeroRTTCipherSuite()) {
@@ -347,6 +354,9 @@ public class QuicPacketCryptoComputations extends ModifiableVariableHolder {
             case TLS_CHACHA20_POLY1305_SHA256:
                 context.setZeroRTTHeaderProtectionCipher(Cipher.getInstance("ChaCha20"));
                 break;
+            default:
+                LOGGER.warn("Unknown cipher suite: {}. Defaulting to AES.", context.getContext().getTlsContext().getSelectedCipherSuite());
+                context.setZeroRTTHeaderProtectionCipher(Cipher.getInstance("AES/ECB/NoPadding"));
         }
 
         context.setZeroRTTHKDFAlgorithm(
@@ -365,6 +375,9 @@ public class QuicPacketCryptoComputations extends ModifiableVariableHolder {
             case TLS_CHACHA20_POLY1305_SHA256:
                 keyLength = 32;
                 break;
+            default:
+                LOGGER.warn("Unknown cipher suite: {}. Defaulting to AES-128.", context.getZeroRTTCipherSuite());
+                keyLength = 16;
         }
 
         // client

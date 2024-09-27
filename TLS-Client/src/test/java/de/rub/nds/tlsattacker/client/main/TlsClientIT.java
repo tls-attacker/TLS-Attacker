@@ -210,7 +210,7 @@ public class TlsClientIT {
         if (cs.name().toUpperCase().contains("NULL") || cs.name().toUpperCase().contains("ANON")) {
             return false;
         }
-        KeyExchangeAlgorithm kex = AlgorithmResolver.getKeyExchangeAlgorithm(cs);
+        KeyExchangeAlgorithm kex = cs.getKeyExchangeAlgorithm();
 
         final boolean serverSupportsCipherSuite =
                 serverSupportedCipherSuites.contains(cs.toString());

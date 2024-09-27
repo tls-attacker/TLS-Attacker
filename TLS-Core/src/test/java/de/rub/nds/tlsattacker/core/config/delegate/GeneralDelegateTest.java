@@ -106,7 +106,7 @@ public class GeneralDelegateTest extends AbstractDelegateTest<GeneralDelegate> {
     public void testApplyDelegate() {
         // Just check that applyDelegate does not throw an Exception
         // TODO check that logLevel gets set
-        Config config = Config.createConfig();
+        Config config = new Config();
         delegate.setKeylogfile("abc");
         delegate.applyDelegate(config);
         assertTrue(config.isWriteKeylogFile());
@@ -115,8 +115,8 @@ public class GeneralDelegateTest extends AbstractDelegateTest<GeneralDelegate> {
 
     @Test
     public void testNothingSetNothingChanges() {
-        Config config = Config.createConfig();
-        Config config2 = Config.createConfig();
+        Config config = new Config();
+        Config config2 = new Config();
         delegate.applyDelegate(config);
         assertTrue(EqualsBuilder.reflectionEquals(config, config2, "certificateChainConfig"));
     }

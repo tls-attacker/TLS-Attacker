@@ -8,11 +8,13 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
-import de.rub.nds.protocol.constants.HashAlgorithm;
-import de.rub.nds.protocol.constants.SignatureAlgorithm;
-import de.rub.nds.x509attacker.constants.X509PublicKeyType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import de.rub.nds.protocol.constants.HashAlgorithm;
+import de.rub.nds.protocol.constants.MacAlgorithm;
+import de.rub.nds.protocol.constants.SignatureAlgorithm;
+import de.rub.nds.x509attacker.constants.X509PublicKeyType;
 
 /** Resolves crypto algorithms and their properties from a given cipher suite (and TLS version). */
 public class AlgorithmResolver {
@@ -181,21 +183,22 @@ public class AlgorithmResolver {
     public static MacAlgorithm getMacAlgorithm(
             ProtocolVersion protocolVersion, CipherSuite cipherSuite) {
         if (cipherSuite.getCipherType() == CipherType.AEAD) {
-            return MacAlgorithm.AEAD;
+            return MacAlgorithm.NONE;
         } else {
             HashAlgorithm hashAlgorithm = cipherSuite.getHashAlgorithm();
+            if (cipherSuite.name().contains("IMIT")) {
+                return MacAlgorithm.IMIT_GOST28147;
+            }
             if (hashAlgorithm == HashAlgorithm.MD5) {
-                if (protocolVersion.isSSL()) {
+                if (protocolVersion == ProtocolVersion.SSL3 || protocolVersion == ProtocolVersion.SSL2) {
                     return MacAlgorithm.SSLMAC_MD5;
-                } else {
-                    return MacAlgorithm.HMAC_MD5;
                 }
+                return MacAlgorithm.HMAC_MD5;
             } else if (hashAlgorithm == HashAlgorithm.SHA1) {
-                if (protocolVersion.isSSL()) {
+                if (protocolVersion == ProtocolVersion.SSL3 || protocolVersion == ProtocolVersion.SSL2) {
                     return MacAlgorithm.SSLMAC_SHA1;
-                } else {
-                    return MacAlgorithm.HMAC_SHA1;
                 }
+                return MacAlgorithm.HMAC_SHA1;
             } else if (hashAlgorithm == HashAlgorithm.SHA256) {
                 return MacAlgorithm.HMAC_SHA256;
             } else if (hashAlgorithm == HashAlgorithm.SHA384) {
@@ -204,12 +207,13 @@ public class AlgorithmResolver {
                 return MacAlgorithm.HMAC_SHA512;
             } else if (hashAlgorithm == HashAlgorithm.SM3) {
                 return MacAlgorithm.HMAC_SM3;
-            } else if (hashAlgorithm == HashAlgorithm.NONE) {
-                return MacAlgorithm.NULL;
             } else if (hashAlgorithm == HashAlgorithm.GOST_R3411_94) {
-                return MacAlgorithm.IMIT_GOST28147;
+                
+                return MacAlgorithm.HMAC_GOSTR3411;
             } else if (hashAlgorithm == HashAlgorithm.GOST_R3411_12) {
                 return MacAlgorithm.HMAC_GOSTR3411_2012_256;
+            } else if (hashAlgorithm == HashAlgorithm.NONE) {
+                return MacAlgorithm.NONE;
             }
         }
         if (!cipherSuite.isRealCipherSuite()) {

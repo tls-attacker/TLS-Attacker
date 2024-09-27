@@ -91,7 +91,7 @@ public class GOSTClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     @Override
     public GOSTClientKeyExchangePreparator getPreparator(TlsContext tlsContext) {
         CipherSuite cipherSuite = tlsContext.getChooser().getSelectedCipherSuite();
-        KeyExchangeAlgorithm exchangeAlg = AlgorithmResolver.getKeyExchangeAlgorithm(cipherSuite);
+        KeyExchangeAlgorithm exchangeAlg = cipherSuite.getKeyExchangeAlgorithm();
         if (exchangeAlg == KeyExchangeAlgorithm.VKO_GOST12) {
             return new GOST12ClientKeyExchangePreparator(tlsContext.getChooser(), this);
         } else {

@@ -10,9 +10,28 @@ package de.rub.nds.tlsattacker.core.config;
 
 import static java.nio.charset.StandardCharsets.US_ASCII;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.InputStream;
+import java.io.Serializable;
+import java.lang.reflect.Field;
+import java.math.BigInteger;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.IllegalStringAdapter;
 import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
+import de.rub.nds.protocol.constants.MacAlgorithm;
 import de.rub.nds.protocol.crypto.ec.Point;
 import de.rub.nds.protocol.xml.Pair;
 import de.rub.nds.tlsattacker.core.config.adapter.MapAdapter;
@@ -37,7 +56,6 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.GOSTCurve;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.core.constants.KeyUpdateRequest;
-import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
@@ -79,22 +97,6 @@ import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.InputStream;
-import java.io.Serializable;
-import java.lang.reflect.Field;
-import java.math.BigInteger;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 @SuppressWarnings("SpellCheckingInspection")
 @XmlRootElement(name = "config")
@@ -1184,17 +1186,17 @@ public class Config implements Serializable {
     /** Supported Cipher suites for EncryptedServerNameIndication extension. */
     @XmlElement(name = "clientSupportedEsniCipherSuite")
     @XmlElementWrapper
-    private List<CipherSuite> clientSupportedEsniCipherSuites = new LinkedList();
+    private List<CipherSuite> clientSupportedEsniCipherSuites = new LinkedList<>();
 
     /** Supported Groups for EncryptedServerNameIndication extension. */
     @XmlElement(name = "clientSupportedEsniNamedGroup")
     @XmlElementWrapper
-    private List<NamedGroup> clientSupportedEsniNamedGroups = new LinkedList();
+    private List<NamedGroup> clientSupportedEsniNamedGroups = new LinkedList<>();
 
     /** KeyPairs for Server with EncryptedServerNameIndication extension. */
     @XmlElement(name = "esniServerKeyPair")
     @XmlElementWrapper
-    private List<KeyShareEntry> esniServerKeyPairs = new LinkedList();
+    private List<KeyShareEntry> esniServerKeyPairs = new LinkedList<>();
 
     /** Default values for EncryptedServerNameIndication extension. */
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
@@ -1222,7 +1224,7 @@ public class Config implements Serializable {
 
     @XmlElement(name = "defaultEsniServerCipherSuite")
     @XmlElementWrapper
-    private List<CipherSuite> defaultEsniServerCipherSuites = new LinkedList();
+    private List<CipherSuite> defaultEsniServerCipherSuites = new LinkedList<>();
 
     private Integer defaultEsniPaddedLength = 260;
 
@@ -1232,7 +1234,7 @@ public class Config implements Serializable {
 
     @XmlElement(name = "defaultEsniExtension")
     @XmlElementWrapper
-    private List<ExtensionType> defaultEsniExtensions = new LinkedList();
+    private List<ExtensionType> defaultEsniExtensions = new LinkedList<>();
 
     /** Private Key of the Client for the EncryptedClientHello extension. */
     private BigInteger defaultEchClientPrivateKey =
@@ -2131,7 +2133,7 @@ public class Config implements Serializable {
     public void setDefaultServerSupportedSignatureAndHashAlgorithms(
             SignatureAndHashAlgorithm... defaultServerSupportedSignatureAndHashAlgorithms) {
         this.defaultServerSupportedSignatureAndHashAlgorithms =
-                new ArrayList(Arrays.asList(defaultServerSupportedSignatureAndHashAlgorithms));
+                new ArrayList<>(Arrays.asList(defaultServerSupportedSignatureAndHashAlgorithms));
     }
 
     public List<SignatureAndHashAlgorithm> getDefaultServerSupportedCertificateSignAlgorithms() {
@@ -2147,7 +2149,7 @@ public class Config implements Serializable {
     public void setDefaultServerSupportedCertificateSignAlgorithms(
             SignatureAndHashAlgorithm... defaultServerSupportedCertificateSignAlgorithms) {
         this.defaultServerSupportedCertificateSignAlgorithms =
-                new ArrayList(Arrays.asList(defaultServerSupportedCertificateSignAlgorithms));
+                new ArrayList<>(Arrays.asList(defaultServerSupportedCertificateSignAlgorithms));
     }
 
     public List<CipherSuite> getDefaultServerSupportedCipherSuites() {
@@ -2162,7 +2164,7 @@ public class Config implements Serializable {
     public final void setDefaultServerSupportedCipherSuites(
             CipherSuite... defaultServerSupportedCipherSuites) {
         this.defaultServerSupportedCipherSuites =
-                new ArrayList(Arrays.asList(defaultServerSupportedCipherSuites));
+                new ArrayList<>(Arrays.asList(defaultServerSupportedCipherSuites));
     }
 
     public List<CompressionMethod> getDefaultClientSupportedCompressionMethods() {
@@ -2177,7 +2179,7 @@ public class Config implements Serializable {
     public final void setDefaultClientSupportedCompressionMethods(
             CompressionMethod... defaultClientSupportedCompressionMethods) {
         this.defaultClientSupportedCompressionMethods =
-                new ArrayList(Arrays.asList(defaultClientSupportedCompressionMethods));
+                new ArrayList<>(Arrays.asList(defaultClientSupportedCompressionMethods));
     }
 
     public HeartbeatMode getDefaultHeartbeatMode() {
@@ -2234,7 +2236,7 @@ public class Config implements Serializable {
     public final void setDefaultClientSupportedPointFormats(
             ECPointFormat... defaultClientSupportedPointFormats) {
         this.defaultClientSupportedPointFormats =
-                new ArrayList(Arrays.asList(defaultClientSupportedPointFormats));
+                new ArrayList<>(Arrays.asList(defaultClientSupportedPointFormats));
     }
 
     public ProtocolVersion getDefaultLastRecordProtocolVersion() {
@@ -2258,7 +2260,7 @@ public class Config implements Serializable {
     public final void setDefaultServerSupportedPointFormats(
             ECPointFormat... defaultServerSupportedPointFormats) {
         this.defaultServerSupportedPointFormats =
-                new ArrayList(Arrays.asList(defaultServerSupportedPointFormats));
+                new ArrayList<>(Arrays.asList(defaultServerSupportedPointFormats));
     }
 
     public List<NamedGroup> getDefaultClientNamedGroups() {
@@ -2270,7 +2272,7 @@ public class Config implements Serializable {
     }
 
     public final void setDefaultClientNamedGroups(NamedGroup... defaultClientNamedGroups) {
-        this.defaultClientNamedGroups = new ArrayList(Arrays.asList(defaultClientNamedGroups));
+        this.defaultClientNamedGroups = new ArrayList<>(Arrays.asList(defaultClientNamedGroups));
     }
 
     public List<NamedGroup> getDefaultServerNamedGroups() {
@@ -2282,7 +2284,7 @@ public class Config implements Serializable {
     }
 
     public final void setDefaultServerNamedGroups(NamedGroup... defaultServerNamedGroups) {
-        this.defaultServerNamedGroups = new ArrayList(Arrays.asList(defaultServerNamedGroups));
+        this.defaultServerNamedGroups = new ArrayList<>(Arrays.asList(defaultServerNamedGroups));
     }
 
     public CipherSuite getDefaultSelectedCipherSuite() {
@@ -2442,7 +2444,7 @@ public class Config implements Serializable {
     }
 
     public final void setClientCertificateTypes(ClientCertificateType... clientCertificateTypes) {
-        this.clientCertificateTypes = new ArrayList(Arrays.asList(clientCertificateTypes));
+        this.clientCertificateTypes = new ArrayList<>(Arrays.asList(clientCertificateTypes));
     }
 
     public String getDefaultApplicationMessageData() {
@@ -2521,7 +2523,7 @@ public class Config implements Serializable {
     public final void setDefaultClientSupportedCipherSuites(
             CipherSuite... defaultClientSupportedCipherSuites) {
         this.defaultClientSupportedCipherSuites =
-                new ArrayList(Arrays.asList(defaultClientSupportedCipherSuites));
+                new ArrayList<>(Arrays.asList(defaultClientSupportedCipherSuites));
     }
 
     public Boolean isDtlsCookieExchange() {
@@ -2553,7 +2555,7 @@ public class Config implements Serializable {
     public final void setDefaultClientSupportedSignatureAndHashAlgorithms(
             SignatureAndHashAlgorithm... supportedSignatureAndHashAlgorithms) {
         this.defaultClientSupportedSignatureAndHashAlgorithms =
-                new ArrayList(Arrays.asList(supportedSignatureAndHashAlgorithms));
+                new ArrayList<>(Arrays.asList(supportedSignatureAndHashAlgorithms));
     }
 
     public List<SignatureAndHashAlgorithm> getDefaultClientSupportedCertificateSignAlgorithms() {
@@ -2569,7 +2571,7 @@ public class Config implements Serializable {
     public final void setDefaultClientSupportedCertificateSignAlgorithms(
             SignatureAndHashAlgorithm... supportedSignatureAndHashAlgorithms) {
         this.defaultClientSupportedCertificateSignAlgorithms =
-                new ArrayList(Arrays.asList(supportedSignatureAndHashAlgorithms));
+                new ArrayList<>(Arrays.asList(supportedSignatureAndHashAlgorithms));
     }
 
     public List<ProtocolVersion> getSupportedVersions() {
@@ -2581,7 +2583,7 @@ public class Config implements Serializable {
     }
 
     public final void setSupportedVersions(ProtocolVersion... supportedVersions) {
-        this.supportedVersions = new ArrayList(Arrays.asList(supportedVersions));
+        this.supportedVersions = new ArrayList<>(Arrays.asList(supportedVersions));
     }
 
     public HeartbeatMode getHeartbeatMode() {
@@ -2809,7 +2811,7 @@ public class Config implements Serializable {
     public final void setDefaultTokenBindingKeyParameters(
             TokenBindingKeyParameters... defaultTokenBindingKeyParameters) {
         this.defaultTokenBindingKeyParameters =
-                new ArrayList(Arrays.asList(defaultTokenBindingKeyParameters));
+                new ArrayList<>(Arrays.asList(defaultTokenBindingKeyParameters));
     }
 
     public Boolean isAddTokenBindingExtension() {
@@ -3158,7 +3160,7 @@ public class Config implements Serializable {
     public void setDefaultServerSupportedCompressionMethods(
             CompressionMethod... defaultServerSupportedCompressionMethods) {
         this.defaultServerSupportedCompressionMethods =
-                new ArrayList(Arrays.asList(defaultServerSupportedCompressionMethods));
+                new ArrayList<>(Arrays.asList(defaultServerSupportedCompressionMethods));
     }
 
     public OutboundConnection getDefaultClientConnection() {
@@ -3444,7 +3446,7 @@ public class Config implements Serializable {
     }
 
     public void setDefaultProposedAlpnProtocols(String... alpnAnnouncedProtocols) {
-        this.defaultProposedAlpnProtocols = new ArrayList(Arrays.asList(alpnAnnouncedProtocols));
+        this.defaultProposedAlpnProtocols = new ArrayList<>(Arrays.asList(alpnAnnouncedProtocols));
     }
 
     public QuicTransportParameters getDefaultQuicTransportParameters() {
@@ -3620,7 +3622,7 @@ public class Config implements Serializable {
 
     public void setClientSupportedEsniCipherSuites(CipherSuite... clientSupportedEsniCipherSuites) {
         this.clientSupportedEsniCipherSuites =
-                new ArrayList(Arrays.asList(clientSupportedEsniCipherSuites));
+                new ArrayList<>(Arrays.asList(clientSupportedEsniCipherSuites));
     }
 
     public List<NamedGroup> getClientSupportedEsniNamedGroups() {
@@ -3634,7 +3636,7 @@ public class Config implements Serializable {
     public final void setClientSupportedEsniNamedGroups(
             NamedGroup... clientSupportedEsniNamedGroups) {
         this.clientSupportedEsniNamedGroups =
-                new ArrayList(Arrays.asList(clientSupportedEsniNamedGroups));
+                new ArrayList<>(Arrays.asList(clientSupportedEsniNamedGroups));
     }
 
     public List<KeyShareEntry> getEsniServerKeyPairs() {
@@ -3646,7 +3648,7 @@ public class Config implements Serializable {
     }
 
     public final void setEsniServerKeyPairs(KeyShareEntry... esniServerKeyPairs) {
-        this.esniServerKeyPairs = new ArrayList(Arrays.asList(esniServerKeyPairs));
+        this.esniServerKeyPairs = new ArrayList<>(Arrays.asList(esniServerKeyPairs));
     }
 
     public byte[] getDefaultEsniClientNonce() {

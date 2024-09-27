@@ -30,6 +30,7 @@ public enum KeyExchangeAlgorithm {
     ECDHE_ECDSA,
     ECDHE_RSA,
     ECDHE_PSK,
+    VKO_GOST94,
     VKO_GOST01,
     VKO_GOST12,
     FORTEZZA_KEA,
