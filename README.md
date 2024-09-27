@@ -292,7 +292,7 @@ this gap with hardcoded values (which are equal to the provided default config).
 
 ## Acknowledgements
 
-We would like to thank everyone who has contributed to TLS-Attacker project.
+We would like to thank everyone who has contributed to the TLS-Attacker project.
 
 A special thanks goes to the following peoples for their notable contributions:
 
