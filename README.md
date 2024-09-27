@@ -293,23 +293,9 @@ this gap with hardcoded values (which are equal to the provided default config).
 ## Acknowledgements
 
 The following people have contributed code to the TLS-Attacker project:
-- Florian Pfützenreuter: DTLS 1.2
-- Felix Lange: EAP-TLS
-- Philip Riese: Server implementation, TLS Man-in-the-Middle prototype
-- Christian Mainka: Design support and many implementation suggestions
-- Matthias Terlinde: More TLS-Extensions
-- Nurullah Erinola: TLS 1.3 Support
-- Lucas Hartmann: TLS-MitM Workflows
-- Florian Linsner: PSK, SRP
-- Pierre Tilhaus: Code quality improvements
-- Felix Kleine-Wilde: SSL 3 Support
-- Marcel Maehren: 0-RTT Support
-- Asli Yardim: STARTTLS
-- Tim Reisach: GOST
-- Paul Fiterau Brostean: DTLS reintegration
-- Malte Poll: High precision timing measurements
-- Mario Korth: Client Authentication Analysis
-- Nils Hanke: OCSP
+
+Felix Lange, Philip Riese, Pierre Tilhaus, Felix Kleine-Wilde, Paul Fiterau Brostean, Jens Carl, Florian Pfützenreuter, Florian Linsner, Asli Yardim, Bastian Haverkamp, Alexander Glasfort, Nils Engelbertz, Mario Korth, Philipp Brinkmann, Joshua Waldner, Kevin Jagla, Felix Dreissig, David Ziemann, Matthias Manfred Geuchen, Christoph Penkert, Nils Hanke, Fabian Albert, Bastian Ebach, Marten Schmidt, Anton Khristoforov, Simon Nachtigall, Till Budde, Malte Poll, Lucas Hartmann, Janis Fliegenschmidt, Matthias Terlinde, Malena Ebert, Alexander Freiherr von Buddenbrock, Tim Reisach, Robert Engel, Raphael Dietrich, Philipp Nieting, Dennis Ziebart, Jan Kaiser, Jonas Thiele, Nils Kafka, Adrian Pinner, Jonas Moos, Niels Pahl, Philipp Wirth, Simon Nattefort, Bjarne Tempel, Philipp Ziemke, Christian Pressler, Conrad Schmidt, Daniel Siegert, Henrik Schaefer, Christian Krug, Christoph Buttler, Patrick Weixler
+
 Additionally we would like to thank all the other people who have contributed code to the project.
 
 Further contributions and pull requests are welcome.
