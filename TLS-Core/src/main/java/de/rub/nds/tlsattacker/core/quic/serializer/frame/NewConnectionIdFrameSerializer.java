@@ -26,7 +26,7 @@ public class NewConnectionIdFrameSerializer extends QuicFrameSerializer<NewConne
         writeFrameType();
         writeSequenceNumber();
         writeRetirePriorTo();
-        writeLength();
+        writeConnectionIdLength();
         writeConnectionId();
         writeStatelessResetToken();
         return getAlreadySerialized();
@@ -46,9 +46,15 @@ public class NewConnectionIdFrameSerializer extends QuicFrameSerializer<NewConne
         LOGGER.debug("Retire Prior To: {}", frame.getRetirePriorTo().getValue());
     }
 
-    protected void writeLength() {
-        appendInt(frame.getLength().getValue(), NewConnectionIdFrame.STATELESS_RESET_TOKEN_LENGTH);
-        LOGGER.debug("Length: {}", frame.getLength().getValue());
+    protected void writeConnectionIdLength() {
+        if (frame.getConnectionIdLength().getValue() > 255) {
+            LOGGER.warn(
+                    "Connection ID length exceeds maximum length encodable in NEW_CONNECTION_ID frame.");
+        }
+        appendInt(
+                frame.getConnectionIdLength().getValue(),
+                NewConnectionIdFrame.CONNECTION_ID_LENGTH_FIELD_LENGTH);
+        LOGGER.debug("Length: {}", frame.getConnectionIdLength().getValue());
     }
 
     protected void writeConnectionId() {

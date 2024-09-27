@@ -244,18 +244,7 @@ public abstract class ProtocolLayer<
             return;
         }
 
-        Parser parser = container.getParser(context, inputStream);
-
-        try {
-            parser.parse(container);
-            Preparator preparator = container.getPreparator(context);
-            preparator.prepareAfterParse();
-            Handler handler = container.getHandler(context);
-            handler.adjustContext(container);
-            addProducedContainer(container);
-        } catch (RuntimeException ex) {
-            setUnreadBytes(parser.getAlreadyParsed());
-        }
+        readDataContainer(container, context, inputStream);
     }
 
     /**

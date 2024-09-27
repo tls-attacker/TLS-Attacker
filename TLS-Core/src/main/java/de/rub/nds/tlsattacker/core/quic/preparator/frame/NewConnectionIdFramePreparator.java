@@ -26,7 +26,7 @@ public class NewConnectionIdFramePreparator extends QuicFramePreparator<NewConne
         LOGGER.debug("NEW CONNECTION ID Frame");
         prepareSequenceNumber(getObject());
         prepareRetirePriorTo(getObject());
-        prepareLength(getObject());
+        prepareConnectionIdLength(getObject());
         prepareConnectionId(getObject());
         prepareStatelessResetToken(getObject());
     }
@@ -41,9 +41,9 @@ public class NewConnectionIdFramePreparator extends QuicFramePreparator<NewConne
         LOGGER.debug("Retire Prior To: {}", frame.getRetirePriorTo().getValue());
     }
 
-    protected void prepareLength(NewConnectionIdFrame frame) {
-        frame.setLength(frame.getLengthConfig());
-        LOGGER.debug("Length: {}", frame.getLength().getValue());
+    protected void prepareConnectionIdLength(NewConnectionIdFrame frame) {
+        frame.setConnectionIdLength(frame.getLengthConfig());
+        LOGGER.debug("Length: {}", frame.getConnectionIdLength().getValue());
     }
 
     protected void prepareConnectionId(NewConnectionIdFrame frame) {
