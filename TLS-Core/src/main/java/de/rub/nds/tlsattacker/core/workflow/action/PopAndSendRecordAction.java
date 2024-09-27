@@ -12,10 +12,8 @@ import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.SpecificSendLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
-import de.rub.nds.tlsattacker.core.layer.context.TcpContext;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.record.Record;
-import de.rub.nds.tlsattacker.core.record.serializer.RecordSerializer;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.container.ActionHelperUtil;
 import jakarta.xml.bind.annotation.XmlRootElement;
@@ -45,8 +43,6 @@ public class PopAndSendRecordAction extends CommonSendAction {
         TlsContext tlsContext =
                 state.getContext(connectionAlias)
                         .getTlsContext(); // TODO this assumes that TLS is ran on top of TCP
-        TcpContext tcpContext = state.getContext(connectionAlias).getTcpContext();
-
         if (isExecuted()) {
             throw new ActionExecutionException("Action already executed!");
         }
@@ -67,7 +63,6 @@ public class PopAndSendRecordAction extends CommonSendAction {
         } else {
             LOGGER.info("Sending record({}): {}", connectionAlias, sending);
         }
-        RecordSerializer s = record.getRecordSerializer();
         try {
             getSendResult(tlsContext.getLayerStack(), createLayerConfiguration(state));
             asPlanned = true;
