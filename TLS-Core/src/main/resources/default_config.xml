@@ -1211,7 +1211,7 @@
     <expectHandshakeDoneQuicFrame>false</expectHandshakeDoneQuicFrame>
     <isQuic>false</isQuic>
     <quicRetryFlowRequired>false</quicRetryFlowRequired>
-    <quicVersion>00 00 00 01</quicVersion>
+    <quicVersion>VERSION_1</quicVersion>
     <stopActionsAfterWarning>false</stopActionsAfterWarning>
     <defaultSelectedCipherSuite>TLS_RSA_WITH_AES_128_CBC_SHA</defaultSelectedCipherSuite>
     <defaultSelectedServerCertificateType>X509</defaultSelectedServerCertificateType>

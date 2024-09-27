@@ -93,6 +93,50 @@ public enum QuicVersion {
         return initialSalt;
     }
 
+    public String getKeyLabel() {
+        switch (this) {
+            case VERSION_1:
+                return QuicHKDFConstants.QUIC1_KEY;
+            case VERSION_2:
+                return QuicHKDFConstants.QUIC2_KEY;
+            default:
+                throw new UnsupportedOperationException();
+        }
+    }
+
+    public String getIvLabel() {
+        switch (this) {
+            case VERSION_1:
+                return QuicHKDFConstants.QUIC1_IV;
+            case VERSION_2:
+                return QuicHKDFConstants.QUIC2_IV;
+            default:
+                throw new UnsupportedOperationException();
+        }
+    }
+
+    public String getHeaderProtectionLabel() {
+        switch (this) {
+            case VERSION_1:
+                return QuicHKDFConstants.QUIC1_HP;
+            case VERSION_2:
+                return QuicHKDFConstants.QUIC2_HP;
+            default:
+                throw new UnsupportedOperationException();
+        }
+    }
+
+    public String getKeyUpdateLabel() {
+        switch (this) {
+            case VERSION_1:
+                return QuicHKDFConstants.QUIC1_KU;
+            case VERSION_2:
+                return QuicHKDFConstants.QUIC2_KU;
+            default:
+                throw new UnsupportedOperationException();
+        }
+    }
+
     public String getName() {
         return this.name();
     }

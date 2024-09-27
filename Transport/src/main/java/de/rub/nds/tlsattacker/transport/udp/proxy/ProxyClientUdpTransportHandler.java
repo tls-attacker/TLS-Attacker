@@ -15,6 +15,12 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 
+/**
+ * It establishes a control channel and data channel to the defined UDP proxy. The control channel
+ * can be used to transmit where the real server is and the data channel can be used to transmit the
+ * data to be sent. The UDP proxy should send the data to the real server and return the response
+ * over the data channel.
+ */
 public class ProxyClientUdpTransportHandler extends ClientUdpTransportHandler
         implements ProxyableTransportHandler {
 
@@ -63,7 +69,6 @@ public class ProxyClientUdpTransportHandler extends ClientUdpTransportHandler
             throw new IOException("Transporthandler is not initalized!");
         }
         socket.close();
-
         if (controlSocket == null) {
             throw new IOException("Transport handler is not initialized!");
         }
