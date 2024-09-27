@@ -10,13 +10,17 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.SpecificSendLayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.context.TcpContext;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.serializer.RecordSerializer;
 import de.rub.nds.tlsattacker.core.state.State;
+import de.rub.nds.tlsattacker.core.workflow.container.ActionHelperUtil;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
@@ -47,7 +51,16 @@ public class PopAndSendRecordAction extends CommonSendAction {
             throw new ActionExecutionException("Action already executed!");
         }
 
-        Record record = tlsContext.getRecordBuffer().pop();
+        Record record = tlsContext.getRecordBuffer().peek();
+
+        if (record == null) {
+            // record buffer is empty
+            asPlanned = false;
+            setExecuted(true);
+            createLayerConfiguration(state);
+            return;
+        }
+
         String sending = record.getContentMessageType().name();
         if (connectionAlias == null) {
             LOGGER.info("Sending record: {}", sending);
@@ -56,7 +69,7 @@ public class PopAndSendRecordAction extends CommonSendAction {
         }
         RecordSerializer s = record.getRecordSerializer();
         try {
-            tcpContext.getTransportHandler().sendData(s.serialize());
+            getSendResult(tlsContext.getLayerStack(), createLayerConfiguration(state));
             asPlanned = true;
         } catch (IOException ex) {
             LOGGER.debug(ex);
@@ -84,7 +97,16 @@ public class PopAndSendRecordAction extends CommonSendAction {
 
     @Override
     protected List<LayerConfiguration<?>> createLayerConfiguration(State state) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'createLayerConfiguration'");
+        List<Record> records = new LinkedList<>();
+        TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
+        LinkedList<Record> recordBuffer = tlsContext.getRecordBuffer();
+        if (!recordBuffer.isEmpty()) {
+            records.add(recordBuffer.pop());
+        }
+        List<LayerConfiguration<?>> configurationList = new LinkedList<>();
+        configurationList.add(
+                new SpecificSendLayerConfiguration<>(ImplementedLayers.RECORD, records));
+        return ActionHelperUtil.sortAndAddOptions(
+                tlsContext.getLayerStack(), true, getActionOptions(), configurationList);
     }
 }
