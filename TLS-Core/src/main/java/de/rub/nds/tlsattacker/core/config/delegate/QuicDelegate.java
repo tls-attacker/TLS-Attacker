@@ -53,6 +53,7 @@ public class QuicDelegate extends Delegate {
 
             config.setDefaultLayerConfiguration(StackConfiguration.QUIC);
             config.setWorkflowExecutorType(WorkflowExecutorType.QUIC);
+            config.setFinishWithCloseNotify(true);
 
             // Protocol Version
             config.setHighestProtocolVersion(ProtocolVersion.TLS13);

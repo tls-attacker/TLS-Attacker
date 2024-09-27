@@ -23,7 +23,7 @@ public enum QuicFrameType {
     NEW_TOKEN_FRAME((byte) 0x07),
     STREAM_FRAME((byte) 0x08),
     STREAM_FRAME_FIN((byte) 0x09),
-    DATAGRAM_FRAME_LEN((byte) 0x0a),
+    STREAM_FRAME_LEN((byte) 0x0a),
     STREAM_FRAME_LEN_FIN((byte) 0x0b),
     STREAM_FRAME_OFF((byte) 0x0c),
     STREAM_FRAME_OFF_FIN((byte) 0x0d),
@@ -45,7 +45,7 @@ public enum QuicFrameType {
     CONNECTION_CLOSE_APPLICATION_FRAME((byte) 0x1d),
     HANDSHAKE_DONE_FRAME((byte) 0x1e),
     DATAGRAM_FRAME((byte) 0x30),
-    STREAM_FRAME_LEN((byte) 0x31);
+    DATAGRAM_FRAME_LEN((byte) 0x31);
 
     private int value;
     private static final Map<Byte, QuicFrameType> MAP;
