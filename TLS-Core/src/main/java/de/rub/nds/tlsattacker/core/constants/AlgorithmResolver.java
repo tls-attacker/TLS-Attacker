@@ -208,7 +208,6 @@ public class AlgorithmResolver {
             } else if (hashAlgorithm == HashAlgorithm.SM3) {
                 return MacAlgorithm.HMAC_SM3;
             } else if (hashAlgorithm == HashAlgorithm.GOST_R3411_94) {
-                
                 return MacAlgorithm.HMAC_GOSTR3411;
             } else if (hashAlgorithm == HashAlgorithm.GOST_R3411_12) {
                 return MacAlgorithm.HMAC_GOSTR3411_2012_256;
