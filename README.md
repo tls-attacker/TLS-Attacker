@@ -300,13 +300,12 @@ Muhammad Abubakar, Fabian Albert, Panneer Selvam Annadurai, Nimrod Aviram, Phili
 
 Further contributions and pull requests are welcome.
 
-## Scientific Papers 
+## Scientific Papers
 
 The basic concepts behind TLS-Attacker and several attacks are described in the following paper:
 - Juraj Somorovsky. Systematic Fuzzing and Testing of TLS Libraries. ACM CCS'16. https://www.nds.rub.de/research/publications/systematic-fuzzing-and-testing-tls-libraries
 
-
-Below, we list recent scientific studies that utilized TLS-Attacker. You can find the full list in the [Wiki](https://github.com/tls-attacker/TLS-Attacker-Development/wiki/Scientific-Papers-and-Projects) 
+Below, we list recent scientific studies that utilized TLS-Attacker. You can find the full list in the [Wiki](https://github.com/tls-attacker/TLS-Attacker-Development/wiki/Scientific-Papers-and-Projects)
 - Michael Scott. 2023. On TLS for the Internet of Things, in a Post Quantum world.
 https://eprint.iacr.org/2023/095
 - Yong Wang, Rui Wang, Xin Liu, Donglan Liu, Hao Zhang, Lei Ma, Fangzhe Zhang,
