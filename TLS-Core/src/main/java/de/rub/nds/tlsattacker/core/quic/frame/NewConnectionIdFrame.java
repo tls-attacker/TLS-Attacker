@@ -33,7 +33,7 @@ public class NewConnectionIdFrame extends QuicFrame {
 
     @ModifiableVariableProperty protected ModifiableLong retirePriorTo;
 
-    @ModifiableVariableProperty protected ModifiableInteger length;
+    @ModifiableVariableProperty protected ModifiableInteger connectionIdLength;
 
     @ModifiableVariableProperty protected ModifiableByteArray connectionId;
 
@@ -47,7 +47,7 @@ public class NewConnectionIdFrame extends QuicFrame {
 
     public static final int STATELESS_RESET_TOKEN_LENGTH = 16;
 
-    public static final int CONNECTION_ID_LENGTH_FIELD = 1;
+    public static final int CONNECTION_ID_LENGTH_FIELD_LENGTH = 1;
 
     public NewConnectionIdFrame() {
         super(QuicFrameType.NEW_CONNECTION_ID_FRAME);
@@ -99,12 +99,13 @@ public class NewConnectionIdFrame extends QuicFrame {
         this.setRetirePriorTo((long) retirePriorTo);
     }
 
-    public ModifiableInteger getLength() {
-        return length;
+    public ModifiableInteger getConnectionIdLength() {
+        return connectionIdLength;
     }
 
-    public void setLength(int length) {
-        this.length = ModifiableVariableFactory.safelySetValue(this.length, length);
+    public void setConnectionIdLength(int length) {
+        this.connectionIdLength =
+                ModifiableVariableFactory.safelySetValue(this.connectionIdLength, length);
     }
 
     public ModifiableByteArray getConnectionId() {

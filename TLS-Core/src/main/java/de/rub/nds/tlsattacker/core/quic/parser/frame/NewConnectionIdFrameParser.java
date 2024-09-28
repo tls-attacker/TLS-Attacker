@@ -25,7 +25,7 @@ public class NewConnectionIdFrameParser extends QuicFrameParser<NewConnectionIdF
     public void parse(NewConnectionIdFrame frame) {
         parseSequenceNumber(frame);
         parseRetirePriorTo(frame);
-        parseLength(frame);
+        parseConnectionIdLength(frame);
         parseConnectionId(frame);
         parseStatelessResetToken(frame);
     }
@@ -40,13 +40,14 @@ public class NewConnectionIdFrameParser extends QuicFrameParser<NewConnectionIdF
         LOGGER.debug("Retire Prior To: {}", frame.getRetirePriorTo().getValue());
     }
 
-    protected void parseLength(NewConnectionIdFrame frame) {
-        frame.setLength(parseIntField(NewConnectionIdFrame.STATELESS_RESET_TOKEN_LENGTH));
-        LOGGER.debug("Length: {}", frame.getLength().getValue());
+    protected void parseConnectionIdLength(NewConnectionIdFrame frame) {
+        frame.setConnectionIdLength(
+                parseIntField(NewConnectionIdFrame.CONNECTION_ID_LENGTH_FIELD_LENGTH));
+        LOGGER.debug("Length: {}", frame.getConnectionIdLength().getValue());
     }
 
     protected void parseConnectionId(NewConnectionIdFrame frame) {
-        frame.setConnectionId(parseByteArrayField(frame.getLength().getValue()));
+        frame.setConnectionId(parseByteArrayField(frame.getConnectionIdLength().getValue()));
         LOGGER.debug("Connection ID: {}", frame.getConnectionId().getValue());
     }
 

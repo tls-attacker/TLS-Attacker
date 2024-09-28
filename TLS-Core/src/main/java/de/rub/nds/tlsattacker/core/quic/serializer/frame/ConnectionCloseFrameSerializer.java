@@ -50,7 +50,8 @@ public class ConnectionCloseFrameSerializer extends QuicFrameSerializer<Connecti
     }
 
     private void writeReasonPhraseLength() {
-        if (frame.getReasonPhraseLength() != null) {
+        if (frame.getReasonPhraseLength() != null
+                && frame.getReasonPhraseLength().getValue() != null) {
             appendBytes(
                     VariableLengthIntegerEncoding.encodeVariableLengthInteger(
                             frame.getReasonPhraseLength().getValue()));
@@ -59,7 +60,7 @@ public class ConnectionCloseFrameSerializer extends QuicFrameSerializer<Connecti
     }
 
     private void writeReasonPhrase() {
-        if (frame.getReasonPhrase() != null) {
+        if (frame.getReasonPhrase() != null && frame.getReasonPhrase().getValue() != null) {
             appendBytes(frame.getReasonPhrase().getValue());
             LOGGER.debug("Reason Phrase: {}", frame.getReasonPhrase().getValue());
         }
