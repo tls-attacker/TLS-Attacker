@@ -300,18 +300,43 @@ Muhammad Abubakar, Fabian Albert, Panneer Selvam Annadurai, Nimrod Aviram, Phili
 
 Further contributions and pull requests are welcome.
 
-## TLS-Attacker Projects
+## Scientific Papers 
 
 The basic concepts behind TLS-Attacker and several attacks are described in the following paper:
 - Juraj Somorovsky. Systematic Fuzzing and Testing of TLS Libraries. ACM CCS'16. https://www.nds.rub.de/research/publications/systematic-fuzzing-and-testing-tls-libraries
 
-TLS-Attacker was furthermore used in the following scientific papers and projects:
-- Tibor Jager, Jörg Schwenk, Juraj Somorovsky. On the Security of TLS 1.3 and QUIC Against Weaknesses in PKCS#1 v1.5 Encryption. ACM CCS'15. https://www.nds.rub.de/research/publications/ccs15/
-- Tibor Jager, Jörg Schwenk, Juraj Somorovsky. Practical Invalid Curve Attacks on TLS-ECDH. ESORICS'15. https://www.nds.rub.de/research/publications/ESORICS15/
-- Quellcode-basierte Untersuchung von kryptographisch relevanten Aspekten der OpenSSL-Bibliothek. https://www.bsi.bund.de/DE/Publikationen/Studien/OpenSSL-Bibliothek/opensslbibliothek.html
-- Entwicklung einer sicheren Kryptobibliothek. https://www.bsi.bund.de/DE/Themen/Kryptografie_Kryptotechnologie/Kryptografie/Kryptobibliothek/kryptobibliothek_node.html
-- Yuan Xiao, Mengyuan Li, Sanchuan Chen, Yinqian Zhang. Stacco: Differentially Analyzing Side-Channel Traces for Detecting SSL/TLS Vulnerabilities in Secure Enclaves. CCS'17. http://web.cse.ohio-state.edu/~zhang.834/papers/ccs17a.pdf
 
-If you have any research ideas or need support feel free to contact us on Twitter (@ic0nz1 , @jurajsomorovsky ) or at https://www.hackmanit.de/.
+Below, we list recent scientific studies that utilized TLS-Attacker. You can find the full list in the [Wiki](https://github.com/tls-attacker/TLS-Attacker-Development/wiki/Scientific-Papers-and-Projects) 
+- Michael Scott. 2023. On TLS for the Internet of Things, in a Post Quantum world.
+https://eprint.iacr.org/2023/095
+- Yong Wang, Rui Wang, Xin Liu, Donglan Liu, Hao Zhang, Lei Ma, Fangzhe Zhang,
+Lili Sun, and Zhenghao Li. 2023. A Framework for TLS Implementation Vulnerability Testing in 5G. In Applied Cryptography and Network Security Workshops, ACNS 2023 Satellite Workshop https://link.springer.com/chapter/10.1007/978-3-031-41181-6_16
+- Diana Gratiela Berbecaru and Giuseppe Petraglia. 2023. TLS-Monitor: A Monitor
+for TLS Attacks. In 2023 IEEE 20th Consumer Communications & Networking
+Conference (CCNC). https://ieeexplore.ieee.org/document/10059989
+- Paul Fiterau-Brostean, Bengt Jonsson, Konstantinos Sagonas, and Fredrik Tåquist. 2023. Automata-Based Automated Detection of State Machine Bugs in Protocol
+Implementations. In 30th Annual Network and Distributed System Security Symposium, NDSS 2023 https://www.ndss-symposium.org/ndss-paper/automata-based-automated-detection-of-state-machine-bugs-in-protocol-implementations/
+- Sven Hebrok, Simon Nachtigall, Marcel Maehren, Nurullah Erinola, Robert Merget, Juraj Somorovsky, and Jörg Schwenk. 2023. We Really Need to Talk About
+Session Tickets: A Large-Scale Analysis of Cryptographic Dangers with TLS
+Session Tickets. In 32nd USENIX Security Symposium, USENIX Security 2023 https://www.usenix.org/conference/usenixsecurity23/presentation/hebrok
+- Nurullah Erinola, Marcel Maehren, Robert Merget, Juraj Somorovsky, and Jörg
+Schwenk. 2023. Exploring the Unknown DTLS Universe: Analysis of the DTLS
+Server Ecosystem on the Internet. In 32nd USENIX Security Symposium, USENIX
+Security 2023 https://www.usenix.org/conference/usenixsecurity23/presentation/erinola
+- Ka Lok Wu, Man Hong Hue, Ngai Man Poon, Kin Man Leung, Wai Yin Po,
+Kin Ting Wong, Sze Ho Hui, and Sze Yiu Chau. 2023. Back to School: On the
+(In)Security of Academic VPNs. In 32nd USENIX Security Symposium, USENIX
+Security 2023 https://www.usenix.org/conference/usenixsecurity23/presentation/wu-ka-lok
+- Diana Gratiela Berbecaru and Antonio Lioy. 2024. Threat-TLS: A Tool for Threat
+Identification in Weak, Malicious, or Suspicious TLS Connections. In Proceedings
+of the 19th International Conference on Availability, Reliability and Security (Vienna,
+Austria) (ARES ’24) https://dl.acm.org/doi/10.1145/3664476.3670945
+- Maximilian Radoy, Sven Hebrok, and Juraj Somorovsky. 2024. In Search of Partitioning Oracle Attacks Against TLS Session Tickets. In 29th European Symposium
+on Research in Computer Security (ESORICS) https://link.springer.com/chapter/10.1007/978-3-031-70896-1_16
+- Martin Dunsche, Marcel Maehren, Nurullah Erinola, Robert Merget, Nicolai Bissantz, Juraj Somorovsky, and Jörg Schwenk. 2024. With Great Power Come Great
+Side Channels: Statistical Timing Side-Channel Analyses with Bounded Type-1
+Errors. In 33rd USENIX Security Symposium, USENIX Security 2024 https://www.usenix.org/conference/usenixsecurity24/presentation/dunsche
+
+If you have any research ideas or need support feel free to contact us on Twitter (@ic0nz1 , @jurajsomorovsky , @marcelmaehren , @nerinola1 ) or at https://www.hackmanit.de/.
 
 If TLS-Attacker helps you to find a bug in a TLS implementation, please acknowledge this tool. Thank you!
