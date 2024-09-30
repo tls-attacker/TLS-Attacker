@@ -68,4 +68,13 @@ public class CipherSuiteTest {
         assertTrue(CipherSuite.TLS_GOSTR341112_256_WITH_28147_CNT_IMIT.isUsingMac());
         assertFalse(CipherSuite.TLS_AES_256_GCM_SHA384.isUsingMac());
     }
+
+    @Test
+    public void testIsRealCipherSuite() {
+
+        assertTrue(CipherSuite.TLS_AES_128_CCM_8_SHA256.isRealCipherSuite());
+        assertTrue(CipherSuite.TLS_AES_256_GCM_SHA384.isRealCipherSuite());
+        assertFalse(CipherSuite.GREASE_03.isRealCipherSuite());
+        assertFalse(CipherSuite.TLS_FALLBACK_SCSV.isRealCipherSuite());
+    }
 }
