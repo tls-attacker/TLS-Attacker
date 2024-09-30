@@ -317,7 +317,6 @@
         <defaultClientSupportedCipherSuite>TLS_PSK_WITH_AES_128_CBC_SHA</defaultClientSupportedCipherSuite>
         <defaultClientSupportedCipherSuite>TLS_PSK_DHE_WITH_AES_128_CCM_8</defaultClientSupportedCipherSuite>
         <defaultClientSupportedCipherSuite>TLS_PSK_DHE_WITH_AES_256_CCM_8</defaultClientSupportedCipherSuite>
-        <defaultClientSupportedCipherSuite>TLS_PSK_DHE_WITH_AES_256_CCM_80</defaultClientSupportedCipherSuite>
         <defaultClientSupportedCipherSuite>TLS_PSK_WITH_3DES_EDE_CBC_SHA</defaultClientSupportedCipherSuite>
         <defaultClientSupportedCipherSuite>TLS_PSK_WITH_AES_128_CBC_SHA256</defaultClientSupportedCipherSuite>
         <defaultClientSupportedCipherSuite>TLS_PSK_WITH_AES_128_CCM</defaultClientSupportedCipherSuite>
@@ -653,7 +652,6 @@
         <defaultServerSupportedCipherSuite>TLS_PSK_WITH_AES_128_CBC_SHA</defaultServerSupportedCipherSuite>
         <defaultServerSupportedCipherSuite>TLS_PSK_DHE_WITH_AES_128_CCM_8</defaultServerSupportedCipherSuite>
         <defaultServerSupportedCipherSuite>TLS_PSK_DHE_WITH_AES_256_CCM_8</defaultServerSupportedCipherSuite>
-        <defaultServerSupportedCipherSuite>TLS_PSK_DHE_WITH_AES_256_CCM_80</defaultServerSupportedCipherSuite>
         <defaultServerSupportedCipherSuite>TLS_PSK_WITH_3DES_EDE_CBC_SHA</defaultServerSupportedCipherSuite>
         <defaultServerSupportedCipherSuite>TLS_PSK_WITH_AES_128_CBC_SHA256</defaultServerSupportedCipherSuite>
         <defaultServerSupportedCipherSuite>TLS_PSK_WITH_AES_128_CCM</defaultServerSupportedCipherSuite>
@@ -1503,7 +1501,6 @@
         <clientSupportedEsniCipherSuite>TLS_PSK_WITH_AES_128_CBC_SHA</clientSupportedEsniCipherSuite>
         <clientSupportedEsniCipherSuite>TLS_PSK_DHE_WITH_AES_128_CCM_8</clientSupportedEsniCipherSuite>
         <clientSupportedEsniCipherSuite>TLS_PSK_DHE_WITH_AES_256_CCM_8</clientSupportedEsniCipherSuite>
-        <clientSupportedEsniCipherSuite>TLS_PSK_DHE_WITH_AES_256_CCM_80</clientSupportedEsniCipherSuite>
         <clientSupportedEsniCipherSuite>TLS_PSK_WITH_3DES_EDE_CBC_SHA</clientSupportedEsniCipherSuite>
         <clientSupportedEsniCipherSuite>TLS_PSK_WITH_AES_128_CBC_SHA256</clientSupportedEsniCipherSuite>
         <clientSupportedEsniCipherSuite>TLS_PSK_WITH_AES_128_CCM</clientSupportedEsniCipherSuite>
