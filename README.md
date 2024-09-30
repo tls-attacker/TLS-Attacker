@@ -296,7 +296,7 @@ We would like to thank everyone who has contributed to the TLS-Attacker project.
 
 A special thanks goes to the following peoples for their notable contributions:
 
-Muhammad Abubakar, Fabian Albert, Panneer Selvam Annadurai, Nimrod Aviram, Philipp Brinkmann, Till Budde, Florian Bürger, Christoph Buttler, Jens Carl, Raphael Dietrich, Felix Dreissig, Bastian Ebach, Malena Ebert, Robert Engel, Nils Engelbertz, Paul Fiterau Brostean, Janis Fliegenschmidt, Alexander Freiherr von Buddenbrock, Matthias Manfred Geuchen, Alexander Glasfort, Nils Hanke, Lucas Hartmann, Bastian Haverkamp, Nico Heitmann, Jannik Hölling, Selami Hoxha, Kevin Jagla, Nils Kafka, Jan Kaiser, Anton Khristoforov, Felix Kleine-Wilde, Mario Korth, Sebastian Krois, Christian Krug, Felix Lange, Florian Linsner, Christian Mainka, Jonas Moos, Simon Nachtigall, Simon Nattefort, Philipp Nieting, Niels Pahl, Christoph Penkert, Florian Pfützenreuter, Adrian Pinner, Malte Poll, Christian Pressler, Tim Reisach, Philip Riese, Nils Luca Rudminat, Henrik Schaefer, Marten Schmidt, Conrad Schmidt, Daniel Siegert, Tim Storm, Rigers Sulku, Bjarne Tempel, Matthias Terlinde, Jonas Thiele, Pierre Tilhaus, Joshua Waldner, Patrick Weixler, Philipp Wirth, Asli Yardim, Dennis Ziebart, David Ziemann, Philipp Ziemke
+Muhammad Abubakar, Fabian Albert, Panneer Selvam Annadurai, Nimrod Aviram, Philipp Brinkmann, Till Budde, Florian Bürger, Christoph Buttler, Jens Carl, Raphael Dietrich, Felix Dreissig, Bastian Ebach, Malena Ebert, Robert Engel, Nils Engelbertz, Paul Fiterau Brostean, Janis Fliegenschmidt, Alexander Freiherr von Buddenbrock, Matthias Manfred Geuchen, Alexander Glasfort, Nils Hanke, Lucas Hartmann, Bastian Haverkamp, Nico Heitmann, Jannik Hölling, Selami Hoxha, Kevin Jagla, Nils Kafka, Jan Kaiser, Anton Khristoforov, Felix Kleine-Wilde, Mario Korth, Sebastian Krois, Christian Krug, Florian Linsner, Christian Mainka, Jonas Moos, Simon Nachtigall, Simon Nattefort, Philipp Nieting, Niels Pahl, Christoph Penkert, Florian Pfützenreuter, Adrian Pinner, Malte Poll, Christian Pressler, Tim Reisach, Philip Riese, Nils Luca Rudminat, Henrik Schaefer, Marten Schmidt, Conrad Schmidt, Daniel Siegert, Tim Storm, Rigers Sulku, Bjarne Tempel, Matthias Terlinde, Jonas Thiele, Pierre Tilhaus, Joshua Waldner, Patrick Weixler, Philipp Wirth, Asli Yardim, Dennis Ziebart, David Ziemann, Philipp Ziemke
 
 Further contributions and pull requests are welcome.
 
@@ -336,6 +336,6 @@ on Research in Computer Security (ESORICS) https://link.springer.com/chapter/10.
 Side Channels: Statistical Timing Side-Channel Analyses with Bounded Type-1
 Errors. In 33rd USENIX Security Symposium, USENIX Security 2024 https://www.usenix.org/conference/usenixsecurity24/presentation/dunsche
 
-If you have any research ideas or need support feel free to contact us on Twitter (@ic0nz1 , @jurajsomorovsky , @marcelmaehren , @nerinola1 ) or at https://www.hackmanit.de/.
+If you have any research ideas or need support feel free to contact us on Twitter (@ic0nz1 , @jurajsomorovsky , @marcelmaehren , @nerinola1 , @JonSnowWhite2) or at https://www.hackmanit.de/.
 
 If TLS-Attacker helps you to find a bug in a TLS implementation, please acknowledge this tool. Thank you!
