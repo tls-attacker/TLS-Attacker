@@ -18,5 +18,7 @@ public class PaddingFramePreparator extends QuicFramePreparator<PaddingFrame> {
     }
 
     @Override
-    public void prepare() {}
+    public void prepare() {
+        // Nothing to prepare here
+    }
 }

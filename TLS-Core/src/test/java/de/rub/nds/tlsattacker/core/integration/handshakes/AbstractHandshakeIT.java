@@ -10,14 +10,39 @@ package de.rub.nds.tlsattacker.core.integration.handshakes;
 
 import static org.junit.Assume.assumeNotNull;
 
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Stream;
+import java.util.stream.Stream.Builder;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.junit.Assert;
+import org.junit.Assume;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import com.github.dockerjava.api.async.ResultCallback;
 import com.github.dockerjava.api.exception.DockerException;
+import com.github.dockerjava.api.model.Frame;
 import com.github.dockerjava.api.model.Image;
+
 import de.rub.nds.tls.subject.ConnectionRole;
 import de.rub.nds.tls.subject.TlsImplementationType;
 import de.rub.nds.tls.subject.constants.TransportType;
-import de.rub.nds.tls.subject.docker.*;
+import de.rub.nds.tls.subject.docker.DockerClientManager;
+import de.rub.nds.tls.subject.docker.DockerTlsClientInstance;
+import de.rub.nds.tls.subject.docker.DockerTlsInstance;
+import de.rub.nds.tls.subject.docker.DockerTlsManagerFactory;
 import de.rub.nds.tls.subject.docker.DockerTlsManagerFactory.TlsClientInstanceBuilder;
 import de.rub.nds.tls.subject.docker.DockerTlsManagerFactory.TlsServerInstanceBuilder;
+import de.rub.nds.tls.subject.docker.DockerTlsServerInstance;
+import de.rub.nds.tls.subject.docker.build.DockerBuilder;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
@@ -33,19 +58,6 @@ import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import de.rub.nds.tlsattacker.util.FreePortFinder;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Stream;
-import java.util.stream.Stream.Builder;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Assume;
-import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 
 @TestInstance(Lifecycle.PER_CLASS)
 public abstract class AbstractHandshakeIT {
@@ -107,9 +119,12 @@ public abstract class AbstractHandshakeIT {
     }
 
     private void prepareContainer() throws DockerException, InterruptedException {
-        Image image =
-                DockerTlsManagerFactory.getMatchingImage(
-                        localImages, implementation, version, dockerConnectionRole);
+        Image image = DockerTlsManagerFactory.getMatchingImage(
+                localImages,
+                implementation,
+                version,
+                DockerBuilder.NO_ADDITIONAL_BUILDFLAGS,
+                dockerConnectionRole);
         getDockerInstance(image);
     }
 
@@ -119,8 +134,7 @@ public abstract class AbstractHandshakeIT {
             if (image != null) {
                 instanceBuilder = new TlsServerInstanceBuilder(image, transportType);
             } else {
-                instanceBuilder =
-                        new TlsServerInstanceBuilder(implementation, version, transportType).pull();
+                instanceBuilder = new TlsServerInstanceBuilder(implementation, version, transportType).pull();
                 localImages = DockerTlsManagerFactory.getAllImages();
                 assumeNotNull(
                         image,
@@ -136,8 +150,7 @@ public abstract class AbstractHandshakeIT {
             if (image != null) {
                 clientInstanceBuilder = new TlsClientInstanceBuilder(image, transportType);
             } else {
-                clientInstanceBuilder =
-                        new TlsClientInstanceBuilder(implementation, version, transportType).pull();
+                clientInstanceBuilder = new TlsClientInstanceBuilder(implementation, version, transportType).pull();
                 localImages = DockerTlsManagerFactory.getAllImages();
                 assumeNotNull(
                         image,
@@ -186,9 +199,9 @@ public abstract class AbstractHandshakeIT {
                 protocolVersion);
 
         State state = new State(config);
-        WorkflowExecutor executor =
-                WorkflowExecutorFactory.createWorkflowExecutor(
-                        config.getWorkflowExecutorType(), state);
+        modifyWorkflowTrace(state);
+        WorkflowExecutor executor = WorkflowExecutorFactory.createWorkflowExecutor(
+                config.getWorkflowExecutorType(), state);
         setCallbacks(executor);
 
         executeTest(
@@ -228,9 +241,9 @@ public abstract class AbstractHandshakeIT {
                 prepareContainer();
                 setConnectionTargetFields(config);
                 state = new State(config);
-                executor =
-                        WorkflowExecutorFactory.createWorkflowExecutor(
-                                config.getWorkflowExecutorType(), state);
+                modifyWorkflowTrace(state);
+                executor = WorkflowExecutorFactory.createWorkflowExecutor(
+                        config.getWorkflowExecutorType(), state);
                 setCallbacks(executor);
             } else if (state.getWorkflowTrace().executedAsPlanned()) {
                 return;
@@ -264,6 +277,7 @@ public abstract class AbstractHandshakeIT {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+        printFailedContainerLogs();
         Assert.fail(
                 "Failed to handshake with "
                         + implementation
@@ -275,6 +289,24 @@ public abstract class AbstractHandshakeIT {
                                 workflowTraceType,
                                 addEncryptThenMac,
                                 addExtendedMasterSecret));
+    }
+
+    private void printFailedContainerLogs() {
+        String dockerId = dockerInstance.getId();
+        System.out.println("Failed container docker logs:");
+        DockerClientManager.getDockerClient()
+                .logContainerCmd(dockerId)
+                .withSince(0)
+                .withStdOut(true)
+                .withStdErr(true)
+                .exec(
+                        new ResultCallback.Adapter<Frame>() {
+                            @Override
+                            public void onNext(Frame frame) {
+                                String log = (new String(frame.getPayload())).trim();
+                                System.out.print(log);
+                            }
+                        });
     }
 
     public Stream<Arguments> provideTestVectors() {
@@ -312,35 +344,39 @@ public abstract class AbstractHandshakeIT {
         return builder.build();
     }
 
+    protected void modifyWorkflowTrace(State state) {
+        return;
+    }
+
     protected NamedGroup[] getNamedGroupsToTest() {
         return new NamedGroup[] {
-            NamedGroup.SECP256R1, NamedGroup.SECP384R1, NamedGroup.SECP521R1, NamedGroup.ECDH_X25519
+                NamedGroup.SECP256R1, NamedGroup.SECP384R1, NamedGroup.SECP521R1, NamedGroup.ECDH_X25519
         };
     }
 
     protected ProtocolVersion[] getProtocolVersionsToTest() {
         return new ProtocolVersion[] {
-            ProtocolVersion.TLS10, ProtocolVersion.TLS11, ProtocolVersion.TLS12
+                ProtocolVersion.TLS10, ProtocolVersion.TLS11, ProtocolVersion.TLS12
         };
     }
 
     protected CipherSuite[] getCipherSuitesToTest() {
         return new CipherSuite[] {
-            CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA,
-            CipherSuite.TLS_DHE_RSA_WITH_AES_128_CBC_SHA,
-            CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,
-            CipherSuite.TLS_RSA_WITH_AES_128_GCM_SHA256,
+                CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA,
+                CipherSuite.TLS_DHE_RSA_WITH_AES_128_CBC_SHA,
+                CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,
+                CipherSuite.TLS_RSA_WITH_AES_128_GCM_SHA256,
         };
     }
 
     protected WorkflowTraceType[] getWorkflowTraceTypesToTest() {
         return new WorkflowTraceType[] {
-            WorkflowTraceType.HANDSHAKE, WorkflowTraceType.FULL_RESUMPTION
+                WorkflowTraceType.HANDSHAKE, WorkflowTraceType.FULL_RESUMPTION
         };
     }
 
     protected boolean[] getCryptoExtensionsValues() {
-        return new boolean[] {true, false};
+        return new boolean[] { true, false };
     }
 
     protected void setCallbacks(WorkflowExecutor executor) {
@@ -454,7 +490,7 @@ public abstract class AbstractHandshakeIT {
                 + workflowTraceType
                 + " EncryptThenMac="
                 + addEncryptThenMac
-                + " ExtendedMasterSecert="
+                + " ExtendedMasterSecret="
                 + addExtendedMasterSecret;
     }
 }

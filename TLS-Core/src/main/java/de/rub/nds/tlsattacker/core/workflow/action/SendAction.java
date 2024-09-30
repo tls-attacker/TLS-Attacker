@@ -179,12 +179,20 @@ public class SendAction extends CommonSendAction implements StaticSendingAction 
         return configuredQuicFrames;
     }
 
+    public void setConfiguredQuicFrames(QuicFrame... configuredQuicFrames) {
+        this.configuredQuicFrames = new ArrayList<>(Arrays.asList(configuredQuicFrames));
+    }
+
     public void setConfiguredQuicFrames(List<QuicFrame> configuredQuicFrames) {
         this.configuredQuicFrames = configuredQuicFrames;
     }
 
     public List<QuicPacket> getConfiguredQuicPackets() {
         return configuredQuicPackets;
+    }
+
+    public void setConfiguredQuicPackets(QuicPacket... configuredQuicPackets) {
+        this.configuredQuicPackets = new ArrayList<>(Arrays.asList(configuredQuicPackets));
     }
 
     public void setConfiguredQuicPackets(List<QuicPacket> configuredQuicPackets) {
@@ -290,6 +298,9 @@ public class SendAction extends CommonSendAction implements StaticSendingAction 
                             ImplementedLayers.RECORD, getConfiguredRecords()));
         }
         if (getConfiguredMessages() != null) {
+            configurationList.add(
+                    new SpecificSendLayerConfiguration<>(
+                            ImplementedLayers.SSL2, getConfiguredMessages()));
             configurationList.add(
                     new SpecificSendLayerConfiguration<>(
                             ImplementedLayers.MESSAGE, getConfiguredMessages()));

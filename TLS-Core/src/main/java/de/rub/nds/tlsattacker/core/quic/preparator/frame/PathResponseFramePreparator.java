@@ -10,8 +10,12 @@ package de.rub.nds.tlsattacker.core.quic.preparator.frame;
 
 import de.rub.nds.tlsattacker.core.quic.frame.PathResponseFrame;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class PathResponseFramePreparator extends QuicFramePreparator<PathResponseFrame> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public PathResponseFramePreparator(Chooser chooser, PathResponseFrame frame) {
         super(chooser, frame);
@@ -19,6 +23,12 @@ public class PathResponseFramePreparator extends QuicFramePreparator<PathRespons
 
     @Override
     public void prepare() {
-        getObject().setData(chooser.getContext().getQuicContext().getPathChallengeData());
+        LOGGER.debug("Preparing PATH_RESPONSE Frame");
+        prepareData(getObject());
+    }
+
+    protected void prepareData(PathResponseFrame frame) {
+        frame.setData(chooser.getContext().getQuicContext().getPathChallengeData());
+        LOGGER.debug("Data: {}", frame.getData().getValue());
     }
 }

@@ -46,7 +46,7 @@ public class HandshakePacket extends LongHeaderPacket {
 
     @Override
     public HandshakePacketHandler getHandler(QuicContext context) {
-        return null;
+        return new HandshakePacketHandler(context);
     }
 
     @Override

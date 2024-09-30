@@ -81,21 +81,23 @@ public class SSL2Layer extends ProtocolLayer<LayerProcessingHint, SSL2Message> {
 
     @Override
     public LayerProcessingResult receiveData() {
-
         try {
             int messageLength = 0;
             byte paddingLength = 0;
             byte[] totalHeader;
             HintedInputStream dataStream = null;
-            SSL2MessageType messageType;
+            SSL2MessageType messageType = SSL2MessageType.SSL_UNKNOWN;
             try {
-
                 dataStream = getLowerLayer().getDataStream();
+                if (dataStream.available() == 0) {
+                    LOGGER.debug("Reached end of stream, cannot parse more messages");
+                    return getLayerResult();
+                }
+
                 totalHeader = dataStream.readNBytes(SSL2ByteLength.LENGTH);
-                if (totalHeader.length != SSL2ByteLength.LENGTH) {
-                    LOGGER.warn(
-                            "Could not read enough bytes for SSL2 message header, parsing as unknown SSL2 message");
-                    messageType = SSL2MessageType.SSL_UNKNOWN;
+                if (SSL2TotalHeaderLengths.isNoPaddingHeader(totalHeader[0])) {
+                    messageLength = resolveUnpaddedMessageLength(totalHeader);
+                    paddingLength = 0x00;
                 } else {
                     if (SSL2TotalHeaderLengths.isNoPaddingHeader(totalHeader[0])) {
                         messageLength = resolveUnpaddedMessageLength(totalHeader);
@@ -113,7 +115,6 @@ public class SSL2Layer extends ProtocolLayer<LayerProcessingHint, SSL2Message> {
             }
 
             SSL2Message message = null;
-
             switch (messageType) {
                 case SSL_CLIENT_HELLO:
                     message = new SSL2ClientHelloMessage();
@@ -130,14 +131,12 @@ public class SSL2Layer extends ProtocolLayer<LayerProcessingHint, SSL2Message> {
                 default:
                     message = new UnknownSSL2Message();
             }
-
             message.setType((byte) messageType.getType());
             message.setMessageLength(messageLength);
             message.setPaddingLength((int) paddingLength);
             readDataContainer(message, context);
-
         } catch (TimeoutException ex) {
-            LOGGER.debug(ex);
+            LOGGER.debug("Received a timeout");
         } catch (EndOfStreamException ex) {
             LOGGER.debug("Reached end of stream, cannot parse more messages", ex);
         }

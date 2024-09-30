@@ -23,7 +23,7 @@ import org.apache.logging.log4j.Logger;
 
 public abstract class UdpTransportHandler extends PacketbasedTransportHandler {
 
-    private Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger();
 
     protected DatagramSocket socket;
 
@@ -131,19 +131,19 @@ public abstract class UdpTransportHandler extends PacketbasedTransportHandler {
         return socket.getPort();
     }
 
-    public String getSourceIp() {
-        if (socket == null) {
-            // mimic socket.getLocalAddress() behavior as if socket was closed
+    public String getSrcIp() {
+        if (socket == null || socket.getLocalAddress() == null) {
             return null;
+        } else {
+            return socket.getLocalAddress().getHostAddress();
         }
-        return socket.getLocalAddress().getHostAddress();
     }
 
-    public String getDestinationIp() {
-        if (socket == null) {
-            // mimic socket.getHostAddress() behavior as if socket was closed
+    public String getDstIp() {
+        if (socket == null || socket.getInetAddress() == null) {
             return null;
+        } else {
+            return socket.getInetAddress().getHostAddress();
         }
-        return socket.getInetAddress().getHostAddress();
     }
 }
