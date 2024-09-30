@@ -20,7 +20,7 @@ public class SignatureAlgorithmCertDelegate extends Delegate {
     @Parameter(
             names = "-signature_algo_cert",
             description =
-                    "Supported Signature and Hash Algorithms for Certificates separated by comma eg. RSA-SHA512,DSA-SHA512")
+                    "Supported Signature and Hash Algorithms for Certificates separated by comma eg. RSA_SHA512,DSA_SHA512")
     private List<SignatureAndHashAlgorithm> signatureAndHashAlgorithms = null;
 
     public List<SignatureAndHashAlgorithm> getSignatureAndHashAlgorithms() {
