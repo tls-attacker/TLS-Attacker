@@ -10,13 +10,16 @@ package de.rub.nds.tlsattacker.core.smtp.parser;
 
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.smtp.extensions.*;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import org.bouncycastle.util.IPAddress;
 
 /** This class contains functions that check syntax based on RFC5321's Command Argument Syntax. */
 public final class SmtpSyntaxParser {
+    /**
+     * @param string Any string.
+     * @return Whether the string is a quoted string. Note: Does not check quoted string content.
+     */
     public static boolean isNotAQuotedString(String string) {
         return !(string.length() > 1
                 && string.charAt(0) == '"'
@@ -75,22 +78,19 @@ public final class SmtpSyntaxParser {
     }
 
     private static int endIndexOfLocalPart(String mailbox) {
-        for (int i = mailbox.length() - 1;
-                i >= 0;
-                i--) { // Last '@'-sign denotes ending of local-part.
+        for (int i = mailbox.length() - 1; i >= 0; i--) {
             if (mailbox.charAt(i) != '@') continue;
             return i;
         }
 
-        // TODO: consider changing:
-        return 0; // For now, it sets an invalid index to 0, so isValidLocalPart() detects that the
-        // local-part is empty.
+        return 0;
     }
 
     private static boolean isValidSubdomain(String str) {
         // first and last characters have to be alphanumeric:
-        if (isNotAlphanumeric(str.charAt(0)) || isNotAlphanumeric(str.charAt(str.length() - 1)))
-            return false;
+        if (str.isEmpty()
+                || isNotAlphanumeric(str.charAt(0))
+                || isNotAlphanumeric(str.charAt(str.length() - 1))) return false;
 
         // characters in between may also be '-'
         for (int i = 1; i < str.length() - 1; i++) {
@@ -102,8 +102,7 @@ public final class SmtpSyntaxParser {
     }
 
     private static boolean isValidDomain(String str) {
-        String[] subdomains =
-                str.split("\\."); // if this causes issues use Pattern.quote(".") instead
+        String[] subdomains = str.split("\\.");
 
         for (String subdomain : subdomains) {
             if (!isValidSubdomain(subdomain)) return false;
@@ -113,12 +112,11 @@ public final class SmtpSyntaxParser {
     }
 
     private static boolean isValidAddressLiteral(String str) {
-        if (str.charAt(0) != '[' || str.charAt(str.length() - 1) != ']') return false;
+        if (str.isEmpty() || str.charAt(0) != '[' || str.charAt(str.length() - 1) != ']')
+            return false;
 
-        str =
-                str.startsWith("[IPv6:")
-                        ? str.substring(6, str.length() - 1)
-                        : str.substring(1, str.length() - 1);
+        if (str.startsWith("[IPv6:")) str = str.substring(6, str.length() - 1);
+        else str = str.substring(1, str.length() - 1);
 
         return IPAddress.isValid(str);
     }
@@ -133,13 +131,13 @@ public final class SmtpSyntaxParser {
 
     private static boolean isValidLocalPart(String localPart) {
         if (localPart.isEmpty()) return false;
-        if (localPart.getBytes(StandardCharsets.UTF_8).length > 64)
-            return false; // can't be longer than 64 octets
-
         if (isValidDotString(localPart)) return true;
 
         // case: special characters were found, thus local part must be quoted string:
-        return localPart.charAt(0) == '"' && localPart.charAt(localPart.length() - 1) == '"';
+        return localPart.charAt(0) == '"'
+                && localPart.charAt(localPart.length() - 1) == '"'
+                && SmtpSyntaxParser.isValidQuotedStringContent(
+                        localPart.substring(1, localPart.length() - 1));
     }
 
     /**
@@ -269,5 +267,17 @@ public final class SmtpSyntaxParser {
                             "Could not parse Extension of Command/Reply. Unknown keyword: " + ext);
                 }
         }
+    }
+
+    public static int startsWithValidReplyCode(
+            String reply, int[] validReplyCodes, boolean isFinalLine) {
+        char delimiter = ' ';
+        if (!isFinalLine) delimiter = '-';
+
+        for (int code : validReplyCodes) {
+            if (reply.startsWith(String.valueOf(code) + delimiter)) return code;
+        }
+
+        return -1;
     }
 }

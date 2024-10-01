@@ -13,33 +13,22 @@ import de.rub.nds.tlsattacker.core.smtp.*;
 import de.rub.nds.tlsattacker.core.smtp.handler.SmtpMessageHandler;
 import de.rub.nds.tlsattacker.core.smtp.handler.SmtpReplyHandler;
 import de.rub.nds.tlsattacker.core.smtp.parser.SmtpMessageParser;
-import de.rub.nds.tlsattacker.core.smtp.parser.SmtpReplyParser;
+import de.rub.nds.tlsattacker.core.smtp.parser.reply.SmtpGenericReplyParser;
 import de.rub.nds.tlsattacker.core.smtp.preparator.SmtpMessagePreparator;
-import de.rub.nds.tlsattacker.core.smtp.preparator.SmtpReplyPreparator;
 import de.rub.nds.tlsattacker.core.smtp.serializer.SmtpMessageSerializer;
 import de.rub.nds.tlsattacker.core.smtp.serializer.SmtpReplySerializer;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 @XmlRootElement
 public class SmtpReply extends SmtpMessage {
 
-    protected int replyCode;
-    protected List<String> replyLines;
+    protected Integer replyCode;
 
-    // this is the human readable message part associated with the reply code
-    // for a single line reply, this is the only line in the replyLines list
-    protected String humanReadableMessage;
+    public SmtpReply() {}
 
-    public SmtpReply() {
-        this.replyLines = new ArrayList<>();
-    }
-
-    public SmtpReply(int replyCode, List<String> replyLines) {
+    public SmtpReply(Integer replyCode) {
         this.replyCode = replyCode;
-        this.replyLines = replyLines;
     }
 
     @Override
@@ -48,14 +37,14 @@ public class SmtpReply extends SmtpMessage {
     }
 
     @Override
-    public SmtpMessageParser<? extends SmtpMessage> getParser(
-            SmtpContext context, InputStream stream) {
-        return new SmtpReplyParser<>(stream);
+    public SmtpMessagePreparator<? extends SmtpMessage> getPreparator(SmtpContext context) {
+        return null;
     }
 
     @Override
-    public SmtpMessagePreparator<? extends SmtpMessage> getPreparator(SmtpContext context) {
-        return new SmtpReplyPreparator<>(context.getChooser(), this);
+    public SmtpMessageParser<? extends SmtpMessage> getParser(
+            SmtpContext context, InputStream stream) {
+        return new SmtpGenericReplyParser<>(stream);
     }
 
     @Override
@@ -68,27 +57,11 @@ public class SmtpReply extends SmtpMessage {
         return "";
     }
 
-    public int getReplyCode() {
-        return replyCode;
-    }
-
-    public void setReplyCode(int replyCode) {
+    public void setReplyCode(Integer replyCode) {
         this.replyCode = replyCode;
     }
 
-    public List<String> getReplyLines() {
-        return replyLines;
-    }
-
-    public void setReplyLines(List<String> replyLines) {
-        this.replyLines = replyLines;
-    }
-
-    public String getHumanReadableMessage() {
-        return humanReadableMessage;
-    }
-
-    public void setHumanReadableMessage(String humanReadableMessage) {
-        this.humanReadableMessage = humanReadableMessage;
+    public int getReplyCode() {
+        return replyCode;
     }
 }
