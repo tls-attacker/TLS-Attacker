@@ -49,7 +49,9 @@ public class RetryPacket extends LongHeaderPacket {
 
     public RetryPacket() {
         super(QuicPacketType.RETRY_PACKET);
-        this.setUnprotectedFlags(QuicPacketType.RETRY_PACKET.getHeader(QuicVersion.getFromVersionBytes(getQuicVersion().getValue())));
+        this.setUnprotectedFlags(
+                QuicPacketType.RETRY_PACKET.getHeader(
+                        QuicVersion.getFromVersionBytes(getQuicVersion().getValue())));
     }
 
     public RetryPacket(byte flags) {
@@ -59,15 +61,17 @@ public class RetryPacket extends LongHeaderPacket {
     }
 
     /**
-     * Verifies the correctness of the Integrity Tag within this Retry Packet to determine processing
+     * Verifies the correctness of the Integrity Tag within this Retry Packet to determine
+     * processing
+     *
      * @param context Current QUIC Context
      * @return Whether the Retry Packet's Integrity is confirmed
      */
     public boolean verifyRetryIntegrityTag(QuicContext context) {
-        //For construction of QUIC Retry Packet Integrity Pseudo Packet, see 5.8, RFC 9001
+        // For construction of QUIC Retry Packet Integrity Pseudo Packet, see 5.8, RFC 9001
         byte[] pseudoPacket =
                 ByteBuffer.allocate(
-                                1   /* ODCID length field */
+                                1 /* ODCID length field */
                                         + context.getFirstDestinationConnectionId().length
                                         + 1 /* Flags Byte */
                                         + 4 /* Version Field */
@@ -90,11 +94,11 @@ public class RetryPacket extends LongHeaderPacket {
 
         byte[] computedTag;
         try {
-            //Secret Key is fixed value from 5.8, RFC 9001
+            // Secret Key is fixed value from 5.8, RFC 9001
             SecretKey secretKey =
                     new SecretKeySpec(Hex.decode("be0c690b9f66575a1d766b54e368c84e"), "AES");
             Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
-            //IV is fixed value from 5.8, RFC 9001
+            // IV is fixed value from 5.8, RFC 9001
             byte[] iv = Hex.decode("461599d35d632bf2239825bb");
             GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(128, iv);
             cipher.init(Cipher.ENCRYPT_MODE, secretKey, gcmParameterSpec);
