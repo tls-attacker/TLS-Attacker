@@ -87,4 +87,22 @@ public class CipherSuiteTest {
 
         assertTrue(CipherSuite.getCipherSuite(93) == null);
     }
+
+    @Test
+    public void testgetCipherSuiteByte() {
+
+        assertTrue(
+                CipherSuite.getCipherSuite(new byte[] {0, 1}) == CipherSuite.TLS_RSA_WITH_NULL_MD5);
+        assertTrue(
+                CipherSuite.getCipherSuite(new byte[] {0, 8})
+                        == CipherSuite.TLS_RSA_EXPORT_WITH_DES40_CBC_SHA);
+        assertTrue(
+                CipherSuite.getCipherSuite(new byte[] {0, 70})
+                        == CipherSuite.TLS_DH_anon_WITH_CAMELLIA_128_CBC_SHA);
+
+        assertTrue(
+                CipherSuite.getCipherSuite(new byte[] {(byte) 0xC0, (byte) 0x90})
+                        == CipherSuite.TLS_DHE_PSK_WITH_CAMELLIA_128_GCM_SHA256);
+        assertTrue(CipherSuite.getCipherSuite(new byte[] {0, 93}) == null);
+    }
 }
