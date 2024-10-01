@@ -8,10 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.smtp.parser.reply;
 
-import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpReply;
 import de.rub.nds.tlsattacker.core.smtp.reply.generic.multiline.SmtpGenericMultilineReply;
-import de.rub.nds.tlsattacker.core.smtp.reply.generic.singleline.SmtpGenericSingleLineReply;
 import java.io.InputStream;
 import java.util.List;
 
@@ -23,16 +21,8 @@ public class SmtpGenericReplyParser<ReplyT extends SmtpReply> extends SmtpReplyP
 
     @Override
     public void parse(ReplyT replyT) {
-        if (replyT instanceof SmtpGenericSingleLineReply
-                || replyT instanceof SmtpGenericMultilineReply) parseReply(replyT);
-        else
-            throw new ParserException(
-                    "Unexpected reply object. Expected SmtpGenericSingleLineReply or SmtpGenericMultilineReply, but got: "
-                            + replyT); // TODO: handle unknown case here and save data regardless
-    }
-
-    private void parseReply(ReplyT replyT) {
         List<String> lines = this.readWholeReply();
+
         for (String line : lines) {
             parseReplyLine(replyT, line);
         }
@@ -43,10 +33,11 @@ public class SmtpGenericReplyParser<ReplyT extends SmtpReply> extends SmtpReplyP
 
         if (line.length() <= 4)
             return; // fourth char is delimiter, so at least five chars are needed
-        if (replyT instanceof SmtpGenericSingleLineReply) {
-            ((SmtpGenericSingleLineReply) replyT).setHumanReadableMessage(line.substring(4));
-        } else if (replyT instanceof SmtpGenericMultilineReply) {
+
+        if (replyT instanceof SmtpGenericMultilineReply) {
             ((SmtpGenericMultilineReply) replyT).addHumanReadableMessages(line.substring(4));
+        } else {
+            replyT.setHumanReadableMessage(line.substring(4));
         }
     }
 }

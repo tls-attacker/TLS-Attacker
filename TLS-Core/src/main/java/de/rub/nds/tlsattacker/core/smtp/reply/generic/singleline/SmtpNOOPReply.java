@@ -8,11 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.smtp.reply.generic.singleline;
 
+import de.rub.nds.tlsattacker.core.smtp.reply.SmtpReply;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
 // TODO: clarify if this class needs different treatment than other genericReplies
 
 @XmlRootElement
-public class SmtpNOOPReply extends SmtpGenericSingleLineReply {
+public class SmtpNOOPReply extends SmtpReply {
     // TODO: shift this to Config somehow
 }

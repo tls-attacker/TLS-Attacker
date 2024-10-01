@@ -10,10 +10,11 @@ package de.rub.nds.tlsattacker.core.smtp.reply.generic.singleline;
 
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.handler.QUITReplyHandler;
+import de.rub.nds.tlsattacker.core.smtp.reply.SmtpReply;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class SmtpQUITReply extends SmtpGenericSingleLineReply {
+public class SmtpQUITReply extends SmtpReply {
     public QUITReplyHandler getHandler(SmtpContext context) {
         return new QUITReplyHandler(context);
     }
