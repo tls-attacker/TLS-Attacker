@@ -23,7 +23,8 @@ public class SmtpGenericReplyParser<ReplyT extends SmtpReply> extends SmtpReplyP
 
     @Override
     public void parse(ReplyT replyT) {
-        if (replyT instanceof SmtpGenericSingleLineReply || replyT instanceof SmtpGenericMultilineReply) parseReply(replyT);
+        if (replyT instanceof SmtpGenericSingleLineReply
+                || replyT instanceof SmtpGenericMultilineReply) parseReply(replyT);
         else
             throw new ParserException(
                     "Unexpected reply object. Expected SmtpGenericSingleLineReply or SmtpGenericMultilineReply, but got: "
