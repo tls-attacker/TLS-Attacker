@@ -11,5 +11,4 @@ package de.rub.nds.tlsattacker.core.smtp.reply.generic.singleline;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class SmtpRESETReply extends SmtpGenericSingleLineReply {
-}
+public class SmtpRESETReply extends SmtpGenericSingleLineReply {}
