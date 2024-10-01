@@ -51,17 +51,28 @@ public abstract class SmtpReplyParser<ReplyT extends SmtpReply> extends SmtpMess
         if (line.length() < 3) return;
 
         int replyCode = this.toInteger(line.substring(0, 3));
+
+        // warning if status code is already set but codes are inconsistent:
+        try {
+            if (replyT.getReplyCode() != replyCode) replyCodeWarning(replyCode, line);
+        } catch (NullPointerException ignored) {
+        } // case: reply code not initialized yet
+
         replyT.setReplyCode(replyCode);
     }
 
     public void checkReplyCodeConsistency(int replyCode, String replyCodeString) {
         int foundReplyCode = this.toInteger(replyCodeString);
         if (foundReplyCode != replyCode) {
-            LOGGER.warn(
-                    "Parsing EHLOReply found inconsistent status codes in multiline reply{} != {}",
-                    replyCode,
-                    replyCodeString);
+            replyCodeWarning(replyCode, replyCodeString);
         }
+    }
+
+    public void replyCodeWarning(int replyCode, String replyCodeString) {
+        LOGGER.warn(
+                "Parsing EHLOReply found inconsistent status codes in multiline reply{} != {}",
+                replyCode,
+                replyCodeString);
     }
 
     public int toInteger(String str) {

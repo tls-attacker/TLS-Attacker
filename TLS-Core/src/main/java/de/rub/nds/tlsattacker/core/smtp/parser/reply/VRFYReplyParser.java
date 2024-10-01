@@ -37,6 +37,8 @@ public class VRFYReplyParser extends SmtpReplyParser<SmtpVRFYReply> {
 
                 // defaults to adding an empty username if not present:
                 reply.addUsernameAndMailbox(username, mailbox);
+            } else { // case: non-250 reply code containing human-readable response
+                reply.setHumanReadableMessage(line.substring(4));
             }
         }
     }

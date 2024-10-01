@@ -24,6 +24,7 @@ import java.io.InputStream;
 public class SmtpReply extends SmtpMessage {
 
     protected Integer replyCode;
+    protected String humanReadableMessage;
 
     public SmtpReply() {}
 
@@ -63,5 +64,33 @@ public class SmtpReply extends SmtpMessage {
 
     public int getReplyCode() {
         return replyCode;
+    }
+
+    public void setHumanReadableMessage(String humanReadableMessage) {
+        this.humanReadableMessage = humanReadableMessage;
+    }
+
+    public String getHumanReadableMessage() {
+        return humanReadableMessage;
+    }
+
+    @Override
+    public String toString() {
+        char SP = ' ';
+        String CRLF = "\r\n";
+        StringBuilder sb = new StringBuilder();
+
+        if (this.replyCode != null) {
+            sb.append(this.replyCode);
+            sb.append(SP);
+        }
+
+        if (this.humanReadableMessage != null) {
+            sb.append(humanReadableMessage);
+        }
+
+        sb.append(CRLF);
+
+        return sb.toString();
     }
 }
