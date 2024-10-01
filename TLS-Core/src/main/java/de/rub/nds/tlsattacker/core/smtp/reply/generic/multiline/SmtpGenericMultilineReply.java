@@ -15,7 +15,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SmtpGenericMultilineReply extends SmtpReply {
+public abstract class SmtpGenericMultilineReply extends SmtpReply {
 
     List<String> humanReadableMessages = new ArrayList<>();
 

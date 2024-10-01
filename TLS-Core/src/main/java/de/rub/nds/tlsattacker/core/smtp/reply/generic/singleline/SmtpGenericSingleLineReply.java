@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.smtp.parser.reply.SmtpGenericReplyParser;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpReply;
 import java.io.InputStream;
 
-public class SmtpGenericSingleLineReply extends SmtpReply {
+public abstract class SmtpGenericSingleLineReply extends SmtpReply {
     String humanReadableMessage;
 
     public void setHumanReadableMessage(String humanReadableMessage) {

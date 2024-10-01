@@ -37,7 +37,7 @@ public class EHLOReplyParser extends SmtpReplyParser<SmtpEHLOReply> {
                 smtpEHLOReply.setDomain(parts[0]);
                 smtpEHLOReply.setGreeting(parts[1]);
             } else {
-                // TODO: create unknown reply of some kind (see: SmtpGenericReplyParser).
+                // TODO: catch in appropriate spot in layer system
             }
         }
 

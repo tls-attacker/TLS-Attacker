@@ -12,8 +12,10 @@ import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.SmtpMessage;
 import de.rub.nds.tlsattacker.core.smtp.parser.SmtpMessageParser;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpReply;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
+@XmlRootElement
 public class SmtpUnknownReply extends SmtpReply {
 
     // TODO: implement. define relevant attributes.

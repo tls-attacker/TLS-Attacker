@@ -62,7 +62,7 @@ class VRFYReplyTest {
         String replyContent = "John Doe <john.doe@gmail.com>";
         SmtpVRFYReply vrfy = new SmtpVRFYReply();
         vrfy.setReplyCode(250);
-        vrfy.addData("John Doe", "<john.doe@gmail.com>");
+        vrfy.addUsernameAndMailbox("John Doe", "<john.doe@gmail.com>");
 
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
         Serializer<?> serializer = vrfy.getSerializer(context);

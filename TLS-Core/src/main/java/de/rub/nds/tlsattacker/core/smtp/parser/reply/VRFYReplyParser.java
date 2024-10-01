@@ -35,7 +35,8 @@ public class VRFYReplyParser extends SmtpReplyParser<SmtpVRFYReply> {
                 String username = line.substring(4, mailboxStartIndex - 1); // minus delimiter
                 String mailbox = line.substring(mailboxStartIndex);
 
-                reply.addData(username, mailbox);
+                // defaults to adding an empty username if not present:
+                reply.addUsernameAndMailbox(username, mailbox);
             }
         }
     }
