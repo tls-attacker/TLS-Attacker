@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.smtp.reply.generic.singleline;
 
+import de.rub.nds.tlsattacker.core.smtp.reply.SmtpReply;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -15,7 +16,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
  * It does not have a command counterpart, but follows the same structure as the other replies.
  */
 @XmlRootElement
-public class SmtpInitialGreeting extends SmtpGenericSingleLineReply {
+public class SmtpInitialGreeting extends SmtpReply {
 
     @Override
     public String toShortString() {

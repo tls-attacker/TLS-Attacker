@@ -8,7 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.smtp.reply.generic.singleline;
 
+import de.rub.nds.tlsattacker.core.smtp.reply.SmtpReply;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class SmtpDATAReply extends SmtpGenericSingleLineReply {}
+public class SmtpDATAReply extends SmtpReply {}
