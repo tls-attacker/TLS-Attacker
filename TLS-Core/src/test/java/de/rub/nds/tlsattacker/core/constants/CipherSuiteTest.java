@@ -8,11 +8,16 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.exceptions.UnknownCipherSuiteException;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -104,5 +109,31 @@ public class CipherSuiteTest {
                 CipherSuite.getCipherSuite(new byte[] {(byte) 0xC0, (byte) 0x90})
                         == CipherSuite.TLS_DHE_PSK_WITH_CAMELLIA_128_GCM_SHA256);
         assertTrue(CipherSuite.getCipherSuite(new byte[] {0, 93}) == null);
+    }
+
+    @Test
+    public void testgetCipherSuitesList() {
+
+        List<CipherSuite> resultList = new LinkedList<>();
+        resultList.add(CipherSuite.UNOFFICIAL_TLS_ECDH_anon_EXPORT_WITH_RC4_40_SHA);
+        resultList.add(CipherSuite.UNOFFICIAL_TLS_ECDH_anon_EXPORT_WITH_RC4_40_SHA);
+
+        assertEquals(resultList, CipherSuite.getCipherSuites(new byte[] {0, 0X5C, 0, 0X5C}));
+        resultList = new LinkedList<>();
+        resultList.add(CipherSuite.UNOFFICIAL_TLS_ECDH_anon_EXPORT_WITH_RC4_40_SHA);
+        resultList.add(CipherSuite.UNOFFICIAL_TLS_ECDH_anon_EXPORT_WITH_DES40_CBC_SHA);
+
+        assertEquals(resultList, CipherSuite.getCipherSuites(new byte[] {0, 0X5C, 0, 0X5B}));
+
+        resultList = new LinkedList<>();
+        resultList.add(null);
+        assertEquals(resultList, CipherSuite.getCipherSuites(new byte[] {0, 0X6E}));
+
+        resultList = new LinkedList<>();
+        try {
+            CipherSuite.getCipherSuites(new byte[] {0x6A});
+            fail();
+        } catch (UnknownCipherSuiteException e) {
+        }
     }
 }
