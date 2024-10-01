@@ -10,8 +10,8 @@ package de.rub.nds.tlsattacker.core.smtp.command;
 
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.handler.EHLOCommandHandler;
-import de.rub.nds.tlsattacker.core.smtp.parser.EHLOCommandParser;
-import de.rub.nds.tlsattacker.core.smtp.preparator.EHLOCommandPreparator;
+import de.rub.nds.tlsattacker.core.smtp.parser.command.EHLOCommandParser;
+import de.rub.nds.tlsattacker.core.smtp.preparator.command.EHLOCommandPreparator;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import org.bouncycastle.util.IPAddress;

@@ -10,8 +10,9 @@ package de.rub.nds.tlsattacker.core.smtp.command;
 
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.handler.HELOCommandHandler;
-import de.rub.nds.tlsattacker.core.smtp.parser.HELOCommandParser;
-import de.rub.nds.tlsattacker.core.smtp.preparator.HELOCommandPreparator;
+import de.rub.nds.tlsattacker.core.smtp.parser.command.HELOCommandParser;
+import de.rub.nds.tlsattacker.core.smtp.preparator.command.HELOCommandPreparator;
+import de.rub.nds.tlsattacker.core.smtp.reply.specific.multiline.SmtpEHLOReply;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
@@ -25,7 +26,7 @@ import java.io.InputStream;
  * reply.
  *
  * @see SmtpEHLOCommand
- * @see de.rub.nds.tlsattacker.core.smtp.reply.SmtpEHLOReply
+ * @see SmtpEHLOReply
  */
 @XmlRootElement
 public class SmtpHELOCommand extends SmtpCommand {

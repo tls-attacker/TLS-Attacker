@@ -9,8 +9,8 @@
 package de.rub.nds.tlsattacker.core.smtp.command;
 
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
-import de.rub.nds.tlsattacker.core.smtp.parser.VRFYCommandParser;
-import de.rub.nds.tlsattacker.core.smtp.preparator.VRFYCommandPreparator;
+import de.rub.nds.tlsattacker.core.smtp.parser.command.VRFYCommandParser;
+import de.rub.nds.tlsattacker.core.smtp.preparator.command.VRFYCommandPreparator;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 

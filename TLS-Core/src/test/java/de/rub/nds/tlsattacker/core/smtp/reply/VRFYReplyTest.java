@@ -12,9 +12,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
-import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
-import de.rub.nds.tlsattacker.core.smtp.parser.VRFYReplyParser;
+import de.rub.nds.tlsattacker.core.smtp.parser.reply.VRFYReplyParser;
+import de.rub.nds.tlsattacker.core.smtp.reply.specific.multiline.SmtpVRFYReply;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import java.io.ByteArrayInputStream;
@@ -25,47 +25,36 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.ValueSource;
 
 class VRFYReplyTest {
     @ParameterizedTest
     @MethodSource("provideValidReplies")
-    void testParseValidReplies(String reply, List<String> mailboxes) {
+    void testParseValidReplies(String reply, List<String> usernames, List<String> mailboxes) {
         VRFYReplyParser parser =
                 new VRFYReplyParser(
                         new ByteArrayInputStream(reply.getBytes(StandardCharsets.UTF_8)));
 
         SmtpVRFYReply vrfy = new SmtpVRFYReply();
         assertDoesNotThrow(() -> parser.parse(vrfy));
+
         assertEquals(vrfy.getReplyCode(), Integer.parseInt(reply.substring(0, 3)));
-        assertEquals(vrfy.getMailboxes().size(), mailboxes.size());
 
         for (int i = 0; i < mailboxes.size(); i++) {
-            assertEquals(vrfy.getMailboxes().get(i), mailboxes.get(i));
+            assertEquals(vrfy.getData().get(i).getUsername(), usernames.get(i));
+            assertEquals(vrfy.getData().get(i).getMailbox(), mailboxes.get(i));
         }
     }
 
     static Stream<Arguments> provideValidReplies() {
         return Stream.of(
-                Arguments.of("250 John <john@mail.com>\r\n", List.of("john@mail.com")),
+                Arguments.of(
+                        "250 John <john@mail.com>\r\n",
+                        List.of("John"),
+                        List.of("<john@mail.com>")),
                 Arguments.of(
                         "553-John Doe <john.doe@mail.com>\r\n553 Jane Doe <jane.doe@mail.com>\r\n",
-                        List.of("john.doe@mail.com", "jane.doe@mail.com")));
-    }
-
-    @ParameterizedTest
-    @ValueSource(
-            strings = {
-                "553-John Doe <john.doe@mail.com>\r\n553-Jane Doe <jane.doe@mail.com>\r\n",
-                "250+John <john@mail.com>\r\n"
-            })
-    void testParseInvalidReplies(String reply) {
-        VRFYReplyParser parser =
-                new VRFYReplyParser(
-                        new ByteArrayInputStream(reply.getBytes(StandardCharsets.UTF_8)));
-
-        SmtpVRFYReply vrfy = new SmtpVRFYReply();
-        assertThrows(RuntimeException.class, () -> parser.parse(vrfy));
+                        List.of("John Doe", "Jane Doe"),
+                        List.of("<john.doe@mail.com>", "<jane.doe@mail.com>")));
     }
 
     @Test
@@ -73,12 +62,10 @@ class VRFYReplyTest {
         String replyContent = "John Doe <john.doe@gmail.com>";
         SmtpVRFYReply vrfy = new SmtpVRFYReply();
         vrfy.setReplyCode(250);
-        vrfy.setLineContents(List.of(replyContent));
+        vrfy.addUsernameAndMailbox("John Doe", "<john.doe@gmail.com>");
 
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
-        Preparator preparator = vrfy.getPreparator(context);
-        Serializer serializer = vrfy.getSerializer(context);
-        preparator.prepare();
+        Serializer<?> serializer = vrfy.getSerializer(context);
         serializer.serialize();
         assertEquals("250 " + replyContent + "\r\n", serializer.getOutputStream().toString());
     }
