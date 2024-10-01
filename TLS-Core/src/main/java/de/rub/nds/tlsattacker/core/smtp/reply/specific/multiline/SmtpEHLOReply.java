@@ -61,8 +61,7 @@ public class SmtpEHLOReply extends SmtpReply {
     public String toString() {
         char SP = ' ';
         char DASH = '-';
-        char CR = '\r';
-        char LF = '\n';
+        String CRLF = "\r\n";
 
         boolean hasExtensions = !this.extensions.isEmpty();
 
@@ -75,8 +74,7 @@ public class SmtpEHLOReply extends SmtpReply {
             sb.append(SP);
             sb.append(this.greeting);
         }
-        sb.append(CR);
-        sb.append(LF);
+        sb.append(CRLF);
 
         if (!hasExtensions) return sb.toString();
 
@@ -85,15 +83,13 @@ public class SmtpEHLOReply extends SmtpReply {
             sb.append(this.replyCode);
             sb.append(DASH);
             sb.append(ext.toString());
-            sb.append(CR);
-            sb.append(LF);
+            sb.append(CRLF);
         }
 
         sb.append(this.replyCode);
         sb.append(SP);
         sb.append(this.extensions.get(this.extensions.size() - 1).toString());
-        sb.append(CR);
-        sb.append(LF);
+        sb.append(CRLF);
 
         return sb.toString();
     }

@@ -33,9 +33,7 @@ public abstract class SmtpGenericSingleLineReply extends SmtpReply {
     @Override
     public String toString() {
         char SP = ' ';
-        char CR = '\r';
-        char LF = '\n';
-
+        String CRLF = "\r\n";
         StringBuilder sb = new StringBuilder();
 
         if (this.replyCode != null) {
@@ -47,8 +45,7 @@ public abstract class SmtpGenericSingleLineReply extends SmtpReply {
             sb.append(humanReadableMessage);
         }
 
-        sb.append(CR);
-        sb.append(LF);
+        sb.append(CRLF);
 
         return sb.toString();
     }

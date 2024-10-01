@@ -23,20 +23,14 @@ public class SmtpGenericReplyParser<ReplyT extends SmtpReply> extends SmtpReplyP
 
     @Override
     public void parse(ReplyT replyT) {
-        if (replyT instanceof SmtpGenericSingleLineReply) parseSingleLineReply(replyT);
-        else if (replyT instanceof SmtpGenericMultilineReply) parseMultiLineReply(replyT);
+        if (replyT instanceof SmtpGenericSingleLineReply || replyT instanceof SmtpGenericMultilineReply) parseReply(replyT);
         else
             throw new ParserException(
                     "Unexpected reply object. Expected SmtpGenericSingleLineReply or SmtpGenericMultilineReply, but got: "
                             + replyT); // TODO: handle unknown case here and save data regardless
     }
 
-    private void parseSingleLineReply(ReplyT replyT) {
-        String line = this.parseSingleLine();
-        parseReplyLine(replyT, line);
-    }
-
-    private void parseMultiLineReply(ReplyT replyT) {
+    private void parseReply(ReplyT replyT) {
         List<String> lines = this.readWholeReply();
         for (String line : lines) {
             parseReplyLine(replyT, line);

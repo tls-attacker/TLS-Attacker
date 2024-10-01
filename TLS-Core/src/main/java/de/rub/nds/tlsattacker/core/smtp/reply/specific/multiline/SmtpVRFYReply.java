@@ -80,8 +80,7 @@ public class SmtpVRFYReply extends SmtpReply {
     public String toString() {
         char SP = ' ';
         char DASH = '-';
-        char CR = '\r';
-        char LF = '\n';
+        String CRLF = "\r\n";
 
         StringBuilder sb = new StringBuilder();
 
@@ -92,15 +91,13 @@ public class SmtpVRFYReply extends SmtpReply {
             SmtpVRFYData vrfyData = this.data.get(i);
             sb.append(replyCodePrefix);
             sb.append(vrfyData.toString());
-            sb.append(CR);
-            sb.append(LF);
+            sb.append(CRLF);
         }
 
         sb.append(this.replyCode);
         sb.append(SP);
         sb.append(this.data.get(this.data.size() - 1).toString());
-        sb.append(CR);
-        sb.append(LF);
+        sb.append(CRLF);
 
         return sb.toString();
     }
