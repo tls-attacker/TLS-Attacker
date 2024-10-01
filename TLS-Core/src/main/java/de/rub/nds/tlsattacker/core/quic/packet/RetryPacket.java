@@ -21,6 +21,17 @@ import de.rub.nds.tlsattacker.core.quic.serializer.packet.RetryPacketSerializer;
 import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import javax.crypto.*;
+import javax.crypto.spec.GCMParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.bouncycastle.util.Arrays;
+import org.bouncycastle.util.encoders.Hex;
 
 /**
  * A Retry packet carries an address validation token created by the server. It is used by a server
@@ -28,6 +39,8 @@ import java.io.InputStream;
  */
 @XmlRootElement
 public class RetryPacket extends LongHeaderPacket {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     @ModifiableVariableProperty protected ModifiableByteArray retryToken;
 
@@ -43,6 +56,63 @@ public class RetryPacket extends LongHeaderPacket {
         super(QuicPacketType.RETRY_PACKET);
         this.setProtectedFlags(flags);
         protectedHeaderHelper.write(flags);
+    }
+
+    public boolean verifyRetryIntegrityTag(QuicContext context) {
+        byte[] pseudoPacket =
+                ByteBuffer.allocate(
+                                1
+                                        + context.getFirstDestinationConnectionId().length
+                                        + 1
+                                        + 4
+                                        + 1
+                                        + getDestinationConnectionIdLength().getValue()
+                                        + 1
+                                        + getSourceConnectionIdLength().getValue()
+                                        + retryToken.getValue().length)
+                        .put((byte) (context.getFirstDestinationConnectionId().length & 0xff))
+                        .put(context.getFirstDestinationConnectionId())
+                        .put((byte) 0xf0)
+                        .put(context.getQuicVersion().getByteValue())
+                        .put(getDestinationConnectionIdLength().getValue())
+                        .put(getDestinationConnectionId().getValue())
+                        .put(getSourceConnectionIdLength().getValue())
+                        .put(getSourceConnectionId().getValue())
+                        .put(retryToken.getValue())
+                        .array();
+        LOGGER.trace("Build Integrity Check Pseudo Packet {}", Hex.toHexString(pseudoPacket));
+
+        byte[] computedTag;
+        try {
+            SecretKey secretKey =
+                    new SecretKeySpec(Hex.decode("be0c690b9f66575a1d766b54e368c84e"), "AES");
+            Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+            byte[] iv = Hex.decode("461599d35d632bf2239825bb");
+            GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(128, iv);
+            cipher.init(Cipher.ENCRYPT_MODE, secretKey, gcmParameterSpec);
+            cipher.updateAAD(pseudoPacket);
+            computedTag = cipher.doFinal();
+        } catch (AEADBadTagException e) {
+            LOGGER.debug("Retry Tag is invalid!");
+            return false;
+        } catch (NoSuchAlgorithmException
+                | NoSuchPaddingException
+                | InvalidKeyException
+                | InvalidAlgorithmParameterException
+                | IllegalBlockSizeException
+                | BadPaddingException e) {
+            LOGGER.error("Error initializing Ciphers to verify Retry Integrity Tag!");
+            LOGGER.trace(e);
+            return false;
+        }
+        if (computedTag.length == 0) {
+            LOGGER.error(
+                    "Attempted to compute Retry Integrity Tag for verification but result is empty!");
+            return false;
+        }
+        boolean tagsEqual = Arrays.areEqual(getRetryIntegrityTag().getValue(), computedTag);
+        LOGGER.debug("Retry Integrity Tag is valid? {}", tagsEqual);
+        return tagsEqual;
     }
 
     @Override
