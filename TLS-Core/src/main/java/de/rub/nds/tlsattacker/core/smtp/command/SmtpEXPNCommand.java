@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.smtp.command;
 
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.parser.VRFYCommandParser;
-import de.rub.nds.tlsattacker.core.smtp.preparator.EXPNCommandPreparator;
+import de.rub.nds.tlsattacker.core.smtp.preparator.command.EXPNCommandPreparator;
 import java.io.InputStream;
 
 public class SmtpEXPNCommand extends SmtpCommand {

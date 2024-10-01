@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.smtp.command;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import de.rub.nds.tlsattacker.core.smtp.parser.EXPNCommandParser;
+import de.rub.nds.tlsattacker.core.smtp.parser.command.EXPNCommandParser;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.Test;
