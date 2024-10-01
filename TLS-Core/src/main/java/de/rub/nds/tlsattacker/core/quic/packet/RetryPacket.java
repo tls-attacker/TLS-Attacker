@@ -14,7 +14,6 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import de.rub.nds.tlsattacker.core.quic.constants.QuicPacketType;
-import de.rub.nds.tlsattacker.core.quic.constants.QuicVersion;
 import de.rub.nds.tlsattacker.core.quic.handler.packet.RetryPacketHandler;
 import de.rub.nds.tlsattacker.core.quic.parser.packet.RetryPacketParser;
 import de.rub.nds.tlsattacker.core.quic.preparator.packet.RetryPacketPreparator;
@@ -49,9 +48,8 @@ public class RetryPacket extends LongHeaderPacket {
 
     public RetryPacket() {
         super(QuicPacketType.RETRY_PACKET);
-        this.setUnprotectedFlags(
-                QuicPacketType.RETRY_PACKET.getHeader(
-                        QuicVersion.getFromVersionBytes(getQuicVersion().getValue())));
+        // TODO: Constant fixed, but not sure whether we should set this here
+        this.setUnprotectedFlags((byte) 0xf0);
     }
 
     public RetryPacket(byte flags) {
