@@ -77,4 +77,14 @@ public class CipherSuiteTest {
         assertFalse(CipherSuite.GREASE_03.isRealCipherSuite());
         assertFalse(CipherSuite.TLS_FALLBACK_SCSV.isRealCipherSuite());
     }
+
+    @Test
+    public void testgetCipherSuite() {
+
+        assertTrue(CipherSuite.getCipherSuite(5) == CipherSuite.TLS_RSA_WITH_RC4_128_SHA);
+        assertTrue(CipherSuite.getCipherSuite(8) == CipherSuite.TLS_RSA_EXPORT_WITH_DES40_CBC_SHA);
+        assertTrue(CipherSuite.getCipherSuite(13) == CipherSuite.TLS_DH_DSS_WITH_3DES_EDE_CBC_SHA);
+
+        assertTrue(CipherSuite.getCipherSuite(93) == null);
+    }
 }
