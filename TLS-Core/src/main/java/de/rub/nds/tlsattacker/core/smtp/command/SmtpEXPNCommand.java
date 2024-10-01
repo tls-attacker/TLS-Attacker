@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.core.smtp.command;
 
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
-import de.rub.nds.tlsattacker.core.smtp.parser.VRFYCommandParser;
+import de.rub.nds.tlsattacker.core.smtp.parser.command.EXPNCommandParser;
 import de.rub.nds.tlsattacker.core.smtp.preparator.command.EXPNCommandPreparator;
 import java.io.InputStream;
 
@@ -36,8 +36,8 @@ public class SmtpEXPNCommand extends SmtpCommand {
     }
 
     @Override
-    public VRFYCommandParser getParser(SmtpContext context, InputStream stream) {
-        return new VRFYCommandParser(stream);
+    public EXPNCommandParser getParser(SmtpContext context, InputStream stream) {
+        return new EXPNCommandParser(stream);
     }
 
     @Override

@@ -30,7 +30,8 @@ public class VRFYReplyParser extends SmtpReplyParser<SmtpVRFYReply> {
 
             if (line.length() <= 4) continue;
 
-            int mailboxStartIndex = findMailboxStartIndex(line.substring(4)) + 4;
+            int offset = 4; // reply code and delimiter take up 4 characters
+            int mailboxStartIndex = findMailboxStartIndex(line, offset);
             if (mailboxStartIndex != -1) {
                 String username = line.substring(4, mailboxStartIndex - 1); // minus delimiter
                 String mailbox = line.substring(mailboxStartIndex);
@@ -43,8 +44,8 @@ public class VRFYReplyParser extends SmtpReplyParser<SmtpVRFYReply> {
         }
     }
 
-    public int findMailboxStartIndex(String str) {
-        int start = 0;
+    public int findMailboxStartIndex(String str, int offset) {
+        int start = offset;
         int end = -1;
         while (end < str.length()) {
             while (start < str.length() && str.charAt(start) != '<') start++;

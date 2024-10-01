@@ -9,8 +9,6 @@
 package de.rub.nds.tlsattacker.core.smtp.parser.reply;
 
 import de.rub.nds.tlsattacker.core.smtp.reply.specific.multiline.SmtpEXPNReply;
-import de.rub.nds.tlsattacker.core.smtp.reply.SmtpVRFYReply;
-import de.rub.nds.tlsattacker.core.smtp.reply.specific.multiline.SmtpVRFYReply;
 
 import java.io.InputStream;
 import java.util.List;
@@ -34,19 +32,22 @@ public class EXPNReplyParser extends SmtpReplyParser<SmtpEXPNReply> {
 
             if (line.length() <= 4) continue;
 
-            int mailboxStartIndex = findMailboxStartIndex(line.substring(4)) + 4;
+            int offset = 4; // reply code and delimiter take up 4 characters
+            int mailboxStartIndex = findMailboxStartIndex(line, offset);
             if (mailboxStartIndex != -1) {
                 String username = line.substring(4, mailboxStartIndex - 1); // minus delimiter
                 String mailbox = line.substring(mailboxStartIndex);
 
                 // defaults to adding an empty username if not present:
                 reply.addUsernameAndMailbox(username, mailbox);
+            } else {
+                reply.setHumanReadableMessage(line.substring(4));
             }
         }
     }
 
-    public int findMailboxStartIndex(String str) {
-        int start = 0;
+    public int findMailboxStartIndex(String str, int offset) {
+        int start = offset;
         int end = -1;
         while (end < str.length()) {
             while (start < str.length() && str.charAt(start) != '<') start++;

@@ -12,7 +12,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
-import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import de.rub.nds.tlsattacker.core.smtp.parser.reply.EXPNReplyParser;
 import de.rub.nds.tlsattacker.core.smtp.reply.specific.multiline.SmtpEXPNReply;
@@ -20,10 +19,7 @@ import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 
 public class EXPNReplyTest {
 
@@ -34,7 +30,10 @@ public class EXPNReplyTest {
         expn.addUsernameAndMailbox("John", "<john.doe@mail.com>");
         expn.addUsernameAndMailbox("Jane Doe", "<jane.doe@mail.com>");
 
-        Serializer<?> serializer = serialize(expn);
+        SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
+        Serializer<?> serializer = expn.getSerializer(context);
+        serializer.serialize();
+
         assertEquals(
                 "250-John <john.doe@mail.com>\r\n250 Jane Doe <jane.doe@mail.com>\r\n",
                 serializer.getOutputStream().toString());
@@ -53,14 +52,17 @@ public class EXPNReplyTest {
 
         assertEquals(expn.getReplyCode(), 250);
         assertEquals(expn.getData().get(0).getUsername(), "John");
-        assertEquals(expn.getData().get(0).getMailbox(), "john.doe@mail.com");
-        assertEquals(expn.getData().get(1).getMailbox(), "Jane Doe");
-        assertEquals(expn.getData().get(1).getMailbox(), "jane.doe@mail.com");
+        assertEquals(expn.getData().get(0).getMailbox(), "<john.doe@mail.com>");
+        assertEquals(expn.getData().get(1).getUsername(), "Jane Doe");
+        assertEquals(expn.getData().get(1).getMailbox(), "<jane.doe@mail.com>");
 
-        Serializer<?> serializer = serialize(expn);
+        SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
+        Serializer<?> serializer = expn.getSerializer(context);
+        serializer.serialize();
         assertEquals(reply, serializer.getOutputStream().toString());
     }
 
+    @Test
     void parseValidDescriptionReply() {
         String reply = "500 Syntax error, command unrecognized\r\n";
         EXPNReplyParser parser =
@@ -70,17 +72,6 @@ public class EXPNReplyTest {
         SmtpEXPNReply expn = new SmtpEXPNReply();
         assertDoesNotThrow(() -> parser.parse(expn));
         assertEquals(expn.getReplyCode(), 500);
-        assertEquals(expn.get);
-        assertEquals(expn.getReplyCode() + " " + expn.getLineContents().get(0) + "\r\n", reply);
-    }
-
-    private Serializer serialize(SmtpEXPNReply reply) {
-        SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
-        Preparator preparator = reply.getPreparator(context);
-        Serializer serializer = reply.getSerializer(context);
-        preparator.prepare();
-        serializer.serialize();
-
-        return serializer;
+        assertEquals(expn.getHumanReadableMessage(), "Syntax error, command unrecognized");
     }
 }
