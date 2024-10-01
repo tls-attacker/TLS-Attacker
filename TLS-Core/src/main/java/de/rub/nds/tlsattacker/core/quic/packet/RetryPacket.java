@@ -80,7 +80,7 @@ public class RetryPacket extends LongHeaderPacket {
                                         + retryToken.getValue().length)
                         .put((byte) (context.getFirstDestinationConnectionId().length & 0xff))
                         .put(context.getFirstDestinationConnectionId())
-                        .put((byte) 0xf0)
+                        .put((byte) (getUnprotectedFlags().getValue() & 0xf0))
                         .put(context.getQuicVersion().getByteValue())
                         .put(getDestinationConnectionIdLength().getValue())
                         .put(getDestinationConnectionId().getValue())
@@ -92,13 +92,15 @@ public class RetryPacket extends LongHeaderPacket {
 
         byte[] computedTag;
         try {
-            // Secret Key is fixed value from 5.8, RFC 9001
+            // Secret Key is fixed value from 5.8, RFC 9001 (or 3.3.3, RFC 9369 for QUICv2)
             SecretKey secretKey =
-                    new SecretKeySpec(Hex.decode("be0c690b9f66575a1d766b54e368c84e"), "AES");
+                    new SecretKeySpec(
+                            context.getQuicVersion().getRetryPacketIntegrityTagKey(), "AES");
             Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
-            // IV is fixed value from 5.8, RFC 9001
-            byte[] iv = Hex.decode("461599d35d632bf2239825bb");
-            GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(128, iv);
+            // IV is fixed value from 5.8, RFC 9001 (or 3.3.3, RFC 9369 for QUICv2)
+            GCMParameterSpec gcmParameterSpec =
+                    new GCMParameterSpec(
+                            128, context.getQuicVersion().getRetryPacketIntegrityTagIV());
             cipher.init(Cipher.ENCRYPT_MODE, secretKey, gcmParameterSpec);
             cipher.updateAAD(pseudoPacket);
             computedTag = cipher.doFinal();
