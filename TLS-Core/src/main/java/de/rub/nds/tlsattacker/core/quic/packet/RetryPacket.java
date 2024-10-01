@@ -58,16 +58,22 @@ public class RetryPacket extends LongHeaderPacket {
         protectedHeaderHelper.write(flags);
     }
 
+    /**
+     * Verifies the correctness of the Integrity Tag within this Retry Packet to determine processing
+     * @param context Current QUIC Context
+     * @return Whether the Retry Packet's Integrity is confirmed
+     */
     public boolean verifyRetryIntegrityTag(QuicContext context) {
+        //For construction of QUIC Retry Packet Integrity Pseudo Packet, see 5.8, RFC 9001
         byte[] pseudoPacket =
                 ByteBuffer.allocate(
-                                1
+                                1   /* ODCID length field */
                                         + context.getFirstDestinationConnectionId().length
-                                        + 1
-                                        + 4
-                                        + 1
+                                        + 1 /* Flags Byte */
+                                        + 4 /* Version Field */
+                                        + 1 /* DCID length field */
                                         + getDestinationConnectionIdLength().getValue()
-                                        + 1
+                                        + 1 /* SCID length field */
                                         + getSourceConnectionIdLength().getValue()
                                         + retryToken.getValue().length)
                         .put((byte) (context.getFirstDestinationConnectionId().length & 0xff))
@@ -84,9 +90,11 @@ public class RetryPacket extends LongHeaderPacket {
 
         byte[] computedTag;
         try {
+            //Secret Key is fixed value from 5.8, RFC 9001
             SecretKey secretKey =
                     new SecretKeySpec(Hex.decode("be0c690b9f66575a1d766b54e368c84e"), "AES");
             Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+            //IV is fixed value from 5.8, RFC 9001
             byte[] iv = Hex.decode("461599d35d632bf2239825bb");
             GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(128, iv);
             cipher.init(Cipher.ENCRYPT_MODE, secretKey, gcmParameterSpec);
