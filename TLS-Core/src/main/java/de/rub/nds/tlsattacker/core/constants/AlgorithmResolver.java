@@ -218,7 +218,7 @@ public class AlgorithmResolver {
         if (!cipherSuite.isRealCipherSuite()) {
             LOGGER.warn("Trying to retrieve MAC algorithm of a non-real cipher suite: {}", cipherSuite);
         }
-        return null;
+        return MacAlgorithm.NONE;
     }
 
     public static HKDFAlgorithm getHKDFAlgorithm(CipherSuite cipherSuite) {
