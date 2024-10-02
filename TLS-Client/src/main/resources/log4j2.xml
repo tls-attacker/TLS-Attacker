@@ -11,7 +11,7 @@
             <ExtendedPatternLayout pattern="%highlight{%d{HH:mm:ss}{GMT+0} [%t] %-5level: %c{1}} - %msg%n%highlight{%throwable}"/>
         </Console>
         <Console name="Direct" target="SYSTEM_OUT">
-	    <ExtendedPatternLayout pattern="%highlight{%msg}%n"/>
+    	    <ExtendedPatternLayout pattern="%highlight{%msg}%n"/>
         </Console>
     </Appenders>
     <Loggers>
