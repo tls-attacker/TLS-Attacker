@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.core.smtp.parser.reply;
 
 import de.rub.nds.tlsattacker.core.smtp.reply.specific.multiline.SmtpEXPNReply;
-
 import java.io.InputStream;
 import java.util.List;
 
