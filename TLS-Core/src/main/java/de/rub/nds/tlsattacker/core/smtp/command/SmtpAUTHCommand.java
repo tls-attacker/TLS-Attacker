@@ -1,16 +1,27 @@
 package de.rub.nds.tlsattacker.core.smtp.command;
 
-import java.util.List;
+import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
+import de.rub.nds.tlsattacker.core.smtp.SmtpMessage;
+import de.rub.nds.tlsattacker.core.smtp.parser.SmtpMessageParser;
+import de.rub.nds.tlsattacker.core.smtp.parser.command.AUTHCommandParser;
+import de.rub.nds.tlsattacker.core.smtp.preparator.command.AUTHCommandPreparator;
+import de.rub.nds.tlsattacker.core.smtp.preparator.command.SmtpCommandPreparator;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
+import java.io.InputStream;
+
+@XmlRootElement
 public class SmtpAUTHCommand extends SmtpCommand {
 
     private static final String COMMAND_NAME = "AUTH";
 
     // depending on the mechanism, there CAN (but don't have to) be multiple base64 strings
-    private String saslMechanism;
+    private String saslMechanism; // mandatory
     private String initialResponse;
-    private List<String> base64Strings;
-    private String cancelResponse;
+
+    public SmtpAUTHCommand() {
+        super(COMMAND_NAME);
+    }
 
     // E.g. "AUTH PLAIN"
     public SmtpAUTHCommand(String saslMechanism) {
@@ -25,26 +36,29 @@ public class SmtpAUTHCommand extends SmtpCommand {
         this.initialResponse = initialResponse;
     }
 
-    public SmtpAUTHCommand(String saslMechanism, String initialResponse, List<String> base64Strings) {
-        super(COMMAND_NAME);
-        this.saslMechanism = saslMechanism;
-        this.initialResponse = initialResponse;
-        this.base64Strings = base64Strings;
+    public String getSaslMechanism() {
+        return saslMechanism;
     }
 
-    public SmtpAUTHCommand(String saslMechanism, String initialResponse, List<String> base64Strings, String cancelResponse) {
-        super(COMMAND_NAME);
-        this.saslMechanism = saslMechanism;
-        this.initialResponse = initialResponse;
-        this.base64Strings = base64Strings;
-        this.cancelResponse = cancelResponse;
+    public String getInitialResponse() {
+        return initialResponse;
     }
 
-    // E.g. "AUTH PLAIN *" to cancel authentication
-    public SmtpAUTHCommand(String saslMechanism, String initialResponse, String cancelResponse) {
-        super(COMMAND_NAME);
+    public void setSaslMechanism(String saslMechanism) {
         this.saslMechanism = saslMechanism;
+    }
+
+    public void setInitialResponse(String initialResponse) {
         this.initialResponse = initialResponse;
-        this.cancelResponse = cancelResponse;
+    }
+
+    @Override
+    public AUTHCommandParser getParser(SmtpContext context, InputStream stream) {
+        return new AUTHCommandParser(stream);
+    }
+
+    @Override
+    public AUTHCommandPreparator getPreparator(SmtpContext context) {
+        return new AUTHCommandPreparator(context, this);
     }
 }
