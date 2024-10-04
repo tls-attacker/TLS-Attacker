@@ -18,7 +18,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedClientHelloExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
@@ -169,13 +168,6 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage>
                             .setClientHello((ClientHelloMessage) message);
                     preparator.afterPrepare();
                 } else if (extensionMessage instanceof EncryptedServerNameIndicationExtensionMessage
-                        && message instanceof ClientHelloMessage
-                        && chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
-                    ClientHelloMessage clientHelloMessage = (ClientHelloMessage) message;
-                    ((EncryptedServerNameIndicationExtensionPreparator) preparator)
-                            .setClientHelloMessage(clientHelloMessage);
-                    preparator.afterPrepare();
-                } else if (extensionMessage instanceof EncryptedClientHelloExtensionMessage
                         && message instanceof ClientHelloMessage
                         && chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
                     ClientHelloMessage clientHelloMessage = (ClientHelloMessage) message;

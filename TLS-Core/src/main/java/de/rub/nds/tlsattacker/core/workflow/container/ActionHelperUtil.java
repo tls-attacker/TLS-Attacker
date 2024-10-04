@@ -8,17 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.container;
 
-import de.rub.nds.tlsattacker.core.layer.DataContainerFilter;
-import de.rub.nds.tlsattacker.core.layer.IgnoreLayerConfiguration;
-import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
-import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
-import de.rub.nds.tlsattacker.core.layer.LayerStack;
-import de.rub.nds.tlsattacker.core.layer.LayerStackProcessingResult;
-import de.rub.nds.tlsattacker.core.layer.MissingReceiveLayerConfiguration;
-import de.rub.nds.tlsattacker.core.layer.MissingSendLayerConfiguration;
-import de.rub.nds.tlsattacker.core.layer.SpecificReceiveLayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.*;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.layer.impl.DataContainerFilters.GenericDataContainerFilter;
 import de.rub.nds.tlsattacker.core.layer.impl.DataContainerFilters.Tls.WarningAlertFilter;
@@ -96,6 +89,23 @@ public class ActionHelperUtil {
             }
         }
         return messageLayerConfiguration;
+    }
+
+    public static List<LayerConfiguration<?>> createReceiveTillHttpContentConfiguration(
+            TlsContext tlsContext, String httpContent) {
+        LayerStack layerStack = tlsContext.getLayerStack();
+
+        LayerConfiguration httpConfiguration =
+                new ReceiveTillHttpContentConfiguration(null, httpContent);
+
+        SpecificReceiveLayerConfiguration messageConfiguration =
+                new SpecificReceiveLayerConfiguration(ImplementedLayers.MESSAGE);
+
+        // allow for additional application data to arrive unhandled
+        messageConfiguration.setAllowTrailingContainers(true);
+
+        return ActionHelperUtil.sortLayerConfigurations(
+                layerStack, false, List.of(httpConfiguration, messageConfiguration));
     }
 
     private static List<LayerConfiguration<?>> sortLayerConfigurations(

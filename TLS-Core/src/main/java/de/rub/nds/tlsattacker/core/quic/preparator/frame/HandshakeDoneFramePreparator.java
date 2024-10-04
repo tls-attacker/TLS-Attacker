@@ -18,5 +18,7 @@ public class HandshakeDoneFramePreparator extends QuicFramePreparator<HandshakeD
     }
 
     @Override
-    public void prepare() {}
+    public void prepare() {
+        // Nothing to prepare here
+    }
 }

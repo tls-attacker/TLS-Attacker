@@ -97,4 +97,9 @@ public class HttpLayer extends ProtocolLayer<HttpLayerHint, HttpMessage> {
 
         return getLayerResult();
     }
+
+    @Override
+    public boolean shouldContinueProcessing() {
+        return super.shouldContinueProcessing() && this.getUnreadBytes() == null;
+    }
 }

@@ -10,19 +10,13 @@ package de.rub.nds.tlsattacker.core.quic.constants;
 
 public class QuicPacketByteLength {
 
-    /** version length field */
     public static final int QUIC_VERSION_LENGTH = 4;
 
-    /** Quic First Header Byte */
     public static final int QUIC_FIRST_HEADER_BYTE = 1;
 
-    /** Destination Connection Id Length */
     public static final int DESTINATION_CONNECTION_ID_LENGTH = 1;
 
-    /** Source Connection Id Length */
     public static final int SOURCE_CONNECTION_ID_LENGTH = 1;
 
     public static final int NO_TOKEN_TOKEN_LENGTH = 1;
-
-    private QuicPacketByteLength() {}
 }

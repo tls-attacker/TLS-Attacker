@@ -73,7 +73,7 @@ public class GOST28147Mac implements Mac, Memoable {
         key = new byte[32];
 
         try {
-            meshCipher = Cipher.getInstance(CipherAlgorithm.GOST_28147_CNT.getJavaName());
+            meshCipher = Cipher.getInstance(CipherAlgorithm.GOST_28147_CNT_IMIT.getJavaName());
         } catch (GeneralSecurityException e) {
             throw new UnsupportedOperationException("Could not initialize mesh cipher!");
         }

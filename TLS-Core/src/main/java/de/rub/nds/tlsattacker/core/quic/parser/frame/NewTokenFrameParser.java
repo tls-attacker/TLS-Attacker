@@ -10,8 +10,12 @@ package de.rub.nds.tlsattacker.core.quic.parser.frame;
 
 import de.rub.nds.tlsattacker.core.quic.frame.NewTokenFrame;
 import java.io.InputStream;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class NewTokenFrameParser extends QuicFrameParser<NewTokenFrame> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public NewTokenFrameParser(InputStream stream) {
         super(stream);
@@ -25,9 +29,11 @@ public class NewTokenFrameParser extends QuicFrameParser<NewTokenFrame> {
 
     protected void parseLength(NewTokenFrame frame) {
         frame.setTokenLength((int) parseVariableLengthInteger());
+        LOGGER.debug("Length: {}", frame.getTokenLength().getValue());
     }
 
     protected void parseToken(NewTokenFrame frame) {
         frame.setToken(parseByteArrayField(frame.getTokenLength().getValue().intValue()));
+        LOGGER.debug("Token: {}", frame.getToken().getValue());
     }
 }

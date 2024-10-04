@@ -11,15 +11,17 @@ package de.rub.nds.tlsattacker.core.crypto.mac;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.CipherSuite;
-import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import java.security.NoSuchAlgorithmException;
 import java.security.Security;
+
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.protocol.constants.MacAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 
 public class MacWrapperTest {
 
@@ -35,7 +37,7 @@ public class MacWrapperTest {
                         ProtocolVersion.TLS10,
                         CipherSuite.TLS_PSK_WITH_AES_128_CBC_SHA,
                         new byte[20]);
-        assertEquals(MacAlgorithm.HMAC_SHA1.getSize(), mac.getMacLength());
+        assertEquals(MacAlgorithm.HMAC_SHA1.getMacLength(), mac.getMacLength());
 
         byte[] actual = mac.calculateMac("Test data".getBytes());
         byte[] expected =
@@ -50,7 +52,7 @@ public class MacWrapperTest {
                         ProtocolVersion.TLS10,
                         CipherSuite.TLS_GOSTR341094_WITH_NULL_GOSTR3411,
                         new byte[32]);
-        assertEquals(MacAlgorithm.HMAC_GOSTR3411.getSize(), mac.getMacLength());
+        assertEquals(MacAlgorithm.HMAC_GOSTR3411.getMacLength(), mac.getMacLength());
 
         byte[] actual = mac.calculateMac("Test data".getBytes());
         byte[] expected =
@@ -72,7 +74,7 @@ public class MacWrapperTest {
                         ProtocolVersion.TLS12,
                         CipherSuite.TLS_GOSTR341001_WITH_28147_CNT_IMIT,
                         new byte[32]);
-        assertEquals(MacAlgorithm.IMIT_GOST28147.getSize(), mac.getMacLength());
+        assertEquals(MacAlgorithm.IMIT_GOST28147.getMacLength() , mac.getMacLength());
 
         byte[] actual = mac.calculateMac("Test data".getBytes());
         byte[] expected = ArrayConverter.hexStringToByteArray("2664CBA8");

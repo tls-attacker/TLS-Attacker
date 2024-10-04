@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.quic;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import de.rub.nds.tlsattacker.core.quic.util.VariableLengthIntegerEncoding;
 import org.junit.jupiter.api.Test;
 
 public class VariableLengthIntegerEncodingTest {

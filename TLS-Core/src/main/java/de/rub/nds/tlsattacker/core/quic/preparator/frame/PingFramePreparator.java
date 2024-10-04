@@ -18,5 +18,7 @@ public class PingFramePreparator extends QuicFramePreparator<PingFrame> {
     }
 
     @Override
-    public void prepare() {}
+    public void prepare() {
+        // Nothing to prepare here
+    }
 }

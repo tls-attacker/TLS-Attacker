@@ -36,8 +36,8 @@ public class UdpDataPacketPreparator extends Preparator<UdpDataPacket> {
             UdpTransportHandler udpTransportHandler = (UdpTransportHandler) transportHandler;
             getObject().setDestinationPort(udpTransportHandler.getDstPort());
             getObject().setSourcePort(udpTransportHandler.getSrcPort());
-            getObject().setDestinationIp(udpTransportHandler.getDestinationIp());
-            getObject().setSourceIp(udpTransportHandler.getSourceIp());
+            getObject().setDestinationIp(udpTransportHandler.getDstIp());
+            getObject().setSourceIp(udpTransportHandler.getSrcIp());
         }
     }
 }

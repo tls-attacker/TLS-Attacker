@@ -31,9 +31,7 @@ public abstract class ServerKeyExchangeParser<T extends ServerKeyExchangeMessage
      */
     public ServerKeyExchangeParser(InputStream stream, TlsContext tlsContext) {
         super(stream, tlsContext);
-        this.keyExchangeAlgorithm =
-                AlgorithmResolver.getKeyExchangeAlgorithm(
-                        tlsContext.getChooser().getSelectedCipherSuite());
+        this.keyExchangeAlgorithm = tlsContext.getChooser().getSelectedCipherSuite().getKeyExchangeAlgorithm();
     }
 
     protected KeyExchangeAlgorithm getKeyExchangeAlgorithm() {

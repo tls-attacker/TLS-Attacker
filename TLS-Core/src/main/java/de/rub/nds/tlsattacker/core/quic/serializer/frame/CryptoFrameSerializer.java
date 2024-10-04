@@ -8,10 +8,14 @@
  */
 package de.rub.nds.tlsattacker.core.quic.serializer.frame;
 
-import de.rub.nds.tlsattacker.core.quic.VariableLengthIntegerEncoding;
 import de.rub.nds.tlsattacker.core.quic.frame.CryptoFrame;
+import de.rub.nds.tlsattacker.core.quic.util.VariableLengthIntegerEncoding;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class CryptoFrameSerializer extends QuicFrameSerializer<CryptoFrame> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public CryptoFrameSerializer(CryptoFrame frame) {
         super(frame);
@@ -30,15 +34,18 @@ public class CryptoFrameSerializer extends QuicFrameSerializer<CryptoFrame> {
         appendBytes(
                 VariableLengthIntegerEncoding.encodeVariableLengthInteger(
                         frame.getOffset().getValue()));
+        LOGGER.debug("Offset: {}", frame.getOffset().getValue());
     }
 
     protected void writeFrameCryptoData() {
         appendBytes(frame.getCryptoData().getValue());
+        LOGGER.debug("Length: {}", frame.getLength().getValue());
     }
 
     protected void writeFrameLength() {
         appendBytes(
                 VariableLengthIntegerEncoding.encodeVariableLengthInteger(
                         frame.getLength().getValue()));
+        LOGGER.debug("Crypto Data: {}", frame.getCryptoData().getValue());
     }
 }

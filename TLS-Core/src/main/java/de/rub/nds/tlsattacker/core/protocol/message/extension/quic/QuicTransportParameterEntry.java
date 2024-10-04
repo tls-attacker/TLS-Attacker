@@ -14,7 +14,7 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.quic.constants.QuicTransportParameterEntryTypes;
-import de.rub.nds.tlsattacker.core.quic.VariableLengthIntegerEncoding;
+import de.rub.nds.tlsattacker.core.quic.util.VariableLengthIntegerEncoding;
 import java.util.Arrays;
 import java.util.Objects;
 

@@ -29,15 +29,18 @@ public class RecordCipherFactory {
                 LOGGER.warn("Cipher {} not implemented. Using Null Cipher instead", cipherSuite);
                 return getNullCipher(tlsContext);
             } else {
-                CipherType type = AlgorithmResolver.getCipherType(cipherSuite);
-                CipherState state =
-                        new CipherState(
-                                tlsContext.getChooser().getSelectedProtocolVersion(),
-                                cipherSuite,
-                                keySet,
-                                tlsContext.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC),
-                                connectionId);
-                switch (type) {
+                CipherState state = new CipherState(
+                        tlsContext.getChooser().getSelectedProtocolVersion(),
+                        cipherSuite,
+                        keySet,
+                        tlsContext.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC),
+                        connectionId);
+                CipherType cipherType = cipherSuite.getCipherType();
+                if (cipherType == null) {
+                    LOGGER.warn("CipherType is null. Using Null Cipher instead");
+                    return new RecordNullCipher(tlsContext, state);
+                }
+                switch (cipherType) {
                     case AEAD:
                         return new RecordAEADCipher(tlsContext, state);
                     case BLOCK:
@@ -45,7 +48,7 @@ public class RecordCipherFactory {
                     case STREAM:
                         return new RecordStreamCipher(tlsContext, state);
                     default:
-                        LOGGER.warn("UnknownCipherType: {}", type);
+                        LOGGER.warn("Unknown CipherType: {}", cipherType);
                         return new RecordNullCipher(tlsContext, state);
                 }
             }
@@ -79,5 +82,6 @@ public class RecordCipherFactory {
                         null));
     }
 
-    private RecordCipherFactory() {}
+    private RecordCipherFactory() {
+    }
 }

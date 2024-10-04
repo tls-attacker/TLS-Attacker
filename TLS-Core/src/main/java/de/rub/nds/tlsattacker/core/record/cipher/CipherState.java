@@ -122,6 +122,6 @@ public class CipherState {
     }
 
     public CipherAlgorithm getCipherAlg() {
-        return AlgorithmResolver.getCipher(cipherSuite);
+        return cipherSuite.getCipherAlgorithm();
     }
 }

@@ -38,6 +38,7 @@ public class GenericReceiveAction extends CommonReceiveAction {
     protected List<LayerConfiguration<?>> createLayerConfiguration(State state) {
         TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
         List<LayerConfiguration<?>> configurationList = new LinkedList<>();
+        configurationList.add(new GenericReceiveLayerConfiguration(ImplementedLayers.SSL2));
         configurationList.add(new GenericReceiveLayerConfiguration(ImplementedLayers.MESSAGE));
         return ActionHelperUtil.sortAndAddOptions(
                 tlsContext.getLayerStack(), false, getActionOptions(), configurationList);

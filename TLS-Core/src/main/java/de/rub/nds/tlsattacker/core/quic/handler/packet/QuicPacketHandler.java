@@ -11,12 +11,8 @@ package de.rub.nds.tlsattacker.core.quic.handler.packet;
 import de.rub.nds.tlsattacker.core.layer.data.Handler;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public abstract class QuicPacketHandler<T extends QuicPacket> extends Handler<T> {
-
-    protected static final Logger LOGGER = LogManager.getLogger();
 
     protected final QuicContext quicContext;
 

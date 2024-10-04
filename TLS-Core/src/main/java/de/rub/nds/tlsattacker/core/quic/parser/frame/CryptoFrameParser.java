@@ -30,16 +30,16 @@ public class CryptoFrameParser extends QuicFrameParser<CryptoFrame> {
 
     protected void parseOffset(CryptoFrame frame) {
         frame.setOffset((int) parseVariableLengthInteger());
-        LOGGER.debug("Parsed CryptoFrame Offset: {}", frame.getOffset().getValue());
+        LOGGER.debug("Offset: {}", frame.getOffset().getValue());
     }
 
     protected void parseLength(CryptoFrame frame) {
         frame.setLength((int) parseVariableLengthInteger());
-        LOGGER.debug("Parsed CryptoFrame Length: {}", frame.getLength().getValue());
+        LOGGER.debug("Length: {}", frame.getLength().getValue());
     }
 
     protected void parseCryptoData(CryptoFrame frame) {
         frame.setCryptoData(parseByteArrayField(frame.getLength().getValue().intValue()));
-        LOGGER.debug("Parsed CryptoFrame CryptoData: {}", frame.getCryptoData().getValue());
+        LOGGER.debug("Crypto Data: {}", frame.getCryptoData().getValue());
     }
 }

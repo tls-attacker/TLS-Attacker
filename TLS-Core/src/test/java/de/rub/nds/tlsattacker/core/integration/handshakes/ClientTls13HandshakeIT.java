@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -34,6 +35,7 @@ import org.junit.jupiter.api.Test;
 public class ClientTls13HandshakeIT extends AbstractHandshakeIT {
 
     public ClientTls13HandshakeIT() {
+        // run OpenSSL with dummy HTTP server to get a reply for app data
         super(TlsImplementationType.OPENSSL, ConnectionRole.SERVER, "1.1.1m", "-early_data");
     }
 
@@ -68,6 +70,19 @@ public class ClientTls13HandshakeIT extends AbstractHandshakeIT {
     @Override
     protected NamedGroup[] getNamedGroupsToTest() {
         return new NamedGroup[] {NamedGroup.ECDH_X25519};
+    }
+
+    @Override
+    protected void modifyWorkflowTrace(State state) {
+        if (state.getConfig().getWorkflowTraceType() == WorkflowTraceType.FULL_ZERO_RTT) {
+            // this OpenSSL version always sends NST after the client's finished
+            // hence, we can leverage it to detect that our finished has been accepted and we do not
+            // have to wait for an alert sent in response
+            ReceiveAction receiveResponse =
+                    new ReceiveAction("client", new NewSessionTicketMessage());
+            state.getWorkflowTrace().addTlsAction(receiveResponse);
+        }
+        return;
     }
 
     @Test

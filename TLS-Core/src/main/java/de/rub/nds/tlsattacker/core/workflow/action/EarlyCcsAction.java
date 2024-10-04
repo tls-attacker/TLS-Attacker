@@ -60,10 +60,8 @@ public class EarlyCcsAction extends TlsAction {
     @Override
     public void execute(State state) {
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(state.getConfig());
-        ClientKeyExchangeMessage message =
-                factory.createClientKeyExchangeMessage(
-                        AlgorithmResolver.getKeyExchangeAlgorithm(
-                                state.getTlsContext().getChooser().getSelectedCipherSuite()));
+        ClientKeyExchangeMessage message = factory.createClientKeyExchangeMessage(
+                state.getTlsContext().getChooser().getSelectedCipherSuite().getKeyExchangeAlgorithm());
         if (message == null) {
             // the factory will fail to provide a CKE message in some cases
             // e.g for TLS_CECPQ1 cipher suites
@@ -73,8 +71,7 @@ public class EarlyCcsAction extends TlsAction {
             message.setIncludeInDigest(Modifiable.explicit(false));
         }
         message.setAdjustContext(Modifiable.explicit(false));
-        ClientKeyExchangeHandler handler =
-                (ClientKeyExchangeHandler) message.getHandler(state.getTlsContext());
+        ClientKeyExchangeHandler handler = (ClientKeyExchangeHandler) message.getHandler(state.getTlsContext());
         message.getPreparator(state.getTlsContext()).prepare();
         if (targetOpenssl100) {
             handler.adjustPremasterSecret(message);

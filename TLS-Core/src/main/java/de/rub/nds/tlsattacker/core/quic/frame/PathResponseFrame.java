@@ -26,6 +26,8 @@ public class PathResponseFrame extends QuicFrame {
 
     @ModifiableVariableProperty protected ModifiableByteArray data;
 
+    public static final int PATH_CHALLENGE_LENGTH = 8;
+
     public PathResponseFrame() {
         super(QuicFrameType.PATH_RESPONSE_FRAME);
     }

@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.layer.ReceiveTillLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.SSL2Message;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.container.ActionHelperUtil;
 import jakarta.xml.bind.annotation.XmlElementRef;
@@ -24,7 +25,9 @@ import java.util.List;
 @XmlRootElement(name = "ReceiveTill")
 public class ReceiveTillAction extends CommonReceiveAction {
 
-    @HoldsModifiableVariable @XmlElementRef protected ProtocolMessage waitTillMessage;
+    @HoldsModifiableVariable
+    @XmlElementRef
+    protected ProtocolMessage waitTillMessage;
 
     public ReceiveTillAction() {
         super();

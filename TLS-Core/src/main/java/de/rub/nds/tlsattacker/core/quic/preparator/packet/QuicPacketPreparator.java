@@ -21,28 +21,36 @@ import org.apache.logging.log4j.Logger;
 
 public abstract class QuicPacketPreparator<T extends QuicPacket> extends Preparator<T> {
 
+    private static final Logger LOGGER = LogManager.getLogger();
+
     protected QuicContext context;
     protected T packet;
 
-    private static final Logger LOGGER = LogManager.getLogger();
-
     public QuicPacketPreparator(Chooser chooser, T packet) {
         super(chooser, packet);
-        context = chooser.getContext().getQuicContext();
+        this.packet = packet;
+        this.context = chooser.getContext().getQuicContext();
     }
 
     protected void prepareQuicPacket() {
-        packet.setDestinationConnectionId(context.getDestinationConnectionId());
+        prepareDestinationConnectionId();
+        prepareDestinationConnectionIdLength();
+        preparePacketNumberLength();
+        preparePadding();
+        prepareUnprotectedPayload();
+        preparePacketLength();
+        packet.buildUnprotectedPacketHeader();
+    }
 
-        packet.setDestinationConnectionIdLength(
-                (byte) packet.getDestinationConnectionId().getValue().length);
+    private void preparePacketLength() {
+        packet.setPacketLength(
+                packet.getUnprotectedPayload().getValue().length
+                        + packet.getPacketNumberLength().getValue()
+                        + MiscRfcConstants.AUTH_TAG_LENGTH);
+        LOGGER.debug("Packet Length: {}", packet.getPacketLength().getValue());
+    }
 
-        packet.setPacketNumberLength(packet.getUnprotectedPacketNumber().getValue().length);
-
-        if (packet.getPadding() == 0) {
-            packet.setPadding(calculatePadding());
-        }
-
+    private void prepareUnprotectedPayload() {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         try {
             outputStream.write(packet.getUnprotectedPayload().getValue());
@@ -53,12 +61,33 @@ public abstract class QuicPacketPreparator<T extends QuicPacket> extends Prepara
             LOGGER.error(e);
         }
         packet.setUnprotectedPayload(outputStream.toByteArray());
+        LOGGER.debug("Unprotected Payload: {}", packet.getUnprotectedPayload().getValue());
+    }
 
-        packet.setPacketLength(
-                packet.getUnprotectedPayload().getValue().length
-                        + packet.getPacketNumberLength().getValue()
-                        + MiscRfcConstants.AUTH_TAG_LENGTH);
-        packet.buildUnprotectedPacketHeader();
+    private void prepareDestinationConnectionId() {
+        packet.setDestinationConnectionId(context.getDestinationConnectionId());
+        LOGGER.debug(
+                "Destination Connection ID: {}", packet.getDestinationConnectionId().getValue());
+    }
+
+    private void prepareDestinationConnectionIdLength() {
+        packet.setDestinationConnectionIdLength(
+                (byte) packet.getDestinationConnectionId().getValue().length);
+        LOGGER.debug(
+                "Destination Connection ID Length: {}",
+                packet.getDestinationConnectionIdLength().getValue());
+    }
+
+    private void preparePacketNumberLength() {
+        packet.setPacketNumberLength(packet.getUnprotectedPacketNumber().getValue().length);
+        LOGGER.debug("Packet Number Length: {}", packet.getPacketNumberLength().getValue());
+    }
+
+    private void preparePadding() {
+        if (packet.getPadding() == 0) {
+            packet.setPadding(calculatePadding());
+            LOGGER.debug("Padding: {}", packet.getPadding());
+        }
     }
 
     protected int calculatePadding() {

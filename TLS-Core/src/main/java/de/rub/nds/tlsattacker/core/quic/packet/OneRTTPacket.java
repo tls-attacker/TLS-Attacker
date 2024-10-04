@@ -60,7 +60,6 @@ public class OneRTTPacket extends QuicPacket {
             completeUnprotectedHeader =
                     ModifiableVariableFactory.safelySetValue(
                             completeUnprotectedHeader, unprotectedHeaderHelper.toByteArray());
-
         } catch (IOException e) {
             LOGGER.error(e);
         }
@@ -69,10 +68,8 @@ public class OneRTTPacket extends QuicPacket {
     @Override
     public void convertCompleteProtectedHeader() {
         byte[] protectedHeaderBytes = protectedHeaderHelper.toByteArray();
-
         protectedHeaderBytes[0] = unprotectedFlags.getValue();
         offsetToPacketNumber = 1 + destinationConnectionId.getValue().length;
-
         this.completeUnprotectedHeader =
                 ModifiableVariableFactory.safelySetValue(
                         this.completeUnprotectedHeader, protectedHeaderBytes);
@@ -80,7 +77,7 @@ public class OneRTTPacket extends QuicPacket {
 
     @Override
     public OneRTTPacketHandler getHandler(QuicContext context) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        return new OneRTTPacketHandler(context);
     }
 
     @Override

@@ -20,7 +20,7 @@ public class ClientUdpTransportHandler extends UdpTransportHandler {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    protected String ipv4;
+    protected String ipAddress;
 
     protected String hostname;
 
@@ -28,7 +28,7 @@ public class ClientUdpTransportHandler extends UdpTransportHandler {
 
     public ClientUdpTransportHandler(Connection con) {
         super(con);
-        this.ipv4 = con.getIp();
+        this.ipAddress = con.getIp();
         this.hostname = con.getHostname();
         this.port = con.getPort();
         this.sourcePort = con.getSourcePort();
@@ -36,7 +36,7 @@ public class ClientUdpTransportHandler extends UdpTransportHandler {
 
     public ClientUdpTransportHandler(long timeout, String ipAddress, int port) {
         super(timeout, ConnectionEndType.CLIENT);
-        this.ipv4 = ipAddress;
+        this.ipAddress = ipAddress;
         this.port = port;
     }
 
@@ -53,7 +53,7 @@ public class ClientUdpTransportHandler extends UdpTransportHandler {
         } else {
             socket = new DatagramSocket(sourcePort);
         }
-        socket.connect(new InetSocketAddress(ipv4, port));
+        socket.connect(new InetSocketAddress(ipAddress, port));
         socket.setSoTimeout((int) timeout);
         cachedSocketState = null;
         this.initialized = true;

@@ -9,10 +9,14 @@
 package de.rub.nds.tlsattacker.core.quic.serializer.frame;
 
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
-import de.rub.nds.tlsattacker.core.quic.VariableLengthIntegerEncoding;
 import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
+import de.rub.nds.tlsattacker.core.quic.util.VariableLengthIntegerEncoding;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public abstract class QuicFrameSerializer<T extends QuicFrame> extends Serializer<T> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     protected final T frame;
 
@@ -30,5 +34,6 @@ public abstract class QuicFrameSerializer<T extends QuicFrame> extends Serialize
         appendBytes(
                 VariableLengthIntegerEncoding.encodeVariableLengthInteger(
                         frame.getFrameType().getValue()));
+        LOGGER.debug("Frame Type: {}", frame.getFrameType().getValue());
     }
 }

@@ -999,8 +999,7 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public BigInteger getDhKeyExchangePeerPublicKey() {
-        KeyExchangeAlgorithm algorithm =
-                AlgorithmResolver.getKeyExchangeAlgorithm(getSelectedCipherSuite());
+        KeyExchangeAlgorithm algorithm = getSelectedCipherSuite().getKeyExchangeAlgorithm();
         if (algorithm.isKeyExchangeStaticDh()) {
             return context.getTlsContext()
                     .getPeerX509Context()
@@ -1017,8 +1016,7 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public BigInteger getDhKeyExchangeModulus() {
-        KeyExchangeAlgorithm algorithm =
-                AlgorithmResolver.getKeyExchangeAlgorithm(getSelectedCipherSuite());
+        KeyExchangeAlgorithm algorithm = getSelectedCipherSuite().getKeyExchangeAlgorithm();
         if (algorithm.isKeyExchangeStaticDh()) {
             return context.getTlsContext().getPeerX509Context().getChooser().getSubjectDhModulus();
         } else {
@@ -1028,8 +1026,7 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public BigInteger getDhKeyExchangeGenerator() {
-        KeyExchangeAlgorithm algorithm =
-                AlgorithmResolver.getKeyExchangeAlgorithm(getSelectedCipherSuite());
+        KeyExchangeAlgorithm algorithm = getSelectedCipherSuite().getKeyExchangeAlgorithm();
         if (algorithm.isKeyExchangeStaticDh()) {
             return context.getTlsContext()
                     .getPeerX509Context()
@@ -1042,8 +1039,7 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public BigInteger getDhKeyExchangePrivateKey() {
-        KeyExchangeAlgorithm algorithm =
-                AlgorithmResolver.getKeyExchangeAlgorithm(getSelectedCipherSuite());
+        KeyExchangeAlgorithm algorithm = getSelectedCipherSuite().getKeyExchangeAlgorithm();
         if (algorithm.isKeyExchangeStaticDh()) {
             return context.getTlsContext()
                     .getTalkingX509Context()
@@ -1060,8 +1056,7 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public Point getEcKeyExchangePeerPublicKey() {
-        KeyExchangeAlgorithm algorithm =
-                AlgorithmResolver.getKeyExchangeAlgorithm(getSelectedCipherSuite());
+        KeyExchangeAlgorithm algorithm = getSelectedCipherSuite().getKeyExchangeAlgorithm();
         if (algorithm.isKeyExchangeStaticEcdh()) {
             return context.getTlsContext()
                     .getPeerX509Context()
@@ -1078,8 +1073,7 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public BigInteger getEcKeyExchangePrivateKey() {
-        KeyExchangeAlgorithm algorithm =
-                AlgorithmResolver.getKeyExchangeAlgorithm(getSelectedCipherSuite());
+        KeyExchangeAlgorithm algorithm = getSelectedCipherSuite().getKeyExchangeAlgorithm();
         if (algorithm.isKeyExchangeStaticEcdh()) {
             return context.getTlsContext()
                     .getTalkingX509Context()
@@ -1136,8 +1130,7 @@ public class DefaultChooser extends Chooser {
         } else {
             KeyShareEntry keyShareEntry = new KeyShareEntry();
             keyShareEntry.setPrivateKey(config.getDefaultEchClientPrivateKey());
-            KeyShareEntryPreparator keyShareEntryPreparator =
-                    new KeyShareEntryPreparator(this, keyShareEntry);
+            KeyShareEntryPreparator keyShareEntryPreparator = new KeyShareEntryPreparator(this, keyShareEntry);
             keyShareEntry.setGroupConfig(getEchConfig().getKem().getNamedGroup());
             keyShareEntryPreparator.prepare();
             if (context != null) {
@@ -1156,8 +1149,7 @@ public class DefaultChooser extends Chooser {
         } else {
             KeyShareEntry keyShareEntry = new KeyShareEntry();
             keyShareEntry.setPrivateKey(config.getDefaultEchServerPrivateKey());
-            KeyShareEntryPreparator keyShareEntryPreparator =
-                    new KeyShareEntryPreparator(this, keyShareEntry);
+            KeyShareEntryPreparator keyShareEntryPreparator = new KeyShareEntryPreparator(this, keyShareEntry);
             keyShareEntry.setGroupConfig(getEchConfig().getKem().getNamedGroup());
             keyShareEntryPreparator.prepare();
             if (context != null) {

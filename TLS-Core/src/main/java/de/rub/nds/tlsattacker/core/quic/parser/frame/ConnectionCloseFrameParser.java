@@ -10,8 +10,12 @@ package de.rub.nds.tlsattacker.core.quic.parser.frame;
 
 import de.rub.nds.tlsattacker.core.quic.frame.ConnectionCloseFrame;
 import java.io.InputStream;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ConnectionCloseFrameParser extends QuicFrameParser<ConnectionCloseFrame> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public ConnectionCloseFrameParser(InputStream stream) {
         super(stream);
@@ -27,18 +31,22 @@ public class ConnectionCloseFrameParser extends QuicFrameParser<ConnectionCloseF
 
     protected void parseErrorCode(ConnectionCloseFrame frame) {
         frame.setErrorCode((int) parseVariableLengthInteger());
+        LOGGER.debug("Error Code: {}", frame.getErrorCode().getValue());
     }
 
     protected void parseFrameType(ConnectionCloseFrame frame) {
         frame.setTriggerFrameType((int) parseVariableLengthInteger());
+        LOGGER.debug("Frame Type: {}", frame.getTriggerFrameType().getValue());
     }
 
     protected void parseReasonPhraseLength(ConnectionCloseFrame frame) {
         frame.setReasonPhraseLength((int) parseVariableLengthInteger());
+        LOGGER.debug("Reason Phrase Length: {}", frame.getReasonPhraseLength().getValue());
     }
 
     protected void parseReasonPhrase(ConnectionCloseFrame frame) {
         frame.setReasonPhrase(
                 parseByteArrayField(frame.getReasonPhraseLength().getValue().intValue()));
+        LOGGER.debug("Reason Phrase: {}", frame.getReasonPhrase().getValue());
     }
 }

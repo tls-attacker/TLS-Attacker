@@ -9,8 +9,12 @@
 package de.rub.nds.tlsattacker.core.quic.serializer.frame;
 
 import de.rub.nds.tlsattacker.core.quic.frame.PathResponseFrame;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class PathResponseFrameSerializer extends QuicFrameSerializer<PathResponseFrame> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public PathResponseFrameSerializer(PathResponseFrame frame) {
         super(frame);
@@ -25,5 +29,6 @@ public class PathResponseFrameSerializer extends QuicFrameSerializer<PathRespons
 
     protected void writeData() {
         appendBytes(frame.getData().getValue());
+        LOGGER.debug("Data: {}", frame.getData().getValue());
     }
 }

@@ -21,7 +21,7 @@ public class RemoveDefaultValues implements ConfigDisplayFilter {
 
     @Override
     public void applyFilter(Config config) {
-        Config defaultConfig = Config.createConfig();
+        Config defaultConfig = new Config();
         for (Field field : Config.class.getDeclaredFields()) {
             if (!(Modifier.isStatic(field.getModifiers())
                     || Modifier.isFinal(field.getModifiers()))) {

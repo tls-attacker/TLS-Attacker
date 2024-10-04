@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.http.HttpMessage;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.SpecificReceiveLayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.SpecificSendLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
@@ -178,12 +179,20 @@ public class SendAction extends CommonSendAction implements StaticSendingAction 
         return configuredQuicFrames;
     }
 
+    public void setConfiguredQuicFrames(QuicFrame... configuredQuicFrames) {
+        this.configuredQuicFrames = new ArrayList<>(Arrays.asList(configuredQuicFrames));
+    }
+
     public void setConfiguredQuicFrames(List<QuicFrame> configuredQuicFrames) {
         this.configuredQuicFrames = configuredQuicFrames;
     }
 
     public List<QuicPacket> getConfiguredQuicPackets() {
         return configuredQuicPackets;
+    }
+
+    public void setConfiguredQuicPackets(QuicPacket... configuredQuicPackets) {
+        this.configuredQuicPackets = new ArrayList<>(Arrays.asList(configuredQuicPackets));
     }
 
     public void setConfiguredQuicPackets(List<QuicPacket> configuredQuicPackets) {
@@ -285,12 +294,15 @@ public class SendAction extends CommonSendAction implements StaticSendingAction 
         List<LayerConfiguration<?>> configurationList = new LinkedList<>();
         if (getConfiguredRecords() != null) {
             configurationList.add(
-                    new SpecificReceiveLayerConfiguration<>(
+                    new SpecificSendLayerConfiguration<>(
                             ImplementedLayers.RECORD, getConfiguredRecords()));
         }
         if (getConfiguredMessages() != null) {
             configurationList.add(
-                    new SpecificReceiveLayerConfiguration<>(
+                    new SpecificSendLayerConfiguration<>(
+                            ImplementedLayers.SSL2, getConfiguredMessages()));
+            configurationList.add(
+                    new SpecificSendLayerConfiguration<>(
                             ImplementedLayers.MESSAGE, getConfiguredMessages()));
         }
         if (getConfiguredSSL2Messages() != null) {
@@ -300,23 +312,23 @@ public class SendAction extends CommonSendAction implements StaticSendingAction 
         }
         if (getConfiguredDtlsHandshakeMessageFragments() != null) {
             configurationList.add(
-                    new SpecificReceiveLayerConfiguration<>(
+                    new SpecificSendLayerConfiguration<>(
                             ImplementedLayers.DTLS_FRAGMENT,
                             getConfiguredDtlsHandshakeMessageFragments()));
         }
         if (getConfiguredHttpMessages() != null) {
             configurationList.add(
-                    new SpecificReceiveLayerConfiguration<>(
+                    new SpecificSendLayerConfiguration<>(
                             ImplementedLayers.HTTP, getConfiguredHttpMessages()));
         }
         if (getConfiguredQuicFrames() != null) {
             configurationList.add(
-                    new SpecificReceiveLayerConfiguration<>(
+                    new SpecificSendLayerConfiguration<>(
                             ImplementedLayers.QUICFRAME, getConfiguredQuicFrames()));
         }
         if (getConfiguredQuicPackets() != null) {
             configurationList.add(
-                    new SpecificReceiveLayerConfiguration<>(
+                    new SpecificSendLayerConfiguration<>(
                             ImplementedLayers.QUICPACKET, getConfiguredQuicPackets()));
         }
         return ActionHelperUtil.sortAndAddOptions(

@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.quic.constants;
 
 public class QuicHKDFConstants {
+
     public static final String QUIC1_KU = "quic ku";
 
     public static final String QUIC1_KEY = "quic key";

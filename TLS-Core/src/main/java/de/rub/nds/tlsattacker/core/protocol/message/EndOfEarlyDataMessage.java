@@ -46,6 +46,13 @@ public class EndOfEarlyDataMessage extends HandshakeMessage {
     }
 
     @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("EndOfEarlyDataMessage: <empty>");
+        return sb.toString();
+    }
+
+    @Override
     public String toShortString() {
         return "EOED";
     }

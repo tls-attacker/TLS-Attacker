@@ -6,12 +6,19 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-package de.rub.nds.tlsattacker.core.quic;
+package de.rub.nds.tlsattacker.core.quic.util;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 
 public class VariableLengthIntegerEncoding {
 
+    /**
+     * Encodes input into variable length integer. The encoding is done according to RFC 9000
+     * Section 16.
+     *
+     * @param value to be encoded
+     * @return byte array with the encoded value
+     */
     public static byte[] encodeVariableLengthInteger(long value) {
         if (value > EncodingLength.SIXTY_BITS.maxValue) {
             return null;

@@ -169,23 +169,21 @@ public class EncryptedServerNameIndicationExtensionPreparator
     }
 
     private void prepareClientEsniInner(EncryptedServerNameIndicationExtensionMessage msg) {
-        ClientEsniInnerPreparator clientEsniInnerPreparator =
-                new ClientEsniInnerPreparator(this.chooser, msg.getClientEsniInner());
+        ClientEsniInnerPreparator clientEsniInnerPreparator = new ClientEsniInnerPreparator(this.chooser,
+                msg.getClientEsniInner());
         clientEsniInnerPreparator.prepare();
     }
 
     private void prepareClientEsniInnerBytes(EncryptedServerNameIndicationExtensionMessage msg) {
-        ClientEsniInnerSerializer serializer =
-                new ClientEsniInnerSerializer(msg.getClientEsniInner());
+        ClientEsniInnerSerializer serializer = new ClientEsniInnerSerializer(msg.getClientEsniInner());
         byte[] clientEsniInnerBytes = serializer.serialize();
         msg.setClientEsniInnerBytes(clientEsniInnerBytes);
         LOGGER.debug("ClientEsniInnerBytes: {}", msg.getClientEsniInnerBytes().getValue());
     }
 
     private void parseClientEsniInnerBytes(EncryptedServerNameIndicationExtensionMessage msg) {
-        ClientEsniInnerParser parser =
-                new ClientEsniInnerParser(
-                        new ByteArrayInputStream(msg.getClientEsniInnerBytes().getValue()));
+        ClientEsniInnerParser parser = new ClientEsniInnerParser(
+                new ByteArrayInputStream(msg.getClientEsniInnerBytes().getValue()));
         ClientEsniInner clientEsniInner = new ClientEsniInner();
         parser.parse(clientEsniInner);
         msg.setClientEsniInner(clientEsniInner);
@@ -208,8 +206,7 @@ public class EncryptedServerNameIndicationExtensionPreparator
 
     private void prepareNamedGroup(EncryptedServerNameIndicationExtensionMessage msg) {
         List<NamedGroup> implementedNamedGroups = NamedGroup.getImplemented();
-        List<NamedGroup> clientSupportedNamedGroups =
-                chooser.getConfig().getClientSupportedEsniNamedGroups();
+        List<NamedGroup> clientSupportedNamedGroups = chooser.getConfig().getClientSupportedEsniNamedGroups();
         List<NamedGroup> serverSupportedNamedGroups = new LinkedList<>();
         for (KeyShareStoreEntry entry : chooser.getEsniServerKeyShareEntries()) {
             serverSupportedNamedGroups.add(entry.getGroup());
@@ -236,16 +233,14 @@ public class EncryptedServerNameIndicationExtensionPreparator
     private void prepareKeyShareEntry(EncryptedServerNameIndicationExtensionMessage msg) {
         KeyShareEntry keyShareEntry = msg.getKeyShareEntry();
         keyShareEntry.setPrivateKey(chooser.getConfig().getDefaultEsniClientPrivateKey());
-        KeyShareEntryPreparator keyShareEntryPreparator =
-                new KeyShareEntryPreparator(chooser, keyShareEntry);
+        KeyShareEntryPreparator keyShareEntryPreparator = new KeyShareEntryPreparator(chooser, keyShareEntry);
         keyShareEntryPreparator.prepare();
         LOGGER.debug("ClientPrivateKey: {}", msg.getKeyShareEntry().getPrivateKey().toByteArray());
         LOGGER.debug("ClientPublicKey: {}", msg.getKeyShareEntry().getPublicKey().getValue());
     }
 
     private void prepareCipherSuite(EncryptedServerNameIndicationExtensionMessage msg) {
-        List<CipherSuite> clientSupportedCipherSuites =
-                chooser.getConfig().getClientSupportedEsniCipherSuites();
+        List<CipherSuite> clientSupportedCipherSuites = chooser.getConfig().getClientSupportedEsniCipherSuites();
         List<CipherSuite> serverSupportedCipherSuites = chooser.getEsniServerCipherSuites();
         List<CipherSuite> implementedCipherSuites = CipherSuite.getEsniImplemented();
         CipherSuite selectedCipherSuite = implementedCipherSuites.get(0);
@@ -276,8 +271,7 @@ public class EncryptedServerNameIndicationExtensionPreparator
         byte[] recordDigest;
         byte[] record = msg.getEncryptedSniComputation().getEsniRecordBytes().getValue();
         CipherSuite cipherSuite = CipherSuite.getCipherSuite(msg.getCipherSuite().getValue());
-        DigestAlgorithm algorithm =
-                AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS13, cipherSuite);
+        DigestAlgorithm algorithm = AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS13, cipherSuite);
         if (algorithm == null) {
             LOGGER.warn(
                     "Could not select digest algorithm for {}. Using SHA256 instead", cipherSuite);
@@ -321,8 +315,7 @@ public class EncryptedServerNameIndicationExtensionPreparator
         byte[] contentsHash = null;
         byte[] contents = msg.getEncryptedSniComputation().getEsniContents().getValue();
         CipherSuite cipherSuite = CipherSuite.getCipherSuite(msg.getCipherSuite().getValue());
-        DigestAlgorithm algorithm =
-                AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS13, cipherSuite);
+        DigestAlgorithm algorithm = AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS13, cipherSuite);
         MessageDigest messageDigest = null;
         try {
             messageDigest = MessageDigest.getInstance(algorithm.getJavaName());
@@ -339,10 +332,8 @@ public class EncryptedServerNameIndicationExtensionPreparator
     private void prepareEsniClientSharedSecret(EncryptedServerNameIndicationExtensionMessage msg) {
         NamedGroup group = NamedGroup.getNamedGroup(msg.getKeyShareEntry().getGroup().getValue());
         BigInteger clientPrivateKey = msg.getKeyShareEntry().getPrivateKey();
-        byte[] serverPublicKey =
-                msg.getEncryptedSniComputation().getEsniServerPublicKey().getValue();
-        byte[] esniSharedSecret =
-                KeyShareCalculator.computeSharedSecret(group, clientPrivateKey, serverPublicKey);
+        byte[] serverPublicKey = msg.getEncryptedSniComputation().getEsniServerPublicKey().getValue();
+        byte[] esniSharedSecret = KeyShareCalculator.computeSharedSecret(group, clientPrivateKey, serverPublicKey);
         msg.getEncryptedSniComputation().setEsniSharedSecret(esniSharedSecret);
         LOGGER.debug(
                 "EsniSharedSecret: {}",
@@ -352,8 +343,7 @@ public class EncryptedServerNameIndicationExtensionPreparator
     private void prepareEsniServerSharedSecret(EncryptedServerNameIndicationExtensionMessage msg) {
         NamedGroup group = NamedGroup.getNamedGroup(msg.getKeyShareEntry().getGroup().getValue());
         boolean isFoundSharedNamedGroup = false;
-        BigInteger serverPrivateKey =
-                chooser.getConfig().getEsniServerKeyPairs().get(0).getPrivateKey();
+        BigInteger serverPrivateKey = chooser.getConfig().getEsniServerKeyPairs().get(0).getPrivateKey();
         for (KeyShareEntry keyShareEntry : chooser.getConfig().getEsniServerKeyPairs()) {
             if (Arrays.equals(keyShareEntry.getGroup().getValue(), group.getValue())) {
                 serverPrivateKey = keyShareEntry.getPrivateKey();
@@ -366,8 +356,7 @@ public class EncryptedServerNameIndicationExtensionPreparator
         }
         byte[] clientPublicKey = msg.getKeyShareEntry().getPublicKey().getValue();
 
-        byte[] esniSharedSecret =
-                KeyShareCalculator.computeSharedSecret(group, serverPrivateKey, clientPublicKey);
+        byte[] esniSharedSecret = KeyShareCalculator.computeSharedSecret(group, serverPrivateKey, clientPublicKey);
 
         msg.getEncryptedSniComputation().setEsniSharedSecret(esniSharedSecret);
         LOGGER.debug(
@@ -398,11 +387,10 @@ public class EncryptedServerNameIndicationExtensionPreparator
         byte[] hashIn = msg.getEncryptedSniComputation().getEsniContentsHash().getValue();
         CipherSuite cipherSuite = CipherSuite.getCipherSuite(msg.getCipherSuite().getValue());
         HKDFAlgorithm hkdfAlgorithm = AlgorithmResolver.getHKDFAlgorithm(cipherSuite);
-        int keyLen = AlgorithmResolver.getCipher(cipherSuite).getKeySize();
+        int keyLen = cipherSuite.getCipherAlgorithm().getKeySize();
         try {
-            key =
-                    HKDFunction.expandLabel(
-                            hkdfAlgorithm, esniMasterSecret, HKDFunction.ESNI_KEY, hashIn, keyLen);
+            key = HKDFunction.expandLabel(
+                    hkdfAlgorithm, esniMasterSecret, HKDFunction.ESNI_KEY, hashIn, keyLen);
         } catch (CryptoException e) {
             throw new PreparationException("Could not prepare esniKey", e);
         }
@@ -417,13 +405,12 @@ public class EncryptedServerNameIndicationExtensionPreparator
         CipherSuite cipherSuite = CipherSuite.getCipherSuite(msg.getCipherSuite().getValue());
         HKDFAlgorithm hkdfAlgorithm = AlgorithmResolver.getHKDFAlgorithm(cipherSuite);
         try {
-            iv =
-                    HKDFunction.expandLabel(
-                            hkdfAlgorithm,
-                            esniMasterSecret,
-                            HKDFunction.ESNI_IV,
-                            hashIn,
-                            IV_LENGTH);
+            iv = HKDFunction.expandLabel(
+                    hkdfAlgorithm,
+                    esniMasterSecret,
+                    HKDFunction.ESNI_IV,
+                    hashIn,
+                    IV_LENGTH);
         } catch (CryptoException e) {
             throw new PreparationException("Could not prepare esniIv", e);
         }
@@ -441,10 +428,8 @@ public class EncryptedServerNameIndicationExtensionPreparator
             List<ExtensionMessage> clientHelloExtensions = clientHelloMessage.getExtensions();
             for (ExtensionMessage m : clientHelloExtensions) {
                 if (m instanceof KeyShareExtensionMessage) {
-                    KeyShareExtensionMessage keyShareExtensionMessage =
-                            (KeyShareExtensionMessage) m;
-                    keyShareListBytesLength =
-                            keyShareExtensionMessage.getKeyShareListLength().getValue();
+                    KeyShareExtensionMessage keyShareExtensionMessage = (KeyShareExtensionMessage) m;
+                    keyShareListBytesLength = keyShareExtensionMessage.getKeyShareListLength().getValue();
                     keyShareListBytes = keyShareExtensionMessage.getKeyShareListBytes().getValue();
                     isClientHelloExtensionsFound = true;
                     break;
@@ -469,9 +454,8 @@ public class EncryptedServerNameIndicationExtensionPreparator
             keyShareListBytesLength = keyShareListBytes.length;
         }
 
-        keyShareListBytesLengthField =
-                ArrayConverter.intToBytes(
-                        keyShareListBytesLength, ExtensionByteLength.KEY_SHARE_LIST_LENGTH);
+        keyShareListBytesLengthField = ArrayConverter.intToBytes(
+                keyShareListBytesLength, ExtensionByteLength.KEY_SHARE_LIST_LENGTH);
         try {
             clientHelloKeyShareStream.write(keyShareListBytesLengthField);
             clientHelloKeyShareStream.write(keyShareListBytes);
@@ -499,8 +483,8 @@ public class EncryptedServerNameIndicationExtensionPreparator
         }
         KeySet keySet = new KeySet();
         keySet.setClientWriteKey(key);
-        EncryptionCipher encryptCipher =
-                CipherWrapper.getEncryptionCipher(cipherSuite, ConnectionEndType.CLIENT, keySet);
+        EncryptionCipher encryptCipher = CipherWrapper.getEncryptionCipher(cipherSuite, ConnectionEndType.CLIENT,
+                keySet);
         try {
             encryptedSni = encryptCipher.encrypt(iv, tagBitLength, aad, plainText);
         } catch (CryptoException e) {
@@ -528,8 +512,8 @@ public class EncryptedServerNameIndicationExtensionPreparator
         KeySet keySet = new KeySet();
         keySet.setClientWriteKey(key);
 
-        DecryptionCipher decryptCipher =
-                CipherWrapper.getDecryptionCipher(cipherSuite, ConnectionEndType.SERVER, keySet);
+        DecryptionCipher decryptCipher = CipherWrapper.getDecryptionCipher(cipherSuite, ConnectionEndType.SERVER,
+                keySet);
         try {
             clientEsniInnerBytes = decryptCipher.decrypt(iv, tagBitLength, aad, cipherText);
         } catch (CryptoException e) {

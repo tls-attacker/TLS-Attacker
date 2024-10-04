@@ -8,18 +8,19 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import de.rub.nds.protocol.exception.PreparationException;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SSL2CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ssl.SSL2ByteLength;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class SSL2ServerHelloPreparator extends SSL2MessagePreparator<SSL2ServerHelloMessage> {
 
@@ -51,13 +52,12 @@ public class SSL2ServerHelloPreparator extends SSL2MessagePreparator<SSL2ServerH
     }
 
     private void prepareMessageLength(SSL2ServerHelloMessage message) {
-        int length =
-                SSL2ByteLength.SESSIONID_LENGTH
-                        + SSL2ByteLength.CERTIFICATE_LENGTH
-                        + SSL2ByteLength.CIPHERSUITE_LENGTH
-                        + SSL2ByteLength.MESSAGE_TYPE
-                        + SSL2ByteLength.SESSION_ID_HIT
-                        + SSL2ByteLength.CERTIFICATE_TYPE;
+        int length = SSL2ByteLength.SESSIONID_LENGTH
+                + SSL2ByteLength.CERTIFICATE_LENGTH
+                + SSL2ByteLength.CIPHERSUITE_LENGTH
+                + SSL2ByteLength.MESSAGE_TYPE
+                + SSL2ByteLength.SESSION_ID_HIT
+                + SSL2ByteLength.CERTIFICATE_TYPE;
         length += message.getCipherSuites().getValue().length;
         length += message.getSessionId().getValue().length;
         length += message.getProtocolVersion().getValue().length;
@@ -119,8 +119,7 @@ public class SSL2ServerHelloPreparator extends SSL2MessagePreparator<SSL2ServerH
 
     private void prepareCipherSuites(SSL2ServerHelloMessage message) {
         ByteArrayOutputStream cipherStream = new ByteArrayOutputStream();
-        for (SSL2CipherSuite suite :
-                chooser.getConfig().getDefaultServerSupportedSSL2CipherSuites()) {
+        for (SSL2CipherSuite suite : chooser.getConfig().getDefaultServerSupportedSSL2CipherSuites()) {
             try {
                 if (suite != SSL2CipherSuite.SSL_UNKNOWN_CIPHER) {
                     cipherStream.write(suite.getByteValue());

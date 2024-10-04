@@ -108,12 +108,15 @@ public class ClientTcpTransportHandler extends TcpTransportHandler {
         if (!socket.isConnected()) {
             throw new IOException("Could not connect to " + hostname + ":" + dstPort);
         }
+
         cachedSocketState = null;
         setStreams(new PushbackInputStream(socket.getInputStream()), socket.getOutputStream());
         srcPort = socket.getLocalPort();
         dstPort = socket.getPort();
         LOGGER.info("Connection established from ports {} -> {}", srcPort, dstPort);
         socket.setSoTimeout((int) timeout);
+        // 2^16 max record size
+        socket.setSendBufferSize(65536);
     }
 
     @Override

@@ -10,28 +10,29 @@ package de.rub.nds.tlsattacker.core.crypto;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.protocol.constants.MacAlgorithm;
 
 public class SSLUtilsTest {
 
     @ParameterizedTest
-    @EnumSource(
-            value = MacAlgorithm.class,
-            names = {"SSLMAC_MD5", "SSLMAC_SHA1"})
+    @EnumSource(value = MacAlgorithm.class, names = { "SSLMAC_MD5", "SSLMAC_SHA1" })
     public void testSslMac(MacAlgorithm providedMacAlgorithm)
             throws NoSuchAlgorithmException, InvalidKeyException {
-        byte[] input = {1, 2, 3};
-        byte[] masterSecret = {0, 1};
-        byte[] clientRdm = {1};
-        byte[] serverRdm = {0};
+        byte[] input = { 1, 2, 3 };
+        byte[] masterSecret = { 0, 1 };
+        byte[] clientRdm = { 1 };
+        byte[] serverRdm = { 0 };
         byte[] seed = ArrayConverter.concatenate(serverRdm, clientRdm);
         int secretSetSize = 64;
         Mac digest = Mac.getInstance(providedMacAlgorithm.getJavaName());

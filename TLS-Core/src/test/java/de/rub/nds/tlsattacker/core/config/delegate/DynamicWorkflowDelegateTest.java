@@ -48,7 +48,7 @@ public class DynamicWorkflowDelegateTest extends AbstractDelegateTest<DynamicWor
     @Test
     @Disabled("Dynamic workflow not implemented")
     public void testApplyDelegate() {
-        Config config = Config.createConfig();
+        Config config = new Config();
         config.setDynamicWorkflow(false);
         args = new String[1];
         args[0] = "-dynamic_workflow";
@@ -60,8 +60,8 @@ public class DynamicWorkflowDelegateTest extends AbstractDelegateTest<DynamicWor
     @Test
     @Disabled("Dynamic workflow not implemented")
     public void testNothingSetNothingChanges() {
-        Config config = Config.createConfig();
-        Config config2 = Config.createConfig();
+        Config config = new Config();
+        Config config2 = new Config();
         delegate.applyDelegate(config);
         assertTrue(EqualsBuilder.reflectionEquals(config, config2, "certificateChainConfig"));
     }

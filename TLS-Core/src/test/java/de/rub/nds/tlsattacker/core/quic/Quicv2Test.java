@@ -60,11 +60,11 @@ public class Quicv2Test {
     }
 
     @Test
-    public void versionDependent0RTTSecretsTest()
+    public void versionDependentZeroRTTSecretsTest()
             throws NoSuchAlgorithmException, CryptoException, NoSuchPaddingException {
         // Check that we generate the correct version-dependent initial secrets
-        QuicContext quicv1Context = calculate0RTTSecretsForVersion(QuicVersion.VERSION_1);
-        QuicContext quicv2Context = calculate0RTTSecretsForVersion(QuicVersion.VERSION_2);
+        QuicContext quicv1Context = calculateZeroRTTSecretsForVersion(QuicVersion.VERSION_1);
+        QuicContext quicv2Context = calculateZeroRTTSecretsForVersion(QuicVersion.VERSION_2);
 
         Assert.assertArrayEquals(
                 quicv1Context.getZeroRTTClientSecret(), quicv2Context.getZeroRTTClientSecret());
@@ -92,7 +92,7 @@ public class Quicv2Test {
         return context;
     }
 
-    private QuicContext calculate0RTTSecretsForVersion(QuicVersion version)
+    private QuicContext calculateZeroRTTSecretsForVersion(QuicVersion version)
             throws NoSuchAlgorithmException, CryptoException, NoSuchPaddingException {
         Config config = new Config();
         config.setQuicVersion(version);
@@ -106,7 +106,7 @@ public class Quicv2Test {
         quicContext.setFirstDestinationConnectionId(new byte[8]);
         // We only calculate the initial secrets for this test because the other secrets require
         // more context and these should already be version-dependent
-        QuicPacketCryptoComputations.calculate0RTTSecrets(quicContext);
+        QuicPacketCryptoComputations.calculateZeroRTTSecrets(quicContext);
         return quicContext;
     }
 }

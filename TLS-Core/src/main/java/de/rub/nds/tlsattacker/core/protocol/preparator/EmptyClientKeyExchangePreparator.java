@@ -70,8 +70,7 @@ public class EmptyClientKeyExchangePreparator<T extends EmptyClientKeyExchangeMe
     protected byte[] computeECPremasterSecret(
             EllipticCurve curve, Point publicKey, BigInteger privateKey) {
         Point sharedPoint = curve.mult(privateKey, publicKey);
-        int elementLength =
-                ArrayConverter.bigIntegerToByteArray(sharedPoint.getFieldX().getModulus()).length;
+        int elementLength = ArrayConverter.bigIntegerToByteArray(sharedPoint.getFieldX().getModulus()).length;
         return ArrayConverter.bigIntegerToNullPaddedByteArray(
                 sharedPoint.getFieldX().getData(), elementLength);
     }
@@ -88,17 +87,15 @@ public class EmptyClientKeyExchangePreparator<T extends EmptyClientKeyExchangeMe
                         .getCertificateList()
                         .isEmpty()) {
 
-            X509PublicKeyType certificateKeyType =
-                    chooser.getContext()
-                            .getTlsContext()
-                            .getClientCertificateChain()
-                            .getLeaf()
-                            .getCertificateKeyType();
-            KeyExchangeAlgorithm keyExchangeAlgorithm =
-                    AlgorithmResolver.getKeyExchangeAlgorithm(chooser.getSelectedCipherSuite());
-            if (keyExchangeAlgorithm.isKeyExchangeDh() || keyExchangeAlgorithm.isKeyExchangeDhe()) {
+            X509PublicKeyType certificateKeyType = chooser.getContext()
+                    .getTlsContext()
+                    .getClientCertificateChain()
+                    .getLeaf()
+                    .getCertificateKeyType();
+            KeyExchangeAlgorithm keyExchangeAlgorithm = chooser.getSelectedCipherSuite().getKeyExchangeAlgorithm();
+            if (keyExchangeAlgorithm != null && (keyExchangeAlgorithm.isKeyExchangeDh() || keyExchangeAlgorithm.isKeyExchangeDhe())) {
                 computeDhKeyExchangePms();
-            } else if (keyExchangeAlgorithm.isEC()) {
+            } else if (keyExchangeAlgorithm != null && keyExchangeAlgorithm.isEC()) {
                 computeEcKeyExchangePms();
             } else {
                 LOGGER.warn(
@@ -119,11 +116,10 @@ public class EmptyClientKeyExchangePreparator<T extends EmptyClientKeyExchangeMe
         msg.getComputations().setDhPeerPublicKey(publicKey);
         BigInteger privateKey = chooser.getDhKeyExchangePrivateKey();
         msg.getComputations().setPrivateKey(privateKey);
-        premasterSecret =
-                calculateDhPremasterSecret(
-                        msg.getComputations().getDhModulus().getValue(),
-                        msg.getComputations().getPrivateKey().getValue(),
-                        msg.getComputations().getDhPeerPublicKey().getValue());
+        premasterSecret = calculateDhPremasterSecret(
+                msg.getComputations().getDhModulus().getValue(),
+                msg.getComputations().getPrivateKey().getValue(),
+                msg.getComputations().getDhPeerPublicKey().getValue());
     }
 
     public void computeEcKeyExchangePms() {
@@ -141,10 +137,9 @@ public class EmptyClientKeyExchangePreparator<T extends EmptyClientKeyExchangeMe
         Point publicKey = chooser.getEcKeyExchangePeerPublicKey();
         msg.getComputations().setEcPublicKeyX(publicKey.getFieldX().getData());
         msg.getComputations().setEcPublicKeyY(publicKey.getFieldY().getData());
-        publicKey =
-                curve.getPoint(
-                        msg.getComputations().getEcPublicKeyX().getValue(),
-                        msg.getComputations().getEcPublicKeyY().getValue());
+        publicKey = curve.getPoint(
+                msg.getComputations().getEcPublicKeyX().getValue(),
+                msg.getComputations().getEcPublicKeyY().getValue());
         msg.getComputations().setPrivateKey(chooser.getEcKeyExchangePrivateKey());
         BigInteger privateKey = msg.getComputations().getPrivateKey().getValue();
         premasterSecret = computeECPremasterSecret(curve, publicKey, privateKey);

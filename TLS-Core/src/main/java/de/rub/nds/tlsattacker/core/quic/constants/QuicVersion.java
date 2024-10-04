@@ -22,7 +22,9 @@ public enum QuicVersion {
     UNKNOWN(0xffffffff, "");
 
     private final int value;
+
     private final byte[] byteValue;
+
     private final byte[] initialSalt;
 
     private static final Map<Integer, QuicVersion> MAP;
