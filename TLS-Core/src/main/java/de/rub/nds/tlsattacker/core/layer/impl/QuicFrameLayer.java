@@ -8,23 +8,22 @@
  */
 package de.rub.nds.tlsattacker.core.layer.impl;
 
-import static de.rub.nds.tlsattacker.core.quic.constants.QuicFrameType.CONNECTION_CLOSE_QUIC_FRAME;
-import static de.rub.nds.tlsattacker.core.quic.constants.QuicFrameType.CRYPTO_FRAME;
-import static de.rub.nds.tlsattacker.core.quic.constants.QuicFrameType.PATH_CHALLENGE_FRAME;
-import static de.rub.nds.tlsattacker.core.quic.constants.QuicFrameType.PATH_RESPONSE_FRAME;
-import static de.rub.nds.tlsattacker.core.quic.constants.QuicFrameType.PING_FRAME;
-import static de.rub.nds.tlsattacker.core.quic.constants.QuicFrameType.STREAM_FRAME;
-import static de.rub.nds.tlsattacker.core.quic.constants.QuicFrameType.STREAM_FRAME_FIN;
-import static de.rub.nds.tlsattacker.core.quic.constants.QuicFrameType.STREAM_FRAME_LEN;
-import static de.rub.nds.tlsattacker.core.quic.constants.QuicFrameType.STREAM_FRAME_LEN_FIN;
-import static de.rub.nds.tlsattacker.core.quic.constants.QuicFrameType.STREAM_FRAME_OFF;
-import static de.rub.nds.tlsattacker.core.quic.constants.QuicFrameType.STREAM_FRAME_OFF_FIN;
-import static de.rub.nds.tlsattacker.core.quic.constants.QuicFrameType.STREAM_FRAME_OFF_LEN;
-import static de.rub.nds.tlsattacker.core.quic.constants.QuicFrameType.STREAM_FRAME_OFF_LEN_FIN;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PushbackInputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import de.rub.nds.protocol.exception.EndOfStreamException;
+import de.rub.nds.protocol.exception.TimeoutException;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.exceptions.TimeoutException;
 import de.rub.nds.tlsattacker.core.layer.AcknowledgingProtocolLayer;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
@@ -49,17 +48,6 @@ import de.rub.nds.tlsattacker.core.quic.frame.PingFrame;
 import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
 import de.rub.nds.tlsattacker.core.quic.frame.StreamFrame;
 import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PushbackInputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * The QuicFrameLayer handles QUIC frames. The encapsulation into QUIC packets happens in the {@link
@@ -130,21 +118,17 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
                     List<QuicFrame> givenFrames = getUnprocessedConfiguredContainers();
                     if (getLayerConfiguration().getContainerList() != null
                             && givenFrames.size() > 0) {
-                        givenFrames =
-                                givenFrames.stream()
-                                        .filter(
-                                                frame ->
-                                                        QuicFrameType.getFrameType(
-                                                                        frame.getFrameType()
-                                                                                .getValue())
-                                                                == QuicFrameType.CRYPTO_FRAME)
-                                        .collect(Collectors.toList());
+                        givenFrames = givenFrames.stream()
+                                .filter(
+                                        frame -> QuicFrameType.getFrameType(
+                                                frame.getFrameType()
+                                                        .getValue()) == QuicFrameType.CRYPTO_FRAME)
+                                .collect(Collectors.toList());
                         int offset = 0;
                         for (QuicFrame frame : givenFrames) {
-                            int toCopy =
-                                    ((CryptoFrame) frame).getMaxFrameLengthConfig() != 0
-                                            ? ((CryptoFrame) frame).getMaxFrameLengthConfig()
-                                            : MAX_FRAME_SIZE;
+                            int toCopy = ((CryptoFrame) frame).getMaxFrameLengthConfig() != 0
+                                    ? ((CryptoFrame) frame).getMaxFrameLengthConfig()
+                                    : MAX_FRAME_SIZE;
                             byte[] payload = Arrays.copyOfRange(data, offset, offset + toCopy);
                             ((CryptoFrame) frame).setCryptoDataConfig(payload);
                             ((CryptoFrame) frame).setOffsetConfig(offset);
@@ -162,11 +146,10 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
                         }
                         // Not enough crypto frames
                         for (; offset < data.length; offset += MAX_FRAME_SIZE) {
-                            byte[] payload =
-                                    Arrays.copyOfRange(
-                                            data,
-                                            offset,
-                                            Math.min(offset + MAX_FRAME_SIZE, data.length));
+                            byte[] payload = Arrays.copyOfRange(
+                                    data,
+                                    offset,
+                                    Math.min(offset + MAX_FRAME_SIZE, data.length));
                             CryptoFrame frame = new CryptoFrame(payload, offset, payload.length);
                             stream = new ByteArrayOutputStream();
                             stream.writeBytes(writeFrame(frame));
@@ -177,11 +160,10 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
                     } else {
                         // produce enough crypto frames
                         for (int offset = 0; offset < data.length; offset += MAX_FRAME_SIZE) {
-                            byte[] payload =
-                                    Arrays.copyOfRange(
-                                            data,
-                                            offset,
-                                            Math.min(offset + MAX_FRAME_SIZE, data.length));
+                            byte[] payload = Arrays.copyOfRange(
+                                    data,
+                                    offset,
+                                    Math.min(offset + MAX_FRAME_SIZE, data.length));
                             CryptoFrame frame = new CryptoFrame(payload, offset, payload.length);
                             stream = new ByteArrayOutputStream();
                             stream.writeBytes(writeFrame(frame));
@@ -356,8 +338,7 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
                     outputStream.write(frame.getCryptoData().getValue());
                 }
                 CryptoFrame lastFrame = cryptoFrameBuffer.get(cryptoFrameBuffer.size() - 1);
-                long nextExpectedCryptoOffset =
-                        lastFrame.getOffset().getValue() + lastFrame.getLength().getValue();
+                long nextExpectedCryptoOffset = lastFrame.getOffset().getValue() + lastFrame.getLength().getValue();
                 if (!context.isHandshakeSecretsInitialized()) {
                     initialPhaseExpectedCryptoFrameOffset = nextExpectedCryptoOffset;
                 } else if (!context.isApplicationSecretsInitialized()) {
@@ -405,9 +386,8 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
             return false;
         }
         for (int i = 1; i < cryptoFrameBuffer.size(); i++) {
-            if (cryptoFrameBuffer.get(i).getOffset().getValue()
-                    != cryptoFrameBuffer.get(i - 1).getOffset().getValue()
-                            + cryptoFrameBuffer.get(i - 1).getLength().getValue()) {
+            if (cryptoFrameBuffer.get(i).getOffset().getValue() != cryptoFrameBuffer.get(i - 1).getOffset().getValue()
+                    + cryptoFrameBuffer.get(i - 1).getLength().getValue()) {
                 LOGGER.warn(
                         "Missing CryptoFrames in buffer: {}, lastSeenCryptoOffset={}",
                         cryptoBufferToString(),
@@ -421,11 +401,10 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
     private String cryptoBufferToString() {
         return cryptoFrameBuffer.stream()
                 .map(
-                        cryptoFrame ->
-                                "o: "
-                                        + cryptoFrame.getOffset().getValue()
-                                        + ", l: "
-                                        + cryptoFrame.getLength().getValue())
+                        cryptoFrame -> "o: "
+                                + cryptoFrame.getOffset().getValue()
+                                + ", l: "
+                                + cryptoFrame.getLength().getValue())
                 .collect(Collectors.joining(" | "));
     }
 
