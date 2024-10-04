@@ -9,11 +9,13 @@
 package de.rub.nds.tlsattacker.core.record;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -21,19 +23,28 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.layer.data.Handler;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
+import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
+import de.rub.nds.tlsattacker.core.layer.data.Handler;
 import de.rub.nds.tlsattacker.core.record.compressor.RecordCompressor;
 import de.rub.nds.tlsattacker.core.record.crypto.Encryptor;
 import de.rub.nds.tlsattacker.core.record.parser.RecordParser;
 import de.rub.nds.tlsattacker.core.record.preparator.RecordPreparator;
 import de.rub.nds.tlsattacker.core.record.serializer.RecordSerializer;
-import de.rub.nds.tlsattacker.core.util.SuppressingTrueBooleanAdapter;
-import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.util.List;
 import java.util.Objects;
 
-public class Record extends ModifiableVariableHolder implements DataContainer<Record, TlsContext> {
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
+public class Record extends ModifiableVariableHolder implements DataContainer<TlsContext> {
+
+    @XmlTransient
+    protected boolean shouldPrepareDefault = true;
 
     /** maximum length configuration for this record */
     private Integer maxRecordLengthConfig;
@@ -89,7 +100,8 @@ public class Record extends ModifiableVariableHolder implements DataContainer<Re
         this.maxRecordLengthConfig = config.getDefaultMaxRecordData();
     }
 
-    public Record() {}
+    public Record() {
+    }
 
     public Record(Integer maxRecordLengthConfig) {
         this.maxRecordLengthConfig = maxRecordLengthConfig;
@@ -97,11 +109,11 @@ public class Record extends ModifiableVariableHolder implements DataContainer<Re
 
     @Override
     public boolean shouldPrepare() {
-        return shouldPrepare;
+        return shouldPrepareDefault;
     }
 
     public void setShouldPrepare(boolean shouldPrepare) {
-        this.shouldPrepare = shouldPrepare;
+        this.shouldPrepareDefault = shouldPrepare;
     }
 
     public ModifiableInteger getLength() {
@@ -137,8 +149,7 @@ public class Record extends ModifiableVariableHolder implements DataContainer<Re
     }
 
     public void setProtocolVersion(byte[] array) {
-        this.protocolVersion =
-                ModifiableVariableFactory.safelySetValue(this.protocolVersion, array);
+        this.protocolVersion = ModifiableVariableFactory.safelySetValue(this.protocolVersion, array);
     }
 
     public ModifiableInteger getEpoch() {
@@ -162,8 +173,7 @@ public class Record extends ModifiableVariableHolder implements DataContainer<Re
     }
 
     public void setSequenceNumber(BigInteger sequenceNumber) {
-        this.sequenceNumber =
-                ModifiableVariableFactory.safelySetValue(this.sequenceNumber, sequenceNumber);
+        this.sequenceNumber = ModifiableVariableFactory.safelySetValue(this.sequenceNumber, sequenceNumber);
     }
 
     public ModifiableByteArray getConnectionId() {
@@ -171,8 +181,7 @@ public class Record extends ModifiableVariableHolder implements DataContainer<Re
     }
 
     public void setConnectionId(byte[] connectionId) {
-        this.connectionId =
-                ModifiableVariableFactory.safelySetValue(this.connectionId, connectionId);
+        this.connectionId = ModifiableVariableFactory.safelySetValue(this.connectionId, connectionId);
     }
 
     public void setConnectionId(ModifiableByteArray connectionId) {
@@ -197,8 +206,7 @@ public class Record extends ModifiableVariableHolder implements DataContainer<Re
     }
 
     public void adjustContext(TlsContext tlsContext) {
-        ProtocolVersion version =
-                ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue());
+        ProtocolVersion version = ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue());
         tlsContext.setLastRecordVersion(version);
     }
 
@@ -215,9 +223,8 @@ public class Record extends ModifiableVariableHolder implements DataContainer<Re
     }
 
     public void setCleanProtocolMessageBytes(byte[] cleanProtocolMessageBytes) {
-        this.cleanProtocolMessageBytes =
-                ModifiableVariableFactory.safelySetValue(
-                        this.cleanProtocolMessageBytes, cleanProtocolMessageBytes);
+        this.cleanProtocolMessageBytes = ModifiableVariableFactory.safelySetValue(
+                this.cleanProtocolMessageBytes, cleanProtocolMessageBytes);
     }
 
     public void setCleanProtocolMessageBytes(ModifiableByteArray cleanProtocolMessageBytes) {
@@ -233,8 +240,7 @@ public class Record extends ModifiableVariableHolder implements DataContainer<Re
     }
 
     public void setProtocolMessageBytes(byte[] bytes) {
-        this.protocolMessageBytes =
-                ModifiableVariableFactory.safelySetValue(this.protocolMessageBytes, bytes);
+        this.protocolMessageBytes = ModifiableVariableFactory.safelySetValue(this.protocolMessageBytes, bytes);
     }
 
     public Integer getMaxRecordLengthConfig() {
@@ -254,9 +260,8 @@ public class Record extends ModifiableVariableHolder implements DataContainer<Re
     }
 
     public void setCompleteRecordBytes(byte[] completeRecordBytes) {
-        this.completeRecordBytes =
-                ModifiableVariableFactory.safelySetValue(
-                        this.completeRecordBytes, completeRecordBytes);
+        this.completeRecordBytes = ModifiableVariableFactory.safelySetValue(
+                this.completeRecordBytes, completeRecordBytes);
     }
 
     public RecordCryptoComputations getComputations() {
@@ -282,6 +287,32 @@ public class Record extends ModifiableVariableHolder implements DataContainer<Re
                 + protocolVersion
                 + ", length="
                 + length
+                + '}';
+    }
+
+    @Override
+    public String toCompactString() {
+        String stringContentType = "unspecified";
+        String stringProtocolVersion = "unspecified";
+        String stringLength = "unspecified";
+        if (contentType != null) {
+            stringContentType = contentType.getValue().toString();
+        }
+        if (protocolVersion != null) {
+            stringContentType = ArrayConverter.bytesToHexString(protocolVersion.getValue());
+        }
+        if (length != null) {
+            stringLength = length.getValue().toString();
+        } else if (maxRecordLengthConfig != null) {
+            stringLength = maxRecordLengthConfig.toString();
+        }
+        return "Record{"
+                + "contentType="
+                + stringContentType
+                + ", protocolVersion="
+                + stringProtocolVersion
+                + ", length="
+                + stringLength
                 + '}';
     }
 
@@ -366,9 +397,7 @@ public class Record extends ModifiableVariableHolder implements DataContainer<Re
     }
 
     @Override
-    public Handler getHandler(TlsContext tlsContext) {
-        throw new UnsupportedOperationException(
-                "Not supported yet."); // To change body of generated methods, choose
-        // Tools | Templates.
+    public Handler<Record> getHandler(TlsContext tlsContext) {
+        return null; // TODO
     }
 }

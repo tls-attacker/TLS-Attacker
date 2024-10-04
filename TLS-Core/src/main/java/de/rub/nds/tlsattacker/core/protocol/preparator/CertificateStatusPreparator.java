@@ -19,7 +19,6 @@ public class CertificateStatusPreparator
     private static final Logger LOGGER = LogManager.getLogger();
 
     private static final int TYPE_OCSP = 1;
-    private static final int TYPE_OCSP_MULTI = 2;
     private final CertificateStatusMessage msg;
 
     public CertificateStatusPreparator(Chooser chooser, CertificateStatusMessage message) {

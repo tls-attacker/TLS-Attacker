@@ -12,12 +12,13 @@ import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * ReceiveConfiguration that receives a specific list of DataContainers. Any additional received
  * containers are marked as such.
  */
-public class SpecificReceiveLayerConfiguration<Container extends DataContainer>
+public class SpecificReceiveLayerConfiguration<Container extends DataContainer<?>>
         extends ReceiveLayerConfiguration<Container> {
 
     public SpecificReceiveLayerConfiguration(LayerType layerType, List<Container> containerList) {
@@ -107,5 +108,15 @@ public class SpecificReceiveLayerConfiguration<Container extends DataContainer>
             return true;
         }
         return !evaluateReceivedContainers(list, true);
+    }
+
+    @Override
+    public String toCompactString() {
+        return "("
+                + getLayerType().getName()
+                + ") Receive:"
+                + getContainerList().stream()
+                        .map(DataContainer::toCompactString)
+                        .collect(Collectors.joining(","));
     }
 }

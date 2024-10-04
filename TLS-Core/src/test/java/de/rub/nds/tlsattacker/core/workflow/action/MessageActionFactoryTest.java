@@ -55,7 +55,7 @@ public class MessageActionFactoryTest {
                 MessageActionFactory.createTLSAction(
                         config, serverConnection, ConnectionEndType.SERVER, new AlertMessage());
         assertEquals(SendAction.class, action.getClass());
-        assertEquals(1, action.messages.size());
+        assertEquals(1, ((SendAction) action).getConfiguredMessages().size());
     }
 
     /** Test of createAction method, of class MessageActionFactory. */
@@ -80,6 +80,6 @@ public class MessageActionFactoryTest {
                 MessageActionFactory.createTLSAction(
                         config, serverConnection, ConnectionEndType.SERVER, messages);
         assertEquals(SendAction.class, action.getClass());
-        assertEquals(2, action.messages.size());
+        assertEquals(2, ((SendAction) action).getConfiguredMessages().size());
     }
 }

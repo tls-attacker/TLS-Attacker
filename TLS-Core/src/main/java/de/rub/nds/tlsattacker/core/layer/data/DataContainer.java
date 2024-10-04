@@ -16,22 +16,23 @@ import java.io.InputStream;
  * with data it only needs to know how to parse, prepare, serialize and handle the message. All
  * messages must therefore provide this functionality.
  */
-public interface DataContainer<
-        Container extends DataContainer<?, ?>, Context extends LayerContext> {
+public interface DataContainer<Context extends LayerContext> {
 
-    public Parser<Container> getParser(Context context, InputStream stream);
+    public Parser<?> getParser(Context context, InputStream stream);
 
-    public Preparator<Container> getPreparator(Context context);
+    public Preparator<?> getPreparator(Context context);
 
-    public Serializer<Container> getSerializer(Context context);
+    public Serializer<?> getSerializer(Context context);
 
-    public Handler<Container> getHandler(Context context);
+    public Handler<?> getHandler(Context context);
 
     public default boolean isRequired() {
         return true;
     }
 
-    public boolean shouldPrepare();
+    public default boolean shouldPrepare() {
+        return true;
+    }
 
     public default String toCompactString() {
         return toString();

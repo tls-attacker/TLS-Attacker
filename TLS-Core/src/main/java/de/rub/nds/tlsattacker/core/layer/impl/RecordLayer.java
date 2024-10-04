@@ -8,11 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.layer.impl;
 
+import de.rub.nds.protocol.exception.EndOfStreamException;
+import de.rub.nds.protocol.exception.ParserException;
+import de.rub.nds.protocol.exception.PreparationException;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
-import de.rub.nds.tlsattacker.core.exceptions.ParserException;
-import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.exceptions.TimeoutException;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
@@ -107,7 +107,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
                 RecordSerializer serializer = record.getRecordSerializer();
                 byte[] serializedMessage = serializer.serialize();
                 record.setCompleteRecordBytes(serializedMessage);
-                getLowerLayer().sendData(null, serializedMessage);
+                getLowerLayer().sendData(null, record.getCompleteRecordBytes().getValue());
                 addProducedContainer(record);
             }
         }
@@ -140,10 +140,16 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
                     "Sending record without a LayerProcessing hint. Using \"UNKNOWN\" as the type");
         }
 
+        int maxDataSize;
+        if (context.getConfig().isRespectPeerRecordSizeLimitations()) {
+            maxDataSize = context.getChooser().getPeerReceiveLimit();
+        } else {
+            maxDataSize = context.getConfig().getDefaultMaxRecordData();
+        }
         // Generate records
         CleanRecordByteSeperator separator =
                 new CleanRecordByteSeperator(
-                        context.getChooser().getOutboundMaxRecordDataSize(),
+                        maxDataSize,
                         new ByteArrayInputStream(data),
                         context.getConfig().isCreateRecordsDynamically());
         List<Record> records = new LinkedList<>();
@@ -165,7 +171,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
                     int recordData =
                             (nextRecord.getMaxRecordLengthConfig() != null
                                     ? nextRecord.getMaxRecordLengthConfig()
-                                    : context.getChooser().getOutboundMaxRecordDataSize());
+                                    : maxDataSize);
                     dataToBeSent -= recordData;
                 }
             }
@@ -218,44 +224,49 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
         InputStream dataStream = getLowerLayer().getDataStream();
         RecordParser parser =
                 new RecordParser(dataStream, getDecryptorCipher().getState().getVersion(), context);
+        boolean receivedHintRecord = false;
         try {
-            Record record = new Record();
-            parser.parse(record);
-            // TODO it would be good to have a record handler here
-            ProtocolVersion protocolVersion =
-                    ProtocolVersion.getProtocolVersion(record.getProtocolVersion().getValue());
-            context.setLastRecordVersion(protocolVersion);
-            decryptor.decrypt(record);
-            decompressor.decompress(record);
-            addProducedContainer(record);
-            RecordLayerHint currentHint;
-            // extract the type of the message we just read
-            if (context.getChooser().getSelectedProtocolVersion().isDTLS()) {
-                currentHint =
-                        new RecordLayerHint(
-                                record.getContentMessageType(),
-                                record.getEpoch().getValue(),
-                                record.getSequenceNumber().getValue().intValue());
-            } else {
-                currentHint = new RecordLayerHint(record.getContentMessageType());
-            }
-            // only set the currentInputStream when we received the expected message
-            if (desiredHint == null || currentHint.equals(desiredHint)) {
-                if (currentInputStream == null) {
-                    // only set new input stream if necessary, extend current stream otherwise
-                    currentInputStream = new HintedLayerInputStream(currentHint, this);
+            while (!receivedHintRecord) {
+                Record record = new Record();
+                parser.parse(record);
+                // TODO it would be good to have a record handler here
+                ProtocolVersion protocolVersion =
+                        ProtocolVersion.getProtocolVersion(record.getProtocolVersion().getValue());
+                context.setLastRecordVersion(protocolVersion);
+                decryptor.decrypt(record);
+                decompressor.decompress(record);
+                addProducedContainer(record);
+                RecordLayerHint currentHint;
+                // extract the type of the message we just read
+                if (context.getChooser().getSelectedProtocolVersion().isDTLS()) {
+                    currentHint =
+                            new RecordLayerHint(
+                                    record.getContentMessageType(),
+                                    record.getEpoch().getValue(),
+                                    record.getSequenceNumber().getValue().intValue());
                 } else {
-                    currentInputStream.setHint(currentHint);
+                    currentHint = new RecordLayerHint(record.getContentMessageType());
                 }
-                currentInputStream.extendStream(record.getCleanProtocolMessageBytes().getValue());
-            } else {
-                if (nextInputStream == null) {
-                    // only set new input stream if necessary, extend current stream otherwise
-                    nextInputStream = new HintedLayerInputStream(currentHint, this);
+                // only set the currentInputStream when we received the expected message
+                if (desiredHint == null || currentHint.equals(desiredHint)) {
+                    receivedHintRecord = true;
+                    if (currentInputStream == null) {
+                        // only set new input stream if necessary, extend current stream otherwise
+                        currentInputStream = new HintedLayerInputStream(currentHint, this);
+                    } else {
+                        currentInputStream.setHint(currentHint);
+                    }
+                    currentInputStream.extendStream(
+                            record.getCleanProtocolMessageBytes().getValue());
                 } else {
-                    nextInputStream.setHint(currentHint);
+                    if (nextInputStream == null) {
+                        // only set new input stream if necessary, extend current stream otherwise
+                        nextInputStream = new HintedLayerInputStream(currentHint, this);
+                    } else {
+                        nextInputStream.setHint(currentHint);
+                    }
+                    nextInputStream.extendStream(record.getCleanProtocolMessageBytes().getValue());
                 }
-                nextInputStream.extendStream(record.getCleanProtocolMessageBytes().getValue());
             }
         } catch (ParserException e) {
             setUnreadBytes(parser.getAlreadyParsed());
@@ -276,7 +287,8 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
             setReachedTimeout(true);
         } catch (EndOfStreamException ex) {
             setUnreadBytes(parser.getAlreadyParsed());
-            LOGGER.debug("Reached end of stream, cannot parse more records", ex);
+            LOGGER.debug("Reached end of stream, cannot parse more records");
+            LOGGER.trace(ex);
             throw ex;
         }
     }

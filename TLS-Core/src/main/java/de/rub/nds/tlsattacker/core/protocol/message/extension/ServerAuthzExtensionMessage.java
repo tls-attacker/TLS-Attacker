@@ -23,7 +23,7 @@ import java.io.InputStream;
 
 /** This extension is defined in RFC5878 */
 @XmlRootElement(name = "ServerAuthorizationExtension")
-public class ServerAuthzExtensionMessage extends ExtensionMessage<ServerAuthzExtensionMessage> {
+public class ServerAuthzExtensionMessage extends ExtensionMessage {
 
     @ModifiableVariableProperty private ModifiableInteger authzFormatListLength;
     @ModifiableVariableProperty private ModifiableByteArray authzFormatList;

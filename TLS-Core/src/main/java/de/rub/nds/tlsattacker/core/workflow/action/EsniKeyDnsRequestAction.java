@@ -12,7 +12,6 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EsniKeyRecord;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.EsniKeyRecordParser;
 import de.rub.nds.tlsattacker.core.state.State;
 import jakarta.xml.bind.annotation.XmlRootElement;
@@ -27,12 +26,12 @@ import org.apache.logging.log4j.Logger;
 import org.xbill.DNS.*;
 import org.xbill.DNS.Record;
 
-@XmlRootElement
+@XmlRootElement(name = "EsniKeyDnsRequest")
 public class EsniKeyDnsRequestAction extends TlsAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private List<ExtensionMessage> extensions;
+    private boolean asPlanned = false;
 
     @Override
     public void execute(State state) throws ActionExecutionException {
@@ -54,10 +53,12 @@ public class EsniKeyDnsRequestAction extends TlsAction {
         } catch (TextParseException e) {
             LOGGER.error("Cannot send DNS query for ip addresses");
             setExecuted(true);
+            asPlanned = false;
             return;
         } catch (UnknownHostException e) {
             LOGGER.warn("Could not reach Cloudflare DNS server");
             setExecuted(true);
+            asPlanned = false;
             return;
         }
         // create DNS query
@@ -65,13 +66,14 @@ public class EsniKeyDnsRequestAction extends TlsAction {
         Message message = Message.newQuery(record);
         Message answer;
 
-        LOGGER.debug("Sending DNS request to get ESNI Resource Record for: " + hostname);
+        LOGGER.debug("Sending DNS request to get ESNI Resource Record for: {}", hostname);
         // send Message and read answer
         try {
             answer = resolver.send(message);
         } catch (IOException e) {
             LOGGER.warn("Failed to send DNS query");
             setExecuted(true);
+            asPlanned = false;
             return;
         }
 
@@ -87,8 +89,9 @@ public class EsniKeyDnsRequestAction extends TlsAction {
         }
 
         if (esniKeyRecords.isEmpty()) {
-            LOGGER.warn("No ESNI DNS Resource Record available for " + hostname);
+            LOGGER.warn("No ESNI DNS Resource Record available for {}", hostname);
             setExecuted(true);
+            asPlanned = false;
             return;
         }
 
@@ -99,14 +102,14 @@ public class EsniKeyDnsRequestAction extends TlsAction {
             esniKeyRecordBytes = Base64.getMimeDecoder().decode(esniKeyRecordStr);
         } catch (IllegalArgumentException e) {
             LOGGER.warn(
-                    "Failed to base64 decode Resource Record for"
-                            + hostname
-                            + ". Resource Record: "
-                            + esniKeyRecordStr);
+                    "Failed to base64 decode Resource Record for {}. Resource Record: {}",
+                    hostname,
+                    esniKeyRecordStr);
             setExecuted(true);
+            asPlanned = false;
             return;
         }
-        LOGGER.debug("esniKeyRecordStr :" + esniKeyRecordStr);
+        LOGGER.debug("esniKeyRecordStr: {}", esniKeyRecordStr);
         LOGGER.debug("esniKeyRecordBytes: {}", esniKeyRecordBytes);
 
         EsniKeyRecordParser esniKeyParser =
@@ -122,17 +125,18 @@ public class EsniKeyDnsRequestAction extends TlsAction {
         tlsContext.setEsniPaddedLength(esniKeyRecord.getPaddedLength());
         tlsContext.setEsniKeysNotBefore(esniKeyRecord.getNotBefore());
         tlsContext.setEsniKeysNotAfter(esniKeyRecord.getNotAfter());
-        extensions = esniKeyRecord.getExtensions();
+        asPlanned = true;
         setExecuted(true);
     }
 
     @Override
     public void reset() {
         setExecuted(false);
+        asPlanned = false;
     }
 
     @Override
     public boolean executedAsPlanned() {
-        return isExecuted();
+        return isExecuted() && asPlanned;
     }
 }

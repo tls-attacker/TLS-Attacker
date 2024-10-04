@@ -56,6 +56,8 @@ public abstract class LayerConfiguration<Container extends DataContainer> {
         return layerType;
     }
 
+    public abstract String toCompactString();
+
     public List<DataContainerFilter> getContainerFilterList() {
         return containerFilterList;
     }

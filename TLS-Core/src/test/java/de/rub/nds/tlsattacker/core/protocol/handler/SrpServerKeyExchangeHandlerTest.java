@@ -33,8 +33,8 @@ public class SrpServerKeyExchangeHandlerTest
         message.setSalt(BigInteger.TEN.toByteArray());
         message.setPublicKey(new byte[] {0, 1, 2, 3});
         context.setSelectedCipherSuite(CipherSuite.TLS_SRP_SHA_WITH_AES_128_CBC_SHA);
-        message.prepareComputations();
-        message.getComputations().setPrivateKey(BigInteger.ZERO);
+        message.prepareKeyExchangeComputations();
+        message.getKeyExchangeComputations().setPrivateKey(BigInteger.ZERO);
         handler.adjustContext(message);
 
         assertEquals(BigInteger.TEN, context.getSRPModulus());

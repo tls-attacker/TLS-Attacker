@@ -13,23 +13,18 @@ import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
-import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
-import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStreamAdapterStream;
+import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerInputStream;
 import de.rub.nds.tlsattacker.transport.udp.UdpTransportHandler;
+import de.rub.nds.udp.UdpDataPacket;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * The UDP layer is a wrapper around an underlying UDP socket. It forwards the sockets InputStream
  * for reading and sends any data over the UDP layer without modifications.
  */
-public class UdpLayer
-        extends ProtocolLayer<LayerProcessingHint, DataContainer> { // TODO change types
-
-    private static Logger LOGGER = LogManager.getLogger();
+public class UdpLayer extends ProtocolLayer<LayerProcessingHint, UdpDataPacket> {
 
     private final TlsContext context;
 
@@ -40,10 +35,13 @@ public class UdpLayer
 
     @Override
     public LayerProcessingResult sendConfiguration() throws IOException {
-        LayerConfiguration<DataContainer> configuration = getLayerConfiguration();
-        if (configuration != null && configuration.getContainerList() != null) {
-            for (DataContainer container : getUnprocessedConfiguredContainers()) {
-                // TODO Send container data
+        LayerConfiguration<UdpDataPacket> configuration = getLayerConfiguration();
+        if (configuration != null) {
+            for (UdpDataPacket udpDataPacket : getUnprocessedConfiguredContainers()) {
+                prepareDataContainer(udpDataPacket, context);
+                addProducedContainer(udpDataPacket);
+                UdpTransportHandler handler = getTransportHandler();
+                handler.sendData(udpDataPacket.getSerializer(context).serialize());
             }
         }
         return getLayerResult();
@@ -53,24 +51,38 @@ public class UdpLayer
     @Override
     public LayerProcessingResult sendData(LayerProcessingHint hint, byte[] data)
             throws IOException {
+        UdpDataPacket udpDataPacket;
+        if (getUnprocessedConfiguredContainers().isEmpty()) {
+            udpDataPacket = new UdpDataPacket();
+        } else {
+            udpDataPacket = getUnprocessedConfiguredContainers().get(0);
+        }
+        udpDataPacket.setConfigData(data);
+        prepareDataContainer(udpDataPacket, context);
+        addProducedContainer(udpDataPacket);
         UdpTransportHandler handler = getTransportHandler();
-        handler.sendData(data);
-        return new LayerProcessingResult(null, getLayerType(), true); // Not implemented
+        handler.sendData(udpDataPacket.getSerializer(context).serialize());
+        return getLayerResult();
     }
 
     @Override
     public void receiveMoreDataForHint(LayerProcessingHint hint) throws IOException {
-        // There is nothing we can do here to fill up our stream, either there is data in it
-        // or not
+        byte[] receivedPacket = getTransportHandler().fetchData();
+        UdpDataPacket udpDataPacket = new UdpDataPacket();
+        udpDataPacket
+                .getParser(context, new ByteArrayInputStream(receivedPacket))
+                .parse(udpDataPacket);
+        udpDataPacket.getPreparator(context).prepareAfterParse();
+        udpDataPacket.getHandler(context).adjustContext(udpDataPacket);
+        addProducedContainer(udpDataPacket);
+        if (currentInputStream == null) {
+            currentInputStream = new HintedLayerInputStream(null, this);
+            currentInputStream.extendStream(receivedPacket);
+        } else {
+            currentInputStream.extendStream(receivedPacket);
+        }
     }
 
-    @Override
-    public HintedInputStream getDataStream() {
-        getTransportHandler().setTimeout(getTransportHandler().getTimeout());
-        return new HintedInputStreamAdapterStream(null, getTransportHandler().getInputStream());
-    }
-
-    /** Returns the InputStream associated with the UDP socket. */
     @Override
     public LayerProcessingResult receiveData() {
         return new LayerProcessingResult(null, getLayerType(), true);

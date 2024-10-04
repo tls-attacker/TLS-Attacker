@@ -10,13 +10,13 @@ package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.util.ProviderUtil;
 import java.security.Provider;
 import java.security.Security;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 public class GeneralDelegate extends Delegate {
 
@@ -73,9 +73,9 @@ public class GeneralDelegate extends Delegate {
 
     @Override
     public void applyDelegate(Config config) {
-        Security.addProvider(new BouncyCastleProvider());
+        ProviderUtil.addBouncyCastleProvider();
         if (isDebug()) {
-            Configurator.setAllLevels("de.rub.nds.tlsattacker", Level.DEBUG);
+            Configurator.setAllLevels("de.rub.nds", Level.DEBUG);
         } else if (quiet) {
             Configurator.setAllLevels("de.rub.nds.tlsattacker", Level.OFF);
         }

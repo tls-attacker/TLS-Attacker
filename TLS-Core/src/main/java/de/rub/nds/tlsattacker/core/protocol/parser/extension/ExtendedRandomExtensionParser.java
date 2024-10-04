@@ -8,8 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import static de.rub.nds.modifiablevariable.util.ArrayConverter.bytesToHexString;
-
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedRandomExtensionMessage;
@@ -33,9 +31,7 @@ public class ExtendedRandomExtensionParser extends ExtensionParser<ExtendedRando
     public void parse(ExtendedRandomExtensionMessage msg) {
         parseExtendedRandomLength(msg);
         msg.setExtendedRandom(parseByteArrayField(msg.getExtendedRandomLength().getValue()));
-        LOGGER.debug(
-                "The extended Random TLS parser parsed the value "
-                        + bytesToHexString(msg.getExtendedRandom()));
+        LOGGER.debug("The extended Random TLS parser parsed the value {}", msg.getExtendedRandom());
     }
 
     private void parseExtendedRandomLength(ExtendedRandomExtensionMessage msg) {

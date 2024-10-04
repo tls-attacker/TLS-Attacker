@@ -8,16 +8,17 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
+import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
+import de.rub.nds.protocol.crypto.ec.Point;
+import de.rub.nds.protocol.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.crypto.ec.Point;
-import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ECDHEServerKeyExchangeHandler<T extends ECDHEServerKeyExchangeMessage<?>>
-        extends ServerKeyExchangeHandler<T> {
+public class ECDHEServerKeyExchangeHandler<KeyExchangeMessage extends ECDHEServerKeyExchangeMessage>
+        extends ServerKeyExchangeHandler<KeyExchangeMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -26,10 +27,13 @@ public class ECDHEServerKeyExchangeHandler<T extends ECDHEServerKeyExchangeMessa
     }
 
     @Override
-    public void adjustContext(T message) {
+    public void adjustContext(KeyExchangeMessage message) {
         adjustECParameter(message);
-        if (message.getComputations() != null) {
-            tlsContext.setServerEcPrivateKey(message.getComputations().getPrivateKey().getValue());
+        adjustSelectedSignatureAndHashAlgorithm(message);
+
+        if (message.getKeyExchangeComputations() != null) {
+            tlsContext.setServerEphemeralEcPrivateKey(
+                    message.getKeyExchangeComputations().getPrivateKey().getValue());
         }
     }
 
@@ -41,8 +45,10 @@ public class ECDHEServerKeyExchangeHandler<T extends ECDHEServerKeyExchangeMessa
 
             LOGGER.debug("Adjusting EC Point");
             Point publicKeyPoint =
-                    PointFormatter.formatFromByteArray(group, message.getPublicKey().getValue());
-            tlsContext.setServerEcPublicKey(publicKeyPoint);
+                    PointFormatter.formatFromByteArray(
+                            (NamedEllipticCurveParameters) group.getGroupParameters(),
+                            message.getPublicKey().getValue());
+            tlsContext.setServerEphemeralEcPublicKey(publicKeyPoint);
         } else {
             LOGGER.warn("Could not adjust server public key, named group is unknown.");
         }

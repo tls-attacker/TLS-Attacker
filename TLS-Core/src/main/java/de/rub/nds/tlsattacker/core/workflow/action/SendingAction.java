@@ -8,27 +8,33 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tcp.TcpStreamContainer;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
+import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
+import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.record.Record;
-import java.util.ArrayList;
+import de.rub.nds.udp.UdpDataPacket;
 import java.util.List;
+import java.util.Set;
 
 public interface SendingAction {
 
-    public abstract List<ProtocolMessage<?>> getSendMessages();
+    public abstract List<ProtocolMessage> getSentMessages();
 
-    public abstract List<Record> getSendRecords();
+    public abstract List<Record> getSentRecords();
 
-    public abstract List<DtlsHandshakeMessageFragment> getSendFragments();
+    public abstract List<DtlsHandshakeMessageFragment> getSentFragments();
 
-    public default List<ProtocolMessageType> getGoingToSendProtocolMessageTypes() {
-        return new ArrayList<>();
-    }
+    public abstract List<QuicPacket> getSentQuicPackets();
 
-    public default List<HandshakeMessageType> getGoingToSendHandshakeMessageTypes() {
-        return new ArrayList<>();
-    }
+    public abstract List<QuicFrame> getSentQuicFrames();
+
+    public abstract List<TcpStreamContainer> getSentTcpStreamContainers();
+
+    public abstract List<UdpDataPacket> getSentUdpDataPackets();
+
+    public Set<String> getAllAliases();
+
+    public Set<String> getAllSendingAliases();
 }

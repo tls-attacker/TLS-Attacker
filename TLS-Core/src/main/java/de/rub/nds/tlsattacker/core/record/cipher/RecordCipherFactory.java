@@ -26,10 +26,7 @@ public class RecordCipherFactory {
         try {
             if (tlsContext.getChooser().getSelectedCipherSuite() == null
                     || !cipherSuite.isImplemented()) {
-                LOGGER.warn(
-                        "Cipher "
-                                + cipherSuite.name()
-                                + " not implemented. Using Null Cipher instead");
+                LOGGER.warn("Cipher {} not implemented. Using Null Cipher instead", cipherSuite);
                 return getNullCipher(tlsContext);
             } else {
                 CipherType type = AlgorithmResolver.getCipherType(cipherSuite);
@@ -48,7 +45,7 @@ public class RecordCipherFactory {
                     case STREAM:
                         return new RecordStreamCipher(tlsContext, state);
                     default:
-                        LOGGER.warn("UnknownCipherType:" + type.name());
+                        LOGGER.warn("UnknownCipherType: {}", type);
                         return new RecordNullCipher(tlsContext, state);
                 }
             }

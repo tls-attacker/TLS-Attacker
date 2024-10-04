@@ -8,10 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.layer.impl;
 
+import de.rub.nds.protocol.exception.EndOfStreamException;
 import de.rub.nds.tlsattacker.core.constants.SSL2MessageType;
 import de.rub.nds.tlsattacker.core.constants.SSL2TotalHeaderLengths;
 import de.rub.nds.tlsattacker.core.constants.ssl.SSL2ByteLength;
-import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
 import de.rub.nds.tlsattacker.core.exceptions.TimeoutException;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
@@ -22,9 +22,15 @@ import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.hints.RecordLayerHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageSerializer;
-import de.rub.nds.tlsattacker.core.protocol.message.*;
+import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientMasterKeyMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.SSL2Message;
+import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerVerifyMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.UnknownSSL2Message;
 import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -42,17 +48,20 @@ public class SSL2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
     @Override
     public LayerProcessingResult sendConfiguration() throws IOException {
         LayerConfiguration<ProtocolMessage> configuration = getLayerConfiguration();
-        if (configuration != null && !configuration.getContainerList().isEmpty()) {
+        if (configuration != null
+                && configuration.getContainerList() != null
+                && !configuration.getContainerList().isEmpty()) {
             for (ProtocolMessage ssl2message : getUnprocessedConfiguredContainers()) {
                 ProtocolMessagePreparator preparator = ssl2message.getPreparator(context);
                 preparator.prepare();
                 preparator.afterPrepare();
-                ssl2message.getHandler(context).adjustContext(ssl2message);
+                ProtocolMessageHandler handler = ssl2message.getHandler(context);
+                handler.adjustContext(ssl2message);
                 ProtocolMessageSerializer serializer = ssl2message.getSerializer(context);
                 byte[] serializedMessage = serializer.serialize();
                 ssl2message.setCompleteResultingMessage(serializedMessage);
-                ssl2message.getHandler(context).adjustContextAfterSerialize(ssl2message);
-                ssl2message.getHandler(context).updateDigest(ssl2message, true);
+                handler.adjustContextAfterSerialize(ssl2message);
+                handler.updateDigest(ssl2message, true);
                 getLowerLayer()
                         .sendData(
                                 new RecordLayerHint(ssl2message.getProtocolMessageType()),
@@ -71,7 +80,6 @@ public class SSL2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
     @Override
     public LayerProcessingResult receiveData() {
-
         try {
             int messageLength = 0;
             byte paddingLength = 0;
@@ -79,10 +87,13 @@ public class SSL2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
             HintedInputStream dataStream = null;
             SSL2MessageType messageType;
             try {
-
                 dataStream = getLowerLayer().getDataStream();
-                totalHeader = dataStream.readNBytes(SSL2ByteLength.LENGTH);
+                if (dataStream.available() == 0) {
+                    LOGGER.debug("Reached end of stream, cannot parse more messages");
+                    return getLayerResult();
+                }
 
+                totalHeader = dataStream.readNBytes(SSL2ByteLength.LENGTH);
                 if (SSL2TotalHeaderLengths.isNoPaddingHeader(totalHeader[0])) {
                     messageLength = resolveUnpaddedMessageLength(totalHeader);
                     paddingLength = 0x00;
@@ -98,7 +109,6 @@ public class SSL2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
             }
 
             SSL2Message message = null;
-
             switch (messageType) {
                 case SSL_CLIENT_HELLO:
                     message = new SSL2ClientHelloMessage();
@@ -115,14 +125,12 @@ public class SSL2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
                 default:
                     message = new UnknownSSL2Message();
             }
-
             message.setType((byte) messageType.getType());
             message.setMessageLength(messageLength);
             message.setPaddingLength((int) paddingLength);
             readDataContainer(message, context);
-
         } catch (TimeoutException ex) {
-            LOGGER.debug(ex);
+            LOGGER.debug("Received a timeout");
         } catch (EndOfStreamException ex) {
             LOGGER.debug("Reached end of stream, cannot parse more messages", ex);
         }

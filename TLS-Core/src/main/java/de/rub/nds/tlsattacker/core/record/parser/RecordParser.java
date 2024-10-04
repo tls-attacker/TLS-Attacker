@@ -56,12 +56,12 @@ public class RecordParser extends Parser<Record> {
 
     private void parseEpoch(Record record) {
         record.setEpoch(parseIntField(RecordByteLength.DTLS_EPOCH));
-        LOGGER.debug("Epoch: " + record.getEpoch().getValue());
+        LOGGER.debug("Epoch: {}", record.getEpoch().getValue());
     }
 
     private void parseSequenceNumber(Record record) {
         record.setSequenceNumber(parseBigIntField(RecordByteLength.DTLS_SEQUENCE_NUMBER));
-        LOGGER.debug("SequenceNumber: " + record.getSequenceNumber().getValue());
+        LOGGER.debug("SequenceNumber: {}", record.getSequenceNumber().getValue());
     }
 
     private void parseConnectionId(Record record) {
@@ -79,7 +79,7 @@ public class RecordParser extends Parser<Record> {
 
     private void parseContentType(Record record) {
         record.setContentType(parseByteField(RecordByteLength.CONTENT_TYPE));
-        LOGGER.debug("ContentType: " + record.getContentType().getValue());
+        LOGGER.debug("ContentType: {}", record.getContentType().getValue());
     }
 
     private void parseVersion(Record record) {
@@ -89,7 +89,7 @@ public class RecordParser extends Parser<Record> {
 
     private void parseLength(Record record) {
         record.setLength(parseIntField(RecordByteLength.RECORD_LENGTH));
-        LOGGER.debug("Length: " + record.getLength().getValue());
+        LOGGER.debug("Length: {}", record.getLength().getValue());
     }
 
     private void parseProtocolMessageBytes(Record record) {

@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
+import de.rub.nds.tlsattacker.core.unittest.helper.FakeTcpTransportHandler;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.IOException;
@@ -30,7 +30,7 @@ public class TlsAttackerSocketTest {
     private State state;
     private Context context;
 
-    private FakeTransportHandler transportHandler;
+    private FakeTcpTransportHandler transportHandler;
 
     public TlsAttackerSocketTest() {}
 
@@ -40,7 +40,7 @@ public class TlsAttackerSocketTest {
         state = new State(config, new WorkflowTrace());
         context = state.getContext();
         context.getTlsContext().setSelectedProtocolVersion(ProtocolVersion.TLS12);
-        transportHandler = new FakeTransportHandler(ConnectionEndType.CLIENT);
+        transportHandler = new FakeTcpTransportHandler(ConnectionEndType.CLIENT);
         context.getTcpContext().setTransportHandler(transportHandler);
         socket = new TlsAttackerSocket(state);
     }
@@ -53,7 +53,7 @@ public class TlsAttackerSocketTest {
     @Test
     public void testSendRawBytes() throws IOException {
         socket.sendRawBytes(new byte[] {1, 2, 3});
-        assertArrayEquals(new byte[] {1, 2, 3}, transportHandler.getSendByte());
+        assertArrayEquals(new byte[] {1, 2, 3}, transportHandler.getSentBytes());
     }
 
     /**
@@ -72,7 +72,7 @@ public class TlsAttackerSocketTest {
     @Test
     public void testSendString() {
         socket.send("test");
-        byte[] sentBytes = transportHandler.getSendByte();
+        byte[] sentBytes = transportHandler.getSentBytes();
         assertArrayEquals(
                 sentBytes,
                 ArrayConverter.concatenate(
@@ -84,7 +84,7 @@ public class TlsAttackerSocketTest {
     @Test
     public void testSendByteArray() {
         socket.send(new byte[] {0, 1, 2, 3});
-        byte[] sentBytes = transportHandler.getSendByte();
+        byte[] sentBytes = transportHandler.getSentBytes();
         assertArrayEquals(sentBytes, new byte[] {0x17, 0x03, 0x03, 0x00, 0x04, 0, 1, 2, 3});
     }
 

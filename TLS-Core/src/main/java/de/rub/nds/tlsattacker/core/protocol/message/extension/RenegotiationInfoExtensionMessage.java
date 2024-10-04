@@ -23,8 +23,7 @@ import java.io.InputStream;
 
 /** This extension is defined in RFC5746 */
 @XmlRootElement(name = "RenegotiationInfoExtension")
-public class RenegotiationInfoExtensionMessage
-        extends ExtensionMessage<RenegotiationInfoExtensionMessage> {
+public class RenegotiationInfoExtensionMessage extends ExtensionMessage {
 
     @ModifiableVariableProperty private ModifiableByteArray renegotiationInfo;
 

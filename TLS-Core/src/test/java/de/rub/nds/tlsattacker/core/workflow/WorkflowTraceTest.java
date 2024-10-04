@@ -11,11 +11,22 @@ package de.rub.nds.tlsattacker.core.workflow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.layer.LayerStack;
+import de.rub.nds.tlsattacker.core.layer.impl.MessageLayer;
+import de.rub.nds.tlsattacker.core.layer.impl.TcpLayer;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
-import de.rub.nds.tlsattacker.core.workflow.action.*;
+import de.rub.nds.tlsattacker.core.state.State;
+import de.rub.nds.tlsattacker.core.unittest.helper.FakeTcpTransportHandler;
+import de.rub.nds.tlsattacker.core.workflow.action.ChangeCipherSuiteAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ChangeClientRandomAction;
+import de.rub.nds.tlsattacker.core.workflow.action.DummyReceivingAction;
+import de.rub.nds.tlsattacker.core.workflow.action.DummySendingAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
+import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
+import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import java.util.LinkedList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -25,11 +36,14 @@ public class WorkflowTraceTest {
 
     private WorkflowTrace trace;
     private Config config;
+    private State state;
+    private FakeTcpTransportHandler fakeTransportHandler;
 
     @BeforeEach
     public void setUp() {
-        config = Config.createConfig();
+        config = new Config();
         trace = new WorkflowTrace();
+        fakeTransportHandler = new FakeTcpTransportHandler(null);
     }
 
     /** Test of makeGeneric method, of class WorkflowTrace. */
@@ -137,9 +151,9 @@ public class WorkflowTraceTest {
         assertEquals(new ReceiveAction(), trace.getReceivingActions().get(0));
     }
 
-    /** Test of getSendActions method, of class WorkflowTrace. */
+    /** Test of testGetSendingActions method, of class WorkflowTrace. */
     @Test
-    public void testGetSendActions() {
+    public void testGetSendingActions() {
         trace.addTlsAction(new SendAction());
         trace.addTlsAction(new ReceiveAction());
         trace.addTlsAction(new ChangeClientRandomAction());
@@ -177,7 +191,7 @@ public class WorkflowTraceTest {
         assertEquals(new ReceiveAction(), trace.getLastMessageAction());
     }
 
-    /** Test of executedAsPlanned method, of class WorkflowTrace. */
+    /** Test of configuredLooksLikeActual method, of class WorkflowTrace. */
     @Test
     @Disabled("Not implemented")
     public void testConfiguredLooksLikeActual() {}
@@ -198,42 +212,57 @@ public class WorkflowTraceTest {
 
     @Test
     public void testGetFirstReceivedMessage() {
-        SendAction sClientHello = new SendAction();
-        sClientHello.setMessages(new ClientHelloMessage());
+        DummySendingAction sendClientHelloAction = new DummySendingAction(new ClientHelloMessage());
+        DummySendingAction sendHeartbeatAction = new DummySendingAction(new HeartbeatMessage());
+        AlertMessage alertMessage = new AlertMessage();
+        ServerHelloMessage serverHelloMessage = new ServerHelloMessage();
 
-        SendAction sHeartbeat = new SendAction();
-        sHeartbeat.setMessages(new HeartbeatMessage());
+        DummyReceivingAction receiveAlertMessageAction = new DummyReceivingAction(alertMessage);
+        DummyReceivingAction receiveServerHelloAction =
+                new DummyReceivingAction(serverHelloMessage);
 
-        AlertMessage am = new AlertMessage();
-        ServerHelloMessage shm = new ServerHelloMessage();
+        trace.addTlsActions(
+                sendClientHelloAction,
+                receiveAlertMessageAction,
+                sendHeartbeatAction,
+                receiveServerHelloAction);
 
-        ReceiveAction rca = new ReceiveAction();
-        ReceiveAction sha = new ReceiveAction();
-
-        rca.setMessages(am);
-        sha.setMessages(shm);
-
-        trace.addTlsActions(sClientHello, rca, sHeartbeat, sha);
-        assertEquals(am, trace.getFirstReceivedMessage(AlertMessage.class));
-        assertEquals(shm, trace.getFirstReceivedMessage(ServerHelloMessage.class));
+        state = new State(config, trace);
+        assertEquals(alertMessage, trace.getFirstReceivedMessage(AlertMessage.class));
+        assertEquals(serverHelloMessage, trace.getLastReceivedMessage(ServerHelloMessage.class));
     }
 
-    @Test
-    public void testGetFirstSendMessage() {
-        ReceiveAction rcvAlertMessage = new ReceiveAction();
-        rcvAlertMessage.setMessages(new AlertMessage());
+    public void testGetFirstSentMessage() {
+        ReceiveAction receiveAlertMessageAction = new ReceiveAction();
+        receiveAlertMessageAction.setExpectedMessages(new AlertMessage());
 
-        ReceiveAction rcvServerHello = new ReceiveAction();
-        rcvServerHello.setMessages(new ServerHelloMessage());
+        ReceiveAction receiveServerHelloAction = new ReceiveAction();
+        receiveServerHelloAction.setExpectedMessages(new ServerHelloMessage());
 
-        ClientHelloMessage ch = new ClientHelloMessage(config);
-        HeartbeatMessage hb = new HeartbeatMessage();
+        ClientHelloMessage clientHello = new ClientHelloMessage(config);
+        HeartbeatMessage heartbeat = new HeartbeatMessage();
 
-        SendAction sch = new SendAction(ch);
-        SendAction shb = new SendAction(hb);
+        SendAction sendClientHelloAction = new SendAction(clientHello);
+        SendAction sendHeartbeatAction = new SendAction(heartbeat);
 
-        trace.addTlsActions(sch, rcvAlertMessage, shb, rcvServerHello);
-        assertEquals(ch, trace.getFirstSendMessage(ClientHelloMessage.class));
-        assertEquals(hb, trace.getFirstSendMessage(HeartbeatMessage.class));
+        trace.addTlsActions(
+                sendClientHelloAction,
+                receiveAlertMessageAction,
+                sendHeartbeatAction,
+                receiveServerHelloAction);
+        state = new State(config, trace);
+
+        state.getTlsContext().setTransportHandler(fakeTransportHandler);
+        state.getContext()
+                .setLayerStack(
+                        new LayerStack(
+                                state.getContext(),
+                                new MessageLayer(state.getTlsContext()),
+                                new TcpLayer(state.getTcpContext())));
+        sendClientHelloAction.execute(state);
+        sendHeartbeatAction.execute(state);
+
+        assertEquals(clientHello, trace.getFirstSentMessage(ClientHelloMessage.class));
+        assertEquals(heartbeat, trace.getFirstSentMessage(HeartbeatMessage.class));
     }
 }

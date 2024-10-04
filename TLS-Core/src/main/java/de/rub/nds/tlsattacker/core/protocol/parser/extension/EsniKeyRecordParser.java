@@ -76,7 +76,7 @@ public class EsniKeyRecordParser extends Parser<EsniKeyRecord> {
     private void parseChecksum(EsniKeyRecord record) {
         byte[] checksum = this.parseByteArrayField(ExtensionByteLength.ESNI_RECORD_CHECKSUM);
         record.setChecksum(checksum);
-        LOGGER.debug("Checksum: " + ArrayConverter.bytesToHexString(record.getChecksum()));
+        LOGGER.debug("Checksum: {}", record.getChecksum());
     }
 
     private void parsePublicName(EsniKeyRecord record) {
@@ -108,8 +108,8 @@ public class EsniKeyRecordParser extends Parser<EsniKeyRecord> {
                     ExtensionByteLength.KEY_SHARE_GROUP
                             + ExtensionByteLength.KEY_SHARE_LENGTH
                             + keyExchangeLen;
-            LOGGER.debug("namedGroup: " + ArrayConverter.bytesToHexString(namedGroup));
-            LOGGER.debug("keyExchange: " + ArrayConverter.bytesToHexString(keyExchange));
+            LOGGER.debug("namedGroup: {}", namedGroup);
+            LOGGER.debug("keyExchange: {}", keyExchange);
         }
     }
 

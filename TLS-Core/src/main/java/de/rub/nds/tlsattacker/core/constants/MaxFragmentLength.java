@@ -13,17 +13,20 @@ import java.util.Map;
 import java.util.Random;
 
 public enum MaxFragmentLength {
-    TWO_9((byte) 1),
-    TWO_10((byte) 2),
-    TWO_11((byte) 3),
-    TWO_12((byte) 4);
+    TWO_9((byte) 1, 512),
+    TWO_10((byte) 2, 1024),
+    TWO_11((byte) 3, 2048),
+    TWO_12((byte) 4, 4096);
 
     private byte value;
 
+    private int lengthValue;
+
     private static final Map<Byte, MaxFragmentLength> MAP;
 
-    private MaxFragmentLength(byte value) {
+    private MaxFragmentLength(byte value, int lengthValue) {
         this.value = value;
+        this.lengthValue = lengthValue;
     }
 
     static {
@@ -35,22 +38,6 @@ public enum MaxFragmentLength {
 
     public static MaxFragmentLength getMaxFragmentLength(byte value) {
         return MAP.get(value);
-    }
-
-    public static Integer getIntegerRepresentation(MaxFragmentLength maxFragmentLength) {
-        switch (maxFragmentLength) {
-            case TWO_9:
-                return 512;
-            case TWO_10:
-                return 1024;
-            case TWO_11:
-                return 2048;
-            case TWO_12:
-                return 4096;
-                // this SHOULD be unreachable
-            default:
-                return null;
-        }
     }
 
     public byte getValue() {
@@ -68,5 +55,9 @@ public enum MaxFragmentLength {
             c = (MaxFragmentLength) o[random.nextInt(o.length)];
         }
         return c;
+    }
+
+    public int getReceiveLimit() {
+        return lengthValue;
     }
 }

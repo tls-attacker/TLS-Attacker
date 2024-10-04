@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.*;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.quic.QuicTransportParametersExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
@@ -24,8 +25,7 @@ import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public abstract class CoreClientHelloMessage<Self extends CoreClientHelloMessage<?>>
-        extends HelloMessage<Self> {
+public abstract class CoreClientHelloMessage extends HelloMessage {
 
     private static final Logger LOGGER = LogManager.getLogger();
     /** compression length */
@@ -194,10 +194,13 @@ public abstract class CoreClientHelloMessage<Self extends CoreClientHelloMessage
             if (tlsConfig.isAddConnectionIdExtension()) {
                 addExtension(new ConnectionIdExtensionMessage());
             }
+            if (tlsConfig.isAddQuicTransportParametersExtension()) {
+                addExtension(new QuicTransportParametersExtensionMessage(tlsConfig));
+            }
+            // In TLS 1.3, the PSK ext has to be the last ClientHello extension
             if (tlsConfig.isAddPreSharedKeyExtension()) {
                 addExtension(new PreSharedKeyExtensionMessage(tlsConfig));
             }
-            // In TLS 1.3, the PSK ext has to be the last ClientHello extension
         }
     }
 

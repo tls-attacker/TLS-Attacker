@@ -8,24 +8,18 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
-import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import jakarta.xml.bind.annotation.XmlRootElement;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@XmlRootElement
-public class BufferedSendAction extends MessageAction implements SendingAction {
+@XmlRootElement(name = "BufferedSend")
+public class BufferedSendAction extends CommonSendAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -39,34 +33,15 @@ public class BufferedSendAction extends MessageAction implements SendingAction {
 
     @Override
     public void execute(State state) throws ActionExecutionException {
-        TlsContext tlsContext = state.getContext(connectionAlias).getTlsContext();
-
-        if (isExecuted()) {
-            throw new ActionExecutionException("Action already executed!");
-        }
-        messages = new ArrayList<ProtocolMessage<?>>(tlsContext.getMessageBuffer());
-        tlsContext.setMessageBuffer(new LinkedList<>());
-        String sending = getReadableString(messages);
-        if (connectionAlias.equals(AliasedConnection.DEFAULT_CONNECTION_ALIAS)) {
-            LOGGER.info("Sending messages: " + sending);
-        } else {
-            LOGGER.info("Sending messages (" + connectionAlias + "): " + sending);
-        }
-
-        try {
-            send(tlsContext, messages, fragments, records, httpMessages);
-            setExecuted(true);
-        } catch (IOException e) {
-            LOGGER.debug(e);
-            setExecuted(getActionOptions().contains(ActionOption.MAY_FAIL));
-        }
+        super.execute(state);
+        state.getTlsContext(getConnectionAlias()).setMessageBuffer(new LinkedList<>());
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("BufferedSend Action:\n");
         sb.append("Messages:\n");
-        for (ProtocolMessage<?> message : messages) {
+        for (ProtocolMessage message : getSentMessages()) {
             sb.append(message.toCompactString());
             sb.append(", ");
         }
@@ -74,40 +49,8 @@ public class BufferedSendAction extends MessageAction implements SendingAction {
     }
 
     @Override
-    public boolean executedAsPlanned() {
-        return isExecuted();
-    }
-
-    @Override
-    public void setRecords(List<Record> records) {
-        this.records = records;
-    }
-
-    @Override
-    public void setFragments(List<DtlsHandshakeMessageFragment> fragments) {
-        this.fragments = fragments;
-    }
-
-    @Override
-    public void reset() {
-        messages = new LinkedList<>();
-        records = new LinkedList<>();
-        fragments = new LinkedList<>();
-        setExecuted(null);
-    }
-
-    @Override
-    public List<ProtocolMessage<?>> getSendMessages() {
-        return messages;
-    }
-
-    @Override
-    public List<Record> getSendRecords() {
-        return records;
-    }
-
-    @Override
-    public List<DtlsHandshakeMessageFragment> getSendFragments() {
-        return fragments;
+    protected List<LayerConfiguration<?>> createLayerConfiguration(State state) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'createLayerConfiguration'");
     }
 }

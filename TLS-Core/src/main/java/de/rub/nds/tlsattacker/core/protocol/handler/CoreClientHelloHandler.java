@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
@@ -25,8 +24,8 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public abstract class CoreClientHelloHandler<T extends CoreClientHelloMessage<?>>
-        extends HandshakeMessageHandler<T> {
+public abstract class CoreClientHelloHandler<Message extends CoreClientHelloMessage>
+        extends HandshakeMessageHandler<Message> {
 
     protected static final Logger LOGGER = LogManager.getLogger();
 
@@ -35,7 +34,7 @@ public abstract class CoreClientHelloHandler<T extends CoreClientHelloMessage<?>
     }
 
     @Override
-    public void adjustContext(T message) {
+    public void adjustContext(Message message) {
         adjustProtocolVersion(message);
         adjustSessionID(message);
         adjustClientSupportedCipherSuites(message);
@@ -57,60 +56,56 @@ public abstract class CoreClientHelloHandler<T extends CoreClientHelloMessage<?>
         }
     }
 
-    private boolean isCookieFieldSet(T message) {
+    private boolean isCookieFieldSet(Message message) {
         return message.getCookie() != null;
     }
 
-    private void adjustClientSupportedCipherSuites(T message) {
+    private void adjustClientSupportedCipherSuites(Message message) {
         List<CipherSuite> suiteList = convertCipherSuites(message.getCipherSuites().getValue());
         tlsContext.setClientSupportedCipherSuites(suiteList);
         if (suiteList != null) {
-            LOGGER.debug("Set ClientSupportedCipherSuites in Context to " + suiteList.toString());
+            LOGGER.debug("Set ClientSupportedCipherSuites in Context to {}", suiteList.toString());
         } else {
-            LOGGER.debug("Set ClientSupportedCipherSuites in Context to " + null);
+            LOGGER.debug("Set ClientSupportedCipherSuites in Context to null");
         }
     }
 
-    private void adjustClientSupportedCompressions(T message) {
+    private void adjustClientSupportedCompressions(Message message) {
         List<CompressionMethod> compressionList =
                 convertCompressionMethods(message.getCompressions().getValue());
         tlsContext.setClientSupportedCompressions(compressionList);
-        LOGGER.debug("Set ClientSupportedCompressions in Context to " + compressionList.toString());
+        LOGGER.debug(
+                "Set ClientSupportedCompressions in Context to {}", compressionList.toString());
     }
 
-    private void adjustDTLSCookie(T message) {
+    private void adjustDTLSCookie(Message message) {
         byte[] dtlsCookie = message.getCookie().getValue();
         tlsContext.setDtlsCookie(dtlsCookie);
-        LOGGER.debug(
-                "Set DTLS Cookie in Context to " + ArrayConverter.bytesToHexString(dtlsCookie));
+        LOGGER.debug("Set DTLS Cookie in Context to {}", dtlsCookie);
     }
 
-    private void adjustSessionID(T message) {
+    private void adjustSessionID(Message message) {
         byte[] sessionId = message.getSessionId().getValue();
         tlsContext.setClientSessionId(sessionId);
-        LOGGER.debug(
-                "Set SessionId in Context to " + ArrayConverter.bytesToHexString(sessionId, false));
+        LOGGER.debug("Set SessionId in Context to {}", sessionId);
     }
 
-    private void adjustProtocolVersion(T message) {
+    private void adjustProtocolVersion(Message message) {
         ProtocolVersion version =
                 ProtocolVersion.getProtocolVersion(message.getProtocolVersion().getValue());
         if (version != null) {
             tlsContext.setHighestClientProtocolVersion(version);
-            LOGGER.debug("Set HighestClientProtocolVersion in Context to " + version.name());
+            LOGGER.debug("Set HighestClientProtocolVersion in Context to {}", version.name());
         } else {
             LOGGER.warn(
-                    "Did not Adjust ProtocolVersion since version is undefined "
-                            + ArrayConverter.bytesToHexString(
-                                    message.getProtocolVersion().getValue()));
+                    "Did not Adjust ProtocolVersion since version is undefined {}",
+                    message.getProtocolVersion().getValue());
         }
     }
 
-    private void adjustRandomContext(T message) {
+    private void adjustRandomContext(Message message) {
         tlsContext.setClientRandom(message.getRandom().getValue());
-        LOGGER.debug(
-                "Set ClientRandom in Context to "
-                        + ArrayConverter.bytesToHexString(tlsContext.getClientRandom()));
+        LOGGER.debug("Set ClientRandom in Context to {}", tlsContext.getClientRandom());
     }
 
     private List<CompressionMethod> convertCompressionMethods(byte[] bytesToConvert) {
@@ -118,7 +113,7 @@ public abstract class CoreClientHelloHandler<T extends CoreClientHelloMessage<?>
         for (byte b : bytesToConvert) {
             CompressionMethod method = CompressionMethod.getCompressionMethod(b);
             if (method == null) {
-                LOGGER.warn("Could not convert " + b + " into a CompressionMethod");
+                LOGGER.warn("Could not convert {} into a CompressionMethod", b);
             } else {
                 list.add(method);
             }
@@ -128,10 +123,7 @@ public abstract class CoreClientHelloHandler<T extends CoreClientHelloMessage<?>
 
     private List<CipherSuite> convertCipherSuites(byte[] bytesToConvert) {
         if (bytesToConvert.length % 2 != 0) {
-            LOGGER.warn(
-                    "Cannot convert:"
-                            + ArrayConverter.bytesToHexString(bytesToConvert, false)
-                            + " to a List<CipherSuite>");
+            LOGGER.warn("Cannot convert: {} to a List<CipherSuite>", bytesToConvert);
             return null;
         }
         List<CipherSuite> list = new LinkedList<>();
@@ -142,10 +134,7 @@ public abstract class CoreClientHelloHandler<T extends CoreClientHelloMessage<?>
             copied[1] = bytesToConvert[i + 1];
             CipherSuite suite = CipherSuite.getCipherSuite(copied);
             if (suite == null) {
-                LOGGER.warn(
-                        "Cannot convert:"
-                                + ArrayConverter.bytesToHexString(copied)
-                                + " to a CipherSuite");
+                LOGGER.warn("Cannot convert {} to a CipherSuite", copied);
             } else {
                 list.add(suite);
             }
@@ -154,7 +143,7 @@ public abstract class CoreClientHelloHandler<T extends CoreClientHelloMessage<?>
     }
 
     @Override
-    public void adjustContextAfterSerialize(T message) {
+    public void adjustContextAfterSerialize(Message message) {
         if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT
                 && tlsContext.isExtensionProposed(ExtensionType.EARLY_DATA)) {
             try {
@@ -186,7 +175,7 @@ public abstract class CoreClientHelloHandler<T extends CoreClientHelloMessage<?>
                         HKDFunction.CLIENT_EARLY_TRAFFIC_SECRET,
                         tlsContext.getDigest().getRawBytes());
         tlsContext.setClientEarlyTrafficSecret(earlyTrafficSecret);
-        LOGGER.debug("EarlyTrafficSecret: " + ArrayConverter.bytesToHexString(earlyTrafficSecret));
+        LOGGER.debug("EarlyTrafficSecret: {}", earlyTrafficSecret);
     }
 
     private void setClientRecordCipherEarly() throws CryptoException {
@@ -210,18 +199,20 @@ public abstract class CoreClientHelloHandler<T extends CoreClientHelloMessage<?>
                                         tlsContext.getChooser().getEarlyDataCipherSuite(),
                                         tlsContext.getReadConnectionId()));
             } else {
-                tlsContext
-                        .getRecordLayer()
-                        .updateEncryptionCipher(
-                                RecordCipherFactory.getRecordCipher(
-                                        tlsContext,
-                                        clientKeySet,
-                                        tlsContext.getChooser().getEarlyDataCipherSuite(),
-                                        tlsContext.getWriteConnectionId()));
+                if (tlsContext.getRecordLayer() != null) {
+                    tlsContext
+                            .getRecordLayer()
+                            .updateEncryptionCipher(
+                                    RecordCipherFactory.getRecordCipher(
+                                            tlsContext,
+                                            clientKeySet,
+                                            tlsContext.getChooser().getEarlyDataCipherSuite(),
+                                            tlsContext.getWriteConnectionId()));
+                }
             }
         } catch (NoSuchAlgorithmException ex) {
             LOGGER.error("Unable to generate KeySet - unknown algorithm");
-            throw new CryptoException(ex.toString());
+            throw new CryptoException(ex);
         }
     }
 

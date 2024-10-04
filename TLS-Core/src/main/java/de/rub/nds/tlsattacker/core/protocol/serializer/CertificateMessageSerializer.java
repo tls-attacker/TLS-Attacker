@@ -51,7 +51,7 @@ public class CertificateMessageSerializer extends HandshakeMessageSerializer<Cer
         appendInt(
                 msg.getRequestContextLength().getValue(),
                 HandshakeByteLength.CERTIFICATE_REQUEST_CONTEXT_LENGTH);
-        LOGGER.debug("RequestContextLength: " + msg.getRequestContextLength().getValue());
+        LOGGER.debug("RequestContextLength: {}", msg.getRequestContextLength().getValue());
     }
 
     /** Writes the RequestContext of the CertificateMessage into the final byte[] */
@@ -65,7 +65,7 @@ public class CertificateMessageSerializer extends HandshakeMessageSerializer<Cer
         appendInt(
                 msg.getCertificatesListLength().getValue(),
                 HandshakeByteLength.CERTIFICATES_LENGTH);
-        LOGGER.debug("certificatesListLength: " + msg.getCertificatesListLength().getValue());
+        LOGGER.debug("certificatesListLength: {}", msg.getCertificatesListLength().getValue());
     }
 
     /** Writes the Certificate of the CertificateMessage into the final byte[] */

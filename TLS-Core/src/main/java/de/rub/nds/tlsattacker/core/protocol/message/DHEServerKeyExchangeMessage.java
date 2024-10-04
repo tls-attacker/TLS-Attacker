@@ -10,12 +10,12 @@ package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.DHEServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.DHEServerComputations;
 import de.rub.nds.tlsattacker.core.protocol.parser.DHEServerKeyExchangeParser;
@@ -26,8 +26,7 @@ import java.io.InputStream;
 import java.util.List;
 
 @XmlRootElement(name = "DHEServerKeyExchange")
-public class DHEServerKeyExchangeMessage<Self extends DHEServerKeyExchangeMessage<?>>
-        extends ServerKeyExchangeMessage<Self> {
+public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
     /** DH modulus */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
@@ -101,7 +100,7 @@ public class DHEServerKeyExchangeMessage<Self extends DHEServerKeyExchangeMessag
     }
 
     @Override
-    public DHEServerComputations getComputations() {
+    public DHEServerComputations getKeyExchangeComputations() {
         return computations;
     }
 
@@ -146,24 +145,24 @@ public class DHEServerKeyExchangeMessage<Self extends DHEServerKeyExchangeMessag
     }
 
     @Override
-    public DHEServerKeyExchangeHandler<Self> getHandler(TlsContext tlsContext) {
-        return new DHEServerKeyExchangeHandler<>(tlsContext);
+    public DHEServerKeyExchangeHandler getHandler(TlsContext tlsContext) {
+        return new DHEServerKeyExchangeHandler(tlsContext);
     }
 
     @Override
-    public DHEServerKeyExchangeParser<Self> getParser(TlsContext tlsContext, InputStream stream) {
-        return new DHEServerKeyExchangeParser<Self>(stream, tlsContext);
+    public DHEServerKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new DHEServerKeyExchangeParser(stream, tlsContext);
     }
 
     @Override
-    public DHEServerKeyExchangePreparator<Self> getPreparator(TlsContext tlsContext) {
-        return new DHEServerKeyExchangePreparator<Self>(tlsContext.getChooser(), (Self) this);
+    public DHEServerKeyExchangePreparator getPreparator(TlsContext tlsContext) {
+        return new DHEServerKeyExchangePreparator(tlsContext.getChooser(), this);
     }
 
     @Override
-    public DHEServerKeyExchangeSerializer<Self> getSerializer(TlsContext tlsContext) {
-        return new DHEServerKeyExchangeSerializer<Self>(
-                (Self) this, tlsContext.getChooser().getSelectedProtocolVersion());
+    public DHEServerKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
+        return new DHEServerKeyExchangeSerializer(
+                this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override
@@ -182,8 +181,8 @@ public class DHEServerKeyExchangeMessage<Self extends DHEServerKeyExchangeMessag
     }
 
     @Override
-    public void prepareComputations() {
-        if (getComputations() == null) {
+    public void prepareKeyExchangeComputations() {
+        if (getKeyExchangeComputations() == null) {
             computations = new DHEServerComputations();
         }
     }

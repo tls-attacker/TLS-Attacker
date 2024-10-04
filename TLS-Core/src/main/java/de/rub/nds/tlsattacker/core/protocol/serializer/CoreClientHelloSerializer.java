@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.CoreClientHelloMessage;
@@ -69,7 +68,7 @@ public abstract class CoreClientHelloSerializer<T extends CoreClientHelloMessage
     /** Writes the DTLS Cookie of the ClientHelloMessage into the final byte[] */
     private void writeCookie(T msg) {
         appendBytes(msg.getCookie().getValue());
-        LOGGER.debug("Cookie: " + ArrayConverter.bytesToHexString(msg.getCookie().getValue()));
+        LOGGER.debug("Cookie: {}", msg.getCookie().getValue());
     }
 
     /** Writes the CipherSuiteLength of the ClientHelloMessage into the final byte[] */
@@ -81,9 +80,7 @@ public abstract class CoreClientHelloSerializer<T extends CoreClientHelloMessage
     /** Writes the CipherSuites of the ClientHelloMessage into the final byte[] */
     private void writeCipherSuites(T msg) {
         appendBytes(msg.getCipherSuites().getValue());
-        LOGGER.debug(
-                "CipherSuite: "
-                        + ArrayConverter.bytesToHexString(msg.getCipherSuites().getValue()));
+        LOGGER.debug("CipherSuite: {}", msg.getCipherSuites().getValue());
     }
 
     /** Writes the CompressionLength of the ClientHelloMessage into the final byte[] */
@@ -95,9 +92,7 @@ public abstract class CoreClientHelloSerializer<T extends CoreClientHelloMessage
     /** Writes the Compressions of the ClientHelloMessage into the final byte[] */
     private void writeCompressions(T msg) {
         appendBytes(msg.getCompressions().getValue());
-        LOGGER.debug(
-                "Compressions: "
-                        + ArrayConverter.bytesToHexString(msg.getCompressions().getValue()));
+        LOGGER.debug("Compressions: {}", msg.getCompressions().getValue());
     }
 
     /** Writes the ExtensionLength of the ClientHelloMessage into the final byte[] */
@@ -109,8 +104,6 @@ public abstract class CoreClientHelloSerializer<T extends CoreClientHelloMessage
     /** Writes the ExtensionBytes of the ClientHelloMessage into the final byte[] */
     private void writeExtensionBytes(T msg) {
         appendBytes(msg.getExtensionBytes().getValue());
-        LOGGER.debug(
-                "ExtensionBytes: "
-                        + ArrayConverter.bytesToHexString(msg.getExtensionBytes().getValue()));
+        LOGGER.debug("ExtensionBytes:{} ", msg.getExtensionBytes().getValue());
     }
 }

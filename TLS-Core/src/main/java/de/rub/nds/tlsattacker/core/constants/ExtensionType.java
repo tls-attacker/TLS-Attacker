@@ -58,9 +58,10 @@ public enum ExtensionType {
     POST_HANDSHAKE_AUTH(new byte[] {(byte) 0, (byte) 49}),
     SIGNATURE_ALGORITHMS_CERT(new byte[] {(byte) 0, (byte) 50}),
     KEY_SHARE(new byte[] {(byte) 0, (byte) 51}),
-    CONNECTION_ID(new byte[] {(byte) 0, (byte) 54}),
     RENEGOTIATION_INFO(new byte[] {(byte) 0xFF, (byte) 0x01}),
     ENCRYPTED_SERVER_NAME_INDICATION(new byte[] {(byte) 0xFF, (byte) 0xCE}),
+    QUIC_TRANSPORT_PARAMETERS(new byte[] {(byte) 0x00, (byte) 0x39}),
+    CONNECTION_ID(new byte[] {(byte) 0, (byte) 54}),
     ENCRYPTED_CLIENT_HELLO_DRAFT_07(new byte[] {(byte) 0xFF, (byte) 0x02}),
     ENCRYPTED_CLIENT_HELLO_DRAFT_08(new byte[] {(byte) 0xFF, (byte) 0x08}),
     ENCRYPTED_CLIENT_HELLO_DRAFT_09(new byte[] {(byte) 0xFF, (byte) 0x09}),
@@ -175,6 +176,7 @@ public enum ExtensionType {
         list.add(COOKIE);
         list.add(RECORD_SIZE_LIMIT);
         list.add(CONNECTION_ID);
+        list.add(QUIC_TRANSPORT_PARAMETERS);
         list.add(ENCRYPTED_CLIENT_HELLO);
 
         return list;
@@ -218,8 +220,9 @@ public enum ExtensionType {
         list.add(USE_SRTP);
         list.add(COOKIE);
         list.add(RECORD_SIZE_LIMIT);
-        list.add(ENCRYPTED_CLIENT_HELLO);
         list.add(CONNECTION_ID);
+        list.add(QUIC_TRANSPORT_PARAMETERS);
+        list.add(ENCRYPTED_CLIENT_HELLO);
 
         return list;
     }
@@ -262,10 +265,12 @@ public enum ExtensionType {
             case CLIENT_CERTIFICATE_TYPE:
             case SERVER_CERTIFICATE_TYPE:
             case EARLY_DATA:
+            case QUIC_TRANSPORT_PARAMETERS:
             case RECORD_SIZE_LIMIT:
                 return true;
+            default:
+                return false;
         }
-        return false;
     }
 
     public static List<ExtensionType> getNonTls13Extensions() {

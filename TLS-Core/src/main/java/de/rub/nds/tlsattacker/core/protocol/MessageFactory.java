@@ -91,6 +91,9 @@ public class MessageFactory {
             case DH_DSS:
             case DH_RSA:
                 return new DHEServerKeyExchangeMessage();
+            case RSA:
+            case RSA_EXPORT:
+                return new RSAServerKeyExchangeMessage();
             case PSK:
                 return new PskServerKeyExchangeMessage();
             case DHE_PSK:

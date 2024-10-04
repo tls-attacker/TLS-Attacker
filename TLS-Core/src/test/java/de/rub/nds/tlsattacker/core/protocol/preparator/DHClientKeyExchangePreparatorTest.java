@@ -20,8 +20,8 @@ import org.junit.jupiter.api.Test;
 
 public class DHClientKeyExchangePreparatorTest
         extends AbstractProtocolMessagePreparatorTest<
-                DHClientKeyExchangeMessage<?>,
-                DHClientKeyExchangePreparator<DHClientKeyExchangeMessage<?>>> {
+                DHClientKeyExchangeMessage,
+                DHClientKeyExchangePreparator<DHClientKeyExchangeMessage>> {
 
     private static final String DH_G =
             "a51883e9ac0539859df3d25c716437008bb4bd8ec4786eb4bc643299daef5e3e5af5863a6ac40a597b83a27583f6a658d408825105b16d31b6ed088fc623f648fd6d95e9cefcb0745763cddf564c87bcf4ba7928e74fd6a3080481f588d535e4c026b58a21e1e5ec412ff241b436043e29173f1dc6cb943c09742de989547288";
@@ -37,10 +37,10 @@ public class DHClientKeyExchangePreparatorTest
 
     public DHClientKeyExchangePreparatorTest() {
         super(DHClientKeyExchangeMessage::new, DHClientKeyExchangePreparator::new);
-        context.getConfig().setDefaultServerDhGenerator(new BigInteger(DH_G, 16));
-        context.getConfig().setDefaultServerDhModulus(new BigInteger(DH_M, 16));
+        context.getConfig().setDefaultServerEphemeralDhGenerator(new BigInteger(DH_G, 16));
+        context.getConfig().setDefaultServerEphemeralDhModulus(new BigInteger(DH_M, 16));
         context.getConfig()
-                .setDefaultClientDhPrivateKey(
+                .setDefaultClientEphemeralDhPrivateKey(
                         new BigInteger("1234567891234567889123546712839632542648746452354265471"));
     }
 
@@ -50,13 +50,13 @@ public class DHClientKeyExchangePreparatorTest
     public void testPrepare() {
         // prepare context
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
-        context.setSelectedCipherSuite(CipherSuite.TLS_DH_RSA_WITH_AES_128_CBC_SHA256);
+        context.setSelectedCipherSuite(CipherSuite.TLS_DHE_RSA_WITH_AES_128_CBC_SHA256);
         context.setClientRandom(ArrayConverter.hexStringToByteArray(RANDOM));
         context.setServerRandom(ArrayConverter.hexStringToByteArray(RANDOM));
         // set server DH-parameters
-        context.setServerDhModulus(new BigInteger(DH_M, 16));
-        context.setServerDhGenerator(new BigInteger(DH_G, 16));
-        context.setServerDhPublicKey(SERVER_PUBLIC_KEY);
+        context.setServerEphemeralDhModulus(new BigInteger(DH_M, 16));
+        context.setServerEphemeralDhGenerator(new BigInteger(DH_G, 16));
+        context.setServerEphemeralDhPublicKey(SERVER_PUBLIC_KEY);
 
         preparator.prepareHandshakeMessageContents();
 
@@ -76,12 +76,12 @@ public class DHClientKeyExchangePreparatorTest
     @Test
     public void testPrepareAfterParse() {
         // This method should only be called when we received the message before
-        message.setPublicKey(context.getChooser().getClientDhPublicKey().toByteArray());
-        preparator.prepareAfterParse(false);
+        message.setPublicKey(context.getChooser().getClientEphemeralDhPublicKey().toByteArray());
+        preparator.prepareAfterParse();
     }
 
     @Test
     public void testPrepareAfterParseReverseMode() {
-        preparator.prepareAfterParse(true);
+        preparator.prepareAfterParse();
     }
 }

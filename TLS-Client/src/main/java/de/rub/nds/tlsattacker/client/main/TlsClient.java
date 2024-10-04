@@ -39,7 +39,7 @@ public class TlsClient {
                 commander.usage();
                 return;
             }
-            ListDelegate list = (ListDelegate) config.getDelegate(ListDelegate.class);
+            ListDelegate list = config.getDelegate(ListDelegate.class);
             if (list.isSet()) {
                 list.plotListing();
                 return;
@@ -49,7 +49,7 @@ public class TlsClient {
                 Config tlsConfig = config.createConfig();
                 WorkflowTrace trace = null;
                 if (config.getWorkflowInput() != null) {
-                    LOGGER.debug("Reading workflow trace from " + config.getWorkflowInput());
+                    LOGGER.debug("Reading workflow trace from {}", config.getWorkflowInput());
                     try (FileInputStream fis = new FileInputStream(config.getWorkflowInput())) {
                         trace = WorkflowTraceSerializer.secureRead(fis);
                     }
@@ -58,7 +58,7 @@ public class TlsClient {
                 State state = client.startTlsClient(tlsConfig, trace);
                 if (config.getWorkflowOutput() != null) {
                     trace = state.getWorkflowTrace();
-                    LOGGER.debug("Writing workflow trace to " + config.getWorkflowOutput());
+                    LOGGER.debug("Writing workflow trace to {}", config.getWorkflowOutput());
                     WorkflowTraceSerializer.write(new File(config.getWorkflowOutput()), trace);
                 }
             } catch (Exception e) {
@@ -66,7 +66,7 @@ public class TlsClient {
                         "Encountered an uncaught Exception aborting. See debug for more info.", e);
             }
         } catch (ParameterException e) {
-            LOGGER.error("Could not parse provided parameters. " + e.getLocalizedMessage(), e);
+            LOGGER.error("Could not parse provided parameters", e);
             commander.usage();
         }
     }
@@ -87,7 +87,7 @@ public class TlsClient {
         } catch (WorkflowExecutionException ex) {
             LOGGER.warn(
                     "The TLS protocol flow was not executed completely, follow the debug messages for more information.");
-            LOGGER.debug(ex.getLocalizedMessage(), ex);
+            LOGGER.debug(ex);
         }
         return state;
     }

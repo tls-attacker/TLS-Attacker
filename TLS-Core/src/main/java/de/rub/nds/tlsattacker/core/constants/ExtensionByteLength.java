@@ -92,6 +92,11 @@ public class ExtensionByteLength {
 
     public static final int ALPN_ENTRY_LENGTH = 1;
 
+    /** Length of the Quic Transport Parameters Extension Length Field */
+    public static final int QUIC_EXTENSION_LENTGH = 2;
+
+    public static final int QUIC_PARAMETER_ENTRY_LENGTH = 1;
+
     /** Length of the SRP extension identifier length field */
     public static final int SRP_IDENTIFIER_LENGTH = 1;
 

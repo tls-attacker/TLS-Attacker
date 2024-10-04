@@ -11,10 +11,11 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
+import de.rub.nds.protocol.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.tlsattacker.core.protocol.message.PWDClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.preparator.PWDClientKeyExchangePreparator;
 import java.math.BigInteger;
@@ -45,7 +46,8 @@ public class PWDClientKeyExchangeHandlerTest
         context.getConfig().setDefaultPWDPassword("barney");
         context.setServerPWDElement(
                 PointFormatter.formatFromByteArray(
-                        NamedGroup.BRAINPOOLP256R1,
+                        (NamedEllipticCurveParameters)
+                                NamedGroup.BRAINPOOLP256R1.getGroupParameters(),
                         ArrayConverter.hexStringToByteArray(
                                 "0422bbd56b481d7fa90c35e8d42fcd06618a0778de506b1bc38882abc73132eef37f02e13bd544acc145bdd806450d43be34b9288348d03d6cd9832487b129dbe1")));
         context.setServerPWDScalar(

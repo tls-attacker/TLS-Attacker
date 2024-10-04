@@ -14,21 +14,14 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.protocol.handler.CertificateMessageHandler;
-import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.util.CertificateUtils;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.security.Security;
-import org.bouncycastle.crypto.tls.Certificate;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import java.math.BigInteger;
 import org.junit.jupiter.api.Test;
 
 public class RSAClientKeyExchangePreparatorTest
         extends AbstractProtocolMessagePreparatorTest<
-                RSAClientKeyExchangeMessage<?>,
-                RSAClientKeyExchangePreparator<RSAClientKeyExchangeMessage<?>>> {
+                RSAClientKeyExchangeMessage,
+                RSAClientKeyExchangePreparator<RSAClientKeyExchangeMessage>> {
 
     public RSAClientKeyExchangePreparatorTest() {
         super(RSAClientKeyExchangeMessage::new, RSAClientKeyExchangePreparator::new);
@@ -38,14 +31,21 @@ public class RSAClientKeyExchangePreparatorTest
     @Test
     @Override
     public void testPrepare() {
-        // TODO
+        setParameters();
+        // Test
+        preparator.prepareHandshakeMessageContents();
+        checkMessageContents();
+    }
+
+    private void setParameters() {
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA256);
         context.setHighestClientProtocolVersion(ProtocolVersion.TLS12);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         context.setClientRandom(ArrayConverter.hexStringToByteArray("AABBCCDDEEFF"));
         context.setServerRandom(ArrayConverter.hexStringToByteArray("AABBCCDDEEFF"));
-        // Test
-        preparator.prepareHandshakeMessageContents();
+    }
+
+    private void checkMessageContents() {
         assertArrayEquals(
                 ArrayConverter.concatenate(
                         ArrayConverter.hexStringToByteArray("AABBCCDDEEFF"),
@@ -78,52 +78,17 @@ public class RSAClientKeyExchangePreparatorTest
         assertNotNull(message.getPublicKey());
     }
 
-    private Certificate parseCertificate(int lengthBytes, byte[] bytesToParse) {
-        try {
-            ByteArrayInputStream stream =
-                    new ByteArrayInputStream(
-                            ArrayConverter.concatenate(
-                                    ArrayConverter.intToBytes(
-                                            lengthBytes, HandshakeByteLength.CERTIFICATES_LENGTH),
-                                    bytesToParse));
-            return Certificate.parse(stream);
-        } catch (IOException E) {
-            return null;
-        }
-    }
-
     @Test
-    public void testPrepareSSL3() throws IOException {
-
-        CertificateMessage certMessage = new CertificateMessage();
-        certMessage.setCertificatesListBytes(
-                ArrayConverter.hexStringToByteArray(
-                        "00027a30820276308201dfa003020102020438918374300d06092a864886f70d01010b0500306e3110300e06035504061307556e6b6e6f776e3110300e06035504081307556e6b6e6f776e3110300e06035504071307556e6b6e6f776e3110300e060355040a1307556e6b6e6f776e3110300e060355040b1307556e6b6e6f776e3112301006035504031309616e6f6e796d6f7573301e170d3135303830343133353731375a170d3235303830313133353731375a306e3110300e06035504061307556e6b6e6f776e3110300e06035504081307556e6b6e6f776e3110300e06035504071307556e6b6e6f776e3110300e060355040a1307556e6b6e6f776e3110300e060355040b1307556e6b6e6f776e3112301006035504031309616e6f6e796d6f757330819f300d06092a864886f70d010101050003818d00308189028181008a4ee023df569ce17c504cbb828f16bae5040ccef4b59ef96733dfe34693530d4062f9b4873c72f933607f8ceea01ad2215dab44eaac207f45de5835a8db4e21b35d5e2757f652eaaa25d71a60c37725cddf877427cc9e60e240d0429e708bc4b6017726734b2c03f404d5fea407d91bbe4e86a0ebc685e8078f8657b5830ab30203010001a321301f301d0603551d0e04160414611782c41da8bd62a49ce58580194baa5d8c764f300d06092a864886f70d01010b0500038181005f9708702b8adb185b2db0d05845af5df1f7d13e7a94647a8653187e7a55753f5c19772a994f53136ab04cdad266683bf65a1b78fca418899e44c0e8f75add9df5b432e92a6a0668b16d6278a67c78f8ea30ca587e1dc314d8312d41808284e22df19c7f4bb3086e74b42c9473df8b82449643a4e2fbb05cf8b1b41acec44fe9"));
-        certMessage.setCertificatesListLength(637);
-        Security.addProvider(new BouncyCastleProvider());
-        CertificateMessageHandler handler = new CertificateMessageHandler(context);
-        handler.adjustContext(certMessage);
-
-        Certificate cert =
-                parseCertificate(
-                        certMessage.getCertificatesListLength().getValue(),
-                        certMessage.getCertificatesListBytes().getValue());
-
-        context.setClientRsaModulus(CertificateUtils.extractRSAModulus(cert));
-        String preMasterSecret =
-                "1a4dc552ddd7e1e25dbaff38dd447b3a6fdc85120e2f760fefdab88e5adbbc710f3d0843f07c9f4f5ac01bc4cea02c4030c272074aa04b1b80a71123b73ea4efbe928b54a83fe4b39472bf66a953c7dc11cfb13ea08f92047996799ce702eb72a7c69bdfd98b91a09bcb836414752d93d3641740f8ed5cfff682225434052230";
-        String keyEx =
-                " 100000801a4dc552ddd7e1e25dbaff38dd447b3a6fdc85120e2f760fefdab88e5adbbc710f3d0843f07c9f4f5ac01bc4cea02c4030c272074aa04b1b80a71123b73ea4efbe928b54a83fe4b39472bf66a953c7dc11cfb13ea08f92047996799ce702eb72a7c69bdfd98b91a09bcb836414752d93d3641740f8ed5cfff682225434052230";
-        context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_NULL_MD5);
-        context.setSelectedProtocolVersion(ProtocolVersion.SSL3);
-        context.setClientRandom(
-                ArrayConverter.hexStringToByteArray(
-                        "405e2a60cefcb557edd6d41336a3fa4b2dfdae20f4ac7adacbb29c13456e2800"));
-        context.setServerRandom(
-                ArrayConverter.hexStringToByteArray(
-                        "a63cd22a46e4fc22b1f03d579c5f0e43cadfda01ef615fd52a9cdbaed3f6c6c2"));
-
-        // Test
+    public void testEncryptWithOddModulus() {
+        setParameters();
+        BigInteger modulus2046bits =
+                new BigInteger(
+                        "3beb21d42ac899b13c7eeacee9f0f2d27f41beed0041ed834539de666650ccaedb63a2be928b1b80fef09fe0c19c7cfd9e2a07bb011923ccad761b0e22fe8a48c755d676c3a96545640af27a5a34ce9595c73df21f4ea362f91569f6a1ad16a8e04ae607232cb7e7aed913bb636d488e6152875ddbcdc6c62c171f9c57305fa570f3b9c5b18b8176bc6efaf727bfac486cc775d8100c49f1131f491040b5c2819f268521d5affd14012922934f573038364f16f54c98ef432bbf2956703a1ba8f9922e8fe3deee5d99a4aa629a0b29cb939d6c83f807bf90094d9257c44f0f50ebc8105f6bbb9bb51c611934dd1441c7f2917916c3c4056251898f764f7fd8c5",
+                        16);
+        context.getServerX509Context().setSubjectRsaModulus(modulus2046bits);
+        context.getServerX509Context().setSubjectRsaPublicExponent(BigInteger.valueOf(65537));
         preparator.prepareHandshakeMessageContents();
+        assertEquals(256, message.getPublicKey().getValue().length);
+        checkMessageContents();
     }
 }

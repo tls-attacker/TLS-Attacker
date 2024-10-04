@@ -22,7 +22,7 @@ import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
+import de.rub.nds.tlsattacker.core.unittest.helper.FakeTcpTransportHandler;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceSerializer;
 import de.rub.nds.tlsattacker.core.workflow.filter.DefaultFilter;
@@ -50,7 +50,6 @@ public class ForwardMessagesActionTest extends AbstractActionTest<ForwardMessage
         alert.setDescription(AlertDescription.DECODE_ERROR.getValue());
         alert.setLevel(AlertLevel.FATAL.getValue());
 
-        TlsContext ctx1 = state.getTlsContext(ctx1Alias);
         TlsContext ctx2 = state.getTlsContext(ctx2Alias);
 
         byte[] alertMsg = new byte[] {0x15, 0x03, 0x03, 0x00, 0x02, 0x02, 50};
@@ -60,7 +59,7 @@ public class ForwardMessagesActionTest extends AbstractActionTest<ForwardMessage
     }
 
     public void setFetchableData(byte[] data) {
-        FakeTransportHandler th = new FakeTransportHandler(ConnectionEndType.SERVER);
+        FakeTcpTransportHandler th = new FakeTcpTransportHandler(ConnectionEndType.SERVER);
         th.setFetchableByte(data);
         state.getContext(ctx1Alias)
                 .getTlsContext()
@@ -71,7 +70,7 @@ public class ForwardMessagesActionTest extends AbstractActionTest<ForwardMessage
     private void initContexts() throws IOException {
         state.getContext(ctx2Alias)
                 .getTcpContext()
-                .setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
+                .setTransportHandler(new FakeTcpTransportHandler(ConnectionEndType.CLIENT));
     }
 
     @Override
@@ -86,7 +85,7 @@ public class ForwardMessagesActionTest extends AbstractActionTest<ForwardMessage
     @Test
     @Override
     public void testExecute() throws Exception {
-        action.setMessages(alert);
+        action.setExpectedMessages(List.of(alert));
         super.testExecute();
     }
 
@@ -145,9 +144,9 @@ public class ForwardMessagesActionTest extends AbstractActionTest<ForwardMessage
             pw.println("        <alias>ctx2</alias>");
             pw.println("    </InboundConnection>");
             pw.println("    <ForwardMessages>");
-            pw.println("        <actionOptions/>");
             pw.println("        <from>ctx1</from>");
             pw.println("        <to>ctx2</to>");
+            pw.println("        <expectedMessages/>");
             pw.println("    </ForwardMessages>");
             pw.println("</workflowTrace>");
         }
@@ -177,14 +176,13 @@ public class ForwardMessagesActionTest extends AbstractActionTest<ForwardMessage
                         receivedData.getBytes()));
         initContexts();
 
-        ForwardMessagesAction action = new ForwardMessagesAction(ctx1Alias, ctx2Alias);
-        action.setMessages(new ApplicationMessage());
-
+        ForwardMessagesAction action =
+                new ForwardMessagesAction(ctx1Alias, ctx2Alias, new ApplicationMessage());
         action.execute(state);
         assertTrue(action.isExecuted());
         assertTrue(action.executedAsPlanned());
 
-        ProtocolMessage forwardedMsgRaw = action.getSendMessages().get(0);
+        ProtocolMessage forwardedMsgRaw = action.getSentMessages().get(0);
         assertEquals("APPLICATION", forwardedMsgRaw.toCompactString());
 
         ApplicationMessage forwardedMsg = (ApplicationMessage) forwardedMsgRaw;

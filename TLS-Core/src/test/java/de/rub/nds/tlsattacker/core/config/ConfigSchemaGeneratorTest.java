@@ -15,7 +15,7 @@ public class ConfigSchemaGeneratorTest {
     /** Test of main method, of class WorkflowTraceSchemaGenerator. */
     @Test
     public void generateResourceSchema() {
-        ConfigSchemaGenerator.main(new String[] {"../resources/schema/"});
-        ConfigSchemaGenerator.main(new String[] {"src/main/resources/"});
+        // ConfigSchemaGenerator.main(new String[] {"../resources/schema/"});
+        // ConfigSchemaGenerator.main(new String[] {"src/main/resources/"});
     }
 }

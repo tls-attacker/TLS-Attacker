@@ -27,7 +27,7 @@ import java.io.InputStream;
 import java.util.Objects;
 
 @XmlRootElement(name = "Alert")
-public class AlertMessage extends ProtocolMessage<AlertMessage> {
+public class AlertMessage extends ProtocolMessage {
 
     /** config array used to configure alert message */
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
@@ -128,7 +128,16 @@ public class AlertMessage extends ProtocolMessage<AlertMessage> {
                 descriptionString = "" + description.getValue();
             }
         } else {
-            descriptionString = "null";
+            if (config != null && config.length == 2) {
+                AlertDescription desc = AlertDescription.getAlertDescription((byte) config[1]);
+                if (desc != null) {
+                    descriptionString = desc.name();
+                } else {
+                    descriptionString = "" + config[1];
+                }
+            } else {
+                descriptionString = "null";
+            }
         }
         sb.append("Alert(").append(levelString).append(",").append(descriptionString).append(")");
         return sb.toString();
@@ -153,9 +162,23 @@ public class AlertMessage extends ProtocolMessage<AlertMessage> {
             return true;
         }
         AlertMessage alert = (AlertMessage) obj;
-        return (Objects.equals(alert.getLevel().getValue(), this.getLevel().getValue()))
-                && (Objects.equals(
+        if (alert.getLevel() != null
+                && alert.getDescription() != null
+                && this.getLevel() != null
+                && this.getDescription() != null) {
+
+            return (Objects.equals(alert.getLevel().getValue(), this.getLevel().getValue()))
+                    && (Objects.equals(
+                            alert.getDescription().getValue(), this.getDescription().getValue()));
+        } else {
+            // If level is null we do not compare the values
+            if (this.getLevel() == null || alert.getLevel() == null) {
+                return (Objects.equals(
                         alert.getDescription().getValue(), this.getDescription().getValue()));
+            } else {
+                return (Objects.equals(alert.getLevel().getValue(), this.getLevel().getValue()));
+            }
+        }
     }
 
     @Override

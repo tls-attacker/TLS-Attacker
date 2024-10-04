@@ -11,16 +11,57 @@ package de.rub.nds.tlsattacker.core.workflow;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.*;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.*;
+import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.HelloRequestMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.UnknownHandshakeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.workflow.action.*;
+import de.rub.nds.tlsattacker.core.workflow.action.ChangeCipherSuiteAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ChangeClientRandomAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ChangeCompressionAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ChangeMasterSecretAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ChangePreMasterSecretAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ChangeProtocolVersionAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ChangeServerRandomAction;
+import de.rub.nds.tlsattacker.core.workflow.action.DeactivateEncryptionAction;
+import de.rub.nds.tlsattacker.core.workflow.action.GenericReceiveAction;
+import de.rub.nds.tlsattacker.core.workflow.action.RenegotiationAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ResetConnectionAction;
+import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
+import de.rub.nds.tlsattacker.core.workflow.action.WaitAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import jakarta.xml.bind.JAXBException;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -101,7 +142,7 @@ public class SerializationFullTest {
         SendAction action = new SendAction(messages);
         List<Record> records = new LinkedList<>();
         records.add(new Record());
-        action.setRecords(records);
+        action.setConfiguredRecords(records);
         trace.addTlsAction(action);
 
         File f = new File(tempDir, "serializationFullTest.xml");
@@ -117,8 +158,7 @@ public class SerializationFullTest {
             LOGGER.info(builder.toString());
         }
 
-        try (FileInputStream fis = new FileInputStream(f)) {
-            assertDoesNotThrow(() -> WorkflowTraceSerializer.secureRead(fis));
-        }
+        FileInputStream fis = new FileInputStream(f);
+        assertDoesNotThrow(() -> WorkflowTraceSerializer.secureRead(fis));
     }
 }

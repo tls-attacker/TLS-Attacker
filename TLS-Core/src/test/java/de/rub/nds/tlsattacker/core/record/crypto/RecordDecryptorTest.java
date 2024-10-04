@@ -12,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.constants.*;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
@@ -19,6 +20,8 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.*;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
+import de.rub.nds.tlsattacker.core.state.Context;
+import de.rub.nds.tlsattacker.core.state.State;
 import java.security.NoSuchAlgorithmException;
 import java.security.Security;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -41,7 +44,7 @@ public class RecordDecryptorTest {
 
     @BeforeEach
     public void setUp() {
-        context = new TlsContext();
+        context = new Context(new State(new Config()), new InboundConnection()).getTlsContext();
         record = new Record();
         record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
         record.setProtocolVersion(ProtocolVersion.TLS10.getValue());

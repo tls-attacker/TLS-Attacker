@@ -21,13 +21,11 @@ public class PreSharedKeyExtensionSerializer
     private static final Logger LOGGER = LogManager.getLogger();
 
     private final PreSharedKeyExtensionMessage msg;
-    private final ConnectionEndType connectionType;
 
     public PreSharedKeyExtensionSerializer(
             PreSharedKeyExtensionMessage message, ConnectionEndType connectionType) {
         super(message);
         msg = message;
-        this.connectionType = connectionType;
     }
 
     @Override

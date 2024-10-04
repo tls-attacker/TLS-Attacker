@@ -9,15 +9,15 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.protocol.crypto.CyclicGroup;
+import de.rub.nds.protocol.crypto.ec.EllipticCurve;
+import de.rub.nds.protocol.crypto.ec.Point;
+import de.rub.nds.protocol.exception.PreparationException;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.Bits;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
-import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
-import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
-import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PWDProtectExtensionMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.math.BigInteger;
@@ -51,7 +51,14 @@ public class PWDProtectExtensionPreparator extends ExtensionPreparator<PWDProtec
 
     private void prepareUsername(PWDProtectExtensionMessage msg) throws CryptoException {
         Config config = chooser.getConfig();
-        EllipticCurve curve = CurveFactory.getCurve(config.getDefaultPWDProtectGroup());
+        CyclicGroup<?> group = config.getDefaultPWDProtectGroup().getGroupParameters().getGroup();
+        if (!(group instanceof EllipticCurve)) {
+            msg.setUsername(new byte[0]);
+            LOGGER.debug(
+                    "Can only compute username for elliptic curves. Using new byte[0] instead");
+            return;
+        }
+        EllipticCurve curve = (EllipticCurve) group;
         Point generator = curve.getBasePoint();
         Point serverPublicKey = config.getDefaultServerPWDProtectPublicKey();
 
@@ -126,6 +133,6 @@ public class PWDProtectExtensionPreparator extends ExtensionPreparator<PWDProtec
 
     private void prepareUsernameLength(PWDProtectExtensionMessage msg) {
         msg.setUsernameLength(msg.getUsername().getValue().length);
-        LOGGER.debug("UsernameLength: " + msg.getUsernameLength().getValue());
+        LOGGER.debug("UsernameLength: {}", msg.getUsernameLength().getValue());
     }
 }

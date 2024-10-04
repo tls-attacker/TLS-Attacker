@@ -10,11 +10,15 @@ package de.rub.nds.tlsattacker.core.record.cipher;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
+import de.rub.nds.tlsattacker.core.state.Context;
+import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.util.tests.TestCategories;
 import java.security.NoSuchAlgorithmException;
 import java.security.Security;
@@ -38,7 +42,7 @@ public class KeySetGeneratorTest {
 
     @BeforeEach
     public void setUp() {
-        context = new TlsContext();
+        context = new Context(new State(new Config()), new InboundConnection()).getTlsContext();
     }
 
     public static Stream<Arguments> provideTestVectors() {

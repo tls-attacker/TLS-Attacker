@@ -24,7 +24,7 @@ import java.io.InputStream;
 import java.util.Objects;
 
 @XmlRootElement(name = "ChangeCipherSpec")
-public class ChangeCipherSpecMessage extends ProtocolMessage<ChangeCipherSpecMessage> {
+public class ChangeCipherSpecMessage extends ProtocolMessage {
 
     @ModifiableVariableProperty private ModifiableByteArray ccsProtocolType;
 

@@ -14,10 +14,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
+import de.rub.nds.tlsattacker.core.unittest.helper.FakeTcpTransportHandler;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceSerializer;
 import de.rub.nds.tlsattacker.core.workflow.filter.DefaultFilter;
@@ -40,14 +40,14 @@ public class ForwardDataActionTest extends AbstractActionTest<ForwardDataAction>
         Context context = state.getContext(ctx1Alias);
         Context context2 = state.getContext(ctx2Alias);
 
-        FakeTransportHandler th = new FakeTransportHandler(ConnectionEndType.SERVER);
+        FakeTcpTransportHandler th = new FakeTcpTransportHandler(ConnectionEndType.SERVER);
         byte[] alertMsg = new byte[] {0x15, 0x03, 0x03, 0x00, 0x02, 0x02, 0x32};
         th.setFetchableByte(alertMsg);
         context.getTlsContext()
                 .setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
         context.getTcpContext().setTransportHandler(th);
         context2.getTcpContext()
-                .setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
+                .setTransportHandler(new FakeTcpTransportHandler(ConnectionEndType.CLIENT));
         context2.getTlsContext()
                 .setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
     }
@@ -63,14 +63,14 @@ public class ForwardDataActionTest extends AbstractActionTest<ForwardDataAction>
 
     @Test
     public void executingWithNullAliasThrowsException() throws Exception {
-        ForwardRecordsAction action = new ForwardRecordsAction(null, ctx2Alias);
-        assertThrows(WorkflowExecutionException.class, () -> action.execute(state));
+        ForwardDataAction action = new ForwardDataAction(null, ctx2Alias);
+        assertThrows(ActionExecutionException.class, () -> action.execute(state));
     }
 
     @Test
     public void executingWithEmptyAliasThrowsException() throws Exception {
-        ForwardRecordsAction action = new ForwardRecordsAction("", ctx2Alias);
-        assertThrows(WorkflowExecutionException.class, () -> action.execute(state));
+        ForwardDataAction action = new ForwardDataAction("", ctx2Alias);
+        assertThrows(ActionExecutionException.class, () -> action.execute(state));
     }
 
     @Test
@@ -88,7 +88,6 @@ public class ForwardDataActionTest extends AbstractActionTest<ForwardDataAction>
             pw.println("        <alias>ctx2</alias>");
             pw.println("    </InboundConnection>");
             pw.println("    <ForwardData>");
-            pw.println("        <actionOptions/>");
             pw.println("        <from>ctx1</from>");
             pw.println("        <to>ctx2</to>");
             pw.println("    </ForwardData>");

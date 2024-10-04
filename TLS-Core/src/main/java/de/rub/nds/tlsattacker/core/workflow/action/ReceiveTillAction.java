@@ -12,33 +12,36 @@ import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.ReceiveTillLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
-import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
+import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.state.State;
+import de.rub.nds.tlsattacker.core.workflow.container.ActionHelperUtil;
 import jakarta.xml.bind.annotation.XmlElementRef;
 import jakarta.xml.bind.annotation.XmlRootElement;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
-@XmlRootElement
+@XmlRootElement(name = "ReceiveTill")
 public class ReceiveTillAction extends CommonReceiveAction {
 
-    private static final Logger LOGGER = LogManager.getLogger();
-
-    @HoldsModifiableVariable @XmlElementRef protected ProtocolMessage<?> waitTillMessage;
+    @HoldsModifiableVariable
+    @XmlElementRef
+    protected ProtocolMessage waitTillMessage;
 
     public ReceiveTillAction() {
         super();
     }
 
-    public ReceiveTillAction(ProtocolMessage<?> waitTillMessage) {
+    public ReceiveTillAction(String connectionAlias) {
+        super(connectionAlias);
+    }
+
+    public ReceiveTillAction(ProtocolMessage waitTillMessage) {
         super();
         this.waitTillMessage = waitTillMessage;
     }
 
-    public ReceiveTillAction(String connectionAliasAlias, ProtocolMessage<?> waitTillMessage) {
+    public ReceiveTillAction(String connectionAliasAlias, ProtocolMessage waitTillMessage) {
         super(connectionAliasAlias);
         this.waitTillMessage = waitTillMessage;
     }
@@ -55,8 +58,8 @@ public class ReceiveTillAction extends CommonReceiveAction {
             sb.append(" (no messages set)");
         }
         sb.append("\n\tActual:");
-        if ((messages != null) && (!messages.isEmpty())) {
-            for (ProtocolMessage<?> message : messages) {
+        if ((getReceivedMessages() != null) && (!getReceivedMessages().isEmpty())) {
+            for (ProtocolMessage message : getReceivedMessages()) {
                 sb.append(message.toCompactString());
                 sb.append(", ");
             }
@@ -85,11 +88,11 @@ public class ReceiveTillAction extends CommonReceiveAction {
 
     @Override
     public boolean executedAsPlanned() {
-        if (messages == null) {
+        if (getReceivedMessages() == null) {
             return false;
         }
 
-        for (ProtocolMessage<?> message : messages) {
+        for (ProtocolMessage message : getReceivedMessages()) {
             if (message.getClass().equals(waitTillMessage.getClass())) {
                 return true;
             }
@@ -98,53 +101,24 @@ public class ReceiveTillAction extends CommonReceiveAction {
         return false;
     }
 
-    public ProtocolMessage<?> getWaitTillMessage() {
+    public ProtocolMessage getWaitTillMessage() {
         return waitTillMessage;
     }
 
-    public void setWaitTillMessage(ProtocolMessage<?> waitTillMessage) {
+    public void setWaitTillMessage(ProtocolMessage waitTillMessage) {
         this.waitTillMessage = waitTillMessage;
     }
 
     @Override
-    public void reset() {
-        messages = null;
-        records = null;
-        fragments = null;
-        setExecuted(null);
-    }
 
-    @Override
-    public int hashCode() {
-        int hash = super.hashCode();
-        hash = 67 * hash + Objects.hashCode(this.waitTillMessage);
-        hash = 67 * hash + Objects.hashCode(this.messages);
-        hash = 67 * hash + Objects.hashCode(this.records);
-        hash = 67 * hash + Objects.hashCode(this.fragments);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final ReceiveTillAction other = (ReceiveTillAction) obj;
-        return Objects.equals(this.waitTillMessage, other.waitTillMessage);
-    }
-
-    @Override
-    protected List<LayerConfiguration<?>> createConfigurationList() {
-        List<LayerConfiguration<?>> configurations = new ArrayList<>();
-        configurations.add(
-                new ReceiveTillLayerConfiguration<DataContainer<?, ?>>(
-                        ImplementedLayers.MESSAGE, waitTillMessage));
-        return configurations;
+    protected List<LayerConfiguration<?>> createLayerConfiguration(State state) {
+        TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
+        List<LayerConfiguration<?>> configurationList = new LinkedList<>();
+        configurationList.add(
+                new ReceiveTillLayerConfiguration(ImplementedLayers.SSL2, waitTillMessage));
+        configurationList.add(
+                new ReceiveTillLayerConfiguration(ImplementedLayers.MESSAGE, waitTillMessage));
+        return ActionHelperUtil.sortAndAddOptions(
+                tlsContext.getLayerStack(), false, getActionOptions(), configurationList);
     }
 }

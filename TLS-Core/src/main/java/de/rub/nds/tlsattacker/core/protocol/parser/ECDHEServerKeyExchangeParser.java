@@ -60,7 +60,7 @@ public class ECDHEServerKeyExchangeParser<T extends ECDHEServerKeyExchangeMessag
      */
     private void parseCurveType(ECDHEServerKeyExchangeMessage msg) {
         msg.setCurveType(parseByteField(HandshakeByteLength.ELLIPTIC_CURVE));
-        LOGGER.debug("CurveType: " + msg.getGroupType().getValue());
+        LOGGER.debug("CurveType: {}", msg.getGroupType().getValue());
     }
 
     /**
@@ -69,7 +69,7 @@ public class ECDHEServerKeyExchangeParser<T extends ECDHEServerKeyExchangeMessag
      * @param msg Message to write in
      */
     private void parseNamedGroup(ECDHEServerKeyExchangeMessage msg) {
-        msg.setNamedGroup(parseByteArrayField(NamedGroup.LENGTH));
+        msg.setNamedGroup(parseByteArrayField(HandshakeByteLength.NAMED_GROUP));
         LOGGER.debug("NamedGroup: {}", msg.getNamedGroup().getValue());
     }
 
@@ -80,7 +80,7 @@ public class ECDHEServerKeyExchangeParser<T extends ECDHEServerKeyExchangeMessag
      */
     private void parseSerializedPublicKeyLength(ECDHEServerKeyExchangeMessage msg) {
         msg.setPublicKeyLength(parseIntField(HandshakeByteLength.ECDHE_PARAM_LENGTH));
-        LOGGER.debug("SerializedPublicKeyLength: " + msg.getPublicKeyLength().getValue());
+        LOGGER.debug("SerializedPublicKeyLength: {}", msg.getPublicKeyLength().getValue());
     }
 
     /**
@@ -112,7 +112,7 @@ public class ECDHEServerKeyExchangeParser<T extends ECDHEServerKeyExchangeMessag
      */
     private void parseSignatureLength(ECDHEServerKeyExchangeMessage msg) {
         msg.setSignatureLength(parseIntField(HandshakeByteLength.SIGNATURE_LENGTH));
-        LOGGER.debug("SignatureLength: " + msg.getSignatureLength().getValue());
+        LOGGER.debug("SignatureLength: {}", msg.getSignatureLength().getValue());
     }
 
     /**

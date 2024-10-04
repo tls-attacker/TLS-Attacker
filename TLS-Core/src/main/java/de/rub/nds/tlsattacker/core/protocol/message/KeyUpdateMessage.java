@@ -20,13 +20,9 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.KeyUpdateSerializer;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.Objects;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 @XmlRootElement(name = "KeyUpdate")
-public class KeyUpdateMessage extends HandshakeMessage<KeyUpdateMessage> {
-
-    private static final Logger LOGGER = LogManager.getLogger();
+public class KeyUpdateMessage extends HandshakeMessage {
 
     private ModifiableByte requestMode;
 

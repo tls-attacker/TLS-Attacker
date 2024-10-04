@@ -19,7 +19,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /** */
-@XmlRootElement
+@XmlRootElement(name = "ChangeDefaultPreMasterSecret")
 public class ChangeDefaultPreMasterSecretAction extends ConnectionBoundAction {
 
     private static final Logger LOGGER = LogManager.getLogger();

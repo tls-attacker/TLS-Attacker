@@ -9,8 +9,8 @@
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
+import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.DHClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.DHClientComputations;
 import de.rub.nds.tlsattacker.core.protocol.parser.DHClientKeyExchangeParser;
@@ -21,8 +21,7 @@ import java.io.InputStream;
 import java.util.List;
 
 @XmlRootElement(name = "DHClientKeyExchange")
-public class DHClientKeyExchangeMessage<Self extends DHClientKeyExchangeMessage<?>>
-        extends ClientKeyExchangeMessage<Self> {
+public class DHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     @HoldsModifiableVariable protected DHClientComputations computations;
 
@@ -43,23 +42,23 @@ public class DHClientKeyExchangeMessage<Self extends DHClientKeyExchangeMessage<
     }
 
     @Override
-    public DHClientKeyExchangeHandler<Self> getHandler(TlsContext tlsContext) {
-        return new DHClientKeyExchangeHandler<>(tlsContext);
+    public DHClientKeyExchangeHandler getHandler(TlsContext tlsContext) {
+        return new DHClientKeyExchangeHandler(tlsContext);
     }
 
     @Override
-    public DHClientKeyExchangeParser<Self> getParser(TlsContext tlsContext, InputStream stream) {
-        return new DHClientKeyExchangeParser<>(stream, tlsContext);
+    public DHClientKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
+        return new DHClientKeyExchangeParser(stream, tlsContext);
     }
 
     @Override
-    public DHClientKeyExchangePreparator<Self> getPreparator(TlsContext tlsContext) {
-        return new DHClientKeyExchangePreparator<Self>(tlsContext.getChooser(), (Self) this);
+    public DHClientKeyExchangePreparator getPreparator(TlsContext tlsContext) {
+        return new DHClientKeyExchangePreparator(tlsContext.getChooser(), this);
     }
 
     @Override
-    public DHClientKeyExchangeSerializer<Self> getSerializer(TlsContext tlsContext) {
-        return new DHClientKeyExchangeSerializer<Self>((Self) this);
+    public DHClientKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
+        return new DHClientKeyExchangeSerializer(this);
     }
 
     @Override

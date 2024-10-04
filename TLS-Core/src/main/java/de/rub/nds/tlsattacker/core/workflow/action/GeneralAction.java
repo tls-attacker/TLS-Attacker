@@ -21,7 +21,7 @@ import java.util.Set;
 /**
  * An action that can be used for testing or to provide defaults for the filter/ normalize methods.
  */
-@XmlRootElement
+@XmlRootElement(name = "GeneralAction")
 public class GeneralAction extends TlsAction {
 
     @XmlTransient private final Set<String> aliases = new LinkedHashSet<>();

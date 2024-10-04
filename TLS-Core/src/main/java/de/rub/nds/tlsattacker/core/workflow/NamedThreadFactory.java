@@ -17,16 +17,27 @@ public class NamedThreadFactory implements ThreadFactory {
 
     private final String prefix;
 
+    private boolean includeNumber;
+
     public NamedThreadFactory(String prefix) {
+        this(prefix, true);
+    }
+
+    public NamedThreadFactory(String prefix, boolean includeNumber) {
         this.number = 1;
         this.prefix = prefix;
+        this.includeNumber = includeNumber;
     }
 
     @Override
     public Thread newThread(Runnable r) {
         Thread newThread = Executors.defaultThreadFactory().newThread(r);
-        newThread.setName(prefix + "-" + number);
-        number++;
+        if (includeNumber) {
+            newThread.setName(prefix + "-" + number);
+            number++;
+        } else {
+            newThread.setName(prefix);
+        }
         return newThread;
     }
 }

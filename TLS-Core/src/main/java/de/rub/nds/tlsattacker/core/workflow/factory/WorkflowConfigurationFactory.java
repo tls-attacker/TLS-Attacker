@@ -10,7 +10,15 @@ package de.rub.nds.tlsattacker.core.workflow.factory;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
-import de.rub.nds.tlsattacker.core.constants.*;
+import de.rub.nds.tlsattacker.core.constants.AlertDescription;
+import de.rub.nds.tlsattacker.core.constants.AlertLevel;
+import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.RunningModeType;
+import de.rub.nds.tlsattacker.core.constants.StarttlsType;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.http.HttpRequestMessage;
 import de.rub.nds.tlsattacker.core.http.HttpResponseMessage;
@@ -18,9 +26,47 @@ import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.*;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EarlyDataExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PreSharedKeyExtensionMessage;
+import de.rub.nds.tlsattacker.core.quic.constants.QuicTransportErrorCodes;
+import de.rub.nds.tlsattacker.core.quic.frame.AckFrame;
+import de.rub.nds.tlsattacker.core.quic.frame.ConnectionCloseFrame;
+import de.rub.nds.tlsattacker.core.quic.frame.HandshakeDoneFrame;
+import de.rub.nds.tlsattacker.core.quic.frame.PingFrame;
+import de.rub.nds.tlsattacker.core.quic.packet.RetryPacket;
+import de.rub.nds.tlsattacker.core.quic.packet.VersionNegotiationPacket;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceUtil;
-import de.rub.nds.tlsattacker.core.workflow.action.*;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceConfigurationUtil;
+import de.rub.nds.tlsattacker.core.workflow.action.BufferedGenericReceiveAction;
+import de.rub.nds.tlsattacker.core.workflow.action.BufferedSendAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ClearBuffersAction;
+import de.rub.nds.tlsattacker.core.workflow.action.CopyBuffersAction;
+import de.rub.nds.tlsattacker.core.workflow.action.CopyPreMasterSecretAction;
+import de.rub.nds.tlsattacker.core.workflow.action.EchConfigDnsRequestAction;
+import de.rub.nds.tlsattacker.core.workflow.action.EsniKeyDnsRequestAction;
+import de.rub.nds.tlsattacker.core.workflow.action.FlushSessionCacheAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ForwardDataAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ForwardMessagesAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ForwardRecordsAction;
+import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
+import de.rub.nds.tlsattacker.core.workflow.action.MessageActionFactory;
+import de.rub.nds.tlsattacker.core.workflow.action.PopAndSendAction;
+import de.rub.nds.tlsattacker.core.workflow.action.PopBufferedMessageAction;
+import de.rub.nds.tlsattacker.core.workflow.action.PopBufferedRecordAction;
+import de.rub.nds.tlsattacker.core.workflow.action.PopBuffersAction;
+import de.rub.nds.tlsattacker.core.workflow.action.PrintLastHandledApplicationDataAction;
+import de.rub.nds.tlsattacker.core.workflow.action.PrintSecretsAction;
+import de.rub.nds.tlsattacker.core.workflow.action.QuicPathChallengeAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ReceiveQuicTillAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ReceiveTillAction;
+import de.rub.nds.tlsattacker.core.workflow.action.RemBufferedChCiphersAction;
+import de.rub.nds.tlsattacker.core.workflow.action.RemBufferedChExtensionsAction;
+import de.rub.nds.tlsattacker.core.workflow.action.RenegotiationAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ResetConnectionAction;
+import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
+import de.rub.nds.tlsattacker.core.workflow.action.SendDynamicClientKeyExchangeAction;
+import de.rub.nds.tlsattacker.core.workflow.action.SendDynamicServerCertificateAction;
+import de.rub.nds.tlsattacker.core.workflow.action.SendDynamicServerKeyExchangeAction;
+import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.ArrayList;
@@ -94,6 +140,12 @@ public class WorkflowConfigurationFactory {
                 return createDynamicHelloWorkflow();
             case DYNAMIC_HTTPS:
                 return createHttpsDynamicWorkflow();
+            case QUIC_VERSION_NEGOTIATION:
+                return createQuicVersionNegotiationWorkflow();
+            case QUIC_PORT_CONNECTION_MIGRATION:
+                return createQuicConnectionMigrationWorkflow(false);
+            case QUIC_IPV6_CONNECTION_MIGRATION:
+                return createQuicConnectionMigrationWorkflow(true);
             default:
                 throw new ConfigurationException("Unknown WorkflowTraceType " + type.name());
         }
@@ -135,6 +187,18 @@ public class WorkflowConfigurationFactory {
             addStartTlsActions(connection, config.getStarttlsType(), workflowTrace);
         }
 
+        if (config.getQuicRetryFlowRequired()) {
+            workflowTrace.addTlsAction(
+                    MessageActionFactory.createTLSAction(
+                            config,
+                            connection,
+                            ConnectionEndType.CLIENT,
+                            new ClientHelloMessage(config)));
+            workflowTrace.addTlsAction(
+                    MessageActionFactory.createQuicAction(
+                            config, connection, ConnectionEndType.SERVER, new RetryPacket()));
+        }
+
         return workflowTrace;
     }
 
@@ -165,22 +229,12 @@ public class WorkflowConfigurationFactory {
             workflowTrace.addTlsAction(new EchConfigDnsRequestAction());
         }
 
-        if (config.isAddEncryptedClientHelloExtension()
-                && connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
-            workflowTrace.addTlsAction(
-                    MessageActionFactory.createTLSAction(
-                            config,
-                            connection,
-                            ConnectionEndType.CLIENT,
-                            new EncryptedClientHelloMessage(config)));
-        } else {
-            workflowTrace.addTlsAction(
-                    MessageActionFactory.createTLSAction(
-                            config,
-                            connection,
-                            ConnectionEndType.CLIENT,
-                            new ClientHelloMessage(config)));
-        }
+        workflowTrace.addTlsAction(
+                MessageActionFactory.createTLSAction(
+                        config,
+                        connection,
+                        ConnectionEndType.CLIENT,
+                        generateClientHelloMessage(config, connection)));
 
         if (config.getHighestProtocolVersion().isDTLS() && config.isDtlsCookieExchange()) {
             workflowTrace.addTlsAction(
@@ -194,7 +248,7 @@ public class WorkflowConfigurationFactory {
                             config,
                             connection,
                             ConnectionEndType.CLIENT,
-                            new ClientHelloMessage(config)));
+                            generateClientHelloMessage(config, connection)));
         }
 
         workflowTrace.addTlsAction(
@@ -314,6 +368,9 @@ public class WorkflowConfigurationFactory {
                             ConnectionEndType.SERVER,
                             new ChangeCipherSpecMessage(),
                             new FinishedMessage()));
+        }
+        if (config.getExpectHandshakeDoneQuicFrame()) {
+            workflowTrace.addTlsAction(new ReceiveQuicTillAction(new HandshakeDoneFrame()));
         }
 
         return workflowTrace;
@@ -459,7 +516,7 @@ public class WorkflowConfigurationFactory {
                         config,
                         connection,
                         ConnectionEndType.CLIENT,
-                        new ClientHelloMessage(config)));
+                        generateClientHelloMessage(config, connection)));
 
         if (config.getHighestProtocolVersion().isDTLS() && config.isDtlsCookieExchange()) {
             trace.addTlsAction(
@@ -473,7 +530,7 @@ public class WorkflowConfigurationFactory {
                             config,
                             connection,
                             ConnectionEndType.CLIENT,
-                            new ClientHelloMessage(config)));
+                            generateClientHelloMessage(config, connection)));
         }
 
         trace.addTlsAction(
@@ -555,15 +612,16 @@ public class WorkflowConfigurationFactory {
 
     public void appendHttpMessages(AliasedConnection connection, WorkflowTrace trace) {
         MessageAction action =
-                MessageActionFactory.createTLSAction(
-                        config, connection, ConnectionEndType.CLIENT, new ApplicationMessage());
+                MessageActionFactory.createHttpAction(
+                        config,
+                        connection,
+                        ConnectionEndType.CLIENT,
+                        new HttpRequestMessage(config));
         trace.addTlsAction(action);
-        action.getHttpMessages().add(new HttpRequestMessage(config));
         action =
-                MessageActionFactory.createTLSAction(
-                        config, connection, ConnectionEndType.SERVER, new ApplicationMessage());
+                MessageActionFactory.createHttpAction(
+                        config, connection, ConnectionEndType.SERVER, new HttpResponseMessage());
         trace.addTlsAction(action);
-        action.getHttpMessages().add(new HttpResponseMessage());
     }
 
     private WorkflowTrace createSimpleMitmProxyWorkflow() {
@@ -587,7 +645,7 @@ public class WorkflowConfigurationFactory {
         // mitm -> server
         String mitmToServerAlias = outboundConnection.getAlias();
 
-        LOGGER.debug("Building mitm trace for: " + inboundConnection + ", " + outboundConnection);
+        LOGGER.debug("Building mitm trace for: {}, {}", inboundConnection, outboundConnection);
 
         WorkflowTrace clientToMitmHandshake = createHandshakeWorkflow(inboundConnection);
         WorkflowTrace mitmToServerHandshake = createHandshakeWorkflow(outboundConnection);
@@ -648,7 +706,7 @@ public class WorkflowConfigurationFactory {
         // mitm -> server
         String mitmToServerAlias = outboundConnection.getAlias();
 
-        LOGGER.debug("Building mitm trace for: " + inboundConnection + ", " + outboundConnection);
+        LOGGER.debug("Building mitm trace for: {}, {}", inboundConnection, outboundConnection);
 
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
         WorkflowTrace trace =
@@ -698,15 +756,15 @@ public class WorkflowConfigurationFactory {
         List<ProtocolMessage<?>> serverMessages = new LinkedList<>();
         List<ProtocolMessage<?>> clientMessages = new LinkedList<>();
 
-        ClientHelloMessage clientHello;
+        CoreClientHelloMessage clientHello;
         ApplicationMessage earlyDataMsg;
 
         if (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
-            clientHello = new ClientHelloMessage(config);
+            clientHello = generateClientHelloMessage(config, connection);
             earlyDataMsg = new ApplicationMessage();
             earlyDataMsg.setDataConfig(config.getEarlyData());
         } else {
-            clientHello = new ClientHelloMessage();
+            clientHello = generateClientHelloMessage(config, connection);
             earlyDataMsg = new ApplicationMessage();
         }
         clientHelloMessages.add(clientHello);
@@ -750,11 +808,14 @@ public class WorkflowConfigurationFactory {
         serverMessages.add(encExtMsg);
         serverMessages.add(serverFin);
 
-        trace.addTlsAction(
+        MessageAction serverMsgsAction =
                 MessageActionFactory.createTLSAction(
-                        config, connection, ConnectionEndType.SERVER, serverMessages));
+                        config, connection, ConnectionEndType.SERVER, serverMessages);
+        serverMsgsAction.addActionOption(ActionOption.IGNORE_UNEXPECTED_NEW_SESSION_TICKETS);
+        trace.addTlsAction(serverMsgsAction);
 
-        if (zeroRtt) {
+        // quic 0rtt does not use the EndOfEarlyDataMessage
+        if (zeroRtt && !config.getQuic()) {
             clientMessages.add(new EndOfEarlyDataMessage());
         }
         clientMessages.add(new FinishedMessage());
@@ -768,12 +829,12 @@ public class WorkflowConfigurationFactory {
         AliasedConnection ourConnection = getConnection();
         WorkflowTrace trace = createHandshakeWorkflow();
         // Remove extensions that are only required in the second handshake
-        HelloMessage<?> initialHello;
+        HelloMessage initialHello;
         if (ourConnection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
             initialHello =
                     (HelloMessage)
-                            WorkflowTraceUtil.getFirstSendMessage(
-                                    HandshakeMessageType.CLIENT_HELLO, trace);
+                            WorkflowTraceConfigurationUtil.getFirstStaticConfiguredSendMessage(
+                                    trace, HandshakeMessageType.CLIENT_HELLO);
             EarlyDataExtensionMessage earlyDataExtension =
                     initialHello.getExtension(EarlyDataExtensionMessage.class);
             if (initialHello.getExtensions() != null) {
@@ -782,12 +843,12 @@ public class WorkflowConfigurationFactory {
         } else {
             initialHello =
                     (HelloMessage)
-                            WorkflowTraceUtil.getFirstSendMessage(
-                                    HandshakeMessageType.SERVER_HELLO, trace);
+                            WorkflowTraceConfigurationUtil.getFirstStaticConfiguredSendMessage(
+                                    trace, HandshakeMessageType.SERVER_HELLO);
             EncryptedExtensionsMessage encryptedExtensionsMessage =
                     (EncryptedExtensionsMessage)
-                            WorkflowTraceUtil.getFirstSendMessage(
-                                    HandshakeMessageType.ENCRYPTED_EXTENSIONS, trace);
+                            WorkflowTraceConfigurationUtil.getFirstStaticConfiguredSendMessage(
+                                    trace, HandshakeMessageType.ENCRYPTED_EXTENSIONS);
             if (encryptedExtensionsMessage != null
                     && encryptedExtensionsMessage.getExtensions() != null) {
                 EarlyDataExtensionMessage earlyDataExtension =
@@ -814,6 +875,14 @@ public class WorkflowConfigurationFactory {
                     .add(ActionOption.IGNORE_UNEXPECTED_NEW_SESSION_TICKETS);
         }
         trace.addTlsAction(newSessionTicketAction);
+        if (config.getQuic()) {
+            trace.addTlsAction(
+                    MessageActionFactory.createQuicAction(
+                            config,
+                            ourConnection,
+                            ConnectionEndType.CLIENT,
+                            new ConnectionCloseFrame(QuicTransportErrorCodes.NO_ERROR.getValue())));
+        }
         trace.addTlsAction(new ResetConnectionAction());
         WorkflowTrace zeroRttTrace = createTls13PskWorkflow(zeroRtt);
         for (TlsAction zeroRttAction : zeroRttTrace.getTlsActions()) {
@@ -853,10 +922,9 @@ public class WorkflowConfigurationFactory {
         }
 
         LOGGER.info(
-                "Building synchronizing proxy trace for:\n"
-                        + inboundConnection.toCompactString()
-                        + ", "
-                        + outboundConnection.toCompactString());
+                "Building synchronizing proxy trace for:\n{}, {}",
+                inboundConnection.toCompactString(),
+                outboundConnection.toCompactString());
 
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
         WorkflowTrace trace =
@@ -975,15 +1043,13 @@ public class WorkflowConfigurationFactory {
                     return new PWDClientKeyExchangeMessage();
                 default:
                     LOGGER.warn(
-                            "Unsupported key exchange algorithm: "
-                                    + algorithm
-                                    + ", not creating ClientKeyExchange Message");
+                            "Unsupported key exchange algorithm: {}, not creating ClientKeyExchange Message",
+                            algorithm);
             }
         } else {
             LOGGER.warn(
-                    "Unsupported key exchange algorithm: "
-                            + algorithm
-                            + ", not creating ClientKeyExchange Message");
+                    "Unsupported key exchange algorithm: {}, not creating ClientKeyExchange Message",
+                    algorithm);
         }
         return null;
     }
@@ -1016,13 +1082,10 @@ public class WorkflowConfigurationFactory {
                 case ECCPWD:
                     return new PWDServerKeyExchangeMessage();
                 case RSA_EXPORT:
-                    // only send rsa server key exchange message if public key size is bigger than
-                    // 512 bits
-                    if (config.getDefaultExplicitCertificateKeyPair().getPublicKey().keySize()
-                            <= 512) {
-                        return null;
-                    }
+                    // TODO We are always adding the server rsa cke message, even though it should
+                    // only be added when our certificate public key is too big.
                     return new RSAServerKeyExchangeMessage();
+
                 default:
                     LOGGER.warn(
                             "Unsupported key exchange algorithm: "
@@ -1035,6 +1098,7 @@ public class WorkflowConfigurationFactory {
                             + algorithm
                             + ", not creating ServerKeyExchange Message");
         }
+
         return null;
     }
 
@@ -1112,12 +1176,21 @@ public class WorkflowConfigurationFactory {
     public WorkflowTrace createDynamicHelloWorkflow(AliasedConnection connection) {
         WorkflowTrace trace = createTlsEntryWorkflowTrace(connection);
 
+        if (config.isAddEncryptedServerNameIndicationExtension()
+                && connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
+            trace.addTlsAction(new EsniKeyDnsRequestAction());
+        }
+        if (config.isAddEncryptedClientHelloExtension()
+                && connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
+            trace.addTlsAction(new EchConfigDnsRequestAction());
+        }
+
         trace.addTlsAction(
                 MessageActionFactory.createTLSAction(
                         config,
                         connection,
                         ConnectionEndType.CLIENT,
-                        new ClientHelloMessage(config)));
+                        generateClientHelloMessage(config, connection)));
 
         if (config.getHighestProtocolVersion().isDTLS() && config.isDtlsCookieExchange()) {
             trace.addTlsAction(
@@ -1131,7 +1204,7 @@ public class WorkflowConfigurationFactory {
                             config,
                             connection,
                             ConnectionEndType.CLIENT,
-                            new ClientHelloMessage(config)));
+                            generateClientHelloMessage(config, connection)));
         }
 
         if (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
@@ -1206,6 +1279,9 @@ public class WorkflowConfigurationFactory {
                 trace.addTlsAction(
                         MessageActionFactory.createTLSAction(
                                 config, connection, ConnectionEndType.CLIENT, tls13Messages));
+                if (config.getExpectHandshakeDoneQuicFrame()) {
+                    trace.addTlsAction(new ReceiveQuicTillAction(new HandshakeDoneFrame()));
+                }
             } else {
                 if (Objects.equals(config.isClientAuthentication(), Boolean.TRUE)) {
                     trace.addTlsAction(new SendAction(new CertificateMessage()));
@@ -1229,6 +1305,44 @@ public class WorkflowConfigurationFactory {
         }
     }
 
+    private WorkflowTrace createQuicVersionNegotiationWorkflow() {
+        return createQuicVersionNegotiationWorkflow(getConnection());
+    }
+
+    public WorkflowTrace createQuicVersionNegotiationWorkflow(AliasedConnection connection) {
+        WorkflowTrace trace = new WorkflowTrace();
+        trace.addTlsAction(
+                MessageActionFactory.createTLSAction(
+                        config,
+                        connection,
+                        ConnectionEndType.CLIENT,
+                        new ClientHelloMessage(config)));
+        trace.addTlsAction(new ReceiveAction(new VersionNegotiationPacket()));
+        return trace;
+    }
+
+    private WorkflowTrace createQuicConnectionMigrationWorkflow(boolean switchToIPv6) {
+        return createQuicConnectionMigrationWorkflow(getConnection(), switchToIPv6);
+    }
+
+    public WorkflowTrace createQuicConnectionMigrationWorkflow(
+            AliasedConnection connection, boolean switchToIPv6) {
+        WorkflowTrace trace = createHandshakeWorkflow();
+        trace.addTlsAction(new ResetConnectionAction(false, switchToIPv6));
+        trace.addTlsAction(
+                MessageActionFactory.createQuicAction(
+                        config, connection, ConnectionEndType.CLIENT, new PingFrame()));
+        TlsAction pathChallengeAction = new QuicPathChallengeAction(connection.getAlias());
+        trace.addTlsAction(pathChallengeAction);
+        trace.addTlsAction(
+                MessageActionFactory.createQuicAction(
+                        config, connection, ConnectionEndType.CLIENT, new PingFrame()));
+        trace.addTlsAction(
+                MessageActionFactory.createQuicAction(
+                        config, connection, ConnectionEndType.SERVER, new AckFrame(false)));
+        return trace;
+    }
+
     private WorkflowTrace createDynamicClientRenegotiationWithoutResumption() {
         WorkflowTrace trace = createDynamicHandshakeWorkflow();
         trace.addTlsAction(new RenegotiationAction());
@@ -1240,5 +1354,15 @@ public class WorkflowConfigurationFactory {
             }
         }
         return trace;
+    }
+
+    private CoreClientHelloMessage generateClientHelloMessage(
+            Config tlsConfig, AliasedConnection connection) {
+        if (config.isAddEncryptedClientHelloExtension()
+                && connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
+            return new EncryptedClientHelloMessage(config);
+        } else {
+            return new ClientHelloMessage(config);
+        }
     }
 }

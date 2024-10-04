@@ -15,17 +15,17 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /** Handler for DH and DHE ClientKeyExchange messages */
-public class DHClientKeyExchangeHandler<T extends DHClientKeyExchangeMessage<?>>
-        extends ClientKeyExchangeHandler<T> {
+public class DHClientKeyExchangeHandler<KeyExchangeMessage extends DHClientKeyExchangeMessage>
+        extends ClientKeyExchangeHandler<KeyExchangeMessage> {
 
-    private Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public DHClientKeyExchangeHandler(TlsContext tlsContext) {
         super(tlsContext);
     }
 
     @Override
-    public void adjustContext(T message) {
+    public void adjustContext(KeyExchangeMessage message) {
         adjustPremasterSecret(message);
         adjustMasterSecret(message);
         adjustClientPublicKey(message);
@@ -36,7 +36,8 @@ public class DHClientKeyExchangeHandler<T extends DHClientKeyExchangeMessage<?>>
         if (message.getPublicKey().getValue().length == 0) {
             LOGGER.debug("Empty DH Key");
         } else {
-            tlsContext.setClientDhPublicKey(new BigInteger(message.getPublicKey().getValue()));
+            tlsContext.setClientEphemeralDhPublicKey(
+                    new BigInteger(message.getPublicKey().getValue()));
         }
     }
 }

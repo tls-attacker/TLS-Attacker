@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.layer;
 import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import java.util.List;
+import java.util.StringJoiner;
 
 /**
  * Contains information about a layers actions, both after sending and receiving data.
@@ -80,5 +81,22 @@ public class LayerProcessingResult<T extends DataContainer<?, ?>> {
 
     public void setUnreadBytes(byte[] unreadBytes) {
         this.unreadBytes = unreadBytes;
+    }
+
+    public String toCompactString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("LayerType: ");
+        sb.append(layerType);
+        sb.append(" As Planned: ");
+        sb.append(executedAsPlanned);
+        sb.append(" Containers: ");
+        StringJoiner joiner = new StringJoiner(", ");
+        for (DataContainer container : usedContainers) {
+            joiner.add(container.toCompactString());
+        }
+        sb.append(joiner.toString());
+        sb.append(" UnreadBytes: ");
+        sb.append(unreadBytes.length);
+        return sb.toString();
     }
 }

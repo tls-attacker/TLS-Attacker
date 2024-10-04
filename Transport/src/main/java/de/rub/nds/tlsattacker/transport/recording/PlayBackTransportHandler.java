@@ -10,13 +10,13 @@ package de.rub.nds.tlsattacker.transport.recording;
 
 import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import de.rub.nds.tlsattacker.transport.TransportHandler;
+import de.rub.nds.tlsattacker.transport.StreambasedTransportHandler;
 import java.io.IOException;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class PlayBackTransportHandler extends TransportHandler {
+public class PlayBackTransportHandler extends StreambasedTransportHandler {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -29,7 +29,7 @@ public class PlayBackTransportHandler extends TransportHandler {
     private boolean closed = false;
 
     PlayBackTransportHandler(Recording recording) {
-        super(0, 0, ConnectionEndType.SERVER);
+        super(0, ConnectionEndType.SERVER);
         this.recording = recording;
         linesToSend = recording.getReceivedLines();
     }
@@ -68,16 +68,7 @@ public class PlayBackTransportHandler extends TransportHandler {
 
     @Override
     public void closeClientConnection() throws IOException {
-        throw new UnsupportedOperationException("Not supported yet."); // To
-        // change
-        // body
-        // of
-        // generated
-        // methods,
-        // choose
-        // Tools
-        // |
-        // Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override

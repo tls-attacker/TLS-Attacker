@@ -8,32 +8,27 @@
  */
 package de.rub.nds.tlsattacker.core.tokenbinding;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.modifiablevariable.util.BadRandom;
-import de.rub.nds.tlsattacker.core.constants.*;
-import de.rub.nds.tlsattacker.core.crypto.ECCUtilsBCWrapper;
-import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
-import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
-import de.rub.nds.tlsattacker.core.crypto.ec.Point;
-import de.rub.nds.tlsattacker.core.crypto.ec.PointFormatter;
+import de.rub.nds.protocol.constants.HashAlgorithm;
+import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
+import de.rub.nds.protocol.constants.SignatureAlgorithm;
+import de.rub.nds.protocol.crypto.ec.EllipticCurve;
+import de.rub.nds.protocol.crypto.ec.EllipticCurveSECP256R1;
+import de.rub.nds.protocol.crypto.ec.Point;
+import de.rub.nds.protocol.crypto.ec.PointFormatter;
+import de.rub.nds.protocol.crypto.key.EcdsaPrivateKey;
+import de.rub.nds.protocol.crypto.signature.EcdsaSignatureComputations;
+import de.rub.nds.protocol.crypto.signature.SignatureCalculator;
+import de.rub.nds.protocol.exception.PreparationException;
+import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessagePreparator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Random;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bouncycastle.crypto.params.ECDomainParameters;
-import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
-import org.bouncycastle.crypto.params.ParametersWithRandom;
-import org.bouncycastle.crypto.signers.ECDSASigner;
 
 public class TokenBindingMessagePreparator extends ProtocolMessagePreparator<TokenBindingMessage> {
 
@@ -50,43 +45,35 @@ public class TokenBindingMessagePreparator extends ProtocolMessagePreparator<Tok
     protected void prepareProtocolMessageContents() {
         message.setTokenbindingType(
                 chooser.getConfig().getDefaultTokenBindingType().getTokenBindingTypeValue());
-        message.setKeyParameter(
-                chooser.getConfig().getDefaultTokenBindingKeyParameters().get(0).getValue());
-        if (chooser.getConfig().getDefaultTokenBindingKeyParameters().get(0)
-                == TokenBindingKeyParameters.ECDSAP256) {
-            EllipticCurve curve = CurveFactory.getCurve(NamedGroup.SECP256R1);
-            BigInteger privateKey = chooser.getConfig().getDefaultTokenBindingEcPrivateKey();
-            LOGGER.debug("Using private Key:" + privateKey);
-            Point publicKey = curve.mult(privateKey, curve.getBasePoint());
+        if (chooser.getConfig().getDefaultTokenBindingKeyParameters().size() > 0) {
+            message.setKeyParameter(
+                    chooser.getConfig().getDefaultTokenBindingKeyParameters().get(0).getValue());
+            if (chooser.getConfig().getDefaultTokenBindingKeyParameters().get(0)
+                    == TokenBindingKeyParameters.ECDSAP256) {
+                EllipticCurve curve = new EllipticCurveSECP256R1();
+                BigInteger privateKey = chooser.getConfig().getDefaultTokenBindingEcPrivateKey();
+                LOGGER.debug("Using private Key: {}", privateKey);
+                Point publicKey = curve.mult(privateKey, curve.getBasePoint());
 
-            message.setPoint(PointFormatter.toRawFormat(publicKey));
-            message.setPointLength(message.getPoint().getValue().length);
-            ParametersWithRandom params =
-                    new ParametersWithRandom(
-                            new ECPrivateKeyParameters(privateKey, generateEcParameters()),
-                            new BadRandom(new Random(0), new byte[0]));
-            ECDSASigner signer = new ECDSASigner();
-            signer.init(true, params);
-            MessageDigest dig;
-            try {
-                dig = MessageDigest.getInstance("SHA-256");
-            } catch (NoSuchAlgorithmException ex) {
-                throw new PreparationException("Could not create SHA-256 digest", ex);
+                message.setPoint(PointFormatter.toRawFormat(publicKey));
+                message.setPointLength(message.getPoint().getValue().length);
+
+                byte[] signature =
+                        generateSignature(
+                                SignatureAndHashAlgorithm.ECDSA_SHA256, generateToBeSigned());
+                message.setSignature(signature);
+            } else {
+                message.setModulus(
+                        chooser.getConfig().getDefaultTokenBindingRsaModulus().toByteArray());
+                message.setModulusLength(message.getModulus().getValue().length);
+                message.setPublicExponent(
+                        chooser.getConfig().getDefaultTokenBindingRsaPublicKey().toByteArray());
+                message.setPublicExponentLength(message.getPublicExponent().getValue().length);
+                message.setSignature(new byte[0]);
             }
-            dig.update(generateToBeSigned());
-            BigInteger[] signature = signer.generateSignature(dig.digest());
-
-            message.setSignature(
-                    ArrayConverter.concatenate(
-                            ArrayConverter.bigIntegerToByteArray(signature[0]),
-                            ArrayConverter.bigIntegerToByteArray(signature[1])));
         } else {
-            message.setModulus(
-                    chooser.getConfig().getDefaultTokenBindingRsaModulus().toByteArray());
-            message.setModulusLength(message.getModulus().getValue().length);
-            message.setPublicExponent(
-                    chooser.getConfig().getDefaultTokenBindingRsaPublicKey().toByteArray());
-            message.setPublicExponentLength(message.getPublicExponent().getValue().length);
+            // We do not have key paraeters.
+            message.setKeyParameter((byte) 0);
             message.setSignature(new byte[0]);
         }
         TokenBindingMessageSerializer serializer = new TokenBindingMessageSerializer(message);
@@ -98,22 +85,22 @@ public class TokenBindingMessagePreparator extends ProtocolMessagePreparator<Tok
         message.setTokenbindingsLength(serializer.serializeBinding().length);
     }
 
-    private ECDomainParameters generateEcParameters() {
-        NamedGroup[] groups = new NamedGroup[] {NamedGroup.SECP256R1};
-        ECPointFormat[] formats = new ECPointFormat[] {ECPointFormat.UNCOMPRESSED};
-        InputStream is =
-                new ByteArrayInputStream(
-                        ArrayConverter.concatenate(
-                                new byte[] {EllipticCurveType.NAMED_CURVE.getValue()},
-                                NamedGroup.SECP256R1.getValue()));
-        ECDomainParameters ecParams;
-        try {
-            ecParams = ECCUtilsBCWrapper.readECParameters(groups, formats, is);
-        } catch (IOException ex) {
-            throw new PreparationException("Failed to generate EC domain parameters", ex);
-        }
+    private byte[] generateSignature(
+            SignatureAndHashAlgorithm algorithm, byte[] toBeHashedAndSigned) {
 
-        return ecParams;
+        SignatureCalculator calculator = new SignatureCalculator();
+        calculator.computeRawEcdsaSignature(
+                (EcdsaSignatureComputations) // This is safe since we hardcode ECDSA
+                        message.getSignatureComputations(SignatureAlgorithm.ECDSA),
+                new EcdsaPrivateKey(
+                        chooser.getConfig().getDefaultTokenBindingEcPrivateKey(),
+                        chooser.getConfig().getDefaultEcdsaNonce(),
+                        NamedEllipticCurveParameters.SECP256R1),
+                toBeHashedAndSigned,
+                HashAlgorithm.SHA256);
+        return message.getSignatureComputations(algorithm.getSignatureAlgorithm())
+                .getSignatureBytes()
+                .getValue();
     }
 
     private byte[] generateToBeSigned() {

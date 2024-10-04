@@ -9,13 +9,13 @@
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.protocol.exception.ParserException;
 import de.rub.nds.tlsattacker.core.constants.EchClientHelloType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.crypto.hpke.HpkeReceiverContext;
 import de.rub.nds.tlsattacker.core.crypto.hpke.HpkeUtil;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.ClientHelloHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
@@ -59,23 +59,17 @@ public class EncryptedClientHelloExtensionHandler
             KeyShareEntry keyShareEntry = tlsContext.getChooser().getEchServerKeyShareEntry();
 
             // log own private and public key
-            LOGGER.debug(
-                    "ServerPrivateKey: "
-                            + ArrayConverter.bytesToHexString(
-                                    keyShareEntry.getPrivateKey().toByteArray()));
-            LOGGER.debug(
-                    "ServerPublicKey: "
-                            + ArrayConverter.bytesToHexString(
-                                    keyShareEntry.getPublicKey().getValue()));
+            LOGGER.debug("ServerPrivateKey: {}", keyShareEntry.getPrivateKey().toByteArray());
+            LOGGER.debug("ServerPublicKey: {}", keyShareEntry.getPublicKey().getValue());
 
             // RFC 9180, Section 7.1
             byte[] info =
                     ArrayConverter.concatenate(
                             "tls ech".getBytes(), new byte[] {0x00}, echConfig.getEchConfigBytes());
-            LOGGER.debug("Info: " + ArrayConverter.bytesToHexString(info));
+            LOGGER.debug("Info: {}", info);
 
             byte[] payload = message.getPayload().getValue();
-            LOGGER.debug("Payload: " + ArrayConverter.bytesToHexString(payload));
+            LOGGER.debug("Payload: {}", payload);
 
             // extract aad from clientHelloOuter by replacing payload with zero bytes
 
@@ -89,24 +83,20 @@ public class EncryptedClientHelloExtensionHandler
                             tlsContext.getLastClientHello().length);
             int startIndex = HpkeUtil.indexOf(aad, payload);
             System.arraycopy(new byte[payload.length], 0, aad, startIndex, payload.length);
-            LOGGER.debug("AAD: " + ArrayConverter.bytesToHexString(aad));
+            LOGGER.debug("AAD: {}", aad);
             byte[] encodedClientHelloInner;
             try {
                 HpkeReceiverContext receiverContext =
                         hpkeUtil.setupBaseReceiver(
                                 message.getEnc().getValue(), info, keyShareEntry);
                 encodedClientHelloInner = receiverContext.open(aad, payload);
-                LOGGER.debug(
-                        "Encoded ClientHello Inner"
-                                + ArrayConverter.bytesToHexString(encodedClientHelloInner));
+                LOGGER.debug("Encoded ClientHello Inner: {}", encodedClientHelloInner);
             } catch (CryptoException e) {
                 LOGGER.warn("Could not decrypt the sent ECH (tag mismatch?): ", e);
                 return;
             }
 
-            LOGGER.debug(
-                    "Encoded client hello inner: "
-                            + ArrayConverter.bytesToHexString(encodedClientHelloInner));
+            LOGGER.debug("Encoded client hello inner: {}", encodedClientHelloInner);
             // parse clienthelloinner if possible
             // first add version and length bytes to encoded clienthelloinner
             byte[] type = new byte[] {HandshakeMessageType.CLIENT_HELLO.getValue()};

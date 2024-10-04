@@ -8,10 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import de.rub.nds.tlsattacker.core.constants.CachedInfoType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
@@ -58,7 +59,6 @@ public class CachedObjectParserTest {
             CachedInfoType expectedCachedInfoType,
             Integer expectedHashLength,
             byte[] expectedHash) {
-        TlsContext tlsContext = new TlsContext();
         CachedObjectParser parser =
                 new CachedObjectParser(
                         new ByteArrayInputStream(providedCachedObjectBytes),

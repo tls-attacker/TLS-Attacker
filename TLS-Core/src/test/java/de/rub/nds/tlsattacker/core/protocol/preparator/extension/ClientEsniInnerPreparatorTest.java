@@ -12,9 +12,13 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientEsniInner;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.ServerNamePair;
+import de.rub.nds.tlsattacker.core.state.Context;
+import de.rub.nds.tlsattacker.core.state.State;
 import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,7 +29,7 @@ public class ClientEsniInnerPreparatorTest {
 
     @BeforeEach
     public void setUp() {
-        context = new TlsContext();
+        context = new Context(new State(new Config()), new InboundConnection()).getTlsContext();
     }
 
     @Test

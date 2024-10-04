@@ -15,11 +15,13 @@ import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
-import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
+import de.rub.nds.tlsattacker.core.unittest.helper.FakeTcpTransportHandler;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import jakarta.xml.bind.JAXB;
-import java.io.StringReader;
-import java.io.StringWriter;
+import jakarta.xml.bind.JAXBException;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import javax.xml.stream.XMLStreamException;
 import org.junit.jupiter.api.Test;
 
 public class ReceiveActionTest extends AbstractActionTest<ReceiveAction> {
@@ -30,7 +32,7 @@ public class ReceiveActionTest extends AbstractActionTest<ReceiveAction> {
     public ReceiveActionTest() {
         super(new ReceiveAction(new AlertMessage()), ReceiveAction.class);
         context = state.getTlsContext();
-        context.setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
+        context.setTransportHandler(new FakeTcpTransportHandler(ConnectionEndType.CLIENT));
         context.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
 
         alertMessage = (AlertMessage) action.getMessages().get(0);
@@ -47,19 +49,17 @@ public class ReceiveActionTest extends AbstractActionTest<ReceiveAction> {
     @Test
     @Override
     public void testExecute() throws Exception {
-        ((FakeTransportHandler) context.getTransportHandler())
+        ((FakeTcpTransportHandler) context.getTransportHandler())
                 .setFetchableByte(new byte[] {0x15, 0x03, 0x03, 0x00, 0x02, 0x02, 50});
         super.testExecute();
     }
 
     @Test
-    public void testJAXB() {
-        StringWriter writer = new StringWriter();
+    public void testJAXB() throws JAXBException, IOException, XMLStreamException {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         action.filter();
-        JAXB.marshal(action, writer);
-        TlsAction action2 =
-                JAXB.unmarshal(
-                        new StringReader(writer.getBuffer().toString()), ReceiveAction.class);
+        ActionIO.write(outputStream, action);
+        TlsAction action2 = ActionIO.read(new ByteArrayInputStream(outputStream.toByteArray()));
         action.normalize();
         action2.normalize();
         assertEquals(action, action2);

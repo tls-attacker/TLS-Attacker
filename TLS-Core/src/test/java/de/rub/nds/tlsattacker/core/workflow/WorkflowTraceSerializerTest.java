@@ -8,7 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.workflow;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import de.rub.nds.modifiablevariable.singlebyte.ByteExplicitValueModification;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
@@ -25,7 +27,12 @@ import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import jakarta.xml.bind.JAXBException;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -67,15 +74,14 @@ public class WorkflowTraceSerializerTest {
         record.setMaxRecordLengthConfig(5);
         records.add(record);
         action = new SendAction(new ClientHelloMessage());
-        action.setRecords(records);
+        ((SendAction) action).setConfiguredRecords(records);
 
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         WorkflowTraceSerializer.write(os, trace);
-        LOGGER.debug(os.toString());
 
-        String serializedWorkflow = os.toString();
-
-        ByteArrayInputStream bis = new ByteArrayInputStream(serializedWorkflow.getBytes());
+        String serializedWorkflow = new String(os.toByteArray());
+        LOGGER.debug("Serialized WorkflowTrace:\n{}", serializedWorkflow);
+        ByteArrayInputStream bis = new ByteArrayInputStream(os.toByteArray());
         WorkflowTrace wt = WorkflowTraceSerializer.secureRead(bis);
 
         os = new ByteArrayOutputStream();
@@ -117,8 +123,7 @@ public class WorkflowTraceSerializerTest {
         try (PrintWriter pw = new PrintWriter(sw)) {
             pw.println("<workflowTrace>");
             pw.println("    <Send>");
-            pw.println("        <actionOptions/>");
-            pw.println("        <messages>");
+            pw.println("        <configuredMessages>");
             pw.println("            <ClientHello>");
             pw.println("                <extensions>");
             pw.println("                    <ECPointFormat/>");
@@ -127,7 +132,7 @@ public class WorkflowTraceSerializerTest {
             pw.println("                    <RenegotiationInfoExtension/>");
             pw.println("                </extensions>");
             pw.println("            </ClientHello>");
-            pw.println("        </messages>");
+            pw.println("        </configuredMessages>");
             pw.println("    </Send>");
             pw.println("</workflowTrace>");
         }
@@ -161,8 +166,7 @@ public class WorkflowTraceSerializerTest {
             pw.println("        <hostname>host1111</hostname>");
             pw.println("    </OutboundConnection>");
             pw.println("    <Send>");
-            pw.println("        <actionOptions/>");
-            pw.println("        <messages>");
+            pw.println("        <configuredMessages>");
             pw.println("            <ClientHello>");
             pw.println("                <extensions>");
             pw.println("                    <ECPointFormat/>");
@@ -171,7 +175,7 @@ public class WorkflowTraceSerializerTest {
             pw.println("                    <RenegotiationInfoExtension/>");
             pw.println("                </extensions>");
             pw.println("            </ClientHello>");
-            pw.println("        </messages>");
+            pw.println("        </configuredMessages>");
             pw.println("    </Send>");
             pw.println("</workflowTrace>");
         }
@@ -215,9 +219,8 @@ public class WorkflowTraceSerializerTest {
             pw.println("        <port>1313</port>");
             pw.println("    </InboundConnection>");
             pw.println("    <Send>");
-            pw.println("        <actionOptions/>");
             pw.println("        <connectionAlias>alias3</connectionAlias>");
-            pw.println("        <messages>");
+            pw.println("        <configuredMessages>");
             pw.println("            <ClientHello>");
             pw.println("                <extensions>");
             pw.println("                    <ECPointFormat/>");
@@ -226,7 +229,7 @@ public class WorkflowTraceSerializerTest {
             pw.println("                    <RenegotiationInfoExtension/>");
             pw.println("                </extensions>");
             pw.println("            </ClientHello>");
-            pw.println("        </messages>");
+            pw.println("        </configuredMessages>");
             pw.println("    </Send>");
             pw.println("</workflowTrace>");
         }

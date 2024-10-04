@@ -10,12 +10,12 @@ package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.PskClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.PSKPremasterComputations;
 import de.rub.nds.tlsattacker.core.protocol.parser.PskClientKeyExchangeParser;
@@ -27,8 +27,7 @@ import java.io.InputStream;
 import java.util.List;
 
 @XmlRootElement(name = "PskClientKeyExchange")
-public class PskClientKeyExchangeMessage
-        extends ClientKeyExchangeMessage<PskClientKeyExchangeMessage> {
+public class PskClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     @HoldsModifiableVariable @XmlElement protected PSKPremasterComputations computations;
 

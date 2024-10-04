@@ -17,7 +17,7 @@ import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@XmlRootElement
+@XmlRootElement(name = "ChangeCompression")
 public class ChangeCompressionAction extends ConnectionBoundAction {
 
     private static final Logger LOGGER = LogManager.getLogger();

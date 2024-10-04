@@ -30,8 +30,8 @@ public class RecordSizeLimitExtensionPreparator
 
     @Override
     public void prepareExtensionContent() {
-        final int recordSizeLimit = chooser.getInboundRecordSizeLimit();
-        LOGGER.debug("Preparing RecordSizeLimitExtensionMessage with " + recordSizeLimit);
+        final int recordSizeLimit = chooser.getConfig().getInboundRecordSizeLimit();
+        LOGGER.debug("Preparing RecordSizeLimitExtensionMessage with {}", recordSizeLimit);
         message.setRecordSizeLimit(
                 ArrayConverter.intToBytes(
                         recordSizeLimit, ExtensionByteLength.RECORD_SIZE_LIMIT_LENGTH));

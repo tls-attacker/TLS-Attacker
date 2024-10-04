@@ -8,11 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension.keyshare;
 
+import de.rub.nds.protocol.constants.NamedEllipticCurveParameters;
+import de.rub.nds.protocol.crypto.ec.EllipticCurve;
 import de.rub.nds.tlsattacker.core.constants.Bits;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
-import de.rub.nds.tlsattacker.core.crypto.ec.EllipticCurve;
 import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.keyshare.DragonFlyKeyShareEntry;
 import java.io.InputStream;
@@ -20,7 +20,7 @@ import java.math.BigInteger;
 
 public class DragonFlyKeyShareEntryParser extends Parser<DragonFlyKeyShareEntry> {
 
-    private NamedGroup group;
+    private final NamedGroup group;
 
     public DragonFlyKeyShareEntryParser(InputStream stream, NamedGroup group) {
         super(stream);
@@ -30,7 +30,8 @@ public class DragonFlyKeyShareEntryParser extends Parser<DragonFlyKeyShareEntry>
     @Override
     public void parse(DragonFlyKeyShareEntry keyShare) {
         if (group.isCurve()) {
-            EllipticCurve curve = CurveFactory.getCurve(group);
+            EllipticCurve curve =
+                    ((NamedEllipticCurveParameters) group.getGroupParameters()).getGroup();
             int elementLength = curve.getModulus().bitLength();
             byte[] rawPublicKey = parseByteArrayField(elementLength * 2 / Bits.IN_A_BYTE);
             int scalarLength = parseIntField(ExtensionByteLength.PWD_SCALAR);

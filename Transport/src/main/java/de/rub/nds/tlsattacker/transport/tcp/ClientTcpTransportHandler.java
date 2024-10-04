@@ -43,7 +43,7 @@ public class ClientTcpTransportHandler extends TcpTransportHandler {
             long timeout,
             String hostname,
             int serverPort) {
-        super(firstTimeout, timeout, ConnectionEndType.CLIENT);
+        super(timeout, ConnectionEndType.CLIENT);
         this.hostname = hostname;
         this.dstPort = serverPort;
         this.connectionTimeout = connectionTimeout;
@@ -52,7 +52,7 @@ public class ClientTcpTransportHandler extends TcpTransportHandler {
 
     public ClientTcpTransportHandler(
             long connectionTimeout, long timeout, String hostname, int serverPort, int clientPort) {
-        super(connectionTimeout, timeout, ConnectionEndType.CLIENT);
+        super(timeout, ConnectionEndType.CLIENT);
         this.hostname = hostname;
         this.dstPort = serverPort;
         this.connectionTimeout = connectionTimeout;
@@ -108,12 +108,15 @@ public class ClientTcpTransportHandler extends TcpTransportHandler {
         if (!socket.isConnected()) {
             throw new IOException("Could not connect to " + hostname + ":" + dstPort);
         }
+
         cachedSocketState = null;
         setStreams(new PushbackInputStream(socket.getInputStream()), socket.getOutputStream());
         srcPort = socket.getLocalPort();
         dstPort = socket.getPort();
         LOGGER.info("Connection established from ports {} -> {}", srcPort, dstPort);
         socket.setSoTimeout((int) timeout);
+        // 2^16 max record size
+        socket.setSendBufferSize(65536);
     }
 
     @Override

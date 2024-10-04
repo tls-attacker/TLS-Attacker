@@ -8,8 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.layer;
 
-import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
-import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
+import de.rub.nds.protocol.exception.EndOfStreamException;
+import de.rub.nds.protocol.exception.PreparationException;
 import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
 import de.rub.nds.tlsattacker.core.layer.context.LayerContext;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
@@ -19,6 +19,7 @@ import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Predicate;
@@ -34,8 +35,7 @@ import org.apache.logging.log4j.Logger;
  * @param <Hint> Some layers need a hint which message they should send or receive.
  * @param <Container> The kind of messages/Containers this layer is able to send and receive.
  */
-public abstract class ProtocolLayer<
-        Hint extends LayerProcessingHint, Container extends DataContainer> {
+public abstract class ProtocolLayer<Hint extends LayerProcessingHint, Container extends DataContainer> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -247,13 +247,24 @@ public abstract class ProtocolLayer<
             return;
         }
 
+        readDataContainer(container, context, inputStream);
+    }
+
+    /**
+     * Parses and handles content from a container.
+     *
+     * @param container The container to handle.
+     * @param context The context of the connection. Keeps parsed and handled values.
+     */
+    protected void readDataContainer(
+            Container container, LayerContext context, InputStream inputStream) {
         Parser parser = container.getParser(context, inputStream);
 
         try {
             parser.parse(container);
             if (container.shouldPrepare()) {
                 Preparator preparator = container.getPreparator(context);
-                preparator.prepareAfterParse(false); // TODO REMOVE THIS CLIENTMODE FLAG
+                preparator.prepareAfterParse();
             }
             Handler handler = container.getHandler(context);
             handler.adjustContext(container);
@@ -273,7 +284,7 @@ public abstract class ProtocolLayer<
 
     public boolean prepareDataContainer(DataContainer dataContainer, LayerContext context) {
         if (dataContainer.shouldPrepare()) {
-            Preparator preparator = dataContainer.getPreparator(context);
+            Preparator<?> preparator = dataContainer.getPreparator(context);
             try {
                 preparator.prepare();
                 preparator.afterPrepare();
@@ -287,11 +298,10 @@ public abstract class ProtocolLayer<
             }
             return true;
         }
-        return true;
     }
 
     public List<Container> getUnprocessedConfiguredContainers() {
-        if (getLayerConfiguration().getContainerList() == null) {
+        if (getLayerConfiguration() == null || getLayerConfiguration().getContainerList() == null) {
             return new LinkedList<>();
         } else if (producedDataContainers == null) {
             return new LinkedList<>(getLayerConfiguration().getContainerList());

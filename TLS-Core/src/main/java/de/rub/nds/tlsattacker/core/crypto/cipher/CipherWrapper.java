@@ -42,7 +42,7 @@ public class CipherWrapper {
         } else if (cipherAlg == CipherAlgorithm.NULL) {
             return new NullCipher();
         } else {
-            LOGGER.warn("Cipher:" + cipherAlg + " is not supported - Using NullCipher!");
+            LOGGER.warn("Cipher:{} is not supported - Using NullCipher!", cipherAlg);
             return new NullCipher();
         }
     }
@@ -67,7 +67,7 @@ public class CipherWrapper {
         } else if (cipherAlg == CipherAlgorithm.NULL) {
             return new NullCipher();
         } else {
-            LOGGER.warn("Cipher:" + cipherAlg + " is not supported - Using NullCipher!");
+            LOGGER.warn("Cipher:{} is not supported - Using NullCipher!", cipherAlg);
             return new NullCipher();
         }
     }

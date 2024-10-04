@@ -21,7 +21,6 @@ public class ClientTcpFragmentationTransportHandler extends ClientTcpTransportHa
     public ClientTcpFragmentationTransportHandler(Connection connection) {
         this(
                 DEFAULT_CONNECTION_TIMEOUT_MILLISECONDS,
-                connection.getFirstTimeout(),
                 connection.getTimeout(),
                 connection.getIp(),
                 connection.getPort());

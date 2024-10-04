@@ -12,8 +12,6 @@ import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.record.Record;
 import java.io.InputStream;
 import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * //TODO I am not sure if this implementation is so smart since it extends Parser which is designed
@@ -21,8 +19,6 @@ import org.apache.logging.log4j.Logger;
  * here
  */
 public class CleanRecordByteSeperator extends Parser<List<Record>> {
-
-    private static Logger LOGGER = LogManager.getLogger();
 
     private final int defaultMaxSize;
     private final boolean createRecordsDynamically;

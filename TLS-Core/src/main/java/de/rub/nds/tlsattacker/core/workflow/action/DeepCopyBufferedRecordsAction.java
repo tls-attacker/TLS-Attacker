@@ -18,7 +18,7 @@ import java.util.LinkedList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@XmlRootElement
+@XmlRootElement(name = "DeepCopyBufferedRecords")
 public class DeepCopyBufferedRecordsAction extends CopyContextFieldAction {
 
     private static final Logger LOGGER = LogManager.getLogger();

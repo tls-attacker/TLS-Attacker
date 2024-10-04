@@ -23,10 +23,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * @param <MessageT> The ClientKeyExchangeMessage that should be Handled
+ * @param <Message> The ClientKeyExchangeMessage that should be Handled
  */
-public abstract class ClientKeyExchangeHandler<MessageT extends ClientKeyExchangeMessage<?>>
-        extends HandshakeMessageHandler<MessageT> {
+public abstract class ClientKeyExchangeHandler<Message extends ClientKeyExchangeMessage>
+        extends HandshakeMessageHandler<Message> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -34,7 +34,7 @@ public abstract class ClientKeyExchangeHandler<MessageT extends ClientKeyExchang
         super(tlsContext);
     }
 
-    public void adjustPremasterSecret(ClientKeyExchangeMessage message) {
+    public void adjustPremasterSecret(Message message) {
         if (message.getComputations().getPremasterSecret() != null) {
             byte[] premasterSecret = message.getComputations().getPremasterSecret().getValue();
             tlsContext.setPreMasterSecret(premasterSecret);
@@ -44,8 +44,7 @@ public abstract class ClientKeyExchangeHandler<MessageT extends ClientKeyExchang
         }
     }
 
-    protected byte[] calculateMasterSecret(ClientKeyExchangeMessage message)
-            throws CryptoException {
+    protected byte[] calculateMasterSecret(Message message) throws CryptoException {
         Chooser chooser = tlsContext.getChooser();
         if (chooser.getSelectedProtocolVersion() == ProtocolVersion.SSL3) {
             LOGGER.debug(
@@ -91,7 +90,7 @@ public abstract class ClientKeyExchangeHandler<MessageT extends ClientKeyExchang
         }
     }
 
-    public void adjustMasterSecret(ClientKeyExchangeMessage message) {
+    public void adjustMasterSecret(Message message) {
         byte[] masterSecret;
         try {
             masterSecret = calculateMasterSecret(message);

@@ -37,6 +37,7 @@ public class MaxFragmentLengthExtensionHandler
         } else {
             LOGGER.debug("Setting MaxFragmentLength: " + length.getValue());
             tlsContext.setMaxFragmentLength(length);
+            tlsContext.setPeerReceiveLimit(length.getReceiveLimit());
         }
     }
 }

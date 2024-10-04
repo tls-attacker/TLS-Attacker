@@ -14,20 +14,25 @@ import java.util.LinkedList;
 import java.util.List;
 
 /** A LayerConfiguration that keeps receiving until reaching the timeout */
-public class GenericReceiveLayerConfiguration extends ReceiveLayerConfiguration<DataContainer> {
+public class GenericReceiveLayerConfiguration extends ReceiveLayerConfiguration<DataContainer<?>> {
 
     public GenericReceiveLayerConfiguration(LayerType layerType) {
         super(layerType, new LinkedList<>());
     }
 
     @Override
-    public boolean executedAsPlanned(List<DataContainer> list) {
+    public boolean executedAsPlanned(List<DataContainer<?>> list) {
         return true;
     }
 
     @Override
     public boolean shouldContinueProcessing(
-            List<DataContainer> list, boolean receivedTimeout, boolean dataLeftToProcess) {
+            List<DataContainer<?>> list, boolean receivedTimeout, boolean dataLeftToProcess) {
         return !receivedTimeout || dataLeftToProcess;
+    }
+
+    @Override
+    public String toCompactString() {
+        return "(" + getLayerType().getName() + ") GenericReceive";
     }
 }

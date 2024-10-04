@@ -8,14 +8,13 @@
  */
 package de.rub.nds.tlsattacker.core.record.crypto;
 
+import de.rub.nds.protocol.exception.ParserException;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
-import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
 import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
@@ -27,12 +26,9 @@ public class RecordDecryptor extends Decryptor {
 
     private final TlsContext tlsContext;
 
-    private RecordNullCipher nullCipher;
-
     public RecordDecryptor(RecordCipher recordCipher, TlsContext tlsContext) {
         super(recordCipher);
         this.tlsContext = tlsContext;
-        nullCipher = RecordCipherFactory.getNullCipher(tlsContext);
     }
 
     @Override

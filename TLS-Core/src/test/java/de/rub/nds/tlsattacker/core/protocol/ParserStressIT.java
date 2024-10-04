@@ -8,9 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.protocol;
 
-import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
-import de.rub.nds.tlsattacker.core.exceptions.ParserException;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.protocol.exception.EndOfStreamException;
+import de.rub.nds.protocol.exception.ParserException;
+import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.connection.InboundConnection;
+import de.rub.nds.tlsattacker.core.state.Context;
+import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.util.tests.TestCategories;
 import java.io.ByteArrayInputStream;
 import java.util.Random;
@@ -39,7 +42,9 @@ public class ParserStressIT extends GenericParserSerializerTest {
                 ProtocolMessage randomMessage = getRandomMessage(r);
                 ProtocolMessageParser parser =
                         randomMessage.getParser(
-                                new TlsContext(), new ByteArrayInputStream(bytesToParse));
+                                new Context(new State(new Config()), new InboundConnection())
+                                        .getTlsContext(),
+                                new ByteArrayInputStream(bytesToParse));
                 parser.parse(randomMessage);
             } catch (EndOfStreamException | ParserException ignored) {
             }

@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
-import de.rub.nds.tlsattacker.core.constants.NameType;
+import de.rub.nds.tlsattacker.core.constants.SniType;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.sni.SNIEntry;
@@ -31,7 +31,7 @@ public class ServerNameIndicationExtensionHandler
     public void adjustTLSExtensionContext(ServerNameIndicationExtensionMessage message) {
         List<SNIEntry> sniEntryList = new LinkedList<>();
         for (ServerNamePair pair : message.getServerNameList()) {
-            NameType type = NameType.getNameType(pair.getServerNameType().getValue());
+            SniType type = SniType.getNameType(pair.getServerNameType().getValue());
             if (type != null) {
                 sniEntryList.add(new SNIEntry(new String(pair.getServerName().getValue()), type));
             } else {

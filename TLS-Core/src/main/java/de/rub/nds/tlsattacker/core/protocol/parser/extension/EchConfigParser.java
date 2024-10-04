@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.protocol.exception.ParserException;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.EchConfigVersion;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
@@ -16,7 +16,6 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.hpke.HpkeAeadFunction;
 import de.rub.nds.tlsattacker.core.constants.hpke.HpkeKeyDerivationFunction;
 import de.rub.nds.tlsattacker.core.constants.hpke.HpkeKeyEncapsulationMechanism;
-import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EchConfig;
@@ -128,8 +127,7 @@ public class EchConfigParser extends Parser<List<EchConfig>> {
         }
         byte[] publicName = this.parseByteArrayField(publicNameLen);
         echConfig.setPublicDomainName(publicName);
-        LOGGER.debug(
-                "Public Name: " + ArrayConverter.bytesToHexString(echConfig.getPublicDomainName()));
+        LOGGER.debug("Public Name: {}", echConfig.getPublicDomainName());
     }
 
     private void parseExtensions(EchConfig echConfig) {
@@ -168,8 +166,7 @@ public class EchConfigParser extends Parser<List<EchConfig>> {
         int publicKeyLen = this.parseIntField(ExtensionByteLength.ECH_CONFIG_PUBLIC_KEY);
         byte[] publicKey = this.parseByteArrayField(publicKeyLen);
         echConfig.setHpkePublicKey(publicKey);
-        LOGGER.debug(
-                "Public Key: " + ArrayConverter.bytesToHexString(echConfig.getHpkePublicKey()));
+        LOGGER.debug("Public Key: {}", echConfig.getHpkePublicKey());
     }
 
     private void parseHPKECipherSuites(EchConfig echConfig) {

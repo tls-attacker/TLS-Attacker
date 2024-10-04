@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.ClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,6 +26,7 @@ import org.apache.logging.log4j.Logger;
  * This Action is used by the EarlyCcs Attack. It sends a ClientKeyExchange message and adjusts the
  * cryptographic material accordingly.
  */
+@XmlRootElement(name = "EarlyCcs")
 public class EarlyCcsAction extends TlsAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -41,6 +43,12 @@ public class EarlyCcsAction extends TlsAction {
      */
     public EarlyCcsAction(Boolean targetsOpenssl100) {
         this.targetOpenssl100 = targetsOpenssl100;
+    }
+
+    /** Private no-arg constructor to please JAXB */
+    @SuppressWarnings("unused")
+    private EarlyCcsAction() {
+        this.targetOpenssl100 = false;
     }
 
     /**

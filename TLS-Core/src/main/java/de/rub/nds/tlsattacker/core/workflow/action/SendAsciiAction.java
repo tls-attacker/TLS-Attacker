@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.layer.context.TcpContext;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import jakarta.xml.bind.annotation.XmlRootElement;
@@ -18,7 +17,7 @@ import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@XmlRootElement
+@XmlRootElement(name = "SendAscii")
 public class SendAsciiAction extends AsciiAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -37,7 +36,6 @@ public class SendAsciiAction extends AsciiAction {
 
     @Override
     public void execute(State state) throws ActionExecutionException {
-        TlsContext tlsContext = state.getTlsContext();
         TcpContext tcpContext = state.getTcpContext();
 
         if (isExecuted()) {
@@ -45,7 +43,7 @@ public class SendAsciiAction extends AsciiAction {
         }
 
         try {
-            LOGGER.info("Sending ASCII message: " + getAsciiText());
+            LOGGER.info("Sending ASCII message: {}", getAsciiText());
             tcpContext.getTransportHandler().sendData(getAsciiText().getBytes(getEncoding()));
             setExecuted(true);
         } catch (IOException e) {
