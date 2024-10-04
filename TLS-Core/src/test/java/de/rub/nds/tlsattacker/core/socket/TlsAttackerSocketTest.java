@@ -32,11 +32,12 @@ public class TlsAttackerSocketTest {
 
     private FakeTcpTransportHandler transportHandler;
 
-    public TlsAttackerSocketTest() {}
+    public TlsAttackerSocketTest() {
+    }
 
     @BeforeEach
     public void setUp() {
-        Config config = Config.createConfig();
+        Config config = new Config();
         state = new State(config, new WorkflowTrace());
         context = state.getContext();
         context.getTlsContext().setSelectedProtocolVersion(ProtocolVersion.TLS12);
@@ -52,8 +53,8 @@ public class TlsAttackerSocketTest {
      */
     @Test
     public void testSendRawBytes() throws IOException {
-        socket.sendRawBytes(new byte[] {1, 2, 3});
-        assertArrayEquals(new byte[] {1, 2, 3}, transportHandler.getSentBytes());
+        socket.sendRawBytes(new byte[] { 1, 2, 3 });
+        assertArrayEquals(new byte[] { 1, 2, 3 }, transportHandler.getSentBytes());
     }
 
     /**
@@ -63,9 +64,9 @@ public class TlsAttackerSocketTest {
      */
     @Test
     public void testReceiveRawBytes() throws IOException {
-        transportHandler.setFetchableByte(new byte[] {1, 2, 3});
+        transportHandler.setFetchableByte(new byte[] { 1, 2, 3 });
         byte[] received = socket.receiveRawBytes();
-        assertArrayEquals(new byte[] {1, 2, 3}, received);
+        assertArrayEquals(new byte[] { 1, 2, 3 }, received);
     }
 
     /** Test of send method, of class TlsAttackerSocket. */
@@ -76,16 +77,16 @@ public class TlsAttackerSocketTest {
         assertArrayEquals(
                 sentBytes,
                 ArrayConverter.concatenate(
-                        new byte[] {0x17, 0x03, 0x03, 0x00, 0x04},
+                        new byte[] { 0x17, 0x03, 0x03, 0x00, 0x04 },
                         "test".getBytes(StandardCharsets.US_ASCII)));
     }
 
     /** Test of send method, of class TlsAttackerSocket. */
     @Test
     public void testSendByteArray() {
-        socket.send(new byte[] {0, 1, 2, 3});
+        socket.send(new byte[] { 0, 1, 2, 3 });
         byte[] sentBytes = transportHandler.getSentBytes();
-        assertArrayEquals(sentBytes, new byte[] {0x17, 0x03, 0x03, 0x00, 0x04, 0, 1, 2, 3});
+        assertArrayEquals(sentBytes, new byte[] { 0x17, 0x03, 0x03, 0x00, 0x04, 0, 1, 2, 3 });
     }
 
     /**
@@ -95,9 +96,9 @@ public class TlsAttackerSocketTest {
      */
     @Test
     public void testReceiveBytes() throws IOException {
-        transportHandler.setFetchableByte(new byte[] {0x17, 0x03, 0x03, 0x00, 0x03, 8, 8, 8});
+        transportHandler.setFetchableByte(new byte[] { 0x17, 0x03, 0x03, 0x00, 0x03, 8, 8, 8 });
         byte[] receivedBytes = socket.receiveBytes();
-        assertArrayEquals(new byte[] {8, 8, 8}, receivedBytes);
+        assertArrayEquals(new byte[] { 8, 8, 8 }, receivedBytes);
     }
 
     /**
@@ -109,7 +110,7 @@ public class TlsAttackerSocketTest {
     public void testReceiveString() throws IOException {
         transportHandler.setFetchableByte(
                 ArrayConverter.concatenate(
-                        new byte[] {0x17, 0x03, 0x03, 0x00, 0x04},
+                        new byte[] { 0x17, 0x03, 0x03, 0x00, 0x04 },
                         "test".getBytes(StandardCharsets.US_ASCII)));
         String receivedString = socket.receiveString();
         assertEquals("test", receivedString);

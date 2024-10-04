@@ -41,25 +41,39 @@ public class ReceiveAction extends CommonReceiveAction implements StaticReceivin
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
+    @HoldsModifiableVariable
+    @XmlElementWrapper
+    @XmlElementRef
     protected List<ProtocolMessage> expectedMessages;
 
-    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
+    @HoldsModifiableVariable
+    @XmlElementWrapper
+    @XmlElementRef
     protected List<SSL2Message> expectedSSL2Messages;
 
-    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
+    @HoldsModifiableVariable
+    @XmlElementWrapper
+    @XmlElementRef
     protected List<Record> expectedRecords;
 
-    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
+    @HoldsModifiableVariable
+    @XmlElementWrapper
+    @XmlElementRef
     protected List<DtlsHandshakeMessageFragment> expectedDtlsFragments;
 
-    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
+    @HoldsModifiableVariable
+    @XmlElementWrapper
+    @XmlElementRef
     protected List<HttpMessage> expectedHttpMessages;
 
-    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
+    @HoldsModifiableVariable
+    @XmlElementWrapper
+    @XmlElementRef
     protected List<QuicFrame> expectedQuicFrames;
 
-    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
+    @HoldsModifiableVariable
+    @XmlElementWrapper
+    @XmlElementRef
     protected List<QuicPacket> expectedQuicPackets;
 
     public ReceiveAction() {
@@ -184,18 +198,16 @@ public class ReceiveAction extends CommonReceiveAction implements StaticReceivin
 
     @Override
     public String toString() {
-        String string =
-                getClass().getSimpleName()
-                        + ": "
-                        + (isExecuted() ? "\n" : "(not executed)\n")
-                        + "\tExpected: "
-                        + LogPrinter.toHumanReadableMultiLineContainerListArray(
-                                getExpectedDataContainerLists(), LOGGER.getLevel());
+        String string = getClass().getSimpleName()
+                + ": "
+                + (isExecuted() ? "\n" : "(not executed)\n")
+                + "\tExpected: "
+                + LogPrinter.toHumanReadableMultiLineContainerListArray(
+                        getExpectedDataContainerLists(), LOGGER.getLevel());
         if (isExecuted()) {
-            string +=
-                    "\n\tActual: "
-                            + LogPrinter.toHumanReadableMultiLine(
-                                    getLayerStackProcessingResult(), LOGGER.getLevel());
+            string += "\n\tActual: "
+                    + LogPrinter.toHumanReadableMultiLine(
+                            getLayerStackProcessingResult(), LOGGER.getLevel());
         }
         return string;
     }
@@ -275,15 +287,12 @@ public class ReceiveAction extends CommonReceiveAction implements StaticReceivin
         TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
         List<LayerConfiguration<?>> configurationList = new LinkedList<>();
 
-        if (getExpectedMessages() != null) {
+        if (getExpectedRecords() != null) {
             configurationList.add(
                     new SpecificReceiveLayerConfiguration<>(
                             ImplementedLayers.RECORD, getExpectedRecords()));
         }
         if (getExpectedMessages() != null) {
-            configurationList.add(
-                    new SpecificReceiveLayerConfiguration<>(
-                            ImplementedLayers.SSL2, getExpectedMessages()));
             configurationList.add(
                     new SpecificReceiveLayerConfiguration<>(
                             ImplementedLayers.MESSAGE, getExpectedMessages()));
