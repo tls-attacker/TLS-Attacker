@@ -40,38 +40,25 @@ import java.util.List;
 @XmlRootElement(name = "Send")
 public class SendAction extends CommonSendAction implements StaticSendingAction {
 
-    @HoldsModifiableVariable
-    @XmlElementWrapper
-    @XmlElementRef
+    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
     protected List<ProtocolMessage> configuredMessages;
 
-    @HoldsModifiableVariable
-    @XmlElementWrapper
-    @XmlElementRef
+    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
     protected List<DtlsHandshakeMessageFragment> configuredDtlsHandshakeMessageFragments;
 
-    @HoldsModifiableVariable
-    @XmlElementWrapper
-    @XmlElementRef
+    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
     protected List<Record> configuredRecords;
 
-    @HoldsModifiableVariable
-    @XmlElementWrapper
-    @XmlElementRef
+    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
     protected List<HttpMessage> configuredHttpMessages;
 
-    @HoldsModifiableVariable
-    @XmlElementWrapper
-    @XmlElementRef
+    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
     protected List<QuicFrame> configuredQuicFrames;
 
-    @HoldsModifiableVariable
-    @XmlElementWrapper
-    @XmlElementRef
+    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
     protected List<QuicPacket> configuredQuicPackets;
 
-    public SendAction() {
-    }
+    public SendAction() {}
 
     public SendAction(
             List<ProtocolMessage> configuredMessages,
@@ -120,7 +107,7 @@ public class SendAction extends CommonSendAction implements StaticSendingAction 
         this.configuredHttpMessages = new ArrayList<>(Arrays.asList(httpMessage));
     }
 
-    public SendAction(ProtocolMessage<?>... messages) {
+    public SendAction(ProtocolMessage... messages) {
         this(new ArrayList<>(Arrays.asList(messages)));
     }
 
@@ -267,7 +254,7 @@ public class SendAction extends CommonSendAction implements StaticSendingAction 
         List<HandshakeMessageType> handshakeMessageTypes = new ArrayList<>();
         for (ProtocolMessage msg : configuredMessages) {
             if (msg instanceof HandshakeMessage) {
-                handshakeMessageTypes.add(((HandshakeMessage<?>) msg).getHandshakeMessageType());
+                handshakeMessageTypes.add(((HandshakeMessage) msg).getHandshakeMessageType());
             }
         }
         return handshakeMessageTypes;

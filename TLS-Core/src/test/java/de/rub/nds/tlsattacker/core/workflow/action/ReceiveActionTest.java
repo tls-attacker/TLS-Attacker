@@ -35,7 +35,7 @@ public class ReceiveActionTest extends AbstractActionTest<ReceiveAction> {
         context.setTransportHandler(new FakeTcpTransportHandler(ConnectionEndType.CLIENT));
         context.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
 
-        alertMessage = (AlertMessage) action.getMessages().get(0);
+        alertMessage = (AlertMessage) action.getExpectedMessages().get(0);
         alertMessage.setConfig(AlertLevel.FATAL, AlertDescription.DECRYPT_ERROR);
         alertMessage.setDescription(AlertDescription.DECODE_ERROR.getValue());
         alertMessage.setLevel(AlertLevel.FATAL.getValue());

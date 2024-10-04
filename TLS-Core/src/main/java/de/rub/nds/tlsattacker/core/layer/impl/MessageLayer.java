@@ -99,7 +99,8 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
     private void processMessage(
             ProtocolMessage message, ByteArrayOutputStream collectedMessageStream)
             throws IOException {
-        ProtocolMessageSerializer<? extends ProtocolMessage> serializer = message.getSerializer(context);
+        ProtocolMessageSerializer<? extends ProtocolMessage> serializer =
+                message.getSerializer(context);
         byte[] serializedMessage = serializer.serialize();
         message.setCompleteResultingMessage(serializedMessage);
         ProtocolMessageHandler handler = message.getHandler(context);
@@ -109,8 +110,9 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
         }
         collectedMessageStream.writeBytes(message.getCompleteResultingMessage().getValue());
         if (mustFlushCollectedMessagesImmediately(message)) {
-            boolean isFirstMessage = (message.getClass() == ClientHelloMessage.class
-                    || message.getClass() == ServerHelloMessage.class);
+            boolean isFirstMessage =
+                    (message.getClass() == ClientHelloMessage.class
+                            || message.getClass() == ServerHelloMessage.class);
             flushCollectedMessages(
                     message.getProtocolMessageType(), collectedMessageStream, isFirstMessage);
         }
@@ -164,9 +166,11 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
                 return !((ServerHelloMessage) message).isTls13HelloRetryRequest();
             } else if (handshakeMessage.getHandshakeMessageType() == HandshakeMessageType.FINISHED
                     || handshakeMessage.getHandshakeMessageType() == HandshakeMessageType.KEY_UPDATE
-                    || handshakeMessage.getHandshakeMessageType() == HandshakeMessageType.END_OF_EARLY_DATA) {
+                    || handshakeMessage.getHandshakeMessageType()
+                            == HandshakeMessageType.END_OF_EARLY_DATA) {
                 return true;
-            } else if (handshakeMessage.getHandshakeMessageType() == HandshakeMessageType.CLIENT_HELLO
+            } else if (handshakeMessage.getHandshakeMessageType()
+                            == HandshakeMessageType.CLIENT_HELLO
                     && context.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT
                     && context.isExtensionProposed(ExtensionType.EARLY_DATA)) {
                 return true;
@@ -207,7 +211,8 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
             LayerConfiguration<ProtocolMessage> configuration) {
         if (configuration != null && configuration.getContainerList() != null) {
             for (ProtocolMessage configuredMessage : getUnprocessedConfiguredContainers()) {
-                if (configuredMessage.getProtocolMessageType() == ProtocolMessageType.APPLICATION_DATA) {
+                if (configuredMessage.getProtocolMessageType()
+                        == ProtocolMessageType.APPLICATION_DATA) {
                     return (ApplicationMessage) configuredMessage;
                 }
             }
@@ -322,11 +327,13 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
         try {
             handshakeStream = getLowerLayer().getDataStream();
             type = handshakeStream.readByte();
-            readBytesStream.write(new byte[] { type });
-            handshakeMessage = MessageFactory.generateHandshakeMessage(
-                    HandshakeMessageType.getMessageType(type), context);
+            readBytesStream.write(new byte[] {type});
+            handshakeMessage =
+                    MessageFactory.generateHandshakeMessage(
+                            HandshakeMessageType.getMessageType(type), context);
             handshakeMessage.setType(type);
-            byte[] lengthBytes = handshakeStream.readChunk(HandshakeByteLength.MESSAGE_LENGTH_FIELD);
+            byte[] lengthBytes =
+                    handshakeStream.readChunk(HandshakeByteLength.MESSAGE_LENGTH_FIELD);
             length = ArrayConverter.bytesToInt(lengthBytes);
             readBytesStream.write(lengthBytes);
             handshakeMessage.setLength(length);
@@ -348,11 +355,12 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
         try {
             handshakeMessage.setCompleteResultingMessage(
                     ArrayConverter.concatenate(
-                            new byte[] { type },
+                            new byte[] {type},
                             ArrayConverter.intToBytes(
                                     length, HandshakeByteLength.MESSAGE_LENGTH_FIELD),
                             payload));
-            HandshakeMessageParser parser = handshakeMessage.getParser(context, new ByteArrayInputStream(payload));
+            HandshakeMessageParser parser =
+                    handshakeMessage.getParser(context, new ByteArrayInputStream(payload));
             parser.parse(handshakeMessage);
             Preparator preparator = handshakeMessage.getPreparator(context);
             preparator.prepareAfterParse();

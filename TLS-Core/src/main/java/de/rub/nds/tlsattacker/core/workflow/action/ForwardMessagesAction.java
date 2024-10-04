@@ -42,7 +42,7 @@ public class ForwardMessagesAction extends CommonForwardAction {
     }
 
     public ForwardMessagesAction(
-            String receiveFromAlias, String forwardToAlias, ProtocolMessage<?>... messages) {
+            String receiveFromAlias, String forwardToAlias, ProtocolMessage... messages) {
         this(receiveFromAlias, forwardToAlias, new ArrayList<>(Arrays.asList(messages)));
     }
 
@@ -102,125 +102,19 @@ public class ForwardMessagesAction extends CommonForwardAction {
     }
 
     @Override
-    public void normalize(TlsAction defaultAction) {
-        super.normalize(defaultAction);
-        initEmptyLists();
-    }
-
-    @Override
-    public void filter() {
-        super.filter();
-        stripEmptyLists();
-    }
-
-    @Override
-    public void filter(TlsAction defaultAction) {
-        super.filter(defaultAction);
-        stripEmptyLists();
-    }
-
-    private void stripEmptyLists() {
-        if (messages == null || messages.isEmpty()) {
-            messages = null;
-        }
-        if (records == null || records.isEmpty()) {
-            records = null;
-        }
-        if (fragments == null || fragments.isEmpty()) {
-            fragments = null;
-        }
-        if (receivedMessages == null || receivedMessages.isEmpty()) {
-            receivedMessages = null;
-        }
-        if (receivedRecords == null || receivedRecords.isEmpty()) {
-            receivedRecords = null;
-        }
-        if (receivedFragments == null || receivedFragments.isEmpty()) {
-            receivedFragments = null;
-        }
-        if (sendMessages == null || sendMessages.isEmpty()) {
-            sendMessages = null;
-        }
-        if (sendRecords == null || sendRecords.isEmpty()) {
-            sendRecords = null;
-        }
-        if (sendFragments == null || sendFragments.isEmpty()) {
-            sendFragments = null;
-        }
-    }
-
-    private void initEmptyLists() {
-        if (messages == null) {
-            messages = new ArrayList<>();
-        }
-        if (records == null) {
-            records = new ArrayList<>();
-        }
-        if (fragments == null) {
-            fragments = new ArrayList<>();
-        }
-        if (receivedMessages == null) {
-            receivedMessages = new ArrayList<>();
-        }
-        if (receivedRecords == null) {
-            receivedRecords = new ArrayList<>();
-        }
-        if (receivedFragments == null) {
-            receivedFragments = new ArrayList<>();
-        }
-        if (sendMessages == null) {
-            sendMessages = new ArrayList<>();
-        }
-        if (sendRecords == null) {
-            sendRecords = new ArrayList<>();
-        }
-        if (sendFragments == null) {
-            sendFragments = new ArrayList<>();
-        }
-    }
-
-    @Override
-    public List<ProtocolMessageType> getGoingToReceiveProtocolMessageTypes() {
-        if (this.messages == null) {
-            return new ArrayList<>();
+    protected List<LayerConfiguration<?>> createSendConfiguration(
+            State state, LayerStackProcessingResult receivedResult) {
+        TlsContext tlsContext = state.getTlsContext(getForwardToAlias());
+        List<ProtocolMessage> receivedMessages = getReceivedMessages();
+        for (ProtocolMessage message : receivedMessages) {
+            message.setShouldPrepareDefault(
+                    false); // Do not recompute the messages on the message layer
         }
 
-        List<ProtocolMessageType> types = new ArrayList<>();
-        for (ProtocolMessage msg : messages) {
-            types.add(msg.getProtocolMessageType());
-        }
-        return types;
-    }
-
-    @Override
-    public List<HandshakeMessageType> getGoingToReceiveHandshakeMessageTypes() {
-        if (this.messages == null) {
-            return new ArrayList<>();
-        }
-
-        List<HandshakeMessageType> types = new ArrayList<>();
-        for (ProtocolMessage msg : messages) {
-            if (!(msg instanceof HandshakeMessage)) {
-                continue;
-            }
-            types.add(((HandshakeMessage) msg).getHandshakeMessageType());
-        }
-        return types;
-    }
-
-    @Override
-    public List<ProtocolMessageType> getGoingToSendProtocolMessageTypes() {
-        return this.getGoingToReceiveProtocolMessageTypes();
-    }
-
-    @Override
-    public List<HandshakeMessageType> getGoingToSendHandshakeMessageTypes() {
-        return this.getGoingToReceiveHandshakeMessageTypes();
-    }
-
-    @Override
-    public List<HttpMessage> getReceivedHttpMessages() {
-        // ForwardMessages should not interfere with messages above TLS
-        return new LinkedList<>();
+        List<LayerConfiguration<?>> configurationList = new LinkedList<>();
+        configurationList.add(
+                new SpecificSendLayerConfiguration<>(ImplementedLayers.MESSAGE, receivedMessages));
+        return ActionHelperUtil.sortAndAddOptions(
+                tlsContext.getLayerStack(), true, getActionOptions(), configurationList);
     }
 }

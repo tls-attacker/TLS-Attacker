@@ -75,9 +75,10 @@ public class SendDynamicServerKeyExchangeAction extends CommonSendAction {
     protected List<LayerConfiguration<?>> createLayerConfiguration(State state) {
         TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
         CipherSuite selectedCipherSuite = tlsContext.getChooser().getSelectedCipherSuite();
-        ServerKeyExchangeMessage serverKeyExchangeMessage = new WorkflowConfigurationFactory(tlsContext.getConfig())
-                .createServerKeyExchangeMessage(
-                        AlgorithmResolver.getKeyExchangeAlgorithm(selectedCipherSuite));
+        ServerKeyExchangeMessage serverKeyExchangeMessage =
+                new WorkflowConfigurationFactory(tlsContext.getConfig())
+                        .createServerKeyExchangeMessage(
+                                AlgorithmResolver.getKeyExchangeAlgorithm(selectedCipherSuite));
         if (serverKeyExchangeMessage != null) {
             List<LayerConfiguration<?>> configurationList = new LinkedList<>();
             configurationList.add(

@@ -45,16 +45,16 @@ public class DeepCopyBufferedMessagesAction extends CopyContextFieldAction {
     }
 
     private void deepCopyMessages(TlsContext src, TlsContext dst) {
-        LinkedList<ProtocolMessage<?>> messageBuffer = new LinkedList<>();
+        LinkedList<ProtocolMessage> messageBuffer = new LinkedList<>();
         ObjectInputStream inStream;
         ObjectOutputStream outStream;
         try {
-            for (ProtocolMessage<?> message : src.getMessageBuffer()) {
+            for (ProtocolMessage message : src.getMessageBuffer()) {
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
                 outStream = new ObjectOutputStream(stream);
                 outStream.writeObject(message);
                 inStream = new ObjectInputStream(new ByteArrayInputStream(stream.toByteArray()));
-                ProtocolMessage<?> messageCopy = (ProtocolMessage<?>) inStream.readObject();
+                ProtocolMessage messageCopy = (ProtocolMessage) inStream.readObject();
 
                 messageBuffer.add(messageCopy);
                 setExecuted(true);

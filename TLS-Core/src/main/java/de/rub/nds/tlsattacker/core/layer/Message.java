@@ -8,8 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.layer;
 
-import java.util.Objects;
-
 import de.rub.nds.modifiablevariable.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.layer.context.LayerContext;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
@@ -17,6 +15,7 @@ import de.rub.nds.tlsattacker.core.util.SuppressingTrueBooleanAdapter;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import java.util.Objects;
 
 /**
  * Abstract class for different messages the TLS-Attacker can send. This includes but is not limited

@@ -32,7 +32,8 @@ public class SendMessagesFromLastFlightAction extends CommonSendAction {
 
     @Override
     protected List<LayerConfiguration<?>> createLayerConfiguration(State state) {
-        List<ProtocolMessage> lastMessages = getLastSendingAction(state.getWorkflowTrace()).getSentMessages();
+        List<ProtocolMessage> lastMessages =
+                getLastSendingAction(state.getWorkflowTrace()).getSentMessages();
         List<ProtocolMessage> duplicatedMessages = DeepCopyUtil.deepCopy(lastMessages);
         for (ProtocolMessage message : duplicatedMessages) {
             message.setShouldPrepareDefault(false);

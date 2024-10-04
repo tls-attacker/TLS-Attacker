@@ -145,7 +145,7 @@ public class LayerStack {
         context.setTalkingConnectionEndType(
                 context.getConnection().getLocalConnectionEndType().getPeer());
 
-        ProtocolLayer topLayer = getTopConfiguredLayer();
+        ProtocolLayer<?, ?> topLayer = getTopConfiguredLayer();
         topLayer.receiveData();
 
         // for quic frame specific actions like the ReceiveQuicTillAction receive data until
@@ -154,7 +154,7 @@ public class LayerStack {
         // called that many times
         // for each receiveData call on the frame layer exactly one packet is processed on the
         // packet layer
-        Optional<ProtocolLayer> quicFrameLayer =
+        Optional<ProtocolLayer<?, ?>> quicFrameLayer =
                 getLayerList().stream().filter(x -> x instanceof QuicFrameLayer).findFirst();
         if (quicFrameLayer.isPresent()
                 && quicFrameLayer.get().getLayerConfiguration()
@@ -175,10 +175,7 @@ public class LayerStack {
             }
         }
 
-        LOGGER.debug(
-                "Top layer finished receiving - checking if other layers need further execution");
         // reverse order
-
         for (int i = getLayerList().size() - 1; i >= 0; i--) {
             ProtocolLayer<?, ?> layer = getLayerList().get(i);
             if (layer.getLayerConfiguration() != null

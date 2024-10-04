@@ -38,8 +38,9 @@ public class PopAndSendRecordAction extends CommonSendAction {
 
     @Override
     public void execute(State state) throws ActionExecutionException {
-        TlsContext tlsContext = state.getContext(connectionAlias)
-                .getTlsContext(); // TODO this assumes that TLS is ran on top of TCP
+        TlsContext tlsContext =
+                state.getContext(connectionAlias)
+                        .getTlsContext(); // TODO this assumes that TLS is ran on top of TCP
         TcpContext tcpContext = state.getContext(connectionAlias).getTcpContext();
 
         if (isExecuted()) {

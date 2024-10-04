@@ -30,17 +30,13 @@ public class MissingReceiveLayerConfiguration<Container extends DataContainer<?>
     }
 
     @Override
-    public boolean failedEarly(List<Container> list) {
-        return false;
-    }
-
-    @Override
     public String toCompactString() {
         return "(" + getLayerType().getName() + ") Not configured";
     }
 
     @Override
-    public boolean isProcessTrailingContainers() {
-        return true;
+    public boolean shouldContinueProcessing(
+            List<Container> list, boolean receivedTimeout, boolean dataLeftToProcess) {
+        return false;
     }
 }

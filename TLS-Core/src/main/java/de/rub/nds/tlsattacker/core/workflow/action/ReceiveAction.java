@@ -36,34 +36,22 @@ import java.util.Set;
 @XmlRootElement(name = "Receive")
 public class ReceiveAction extends CommonReceiveAction implements StaticReceivingAction {
 
-    @HoldsModifiableVariable
-    @XmlElementWrapper
-    @XmlElementRef
+    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
     protected List<ProtocolMessage> expectedMessages;
 
-    @HoldsModifiableVariable
-    @XmlElementWrapper
-    @XmlElementRef
+    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
     protected List<Record> expectedRecords;
 
-    @HoldsModifiableVariable
-    @XmlElementWrapper
-    @XmlElementRef
+    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
     protected List<DtlsHandshakeMessageFragment> expectedDtlsFragments;
 
-    @HoldsModifiableVariable
-    @XmlElementWrapper
-    @XmlElementRef
+    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
     protected List<HttpMessage> expectedHttpMessages;
 
-    @HoldsModifiableVariable
-    @XmlElementWrapper
-    @XmlElementRef
+    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
     protected List<QuicFrame> expectedQuicFrames;
 
-    @HoldsModifiableVariable
-    @XmlElementWrapper
-    @XmlElementRef
+    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
     protected List<QuicPacket> expectedQuicPackets;
 
     public ReceiveAction() {
@@ -87,7 +75,7 @@ public class ReceiveAction extends CommonReceiveAction implements StaticReceivin
         this.expectedMessages = expectedMessages;
     }
 
-    public ReceiveAction(ProtocolMessage<?>... expectedMessages) {
+    public ReceiveAction(ProtocolMessage... expectedMessages) {
         super();
         this.expectedMessages = new ArrayList<>(Arrays.asList(expectedMessages));
     }
@@ -137,7 +125,7 @@ public class ReceiveAction extends CommonReceiveAction implements StaticReceivin
     }
 
     public ReceiveAction(
-            List<ProtocolMessage<?>> expectedMessages, List<HttpMessage<?>> expectedHttpMessages) {
+            List<ProtocolMessage> expectedMessages, List<HttpMessage> expectedHttpMessages) {
         this(expectedMessages);
         this.expectedHttpMessages = expectedHttpMessages;
     }
@@ -146,7 +134,7 @@ public class ReceiveAction extends CommonReceiveAction implements StaticReceivin
         this.expectedHttpMessages = new ArrayList<>(Arrays.asList(expectedHttpMessages));
     }
 
-    public ReceiveAction(Set<ActionOption> myActionOptions, List<ProtocolMessage<?>> messages) {
+    public ReceiveAction(Set<ActionOption> myActionOptions, List<ProtocolMessage> messages) {
         this(messages);
         setActionOptions(myActionOptions);
     }
@@ -155,12 +143,12 @@ public class ReceiveAction extends CommonReceiveAction implements StaticReceivin
         this(actionOptions, new ArrayList<>(Arrays.asList(messages)));
     }
 
-    public ReceiveAction(ActionOption actionOption, List<ProtocolMessage<?>> messages) {
+    public ReceiveAction(ActionOption actionOption, List<ProtocolMessage> messages) {
         this(messages);
         setActionOptions(Set.of(actionOption));
     }
 
-    public ReceiveAction(ActionOption actionOption, ProtocolMessage<?>... messages) {
+    public ReceiveAction(ActionOption actionOption, ProtocolMessage... messages) {
         this(actionOption, new ArrayList<>(Arrays.asList(messages)));
     }
 
@@ -168,26 +156,28 @@ public class ReceiveAction extends CommonReceiveAction implements StaticReceivin
         super(connectionAlias);
     }
 
-    public ReceiveAction(String connectionAliasAlias, List<ProtocolMessage<?>> messages) {
+    public ReceiveAction(String connectionAliasAlias, List<ProtocolMessage> messages) {
         super(connectionAliasAlias);
         this.expectedMessages = messages;
     }
 
-    public ReceiveAction(String connectionAliasAlias, ProtocolMessage<?>... messages) {
+    public ReceiveAction(String connectionAliasAlias, ProtocolMessage... messages) {
         this(connectionAliasAlias, new ArrayList<>(Arrays.asList(messages)));
     }
 
     @Override
     public String toString() {
-        String string = getClass().getSimpleName()
-                + ": "
-                + (isExecuted() ? "\n" : "(not executed)\n")
-                + "\tExpected: "
-                + LogPrinter.toHumanReadableMultiLineContainerListArray(
-                        getExpectedDataContainerLists());
+        String string =
+                getClass().getSimpleName()
+                        + ": "
+                        + (isExecuted() ? "\n" : "(not executed)\n")
+                        + "\tExpected: "
+                        + LogPrinter.toHumanReadableMultiLineContainerListArray(
+                                getExpectedDataContainerLists());
         if (isExecuted()) {
-            string += "\n\tActual: "
-                    + LogPrinter.toHumanReadableMultiLine(getLayerStackProcessingResult());
+            string +=
+                    "\n\tActual: "
+                            + LogPrinter.toHumanReadableMultiLine(getLayerStackProcessingResult());
         }
         return string;
     }

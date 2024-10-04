@@ -69,19 +69,21 @@ public class SendRaccoonCkeAction extends CommonSendAction {
         Chooser chooser = context.getChooser();
         byte[] clientPublicKey;
         if (chooser.getSelectedCipherSuite().isEphemeral()) {
-            clientPublicKey = getClientPublicKey(
-                    chooser.getServerEphemeralDhGenerator(),
-                    chooser.getServerEphemeralDhModulus(),
-                    chooser.getServerEphemeralDhPublicKey(),
-                    initialSecret,
-                    withNullByte);
+            clientPublicKey =
+                    getClientPublicKey(
+                            chooser.getServerEphemeralDhGenerator(),
+                            chooser.getServerEphemeralDhModulus(),
+                            chooser.getServerEphemeralDhPublicKey(),
+                            initialSecret,
+                            withNullByte);
         } else {
-            clientPublicKey = getClientPublicKey(
-                    chooser.getServerX509Chooser().getSubjectDhGenerator(),
-                    chooser.getServerX509Chooser().getSubjectDhModulus(),
-                    chooser.getServerX509Chooser().getSubjectDhPublicKey(),
-                    initialSecret,
-                    withNullByte);
+            clientPublicKey =
+                    getClientPublicKey(
+                            chooser.getServerX509Chooser().getSubjectDhGenerator(),
+                            chooser.getServerX509Chooser().getSubjectDhModulus(),
+                            chooser.getServerX509Chooser().getSubjectDhPublicKey(),
+                            initialSecret,
+                            withNullByte);
         }
         cke.setPublicKey(Modifiable.explicit(clientPublicKey));
         return cke;
@@ -94,8 +96,9 @@ public class SendRaccoonCkeAction extends CommonSendAction {
             BigInteger initialClientDhSecret,
             boolean withNullByte) {
         int length = ArrayConverter.bigIntegerToByteArray(m).length;
-        byte[] pms = ArrayConverter.bigIntegerToNullPaddedByteArray(
-                serverPublicKey.modPow(initialClientDhSecret, m), length);
+        byte[] pms =
+                ArrayConverter.bigIntegerToNullPaddedByteArray(
+                        serverPublicKey.modPow(initialClientDhSecret, m), length);
 
         if (((withNullByte && pms[0] == 0) && pms[1] != 0) || (!withNullByte && pms[0] != 0)) {
             BigInteger clientPublicKey = g.modPow(initialClientDhSecret, m);
@@ -148,7 +151,8 @@ public class SendRaccoonCkeAction extends CommonSendAction {
     @Override
     protected List<LayerConfiguration<?>> createLayerConfiguration(State state) {
         TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
-        ClientKeyExchangeMessage message = generateRaccoonDhClientKeyExchangeMessage(tlsContext, withNullByte);
+        ClientKeyExchangeMessage message =
+                generateRaccoonDhClientKeyExchangeMessage(tlsContext, withNullByte);
         List<LayerConfiguration<?>> configurationList = new LinkedList<>();
         configurationList.add(
                 new SpecificSendLayerConfiguration<>(ImplementedLayers.MESSAGE, message));

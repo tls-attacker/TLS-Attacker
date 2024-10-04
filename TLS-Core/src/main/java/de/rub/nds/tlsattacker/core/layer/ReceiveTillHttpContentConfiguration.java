@@ -36,17 +36,14 @@ public class ReceiveTillHttpContentConfiguration
     }
 
     @Override
-    public boolean failedEarly(List<HttpResponseMessage> list) {
-        return false;
-    }
-
-    @Override
     public String toCompactString() {
         return "(" + getLayerType().getName() + ") ReceiveTillHttpContent: " + desiredContent;
     }
 
     @Override
-    public boolean isProcessTrailingContainers() {
-        return false;
+    public boolean shouldContinueProcessing(
+            List<HttpResponseMessage> list, boolean receivedTimeout, boolean dataLeftToProcess) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'shouldContinueProcessing'");
     }
 }

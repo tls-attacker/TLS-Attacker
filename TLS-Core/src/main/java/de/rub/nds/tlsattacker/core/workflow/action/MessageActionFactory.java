@@ -32,7 +32,7 @@ public class MessageActionFactory {
             Config tlsConfig,
             AliasedConnection connection,
             ConnectionEndType sendingConnectionEndType,
-            ProtocolMessage<?>... protocolMessages) {
+            ProtocolMessage... protocolMessages) {
         return createTLSAction(
                 tlsConfig,
                 connection,
@@ -60,7 +60,7 @@ public class MessageActionFactory {
             Config tlsConfig,
             AliasedConnection connection,
             ConnectionEndType sendingConnectionEnd,
-            List<ProtocolMessage<?>> protocolMessages) {
+            List<ProtocolMessage> protocolMessages) {
         MessageAction action;
         if (connection.getLocalConnectionEndType() == sendingConnectionEnd) {
             action = new SendAction(protocolMessages);

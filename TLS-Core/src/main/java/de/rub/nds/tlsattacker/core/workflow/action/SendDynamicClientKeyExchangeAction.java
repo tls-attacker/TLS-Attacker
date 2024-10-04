@@ -88,10 +88,11 @@ public class SendDynamicClientKeyExchangeAction extends CommonSendAction {
     @Override
     protected List<LayerConfiguration<?>> createLayerConfiguration(State state) {
         TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
-        ClientKeyExchangeMessage clientKeyExchangeMessage = new WorkflowConfigurationFactory(tlsContext.getConfig())
-                .createClientKeyExchangeMessage(
-                        AlgorithmResolver.getKeyExchangeAlgorithm(
-                                tlsContext.getChooser().getSelectedCipherSuite()));
+        ClientKeyExchangeMessage clientKeyExchangeMessage =
+                new WorkflowConfigurationFactory(tlsContext.getConfig())
+                        .createClientKeyExchangeMessage(
+                                AlgorithmResolver.getKeyExchangeAlgorithm(
+                                        tlsContext.getChooser().getSelectedCipherSuite()));
         if (clientKeyExchangeMessage != null) {
             List<LayerConfiguration<?>> configurationList = new LinkedList<>();
             configurationList.add(

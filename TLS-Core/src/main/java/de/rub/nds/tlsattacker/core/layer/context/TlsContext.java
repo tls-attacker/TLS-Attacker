@@ -413,7 +413,7 @@ public class TlsContext extends LayerContext {
 
     private Random random;
 
-    private LinkedList<ProtocolMessage<?>> messageBuffer;
+    private LinkedList<ProtocolMessage> messageBuffer;
 
     private LinkedList<Record> recordBuffer;
 
@@ -633,11 +633,11 @@ public class TlsContext extends LayerContext {
         this.reversePrepareAfterParse = reversePrepareAfterParse;
     }
 
-    public LinkedList<ProtocolMessage<?>> getMessageBuffer() {
+    public LinkedList<ProtocolMessage> getMessageBuffer() {
         return messageBuffer;
     }
 
-    public void setMessageBuffer(LinkedList<ProtocolMessage<?>> messageBuffer) {
+    public void setMessageBuffer(LinkedList<ProtocolMessage> messageBuffer) {
         this.messageBuffer = messageBuffer;
     }
 

@@ -24,9 +24,7 @@ import java.util.List;
 @XmlRootElement(name = "ReceiveTill")
 public class ReceiveTillAction extends CommonReceiveAction {
 
-    @HoldsModifiableVariable
-    @XmlElementRef
-    protected ProtocolMessage waitTillMessage;
+    @HoldsModifiableVariable @XmlElementRef protected ProtocolMessage waitTillMessage;
 
     public ReceiveTillAction() {
         super();
@@ -110,7 +108,6 @@ public class ReceiveTillAction extends CommonReceiveAction {
     }
 
     @Override
-
     protected List<LayerConfiguration<?>> createLayerConfiguration(State state) {
         TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
         List<LayerConfiguration<?>> configurationList = new LinkedList<>();

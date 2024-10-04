@@ -61,7 +61,7 @@ public class MessageActionFactoryTest {
     /** Test of createAction method, of class MessageActionFactory. */
     @Test
     public void testCreateActionMultiple() {
-        List<ProtocolMessage<?>> messages = new LinkedList<>();
+        List<ProtocolMessage> messages = new LinkedList<>();
         messages.add(new ChangeCipherSpecMessage());
         messages.add(new AlertMessage());
         MessageAction action =
