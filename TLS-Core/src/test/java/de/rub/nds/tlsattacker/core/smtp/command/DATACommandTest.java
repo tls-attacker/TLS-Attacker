@@ -32,7 +32,7 @@ public class DATACommandTest {
                         context,
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
         parser.parse(dataCommand);
-        assertEquals("DATA", dataCommand.getVerb().getValue());
+        assertEquals("DATA", dataCommand.getVerb());
     }
 
     @Test
@@ -46,7 +46,7 @@ public class DATACommandTest {
                         context,
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
         parser.parse(dataCommand);
-        assertEquals("DATA", dataCommand.getVerb().getValue());
+        assertEquals("DATA", dataCommand.getVerb());
     }
 
     @Test

@@ -38,8 +38,8 @@ class VRFYCommandTest {
             SmtpVRFYCommand vrfy = new SmtpVRFYCommand();
             parser.parse(vrfy);
 
-            assertEquals("VRFY", vrfy.getVerb().getValue());
-            assertEquals(command.substring(5, command.length() - 2), vrfy.getParameters().getValue());
+            assertEquals(vrfy.getVerb(), "VRFY");
+            assertEquals(vrfy.getParameters(), command.substring(5, command.length() - 2));
         }
     }
 

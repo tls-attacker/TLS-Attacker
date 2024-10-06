@@ -24,10 +24,10 @@ public class SmtpInitialGreeting extends SmtpReply {
     }
 
     public boolean serverRejection() {
-        return this.getReplyCode().getValue() == 554;
+        return this.getReplyCode() == 554;
     }
 
     public boolean serverReady() {
-        return this.getReplyCode().getValue() == 220;
+        return this.getReplyCode() == 220;
     }
 }

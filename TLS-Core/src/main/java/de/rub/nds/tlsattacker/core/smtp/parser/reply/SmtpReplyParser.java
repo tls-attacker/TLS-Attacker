@@ -54,7 +54,7 @@ public abstract class SmtpReplyParser<ReplyT extends SmtpReply> extends SmtpMess
 
         // warning if status code is already set but codes are inconsistent:
         try {
-            if (replyT.getReplyCode().getValue() != replyCode) replyCodeWarning(replyCode, line);
+            if (replyT.getReplyCode() != replyCode) replyCodeWarning(replyCode, line);
         } catch (NullPointerException ignored) {
         } // case: reply code not initialized yet
 

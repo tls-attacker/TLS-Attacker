@@ -32,7 +32,7 @@ public class SmtpCommandParser<CommandT extends SmtpCommand> extends SmtpMessage
         if (verbAndParams.length == 2) {
             smtpCommand.setParameters(verbAndParams[1]);
         }
-        parseArguments(smtpCommand, smtpCommand.getParameters().getValue());
+        parseArguments(smtpCommand, smtpCommand.getParameters());
     }
 
     /**

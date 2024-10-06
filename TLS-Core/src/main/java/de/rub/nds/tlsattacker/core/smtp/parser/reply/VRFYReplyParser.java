@@ -26,7 +26,7 @@ public class VRFYReplyParser extends SmtpReplyParser<SmtpVRFYReply> {
             String line = lines.get(i);
 
             if (i == 0) this.parseReplyCode(reply, line);
-            else this.checkReplyCodeConsistency(reply.getReplyCode().getValue(), line.substring(0, 3));
+            else this.checkReplyCodeConsistency(reply.getReplyCode(), line.substring(0, 3));
 
             if (line.length() <= 4) continue;
 

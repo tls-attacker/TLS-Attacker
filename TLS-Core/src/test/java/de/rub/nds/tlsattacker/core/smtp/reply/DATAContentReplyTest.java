@@ -43,7 +43,7 @@ public class DATAContentReplyTest {
                             new ByteArrayInputStream(reply.getBytes(StandardCharsets.UTF_8)));
             SmtpDATAContentReply dataContentReply = new SmtpDATAContentReply();
             parser.parse(dataContentReply);
-            assertEquals(Integer.parseInt(reply.substring(0, 3)), dataContentReply.getReplyCode().getValue());
+            assertEquals(Integer.parseInt(reply.substring(0, 3)), dataContentReply.getReplyCode());
             assertEquals(
                     reply.substring(4, reply.length() - 2),
                     dataContentReply.getHumanReadableMessages().get(0));

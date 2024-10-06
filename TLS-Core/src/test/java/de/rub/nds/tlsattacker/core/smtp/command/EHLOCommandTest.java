@@ -37,7 +37,7 @@ class EHLOCommandTest {
                         context,
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
         parser.parse(ehlo);
-        assertEquals("EHLO", ehlo.getVerb().getValue());
+        assertEquals("EHLO", ehlo.getVerb());
         assertEquals("seal.cs.upb.de", ehlo.getClientIdentity());
     }
 
@@ -52,7 +52,7 @@ class EHLOCommandTest {
                         context,
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
         parser.parse(ehlo);
-        assertEquals("EHLO", ehlo.getVerb().getValue());
+        assertEquals("EHLO", ehlo.getVerb());
         assertEquals("seal.cs.upb.de", ehlo.getClientIdentity());
     }
 
@@ -67,7 +67,7 @@ class EHLOCommandTest {
                         context,
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
         parser.parse(ehlo);
-        assertEquals("EHLO", ehlo.getVerb().getValue());
+        assertEquals("EHLO", ehlo.getVerb());
         assertEquals("seal.cs.upb.de invalid", ehlo.getClientIdentity());
     }
 
@@ -82,7 +82,7 @@ class EHLOCommandTest {
                         context,
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
         parser.parse(ehlo);
-        assertEquals("EHLO", ehlo.getVerb().getValue());
+        assertEquals("EHLO", ehlo.getVerb());
         assertEquals("127.0.0.1", ehlo.getClientIdentity());
         assertTrue(ehlo.hasAddressLiteral());
     }
@@ -98,7 +98,7 @@ class EHLOCommandTest {
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
 
         parser.parse(ehlo);
-        assertEquals("EHLO", ehlo.getVerb().getValue());
+        assertEquals("EHLO", ehlo.getVerb());
         assertEquals("1.2.3. ", ehlo.getClientIdentity());
     }
 

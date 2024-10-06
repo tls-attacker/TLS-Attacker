@@ -36,12 +36,12 @@ public class SmtpCommandSerializer<CommandT extends SmtpCommand>
     protected byte[] serializeBytes() {
         StringBuilder builder = new StringBuilder();
 
-        boolean verbExists = this.command.getVerb().getValue() != null;
-        boolean parametersExist = this.command.getParameters().getValue() != null;
+        boolean verbExists = this.command.getVerb() != null;
+        boolean parametersExist = this.command.getParameters() != null;
 
-        if (verbExists) builder.append(this.command.getVerb().getValue());
+        if (verbExists) builder.append(this.command.getVerb());
         if (verbExists && parametersExist) builder.append(SP);
-        if (parametersExist) builder.append(this.command.getParameters().getValue());
+        if (parametersExist) builder.append(this.command.getParameters());
 
         builder.append(CRLF);
         byte[] output = builder.toString().getBytes();

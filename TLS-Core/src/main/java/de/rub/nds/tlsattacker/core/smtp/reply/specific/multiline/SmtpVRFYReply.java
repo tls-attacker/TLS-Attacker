@@ -87,7 +87,7 @@ public class SmtpVRFYReply extends SmtpReply {
         StringBuilder sb = new StringBuilder();
 
         String replyCodePrefix =
-                this.getReplyCode() != null ? String.valueOf(this.getReplyCode().getValue()) + DASH : "";
+                this.replyCode != null ? String.valueOf(this.replyCode) + DASH : "";
 
         for (int i = 0; i < this.data.size() - 1; i++) {
             SmtpVRFYData vrfyData = this.data.get(i);
@@ -96,7 +96,7 @@ public class SmtpVRFYReply extends SmtpReply {
             sb.append(CRLF);
         }
 
-        sb.append(this.getReplyCode().getValue());
+        sb.append(this.replyCode);
         sb.append(SP);
         sb.append(this.data.get(this.data.size() - 1).toString());
         sb.append(CRLF);

@@ -28,13 +28,13 @@ import java.io.InputStream;
 @XmlRootElement
 public class SmtpReply extends SmtpMessage {
 
-    protected ModifiableInteger replyCode = new ModifiableInteger();
-    protected ModifiableString humanReadableMessage = new ModifiableString();
+    protected Integer replyCode;
+    protected String humanReadableMessage;
 
     public SmtpReply() {}
 
     public SmtpReply(Integer replyCode) {
-        this.replyCode = ModifiableVariableFactory.safelySetValue(this.replyCode, replyCode);
+        this.replyCode = replyCode;
     }
 
     @Override
@@ -64,18 +64,18 @@ public class SmtpReply extends SmtpMessage {
     }
 
     public void setReplyCode(Integer replyCode) {
-        this.replyCode = ModifiableVariableFactory.safelySetValue(this.replyCode, replyCode);
+        this.replyCode = replyCode;
     }
 
-    public ModifiableInteger getReplyCode() {
+    public int getReplyCode() {
         return replyCode;
     }
 
     public void setHumanReadableMessage(String humanReadableMessage) {
-        this.humanReadableMessage = ModifiableVariableFactory.safelySetValue(this.humanReadableMessage, humanReadableMessage);
+        this.humanReadableMessage = humanReadableMessage;
     }
 
-    public ModifiableString getHumanReadableMessage() {
+    public String getHumanReadableMessage() {
         return humanReadableMessage;
     }
 
@@ -85,13 +85,13 @@ public class SmtpReply extends SmtpMessage {
         String CRLF = "\r\n";
         StringBuilder sb = new StringBuilder();
 
-        if (this.getReplyCode().getValue() != null) {
-            sb.append(this.getReplyCode().getValue());
+        if (this.replyCode != null) {
+            sb.append(this.replyCode);
             sb.append(SP);
         }
 
-        if (this.getHumanReadableMessage().getValue() != null) {
-            sb.append(this.getHumanReadableMessage().getValue());
+        if (this.humanReadableMessage != null) {
+            sb.append(humanReadableMessage);
         }
 
         sb.append(CRLF);

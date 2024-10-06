@@ -35,7 +35,7 @@ class NOOPCommandTest {
                         context,
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
         parser.parse(noop);
-        assertEquals("NOOP", noop.getVerb().getValue());
+        assertEquals("NOOP", noop.getVerb());
     }
 
     @Test
@@ -49,8 +49,8 @@ class NOOPCommandTest {
                         context,
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
         parser.parse(noop);
-        assertEquals("NOOP", noop.getVerb().getValue());
-        assertEquals("parameter", noop.getParameters().getValue());
+        assertEquals("NOOP", noop.getVerb());
+        assertEquals("parameter", noop.getParameters());
     }
 
     @Test
