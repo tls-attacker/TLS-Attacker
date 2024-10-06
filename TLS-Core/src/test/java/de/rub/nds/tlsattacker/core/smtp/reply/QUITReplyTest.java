@@ -32,8 +32,8 @@ public class QUITReplyTest {
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
 
         parser.parse(quitReply);
-        assertEquals(221, quitReply.getReplyCode());
-        assertEquals("byebye", quitReply.getHumanReadableMessage());
+        assertEquals(221, quitReply.getReplyCode().getValue());
+        assertEquals("byebye", quitReply.getHumanReadableMessage().getValue());
     }
 
     /* TODO: consider re-adding default values in QUIT class (and in general)

@@ -32,8 +32,8 @@ class MAILReplyTest {
                 new SmtpGenericReplyParser<>(
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
         parser.parse(reply);
-        assertEquals(250, reply.getReplyCode());
-        assertEquals("OK", reply.getHumanReadableMessage());
+        assertEquals(250, reply.getReplyCode().getValue());
+        assertEquals("OK", reply.getHumanReadableMessage().getValue());
     }
 
     @Test
@@ -45,8 +45,8 @@ class MAILReplyTest {
 
         SmtpMAILReply reply = new SmtpMAILReply();
         parser.parse(reply);
-        assertEquals(reply.getReplyCode(), 552);
-        assertEquals(reply.getHumanReadableMessage(), "Aborted");
+        assertEquals(552, reply.getReplyCode().getValue());
+        assertEquals("Aborted", reply.getHumanReadableMessage().getValue());
     }
 
     @Test

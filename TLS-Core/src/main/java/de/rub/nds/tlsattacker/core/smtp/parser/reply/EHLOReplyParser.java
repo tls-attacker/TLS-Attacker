@@ -42,7 +42,7 @@ public class EHLOReplyParser extends SmtpReplyParser<SmtpEHLOReply> {
         }
 
         for (String line : lines.subList(1, lines.size())) {
-            this.checkReplyCodeConsistency(smtpEHLOReply.getReplyCode(), line.substring(0, 3));
+            this.checkReplyCodeConsistency(smtpEHLOReply.getReplyCode().getValue(), line.substring(0, 3));
 
             String keyword = line.substring(4);
             SmtpServiceExtension extension = parseKeyword(keyword);

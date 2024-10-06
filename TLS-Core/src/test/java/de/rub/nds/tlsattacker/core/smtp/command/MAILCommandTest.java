@@ -33,7 +33,7 @@ public class MAILCommandTest {
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
         SmtpMAILCommand mail = new SmtpMAILCommand();
         parser.parse(mail);
-        assertEquals("MAIL", mail.getVerb());
+        assertEquals("MAIL", mail.getVerb().getValue());
         assertEquals("<seal@upb.de>", mail.getReversePath());
     }
 
@@ -45,7 +45,7 @@ public class MAILCommandTest {
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
         SmtpMAILCommand mail = new SmtpMAILCommand();
         parser.parse(mail);
-        assertEquals("MAIL", mail.getVerb());
+        assertEquals("MAIL", mail.getVerb().getValue());
         assertEquals("<seal@upb.de>", mail.getReversePath());
     }
 
@@ -57,7 +57,7 @@ public class MAILCommandTest {
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
         SmtpMAILCommand mail = new SmtpMAILCommand();
         parser.parse(mail);
-        assertEquals("MAIL", mail.getVerb());
+        assertEquals("MAIL", mail.getVerb().getValue());
         assertEquals("<seal@heal@upb.de>", mail.getReversePath());
     }
 
@@ -89,7 +89,7 @@ public class MAILCommandTest {
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
         SmtpMAILCommand mail = new SmtpMAILCommand();
         parser.parse(mail);
-        assertEquals("MAIL", mail.getVerb());
+        assertEquals("MAIL", mail.getVerb().getValue());
         assertEquals("<seal@upb.de>", mail.getReversePath());
         assertEquals("SIZE", mail.getMAILparameters().get(0).getExtension().getEhloKeyword());
         assertEquals("12345", mail.getMAILparameters().get(0).getParameters());

@@ -28,7 +28,7 @@ class NOOPReplyTest {
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
         parser.parse(noop);
 
-        assertEquals(250, noop.getReplyCode());
-        assertEquals("NOOP acknowledged", noop.getHumanReadableMessage());
+        assertEquals(250, noop.getReplyCode().getValue());
+        assertEquals("NOOP acknowledged", noop.getHumanReadableMessage().getValue());
     }
 }

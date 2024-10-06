@@ -40,7 +40,7 @@ class EHLOReplyTest {
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
         parser.parse(ehlo);
 
-        assertEquals(250, ehlo.getReplyCode());
+        assertEquals(250, ehlo.getReplyCode().getValue());
         assertEquals("seal.cs.upb.de", ehlo.getDomain());
         assertEquals("says Greetings", ehlo.getGreeting());
     }
@@ -62,7 +62,7 @@ class EHLOReplyTest {
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
         parser.parse(ehlo);
 
-        assertEquals(250, ehlo.getReplyCode());
+        assertEquals(250, ehlo.getReplyCode().getValue());
         assertEquals("seal.cs.upb.de", ehlo.getDomain());
         assertEquals("says Greetings", ehlo.getGreeting());
         assertEquals(4, ehlo.getExtensions().size());
@@ -155,7 +155,7 @@ class EHLOReplyTest {
                                         .getBytes(StandardCharsets.UTF_8)));
         SmtpEHLOReply reply = new SmtpEHLOReply();
         parser.parse(reply);
-        assertEquals(502, reply.getReplyCode());
+        assertEquals(502, reply.getReplyCode().getValue());
     }
 
     @Test
@@ -167,7 +167,7 @@ class EHLOReplyTest {
                                         .getBytes(StandardCharsets.UTF_8)));
         SmtpEHLOReply reply = new SmtpEHLOReply();
         parser.parse(reply);
-        assertEquals(550, reply.getReplyCode());
+        assertEquals(550, reply.getReplyCode().getValue());
     }
 
     @Test
@@ -179,7 +179,7 @@ class EHLOReplyTest {
                                         .getBytes(StandardCharsets.UTF_8)));
         SmtpEHLOReply reply = new SmtpEHLOReply();
         parser.parse(reply);
-        assertEquals(504, reply.getReplyCode());
+        assertEquals(504, reply.getReplyCode().getValue());
     }
 
     @Disabled("Invalid test case")
@@ -192,7 +192,7 @@ class EHLOReplyTest {
                                         .getBytes(StandardCharsets.UTF_8)));
         SmtpEHLOReply reply = new SmtpEHLOReply();
         parser.parse(reply);
-        assertEquals(502, reply.getReplyCode());
+        assertEquals(502, reply.getReplyCode().getValue());
         assertEquals("", reply.getDomain());
     }
 }

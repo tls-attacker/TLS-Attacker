@@ -18,7 +18,7 @@ public class EHLOReplyHandler extends SmtpReplyHandler<SmtpEHLOReply> {
 
     @Override
     public void adjustContext(SmtpEHLOReply smtpMessage) {
-        if (smtpMessage.getReplyCode() == 502) {
+        if (smtpMessage.getReplyCode().getValue() == 502) {
             this.getContext().setServerOnlySupportsEHLO(true);
         }
     }

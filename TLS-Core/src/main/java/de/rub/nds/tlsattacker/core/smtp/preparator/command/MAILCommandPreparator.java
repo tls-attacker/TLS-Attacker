@@ -20,7 +20,7 @@ public class MAILCommandPreparator extends SmtpCommandPreparator<SmtpMAILCommand
     @Override
     public void prepare() {
         this.getObject().setVerb("MAIL");
-        StringBuilder pars = new StringBuilder(this.getObject().getParameters());
+        StringBuilder pars = new StringBuilder(this.getObject().getParameters().getValue());
         if (this.getObject().getMAILparameters() != null) {
             for (SmtpParameters MAILparameters : this.getObject().getMAILparameters()) {
                 pars.append(" ").append(MAILparameters.toString());

@@ -33,7 +33,7 @@ public class QUITCommandTest {
                         context,
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
         parser.parse(quitCommand);
-        assertEquals("QUIT", quitCommand.getVerb());
+        assertEquals("QUIT", quitCommand.getVerb().getValue());
     }
 
     @Test
@@ -47,7 +47,7 @@ public class QUITCommandTest {
                         context,
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
         parser.parse(quitCommand);
-        assertEquals("QUIT", quitCommand.getVerb());
+        assertEquals("QUIT", quitCommand.getVerb().getValue());
     }
 
     @Test

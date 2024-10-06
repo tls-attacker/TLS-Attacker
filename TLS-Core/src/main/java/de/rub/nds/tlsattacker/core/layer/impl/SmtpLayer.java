@@ -99,6 +99,13 @@ public class SmtpLayer extends ProtocolLayer<SmtpLayerHint, SmtpMessage> {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    @Override
+    public boolean executedAsPlanned() {
+        //TODO: when is this called and what information can I access?
+        // Ideally: check assertions for SMTP status codes
+        return super.executedAsPlanned();
+    }
+
     public SmtpCommand getCommandType() {
         return new SmtpCommand();
     }

@@ -35,7 +35,7 @@ public class HELOCommandTest {
                         new ByteArrayInputStream(
                                 "HELO seal.cs.upb.de\r\n".getBytes(StandardCharsets.UTF_8)));
         parser.parse(command);
-        assertEquals("HELO", command.getVerb());
+        assertEquals("HELO", command.getVerb().getValue());
         assertEquals("seal.cs.upb.de", command.getDomain());
     }
 
@@ -49,7 +49,7 @@ public class HELOCommandTest {
                         new ByteArrayInputStream(
                                 "HELO seal.cs.upb.de \r\n".getBytes(StandardCharsets.UTF_8)));
         parser.parse(command);
-        assertEquals("HELO", command.getVerb());
+        assertEquals("HELO", command.getVerb().getValue());
         assertEquals("seal.cs.upb.de", command.getDomain());
     }
 

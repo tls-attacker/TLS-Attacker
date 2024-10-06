@@ -40,7 +40,7 @@ class InitialGreetingTest {
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
         SmtpEHLOReply ehlo = new SmtpEHLOReply();
         parser.parse(ehlo);
-        assertEquals(250, ehlo.getReplyCode());
+        assertEquals(250, ehlo.getReplyCode().getValue());
         assertEquals("seal.cs.upb.de", ehlo.getDomain());
         assertNull(ehlo.getGreeting());
     }
@@ -61,7 +61,7 @@ class InitialGreetingTest {
                         context,
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
         parser.parse(ehlo);
-        assertEquals(250, ehlo.getReplyCode());
+        assertEquals(250, ehlo.getReplyCode().getValue());
         assertEquals("seal.cs.upb.de", ehlo.getDomain());
         assertEquals("says Greetings", ehlo.getGreeting());
         assertEquals(4, ehlo.getExtensions().size());

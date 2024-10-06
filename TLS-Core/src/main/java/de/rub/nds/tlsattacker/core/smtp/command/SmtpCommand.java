@@ -8,6 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.smtp.command;
 
+import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.*;
 import de.rub.nds.tlsattacker.core.smtp.handler.SmtpCommandHandler;
@@ -22,19 +24,19 @@ import java.io.InputStream;
 @XmlRootElement
 public class SmtpCommand extends SmtpMessage {
 
-    String verb;
+    ModifiableString verb = new ModifiableString();
     // this field is used by preparator+serializer for the command parameters, it should not be used
     // for the actual contents
-    String parameters;
+    ModifiableString parameters = new ModifiableString();
 
     public SmtpCommand(String verb, String parameters) {
         super();
-        this.verb = verb;
-        this.parameters = parameters;
+        this.verb = ModifiableVariableFactory.safelySetValue(this.verb, verb);
+        this.parameters = ModifiableVariableFactory.safelySetValue(this.parameters, parameters);
     }
 
     public SmtpCommand(String verb) {
-        this.verb = verb;
+        this.verb = ModifiableVariableFactory.safelySetValue(this.verb, verb);
     }
 
     public SmtpCommand() {}
@@ -65,19 +67,19 @@ public class SmtpCommand extends SmtpMessage {
         return "SMTP_CMD";
     }
 
-    public String getVerb() {
+    public ModifiableString getVerb() {
         return verb;
     }
 
     public void setVerb(String verb) {
-        this.verb = verb;
+        this.verb = ModifiableVariableFactory.safelySetValue(this.verb, verb);
     }
 
-    public String getParameters() {
+    public ModifiableString getParameters() {
         return parameters;
     }
 
     public void setParameters(String parameters) {
-        this.parameters = parameters;
+        this.parameters = ModifiableVariableFactory.safelySetValue(this.parameters, parameters);
     }
 }

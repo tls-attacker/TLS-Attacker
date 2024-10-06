@@ -8,6 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.smtp.reply;
 
+import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.*;
 import de.rub.nds.tlsattacker.core.smtp.handler.SmtpMessageHandler;
@@ -25,13 +28,13 @@ import java.io.InputStream;
 @XmlRootElement
 public class SmtpReply extends SmtpMessage {
 
-    protected Integer replyCode;
-    protected String humanReadableMessage;
+    protected ModifiableInteger replyCode = new ModifiableInteger();
+    protected ModifiableString humanReadableMessage = new ModifiableString();
 
     public SmtpReply() {}
 
     public SmtpReply(Integer replyCode) {
-        this.replyCode = replyCode;
+        this.replyCode = ModifiableVariableFactory.safelySetValue(this.replyCode, replyCode);
     }
 
     @Override
@@ -61,18 +64,18 @@ public class SmtpReply extends SmtpMessage {
     }
 
     public void setReplyCode(Integer replyCode) {
-        this.replyCode = replyCode;
+        this.replyCode = ModifiableVariableFactory.safelySetValue(this.replyCode, replyCode);
     }
 
-    public int getReplyCode() {
+    public ModifiableInteger getReplyCode() {
         return replyCode;
     }
 
     public void setHumanReadableMessage(String humanReadableMessage) {
-        this.humanReadableMessage = humanReadableMessage;
+        this.humanReadableMessage = ModifiableVariableFactory.safelySetValue(this.humanReadableMessage, humanReadableMessage);
     }
 
-    public String getHumanReadableMessage() {
+    public ModifiableString getHumanReadableMessage() {
         return humanReadableMessage;
     }
 
@@ -82,13 +85,13 @@ public class SmtpReply extends SmtpMessage {
         String CRLF = "\r\n";
         StringBuilder sb = new StringBuilder();
 
-        if (this.replyCode != null) {
-            sb.append(this.replyCode);
+        if (this.getReplyCode().getValue() != null) {
+            sb.append(this.getReplyCode().getValue());
             sb.append(SP);
         }
 
-        if (this.humanReadableMessage != null) {
-            sb.append(humanReadableMessage);
+        if (this.humanReadableMessage.getValue() != null) {
+            sb.append(humanReadableMessage.getValue());
         }
 
         sb.append(CRLF);

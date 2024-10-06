@@ -64,6 +64,8 @@ public class SMTPWorkflowTestBench {
         trace.addTlsAction(new ReceiveAction(new SmtpEHLOReply()));
         trace.addTlsAction(new WaitAction(1000));
         trace.addTlsAction(new SendAction(new SmtpNOOPCommand()));
+        SmtpNOOPReply noopReply = new SmtpNOOPReply();
+        noopReply.getReplyCode().setAssertEquals(249);
         trace.addTlsAction(new ReceiveAction(new SmtpNOOPReply()));
         //        trace.addTlsAction(new SendAction(new SmtpQUITCommand()));
         //        trace.addTlsAction(new ReceiveAction(new SmtpQUITReply()));

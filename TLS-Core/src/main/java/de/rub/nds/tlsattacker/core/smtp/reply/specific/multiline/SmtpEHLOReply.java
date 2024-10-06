@@ -67,7 +67,7 @@ public class SmtpEHLOReply extends SmtpReply {
 
         StringBuilder sb = new StringBuilder();
 
-        sb.append(this.replyCode);
+        sb.append(this.getReplyCode().getValue());
         sb.append(hasExtensions ? DASH : SP);
         sb.append(this.domain);
         if (this.greeting != null) {
@@ -80,13 +80,13 @@ public class SmtpEHLOReply extends SmtpReply {
 
         for (int i = 0; i < this.extensions.size() - 1; i++) {
             SmtpServiceExtension ext = this.extensions.get(i);
-            sb.append(this.replyCode);
+            sb.append(this.getReplyCode().getValue());
             sb.append(DASH);
             sb.append(ext.toString());
             sb.append(CRLF);
         }
 
-        sb.append(this.replyCode);
+        sb.append(this.getReplyCode().getValue());
         sb.append(SP);
         sb.append(this.extensions.get(this.extensions.size() - 1).toString());
         sb.append(CRLF);

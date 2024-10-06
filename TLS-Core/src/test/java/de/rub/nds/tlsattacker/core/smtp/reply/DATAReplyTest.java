@@ -32,9 +32,9 @@ public class DATAReplyTest {
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
 
         dataReplyParser.parse(dataReply);
-        assertEquals(354, dataReply.getReplyCode());
+        assertEquals(354, dataReply.getReplyCode().getValue());
         assertEquals(
-                "Start mail input; end with <CRLF>.<CRLF>", dataReply.getHumanReadableMessage());
+                "Start mail input; end with <CRLF>.<CRLF>", dataReply.getHumanReadableMessage().getValue());
     }
 
     @Test
@@ -46,8 +46,8 @@ public class DATAReplyTest {
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
 
         assertDoesNotThrow(() -> dataReplyParser.parse(dataReply));
-        assertEquals(dataReply.getReplyCode(), 111);
-        assertEquals(dataReply.getHumanReadableMessage(), "test");
+        assertEquals(111, dataReply.getReplyCode().getValue());
+        assertEquals("test", dataReply.getHumanReadableMessage().getValue());
     }
 
     @Test

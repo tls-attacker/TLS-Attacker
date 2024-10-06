@@ -37,7 +37,7 @@ class VRFYReplyTest {
         SmtpVRFYReply vrfy = new SmtpVRFYReply();
         assertDoesNotThrow(() -> parser.parse(vrfy));
 
-        assertEquals(vrfy.getReplyCode(), Integer.parseInt(reply.substring(0, 3)));
+        assertEquals(Integer.parseInt(reply.substring(0, 3)), vrfy.getReplyCode().getValue());
 
         for (int i = 0; i < mailboxes.size(); i++) {
             assertEquals(vrfy.getData().get(i).getUsername(), usernames.get(i));

@@ -39,21 +39,19 @@ public abstract class SmtpGenericMultilineReply extends SmtpReply {
 
     @Override
     public String toString() {
-        char SP = ' ';
-        char DASH = '-';
+        String SP = " ";
+        String DASH = "-";
         String CRLF = "\r\n";
 
         StringBuilder sb = new StringBuilder();
-        String replyCodeString = this.replyCode != null ? String.valueOf(this.replyCode) : "";
-        String replyCodePrefix = this.replyCode != null ? replyCodeString + DASH : "";
 
         for (int i = 0; i < this.humanReadableMessages.size() - 1; i++) {
-            sb.append(replyCodePrefix);
+            sb.append(this.getReplyCode().getValue() + DASH);
             sb.append(this.humanReadableMessages.get(i));
             sb.append(CRLF);
         }
 
-        sb.append(replyCodeString);
+        sb.append(this.getReplyCode().getValue());
         sb.append(SP);
         sb.append(this.humanReadableMessages.get(this.humanReadableMessages.size() - 1));
         sb.append(CRLF);
