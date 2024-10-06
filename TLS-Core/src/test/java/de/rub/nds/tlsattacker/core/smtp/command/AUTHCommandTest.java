@@ -37,7 +37,7 @@ public class AUTHCommandTest {
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
 
         parser.parse(auth);
-        assertEquals("AUTH", auth.getVerb());
+        assertEquals("AUTH", auth.getVerb().getValue());
         assertEquals("PLAIN", auth.getSaslMechanism());
         assertEquals("qweqweqwe==", auth.getInitialResponse());
     }
