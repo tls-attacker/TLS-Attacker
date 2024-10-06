@@ -12,6 +12,8 @@ import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.SmtpMessage;
 import de.rub.nds.tlsattacker.core.smtp.parser.SmtpMessageParser;
 import de.rub.nds.tlsattacker.core.smtp.parser.command.VRFYCommandParser;
+import de.rub.nds.tlsattacker.core.smtp.parser.reply.SmtpReplyParser;
+import de.rub.nds.tlsattacker.core.smtp.parser.reply.VRFYReplyParser;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpReply;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
@@ -71,9 +73,9 @@ public class SmtpVRFYReply extends SmtpReply {
     }
 
     @Override
-    public SmtpMessageParser<? extends SmtpMessage> getParser(
+    public SmtpReplyParser<? extends SmtpReply> getParser(
             SmtpContext context, InputStream stream) {
-        return new VRFYCommandParser(stream);
+        return new VRFYReplyParser(stream);
     }
 
     @Override

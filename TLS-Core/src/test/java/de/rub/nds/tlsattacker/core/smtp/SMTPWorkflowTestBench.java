@@ -51,7 +51,7 @@ public class SMTPWorkflowTestBench {
     public void testWorkFlow() throws IOException, JAXBException {
         Security.addProvider(new BouncyCastleProvider());
         Config config = Config.createConfig();
-        config.setDefaultClientConnection(new OutboundConnection(4443, "localhost"));
+        config.setDefaultClientConnection(new OutboundConnection(2525, "localhost"));
         config.setDefaultLayerConfiguration(StackConfiguration.SMTP);
 
         WorkflowTrace trace = new WorkflowTrace();

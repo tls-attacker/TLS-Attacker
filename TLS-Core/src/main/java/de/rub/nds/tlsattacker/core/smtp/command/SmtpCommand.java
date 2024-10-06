@@ -40,12 +40,12 @@ public class SmtpCommand extends SmtpMessage {
     public SmtpCommand() {}
 
     @Override
-    public SmtpMessageHandler<? extends SmtpMessage> getHandler(SmtpContext smtpContext) {
+    public SmtpCommandHandler<? extends SmtpCommand> getHandler(SmtpContext smtpContext) {
         return new SmtpCommandHandler<>(smtpContext);
     }
 
     @Override
-    public SmtpMessageParser<? extends SmtpMessage> getParser(
+    public SmtpCommandParser<? extends SmtpCommand> getParser(
             SmtpContext context, InputStream stream) {
         return new SmtpCommandParser<>(stream);
     }
