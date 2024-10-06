@@ -12,9 +12,11 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.layer.constant.StackConfiguration;
+import de.rub.nds.tlsattacker.core.smtp.command.SmtpAUTHCommand;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpEHLOCommand;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpNOOPCommand;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpReply;
+import de.rub.nds.tlsattacker.core.smtp.reply.generic.singleline.SmtpAUTHReply;
 import de.rub.nds.tlsattacker.core.smtp.reply.generic.singleline.SmtpInitialGreeting;
 import de.rub.nds.tlsattacker.core.smtp.reply.generic.singleline.SmtpNOOPReply;
 import de.rub.nds.tlsattacker.core.smtp.reply.specific.multiline.SmtpEHLOReply;
@@ -67,6 +69,8 @@ public class SMTPWorkflowTestBench {
         SmtpNOOPReply noopReply = new SmtpNOOPReply();
         noopReply.getReplyCode().setAssertEquals(249);
         trace.addTlsAction(new ReceiveAction(new SmtpNOOPReply()));
+        trace.addTlsAction(new SendAction(new SmtpAUTHCommand("PLAIN","dXNlcm5hbWU6cGFzc3dvcmQK" )));
+        trace.addTlsAction(new ReceiveAction(new SmtpAUTHReply()));
         //        trace.addTlsAction(new SendAction(new SmtpQUITCommand()));
         //        trace.addTlsAction(new ReceiveAction(new SmtpQUITReply()));
 
