@@ -90,8 +90,8 @@ public class SmtpReply extends SmtpMessage {
             sb.append(SP);
         }
 
-        if (this.humanReadableMessage.getValue() != null) {
-            sb.append(humanReadableMessage.getValue());
+        if (this.getHumanReadableMessage().getValue() != null) {
+            sb.append(this.getHumanReadableMessage().getValue());
         }
 
         sb.append(CRLF);

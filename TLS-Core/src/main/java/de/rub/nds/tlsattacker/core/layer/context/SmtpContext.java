@@ -21,6 +21,7 @@ public class SmtpContext extends LayerContext {
 
     private List<String> reversePathBuffer = new ArrayList<>();
     private List<String> forwardPathBuffer = new ArrayList<>();
+    private List<String> recipientBuffer = new ArrayList<>();
     private List<String> mailDataBuffer = new ArrayList<>();
     private String clientIdentity;
     private boolean serverOnlySupportsEHLO = false;
@@ -140,5 +141,13 @@ public class SmtpContext extends LayerContext {
 
     public void setServerAcknowledgedClose(boolean serverAcknowledgedClose) {
         this.serverAcknowledgedClose = serverAcknowledgedClose;
+    }
+
+    public List<String> getRecipientBuffer() {
+        return recipientBuffer;
+    }
+
+    public void setRecipientBuffer(List<String> recipientBuffer) {
+        this.recipientBuffer = recipientBuffer;
     }
 }
