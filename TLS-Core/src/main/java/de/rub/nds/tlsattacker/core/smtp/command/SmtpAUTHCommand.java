@@ -14,6 +14,11 @@ import de.rub.nds.tlsattacker.core.smtp.preparator.command.AUTHCommandPreparator
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
+/**
+ * This class represents the AUTH command of the SMTP protocol. The AUTH command is used to authenticate the client to the server.
+ * @see <a href="https://datatracker.ietf.org/doc/html/rfc4954">RFC 4954</a>
+
+ */
 @XmlRootElement
 public class SmtpAUTHCommand extends SmtpCommand {
 
