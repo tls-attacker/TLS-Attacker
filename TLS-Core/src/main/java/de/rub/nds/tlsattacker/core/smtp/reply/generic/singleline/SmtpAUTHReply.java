@@ -11,6 +11,10 @@ package de.rub.nds.tlsattacker.core.smtp.reply.generic.singleline;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpReply;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
-// TODO: once SmtpAUTHCommand is made to be more complex, this has to be updated accordingly.
+/**
+ * Models the reply to the AUTH command.
+ * Defined in RFC 4954.
+ * Follows the normal reply format of status code with human-readable message.
+ */
 @XmlRootElement
 public class SmtpAUTHReply extends SmtpReply {}
