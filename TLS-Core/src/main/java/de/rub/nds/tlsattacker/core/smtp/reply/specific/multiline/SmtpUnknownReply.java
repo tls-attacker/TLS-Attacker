@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.smtp.reply.specific.multiline;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.SmtpMessage;
 import de.rub.nds.tlsattacker.core.smtp.parser.SmtpMessageParser;
+import de.rub.nds.tlsattacker.core.smtp.parser.reply.SmtpReplyParser;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpReply;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
@@ -21,7 +22,7 @@ public class SmtpUnknownReply extends SmtpReply {
     // TODO: implement. define relevant attributes.
 
     @Override
-    public SmtpMessageParser<? extends SmtpMessage> getParser(
+    public SmtpReplyParser<? extends SmtpMessage> getParser(
             SmtpContext context, InputStream stream) {
         throw new UnsupportedOperationException("Unknown replies are not supported yet.");
     }
