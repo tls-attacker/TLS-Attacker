@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
+import de.rub.nds.tlsattacker.core.layer.context.LayerContext;
 import de.rub.nds.tlsattacker.core.layer.context.TcpContext;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedLayerInputStream;
@@ -24,7 +25,7 @@ import java.io.IOException;
  * The TCP layer is a wrapper around an underlying TCP socket. It forwards the sockets InputStream
  * for reading and sends any data over the TCP socket without modifications.
  */
-public class TcpLayer extends ProtocolLayer<LayerProcessingHint, TcpStreamContainer> {
+public class TcpLayer extends ProtocolLayer<LayerContext, LayerProcessingHint, TcpStreamContainer> {
 
     private final TcpContext context;
 

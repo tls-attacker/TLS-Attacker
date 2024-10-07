@@ -57,7 +57,8 @@ import org.apache.logging.log4j.Logger;
  * The QuicPacketLayer encrypts and encapsulates QUIC frames into QUIC packets. It sends the packets
  * using the lower layer.
  */
-public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerHint, QuicPacket> {
+public class QuicPacketLayer
+        extends AcknowledgingProtocolLayer<QuicContext, QuicPacketLayerHint, QuicPacket> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 

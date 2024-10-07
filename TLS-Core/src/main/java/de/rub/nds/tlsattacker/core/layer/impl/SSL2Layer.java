@@ -35,7 +35,7 @@ import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class SSL2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessage> {
+public class SSL2Layer extends ProtocolLayer<TlsContext, LayerProcessingHint, ProtocolMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
     private TlsContext context;

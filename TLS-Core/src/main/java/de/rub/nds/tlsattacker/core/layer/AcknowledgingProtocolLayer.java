@@ -9,12 +9,15 @@
 package de.rub.nds.tlsattacker.core.layer;
 
 import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
+import de.rub.nds.tlsattacker.core.layer.context.LayerContext;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 
 public abstract class AcknowledgingProtocolLayer<
-                Hint extends LayerProcessingHint, Container extends DataContainer>
-        extends ProtocolLayer<Hint, Container> {
+                Context extends LayerContext,
+                Hint extends LayerProcessingHint,
+                Container extends DataContainer<Context>>
+        extends ProtocolLayer<Context, Hint, Container> {
 
     public AcknowledgingProtocolLayer(LayerType layerType) {
         super(layerType);

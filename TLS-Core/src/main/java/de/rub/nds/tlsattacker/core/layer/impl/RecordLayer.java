@@ -49,7 +49,7 @@ import org.apache.logging.log4j.Logger;
  * The record layer encrypts and encapsulates payload or handshake messages into TLS records. It
  * sends the records using the lower layer.
  */
-public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
+public class RecordLayer extends ProtocolLayer<TlsContext, RecordLayerHint, Record> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 

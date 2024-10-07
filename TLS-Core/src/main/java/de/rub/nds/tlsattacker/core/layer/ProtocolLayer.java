@@ -36,7 +36,9 @@ import org.apache.logging.log4j.Logger;
  * @param <Container> The kind of messages/Containers this layer is able to send and receive.
  */
 public abstract class ProtocolLayer<
-        Hint extends LayerProcessingHint, Container extends DataContainer> {
+        Context extends LayerContext,
+        Hint extends LayerProcessingHint,
+        Container extends DataContainer<Context>> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -239,7 +241,7 @@ public abstract class ProtocolLayer<
      * @param container The container to handle.
      * @param context The context of the connection. Keeps parsed and handled values.
      */
-    protected void readDataContainer(Container container, LayerContext context) {
+    protected void readDataContainer(Container container, Context context) {
         HintedInputStream inputStream;
         try {
             inputStream = getLowerLayer().getDataStream();
@@ -258,7 +260,7 @@ public abstract class ProtocolLayer<
      * @param context The context of the connection. Keeps parsed and handled values.
      */
     protected void readDataContainer(
-            Container container, LayerContext context, InputStream inputStream) {
+            Container container, Context context, InputStream inputStream) {
         Parser parser = container.getParser(context, inputStream);
 
         try {

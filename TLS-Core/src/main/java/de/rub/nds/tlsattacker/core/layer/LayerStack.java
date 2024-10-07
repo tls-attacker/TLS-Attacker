@@ -37,7 +37,7 @@ public class LayerStack {
      * layer. Not all layers need to be defined at any time, it is perfectly fine to leave the layer
      * stack and plug another component in which does the rest of the processing
      */
-    private final List<ProtocolLayer> layerList;
+    private final List<ProtocolLayer<?, ?, ?>> layerList;
 
     private final Context context;
 
@@ -96,13 +96,13 @@ public class LayerStack {
 
         // Prepare layer configuration and clear previous executions
         for (int i = 0; i < getLayerList().size(); i++) {
-            ProtocolLayer<?, ?> layer = getLayerList().get(i);
+            ProtocolLayer<?, ?, ?> layer = getLayerList().get(i);
             layer.clear();
             layer.setLayerConfiguration(layerConfigurationList.get(i));
         }
         context.setTalkingConnectionEndType(context.getConnection().getLocalConnectionEndType());
         // Send data
-        for (ProtocolLayer<?, ?> layer : getLayerList()) {
+        for (ProtocolLayer<?, ?, ?> layer : getLayerList()) {
             layer.sendConfiguration();
         }
 
@@ -138,14 +138,14 @@ public class LayerStack {
         }
         // Prepare layer configuration and clear previous executions
         for (int i = 0; i < getLayerList().size(); i++) {
-            ProtocolLayer<?, ?> layer = getLayerList().get(i);
+            ProtocolLayer<?, ?, ?> layer = getLayerList().get(i);
             layer.clear();
             layer.setLayerConfiguration(layerConfigurationList.get(i));
         }
         context.setTalkingConnectionEndType(
                 context.getConnection().getLocalConnectionEndType().getPeer());
 
-        ProtocolLayer<?, ?> topLayer = getTopConfiguredLayer();
+        ProtocolLayer<?, ?, ?> topLayer = getTopConfiguredLayer();
         topLayer.receiveData();
 
         // for quic frame specific actions like the ReceiveQuicTillAction receive data until
@@ -154,7 +154,7 @@ public class LayerStack {
         // called that many times
         // for each receiveData call on the frame layer exactly one packet is processed on the
         // packet layer
-        Optional<ProtocolLayer<?, ?>> quicFrameLayer =
+        Optional<ProtocolLayer<?, ?, ?>> quicFrameLayer =
                 getLayerList().stream().filter(x -> x instanceof QuicFrameLayer).findFirst();
         if (quicFrameLayer.isPresent()
                 && quicFrameLayer.get().getLayerConfiguration()
@@ -177,7 +177,7 @@ public class LayerStack {
 
         // reverse order
         for (int i = getLayerList().size() - 1; i >= 0; i--) {
-            ProtocolLayer<?, ?> layer = getLayerList().get(i);
+            ProtocolLayer<?, ?, ?> layer = getLayerList().get(i);
             if (layer.getLayerConfiguration() != null
                     && !(layer.getLayerConfiguration() instanceof IgnoreLayerConfiguration)
                     && !layer.executedAsPlanned()) {
@@ -232,7 +232,7 @@ public class LayerStack {
     }
 
     /** Returns the layer list. */
-    public List<ProtocolLayer<?, ?>> getLayerList() {
+    public List<ProtocolLayer<?, ?, ?>> getLayerList() {
         return Collections.unmodifiableList(layerList);
     }
 }

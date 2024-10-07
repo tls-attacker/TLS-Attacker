@@ -53,7 +53,7 @@ import org.apache.logging.log4j.Logger;
  * The MessageLayer handles TLS Handshake messages. The encapsulation into records happens in the
  * {@link RecordLayer}.
  */
-public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMessage> {
+public class MessageLayer extends ProtocolLayer<TlsContext, LayerProcessingHint, ProtocolMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 

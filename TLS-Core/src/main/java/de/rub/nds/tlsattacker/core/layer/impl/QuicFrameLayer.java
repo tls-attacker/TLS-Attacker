@@ -65,7 +65,8 @@ import org.apache.logging.log4j.Logger;
  * The QuicFrameLayer handles QUIC frames. The encapsulation into QUIC packets happens in the {@link
  * QuicPacketLayer}.
  */
-public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHint, QuicFrame> {
+public class QuicFrameLayer
+        extends AcknowledgingProtocolLayer<QuicContext, QuicFrameLayerHint, QuicFrame> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
