@@ -160,15 +160,17 @@ public class IceLayer extends ProtocolLayer<RecordLayerHint, IceMessage> {
         byte[] data = dataStream.readChunk(length);
         int paddingLength = 0;
         if (dataStream.available() > 0) {
-            paddingLength = (IceByteLengths.DATA_CHANNEL_ALIGNMENT
-                    - (length) % IceByteLengths.DATA_CHANNEL_ALIGNMENT)
-                    % IceByteLengths.DATA_CHANNEL_ALIGNMENT;
+            paddingLength =
+                    (IceByteLengths.DATA_CHANNEL_ALIGNMENT
+                                    - (length) % IceByteLengths.DATA_CHANNEL_ALIGNMENT)
+                            % IceByteLengths.DATA_CHANNEL_ALIGNMENT;
             if (paddingLength < 0) {
                 paddingLength = 0;
             }
         }
         byte[] padding = dataStream.readChunk(paddingLength);
-        byte[] completeMessageBytes = ArrayConverter.concatenate(channelNumber, lengthBytes, data, padding);
+        byte[] completeMessageBytes =
+                ArrayConverter.concatenate(channelNumber, lengthBytes, data, padding);
         ChannelDataMessage message = new ChannelDataMessage(data);
         message.setCompleteMessageBytes(completeMessageBytes);
         readDataContainer(message, context, new ByteArrayInputStream(completeMessageBytes));
