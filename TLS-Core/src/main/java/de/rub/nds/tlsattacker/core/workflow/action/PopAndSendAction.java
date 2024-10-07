@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.protocol.exception.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.Message;
 import de.rub.nds.tlsattacker.core.layer.SpecificSendLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
@@ -107,7 +108,9 @@ public class PopAndSendAction extends CommonSendAction {
             tlsContext.getRecordBuffer().remove((int) index);
         } else {
             if (!messageBuffer.isEmpty()) {
-                messages.add(messageBuffer.pop());
+                ProtocolMessage message = messageBuffer.pop();
+                message.setShouldPrepareDefault(false);
+                messages.add(message);
             }
         }
 
