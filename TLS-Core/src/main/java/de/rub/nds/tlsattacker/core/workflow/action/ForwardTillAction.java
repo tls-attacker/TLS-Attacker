@@ -8,11 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerStackProcessingResult;
@@ -26,17 +21,18 @@ import de.rub.nds.tlsattacker.core.workflow.container.ActionHelperUtil;
 import jakarta.xml.bind.annotation.XmlElementRef;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 @XmlRootElement(name = "ForwardTill")
 public class ForwardTillAction extends CommonForwardAction {
 
-    @XmlElementWrapper
-    @HoldsModifiableVariable
-    @XmlElementRef
+    @XmlElementWrapper @HoldsModifiableVariable @XmlElementRef
     protected List<ProtocolMessage> expectedMessages;
 
-    public ForwardTillAction() {
-    }
+    public ForwardTillAction() {}
 
     public ForwardTillAction(
             String receiveFromAlias, String forwardToAlias, List<ProtocolMessage> messages) {
@@ -99,8 +95,7 @@ public class ForwardTillAction extends CommonForwardAction {
         TlsContext tlsContext = state.getTlsContext(getReceiveFromAlias());
         List<LayerConfiguration<?>> configurationList = new LinkedList<>();
         configurationList.add(
-                new ReceiveTillLayerConfiguration<>(
-                        ImplementedLayers.MESSAGE, expectedMessages));
+                new ReceiveTillLayerConfiguration<>(ImplementedLayers.MESSAGE, expectedMessages));
         return ActionHelperUtil.sortAndAddOptions(
                 tlsContext.getLayerStack(), false, getActionOptions(), configurationList);
     }

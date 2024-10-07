@@ -12,27 +12,6 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
-import java.io.ByteArrayInputStream;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Modifier;
-import java.security.Security;
-import java.util.Arrays;
-import java.util.Set;
-import java.util.stream.Stream;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.opentest4j.TestAbortedException;
-import org.reflections.Reflections;
-
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.protocol.exception.EndOfStreamException;
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -46,8 +25,27 @@ import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.util.tests.TestCategories;
+import java.io.ByteArrayInputStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
+import java.security.Security;
+import java.util.Arrays;
+import java.util.Set;
+import java.util.stream.Stream;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.opentest4j.TestAbortedException;
+import org.reflections.Reflections;
 
-@SuppressWarnings({ "rawtypes", "unchecked" })
+@SuppressWarnings({"rawtypes", "unchecked"})
 public class CyclicParserSerializerTest {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -68,7 +66,8 @@ public class CyclicParserSerializerTest {
         Stream.Builder<Arguments> builder = Stream.builder();
         // Get all parsers by reflection
         Reflections reflections = new Reflections("de.rub.nds.tlsattacker.core.protocol.message");
-        Set<Class<? extends ProtocolMessage>> messageClasses = reflections.getSubTypesOf(ProtocolMessage.class);
+        Set<Class<? extends ProtocolMessage>> messageClasses =
+                reflections.getSubTypesOf(ProtocolMessage.class);
         Class<? extends ProtocolMessageParser> parserClass = null;
         Class<? extends ProtocolMessagePreparator> preparatorClass = null;
         Class<? extends ProtocolMessageSerializer> serializerClass = null;
@@ -209,11 +208,13 @@ public class CyclicParserSerializerTest {
         if (message.getProtocolMessageType() == ProtocolMessageType.HANDSHAKE) {
             int handshakeHeaderLength;
 
-            handshakeHeaderLength = HandshakeByteLength.MESSAGE_TYPE + HandshakeByteLength.MESSAGE_LENGTH_FIELD;
+            handshakeHeaderLength =
+                    HandshakeByteLength.MESSAGE_TYPE + HandshakeByteLength.MESSAGE_LENGTH_FIELD;
 
             messageHeader = Arrays.copyOfRange(serializedMessage, 0, handshakeHeaderLength);
-            serializedMessage = Arrays.copyOfRange(
-                    serializedMessage, handshakeHeaderLength, serializedMessage.length);
+            serializedMessage =
+                    Arrays.copyOfRange(
+                            serializedMessage, handshakeHeaderLength, serializedMessage.length);
         }
         parser = message.getParser(context, new ByteArrayInputStream(serializedMessage));
         try {
@@ -237,14 +238,16 @@ public class CyclicParserSerializerTest {
 
     private static Class<? extends ProtocolMessageParser> getParser(String testName)
             throws ClassNotFoundException {
-        String preparatorName = "de.rub.nds.tlsattacker.core.protocol.parser." + testName + "Parser";
+        String preparatorName =
+                "de.rub.nds.tlsattacker.core.protocol.parser." + testName + "Parser";
         try {
             return (Class<? extends ProtocolMessageParser>) Class.forName(preparatorName);
         } catch (ClassNotFoundException E) {
             try {
-                preparatorName = "de.rub.nds.tlsattacker.core.protocol.preparator."
-                        + testName
-                        + "MessageParser";
+                preparatorName =
+                        "de.rub.nds.tlsattacker.core.protocol.preparator."
+                                + testName
+                                + "MessageParser";
                 return (Class<? extends ProtocolMessageParser>) Class.forName(preparatorName);
             } catch (ClassNotFoundException ex) {
                 throw new ClassNotFoundException("Could not find Parser for " + testName);
@@ -254,14 +257,16 @@ public class CyclicParserSerializerTest {
 
     private static Class<? extends ProtocolMessagePreparator> getPreparator(String testName)
             throws ClassNotFoundException {
-        String preparatorName = "de.rub.nds.tlsattacker.core.protocol.preparator." + testName + "Preparator";
+        String preparatorName =
+                "de.rub.nds.tlsattacker.core.protocol.preparator." + testName + "Preparator";
         try {
             return (Class<? extends ProtocolMessagePreparator>) Class.forName(preparatorName);
         } catch (ClassNotFoundException E) {
             try {
-                preparatorName = "de.rub.nds.tlsattacker.core.protocol.preparator."
-                        + testName
-                        + "MessagePreparator";
+                preparatorName =
+                        "de.rub.nds.tlsattacker.core.protocol.preparator."
+                                + testName
+                                + "MessagePreparator";
                 return (Class<? extends ProtocolMessagePreparator>) Class.forName(preparatorName);
             } catch (ClassNotFoundException ex) {
                 throw new ClassNotFoundException("Could not find Preparator for " + testName);
@@ -271,12 +276,14 @@ public class CyclicParserSerializerTest {
 
     private static Class<? extends ProtocolMessageSerializer> getSerializer(String testName)
             throws ClassNotFoundException {
-        String serializerName = "de.rub.nds.tlsattacker.core.protocol.serializer." + testName + "Serializer";
+        String serializerName =
+                "de.rub.nds.tlsattacker.core.protocol.serializer." + testName + "Serializer";
         try {
             return (Class<? extends ProtocolMessageSerializer>) Class.forName(serializerName);
         } catch (ClassNotFoundException E) {
             try {
-                return (Class<? extends ProtocolMessageSerializer>) Class.forName(serializerName + "MessageSerializer");
+                return (Class<? extends ProtocolMessageSerializer>)
+                        Class.forName(serializerName + "MessageSerializer");
             } catch (ClassNotFoundException ex) {
                 throw new ClassNotFoundException("Could not find Serializer for " + testName);
             }

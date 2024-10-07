@@ -124,7 +124,7 @@ public class TlsAttackerSslSocket extends SSLSocket {
 
     @Override
     public String[] getEnabledCipherSuites() {
-        return new String[] { "SSL3", "TLS10", "TLS11", "TLS12", "TLS13" };
+        return new String[] {"SSL3", "TLS10", "TLS11", "TLS12", "TLS13"};
     }
 
     @Override
@@ -170,7 +170,8 @@ public class TlsAttackerSslSocket extends SSLSocket {
         config.setWorkflowExecutorShouldClose(false);
         config.setWorkflowExecutorShouldOpen(false);
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
-        WorkflowTrace trace = factory.createTlsEntryWorkflowTrace(config.getDefaultClientConnection());
+        WorkflowTrace trace =
+                factory.createTlsEntryWorkflowTrace(config.getDefaultClientConnection());
 
         ClientHelloMessage message;
         if (clientHelloBytes == null) {
@@ -187,30 +188,34 @@ public class TlsAttackerSslSocket extends SSLSocket {
                 state.getTlsContext().addProposedExtension(type);
             }
         }
-        StreamTransportHandler streamTransportHandler = new StreamTransportHandler(
-                timeout,
-                ConnectionEndType.CLIENT,
-                super.getInputStream(),
-                super.getOutputStream());
+        StreamTransportHandler streamTransportHandler =
+                new StreamTransportHandler(
+                        timeout,
+                        ConnectionEndType.CLIENT,
+                        super.getInputStream(),
+                        super.getOutputStream());
         streamTransportHandler.initialize();
         state.getTlsContext().setTransportHandler(streamTransportHandler);
         WorkflowExecutor executor = new DefaultWorkflowExecutor(state);
         executor.executeWorkflow();
 
         if (trace.executedAsPlanned()) {
-            ServerHelloMessage msg = (ServerHelloMessage) WorkflowTraceResultUtil.getFirstReceivedMessage(
-                    trace, HandshakeMessageType.SERVER_HELLO);
+            ServerHelloMessage msg =
+                    (ServerHelloMessage)
+                            WorkflowTraceResultUtil.getFirstReceivedMessage(
+                                    trace, HandshakeMessageType.SERVER_HELLO);
             if (msg.isTls13HelloRetryRequest()) {
 
                 config.setDefaultClientNamedGroups(state.getTlsContext().getSelectedGroup());
                 new SendAction(
-                        "client",
-                        new ChangeCipherSpecMessage(),
-                        new ClientHelloMessage(config))
+                                "client",
+                                new ChangeCipherSpecMessage(),
+                                new ClientHelloMessage(config))
                         .execute(state);
 
                 finishHandshakeTls13(trace);
-            } else if (state.getTlsContext().getSelectedProtocolVersion() == ProtocolVersion.TLS13) {
+            } else if (state.getTlsContext().getSelectedProtocolVersion()
+                    == ProtocolVersion.TLS13) {
                 finishHandshakeTls13(trace);
             } else {
                 finishHandshake(trace);
@@ -226,7 +231,8 @@ public class TlsAttackerSslSocket extends SSLSocket {
             throws RuntimeException, WorkflowExecutionException {
         if (!WorkflowTraceResultUtil.didReceiveMessage(
                 trace, HandshakeMessageType.SERVER_HELLO_DONE)) {
-            ReceiveTillAction receiveTillAction = new ReceiveTillAction("client", new ServerHelloDoneMessage());
+            ReceiveTillAction receiveTillAction =
+                    new ReceiveTillAction("client", new ServerHelloDoneMessage());
             receiveTillAction.execute(state);
             if (!receiveTillAction.executedAsPlanned()) {
                 throw new RuntimeException("Did not receive ServerHelloDone");
@@ -235,7 +241,8 @@ public class TlsAttackerSslSocket extends SSLSocket {
         new SendDynamicClientKeyExchangeAction("client").execute(state);
         new SendAction("client", new ChangeCipherSpecMessage(), new FinishedMessage())
                 .execute(state);
-        ReceiveTillAction receiveTillAction = new ReceiveTillAction("client", new FinishedMessage());
+        ReceiveTillAction receiveTillAction =
+                new ReceiveTillAction("client", new FinishedMessage());
         receiveTillAction.execute(state);
         if (!receiveTillAction.executedAsPlanned()) {
             throw new RuntimeException("Did not receive FinishedMessage");
@@ -244,7 +251,8 @@ public class TlsAttackerSslSocket extends SSLSocket {
 
     private void finishHandshakeTls13(WorkflowTrace trace) throws RuntimeException {
         if (!WorkflowTraceResultUtil.didReceiveMessage(trace, HandshakeMessageType.FINISHED)) {
-            ReceiveTillAction receiveTillAction = new ReceiveTillAction("client", new FinishedMessage());
+            ReceiveTillAction receiveTillAction =
+                    new ReceiveTillAction("client", new FinishedMessage());
             receiveTillAction.execute(state);
             if (!receiveTillAction.executedAsPlanned()) {
                 throw new RuntimeException("Did not receive Finished (TLS 1.3)");
@@ -306,8 +314,9 @@ public class TlsAttackerSslSocket extends SSLSocket {
     private ClientHelloMessage createClientHelloFromBytes(byte[] clientHelloBytes) {
         ClientHelloMessage message = new ClientHelloMessage();
 
-        ClientHelloParser parser = new ClientHelloParser(
-                new ByteArrayInputStream(clientHelloBytes), state.getTlsContext());
+        ClientHelloParser parser =
+                new ClientHelloParser(
+                        new ByteArrayInputStream(clientHelloBytes), state.getTlsContext());
         ClientHelloMessage parsedClientHelloMessage = new ClientHelloMessage();
         parser.parse(parsedClientHelloMessage);
         message.setCipherSuites(
@@ -323,7 +332,8 @@ public class TlsAttackerSslSocket extends SSLSocket {
                 // Since we do not know the private key we have to overwrite the
                 // keyshare extension - currently only x25519 supported...
                 List<KeyShareStoreEntry> storeEntryList = new LinkedList();
-                for (KeyShareEntry entry : ((KeyShareExtensionMessage) parsedExtension).getKeyShareList()) {
+                for (KeyShareEntry entry :
+                        ((KeyShareExtensionMessage) parsedExtension).getKeyShareList()) {
                     NamedGroup group = NamedGroup.getNamedGroup(entry.getGroup().getValue());
                     if (group.isEcGroup()) {
                         if (group == NamedGroup.ECDH_X25519) {
@@ -339,7 +349,8 @@ public class TlsAttackerSslSocket extends SSLSocket {
                     }
                 }
                 config.setDefaultClientKeyStoreEntries(storeEntryList);
-                KeyShareExtensionMessage recreatedKeyShareExtensionMessage = new KeyShareExtensionMessage(config);
+                KeyShareExtensionMessage recreatedKeyShareExtensionMessage =
+                        new KeyShareExtensionMessage(config);
                 message.addExtension(recreatedKeyShareExtensionMessage);
 
             } else {

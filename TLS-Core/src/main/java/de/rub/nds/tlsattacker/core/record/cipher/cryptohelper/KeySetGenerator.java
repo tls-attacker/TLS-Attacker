@@ -120,22 +120,26 @@ public class KeySetGenerator {
         ProtocolVersion protocolVersion = tlsContext.getChooser().getSelectedProtocolVersion();
         CipherSuite cipherSuite = tlsContext.getChooser().getSelectedCipherSuite();
         byte[] masterSecret = tlsContext.getChooser().getMasterSecret();
-        byte[] seed = ArrayConverter.concatenate(
-                tlsContext.getChooser().getServerRandom(),
-                tlsContext.getChooser().getClientRandom());
+        byte[] seed =
+                ArrayConverter.concatenate(
+                        tlsContext.getChooser().getServerRandom(),
+                        tlsContext.getChooser().getClientRandom());
 
         byte[] keyBlock;
         if (protocolVersion.isSSL()) {
-            keyBlock = SSLUtils.calculateKeyBlockSSL3(
-                    masterSecret, seed, getSecretSetSize(protocolVersion, cipherSuite));
+            keyBlock =
+                    SSLUtils.calculateKeyBlockSSL3(
+                            masterSecret, seed, getSecretSetSize(protocolVersion, cipherSuite));
         } else {
-            PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(protocolVersion, cipherSuite);
-            keyBlock = PseudoRandomFunction.compute(
-                    prfAlgorithm,
-                    masterSecret,
-                    PseudoRandomFunction.KEY_EXPANSION_LABEL,
-                    seed,
-                    getSecretSetSize(protocolVersion, cipherSuite));
+            PRFAlgorithm prfAlgorithm =
+                    AlgorithmResolver.getPRFAlgorithm(protocolVersion, cipherSuite);
+            keyBlock =
+                    PseudoRandomFunction.compute(
+                            prfAlgorithm,
+                            masterSecret,
+                            PseudoRandomFunction.KEY_EXPANSION_LABEL,
+                            seed,
+                            getSecretSetSize(protocolVersion, cipherSuite));
         }
         LOGGER.debug("A new key block was generated: {}", keyBlock);
         KeyBlockParser parser = new KeyBlockParser(keyBlock, cipherSuite, protocolVersion);
@@ -180,12 +184,13 @@ public class KeySetGenerator {
 
         int blockSize = cipherSuite.getCipherAlgorithm().getBlocksize();
         byte[] emptySecret = {};
-        byte[] ivBlock = PseudoRandomFunction.compute(
-                prfAlgorithm,
-                emptySecret,
-                PseudoRandomFunction.IV_BLOCK_LABEL,
-                clientAndServerRandom,
-                2 * blockSize);
+        byte[] ivBlock =
+                PseudoRandomFunction.compute(
+                        prfAlgorithm,
+                        emptySecret,
+                        PseudoRandomFunction.IV_BLOCK_LABEL,
+                        clientAndServerRandom,
+                        2 * blockSize);
         keySet.setClientWriteIv(Arrays.copyOfRange(ivBlock, 0, blockSize));
         keySet.setServerWriteIv(Arrays.copyOfRange(ivBlock, blockSize, 2 * blockSize));
     }
@@ -248,7 +253,7 @@ public class KeySetGenerator {
         CipherAlgorithm cipherAlg = cipherSuite.getCipherAlgorithm();
         MacAlgorithm macAlg = AlgorithmResolver.getMacAlgorithm(protocolVersion, cipherSuite);
         int cipherSize = cipherAlg != null ? cipherAlg.getKeySize() : 0;
-        int macSize = macAlg != null ? macAlg.getKeySize()  : 0;
+        int macSize = macAlg != null ? macAlg.getKeySize() : 0;
         int secretSetSize = (2 * cipherSize) + (2 * macSize);
         if (cipherSuite.isSteamCipherWithIV() && cipherAlg != null) {
             secretSetSize += (2 * cipherAlg.getNonceBytesFromHandshake());
@@ -256,6 +261,5 @@ public class KeySetGenerator {
         return secretSetSize;
     }
 
-    private KeySetGenerator() {
-    }
+    private KeySetGenerator() {}
 }

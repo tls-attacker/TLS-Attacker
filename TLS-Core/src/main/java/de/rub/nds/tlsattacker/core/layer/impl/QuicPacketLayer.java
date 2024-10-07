@@ -8,20 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.layer.impl;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import de.rub.nds.protocol.exception.EndOfStreamException;
 import de.rub.nds.protocol.exception.TimeoutException;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
@@ -46,6 +32,18 @@ import de.rub.nds.tlsattacker.core.quic.packet.RetryPacket;
 import de.rub.nds.tlsattacker.core.quic.packet.VersionNegotiationPacket;
 import de.rub.nds.tlsattacker.core.quic.packet.ZeroRTTPacket;
 import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * The QuicPacketLayer encrypts and encapsulates QUIC frames into QUIC packets. It sends the packets
@@ -69,7 +67,8 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
         encryptor = new QuicEncryptor(context);
         Arrays.stream(QuicPacketType.values())
                 .forEach(
-                        quicPacketType -> receivedPacketBuffer.put(quicPacketType, new ArrayList<>()));
+                        quicPacketType ->
+                                receivedPacketBuffer.put(quicPacketType, new ArrayList<>()));
     }
 
     /**
@@ -253,8 +252,9 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
                     }
                 }
             } else {
-                packetType = QuicPacketType.getPacketTypeFromFirstByte(
-                        context.getQuicVersion(), firstByte);
+                packetType =
+                        QuicPacketType.getPacketTypeFromFirstByte(
+                                context.getQuicVersion(), firstByte);
             }
 
             // Store the packet in the buffer for further processing.
@@ -453,23 +453,26 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
                 && context.isInitialSecretsInitialized()) {
             receivedPacketBuffer.computeIfPresent(
                     QuicPacketType.INITIAL_PACKET,
-                    (packetType, packets) -> (ArrayList<QuicPacket>) packets.stream()
-                            .map(
-                                    packet -> {
-                                        try {
-                                            return packet.getUnprotectedPayload() == null
-                                                    ? decryptIntitialPacket(
-                                                            (InitialPacket) packet)
-                                                    : packet;
-                                        } catch (CryptoException ex) {
-                                            throw new CryptoRuntimeException(
-                                                    "Could not decrypt packet", ex);
-                                        }
-                                    })
-                            .sorted(
-                                    Comparator.comparingInt(
-                                            QuicPacket::getPlainPacketNumber))
-                            .collect(Collectors.toList()));
+                    (packetType, packets) ->
+                            (ArrayList<QuicPacket>)
+                                    packets.stream()
+                                            .map(
+                                                    packet -> {
+                                                        try {
+                                                            return packet.getUnprotectedPayload()
+                                                                            == null
+                                                                    ? decryptIntitialPacket(
+                                                                            (InitialPacket) packet)
+                                                                    : packet;
+                                                        } catch (CryptoException ex) {
+                                                            throw new CryptoRuntimeException(
+                                                                    "Could not decrypt packet", ex);
+                                                        }
+                                                    })
+                                            .sorted(
+                                                    Comparator.comparingInt(
+                                                            QuicPacket::getPlainPacketNumber))
+                                            .collect(Collectors.toList()));
         }
     }
 
@@ -478,23 +481,27 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
                 && context.isHandshakeSecretsInitialized()) {
             receivedPacketBuffer.computeIfPresent(
                     QuicPacketType.HANDSHAKE_PACKET,
-                    (packetType, packets) -> (ArrayList<QuicPacket>) packets.stream()
-                            .map(
-                                    packet -> {
-                                        try {
-                                            return packet.getUnprotectedPayload() == null
-                                                    ? decryptHandshakePacket(
-                                                            (HandshakePacket) packet)
-                                                    : packet;
-                                        } catch (CryptoException ex) {
-                                            throw new CryptoRuntimeException(
-                                                    "Could not decrypt packet", ex);
-                                        }
-                                    })
-                            .sorted(
-                                    Comparator.comparingInt(
-                                            QuicPacket::getPlainPacketNumber))
-                            .collect(Collectors.toList()));
+                    (packetType, packets) ->
+                            (ArrayList<QuicPacket>)
+                                    packets.stream()
+                                            .map(
+                                                    packet -> {
+                                                        try {
+                                                            return packet.getUnprotectedPayload()
+                                                                            == null
+                                                                    ? decryptHandshakePacket(
+                                                                            (HandshakePacket)
+                                                                                    packet)
+                                                                    : packet;
+                                                        } catch (CryptoException ex) {
+                                                            throw new CryptoRuntimeException(
+                                                                    "Could not decrypt packet", ex);
+                                                        }
+                                                    })
+                                            .sorted(
+                                                    Comparator.comparingInt(
+                                                            QuicPacket::getPlainPacketNumber))
+                                            .collect(Collectors.toList()));
         }
     }
 
@@ -503,23 +510,26 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
                 && context.isApplicationSecretsInitialized()) {
             receivedPacketBuffer.computeIfPresent(
                     QuicPacketType.ONE_RTT_PACKET,
-                    (packetType, packets) -> (ArrayList<QuicPacket>) packets.stream()
-                            .map(
-                                    packet -> {
-                                        try {
-                                            return packet.getUnprotectedPayload() == null
-                                                    ? decryptOneRTTPacket(
-                                                            (OneRTTPacket) packet)
-                                                    : packet;
-                                        } catch (CryptoException ex) {
-                                            throw new CryptoRuntimeException(
-                                                    "Could not decrypt packet", ex);
-                                        }
-                                    })
-                            .sorted(
-                                    Comparator.comparingInt(
-                                            QuicPacket::getPlainPacketNumber))
-                            .collect(Collectors.toList()));
+                    (packetType, packets) ->
+                            (ArrayList<QuicPacket>)
+                                    packets.stream()
+                                            .map(
+                                                    packet -> {
+                                                        try {
+                                                            return packet.getUnprotectedPayload()
+                                                                            == null
+                                                                    ? decryptOneRTTPacket(
+                                                                            (OneRTTPacket) packet)
+                                                                    : packet;
+                                                        } catch (CryptoException ex) {
+                                                            throw new CryptoRuntimeException(
+                                                                    "Could not decrypt packet", ex);
+                                                        }
+                                                    })
+                                            .sorted(
+                                                    Comparator.comparingInt(
+                                                            QuicPacket::getPlainPacketNumber))
+                                            .collect(Collectors.toList()));
         }
     }
 

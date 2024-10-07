@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
@@ -31,7 +30,8 @@ public abstract class ServerKeyExchangeParser<T extends ServerKeyExchangeMessage
      */
     public ServerKeyExchangeParser(InputStream stream, TlsContext tlsContext) {
         super(stream, tlsContext);
-        this.keyExchangeAlgorithm = tlsContext.getChooser().getSelectedCipherSuite().getKeyExchangeAlgorithm();
+        this.keyExchangeAlgorithm =
+                tlsContext.getChooser().getSelectedCipherSuite().getKeyExchangeAlgorithm();
     }
 
     protected KeyExchangeAlgorithm getKeyExchangeAlgorithm() {

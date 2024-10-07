@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.layer;
 import de.rub.nds.tlsattacker.core.http.HttpResponseMessage;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import java.util.List;
-
 import org.apache.logging.log4j.Level;
 
 /**

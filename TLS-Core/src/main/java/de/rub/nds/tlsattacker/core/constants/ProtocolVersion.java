@@ -13,48 +13,48 @@ import de.rub.nds.tlsattacker.core.exceptions.UnknownProtocolVersionException;
 import java.util.*;
 
 public enum ProtocolVersion {
-    SSL2(new byte[] { (byte) 0x00, (byte) 0x02 }),
-    SSL3(new byte[] { (byte) 0x03, (byte) 0x00 }),
-    TLS10(new byte[] { (byte) 0x03, (byte) 0x01 }),
-    TLS11(new byte[] { (byte) 0x03, (byte) 0x02 }),
-    TLS12(new byte[] { (byte) 0x03, (byte) 0x03 }),
-    TLS13(new byte[] { (byte) 0x03, (byte) 0x04 }),
-    TLS13_DRAFT14(new byte[] { (byte) 0x7F, (byte) 0x0E }),
-    TLS13_DRAFT15(new byte[] { (byte) 0x7F, (byte) 0x0F }),
-    TLS13_DRAFT16(new byte[] { (byte) 0x7F, (byte) 0x10 }),
-    TLS13_DRAFT17(new byte[] { (byte) 0x7F, (byte) 0x11 }),
-    TLS13_DRAFT18(new byte[] { (byte) 0x7F, (byte) 0x12 }),
-    TLS13_DRAFT19(new byte[] { (byte) 0x7F, (byte) 0x13 }),
-    TLS13_DRAFT20(new byte[] { (byte) 0x7F, (byte) 0x14 }),
-    TLS13_DRAFT21(new byte[] { (byte) 0x7F, (byte) 0x15 }),
-    TLS13_DRAFT22(new byte[] { (byte) 0x7F, (byte) 0x16 }),
-    TLS13_DRAFT23(new byte[] { (byte) 0x7F, (byte) 0x17 }),
-    TLS13_DRAFT24(new byte[] { (byte) 0x7F, (byte) 0x18 }),
-    TLS13_DRAFT25(new byte[] { (byte) 0x7F, (byte) 0x19 }),
-    TLS13_DRAFT26(new byte[] { (byte) 0x7F, (byte) 0x1A }),
-    TLS13_DRAFT27(new byte[] { (byte) 0x7F, (byte) 0x1B }),
-    TLS13_DRAFT28(new byte[] { (byte) 0x7F, (byte) 0x1C }),
-    DTLS10_DRAFT(new byte[] { (byte) 0x01, (byte) 0x00 }),
-    DTLS10(new byte[] { (byte) 0xFE, (byte) 0xFF }),
-    DTLS12(new byte[] { (byte) 0xFE, (byte) 0xFD }),
-    DTLS13(new byte[] { (byte) 0xFE, (byte) 0xFC }),
+    SSL2(new byte[] {(byte) 0x00, (byte) 0x02}),
+    SSL3(new byte[] {(byte) 0x03, (byte) 0x00}),
+    TLS10(new byte[] {(byte) 0x03, (byte) 0x01}),
+    TLS11(new byte[] {(byte) 0x03, (byte) 0x02}),
+    TLS12(new byte[] {(byte) 0x03, (byte) 0x03}),
+    TLS13(new byte[] {(byte) 0x03, (byte) 0x04}),
+    TLS13_DRAFT14(new byte[] {(byte) 0x7F, (byte) 0x0E}),
+    TLS13_DRAFT15(new byte[] {(byte) 0x7F, (byte) 0x0F}),
+    TLS13_DRAFT16(new byte[] {(byte) 0x7F, (byte) 0x10}),
+    TLS13_DRAFT17(new byte[] {(byte) 0x7F, (byte) 0x11}),
+    TLS13_DRAFT18(new byte[] {(byte) 0x7F, (byte) 0x12}),
+    TLS13_DRAFT19(new byte[] {(byte) 0x7F, (byte) 0x13}),
+    TLS13_DRAFT20(new byte[] {(byte) 0x7F, (byte) 0x14}),
+    TLS13_DRAFT21(new byte[] {(byte) 0x7F, (byte) 0x15}),
+    TLS13_DRAFT22(new byte[] {(byte) 0x7F, (byte) 0x16}),
+    TLS13_DRAFT23(new byte[] {(byte) 0x7F, (byte) 0x17}),
+    TLS13_DRAFT24(new byte[] {(byte) 0x7F, (byte) 0x18}),
+    TLS13_DRAFT25(new byte[] {(byte) 0x7F, (byte) 0x19}),
+    TLS13_DRAFT26(new byte[] {(byte) 0x7F, (byte) 0x1A}),
+    TLS13_DRAFT27(new byte[] {(byte) 0x7F, (byte) 0x1B}),
+    TLS13_DRAFT28(new byte[] {(byte) 0x7F, (byte) 0x1C}),
+    DTLS10_DRAFT(new byte[] {(byte) 0x01, (byte) 0x00}),
+    DTLS10(new byte[] {(byte) 0xFE, (byte) 0xFF}),
+    DTLS12(new byte[] {(byte) 0xFE, (byte) 0xFD}),
+    DTLS13(new byte[] {(byte) 0xFE, (byte) 0xFC}),
     // GREASE constants
-    GREASE_00(new byte[] { (byte) 0x0A, (byte) 0x0A }),
-    GREASE_01(new byte[] { (byte) 0x1A, (byte) 0x1A }),
-    GREASE_02(new byte[] { (byte) 0x2A, (byte) 0x2A }),
-    GREASE_03(new byte[] { (byte) 0x3A, (byte) 0x3A }),
-    GREASE_04(new byte[] { (byte) 0x4A, (byte) 0x4A }),
-    GREASE_05(new byte[] { (byte) 0x5A, (byte) 0x5A }),
-    GREASE_06(new byte[] { (byte) 0x6A, (byte) 0x6A }),
-    GREASE_07(new byte[] { (byte) 0x7A, (byte) 0x7A }),
-    GREASE_08(new byte[] { (byte) 0x8A, (byte) 0x8A }),
-    GREASE_09(new byte[] { (byte) 0x9A, (byte) 0x9A }),
-    GREASE_10(new byte[] { (byte) 0xAA, (byte) 0xAA }),
-    GREASE_11(new byte[] { (byte) 0xBA, (byte) 0xBA }),
-    GREASE_12(new byte[] { (byte) 0xCA, (byte) 0xCA }),
-    GREASE_13(new byte[] { (byte) 0xDA, (byte) 0xDA }),
-    GREASE_14(new byte[] { (byte) 0xEA, (byte) 0xEA }),
-    GREASE_15(new byte[] { (byte) 0xFA, (byte) 0xFA });
+    GREASE_00(new byte[] {(byte) 0x0A, (byte) 0x0A}),
+    GREASE_01(new byte[] {(byte) 0x1A, (byte) 0x1A}),
+    GREASE_02(new byte[] {(byte) 0x2A, (byte) 0x2A}),
+    GREASE_03(new byte[] {(byte) 0x3A, (byte) 0x3A}),
+    GREASE_04(new byte[] {(byte) 0x4A, (byte) 0x4A}),
+    GREASE_05(new byte[] {(byte) 0x5A, (byte) 0x5A}),
+    GREASE_06(new byte[] {(byte) 0x6A, (byte) 0x6A}),
+    GREASE_07(new byte[] {(byte) 0x7A, (byte) 0x7A}),
+    GREASE_08(new byte[] {(byte) 0x8A, (byte) 0x8A}),
+    GREASE_09(new byte[] {(byte) 0x9A, (byte) 0x9A}),
+    GREASE_10(new byte[] {(byte) 0xAA, (byte) 0xAA}),
+    GREASE_11(new byte[] {(byte) 0xBA, (byte) 0xBA}),
+    GREASE_12(new byte[] {(byte) 0xCA, (byte) 0xCA}),
+    GREASE_13(new byte[] {(byte) 0xDA, (byte) 0xDA}),
+    GREASE_14(new byte[] {(byte) 0xEA, (byte) 0xEA}),
+    GREASE_15(new byte[] {(byte) 0xFA, (byte) 0xFA});
 
     private byte[] value;
 
@@ -227,10 +227,8 @@ public enum ProtocolVersion {
             return 0;
         }
 
-        if (this.isGrease())
-            return -1;
-        if (otherProtocolVersion.isGrease())
-            return 1;
+        if (this.isGrease()) return -1;
+        if (otherProtocolVersion.isGrease()) return 1;
 
         if (this.isDTLS()) {
             return compareDtls(this, otherProtocolVersion);
@@ -240,7 +238,9 @@ public enum ProtocolVersion {
     }
 
     /**
-     * Compares two SSL or TLS protocol versions. DTLS is "newer" than the respective TLS version. Grease is always lower than TLS/DTLS. When comparing grease with grease the higher byte value wins.
+     * Compares two SSL or TLS protocol versions. DTLS is "newer" than the respective TLS version.
+     * Grease is always lower than TLS/DTLS. When comparing grease with grease the higher byte value
+     * wins.
      *
      * @param protocolVersion1 First protocol version to use in comparison
      * @param protocolVersion2 Second protocol version to use in comparison
@@ -253,11 +253,11 @@ public enum ProtocolVersion {
             return 0;
         }
         if (protocolVersion1.isDTLS() || protocolVersion2.isDTLS()) {
-            if(protocolVersion1.isDTLS() && protocolVersion2.isDTLS())
-            {
+            if (protocolVersion1.isDTLS() && protocolVersion2.isDTLS()) {
                 return compareDtls(protocolVersion1, protocolVersion2);
             }
-            ProtocolVersion dtlsVersion = protocolVersion1.isDTLS() ? protocolVersion1 : protocolVersion2;
+            ProtocolVersion dtlsVersion =
+                    protocolVersion1.isDTLS() ? protocolVersion1 : protocolVersion2;
             ProtocolVersion equivalentTlsVersion;
             switch (dtlsVersion) {
                 case DTLS10:
@@ -272,25 +272,21 @@ public enum ProtocolVersion {
                 default:
                     throw new IllegalArgumentException("Unknown DTLS version: " + dtlsVersion);
             }
-            
+
             int tempCompare;
             if (protocolVersion1 != dtlsVersion) {
                 tempCompare = compareSslOrTls(protocolVersion1, equivalentTlsVersion);
-                if(tempCompare == 0)
-                {
+                if (tempCompare == 0) {
                     return -1;
                 }
                 return tempCompare;
             } else {
                 tempCompare = compareSslOrTls(equivalentTlsVersion, protocolVersion2);
-                if(tempCompare != 0)
-                {
+                if (tempCompare != 0) {
                     return 1;
                 }
                 return tempCompare;
             }
-
-            
         }
         if (protocolVersion1.isGrease() || protocolVersion2.isGrease()) {
             if (protocolVersion1.isGrease() && !protocolVersion2.isGrease()) {
@@ -300,8 +296,8 @@ public enum ProtocolVersion {
             }
         }
 
-        if (ArrayConverter.bytesToInt(protocolVersion1.getValue()) > ArrayConverter
-                .bytesToInt(protocolVersion2.getValue())) {
+        if (ArrayConverter.bytesToInt(protocolVersion1.getValue())
+                > ArrayConverter.bytesToInt(protocolVersion2.getValue())) {
             return 1;
         }
 

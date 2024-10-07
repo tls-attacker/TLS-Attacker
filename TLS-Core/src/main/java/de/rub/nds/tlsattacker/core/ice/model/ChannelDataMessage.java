@@ -17,7 +17,6 @@ import de.rub.nds.tlsattacker.core.ice.preparator.ChannelDataMessagePreparator;
 import de.rub.nds.tlsattacker.core.ice.serializer.ChannelDataMessageSerializer;
 import de.rub.nds.tlsattacker.core.layer.context.IceContext;
 import java.io.InputStream;
-import java.util.Arrays;
 
 public class ChannelDataMessage extends IceMessage {
 
@@ -65,7 +64,8 @@ public class ChannelDataMessage extends IceMessage {
     }
 
     public void setChannelNumber(byte[] channelNumber) {
-        this.channelNumber = ModifiableVariableFactory.safelySetValue(this.channelNumber, channelNumber);
+        this.channelNumber =
+                ModifiableVariableFactory.safelySetValue(this.channelNumber, channelNumber);
     }
 
     public ModifiableInteger getMessageLength() {
@@ -77,7 +77,8 @@ public class ChannelDataMessage extends IceMessage {
     }
 
     public void setMessageLength(int messageLength) {
-        this.messageLength = ModifiableVariableFactory.safelySetValue(this.messageLength, messageLength);
+        this.messageLength =
+                ModifiableVariableFactory.safelySetValue(this.messageLength, messageLength);
     }
 
     public ModifiableByteArray getData() {
@@ -121,5 +122,4 @@ public class ChannelDataMessage extends IceMessage {
     public String toString() {
         return toShortString();
     }
-
 }

@@ -131,6 +131,7 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
 
     @Override
     public void adjustContextBeforeParse(CertificateMessage message) {
-        tlsContext.setTalkingX509Context(new X509Context(tlsContext.getConfig().getDefaultX509CertificateConfig()));
+        tlsContext.setTalkingX509Context(
+                new X509Context(tlsContext.getConfig().getDefaultX509CertificateConfig()));
     }
 }

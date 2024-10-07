@@ -185,6 +185,4 @@ public class StunMessage extends IceMessage {
     public String toString() {
         return toShortString();
     }
-
-    
 }

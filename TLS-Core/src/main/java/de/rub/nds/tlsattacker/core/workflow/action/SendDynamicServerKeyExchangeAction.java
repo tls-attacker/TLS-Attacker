@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.SpecificSendLayerConfiguration;
@@ -75,9 +74,10 @@ public class SendDynamicServerKeyExchangeAction extends CommonSendAction {
     protected List<LayerConfiguration<?>> createLayerConfiguration(State state) {
         TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
         CipherSuite selectedCipherSuite = tlsContext.getChooser().getSelectedCipherSuite();
-        ServerKeyExchangeMessage serverKeyExchangeMessage = new WorkflowConfigurationFactory(tlsContext.getConfig())
-                .createServerKeyExchangeMessage(
-                        selectedCipherSuite.getKeyExchangeAlgorithm());
+        ServerKeyExchangeMessage serverKeyExchangeMessage =
+                new WorkflowConfigurationFactory(tlsContext.getConfig())
+                        .createServerKeyExchangeMessage(
+                                selectedCipherSuite.getKeyExchangeAlgorithm());
         if (serverKeyExchangeMessage != null) {
             List<LayerConfiguration<?>> configurationList = new LinkedList<>();
             configurationList.add(

@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.constants;
 /** Symmetric cipher algorithm and its mapping to Java names */
 public enum CipherAlgorithm {
     NULL(0, 0, 0, 0),
-    RC2_40(5, 8, 0, 8, "RC2/CBC/NoPadding"), //TODO Not sure this is correct
+    RC2_40(5, 8, 0, 8, "RC2/CBC/NoPadding"), // TODO Not sure this is correct
     RC2_128(16, 8, 0, 8, "RC2/CBC/NoPadding"),
     RC4_128(16, 0, 0, 0, "RC4"),
     DES_CBC(8, 8, 0, 8, "DES/CBC/NoPadding"),
@@ -39,14 +39,14 @@ public enum CipherAlgorithm {
     FORTEZZA_CBC(0, 0, 0, 0), // TODO
     AES_128_CTR(16, 16, 0, 0, "AES/CTR/NoPadding"),
     AES_256_CTR(32, 16, 0, 0, "AES/CTR/NoPadding"),
-    RABBIT_CBC(16, 8, 0, 8), //TODO Not sure this is correct
+    RABBIT_CBC(16, 8, 0, 8), // TODO Not sure this is correct
     SM4_GCM(16, 4, 8, 16, "SM4/GCM/NoPadding"),
-    SM4_CCM(16, 4, 8, 16, "SM4/CCM/NoPadding"), 
-    RC4_40(5, 0, 0, 0, "RC4"),  //TODO check
-    RC4_56(7, 0, 0, 0, "RC4"),  //TODO check
-    RC2_56(7, 8, 0, 8, "RC2/CBC/NoPadding"),  //TODO check
-    AES_128_CCM_8(16, 4, 8, 16, "AES/CCM/NoPadding"), //TODO check 
-    AES_256_CCM_8(32, 4, 8, 16, "AES/CCM/NoPadding"); //TODO check
+    SM4_CCM(16, 4, 8, 16, "SM4/CCM/NoPadding"),
+    RC4_40(5, 0, 0, 0, "RC4"), // TODO check
+    RC4_56(7, 0, 0, 0, "RC4"), // TODO check
+    RC2_56(7, 8, 0, 8, "RC2/CBC/NoPadding"), // TODO check
+    AES_128_CCM_8(16, 4, 8, 16, "AES/CCM/NoPadding"), // TODO check
+    AES_256_CCM_8(32, 4, 8, 16, "AES/CCM/NoPadding"); // TODO check
 
     CipherAlgorithm(
             int keySize,
