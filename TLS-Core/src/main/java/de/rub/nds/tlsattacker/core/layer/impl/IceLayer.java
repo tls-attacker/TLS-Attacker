@@ -49,7 +49,7 @@ public class IceLayer extends ProtocolLayer<RecordLayerHint, IceMessage> {
     }
 
     @Override
-    public LayerProcessingResult sendConfiguration() throws IOException {
+    public LayerProcessingResult<IceMessage> sendConfiguration() throws IOException {
         for (IceMessage message : getLayerConfiguration().getContainerList()) {
             prepareDataContainer(message, context);
             IceMessageHandler handler = message.getHandler(context);
@@ -62,7 +62,7 @@ public class IceLayer extends ProtocolLayer<RecordLayerHint, IceMessage> {
     }
 
     @Override
-    public LayerProcessingResult sendData(RecordLayerHint hint, byte[] additionalData) {
+    public LayerProcessingResult<IceMessage> sendData(RecordLayerHint hint, byte[] additionalData) {
         // TODO Fix Fragmentation if data is too big
         try {
 
@@ -121,7 +121,7 @@ public class IceLayer extends ProtocolLayer<RecordLayerHint, IceMessage> {
     }
 
     @Override
-    public LayerProcessingResult receiveData() {
+    public LayerProcessingResult<IceMessage> receiveData() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -160,17 +160,15 @@ public class IceLayer extends ProtocolLayer<RecordLayerHint, IceMessage> {
         byte[] data = dataStream.readChunk(length);
         int paddingLength = 0;
         if (dataStream.available() > 0) {
-            paddingLength =
-                    (IceByteLengths.DATA_CHANNEL_ALIGNMENT
-                                    - (length) % IceByteLengths.DATA_CHANNEL_ALIGNMENT)
-                            % IceByteLengths.DATA_CHANNEL_ALIGNMENT;
+            paddingLength = (IceByteLengths.DATA_CHANNEL_ALIGNMENT
+                    - (length) % IceByteLengths.DATA_CHANNEL_ALIGNMENT)
+                    % IceByteLengths.DATA_CHANNEL_ALIGNMENT;
             if (paddingLength < 0) {
                 paddingLength = 0;
             }
         }
         byte[] padding = dataStream.readChunk(paddingLength);
-        byte[] completeMessageBytes =
-                ArrayConverter.concatenate(channelNumber, lengthBytes, data, padding);
+        byte[] completeMessageBytes = ArrayConverter.concatenate(channelNumber, lengthBytes, data, padding);
         ChannelDataMessage message = new ChannelDataMessage(data);
         message.setCompleteMessageBytes(completeMessageBytes);
         readDataContainer(message, context, new ByteArrayInputStream(completeMessageBytes));

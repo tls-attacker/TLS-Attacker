@@ -35,8 +35,7 @@ import org.apache.logging.log4j.Logger;
  * @param <Hint> Some layers need a hint which message they should send or receive.
  * @param <Container> The kind of messages/Containers this layer is able to send and receive.
  */
-public abstract class ProtocolLayer<
-        Hint extends LayerProcessingHint, Container extends DataContainer> {
+public abstract class ProtocolLayer<Hint extends LayerProcessingHint, Container extends DataContainer> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -78,22 +77,22 @@ public abstract class ProtocolLayer<
         this.lowerLayer = lowerLayer;
     }
 
-    public abstract LayerProcessingResult sendConfiguration() throws IOException;
+    public abstract LayerProcessingResult<Container> sendConfiguration() throws IOException;
 
-    public abstract LayerProcessingResult sendData(Hint hint, byte[] additionalData)
+    public abstract LayerProcessingResult<Container> sendData(Hint hint, byte[] additionalData)
             throws IOException;
 
     public LayerConfiguration<Container> getLayerConfiguration() {
         return layerConfiguration;
     }
 
-    public void setLayerConfiguration(LayerConfiguration layerConfiguration) {
+    public void setLayerConfiguration(LayerConfiguration<Container> layerConfiguration) {
         this.layerConfiguration = layerConfiguration;
     }
 
     public LayerProcessingResult<Container> getLayerResult() {
         boolean isExecutedAsPlanned = executedAsPlanned();
-        return new LayerProcessingResult(
+        return new LayerProcessingResult<Container>(
                 producedDataContainers, getLayerType(), isExecutedAsPlanned, getUnreadBytes());
     }
 
@@ -145,7 +144,7 @@ public abstract class ProtocolLayer<
      *
      * @return LayerProcessingResult Contains information about the execution of the receive action.
      */
-    public abstract LayerProcessingResult receiveData();
+    public abstract LayerProcessingResult<Container> receiveData();
 
     /**
      * Tries to fill up the current Stream with more data, if instead unprocessable data (for the
@@ -217,7 +216,7 @@ public abstract class ProtocolLayer<
                 return true;
             } else {
                 return layerConfiguration.successRequiresMoreContainers(
-                                getLayerResult().getUsedContainers())
+                        getLayerResult().getUsedContainers())
                         || (isDataBuffered()
                                 && ((ReceiveLayerConfiguration) layerConfiguration)
                                         .isProcessTrailingContainers());
@@ -282,7 +281,7 @@ public abstract class ProtocolLayer<
         this.unreadBytes = unreadBytes;
     }
 
-    public boolean prepareDataContainer(DataContainer dataContainer, LayerContext context) {
+    public boolean prepareDataContainer(Container dataContainer, LayerContext context) {
         if (dataContainer.shouldPrepare()) {
             Preparator<?> preparator = dataContainer.getPreparator(context);
             try {

@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.core.config.delegate.QuicDelegate;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
+import de.rub.nds.tlsattacker.core.layer.IgnoreLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerStack;
 import de.rub.nds.tlsattacker.core.layer.SpecificSendLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
@@ -44,136 +45,151 @@ import org.junit.jupiter.api.Test;
 
 public class QuicFrameLayerTest {
 
-    private Config config;
-    private TlsContext tlsContext;
-    private QuicContext quicContext;
-    private FakeUdpTransportHandler transportHandler;
+        private Config config;
+        private TlsContext tlsContext;
+        private QuicContext quicContext;
+        private FakeUdpTransportHandler transportHandler;
 
-    private final byte[] handshakeDoneFrame = ArrayConverter.hexStringToByteArray("1E");
-    private final byte[] pingFrame = ArrayConverter.hexStringToByteArray("01");
-    private final byte[] paddingFrame = ArrayConverter.hexStringToByteArray("0000000000");
-    private final byte[] cryptoFrame = ArrayConverter.hexStringToByteArray("060005AABBCCDDEE");
+        private final byte[] handshakeDoneFrame = ArrayConverter.hexStringToByteArray("1E");
+        private final byte[] pingFrame = ArrayConverter.hexStringToByteArray("01");
+        private final byte[] paddingFrame = ArrayConverter.hexStringToByteArray("0000000000");
+        private final byte[] cryptoFrame = ArrayConverter.hexStringToByteArray("060005AABBCCDDEE");
 
-    private final byte[] sourceConnectionId =
-            ArrayConverter.hexStringToByteArray("1d541e5371a5e1c6c481b6d7b07f0961");
-    private final byte[] destinationConnectionId =
-            ArrayConverter.hexStringToByteArray("8bf5abc395aa5e36e8c0b304a1352aa5");
+        private final byte[] sourceConnectionId = ArrayConverter
+                        .hexStringToByteArray("1d541e5371a5e1c6c481b6d7b07f0961");
+        private final byte[] destinationConnectionId = ArrayConverter
+                        .hexStringToByteArray("8bf5abc395aa5e36e8c0b304a1352aa5");
 
-    @BeforeAll
-    public static void setUpClass() {
-        Security.addProvider(new BouncyCastleProvider());
-    }
-
-    @BeforeEach
-    public void setUp() throws IOException, CryptoException, NoSuchAlgorithmException {
-        config = new Config();
-        QuicDelegate delegate = new QuicDelegate(true);
-        delegate.applyDelegate(config);
-        Context context = new Context(new State(config), new OutboundConnection());
-        tlsContext = context.getTlsContext();
-        quicContext = context.getQuicContext();
-        context.setLayerStack(
-                new LayerStack(context, new QuicFrameLayer(quicContext), new UdpLayer(tlsContext)));
-
-        transportHandler = new FakeUdpTransportHandler(null);
-        tlsContext.setTransportHandler(transportHandler);
-
-        quicContext.setSourceConnectionId(sourceConnectionId);
-        quicContext.setFirstDestinationConnectionId(destinationConnectionId);
-        quicContext.setDestinationConnectionId(destinationConnectionId);
-        QuicPacketCryptoComputations.calculateInitialSecrets(quicContext);
-    }
-
-    private ArrayList<byte[]> getQuicFramesBytes() {
-        ArrayList<byte[]> frames = new ArrayList<>();
-        frames.add(handshakeDoneFrame);
-        frames.add(pingFrame);
-        frames.add(paddingFrame);
-        frames.add(cryptoFrame);
-        return frames;
-    }
-
-    private ArrayList<QuicFrame> getQuicFrames() {
-        ArrayList<QuicFrame> frames = new ArrayList<>();
-        frames.add(new HandshakeDoneFrame());
-        frames.add(new PingFrame());
-        frames.add(new PaddingFrame(5));
-        frames.add(new CryptoFrame(ArrayConverter.hexStringToByteArray("AABBCCDDEE"), 0, 5));
-        return frames;
-    }
-
-    @Test
-    public void testSendConfiguration() throws IOException {
-        ArrayList<QuicFrame> quicFrames = getQuicFrames();
-        ArrayList<byte[]> quicFramesBytes = getQuicFramesBytes();
-        for (int i = 0; i < quicFrames.size(); i++) {
-            tlsContext
-                    .getLayerStack()
-                    .getLayer(QuicFrameLayer.class)
-                    .setLayerConfiguration(
-                            new SpecificSendLayerConfiguration<>(
-                                    ImplementedLayers.QUICFRAME, quicFrames.get(i)));
-            tlsContext.getLayerStack().getLayer(QuicFrameLayer.class).sendConfiguration();
-
-            List<QuicFrame> usedQuicFrames =
-                    tlsContext
-                            .getLayerStack()
-                            .getLayer(QuicFrameLayer.class)
-                            .getLayerResult()
-                            .getUsedContainers();
-            assertEquals(quicFrames.get(i), usedQuicFrames.get(i));
-            assertEquals(
-                    Arrays.toString(quicFramesBytes.get(i)),
-                    Arrays.toString(transportHandler.getSendByte()));
-            transportHandler.resetOutputStream();
+        @BeforeAll
+        public static void setUpClass() {
+                Security.addProvider(new BouncyCastleProvider());
         }
-    }
 
-    @Test
-    public void testSendData() throws IOException {
-        // CRYPTO Frame
-        byte[] quicFramePayload = ArrayConverter.hexStringToByteArray("AABBCCDDEE");
-        byte[] quicFrameBytes = ArrayConverter.hexStringToByteArray("060005AABBCCDDEE");
-        tlsContext
-                .getLayerStack()
-                .getLayer(QuicFrameLayer.class)
-                .setLayerConfiguration(
-                        new SpecificSendLayerConfiguration<>(
-                                ImplementedLayers.QUICFRAME, new ArrayList<>()));
-        tlsContext
-                .getLayerStack()
-                .getLayer(QuicFrameLayer.class)
-                .sendData(new QuicFrameLayerHint(ProtocolMessageType.HANDSHAKE), quicFramePayload);
-        assertEquals(
-                Arrays.toString(quicFrameBytes), Arrays.toString(transportHandler.getSendByte()));
+        @BeforeEach
+        public void setUp() throws IOException, CryptoException, NoSuchAlgorithmException {
+                config = new Config();
+                QuicDelegate delegate = new QuicDelegate(true);
+                delegate.applyDelegate(config);
+                Context context = new Context(new State(config), new OutboundConnection());
+                tlsContext = context.getTlsContext();
+                quicContext = context.getQuicContext();
+                context.setLayerStack(
+                                new LayerStack(context, new QuicFrameLayer(quicContext), new UdpLayer(tlsContext)));
 
-        // Reset
-        transportHandler.resetOutputStream();
+                transportHandler = new FakeUdpTransportHandler(null);
+                tlsContext.setTransportHandler(transportHandler);
 
-        // STREAM Frame
-        quicFramePayload = ArrayConverter.hexStringToByteArray("AABBCCDDEE");
-        quicFrameBytes =
-                ArrayConverter.hexStringToByteArray(
-                        "0E020005AABBCCDDEE000000000000000000000000000000000000000000000000000000");
-        tlsContext
-                .getLayerStack()
-                .getLayer(QuicFrameLayer.class)
-                .setLayerConfiguration(
-                        new SpecificSendLayerConfiguration<>(
-                                ImplementedLayers.QUICFRAME, new ArrayList<>()));
-        tlsContext
-                .getLayerStack()
-                .getLayer(QuicFrameLayer.class)
-                .sendData(
-                        new QuicFrameLayerHint(ProtocolMessageType.APPLICATION_DATA),
-                        quicFramePayload);
-        assertEquals(
-                Arrays.toString(quicFrameBytes), Arrays.toString(transportHandler.getSendByte()));
-    }
+                quicContext.setSourceConnectionId(sourceConnectionId);
+                quicContext.setFirstDestinationConnectionId(destinationConnectionId);
+                quicContext.setDestinationConnectionId(destinationConnectionId);
+                QuicPacketCryptoComputations.calculateInitialSecrets(quicContext);
+        }
 
-    @Test
-    public void testReceiveData() throws IOException {}
+        private ArrayList<byte[]> getQuicFramesBytes() {
+                ArrayList<byte[]> frames = new ArrayList<>();
+                frames.add(handshakeDoneFrame);
+                frames.add(pingFrame);
+                frames.add(paddingFrame);
+                frames.add(cryptoFrame);
+                return frames;
+        }
 
-    @Test
-    public void testReceiveMoreDataForHint() {}
+        private ArrayList<QuicFrame> getQuicFrames() {
+                ArrayList<QuicFrame> frames = new ArrayList<>();
+                frames.add(new HandshakeDoneFrame());
+                frames.add(new PingFrame());
+                frames.add(new PaddingFrame(5));
+                frames.add(new CryptoFrame(ArrayConverter.hexStringToByteArray("AABBCCDDEE"), 0, 5));
+                return frames;
+        }
+
+        @Test
+        public void testSendConfiguration() throws IOException {
+                ArrayList<QuicFrame> quicFrames = getQuicFrames();
+                ArrayList<byte[]> quicFramesBytes = getQuicFramesBytes();
+                for (int i = 0; i < quicFrames.size(); i++) {
+                        tlsContext
+                                        .getLayerStack()
+                                        .getLayer(UdpLayer.class)
+                                        .setLayerConfiguration(
+                                                        new IgnoreLayerConfiguration<>(
+                                                                        ImplementedLayers.UDP));
+
+                        tlsContext
+                                        .getLayerStack()
+                                        .getLayer(QuicFrameLayer.class)
+                                        .setLayerConfiguration(
+                                                        new SpecificSendLayerConfiguration<>(
+                                                                        ImplementedLayers.QUICFRAME,
+                                                                        quicFrames.get(i)));
+
+                        tlsContext.getLayerStack().getLayer(QuicFrameLayer.class).sendConfiguration();
+
+                        List<QuicFrame> usedQuicFrames = tlsContext
+                                        .getLayerStack()
+                                        .getLayer(QuicFrameLayer.class)
+                                        .getLayerResult()
+                                        .getUsedContainers();
+                        assertEquals(quicFrames.get(i), usedQuicFrames.get(i));
+                        assertEquals(
+                                        Arrays.toString(quicFramesBytes.get(i)),
+                                        Arrays.toString(transportHandler.getSendByte()));
+                        transportHandler.resetOutputStream();
+                }
+        }
+
+        @Test
+        public void testSendData() throws IOException {
+                // CRYPTO Frame
+                byte[] quicFramePayload = ArrayConverter.hexStringToByteArray("AABBCCDDEE");
+                byte[] quicFrameBytes = ArrayConverter.hexStringToByteArray("060005AABBCCDDEE");
+                tlsContext
+                                .getLayerStack()
+                                .getLayer(QuicFrameLayer.class)
+                                .setLayerConfiguration(
+                                                new SpecificSendLayerConfiguration<>(
+                                                                ImplementedLayers.QUICFRAME, new ArrayList<>()));
+                tlsContext
+                                .getLayerStack()
+                                .getLayer(UdpLayer.class)
+                                .setLayerConfiguration(
+                                                new IgnoreLayerConfiguration<>(
+                                                                ImplementedLayers.UDP));
+                tlsContext
+                                .getLayerStack()
+                                .getLayer(QuicFrameLayer.class)
+                                .sendData(new QuicFrameLayerHint(ProtocolMessageType.HANDSHAKE), quicFramePayload);
+                assertEquals(
+                                Arrays.toString(quicFrameBytes), Arrays.toString(transportHandler.getSendByte()));
+
+                // Reset
+                transportHandler.resetOutputStream();
+
+                // STREAM Frame
+                quicFramePayload = ArrayConverter.hexStringToByteArray("AABBCCDDEE");
+                quicFrameBytes = ArrayConverter.hexStringToByteArray(
+                                "0E020005AABBCCDDEE000000000000000000000000000000000000000000000000000000");
+                tlsContext
+                                .getLayerStack()
+                                .getLayer(UdpLayer.class)
+                                .setLayerConfiguration(
+                                                new IgnoreLayerConfiguration<>(
+                                                                ImplementedLayers.UDP));
+                tlsContext
+                                .getLayerStack()
+                                .getLayer(QuicFrameLayer.class)
+                                .sendData(
+                                                new QuicFrameLayerHint(ProtocolMessageType.APPLICATION_DATA),
+                                                quicFramePayload);
+                assertEquals(
+                                Arrays.toString(quicFrameBytes), Arrays.toString(transportHandler.getSendByte()));
+        }
+
+        @Test
+        public void testReceiveData() throws IOException {
+        }
+
+        @Test
+        public void testReceiveMoreDataForHint() {
+        }
 }
