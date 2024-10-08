@@ -857,7 +857,7 @@ public enum CipherSuite {
          */
         private CipherSuite(int value, boolean isGrease) {
                 this.value = value;
-                this.grease = true;
+                this.grease = isGrease;
                 this.cipherAlgorithm = null;
                 this.keyExchangeAlgorithm = null;
                 this.hashAlgorithm = null;
