@@ -1400,7 +1400,6 @@
     </defaultServerPWDProtectPublicKey>
     <defaultServerPWDProtectRandomSecret>1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111</defaultServerPWDProtectRandomSecret>
     <defaultPWDPassword>barney</defaultPWDPassword>
-    <defaultPWDIterations>40</defaultPWDIterations>
     <defaultServerPWDPrivate>21 D9 9D 34 1C 97 97 B3 AE 72 DF D2 89 97 1F 1B 74 CE 9D E6 8A D4 B9 AB F5 48 88 D8 F6 C5 04 3C</defaultServerPWDPrivate>
     <defaultServerPWDMask>0D 96 AB 62 4D 08 2C 71 25 5B E3 64 8D CD 30 3F 6A B0 CA 61 A9 50 34 A5 53 E3 30 8D 1D 37 44 E5</defaultServerPWDMask>
     <defaultClientPWDPrivate>17 1D E8 CA A5 35 2D 36 EE 96 A3 99 79 B5 B7 2F A1 89 AE 7A 6A 09 C7 7F 7B 43 8A F1 6D F4 A8 8B</defaultClientPWDPrivate>
