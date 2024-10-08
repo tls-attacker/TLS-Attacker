@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.constants;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.protocol.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.UnknownCipherSuiteException;
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -3161,7 +3160,7 @@ public enum CipherSuite {
      */
     private CipherSuite(int value, boolean isGrease) {
         this.value = value;
-        this.grease = true;
+        this.grease = isGrease;
         this.cipherAlgorithm = null;
         this.keyExchangeAlgorithm = null;
         this.hashAlgorithm = null;
@@ -3300,7 +3299,7 @@ public enum CipherSuite {
                 return false;
             }
             String[] hashFunctionNames = {
-                    "MD5", "SHA", "SHA256", "SHA384", "SHA512", "IMIT", "GOSTR3411"
+                "MD5", "SHA", "SHA256", "SHA384", "SHA512", "IMIT", "GOSTR3411"
             };
             for (String hashFunction : hashFunctionNames) {
                 if (cipher.endsWith(hashFunction)) {
