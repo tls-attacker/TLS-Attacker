@@ -249,6 +249,20 @@ public enum KeyExchangeAlgorithm {
         }
     }
 
+    public boolean mustUseRsaSignatures() {
+        switch (this) {
+            case RSA:
+            case RSA_EXPORT:
+            case ECDHE_RSA:
+            case DHE_RSA:
+            case CECPQ1_RSA:
+            case SRP_SHA_RSA:
+                return true;
+            default:
+                return false;
+        }
+    }
+
     public boolean isDss() {
         switch (this) {
             case DHE_DSS:
