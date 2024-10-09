@@ -27,15 +27,15 @@ public class QuicTransportParametersExtensionParser
     public void parse(QuicTransportParametersExtensionMessage msg) {
         while (getBytesLeft() > 0) {
             QuicTransportParameterEntry entry = new QuicTransportParameterEntry();
-            QuicTransportParameterEntryTypes types =
-                    QuicTransportParameterEntryTypes.getParameterEntryType(parseByteField(1));
+            QuicTransportParameterEntryTypes types = QuicTransportParameterEntryTypes
+                    .getParameterEntryType(parseByteField(1));
 
             if (types == QuicTransportParameterEntryTypes.GOOGLE
                     || types == QuicTransportParameterEntryTypes.PROVISIONAL_PARAMETERS) {
                 byte typeExtraByte = parseByteField(1);
             } else if (types == QuicTransportParameterEntryTypes.UNKNOWN) {
                 // upon finding unknown type, parse all bytes
-                byte[] junk = parseTillEnd();
+                parseTillEnd();
                 break;
             }
             byte length = parseByteField(1);
