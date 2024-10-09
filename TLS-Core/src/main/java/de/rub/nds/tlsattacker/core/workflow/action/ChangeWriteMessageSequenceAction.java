@@ -20,6 +20,10 @@ public class ChangeWriteMessageSequenceAction extends ChangeMessageSequenceActio
         super(messageSequence);
     }
 
+    public ChangeWriteMessageSequenceAction(String connectionAlias, int messageSequence) {
+        super(connectionAlias, messageSequence);
+    }
+
     @Override
     protected void changeMessageSequence(TlsContext tlsContext) {
         LOGGER.info("Changed write message sequence");
