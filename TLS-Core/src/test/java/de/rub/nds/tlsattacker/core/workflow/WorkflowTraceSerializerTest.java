@@ -50,8 +50,8 @@ public class WorkflowTraceSerializerTest {
 
     @BeforeEach
     public void setUp() throws JAXBException {
-        config = Config.createConfig();
-        action = new SendAction(new ClientHelloMessage(Config.createConfig()));
+        config = new Config();
+        action = new SendAction(new ClientHelloMessage(new Config()));
     }
 
     /**
@@ -63,8 +63,7 @@ public class WorkflowTraceSerializerTest {
     @Test
     public void testWriteRead() throws Exception {
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
-        WorkflowTrace trace =
-                factory.createWorkflowTrace(WorkflowTraceType.FULL, RunningModeType.CLIENT);
+        WorkflowTrace trace = factory.createWorkflowTrace(WorkflowTraceType.FULL, RunningModeType.CLIENT);
         // pick random protocol message and initialize a record with modifiable
         // variable
         List<Record> records = new LinkedList<>();

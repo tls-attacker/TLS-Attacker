@@ -45,7 +45,7 @@ public class WorkflowTypeDelegateTest extends AbstractDelegateTest<WorkflowTypeD
     /** Test of applyDelegate method, of class WorkflowTypeDelegate. */
     @Test
     public void testApplyDelegate() {
-        Config config = Config.createConfig();
+        Config config = new Config();
         args = new String[2];
         args[0] = "-workflow_trace_type";
         args[1] = "FULL";
@@ -57,8 +57,8 @@ public class WorkflowTypeDelegateTest extends AbstractDelegateTest<WorkflowTypeD
 
     @Test
     public void testNothingSetNothingChanges() {
-        Config config = Config.createConfig();
-        Config config2 = Config.createConfig();
+        Config config = new Config();
+        Config config2 = new Config();
         delegate.applyDelegate(config);
         assertTrue(
                 EqualsBuilder.reflectionEquals(

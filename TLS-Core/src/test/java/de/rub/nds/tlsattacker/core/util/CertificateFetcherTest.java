@@ -49,14 +49,11 @@ public class CertificateFetcherTest {
     public static void setUpClass() throws Exception {
         Security.addProvider(new BouncyCastleProvider());
         TimeHelper.setProvider(new FixedTimeProvider(0));
-        KeyPair keyPair =
-                KeyStoreGenerator.createRSAKeyPair(1024, new BadRandom(new Random(0), new byte[0]));
-        KeyStore keyStore =
-                KeyStoreGenerator.createKeyStore(
-                        keyPair, new BadRandom(new Random(0), new byte[0]));
+        KeyPair keyPair = KeyStoreGenerator.createRSAKeyPair(1024, new BadRandom(new Random(0), new byte[0]));
+        KeyStore keyStore = KeyStoreGenerator.createKeyStore(
+                keyPair, new BadRandom(new Random(0), new byte[0]));
 
-        expectedCertificate =
-                CertificateIo.convert(keyStore.getCertificate(KeyStoreGenerator.ALIAS));
+        expectedCertificate = CertificateIo.convert(keyStore.getCertificate(KeyStoreGenerator.ALIAS));
         expectedPublicKey = expectedCertificate.getLeaf().getPublicKeyContainer();
 
         tlsServer = new BasicTlsServer(keyStore, KeyStoreGenerator.PASSWORD, "TLS", SERVER_PORT);
@@ -78,7 +75,7 @@ public class CertificateFetcherTest {
 
     @BeforeEach
     public void setUp() {
-        config = Config.createConfig();
+        config = new Config();
         ClientDelegate clientDelegate = new ClientDelegate();
         clientDelegate.setHost("localhost:" + SERVER_PORT);
         clientDelegate.applyDelegate(config);

@@ -27,67 +27,67 @@ import org.junit.jupiter.api.Test;
 
 public class RecordTest {
 
-    private Record record;
-    private Encryptor encryptor;
-    private RecordCompressor compressor;
-    private Context context;
+        private Record record;
+        private Encryptor encryptor;
+        private RecordCompressor compressor;
+        private Context context;
 
-    @BeforeEach
-    public void setUp() {
-        record = new Record();
-        Config config = Config.createConfig();
-        context = new Context(new State(config), new InboundConnection());
-    }
+        @BeforeEach
+        public void setUp() {
+                record = new Record();
+                Config config = new Config();
+                context = new Context(new State(config), new InboundConnection());
+        }
 
-    /** Test of getRecordPreparator method, of class Record. */
-    @Test
-    public void testGetRecordPreparator() {
-        assertEquals(
-                record.getRecordPreparator(
-                                context.getTlsContext(),
-                                encryptor,
-                                compressor,
-                                ProtocolMessageType.ALERT)
-                        .getClass(),
-                RecordPreparator.class);
-    }
+        /** Test of getRecordPreparator method, of class Record. */
+        @Test
+        public void testGetRecordPreparator() {
+                assertEquals(
+                                record.getRecordPreparator(
+                                                context.getTlsContext(),
+                                                encryptor,
+                                                compressor,
+                                                ProtocolMessageType.ALERT)
+                                                .getClass(),
+                                RecordPreparator.class);
+        }
 
-    /** Test of getRecordParser method, of class Record. */
-    @Test
-    public void testGetRecordParser() {
-        assertEquals(
-                record.getRecordParser(
-                                new ByteArrayInputStream(new byte[0]),
-                                ProtocolVersion.TLS10,
-                                context.getTlsContext())
-                        .getClass(),
-                RecordParser.class);
-        assertEquals(
-                record.getRecordParser(
-                                new ByteArrayInputStream(new byte[0]),
-                                ProtocolVersion.TLS11,
-                                context.getTlsContext())
-                        .getClass(),
-                RecordParser.class);
-        assertEquals(
-                record.getRecordParser(
-                                new ByteArrayInputStream(new byte[0]),
-                                ProtocolVersion.TLS12,
-                                context.getTlsContext())
-                        .getClass(),
-                RecordParser.class);
-        assertEquals(
-                record.getRecordParser(
-                                new ByteArrayInputStream(new byte[0]),
-                                ProtocolVersion.TLS13,
-                                context.getTlsContext())
-                        .getClass(),
-                RecordParser.class);
-    }
+        /** Test of getRecordParser method, of class Record. */
+        @Test
+        public void testGetRecordParser() {
+                assertEquals(
+                                record.getRecordParser(
+                                                new ByteArrayInputStream(new byte[0]),
+                                                ProtocolVersion.TLS10,
+                                                context.getTlsContext())
+                                                .getClass(),
+                                RecordParser.class);
+                assertEquals(
+                                record.getRecordParser(
+                                                new ByteArrayInputStream(new byte[0]),
+                                                ProtocolVersion.TLS11,
+                                                context.getTlsContext())
+                                                .getClass(),
+                                RecordParser.class);
+                assertEquals(
+                                record.getRecordParser(
+                                                new ByteArrayInputStream(new byte[0]),
+                                                ProtocolVersion.TLS12,
+                                                context.getTlsContext())
+                                                .getClass(),
+                                RecordParser.class);
+                assertEquals(
+                                record.getRecordParser(
+                                                new ByteArrayInputStream(new byte[0]),
+                                                ProtocolVersion.TLS13,
+                                                context.getTlsContext())
+                                                .getClass(),
+                                RecordParser.class);
+        }
 
-    /** Test of getRecordSerializer method, of class Record. */
-    @Test
-    public void testGetRecordSerializer() {
-        assertEquals(record.getRecordSerializer().getClass(), RecordSerializer.class);
-    }
+        /** Test of getRecordSerializer method, of class Record. */
+        @Test
+        public void testGetRecordSerializer() {
+                assertEquals(record.getRecordSerializer().getClass(), RecordSerializer.class);
+        }
 }

@@ -115,9 +115,8 @@ public abstract class AbstractHandshakeIT {
     }
 
     private void prepareContainer() throws DockerException, InterruptedException {
-        Image image =
-                DockerTlsManagerFactory.getMatchingImage(
-                        localImages, implementation, version, dockerConnectionRole);
+        Image image = DockerTlsManagerFactory.getMatchingImage(
+                localImages, implementation, version, dockerConnectionRole);
         getDockerInstance(image);
     }
 
@@ -127,8 +126,7 @@ public abstract class AbstractHandshakeIT {
             if (image != null) {
                 instanceBuilder = new TlsServerInstanceBuilder(image, transportType);
             } else {
-                instanceBuilder =
-                        new TlsServerInstanceBuilder(implementation, version, transportType).pull();
+                instanceBuilder = new TlsServerInstanceBuilder(implementation, version, transportType).pull();
                 localImages = DockerTlsManagerFactory.getAllImages();
                 assumeNotNull(
                         image,
@@ -144,8 +142,7 @@ public abstract class AbstractHandshakeIT {
             if (image != null) {
                 clientInstanceBuilder = new TlsClientInstanceBuilder(image, transportType);
             } else {
-                clientInstanceBuilder =
-                        new TlsClientInstanceBuilder(implementation, version, transportType).pull();
+                clientInstanceBuilder = new TlsClientInstanceBuilder(implementation, version, transportType).pull();
                 localImages = DockerTlsManagerFactory.getAllImages();
                 assumeNotNull(
                         image,
@@ -195,9 +192,8 @@ public abstract class AbstractHandshakeIT {
 
         State state = new State(config);
         modifyWorkflowTrace(state);
-        WorkflowExecutor executor =
-                WorkflowExecutorFactory.createWorkflowExecutor(
-                        config.getWorkflowExecutorType(), state);
+        WorkflowExecutor executor = WorkflowExecutorFactory.createWorkflowExecutor(
+                config.getWorkflowExecutorType(), state);
         setCallbacks(executor);
 
         executeTest(
@@ -238,9 +234,8 @@ public abstract class AbstractHandshakeIT {
                 setConnectionTargetFields(config);
                 state = new State(config);
                 modifyWorkflowTrace(state);
-                executor =
-                        WorkflowExecutorFactory.createWorkflowExecutor(
-                                config.getWorkflowExecutorType(), state);
+                executor = WorkflowExecutorFactory.createWorkflowExecutor(
+                        config.getWorkflowExecutorType(), state);
                 setCallbacks(executor);
             } else if (state.getWorkflowTrace().executedAsPlanned()) {
                 return;
@@ -347,33 +342,33 @@ public abstract class AbstractHandshakeIT {
 
     protected NamedGroup[] getNamedGroupsToTest() {
         return new NamedGroup[] {
-            NamedGroup.SECP256R1, NamedGroup.SECP384R1, NamedGroup.SECP521R1, NamedGroup.ECDH_X25519
+                NamedGroup.SECP256R1, NamedGroup.SECP384R1, NamedGroup.SECP521R1, NamedGroup.ECDH_X25519
         };
     }
 
     protected ProtocolVersion[] getProtocolVersionsToTest() {
         return new ProtocolVersion[] {
-            ProtocolVersion.TLS10, ProtocolVersion.TLS11, ProtocolVersion.TLS12
+                ProtocolVersion.TLS10, ProtocolVersion.TLS11, ProtocolVersion.TLS12
         };
     }
 
     protected CipherSuite[] getCipherSuitesToTest() {
         return new CipherSuite[] {
-            CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA,
-            CipherSuite.TLS_DHE_RSA_WITH_AES_128_CBC_SHA,
-            CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,
-            CipherSuite.TLS_RSA_WITH_AES_128_GCM_SHA256,
+                CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA,
+                CipherSuite.TLS_DHE_RSA_WITH_AES_128_CBC_SHA,
+                CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,
+                CipherSuite.TLS_RSA_WITH_AES_128_GCM_SHA256,
         };
     }
 
     protected WorkflowTraceType[] getWorkflowTraceTypesToTest() {
         return new WorkflowTraceType[] {
-            WorkflowTraceType.HANDSHAKE, WorkflowTraceType.FULL_RESUMPTION
+                WorkflowTraceType.HANDSHAKE, WorkflowTraceType.FULL_RESUMPTION
         };
     }
 
     protected boolean[] getCryptoExtensionsValues() {
-        return new boolean[] {true, false};
+        return new boolean[] { true, false };
     }
 
     protected void setCallbacks(WorkflowExecutor executor) {
@@ -404,7 +399,7 @@ public abstract class AbstractHandshakeIT {
             config.setAddRetransmissionsToWorkflowTraceInDtls(false);
         }
         if (cipherSuite.isTls13()
-                || AlgorithmResolver.getKeyExchangeAlgorithm(cipherSuite).isEC()) {
+                || cipherSuite.getKeyExchangeAlgorithm().isEC()) {
             config.setAddECPointFormatExtension(Boolean.TRUE);
             config.setAddEllipticCurveExtension(Boolean.TRUE);
         } else {

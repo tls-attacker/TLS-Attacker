@@ -79,15 +79,14 @@ public class RecordedWorkflowTest {
     @Test
     @Disabled("Not implemented")
     public void testFullWorkflowDeterministicWorkflow() throws IOException {
-        Config c = Config.createConfig();
+        Config c = new Config();
         c.setDefaultSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
         c.setDefaultClientSupportedCipherSuites(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
         c.setWorkflowExecutorShouldOpen(false);
-        WorkflowTrace trace =
-                new WorkflowConfigurationFactory(c)
-                        .createWorkflowTrace(WorkflowTraceType.FULL, RunningModeType.CLIENT);
-        ClientRecordingTcpTransportHandler transportHandler =
-                new ClientRecordingTcpTransportHandler(1000, 1000, "localhost", 4555);
+        WorkflowTrace trace = new WorkflowConfigurationFactory(c)
+                .createWorkflowTrace(WorkflowTraceType.FULL, RunningModeType.CLIENT);
+        ClientRecordingTcpTransportHandler transportHandler = new ClientRecordingTcpTransportHandler(1000, 1000,
+                "localhost", 4555);
         transportHandler.initialize();
         State state = new State(c, trace);
         state.getTcpContext().setTransportHandler(transportHandler);

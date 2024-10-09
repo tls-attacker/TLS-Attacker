@@ -44,7 +44,7 @@ public class TimeoutDelegateTest extends AbstractDelegateTest<TimeoutDelegate> {
     /** Test of applyDelegate method, of class TimeoutDelegate. */
     @Test
     public void testApplyDelegate() {
-        Config config = Config.createConfig();
+        Config config = new Config();
         config.getDefaultClientConnection().setTimeout(1000);
         config.getDefaultServerConnection().setTimeout(1000);
         int expectedTimeout = 123;
@@ -61,8 +61,8 @@ public class TimeoutDelegateTest extends AbstractDelegateTest<TimeoutDelegate> {
 
     @Test
     public void testNothingSetNothingChanges() {
-        Config config = Config.createConfig();
-        Config config2 = Config.createConfig();
+        Config config = new Config();
+        Config config2 = new Config();
         delegate.applyDelegate(config);
         assertTrue(
                 EqualsBuilder.reflectionEquals(

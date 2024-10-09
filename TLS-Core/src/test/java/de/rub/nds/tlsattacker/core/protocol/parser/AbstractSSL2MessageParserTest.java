@@ -31,8 +31,7 @@ import org.junit.jupiter.api.Named;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-abstract class AbstractSSL2MessageParserTest<
-        MT extends SSL2Message, PT extends SSL2MessageParser<MT>> {
+abstract class AbstractSSL2MessageParserTest<MT extends SSL2Message, PT extends SSL2MessageParser<MT>> {
     private final Function<InputStream, PT> parserConstructor;
     private final BiFunction<InputStream, TlsContext, PT> parserConstructorWithContext;
     protected PT parser;
@@ -57,7 +56,7 @@ abstract class AbstractSSL2MessageParserTest<
         this.parserConstructorWithContext = parserConstructorWithContext;
         this.parserConstructor = null;
         this.messageGetters = messageGetters;
-        this.config = Config.createConfig();
+        this.config = new Config();
         this.tlsContext = new Context(new State(config), new InboundConnection()).getTlsContext();
         this.messageClass = messageClass;
     }
@@ -69,7 +68,7 @@ abstract class AbstractSSL2MessageParserTest<
         this.parserConstructor = parserConstructor;
         this.parserConstructorWithContext = null;
         this.messageGetters = messageGetters;
-        this.config = Config.createConfig();
+        this.config = new Config();
         this.tlsContext = new Context(new State(config), new InboundConnection()).getTlsContext();
         this.messageClass = messageClass;
     }
@@ -111,9 +110,8 @@ abstract class AbstractSSL2MessageParserTest<
 
     protected void getParser(ProtocolVersion providedProtocolVersion, byte[] providedMessageBytes) {
         if (parserConstructorWithContext != null) {
-            parser =
-                    parserConstructorWithContext.apply(
-                            getMessageInputStream(providedMessageBytes), tlsContext);
+            parser = parserConstructorWithContext.apply(
+                    getMessageInputStream(providedMessageBytes), tlsContext);
         } else {
             parser = parserConstructor.apply(getMessageInputStream(providedMessageBytes));
         }
@@ -136,8 +134,7 @@ abstract class AbstractSSL2MessageParserTest<
                 actual = ((ModifiableVariable<?>) actual).getValue();
             }
             // Perform assertion
-            String assertionMessage =
-                    this.getClass().getSimpleName() + " failed: " + getter.getName();
+            String assertionMessage = this.getClass().getSimpleName() + " failed: " + getter.getName();
             if (expected instanceof byte[]) {
                 assertArrayEquals((byte[]) expected, (byte[]) actual, assertionMessage);
             } else if (expected == null) {

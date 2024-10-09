@@ -23,15 +23,14 @@ public class DefaultFilterTest {
 
     @BeforeEach
     public void setUp() {
-        Config config = Config.createConfig();
+        Config config = new Config();
         filter = new DefaultFilter(config);
     }
 
     @Test
     public void testFilterUninitializedTraceFails() {
         WorkflowTrace trace = new WorkflowTrace();
-        ConfigurationException exception =
-                assertThrows(ConfigurationException.class, () -> filter.applyFilter(trace));
+        ConfigurationException exception = assertThrows(ConfigurationException.class, () -> filter.applyFilter(trace));
         assertEquals(
                 "Workflow trace not well defined. Trace does not define any connections.",
                 exception.getMessage());

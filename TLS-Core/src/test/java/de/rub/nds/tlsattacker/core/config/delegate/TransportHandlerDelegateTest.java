@@ -54,7 +54,7 @@ public class TransportHandlerDelegateTest extends AbstractDelegateTest<Transport
     /** Test of applyDelegate method, of class TransportHandlerDelegate. */
     @Test
     public void testApplyDelegate() {
-        Config config = Config.createConfig();
+        Config config = new Config();
         config.getDefaultClientConnection().setTransportHandlerType(TransportHandlerType.TCP);
         config.getDefaultServerConnection().setTransportHandlerType(TransportHandlerType.TCP);
         args = new String[2];
@@ -74,8 +74,8 @@ public class TransportHandlerDelegateTest extends AbstractDelegateTest<Transport
 
     @Test
     public void testNothingSetNothingChanges() {
-        Config config = Config.createConfig();
-        Config config2 = Config.createConfig();
+        Config config = new Config();
+        Config config2 = new Config();
         delegate.applyDelegate(config);
         assertTrue(
                 EqualsBuilder.reflectionEquals(

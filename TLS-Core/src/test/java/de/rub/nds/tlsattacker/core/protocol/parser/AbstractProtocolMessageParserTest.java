@@ -32,8 +32,7 @@ import org.junit.jupiter.api.Named;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-abstract class AbstractProtocolMessageParserTest<
-        MT extends ProtocolMessage, PT extends ProtocolMessageParser<MT>> {
+abstract class AbstractProtocolMessageParserTest<MT extends ProtocolMessage, PT extends ProtocolMessageParser<MT>> {
     private final Function<InputStream, PT> parserConstructor;
     private final BiFunction<InputStream, TlsContext, PT> parserConstructorWithContext;
     protected PT parser;
@@ -58,7 +57,7 @@ abstract class AbstractProtocolMessageParserTest<
         this.parserConstructorWithContext = parserConstructorWithContext;
         this.parserConstructor = null;
         this.messageGetters = messageGetters;
-        this.config = Config.createConfig();
+        this.config = new Config();
         this.tlsContext = new Context(new State(config), new InboundConnection()).getTlsContext();
         this.messageClass = messageClass;
     }
@@ -70,7 +69,7 @@ abstract class AbstractProtocolMessageParserTest<
         this.parserConstructor = parserConstructor;
         this.parserConstructorWithContext = null;
         this.messageGetters = messageGetters;
-        this.config = Config.createConfig();
+        this.config = new Config();
         this.tlsContext = new Context(new State(config), new InboundConnection()).getTlsContext();
         this.messageClass = messageClass;
     }
@@ -112,9 +111,8 @@ abstract class AbstractProtocolMessageParserTest<
 
     protected void getParser(ProtocolVersion providedProtocolVersion, byte[] providedMessageBytes) {
         if (parserConstructorWithContext != null) {
-            parser =
-                    parserConstructorWithContext.apply(
-                            getMessageInputStream(providedMessageBytes), tlsContext);
+            parser = parserConstructorWithContext.apply(
+                    getMessageInputStream(providedMessageBytes), tlsContext);
         } else {
             parser = parserConstructor.apply(getMessageInputStream(providedMessageBytes));
         }
@@ -137,8 +135,7 @@ abstract class AbstractProtocolMessageParserTest<
                 actual = ((ModifiableVariable<?>) actual).getValue();
             }
             // Perform assertion
-            String assertionMessage =
-                    this.getClass().getSimpleName() + " failed: " + getter.getName();
+            String assertionMessage = this.getClass().getSimpleName() + " failed: " + getter.getName();
             if (expected instanceof byte[]) {
                 assertArrayEquals((byte[]) expected, (byte[]) actual, assertionMessage);
             } else if (expected == null) {

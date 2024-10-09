@@ -46,7 +46,7 @@ public class StarttlsDelegateTest extends AbstractDelegateTest<StarttlsDelegate>
     /** Test of applyDelegate method, of class StarttlsDelegate. */
     @Test
     public void testApplyDelegate() {
-        Config config = Config.createConfig();
+        Config config = new Config();
         args = new String[2];
         args[0] = "-starttls";
         args[1] = "POP3";

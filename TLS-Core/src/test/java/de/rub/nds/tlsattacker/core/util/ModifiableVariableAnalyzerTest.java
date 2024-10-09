@@ -24,19 +24,19 @@ public class ModifiableVariableAnalyzerTest {
     /** Test of getAllModifiableVariableFields method, of class ModifiableVariableAnalyzer. */
     @Test
     public void testGetAllModifiableVariableFields() {
-        ClientHelloMessage chm = new ClientHelloMessage(Config.createConfig());
+        ClientHelloMessage chm = new ClientHelloMessage(new Config());
         String[] fieldNames = {
-            "compressionLength",
-            "cipherSuiteLength",
-            "cipherSuites",
-            "compressions",
-            "protocolVersion",
-            "unixTime",
-            "random",
-            "sessionIdLength",
-            "sessionId",
-            "type",
-            "completeResultingMessage"
+                "compressionLength",
+                "cipherSuiteLength",
+                "cipherSuites",
+                "compressions",
+                "protocolVersion",
+                "unixTime",
+                "random",
+                "sessionIdLength",
+                "sessionId",
+                "type",
+                "completeResultingMessage"
         };
         List<Field> fields = ModifiableVariableAnalyzer.getAllModifiableVariableFields(chm);
         for (String fn : fieldNames) {
@@ -48,7 +48,8 @@ public class ModifiableVariableAnalyzerTest {
     /** Test of getRandomModifiableVariableField method, of class ModifiableVariableAnalyzer. */
     @Test
     @Disabled("Not implemented")
-    public void testGetRandomModifiableVariableField() {}
+    public void testGetRandomModifiableVariableField() {
+    }
 
     private boolean containsFieldName(String name, List<Field> list) {
         for (Field f : list) {

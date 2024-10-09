@@ -8,15 +8,15 @@
  */
 package de.rub.nds.tlsattacker.core.crypto.cipher;
 
-import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CipherType;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.util.GOSTUtils;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class CipherWrapper {
 
@@ -24,7 +24,7 @@ public class CipherWrapper {
 
     public static EncryptionCipher getEncryptionCipher(
             CipherSuite cipherSuite, ConnectionEndType connectionEndType, KeySet keySet) {
-        CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
+        CipherAlgorithm cipherAlg = cipherSuite.getCipherAlgorithm();
         if (cipherAlg == CipherAlgorithm.GOST_28147_CNT_IMIT) {
             return new GOST28147Cipher(
                     GOSTUtils.getGostSpec(cipherSuite),
@@ -49,7 +49,7 @@ public class CipherWrapper {
 
     public static DecryptionCipher getDecryptionCipher(
             CipherSuite cipherSuite, ConnectionEndType connectionEndType, KeySet keySet) {
-        CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
+        CipherAlgorithm cipherAlg = cipherSuite.getCipherAlgorithm();
         if (cipherAlg == CipherAlgorithm.GOST_28147_CNT_IMIT) {
             return new GOST28147Cipher(
                     GOSTUtils.getGostSpec(cipherSuite),
@@ -72,5 +72,6 @@ public class CipherWrapper {
         }
     }
 
-    private CipherWrapper() {}
+    private CipherWrapper() {
+    }
 }

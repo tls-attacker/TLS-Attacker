@@ -28,7 +28,7 @@ public class DefaultWorkflowExecutorTest {
     /** Fallback to WorkflowConfigurationFactory with default context should work. */
     @Test
     public void testExecuteImplicitWorkflowWithDefaultContexts() {
-        Config config = Config.createConfig();
+        Config config = new Config();
         config.setWorkflowTraceType(WorkflowTraceType.HELLO);
         State state = new State(config);
         assertDoesNotThrow(() -> new DefaultWorkflowExecutor(state));
