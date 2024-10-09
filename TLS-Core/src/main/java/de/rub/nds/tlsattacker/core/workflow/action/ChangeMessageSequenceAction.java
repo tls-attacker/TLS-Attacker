@@ -28,6 +28,7 @@ public abstract class ChangeMessageSequenceAction extends ConnectionBoundAction 
 
     public ChangeMessageSequenceAction(String connectionAlias, int messageSequence) {
         super(connectionAlias);
+        this.messageSequence = messageSequence;
     }
 
     protected abstract void changeMessageSequence(TlsContext tlsContext);
