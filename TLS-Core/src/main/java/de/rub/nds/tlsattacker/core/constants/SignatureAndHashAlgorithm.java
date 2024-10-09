@@ -94,7 +94,7 @@ public enum SignatureAndHashAlgorithm {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public static List<? extends SignatureAndHashAlgorithm> getImplemented() {
+    public static List<SignatureAndHashAlgorithm> getImplemented() {
         List<SignatureAndHashAlgorithm> algoList = new LinkedList<>();
         algoList.add(DSA_SHA1);
         algoList.add(DSA_SHA224);
@@ -195,10 +195,8 @@ public enum SignatureAndHashAlgorithm {
         }
         ByteArrayInputStream algorithmsStream = new ByteArrayInputStream(signatureAndHashBytes);
         byte[] algoBytes = new byte[HandshakeByteLength.SIGNATURE_HASH_ALGORITHM];
-        while (algorithmsStream.read(algoBytes, 0, HandshakeByteLength.SIGNATURE_HASH_ALGORITHM)
-                != -1) {
-            SignatureAndHashAlgorithm algo =
-                    SignatureAndHashAlgorithm.getSignatureAndHashAlgorithm(algoBytes);
+        while (algorithmsStream.read(algoBytes, 0, HandshakeByteLength.SIGNATURE_HASH_ALGORITHM) != -1) {
+            SignatureAndHashAlgorithm algo = SignatureAndHashAlgorithm.getSignatureAndHashAlgorithm(algoBytes);
             if (algo == null) {
                 LOGGER.warn("Unknown SignatureAndHashAlgorithm: {}", algoBytes);
             } else {
