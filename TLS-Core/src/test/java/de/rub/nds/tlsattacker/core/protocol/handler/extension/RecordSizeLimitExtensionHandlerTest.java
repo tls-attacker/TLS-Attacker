@@ -24,7 +24,8 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 public class RecordSizeLimitExtensionHandlerTest
-        extends AbstractExtensionMessageHandlerTest<RecordSizeLimitExtensionMessage, RecordSizeLimitExtensionHandler> {
+        extends AbstractExtensionMessageHandlerTest<
+                RecordSizeLimitExtensionMessage, RecordSizeLimitExtensionHandler> {
 
     RecordSizeLimitExtensionHandlerTest() {
         super(
@@ -44,7 +45,7 @@ public class RecordSizeLimitExtensionHandlerTest
         context.setTalkingConnectionEndType(ConnectionEndType.CLIENT);
 
         RecordSizeLimitExtensionMessage msg = new RecordSizeLimitExtensionMessage();
-        msg.setRecordSizeLimit(new byte[] { (byte) 0x05, (byte) 0x39 });
+        msg.setRecordSizeLimit(new byte[] {(byte) 0x05, (byte) 0x39});
         assertNull(context.getOutboundRecordSizeLimit());
         handler.adjustTLSExtensionContext(msg);
         assertEquals(1337, (int) context.getOutboundRecordSizeLimit());
@@ -53,7 +54,7 @@ public class RecordSizeLimitExtensionHandlerTest
     @Test
     public void testadjustTLSExtensionContextInvalidSize() {
         RecordSizeLimitExtensionMessage msg = new RecordSizeLimitExtensionMessage();
-        msg.setRecordSizeLimit(new byte[] { (byte) 0x05, (byte) 0x39, (byte) 0x00 });
+        msg.setRecordSizeLimit(new byte[] {(byte) 0x05, (byte) 0x39, (byte) 0x00});
         assertNull(context.getOutboundRecordSizeLimit());
         assertThrows(AdjustmentException.class, () -> handler.adjustTLSExtensionContext(msg));
     }
@@ -62,7 +63,7 @@ public class RecordSizeLimitExtensionHandlerTest
     @Disabled("To be fixed")
     public void testadjustTLSExtensionContextSizeTooSmall() {
         RecordSizeLimitExtensionMessage msg = new RecordSizeLimitExtensionMessage();
-        msg.setRecordSizeLimit(new byte[] { (byte) 0x00, (byte) 0x2A });
+        msg.setRecordSizeLimit(new byte[] {(byte) 0x00, (byte) 0x2A});
         assertNull(context.getOutboundRecordSizeLimit());
         handler.adjustContext(msg);
         assertNull(context.getOutboundRecordSizeLimit());

@@ -38,23 +38,25 @@ public class ParserSerializerIT extends GenericParserSerializerTest {
     @Tag(TestCategories.INTEGRATION_TEST)
     public void testParser()
             throws NoSuchMethodException,
-            InstantiationException,
-            IllegalAccessException,
-            IllegalAccessException,
-            IllegalArgumentException,
-            IllegalArgumentException,
-            InvocationTargetException {
+                    InstantiationException,
+                    IllegalAccessException,
+                    IllegalAccessException,
+                    IllegalArgumentException,
+                    IllegalArgumentException,
+                    InvocationTargetException {
         Random r = new Random(42);
         for (int i = 0; i < 10000; i++) {
             ProtocolMessage message = null;
-            TlsContext tlsContext = new Context(new State(config), new InboundConnection()).getTlsContext();
+            TlsContext tlsContext =
+                    new Context(new State(config), new InboundConnection()).getTlsContext();
             byte[] bytesToParse = null;
             try {
                 int length = r.nextInt(1000);
                 bytesToParse = new byte[length];
                 r.nextBytes(bytesToParse);
                 message = getRandomMessage(r);
-                Parser parser = message.getParser(tlsContext, new ByteArrayInputStream(bytesToParse));
+                Parser parser =
+                        message.getParser(tlsContext, new ByteArrayInputStream(bytesToParse));
                 parser.parse(message);
             } catch (ParserException | EndOfStreamException E) {
                 continue;

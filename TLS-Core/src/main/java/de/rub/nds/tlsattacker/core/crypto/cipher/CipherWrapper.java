@@ -8,15 +8,14 @@
  */
 package de.rub.nds.tlsattacker.core.crypto.cipher;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CipherType;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.util.GOSTUtils;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class CipherWrapper {
 
@@ -72,6 +71,5 @@ public class CipherWrapper {
         }
     }
 
-    private CipherWrapper() {
-    }
+    private CipherWrapper() {}
 }

@@ -32,8 +32,8 @@ public class TlsConfigIOTest {
     @Test
     public void testEmptyConfig() throws IOException {
         try (InputStream stream = Config.class.getResourceAsStream("/test_empty_config.xml")) {
-            IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                    () -> Config.createConfig(stream));
+            IllegalArgumentException exception =
+                    assertThrows(IllegalArgumentException.class, () -> Config.createConfig(stream));
             assertTrue(exception.getMessage().startsWith("Stream cannot be null"));
         }
     }
@@ -50,10 +50,12 @@ public class TlsConfigIOTest {
 
     @Test
     public void testReadCustomClientConnection() throws IOException {
-        OutboundConnection expected = new OutboundConnection("testConnection", 8002, "testHostname");
+        OutboundConnection expected =
+                new OutboundConnection("testConnection", 8002, "testHostname");
 
         Config config;
-        try (InputStream stream = Config.class.getResourceAsStream("/test_config_custom_client_connection.xml")) {
+        try (InputStream stream =
+                Config.class.getResourceAsStream("/test_config_custom_client_connection.xml")) {
             config = Config.createConfig(stream);
         }
         assertNotNull(config);
@@ -66,7 +68,8 @@ public class TlsConfigIOTest {
     @Test
     public void testReadCustomServerConnection() throws IOException {
         Config config;
-        try (InputStream stream = Config.class.getResourceAsStream("/test_config_custom_server_connection.xml")) {
+        try (InputStream stream =
+                Config.class.getResourceAsStream("/test_config_custom_server_connection.xml")) {
             config = Config.createConfig(stream);
         }
         assertNotNull(config);

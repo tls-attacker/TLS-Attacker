@@ -65,7 +65,8 @@ public class ServerDelegateTest extends AbstractDelegateTest<ServerDelegate> {
     @Test
     public void applyingEmptyDelegateThrowsException() {
         Config config = new Config();
-        ParameterException exception = assertThrows(ParameterException.class, () -> delegate.applyDelegate(config));
+        ParameterException exception =
+                assertThrows(ParameterException.class, () -> delegate.applyDelegate(config));
         assertTrue(exception.getMessage().startsWith("Port must be set, but was not specified"));
     }
 

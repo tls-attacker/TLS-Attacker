@@ -62,28 +62,30 @@ public class FragmentManagerTest {
 
     @Test
     public void testGetFragmentedMessageMultipleMessages() {
-        manager.addMessageFragment(fragment(0, 0, 5, new byte[] { 0, 1, 2, 3, 4 }, 0));
-        manager.addMessageFragment(fragment(1, 0, 5, new byte[] { 8, 9, 10, 11, 12 }, 0));
-        manager.addMessageFragment(fragment(0, 5, 5, new byte[] { 5, 6, 7, 8, 9 }, 0));
-        manager.addMessageFragment(fragment(0, 0, 2, new byte[] { 9, 8 }, 1));
-        manager.addMessageFragment(fragment(0, 2, 8, new byte[] { 7, 6, 5, 4, 3, 2, 1, 0 }, 1));
+        manager.addMessageFragment(fragment(0, 0, 5, new byte[] {0, 1, 2, 3, 4}, 0));
+        manager.addMessageFragment(fragment(1, 0, 5, new byte[] {8, 9, 10, 11, 12}, 0));
+        manager.addMessageFragment(fragment(0, 5, 5, new byte[] {5, 6, 7, 8, 9}, 0));
+        manager.addMessageFragment(fragment(0, 0, 2, new byte[] {9, 8}, 1));
+        manager.addMessageFragment(fragment(0, 2, 8, new byte[] {7, 6, 5, 4, 3, 2, 1, 0}, 1));
         assertNull(manager.getCombinedMessageFragment(1, 0));
-        DtlsHandshakeMessageFragment fragmentedMessageEpoch0 = manager.getCombinedMessageFragment(0, 0);
+        DtlsHandshakeMessageFragment fragmentedMessageEpoch0 =
+                manager.getCombinedMessageFragment(0, 0);
         FragmentUtils.assertFragment(
-                fragmentedMessageEpoch0, 0, 10, new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 });
-        DtlsHandshakeMessageFragment fragmentedMessageEpoch1 = manager.getCombinedMessageFragment(0, 1);
+                fragmentedMessageEpoch0, 0, 10, new byte[] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9});
+        DtlsHandshakeMessageFragment fragmentedMessageEpoch1 =
+                manager.getCombinedMessageFragment(0, 1);
         FragmentUtils.assertFragment(
-                fragmentedMessageEpoch1, 0, 10, new byte[] { 9, 8, 7, 6, 5, 4, 3, 2, 1, 0 });
+                fragmentedMessageEpoch1, 0, 10, new byte[] {9, 8, 7, 6, 5, 4, 3, 2, 1, 0});
     }
 
     @Test
     public void testGetFragmentedMessageDisordelyOverlapping() {
-        manager.addMessageFragment(fragment(0, 0, 5, new byte[] { 0, 1, 2, 3, 4 }, 0));
-        manager.addMessageFragment(fragment(0, 7, 3, new byte[] { 7, 8, 9 }, 0));
-        manager.addMessageFragment(fragment(0, 5, 4, new byte[] { 5, 6, 7, 8 }, 0));
-        manager.addMessageFragment(fragment(0, 0, 5, new byte[] { 0, 1, 2, 3, 4 }, 0));
+        manager.addMessageFragment(fragment(0, 0, 5, new byte[] {0, 1, 2, 3, 4}, 0));
+        manager.addMessageFragment(fragment(0, 7, 3, new byte[] {7, 8, 9}, 0));
+        manager.addMessageFragment(fragment(0, 5, 4, new byte[] {5, 6, 7, 8}, 0));
+        manager.addMessageFragment(fragment(0, 0, 5, new byte[] {0, 1, 2, 3, 4}, 0));
         DtlsHandshakeMessageFragment fragmentedMessage = manager.getCombinedMessageFragment(0, 0);
         FragmentUtils.assertFragment(
-                fragmentedMessage, 0, 10, new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 });
+                fragmentedMessage, 0, 10, new byte[] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9});
     }
 }

@@ -20,77 +20,77 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class SignatureAndHashAlgorithmDelegateTest
-                extends AbstractDelegateTest<SignatureAndHashAlgorithmDelegate> {
+        extends AbstractDelegateTest<SignatureAndHashAlgorithmDelegate> {
 
-        @BeforeEach
-        public void setUp() {
-                super.setUp(new SignatureAndHashAlgorithmDelegate());
-        }
+    @BeforeEach
+    public void setUp() {
+        super.setUp(new SignatureAndHashAlgorithmDelegate());
+    }
 
-        /** Test of getSignatureAndHashAlgorithms method, of class SignatureAndHashAlgorithmDelegate. */
-        @Test
-        public void testGetSignatureAndHashAlgorithms() {
-                args = new String[2];
-                args[0] = "-signature_hash_algo";
-                args[1] = "RSA_SHA512,DSA_SHA512";
-                delegate.setSignatureAndHashAlgorithms(null);
-                jcommander.parse(args);
-                assertTrue(
-                                delegate.getSignatureAndHashAlgorithms()
-                                                .contains(SignatureAndHashAlgorithm.RSA_SHA512));
-                assertTrue(
-                                delegate.getSignatureAndHashAlgorithms()
-                                                .contains(SignatureAndHashAlgorithm.DSA_SHA512));
-        }
+    /** Test of getSignatureAndHashAlgorithms method, of class SignatureAndHashAlgorithmDelegate. */
+    @Test
+    public void testGetSignatureAndHashAlgorithms() {
+        args = new String[2];
+        args[0] = "-signature_hash_algo";
+        args[1] = "RSA_SHA512,DSA_SHA512";
+        delegate.setSignatureAndHashAlgorithms(null);
+        jcommander.parse(args);
+        assertTrue(
+                delegate.getSignatureAndHashAlgorithms()
+                        .contains(SignatureAndHashAlgorithm.RSA_SHA512));
+        assertTrue(
+                delegate.getSignatureAndHashAlgorithms()
+                        .contains(SignatureAndHashAlgorithm.DSA_SHA512));
+    }
 
-        @Test
-        public void testGetInvalidSignatureHashAlgorithms() {
-                args = new String[2];
-                args[0] = "-signature_hash_algo";
-                args[1] = "RSA_STSDHA512,DsdfsdSA_SHA512";
-                assertThrows(ParameterException.class, () -> jcommander.parse(args));
-        }
+    @Test
+    public void testGetInvalidSignatureHashAlgorithms() {
+        args = new String[2];
+        args[0] = "-signature_hash_algo";
+        args[1] = "RSA_STSDHA512,DsdfsdSA_SHA512";
+        assertThrows(ParameterException.class, () -> jcommander.parse(args));
+    }
 
-        /** Test of setSignatureAndHashAlgorithms method, of class SignatureAndHashAlgorithmDelegate. */
-        @Test
-        public void testSetSignatureAndHashAlgorithms() {
-                List<SignatureAndHashAlgorithm> signatureAndHashAlgoList = new LinkedList<>();
-                signatureAndHashAlgoList.add(SignatureAndHashAlgorithm.ANONYMOUS_SHA1);
-                delegate.setSignatureAndHashAlgorithms(signatureAndHashAlgoList);
-                assertTrue(
-                                delegate.getSignatureAndHashAlgorithms()
-                                                .contains(SignatureAndHashAlgorithm.ANONYMOUS_SHA1));
-        }
+    /** Test of setSignatureAndHashAlgorithms method, of class SignatureAndHashAlgorithmDelegate. */
+    @Test
+    public void testSetSignatureAndHashAlgorithms() {
+        List<SignatureAndHashAlgorithm> signatureAndHashAlgoList = new LinkedList<>();
+        signatureAndHashAlgoList.add(SignatureAndHashAlgorithm.ANONYMOUS_SHA1);
+        delegate.setSignatureAndHashAlgorithms(signatureAndHashAlgoList);
+        assertTrue(
+                delegate.getSignatureAndHashAlgorithms()
+                        .contains(SignatureAndHashAlgorithm.ANONYMOUS_SHA1));
+    }
 
-        /** Test of applyDelegate method, of class SignatureAndHashAlgorithmDelegate. */
-        @Test
-        public void testApplyDelegate() {
-                Config config = new Config();
-                args = new String[2];
-                args[0] = "-signature_hash_algo";
-                args[1] = "RSA_SHA512,DSA_SHA512";
-                delegate.setSignatureAndHashAlgorithms(null);
-                jcommander.parse(args);
-                config.setAddSignatureAndHashAlgorithmsExtension(false);
-                assertFalse(config.isAddSignatureAndHashAlgorithmsExtension());
-                delegate.applyDelegate(config);
-                assertTrue(config.isAddSignatureAndHashAlgorithmsExtension());
-                assertTrue(
-                                config.getDefaultClientSupportedSignatureAndHashAlgorithms()
-                                                .contains(SignatureAndHashAlgorithm.RSA_SHA512));
-                assertTrue(
-                                config.getDefaultClientSupportedSignatureAndHashAlgorithms()
-                                                .contains(SignatureAndHashAlgorithm.DSA_SHA512));
-        }
+    /** Test of applyDelegate method, of class SignatureAndHashAlgorithmDelegate. */
+    @Test
+    public void testApplyDelegate() {
+        Config config = new Config();
+        args = new String[2];
+        args[0] = "-signature_hash_algo";
+        args[1] = "RSA_SHA512,DSA_SHA512";
+        delegate.setSignatureAndHashAlgorithms(null);
+        jcommander.parse(args);
+        config.setAddSignatureAndHashAlgorithmsExtension(false);
+        assertFalse(config.isAddSignatureAndHashAlgorithmsExtension());
+        delegate.applyDelegate(config);
+        assertTrue(config.isAddSignatureAndHashAlgorithmsExtension());
+        assertTrue(
+                config.getDefaultClientSupportedSignatureAndHashAlgorithms()
+                        .contains(SignatureAndHashAlgorithm.RSA_SHA512));
+        assertTrue(
+                config.getDefaultClientSupportedSignatureAndHashAlgorithms()
+                        .contains(SignatureAndHashAlgorithm.DSA_SHA512));
+    }
 
-        @Test
-        public void testNothingSetNothingChanges() {
-                Config config = new Config();
-                Config config2 = new Config();
-                delegate.applyDelegate(config);
-                assertTrue(
-                                EqualsBuilder.reflectionEquals(
-                                                config, config2, "certificateChainConfig", "iceConfig")); // little
-                // ugly
-        }
+    @Test
+    public void testNothingSetNothingChanges() {
+        Config config = new Config();
+        Config config2 = new Config();
+        delegate.applyDelegate(config);
+        assertTrue(
+                EqualsBuilder.reflectionEquals(
+                        config, config2, "certificateChainConfig", "iceConfig")); // little
+        // ugly
+    }
 }

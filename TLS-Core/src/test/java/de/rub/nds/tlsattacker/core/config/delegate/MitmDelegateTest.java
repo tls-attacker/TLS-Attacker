@@ -80,7 +80,8 @@ public class MitmDelegateTest extends AbstractDelegateTest<MitmDelegate> {
         config.setDefaultClientConnection(null);
         config.setDefaultServerConnection(null);
         InboundConnection expectedServerCon = new InboundConnection("accept:1234", 1234);
-        OutboundConnection expectedClientCon = new OutboundConnection("remotehost:4321", 4321, "remotehost");
+        OutboundConnection expectedClientCon =
+                new OutboundConnection("remotehost:4321", 4321, "remotehost");
         args = new String[4];
         args[0] = "-accept";
         args[1] = "1234";
@@ -108,7 +109,8 @@ public class MitmDelegateTest extends AbstractDelegateTest<MitmDelegate> {
         for (String badPort : invalidPorts) {
             delegate.setInboundConnectionStr(badPort);
             delegate.setOutboundConnectionStr(validPort);
-            ParameterException exception = assertThrows(ParameterException.class, () -> delegate.applyDelegate(config));
+            ParameterException exception =
+                    assertThrows(ParameterException.class, () -> delegate.applyDelegate(config));
             assertTrue(
                     exception
                             .getMessage()
@@ -116,7 +118,8 @@ public class MitmDelegateTest extends AbstractDelegateTest<MitmDelegate> {
 
             delegate.setInboundConnectionStr(validPort);
             delegate.setOutboundConnectionStr(badPort);
-            exception = assertThrows(ParameterException.class, () -> delegate.applyDelegate(config));
+            exception =
+                    assertThrows(ParameterException.class, () -> delegate.applyDelegate(config));
             assertTrue(
                     exception
                             .getMessage()
@@ -152,6 +155,5 @@ public class MitmDelegateTest extends AbstractDelegateTest<MitmDelegate> {
 
     @Test
     @Disabled("Not implemented")
-    public void testApplyDelegateWithMissingConnection() {
-    }
+    public void testApplyDelegateWithMissingConnection() {}
 }
