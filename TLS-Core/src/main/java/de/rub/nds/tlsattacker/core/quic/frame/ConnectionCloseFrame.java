@@ -31,20 +31,26 @@ import java.nio.charset.StandardCharsets;
 @XmlRootElement
 public class ConnectionCloseFrame extends QuicFrame {
 
-    @ModifiableVariableProperty private ModifiableLong errorCode;
+    @ModifiableVariableProperty
+    private ModifiableLong errorCode;
 
-    @ModifiableVariableProperty private ModifiableLong triggerFrameType;
+    @ModifiableVariableProperty
+    private ModifiableLong triggerFrameType;
 
-    @ModifiableVariableProperty private ModifiableLong reasonPhraseLength;
+    @ModifiableVariableProperty
+    private ModifiableLong reasonPhraseLength;
 
-    @ModifiableVariableProperty private ModifiableByteArray reasonPhrase;
+    @ModifiableVariableProperty
+    private ModifiableByteArray reasonPhrase;
 
     private long errorCodeConfig;
     private long triggerFrameTypeConfig;
     private long reasonPhraseLengthConfig;
     private byte[] reasonPhraseConfig;
 
-    private ConnectionCloseFrame() {}
+    @SuppressWarnings("unused") // JAXB
+    private ConnectionCloseFrame() {
+    }
 
     public ConnectionCloseFrame(boolean isQuicLayer) {
         if (isQuicLayer) {
@@ -111,8 +117,7 @@ public class ConnectionCloseFrame extends QuicFrame {
     }
 
     public void setTriggerFrameType(long triggerFrameType) {
-        this.triggerFrameType =
-                ModifiableVariableFactory.safelySetValue(this.triggerFrameType, triggerFrameType);
+        this.triggerFrameType = ModifiableVariableFactory.safelySetValue(this.triggerFrameType, triggerFrameType);
     }
 
     public void setTriggerFrameType(int triggerFrameType) {
@@ -124,9 +129,8 @@ public class ConnectionCloseFrame extends QuicFrame {
     }
 
     public void setReasonPhraseLength(long reasonPhraseLength) {
-        this.reasonPhraseLength =
-                ModifiableVariableFactory.safelySetValue(
-                        this.reasonPhraseLength, reasonPhraseLength);
+        this.reasonPhraseLength = ModifiableVariableFactory.safelySetValue(
+                this.reasonPhraseLength, reasonPhraseLength);
     }
 
     public void setReasonPhraseLength(int reasonPhraseLength) {
@@ -138,8 +142,7 @@ public class ConnectionCloseFrame extends QuicFrame {
     }
 
     public void setReasonPhrase(byte[] reasonPhrase) {
-        this.reasonPhrase =
-                ModifiableVariableFactory.safelySetValue(this.reasonPhrase, reasonPhrase);
+        this.reasonPhrase = ModifiableVariableFactory.safelySetValue(this.reasonPhrase, reasonPhrase);
     }
 
     public long getErrorCodeConfig() {
@@ -186,7 +189,7 @@ public class ConnectionCloseFrame extends QuicFrame {
                         .append(") -> TLS Alert Description: ")
                         .append(
                                 AlertDescription.getAlertDescription(
-                                                (byte) (errorCode.getValue() & 0xFF))
+                                        (byte) (errorCode.getValue() & 0xFF))
                                         .name());
 
             } else {
