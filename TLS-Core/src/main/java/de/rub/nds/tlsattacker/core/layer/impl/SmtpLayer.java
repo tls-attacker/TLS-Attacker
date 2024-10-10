@@ -21,7 +21,7 @@ import de.rub.nds.tlsattacker.core.smtp.SmtpMessage;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpCommand;
 import de.rub.nds.tlsattacker.core.smtp.handler.SmtpMessageHandler;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpReply;
-import de.rub.nds.tlsattacker.core.smtp.reply.SmtpUnknownReply;
+import de.rub.nds.tlsattacker.core.smtp.reply.specific.multiline.SmtpUnknownReply;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
@@ -86,7 +86,7 @@ public class SmtpLayer extends ProtocolLayer<SmtpLayerHint, SmtpMessage> {
                     SmtpCommand smtpCommand = new SmtpCommand();
                     readDataContainer(smtpCommand, context);
                 }
-                LOGGER.trace("Should continue processing: {}", shouldContinueProcessing());
+//                LOGGER.trace("Should continue processing: {}", shouldContinueProcessing());
             } while (shouldContinueProcessing());
         } catch (TimeoutException e) {
             LOGGER.debug(e);

@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.core.smtp.handler;
 
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
-import de.rub.nds.tlsattacker.core.smtp.reply.SmtpQUITReply;
+import de.rub.nds.tlsattacker.core.smtp.reply.generic.singleline.SmtpQUITReply;
 
 public class QUITReplyHandler extends SmtpReplyHandler<SmtpQUITReply> {
     public QUITReplyHandler(SmtpContext smtpContext) {

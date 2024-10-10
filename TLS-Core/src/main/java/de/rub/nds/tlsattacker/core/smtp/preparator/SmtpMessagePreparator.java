@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.smtp.SmtpMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
-public abstract class SmtpMessagePreparator<MessageT extends SmtpMessage>
+public class SmtpMessagePreparator<MessageT extends SmtpMessage>
         extends Preparator<MessageT> {
 
     protected final SmtpContext context;
@@ -21,6 +21,11 @@ public abstract class SmtpMessagePreparator<MessageT extends SmtpMessage>
     public SmtpMessagePreparator(Chooser chooser, MessageT message) {
         super(chooser, message);
         this.context = chooser.getContext().getSmtpContext();
+    }
+
+    @Override
+    public void prepare() {
+
     }
 
     public SmtpContext getContext() {

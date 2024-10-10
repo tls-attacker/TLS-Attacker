@@ -34,4 +34,17 @@ public abstract class SmtpServiceExtension {
     public String getParameters() {
         return parameters;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(this.ehloKeyword);
+        if (this.parameters != null) {
+            sb.append(' ');
+            sb.append(parameters);
+        }
+
+        return sb.toString();
+    }
 }

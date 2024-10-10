@@ -13,13 +13,13 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
-import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import de.rub.nds.tlsattacker.core.smtp.extensions.ATRNExtension;
 import de.rub.nds.tlsattacker.core.smtp.extensions.HELPExtension;
 import de.rub.nds.tlsattacker.core.smtp.extensions.STARTTLSExtension;
 import de.rub.nds.tlsattacker.core.smtp.extensions._8BITMIMEExtension;
-import de.rub.nds.tlsattacker.core.smtp.parser.EHLOReplyParser;
+import de.rub.nds.tlsattacker.core.smtp.parser.reply.EHLOReplyParser;
+import de.rub.nds.tlsattacker.core.smtp.reply.specific.multiline.SmtpEHLOReply;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import java.io.ByteArrayInputStream;
@@ -27,22 +27,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
+// TODO: this doesn't seem to actually test the InitialGreeting class
+
 class InitialGreetingTest {
-
-    @Test
-    public void testParseSimple() {
-        String stringMessage = "220 seal.cs.upb.de says Greetings\r\n";
-
-        SmtpInitialGreeting greeting = new SmtpInitialGreeting();
-        //        Parser parser =
-        //                greeting.getParser()
-        //                        new
-        // ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
-        //        parser.parse(ehlo);
-        //        assertEquals(250, ehlo.getReplyCode());
-        //        assertEquals("seal.cs.upb.de", ehlo.getDomain());
-        //        assertEquals("says Greetings", ehlo.getGreeting());
-    }
 
     @Test
     public void testParseSimpleNoGreeting() {
@@ -93,9 +80,7 @@ class InitialGreetingTest {
         ehlo.setGreeting("says Greetings");
 
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
-        Preparator preparator = ehlo.getPreparator(context);
-        Serializer serializer = ehlo.getSerializer(context);
-        preparator.prepare();
+        Serializer<?> serializer = ehlo.getSerializer(context);
         serializer.serialize();
         assertEquals(
                 "250 seal.cs.upb.de says Greetings\r\n", serializer.getOutputStream().toString());
@@ -115,9 +100,7 @@ class InitialGreetingTest {
                         new HELPExtension()));
 
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
-        Preparator preparator = ehlo.getPreparator(context);
-        Serializer serializer = ehlo.getSerializer(context);
-        preparator.prepare();
+        Serializer<?> serializer = ehlo.getSerializer(context);
         serializer.serialize();
         assertEquals(
                 "250-seal.cs.upb.de says Greetings\r\n250-8BITMIME\r\n250-ATRN\r\n250-STARTTLS\r\n250 HELP\r\n",

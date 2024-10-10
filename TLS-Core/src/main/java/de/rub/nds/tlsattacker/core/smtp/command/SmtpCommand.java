@@ -12,9 +12,9 @@ import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.*;
 import de.rub.nds.tlsattacker.core.smtp.handler.SmtpCommandHandler;
 import de.rub.nds.tlsattacker.core.smtp.handler.SmtpMessageHandler;
-import de.rub.nds.tlsattacker.core.smtp.parser.SmtpCommandParser;
 import de.rub.nds.tlsattacker.core.smtp.parser.SmtpMessageParser;
-import de.rub.nds.tlsattacker.core.smtp.preparator.SmtpCommandPreparator;
+import de.rub.nds.tlsattacker.core.smtp.parser.command.SmtpCommandParser;
+import de.rub.nds.tlsattacker.core.smtp.preparator.command.SmtpCommandPreparator;
 import de.rub.nds.tlsattacker.core.smtp.serializer.SmtpCommandSerializer;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
@@ -40,12 +40,12 @@ public class SmtpCommand extends SmtpMessage {
     public SmtpCommand() {}
 
     @Override
-    public SmtpMessageHandler<? extends SmtpMessage> getHandler(SmtpContext smtpContext) {
+    public SmtpCommandHandler<? extends SmtpCommand> getHandler(SmtpContext smtpContext) {
         return new SmtpCommandHandler<>(smtpContext);
     }
 
     @Override
-    public SmtpMessageParser<? extends SmtpMessage> getParser(
+    public SmtpCommandParser<? extends SmtpCommand> getParser(
             SmtpContext context, InputStream stream) {
         return new SmtpCommandParser<>(stream);
     }
@@ -63,6 +63,11 @@ public class SmtpCommand extends SmtpMessage {
     @Override
     public String toShortString() {
         return "SMTP_CMD";
+    }
+
+    @Override
+    public String toCompactString() {
+        return this.getClass().getSimpleName() + " (" + verb + (parameters != null ? " " + parameters : "") + ")";
     }
 
     public String getVerb() {

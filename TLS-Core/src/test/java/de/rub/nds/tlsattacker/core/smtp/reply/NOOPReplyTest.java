@@ -10,11 +10,8 @@ package de.rub.nds.tlsattacker.core.smtp.reply;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
-import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
-import de.rub.nds.tlsattacker.core.layer.data.Parser;
-import de.rub.nds.tlsattacker.core.state.Context;
-import de.rub.nds.tlsattacker.core.state.State;
+import de.rub.nds.tlsattacker.core.smtp.parser.reply.SmtpGenericReplyParser;
+import de.rub.nds.tlsattacker.core.smtp.reply.generic.singleline.SmtpNOOPReply;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.Test;
@@ -25,11 +22,9 @@ class NOOPReplyTest {
     public void testParseSimple() {
         String stringMessage = "250 NOOP acknowledged\r\n";
 
-        SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
         SmtpNOOPReply noop = new SmtpNOOPReply();
-        Parser parser =
-                noop.getParser(
-                        context,
+        SmtpGenericReplyParser<SmtpNOOPReply> parser =
+                new SmtpGenericReplyParser<>(
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
         parser.parse(noop);
 

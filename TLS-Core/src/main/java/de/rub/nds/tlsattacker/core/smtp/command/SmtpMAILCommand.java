@@ -11,8 +11,8 @@ package de.rub.nds.tlsattacker.core.smtp.command;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.handler.MAILCommandHandler;
 import de.rub.nds.tlsattacker.core.smtp.parameters.SmtpParameters;
-import de.rub.nds.tlsattacker.core.smtp.parser.MAILCommandParser;
-import de.rub.nds.tlsattacker.core.smtp.preparator.MAILCommandPreparator;
+import de.rub.nds.tlsattacker.core.smtp.parser.command.MAILCommandParser;
+import de.rub.nds.tlsattacker.core.smtp.preparator.command.MAILCommandPreparator;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -30,15 +30,16 @@ public class SmtpMAILCommand extends SmtpCommand {
 
     private String reversePath;
 
-    private List<SmtpParameters> MAILparameters;
+    private final List<SmtpParameters> MAILparameters;
 
     public SmtpMAILCommand() {
-        super(COMMAND, null);
+        super(COMMAND);
         this.MAILparameters = new ArrayList<>();
     }
 
     public SmtpMAILCommand(String reversePath) {
         super(COMMAND, reversePath);
+        this.reversePath = reversePath;
         this.MAILparameters = new ArrayList<>();
     }
 

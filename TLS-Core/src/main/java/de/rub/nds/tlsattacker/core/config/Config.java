@@ -1252,6 +1252,36 @@ public class Config implements Serializable {
     /** Padding for the list of alpn values */
     private Integer defaultMaxEchAlpnPadding = 25;
 
+    private String defaultSmtpReversePath = "seal@upb.de";
+
+    public String getDefaultSmtpClientIdentity() {
+        return defaultSmtpClientIdentity;
+    }
+
+    public void setDefaultSmtpClientIdentity(String defaultSmtpClientIdentity) {
+        this.defaultSmtpClientIdentity = defaultSmtpClientIdentity;
+    }
+
+    private String defaultSmtpClientIdentity = "seal.upb.de";
+
+    public String getDefaultSmtpForwardPath() {
+        return defaultSmtpForwardPath;
+    }
+
+    public void setDefaultSmtpForwardPath(String defaultSmtpForwardPath) {
+        this.defaultSmtpForwardPath = defaultSmtpForwardPath;
+    }
+
+    public String getDefaultSmtpReversePath() {
+        return defaultSmtpReversePath;
+    }
+
+    public void setDefaultSmtpReversePath(String defaultSmtpReversePath) {
+        this.defaultSmtpReversePath = defaultSmtpReversePath;
+    }
+
+    private String defaultSmtpForwardPath = "test@example.com";
+
     private Boolean acceptOnlyFittingDtlsFragments = false;
 
     private Boolean acceptContentRewritingDtlsFragments = true;
