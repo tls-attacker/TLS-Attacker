@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.smtp.command;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.*;
@@ -19,15 +20,19 @@ import de.rub.nds.tlsattacker.core.smtp.parser.command.SmtpCommandParser;
 import de.rub.nds.tlsattacker.core.smtp.preparator.command.SmtpCommandPreparator;
 import de.rub.nds.tlsattacker.core.smtp.serializer.SmtpCommandSerializer;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import org.bouncycastle.math.raw.Mod;
+
 import java.io.InputStream;
 
-@XmlRootElement
+@XmlRootElement(name = "SmtpCommand")
 public class SmtpCommand extends SmtpMessage {
 
-    ModifiableString verb = new ModifiableString();
+    @ModifiableVariableProperty
+    ModifiableString verb;
     // this field is used by preparator+serializer for the command parameters, it should not be used
     // for the actual contents
-    ModifiableString parameters = new ModifiableString();
+    @ModifiableVariableProperty
+    ModifiableString parameters;
 
     public SmtpCommand(String verb, String parameters) {
         super();
@@ -37,9 +42,13 @@ public class SmtpCommand extends SmtpMessage {
 
     public SmtpCommand(String verb) {
         this.verb = ModifiableVariableFactory.safelySetValue(this.verb, verb);
+        this.parameters = new ModifiableString();
     }
 
-    public SmtpCommand() {}
+    public SmtpCommand() {
+        this.verb = new ModifiableString();
+        this.parameters = new ModifiableString();
+    }
 
     @Override
     public SmtpCommandHandler<? extends SmtpCommand> getHandler(SmtpContext smtpContext) {
@@ -65,6 +74,11 @@ public class SmtpCommand extends SmtpMessage {
     @Override
     public String toShortString() {
         return "SMTP_CMD";
+    }
+
+    @Override
+    public String toCompactString() {
+        return "SMTPCommand";
     }
 
     public ModifiableString getVerb() {

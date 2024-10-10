@@ -33,7 +33,7 @@ public class SmtpMAILCommand extends SmtpCommand {
     private List<SmtpParameters> MAILparameters;
 
     public SmtpMAILCommand() {
-        super(COMMAND, null);
+        super(COMMAND);
         this.MAILparameters = new ArrayList<>();
     }
 

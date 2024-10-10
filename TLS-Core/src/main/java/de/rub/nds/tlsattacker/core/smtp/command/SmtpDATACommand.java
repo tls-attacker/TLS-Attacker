@@ -15,6 +15,6 @@ public class SmtpDATACommand extends SmtpCommand {
     private static final String COMMAND = "DATA";
 
     public SmtpDATACommand() {
-        super(COMMAND, null);
+        super(COMMAND);
     }
 }

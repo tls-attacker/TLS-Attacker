@@ -9,16 +9,17 @@
 package de.rub.nds.tlsattacker.core.smtp.preparator.command;
 
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
-import de.rub.nds.tlsattacker.core.smtp.command.SmtpVRFYCommand;
+import de.rub.nds.tlsattacker.core.smtp.command.SmtpMAILCommand;
+import de.rub.nds.tlsattacker.core.smtp.command.SmtpNOOPCommand;
+import de.rub.nds.tlsattacker.core.smtp.parameters.SmtpParameters;
 
-public class VRFYCommandPreparator extends SmtpCommandPreparator<SmtpVRFYCommand> {
-    public VRFYCommandPreparator(SmtpContext context, SmtpVRFYCommand command) {
+public class NOOPCommandPreparator extends SmtpCommandPreparator<SmtpNOOPCommand> {
+    public NOOPCommandPreparator(SmtpContext context, SmtpNOOPCommand command) {
         super(context.getChooser(), command);
     }
 
     @Override
     public void prepare() {
-        this.getObject().setVerb("VRFY");
-        this.getObject().setParameters(this.getObject().getUsername());
+        this.getObject().setVerb("NOOP");
     }
 }
