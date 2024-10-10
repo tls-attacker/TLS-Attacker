@@ -13,7 +13,6 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
-import org.bouncycastle.util.encoders.Hex;
 
 public enum QuicVersion {
     VERSION_1(0x00000001, "38762cf7f55934b34d179ae6a4c80cadccbb7f0a"),
@@ -135,28 +134,6 @@ public enum QuicVersion {
                 return QuicHKDFConstants.QUIC1_KU;
             case VERSION_2:
                 return QuicHKDFConstants.QUIC2_KU;
-            default:
-                throw new UnsupportedOperationException();
-        }
-    }
-
-    public byte[] getRetryPacketIntegrityTagKey() {
-        switch (this) {
-            case VERSION_1:
-                return Hex.decode("be0c690b9f66575a1d766b54e368c84e");
-            case VERSION_2:
-                return Hex.decode("8fb4b01b56ac48e260fbcbcead7ccc92");
-            default:
-                throw new UnsupportedOperationException();
-        }
-    }
-
-    public byte[] getRetryPacketIntegrityTagIV() {
-        switch (this) {
-            case VERSION_1:
-                return Hex.decode("461599d35d632bf2239825bb");
-            case VERSION_2:
-                return Hex.decode("d86969bc2d7c6d9990efb04a");
             default:
                 throw new UnsupportedOperationException();
         }

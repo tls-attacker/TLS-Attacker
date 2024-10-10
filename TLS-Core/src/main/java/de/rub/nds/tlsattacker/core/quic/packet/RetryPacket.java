@@ -14,6 +14,8 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import de.rub.nds.tlsattacker.core.quic.constants.QuicPacketType;
+import de.rub.nds.tlsattacker.core.quic.constants.QuicRetryConstants;
+import de.rub.nds.tlsattacker.core.quic.constants.QuicVersion;
 import de.rub.nds.tlsattacker.core.quic.handler.packet.RetryPacketHandler;
 import de.rub.nds.tlsattacker.core.quic.parser.packet.RetryPacketParser;
 import de.rub.nds.tlsattacker.core.quic.preparator.packet.RetryPacketPreparator;
@@ -31,7 +33,6 @@ import javax.crypto.spec.SecretKeySpec;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.util.Arrays;
-import org.bouncycastle.util.encoders.Hex;
 
 /**
  * A Retry packet carries an address validation token created by the server. It is used by a server
@@ -88,19 +89,25 @@ public class RetryPacket extends LongHeaderPacket {
                         .put(getSourceConnectionId().getValue())
                         .put(retryToken.getValue())
                         .array();
-        LOGGER.trace("Build Integrity Check Pseudo Packet {}", Hex.toHexString(pseudoPacket));
+        LOGGER.trace("Build Integrity Check Pseudo Packet {}", pseudoPacket);
 
         byte[] computedTag;
         try {
             // Secret Key is fixed value from 5.8, RFC 9001 (or 3.3.3, RFC 9369 for QUICv2)
             SecretKey secretKey =
                     new SecretKeySpec(
-                            context.getQuicVersion().getRetryPacketIntegrityTagKey(), "AES");
+                            context.getQuicVersion() == QuicVersion.VERSION_1
+                                    ? QuicRetryConstants.QUIC1_RETRY_INTEGRITY_TAG_KEY
+                                    : QuicRetryConstants.QUIC2_RETRY_INTEGRITY_TAG_KEY,
+                            "AES");
             Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
             // IV is fixed value from 5.8, RFC 9001 (or 3.3.3, RFC 9369 for QUICv2)
             GCMParameterSpec gcmParameterSpec =
                     new GCMParameterSpec(
-                            128, context.getQuicVersion().getRetryPacketIntegrityTagIV());
+                            128,
+                            context.getQuicVersion() == QuicVersion.VERSION_1
+                                    ? QuicRetryConstants.QUIC1_RETRY_INTEGRITY_TAG_IV
+                                    : QuicRetryConstants.QUIC2_RETRY_INTEGRITY_TAG_IV);
             cipher.init(Cipher.ENCRYPT_MODE, secretKey, gcmParameterSpec);
             cipher.updateAAD(pseudoPacket);
             computedTag = cipher.doFinal();
