@@ -186,11 +186,9 @@ public class AlgorithmResolver {
             case DH_DSS:
                 return new X509PublicKeyType[] {X509PublicKeyType.DH};
             case ECDH_ECDSA:
-                return new X509PublicKeyType[] {
-                    X509PublicKeyType.ECDH_ECDSA, X509PublicKeyType.ECDH_ONLY
-                };
+                return new X509PublicKeyType[] {X509PublicKeyType.ECDH_ECDSA};
             case ECDH_RSA:
-                return new X509PublicKeyType[] {X509PublicKeyType.ECDH_ONLY};
+                return new X509PublicKeyType[] {X509PublicKeyType.ECDH_ECDSA};
             case ECDHE_ECDSA:
             case ECMQV_ECDSA:
             case CECPQ1_ECDSA:
