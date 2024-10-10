@@ -9,19 +9,21 @@
 package de.rub.nds.tlsattacker.core.smtp.preparator.command;
 
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
-import de.rub.nds.tlsattacker.core.smtp.command.SmtpHELOCommand;
+import de.rub.nds.tlsattacker.core.smtp.command.SmtpAUTHCommand;
 
-public class HELOCommandPreparator extends SmtpCommandPreparator<SmtpHELOCommand> {
-    public HELOCommandPreparator(SmtpContext context, SmtpHELOCommand command) {
+public class AUTHCommandPreparator extends SmtpCommandPreparator<SmtpAUTHCommand> {
+
+    public AUTHCommandPreparator(SmtpContext context, SmtpAUTHCommand command) {
         super(context.getChooser(), command);
     }
 
     @Override
     public void prepare() {
-        this.getObject().setVerb("HELO");
-        if (this.getObject().getDomain() == null) {
-            this.getObject().setDomain(chooser.getConfig().getDefaultSmtpClientIdentity());
-        }
-        this.getObject().setParameters(this.getObject().getDomain());
+        this.getObject().setVerb("AUTH");
+        this.getObject()
+                .setParameters(
+                        this.getObject().getSaslMechanism()
+                                + " "
+                                + this.getObject().getInitialResponse());
     }
 }

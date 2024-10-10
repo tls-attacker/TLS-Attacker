@@ -121,7 +121,7 @@ public class MAILCommandTest {
         Serializer serializer = mailCommand.getSerializer(context);
         preparator.prepare();
         serializer.serialize();
-        assertEquals("MAIL seal@upb.de\r\n", serializer.getOutputStream().toString());
+        assertEquals("MAIL FROM:<seal@upb.de>\r\n", serializer.getOutputStream().toString());
     }
 
     @Test

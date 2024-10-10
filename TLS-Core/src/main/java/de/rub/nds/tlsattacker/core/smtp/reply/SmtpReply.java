@@ -8,13 +8,18 @@
  */
 package de.rub.nds.tlsattacker.core.smtp.reply;
 
+import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.*;
 import de.rub.nds.tlsattacker.core.smtp.handler.SmtpMessageHandler;
 import de.rub.nds.tlsattacker.core.smtp.handler.SmtpReplyHandler;
 import de.rub.nds.tlsattacker.core.smtp.parser.SmtpMessageParser;
 import de.rub.nds.tlsattacker.core.smtp.parser.reply.SmtpGenericReplyParser;
+import de.rub.nds.tlsattacker.core.smtp.parser.reply.SmtpReplyParser;
 import de.rub.nds.tlsattacker.core.smtp.preparator.SmtpMessagePreparator;
+import de.rub.nds.tlsattacker.core.smtp.preparator.SmtpReplyPreparator;
 import de.rub.nds.tlsattacker.core.smtp.serializer.SmtpMessageSerializer;
 import de.rub.nds.tlsattacker.core.smtp.serializer.SmtpReplySerializer;
 import jakarta.xml.bind.annotation.XmlRootElement;
@@ -33,23 +38,23 @@ public class SmtpReply extends SmtpMessage {
     }
 
     @Override
-    public SmtpMessageHandler<? extends SmtpMessage> getHandler(SmtpContext smtpContext) {
+    public SmtpReplyHandler<? extends SmtpReply> getHandler(SmtpContext smtpContext) {
         return new SmtpReplyHandler<>(smtpContext);
     }
 
     @Override
-    public SmtpMessagePreparator<? extends SmtpMessage> getPreparator(SmtpContext context) {
-        return null;
+    public SmtpReplyPreparator<? extends SmtpReply> getPreparator(SmtpContext context) {
+        return new SmtpReplyPreparator<>(context.getChooser(), this);
     }
 
     @Override
-    public SmtpMessageParser<? extends SmtpMessage> getParser(
+    public SmtpReplyParser<? extends SmtpReply> getParser(
             SmtpContext context, InputStream stream) {
         return new SmtpGenericReplyParser<>(stream);
     }
 
     @Override
-    public SmtpMessageSerializer<? extends SmtpMessage> getSerializer(SmtpContext context) {
+    public SmtpReplySerializer<? extends SmtpReply> getSerializer(SmtpContext context) {
         return new SmtpReplySerializer<>(context, this);
     }
 

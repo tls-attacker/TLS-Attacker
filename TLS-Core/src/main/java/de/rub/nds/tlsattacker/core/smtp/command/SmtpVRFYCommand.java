@@ -26,7 +26,7 @@ public class SmtpVRFYCommand extends SmtpCommand {
     private String username;
 
     public SmtpVRFYCommand() {
-        super(COMMAND_NAME, null);
+        super(COMMAND_NAME);
     }
 
     public SmtpVRFYCommand(String username) {
