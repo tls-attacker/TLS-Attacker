@@ -37,8 +37,8 @@ public class RCPTCommandTest {
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
         SmtpRCPTCommand rcpt = new SmtpRCPTCommand();
         parser.parse(rcpt);
-        assertEquals("RCPT", rcpt.getVerb().getValue());
-        assertEquals("TO:<postmaster>", rcpt.getParameters().getValue());
+        assertEquals("RCPT", rcpt.getVerb());
+        assertEquals("TO:<postmaster>", rcpt.getParameters());
         assertEquals("postmaster", rcpt.getRecipient());
 //        assertTrue(rcpt.isValidRecipient());
     }
@@ -52,8 +52,8 @@ public class RCPTCommandTest {
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
         SmtpRCPTCommand rcpt = new SmtpRCPTCommand();
         parser.parse(rcpt);
-        assertEquals("RCPT", rcpt.getVerb().getValue());
-        assertEquals("TO:<seal@upb.de>", rcpt.getParameters().getValue());
+        assertEquals("RCPT", rcpt.getVerb());
+        assertEquals("TO:<seal@upb.de>", rcpt.getParameters());
         assertEquals("seal@upb.de", rcpt.getRecipient());
 //        assertTrue(rcpt.isValidRecipient());
     }
@@ -67,8 +67,8 @@ public class RCPTCommandTest {
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
         SmtpRCPTCommand rcpt = new SmtpRCPTCommand();
         parser.parse(rcpt);
-        assertEquals("RCPT", rcpt.getVerb().getValue());
-        assertEquals("TO:<@rub.com,@tue.nl:seal@abc.def.ghi>", rcpt.getParameters().getValue());
+        assertEquals("RCPT", rcpt.getVerb());
+        assertEquals("TO:<@rub.com,@tue.nl:seal@abc.def.ghi>", rcpt.getParameters());
         assertEquals("@rub.com,@tue.nl:seal@abc.def.ghi", rcpt.getRecipient());
 //        assertEquals("@rub.com", rcpt.getHops().get(0));
 //        assertEquals("@tue.nl", rcpt.getHops().get(1));
@@ -85,8 +85,8 @@ public class RCPTCommandTest {
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
         SmtpRCPTCommand rcpt = new SmtpRCPTCommand();
         parser.parse(rcpt);
-        assertEquals("RCPT", rcpt.getVerb().getValue());
-        assertEquals("TO:<@hosta.int,@jkl.org:userc@d.bar.org>", rcpt.getParameters().getValue());
+        assertEquals("RCPT", rcpt.getVerb());
+        assertEquals("TO:<@hosta.int,@jkl.org:userc@d.bar.org>", rcpt.getParameters());
         assertEquals("@hosta.int,@jkl.org:userc@d.bar.org", rcpt.getRecipient());
 //        assertEquals("@hosta.int", rcpt.getHops().get(0));
 //        assertEquals("@jkl.org", rcpt.getHops().get(1));
@@ -103,8 +103,8 @@ public class RCPTCommandTest {
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
         SmtpRCPTCommand rcpt = new SmtpRCPTCommand();
         parser.parse(rcpt);
-        assertEquals("RCPT", rcpt.getVerb().getValue());
-        assertEquals("TO:<'*+-/=?^_`{|}~#$@nice.org>", rcpt.getParameters().getValue());
+        assertEquals("RCPT", rcpt.getVerb());
+        assertEquals("TO:<'*+-/=?^_`{|}~#$@nice.org>", rcpt.getParameters());
         assertEquals("'*+-/=?^_`{|}~#$@nice.org", rcpt.getRecipient());
 //        assertTrue(rcpt.isValidRecipient());
     }
@@ -118,8 +118,8 @@ public class RCPTCommandTest {
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
         SmtpRCPTCommand rcpt = new SmtpRCPTCommand();
         parser.parse(rcpt);
-        assertEquals("RCPT", rcpt.getVerb().getValue());
-        assertEquals("TO:<test@[IPv6:2001:470:30:84:e276:63ff:fe72:3900]>", rcpt.getParameters().getValue());
+        assertEquals("RCPT", rcpt.getVerb());
+        assertEquals("TO:<test@[IPv6:2001:470:30:84:e276:63ff:fe72:3900]>", rcpt.getParameters());
         assertEquals("test@[IPv6:2001:470:30:84:e276:63ff:fe72:3900]", rcpt.getRecipient());
 //        assertTrue(rcpt.isValidRecipient());
     }
@@ -133,8 +133,8 @@ public class RCPTCommandTest {
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
         SmtpRCPTCommand rcpt = new SmtpRCPTCommand();
         parser.parse(rcpt);
-        assertEquals("RCPT", rcpt.getVerb().getValue());
-        assertEquals("TO:<seal@[166.84.7.99]>", rcpt.getParameters().getValue());
+        assertEquals("RCPT", rcpt.getVerb());
+        assertEquals("TO:<seal@[166.84.7.99]>", rcpt.getParameters());
         assertEquals("seal@[166.84.7.99]", rcpt.getRecipient());
 //        assertTrue(rcpt.isValidRecipient());
     }
@@ -148,8 +148,8 @@ public class RCPTCommandTest {
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
         SmtpRCPTCommand rcpt = new SmtpRCPTCommand();
         parser.parse(rcpt);
-        assertEquals("RCPT", rcpt.getVerb().getValue());
-        assertEquals("TO:<\"\\@\\@\\@\\@\\@\"@gmail.com>", rcpt.getParameters().getValue());
+        assertEquals("RCPT", rcpt.getVerb());
+        assertEquals("TO:<\"\\@\\@\\@\\@\\@\"@gmail.com>", rcpt.getParameters());
         assertEquals("\"\\@\\@\\@\\@\\@\"@gmail.com", rcpt.getRecipient());
 //        assertTrue(rcpt.isValidRecipient());
     }
@@ -163,8 +163,8 @@ public class RCPTCommandTest {
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
         SmtpRCPTCommand rcpt = new SmtpRCPTCommand();
         parser.parse(rcpt);
-        assertEquals("RCPT", rcpt.getVerb().getValue());
-        assertEquals("TO:<nicerdicer@>", rcpt.getParameters().getValue());
+        assertEquals("RCPT", rcpt.getVerb());
+        assertEquals("TO:<nicerdicer@>", rcpt.getParameters());
         assertEquals("nicerdicer@", rcpt.getRecipient());
     }
 
@@ -177,8 +177,8 @@ public class RCPTCommandTest {
                         new ByteArrayInputStream(stringMessage.getBytes(StandardCharsets.UTF_8)));
         SmtpRCPTCommand rcpt = new SmtpRCPTCommand();
         parser.parse(rcpt);
-        assertEquals("RCPT", rcpt.getVerb().getValue());
-        assertEquals("TO:<@,@:@gmail.com>", rcpt.getParameters().getValue());
+        assertEquals("RCPT", rcpt.getVerb());
+        assertEquals("TO:<@,@:@gmail.com>", rcpt.getParameters());
 //        assertEquals("<@,@:@gmail.com>", rcpt.getRecipient());
     }
 

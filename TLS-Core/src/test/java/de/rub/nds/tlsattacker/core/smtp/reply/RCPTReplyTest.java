@@ -68,7 +68,7 @@ class RCPTReplyTest {
             SmtpRCPTReply RCPT = new SmtpRCPTReply();
             parser.parse(RCPT);
 //            assertTrue(RCPT.isValidReply());
-            assertEquals(Integer.parseInt(reply.substring(0, 3)), RCPT.getReplyCode().getValue());
+            assertEquals(Integer.parseInt(reply.substring(0, 3)), RCPT.getReplyCode());
         }
     }
 
