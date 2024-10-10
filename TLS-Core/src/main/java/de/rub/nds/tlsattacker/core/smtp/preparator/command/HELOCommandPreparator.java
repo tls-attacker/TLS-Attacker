@@ -19,6 +19,9 @@ public class HELOCommandPreparator extends SmtpCommandPreparator<SmtpHELOCommand
     @Override
     public void prepare() {
         this.getObject().setVerb("HELO");
+        if (this.getObject().getDomain() == null) {
+            this.getObject().setDomain(chooser.getConfig().getDefaultSmtpClientIdentity());
+        }
         this.getObject().setParameters(this.getObject().getDomain());
     }
 }

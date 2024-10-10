@@ -30,15 +30,16 @@ public class SmtpMAILCommand extends SmtpCommand {
 
     private String reversePath;
 
-    private List<SmtpParameters> MAILparameters;
+    private final List<SmtpParameters> MAILparameters;
 
     public SmtpMAILCommand() {
-        super(COMMAND, null);
+        super(COMMAND);
         this.MAILparameters = new ArrayList<>();
     }
 
     public SmtpMAILCommand(String reversePath) {
         super(COMMAND, reversePath);
+        this.reversePath = reversePath;
         this.MAILparameters = new ArrayList<>();
     }
 

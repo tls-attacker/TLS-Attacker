@@ -22,6 +22,9 @@ public class RCPTCommandPreparator extends SmtpCommandPreparator<SmtpRCPTCommand
     @Override
     public void prepare() {
         this.getObject().setVerb("RCPT");
+        if (this.getObject().getRecipient() == null) {
+            this.getObject().setRecipient(chooser.getConfig().getDefaultSmtpForwardPath());
+        }
         this.getObject().setParameters("TO:<" + this.getObject().getRecipient() + ">");
     }
 }
