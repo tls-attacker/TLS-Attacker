@@ -51,6 +51,7 @@ public class AckFrame extends QuicFrame {
     private long ect1Config;
     private long ecnCeConfig;
 
+    @SuppressWarnings("unused") // JAXB
     private AckFrame() {}
 
     public AckFrame(boolean withECN) {
