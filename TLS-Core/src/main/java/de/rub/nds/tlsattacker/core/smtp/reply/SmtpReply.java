@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.core.smtp.reply;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
-import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
@@ -29,9 +28,7 @@ import java.io.InputStream;
 @XmlRootElement
 public class SmtpReply extends SmtpMessage {
 
-    @ModifiableVariableProperty
     protected ModifiableInteger replyCode = new ModifiableInteger();
-    @ModifiableVariableProperty
     protected ModifiableString humanReadableMessage = new ModifiableString();
 
     public SmtpReply() {}
@@ -63,7 +60,7 @@ public class SmtpReply extends SmtpMessage {
 
     @Override
     public String toShortString() {
-        return "SMTP_REPLY";
+        return "";
     }
 
     public void setReplyCode(Integer replyCode) {

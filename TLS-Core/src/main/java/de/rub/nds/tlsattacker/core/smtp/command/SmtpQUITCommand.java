@@ -21,7 +21,7 @@ public class SmtpQUITCommand extends SmtpCommand {
     private static final String COMMAND = "QUIT";
 
     public SmtpQUITCommand() {
-        super(COMMAND);
+        super(COMMAND, null);
     }
 
     @Override

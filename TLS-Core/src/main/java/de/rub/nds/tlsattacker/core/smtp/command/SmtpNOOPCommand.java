@@ -8,9 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.smtp.command;
 
-import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
-import de.rub.nds.tlsattacker.core.smtp.preparator.command.NOOPCommandPreparator;
-import de.rub.nds.tlsattacker.core.smtp.preparator.command.SmtpCommandPreparator;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
@@ -19,10 +16,5 @@ public class SmtpNOOPCommand extends SmtpCommand {
 
     public SmtpNOOPCommand() {
         super(COMMAND, null);
-    }
-
-    @Override
-    public SmtpCommandPreparator<? extends SmtpCommand> getPreparator(SmtpContext context) {
-        return new NOOPCommandPreparator(context, this);
     }
 }

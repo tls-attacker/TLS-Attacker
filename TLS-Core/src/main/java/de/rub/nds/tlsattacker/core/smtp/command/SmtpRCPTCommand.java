@@ -32,11 +32,11 @@ public class SmtpRCPTCommand extends SmtpCommand {
 //    private boolean validRecipient = true;
 
     public SmtpRCPTCommand() {
-        super(COMMAND);
+        super(COMMAND, null);
     }
 
     public SmtpRCPTCommand(String recipient) {
-        super(COMMAND);
+        super(COMMAND, null);
         this.recipient = recipient;
     }
 
