@@ -8,14 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.state.State;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlTransient;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * This action allows the declaration of multiple actions, the right one will selected at runtime.
@@ -68,25 +65,6 @@ public class MultiReceiveAction extends GenericReceiveAction {
 
     public List<ReceiveAction> getExpectedActionCandidates() {
         return expectedActionCandidates;
-    }
-
-    private boolean compareExpectedActionsWithReceivedActions(ReceiveAction actionCandidate) {
-        List<ProtocolMessage> expectedMessagesCandidate = actionCandidate.getExpectedMessages();
-        if (expectedMessagesCandidate.size() != super.getReceivedMessages().size()) {
-            return false;
-        }
-        for (int i = 0; i < expectedMessagesCandidate.size(); i++) {
-            ProtocolMessage expectedMessageCandidate = expectedMessagesCandidate.get(i);
-            ProtocolMessage receivedMessage = getReceivedMessages().get(i);
-            if (expectedMessageCandidate.getClass().equals(receivedMessage.getClass())) {
-                return false;
-                // could contain different AlertMessages
-            } else if (expectedMessageCandidate instanceof AlertMessage
-                    && receivedMessage instanceof AlertMessage) {
-                return Objects.equals(expectedMessageCandidate, receivedMessage);
-            }
-        }
-        return true;
     }
 
     private boolean compareExpectedActionsWithReceivedActions2(ReceiveAction actionCandidate) {
