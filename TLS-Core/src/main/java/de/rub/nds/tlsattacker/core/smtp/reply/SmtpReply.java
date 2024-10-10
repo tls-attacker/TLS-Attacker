@@ -60,7 +60,11 @@ public class SmtpReply extends SmtpMessage {
 
     @Override
     public String toShortString() {
-        return "";
+        return "SMTP_REPLY";
+    }
+    @Override
+    public String toCompactString() {
+        return this.getClass().getSimpleName();
     }
 
     public void setReplyCode(Integer replyCode) {

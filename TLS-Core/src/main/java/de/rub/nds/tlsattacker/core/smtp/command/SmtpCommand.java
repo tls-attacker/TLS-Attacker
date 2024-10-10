@@ -65,6 +65,11 @@ public class SmtpCommand extends SmtpMessage {
         return "SMTP_CMD";
     }
 
+    @Override
+    public String toCompactString() {
+        return this.getClass().getSimpleName() + " (" + verb + (parameters != null ? " " + parameters : "") + ")";
+    }
+
     public String getVerb() {
         return verb;
     }
