@@ -27,8 +27,8 @@ public class QuicTransportParametersExtensionParser
     public void parse(QuicTransportParametersExtensionMessage msg) {
         while (getBytesLeft() > 0) {
             QuicTransportParameterEntry entry = new QuicTransportParameterEntry();
-            QuicTransportParameterEntryTypes types = QuicTransportParameterEntryTypes
-                    .getParameterEntryType(parseByteField(1));
+            QuicTransportParameterEntryTypes types =
+                    QuicTransportParameterEntryTypes.getParameterEntryType(parseByteField(1));
 
             if (types == QuicTransportParameterEntryTypes.GOOGLE
                     || types == QuicTransportParameterEntryTypes.PROVISIONAL_PARAMETERS) {

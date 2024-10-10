@@ -27,21 +27,21 @@ import java.util.LinkedList;
 import java.util.List;
 
 @XmlRootElement(name = "ForwardTill")
-public class ForwardTillAction extends CommonForwardAction {
+public class TightForwardTillAction extends CommonForwardAction {
 
     @XmlElementWrapper @HoldsModifiableVariable @XmlElementRef
     protected List<ProtocolMessage> expectedMessages;
 
-    public ForwardTillAction() {}
+    public TightForwardTillAction() {}
 
-    public ForwardTillAction(
+    public TightForwardTillAction(
             String receiveFromAlias, String forwardToAlias, List<ProtocolMessage> messages) {
         this.expectedMessages = messages;
         this.receiveFromAlias = receiveFromAlias;
         this.forwardToAlias = forwardToAlias;
     }
 
-    public ForwardTillAction(
+    public TightForwardTillAction(
             String receiveFromAlias, String forwardToAlias, ProtocolMessage... messages) {
         this(receiveFromAlias, forwardToAlias, new ArrayList<>(Arrays.asList(messages)));
     }
@@ -95,7 +95,8 @@ public class ForwardTillAction extends CommonForwardAction {
         TlsContext tlsContext = state.getTlsContext(getReceiveFromAlias());
         List<LayerConfiguration<?>> configurationList = new LinkedList<>();
         configurationList.add(
-                new ReceiveTillLayerConfiguration<>(ImplementedLayers.MESSAGE, expectedMessages));
+                new ReceiveTillLayerConfiguration<>(
+                        ImplementedLayers.MESSAGE, false, expectedMessages));
         return ActionHelperUtil.sortAndAddOptions(
                 tlsContext.getLayerStack(), false, getActionOptions(), configurationList);
     }

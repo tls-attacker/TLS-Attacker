@@ -29,26 +29,19 @@ import java.io.InputStream;
 @XmlRootElement
 public class AckFrame extends QuicFrame {
 
-    @ModifiableVariableProperty
-    protected ModifiableLong largestAcknowledged;
+    @ModifiableVariableProperty protected ModifiableLong largestAcknowledged;
 
-    @ModifiableVariableProperty
-    protected ModifiableLong ackDelay;
+    @ModifiableVariableProperty protected ModifiableLong ackDelay;
 
-    @ModifiableVariableProperty
-    protected ModifiableLong ackRangeCount;
+    @ModifiableVariableProperty protected ModifiableLong ackRangeCount;
 
-    @ModifiableVariableProperty
-    protected ModifiableLong firstACKRange;
+    @ModifiableVariableProperty protected ModifiableLong firstACKRange;
 
-    @ModifiableVariableProperty
-    protected ModifiableLong ect0;
+    @ModifiableVariableProperty protected ModifiableLong ect0;
 
-    @ModifiableVariableProperty
-    protected ModifiableLong ect1;
+    @ModifiableVariableProperty protected ModifiableLong ect1;
 
-    @ModifiableVariableProperty
-    protected ModifiableLong ecnCe;
+    @ModifiableVariableProperty protected ModifiableLong ecnCe;
 
     private long largestAcknowledgedConfig;
     private long ackDelayConfig;
@@ -58,9 +51,8 @@ public class AckFrame extends QuicFrame {
     private long ect1Config;
     private long ecnCeConfig;
 
-    @SuppressWarnings("unused") //JAXB
-    private AckFrame() {
-    }
+    @SuppressWarnings("unused") // JAXB
+    private AckFrame() {}
 
     public AckFrame(boolean withECN) {
         if (withECN) {
@@ -96,13 +88,15 @@ public class AckFrame extends QuicFrame {
     }
 
     public void setLargestAcknowledged(int largestAcknowledged) {
-        this.largestAcknowledged = ModifiableVariableFactory.safelySetValue(
-                this.largestAcknowledged, (long) largestAcknowledged);
+        this.largestAcknowledged =
+                ModifiableVariableFactory.safelySetValue(
+                        this.largestAcknowledged, (long) largestAcknowledged);
     }
 
     public void setLargestAcknowledged(long largestAcknowledged) {
-        this.largestAcknowledged = ModifiableVariableFactory.safelySetValue(
-                this.largestAcknowledged, largestAcknowledged);
+        this.largestAcknowledged =
+                ModifiableVariableFactory.safelySetValue(
+                        this.largestAcknowledged, largestAcknowledged);
     }
 
     public ModifiableLong getLargestAcknowledged() {
@@ -130,11 +124,13 @@ public class AckFrame extends QuicFrame {
     }
 
     public void setAckRangeCount(long ackRangeCount) {
-        this.ackRangeCount = ModifiableVariableFactory.safelySetValue(this.ackRangeCount, ackRangeCount);
+        this.ackRangeCount =
+                ModifiableVariableFactory.safelySetValue(this.ackRangeCount, ackRangeCount);
     }
 
     public void setAckRangeCount(int ackRangeCount) {
-        this.ackRangeCount = ModifiableVariableFactory.safelySetValue(this.ackRangeCount, (long) ackRangeCount);
+        this.ackRangeCount =
+                ModifiableVariableFactory.safelySetValue(this.ackRangeCount, (long) ackRangeCount);
     }
 
     public ModifiableLong getAckRangeCount() {
@@ -146,11 +142,13 @@ public class AckFrame extends QuicFrame {
     }
 
     public void setFirstACKRange(long firstACKRange) {
-        this.firstACKRange = ModifiableVariableFactory.safelySetValue(this.firstACKRange, firstACKRange);
+        this.firstACKRange =
+                ModifiableVariableFactory.safelySetValue(this.firstACKRange, firstACKRange);
     }
 
     public void setFirstACKRange(int firstACKRange) {
-        this.firstACKRange = ModifiableVariableFactory.safelySetValue(this.firstACKRange, (long) firstACKRange);
+        this.firstACKRange =
+                ModifiableVariableFactory.safelySetValue(this.firstACKRange, (long) firstACKRange);
     }
 
     public ModifiableLong getFirstACKRange() {
