@@ -34,8 +34,8 @@ public class AUTHReplyTest {
 
         parser.parse(auth);
 
-        assertEquals(235, auth.getReplyCode().getValue());
-        assertEquals("Authentication successful", auth.getHumanReadableMessage().getValue());
+        assertEquals(235, auth.getReplyCode());
+        assertEquals("Authentication successful", auth.getHumanReadableMessage());
     }
 
     @Test
