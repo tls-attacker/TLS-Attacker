@@ -19,6 +19,6 @@ public class RESETCommandHandler extends SmtpCommandHandler<SmtpRESETCommand> {
 
     @Override
     public void adjustContextSpecific(SmtpRESETCommand command) {
-        this.getContext().clearBuffers();
+        this.getContext().resetContext();
     }
 }

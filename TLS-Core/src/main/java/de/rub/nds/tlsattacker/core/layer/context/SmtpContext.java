@@ -35,8 +35,11 @@ public class SmtpContext extends LayerContext {
     // server has
     private boolean serverAcknowledgedClose = false;
 
+    // store the old context to evaluate command injection type vulns with SmtpContext through RESET
+    private SmtpContext oldContext;
+
     // SMTP is a back and forth of commands and replies. We need to keep track of each to correctly
-    // get the type of the reply
+    // get the type of the reply, because the reply type cannot be determined by the content alone.
     private SmtpCommand lastCommand = new SmtpInitialGreetingDummy();
 
     public SmtpContext(Context context) {
@@ -47,6 +50,18 @@ public class SmtpContext extends LayerContext {
         reversePathBuffer.clear();
         forwardPathBuffer.clear();
         mailDataBuffer.clear();
+    }
+
+    /**
+     * Reset the context as intended by the RESET command.
+     * The old context is stored to evaluate command injection type vulns with TLSStateVulnFinder.
+     */
+    public void resetContext() {
+        oldContext = new SmtpContext(getContext());
+        oldContext.setReversePathBuffer(getReversePathBuffer());
+        oldContext.setForwardPathBuffer(getForwardPathBuffer());
+        oldContext.setMailDataBuffer(getMailDataBuffer());
+
     }
 
     public void insertReversePath(String reversePath) {
