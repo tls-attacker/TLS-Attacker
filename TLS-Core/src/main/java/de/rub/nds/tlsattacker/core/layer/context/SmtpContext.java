@@ -107,6 +107,17 @@ public class SmtpContext extends LayerContext {
 
     public SmtpReply getExpectedNextReplyType() {
         SmtpCommand command = getLastCommand();
+        return getExpectedReplyType(command);
+    }
+
+    /**
+     * Given a command return an instance of the Reply object expected fpr ot. Raises an exception
+     * when a command is not implemented.
+     *
+     * @param command The command for which to get the expected reply
+     * @return The expected reply object
+     */
+    public static SmtpReply getExpectedReplyType(SmtpCommand command) {
         if (command == null) {
             return null;
         } else {
@@ -134,6 +145,8 @@ public class SmtpContext extends LayerContext {
                 return new SmtpHELPReply();
             } else if (command instanceof SmtpQUITCommand) {
                 return new SmtpQUITReply();
+            } else if (command instanceof SmtpSTARTTLSCommand) {
+                return new SmtpSTARTTLSReply();
             } else {
                 throw new UnsupportedOperationException(
                         "No reply implemented for class in SmtpContext:" + command.getClass());

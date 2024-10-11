@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.layer.impl;
 
+import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
 import de.rub.nds.tlsattacker.core.exceptions.TimeoutException;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
@@ -91,6 +92,14 @@ public class SmtpLayer extends ProtocolLayer<SmtpLayerHint, SmtpMessage> {
             } while (shouldContinueProcessing());
         } catch (TimeoutException e) {
             LOGGER.debug(e);
+        } catch (EndOfStreamException ex) {
+            if (getLayerConfiguration() != null
+                    && getLayerConfiguration().getContainerList() != null
+                    && !getLayerConfiguration().getContainerList().isEmpty()) {
+                LOGGER.debug("Reached end of stream, cannot parse more messages", ex);
+            } else {
+                LOGGER.debug("No messages required for layer.");
+            }
         }
         return getLayerResult();
     }
@@ -102,5 +111,13 @@ public class SmtpLayer extends ProtocolLayer<SmtpLayerHint, SmtpMessage> {
 
     public SmtpCommand getCommandType() {
         return new SmtpCommand();
+    }
+
+    @Override
+    public boolean executedAsPlanned() {
+        //        for(DataContainer<SmtpContext> produced : getLayerResult().getUsedContainers()) {
+        //
+        //        }
+        return true;
     }
 }
