@@ -12,19 +12,16 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.layer.constant.StackConfiguration;
-import de.rub.nds.tlsattacker.core.quic.frame.NewConnectionIdFrame;
 import de.rub.nds.tlsattacker.core.smtp.command.*;
-import de.rub.nds.tlsattacker.core.smtp.reply.SmtpReply;
+import de.rub.nds.tlsattacker.core.smtp.reply.generic.multiline.SmtpDATAContentReply;
 import de.rub.nds.tlsattacker.core.smtp.reply.generic.singleline.*;
 import de.rub.nds.tlsattacker.core.smtp.reply.specific.multiline.SmtpEHLOReply;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceSerializer;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
-import de.rub.nds.tlsattacker.core.workflow.action.WaitAction;
 import jakarta.xml.bind.JAXBException;
 import java.io.IOException;
 import java.security.Security;
@@ -58,16 +55,25 @@ public class SMTPWorkflowTestBench {
         trace.addTlsAction(new ReceiveAction(new SmtpInitialGreeting()));
         trace.addTlsAction(new SendAction(new SmtpEHLOCommand("seal.upb.de")));
         trace.addTlsAction(new ReceiveAction(new SmtpEHLOReply()));
-        trace.addTlsAction(new SendAction(new SmtpAUTHCommand("PLAIN","dXNlcm5hbWU6cGFzc3dvcmQK" )));
-        trace.addTlsAction(new ReceiveAction(new SmtpAUTHReply()));
-        trace.addTlsAction(new SendAction(new SmtpNOOPCommand()));
-        trace.addTlsAction(new ReceiveAction(new SmtpNOOPReply()));
+        //        trace.addTlsAction(new SendAction(new SmtpHELPCommand()));
+        //        trace.addTlsAction(new ReceiveAction(new SmtpHELPReply()));
+        //        trace.addTlsAction(new SendAction(new
+        // SmtpAUTHCommand("PLAIN","dXNlcm5hbWU6cGFzc3dvcmQK" )));
+        //        trace.addTlsAction(new ReceiveAction(new SmtpAUTHReply()));
+        //        trace.addTlsAction(new SendAction(new SmtpNOOPCommand()));
+        //        trace.addTlsAction(new ReceiveAction(new SmtpNOOPReply()));
         trace.addTlsAction(new SendAction(new SmtpMAILCommand()));
         trace.addTlsAction(new ReceiveAction(new SmtpMAILReply()));
-        trace.addTlsAction(new SendAction(new SmtpRESETCommand()));
-        trace.addTlsAction(new ReceiveAction(new SmtpRESETReply()));
-        trace.addTlsAction(new SendAction(new SmtpMAILCommand()));
-        trace.addTlsAction(new ReceiveAction(new SmtpMAILReply()));
+        trace.addTlsAction(new SendAction(new SmtpRCPTCommand()));
+        trace.addTlsAction(new ReceiveAction(new SmtpRCPTReply()));
+        trace.addTlsAction(new SendAction(new SmtpDATACommand()));
+        trace.addTlsAction(new ReceiveAction(new SmtpDATAReply()));
+        trace.addTlsAction(new SendAction(new SmtpDATAContentCommand("Test", "123", "lets go")));
+        trace.addTlsAction(new ReceiveAction(new SmtpDATAContentReply()));
+        //        trace.addTlsAction(new SendAction(new SmtpRESETCommand()));
+        //        trace.addTlsAction(new ReceiveAction(new SmtpRESETReply()));
+        //        trace.addTlsAction(new SendAction(new SmtpMAILCommand()));
+        //        trace.addTlsAction(new ReceiveAction(new SmtpMAILReply()));
         trace.addTlsAction(new SendAction(new SmtpQUITCommand()));
         trace.addTlsAction(new ReceiveAction(new SmtpQUITReply()));
 
@@ -85,9 +91,9 @@ public class SMTPWorkflowTestBench {
             System.out.println(ex);
         }
 
-//        System.out.println(state.getWorkflowTrace().executedAsPlanned());
-//        String res = WorkflowTraceSerializer.write(state.getWorkflowTrace());
-//        System.out.println(res);
+        //        System.out.println(state.getWorkflowTrace().executedAsPlanned());
+        //        String res = WorkflowTraceSerializer.write(state.getWorkflowTrace());
+        //        System.out.println(res);
         assert (state.getWorkflowTrace().executedAsPlanned());
     }
 }
