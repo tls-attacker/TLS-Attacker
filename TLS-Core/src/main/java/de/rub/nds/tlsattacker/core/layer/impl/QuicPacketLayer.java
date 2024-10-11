@@ -8,14 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.layer.impl;
 
-import static de.rub.nds.tlsattacker.core.quic.constants.QuicPacketType.HANDSHAKE_PACKET;
-import static de.rub.nds.tlsattacker.core.quic.constants.QuicPacketType.INITIAL_PACKET;
-import static de.rub.nds.tlsattacker.core.quic.constants.QuicPacketType.ONE_RTT_PACKET;
-import static de.rub.nds.tlsattacker.core.quic.constants.QuicPacketType.RETRY_PACKET;
-import static de.rub.nds.tlsattacker.core.quic.constants.QuicPacketType.UNKNOWN;
-import static de.rub.nds.tlsattacker.core.quic.constants.QuicPacketType.VERSION_NEGOTIATION;
-import static de.rub.nds.tlsattacker.core.quic.constants.QuicPacketType.ZERO_RTT_PACKET;
-
 import de.rub.nds.protocol.exception.EndOfStreamException;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoRuntimeException;
