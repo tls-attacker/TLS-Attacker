@@ -86,7 +86,8 @@ public class SmtpLayer extends ProtocolLayer<SmtpLayerHint, SmtpMessage> {
                     SmtpCommand smtpCommand = new SmtpCommand();
                     readDataContainer(smtpCommand, context);
                 }
-//                LOGGER.trace("Should continue processing: {}", shouldContinueProcessing());
+                //                LOGGER.trace("Should continue processing: {}",
+                // shouldContinueProcessing());
             } while (shouldContinueProcessing());
         } catch (TimeoutException e) {
             LOGGER.debug(e);

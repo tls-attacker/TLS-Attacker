@@ -51,15 +51,14 @@ public class SmtpContext extends LayerContext {
     }
 
     /**
-     * Reset the context as intended by the RESET command.
-     * The old context is stored to evaluate command injection type vulns with TLSStateVulnFinder.
+     * Reset the context as intended by the RESET command. The old context is stored to evaluate
+     * command injection type vulns with TLSStateVulnFinder.
      */
     public void resetContext() {
         oldContext = new SmtpContext(getContext());
         oldContext.setReversePathBuffer(getReversePathBuffer());
         oldContext.setForwardPathBuffer(getForwardPathBuffer());
         oldContext.setMailDataBuffer(getMailDataBuffer());
-
     }
 
     public void insertReversePath(String reversePath) {
@@ -127,8 +126,12 @@ public class SmtpContext extends LayerContext {
                 return new SmtpInitialGreeting();
             } else if (command instanceof SmtpDATACommand) {
                 return new SmtpDATAReply();
+            } else if (command instanceof SmtpRCPTCommand) {
+                return new SmtpRCPTReply();
             } else if (command instanceof SmtpDATAContentCommand) {
                 return new SmtpDATAContentReply();
+            } else if (command instanceof SmtpHELPCommand) {
+                return new SmtpHELPReply();
             } else if (command instanceof SmtpQUITCommand) {
                 return new SmtpQUITReply();
             } else {
