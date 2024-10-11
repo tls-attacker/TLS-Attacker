@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.core.smtp.handler;
 
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
-import de.rub.nds.tlsattacker.core.smtp.reply.SmtpHELPReply;
+import de.rub.nds.tlsattacker.core.smtp.reply.generic.singleline.SmtpHELPReply;
 
 public class HELPReplyHandler extends SmtpReplyHandler<SmtpHELPReply> {
     public HELPReplyHandler(SmtpContext smtpContext) {
@@ -17,5 +17,7 @@ public class HELPReplyHandler extends SmtpReplyHandler<SmtpHELPReply> {
     }
 
     @Override
-    public void adjustContext(SmtpHELPReply smtpMessage) {this.getContext().clearBuffers();}
+    public void adjustContext(SmtpHELPReply smtpMessage) {
+        this.getContext().clearBuffers();
+    }
 }

@@ -6,16 +6,14 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-package de.rub.nds.tlsattacker.core.smtp.parser;
+package de.rub.nds.tlsattacker.core.smtp.parser.command;
 
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpHELPCommand;
-import org.bouncycastle.util.IPAddress;
-
 import java.io.InputStream;
 
 /**
- * Parser to parse message into HELP command, which contains the command and
- * optionally a subject as for example the name of a command.
+ * Parser to parse message into HELP command, which contains the command and optionally a subject as
+ * for example the name of a command.
  */
 public class HELPCommandParser extends SmtpCommandParser<SmtpHELPCommand> {
     public HELPCommandParser(InputStream stream) {
@@ -24,12 +22,10 @@ public class HELPCommandParser extends SmtpCommandParser<SmtpHELPCommand> {
 
     @Override
     public void parseArguments(SmtpHELPCommand command, String arguments) {
-        if (arguments == null || arguments.isEmpty()){
+        if (arguments == null || arguments.isEmpty()) {
             command.setSubject("");
-        }
-        else{
+        } else {
             command.setSubject(arguments);
         }
-        command.setValidParsing(true);
     }
 }

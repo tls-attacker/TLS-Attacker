@@ -8,25 +8,24 @@
  */
 package de.rub.nds.tlsattacker.core.smtp.command;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
-import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.layer.data.Handler;
+import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
-import org.junit.jupiter.api.Test;
-
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for HELP command.
  *
- * Includes parsing of valid and invalid syntax, serialization, and handler.
+ * <p>Includes parsing of valid and invalid syntax, serialization, and handler.
  */
 public class HELPCommandTest {
     @Test
@@ -42,7 +41,6 @@ public class HELPCommandTest {
         parser.parse(HELPCommand);
         assertEquals("HELP", HELPCommand.getVerb());
         assertEquals("", HELPCommand.getSubject());
-        assertTrue(HELPCommand.isValidParsing());
     }
 
     @Test
@@ -58,7 +56,6 @@ public class HELPCommandTest {
         parser.parse(HELPCommand);
         assertEquals("HELP", HELPCommand.getVerb());
         assertEquals("", HELPCommand.getSubject());
-        assertTrue(HELPCommand.isValidParsing());
     }
 
     @Test
@@ -74,7 +71,6 @@ public class HELPCommandTest {
         parser.parse(HELPCommand);
         assertEquals("HELP", HELPCommand.getVerb());
         assertEquals("DATA", HELPCommand.getSubject());
-        assertTrue(HELPCommand.isValidParsing());
     }
 
     @Test
