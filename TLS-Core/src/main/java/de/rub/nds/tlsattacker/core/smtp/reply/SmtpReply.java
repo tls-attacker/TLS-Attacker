@@ -8,19 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.smtp.reply;
 
-import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
-import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.*;
-import de.rub.nds.tlsattacker.core.smtp.handler.SmtpMessageHandler;
 import de.rub.nds.tlsattacker.core.smtp.handler.SmtpReplyHandler;
-import de.rub.nds.tlsattacker.core.smtp.parser.SmtpMessageParser;
 import de.rub.nds.tlsattacker.core.smtp.parser.reply.SmtpGenericReplyParser;
 import de.rub.nds.tlsattacker.core.smtp.parser.reply.SmtpReplyParser;
-import de.rub.nds.tlsattacker.core.smtp.preparator.SmtpMessagePreparator;
 import de.rub.nds.tlsattacker.core.smtp.preparator.SmtpReplyPreparator;
-import de.rub.nds.tlsattacker.core.smtp.serializer.SmtpMessageSerializer;
 import de.rub.nds.tlsattacker.core.smtp.serializer.SmtpReplySerializer;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
@@ -48,8 +41,7 @@ public class SmtpReply extends SmtpMessage {
     }
 
     @Override
-    public SmtpReplyParser<? extends SmtpReply> getParser(
-            SmtpContext context, InputStream stream) {
+    public SmtpReplyParser<? extends SmtpReply> getParser(SmtpContext context, InputStream stream) {
         return new SmtpGenericReplyParser<>(stream);
     }
 
@@ -62,6 +54,7 @@ public class SmtpReply extends SmtpMessage {
     public String toShortString() {
         return "SMTP_REPLY";
     }
+
     @Override
     public String toCompactString() {
         return this.getClass().getSimpleName();

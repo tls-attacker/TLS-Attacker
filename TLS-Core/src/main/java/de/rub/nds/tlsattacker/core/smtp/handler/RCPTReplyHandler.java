@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.core.smtp.handler;
 
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
-import de.rub.nds.tlsattacker.core.smtp.reply.specific.multiline.SmtpRCPTReply;
+import de.rub.nds.tlsattacker.core.smtp.reply.generic.singleline.SmtpRCPTReply;
 
 public class RCPTReplyHandler extends SmtpReplyHandler<SmtpRCPTReply> {
     public RCPTReplyHandler(SmtpContext smtpContext) {

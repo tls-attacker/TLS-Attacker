@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.core.smtp.reply.specific.multiline;
 
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.SmtpMessage;
-import de.rub.nds.tlsattacker.core.smtp.parser.SmtpMessageParser;
 import de.rub.nds.tlsattacker.core.smtp.parser.reply.SmtpReplyParser;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpReply;
 import jakarta.xml.bind.annotation.XmlRootElement;

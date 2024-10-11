@@ -15,10 +15,11 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
 /**
- * This class represents the AUTH command of the SMTP protocol. The AUTH command is used to authenticate the client to the server.
- * So far only the PLAIN mechanism is supported. Multistep authentication is not supported.
+ * This class represents the AUTH command of the SMTP protocol. The AUTH command is used to
+ * authenticate the client to the server. So far only the PLAIN mechanism is supported. Multistep
+ * authentication is not supported.
+ *
  * @see <a href="https://datatracker.ietf.org/doc/html/rfc4954">RFC 4954</a>
-
  */
 @XmlRootElement
 public class SmtpAUTHCommand extends SmtpCommand {

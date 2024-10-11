@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests for RCPT command.
  *
- * Includes parsing of valid and invalid syntax, serialization, and handler.
+ * <p>Includes parsing of valid and invalid syntax, serialization, and handler.
  */
 public class RCPTCommandTest {
     @Test
@@ -40,7 +40,7 @@ public class RCPTCommandTest {
         assertEquals("RCPT", rcpt.getVerb());
         assertEquals("TO:<postmaster>", rcpt.getParameters());
         assertEquals("postmaster", rcpt.getRecipient());
-//        assertTrue(rcpt.isValidRecipient());
+        //        assertTrue(rcpt.isValidRecipient());
     }
 
     @Test
@@ -55,7 +55,7 @@ public class RCPTCommandTest {
         assertEquals("RCPT", rcpt.getVerb());
         assertEquals("TO:<seal@upb.de>", rcpt.getParameters());
         assertEquals("seal@upb.de", rcpt.getRecipient());
-//        assertTrue(rcpt.isValidRecipient());
+        //        assertTrue(rcpt.isValidRecipient());
     }
 
     @Test
@@ -70,10 +70,10 @@ public class RCPTCommandTest {
         assertEquals("RCPT", rcpt.getVerb());
         assertEquals("TO:<@rub.com,@tue.nl:seal@abc.def.ghi>", rcpt.getParameters());
         assertEquals("@rub.com,@tue.nl:seal@abc.def.ghi", rcpt.getRecipient());
-//        assertEquals("@rub.com", rcpt.getHops().get(0));
-//        assertEquals("@tue.nl", rcpt.getHops().get(1));
-//        assertEquals(2, rcpt.getHops().size());
-//        assertTrue(rcpt.isValidRecipient());
+        //        assertEquals("@rub.com", rcpt.getHops().get(0));
+        //        assertEquals("@tue.nl", rcpt.getHops().get(1));
+        //        assertEquals(2, rcpt.getHops().size());
+        //        assertTrue(rcpt.isValidRecipient());
     }
 
     @Test
@@ -88,10 +88,10 @@ public class RCPTCommandTest {
         assertEquals("RCPT", rcpt.getVerb());
         assertEquals("TO:<@hosta.int,@jkl.org:userc@d.bar.org>", rcpt.getParameters());
         assertEquals("@hosta.int,@jkl.org:userc@d.bar.org", rcpt.getRecipient());
-//        assertEquals("@hosta.int", rcpt.getHops().get(0));
-//        assertEquals("@jkl.org", rcpt.getHops().get(1));
-//        assertEquals(2, rcpt.getHops().size());
-//        assertTrue(rcpt.isValidRecipient());
+        //        assertEquals("@hosta.int", rcpt.getHops().get(0));
+        //        assertEquals("@jkl.org", rcpt.getHops().get(1));
+        //        assertEquals(2, rcpt.getHops().size());
+        //        assertTrue(rcpt.isValidRecipient());
     }
 
     @Test
@@ -106,7 +106,7 @@ public class RCPTCommandTest {
         assertEquals("RCPT", rcpt.getVerb());
         assertEquals("TO:<'*+-/=?^_`{|}~#$@nice.org>", rcpt.getParameters());
         assertEquals("'*+-/=?^_`{|}~#$@nice.org", rcpt.getRecipient());
-//        assertTrue(rcpt.isValidRecipient());
+        //        assertTrue(rcpt.isValidRecipient());
     }
 
     @Test
@@ -121,7 +121,7 @@ public class RCPTCommandTest {
         assertEquals("RCPT", rcpt.getVerb());
         assertEquals("TO:<test@[IPv6:2001:470:30:84:e276:63ff:fe72:3900]>", rcpt.getParameters());
         assertEquals("test@[IPv6:2001:470:30:84:e276:63ff:fe72:3900]", rcpt.getRecipient());
-//        assertTrue(rcpt.isValidRecipient());
+        //        assertTrue(rcpt.isValidRecipient());
     }
 
     @Test
@@ -136,7 +136,7 @@ public class RCPTCommandTest {
         assertEquals("RCPT", rcpt.getVerb());
         assertEquals("TO:<seal@[166.84.7.99]>", rcpt.getParameters());
         assertEquals("seal@[166.84.7.99]", rcpt.getRecipient());
-//        assertTrue(rcpt.isValidRecipient());
+        //        assertTrue(rcpt.isValidRecipient());
     }
 
     @Test
@@ -151,7 +151,7 @@ public class RCPTCommandTest {
         assertEquals("RCPT", rcpt.getVerb());
         assertEquals("TO:<\"\\@\\@\\@\\@\\@\"@gmail.com>", rcpt.getParameters());
         assertEquals("\"\\@\\@\\@\\@\\@\"@gmail.com", rcpt.getRecipient());
-//        assertTrue(rcpt.isValidRecipient());
+        //        assertTrue(rcpt.isValidRecipient());
     }
 
     @Test
@@ -179,7 +179,7 @@ public class RCPTCommandTest {
         parser.parse(rcpt);
         assertEquals("RCPT", rcpt.getVerb());
         assertEquals("TO:<@,@:@gmail.com>", rcpt.getParameters());
-//        assertEquals("<@,@:@gmail.com>", rcpt.getRecipient());
+        //        assertEquals("<@,@:@gmail.com>", rcpt.getRecipient());
     }
 
     @Test

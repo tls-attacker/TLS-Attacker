@@ -11,14 +11,12 @@ package de.rub.nds.tlsattacker.core.smtp.command;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.parser.command.HELPCommandParser;
 import jakarta.xml.bind.annotation.XmlRootElement;
-
 import java.io.InputStream;
 
 /**
- * This command causes the server to send helpful information to the client.
- * The command MAY take an argument (e.g., any command name) and return more
- * specific information as a response. When the content is not following the
- * RFC 5321 syntax, the validParsing parameter is set to False.
+ * This command causes the server to send helpful information to the client. The command MAY take an
+ * argument (e.g., any command name) and return more specific information as a response. When the
+ * content is not following the RFC 5321 syntax, the validParsing parameter is set to False.
  */
 @XmlRootElement
 public class SmtpHELPCommand extends SmtpCommand {

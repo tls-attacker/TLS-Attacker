@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import de.rub.nds.tlsattacker.core.smtp.parser.reply.RCPTReplyParser;
-import de.rub.nds.tlsattacker.core.smtp.reply.specific.multiline.SmtpRCPTReply;
+import de.rub.nds.tlsattacker.core.smtp.reply.generic.singleline.SmtpRCPTReply;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import java.io.ByteArrayInputStream;
@@ -26,7 +26,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests for RCPT reply.
  *
- * Includes parsing of valid and invalid syntax and serialization.
+ * <p>Includes parsing of valid and invalid syntax and serialization.
  */
 class RCPTReplyTest {
     @Test
@@ -67,7 +67,7 @@ class RCPTReplyTest {
 
             SmtpRCPTReply RCPT = new SmtpRCPTReply();
             parser.parse(RCPT);
-//            assertTrue(RCPT.isValidReply());
+            //            assertTrue(RCPT.isValidReply());
             assertEquals(Integer.parseInt(reply.substring(0, 3)), RCPT.getReplyCode());
         }
     }
@@ -83,7 +83,7 @@ class RCPTReplyTest {
 
             SmtpRCPTReply RCPT = new SmtpRCPTReply();
             parser.parse(RCPT);
-//            assertFalse(RCPT.isValidReply());
+            //            assertFalse(RCPT.isValidReply());
         }
     }
 

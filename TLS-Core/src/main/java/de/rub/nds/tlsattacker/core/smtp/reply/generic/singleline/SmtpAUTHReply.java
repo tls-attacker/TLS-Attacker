@@ -12,9 +12,8 @@ import de.rub.nds.tlsattacker.core.smtp.reply.SmtpReply;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
- * Models the reply to the AUTH command.
- * Defined in RFC 4954.
- * Follows the normal reply format of status code with human-readable message.
+ * Models the reply to the AUTH command. Defined in RFC 4954. Follows the normal reply format of
+ * status code with human-readable message.
  */
 @XmlRootElement
 public class SmtpAUTHReply extends SmtpReply {}

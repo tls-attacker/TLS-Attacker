@@ -9,9 +9,6 @@
 package de.rub.nds.tlsattacker.core.smtp.reply.specific.multiline;
 
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
-import de.rub.nds.tlsattacker.core.smtp.SmtpMessage;
-import de.rub.nds.tlsattacker.core.smtp.parser.SmtpMessageParser;
-import de.rub.nds.tlsattacker.core.smtp.parser.command.VRFYCommandParser;
 import de.rub.nds.tlsattacker.core.smtp.parser.reply.SmtpReplyParser;
 import de.rub.nds.tlsattacker.core.smtp.parser.reply.VRFYReplyParser;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpReply;
@@ -73,8 +70,7 @@ public class SmtpVRFYReply extends SmtpReply {
     }
 
     @Override
-    public SmtpReplyParser<? extends SmtpReply> getParser(
-            SmtpContext context, InputStream stream) {
+    public SmtpReplyParser<? extends SmtpReply> getParser(SmtpContext context, InputStream stream) {
         return new VRFYReplyParser(stream);
     }
 

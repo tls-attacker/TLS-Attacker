@@ -20,10 +20,10 @@ public class MAILCommandPreparator extends SmtpCommandPreparator<SmtpMAILCommand
     @Override
     public void prepare() {
         this.getObject().setVerb("MAIL");
-        if(this.getObject().getReversePath() == null) {
+        if (this.getObject().getReversePath() == null) {
             this.getObject().setReversePath(chooser.getConfig().getDefaultSmtpReversePath());
         }
-        StringBuilder pars = new StringBuilder("FROM:<" + this.getObject().getReversePath()+">");
+        StringBuilder pars = new StringBuilder("FROM:<" + this.getObject().getReversePath() + ">");
         if (this.getObject().getMAILparameters() != null) {
             for (SmtpParameters MAILparameters : this.getObject().getMAILparameters()) {
                 pars.append(" ").append(MAILparameters.toString());
