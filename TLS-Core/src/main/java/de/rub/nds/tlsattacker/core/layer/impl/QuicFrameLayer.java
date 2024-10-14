@@ -8,20 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.layer.impl;
 
-import static de.rub.nds.tlsattacker.core.quic.constants.QuicFrameType.CONNECTION_CLOSE_QUIC_FRAME;
-import static de.rub.nds.tlsattacker.core.quic.constants.QuicFrameType.CRYPTO_FRAME;
-import static de.rub.nds.tlsattacker.core.quic.constants.QuicFrameType.PATH_CHALLENGE_FRAME;
-import static de.rub.nds.tlsattacker.core.quic.constants.QuicFrameType.PATH_RESPONSE_FRAME;
-import static de.rub.nds.tlsattacker.core.quic.constants.QuicFrameType.PING_FRAME;
-import static de.rub.nds.tlsattacker.core.quic.constants.QuicFrameType.STREAM_FRAME;
-import static de.rub.nds.tlsattacker.core.quic.constants.QuicFrameType.STREAM_FRAME_FIN;
-import static de.rub.nds.tlsattacker.core.quic.constants.QuicFrameType.STREAM_FRAME_LEN;
-import static de.rub.nds.tlsattacker.core.quic.constants.QuicFrameType.STREAM_FRAME_LEN_FIN;
-import static de.rub.nds.tlsattacker.core.quic.constants.QuicFrameType.STREAM_FRAME_OFF;
-import static de.rub.nds.tlsattacker.core.quic.constants.QuicFrameType.STREAM_FRAME_OFF_FIN;
-import static de.rub.nds.tlsattacker.core.quic.constants.QuicFrameType.STREAM_FRAME_OFF_LEN;
-import static de.rub.nds.tlsattacker.core.quic.constants.QuicFrameType.STREAM_FRAME_OFF_LEN_FIN;
-
 import de.rub.nds.protocol.exception.EndOfStreamException;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.TimeoutException;
