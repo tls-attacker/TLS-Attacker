@@ -32,7 +32,7 @@ public class RecordSizeLimitExtensionHandlerTest
                 RecordSizeLimitExtensionMessage::new,
                 RecordSizeLimitExtensionHandler::new,
                 () -> {
-                    Config config = Config.createConfig();
+                    Config config = new Config();
                     config.setDefaultRunningMode(RunningModeType.SERVER);
                     return new Context(new State(config), new InboundConnection()).getTlsContext();
                 });

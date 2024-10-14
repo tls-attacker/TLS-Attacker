@@ -196,6 +196,9 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
                     }
                     getLowerLayer().sendData(packetLayerHint, stream.toByteArray());
                     break;
+                default:
+                    LOGGER.debug("Unsupported message type: {}", hint.getMessageType());
+                    break;
             }
         } else {
             throw new UnsupportedOperationException(

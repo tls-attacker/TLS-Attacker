@@ -42,23 +42,27 @@ public class ECDHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     }
 
     @Override
-    public ECDHClientKeyExchangeHandler getHandler(TlsContext tlsContext) {
-        return new ECDHClientKeyExchangeHandler(tlsContext);
+    public ECDHClientKeyExchangeHandler<? extends ECDHClientKeyExchangeMessage> getHandler(
+            TlsContext tlsContext) {
+        return new ECDHClientKeyExchangeHandler<>(tlsContext);
     }
 
     @Override
-    public ECDHClientKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new ECDHClientKeyExchangeParser(stream, tlsContext);
+    public ECDHClientKeyExchangeParser<? extends ECDHClientKeyExchangeMessage> getParser(
+            TlsContext tlsContext, InputStream stream) {
+        return new ECDHClientKeyExchangeParser<>(stream, tlsContext);
     }
 
     @Override
-    public ECDHClientKeyExchangePreparator getPreparator(TlsContext tlsContext) {
-        return new ECDHClientKeyExchangePreparator(tlsContext.getChooser(), this);
+    public ECDHClientKeyExchangePreparator<? extends ECDHClientKeyExchangeMessage> getPreparator(
+            TlsContext tlsContext) {
+        return new ECDHClientKeyExchangePreparator<>(tlsContext.getChooser(), this);
     }
 
     @Override
-    public ECDHClientKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
-        return new ECDHClientKeyExchangeSerializer(this);
+    public ECDHClientKeyExchangeSerializer<? extends ECDHClientKeyExchangeMessage> getSerializer(
+            TlsContext tlsContext) {
+        return new ECDHClientKeyExchangeSerializer<>(this);
     }
 
     @Override

@@ -53,7 +53,7 @@ public class RecordSizeLimitDelegateTest extends AbstractDelegateTest<RecordSize
     /** Test of applyDelegate method, of class RecordSizeLimitDelegate. */
     @Test
     public void testApplyDelegate() {
-        Config config = Config.createConfig();
+        Config config = new Config();
         args = new String[2];
         args[0] = "-record_size_limit";
         args[1] = "1337";
@@ -66,7 +66,7 @@ public class RecordSizeLimitDelegateTest extends AbstractDelegateTest<RecordSize
 
     @Test
     public void testApplyDelegateOutOfLowerBound() {
-        Config config = Config.createConfig();
+        Config config = new Config();
         args = new String[2];
         args[0] = "-record_size_limit";
         args[1] = "0";
@@ -78,7 +78,7 @@ public class RecordSizeLimitDelegateTest extends AbstractDelegateTest<RecordSize
 
     @Test
     public void testApplyDelegateOutOfUpperBound() {
-        Config config = Config.createConfig();
+        Config config = new Config();
         args = new String[2];
         args[0] = "-record_size_limit";
         args[1] = "65536";
@@ -90,7 +90,7 @@ public class RecordSizeLimitDelegateTest extends AbstractDelegateTest<RecordSize
 
     @Test
     public void testApplyDelegateNegative() {
-        Config config = Config.createConfig();
+        Config config = new Config();
         args = new String[2];
         args[0] = "-record_size_limit";
         args[1] = "-1";
@@ -102,8 +102,8 @@ public class RecordSizeLimitDelegateTest extends AbstractDelegateTest<RecordSize
 
     @Test
     public void testNothingSetNothingChanges() {
-        Config config = Config.createConfig();
-        Config config2 = Config.createConfig();
+        Config config = new Config();
+        Config config2 = new Config();
         delegate.applyDelegate(config);
         assertTrue(EqualsBuilder.reflectionEquals(config, config2, "certificateChainConfig"));
     }

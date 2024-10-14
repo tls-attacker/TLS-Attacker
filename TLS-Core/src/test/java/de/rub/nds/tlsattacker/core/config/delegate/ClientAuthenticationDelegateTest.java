@@ -45,7 +45,7 @@ public class ClientAuthenticationDelegateTest
     /** Test of applyDelegate method, of class ClientAuthenticationDelegate. */
     @Test
     public void testApplyDelegate() {
-        Config config = Config.createConfig();
+        Config config = new Config();
         config.setClientAuthentication(false);
         args = new String[1];
         args[0] = "-client_authentication";
@@ -56,8 +56,8 @@ public class ClientAuthenticationDelegateTest
 
     @Test
     public void testNothingSetNothingChanges() {
-        Config config = Config.createConfig();
-        Config config2 = Config.createConfig();
+        Config config = new Config();
+        Config config2 = new Config();
         delegate.applyDelegate(config);
         assertTrue(EqualsBuilder.reflectionEquals(config, config2, "certificateChainConfig"));
     }

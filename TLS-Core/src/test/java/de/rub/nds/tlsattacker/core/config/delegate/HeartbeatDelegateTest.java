@@ -53,7 +53,7 @@ public class HeartbeatDelegateTest extends AbstractDelegateTest<HeartbeatDelegat
     /** Test of applyDelegate method, of class HeartbeatDelegate. */
     @Test
     public void testApplyDelegate() {
-        Config config = Config.createConfig();
+        Config config = new Config();
         config.setHeartbeatMode(null);
         args = new String[2];
         args[0] = "-heartbeat_mode";
@@ -67,8 +67,8 @@ public class HeartbeatDelegateTest extends AbstractDelegateTest<HeartbeatDelegat
 
     @Test
     public void testNothingSetNothingChanges() {
-        Config config = Config.createConfig();
-        Config config2 = Config.createConfig();
+        Config config = new Config();
+        Config config2 = new Config();
         delegate.applyDelegate(config);
         assertTrue(EqualsBuilder.reflectionEquals(config, config2, "certificateChainConfig"));
     }

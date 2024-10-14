@@ -36,7 +36,7 @@ public class TlsAttackerSocketTest {
 
     @BeforeEach
     public void setUp() {
-        Config config = Config.createConfig();
+        Config config = new Config();
         state = new State(config, new WorkflowTrace());
         context = state.getContext();
         context.getTlsContext().setSelectedProtocolVersion(ProtocolVersion.TLS12);

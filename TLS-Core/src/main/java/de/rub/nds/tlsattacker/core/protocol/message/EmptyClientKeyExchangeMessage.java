@@ -47,18 +47,21 @@ public class EmptyClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     }
 
     @Override
-    public EmptyClientKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new EmptyClientKeyExchangeParser(stream, tlsContext);
+    public EmptyClientKeyExchangeParser<EmptyClientKeyExchangeMessage> getParser(
+            TlsContext tlsContext, InputStream stream) {
+        return new EmptyClientKeyExchangeParser<>(stream, tlsContext);
     }
 
     @Override
-    public EmptyClientKeyExchangePreparator getPreparator(TlsContext tlsContext) {
-        return new EmptyClientKeyExchangePreparator(tlsContext.getChooser(), this);
+    public EmptyClientKeyExchangePreparator<EmptyClientKeyExchangeMessage> getPreparator(
+            TlsContext tlsContext) {
+        return new EmptyClientKeyExchangePreparator<>(tlsContext.getChooser(), this);
     }
 
     @Override
-    public EmptyClientKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
-        return new EmptyClientKeyExchangeSerializer(this);
+    public EmptyClientKeyExchangeSerializer<EmptyClientKeyExchangeMessage> getSerializer(
+            TlsContext tlsContext) {
+        return new EmptyClientKeyExchangeSerializer<>(this);
     }
 
     @Override
