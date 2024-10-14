@@ -280,7 +280,10 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
                 readUnknownProtocolData();
                 break;
             default:
-                LOGGER.error("Undefined record layer type");
+                readUnknownProtocolData();
+                LOGGER.warn(
+                        "Undefined record layer type ({})",
+                        (hint.getType() == null ? "null" : hint.getType()));
                 break;
         }
     }
