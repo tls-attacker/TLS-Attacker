@@ -31,6 +31,7 @@ public class DatagramFrame extends QuicFrame {
     private int lengthConfig;
     private byte[] dataConfig;
 
+    @SuppressWarnings("unused") // JAXB
     private DatagramFrame() {}
 
     public DatagramFrame(boolean isLengthField) {

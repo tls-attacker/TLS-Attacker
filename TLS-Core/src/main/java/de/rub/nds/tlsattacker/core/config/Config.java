@@ -1156,9 +1156,6 @@ public class Config implements Serializable {
     @XmlJavaTypeAdapter(IllegalStringAdapter.class)
     private String defaultPWDPassword = "barney";
 
-    /** Min iterations for finding the PWD password element */
-    private Integer defaultPWDIterations = 40;
-
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultServerPWDPrivate =
             ArrayConverter.hexStringToByteArray(
@@ -3589,14 +3586,6 @@ public class Config implements Serializable {
 
     public void setDefaultPWDPassword(String password) {
         this.defaultPWDPassword = password;
-    }
-
-    public Integer getDefaultPWDIterations() {
-        return defaultPWDIterations;
-    }
-
-    public void setDefaultPWDIterations(Integer defaultPWDIterations) {
-        this.defaultPWDIterations = defaultPWDIterations;
     }
 
     public byte[] getDefaultServerPWDPrivate() {

@@ -345,9 +345,10 @@ public class WorkflowTraceConfigurationUtil {
             List<List<DataContainer<?>>> configuredDataContainerLists =
                     action.getConfiguredDataContainerLists();
             for (List<DataContainer<?>> dataContainerList : configuredDataContainerLists) {
-                if (!dataContainerList.isEmpty()
-                        && dataContainerList.get(0) instanceof ProtocolMessage) {
-                    sendMessages.add((ProtocolMessage) dataContainerList.get(0));
+                for (DataContainer<?> dataContainer : dataContainerList) {
+                    if (dataContainer instanceof ProtocolMessage) {
+                        sendMessages.add((ProtocolMessage) dataContainer);
+                    }
                 }
             }
         }
@@ -360,9 +361,10 @@ public class WorkflowTraceConfigurationUtil {
             List<List<DataContainer<?>>> configuredDataContainerLists =
                     action.getExpectedDataContainerLists();
             for (List<DataContainer<?>> dataContainerList : configuredDataContainerLists) {
-                if (!dataContainerList.isEmpty()
-                        && dataContainerList.get(0) instanceof ProtocolMessage) {
-                    receiveMessages.add((ProtocolMessage) dataContainerList.get(0));
+                for (DataContainer<?> dataContainer : dataContainerList) {
+                    if (dataContainer instanceof ProtocolMessage) {
+                        receiveMessages.add((ProtocolMessage) dataContainer);
+                    }
                 }
             }
         }

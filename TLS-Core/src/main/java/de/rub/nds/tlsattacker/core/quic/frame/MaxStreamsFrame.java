@@ -27,6 +27,7 @@ public class MaxStreamsFrame extends QuicFrame {
 
     private int maximumStreamsConfig;
 
+    @SuppressWarnings("unused") // JAXB
     private MaxStreamsFrame() {}
 
     public MaxStreamsFrame(boolean isBidirectional) {

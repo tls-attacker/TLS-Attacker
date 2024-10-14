@@ -136,4 +136,12 @@ public class CipherSuiteTest {
         } catch (UnknownCipherSuiteException e) {
         }
     }
+
+    @Test
+    public void testCipherSuitesByteValue() {
+        assertArrayEquals(new byte[] {0x7A, 0X7A}, CipherSuite.GREASE_07.getByteValue());
+        assertArrayEquals(
+                new byte[] {(byte) 0xC0, (byte) 0X9A},
+                CipherSuite.TLS_ECDHE_PSK_WITH_CAMELLIA_128_CBC_SHA256.getByteValue());
+    }
 }

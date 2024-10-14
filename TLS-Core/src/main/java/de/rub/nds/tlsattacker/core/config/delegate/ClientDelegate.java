@@ -158,15 +158,6 @@ public class ClientDelegate extends Delegate {
         throw new UnknownHostException();
     }
 
-    private String getHostForIp(String ip) {
-        try {
-            return InetAddress.getByName(ip).getCanonicalHostName();
-        } catch (UnknownHostException ex) {
-            LOGGER.warn("Could not perform reverse DNS for \"{}\"", ip, ex);
-            return ip;
-        }
-    }
-
     public String getSniHostname() {
         return sniHostname;
     }
