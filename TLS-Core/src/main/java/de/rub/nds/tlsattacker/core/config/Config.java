@@ -278,11 +278,12 @@ public class Config implements Serializable {
 
     @XmlElement(name = "defaultSniHostname")
     @XmlElementWrapper
-    private List<ServerNamePair> defaultSniHostnames = new LinkedList<>(
-            List.of(
-                    new ServerNamePair(
-                            SniType.HOST_NAME.getValue(),
-                            "example.com".getBytes(US_ASCII))));
+    private List<ServerNamePair> defaultSniHostnames =
+            new LinkedList<>(
+                    List.of(
+                            new ServerNamePair(
+                                    SniType.HOST_NAME.getValue(),
+                                    "example.com".getBytes(US_ASCII))));
     /** Key type for KeyShareExtension */
     private NamedGroup defaultSelectedNamedGroup = NamedGroup.SECP256R1;
 
@@ -349,7 +350,8 @@ public class Config implements Serializable {
     private List<TokenBindingKeyParameters> defaultTokenBindingKeyParameters;
 
     /** This is the request type of the CertificateStatusRequest extension */
-    private CertificateStatusRequestType certificateStatusRequestExtensionRequestType = CertificateStatusRequestType.OCSP;
+    private CertificateStatusRequestType certificateStatusRequestExtensionRequestType =
+            CertificateStatusRequestType.OCSP;
 
     /** This is the responder ID list of the CertificateStatusRequest extension */
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
@@ -377,7 +379,8 @@ public class Config implements Serializable {
 
     /** Default SRP Identifier */
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
-    private byte[] secureRemotePasswordExtensionIdentifier = "UserName".getBytes(Charset.forName("UTF-8"));
+    private byte[] secureRemotePasswordExtensionIdentifier =
+            "UserName".getBytes(Charset.forName("UTF-8"));
 
     /** Default SRTP extension protection profiles. */
     @XmlElement(name = "clientSupportedSrtpProtectionProfiles")
@@ -389,14 +392,16 @@ public class Config implements Serializable {
     @XmlElementWrapper
     private List<SrtpProtectionProfile> serverSupportedSrtpProtectionProfiles;
 
-    private SrtpProtectionProfile defaultSelectedSrtpProtectionProfile = SrtpProtectionProfile.SRTP_AES128_CM_HMAC_SHA1_80;
+    private SrtpProtectionProfile defaultSelectedSrtpProtectionProfile =
+            SrtpProtectionProfile.SRTP_AES128_CM_HMAC_SHA1_80;
 
     /** Default SRTP extension master key identifier */
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] secureRealTimeTransportProtocolMasterKeyIdentifier = new byte[0];
 
     /** Default user mapping extension hint type */
-    private UserMappingExtensionHintType userMappingExtensionHintType = UserMappingExtensionHintType.UPN_DOMAIN_HINT;
+    private UserMappingExtensionHintType userMappingExtensionHintType =
+            UserMappingExtensionHintType.UPN_DOMAIN_HINT;
 
     /** Default certificate type extension desired types */
     @XmlElement(name = "certificateTypeDesiredType")
@@ -598,7 +603,7 @@ public class Config implements Serializable {
     /** Default ConnectionID to use, if addConnectionIdExtension is true */
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     @XmlElement(name = "defaultConnectionId")
-    private byte[] defaultConnectionId = { 0x01, 0x02, 0x03 };
+    private byte[] defaultConnectionId = {0x01, 0x02, 0x03};
 
     /** If we generate a ClientHello / ServerHello with DTLS 1.2 ConnectionID extension */
     private Boolean addConnectionIdExtension = false;
@@ -673,28 +678,33 @@ public class Config implements Serializable {
 
     private BigInteger defaultServerEphemeralDhGenerator = new BigInteger("2");
 
-    private BigInteger defaultServerEphemeralDhModulus = new BigInteger(
-            "5809605995369958062791915965639201402176612226902900533702900882779736177890990861472094774477339581147373410185646378328043729800750470098210924487866935059164371588168047540943981644516632755067501626434556398193186628990071248660819361205119793693985433297036118232914410171876807536457391277857011849897410207519105333355801121109356897459426271845471397952675959440793493071628394122780510124618488232602464649876850458861245784240929258426287699705312584509625419513463605155428017165714465363094021609290561084025893662561222573202082865797821865270991145082200656978177192827024538990239969175546190770645685893438011714430426409338676314743571154537142031573004276428701433036381801705308659830751190352946025482059931306571004727362479688415574702596946457770284148435989129632853918392117997472632693078113129886487399347796982772784615865232621289656944284216824611318709764535152507354116344703769998514148343807");
+    private BigInteger defaultServerEphemeralDhModulus =
+            new BigInteger(
+                    "5809605995369958062791915965639201402176612226902900533702900882779736177890990861472094774477339581147373410185646378328043729800750470098210924487866935059164371588168047540943981644516632755067501626434556398193186628990071248660819361205119793693985433297036118232914410171876807536457391277857011849897410207519105333355801121109356897459426271845471397952675959440793493071628394122780510124618488232602464649876850458861245784240929258426287699705312584509625419513463605155428017165714465363094021609290561084025893662561222573202082865797821865270991145082200656978177192827024538990239969175546190770645685893438011714430426409338676314743571154537142031573004276428701433036381801705308659830751190352946025482059931306571004727362479688415574702596946457770284148435989129632853918392117997472632693078113129886487399347796982772784615865232621289656944284216824611318709764535152507354116344703769998514148343807");
 
     private BigInteger defaultServerEphemeralDhPrivateKey = new BigInteger("FFFF", 16);
 
     private BigInteger defaultClientEphemeralDhPrivateKey = new BigInteger("FFFF", 16);
 
-    private BigInteger defaultServerEphemeralDhPublicKey = new BigInteger(
-            "2043613254509771843465057207078304133427100053346630496863115304729422431506842297554370188431622336168084226893060531474609378481237396107127063278624858982135545329954888129900714249447398611399069380214077491792199889131147659097337451088584054931352640316306698530468089459265836208766829761530786550035554546801263324790398605318443686766315312672983302101280548433287949333943437948214799189911192606949101858307621640886413682299273130735853556255008467704876737231663242842259426239401780891543201358635180397430055997246351872086043137262555233050955216238105392009330462604912891943865361186717249962097299588875409587651544594728203293910128024102640696503192096755401014128136916889018704050784334709496695214785225237421325503031115105974843553040027247097092511319153606298406218024502785451855415341620633845851737579504653807158340552365430158715166515645118698024341396560621615465703434564793715203380646117");
+    private BigInteger defaultServerEphemeralDhPublicKey =
+            new BigInteger(
+                    "2043613254509771843465057207078304133427100053346630496863115304729422431506842297554370188431622336168084226893060531474609378481237396107127063278624858982135545329954888129900714249447398611399069380214077491792199889131147659097337451088584054931352640316306698530468089459265836208766829761530786550035554546801263324790398605318443686766315312672983302101280548433287949333943437948214799189911192606949101858307621640886413682299273130735853556255008467704876737231663242842259426239401780891543201358635180397430055997246351872086043137262555233050955216238105392009330462604912891943865361186717249962097299588875409587651544594728203293910128024102640696503192096755401014128136916889018704050784334709496695214785225237421325503031115105974843553040027247097092511319153606298406218024502785451855415341620633845851737579504653807158340552365430158715166515645118698024341396560621615465703434564793715203380646117");
 
-    private BigInteger defaultClientEphemeralDhPublicKey = new BigInteger(
-            "2043613254509771843465057207078304133427100053346630496863115304729422431506842297554370188431622336168084226893060531474609378481237396107127063278624858982135545329954888129900714249447398611399069380214077491792199889131147659097337451088584054931352640316306698530468089459265836208766829761530786550035554546801263324790398605318443686766315312672983302101280548433287949333943437948214799189911192606949101858307621640886413682299273130735853556255008467704876737231663242842259426239401780891543201358635180397430055997246351872086043137262555233050955216238105392009330462604912891943865361186717249962097299588875409587651544594728203293910128024102640696503192096755401014128136916889018704050784334709496695214785225237421325503031115105974843553040027247097092511319153606298406218024502785451855415341620633845851737579504653807158340552365430158715166515645118698024341396560621615465703434564793715203380646117");
+    private BigInteger defaultClientEphemeralDhPublicKey =
+            new BigInteger(
+                    "2043613254509771843465057207078304133427100053346630496863115304729422431506842297554370188431622336168084226893060531474609378481237396107127063278624858982135545329954888129900714249447398611399069380214077491792199889131147659097337451088584054931352640316306698530468089459265836208766829761530786550035554546801263324790398605318443686766315312672983302101280548433287949333943437948214799189911192606949101858307621640886413682299273130735853556255008467704876737231663242842259426239401780891543201358635180397430055997246351872086043137262555233050955216238105392009330462604912891943865361186717249962097299588875409587651544594728203293910128024102640696503192096755401014128136916889018704050784334709496695214785225237421325503031115105974843553040027247097092511319153606298406218024502785451855415341620633845851737579504653807158340552365430158715166515645118698024341396560621615465703434564793715203380646117");
 
-    private BigInteger defaultEcdsaNonce = new BigInteger(
-            1,
-            ArrayConverter.hexStringToByteArray(
-                    "60B420BB3851D9D47ACB933DBE70399BF6C92DA33AF01D4FB770E98C0325F41D3EBAF8986DA712C82BCD4D554BF0B54023C29B624DE9EF9C2F931EFC580F9AFB081B12E107B1E805F2B4F5F0F1D00C2D0F62634670921C505867FF20F6A8335E98AF8725385586B41FEFF205B4E05A000823F78B5F8F5C02439CE8F67A781D90CBE6BF1AE7F2BC40A49709A06C0E31499BF02969CA42D203E566BCC696DE08FA0102A0FD2E2330B0964ABB7C443020DE1CAD09BFD6381FFB94DAAFBB90C4ED91A0613AD1DC4B4703AF84C1D63B1A876921C6D5869D61CCB98ED13AE6C09A13FC91E14922F301CF8BCF934315A6049D2F07D983FAA91B8F4E7265ECB815A7CBAB"));
+    private BigInteger defaultEcdsaNonce =
+            new BigInteger(
+                    1,
+                    ArrayConverter.hexStringToByteArray(
+                            "60B420BB3851D9D47ACB933DBE70399BF6C92DA33AF01D4FB770E98C0325F41D3EBAF8986DA712C82BCD4D554BF0B54023C29B624DE9EF9C2F931EFC580F9AFB081B12E107B1E805F2B4F5F0F1D00C2D0F62634670921C505867FF20F6A8335E98AF8725385586B41FEFF205B4E05A000823F78B5F8F5C02439CE8F67A781D90CBE6BF1AE7F2BC40A49709A06C0E31499BF02969CA42D203E566BCC696DE08FA0102A0FD2E2330B0964ABB7C443020DE1CAD09BFD6381FFB94DAAFBB90C4ED91A0613AD1DC4B4703AF84C1D63B1A876921C6D5869D61CCB98ED13AE6C09A13FC91E14922F301CF8BCF934315A6049D2F07D983FAA91B8F4E7265ECB815A7CBAB"));
 
-    private BigInteger defaultDsaNonce = new BigInteger(
-            1,
-            ArrayConverter.hexStringToByteArray(
-                    "349C55648DCF992F3F33E8026CFAC87C1D2BA075"));
+    private BigInteger defaultDsaNonce =
+            new BigInteger(
+                    1,
+                    ArrayConverter.hexStringToByteArray(
+                            "349C55648DCF992F3F33E8026CFAC87C1D2BA075"));
 
     private GOSTCurve defaultSelectedGostCurve = GOSTCurve.GostR3410_2001_CryptoPro_XchB;
 
@@ -713,7 +723,7 @@ public class Config implements Serializable {
     /** How much padding bytes should be send by default */
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     @XmlElement(name = "defaultPaddingExtensionBytes")
-    private byte[] defaultPaddingExtensionBytes = new byte[] { 0, 0, 0, 0, 0, 0 };
+    private byte[] defaultPaddingExtensionBytes = new byte[] {0, 0, 0, 0, 0, 0};
 
     /** How long should our DTLSCookies be by default */
     private Integer dtlsDefaultCookieLength = 20;
@@ -794,8 +804,9 @@ public class Config implements Serializable {
 
     private QuicVersion quicVersion = QuicVersion.VERSION_1;
 
-    private byte[] defaultQuicNewToken = ArrayConverter.hexStringToByteArray(
-            "AABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFF");
+    private byte[] defaultQuicNewToken =
+            ArrayConverter.hexStringToByteArray(
+                    "AABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFF");
 
     private byte[] defaultQuicPathChallange = ArrayConverter.hexStringToByteArray("AABBCCDD");
 
@@ -826,9 +837,11 @@ public class Config implements Serializable {
     @XmlElementWrapper
     private List<SignatureAndHashAlgorithm> defaultServerSupportedCertificateSignAlgorithms;
 
-    private SignatureAndHashAlgorithm defaultSelectedSignatureAndHashAlgorithm = SignatureAndHashAlgorithm.RSA_SHA1;
+    private SignatureAndHashAlgorithm defaultSelectedSignatureAndHashAlgorithm =
+            SignatureAndHashAlgorithm.RSA_SHA1;
 
-    private SignatureAndHashAlgorithm defaultSelectedSignatureAlgorithmCert = SignatureAndHashAlgorithm.RSA_SHA1;
+    private SignatureAndHashAlgorithm defaultSelectedSignatureAlgorithmCert =
+            SignatureAndHashAlgorithm.RSA_SHA1;
 
     private ProtocolVersion defaultLastRecordProtocolVersion = ProtocolVersion.TLS10;
 
@@ -865,27 +878,32 @@ public class Config implements Serializable {
     private byte[] defaultPreMasterSecret = new byte[0];
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
-    private byte[] defaultClientExtendedRandom = ArrayConverter.hexStringToByteArray(
-            "AABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABB");
+    private byte[] defaultClientExtendedRandom =
+            ArrayConverter.hexStringToByteArray(
+                    "AABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABB");
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
-    private byte[] defaultServerExtendedRandom = ArrayConverter.hexStringToByteArray(
-            "AABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABB");
+    private byte[] defaultServerExtendedRandom =
+            ArrayConverter.hexStringToByteArray(
+                    "AABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABBCCDDEEFFAABB");
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
-    private byte[] defaultClientRandom = ArrayConverter.hexStringToByteArray(
-            "00112233445566778899AABBCCDDEEFFFFEEDDCCBBAA99887766554433221100");
+    private byte[] defaultClientRandom =
+            ArrayConverter.hexStringToByteArray(
+                    "00112233445566778899AABBCCDDEEFFFFEEDDCCBBAA99887766554433221100");
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
-    private byte[] defaultServerRandom = ArrayConverter.hexStringToByteArray(
-            "00112233445566778899AABBCCDDEEFFFFEEDDCCBBAA99887766554433221100");
+    private byte[] defaultServerRandom =
+            ArrayConverter.hexStringToByteArray(
+                    "00112233445566778899AABBCCDDEEFFFFEEDDCCBBAA99887766554433221100");
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultClientSessionId = new byte[0];
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
-    private byte[] defaultClientTicketResumptionSessionId = ArrayConverter.hexStringToByteArray(
-            "332CAC09A5C56974E3D49C0741F396C5F1C90B41529DD643485E65B1C0619D2B");
+    private byte[] defaultClientTicketResumptionSessionId =
+            ArrayConverter.hexStringToByteArray(
+                    "332CAC09A5C56974E3D49C0741F396C5F1C90B41529DD643485E65B1C0619D2B");
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultServerSessionId = new byte[0];
@@ -909,19 +927,21 @@ public class Config implements Serializable {
 
     private NamedGroup defaultEcCertificateCurve = NamedGroup.SECP256R1;
 
-    private Point defaultClientEphemeralEcPublicKey = Point.createPoint(
-            new BigInteger(
-                    "42877656971275811310262564894490210024759287182177196162425349131675946712428"),
-            new BigInteger(
-                    "61154801112014214504178281461992570017247172004704277041681093927569603776562"),
-            defaultSelectedNamedGroup.getGroupParameters());
+    private Point defaultClientEphemeralEcPublicKey =
+            Point.createPoint(
+                    new BigInteger(
+                            "42877656971275811310262564894490210024759287182177196162425349131675946712428"),
+                    new BigInteger(
+                            "61154801112014214504178281461992570017247172004704277041681093927569603776562"),
+                    defaultSelectedNamedGroup.getGroupParameters());
 
-    private Point defaultServerEphemeralEcPublicKey = Point.createPoint(
-            new BigInteger(
-                    "42877656971275811310262564894490210024759287182177196162425349131675946712428"),
-            new BigInteger(
-                    "61154801112014214504178281461992570017247172004704277041681093927569603776562"),
-            defaultSelectedNamedGroup.getGroupParameters());
+    private Point defaultServerEphemeralEcPublicKey =
+            Point.createPoint(
+                    new BigInteger(
+                            "42877656971275811310262564894490210024759287182177196162425349131675946712428"),
+                    new BigInteger(
+                            "61154801112014214504178281461992570017247172004704277041681093927569603776562"),
+                    defaultSelectedNamedGroup.getGroupParameters());
 
     private BigInteger defaultServerEphemeralEcPrivateKey = new BigInteger("3");
 
@@ -929,9 +949,10 @@ public class Config implements Serializable {
 
     private BigInteger defaultServerEphemeralRsaExportPublicKey = new BigInteger("65537");
 
-    private BigInteger defaultServerEphemeralRsaExportPrivateKey = new BigInteger(
-            "7dc0cb485a3edb56811aeab12cdcda8e48b023298dd453a37b4d75d9e0bbba27c98f0e4852c16fd52341ffb673f64b580b7111abf14bf323e53a2dfa92727364ddb34f541f74a478a077f15277c013606aea839307e6f5fec23fdd72506feea7cbe362697949b145fe8945823a39a898ac6583fc5fbaefa1e77cbc95b3b475e66106e92b906bdbb214b87bcc94020f317fc1c056c834e9cee0ad21951fbdca088274c4ef9d8c2004c6294f49b370fb249c1e2431fb80ce5d3dc9e342914501ef4c162e54e1ee4fed9369b82afc00821a29f4979a647e60935420d44184d98f9cb75122fb604642c6d1ff2b3a51dc32eefdc57d9a9407ad6a06d10e83e2965481",
-            16);
+    private BigInteger defaultServerEphemeralRsaExportPrivateKey =
+            new BigInteger(
+                    "7dc0cb485a3edb56811aeab12cdcda8e48b023298dd453a37b4d75d9e0bbba27c98f0e4852c16fd52341ffb673f64b580b7111abf14bf323e53a2dfa92727364ddb34f541f74a478a077f15277c013606aea839307e6f5fec23fdd72506feea7cbe362697949b145fe8945823a39a898ac6583fc5fbaefa1e77cbc95b3b475e66106e92b906bdbb214b87bcc94020f317fc1c056c834e9cee0ad21951fbdca088274c4ef9d8c2004c6294f49b370fb249c1e2431fb80ce5d3dc9e342914501ef4c162e54e1ee4fed9369b82afc00821a29f4979a647e60935420d44184d98f9cb75122fb604642c6d1ff2b3a51dc32eefdc57d9a9407ad6a06d10e83e2965481",
+                    16);
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultPSKKey = ArrayConverter.hexStringToByteArray("1a2b3c4d");
@@ -942,10 +963,11 @@ public class Config implements Serializable {
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultPSKIdentityHint = new byte[0];
 
-    private BigInteger defaultSRPModulus = new BigInteger(
-            1,
-            ArrayConverter.hexStringToByteArray(
-                    "EEAF0AB9ADB38DD69C33F80AFA8FC5E86072618775FF3C0B9EA2314C9C256576D674DF7496EA81D3383B4813D692C6E0E0D5D8E250B98BE48E495C1D6089DAD15DC7D7B46154D6B6CE8EF4AD69B15D4982559B297BCF1885C529F566660E57EC68EDBC3C05726CC02FD4CBF4976EAA9AFD5138FE8376435B9FC61D2FC0EB06E3"));
+    private BigInteger defaultSRPModulus =
+            new BigInteger(
+                    1,
+                    ArrayConverter.hexStringToByteArray(
+                            "EEAF0AB9ADB38DD69C33F80AFA8FC5E86072618775FF3C0B9EA2314C9C256576D674DF7496EA81D3383B4813D692C6E0E0D5D8E250B98BE48E495C1D6089DAD15DC7D7B46154D6B6CE8EF4AD69B15D4982559B297BCF1885C529F566660E57EC68EDBC3C05726CC02FD4CBF4976EAA9AFD5138FE8376435B9FC61D2FC0EB06E3"));
 
     private BigInteger defaultSRPGenerator = new BigInteger("2");
 
@@ -953,12 +975,14 @@ public class Config implements Serializable {
 
     private BigInteger defaultSRPClientPrivateKey = new BigInteger("5");
 
-    private BigInteger defaultSRPServerPublicKey = new BigInteger(
-            1,
-            ArrayConverter.hexStringToByteArray(
-                    "AC47983DEB1698D9A9029E8F7B39092F441DDD72C56D3A63F236E1CF6CEE839937AB5FD69F8CEBBA64C210170A59B2526ED34B9DD83EF86DF7899DF68297844B15E6F2D1BD2448640D32A48220E6343875976A268F28D25174C37D8DC19F2BA5A35301CEED689206FA91CE7A172D908B821DF8C760918E6A5D1C0CFA76AF503B"));
+    private BigInteger defaultSRPServerPublicKey =
+            new BigInteger(
+                    1,
+                    ArrayConverter.hexStringToByteArray(
+                            "AC47983DEB1698D9A9029E8F7B39092F441DDD72C56D3A63F236E1CF6CEE839937AB5FD69F8CEBBA64C210170A59B2526ED34B9DD83EF86DF7899DF68297844B15E6F2D1BD2448640D32A48220E6343875976A268F28D25174C37D8DC19F2BA5A35301CEED689206FA91CE7A172D908B821DF8C760918E6A5D1C0CFA76AF503B"));
 
-    private BigInteger defaultSRPClientPublicKey = new BigInteger(1, ArrayConverter.hexStringToByteArray("25C843"));
+    private BigInteger defaultSRPClientPublicKey =
+            new BigInteger(1, ArrayConverter.hexStringToByteArray("25C843"));
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultSRPServerSalt = ArrayConverter.hexStringToByteArray("AABBCCDD");
@@ -981,42 +1005,49 @@ public class Config implements Serializable {
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultServerApplicationTrafficSecret = new byte[32];
 
-    private BigInteger defaultServerEphemeralRsaExportModulus = new BigInteger(
-            "00e208ff3431b8d1f6c48d9bb93c76a9c7f5693ada3eb45fa12581d2203a97246a5ceed7cf8d8fc1d6136225545855dd41581543cecba0b4a5776f90d05a0059ff",
-            16);
+    private BigInteger defaultServerEphemeralRsaExportModulus =
+            new BigInteger(
+                    "00e208ff3431b8d1f6c48d9bb93c76a9c7f5693ada3eb45fa12581d2203a97246a5ceed7cf8d8fc1d6136225545855dd41581543cecba0b4a5776f90d05a0059ff",
+                    16);
 
     private BigInteger defaultServerEphemeralDhExportGenerator = new BigInteger("2");
 
-    private BigInteger defaultServerEphemeralDhExportModulus = new BigInteger(
-            "0090e6a3f16f2c9325a8a036d9bd96d69ae2b6caa59fd7d4cce729b225f8849a14d0fb5939102ba44ed54f26c186e1ad243d58a1a4542ce1adffd482e8f85ef663",
-            16);
+    private BigInteger defaultServerEphemeralDhExportModulus =
+            new BigInteger(
+                    "0090e6a3f16f2c9325a8a036d9bd96d69ae2b6caa59fd7d4cce729b225f8849a14d0fb5939102ba44ed54f26c186e1ad243d58a1a4542ce1adffd482e8f85ef663",
+                    16);
 
-    private BigInteger defaultServerEphemeralDhExportPublicKey = new BigInteger(
-            "2530802253db34a8106584c96a066050310bd3b2eb11c71dd7095638eef4b7961892b13b2c983cc31635c49982b485fe837be0ba9d7f75ff72e2cae0f4c1b090",
-            16);
+    private BigInteger defaultServerEphemeralDhExportPublicKey =
+            new BigInteger(
+                    "2530802253db34a8106584c96a066050310bd3b2eb11c71dd7095638eef4b7961892b13b2c983cc31635c49982b485fe837be0ba9d7f75ff72e2cae0f4c1b090",
+                    16);
 
-    private BigInteger defaultServerEphemeralDhExportPrivateKey = new BigInteger(
-            "4ba017c0142c0df8fe5f8da8f4046c0933486730b155f1b09bd611c09863b72ad9aec3782d9379883c4a291c748c530f433207f740e0db5f67748c2c2dde2866",
-            16);
+    private BigInteger defaultServerEphemeralDhExportPrivateKey =
+            new BigInteger(
+                    "4ba017c0142c0df8fe5f8da8f4046c0933486730b155f1b09bd611c09863b72ad9aec3782d9379883c4a291c748c530f433207f740e0db5f67748c2c2dde2866",
+                    16);
 
     private TokenBindingType defaultTokenBindingType = TokenBindingType.PROVIDED_TOKEN_BINDING;
 
-    private Point defaultTokenBindingECPublicKey = Point.createPoint(
-            new BigInteger(
-                    "42877656971275811310262564894490210024759287182177196162425349131675946712428"),
-            new BigInteger(
-                    "61154801112014214504178281461992570017247172004704277041681093927569603776562"),
-            defaultSelectedNamedGroup.getGroupParameters());
+    private Point defaultTokenBindingECPublicKey =
+            Point.createPoint(
+                    new BigInteger(
+                            "42877656971275811310262564894490210024759287182177196162425349131675946712428"),
+                    new BigInteger(
+                            "61154801112014214504178281461992570017247172004704277041681093927569603776562"),
+                    defaultSelectedNamedGroup.getGroupParameters());
 
     private BigInteger defaultTokenBindingRsaPublicKey = new BigInteger("65537");
 
-    private BigInteger defaultTokenBindingRsaPrivateKey = new BigInteger(
-            "89489425009274444368228545921773093919669586065884257445497854456487674839629818390934941973262879616797970608917283679875499331574161113854088813275488110588247193077582527278437906504015680623423550067240042466665654232383502922215493623289472138866445818789127946123407807725702626644091036502372545139713");
+    private BigInteger defaultTokenBindingRsaPrivateKey =
+            new BigInteger(
+                    "89489425009274444368228545921773093919669586065884257445497854456487674839629818390934941973262879616797970608917283679875499331574161113854088813275488110588247193077582527278437906504015680623423550067240042466665654232383502922215493623289472138866445818789127946123407807725702626644091036502372545139713");
 
     private BigInteger defaultTokenBindingEcPrivateKey = new BigInteger("3");
 
-    private BigInteger defaultTokenBindingRsaModulus = new BigInteger(
-            "145906768007583323230186939349070635292401872375357164399581871019873438799005358938369571402670149802121818086292467422828157022922076746906543401224889672472407926969987100581290103199317858753663710862357656510507883714297115637342788911463535102712032765166518411726859837988672111837205085526346618740053");
+    private BigInteger defaultTokenBindingRsaModulus =
+            new BigInteger(
+                    "145906768007583323230186939349070635292401872375357164399581871019873438799005358938369571402670149802121818086292467422828157022922076746906543401224889672472407926969987100581290103199317858753663710862357656510507883714297115637342788911463535102712032765166518411726859837988672111837205085526346618740053");
 
     private Boolean useFreshRandom = true;
 
@@ -1056,15 +1087,18 @@ public class Config implements Serializable {
     private Long sessionTicketLifetimeHint = 7200L;
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
-    private byte[] sessionTicketEncryptionKey = ArrayConverter.hexStringToByteArray(
-            "536563757265535469636b65744b6579"); // SecureSTicketKey
+    private byte[] sessionTicketEncryptionKey =
+            ArrayConverter.hexStringToByteArray(
+                    "536563757265535469636b65744b6579"); // SecureSTicketKey
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
-    private byte[] sessionTicketKeyHMAC = ArrayConverter.hexStringToByteArray(
-            "536563757265535469636b65744b6579536563757265535469636b65744b6579"); // SecureSTicketKeySecureSTicketKey
+    private byte[] sessionTicketKeyHMAC =
+            ArrayConverter.hexStringToByteArray(
+                    "536563757265535469636b65744b6579536563757265535469636b65744b6579"); // SecureSTicketKeySecureSTicketKey
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
-    private byte[] sessionTicketKeyName = ArrayConverter.hexStringToByteArray("544c532d41747461636b6572204b6579"); // TLS-Attacker
+    private byte[] sessionTicketKeyName =
+            ArrayConverter.hexStringToByteArray("544c532d41747461636b6572204b6579"); // TLS-Attacker
 
     private CipherAlgorithm sessionTicketCipherAlgorithm = CipherAlgorithm.AES_128_CBC;
 
@@ -1077,8 +1111,9 @@ public class Config implements Serializable {
     private byte[] defaultSessionTicketNonce = ArrayConverter.hexStringToByteArray("00");
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
-    private byte[] defaultSessionTicketIdentity = ArrayConverter.hexStringToByteArray(
-            "5266d21abe0f5156106eb1f0ec54a48a90fbc136de990a8881192211cc83aa7992ceb67d7a40b3f304fdea87e4ca61042c19641fd7493975ec69a3ec3f5fb6404aa4ac5acd5efbea15d454d89888a46fc4e6c6b9a3e0ee08ea21538372ced8d0aca453ceae44ce372a5388ab4cef67c5eae8cc1c72735d2646c19b2c50a4ee9bc97e70c6b57cab276a11a59fc5cbe0f5d2519e164fbf9f07a9dd053bcfc08939b475c7a2e76f04ef2a06cc9672bd4034");
+    private byte[] defaultSessionTicketIdentity =
+            ArrayConverter.hexStringToByteArray(
+                    "5266d21abe0f5156106eb1f0ec54a48a90fbc136de990a8881192211cc83aa7992ceb67d7a40b3f304fdea87e4ca61042c19641fd7493975ec69a3ec3f5fb6404aa4ac5acd5efbea15d454d89888a46fc4e6c6b9a3e0ee08ea21538372ced8d0aca453ceae44ce372a5388ab4cef67c5eae8cc1c72735d2646c19b2c50a4ee9bc97e70c6b57cab276a11a59fc5cbe0f5d2519e164fbf9f07a9dd053bcfc08939b475c7a2e76f04ef2a06cc9672bd4034");
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultLastClientHello = new byte[32];
@@ -1096,43 +1131,51 @@ public class Config implements Serializable {
     /** Group used to encrypt the username in TLS_ECCPWD */
     private NamedGroup defaultPWDProtectGroup = NamedGroup.SECP256R1;
 
-    private BigInteger defaultServerPWDProtectPrivateKey = new BigInteger(
-            "191991257030464195512760799659436374116556484140110877679395918219072292938297573720808302564562486757422301181089761");
-
-    private Point defaultServerPWDProtectPublicKey = Point.createPoint(
+    private BigInteger defaultServerPWDProtectPrivateKey =
             new BigInteger(
-                    "18331185786522319349444255540874590232255475110717040504630785378857839293510"),
-            new BigInteger(
-                    "77016287303447444409379355974404854219241223376914775755121063765271326101171"),
-            defaultSelectedNamedGroup.getGroupParameters());
+                    "191991257030464195512760799659436374116556484140110877679395918219072292938297573720808302564562486757422301181089761");
 
-    private BigInteger defaultServerPWDProtectRandomSecret = new BigInteger(
-            "1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111");
+    private Point defaultServerPWDProtectPublicKey =
+            Point.createPoint(
+                    new BigInteger(
+                            "18331185786522319349444255540874590232255475110717040504630785378857839293510"),
+                    new BigInteger(
+                            "77016287303447444409379355974404854219241223376914775755121063765271326101171"),
+                    defaultSelectedNamedGroup.getGroupParameters());
+
+    private BigInteger defaultServerPWDProtectRandomSecret =
+            new BigInteger(
+                    "1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111");
 
     /** Use password from the example of RFC8492 */
     @XmlJavaTypeAdapter(IllegalStringAdapter.class)
     private String defaultPWDPassword = "barney";
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
-    private byte[] defaultServerPWDPrivate = ArrayConverter.hexStringToByteArray(
-            "21d99d341c9797b3ae72dfd289971f1b74ce9de68ad4b9abf54888d8f6c5043c");
+    private byte[] defaultServerPWDPrivate =
+            ArrayConverter.hexStringToByteArray(
+                    "21d99d341c9797b3ae72dfd289971f1b74ce9de68ad4b9abf54888d8f6c5043c");
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
-    private byte[] defaultServerPWDMask = ArrayConverter.hexStringToByteArray(
-            "0d96ab624d082c71255be3648dcd303f6ab0ca61a95034a553e3308d1d3744e5");
+    private byte[] defaultServerPWDMask =
+            ArrayConverter.hexStringToByteArray(
+                    "0d96ab624d082c71255be3648dcd303f6ab0ca61a95034a553e3308d1d3744e5");
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
-    private byte[] defaultClientPWDPrivate = ArrayConverter.hexStringToByteArray(
-            "171de8caa5352d36ee96a39979b5b72fa189ae7a6a09c77f7b438af16df4a88b");
+    private byte[] defaultClientPWDPrivate =
+            ArrayConverter.hexStringToByteArray(
+                    "171de8caa5352d36ee96a39979b5b72fa189ae7a6a09c77f7b438af16df4a88b");
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
-    private byte[] defaultClientPWDMask = ArrayConverter.hexStringToByteArray(
-            "4f745bdfc295d3b38429f7eb3025a48883728b07d88605c0ee202316a072d1bd");
+    private byte[] defaultClientPWDMask =
+            ArrayConverter.hexStringToByteArray(
+                    "4f745bdfc295d3b38429f7eb3025a48883728b07d88605c0ee202316a072d1bd");
 
     /** Use salt from the example of RFC8492, should be 32 octets */
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
-    private byte[] defaultServerPWDSalt = ArrayConverter.hexStringToByteArray(
-            "963c77cdc13a2a8d75cdddd1e0449929843711c21d47ce6e6383cdda37e47da3");
+    private byte[] defaultServerPWDSalt =
+            ArrayConverter.hexStringToByteArray(
+                    "963c77cdc13a2a8d75cdddd1e0449929843711c21d47ce6e6383cdda37e47da3");
 
     private ECPointFormat defaultSelectedPointFormat = ECPointFormat.UNCOMPRESSED;
 
@@ -1140,8 +1183,9 @@ public class Config implements Serializable {
     private String defaultDnsServer = "8.8.8.8";
 
     /** Private Key of the Client for the EncryptedServerNameIndication extension. */
-    private BigInteger defaultEsniClientPrivateKey = new BigInteger(
-            "191991257030464195512760799659436374116556484140110877679395918219072292938297573720808302564562486757422301181089761");
+    private BigInteger defaultEsniClientPrivateKey =
+            new BigInteger(
+                    "191991257030464195512760799659436374116556484140110877679395918219072292938297573720808302564562486757422301181089761");
 
     /** Supported Cipher suites for EncryptedServerNameIndication extension. */
     @XmlElement(name = "clientSupportedEsniCipherSuite")
@@ -1160,16 +1204,20 @@ public class Config implements Serializable {
 
     /** Default values for EncryptedServerNameIndication extension. */
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
-    private byte[] defaultEsniClientNonce = ArrayConverter.hexStringToByteArray("a7284c9a52f15c13644b947261774657");
+    private byte[] defaultEsniClientNonce =
+            ArrayConverter.hexStringToByteArray("a7284c9a52f15c13644b947261774657");
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
-    private byte[] defaultEsniServerNonce = ArrayConverter.hexStringToByteArray("00000000000000000000000000000000");
+    private byte[] defaultEsniServerNonce =
+            ArrayConverter.hexStringToByteArray("00000000000000000000000000000000");
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
-    private byte[] defaultEsniRecordBytes = ArrayConverter.hexStringToByteArray(
-            "ff0100124b2a0024001d0020fa572d03e21e15f9ca1aa7fb85f61b9fc78458a78050ac581811863325944412000213010104000000005dcc3a45000000005dda12050000");
+    private byte[] defaultEsniRecordBytes =
+            ArrayConverter.hexStringToByteArray(
+                    "ff0100124b2a0024001d0020fa572d03e21e15f9ca1aa7fb85f61b9fc78458a78050ac581811863325944412000213010104000000005dcc3a45000000005dda12050000");
 
-    private EsniDnsKeyRecordVersion defaultEsniRecordVersion = EsniVersion.DRAFT_2.getDnsKeyRecordVersion();
+    private EsniDnsKeyRecordVersion defaultEsniRecordVersion =
+            EsniVersion.DRAFT_2.getDnsKeyRecordVersion();
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] defaultEsniRecordChecksum = ArrayConverter.hexStringToByteArray("00124b2a");
@@ -1193,12 +1241,14 @@ public class Config implements Serializable {
     private List<ExtensionType> defaultEsniExtensions = new LinkedList<>();
 
     /** Private Key of the Client for the EncryptedClientHello extension. */
-    private BigInteger defaultEchClientPrivateKey = new BigInteger(
-            "191991257030464195512760799659436374116556484140110877679395918219072292938297573720808302564562486757422301181089761");
+    private BigInteger defaultEchClientPrivateKey =
+            new BigInteger(
+                    "191991257030464195512760799659436374116556484140110877679395918219072292938297573720808302564562486757422301181089761");
 
     /** Default value of a server's public key */
-    private BigInteger defaultEchServerPrivateKey = new BigInteger(
-            "-1673869334575128978734767576405071540980308529037586990006706167463937836529");
+    private BigInteger defaultEchServerPrivateKey =
+            new BigInteger(
+                    "-1673869334575128978734767576405071540980308529037586990006706167463937836529");
 
     /** Default algorithm values for ECH */
     private EchConfig defaultEchConfig;
@@ -1218,8 +1268,9 @@ public class Config implements Serializable {
     private String keylogFilePath = null;
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
-    private byte[] defaultRsaSsaPssSalt = ArrayConverter.hexStringToByteArray(
-            "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+    private byte[] defaultRsaSsaPssSalt =
+            ArrayConverter.hexStringToByteArray(
+                    "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 
     public Config() {
         this.certificateChainConfig = new LinkedList<>();
@@ -1232,7 +1283,8 @@ public class Config implements Serializable {
         X509CertificateConfig caConfig = new X509CertificateConfig();
         caConfig.setIssuer(rdn);
         caConfig.setSubject(rdn);
-        byte[] serialNumber = ArrayConverter.hexStringToByteArray("DEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEF");
+        byte[] serialNumber =
+                ArrayConverter.hexStringToByteArray("DEADBEEFDEADBEEFDEADBEEFDEADBEEFDEADBEEF");
         caConfig.setSerialNumber(new BigInteger(serialNumber));
 
         X509CertificateConfig leafConfig = new X509CertificateConfig();
@@ -1242,7 +1294,8 @@ public class Config implements Serializable {
         rdn.add(new Pair<>(X500AttributeType.ORGANISATION_NAME, "TLS-Attacker"));
 
         leafConfig.setSubject(rdn);
-        serialNumber = ArrayConverter.hexStringToByteArray("0F1F2F34F5F6F7F8F9F0F0F9F8F7F6F5F4F3F2F1");
+        serialNumber =
+                ArrayConverter.hexStringToByteArray("0F1F2F34F5F6F7F8F9F0F0F9F8F7F6F5F4F3F2F1");
         leafConfig.setSerialNumber(new BigInteger(serialNumber));
 
         certificateChainConfig.add(leafConfig);
@@ -1380,10 +1433,11 @@ public class Config implements Serializable {
                                 "2A981DB6CDD02A06C1763102C9E741365AC4E6F72B3176A6BD6A3523D3EC0F4C")));
         defaultClientKeyShareNamedGroups = new LinkedList<>();
         defaultClientKeyShareNamedGroups.add(NamedGroup.ECDH_X25519);
-        defaultServerKeyShareEntry = new KeyShareStoreEntry(
-                NamedGroup.ECDH_X25519,
-                ArrayConverter.hexStringToByteArray(
-                        "2A981DB6CDD02A06C1763102C9E741365AC4E6F72B3176A6BD6A3523D3EC0F4C"));
+        defaultServerKeyShareEntry =
+                new KeyShareStoreEntry(
+                        NamedGroup.ECDH_X25519,
+                        ArrayConverter.hexStringToByteArray(
+                                "2A981DB6CDD02A06C1763102C9E741365AC4E6F72B3176A6BD6A3523D3EC0F4C"));
         defaultEchConfig = EchConfig.createDefaultEchConfig();
         pskKeyExchangeModes = new LinkedList<>();
         pskKeyExchangeModes.add(PskKeyExchangeMode.PSK_KE);
@@ -2097,13 +2151,14 @@ public class Config implements Serializable {
 
     public void setDefaultServerSupportedSignatureAndHashAlgorithms(
             List<SignatureAndHashAlgorithm> defaultServerSupportedSignatureAndHashAlgorithms) {
-        this.defaultServerSupportedSignatureAndHashAlgorithms = defaultServerSupportedSignatureAndHashAlgorithms;
+        this.defaultServerSupportedSignatureAndHashAlgorithms =
+                defaultServerSupportedSignatureAndHashAlgorithms;
     }
 
     public void setDefaultServerSupportedSignatureAndHashAlgorithms(
             SignatureAndHashAlgorithm... defaultServerSupportedSignatureAndHashAlgorithms) {
-        this.defaultServerSupportedSignatureAndHashAlgorithms = new ArrayList<>(
-                Arrays.asList(defaultServerSupportedSignatureAndHashAlgorithms));
+        this.defaultServerSupportedSignatureAndHashAlgorithms =
+                new ArrayList<>(Arrays.asList(defaultServerSupportedSignatureAndHashAlgorithms));
     }
 
     public List<SignatureAndHashAlgorithm> getDefaultServerSupportedCertificateSignAlgorithms() {
@@ -2112,13 +2167,14 @@ public class Config implements Serializable {
 
     public void setDefaultServerSupportedCertificateSignAlgorithms(
             List<SignatureAndHashAlgorithm> defaultServerSupportedCertificateSignAlgorithms) {
-        this.defaultServerSupportedCertificateSignAlgorithms = defaultServerSupportedCertificateSignAlgorithms;
+        this.defaultServerSupportedCertificateSignAlgorithms =
+                defaultServerSupportedCertificateSignAlgorithms;
     }
 
     public void setDefaultServerSupportedCertificateSignAlgorithms(
             SignatureAndHashAlgorithm... defaultServerSupportedCertificateSignAlgorithms) {
-        this.defaultServerSupportedCertificateSignAlgorithms = new ArrayList<>(
-                Arrays.asList(defaultServerSupportedCertificateSignAlgorithms));
+        this.defaultServerSupportedCertificateSignAlgorithms =
+                new ArrayList<>(Arrays.asList(defaultServerSupportedCertificateSignAlgorithms));
     }
 
     public List<CipherSuite> getDefaultServerSupportedCipherSuites() {
@@ -2132,7 +2188,8 @@ public class Config implements Serializable {
 
     public final void setDefaultServerSupportedCipherSuites(
             CipherSuite... defaultServerSupportedCipherSuites) {
-        this.defaultServerSupportedCipherSuites = new ArrayList<>(Arrays.asList(defaultServerSupportedCipherSuites));
+        this.defaultServerSupportedCipherSuites =
+                new ArrayList<>(Arrays.asList(defaultServerSupportedCipherSuites));
     }
 
     public List<CompressionMethod> getDefaultClientSupportedCompressionMethods() {
@@ -2146,8 +2203,8 @@ public class Config implements Serializable {
 
     public final void setDefaultClientSupportedCompressionMethods(
             CompressionMethod... defaultClientSupportedCompressionMethods) {
-        this.defaultClientSupportedCompressionMethods = new ArrayList<>(
-                Arrays.asList(defaultClientSupportedCompressionMethods));
+        this.defaultClientSupportedCompressionMethods =
+                new ArrayList<>(Arrays.asList(defaultClientSupportedCompressionMethods));
     }
 
     public HeartbeatMode getDefaultHeartbeatMode() {
@@ -2203,7 +2260,8 @@ public class Config implements Serializable {
 
     public final void setDefaultClientSupportedPointFormats(
             ECPointFormat... defaultClientSupportedPointFormats) {
-        this.defaultClientSupportedPointFormats = new ArrayList<>(Arrays.asList(defaultClientSupportedPointFormats));
+        this.defaultClientSupportedPointFormats =
+                new ArrayList<>(Arrays.asList(defaultClientSupportedPointFormats));
     }
 
     public ProtocolVersion getDefaultLastRecordProtocolVersion() {
@@ -2226,7 +2284,8 @@ public class Config implements Serializable {
 
     public final void setDefaultServerSupportedPointFormats(
             ECPointFormat... defaultServerSupportedPointFormats) {
-        this.defaultServerSupportedPointFormats = new ArrayList<>(Arrays.asList(defaultServerSupportedPointFormats));
+        this.defaultServerSupportedPointFormats =
+                new ArrayList<>(Arrays.asList(defaultServerSupportedPointFormats));
     }
 
     public List<NamedGroup> getDefaultClientNamedGroups() {
@@ -2488,7 +2547,8 @@ public class Config implements Serializable {
 
     public final void setDefaultClientSupportedCipherSuites(
             CipherSuite... defaultClientSupportedCipherSuites) {
-        this.defaultClientSupportedCipherSuites = new ArrayList<>(Arrays.asList(defaultClientSupportedCipherSuites));
+        this.defaultClientSupportedCipherSuites =
+                new ArrayList<>(Arrays.asList(defaultClientSupportedCipherSuites));
     }
 
     public Boolean isDtlsCookieExchange() {
@@ -2513,13 +2573,14 @@ public class Config implements Serializable {
 
     public void setDefaultClientSupportedSignatureAndHashAlgorithms(
             List<SignatureAndHashAlgorithm> defaultClientSupportedSignatureAndHashAlgorithms) {
-        this.defaultClientSupportedSignatureAndHashAlgorithms = defaultClientSupportedSignatureAndHashAlgorithms;
+        this.defaultClientSupportedSignatureAndHashAlgorithms =
+                defaultClientSupportedSignatureAndHashAlgorithms;
     }
 
     public final void setDefaultClientSupportedSignatureAndHashAlgorithms(
             SignatureAndHashAlgorithm... supportedSignatureAndHashAlgorithms) {
-        this.defaultClientSupportedSignatureAndHashAlgorithms = new ArrayList<>(
-                Arrays.asList(supportedSignatureAndHashAlgorithms));
+        this.defaultClientSupportedSignatureAndHashAlgorithms =
+                new ArrayList<>(Arrays.asList(supportedSignatureAndHashAlgorithms));
     }
 
     public List<SignatureAndHashAlgorithm> getDefaultClientSupportedCertificateSignAlgorithms() {
@@ -2528,13 +2589,14 @@ public class Config implements Serializable {
 
     public void setDefaultClientSupportedCertificateSignAlgorithms(
             List<SignatureAndHashAlgorithm> defaultClientSupportedCertificateSignAlgorithms) {
-        this.defaultClientSupportedCertificateSignAlgorithms = defaultClientSupportedCertificateSignAlgorithms;
+        this.defaultClientSupportedCertificateSignAlgorithms =
+                defaultClientSupportedCertificateSignAlgorithms;
     }
 
     public final void setDefaultClientSupportedCertificateSignAlgorithms(
             SignatureAndHashAlgorithm... supportedSignatureAndHashAlgorithms) {
-        this.defaultClientSupportedCertificateSignAlgorithms = new ArrayList<>(
-                Arrays.asList(supportedSignatureAndHashAlgorithms));
+        this.defaultClientSupportedCertificateSignAlgorithms =
+                new ArrayList<>(Arrays.asList(supportedSignatureAndHashAlgorithms));
     }
 
     public List<ProtocolVersion> getSupportedVersions() {
@@ -2773,7 +2835,8 @@ public class Config implements Serializable {
 
     public final void setDefaultTokenBindingKeyParameters(
             TokenBindingKeyParameters... defaultTokenBindingKeyParameters) {
-        this.defaultTokenBindingKeyParameters = new ArrayList<>(Arrays.asList(defaultTokenBindingKeyParameters));
+        this.defaultTokenBindingKeyParameters =
+                new ArrayList<>(Arrays.asList(defaultTokenBindingKeyParameters));
     }
 
     public Boolean isAddTokenBindingExtension() {
@@ -2814,7 +2877,8 @@ public class Config implements Serializable {
 
     public void setCertificateStatusRequestExtensionRequestType(
             CertificateStatusRequestType certificateStatusRequestExtensionRequestType) {
-        this.certificateStatusRequestExtensionRequestType = certificateStatusRequestExtensionRequestType;
+        this.certificateStatusRequestExtensionRequestType =
+                certificateStatusRequestExtensionRequestType;
     }
 
     public byte[] getCertificateStatusRequestExtensionResponderIDList() {
@@ -2825,7 +2889,8 @@ public class Config implements Serializable {
 
     public void setCertificateStatusRequestExtensionResponderIDList(
             byte[] certificateStatusRequestExtensionResponderIDList) {
-        this.certificateStatusRequestExtensionResponderIDList = certificateStatusRequestExtensionResponderIDList;
+        this.certificateStatusRequestExtensionResponderIDList =
+                certificateStatusRequestExtensionResponderIDList;
     }
 
     public byte[] getCertificateStatusRequestExtensionRequestExtension() {
@@ -2836,7 +2901,8 @@ public class Config implements Serializable {
 
     public void setCertificateStatusRequestExtensionRequestExtension(
             byte[] certificateStatusRequestExtensionRequestExtension) {
-        this.certificateStatusRequestExtensionRequestExtension = certificateStatusRequestExtensionRequestExtension;
+        this.certificateStatusRequestExtensionRequestExtension =
+                certificateStatusRequestExtensionRequestExtension;
     }
 
     public byte[] getSecureRemotePasswordExtensionIdentifier() {
@@ -2856,7 +2922,8 @@ public class Config implements Serializable {
 
     public void setClientSupportedSrtpProtectionProfiles(
             List<SrtpProtectionProfile> secureRealTimeTransportProtocolProtectionProfiles) {
-        this.clientSupportedSrtpProtectionProfiles = secureRealTimeTransportProtocolProtectionProfiles;
+        this.clientSupportedSrtpProtectionProfiles =
+                secureRealTimeTransportProtocolProtectionProfiles;
     }
 
     public byte[] getSecureRealTimeTransportProtocolMasterKeyIdentifier() {
@@ -2867,7 +2934,8 @@ public class Config implements Serializable {
 
     public void setSecureRealTimeTransportProtocolMasterKeyIdentifier(
             byte[] secureRealTimeTransportProtocolMasterKeyIdentifier) {
-        this.secureRealTimeTransportProtocolMasterKeyIdentifier = secureRealTimeTransportProtocolMasterKeyIdentifier;
+        this.secureRealTimeTransportProtocolMasterKeyIdentifier =
+                secureRealTimeTransportProtocolMasterKeyIdentifier;
     }
 
     public UserMappingExtensionHintType getUserMappingExtensionHintType() {
@@ -2947,7 +3015,8 @@ public class Config implements Serializable {
 
     public void setClientCertificateTypeExtensionMessageState(
             Boolean clientCertificateTypeExtensionMessageState) {
-        this.clientCertificateTypeExtensionMessageState = clientCertificateTypeExtensionMessageState;
+        this.clientCertificateTypeExtensionMessageState =
+                clientCertificateTypeExtensionMessageState;
     }
 
     public Boolean isCachedInfoExtensionIsClientState() {
@@ -3115,8 +3184,8 @@ public class Config implements Serializable {
 
     public void setDefaultServerSupportedCompressionMethods(
             CompressionMethod... defaultServerSupportedCompressionMethods) {
-        this.defaultServerSupportedCompressionMethods = new ArrayList<>(
-                Arrays.asList(defaultServerSupportedCompressionMethods));
+        this.defaultServerSupportedCompressionMethods =
+                new ArrayList<>(Arrays.asList(defaultServerSupportedCompressionMethods));
     }
 
     public OutboundConnection getDefaultClientConnection() {
@@ -3569,7 +3638,8 @@ public class Config implements Serializable {
     }
 
     public void setClientSupportedEsniCipherSuites(CipherSuite... clientSupportedEsniCipherSuites) {
-        this.clientSupportedEsniCipherSuites = new ArrayList<>(Arrays.asList(clientSupportedEsniCipherSuites));
+        this.clientSupportedEsniCipherSuites =
+                new ArrayList<>(Arrays.asList(clientSupportedEsniCipherSuites));
     }
 
     public List<NamedGroup> getClientSupportedEsniNamedGroups() {
@@ -3582,7 +3652,8 @@ public class Config implements Serializable {
 
     public final void setClientSupportedEsniNamedGroups(
             NamedGroup... clientSupportedEsniNamedGroups) {
-        this.clientSupportedEsniNamedGroups = new ArrayList<>(Arrays.asList(clientSupportedEsniNamedGroups));
+        this.clientSupportedEsniNamedGroups =
+                new ArrayList<>(Arrays.asList(clientSupportedEsniNamedGroups));
     }
 
     public List<KeyShareEntry> getEsniServerKeyPairs() {
@@ -3737,7 +3808,8 @@ public class Config implements Serializable {
 
     public void setDefaultClientKeyShareNamedGroups(
             NamedGroup... defaultClientKeyShareNamedGroups) {
-        this.defaultClientKeyShareNamedGroups = new ArrayList<>(Arrays.asList(defaultClientKeyShareNamedGroups));
+        this.defaultClientKeyShareNamedGroups =
+                new ArrayList<>(Arrays.asList(defaultClientKeyShareNamedGroups));
     }
 
     public List<KeyShareStoreEntry> getDefaultClientKeyStoreEntries() {
