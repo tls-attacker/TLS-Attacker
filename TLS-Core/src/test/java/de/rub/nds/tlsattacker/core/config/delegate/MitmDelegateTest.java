@@ -76,7 +76,7 @@ public class MitmDelegateTest extends AbstractDelegateTest<MitmDelegate> {
 
     @Test
     public void testApplyDelegate() {
-        Config config = Config.createConfig();
+        Config config = new Config();
         config.setDefaultClientConnection(null);
         config.setDefaultServerConnection(null);
         InboundConnection expectedServerCon = new InboundConnection("accept:1234", 1234);
@@ -100,7 +100,7 @@ public class MitmDelegateTest extends AbstractDelegateTest<MitmDelegate> {
     /** Make sure that applying with port = null fails properly. */
     @Test
     public void testApplyDelegateInvalidPorts() {
-        Config config = Config.createConfig();
+        Config config = new Config();
         String validPort = "aliasOrHost:8420";
         List<String> invalidPorts = new ArrayList<>();
         invalidPorts.add("badPort:0");
@@ -129,7 +129,7 @@ public class MitmDelegateTest extends AbstractDelegateTest<MitmDelegate> {
 
     @Test
     public void testApplyDelegateWithEmptyConfig() {
-        Config config = Config.createConfig();
+        Config config = new Config();
         config.setDefaultServerConnection(null);
         config.setDefaultClientConnection(null);
         String expectedHostOrAlias = "aliasOrHost";

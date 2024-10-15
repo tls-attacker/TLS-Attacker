@@ -64,6 +64,9 @@ public class EsniKeyRecordParser extends Parser<EsniKeyRecord> {
                 parsePaddedLength(record);
                 parseExtensions(record);
                 break;
+            default:
+                LOGGER.warn("Unknown version: {}, not parsing", record.getVersion());
+                break;
         }
     }
 

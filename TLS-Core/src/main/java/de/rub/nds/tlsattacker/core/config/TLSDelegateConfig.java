@@ -75,7 +75,7 @@ public abstract class TLSDelegateConfig {
                 throw new ParameterException("Could not find config file: " + defaultConfig);
             }
         } else {
-            config = Config.createConfig();
+            config = new Config();
         }
 
         return createConfig(config);

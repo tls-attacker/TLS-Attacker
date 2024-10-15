@@ -591,7 +591,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         }
         tlsContext.setSelectedGroup(selectedKeyShareStore.getGroup());
 
-        if (selectedKeyShareStore.getGroup().isCurve()) {
+        if (selectedKeyShareStore.getGroup().isEcGroup()) {
             Point publicPoint;
             if (tlsContext.getChooser().getSelectedCipherSuite().isPWD()) {
                 publicPoint =

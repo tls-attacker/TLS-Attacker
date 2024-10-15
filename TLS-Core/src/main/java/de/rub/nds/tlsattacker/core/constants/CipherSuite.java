@@ -1055,7 +1055,7 @@ public enum CipherSuite {
     }
 
     public static List<CipherSuite> getEsniImplemented() {
-        List<CipherSuite> list = new LinkedList();
+        List<CipherSuite> list = new LinkedList<>();
         list.add(CipherSuite.TLS_AES_128_GCM_SHA256);
         list.add(CipherSuite.TLS_AES_256_GCM_SHA384);
         list.add(CipherSuite.TLS_CHACHA20_POLY1305_SHA256);
@@ -1065,7 +1065,7 @@ public enum CipherSuite {
     }
 
     public static List<CipherSuite> getTls13CipherSuites() {
-        List<CipherSuite> list = new LinkedList();
+        List<CipherSuite> list = new LinkedList<>();
         list.add(CipherSuite.TLS_AES_128_GCM_SHA256);
         list.add(CipherSuite.TLS_AES_256_GCM_SHA384);
         list.add(CipherSuite.TLS_CHACHA20_POLY1305_SHA256);
@@ -1077,7 +1077,7 @@ public enum CipherSuite {
     }
 
     public static List<CipherSuite> getImplementedTls13CipherSuites() {
-        List<CipherSuite> list = new LinkedList();
+        List<CipherSuite> list = new LinkedList<>();
         list.add(CipherSuite.TLS_AES_128_GCM_SHA256);
         list.add(CipherSuite.TLS_AES_256_GCM_SHA384);
         list.add(CipherSuite.TLS_CHACHA20_POLY1305_SHA256);

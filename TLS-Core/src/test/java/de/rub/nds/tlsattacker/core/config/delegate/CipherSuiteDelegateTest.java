@@ -74,7 +74,7 @@ public class CipherSuiteDelegateTest extends AbstractDelegateTest<CipherSuiteDel
         assertTrue(
                 delegate.getCipherSuites().contains(CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA),
                 "TLS_RSA_WITH_AES_256_CBC_SHA should get parsed correctly");
-        Config config = Config.createConfig();
+        Config config = new Config();
         config.setDefaultSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
         config.setDefaultClientSupportedCipherSuites();
         delegate.applyDelegate(config);
@@ -92,8 +92,8 @@ public class CipherSuiteDelegateTest extends AbstractDelegateTest<CipherSuiteDel
 
     @Test
     public void testNothingSetNothingChanges() {
-        Config config = Config.createConfig();
-        Config config2 = Config.createConfig();
+        Config config = new Config();
+        Config config2 = new Config();
         delegate.applyDelegate(config);
         assertTrue(EqualsBuilder.reflectionEquals(config, config2, "certificateChainConfig"));
     }
