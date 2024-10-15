@@ -34,7 +34,7 @@ public class TcpLayer extends ProtocolLayer<LayerProcessingHint, TcpStreamContai
     }
 
     @Override
-    public LayerProcessingResult sendConfiguration() throws IOException {
+    public LayerProcessingResult<TcpStreamContainer> sendConfiguration() throws IOException {
         LayerConfiguration<TcpStreamContainer> configuration = getLayerConfiguration();
         if (configuration != null) {
             for (TcpStreamContainer container : getUnprocessedConfiguredContainers()) {
@@ -49,7 +49,7 @@ public class TcpLayer extends ProtocolLayer<LayerProcessingHint, TcpStreamContai
 
     /** Sends data over the TCP socket. */
     @Override
-    public LayerProcessingResult sendData(LayerProcessingHint hint, byte[] data)
+    public LayerProcessingResult<TcpStreamContainer> sendData(LayerProcessingHint hint, byte[] data)
             throws IOException {
         TcpStreamContainer container;
         if (getUnprocessedConfiguredContainers().isEmpty()) {
@@ -86,7 +86,7 @@ public class TcpLayer extends ProtocolLayer<LayerProcessingHint, TcpStreamContai
     }
 
     @Override
-    public LayerProcessingResult receiveData() {
+    public LayerProcessingResult<TcpStreamContainer> receiveData() {
         return new LayerProcessingResult(null, getLayerType(), true);
     }
 

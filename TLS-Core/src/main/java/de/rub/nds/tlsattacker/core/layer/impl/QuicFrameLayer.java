@@ -79,7 +79,7 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
      * @throws IOException When the data cannot be sent
      */
     @Override
-    public LayerProcessingResult sendConfiguration() throws IOException {
+    public LayerProcessingResult<QuicFrame> sendConfiguration() throws IOException {
         LayerConfiguration<QuicFrame> configuration = getLayerConfiguration();
         if (configuration != null && configuration.getContainerList() != null) {
             for (QuicFrame frame : configuration.getContainerList()) {
@@ -102,7 +102,8 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
      * @throws IOException When the data cannot be sent
      */
     @Override
-    public LayerProcessingResult sendData(QuicFrameLayerHint hint, byte[] data) throws IOException {
+    public LayerProcessingResult<QuicFrame> sendData(QuicFrameLayerHint hint, byte[] data)
+            throws IOException {
         if (hint != null && hint.getMessageType() != null) {
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             QuicPacketLayerHint packetLayerHint;
@@ -213,7 +214,7 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
      * @return LayerProcessingResult A result object containing information about the received data.
      */
     @Override
-    public LayerProcessingResult receiveData() {
+    public LayerProcessingResult<QuicFrame> receiveData() {
         try {
             InputStream dataStream;
             do {

@@ -79,7 +79,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
      * @throws IOException When the data cannot be sent
      */
     @Override
-    public LayerProcessingResult sendConfiguration() throws IOException {
+    public LayerProcessingResult<Record> sendConfiguration() throws IOException {
         LayerConfiguration<Record> configuration = getLayerConfiguration();
         if (configuration != null && configuration.getContainerList() != null) {
             for (Record record : getUnprocessedConfiguredContainers()) {
@@ -398,7 +398,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
     }
 
     @Override
-    public LayerProcessingResult receiveData() {
+    public LayerProcessingResult<Record> receiveData() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

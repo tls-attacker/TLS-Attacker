@@ -78,7 +78,7 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
      * @throws IOException When the data cannot be sent
      */
     @Override
-    public LayerProcessingResult sendConfiguration() throws IOException {
+    public LayerProcessingResult<QuicPacket> sendConfiguration() throws IOException {
         LayerConfiguration<QuicPacket> configuration = getLayerConfiguration();
         if (configuration != null && configuration.getContainerList() != null) {
             for (QuicPacket packet : getUnprocessedConfiguredContainers()) {
@@ -107,7 +107,7 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
      * @throws IOException When the data cannot be sent
      */
     @Override
-    public LayerProcessingResult sendData(QuicPacketLayerHint hint, byte[] data)
+    public LayerProcessingResult<QuicPacket> sendData(QuicPacketLayerHint hint, byte[] data)
             throws IOException {
         QuicPacketType type = QuicPacketType.UNKNOWN;
         if (hint != null && hint.getQuicPacketType() != null) {
@@ -176,7 +176,7 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
      * @return LayerProcessingResult A result object containing information about the received data.
      */
     @Override
-    public LayerProcessingResult receiveData() {
+    public LayerProcessingResult<QuicPacket> receiveData() {
         try {
             InputStream dataStream;
             do {

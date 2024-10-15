@@ -66,7 +66,8 @@ public class DtlsFragmentLayer
      * @throws IOException When the data cannot be sent
      */
     @Override
-    public LayerProcessingResult sendConfiguration() throws IOException {
+    public LayerProcessingResult<DtlsHandshakeMessageFragment> sendConfiguration()
+            throws IOException {
         LayerConfiguration<DtlsHandshakeMessageFragment> configuration = getLayerConfiguration();
         if (configuration != null && configuration.getContainerList() != null) {
             for (DtlsHandshakeMessageFragment fragment : getUnprocessedConfiguredContainers()) {
@@ -164,7 +165,7 @@ public class DtlsFragmentLayer
     }
 
     @Override
-    public LayerProcessingResult receiveData() {
+    public LayerProcessingResult<DtlsHandshakeMessageFragment> receiveData() {
         throw new UnsupportedOperationException(
                 "Not supported yet."); // To change body of generated methods, choose
         // Tools | Templates.
