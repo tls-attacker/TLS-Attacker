@@ -25,6 +25,7 @@ public class SpecificSendLayerConfiguration<Container extends DataContainer<?>>
         super(layerType, containerList);
     }
 
+    @SafeVarargs
     public SpecificSendLayerConfiguration(LayerType layerType, Container... containers) {
         super(layerType, containers);
     }
