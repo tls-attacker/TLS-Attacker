@@ -102,14 +102,23 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
      * @throws IOException When the data cannot be sent
      */
     @Override
-    public LayerProcessingResult<QuicFrame> sendData(QuicFrameLayerHint hint, byte[] data)
+    public LayerProcessingResult<QuicFrame> sendData(LayerProcessingHint hint, byte[] data)
             throws IOException {
-        if (hint != null && hint.getMessageType() != null) {
+        ProtocolMessageType hintedType;
+        boolean hintedFirstMessage;
+        if (hint instanceof QuicFrameLayerHint) {
+            hintedType = ((QuicFrameLayerHint) hint).getMessageType();
+            hintedFirstMessage = ((QuicFrameLayerHint) hint).isFirstMessage();
+        } else {
+            hintedType = ProtocolMessageType.UNKNOWN;
+            hintedFirstMessage = true;
+        }
+        if (hint != null && hintedType != null) {
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             QuicPacketLayerHint packetLayerHint;
-            switch (hint.getMessageType()) {
+            switch (hintedType) {
                 case HANDSHAKE:
-                    if (hint.isFirstMessage()) {
+                    if (hintedFirstMessage) {
                         packetLayerHint = new QuicPacketLayerHint(QuicPacketType.INITIAL_PACKET);
                     } else {
                         packetLayerHint = new QuicPacketLayerHint(QuicPacketType.HANDSHAKE_PACKET);
@@ -198,7 +207,7 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
                     getLowerLayer().sendData(packetLayerHint, stream.toByteArray());
                     break;
                 default:
-                    LOGGER.debug("Unsupported message type: {}", hint.getMessageType());
+                    LOGGER.debug("Unsupported message type: {}", hintedType);
                     break;
             }
         } else {

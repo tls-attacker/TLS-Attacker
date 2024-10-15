@@ -106,8 +106,14 @@ public class DtlsFragmentLayer
      */
     @Override
     public LayerProcessingResult<DtlsHandshakeMessageFragment> sendData(
-            RecordLayerHint hint, byte[] data) throws IOException {
-        if (hint.getType() == ProtocolMessageType.HANDSHAKE) {
+            LayerProcessingHint hint, byte[] data) throws IOException {
+        ProtocolMessageType hintedType;
+        if (hint instanceof RecordLayerHint) {
+            hintedType = ((RecordLayerHint) hint).getType();
+        } else {
+            hintedType = ProtocolMessageType.UNKNOWN;
+        }
+        if (hintedType == ProtocolMessageType.HANDSHAKE) {
             // produce enough fragments from the given data
             List<DtlsHandshakeMessageFragment> fragments = new LinkedList<>();
             if (getLayerConfiguration().getContainerList() == null

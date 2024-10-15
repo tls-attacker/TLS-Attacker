@@ -85,7 +85,7 @@ public class UdpLayer extends ProtocolLayer<LayerProcessingHint, UdpDataPacket> 
 
     @Override
     public LayerProcessingResult<UdpDataPacket> receiveData() {
-        return new LayerProcessingResult(null, getLayerType(), true);
+        return new LayerProcessingResult<UdpDataPacket>(null, getLayerType(), true);
     }
 
     private UdpTransportHandler getTransportHandler() {

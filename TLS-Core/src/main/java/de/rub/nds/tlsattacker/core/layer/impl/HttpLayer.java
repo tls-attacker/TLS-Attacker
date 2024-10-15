@@ -58,8 +58,8 @@ public class HttpLayer extends ProtocolLayer<HttpLayerHint, HttpMessage> {
     }
 
     @Override
-    public LayerProcessingResult<HttpMessage> sendData(HttpLayerHint hint, byte[] additionalData)
-            throws IOException {
+    public LayerProcessingResult<HttpMessage> sendData(
+            LayerProcessingHint hint, byte[] additionalData) throws IOException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

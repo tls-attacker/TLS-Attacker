@@ -17,7 +17,7 @@ import java.util.List;
  *
  * @param <Container>
  */
-public class MissingSendLayerConfiguration<Container extends DataContainer>
+public class MissingSendLayerConfiguration<Container extends DataContainer<?>>
         extends LayerConfiguration<Container> {
 
     public MissingSendLayerConfiguration(LayerType layerType) {
