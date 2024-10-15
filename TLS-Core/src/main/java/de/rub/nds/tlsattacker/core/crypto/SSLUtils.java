@@ -351,7 +351,7 @@ public class SSLUtils {
      * <p>5.6.9.
      *
      * <p>Finished A finished message is always sent immediately after a change cipher spec message
-     * to verify that th e key exchange and authentication processes were successful. The finished
+     * to verify that the key exchange and authentication processes were successful. The finished
      * message is the first protected with the just-negotiated algorithms, keys, and secrets. No
      * acknowledgment of the finished message is required; parties may begin sending encrypted data
      * immediately after sending the finished message. Recipients of finished messages must verify
