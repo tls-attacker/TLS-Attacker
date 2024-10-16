@@ -119,6 +119,7 @@ public class ResetConnectionAction extends ConnectionBoundAction {
                 ((QuicFrameLayer) context.getLayerStack().getLayer(QuicFrameLayer.class))
                         .clearCryptoFrameBuffer();
             }
+            tlsContext.clearRetransmissionCache();
         }
 
         LOGGER.info("Reopening Connection");
