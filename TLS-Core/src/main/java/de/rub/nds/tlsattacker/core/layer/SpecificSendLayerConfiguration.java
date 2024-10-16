@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
  *
  * @param <Container>
  */
-public class SpecificSendLayerConfiguration<Container extends DataContainer>
+public class SpecificSendLayerConfiguration<Container extends DataContainer<?>>
         extends LayerConfiguration<Container> {
 
     public SpecificSendLayerConfiguration(LayerType layerType, List<Container> containerList) {

@@ -71,7 +71,7 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
      * @throws IOException When the data cannot be sent.
      */
     @Override
-    public LayerProcessingResult sendConfiguration() throws IOException {
+    public LayerProcessingResult<ProtocolMessage> sendConfiguration() throws IOException {
         LayerConfiguration<ProtocolMessage> configuration = getLayerConfiguration();
         ProtocolMessageType runningProtocolMessageType = null;
         ByteArrayOutputStream collectedMessageStream = new ByteArrayOutputStream();
@@ -180,8 +180,8 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
     }
 
     @Override
-    public LayerProcessingResult sendData(LayerProcessingHint hint, byte[] additionalData)
-            throws IOException {
+    public LayerProcessingResult<ProtocolMessage> sendData(
+            LayerProcessingHint hint, byte[] additionalData) throws IOException {
         LayerConfiguration<ProtocolMessage> configuration = getLayerConfiguration();
         ApplicationMessage applicationMessage = getConfiguredApplicationMessage(configuration);
         if (applicationMessage == null) {
@@ -226,7 +226,7 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
      * @return LayerProcessingResult A result object containing information about the received data.
      */
     @Override
-    public LayerProcessingResult receiveData() {
+    public LayerProcessingResult<ProtocolMessage> receiveData() {
         try {
             HintedInputStream dataStream;
             do {
