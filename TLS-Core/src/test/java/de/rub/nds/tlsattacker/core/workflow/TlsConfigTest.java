@@ -25,6 +25,6 @@ public class TlsConfigTest {
 
     @Test
     public void testReadFromResource() {
-        assertNotNull(Config.createConfig());
+        assertNotNull(new Config());
     }
 }

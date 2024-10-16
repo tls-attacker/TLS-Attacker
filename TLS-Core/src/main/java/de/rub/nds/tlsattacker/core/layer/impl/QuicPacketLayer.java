@@ -78,7 +78,7 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
      * @throws IOException When the data cannot be sent
      */
     @Override
-    public LayerProcessingResult sendConfiguration() throws IOException {
+    public LayerProcessingResult<QuicPacket> sendConfiguration() throws IOException {
         LayerConfiguration<QuicPacket> configuration = getLayerConfiguration();
         if (configuration != null && configuration.getContainerList() != null) {
             for (QuicPacket packet : getUnprocessedConfiguredContainers()) {
@@ -107,11 +107,11 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
      * @throws IOException When the data cannot be sent
      */
     @Override
-    public LayerProcessingResult sendData(QuicPacketLayerHint hint, byte[] data)
+    public LayerProcessingResult<QuicPacket> sendData(LayerProcessingHint hint, byte[] data)
             throws IOException {
-        QuicPacketType type = QuicPacketType.UNKNOWN;
-        if (hint != null && hint.getQuicPacketType() != null) {
-            type = hint.getQuicPacketType();
+        QuicPacketType hintedType = QuicPacketType.UNKNOWN;
+        if (hint != null && hint instanceof QuicPacketLayerHint) {
+            hintedType = ((QuicPacketLayerHint) hint).getQuicPacketType();
         } else {
             LOGGER.warn(
                     "Sending packet without a LayerProcessing hint. Using UNKNOWN as the type.");
@@ -126,7 +126,7 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
                 addProducedContainer(packet);
                 getLowerLayer().sendData(null, bytes);
             } else {
-                switch (type) {
+                switch (hintedType) {
                     case INITIAL_PACKET:
                         InitialPacket initialPacket = new InitialPacket();
                         byte[] initialPacketBytes = writePacket(data, initialPacket);
@@ -176,7 +176,7 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
      * @return LayerProcessingResult A result object containing information about the received data.
      */
     @Override
-    public LayerProcessingResult receiveData() {
+    public LayerProcessingResult<QuicPacket> receiveData() {
         try {
             InputStream dataStream;
             do {

@@ -60,7 +60,7 @@ public class CertificateRequestHandlerTest
     /** Test of adjustContext method, of class CertificateRequestHandler. */
     @Test
     public void testadjustContextTLS13() {
-        Config config = Config.createConfig();
+        Config config = new Config();
         config.setHighestProtocolVersion(ProtocolVersion.TLS13);
 
         CertificateRequestMessage message = new CertificateRequestMessage(config);

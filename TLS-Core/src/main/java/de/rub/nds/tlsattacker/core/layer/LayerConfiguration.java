@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.layer;
 
 import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
+import de.rub.nds.tlsattacker.core.layer.context.LayerContext;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import java.util.Arrays;
 import java.util.List;
@@ -19,7 +20,7 @@ import java.util.List;
  *
  * @param <Container>
  */
-public abstract class LayerConfiguration<Container extends DataContainer> {
+public abstract class LayerConfiguration<Container extends DataContainer<? extends LayerContext>> {
 
     private final List<Container> containerList;
 

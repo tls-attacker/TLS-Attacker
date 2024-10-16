@@ -240,6 +240,11 @@ public class QuicPacketCryptoComputations extends ModifiableVariableHolder {
                 keyLength = 32;
                 context.setHeaderProtectionCipher(Cipher.getInstance("ChaCha20"));
                 break;
+            default:
+                LOGGER.warn(
+                        "Unsupported Cipher Suite: {}",
+                        context.getContext().getTlsContext().getSelectedCipherSuite());
+                break;
         }
 
         context.setHkdfAlgorithm(
@@ -293,6 +298,11 @@ public class QuicPacketCryptoComputations extends ModifiableVariableHolder {
             case TLS_AES_256_GCM_SHA384:
             case TLS_CHACHA20_POLY1305_SHA256:
                 keyLength = 32;
+                break;
+            default:
+                LOGGER.warn(
+                        "Unsupported Cipher Suite: {}",
+                        context.getContext().getTlsContext().getSelectedCipherSuite());
                 break;
         }
 
@@ -363,6 +373,9 @@ public class QuicPacketCryptoComputations extends ModifiableVariableHolder {
             case TLS_CHACHA20_POLY1305_SHA256:
                 keyLength = 32;
                 context.setZeroRTTHeaderProtectionCipher(Cipher.getInstance("ChaCha20"));
+                break;
+            default:
+                LOGGER.warn("Unsupported Cipher Suite: {}", context.getZeroRTTCipherSuite());
                 break;
         }
 

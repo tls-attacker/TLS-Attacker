@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.layer;
 
 import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
+import de.rub.nds.tlsattacker.core.layer.context.LayerContext;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import java.util.List;
 import java.util.StringJoiner;
@@ -16,12 +17,12 @@ import java.util.StringJoiner;
 /**
  * Contains information about a layers actions, both after sending and receiving data.
  *
- * @param <T>
+ * @param <Container>
  */
-public class LayerProcessingResult<T extends DataContainer> {
+public class LayerProcessingResult<Container extends DataContainer<? extends LayerContext>> {
 
     /** List of containers that were sent or received */
-    private List<T> usedContainers;
+    private List<Container> usedContainers;
 
     /** Type of layer that produced this result. */
     private LayerType layerType;
@@ -33,7 +34,7 @@ public class LayerProcessingResult<T extends DataContainer> {
     private byte[] unreadBytes;
 
     public LayerProcessingResult(
-            List<T> usedContainers,
+            List<Container> usedContainers,
             LayerType layerType,
             boolean executedAsPlanned,
             byte[] unreadBytes) {
@@ -44,18 +45,18 @@ public class LayerProcessingResult<T extends DataContainer> {
     }
 
     public LayerProcessingResult(
-            List<T> usedContainers, LayerType layerType, boolean executedAsPlanned) {
+            List<Container> usedContainers, LayerType layerType, boolean executedAsPlanned) {
         this.usedContainers = usedContainers;
         this.layerType = layerType;
         this.executedAsPlanned = executedAsPlanned;
         this.unreadBytes = new byte[0];
     }
 
-    public List<T> getUsedContainers() {
+    public List<Container> getUsedContainers() {
         return usedContainers;
     }
 
-    public void setUsedContainers(List<T> usedContainers) {
+    public void setUsedContainers(List<Container> usedContainers) {
         this.usedContainers = usedContainers;
     }
 
@@ -91,7 +92,7 @@ public class LayerProcessingResult<T extends DataContainer> {
         sb.append(executedAsPlanned);
         sb.append(" Containers: ");
         StringJoiner joiner = new StringJoiner(", ");
-        for (DataContainer container : usedContainers) {
+        for (Container container : usedContainers) {
             joiner.add(container.toCompactString());
         }
         sb.append(joiner.toString());

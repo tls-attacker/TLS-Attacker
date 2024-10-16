@@ -33,7 +33,7 @@ import org.junit.jupiter.api.Test;
 public class ParserSerializerIT extends GenericParserSerializerTest {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    private final Config config = Config.createConfig();
+    private final Config config = new Config();
 
     @Test
     @Tag(TestCategories.INTEGRATION_TEST)
