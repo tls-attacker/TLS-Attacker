@@ -8,18 +8,19 @@
  */
 package de.rub.nds.tlsattacker.core.smtp.parser.reply;
 
-import de.rub.nds.tlsattacker.core.smtp.reply.specific.multiline.SmtpVRFYReply;
+import de.rub.nds.tlsattacker.core.smtp.reply.specific.multiline.SmtpEXPNReply;
 import java.io.InputStream;
 import java.util.List;
 
-public class VRFYReplyParser extends SmtpReplyParser<SmtpVRFYReply> {
+public class EXPNReplyParser extends SmtpReplyParser<SmtpEXPNReply> {
 
-    public VRFYReplyParser(InputStream inputStream) {
+    public EXPNReplyParser(InputStream inputStream) {
         super(inputStream);
     }
 
+    // for now just duplicated code from VRFYReplyParser:
     @Override
-    public void parse(SmtpVRFYReply reply) {
+    public void parse(SmtpEXPNReply reply) {
         List<String> lines = readWholeReply();
 
         for (int i = 0; i < lines.size(); i++) {
@@ -38,7 +39,7 @@ public class VRFYReplyParser extends SmtpReplyParser<SmtpVRFYReply> {
 
                 // defaults to adding an empty username if not present:
                 reply.addUsernameAndMailbox(username, mailbox);
-            } else { // case: non-250 reply code containing human-readable response
+            } else {
                 reply.setHumanReadableMessage(line.substring(4));
             }
         }

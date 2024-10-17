@@ -69,4 +69,17 @@ class VRFYReplyTest {
         serializer.serialize();
         assertEquals("250 " + replyContent + "\r\n", serializer.getOutputStream().toString());
     }
+
+    @Test
+    void parseValidDescriptionReply() {
+        String reply = "500 Syntax error, command unrecognized\r\n";
+        VRFYReplyParser parser =
+                new VRFYReplyParser(
+                        new ByteArrayInputStream(reply.getBytes(StandardCharsets.UTF_8)));
+
+        SmtpVRFYReply vrfyReply = new SmtpVRFYReply();
+        assertDoesNotThrow(() -> parser.parse(vrfyReply));
+        assertEquals(vrfyReply.getReplyCode(), 500);
+        assertEquals(vrfyReply.getHumanReadableMessage(), "Syntax error, command unrecognized");
+    }
 }
