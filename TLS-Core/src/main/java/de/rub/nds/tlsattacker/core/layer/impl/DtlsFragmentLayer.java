@@ -31,6 +31,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.DtlsHandshakeMessageFragmentParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.DtlsHandshakeMessageFragmentPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.DtlsHandshakeMessageFragmentSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -53,9 +54,9 @@ public class DtlsFragmentLayer
     private int readHandshakeMessageSequence = 0;
     private int writeHandshakeMessageSequence = 0;
 
-    public DtlsFragmentLayer(TlsContext context) {
+    public DtlsFragmentLayer(Context context) {
         super(ImplementedLayers.DTLS_FRAGMENT);
-        this.context = context;
+        this.context = context.getTlsContext();
         this.fragmentManager = new FragmentManager(context.getConfig());
     }
 

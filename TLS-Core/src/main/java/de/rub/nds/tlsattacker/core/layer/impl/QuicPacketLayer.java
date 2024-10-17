@@ -31,6 +31,7 @@ import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.quic.packet.RetryPacket;
 import de.rub.nds.tlsattacker.core.quic.packet.VersionNegotiationPacket;
 import de.rub.nds.tlsattacker.core.quic.packet.ZeroRTTPacket;
+import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -60,11 +61,11 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
 
     private final Map<QuicPacketType, ArrayList<QuicPacket>> receivedPacketBuffer = new HashMap<>();
 
-    public QuicPacketLayer(QuicContext context) {
+    public QuicPacketLayer(Context context) {
         super(ImplementedLayers.QUICPACKET);
-        this.context = context;
-        decryptor = new QuicDecryptor(context);
-        encryptor = new QuicEncryptor(context);
+        this.context = context.getQuicContext();
+        decryptor = new QuicDecryptor(this.context);
+        encryptor = new QuicEncryptor(this.context);
         Arrays.stream(QuicPacketType.values())
                 .forEach(
                         quicPacketType ->

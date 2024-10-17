@@ -34,6 +34,7 @@ import de.rub.nds.tlsattacker.core.quic.frame.PathResponseFrame;
 import de.rub.nds.tlsattacker.core.quic.frame.PingFrame;
 import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
 import de.rub.nds.tlsattacker.core.quic.frame.StreamFrame;
+import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -66,9 +67,9 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
 
     private List<CryptoFrame> cryptoFrameBuffer = new ArrayList<>();
 
-    public QuicFrameLayer(QuicContext context) {
+    public QuicFrameLayer(Context context) {
         super(ImplementedLayers.QUICFRAME);
-        this.context = context;
+        this.context = context.getQuicContext();
         this.MAX_FRAME_SIZE = context.getConfig().getQuicMaximumFrameSize();
     }
 
@@ -282,13 +283,14 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
             QuicFrameType frameType = QuicFrameType.getFrameType((byte) firstByte);
             switch (frameType) {
                 case ACK_FRAME:
-                    readDataContainer(new AckFrame(false), context, inputStream);
+                    readDataContainer(new AckFrame(false), context.getContext(), inputStream);
                     break;
                 case ACK_FRAME_WITH_ECN:
-                    readDataContainer(new AckFrame(true), context, inputStream);
+                    readDataContainer(new AckFrame(true), context.getContext(), inputStream);
                     break;
                 case CONNECTION_CLOSE_QUIC_FRAME:
-                    readDataContainer(new ConnectionCloseFrame(true), context, inputStream);
+                    readDataContainer(
+                            new ConnectionCloseFrame(true), context.getContext(), inputStream);
                     break;
                 case CONNECTION_CLOSE_APPLICATION_FRAME:
                     readDataContainer(new ConnectionCloseFrame(false), context, inputStream);

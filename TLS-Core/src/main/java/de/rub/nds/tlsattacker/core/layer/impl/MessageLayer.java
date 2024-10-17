@@ -42,6 +42,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownHandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.HandshakeMessageParser;
+import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -59,9 +60,9 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
 
     private final TlsContext context;
 
-    public MessageLayer(TlsContext context) {
+    public MessageLayer(Context context) {
         super(ImplementedLayers.MESSAGE);
-        this.context = context;
+        this.context = context.getTlsContext();
     }
 
     /**
@@ -78,7 +79,7 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
         if (configuration != null && configuration.getContainerList() != null) {
             for (ProtocolMessage message : getUnprocessedConfiguredContainers()) {
                 if (containerAlreadyUsedByHigherLayer(message)
-                        || !prepareDataContainer(message, context)) {
+                        || !prepareDataContainer(message, context.getContext())) {
                     continue;
                 }
                 if (!message.isHandshakeMessage()) {
@@ -290,12 +291,12 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
 
     private void readAlertProtocolData() {
         AlertMessage message = new AlertMessage();
-        readDataContainer(message, context);
+        readDataContainer(message, context.getContext());
     }
 
     private ApplicationMessage readAppDataProtocolData() {
         ApplicationMessage message = new ApplicationMessage();
-        readDataContainer(message, context);
+        readDataContainer(message, context.getContext());
         getLowerLayer().removeDrainedInputStream();
         return message;
     }
@@ -311,7 +312,7 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
                 context.addDtlsReceivedChangeCipherSpecEpochs(epoch);
             }
         }
-        readDataContainer(message, context);
+        readDataContainer(message, context.getContext());
     }
 
     /**
@@ -389,12 +390,12 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
 
     private void readHeartbeatProtocolData() {
         HeartbeatMessage message = new HeartbeatMessage();
-        readDataContainer(message, context);
+        readDataContainer(message, context.getContext());
     }
 
     private void readUnknownProtocolData() {
         UnknownMessage message = new UnknownMessage();
-        readDataContainer(message, context);
+        readDataContainer(message, context.getContext());
         getLowerLayer().removeDrainedInputStream();
     }
 

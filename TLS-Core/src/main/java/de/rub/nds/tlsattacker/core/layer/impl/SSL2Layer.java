@@ -30,6 +30,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.SSL2Message;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerVerifyMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownSSL2Message;
+import de.rub.nds.tlsattacker.core.state.Context;
 import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -39,9 +40,9 @@ public class SSL2Layer extends ProtocolLayer<LayerProcessingHint, SSL2Message> {
     private static final Logger LOGGER = LogManager.getLogger();
     private TlsContext context;
 
-    public SSL2Layer(TlsContext context) {
+    public SSL2Layer(Context context) {
         super(ImplementedLayers.SSL2);
-        this.context = context;
+        this.context = context.getTlsContext();
     }
 
     @Override
