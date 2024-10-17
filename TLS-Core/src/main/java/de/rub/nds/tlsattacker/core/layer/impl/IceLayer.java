@@ -62,7 +62,8 @@ public class IceLayer extends ProtocolLayer<RecordLayerHint, IceMessage> {
     }
 
     @Override
-    public LayerProcessingResult<IceMessage> sendData(LayerProcessingHint hint, byte[] additionalData) {
+    public LayerProcessingResult<IceMessage> sendData(
+            LayerProcessingHint hint, byte[] additionalData) {
         // TODO Fix Fragmentation if data is too big
         try {
 

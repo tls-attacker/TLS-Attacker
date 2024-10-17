@@ -154,7 +154,6 @@ public class LayerStack {
             LOGGER.debug("Finished receiving. Clearing retransmission cache");
             fragmentLayer.resetRetransmissionCounter();
             context.getTlsContext().clearRetransmissionCache();
-
         }
         // for quic frame specific actions like the ReceiveQuicTillAction receive data until
         // configuration is satisfied
@@ -162,12 +161,15 @@ public class LayerStack {
         // called that many times
         // for each receiveData call on the frame layer exactly one packet is processed on the
         // packet layer
-        Optional<ProtocolLayer> quicFrameLayer = getLayerList().stream().filter(x -> x instanceof QuicFrameLayer)
-                .findFirst();
+        Optional<ProtocolLayer> quicFrameLayer =
+                getLayerList().stream().filter(x -> x instanceof QuicFrameLayer).findFirst();
         if (quicFrameLayer.isPresent()
-                && quicFrameLayer.get().getLayerConfiguration() instanceof ReceiveTillLayerConfiguration) {
-            int remainingTries = ((ReceiveTillLayerConfiguration<?>) quicFrameLayer.get().getLayerConfiguration())
-                    .getMaxNumberOfQuicPacketsToReceive();
+                && quicFrameLayer.get().getLayerConfiguration()
+                        instanceof ReceiveTillLayerConfiguration) {
+            int remainingTries =
+                    ((ReceiveTillLayerConfiguration<?>)
+                                    quicFrameLayer.get().getLayerConfiguration())
+                            .getMaxNumberOfQuicPacketsToReceive();
             if (remainingTries > 0) {
                 while (remainingTries > 0 && quicFrameLayer.get().shouldContinueProcessing()) {
                     quicFrameLayer.get().receiveData();

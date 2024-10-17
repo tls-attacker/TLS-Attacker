@@ -1277,6 +1277,7 @@
     </defaultServerSupportedCertificateSignAlgorithms>
     <defaultSelectedSignatureAndHashAlgorithm>RSA_SHA1</defaultSelectedSignatureAndHashAlgorithm>
     <defaultSelectedSignatureAlgorithmCert>RSA_SHA1</defaultSelectedSignatureAlgorithmCert>
+    <initialRecordVersion>TLS10</initialRecordVersion>
     <defaultLastRecordProtocolVersion>TLS10</defaultLastRecordProtocolVersion>
     <defaultSelectedProtocolVersion>TLS12</defaultSelectedProtocolVersion>
     <defaultHighestClientProtocolVersion>TLS12</defaultHighestClientProtocolVersion>

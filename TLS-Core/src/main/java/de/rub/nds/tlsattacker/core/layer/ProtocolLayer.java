@@ -8,16 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.layer;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import de.rub.nds.protocol.exception.EndOfStreamException;
 import de.rub.nds.protocol.exception.PreparationException;
 import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
@@ -28,6 +18,14 @@ import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Abstracts a message layer (TCP, UDP, IMAP, etc.). Each layer knows of the layer below and above
@@ -37,7 +35,8 @@ import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
  * @param <Hint> Some layers need a hint which message they should send or receive.
  * @param <Container> The kind of messages/Containers this layer is able to send and receive.
  */
-public abstract class ProtocolLayer<Hint extends LayerProcessingHint, Container extends DataContainer<? extends LayerContext>> {
+public abstract class ProtocolLayer<
+        Hint extends LayerProcessingHint, Container extends DataContainer<? extends LayerContext>> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -218,7 +217,7 @@ public abstract class ProtocolLayer<Hint extends LayerProcessingHint, Container 
                 return true;
             } else {
                 return layerConfiguration.successRequiresMoreContainers(
-                        getLayerResult().getUsedContainers())
+                                getLayerResult().getUsedContainers())
                         || (isDataBuffered()
                                 && ((ReceiveLayerConfiguration) layerConfiguration)
                                         .isProcessTrailingContainers());

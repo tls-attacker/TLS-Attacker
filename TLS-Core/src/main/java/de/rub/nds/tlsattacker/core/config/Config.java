@@ -848,6 +848,8 @@ public class Config implements Serializable {
     private SignatureAndHashAlgorithm defaultSelectedSignatureAlgorithmCert =
             SignatureAndHashAlgorithm.RSA_SHA1;
 
+    private ProtocolVersion initialRecordVersion = ProtocolVersion.TLS10;
+
     private ProtocolVersion defaultLastRecordProtocolVersion = ProtocolVersion.TLS10;
 
     private ProtocolVersion defaultSelectedProtocolVersion = ProtocolVersion.TLS12;
@@ -1473,6 +1475,14 @@ public class Config implements Serializable {
 
     public void setIceConfig(IceConfig iceConfig) {
         this.iceConfig = iceConfig;
+    }
+
+    public ProtocolVersion getInitialRecordVersion() {
+        return initialRecordVersion;
+    }
+
+    public void setInitialRecordVersion(ProtocolVersion initialRecordVersion) {
+        this.initialRecordVersion = initialRecordVersion;
     }
 
     public void setDefaultRsaSsaPssSalt(byte[] salt) {

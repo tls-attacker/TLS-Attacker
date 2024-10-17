@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.util.Modifiable;
 import de.rub.nds.tlsattacker.core.constants.AlertDescription;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.record.Record;
@@ -35,6 +36,7 @@ public class SendActionTest extends AbstractActionTest<SendAction> {
         TlsContext context = state.getTlsContext();
         context.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
         context.setTransportHandler(new FakeTcpTransportHandler(ConnectionEndType.CLIENT));
+        config.setInitialRecordVersion(ProtocolVersion.TLS12);
     }
 
     @Override

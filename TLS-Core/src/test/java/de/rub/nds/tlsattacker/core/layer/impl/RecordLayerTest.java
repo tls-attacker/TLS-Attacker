@@ -41,6 +41,7 @@ public class RecordLayerTest {
         config = new Config();
         config.setDefaultLayerConfiguration(StackConfiguration.TLS);
         config.setHighestProtocolVersion(ProtocolVersion.TLS12);
+        config.setInitialRecordVersion(ProtocolVersion.TLS12);
         state = new State(config);
         tlsContext = state.getTlsContext();
         transportHandler = new FakeTcpTransportHandler(null);

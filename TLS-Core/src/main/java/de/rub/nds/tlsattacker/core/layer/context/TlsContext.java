@@ -424,7 +424,8 @@ public class TlsContext extends LayerContext {
     private final EnumSet<ExtensionType> proposedExtensionSet = EnumSet.noneOf(ExtensionType.class);
 
     /** Contains the TLS extensions proposed by the server. */
-    private final EnumSet<ExtensionType> negotiatedExtensionSet = EnumSet.noneOf(ExtensionType.class);
+    private final EnumSet<ExtensionType> negotiatedExtensionSet =
+            EnumSet.noneOf(ExtensionType.class);
 
     /**
      * The "secure_renegotiation" flag of the Renegotiation Indication Extension as defined in
@@ -507,8 +508,9 @@ public class TlsContext extends LayerContext {
     private byte[] readConnectionID;
 
     /**
-     * If we need to do a retransmission on the message layer, we look into this list and resend this to the fragment layer
-     * Whenever we successfully received message and switch to sending again we clear this cache.
+     * If we need to do a retransmission on the message layer, we look into this list and resend
+     * this to the fragment layer Whenever we successfully received message and switch to sending
+     * again we clear this cache.
      */
     private List<RetransmissionStruct> retransmissionCache;
 
@@ -558,9 +560,11 @@ public class TlsContext extends LayerContext {
 
     public void resetTalkingX509Context() {
         if (getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
-            clientX509Context = new X509Context(getContext().getConfig().getDefaultX509CertificateConfig());
+            clientX509Context =
+                    new X509Context(getContext().getConfig().getDefaultX509CertificateConfig());
         } else {
-            serverX509Context = new X509Context(getContext().getConfig().getDefaultX509CertificateConfig());
+            serverX509Context =
+                    new X509Context(getContext().getConfig().getDefaultX509CertificateConfig());
         }
     }
 
@@ -1398,7 +1402,8 @@ public class TlsContext extends LayerContext {
 
     public void setCertificateStatusRequestExtensionRequestType(
             CertificateStatusRequestType certificateStatusRequestExtensionRequestType) {
-        this.certificateStatusRequestExtensionRequestType = certificateStatusRequestExtensionRequestType;
+        this.certificateStatusRequestExtensionRequestType =
+                certificateStatusRequestExtensionRequestType;
     }
 
     public byte[] getCertificateStatusRequestExtensionResponderIDList() {
@@ -1407,7 +1412,8 @@ public class TlsContext extends LayerContext {
 
     public void setCertificateStatusRequestExtensionResponderIDList(
             byte[] certificateStatusRequestExtensionResponderIDList) {
-        this.certificateStatusRequestExtensionResponderIDList = certificateStatusRequestExtensionResponderIDList;
+        this.certificateStatusRequestExtensionResponderIDList =
+                certificateStatusRequestExtensionResponderIDList;
     }
 
     public byte[] getCertificateStatusRequestExtensionRequestExtension() {
@@ -1416,7 +1422,8 @@ public class TlsContext extends LayerContext {
 
     public void setCertificateStatusRequestExtensionRequestExtension(
             byte[] certificateStatusRequestExtensionRequestExtension) {
-        this.certificateStatusRequestExtensionRequestExtension = certificateStatusRequestExtensionRequestExtension;
+        this.certificateStatusRequestExtensionRequestExtension =
+                certificateStatusRequestExtensionRequestExtension;
     }
 
     public String getSelectedAlpnProtocol() {

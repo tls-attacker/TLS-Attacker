@@ -99,7 +99,11 @@ public class RecordPreparator extends Preparator<Record> {
                 || tlsContext.getActiveKeySetTypeWrite() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
             record.setProtocolVersion(ProtocolVersion.TLS12.getValue());
         } else {
-            record.setProtocolVersion(chooser.getSelectedProtocolVersion().getValue());
+            if (chooser.getContext().getTlsContext().getSelectedProtocolVersion() == null) {
+                record.setProtocolVersion(chooser.getConfig().getInitialRecordVersion().getValue());
+            } else {
+                record.setProtocolVersion(chooser.getSelectedProtocolVersion().getValue());
+            }
         }
         LOGGER.debug("ProtocolVersion: {}", record.getProtocolVersion().getValue());
     }

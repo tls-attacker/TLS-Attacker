@@ -51,6 +51,7 @@ public class ProtocolVersionDelegate extends Delegate {
             config.setWorkflowExecutorType(WorkflowExecutorType.DTLS);
             config.setFinishWithCloseNotify(true);
             config.setIgnoreRetransmittedCssInDtls(true);
+            config.setInitialRecordVersion(ProtocolVersion.DTLS10);
         }
 
         if (config.getDefaultClientConnection() == null) {
