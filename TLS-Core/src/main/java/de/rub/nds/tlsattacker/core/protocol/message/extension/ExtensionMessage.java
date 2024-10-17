@@ -77,8 +77,7 @@ import java.io.InputStream;
     QuicTransportParametersExtensionMessage.class,
     EncryptedClientHelloExtensionMessage.class
 })
-public abstract class ExtensionMessage extends ModifiableVariableHolder
-        implements DataContainer<TlsContext> {
+public abstract class ExtensionMessage extends ModifiableVariableHolder implements DataContainer {
 
     protected ExtensionType extensionTypeConstant;
 

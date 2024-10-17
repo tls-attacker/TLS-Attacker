@@ -24,7 +24,7 @@ import java.io.InputStream;
 import java.util.List;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-public abstract class ProtocolMessage extends Message<TlsContext> {
+public abstract class ProtocolMessage extends Message {
 
     @XmlTransient protected boolean goingToBeSentDefault = true;
     @XmlTransient protected boolean requiredDefault = true;

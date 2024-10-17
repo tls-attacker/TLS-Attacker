@@ -36,7 +36,7 @@ import org.apache.logging.log4j.Logger;
  * @param <Container> The kind of messages/Containers this layer is able to send and receive.
  */
 public abstract class ProtocolLayer<
-        Hint extends LayerProcessingHint, Container extends DataContainer<? extends LayerContext>> {
+        Hint extends LayerProcessingHint, Container extends DataContainer> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 

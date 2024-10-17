@@ -303,10 +303,10 @@ public class SendAction extends CommonSendAction implements StaticSendingAction 
     }
 
     @Override
-    public List<List<DataContainer<?>>> getConfiguredDataContainerLists() {
-        List<List<DataContainer<?>>> dataContainerLists = new LinkedList<>();
+    public List<List<DataContainer>> getConfiguredDataContainerLists() {
+        List<List<DataContainer>> dataContainerLists = new LinkedList<>();
         if (configuredHttpMessages != null) {
-            dataContainerLists.add((List<DataContainer<?>>) (List<?>) configuredHttpMessages);
+            dataContainerLists.add((List<DataContainer>) (List<?>) configuredHttpMessages);
         }
         if (configuredMessages != null) {
             dataContainerLists.add((List<DataContainer<?>>) (List<?>) configuredMessages);
