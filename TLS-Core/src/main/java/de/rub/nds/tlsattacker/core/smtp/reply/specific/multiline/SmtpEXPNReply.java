@@ -68,7 +68,7 @@ public class SmtpEXPNReply extends SmtpReply {
     }
 
     @Override
-    public SmtpMessageParser<? extends SmtpMessage> getParser(
+    public EXPNReplyParser getParser(
             SmtpContext context, InputStream stream) {
         return new EXPNReplyParser(stream);
     }
