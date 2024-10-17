@@ -30,7 +30,7 @@ public abstract class LongHeaderPacketParser<T extends LongHeaderPacket>
         packet.setSourceConnectionIdLength(idLengthBytes);
         packet.protectedHeaderHelper.write(idLengthBytes);
         LOGGER.debug(
-                "Source Connection ID Length", packet.getSourceConnectionIdLength().getValue());
+                "Source Connection ID Length: {}", packet.getSourceConnectionIdLength().getValue());
     }
 
     protected void parseSourceConnectionId(T packet) {

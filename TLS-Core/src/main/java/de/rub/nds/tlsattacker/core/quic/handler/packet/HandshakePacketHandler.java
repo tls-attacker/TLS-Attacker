@@ -33,7 +33,7 @@ public class HandshakePacketHandler extends LongHeaderPacketHandler<HandshakePac
                 QuicPacketCryptoComputations.calculateHandshakeSecrets(quicContext);
             }
         } catch (NoSuchAlgorithmException | NoSuchPaddingException | CryptoException e) {
-            LOGGER.error("Could not calculate handshake secrets: {}", e);
+            LOGGER.error("Could not calculate handshake secrets", e);
         }
     }
 }

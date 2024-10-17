@@ -41,13 +41,13 @@ public class InitialPacketSerializer extends LongHeaderPacketSerializer<InitialP
         appendBytes(
                 VariableLengthIntegerEncoding.encodeVariableLengthInteger(
                         packet.getTokenLength().getValue()));
-        LOGGER.debug("Token Length", packet.getTokenLength().getValue());
+        LOGGER.debug("Token Length: {}", packet.getTokenLength().getValue());
     }
 
     protected void writeToken(InitialPacket packet) {
         if (packet.getToken() != null) {
             appendBytes(packet.getToken().getValue());
-            LOGGER.debug("Token", packet.getToken().getValue());
+            LOGGER.debug("Token: {}", packet.getToken().getValue());
         }
     }
 }
