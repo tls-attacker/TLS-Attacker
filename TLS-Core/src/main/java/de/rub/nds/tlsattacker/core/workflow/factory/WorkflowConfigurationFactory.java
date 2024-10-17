@@ -75,7 +75,6 @@ import de.rub.nds.tlsattacker.core.quic.packet.RetryPacket;
 import de.rub.nds.tlsattacker.core.quic.packet.VersionNegotiationPacket;
 import de.rub.nds.tlsattacker.core.smtp.command.*;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpSTARTTLSReply;
-import de.rub.nds.tlsattacker.core.smtp.reply.generic.singleline.SmtpInitialGreeting;
 import de.rub.nds.tlsattacker.core.smtp.reply.specific.multiline.SmtpEHLOReply;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceConfigurationUtil;
@@ -642,7 +641,7 @@ public class WorkflowConfigurationFactory {
                             config, connection, ConnectionEndType.SERVER, new SmtpEHLOReply()));
         }
         appendSmtpCommandAndReplyActions(connection, trace, new SmtpEHLOCommand());
-//        appendSmtpCommandAndReplyActions(connection, trace, new SmtpHELPCommand());
+        //        appendSmtpCommandAndReplyActions(connection, trace, new SmtpHELPCommand());
         appendSmtpCommandAndReplyActions(connection, trace, new SmtpNOOPCommand());
         appendSmtpCommandAndReplyActions(connection, trace, new SmtpMAILCommand());
         appendSmtpCommandAndReplyActions(connection, trace, new SmtpRCPTCommand());
@@ -652,6 +651,7 @@ public class WorkflowConfigurationFactory {
 
         return trace;
     }
+
     private WorkflowTrace createSmtpStarttlsWorkflow() {
 
         AliasedConnection connection = getConnection();

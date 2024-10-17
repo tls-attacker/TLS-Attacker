@@ -30,6 +30,7 @@ import org.apache.logging.log4j.Logger;
  */
 public abstract class SmtpReplyParser<ReplyT extends SmtpReply> extends SmtpMessageParser<ReplyT> {
     private static final Logger LOGGER = LogManager.getLogger();
+
     public SmtpReplyParser(InputStream stream) {
         super(stream);
     }

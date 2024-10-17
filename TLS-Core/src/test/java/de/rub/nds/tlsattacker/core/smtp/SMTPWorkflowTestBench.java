@@ -14,7 +14,6 @@ import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.layer.constant.StackConfiguration;
 import de.rub.nds.tlsattacker.core.smtp.command.*;
-import de.rub.nds.tlsattacker.core.smtp.reply.SmtpSTARTTLSReply;
 import de.rub.nds.tlsattacker.core.smtp.reply.generic.multiline.SmtpDATAContentReply;
 import de.rub.nds.tlsattacker.core.smtp.reply.generic.singleline.*;
 import de.rub.nds.tlsattacker.core.smtp.reply.specific.multiline.SmtpEHLOReply;
@@ -26,9 +25,7 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceSerializer;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
-import de.rub.nds.tlsattacker.core.workflow.action.STARTTLSAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
-import de.rub.nds.tlsattacker.core.workflow.action.WaitAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import jakarta.xml.bind.JAXBException;
@@ -59,23 +56,27 @@ public class SMTPWorkflowTestBench {
         config.setDefaultClientConnection(new OutboundConnection(2525, "localhost"));
         config.setDefaultLayerConfiguration(StackConfiguration.SMTP);
 
-        WorkflowConfigurationFactory workflowConfigurationFactory = new WorkflowConfigurationFactory(config);
-        WorkflowTrace trace = workflowConfigurationFactory.createWorkflowTrace(WorkflowTraceType.SMTP, RunningModeType.CLIENT);
-//        WorkflowTrace trace = new WorkflowTrace();
-//
-//        trace.addTlsAction(new ReceiveAction(new SmtpInitialGreeting()));
-//        trace.addTlsAction(new SendAction(new SmtpEHLOCommand("seal.upb.de")));
-//        trace.addTlsAction(new ReceiveAction(new SmtpEHLOReply()));
-//        trace.addTlsAction(new SendAction(new SmtpMAILCommand()));
-//        trace.addTlsAction(new ReceiveAction(new SmtpMAILReply()));
-//        trace.addTlsAction(new SendAction(new SmtpRCPTCommand()));
-//        trace.addTlsAction(new ReceiveAction(new SmtpRCPTReply()));
-//        trace.addTlsAction(new SendAction(new SmtpDATACommand()));
-//        trace.addTlsAction(new ReceiveAction(new SmtpDATAReply()));
-//        trace.addTlsAction(new SendAction(new SmtpDATAContentCommand("Test", "123", "lets go")));
-//        trace.addTlsAction(new ReceiveAction(new SmtpDATAContentReply()));
-//        trace.addTlsAction(new SendAction(new SmtpQUITCommand()));
-//        trace.addTlsAction(new ReceiveAction(new SmtpQUITReply()));
+        WorkflowConfigurationFactory workflowConfigurationFactory =
+                new WorkflowConfigurationFactory(config);
+        WorkflowTrace trace =
+                workflowConfigurationFactory.createWorkflowTrace(
+                        WorkflowTraceType.SMTP, RunningModeType.CLIENT);
+        //        WorkflowTrace trace = new WorkflowTrace();
+        //
+        //        trace.addTlsAction(new ReceiveAction(new SmtpInitialGreeting()));
+        //        trace.addTlsAction(new SendAction(new SmtpEHLOCommand("seal.upb.de")));
+        //        trace.addTlsAction(new ReceiveAction(new SmtpEHLOReply()));
+        //        trace.addTlsAction(new SendAction(new SmtpMAILCommand()));
+        //        trace.addTlsAction(new ReceiveAction(new SmtpMAILReply()));
+        //        trace.addTlsAction(new SendAction(new SmtpRCPTCommand()));
+        //        trace.addTlsAction(new ReceiveAction(new SmtpRCPTReply()));
+        //        trace.addTlsAction(new SendAction(new SmtpDATACommand()));
+        //        trace.addTlsAction(new ReceiveAction(new SmtpDATAReply()));
+        //        trace.addTlsAction(new SendAction(new SmtpDATAContentCommand("Test", "123", "lets
+        // go")));
+        //        trace.addTlsAction(new ReceiveAction(new SmtpDATAContentReply()));
+        //        trace.addTlsAction(new SendAction(new SmtpQUITCommand()));
+        //        trace.addTlsAction(new ReceiveAction(new SmtpQUITReply()));
 
         State state = new State(config, trace);
 
@@ -163,30 +164,30 @@ public class SMTPWorkflowTestBench {
                 factory.createWorkflowTrace(
                         WorkflowTraceType.SMTP_STARTTLS, RunningModeType.CLIENT);
 
-//        trace.addTlsAction(0, new ReceiveAction(new SmtpInitialGreeting()));
-//        trace.addTlsAction(1, new SendAction(new SmtpEHLOCommand("seal.upb.de")));
-//        trace.addTlsAction(2, new ReceiveAction(new SmtpEHLOReply()));
-//        trace.addTlsAction(3, new SendAction(new SmtpSTARTTLSCommand()));
-//        trace.addTlsAction(4, new ReceiveAction(new SmtpSTARTTLSReply()));
-//        trace.addTlsAction(5, new STARTTLSAction());
-//
-//        trace.addTlsAction(new ReceiveAction(new SmtpInitialGreeting()));
-//        trace.addTlsAction(new SendAction(new SmtpEHLOCommand("seal.upb.de")));
-//        trace.addTlsAction(new ReceiveAction(new SmtpEHLOReply()));
-//        //        trace.addTlsAction(new SendAction(new SmtpQUITCommand()));
-//        //        trace.addTlsAction(new ReceiveAction(new SmtpQUITReply()));
-//
-//        trace.addTlsAction(new STARTTLSAction());
-//
-//        //        trace.addTlsAction(new SendAction(new
-//        // SmtpEHLOCommand("commandinjection.seal.upb.de")));
-//        trace.addTlsAction(new SendAction(new SmtpNOOPCommand()));
-//        // trace.addTlsAction(new ReceiveAction(new SmtpEHLOReply()));
-//
-//        trace.addTlsAction(new STARTTLSAction());
-//
-//        trace.addTlsAction(new SendAction(new SmtpQUITCommand()));
-//        trace.addTlsAction(new ReceiveAction(new SmtpQUITReply()));
+        //        trace.addTlsAction(0, new ReceiveAction(new SmtpInitialGreeting()));
+        //        trace.addTlsAction(1, new SendAction(new SmtpEHLOCommand("seal.upb.de")));
+        //        trace.addTlsAction(2, new ReceiveAction(new SmtpEHLOReply()));
+        //        trace.addTlsAction(3, new SendAction(new SmtpSTARTTLSCommand()));
+        //        trace.addTlsAction(4, new ReceiveAction(new SmtpSTARTTLSReply()));
+        //        trace.addTlsAction(5, new STARTTLSAction());
+        //
+        //        trace.addTlsAction(new ReceiveAction(new SmtpInitialGreeting()));
+        //        trace.addTlsAction(new SendAction(new SmtpEHLOCommand("seal.upb.de")));
+        //        trace.addTlsAction(new ReceiveAction(new SmtpEHLOReply()));
+        //        //        trace.addTlsAction(new SendAction(new SmtpQUITCommand()));
+        //        //        trace.addTlsAction(new ReceiveAction(new SmtpQUITReply()));
+        //
+        //        trace.addTlsAction(new STARTTLSAction());
+        //
+        //        //        trace.addTlsAction(new SendAction(new
+        //        // SmtpEHLOCommand("commandinjection.seal.upb.de")));
+        //        trace.addTlsAction(new SendAction(new SmtpNOOPCommand()));
+        //        // trace.addTlsAction(new ReceiveAction(new SmtpEHLOReply()));
+        //
+        //        trace.addTlsAction(new STARTTLSAction());
+        //
+        //        trace.addTlsAction(new SendAction(new SmtpQUITCommand()));
+        //        trace.addTlsAction(new ReceiveAction(new SmtpQUITReply()));
 
         System.out.println(trace);
         State state = new State(config, trace);
