@@ -29,6 +29,7 @@ public class SpecificReceiveLayerConfiguration<Container extends DataContainer<?
         super(layerType, containerList);
     }
 
+    @SafeVarargs
     public SpecificReceiveLayerConfiguration(LayerType layerType, Container... containers) {
         super(layerType, containers);
     }

@@ -31,6 +31,7 @@ public abstract class LayerConfiguration<Container extends DataContainer<? exten
         this.layerType = layerType;
     }
 
+    @SafeVarargs
     public LayerConfiguration(LayerType layerType, Container... containers) {
         this.containerList = Arrays.asList(containers);
         this.layerType = layerType;
