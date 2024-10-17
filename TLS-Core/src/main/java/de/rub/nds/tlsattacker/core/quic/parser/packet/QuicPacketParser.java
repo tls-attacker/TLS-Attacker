@@ -32,7 +32,7 @@ public abstract class QuicPacketParser<T extends QuicPacket> extends Parser<T> {
         byte firstHeaderByte = parseByteField(QuicPacketByteLength.QUIC_FIRST_HEADER_BYTE);
         packet.protectedHeaderHelper.write(firstHeaderByte);
         packet.setProtectedFlags(firstHeaderByte);
-        LOGGER.debug("Protected Flags", packet.getProtectedFlags().getValue());
+        LOGGER.debug("Protected Flags: {}", packet.getProtectedFlags().getValue());
     }
 
     protected void parseDestinationConnectionIdLength(T packet) {
@@ -41,7 +41,7 @@ public abstract class QuicPacketParser<T extends QuicPacket> extends Parser<T> {
         packet.protectedHeaderHelper.write(destinationConnectionIdBytes);
         packet.setDestinationConnectionIdLength(destinationConnectionIdBytes);
         LOGGER.debug(
-                "Destination Connection ID Length",
+                "Destination Connection ID Length: {}",
                 packet.getDestinationConnectionIdLength().getValue());
     }
 
@@ -54,7 +54,8 @@ public abstract class QuicPacketParser<T extends QuicPacket> extends Parser<T> {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        LOGGER.debug("Destination Connection ID", packet.getDestinationConnectionId().getValue());
+        LOGGER.debug(
+                "Destination Connection ID: {}", packet.getDestinationConnectionId().getValue());
     }
 
     protected void parsePacketLength(T packet) {
@@ -69,7 +70,7 @@ public abstract class QuicPacketParser<T extends QuicPacket> extends Parser<T> {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        LOGGER.debug("Packet Length", packet.getPacketLength().getValue());
+        LOGGER.debug("Packet Length: {}", packet.getPacketLength().getValue());
     }
 
     protected void parseProtectedPacketNumberAndPayload(T packet) {
@@ -84,7 +85,7 @@ public abstract class QuicPacketParser<T extends QuicPacket> extends Parser<T> {
         byte unprotectedFlags = packet.getUnprotectedFlags().getValue();
         int length = (unprotectedFlags & 0x03) + 1;
         packet.setPacketNumberLength(length);
-        LOGGER.debug("Packet Number Length", packet.getPacketNumberLength().getValue());
+        LOGGER.debug("Packet Number Length: {}", packet.getPacketNumberLength().getValue());
     }
 
     public void parseProtectedPacketNumber(T packet) {
@@ -93,6 +94,6 @@ public abstract class QuicPacketParser<T extends QuicPacket> extends Parser<T> {
         System.arraycopy(
                 packet.getProtectedPacketNumberAndPayload().getValue(), 0, packetNumber, 0, length);
         packet.setProtectedPacketNumber(packetNumber);
-        LOGGER.debug("Protected Packet Number", packet.getProtectedPacketNumber().getValue());
+        LOGGER.debug("Protected Packet Number: {}", packet.getProtectedPacketNumber().getValue());
     }
 }

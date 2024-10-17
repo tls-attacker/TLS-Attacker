@@ -33,7 +33,7 @@ public class OneRTTPacketHandler extends QuicPacketHandler<OneRTTPacket> {
                 QuicPacketCryptoComputations.calculateApplicationSecrets(quicContext.getContext());
             }
         } catch (NoSuchAlgorithmException | NoSuchPaddingException | CryptoException e) {
-            LOGGER.error("Could not calculate application secrets: {}", e);
+            LOGGER.error("Could not calculate application secrets", e);
         }
     }
 }
