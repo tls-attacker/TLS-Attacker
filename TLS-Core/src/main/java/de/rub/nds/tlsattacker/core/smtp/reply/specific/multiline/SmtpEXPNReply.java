@@ -13,10 +13,13 @@ import de.rub.nds.tlsattacker.core.smtp.SmtpMessage;
 import de.rub.nds.tlsattacker.core.smtp.parser.SmtpMessageParser;
 import de.rub.nds.tlsattacker.core.smtp.parser.reply.EXPNReplyParser;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpReply;
+import jakarta.xml.bind.annotation.XmlRootElement;
+
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+@XmlRootElement
 public class SmtpEXPNReply extends SmtpReply {
     public static class SmtpEXPNData {
         String username;

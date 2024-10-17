@@ -11,8 +11,11 @@ package de.rub.nds.tlsattacker.core.smtp.command;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.parser.command.EXPNCommandParser;
 import de.rub.nds.tlsattacker.core.smtp.preparator.command.EXPNCommandPreparator;
+import jakarta.xml.bind.annotation.XmlRootElement;
+
 import java.io.InputStream;
 
+@XmlRootElement
 public class SmtpEXPNCommand extends SmtpCommand {
 
     private static final String COMMAND_NAME = "EXPN";

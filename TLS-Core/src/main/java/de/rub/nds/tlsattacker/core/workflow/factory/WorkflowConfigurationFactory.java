@@ -127,6 +127,8 @@ public class WorkflowConfigurationFactory {
                 return createDynamicClientRenegotiationWithoutResumption();
             case HTTPS:
                 return createHttpsWorkflow();
+            case SMTP:
+                return createSmtpWorkflow();
             case SMTP_STARTTLS:
                 return createSmtpStarttlsWorkflow();
             case RESUMPTION:
@@ -628,21 +630,39 @@ public class WorkflowConfigurationFactory {
         return trace;
     }
 
+    private WorkflowTrace createSmtpWorkflow() {
+        AliasedConnection connection = getConnection();
+        WorkflowTrace trace = new WorkflowTrace();
+        if (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
+            trace.addTlsAction(
+                    MessageActionFactory.createSmtpAction(
+                            config, connection, ConnectionEndType.CLIENT, new SmtpEHLOCommand()));
+            trace.addTlsAction(
+                    MessageActionFactory.createSmtpAction(
+                            config, connection, ConnectionEndType.SERVER, new SmtpEHLOReply()));
+        }
+        appendSmtpCommandAndReplyActions(connection, trace, new SmtpEHLOCommand());
+//        appendSmtpCommandAndReplyActions(connection, trace, new SmtpHELPCommand());
+        appendSmtpCommandAndReplyActions(connection, trace, new SmtpNOOPCommand());
+        appendSmtpCommandAndReplyActions(connection, trace, new SmtpMAILCommand());
+        appendSmtpCommandAndReplyActions(connection, trace, new SmtpRCPTCommand());
+        appendSmtpCommandAndReplyActions(connection, trace, new SmtpDATACommand());
+        appendSmtpCommandAndReplyActions(connection, trace, new SmtpDATAContentCommand("Test"));
+        appendSmtpCommandAndReplyActions(connection, trace, new SmtpQUITCommand());
+
+        return trace;
+    }
     private WorkflowTrace createSmtpStarttlsWorkflow() {
+
         AliasedConnection connection = getConnection();
         WorkflowTrace trace = createDynamicHandshakeWorkflow(connection);
         // kind of dirty changing it from the back, but otherwise we have to rework the whole
         // dynamic handshake mechanism
-        trace.addTlsAction(0, new ReceiveAction(new SmtpInitialGreeting()));
-        trace.addTlsAction(1, new SendAction(new SmtpEHLOCommand("seal.upb.de")));
-        trace.addTlsAction(2, new ReceiveAction(new SmtpEHLOReply()));
-        trace.addTlsAction(3, new SendAction(new SmtpSTARTTLSCommand()));
-        trace.addTlsAction(4, new ReceiveAction(new SmtpSTARTTLSReply()));
-        trace.addTlsAction(5, new STARTTLSAction());
+        trace.addTlsAction(0, new SendAction(new SmtpSTARTTLSCommand()));
+        trace.addTlsAction(1, new ReceiveAction(new SmtpSTARTTLSReply()));
+        trace.addTlsAction(2, new STARTTLSAction());
 
-        appendSmtpCommandAndReplyActions(connection, trace, new SmtpEHLOCommand());
-        appendSmtpCommandAndReplyActions(connection, trace, new SmtpMAILCommand());
-        appendSmtpCommandAndReplyActions(connection, trace, new SmtpQUITCommand());
+        trace.addTlsActions(createSmtpWorkflow().getTlsActions());
 
         return trace;
     }

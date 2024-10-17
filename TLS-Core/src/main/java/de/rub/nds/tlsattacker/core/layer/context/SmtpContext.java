@@ -13,6 +13,8 @@ import de.rub.nds.tlsattacker.core.smtp.reply.*;
 import de.rub.nds.tlsattacker.core.smtp.reply.generic.multiline.SmtpDATAContentReply;
 import de.rub.nds.tlsattacker.core.smtp.reply.generic.singleline.*;
 import de.rub.nds.tlsattacker.core.smtp.reply.specific.multiline.SmtpEHLOReply;
+import de.rub.nds.tlsattacker.core.smtp.reply.specific.multiline.SmtpEXPNReply;
+import de.rub.nds.tlsattacker.core.smtp.reply.specific.multiline.SmtpVRFYReply;
 import de.rub.nds.tlsattacker.core.state.Context;
 import java.util.ArrayList;
 import java.util.List;
@@ -129,6 +131,10 @@ public class SmtpContext extends LayerContext {
                 return new SmtpNOOPReply();
             } else if (command instanceof SmtpAUTHCommand) {
                 return new SmtpAUTHReply();
+            } else if(command instanceof SmtpEXPNCommand) {
+                return new SmtpEXPNReply();
+            } else if(command instanceof SmtpVRFYCommand) {
+                return new SmtpVRFYReply();
             } else if (command instanceof SmtpMAILCommand) {
                 return new SmtpMAILReply();
             } else if (command instanceof SmtpRESETCommand) {
