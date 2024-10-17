@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.layer;
 
 import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
+import de.rub.nds.tlsattacker.core.layer.impl.DtlsFragmentLayer;
 import de.rub.nds.tlsattacker.core.layer.impl.QuicFrameLayer;
 import de.rub.nds.tlsattacker.core.state.Context;
 import java.io.IOException;
@@ -148,22 +149,25 @@ public class LayerStack {
         ProtocolLayer topLayer = getTopConfiguredLayer();
         LOGGER.debug("Receiving data from topLayer: {}", topLayer.getLayerType());
         topLayer.receiveData();
+        if (getLayer(DtlsFragmentLayer.class) != null) {
+            DtlsFragmentLayer fragmentLayer = (DtlsFragmentLayer) getLayer(DtlsFragmentLayer.class);
+            LOGGER.debug("Finished receiving. Clearing retransmission cache");
+            fragmentLayer.resetRetransmissionCounter();
+            context.getTlsContext().clearRetransmissionCache();
 
+        }
         // for quic frame specific actions like the ReceiveQuicTillAction receive data until
         // configuration is satisfied
         // if maxNumberOfQuicPacketsToReceive is set in layer config the receive function is only
         // called that many times
         // for each receiveData call on the frame layer exactly one packet is processed on the
         // packet layer
-        Optional<ProtocolLayer> quicFrameLayer =
-                getLayerList().stream().filter(x -> x instanceof QuicFrameLayer).findFirst();
+        Optional<ProtocolLayer> quicFrameLayer = getLayerList().stream().filter(x -> x instanceof QuicFrameLayer)
+                .findFirst();
         if (quicFrameLayer.isPresent()
-                && quicFrameLayer.get().getLayerConfiguration()
-                        instanceof ReceiveTillLayerConfiguration) {
-            int remainingTries =
-                    ((ReceiveTillLayerConfiguration<?>)
-                                    quicFrameLayer.get().getLayerConfiguration())
-                            .getMaxNumberOfQuicPacketsToReceive();
+                && quicFrameLayer.get().getLayerConfiguration() instanceof ReceiveTillLayerConfiguration) {
+            int remainingTries = ((ReceiveTillLayerConfiguration<?>) quicFrameLayer.get().getLayerConfiguration())
+                    .getMaxNumberOfQuicPacketsToReceive();
             if (remainingTries > 0) {
                 while (remainingTries > 0 && quicFrameLayer.get().shouldContinueProcessing()) {
                     quicFrameLayer.get().receiveData();

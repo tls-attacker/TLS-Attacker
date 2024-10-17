@@ -265,6 +265,7 @@ public class DtlsFragmentLayer
                 doRetransmissions();
                 receiveMoreDataForHint(desiredHint);
             } else {
+                LOGGER.debug("Clearing Retransmission Cache");
                 retransmissionCounter = 0;
                 context.clearRetransmissionCache();
                 throw ex;
@@ -272,12 +273,15 @@ public class DtlsFragmentLayer
         } catch (EndOfStreamException ex) {
             LOGGER.debug("Reached end of stream, cannot parse more dtls fragments");
             LOGGER.trace(ex);
+            LOGGER.debug("Clearing Retransmission Cache");
             retransmissionCounter = 0;
             context.clearRetransmissionCache();
             throw ex;
         }
+    }
+
+    public void resetRetransmissionCounter() {
         retransmissionCounter = 0;
-        context.clearRetransmissionCache();
     }
 
     private void doRetransmissions() {
