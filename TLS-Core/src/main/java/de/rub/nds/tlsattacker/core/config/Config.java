@@ -2199,7 +2199,7 @@ public class Config implements Serializable {
     public void setDefaultServerSupportedSignatureAndHashAlgorithms(
             SignatureAndHashAlgorithm... defaultServerSupportedSignatureAndHashAlgorithms) {
         this.defaultServerSupportedSignatureAndHashAlgorithms =
-                new ArrayList(Arrays.asList(defaultServerSupportedSignatureAndHashAlgorithms));
+                new ArrayList<>(Arrays.asList(defaultServerSupportedSignatureAndHashAlgorithms));
     }
 
     public List<SignatureAndHashAlgorithm> getDefaultServerSupportedCertificateSignAlgorithms() {
@@ -2215,7 +2215,7 @@ public class Config implements Serializable {
     public void setDefaultServerSupportedCertificateSignAlgorithms(
             SignatureAndHashAlgorithm... defaultServerSupportedCertificateSignAlgorithms) {
         this.defaultServerSupportedCertificateSignAlgorithms =
-                new ArrayList(Arrays.asList(defaultServerSupportedCertificateSignAlgorithms));
+                new ArrayList<>(Arrays.asList(defaultServerSupportedCertificateSignAlgorithms));
     }
 
     public List<CipherSuite> getDefaultServerSupportedCipherSuites() {
@@ -2230,7 +2230,7 @@ public class Config implements Serializable {
     public final void setDefaultServerSupportedCipherSuites(
             CipherSuite... defaultServerSupportedCipherSuites) {
         this.defaultServerSupportedCipherSuites =
-                new ArrayList(Arrays.asList(defaultServerSupportedCipherSuites));
+                new ArrayList<>(Arrays.asList(defaultServerSupportedCipherSuites));
     }
 
     public List<CompressionMethod> getDefaultClientSupportedCompressionMethods() {
@@ -2245,7 +2245,7 @@ public class Config implements Serializable {
     public final void setDefaultClientSupportedCompressionMethods(
             CompressionMethod... defaultClientSupportedCompressionMethods) {
         this.defaultClientSupportedCompressionMethods =
-                new ArrayList(Arrays.asList(defaultClientSupportedCompressionMethods));
+                new ArrayList<>(Arrays.asList(defaultClientSupportedCompressionMethods));
     }
 
     public HeartbeatMode getDefaultHeartbeatMode() {
@@ -2302,7 +2302,7 @@ public class Config implements Serializable {
     public final void setDefaultClientSupportedPointFormats(
             ECPointFormat... defaultClientSupportedPointFormats) {
         this.defaultClientSupportedPointFormats =
-                new ArrayList(Arrays.asList(defaultClientSupportedPointFormats));
+                new ArrayList<>(Arrays.asList(defaultClientSupportedPointFormats));
     }
 
     public ProtocolVersion getDefaultLastRecordProtocolVersion() {
@@ -2326,7 +2326,7 @@ public class Config implements Serializable {
     public final void setDefaultServerSupportedPointFormats(
             ECPointFormat... defaultServerSupportedPointFormats) {
         this.defaultServerSupportedPointFormats =
-                new ArrayList(Arrays.asList(defaultServerSupportedPointFormats));
+                new ArrayList<>(Arrays.asList(defaultServerSupportedPointFormats));
     }
 
     public List<NamedGroup> getDefaultClientNamedGroups() {
@@ -2589,7 +2589,7 @@ public class Config implements Serializable {
     public final void setDefaultClientSupportedCipherSuites(
             CipherSuite... defaultClientSupportedCipherSuites) {
         this.defaultClientSupportedCipherSuites =
-                new ArrayList(Arrays.asList(defaultClientSupportedCipherSuites));
+                new ArrayList<>(Arrays.asList(defaultClientSupportedCipherSuites));
     }
 
     public Boolean isDtlsCookieExchange() {
@@ -2621,7 +2621,7 @@ public class Config implements Serializable {
     public final void setDefaultClientSupportedSignatureAndHashAlgorithms(
             SignatureAndHashAlgorithm... supportedSignatureAndHashAlgorithms) {
         this.defaultClientSupportedSignatureAndHashAlgorithms =
-                new ArrayList(Arrays.asList(supportedSignatureAndHashAlgorithms));
+                new ArrayList<>(Arrays.asList(supportedSignatureAndHashAlgorithms));
     }
 
     public List<SignatureAndHashAlgorithm> getDefaultClientSupportedCertificateSignAlgorithms() {
@@ -2637,7 +2637,7 @@ public class Config implements Serializable {
     public final void setDefaultClientSupportedCertificateSignAlgorithms(
             SignatureAndHashAlgorithm... supportedSignatureAndHashAlgorithms) {
         this.defaultClientSupportedCertificateSignAlgorithms =
-                new ArrayList(Arrays.asList(supportedSignatureAndHashAlgorithms));
+                new ArrayList<>(Arrays.asList(supportedSignatureAndHashAlgorithms));
     }
 
     public List<ProtocolVersion> getSupportedVersions() {
@@ -2877,7 +2877,7 @@ public class Config implements Serializable {
     public final void setDefaultTokenBindingKeyParameters(
             TokenBindingKeyParameters... defaultTokenBindingKeyParameters) {
         this.defaultTokenBindingKeyParameters =
-                new ArrayList(Arrays.asList(defaultTokenBindingKeyParameters));
+                new ArrayList<>(Arrays.asList(defaultTokenBindingKeyParameters));
     }
 
     public Boolean isAddTokenBindingExtension() {
@@ -3226,7 +3226,7 @@ public class Config implements Serializable {
     public void setDefaultServerSupportedCompressionMethods(
             CompressionMethod... defaultServerSupportedCompressionMethods) {
         this.defaultServerSupportedCompressionMethods =
-                new ArrayList(Arrays.asList(defaultServerSupportedCompressionMethods));
+                new ArrayList<>(Arrays.asList(defaultServerSupportedCompressionMethods));
     }
 
     public OutboundConnection getDefaultClientConnection() {
@@ -3680,7 +3680,7 @@ public class Config implements Serializable {
 
     public void setClientSupportedEsniCipherSuites(CipherSuite... clientSupportedEsniCipherSuites) {
         this.clientSupportedEsniCipherSuites =
-                new ArrayList(Arrays.asList(clientSupportedEsniCipherSuites));
+                new ArrayList<>(Arrays.asList(clientSupportedEsniCipherSuites));
     }
 
     public List<NamedGroup> getClientSupportedEsniNamedGroups() {
@@ -3694,7 +3694,7 @@ public class Config implements Serializable {
     public final void setClientSupportedEsniNamedGroups(
             NamedGroup... clientSupportedEsniNamedGroups) {
         this.clientSupportedEsniNamedGroups =
-                new ArrayList(Arrays.asList(clientSupportedEsniNamedGroups));
+                new ArrayList<>(Arrays.asList(clientSupportedEsniNamedGroups));
     }
 
     public List<KeyShareEntry> getEsniServerKeyPairs() {

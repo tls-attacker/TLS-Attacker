@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.constants;
 
 import de.rub.nds.protocol.constants.GroupParameters;
+import de.rub.nds.protocol.crypto.ec.Point;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.cryptopro.CryptoProObjectIdentifiers;
 import org.bouncycastle.asn1.rosstandart.RosstandartObjectIdentifiers;
@@ -31,7 +32,7 @@ public enum GOSTCurve {
 
     private final ASN1ObjectIdentifier identifier;
 
-    private GroupParameters groupParameters;
+    private GroupParameters<Point> groupParameters;
 
     GOSTCurve(ASN1ObjectIdentifier identifier) {
         this.identifier = identifier;
@@ -41,7 +42,7 @@ public enum GOSTCurve {
         return identifier;
     }
 
-    public GroupParameters getGroupParameters() {
+    public GroupParameters<Point> getGroupParameters() {
         return groupParameters;
     }
 

@@ -51,7 +51,7 @@ public class ModvarHelper {
     }
 
     public List<ModifiableVariableField> getAllNonNullSentFieldsOfType(
-            WorkflowTrace trace, Class type) {
+            WorkflowTrace trace, Class<?> type) {
         List<ModifiableVariableField> allNonNullSentFields = getAllNonNullSentFields(trace);
         List<ModifiableVariableField> resultFields = new LinkedList<>();
         for (ModifiableVariableField field : allNonNullSentFields) {

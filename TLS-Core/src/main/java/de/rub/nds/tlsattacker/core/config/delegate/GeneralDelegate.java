@@ -81,7 +81,7 @@ public class GeneralDelegate extends Delegate {
         }
         LOGGER.debug("Using the following security providers");
         for (Provider p : Security.getProviders()) {
-            LOGGER.debug("Provider {}, version, {}", p.getName(), p.getVersion());
+            LOGGER.debug("Provider {}, version, {}", p.getName(), p.getVersionStr());
         }
 
         if (keylogfile != null) {

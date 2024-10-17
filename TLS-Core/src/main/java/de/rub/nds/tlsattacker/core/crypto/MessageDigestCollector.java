@@ -51,7 +51,9 @@ public class MessageDigestCollector {
             MessageDigest hash2 = null;
             DigestAlgorithm algorithm = AlgorithmResolver.getDigestAlgorithm(version, suite);
             if (null == algorithm) {
-                hash1 = MessageDigest.getInstance(algorithm.getJavaName());
+                LOGGER.warn(
+                        "null algorithm for version {} and suite {}. Using SHA256", version, suite);
+                hash1 = MessageDigest.getInstance(DigestAlgorithm.SHA256.getJavaName());
             } else {
                 switch (algorithm) {
                     case SSL_DIGEST:

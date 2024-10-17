@@ -21,7 +21,9 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.hints.RecordLayerHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
-import de.rub.nds.tlsattacker.core.protocol.handler.SSL2MessageHandler;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessagePreparator;
+import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageSerializer;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientMasterKeyMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2Message;
@@ -45,7 +47,7 @@ public class SSL2Layer extends ProtocolLayer<LayerProcessingHint, SSL2Message> {
     }
 
     @Override
-    public LayerProcessingResult sendConfiguration() throws IOException {
+    public LayerProcessingResult<SSL2Message> sendConfiguration() throws IOException {
         LayerConfiguration<SSL2Message> configuration = getLayerConfiguration();
         if (configuration != null
                 && configuration.getContainerList() != null
@@ -72,13 +74,13 @@ public class SSL2Layer extends ProtocolLayer<LayerProcessingHint, SSL2Message> {
     }
 
     @Override
-    public LayerProcessingResult sendData(LayerProcessingHint hint, byte[] additionalData)
-            throws IOException {
+    public LayerProcessingResult<SSL2Message> sendData(
+            LayerProcessingHint hint, byte[] additionalData) throws IOException {
         return sendConfiguration();
     }
 
     @Override
-    public LayerProcessingResult receiveData() {
+    public LayerProcessingResult<SSL2Message> receiveData() {
         try {
             int messageLength = 0;
             byte paddingLength = 0;

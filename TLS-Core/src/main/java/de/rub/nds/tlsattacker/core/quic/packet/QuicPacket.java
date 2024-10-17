@@ -77,16 +77,16 @@ public abstract class QuicPacket extends ModifiableVariableHolder
     public abstract void convertCompleteProtectedHeader();
 
     @Override
-    public abstract Handler<?> getHandler(QuicContext context);
+    public abstract Handler<? extends QuicPacket> getHandler(QuicContext context);
 
     @Override
-    public abstract Serializer<?> getSerializer(QuicContext context);
+    public abstract Serializer<? extends QuicPacket> getSerializer(QuicContext context);
 
     @Override
-    public abstract Preparator<?> getPreparator(QuicContext context);
+    public abstract Preparator<? extends QuicPacket> getPreparator(QuicContext context);
 
     @Override
-    public abstract Parser<?> getParser(QuicContext context, InputStream stream);
+    public abstract Parser<? extends QuicPacket> getParser(QuicContext context, InputStream stream);
 
     public byte[] encodePacketNumber(long packetnumber) {
         if (packetnumber <= 0xff) {

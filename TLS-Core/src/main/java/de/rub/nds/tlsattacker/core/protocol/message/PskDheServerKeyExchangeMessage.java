@@ -14,7 +14,6 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.protocol.handler.DHEServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.PskDheServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.PskDheServerKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.PskDheServerKeyExchangePreparator;
@@ -86,7 +85,7 @@ public class PskDheServerKeyExchangeMessage extends DHEServerKeyExchangeMessage 
     }
 
     @Override
-    public DHEServerKeyExchangeHandler getHandler(TlsContext tlsContext) {
+    public PskDheServerKeyExchangeHandler getHandler(TlsContext tlsContext) {
         return new PskDheServerKeyExchangeHandler(tlsContext);
     }
 

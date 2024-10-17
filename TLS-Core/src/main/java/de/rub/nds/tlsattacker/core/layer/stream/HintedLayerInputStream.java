@@ -21,11 +21,11 @@ import java.io.InputStream;
  */
 public class HintedLayerInputStream extends HintedInputStream {
 
-    private final ProtocolLayer layer;
+    private final ProtocolLayer<?, ?> layer;
 
     private ByteArrayInputStream stream = new ByteArrayInputStream(new byte[0]);
 
-    public HintedLayerInputStream(LayerProcessingHint hint, ProtocolLayer layer) {
+    public HintedLayerInputStream(LayerProcessingHint hint, ProtocolLayer<?, ?> layer) {
         super(hint);
         this.layer = layer;
     }

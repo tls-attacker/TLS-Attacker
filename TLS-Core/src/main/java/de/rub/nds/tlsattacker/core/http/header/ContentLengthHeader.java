@@ -15,7 +15,6 @@ import de.rub.nds.tlsattacker.core.http.header.serializer.HttpHeaderSerializer;
 import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
 import de.rub.nds.tlsattacker.core.layer.data.Handler;
 import de.rub.nds.tlsattacker.core.layer.data.Parser;
-import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.InputStream;
 
@@ -53,17 +52,17 @@ public class ContentLengthHeader extends HttpHeader {
     }
 
     @Override
-    public Parser<?> getParser(HttpContext context, InputStream stream) {
+    public Parser<ContentLengthHeader> getParser(HttpContext context, InputStream stream) {
         return null; // TODO Parser is not used
     }
 
     @Override
-    public Serializer<?> getSerializer(HttpContext context) {
+    public HttpHeaderSerializer getSerializer(HttpContext context) {
         return new HttpHeaderSerializer(this);
     }
 
     @Override
-    public Handler<?> getHandler(HttpContext context) {
+    public Handler<ContentLengthHeader> getHandler(HttpContext context) {
         return null;
     }
 }

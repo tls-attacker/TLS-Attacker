@@ -17,11 +17,8 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.PSKKeyExchangeModesExtensionHandler;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.PSKKeyExchangeModesExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PSKKeyExchangeModesExtensionPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PSKKeyExchangeModesExtensionSerializer;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
@@ -93,17 +90,17 @@ public class PSKKeyExchangeModesExtensionMessage extends ExtensionMessage {
     }
 
     @Override
-    public ExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
+    public PSKKeyExchangeModesExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
         return new PSKKeyExchangeModesExtensionParser(stream, tlsContext);
     }
 
     @Override
-    public ExtensionPreparator getPreparator(TlsContext tlsContext) {
+    public PSKKeyExchangeModesExtensionPreparator getPreparator(TlsContext tlsContext) {
         return new PSKKeyExchangeModesExtensionPreparator(tlsContext.getChooser(), this);
     }
 
     @Override
-    public ExtensionSerializer getSerializer(TlsContext tlsContext) {
+    public PSKKeyExchangeModesExtensionSerializer getSerializer(TlsContext tlsContext) {
         return new PSKKeyExchangeModesExtensionSerializer(this);
     }
 

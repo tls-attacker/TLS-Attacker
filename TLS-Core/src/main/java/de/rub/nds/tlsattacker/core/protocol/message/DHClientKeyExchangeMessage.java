@@ -42,23 +42,27 @@ public class DHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     }
 
     @Override
-    public DHClientKeyExchangeHandler getHandler(TlsContext tlsContext) {
-        return new DHClientKeyExchangeHandler(tlsContext);
+    public DHClientKeyExchangeHandler<? extends DHClientKeyExchangeMessage> getHandler(
+            TlsContext tlsContext) {
+        return new DHClientKeyExchangeHandler<>(tlsContext);
     }
 
     @Override
-    public DHClientKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new DHClientKeyExchangeParser(stream, tlsContext);
+    public DHClientKeyExchangeParser<? extends DHClientKeyExchangeMessage> getParser(
+            TlsContext tlsContext, InputStream stream) {
+        return new DHClientKeyExchangeParser<>(stream, tlsContext);
     }
 
     @Override
-    public DHClientKeyExchangePreparator getPreparator(TlsContext tlsContext) {
-        return new DHClientKeyExchangePreparator(tlsContext.getChooser(), this);
+    public DHClientKeyExchangePreparator<? extends DHClientKeyExchangeMessage> getPreparator(
+            TlsContext tlsContext) {
+        return new DHClientKeyExchangePreparator<>(tlsContext.getChooser(), this);
     }
 
     @Override
-    public DHClientKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
-        return new DHClientKeyExchangeSerializer(this);
+    public DHClientKeyExchangeSerializer<? extends DHClientKeyExchangeMessage> getSerializer(
+            TlsContext tlsContext) {
+        return new DHClientKeyExchangeSerializer<>(this);
     }
 
     @Override

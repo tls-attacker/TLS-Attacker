@@ -36,7 +36,7 @@ import org.apache.logging.log4j.Logger;
  * @param <Container> The kind of messages/Containers this layer is able to send and receive.
  */
 public abstract class ProtocolLayer<
-        Hint extends LayerProcessingHint, Container extends DataContainer> {
+        Hint extends LayerProcessingHint, Container extends DataContainer<? extends LayerContext>> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -62,11 +62,11 @@ public abstract class ProtocolLayer<
         this.unreadBytes = new byte[0];
     }
 
-    public ProtocolLayer getHigherLayer() {
+    public ProtocolLayer<?, ?> getHigherLayer() {
         return higherLayer;
     }
 
-    public ProtocolLayer getLowerLayer() {
+    public ProtocolLayer<?, ?> getLowerLayer() {
         return lowerLayer;
     }
 
@@ -80,8 +80,8 @@ public abstract class ProtocolLayer<
 
     public abstract LayerProcessingResult<Container> sendConfiguration() throws IOException;
 
-    public abstract LayerProcessingResult<Container> sendData(Hint hint, byte[] additionalData)
-            throws IOException;
+    public abstract LayerProcessingResult<Container> sendData(
+            LayerProcessingHint hint, byte[] additionalData) throws IOException;
 
     public LayerConfiguration<Container> getLayerConfiguration() {
         return layerConfiguration;
@@ -256,8 +256,8 @@ public abstract class ProtocolLayer<
      * @param context The context of the connection. Keeps parsed and handled values.
      */
     protected void readDataContainer(
-            Container container, LayerContext context, InputStream inputStream) {
-        Parser parser = container.getParser(context, inputStream);
+            DataContainer container, LayerContext context, InputStream inputStream) {
+        Parser parser = container.getParser((LayerContext) context, inputStream);
 
         try {
             parser.parse(container);
@@ -265,7 +265,7 @@ public abstract class ProtocolLayer<
             preparator.prepareAfterParse();
             Handler handler = container.getHandler(context);
             handler.adjustContext(container);
-            addProducedContainer(container);
+            addProducedContainer((Container) container);
         } catch (RuntimeException ex) {
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("Could not read data container: ", ex);

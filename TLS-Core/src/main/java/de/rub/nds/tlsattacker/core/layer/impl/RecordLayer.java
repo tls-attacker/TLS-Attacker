@@ -79,7 +79,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
      * @throws IOException When the data cannot be sent
      */
     @Override
-    public LayerProcessingResult sendConfiguration() throws IOException {
+    public LayerProcessingResult<Record> sendConfiguration() throws IOException {
         LayerConfiguration<Record> configuration = getLayerConfiguration();
         if (configuration != null && configuration.getContainerList() != null) {
             for (Record record : getUnprocessedConfiguredContainers()) {
@@ -129,11 +129,11 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
      * @throws IOException When the data cannot be sent
      */
     @Override
-    public LayerProcessingResult<Record> sendData(RecordLayerHint hint, byte[] data)
+    public LayerProcessingResult<Record> sendData(LayerProcessingHint hint, byte[] data)
             throws IOException {
-        ProtocolMessageType type = ProtocolMessageType.UNKNOWN;
-        if (hint != null) {
-            type = hint.getType();
+        ProtocolMessageType hintedType = ProtocolMessageType.UNKNOWN;
+        if (hint != null && hint instanceof RecordLayerHint) {
+            hintedType = ((RecordLayerHint) hint).getType();
         } else {
             LOGGER.warn(
                     "Sending record without a LayerProcessing hint. Using \"UNKNOWN\" as the type");
@@ -180,7 +180,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
         if (separator.getBytesLeft() > 0) {
             LOGGER.warn(
                     "Unsent bytes for message "
-                            + type
+                            + hintedType
                             + ". Not enough records specified and disabled dynamic record creation in config.");
         }
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -189,7 +189,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
         for (Record record : records) {
             ProtocolMessageType contentType = record.getContentMessageType();
             if (contentType == null) {
-                contentType = type;
+                contentType = hintedType;
             }
             if (encryptor.getRecordCipher(writeEpoch).getState().getVersion().isDTLS()) {
                 record.setEpoch(writeEpoch);
@@ -398,7 +398,7 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
     }
 
     @Override
-    public LayerProcessingResult receiveData() {
+    public LayerProcessingResult<Record> receiveData() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

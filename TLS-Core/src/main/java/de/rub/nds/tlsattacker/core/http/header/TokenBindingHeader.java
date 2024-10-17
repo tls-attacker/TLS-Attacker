@@ -14,7 +14,6 @@ import de.rub.nds.tlsattacker.core.http.header.serializer.HttpHeaderSerializer;
 import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
 import de.rub.nds.tlsattacker.core.layer.data.Handler;
 import de.rub.nds.tlsattacker.core.layer.data.Parser;
-import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import de.rub.nds.tlsattacker.core.tokenbinding.TokenBindingMessage;
 import java.io.InputStream;
 
@@ -40,17 +39,17 @@ public class TokenBindingHeader extends HttpHeader {
     }
 
     @Override
-    public Parser<?> getParser(HttpContext context, InputStream stream) {
+    public Parser<TokenBindingHeader> getParser(HttpContext context, InputStream stream) {
         return null; // TODO Parser is not used
     }
 
     @Override
-    public Serializer<?> getSerializer(HttpContext context) {
+    public HttpHeaderSerializer getSerializer(HttpContext context) {
         return new HttpHeaderSerializer(this);
     }
 
     @Override
-    public Handler<?> getHandler(HttpContext context) {
+    public Handler<TokenBindingHeader> getHandler(HttpContext context) {
         return null;
     }
 }

@@ -39,7 +39,7 @@ public class CipherSuiteDelegate extends Delegate {
     }
 
     public void setCipherSuites(CipherSuite... cipherSuites) {
-        this.cipherSuites = new ArrayList(Arrays.asList(cipherSuites));
+        this.cipherSuites = new ArrayList<>(Arrays.asList(cipherSuites));
     }
 
     @Override

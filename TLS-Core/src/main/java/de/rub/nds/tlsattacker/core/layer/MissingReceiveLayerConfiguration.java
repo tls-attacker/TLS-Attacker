@@ -22,7 +22,7 @@ public class MissingReceiveLayerConfiguration<Container extends DataContainer<?>
         extends ReceiveLayerConfiguration<Container> {
 
     public MissingReceiveLayerConfiguration(LayerType layerType) {
-        super(layerType, (List) null);
+        super(layerType, (List<Container>) null);
     }
 
     @Override

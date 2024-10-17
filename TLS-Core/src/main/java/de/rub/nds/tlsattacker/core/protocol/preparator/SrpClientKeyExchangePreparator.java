@@ -215,7 +215,7 @@ public class SrpClientKeyExchangePreparator
         try {
             dig = MessageDigest.getInstance("SHA-1");
         } catch (NoSuchAlgorithmException ex) {
-            throw new CryptoException(ex);
+            throw new CryptoException("SHA1 is not availble");
         }
         dig.update(toHash);
         return dig.digest();

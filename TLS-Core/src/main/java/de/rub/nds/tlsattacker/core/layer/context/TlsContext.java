@@ -751,7 +751,8 @@ public class TlsContext extends LayerContext {
 
     public void setClientSupportedProtocolVersions(
             ProtocolVersion... clientSupportedProtocolVersions) {
-        this.clientSupportedProtocolVersions = new ArrayList<>(Arrays.asList(clientSupportedProtocolVersions));
+        this.clientSupportedProtocolVersions =
+                new ArrayList<>(Arrays.asList(clientSupportedProtocolVersions));
     }
 
     public NamedGroup getSelectedGroup() {
@@ -922,8 +923,8 @@ public class TlsContext extends LayerContext {
 
     public void setClientSupportedSignatureAndHashAlgorithms(
             SignatureAndHashAlgorithm... clientSupportedSignatureAndHashAlgorithms) {
-        this.clientSupportedSignatureAndHashAlgorithms = new ArrayList<>(
-                Arrays.asList(clientSupportedSignatureAndHashAlgorithms));
+        this.clientSupportedSignatureAndHashAlgorithms =
+                new ArrayList<>(Arrays.asList(clientSupportedSignatureAndHashAlgorithms));
     }
 
     public List<SignatureAndHashAlgorithm> getClientSupportedCertificateSignAlgorithms() {
@@ -937,8 +938,8 @@ public class TlsContext extends LayerContext {
 
     public void setClientSupportedCertificateSignAlgorithms(
             SignatureAndHashAlgorithm... clientSupportedCertificateSignAlgorithms) {
-        this.clientSupportedCertificateSignAlgorithms = new ArrayList<>(
-                Arrays.asList(clientSupportedCertificateSignAlgorithms));
+        this.clientSupportedCertificateSignAlgorithms =
+                new ArrayList<>(Arrays.asList(clientSupportedCertificateSignAlgorithms));
     }
 
     public List<SNIEntry> getClientSNIEntryList() {
@@ -1035,7 +1036,8 @@ public class TlsContext extends LayerContext {
     }
 
     public void setClientSupportedCompressions(CompressionMethod... clientSupportedCompressions) {
-        this.clientSupportedCompressions = new ArrayList<>(Arrays.asList(clientSupportedCompressions));
+        this.clientSupportedCompressions =
+                new ArrayList<>(Arrays.asList(clientSupportedCompressions));
     }
 
     public void addDtlsReceivedHandshakeMessageSequences(int sequence) {
@@ -1063,7 +1065,8 @@ public class TlsContext extends LayerContext {
     }
 
     public void setClientSupportedCipherSuites(CipherSuite... clientSupportedCipherSuites) {
-        this.clientSupportedCipherSuites = new ArrayList<>(Arrays.asList(clientSupportedCipherSuites));
+        this.clientSupportedCipherSuites =
+                new ArrayList<>(Arrays.asList(clientSupportedCipherSuites));
     }
 
     public List<SignatureAndHashAlgorithm> getServerSupportedSignatureAndHashAlgorithms() {
@@ -1077,8 +1080,8 @@ public class TlsContext extends LayerContext {
 
     public void setServerSupportedSignatureAndHashAlgorithms(
             SignatureAndHashAlgorithm... serverSupportedSignatureAndHashAlgorithms) {
-        this.serverSupportedSignatureAndHashAlgorithms = new ArrayList<>(
-                Arrays.asList(serverSupportedSignatureAndHashAlgorithms));
+        this.serverSupportedSignatureAndHashAlgorithms =
+                new ArrayList<>(Arrays.asList(serverSupportedSignatureAndHashAlgorithms));
     }
 
     public List<SignatureAndHashAlgorithm> getServerSupportedCertificateSignAlgorithms() {
@@ -1092,8 +1095,8 @@ public class TlsContext extends LayerContext {
 
     public void setServerSupportedSignatureAlgorithmsCert(
             SignatureAndHashAlgorithm... serverSupportedCertificateSignAlgorithms) {
-        this.serverSupportedCertificateSignAlgorithms = new ArrayList<>(
-                Arrays.asList(serverSupportedCertificateSignAlgorithms));
+        this.serverSupportedCertificateSignAlgorithms =
+                new ArrayList<>(Arrays.asList(serverSupportedCertificateSignAlgorithms));
     }
 
     public ProtocolVersion getSelectedProtocolVersion() {
@@ -1331,8 +1334,8 @@ public class TlsContext extends LayerContext {
         this.clientKeyShareStoreEntryList = clientKeyShareStoreEntryList;
     }
 
-    public void setClientKSEntryList(KeyShareEntry... clientKSEntryList) {
-        this.clientKeyShareStoreEntryList = new ArrayList(Arrays.asList(clientKSEntryList));
+    public void setClientKSEntryList(KeyShareStoreEntry... clientKSEntryList) {
+        this.clientKeyShareStoreEntryList = new ArrayList<>(Arrays.asList(clientKSEntryList));
     }
 
     public KeyShareStoreEntry getServerKeyShareStoreEntry() {
