@@ -284,7 +284,7 @@ public class DtlsFragmentLayer
         LOGGER.debug("Starting retransmissions");
         for (RetransmissionStruct retransmissionStruct : context.getRetransmissionCache()) {
             try {
-                LOGGER.debug("Retransmitting message: {} , {}", retransmissionStruct.getHint().getType(),
+                LOGGER.debug("Retransmitting message: {} , {}", retransmissionStruct.getHint(),
                         retransmissionStruct.getMessageBytes());
                 getLowerLayer().sendData(retransmissionStruct.getHint(), retransmissionStruct.getMessageBytes());
             } catch (IOException e) {
