@@ -73,7 +73,7 @@ public class QuicFrameLayerTest {
         tlsContext = context.getTlsContext();
         quicContext = context.getQuicContext();
         context.setLayerStack(
-                new LayerStack(context, new QuicFrameLayer(quicContext), new UdpLayer(tlsContext)));
+                new LayerStack(context, new QuicFrameLayer(context), new UdpLayer(context)));
 
         transportHandler = new FakeUdpTransportHandler(null);
         tlsContext.setTransportHandler(transportHandler);

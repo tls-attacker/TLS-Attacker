@@ -13,11 +13,11 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ClientAuthzExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ClientAuthzExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ClientAuthzExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ClientAuthzExtensionSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
@@ -60,22 +60,22 @@ public class ClientAuthzExtensionMessage extends ExtensionMessage {
     }
 
     @Override
-    public ClientAuthzExtensionParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new ClientAuthzExtensionParser(stream, tlsContext);
+    public ClientAuthzExtensionParser getParser(Context context, InputStream stream) {
+        return new ClientAuthzExtensionParser(stream, context.getTlsContext());
     }
 
     @Override
-    public ClientAuthzExtensionPreparator getPreparator(TlsContext tlsContext) {
-        return new ClientAuthzExtensionPreparator(tlsContext.getChooser(), this);
+    public ClientAuthzExtensionPreparator getPreparator(Context context) {
+        return new ClientAuthzExtensionPreparator(context.getChooser(), this);
     }
 
     @Override
-    public ClientAuthzExtensionSerializer getSerializer(TlsContext tlsContext) {
+    public ClientAuthzExtensionSerializer getSerializer(Context context) {
         return new ClientAuthzExtensionSerializer(this);
     }
 
     @Override
-    public ClientAuthzExtensionHandler getHandler(TlsContext tlsContext) {
-        return new ClientAuthzExtensionHandler(tlsContext);
+    public ClientAuthzExtensionHandler getHandler(Context context) {
+        return new ClientAuthzExtensionHandler(context.getTlsContext());
     }
 }

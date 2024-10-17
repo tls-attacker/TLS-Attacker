@@ -18,7 +18,7 @@ import de.rub.nds.tlsattacker.core.quic.handler.frame.QuicFrameHandler;
 import de.rub.nds.tlsattacker.core.quic.parser.frame.QuicFrameParser;
 import de.rub.nds.tlsattacker.core.quic.preparator.frame.QuicFramePreparator;
 import de.rub.nds.tlsattacker.core.quic.serializer.frame.QuicFrameSerializer;
-import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
@@ -62,14 +62,14 @@ public abstract class QuicFrame extends ModifiableVariableHolder implements Data
     }
 
     @Override
-    public abstract QuicFrameHandler getHandler(QuicContext context);
+    public abstract QuicFrameHandler getHandler(Context context);
 
     @Override
-    public abstract QuicFrameSerializer getSerializer(QuicContext context);
+    public abstract QuicFrameSerializer getSerializer(Context context);
 
     @Override
-    public abstract QuicFramePreparator getPreparator(QuicContext context);
+    public abstract QuicFramePreparator getPreparator(Context context);
 
     @Override
-    public abstract QuicFrameParser getParser(QuicContext context, InputStream stream);
+    public abstract QuicFrameParser getParser(Context context, InputStream stream);
 }

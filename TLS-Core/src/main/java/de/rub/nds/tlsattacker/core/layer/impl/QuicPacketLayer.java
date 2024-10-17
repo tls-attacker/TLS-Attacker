@@ -54,7 +54,8 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final QuicContext context;
+    private final Context context;
+    private final QuicContext quicContext;
 
     private final QuicDecryptor decryptor;
     private final QuicEncryptor encryptor;
@@ -63,9 +64,10 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
 
     public QuicPacketLayer(Context context) {
         super(ImplementedLayers.QUICPACKET);
-        this.context = context.getQuicContext();
-        decryptor = new QuicDecryptor(this.context);
-        encryptor = new QuicEncryptor(this.context);
+        this.context = context;
+        this.quicContext = context.getQuicContext();
+        decryptor = new QuicDecryptor(context.getQuicContext());
+        encryptor = new QuicEncryptor(context.getQuicContext());
         Arrays.stream(QuicPacketType.values())
                 .forEach(
                         quicPacketType ->
@@ -246,7 +248,7 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
                     packetType = QuicPacketType.VERSION_NEGOTIATION;
                 } else {
                     packetType = QuicPacketType.getPacketTypeFromFirstByte(quicVersion, firstByte);
-                    if (quicVersion != context.getQuicVersion()
+                    if (quicVersion != quicContext.getQuicVersion()
                             && packetType != QuicPacketType.VERSION_NEGOTIATION) {
                         LOGGER.warn("Received packet with unexpected QUIC version, ignoring it.");
                         packetType = QuicPacketType.UNKNOWN;
@@ -255,7 +257,7 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
             } else {
                 packetType =
                         QuicPacketType.getPacketTypeFromFirstByte(
-                                context.getQuicVersion(), firstByte);
+                                quicContext.getQuicVersion(), firstByte);
             }
 
             // Store the packet in the buffer for further processing.
@@ -311,7 +313,7 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
             receivedPacketBuffer.put(packetTypeToProcess, packets);
 
             outputStream.write(packet.getUnprotectedPayload().getValue());
-            context.getReceivedPackets().add(packet.getPacketType());
+            quicContext.getReceivedPackets().add(packet.getPacketType());
         }
 
         if (currentInputStream == null) {
@@ -394,7 +396,7 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
         decryptor.removeHeaderProtectionInitial(packet);
         packet.convertCompleteProtectedHeader();
         decryptor.decryptInitialPacket(packet);
-        context.addReceivedInitialPacketNumber(packet.getPlainPacketNumber());
+        quicContext.addReceivedInitialPacketNumber(packet.getPlainPacketNumber());
         packet.getHandler(context).adjustContext(packet);
         addProducedContainer(packet);
         return packet;
@@ -411,7 +413,7 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
         decryptor.removeHeaderProtectionHandshake(packet);
         packet.convertCompleteProtectedHeader();
         decryptor.decryptHandshakePacket(packet);
-        context.addReceivedHandshakePacketNumber(packet.getPlainPacketNumber());
+        quicContext.addReceivedHandshakePacketNumber(packet.getPlainPacketNumber());
         packet.getHandler(context).adjustContext(packet);
         addProducedContainer(packet);
         return packet;
@@ -427,7 +429,7 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
         decryptor.removeHeaderProtectionOneRTT(packet);
         packet.convertCompleteProtectedHeader();
         decryptor.decryptOneRTTPacket(packet);
-        context.addReceivedOneRTTPacketNumber(packet.getPlainPacketNumber());
+        quicContext.addReceivedOneRTTPacketNumber(packet.getPlainPacketNumber());
         packet.getHandler(context).adjustContext(packet);
         addProducedContainer(packet);
         return packet;
@@ -451,7 +453,7 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
 
     private void decryptInitialPacketsInBuffer() {
         if (!receivedPacketBuffer.get(QuicPacketType.INITIAL_PACKET).isEmpty()
-                && context.isInitialSecretsInitialized()) {
+                && quicContext.isInitialSecretsInitialized()) {
             receivedPacketBuffer.computeIfPresent(
                     QuicPacketType.INITIAL_PACKET,
                     (packetType, packets) ->
@@ -479,7 +481,7 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
 
     private void decryptHandshakePacketsInBuffer() {
         if (!receivedPacketBuffer.get(QuicPacketType.HANDSHAKE_PACKET).isEmpty()
-                && context.isHandshakeSecretsInitialized()) {
+                && quicContext.isHandshakeSecretsInitialized()) {
             receivedPacketBuffer.computeIfPresent(
                     QuicPacketType.HANDSHAKE_PACKET,
                     (packetType, packets) ->
@@ -508,7 +510,7 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
 
     private void decryptOneRRTPacketsInBuffer() {
         if (!receivedPacketBuffer.get(QuicPacketType.ONE_RTT_PACKET).isEmpty()
-                && context.isApplicationSecretsInitialized()) {
+                && quicContext.isApplicationSecretsInitialized()) {
             receivedPacketBuffer.computeIfPresent(
                     QuicPacketType.ONE_RTT_PACKET,
                     (packetType, packets) ->
@@ -536,15 +538,15 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
 
     private QuicPacketType getPacketTypeToProcessNext() {
         if (!receivedPacketBuffer.get(QuicPacketType.INITIAL_PACKET).isEmpty()
-                && context.isInitialSecretsInitialized()
-                && !context.isHandshakeSecretsInitialized()) {
+                && quicContext.isInitialSecretsInitialized()
+                && !quicContext.isHandshakeSecretsInitialized()) {
             return QuicPacketType.INITIAL_PACKET;
         } else if (!receivedPacketBuffer.get(QuicPacketType.HANDSHAKE_PACKET).isEmpty()
-                && context.isHandshakeSecretsInitialized()
-                && !context.isApplicationSecretsInitialized()) {
+                && quicContext.isHandshakeSecretsInitialized()
+                && !quicContext.isApplicationSecretsInitialized()) {
             return QuicPacketType.HANDSHAKE_PACKET;
         } else if (!receivedPacketBuffer.get(QuicPacketType.ONE_RTT_PACKET).isEmpty()
-                && context.isApplicationSecretsInitialized()) {
+                && quicContext.isApplicationSecretsInitialized()) {
             return QuicPacketType.ONE_RTT_PACKET;
         }
         return null;
@@ -561,11 +563,13 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
     public void sendAck(byte[] data) {
         context.setTalkingConnectionEndType(context.getConnection().getLocalConnectionEndType());
         try {
-            if (context.getReceivedPackets().getLast() == QuicPacketType.INITIAL_PACKET) {
+            if (quicContext.getReceivedPackets().getLast() == QuicPacketType.INITIAL_PACKET) {
                 getLowerLayer().sendData(null, writePacket(data, new InitialPacket()));
-            } else if (context.getReceivedPackets().getLast() == QuicPacketType.HANDSHAKE_PACKET) {
+            } else if (quicContext.getReceivedPackets().getLast()
+                    == QuicPacketType.HANDSHAKE_PACKET) {
                 getLowerLayer().sendData(null, writePacket(data, new HandshakePacket()));
-            } else if (context.getReceivedPackets().getLast() == QuicPacketType.ONE_RTT_PACKET) {
+            } else if (quicContext.getReceivedPackets().getLast()
+                    == QuicPacketType.ONE_RTT_PACKET) {
                 getLowerLayer().sendData(null, writePacket(data, new OneRTTPacket()));
             }
         } catch (IOException | CryptoException e) {

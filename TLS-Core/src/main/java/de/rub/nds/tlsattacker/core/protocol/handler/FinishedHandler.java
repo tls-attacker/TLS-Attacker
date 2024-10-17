@@ -52,7 +52,7 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
                             == StackConfiguration.QUIC) {
                         try {
                             QuicPacketCryptoComputations.calculateApplicationSecrets(
-                                    tlsContext.getContext().getQuicContext());
+                                    tlsContext.getContext());
                         } catch (NoSuchAlgorithmException
                                 | NoSuchPaddingException
                                 | CryptoException e) {

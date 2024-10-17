@@ -309,20 +309,20 @@ public class SendAction extends CommonSendAction implements StaticSendingAction 
             dataContainerLists.add((List<DataContainer>) (List<?>) configuredHttpMessages);
         }
         if (configuredMessages != null) {
-            dataContainerLists.add((List<DataContainer<?>>) (List<?>) configuredMessages);
+            dataContainerLists.add((List<DataContainer>) (List<?>) configuredMessages);
         }
         if (configuredDtlsHandshakeMessageFragments != null) {
             dataContainerLists.add(
-                    (List<DataContainer<?>>) (List<?>) configuredDtlsHandshakeMessageFragments);
+                    (List<DataContainer>) (List<?>) configuredDtlsHandshakeMessageFragments);
         }
         if (configuredRecords != null) {
-            dataContainerLists.add((List<DataContainer<?>>) (List<?>) configuredRecords);
+            dataContainerLists.add((List<DataContainer>) (List<?>) configuredRecords);
         }
         if (configuredQuicFrames != null) {
-            dataContainerLists.add((List<DataContainer<?>>) (List<?>) configuredQuicFrames);
+            dataContainerLists.add((List<DataContainer>) (List<?>) configuredQuicFrames);
         }
         if (configuredQuicPackets != null) {
-            dataContainerLists.add((List<DataContainer<?>>) (List<?>) configuredQuicPackets);
+            dataContainerLists.add((List<DataContainer>) (List<?>) configuredQuicPackets);
         }
         return dataContainerLists;
     }

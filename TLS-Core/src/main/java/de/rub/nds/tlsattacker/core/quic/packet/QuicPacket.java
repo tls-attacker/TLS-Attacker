@@ -21,7 +21,7 @@ import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import de.rub.nds.tlsattacker.core.quic.constants.MiscRfcConstants;
 import de.rub.nds.tlsattacker.core.quic.constants.QuicCryptoSecrets;
 import de.rub.nds.tlsattacker.core.quic.constants.QuicPacketType;
-import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import java.io.ByteArrayOutputStream;
@@ -76,16 +76,16 @@ public abstract class QuicPacket extends ModifiableVariableHolder implements Dat
     public abstract void convertCompleteProtectedHeader();
 
     @Override
-    public abstract Handler<? extends QuicPacket> getHandler(QuicContext context);
+    public abstract Handler<? extends QuicPacket> getHandler(Context context);
 
     @Override
-    public abstract Serializer<? extends QuicPacket> getSerializer(QuicContext context);
+    public abstract Serializer<? extends QuicPacket> getSerializer(Context context);
 
     @Override
-    public abstract Preparator<? extends QuicPacket> getPreparator(QuicContext context);
+    public abstract Preparator<? extends QuicPacket> getPreparator(Context context);
 
     @Override
-    public abstract Parser<? extends QuicPacket> getParser(QuicContext context, InputStream stream);
+    public abstract Parser<? extends QuicPacket> getParser(Context context, InputStream stream);
 
     public byte[] encodePacketNumber(long packetnumber) {
         if (packetnumber <= 0xff) {

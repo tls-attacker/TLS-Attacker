@@ -47,7 +47,7 @@ public class DtlsFragmentLayer
 
     private static Logger LOGGER = LogManager.getLogger();
 
-    private final TlsContext context;
+    private final Context context;
 
     private FragmentManager fragmentManager;
 
@@ -56,7 +56,7 @@ public class DtlsFragmentLayer
 
     public DtlsFragmentLayer(Context context) {
         super(ImplementedLayers.DTLS_FRAGMENT);
-        this.context = context.getTlsContext();
+        this.context = context;
         this.fragmentManager = new FragmentManager(context.getConfig());
     }
 
@@ -119,7 +119,7 @@ public class DtlsFragmentLayer
             List<DtlsHandshakeMessageFragment> fragments = new LinkedList<>();
             if (getLayerConfiguration().getContainerList() == null
                     || getUnprocessedConfiguredContainers().isEmpty()) {
-                fragments = getEnoughFragments(context, data.length);
+                fragments = getEnoughFragments(context.getTlsContext(), data.length);
             } else {
                 // use the provided fragments
                 int dataToBeSent = data.length;
@@ -131,7 +131,7 @@ public class DtlsFragmentLayer
                     dataToBeSent -= nextFragment.getMaxFragmentLengthConfig();
                 }
                 if (dataToBeSent > 0 && context.getConfig().isCreateFragmentsDynamically()) {
-                    fragments.addAll(getEnoughFragments(context, dataToBeSent));
+                    fragments.addAll(getEnoughFragments(context.getTlsContext(), dataToBeSent));
                 }
             }
             fragments =
@@ -338,7 +338,7 @@ public class DtlsFragmentLayer
      * @return DtlsHandshakeMessageFragment The fragment containing the message
      */
     public DtlsHandshakeMessageFragment wrapInSingleFragment(
-            TlsContext context, HandshakeMessage message, boolean goingToBeSent) {
+            Context context, HandshakeMessage message, boolean goingToBeSent) {
         DtlsHandshakeMessageFragment fragment = new DtlsHandshakeMessageFragment();
         fragment.setHandshakeMessageTypeConfig(message.getHandshakeMessageType());
         byte[] messageContent = message.getSerializer(context).serializeHandshakeMessageContent();

@@ -32,7 +32,7 @@ public class UserMappingExtensionHandlerTest
         UserMappingExtensionMessage msg = new UserMappingExtensionMessage();
         msg.setUserMappingType(hintType.getValue());
         handler.adjustContext(msg);
-        assertTrue(context.isExtensionProposed(ExtensionType.USER_MAPPING));
-        assertEquals(hintType.getValue(), context.getUserMappingExtensionHintType().getValue());
+        assertTrue(tlsContext.isExtensionProposed(ExtensionType.USER_MAPPING));
+        assertEquals(hintType.getValue(), tlsContext.getUserMappingExtensionHintType().getValue());
     }
 }

@@ -10,13 +10,13 @@ package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.EncryptedExtensionsHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.RecordSizeLimitExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.EncryptedExtensionsParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.EncryptedExtensionsPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.EncryptedExtensionsSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.LinkedList;
@@ -67,22 +67,22 @@ public class EncryptedExtensionsMessage extends HandshakeMessage {
     }
 
     @Override
-    public EncryptedExtensionsHandler getHandler(TlsContext tlsContext) {
-        return new EncryptedExtensionsHandler(tlsContext);
+    public EncryptedExtensionsHandler getHandler(Context context) {
+        return new EncryptedExtensionsHandler(context.getTlsContext());
     }
 
     @Override
-    public EncryptedExtensionsParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new EncryptedExtensionsParser(stream, tlsContext);
+    public EncryptedExtensionsParser getParser(Context context, InputStream stream) {
+        return new EncryptedExtensionsParser(stream, context.getTlsContext());
     }
 
     @Override
-    public EncryptedExtensionsPreparator getPreparator(TlsContext tlsContext) {
-        return new EncryptedExtensionsPreparator(tlsContext.getChooser(), this);
+    public EncryptedExtensionsPreparator getPreparator(Context context) {
+        return new EncryptedExtensionsPreparator(context.getChooser(), this);
     }
 
     @Override
-    public EncryptedExtensionsSerializer getSerializer(TlsContext tlsContext) {
+    public EncryptedExtensionsSerializer getSerializer(Context context) {
         return new EncryptedExtensionsSerializer(this);
     }
 

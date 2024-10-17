@@ -14,9 +14,9 @@ import de.rub.nds.modifiablevariable.bool.ModifiableBoolean;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.layer.Message;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlTransient;
@@ -134,18 +134,17 @@ public abstract class ProtocolMessage extends Message {
     }
 
     @Override
-    public abstract ProtocolMessageHandler<? extends ProtocolMessage> getHandler(
-            TlsContext context);
+    public abstract ProtocolMessageHandler<? extends ProtocolMessage> getHandler(Context context);
 
     @Override
     public abstract ProtocolMessageParser<? extends ProtocolMessage> getParser(
-            TlsContext context, InputStream stream);
+            Context context, InputStream stream);
 
     @Override
     public abstract ProtocolMessagePreparator<? extends ProtocolMessage> getPreparator(
-            TlsContext context);
+            Context context);
 
     @Override
     public abstract ProtocolMessageSerializer<? extends ProtocolMessage> getSerializer(
-            TlsContext context);
+            Context context);
 }

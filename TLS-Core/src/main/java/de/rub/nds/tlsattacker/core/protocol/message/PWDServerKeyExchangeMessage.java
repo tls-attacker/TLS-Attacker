@@ -16,12 +16,12 @@ import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.PWDServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.PWDComputations;
 import de.rub.nds.tlsattacker.core.protocol.parser.PWDServerKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.PWDServerKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.PWDServerKeyExchangeSerializer;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
@@ -68,24 +68,24 @@ public class PWDServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     }
 
     @Override
-    public PWDServerKeyExchangeHandler getHandler(TlsContext tlsContext) {
-        return new PWDServerKeyExchangeHandler(tlsContext);
+    public PWDServerKeyExchangeHandler getHandler(Context context) {
+        return new PWDServerKeyExchangeHandler(context.getTlsContext());
     }
 
     @Override
-    public PWDServerKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new PWDServerKeyExchangeParser(stream, tlsContext);
+    public PWDServerKeyExchangeParser getParser(Context context, InputStream stream) {
+        return new PWDServerKeyExchangeParser(stream, context.getTlsContext());
     }
 
     @Override
-    public PWDServerKeyExchangePreparator getPreparator(TlsContext tlsContext) {
-        return new PWDServerKeyExchangePreparator(tlsContext.getChooser(), this);
+    public PWDServerKeyExchangePreparator getPreparator(Context context) {
+        return new PWDServerKeyExchangePreparator(context.getChooser(), this);
     }
 
     @Override
-    public PWDServerKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
+    public PWDServerKeyExchangeSerializer getSerializer(Context context) {
         return new PWDServerKeyExchangeSerializer(
-                this, tlsContext.getChooser().getSelectedProtocolVersion());
+                this, context.getChooser().getSelectedProtocolVersion());
     }
 
     public ModifiableInteger getSaltLength() {

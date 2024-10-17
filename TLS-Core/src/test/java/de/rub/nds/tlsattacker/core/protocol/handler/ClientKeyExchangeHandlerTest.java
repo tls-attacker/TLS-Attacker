@@ -56,10 +56,10 @@ public class ClientKeyExchangeHandlerTest
         message.getComputations().setPremasterSecret(preMasterSecret);
         message.getComputations()
                 .setClientServerRandom(ArrayConverter.concatenate(clientRdm, serverRdm));
-        context.setServerRandom(serverRdm);
-        context.setSelectedCipherSuite(CipherSuite.TLS_DHE_RSA_WITH_AES_256_CBC_SHA);
-        context.setSelectedProtocolVersion(ProtocolVersion.SSL3);
-        context.setPreMasterSecret(preMasterSecret);
+        tlsContext.setServerRandom(serverRdm);
+        tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_RSA_WITH_AES_256_CBC_SHA);
+        tlsContext.setSelectedProtocolVersion(ProtocolVersion.SSL3);
+        tlsContext.setPreMasterSecret(preMasterSecret);
 
         final MessageDigest md5 = java.security.MessageDigest.getInstance("MD5");
         final MessageDigest sha = java.security.MessageDigest.getInstance("SHA-1");

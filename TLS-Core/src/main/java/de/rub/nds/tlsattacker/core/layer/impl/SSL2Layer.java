@@ -17,7 +17,6 @@ import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.tlsattacker.core.layer.ProtocolLayer;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.hints.RecordLayerHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
@@ -38,11 +37,11 @@ import org.apache.logging.log4j.Logger;
 public class SSL2Layer extends ProtocolLayer<LayerProcessingHint, SSL2Message> {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    private TlsContext context;
+    private Context context;
 
     public SSL2Layer(Context context) {
         super(ImplementedLayers.SSL2);
-        this.context = context.getTlsContext();
+        this.context = context;
     }
 
     @Override

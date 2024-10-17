@@ -100,7 +100,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                         == StackConfiguration.QUIC) {
                     try {
                         QuicPacketCryptoComputations.calculateHandshakeSecrets(
-                                tlsContext.getContext().getQuicContext());
+                                tlsContext.getContext());
                     } catch (NoSuchAlgorithmException
                             | NoSuchPaddingException
                             | CryptoException e) {

@@ -20,7 +20,7 @@ import de.rub.nds.tlsattacker.core.quic.parser.packet.InitialPacketParser;
 import de.rub.nds.tlsattacker.core.quic.preparator.packet.InitialPacketPreparator;
 import de.rub.nds.tlsattacker.core.quic.serializer.packet.InitialPacketSerializer;
 import de.rub.nds.tlsattacker.core.quic.util.VariableLengthIntegerEncoding;
-import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
+import de.rub.nds.tlsattacker.core.state.Context;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.IOException;
 import java.io.InputStream;
@@ -137,23 +137,23 @@ public class InitialPacket extends LongHeaderPacket {
     }
 
     @Override
-    public InitialPacketHandler getHandler(QuicContext context) {
-        return new InitialPacketHandler(context);
+    public InitialPacketHandler getHandler(Context context) {
+        return new InitialPacketHandler(context.getQuicContext());
     }
 
     @Override
-    public InitialPacketSerializer getSerializer(QuicContext context) {
+    public InitialPacketSerializer getSerializer(Context context) {
         return new InitialPacketSerializer(this);
     }
 
     @Override
-    public InitialPacketPreparator getPreparator(QuicContext context) {
+    public InitialPacketPreparator getPreparator(Context context) {
         return new InitialPacketPreparator(context.getChooser(), this);
     }
 
     @Override
-    public InitialPacketParser getParser(QuicContext context, InputStream stream) {
-        return new InitialPacketParser(stream, context);
+    public InitialPacketParser getParser(Context context, InputStream stream) {
+        return new InitialPacketParser(stream, context.getQuicContext());
     }
 
     public void setToken(ModifiableByteArray token) {
