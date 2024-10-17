@@ -21,6 +21,7 @@ import de.rub.nds.tlsattacker.core.quic.parser.packet.RetryPacketParser;
 import de.rub.nds.tlsattacker.core.quic.preparator.packet.RetryPacketPreparator;
 import de.rub.nds.tlsattacker.core.quic.serializer.packet.RetryPacketSerializer;
 import de.rub.nds.tlsattacker.core.state.Context;
+import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
