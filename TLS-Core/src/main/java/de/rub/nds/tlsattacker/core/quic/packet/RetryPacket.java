@@ -56,6 +56,8 @@ public class RetryPacket extends LongHeaderPacket {
     public RetryPacket(byte flags) {
         super(QuicPacketType.RETRY_PACKET);
         this.setProtectedFlags(flags);
+        // We do not have any header protection in Retry packets
+        this.setUnprotectedFlags(flags);
         protectedHeaderHelper.write(flags);
     }
 
@@ -81,7 +83,7 @@ public class RetryPacket extends LongHeaderPacket {
                                         + retryToken.getValue().length)
                         .put((byte) (context.getFirstDestinationConnectionId().length & 0xff))
                         .put(context.getFirstDestinationConnectionId())
-                        .put((byte) (getUnprotectedFlags().getValue() & 0xf0))
+                        .put((byte) (getUnprotectedFlags().getValue()))
                         .put(context.getQuicVersion().getByteValue())
                         .put(getDestinationConnectionIdLength().getValue())
                         .put(getDestinationConnectionId().getValue())
