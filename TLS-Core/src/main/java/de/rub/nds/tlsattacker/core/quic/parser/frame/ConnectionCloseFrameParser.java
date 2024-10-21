@@ -24,6 +24,7 @@ public class ConnectionCloseFrameParser extends QuicFrameParser<ConnectionCloseF
     @Override
     public void parse(ConnectionCloseFrame frame) {
         parseErrorCode(frame);
+        parseFrameType(frame);
         parseReasonPhraseLength(frame);
         parseReasonPhrase(frame);
     }
@@ -31,6 +32,11 @@ public class ConnectionCloseFrameParser extends QuicFrameParser<ConnectionCloseF
     protected void parseErrorCode(ConnectionCloseFrame frame) {
         frame.setErrorCode((int) parseVariableLengthInteger());
         LOGGER.debug("Error Code: {}", frame.getErrorCode().getValue());
+    }
+
+    protected void parseFrameType(ConnectionCloseFrame frame) {
+        frame.setTriggerFrameType((int) parseVariableLengthInteger());
+        LOGGER.debug("Frame Type: {}", frame.getTriggerFrameType().getValue());
     }
 
     protected void parseReasonPhraseLength(ConnectionCloseFrame frame) {
