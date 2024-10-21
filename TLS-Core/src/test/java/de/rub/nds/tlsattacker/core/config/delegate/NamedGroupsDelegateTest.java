@@ -106,7 +106,7 @@ public class NamedGroupsDelegateTest extends AbstractDelegateTest<NamedGroupsDel
         args[1] = "SECP192R1,SECP256R1";
         args[2] = "-point_formats";
         args[3] = "ANSIX962_COMPRESSED_PRIME,UNCOMPRESSED";
-        Config config = Config.createConfig();
+        Config config = new Config();
         config.setDefaultSelectedNamedGroup(NamedGroup.SECP192R1);
         config.setDefaultClientSupportedPointFormats();
         config.setDefaultServerSupportedPointFormats();
@@ -136,8 +136,8 @@ public class NamedGroupsDelegateTest extends AbstractDelegateTest<NamedGroupsDel
 
     @Test
     public void testNothingSetNothingChanges() {
-        Config config = Config.createConfig();
-        Config config2 = Config.createConfig();
+        Config config = new Config();
+        Config config2 = new Config();
         delegate.applyDelegate(config);
         assertTrue(EqualsBuilder.reflectionEquals(config, config2, "certificateChainConfig"));
     }

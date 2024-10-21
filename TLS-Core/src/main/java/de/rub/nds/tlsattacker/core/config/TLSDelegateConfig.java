@@ -44,7 +44,7 @@ public abstract class TLSDelegateConfig {
     public <T extends Delegate> T getDelegate(Class<T> delegateClass) {
         for (Delegate delegate : getDelegateList()) {
             if (delegate.getClass().equals(delegateClass)) {
-                return (T) delegate;
+                return delegateClass.cast(delegate);
             }
         }
         return null;
@@ -75,7 +75,7 @@ public abstract class TLSDelegateConfig {
                 throw new ParameterException("Could not find config file: " + defaultConfig);
             }
         } else {
-            config = Config.createConfig();
+            config = new Config();
         }
 
         return createConfig(config);

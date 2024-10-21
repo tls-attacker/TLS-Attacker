@@ -41,9 +41,11 @@ public enum QuicFrameType {
     RETIRE_CONNECTION_ID((byte) 0x19),
     PATH_CHALLENGE_FRAME((byte) 0x1a),
     PATH_RESPONSE_FRAME((byte) 0x1b),
-    CONNECTION_CLOSE_FRAME((byte) 0x1c),
-    CONNECTION_CLOSE_SIGNAL_ERROR_FRAME((byte) 0x1d),
-    HANDSHAKE_DONE_FRAME((byte) 0x1e);
+    CONNECTION_CLOSE_QUIC_FRAME((byte) 0x1c),
+    CONNECTION_CLOSE_APPLICATION_FRAME((byte) 0x1d),
+    HANDSHAKE_DONE_FRAME((byte) 0x1e),
+    DATAGRAM_FRAME((byte) 0x30),
+    DATAGRAM_FRAME_LEN((byte) 0x31);
 
     private int value;
     private static final Map<Byte, QuicFrameType> MAP;
@@ -58,11 +60,11 @@ public enum QuicFrameType {
 
     static {
         MAP = new HashMap<>();
-        for (QuicFrameType knownType : QuicFrameType.values()) {
-            if (knownType == UNKNOWN) {
+        for (QuicFrameType type : QuicFrameType.values()) {
+            if (type == UNKNOWN) {
                 continue;
             }
-            MAP.put((byte) knownType.value, knownType);
+            MAP.put((byte) type.value, type);
         }
     }
 

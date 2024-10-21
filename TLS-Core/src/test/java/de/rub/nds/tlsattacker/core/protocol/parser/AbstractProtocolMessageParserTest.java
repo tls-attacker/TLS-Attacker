@@ -58,7 +58,7 @@ abstract class AbstractProtocolMessageParserTest<
         this.parserConstructorWithContext = parserConstructorWithContext;
         this.parserConstructor = null;
         this.messageGetters = messageGetters;
-        this.config = Config.createConfig();
+        this.config = new Config();
         this.tlsContext = new Context(new State(config), new InboundConnection()).getTlsContext();
         this.messageClass = messageClass;
     }
@@ -70,7 +70,7 @@ abstract class AbstractProtocolMessageParserTest<
         this.parserConstructor = parserConstructor;
         this.parserConstructorWithContext = null;
         this.messageGetters = messageGetters;
-        this.config = Config.createConfig();
+        this.config = new Config();
         this.tlsContext = new Context(new State(config), new InboundConnection()).getTlsContext();
         this.messageClass = messageClass;
     }

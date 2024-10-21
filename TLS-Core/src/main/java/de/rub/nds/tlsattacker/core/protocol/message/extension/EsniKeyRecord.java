@@ -22,14 +22,14 @@ public class EsniKeyRecord {
     private byte[] publicNameLength;
     private byte[] publicName;
     private byte[] keysLength;
-    private List<KeyShareStoreEntry> keys = new LinkedList();
+    private List<KeyShareStoreEntry> keys = new LinkedList<>();
     private byte[] cipherSuitesLength;
-    private List<CipherSuite> cipherSuites = new LinkedList();
+    private List<CipherSuite> cipherSuites = new LinkedList<>();
     private int paddedLength;
     private long notBefore;
     private long notAfter;
     private byte[] extensionsLength;
-    private List<ExtensionMessage> extensions = new LinkedList();
+    private List<ExtensionMessage> extensions = new LinkedList<>();
 
     public EsniDnsKeyRecordVersion getVersion() {
         return version;

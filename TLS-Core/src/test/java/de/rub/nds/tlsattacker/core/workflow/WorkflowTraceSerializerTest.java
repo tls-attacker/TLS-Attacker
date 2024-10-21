@@ -50,8 +50,8 @@ public class WorkflowTraceSerializerTest {
 
     @BeforeEach
     public void setUp() throws JAXBException {
-        config = Config.createConfig();
-        action = new SendAction(new ClientHelloMessage(Config.createConfig()));
+        config = new Config();
+        action = new SendAction(new ClientHelloMessage(new Config()));
     }
 
     /**

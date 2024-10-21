@@ -252,6 +252,9 @@ public class ReceiveAction extends CommonReceiveAction implements StaticReceivin
         if (getExpectedMessages() != null) {
             configurationList.add(
                     new SpecificReceiveLayerConfiguration<>(
+                            ImplementedLayers.SSL2, getExpectedMessages()));
+            configurationList.add(
+                    new SpecificReceiveLayerConfiguration<>(
                             ImplementedLayers.MESSAGE, getExpectedMessages()));
         }
         if (getExpectedDtlsFragments() != null) {

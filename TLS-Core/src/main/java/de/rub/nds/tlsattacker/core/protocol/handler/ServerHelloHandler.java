@@ -94,6 +94,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                 if (tlsContext.getTalkingConnectionEndType()
                         != tlsContext.getChooser().getConnectionEndType()) {
                     setServerRecordCipher();
+                    precalculateHandshakeKeysClient();
                 }
                 if (tlsContext.getConfig().getDefaultLayerConfiguration()
                         == StackConfiguration.QUIC) {
@@ -590,7 +591,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         }
         tlsContext.setSelectedGroup(selectedKeyShareStore.getGroup());
 
-        if (selectedKeyShareStore.getGroup().isCurve()) {
+        if (selectedKeyShareStore.getGroup().isEcGroup()) {
             Point publicPoint;
             if (tlsContext.getChooser().getSelectedCipherSuite().isPWD()) {
                 publicPoint =
@@ -610,5 +611,24 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         }
 
         return selectedKeyShareStore;
+    }
+
+    private KeySet getKeySet(TlsContext tlsContext, Tls13KeySetType keySetType) {
+        try {
+            LOGGER.debug("Generating new KeySet");
+            KeySet keySet =
+                    KeySetGenerator.generateKeySet(
+                            tlsContext,
+                            tlsContext.getChooser().getSelectedProtocolVersion(),
+                            keySetType);
+            return keySet;
+        } catch (NoSuchAlgorithmException | CryptoException ex) {
+            throw new UnsupportedOperationException("The specified Algorithm is not supported", ex);
+        }
+    }
+
+    private void precalculateHandshakeKeysClient() {
+        KeySet keySet = getKeySet(tlsContext, Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
+        tlsContext.setkeySetHandshake(keySet);
     }
 }

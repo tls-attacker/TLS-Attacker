@@ -40,11 +40,12 @@ public class VersionNegotiationPacketParser
     protected void parseSupportedVersion(VersionNegotiationPacket packet) {
         try {
             while (getStream().available() > 0) {
-                packet.addSupportedVersion(
+                packet.setSupportedVersions(
                         parseByteArrayField(QuicPacketByteLength.QUIC_VERSION_LENGTH));
             }
         } catch (EndOfStreamException | ParserException | TimeoutException | IOException e) {
             LOGGER.error("No more versions to parse in Version Negotiation Packet");
         }
+        LOGGER.debug("Supported Versions: {}", packet.getSupportedVersions().getValue());
     }
 }

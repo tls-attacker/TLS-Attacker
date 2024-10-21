@@ -21,7 +21,6 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.tlsattacker.core.layer.hints.RecordLayerHint;
 import de.rub.nds.tlsattacker.core.layer.stream.HintedInputStream;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageSerializer;
@@ -35,7 +34,7 @@ import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class SSL2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessage> {
+public class SSL2Layer extends ProtocolLayer<LayerProcessingHint, SSL2Message> {
 
     private static final Logger LOGGER = LogManager.getLogger();
     private TlsContext context;
@@ -46,12 +45,12 @@ public class SSL2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
     }
 
     @Override
-    public LayerProcessingResult sendConfiguration() throws IOException {
-        LayerConfiguration<ProtocolMessage> configuration = getLayerConfiguration();
+    public LayerProcessingResult<SSL2Message> sendConfiguration() throws IOException {
+        LayerConfiguration<SSL2Message> configuration = getLayerConfiguration();
         if (configuration != null
                 && configuration.getContainerList() != null
                 && !configuration.getContainerList().isEmpty()) {
-            for (ProtocolMessage ssl2message : getUnprocessedConfiguredContainers()) {
+            for (SSL2Message ssl2message : getUnprocessedConfiguredContainers()) {
                 ProtocolMessagePreparator preparator = ssl2message.getPreparator(context);
                 preparator.prepare();
                 preparator.afterPrepare();
@@ -73,14 +72,13 @@ public class SSL2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
     }
 
     @Override
-    public LayerProcessingResult sendData(LayerProcessingHint hint, byte[] additionalData)
-            throws IOException {
+    public LayerProcessingResult<SSL2Message> sendData(
+            LayerProcessingHint hint, byte[] additionalData) throws IOException {
         return sendConfiguration();
     }
 
     @Override
-    public LayerProcessingResult receiveData() {
-
+    public LayerProcessingResult<SSL2Message> receiveData() {
         try {
             int messageLength = 0;
             byte paddingLength = 0;
@@ -88,10 +86,13 @@ public class SSL2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
             HintedInputStream dataStream = null;
             SSL2MessageType messageType;
             try {
-
                 dataStream = getLowerLayer().getDataStream();
-                totalHeader = dataStream.readNBytes(SSL2ByteLength.LENGTH);
+                if (dataStream.available() == 0) {
+                    LOGGER.debug("Reached end of stream, cannot parse more messages");
+                    return getLayerResult();
+                }
 
+                totalHeader = dataStream.readNBytes(SSL2ByteLength.LENGTH);
                 if (SSL2TotalHeaderLengths.isNoPaddingHeader(totalHeader[0])) {
                     messageLength = resolveUnpaddedMessageLength(totalHeader);
                     paddingLength = 0x00;
@@ -107,7 +108,6 @@ public class SSL2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
             }
 
             SSL2Message message = null;
-
             switch (messageType) {
                 case SSL_CLIENT_HELLO:
                     message = new SSL2ClientHelloMessage();
@@ -124,14 +124,12 @@ public class SSL2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
                 default:
                     message = new UnknownSSL2Message();
             }
-
             message.setType((byte) messageType.getType());
             message.setMessageLength(messageLength);
             message.setPaddingLength((int) paddingLength);
             readDataContainer(message, context);
-
         } catch (TimeoutException ex) {
-            LOGGER.debug(ex);
+            LOGGER.debug("Received a timeout");
         } catch (EndOfStreamException ex) {
             LOGGER.debug("Reached end of stream, cannot parse more messages", ex);
         }

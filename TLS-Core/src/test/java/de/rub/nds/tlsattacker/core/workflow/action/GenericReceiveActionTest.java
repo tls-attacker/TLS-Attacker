@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
-import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
+import de.rub.nds.tlsattacker.core.unittest.helper.FakeTcpTransportHandler;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import org.junit.jupiter.api.Test;
 
@@ -37,14 +37,14 @@ public class GenericReceiveActionTest extends AbstractActionTest<GenericReceiveA
         tlsContext
                 .getContext()
                 .getTcpContext()
-                .setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
+                .setTransportHandler(new FakeTcpTransportHandler(ConnectionEndType.CLIENT));
         tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
     }
 
     /** Test of execute method, of class GenericReceiveAction. */
     @Test
     public void testExecute() throws Exception {
-        ((FakeTransportHandler) tlsContext.getContext().getTransportHandler())
+        ((FakeTcpTransportHandler) tlsContext.getContext().getTransportHandler())
                 .setFetchableByte(new byte[] {0x15, 0x03, 0x03, 0x00, 0x02, 0x02, 50});
         super.testExecute();
         assertEquals(action.getReceivedMessages().get(0), alert);

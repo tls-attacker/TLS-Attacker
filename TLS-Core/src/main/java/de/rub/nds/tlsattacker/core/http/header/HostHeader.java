@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.http.header.serializer.HttpHeaderSerializer;
 import de.rub.nds.tlsattacker.core.layer.context.HttpContext;
 import de.rub.nds.tlsattacker.core.layer.data.Handler;
 import de.rub.nds.tlsattacker.core.layer.data.Parser;
-import de.rub.nds.tlsattacker.core.layer.data.Serializer;
+import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import java.io.InputStream;
 
 public class HostHeader extends HttpHeader {
@@ -21,22 +21,22 @@ public class HostHeader extends HttpHeader {
     public HostHeader() {}
 
     @Override
-    public HostHeaderPreparator getPreparator(HttpContext httpContext) {
+    public Preparator<HostHeader> getPreparator(HttpContext httpContext) {
         return new HostHeaderPreparator(httpContext.getChooser(), this);
     }
 
     @Override
-    public Parser<?> getParser(HttpContext context, InputStream stream) {
+    public Parser<HostHeader> getParser(HttpContext context, InputStream stream) {
         return null; // TODO Parser is not used
     }
 
     @Override
-    public Serializer<?> getSerializer(HttpContext context) {
+    public HttpHeaderSerializer getSerializer(HttpContext context) {
         return new HttpHeaderSerializer(this);
     }
 
     @Override
-    public Handler<?> getHandler(HttpContext context) {
+    public Handler<HostHeader> getHandler(HttpContext context) {
         return null;
     }
 }

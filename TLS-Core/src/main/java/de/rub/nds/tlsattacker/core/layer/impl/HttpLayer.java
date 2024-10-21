@@ -39,7 +39,7 @@ public class HttpLayer extends ProtocolLayer<HttpLayerHint, HttpMessage> {
     }
 
     @Override
-    public LayerProcessingResult sendConfiguration() throws IOException {
+    public LayerProcessingResult<HttpMessage> sendConfiguration() throws IOException {
         LayerConfiguration<HttpMessage> configuration = getLayerConfiguration();
         if (configuration != null && configuration.getContainerList() != null) {
             for (HttpMessage httpMsg : getUnprocessedConfiguredContainers()) {
@@ -58,8 +58,8 @@ public class HttpLayer extends ProtocolLayer<HttpLayerHint, HttpMessage> {
     }
 
     @Override
-    public LayerProcessingResult sendData(HttpLayerHint hint, byte[] additionalData)
-            throws IOException {
+    public LayerProcessingResult<HttpMessage> sendData(
+            LayerProcessingHint hint, byte[] additionalData) throws IOException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -69,7 +69,7 @@ public class HttpLayer extends ProtocolLayer<HttpLayerHint, HttpMessage> {
     }
 
     @Override
-    public LayerProcessingResult receiveData() {
+    public LayerProcessingResult<HttpMessage> receiveData() {
         try {
             do {
                 // for now, we parse based on our endpoint
@@ -96,5 +96,10 @@ public class HttpLayer extends ProtocolLayer<HttpLayerHint, HttpMessage> {
         }
 
         return getLayerResult();
+    }
+
+    @Override
+    public boolean shouldContinueProcessing() {
+        return super.shouldContinueProcessing() && this.getUnreadBytes() == null;
     }
 }

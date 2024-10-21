@@ -17,7 +17,12 @@ import de.rub.nds.tlsattacker.core.constants.hpke.HpkeAeadFunction;
 import de.rub.nds.tlsattacker.core.constants.hpke.HpkeKeyDerivationFunction;
 import de.rub.nds.tlsattacker.core.constants.hpke.HpkeKeyEncapsulationMechanism;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ech.HpkeCipherSuite;
-import jakarta.xml.bind.annotation.*;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElementWrapper;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlTransient;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.util.Arrays;
@@ -47,7 +52,7 @@ public class EchConfig implements Serializable {
 
     @XmlElement(name = "extension")
     @XmlElementWrapper
-    private List<ExtensionMessage> extensions = new LinkedList();
+    private List<ExtensionMessage> extensions = new LinkedList<>();
 
     // HPKE key data
 

@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
+import de.rub.nds.tlsattacker.core.unittest.helper.FakeTcpTransportHandler;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.ArrayList;
 import org.junit.jupiter.api.Test;
@@ -27,7 +27,7 @@ public class SendDynamicClientKeyExchangeActionTest
         state.getConfig().setDefaultRunningMode(RunningModeType.CLIENT);
         TlsContext context = state.getTlsContext();
         context.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
-        context.setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
+        context.setTransportHandler(new FakeTcpTransportHandler(ConnectionEndType.CLIENT));
     }
 
     @Test

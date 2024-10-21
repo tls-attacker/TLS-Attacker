@@ -36,13 +36,13 @@ import org.apache.logging.log4j.Logger;
  * @param <Container> The kind of messages/Containers this layer is able to send and receive.
  */
 public abstract class ProtocolLayer<
-        Hint extends LayerProcessingHint, Container extends DataContainer> {
+        Hint extends LayerProcessingHint, Container extends DataContainer<? extends LayerContext>> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private ProtocolLayer higherLayer = null;
+    private ProtocolLayer<?, ?> higherLayer = null;
 
-    private ProtocolLayer lowerLayer = null;
+    private ProtocolLayer<?, ?> lowerLayer = null;
 
     private LayerConfiguration<Container> layerConfiguration;
 
@@ -62,38 +62,38 @@ public abstract class ProtocolLayer<
         this.unreadBytes = new byte[0];
     }
 
-    public ProtocolLayer getHigherLayer() {
+    public ProtocolLayer<?, ?> getHigherLayer() {
         return higherLayer;
     }
 
-    public ProtocolLayer getLowerLayer() {
+    public ProtocolLayer<?, ?> getLowerLayer() {
         return lowerLayer;
     }
 
-    public void setHigherLayer(ProtocolLayer higherLayer) {
+    public void setHigherLayer(ProtocolLayer<?, ?> higherLayer) {
         this.higherLayer = higherLayer;
     }
 
-    public void setLowerLayer(ProtocolLayer lowerLayer) {
+    public void setLowerLayer(ProtocolLayer<?, ?> lowerLayer) {
         this.lowerLayer = lowerLayer;
     }
 
-    public abstract LayerProcessingResult sendConfiguration() throws IOException;
+    public abstract LayerProcessingResult<Container> sendConfiguration() throws IOException;
 
-    public abstract LayerProcessingResult sendData(Hint hint, byte[] additionalData)
-            throws IOException;
+    public abstract LayerProcessingResult<Container> sendData(
+            LayerProcessingHint hint, byte[] additionalData) throws IOException;
 
     public LayerConfiguration<Container> getLayerConfiguration() {
         return layerConfiguration;
     }
 
-    public void setLayerConfiguration(LayerConfiguration layerConfiguration) {
+    public void setLayerConfiguration(LayerConfiguration<Container> layerConfiguration) {
         this.layerConfiguration = layerConfiguration;
     }
 
     public LayerProcessingResult<Container> getLayerResult() {
         boolean isExecutedAsPlanned = executedAsPlanned();
-        return new LayerProcessingResult(
+        return new LayerProcessingResult<Container>(
                 producedDataContainers, getLayerType(), isExecutedAsPlanned, getUnreadBytes());
     }
 
@@ -145,7 +145,7 @@ public abstract class ProtocolLayer<
      *
      * @return LayerProcessingResult Contains information about the execution of the receive action.
      */
-    public abstract LayerProcessingResult receiveData();
+    public abstract LayerProcessingResult<Container> receiveData();
 
     /**
      * Tries to fill up the current Stream with more data, if instead unprocessable data (for the
@@ -244,18 +244,7 @@ public abstract class ProtocolLayer<
             return;
         }
 
-        Parser parser = container.getParser(context, inputStream);
-
-        try {
-            parser.parse(container);
-            Preparator preparator = container.getPreparator(context);
-            preparator.prepareAfterParse();
-            Handler handler = container.getHandler(context);
-            handler.adjustContext(container);
-            addProducedContainer(container);
-        } catch (RuntimeException ex) {
-            setUnreadBytes(parser.getAlreadyParsed());
-        }
+        readDataContainer(container, context, inputStream);
     }
 
     /**
@@ -265,8 +254,8 @@ public abstract class ProtocolLayer<
      * @param context The context of the connection. Keeps parsed and handled values.
      */
     protected void readDataContainer(
-            Container container, LayerContext context, InputStream inputStream) {
-        Parser parser = container.getParser(context, inputStream);
+            DataContainer container, LayerContext context, InputStream inputStream) {
+        Parser parser = container.getParser((LayerContext) context, inputStream);
 
         try {
             parser.parse(container);
@@ -274,7 +263,7 @@ public abstract class ProtocolLayer<
             preparator.prepareAfterParse();
             Handler handler = container.getHandler(context);
             handler.adjustContext(container);
-            addProducedContainer(container);
+            addProducedContainer((Container) container);
         } catch (RuntimeException ex) {
             setUnreadBytes(parser.getAlreadyParsed());
         }
@@ -307,7 +296,7 @@ public abstract class ProtocolLayer<
     }
 
     public List<Container> getUnprocessedConfiguredContainers() {
-        if (getLayerConfiguration().getContainerList() == null) {
+        if (getLayerConfiguration() == null || getLayerConfiguration().getContainerList() == null) {
             return new LinkedList<>();
         } else if (producedDataContainers == null) {
             return new LinkedList<>(getLayerConfiguration().getContainerList());
