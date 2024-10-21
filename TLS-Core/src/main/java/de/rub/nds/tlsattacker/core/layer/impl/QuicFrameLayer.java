@@ -39,6 +39,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PushbackInputStream;
+import java.net.PortUnreachableException;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -227,20 +229,20 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
         try {
             InputStream dataStream;
             do {
-                try {
-                    dataStream = getLowerLayer().getDataStream();
-                    readFrames(dataStream);
-                } catch (IOException ex) {
-                    LOGGER.warn("The lower layer did not produce a data stream: ", ex);
-                    return getLayerResult();
-                }
+                dataStream = getLowerLayer().getDataStream();
+                readFrames(dataStream);
             } while (shouldContinueProcessing());
-        } catch (TimeoutException ex) {
+        } catch (SocketTimeoutException | TimeoutException ex) {
             LOGGER.debug("Received a timeout");
+            LOGGER.trace(ex);
+        } catch (PortUnreachableException ex) {
+            LOGGER.debug("Desitination port unreachable");
             LOGGER.trace(ex);
         } catch (EndOfStreamException ex) {
             LOGGER.debug("Reached end of stream, cannot parse more messages");
             LOGGER.trace(ex);
+        } catch (IOException ex) {
+            LOGGER.warn("The lower layer did not produce a data stream: ", ex);
         }
         return getLayerResult();
     }
@@ -254,15 +256,13 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
     @Override
     public void receiveMoreDataForHint(LayerProcessingHint hint) throws IOException {
         try {
-            InputStream dataStream;
-            try {
-                dataStream = getLowerLayer().getDataStream();
-                // For now, we ignore the hint
-                readFrames(dataStream);
-            } catch (IOException ex) {
-                LOGGER.warn("The lower layer did not produce a data stream: ", ex);
-            }
-        } catch (TimeoutException ex) {
+            InputStream dataStream = getLowerLayer().getDataStream();
+            // For now, we ignore the hint
+            readFrames(dataStream);
+        } catch (PortUnreachableException ex) {
+            LOGGER.debug("Received a ICMP Port Unreachable");
+            LOGGER.trace(ex);
+        } catch (SocketTimeoutException | TimeoutException ex) {
             LOGGER.debug("Received a timeout");
             LOGGER.trace(ex);
         } catch (EndOfStreamException ex) {
@@ -277,6 +277,9 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
         RecordLayerHint recordLayerHint = null;
         boolean isAckEliciting = false;
 
+        if (inputStream.available() == 0) {
+            throw new EndOfStreamException();
+        }
         while (inputStream.available() > 0) {
             int firstByte = inputStream.read();
             QuicFrameType frameType = QuicFrameType.getFrameType((byte) firstByte);
