@@ -68,6 +68,8 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
 
     private List<CryptoFrame> cryptoFrameBuffer = new ArrayList<>();
 
+    private boolean hasExperiencedTimeout = false;
+
     public QuicFrameLayer(QuicContext context) {
         super(ImplementedLayers.QUICFRAME);
         this.context = context;
@@ -235,12 +237,15 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
         } catch (SocketTimeoutException | TimeoutException ex) {
             LOGGER.debug("Received a timeout");
             LOGGER.trace(ex);
+            hasExperiencedTimeout = true;
         } catch (PortUnreachableException ex) {
             LOGGER.debug("Desitination port unreachable");
             LOGGER.trace(ex);
+            hasExperiencedTimeout = true;
         } catch (EndOfStreamException ex) {
             LOGGER.debug("Reached end of stream, cannot parse more messages");
             LOGGER.trace(ex);
+            hasExperiencedTimeout = true;
         } catch (IOException ex) {
             LOGGER.warn("The lower layer did not produce a data stream: ", ex);
         }
@@ -262,12 +267,15 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
         } catch (PortUnreachableException ex) {
             LOGGER.debug("Received a ICMP Port Unreachable");
             LOGGER.trace(ex);
+            hasExperiencedTimeout = true;
         } catch (SocketTimeoutException | TimeoutException ex) {
             LOGGER.debug("Received a timeout");
             LOGGER.trace(ex);
+            hasExperiencedTimeout = true;
         } catch (EndOfStreamException ex) {
             LOGGER.debug("Reached end of stream, cannot parse more messages");
             LOGGER.trace(ex);
+            hasExperiencedTimeout = true;
         }
     }
 
@@ -479,5 +487,9 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
         initialPhaseExpectedCryptoFrameOffset = 0;
         handshakePhaseExpectedCryptoFrameOffset = 0;
         applicationPhaseExpectedCryptoFrameOffset = 0;
+    }
+
+    public boolean hasExperiencedTimeout() {
+        return hasExperiencedTimeout;
     }
 }

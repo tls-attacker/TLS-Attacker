@@ -216,7 +216,7 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
         } catch (PortUnreachableException ex) {
             LOGGER.debug("Received a ICMP Port Unreachable");
             LOGGER.trace(ex);
-        } catch (TimeoutException ex) {
+        } catch (SocketTimeoutException | TimeoutException ex) {
             LOGGER.debug("Received a timeout");
             LOGGER.trace(ex);
         } catch (EndOfStreamException ex) {
