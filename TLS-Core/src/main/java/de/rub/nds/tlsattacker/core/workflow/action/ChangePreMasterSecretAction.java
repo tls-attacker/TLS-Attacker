@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.SuppressingFalseBooleanAdapter;
 import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
@@ -16,6 +17,7 @@ import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeyDerivator;
 import de.rub.nds.tlsattacker.core.state.State;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlTransient;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
@@ -32,9 +34,10 @@ public class ChangePreMasterSecretAction extends ConnectionBoundAction {
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] oldValue = null;
 
+    @XmlJavaTypeAdapter(SuppressingFalseBooleanAdapter.class)
     private boolean updateMasterSecret = false;
 
-    private boolean asPlanned = false;
+    @XmlTransient private boolean asPlanned = false;
 
     public ChangePreMasterSecretAction(byte[] newValue) {
         super();
