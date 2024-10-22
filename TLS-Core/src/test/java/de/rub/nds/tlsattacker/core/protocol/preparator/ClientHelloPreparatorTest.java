@@ -13,6 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
+import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.layer.LayerStack;
 import de.rub.nds.tlsattacker.core.layer.impl.DtlsFragmentLayer;
@@ -183,5 +184,35 @@ public class ClientHelloPreparatorTest
         assertEquals(
                 context.getConfig().getDefaultClientTicketResumptionSessionId().length,
                 (int) message.getSessionIdLength().getValue());
+    }
+
+    @Test
+    public void testPrepareRetainedClientRandomHrr() {
+        context.getConfig().setUseFreshRandom(true);
+        context.setSelectedProtocolVersion(ProtocolVersion.TLS13);
+        context.getDigest()
+                .setRawBytes(new byte[] {HandshakeMessageType.MESSAGE_HASH.getValue(), 1, 2, 3});
+        byte[] firstRandom =
+                new byte[] {
+                    1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3,
+                    4, 1, 2, 3, 4
+                };
+        context.setClientRandom(firstRandom);
+        preparator.prepare();
+        assertArrayEquals(firstRandom, message.getRandom().getValue());
+    }
+
+    @Test
+    public void testPrepareRetainedClientRandomDtls() {
+        context.getConfig().setUseFreshRandom(false);
+        context.setSelectedProtocolVersion(ProtocolVersion.DTLS12);
+        byte[] firstRandom =
+                new byte[] {
+                    1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3,
+                    4, 1, 2, 3, 4
+                };
+        context.setClientRandom(firstRandom);
+        preparator.prepare();
+        assertArrayEquals(firstRandom, message.getRandom().getValue());
     }
 }
