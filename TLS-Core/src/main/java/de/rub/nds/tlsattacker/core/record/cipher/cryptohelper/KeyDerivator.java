@@ -21,7 +21,7 @@ import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class KeySetGenerator {
+public class KeyDerivator {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -258,5 +258,5 @@ public class KeySetGenerator {
         return secretSetSize;
     }
 
-    private KeySetGenerator() {}
+    private KeyDerivator() {}
 }
