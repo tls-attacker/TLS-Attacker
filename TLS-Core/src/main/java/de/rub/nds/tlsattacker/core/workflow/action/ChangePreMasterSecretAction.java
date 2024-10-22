@@ -8,9 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
+import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeyDerivator;
 import de.rub.nds.tlsattacker.core.state.State;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -29,9 +32,19 @@ public class ChangePreMasterSecretAction extends ConnectionBoundAction {
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] oldValue = null;
 
+    private boolean updateMasterSecret = false;
+
+    private boolean asPlanned = false;
+
     public ChangePreMasterSecretAction(byte[] newValue) {
         super();
         this.newValue = newValue;
+    }
+
+    public ChangePreMasterSecretAction(byte[] newValue, boolean updateMasterSecret) {
+        super();
+        this.newValue = newValue;
+        this.updateMasterSecret = updateMasterSecret;
     }
 
     public ChangePreMasterSecretAction() {}
@@ -48,6 +61,14 @@ public class ChangePreMasterSecretAction extends ConnectionBoundAction {
         return oldValue;
     }
 
+    public boolean isUpdateMasterSecret() {
+        return updateMasterSecret;
+    }
+
+    public void setUpdateMasterSecret(boolean updateMasterSecret) {
+        this.updateMasterSecret = updateMasterSecret;
+    }
+
     @Override
     public void execute(State state) throws ActionExecutionException {
         TlsContext tlsContext = state.getContext(getConnectionAlias()).getTlsContext();
@@ -58,6 +79,25 @@ public class ChangePreMasterSecretAction extends ConnectionBoundAction {
         oldValue = tlsContext.getPreMasterSecret();
         tlsContext.setPreMasterSecret(newValue);
         LOGGER.info("Changed PreMasterSecret from {} to {}", oldValue, newValue);
+        asPlanned = true;
+        if (updateMasterSecret) {
+            byte[] clientServerRandom =
+                    ArrayConverter.concatenate(
+                            tlsContext.getChooser().getClientRandom(),
+                            tlsContext.getChooser().getServerRandom());
+            try {
+                byte[] newMasterSecret =
+                        KeyDerivator.calculateMasterSecret(tlsContext, clientServerRandom);
+                LOGGER.info(
+                        "Derived new master secret {} using clientServerRandom {}",
+                        newMasterSecret,
+                        clientServerRandom);
+                tlsContext.setMasterSecret(newMasterSecret);
+            } catch (CryptoException e) {
+                asPlanned = false;
+                LOGGER.error("Could not update master secret: {}", e);
+            }
+        }
         setExecuted(true);
     }
 
@@ -65,6 +105,7 @@ public class ChangePreMasterSecretAction extends ConnectionBoundAction {
     public void reset() {
         oldValue = null;
         setExecuted(null);
+        asPlanned = false;
     }
 
     @Override
@@ -95,6 +136,6 @@ public class ChangePreMasterSecretAction extends ConnectionBoundAction {
 
     @Override
     public boolean executedAsPlanned() {
-        return isExecuted();
+        return asPlanned;
     }
 }
