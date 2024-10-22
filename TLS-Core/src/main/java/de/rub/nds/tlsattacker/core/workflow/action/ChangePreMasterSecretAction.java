@@ -16,6 +16,8 @@ import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeyDerivator;
 import de.rub.nds.tlsattacker.core.state.State;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlTransient;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -24,6 +26,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @XmlRootElement(name = "ChangePreMasterSecret")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class ChangePreMasterSecretAction extends ConnectionBoundAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -35,7 +38,7 @@ public class ChangePreMasterSecretAction extends ConnectionBoundAction {
     private byte[] oldValue = null;
 
     @XmlJavaTypeAdapter(SuppressingFalseBooleanAdapter.class)
-    private boolean updateMasterSecret = false;
+    private Boolean updateMasterSecret = null;
 
     @XmlTransient private boolean asPlanned = false;
 
@@ -83,7 +86,7 @@ public class ChangePreMasterSecretAction extends ConnectionBoundAction {
         tlsContext.setPreMasterSecret(newValue);
         LOGGER.info("Changed PreMasterSecret from {} to {}", oldValue, newValue);
         asPlanned = true;
-        if (updateMasterSecret) {
+        if (Boolean.TRUE.equals(updateMasterSecret)) {
             byte[] clientServerRandom =
                     ArrayConverter.concatenate(
                             tlsContext.getChooser().getClientRandom(),
