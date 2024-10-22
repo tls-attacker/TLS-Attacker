@@ -11,12 +11,10 @@ package de.rub.nds.tlsattacker.core.layer.data;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.protocol.exception.EndOfStreamException;
 import de.rub.nds.protocol.exception.ParserException;
-import de.rub.nds.tlsattacker.core.exceptions.TimeoutException;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
-import java.net.SocketTimeoutException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -78,8 +76,6 @@ public abstract class Parser<T> {
             } else {
                 outputStream.write(data);
             }
-        } catch (SocketTimeoutException E) {
-            throw new TimeoutException("Received a timeout while reading", E);
         } catch (IOException E) {
             throw new ParserException("Could not parse byteArrayField of length=" + length, E);
         }
