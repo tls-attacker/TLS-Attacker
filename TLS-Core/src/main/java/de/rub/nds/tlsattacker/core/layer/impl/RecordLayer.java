@@ -150,11 +150,13 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
                 new CleanRecordByteSeperator(
                         maxDataSize,
                         new ByteArrayInputStream(data),
-                        context.getConfig().isCreateRecordsDynamically());
+                        context.getConfig().isCreateRecordsDynamically(),
+                        true);
         List<Record> records = new LinkedList<>();
 
         List<Record> givenRecords = getUnprocessedConfiguredContainers();
 
+        boolean mustStillCoverEmptyMessageFromUpperLayer = data.length == 0;
         // if we are given records we should assign messages to them
         if (getLayerConfiguration().getContainerList() != null && givenRecords.size() > 0) {
             if (context.getConfig().getPreserveMessageRecordRelation()) {
@@ -164,7 +166,8 @@ public class RecordLayer extends ProtocolLayer<RecordLayerHint, Record> {
             } else {
                 // assign as many records as we need for the message
                 int dataToBeSent = data.length;
-                while (givenRecords.size() > 0 && dataToBeSent > 0) {
+                while (givenRecords.size() > 0
+                        && (dataToBeSent > 0 || mustStillCoverEmptyMessageFromUpperLayer)) {
                     Record nextRecord = givenRecords.remove(0);
                     records.add(nextRecord);
                     int recordData =

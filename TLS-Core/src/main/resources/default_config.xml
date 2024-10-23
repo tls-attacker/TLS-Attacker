@@ -36,10 +36,10 @@
             </subject>
             <notBefore/>
             <notBeforeAccurracy>SECONDS</notBeforeAccurracy>
-            <defaultNotBeforeEncoding>GENERALIZED_TIME_UTC</defaultNotBeforeEncoding>
+            <defaultNotBeforeEncoding>GENERALIZED_TIME_DIFFERENTIAL</defaultNotBeforeEncoding>
             <notAfter/>
             <notAfterAccurracy>SECONDS</notAfterAccurracy>
-            <defaultNotAfterEncoding>GENERALIZED_TIME_UTC</defaultNotAfterEncoding>
+            <defaultNotAfterEncoding>GENERALIZED_TIME_DIFFERENTIAL</defaultNotAfterEncoding>
             <timezoneOffsetInMinutes>0</timezoneOffsetInMinutes>
             <defaultIssuerUniqueId>00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00</defaultIssuerUniqueId>
             <subjectUniqueId>00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00</subjectUniqueId>
@@ -118,10 +118,10 @@
             </subject>
             <notBefore/>
             <notBeforeAccurracy>SECONDS</notBeforeAccurracy>
-            <defaultNotBeforeEncoding>GENERALIZED_TIME_UTC</defaultNotBeforeEncoding>
+            <defaultNotBeforeEncoding>GENERALIZED_TIME_DIFFERENTIAL</defaultNotBeforeEncoding>
             <notAfter/>
             <notAfterAccurracy>SECONDS</notAfterAccurracy>
-            <defaultNotAfterEncoding>GENERALIZED_TIME_UTC</defaultNotAfterEncoding>
+            <defaultNotAfterEncoding>GENERALIZED_TIME_DIFFERENTIAL</defaultNotAfterEncoding>
             <timezoneOffsetInMinutes>0</timezoneOffsetInMinutes>
             <defaultIssuerUniqueId>00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00</defaultIssuerUniqueId>
             <subjectUniqueId>00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00</subjectUniqueId>

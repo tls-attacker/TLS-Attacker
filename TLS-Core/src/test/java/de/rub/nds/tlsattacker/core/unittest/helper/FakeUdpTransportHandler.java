@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class FakeUdpTransportHandler extends UdpTransportHandler {
+public class FakeUdpTransportHandler extends UdpTransportHandler implements FakeTransportHandler {
 
     private ByteArrayOutputStream outputStream;
 
@@ -30,7 +30,7 @@ public class FakeUdpTransportHandler extends UdpTransportHandler {
         outputStream = new ByteArrayOutputStream();
     }
 
-    public byte[] getSendByte() {
+    public byte[] getSentBytes() {
         return outputStream.toByteArray();
     }
 

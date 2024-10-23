@@ -11,20 +11,15 @@ package de.rub.nds.tlsattacker.core.layer.impl;
 import static junit.framework.Assert.assertEquals;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.delegate.QuicDelegate;
-import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.layer.SpecificSendLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.hints.QuicPacketLayerHint;
 import de.rub.nds.tlsattacker.core.quic.constants.QuicPacketType;
 import de.rub.nds.tlsattacker.core.quic.packet.InitialPacket;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacketCryptoComputations;
-import de.rub.nds.tlsattacker.core.state.Context;
-import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeUdpTransportHandler;
 import java.io.IOException;
@@ -35,15 +30,11 @@ import java.util.Arrays;
 import java.util.List;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class QuicPacketLayerTest {
+public class QuicPacketLayerTest extends AbstractLayerTest {
 
-    private Config config;
-    private TlsContext tlsContext;
     private QuicContext quicContext;
-    private FakeUdpTransportHandler transportHandler;
 
     private final byte[] sourceConnectionId =
             ArrayConverter.hexStringToByteArray("1d541e5371a5e1c6c481b6d7b07f0961");
@@ -62,22 +53,24 @@ public class QuicPacketLayerTest {
         Security.addProvider(new BouncyCastleProvider());
     }
 
-    @BeforeEach
-    public void setUp() throws IOException, CryptoException, NoSuchAlgorithmException {
-        config = new Config();
+    public void applyDelegate() {
         QuicDelegate delegate = new QuicDelegate(true);
         delegate.applyDelegate(config);
-        Context context = new Context(new State(config), new OutboundConnection());
-        tlsContext = context.getTlsContext();
+    }
+
+    public void setUpLayerSpecific() {
+        FakeUdpTransportHandler udpTransportHandler = new FakeUdpTransportHandler(null);
+        tlsContext.setTransportHandler(udpTransportHandler);
+        transportHandler = udpTransportHandler;
         quicContext = context.getQuicContext();
-
-        transportHandler = new FakeUdpTransportHandler(null);
-        tlsContext.setTransportHandler(transportHandler);
-
         quicContext.setSourceConnectionId(sourceConnectionId);
         quicContext.setFirstDestinationConnectionId(destinationConnectionId);
         quicContext.setDestinationConnectionId(destinationConnectionId);
-        QuicPacketCryptoComputations.calculateInitialSecrets(quicContext);
+        try {
+            QuicPacketCryptoComputations.calculateInitialSecrets(quicContext);
+        } catch (NoSuchAlgorithmException | CryptoException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private ArrayList<byte[]> getQuicPacketsBytes() {
@@ -120,7 +113,7 @@ public class QuicPacketLayerTest {
             assertEquals(quicPackets.get(i), usedContainers.get(i));
             assertEquals(
                     Arrays.toString(quicPacketsBytes.get(i)),
-                    Arrays.toString(transportHandler.getSendByte()));
+                    Arrays.toString(transportHandler.getSentBytes()));
         }
     }
 
@@ -143,7 +136,7 @@ public class QuicPacketLayerTest {
                             quicPackets.get(i));
             assertEquals(
                     Arrays.toString(quicPacketsBytes.get(i)),
-                    Arrays.toString(transportHandler.getSendByte()));
+                    Arrays.toString(transportHandler.getSentBytes()));
         }
     }
 
