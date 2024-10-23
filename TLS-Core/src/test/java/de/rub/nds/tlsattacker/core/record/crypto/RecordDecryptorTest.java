@@ -19,7 +19,7 @@ import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.*;
-import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeyDerivator;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import java.security.NoSuchAlgorithmException;
@@ -77,7 +77,7 @@ public class RecordDecryptorTest {
                         new CipherState(
                                 context.getChooser().getSelectedProtocolVersion(),
                                 context.getChooser().getSelectedCipherSuite(),
-                                KeySetGenerator.generateKeySet(context),
+                                KeyDerivator.generateKeySet(context),
                                 context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
         decryptor = new RecordDecryptor(recordCipher, context);
         decryptor.decrypt(record);
@@ -134,7 +134,7 @@ public class RecordDecryptorTest {
                         new CipherState(
                                 context.getChooser().getSelectedProtocolVersion(),
                                 context.getChooser().getSelectedCipherSuite(),
-                                KeySetGenerator.generateKeySet(context),
+                                KeyDerivator.generateKeySet(context),
                                 context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
         decryptor = new RecordDecryptor(recordCipher, context);
         decryptor.decrypt(record);
@@ -188,7 +188,7 @@ public class RecordDecryptorTest {
                         new CipherState(
                                 context.getChooser().getSelectedProtocolVersion(),
                                 context.getChooser().getSelectedCipherSuite(),
-                                KeySetGenerator.generateKeySet(context),
+                                KeyDerivator.generateKeySet(context),
                                 context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
         decryptor = new RecordDecryptor(recordCipher, context);
         decryptor.decrypt(record);
@@ -243,7 +243,7 @@ public class RecordDecryptorTest {
                         new CipherState(
                                 context.getChooser().getSelectedProtocolVersion(),
                                 context.getChooser().getSelectedCipherSuite(),
-                                KeySetGenerator.generateKeySet(context),
+                                KeyDerivator.generateKeySet(context),
                                 context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
         decryptor = new RecordDecryptor(recordCipher, context);
         decryptor.decrypt(record);
@@ -297,7 +297,7 @@ public class RecordDecryptorTest {
                         new CipherState(
                                 context.getChooser().getSelectedProtocolVersion(),
                                 context.getChooser().getSelectedCipherSuite(),
-                                KeySetGenerator.generateKeySet(context),
+                                KeyDerivator.generateKeySet(context),
                                 context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
         decryptor = new RecordDecryptor(recordCipher, context);
         decryptor.decrypt(record);
@@ -356,7 +356,7 @@ public class RecordDecryptorTest {
                         new CipherState(
                                 context.getChooser().getSelectedProtocolVersion(),
                                 context.getChooser().getSelectedCipherSuite(),
-                                KeySetGenerator.generateKeySet(context),
+                                KeyDerivator.generateKeySet(context),
                                 context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
         decryptor = new RecordDecryptor(recordCipher, context);
         decryptor.decrypt(record);
@@ -413,7 +413,7 @@ public class RecordDecryptorTest {
                         new CipherState(
                                 context.getChooser().getSelectedProtocolVersion(),
                                 context.getChooser().getSelectedCipherSuite(),
-                                KeySetGenerator.generateKeySet(context),
+                                KeyDerivator.generateKeySet(context),
                                 context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
         decryptor = new RecordDecryptor(recordCipher, context);
         decryptor.decrypt(record);
@@ -490,7 +490,7 @@ public class RecordDecryptorTest {
                         new CipherState(
                                 context.getChooser().getSelectedProtocolVersion(),
                                 context.getChooser().getSelectedCipherSuite(),
-                                KeySetGenerator.generateKeySet(context),
+                                KeyDerivator.generateKeySet(context),
                                 context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
         decryptor = new RecordDecryptor(recordCipher, context);
         decryptor.decrypt(record);
@@ -561,7 +561,7 @@ public class RecordDecryptorTest {
                         new CipherState(
                                 context.getChooser().getSelectedProtocolVersion(),
                                 context.getChooser().getSelectedCipherSuite(),
-                                KeySetGenerator.generateKeySet(context),
+                                KeyDerivator.generateKeySet(context),
                                 context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)));
         decryptor = new RecordDecryptor(recordCipher, context);
         decryptor.decrypt(record);
