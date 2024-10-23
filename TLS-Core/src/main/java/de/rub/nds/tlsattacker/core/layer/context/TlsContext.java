@@ -1319,8 +1319,8 @@ public class TlsContext extends LayerContext {
         this.clientKeyShareStoreEntryList = clientKeyShareStoreEntryList;
     }
 
-    public void setClientKSEntryList(KeyShareEntry... clientKSEntryList) {
-        this.clientKeyShareStoreEntryList = new ArrayList(Arrays.asList(clientKSEntryList));
+    public void setClientKSEntryList(KeyShareStoreEntry... clientKSEntryList) {
+        this.clientKeyShareStoreEntryList = new ArrayList<>(Arrays.asList(clientKSEntryList));
     }
 
     public KeyShareStoreEntry getServerKeyShareStoreEntry() {

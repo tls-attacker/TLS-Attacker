@@ -44,6 +44,7 @@ public class ConnectionCloseFrame extends QuicFrame {
     private long reasonPhraseLengthConfig;
     private byte[] reasonPhraseConfig;
 
+    @SuppressWarnings("unused") // JAXB
     private ConnectionCloseFrame() {}
 
     public ConnectionCloseFrame(boolean isQuicLayer) {

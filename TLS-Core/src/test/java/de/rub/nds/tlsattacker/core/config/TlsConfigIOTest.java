@@ -23,7 +23,7 @@ public class TlsConfigIOTest {
     @Test
     public void testReadWriteRead(@TempDir File tempDir) {
         File f = new File(tempDir, "read_write_test.config");
-        Config config = Config.createConfig();
+        Config config = new Config();
         ConfigIO.write(config, f);
         config = ConfigIO.read(f);
         assertNotNull(config);

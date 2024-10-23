@@ -24,6 +24,7 @@ import org.reflections.Reflections;
 
 public class MessageIO {
 
+    @SuppressWarnings("unused")
     private static final Logger LOGGER = LogManager.getLogger();
 
     private static JAXBContext context;

@@ -65,6 +65,7 @@ public class ChangeContextValueAction<T> extends ConnectionBoundAction {
         this.fieldName = fieldName;
     }
 
+    @SafeVarargs
     public ChangeContextValueAction(String fieldName, T... newValueList) {
         this(fieldName, Arrays.asList(newValueList));
     }
@@ -216,11 +217,12 @@ public class ChangeContextValueAction<T> extends ConnectionBoundAction {
         this.newValueList = newValue;
     }
 
-    public void setNewValue(T... newValue) {
+    @SafeVarargs
+    public final void setNewValue(T... newValue) {
         this.setNewValue(Arrays.asList(newValue));
     }
 
-    public T getNewValue() {
+    public final T getNewValue() {
         if (isUsesList()) {
             throw new UnsupportedOperationException("The action was initialized with a list");
         }

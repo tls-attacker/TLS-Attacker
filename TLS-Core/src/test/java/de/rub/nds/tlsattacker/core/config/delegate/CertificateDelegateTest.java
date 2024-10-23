@@ -111,16 +111,17 @@ public class CertificateDelegateTest extends AbstractDelegateTest<CertificateDel
     @Test
     public void testApplyDelegate(@TempDir File tempDir)
             throws NoSuchAlgorithmException,
-            CertificateException,
-            IOException,
-            InvalidKeyException,
-            KeyStoreException,
-            NoSuchProviderException,
-            SignatureException,
-            OperatorCreationException {
+                    CertificateException,
+                    IOException,
+                    InvalidKeyException,
+                    KeyStoreException,
+                    NoSuchProviderException,
+                    SignatureException,
+                    OperatorCreationException {
         BadRandom random = new BadRandom(new Random(0), null);
-        KeyStore store = KeyStoreGenerator.createKeyStore(
-                KeyStoreGenerator.createRSAKeyPair(1024, random), random);
+        KeyStore store =
+                KeyStoreGenerator.createKeyStore(
+                        KeyStoreGenerator.createRSAKeyPair(1024, random), random);
         File keyStoreFile = new File(tempDir, "key.store");
         try (FileOutputStream fos = new FileOutputStream(keyStoreFile)) {
             store.store(fos, "password".toCharArray());
@@ -159,7 +160,8 @@ public class CertificateDelegateTest extends AbstractDelegateTest<CertificateDel
         Config config = new Config();
         config.setDefaultExplicitCertificateChain(null);
 
-        ParameterException exception = assertThrows(ParameterException.class, () -> delegate.applyDelegate(config));
+        ParameterException exception =
+                assertThrows(ParameterException.class, () -> delegate.applyDelegate(config));
         assertTrue(
                 exception
                         .getMessage()

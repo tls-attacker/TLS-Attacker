@@ -22,6 +22,7 @@ public class ReceiveTillLayerConfiguration<Container extends DataContainer<?>>
 
     private int maxNumberOfQuicPacketsToReceive;
 
+    @SafeVarargs
     public ReceiveTillLayerConfiguration(LayerType layerType, Container... expectedContainers) {
         super(layerType, Arrays.asList(expectedContainers));
     }
@@ -30,6 +31,7 @@ public class ReceiveTillLayerConfiguration<Container extends DataContainer<?>>
         super(layerType, expectedContainers);
     }
 
+    @SafeVarargs
     public ReceiveTillLayerConfiguration(
             LayerType layerType,
             boolean processTrailingContainers,
@@ -45,6 +47,7 @@ public class ReceiveTillLayerConfiguration<Container extends DataContainer<?>>
         this.processTrailingContainers = processTrailingContainers;
     }
 
+    @SafeVarargs
     public ReceiveTillLayerConfiguration(
             LayerType layerType,
             boolean processTrailingContainers,

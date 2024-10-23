@@ -8,20 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.layer.impl;
 
-import static de.rub.nds.tlsattacker.core.quic.constants.QuicFrameType.CONNECTION_CLOSE_QUIC_FRAME;
-import static de.rub.nds.tlsattacker.core.quic.constants.QuicFrameType.CRYPTO_FRAME;
-import static de.rub.nds.tlsattacker.core.quic.constants.QuicFrameType.PATH_CHALLENGE_FRAME;
-import static de.rub.nds.tlsattacker.core.quic.constants.QuicFrameType.PATH_RESPONSE_FRAME;
-import static de.rub.nds.tlsattacker.core.quic.constants.QuicFrameType.PING_FRAME;
-import static de.rub.nds.tlsattacker.core.quic.constants.QuicFrameType.STREAM_FRAME;
-import static de.rub.nds.tlsattacker.core.quic.constants.QuicFrameType.STREAM_FRAME_FIN;
-import static de.rub.nds.tlsattacker.core.quic.constants.QuicFrameType.STREAM_FRAME_LEN;
-import static de.rub.nds.tlsattacker.core.quic.constants.QuicFrameType.STREAM_FRAME_LEN_FIN;
-import static de.rub.nds.tlsattacker.core.quic.constants.QuicFrameType.STREAM_FRAME_OFF;
-import static de.rub.nds.tlsattacker.core.quic.constants.QuicFrameType.STREAM_FRAME_OFF_FIN;
-import static de.rub.nds.tlsattacker.core.quic.constants.QuicFrameType.STREAM_FRAME_OFF_LEN;
-import static de.rub.nds.tlsattacker.core.quic.constants.QuicFrameType.STREAM_FRAME_OFF_LEN_FIN;
-
 import de.rub.nds.protocol.exception.EndOfStreamException;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.TimeoutException;
@@ -93,7 +79,7 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
      * @throws IOException When the data cannot be sent
      */
     @Override
-    public LayerProcessingResult sendConfiguration() throws IOException {
+    public LayerProcessingResult<QuicFrame> sendConfiguration() throws IOException {
         LayerConfiguration<QuicFrame> configuration = getLayerConfiguration();
         if (configuration != null && configuration.getContainerList() != null) {
             for (QuicFrame frame : configuration.getContainerList()) {
@@ -116,13 +102,23 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
      * @throws IOException When the data cannot be sent
      */
     @Override
-    public LayerProcessingResult sendData(QuicFrameLayerHint hint, byte[] data) throws IOException {
-        if (hint != null && hint.getMessageType() != null) {
+    public LayerProcessingResult<QuicFrame> sendData(LayerProcessingHint hint, byte[] data)
+            throws IOException {
+        ProtocolMessageType hintedType;
+        boolean hintedFirstMessage;
+        if (hint instanceof QuicFrameLayerHint) {
+            hintedType = ((QuicFrameLayerHint) hint).getMessageType();
+            hintedFirstMessage = ((QuicFrameLayerHint) hint).isFirstMessage();
+        } else {
+            hintedType = ProtocolMessageType.UNKNOWN;
+            hintedFirstMessage = true;
+        }
+        if (hint != null && hintedType != null) {
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             QuicPacketLayerHint packetLayerHint;
-            switch (hint.getMessageType()) {
+            switch (hintedType) {
                 case HANDSHAKE:
-                    if (hint.isFirstMessage()) {
+                    if (hintedFirstMessage) {
                         packetLayerHint = new QuicPacketLayerHint(QuicPacketType.INITIAL_PACKET);
                     } else {
                         packetLayerHint = new QuicPacketLayerHint(QuicPacketType.HANDSHAKE_PACKET);
@@ -210,6 +206,9 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
                     }
                     getLowerLayer().sendData(packetLayerHint, stream.toByteArray());
                     break;
+                default:
+                    LOGGER.debug("Unsupported message type: {}", hintedType);
+                    break;
             }
         } else {
             throw new UnsupportedOperationException(
@@ -224,7 +223,7 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
      * @return LayerProcessingResult A result object containing information about the received data.
      */
     @Override
-    public LayerProcessingResult receiveData() {
+    public LayerProcessingResult<QuicFrame> receiveData() {
         try {
             InputStream dataStream;
             do {

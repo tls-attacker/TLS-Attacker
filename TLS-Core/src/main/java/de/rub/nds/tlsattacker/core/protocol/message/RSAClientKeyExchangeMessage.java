@@ -43,23 +43,27 @@ public class RSAClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     }
 
     @Override
-    public RSAClientKeyExchangeHandler getHandler(TlsContext tlsContext) {
-        return new RSAClientKeyExchangeHandler(tlsContext);
+    public RSAClientKeyExchangeHandler<? extends RSAClientKeyExchangeMessage> getHandler(
+            TlsContext tlsContext) {
+        return new RSAClientKeyExchangeHandler<>(tlsContext);
     }
 
     @Override
-    public RSAClientKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new RSAClientKeyExchangeParser(stream, tlsContext);
+    public RSAClientKeyExchangeParser<? extends RSAClientKeyExchangeMessage> getParser(
+            TlsContext tlsContext, InputStream stream) {
+        return new RSAClientKeyExchangeParser<>(stream, tlsContext);
     }
 
     @Override
-    public RSAClientKeyExchangePreparator getPreparator(TlsContext tlsContext) {
-        return new RSAClientKeyExchangePreparator(tlsContext.getChooser(), this);
+    public RSAClientKeyExchangePreparator<? extends RSAClientKeyExchangeMessage> getPreparator(
+            TlsContext tlsContext) {
+        return new RSAClientKeyExchangePreparator<>(tlsContext.getChooser(), this);
     }
 
     @Override
-    public RSAClientKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
-        return new RSAClientKeyExchangeSerializer(
+    public RSAClientKeyExchangeSerializer<? extends RSAClientKeyExchangeMessage> getSerializer(
+            TlsContext tlsContext) {
+        return new RSAClientKeyExchangeSerializer<>(
                 this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 

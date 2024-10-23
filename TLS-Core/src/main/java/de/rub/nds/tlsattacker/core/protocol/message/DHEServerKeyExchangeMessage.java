@@ -145,23 +145,27 @@ public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     }
 
     @Override
-    public DHEServerKeyExchangeHandler getHandler(TlsContext tlsContext) {
-        return new DHEServerKeyExchangeHandler(tlsContext);
+    public DHEServerKeyExchangeHandler<? extends DHEServerKeyExchangeMessage> getHandler(
+            TlsContext tlsContext) {
+        return new DHEServerKeyExchangeHandler<>(tlsContext);
     }
 
     @Override
-    public DHEServerKeyExchangeParser getParser(TlsContext tlsContext, InputStream stream) {
-        return new DHEServerKeyExchangeParser(stream, tlsContext);
+    public DHEServerKeyExchangeParser<? extends DHEServerKeyExchangeMessage> getParser(
+            TlsContext tlsContext, InputStream stream) {
+        return new DHEServerKeyExchangeParser<>(stream, tlsContext);
     }
 
     @Override
-    public DHEServerKeyExchangePreparator getPreparator(TlsContext tlsContext) {
-        return new DHEServerKeyExchangePreparator(tlsContext.getChooser(), this);
+    public DHEServerKeyExchangePreparator<? extends DHEServerKeyExchangeMessage> getPreparator(
+            TlsContext tlsContext) {
+        return new DHEServerKeyExchangePreparator<>(tlsContext.getChooser(), this);
     }
 
     @Override
-    public DHEServerKeyExchangeSerializer getSerializer(TlsContext tlsContext) {
-        return new DHEServerKeyExchangeSerializer(
+    public DHEServerKeyExchangeSerializer<? extends DHEServerKeyExchangeMessage> getSerializer(
+            TlsContext tlsContext) {
+        return new DHEServerKeyExchangeSerializer<>(
                 this, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 

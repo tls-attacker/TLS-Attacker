@@ -69,7 +69,7 @@ public class ActionHelperUtil {
 
     public static LayerConfiguration<?> applyMessageFilters(
             LayerConfiguration<?> messageLayerConfiguration, Set<ActionOption> actionOptions) {
-        List<DataContainerFilter> containerFilters = new LinkedList<>();
+        List<DataContainerFilter<?>> containerFilters = new LinkedList<>();
         if (actionOptions != null) {
             if (actionOptions.contains(ActionOption.IGNORE_UNEXPECTED_APP_DATA)) {
                 containerFilters.add(new GenericDataContainerFilter(ApplicationMessage.class));

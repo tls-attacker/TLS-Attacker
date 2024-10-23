@@ -8,13 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import de.rub.nds.protocol.constants.HashAlgorithm;
 import de.rub.nds.protocol.constants.MacAlgorithm;
 import de.rub.nds.protocol.constants.SignatureAlgorithm;
 import de.rub.nds.x509attacker.constants.X509PublicKeyType;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /** Resolves crypto algorithms and their properties from a given cipher suite (and TLS version). */
 public class AlgorithmResolver {
@@ -114,28 +113,26 @@ public class AlgorithmResolver {
             case RSA_EXPORT:
             case SRP_SHA_RSA:
             case RSA_PSK:
-                return new X509PublicKeyType[] { X509PublicKeyType.RSA };
+                return new X509PublicKeyType[] {X509PublicKeyType.RSA};
             case DH_RSA:
             case DH_DSS:
-                return new X509PublicKeyType[] { X509PublicKeyType.DH };
+                return new X509PublicKeyType[] {X509PublicKeyType.DH};
             case ECDH_ECDSA:
-                return new X509PublicKeyType[] {
-                        X509PublicKeyType.ECDH_ECDSA, X509PublicKeyType.ECDH_ONLY
-                };
+                return new X509PublicKeyType[] {X509PublicKeyType.ECDH_ECDSA};
             case ECDH_RSA:
-                return new X509PublicKeyType[] { X509PublicKeyType.ECDH_ONLY };
+                return new X509PublicKeyType[] {X509PublicKeyType.ECDH_ECDSA};
             case ECDHE_ECDSA:
             case ECMQV_ECDSA:
             case CECPQ1_ECDSA:
-                return new X509PublicKeyType[] { X509PublicKeyType.ECDH_ECDSA };
+                return new X509PublicKeyType[] {X509PublicKeyType.ECDH_ECDSA};
             case DHE_DSS:
             case SRP_SHA_DSS:
-                return new X509PublicKeyType[] { X509PublicKeyType.DSA };
+                return new X509PublicKeyType[] {X509PublicKeyType.DSA};
             case VKO_GOST01:
-                return new X509PublicKeyType[] { X509PublicKeyType.GOST_R3411_2001 };
+                return new X509PublicKeyType[] {X509PublicKeyType.GOST_R3411_2001};
             case VKO_GOST12:
                 // TODO Not correct
-                return new X509PublicKeyType[] { X509PublicKeyType.GOST_R3411_94 };
+                return new X509PublicKeyType[] {X509PublicKeyType.GOST_R3411_94};
             case DHE_PSK:
             case DH_ANON:
             case ECCPWD:
@@ -150,14 +147,14 @@ public class AlgorithmResolver {
             case ECMQV_ECNRA:
                 throw new UnsupportedOperationException("Not Implemented");
             case FORTEZZA_KEA:
-                return new X509PublicKeyType[] { X509PublicKeyType.KEA };
+                return new X509PublicKeyType[] {X509PublicKeyType.KEA};
             default:
                 throw new UnsupportedOperationException(
                         "Unsupported KeyExchange Algorithm: " + keyExchangeAlgorithm);
         }
     }
 
-    @Deprecated //Use ciphersuite.getCipherAlgorithm() instead
+    @Deprecated // Use ciphersuite.getCipherAlgorithm() instead
     public static CipherAlgorithm getCipher(CipherSuite cipherSuite) {
         return cipherSuite.getCipherAlgorithm();
     }
@@ -172,9 +169,9 @@ public class AlgorithmResolver {
     }
 
     /**
-    * @param cipherSuite The Cipher suite for which the CipherType should be selected
-    * @return The CipherType of the Cipher suite. Can be null if its not a real cipher suite
-    */
+     * @param cipherSuite The Cipher suite for which the CipherType should be selected
+     * @return The CipherType of the Cipher suite. Can be null if its not a real cipher suite
+     */
     @Deprecated // Use cipherSuite.getCipherType() instead
     public static CipherType getCipherType(CipherSuite cipherSuite) {
         return cipherSuite.getCipherType();
@@ -190,12 +187,14 @@ public class AlgorithmResolver {
                 return MacAlgorithm.IMIT_GOST28147;
             }
             if (hashAlgorithm == HashAlgorithm.MD5) {
-                if (protocolVersion == ProtocolVersion.SSL3 || protocolVersion == ProtocolVersion.SSL2) {
+                if (protocolVersion == ProtocolVersion.SSL3
+                        || protocolVersion == ProtocolVersion.SSL2) {
                     return MacAlgorithm.SSLMAC_MD5;
                 }
                 return MacAlgorithm.HMAC_MD5;
             } else if (hashAlgorithm == HashAlgorithm.SHA1) {
-                if (protocolVersion == ProtocolVersion.SSL3 || protocolVersion == ProtocolVersion.SSL2) {
+                if (protocolVersion == ProtocolVersion.SSL3
+                        || protocolVersion == ProtocolVersion.SSL2) {
                     return MacAlgorithm.SSLMAC_SHA1;
                 }
                 return MacAlgorithm.HMAC_SHA1;
@@ -216,7 +215,8 @@ public class AlgorithmResolver {
             }
         }
         if (!cipherSuite.isRealCipherSuite()) {
-            LOGGER.warn("Trying to retrieve MAC algorithm of a non-real cipher suite: {}", cipherSuite);
+            LOGGER.warn(
+                    "Trying to retrieve MAC algorithm of a non-real cipher suite: {}", cipherSuite);
         }
         return MacAlgorithm.NONE;
     }
@@ -276,6 +276,5 @@ public class AlgorithmResolver {
         }
     }
 
-    private AlgorithmResolver() {
-    }
+    private AlgorithmResolver() {}
 }

@@ -46,7 +46,7 @@ public class ServerDelegateTest extends AbstractDelegateTest<ServerDelegate> {
     /** Test of applyDelegate method, of class ServerDelegate. */
     @Test
     public void testApplyDelegate() {
-        Config config = Config.createConfig();
+        Config config = new Config();
         int expectedDefaultTimeout = 390121;
         config.getDefaultServerConnection().setTimeout(expectedDefaultTimeout);
         args = new String[2];
@@ -64,7 +64,7 @@ public class ServerDelegateTest extends AbstractDelegateTest<ServerDelegate> {
     /** Make sure that applying with port = null fails properly. */
     @Test
     public void applyingEmptyDelegateThrowsException() {
-        Config config = Config.createConfig();
+        Config config = new Config();
         ParameterException exception =
                 assertThrows(ParameterException.class, () -> delegate.applyDelegate(config));
         assertTrue(exception.getMessage().startsWith("Port must be set, but was not specified"));
@@ -72,7 +72,7 @@ public class ServerDelegateTest extends AbstractDelegateTest<ServerDelegate> {
 
     @Test
     public void testApplyDelegateWithEmptyConfig() {
-        Config config = Config.createConfig();
+        Config config = new Config();
         config.setDefaultServerConnection(null);
         int expectedPort = 8777;
         delegate.setPort(expectedPort);

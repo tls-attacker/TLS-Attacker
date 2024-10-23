@@ -27,6 +27,7 @@ public class TightReceiveLayerConfiguration<Container extends DataContainer<?>>
         super(layerType, containerList);
     }
 
+    @SafeVarargs
     public TightReceiveLayerConfiguration(LayerType layerType, Container... containers) {
         super(layerType, containers);
     }

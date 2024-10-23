@@ -18,13 +18,13 @@ import java.io.InputStream;
  */
 public interface DataContainer<Context extends LayerContext> {
 
-    public Parser<?> getParser(Context context, InputStream stream);
+    public Parser<? extends DataContainer<Context>> getParser(Context context, InputStream stream);
 
-    public Preparator<?> getPreparator(Context context);
+    public Preparator<? extends DataContainer<Context>> getPreparator(Context context);
 
-    public Serializer<?> getSerializer(Context context);
+    public Serializer<? extends DataContainer<Context>> getSerializer(Context context);
 
-    public Handler<?> getHandler(Context context);
+    public Handler<? extends DataContainer<Context>> getHandler(Context context);
 
     public default boolean isRequired() {
         return true;

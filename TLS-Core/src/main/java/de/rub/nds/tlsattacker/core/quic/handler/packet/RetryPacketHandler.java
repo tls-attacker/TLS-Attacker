@@ -36,6 +36,11 @@ public class RetryPacketHandler extends LongHeaderPacketHandler<RetryPacket> {
 
     @Override
     public void adjustContext(RetryPacket packet) {
+        if (!packet.verifyRetryIntegrityTag(quicContext)) {
+            LOGGER.debug(
+                    "Retry Integrity Tag is not verified, therefore we abort adjusting our context accordingly");
+            return;
+        }
         // update quic context
         quicContext.setInitialPacketToken(packet.getRetryToken().getValue());
         quicContext.setFirstDestinationConnectionId(packet.getSourceConnectionId().getValue());
@@ -69,7 +74,7 @@ public class RetryPacketHandler extends LongHeaderPacketHandler<RetryPacket> {
         try {
             QuicPacketCryptoComputations.calculateInitialSecrets(quicContext);
         } catch (CryptoException | NoSuchAlgorithmException e) {
-            LOGGER.error("Could not initial secrets: {}", e);
+            LOGGER.error("Could not initial secrets", e);
         }
     }
 }

@@ -27,6 +27,7 @@ public class StreamsBlockedFrame extends QuicFrame {
 
     private int maximumStreamsConfig;
 
+    @SuppressWarnings("unused") // JAXB
     private StreamsBlockedFrame() {}
 
     public StreamsBlockedFrame(boolean isBidirectional) {
