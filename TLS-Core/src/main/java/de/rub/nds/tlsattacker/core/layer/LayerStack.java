@@ -168,7 +168,10 @@ public class LayerStack {
                     remainingTries--;
                 }
             } else {
-                while (quicFrameLayer.get().shouldContinueProcessing()) {
+                // TODO: If we eventually decide to drop this part of the code, the
+                // hasExperienceTimeout can be removed as well in the QuicFrameLayer
+                while (quicFrameLayer.get().shouldContinueProcessing()
+                        && !((QuicFrameLayer) quicFrameLayer.get()).hasExperiencedTimeout()) {
                     quicFrameLayer.get().receiveData();
                 }
             }
