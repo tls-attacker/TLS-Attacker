@@ -16,7 +16,6 @@ import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.layer.data.Handler;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
-import de.rub.nds.tlsattacker.core.smtp.parser.reply.HELPReplyParser;
 import de.rub.nds.tlsattacker.core.smtp.parser.reply.SmtpReplyParser;
 import de.rub.nds.tlsattacker.core.smtp.reply.generic.singleline.SmtpHELPReply;
 import de.rub.nds.tlsattacker.core.state.Context;
@@ -65,11 +64,12 @@ class HELPReplyTest {
         };
 
         for (String reply : validReplies) {
-            HELPReplyParser parser =
-                    new HELPReplyParser(
-                            new ByteArrayInputStream(reply.getBytes(StandardCharsets.UTF_8)));
-
+            SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
             SmtpHELPReply helpReply = new SmtpHELPReply();
+            SmtpReplyParser parser =
+                    helpReply.getParser(
+                            context,
+                            new ByteArrayInputStream(reply.getBytes(StandardCharsets.UTF_8)));
             parser.parse(helpReply);
             assertEquals(helpReply.getReplyCode(), Integer.parseInt(reply.substring(0, 3)));
         }
@@ -101,11 +101,12 @@ class HELPReplyTest {
         String[] invalidReplies = {"321 No such user here\r\n", "123 Everything fine\r\n"};
 
         for (String reply : invalidReplies) {
-            HELPReplyParser parser =
-                    new HELPReplyParser(
-                            new ByteArrayInputStream(reply.getBytes(StandardCharsets.UTF_8)));
-
+            SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
             SmtpHELPReply helpReply = new SmtpHELPReply();
+            SmtpReplyParser parser =
+                    helpReply.getParser(
+                            context,
+                            new ByteArrayInputStream(reply.getBytes(StandardCharsets.UTF_8)));
             parser.parse(helpReply);
         }
     }
@@ -117,23 +118,13 @@ class HELPReplyTest {
         };
 
         for (String reply : invalidReplies) {
-            HELPReplyParser parser =
-                    new HELPReplyParser(
+            SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
+            SmtpHELPReply helpReply = new SmtpHELPReply();
+            SmtpReplyParser parser =
+                    helpReply.getParser(
+                            context,
                             new ByteArrayInputStream(reply.getBytes(StandardCharsets.UTF_8)));
-
-            SmtpHELPReply HELP = new SmtpHELPReply();
-            assertThrows(ParserException.class, () -> parser.parse(HELP));
+            assertThrows(ParserException.class, () -> parser.parse(helpReply));
         }
-    }
-
-    @Test
-    public void testHandle() {
-        SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
-        SmtpHELPReply reply = new SmtpHELPReply();
-        Handler handler = reply.getHandler(context);
-
-        assertTrue(context.getForwardPathBuffer().isEmpty());
-        assertTrue(context.getReversePathBuffer().isEmpty());
-        assertTrue(context.getMailDataBuffer().isEmpty());
     }
 }
