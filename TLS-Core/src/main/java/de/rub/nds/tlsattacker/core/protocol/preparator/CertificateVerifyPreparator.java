@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CertificateVerifyConstants;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.SSLUtils;
 import de.rub.nds.tlsattacker.core.crypto.TlsSignatureUtil;
@@ -39,7 +40,8 @@ public class CertificateVerifyPreparator
     public void prepareHandshakeMessageContents() {
         LOGGER.debug("Preparing CertificateVerifyMessage");
         algorithm =
-                SignatureAndHashAlgorithmSelector.selectSignatureAndHashAlgorithm(chooser, true);
+                SignatureAndHashAlgorithmSelector.selectSignatureAndHashAlgorithm(
+                        chooser, chooser.getSelectedProtocolVersion() == ProtocolVersion.TLS13);
         signature = new byte[0];
         try {
             signature = createSignature();
