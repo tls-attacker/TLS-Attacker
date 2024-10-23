@@ -34,4 +34,8 @@ public class SmtpParameters {
     public void setExtension(SmtpServiceExtension extension) {
         this.extension = extension;
     }
+
+    public String serialize() {
+        return extension.serialize() + "=" + parameters;
+    }
 }

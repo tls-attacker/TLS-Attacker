@@ -76,8 +76,7 @@ public class SmtpReply extends SmtpMessage {
         return humanReadableMessage;
     }
 
-    @Override
-    public String toString() {
+    public String serialize() {
         char SP = ' ';
         String CRLF = "\r\n";
         StringBuilder sb = new StringBuilder();

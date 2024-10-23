@@ -28,7 +28,7 @@ public class SmtpReplySerializer<ReplyT extends SmtpReply> extends SmtpMessageSe
 
     @Override
     protected byte[] serializeBytes() {
-        byte[] output = this.reply.toString().getBytes();
+        byte[] output = this.reply.serialize().getBytes();
         appendBytes(output);
         return getAlreadySerialized();
     }

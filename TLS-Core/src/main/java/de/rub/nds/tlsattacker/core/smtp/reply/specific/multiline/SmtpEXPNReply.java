@@ -39,8 +39,7 @@ public class SmtpEXPNReply extends SmtpReply {
             return mailbox;
         }
 
-        @Override
-        public String toString() {
+        public String serialize() {
             StringBuilder sb = new StringBuilder();
 
             if (this.username != null) {
@@ -73,7 +72,7 @@ public class SmtpEXPNReply extends SmtpReply {
     }
 
     @Override
-    public String toString() {
+    public String serialize() {
         char SP = ' ';
         char DASH = '-';
         String CRLF = "\r\n";
@@ -86,13 +85,13 @@ public class SmtpEXPNReply extends SmtpReply {
         for (int i = 0; i < this.data.size() - 1; i++) {
             SmtpEXPNData expnData = this.data.get(i);
             sb.append(replyCodePrefix);
-            sb.append(expnData.toString());
+            sb.append(expnData.serialize());
             sb.append(CRLF);
         }
 
         sb.append(this.replyCode);
         sb.append(SP);
-        sb.append(this.data.get(this.data.size() - 1).toString());
+        sb.append(this.data.get(this.data.size() - 1).serialize());
         sb.append(CRLF);
 
         return sb.toString();

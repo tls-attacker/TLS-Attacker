@@ -137,8 +137,8 @@ public class SmtpContext extends LayerContext {
                 return new SmtpVRFYReply();
             } else if (command instanceof SmtpMAILCommand) {
                 return new SmtpMAILReply();
-            } else if (command instanceof SmtpRESETCommand) {
-                return new SmtpRESETReply();
+            } else if (command instanceof SmtpRSETCommand) {
+                return new SmtpRSETReply();
             } else if (command instanceof SmtpInitialGreetingDummy) {
                 return new SmtpInitialGreeting();
             } else if (command instanceof SmtpDATACommand) {

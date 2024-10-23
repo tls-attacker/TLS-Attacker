@@ -26,7 +26,7 @@ public class MAILCommandPreparator extends SmtpCommandPreparator<SmtpMAILCommand
         StringBuilder pars = new StringBuilder("FROM:<" + this.getObject().getReversePath() + ">");
         if (this.getObject().getMAILparameters() != null) {
             for (SmtpParameters MAILparameters : this.getObject().getMAILparameters()) {
-                pars.append(" ").append(MAILparameters.toString());
+                pars.append(" ").append(MAILparameters.serialize());
             }
         }
         this.getObject().setParameters(pars.toString());

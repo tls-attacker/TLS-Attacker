@@ -35,8 +35,7 @@ public abstract class SmtpServiceExtension {
         return parameters;
     }
 
-    @Override
-    public String toString() {
+    public String serialize() {
         StringBuilder sb = new StringBuilder();
 
         sb.append(this.ehloKeyword);

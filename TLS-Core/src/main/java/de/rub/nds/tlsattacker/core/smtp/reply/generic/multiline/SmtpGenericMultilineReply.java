@@ -38,7 +38,7 @@ public abstract class SmtpGenericMultilineReply extends SmtpReply {
     }
 
     @Override
-    public String toString() {
+    public String serialize() {
         char SP = ' ';
         char DASH = '-';
         String CRLF = "\r\n";

@@ -58,7 +58,7 @@ public class SmtpEHLOReply extends SmtpReply {
     }
 
     @Override
-    public String toString() {
+    public String serialize() {
         char SP = ' ';
         char DASH = '-';
         String CRLF = "\r\n";
@@ -82,13 +82,13 @@ public class SmtpEHLOReply extends SmtpReply {
             SmtpServiceExtension ext = this.extensions.get(i);
             sb.append(this.replyCode);
             sb.append(DASH);
-            sb.append(ext.toString());
+            sb.append(ext.serialize());
             sb.append(CRLF);
         }
 
         sb.append(this.replyCode);
         sb.append(SP);
-        sb.append(this.extensions.get(this.extensions.size() - 1).toString());
+        sb.append(this.extensions.get(this.extensions.size() - 1).serialize());
         sb.append(CRLF);
 
         return sb.toString();

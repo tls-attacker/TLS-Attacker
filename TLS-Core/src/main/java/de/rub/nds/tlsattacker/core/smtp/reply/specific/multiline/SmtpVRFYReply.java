@@ -41,8 +41,7 @@ public class SmtpVRFYReply extends SmtpReply {
             return mailbox;
         }
 
-        @Override
-        public String toString() {
+        public String serialize() {
             StringBuilder sb = new StringBuilder();
 
             if (this.username != null) {
@@ -75,7 +74,7 @@ public class SmtpVRFYReply extends SmtpReply {
     }
 
     @Override
-    public String toString() {
+    public String serialize() {
         char SP = ' ';
         char DASH = '-';
         String CRLF = "\r\n";
@@ -88,13 +87,13 @@ public class SmtpVRFYReply extends SmtpReply {
         for (int i = 0; i < this.data.size() - 1; i++) {
             SmtpVRFYData vrfyData = this.data.get(i);
             sb.append(replyCodePrefix);
-            sb.append(vrfyData.toString());
+            sb.append(vrfyData.serialize());
             sb.append(CRLF);
         }
 
         sb.append(this.replyCode);
         sb.append(SP);
-        sb.append(this.data.get(this.data.size() - 1).toString());
+        sb.append(this.data.get(this.data.size() - 1).serialize());
         sb.append(CRLF);
 
         return sb.toString();
