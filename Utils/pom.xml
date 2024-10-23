@@ -4,7 +4,7 @@
     <parent>
         <groupId>de.rub.nds.tls.attacker</groupId>
         <artifactId>tls-attacker</artifactId>
-        <version>6.1.8-SNAPSHOT</version>
+        <version>6.1.9-SNAPSHOT</version>
     </parent>
     <artifactId>utils</artifactId>
 
