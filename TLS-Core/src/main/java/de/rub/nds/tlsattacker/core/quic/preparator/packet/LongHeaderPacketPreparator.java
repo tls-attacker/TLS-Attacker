@@ -20,13 +20,28 @@ public abstract class LongHeaderPacketPreparator<T extends LongHeaderPacket>
 
     public LongHeaderPacketPreparator(Chooser chooser, T packet) {
         super(chooser, packet);
-        this.packet = packet;
     }
 
     protected void prepareLongHeaderPacket() {
-        packet.setQuicVersion(context.getQuicVersion());
-        packet.setSourceConnectionId(context.getSourceConnectionId());
-        packet.setSourceConnectionIdLength((byte) packet.getSourceConnectionId().getValue().length);
+        prepareQuicVersion();
+        prepareSourceConnectionId();
+        prepareSourceConnectionIdLength();
         prepareQuicPacket();
+    }
+
+    private void prepareSourceConnectionIdLength() {
+        packet.setSourceConnectionIdLength((byte) packet.getSourceConnectionId().getValue().length);
+        LOGGER.debug(
+                "Source Connection ID Length: {}", packet.getSourceConnectionIdLength().getValue());
+    }
+
+    private void prepareSourceConnectionId() {
+        packet.setSourceConnectionId(context.getSourceConnectionId());
+        LOGGER.debug("Source Connection ID: {}", packet.getSourceConnectionId().getValue());
+    }
+
+    public void prepareQuicVersion() {
+        packet.setQuicVersion(context.getQuicVersion());
+        LOGGER.debug("Quic Version: {}", packet.getQuicVersion().getValue());
     }
 }

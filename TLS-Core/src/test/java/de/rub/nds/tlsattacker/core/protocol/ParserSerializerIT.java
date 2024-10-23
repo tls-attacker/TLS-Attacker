@@ -10,14 +10,15 @@ package de.rub.nds.tlsattacker.core.protocol;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
+import de.rub.nds.protocol.exception.EndOfStreamException;
+import de.rub.nds.protocol.exception.ParserException;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
-import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
-import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
-import de.rub.nds.tlsattacker.core.protocol.message.*;
+import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.SSL2Message;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.util.tests.TestCategories;
@@ -32,7 +33,7 @@ import org.junit.jupiter.api.Test;
 public class ParserSerializerIT extends GenericParserSerializerTest {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    private final Config config = Config.createConfig();
+    private final Config config = new Config();
 
     @Test
     @Tag(TestCategories.INTEGRATION_TEST)
@@ -46,7 +47,6 @@ public class ParserSerializerIT extends GenericParserSerializerTest {
                     InvocationTargetException {
         Random r = new Random(42);
         for (int i = 0; i < 10000; i++) {
-            int random = r.nextInt(20);
             ProtocolMessage message = null;
             TlsContext tlsContext =
                     new Context(new State(config), new InboundConnection()).getTlsContext();
@@ -55,7 +55,6 @@ public class ParserSerializerIT extends GenericParserSerializerTest {
                 int length = r.nextInt(1000);
                 bytesToParse = new byte[length];
                 r.nextBytes(bytesToParse);
-                int start = r.nextInt(100);
                 message = getRandomMessage(r);
                 Parser parser =
                         message.getParser(tlsContext, new ByteArrayInputStream(bytesToParse));

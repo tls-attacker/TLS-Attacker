@@ -12,6 +12,8 @@ import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.core.dtls.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.http.HttpMessage;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.SpecificReceiveLayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.printer.LogPrinter;
@@ -30,13 +32,9 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 @XmlRootElement(name = "Receive")
 public class ReceiveAction extends CommonReceiveAction implements StaticReceivingAction {
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
     protected List<ProtocolMessage> expectedMessages;
@@ -245,15 +243,42 @@ public class ReceiveAction extends CommonReceiveAction implements StaticReceivin
     @Override
     protected List<LayerConfiguration<?>> createLayerConfiguration(State state) {
         TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
-        return ActionHelperUtil.createReceiveLayerConfiguration(
-                tlsContext,
-                getActionOptions(),
-                expectedMessages,
-                expectedDtlsFragments,
-                expectedRecords,
-                expectedQuicFrames,
-                expectedQuicPackets,
-                expectedHttpMessages);
+        List<LayerConfiguration<?>> configurationList = new LinkedList<>();
+        if (getExpectedRecords() != null) {
+            configurationList.add(
+                    new SpecificReceiveLayerConfiguration<>(
+                            ImplementedLayers.RECORD, getExpectedRecords()));
+        }
+        if (getExpectedMessages() != null) {
+            configurationList.add(
+                    new SpecificReceiveLayerConfiguration<>(
+                            ImplementedLayers.SSL2, getExpectedMessages()));
+            configurationList.add(
+                    new SpecificReceiveLayerConfiguration<>(
+                            ImplementedLayers.MESSAGE, getExpectedMessages()));
+        }
+        if (getExpectedDtlsFragments() != null) {
+            configurationList.add(
+                    new SpecificReceiveLayerConfiguration<>(
+                            ImplementedLayers.DTLS_FRAGMENT, getExpectedDtlsFragments()));
+        }
+        if (getExpectedHttpMessages() != null) {
+            configurationList.add(
+                    new SpecificReceiveLayerConfiguration<>(
+                            ImplementedLayers.HTTP, getExpectedHttpMessages()));
+        }
+        if (getExpectedQuicFrames() != null) {
+            configurationList.add(
+                    new SpecificReceiveLayerConfiguration<>(
+                            ImplementedLayers.QUICFRAME, getExpectedQuicFrames()));
+        }
+        if (getExpectedQuicPackets() != null) {
+            configurationList.add(
+                    new SpecificReceiveLayerConfiguration<>(
+                            ImplementedLayers.QUICPACKET, getExpectedQuicPackets()));
+        }
+        return ActionHelperUtil.sortAndAddOptions(
+                tlsContext.getLayerStack(), false, getActionOptions(), configurationList);
     }
 
     @Override

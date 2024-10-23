@@ -9,6 +9,8 @@
 package de.rub.nds.tlsattacker.core.layer.impl;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.protocol.exception.EndOfStreamException;
+import de.rub.nds.protocol.exception.PreparationException;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
@@ -18,8 +20,6 @@ import de.rub.nds.tlsattacker.core.dtls.FragmentManager;
 import de.rub.nds.tlsattacker.core.dtls.parser.DtlsHandshakeMessageFragmentParser;
 import de.rub.nds.tlsattacker.core.dtls.preparator.DtlsHandshakeMessageFragmentPreparator;
 import de.rub.nds.tlsattacker.core.dtls.serializer.DtlsHandshakeMessageFragmentSerializer;
-import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
-import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.exceptions.TimeoutException;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
@@ -66,7 +66,8 @@ public class DtlsFragmentLayer
      * @throws IOException When the data cannot be sent
      */
     @Override
-    public LayerProcessingResult sendConfiguration() throws IOException {
+    public LayerProcessingResult<DtlsHandshakeMessageFragment> sendConfiguration()
+            throws IOException {
         LayerConfiguration<DtlsHandshakeMessageFragment> configuration = getLayerConfiguration();
         if (configuration != null && configuration.getContainerList() != null) {
             for (DtlsHandshakeMessageFragment fragment : getUnprocessedConfiguredContainers()) {
@@ -105,8 +106,14 @@ public class DtlsFragmentLayer
      */
     @Override
     public LayerProcessingResult<DtlsHandshakeMessageFragment> sendData(
-            RecordLayerHint hint, byte[] data) throws IOException {
-        if (hint.getType() == ProtocolMessageType.HANDSHAKE) {
+            LayerProcessingHint hint, byte[] data) throws IOException {
+        ProtocolMessageType hintedType;
+        if (hint instanceof RecordLayerHint) {
+            hintedType = ((RecordLayerHint) hint).getType();
+        } else {
+            hintedType = ProtocolMessageType.UNKNOWN;
+        }
+        if (hintedType == ProtocolMessageType.HANDSHAKE) {
             // produce enough fragments from the given data
             List<DtlsHandshakeMessageFragment> fragments = new LinkedList<>();
             if (getLayerConfiguration().getContainerList() == null
@@ -164,7 +171,7 @@ public class DtlsFragmentLayer
     }
 
     @Override
-    public LayerProcessingResult receiveData() {
+    public LayerProcessingResult<DtlsHandshakeMessageFragment> receiveData() {
         throw new UnsupportedOperationException(
                 "Not supported yet."); // To change body of generated methods, choose
         // Tools | Templates.

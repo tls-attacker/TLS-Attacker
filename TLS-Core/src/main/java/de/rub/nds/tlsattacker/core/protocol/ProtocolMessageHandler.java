@@ -26,7 +26,7 @@ public abstract class ProtocolMessageHandler<MessageT extends ProtocolMessage>
         this.tlsContext = tlsContext;
     }
 
-    public void updateDigest(MessageT message, boolean goingToBeSent) {
+    public void updateDigest(ProtocolMessage message, boolean goingToBeSent) {
         if (!(message instanceof HandshakeMessage)) {
             return;
         }

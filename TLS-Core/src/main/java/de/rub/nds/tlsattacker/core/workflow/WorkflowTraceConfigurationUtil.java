@@ -18,12 +18,8 @@ import de.rub.nds.tlsattacker.core.workflow.action.StaticSendingAction;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class WorkflowTraceConfigurationUtil {
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     private WorkflowTraceConfigurationUtil() {}
 
@@ -349,9 +345,10 @@ public class WorkflowTraceConfigurationUtil {
             List<List<DataContainer<?>>> configuredDataContainerLists =
                     action.getConfiguredDataContainerLists();
             for (List<DataContainer<?>> dataContainerList : configuredDataContainerLists) {
-                if (!dataContainerList.isEmpty()
-                        && dataContainerList.get(0) instanceof ProtocolMessage) {
-                    sendMessages.add((ProtocolMessage) dataContainerList.get(0));
+                for (DataContainer<?> dataContainer : dataContainerList) {
+                    if (dataContainer instanceof ProtocolMessage) {
+                        sendMessages.add((ProtocolMessage) dataContainer);
+                    }
                 }
             }
         }
@@ -364,9 +361,10 @@ public class WorkflowTraceConfigurationUtil {
             List<List<DataContainer<?>>> configuredDataContainerLists =
                     action.getExpectedDataContainerLists();
             for (List<DataContainer<?>> dataContainerList : configuredDataContainerLists) {
-                if (!dataContainerList.isEmpty()
-                        && dataContainerList.get(0) instanceof ProtocolMessage) {
-                    receiveMessages.add((ProtocolMessage) dataContainerList.get(0));
+                for (DataContainer<?> dataContainer : dataContainerList) {
+                    if (dataContainer instanceof ProtocolMessage) {
+                        receiveMessages.add((ProtocolMessage) dataContainer);
+                    }
                 }
             }
         }

@@ -16,7 +16,6 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.handler.PskRsaClientKeyExchangeHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.RSAClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.parser.PskRsaClientKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.PskRsaClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.PskRsaClientKeyExchangeSerializer;
@@ -84,8 +83,7 @@ public class PskRsaClientKeyExchangeMessage extends RSAClientKeyExchangeMessage 
     }
 
     @Override
-    public RSAClientKeyExchangeHandler<PskRsaClientKeyExchangeMessage> getHandler(
-            TlsContext tlsContext) {
+    public PskRsaClientKeyExchangeHandler getHandler(TlsContext tlsContext) {
         return new PskRsaClientKeyExchangeHandler(tlsContext);
     }
 

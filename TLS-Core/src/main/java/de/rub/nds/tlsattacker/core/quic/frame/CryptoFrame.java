@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.quic.frame;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.modifiablevariable.mlong.ModifiableLong;
+import de.rub.nds.modifiablevariable.longint.ModifiableLong;
 import de.rub.nds.tlsattacker.core.quic.constants.QuicFrameType;
 import de.rub.nds.tlsattacker.core.quic.handler.frame.CryptoFrameHandler;
 import de.rub.nds.tlsattacker.core.quic.parser.frame.CryptoFrameParser;
@@ -20,60 +20,36 @@ import de.rub.nds.tlsattacker.core.quic.serializer.frame.CryptoFrameSerializer;
 import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
-import java.util.Arrays;
 
+/** A CRYPTO frame (type=0x06) is used to transmit cryptographic handshake messages. */
 @XmlRootElement
 public class CryptoFrame extends QuicFrame {
 
-    /**
-     * A variable-length integer specifying the byte offset in the stream for the data in this
-     * CRYPTO frame.
-     */
     @ModifiableVariableProperty protected ModifiableLong offset;
 
-    /**
-     * A variable-length integer specifying the length of the Crypto Data field in this CRYPTO
-     * frame.
-     */
     @ModifiableVariableProperty protected ModifiableLong length;
 
-    /** The cryptographic message data. */
     @ModifiableVariableProperty protected ModifiableByteArray cryptoData;
+
+    private int maxFrameLengthConfig;
+    private byte[] cryptoDataConfig;
+    private long offsetConfig;
+    private long lengthConfig;
 
     public CryptoFrame() {
         super(QuicFrameType.CRYPTO_FRAME);
     }
 
-    public void setOffset(long offset) {
-        this.offset = ModifiableVariableFactory.safelySetValue(this.offset, offset);
+    public CryptoFrame(int maxFrameLengthConfig) {
+        super(QuicFrameType.CRYPTO_FRAME);
+        this.maxFrameLengthConfig = maxFrameLengthConfig;
     }
 
-    public void setOffset(int offset) {
-        this.setOffset((long) offset);
-    }
-
-    public ModifiableLong getOffset() {
-        return this.offset;
-    }
-
-    public void setLength(long length) {
-        this.length = ModifiableVariableFactory.safelySetValue(this.length, length);
-    }
-
-    public void setLength(int length) {
-        this.setLength((long) length);
-    }
-
-    public ModifiableLong getLength() {
-        return this.length;
-    }
-
-    public void setCryptoData(byte[] cryptoData) {
-        this.cryptoData = ModifiableVariableFactory.safelySetValue(this.cryptoData, cryptoData);
-    }
-
-    public ModifiableByteArray getCryptoData() {
-        return this.cryptoData;
+    public CryptoFrame(byte[] cryptoDataConfig, long offsetConfig, long lengthConfig) {
+        super(QuicFrameType.CRYPTO_FRAME);
+        this.cryptoDataConfig = cryptoDataConfig;
+        this.offsetConfig = offsetConfig;
+        this.lengthConfig = lengthConfig;
     }
 
     @Override
@@ -96,39 +72,79 @@ public class CryptoFrame extends QuicFrame {
         return new CryptoFrameParser(stream);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        CryptoFrame that = (CryptoFrame) o;
-
-        if ((offset == null) != (that.offset == null)) {
-            return false;
-        }
-
-        if ((length == null) != (that.offset == null)) {
-            return false;
-        }
-
-        if (offset != null && !offset.getValue().equals(that.offset.getValue())) {
-            return false;
-        }
-        if (length != null && !length.getValue().equals(that.length.getValue())) {
-            return false;
-        }
-        return Arrays.equals(cryptoData.getValue(), that.cryptoData.getValue());
+    public void setOffset(long offset) {
+        this.offset = ModifiableVariableFactory.safelySetValue(this.offset, offset);
     }
 
-    @Override
-    public int hashCode() {
-        int result = offset.hashCode();
-        result = 31 * result + length.hashCode();
-        result = 31 * result + cryptoData.hashCode();
-        return result;
+    public void setOffset(int offset) {
+        this.setOffset((long) offset);
+    }
+
+    public void setOffset(ModifiableLong offset) {
+        this.offset = offset;
+    }
+
+    public ModifiableLong getOffset() {
+        return this.offset;
+    }
+
+    public void setLength(long length) {
+        this.length = ModifiableVariableFactory.safelySetValue(this.length, length);
+    }
+
+    public void setLength(int length) {
+        this.setLength((long) length);
+    }
+
+    public void setLength(ModifiableLong length) {
+        this.length = length;
+    }
+
+    public ModifiableLong getLength() {
+        return this.length;
+    }
+
+    public void setCryptoData(byte[] cryptoData) {
+        this.cryptoData = ModifiableVariableFactory.safelySetValue(this.cryptoData, cryptoData);
+    }
+
+    public void setCryptoData(ModifiableByteArray cryptoData) {
+        this.cryptoData = cryptoData;
+    }
+
+    public ModifiableByteArray getCryptoData() {
+        return this.cryptoData;
+    }
+
+    public int getMaxFrameLengthConfig() {
+        return maxFrameLengthConfig;
+    }
+
+    public void setMaxFrameLengthConfig(int maxFrameLengthConfig) {
+        this.maxFrameLengthConfig = maxFrameLengthConfig;
+    }
+
+    public byte[] getCryptoDataConfig() {
+        return cryptoDataConfig;
+    }
+
+    public void setCryptoDataConfig(byte[] cryptoDataConfig) {
+        this.cryptoDataConfig = cryptoDataConfig;
+    }
+
+    public long getOffsetConfig() {
+        return offsetConfig;
+    }
+
+    public void setOffsetConfig(long offsetConfig) {
+        this.offsetConfig = offsetConfig;
+    }
+
+    public long getLengthConfig() {
+        return lengthConfig;
+    }
+
+    public void setLengthConfig(long lengthConfig) {
+        this.lengthConfig = lengthConfig;
     }
 }

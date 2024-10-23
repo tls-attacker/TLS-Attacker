@@ -8,8 +8,15 @@
  */
 package de.rub.nds.tlsattacker.core.http;
 
-import de.rub.nds.tlsattacker.core.exceptions.ParserException;
-import de.rub.nds.tlsattacker.core.http.header.*;
+import de.rub.nds.protocol.exception.ParserException;
+import de.rub.nds.tlsattacker.core.http.header.ContentLengthHeader;
+import de.rub.nds.tlsattacker.core.http.header.DateHeader;
+import de.rub.nds.tlsattacker.core.http.header.ExpiresHeader;
+import de.rub.nds.tlsattacker.core.http.header.GenericHttpHeader;
+import de.rub.nds.tlsattacker.core.http.header.HostHeader;
+import de.rub.nds.tlsattacker.core.http.header.HttpHeader;
+import de.rub.nds.tlsattacker.core.http.header.LocationHeader;
+import de.rub.nds.tlsattacker.core.http.header.TokenBindingHeader;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -32,7 +39,7 @@ public class HttpResponseParser extends HttpMessageParser<HttpResponseMessage> {
         GenericHttpHeader transferEncodingHeader = null;
 
         String request = parseStringTill(LINEBREAK_BYTE);
-        String[] split = request.replaceAll("\r", " ").split(" ");
+        String[] split = request.replace("\r", " ").split(" ");
         if (split.length < 2) {
             throw new ParserException("Could not parse as HttpsResponseMessage");
         }
@@ -51,30 +58,30 @@ public class HttpResponseParser extends HttpMessageParser<HttpResponseMessage> {
             String headerName = split[0];
             String headerValue =
                     line.replaceFirst(split[0] + ":", "")
-                            .replaceAll("\n", "")
-                            .replaceAll("\r", "")
+                            .replace("\n", "")
+                            .replace("\r", "")
                             .trim();
-            switch (headerName) {
-                case "Host":
+            switch (headerName.toLowerCase()) {
+                case "host":
                     header = new HostHeader();
                     break;
-                case "Sec-Token-Binding":
+                case "sec-token-binding":
                     header = new TokenBindingHeader();
                     break;
-                case "Location":
+                case "location":
                     header = new LocationHeader();
                     break;
-                case "Content-Length":
+                case "content-length":
                     header = new ContentLengthHeader();
                     contentLengthHeader = (ContentLengthHeader) header;
                     break;
-                case "Expires":
+                case "expires":
                     header = new ExpiresHeader();
                     break;
-                case "Date":
+                case "date":
                     header = new DateHeader();
                     break;
-                case "Transfer-Encoding":
+                case "transfer-encoding":
                     header = new GenericHttpHeader();
                     transferEncodingHeader = (GenericHttpHeader) header;
                     break;
@@ -94,6 +101,11 @@ public class HttpResponseParser extends HttpMessageParser<HttpResponseMessage> {
 
         StringBuilder httpMessageBuilder = new StringBuilder();
 
+        if (contentLengthHeader != null && transferEncodingHeader != null) {
+            LOGGER.warn(
+                    "HTTP message contains both Content-Length and Transfer-Encoding headers, assuming Content-Length");
+        }
+
         if (contentLengthHeader != null) {
             LOGGER.debug("Parsing HTTP message with Content Length Header");
             // get bytes to parse from header
@@ -102,14 +114,19 @@ public class HttpResponseParser extends HttpMessageParser<HttpResponseMessage> {
                 bytesToRead = Integer.parseInt(contentLengthHeader.getHeaderValue().getValue());
             } catch (NumberFormatException e) {
                 LOGGER.warn(
-                        "Server send invalid content length header, header value"
-                                + contentLengthHeader.getHeaderValue().getValue()
-                                + " cannot be parsed to int");
+                        "Server send invalid content length header, header value {} cannot be parsed to int",
+                        contentLengthHeader.getHeaderValue().getValue());
                 bytesToRead = getBytesLeft();
             }
             // persist them
-            httpMessageBuilder.append(
-                    new String(parseArrayOrTillEnd(bytesToRead), StandardCharsets.UTF_8));
+            byte[] content = parseByteArrayField(bytesToRead);
+            httpMessageBuilder.append(new String(content, StandardCharsets.UTF_8));
+            if (content.length < bytesToRead) {
+                LOGGER.warn(
+                        "Content-Length header value was larger ({}B) than actual content ({}B)",
+                        bytesToRead,
+                        content.length);
+            }
 
         } else if (transferEncodingHeader != null) {
             LOGGER.debug("Parsing HTTP message with chunked encoding.");
@@ -148,11 +165,10 @@ public class HttpResponseParser extends HttpMessageParser<HttpResponseMessage> {
         } else {
             // without headers defining parsing behavior or length we parse until the end of the
             // stream
-            httpMessageBuilder.append(
-                    new String(parseArrayOrTillEnd(getBytesLeft()), StandardCharsets.UTF_8));
+            httpMessageBuilder.append(new String(parseTillEnd(), StandardCharsets.UTF_8));
         }
 
         message.setResponseContent(httpMessageBuilder.toString());
-        LOGGER.debug(new String(getAlreadyParsed()));
+        LOGGER.debug(() -> new String(getAlreadyParsed()));
     }
 }

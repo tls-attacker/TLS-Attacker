@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.quic.constants.QuicCryptoSecrets;
 import de.rub.nds.tlsattacker.core.quic.constants.QuicPacketType;
 import de.rub.nds.tlsattacker.core.quic.handler.packet.ZeroRTTPacketHandler;
+import de.rub.nds.tlsattacker.core.quic.parser.packet.ZeroRTTPacketParser;
 import de.rub.nds.tlsattacker.core.quic.preparator.packet.ZeroRTTPacketPreparator;
 import de.rub.nds.tlsattacker.core.quic.serializer.packet.ZeroRTTPacketSerializer;
 import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
@@ -23,7 +24,6 @@ public class ZeroRTTPacket extends LongHeaderPacket {
 
     public ZeroRTTPacket() {
         super(QuicPacketType.ZERO_RTT_PACKET);
-        this.setUnprotectedFlags(QuicPacketType.ZERO_RTT_PACKET.getHeader());
         this.packetSecret = QuicCryptoSecrets.APPLICATION_SECRET;
     }
 
@@ -44,6 +44,6 @@ public class ZeroRTTPacket extends LongHeaderPacket {
 
     @Override
     public Parser<ZeroRTTPacket> getParser(QuicContext context, InputStream stream) {
-        return null;
+        return new ZeroRTTPacketParser(stream, context);
     }
 }

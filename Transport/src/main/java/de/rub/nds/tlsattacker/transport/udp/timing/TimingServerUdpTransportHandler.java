@@ -19,12 +19,22 @@ public class TimingServerUdpTransportHandler extends ServerUdpTransportHandler
         super(con);
     }
 
-    public TimingServerUdpTransportHandler(long firstTimeout, long timeout, int port) {
-        super(firstTimeout, timeout, port);
+    public TimingServerUdpTransportHandler(long timeout, int port) {
+        super(timeout, port);
     }
 
     @Override
     public Long getLastMeasurement() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public boolean isMeasuringActive() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void setMeasuringActive(boolean measuringActive) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

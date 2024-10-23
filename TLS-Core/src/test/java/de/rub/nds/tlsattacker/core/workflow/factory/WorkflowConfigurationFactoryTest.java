@@ -42,51 +42,6 @@ import org.junit.jupiter.api.Test;
 
 public class WorkflowConfigurationFactoryTest {
 
-    /**
-     * Checks if the left and right WorkflowTrace contain the same amount and combination of
-     * MessageActions and their respective Messages. The Messages are matched by their Class.
-     */
-    private boolean workflowTracesEqual(WorkflowTrace left, WorkflowTrace right) {
-        if (left.getMessageActions().size() != right.getMessageActions().size()
-                || left.getReceivingActions().size() != right.getReceivingActions().size()
-                || left.getSendingActions().size() != right.getSendingActions().size()) {
-            return false;
-        }
-        for (int i = 0; i < left.getMessageActions().size(); i++) {
-            final MessageAction leftMessageAction = left.getMessageActions().get(i);
-            final MessageAction rightMessageAction = right.getMessageActions().get(i);
-            if (!areActionsEqual(rightMessageAction, leftMessageAction)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Two messages are equal if they contain the same messages.
-     *
-     * @param left
-     * @param right
-     * @return
-     */
-    private boolean areActionsEqual(MessageAction left, MessageAction right) {
-        List<ProtocolMessage> leftProtocolMessages = extractMessages(left);
-        List<ProtocolMessage> rightProtocolMessages = extractMessages(right);
-
-        if (leftProtocolMessages.size() != rightProtocolMessages.size()) {
-            return false;
-        }
-        for (int i = 0; i < leftProtocolMessages.size(); i++) {
-            if (!leftProtocolMessages
-                    .get(i)
-                    .getClass()
-                    .equals(rightProtocolMessages.get(i).getClass())) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     public List<ProtocolMessage> extractMessages(MessageAction action) {
         if (action instanceof SendAction) {
             return ((SendAction) action).getConfiguredMessages();
@@ -116,7 +71,6 @@ public class WorkflowConfigurationFactoryTest {
         MessageAction messageAction1;
         MessageAction messageAction2;
         ReceiveAction lastAction;
-        ClientHelloMessage clientHelloMessage;
 
         // Invariants Test: We will always obtain a WorkflowTrace containing at
         // least two TLS-Actions with exactly one message for the first
@@ -153,8 +107,6 @@ public class WorkflowConfigurationFactoryTest {
                         WorkflowTraceType.HELLO, RunningModeType.CLIENT);
 
         firstAction = helloWorkflow.getMessageActions().get(0);
-        clientHelloMessage = (ClientHelloMessage) extractMessages(firstAction).get(0);
-
         assertTrue(helloWorkflow.getMessageActions().size() >= 4);
         assertNotNull(helloWorkflow.getMessageActions().get(1));
         assertNotNull(helloWorkflow.getMessageActions().get(2));

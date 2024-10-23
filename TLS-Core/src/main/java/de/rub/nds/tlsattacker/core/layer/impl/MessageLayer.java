@@ -9,12 +9,12 @@
 package de.rub.nds.tlsattacker.core.layer.impl;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.protocol.exception.EndOfStreamException;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
 import de.rub.nds.tlsattacker.core.exceptions.TimeoutException;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
@@ -32,7 +32,15 @@ import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessageSerializer;
 import de.rub.nds.tlsattacker.core.protocol.handler.HandshakeMessageHandler;
-import de.rub.nds.tlsattacker.core.protocol.message.*;
+import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.UnknownHandshakeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.HandshakeMessageParser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
@@ -63,7 +71,7 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
      * @throws IOException When the data cannot be sent.
      */
     @Override
-    public LayerProcessingResult sendConfiguration() throws IOException {
+    public LayerProcessingResult<ProtocolMessage> sendConfiguration() throws IOException {
         LayerConfiguration<ProtocolMessage> configuration = getLayerConfiguration();
         ProtocolMessageType runningProtocolMessageType = null;
         ByteArrayOutputStream collectedMessageStream = new ByteArrayOutputStream();
@@ -172,8 +180,8 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
     }
 
     @Override
-    public LayerProcessingResult sendData(LayerProcessingHint hint, byte[] additionalData)
-            throws IOException {
+    public LayerProcessingResult<ProtocolMessage> sendData(
+            LayerProcessingHint hint, byte[] additionalData) throws IOException {
         LayerConfiguration<ProtocolMessage> configuration = getLayerConfiguration();
         ApplicationMessage applicationMessage = getConfiguredApplicationMessage(configuration);
         if (applicationMessage == null) {
@@ -218,7 +226,7 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
      * @return LayerProcessingResult A result object containing information about the received data.
      */
     @Override
-    public LayerProcessingResult receiveData() {
+    public LayerProcessingResult<ProtocolMessage> receiveData() {
         try {
             HintedInputStream dataStream;
             do {
@@ -272,7 +280,10 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
                 readUnknownProtocolData();
                 break;
             default:
-                LOGGER.error("Undefined record layer type");
+                readUnknownProtocolData();
+                LOGGER.warn(
+                        "Undefined record layer type ({})",
+                        (hint.getType() == null ? "null" : hint.getType()));
                 break;
         }
     }
@@ -291,7 +302,8 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
 
     private void readCcsProtocolData(Integer epoch) {
         ChangeCipherSpecMessage message = new ChangeCipherSpecMessage();
-        if (context.getSelectedProtocolVersion().isDTLS()) {
+        if (context.getSelectedProtocolVersion() != null
+                && context.getSelectedProtocolVersion().isDTLS()) {
             if (context.getDtlsReceivedChangeCipherSpecEpochs().contains(epoch)
                     && context.getConfig().isIgnoreRetransmittedCcsInDtls()) {
                 message.setAdjustContext(false);
@@ -388,40 +400,51 @@ public class MessageLayer extends ProtocolLayer<LayerProcessingHint, ProtocolMes
 
     @Override
     public void receiveMoreDataForHint(LayerProcessingHint hint) {
-        try {
-            HintedInputStream dataStream = null;
+        boolean continueProcessing;
+
+        do {
             try {
-                dataStream = getLowerLayer().getDataStream();
-            } catch (IOException e) {
-                // the lower layer does not give us any data so we can simply return here
-                LOGGER.warn("The lower layer did not produce a data stream: ", e);
-                return;
-            }
-            // for now we ignore the hint as we only expect app data to be
-            // requested anyway
-            LayerProcessingHint inputStreamHint = dataStream.getHint();
-            if (inputStreamHint == null) {
-                // TODO: determine if this should be passed to upper layer
-                LOGGER.warn(
-                        "The TLS message layer requires a processing hint. E.g. a record type. Parsing as an unknown message");
-                readUnknownProtocolData();
-            } else if (inputStreamHint instanceof RecordLayerHint) {
-                RecordLayerHint recordLayerHint = (RecordLayerHint) inputStreamHint;
-                if (recordLayerHint.getType() == ProtocolMessageType.APPLICATION_DATA) {
-                    ApplicationMessage receivedAppData = readAppDataProtocolData();
-                    passToHigherLayer(receivedAppData, hint);
-                } else {
-                    readMessageForHint(recordLayerHint);
+                HintedInputStream dataStream;
+                try {
+                    dataStream = getLowerLayer().getDataStream();
+                } catch (IOException e) {
+                    // the lower layer does not give us any data, so we can simply return here
+                    LOGGER.warn("The lower layer did not produce a data stream: ", e);
+                    return;
                 }
+                // for now, we ignore the hint as we only expect app data to be
+                // requested anyway
+                LayerProcessingHint inputStreamHint = dataStream.getHint();
+                if (inputStreamHint == null) {
+                    // TODO: determine if this should be passed to upper layer
+                    LOGGER.warn(
+                            "The TLS message layer requires a processing hint. E.g. a record type. Parsing as an unknown message");
+                    readUnknownProtocolData();
+                    continueProcessing = false;
+                } else if (inputStreamHint instanceof RecordLayerHint) {
+                    RecordLayerHint recordLayerHint = (RecordLayerHint) inputStreamHint;
+                    if (recordLayerHint.getType() == ProtocolMessageType.APPLICATION_DATA) {
+                        ApplicationMessage receivedAppData = readAppDataProtocolData();
+                        passToHigherLayer(receivedAppData, hint);
+                        continueProcessing = false;
+                    } else {
+                        readMessageForHint(recordLayerHint);
+                        continueProcessing = true;
+                    }
+                } else {
+                    continueProcessing = false;
+                }
+                // receive until the layer configuration is satisfied or no data is left
+            } catch (TimeoutException ex) {
+                LOGGER.debug("Received a timeout");
+                LOGGER.trace(ex);
+                continueProcessing = false;
+            } catch (EndOfStreamException ex) {
+                LOGGER.debug("Reached end of stream, cannot parse more messages");
+                LOGGER.trace(ex);
+                continueProcessing = false;
             }
-            // receive until the layer configuration is satisfied or no data is left
-        } catch (TimeoutException ex) {
-            LOGGER.debug("Received a timeout");
-            LOGGER.trace(ex);
-        } catch (EndOfStreamException ex) {
-            LOGGER.debug("Reached end of stream, cannot parse more messages");
-            LOGGER.trace(ex);
-        }
+        } while (continueProcessing);
     }
 
     public void passToHigherLayer(ApplicationMessage receivedAppData, LayerProcessingHint hint) {

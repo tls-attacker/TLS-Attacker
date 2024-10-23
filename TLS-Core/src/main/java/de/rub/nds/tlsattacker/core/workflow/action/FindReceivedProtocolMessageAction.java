@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceResultUtil;
 import jakarta.xml.bind.annotation.XmlRootElement;
@@ -46,7 +45,6 @@ public class FindReceivedProtocolMessageAction extends ConnectionBoundAction {
 
     @Override
     public void execute(State state) throws ActionExecutionException {
-        TlsContext ctx = state.getContext(getConnectionAlias()).getTlsContext();
         found =
                 WorkflowTraceResultUtil.didReceiveMessage(
                         state.getWorkflowTrace(), protocolMessageType);

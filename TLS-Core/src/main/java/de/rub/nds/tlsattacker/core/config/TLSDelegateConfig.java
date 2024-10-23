@@ -17,12 +17,8 @@ import java.io.File;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public abstract class TLSDelegateConfig {
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     private final List<Delegate> delegateList;
 
@@ -48,7 +44,7 @@ public abstract class TLSDelegateConfig {
     public <T extends Delegate> T getDelegate(Class<T> delegateClass) {
         for (Delegate delegate : getDelegateList()) {
             if (delegate.getClass().equals(delegateClass)) {
-                return (T) delegate;
+                return delegateClass.cast(delegate);
             }
         }
         return null;
@@ -79,7 +75,7 @@ public abstract class TLSDelegateConfig {
                 throw new ParameterException("Could not find config file: " + defaultConfig);
             }
         } else {
-            config = Config.createConfig();
+            config = new Config();
         }
 
         return createConfig(config);

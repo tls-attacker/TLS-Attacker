@@ -8,17 +8,13 @@
  */
 package de.rub.nds.tlsattacker.core.layer.data;
 
-import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
+import de.rub.nds.protocol.exception.PreparationException;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * @param <T> The Object that should be prepared
  */
 public abstract class Preparator<T> {
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     protected final Chooser chooser;
     private final T object;

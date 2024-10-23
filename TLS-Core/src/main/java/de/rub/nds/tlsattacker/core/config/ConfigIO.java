@@ -29,12 +29,8 @@ import java.nio.charset.StandardCharsets;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class ConfigIO {
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     /** context initialization is expensive, we need to do that only once */
     private static JAXBContext context;

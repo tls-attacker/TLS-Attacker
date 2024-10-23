@@ -67,7 +67,7 @@ public class CompressionDelegateTest extends AbstractDelegateTest<CompressionDel
         args[0] = "-compression";
         args[1] = "NULL,DEFLATE";
         jcommander.parse(args);
-        Config config = Config.createConfig();
+        Config config = new Config();
         config.setDefaultClientSupportedCompressionMethods();
         config.setDefaultServerSupportedCompressionMethods();
         delegate.applyDelegate(config);
@@ -91,8 +91,8 @@ public class CompressionDelegateTest extends AbstractDelegateTest<CompressionDel
 
     @Test
     public void testNothingSetNothingChanges() {
-        Config config = Config.createConfig();
-        Config config2 = Config.createConfig();
+        Config config = new Config();
+        Config config2 = new Config();
         delegate.applyDelegate(config);
         assertTrue(EqualsBuilder.reflectionEquals(config, config2, "certificateChainConfig"));
     }

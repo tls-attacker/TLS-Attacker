@@ -8,23 +8,28 @@
  */
 package de.rub.nds.tlsattacker.core.quic.serializer.frame;
 
-import de.rub.nds.tlsattacker.core.quic.VariableLengthIntegerEncoding;
+import de.rub.nds.tlsattacker.core.quic.constants.QuicFrameType;
 import de.rub.nds.tlsattacker.core.quic.frame.ConnectionCloseFrame;
+import de.rub.nds.tlsattacker.core.quic.util.VariableLengthIntegerEncoding;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-public class ConnectionCloseFrameSerializer extends QuicFrameSerializer {
+public class ConnectionCloseFrameSerializer extends QuicFrameSerializer<ConnectionCloseFrame> {
 
-    private final ConnectionCloseFrame frame;
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public ConnectionCloseFrameSerializer(ConnectionCloseFrame frame) {
         super(frame);
-        this.frame = frame;
     }
 
     @Override
     protected byte[] serializeBytes() {
         writeFrameType();
         writeErrorCode();
-        writeTriggerFrameType();
+        QuicFrameType frameType = QuicFrameType.getFrameType(frame.getFrameType().getValue());
+        if (frameType == QuicFrameType.CONNECTION_CLOSE_QUIC_FRAME) {
+            writeTriggerFrameType();
+        }
         writeReasonPhraseLength();
         writeReasonPhrase();
         return getAlreadySerialized();
@@ -34,23 +39,30 @@ public class ConnectionCloseFrameSerializer extends QuicFrameSerializer {
         appendBytes(
                 VariableLengthIntegerEncoding.encodeVariableLengthInteger(
                         frame.getErrorCode().getValue()));
+        LOGGER.debug("Error Code: {}", frame.getErrorCode().getValue());
     }
 
     private void writeTriggerFrameType() {
         appendBytes(
                 VariableLengthIntegerEncoding.encodeVariableLengthInteger(
                         frame.getTriggerFrameType().getValue()));
+        LOGGER.debug("Frame Type: {}", frame.getTriggerFrameType().getValue());
     }
 
     private void writeReasonPhraseLength() {
-        appendBytes(
-                VariableLengthIntegerEncoding.encodeVariableLengthInteger(
-                        frame.getReasonPhraseLength().getValue()));
+        if (frame.getReasonPhraseLength() != null
+                && frame.getReasonPhraseLength().getValue() != null) {
+            appendBytes(
+                    VariableLengthIntegerEncoding.encodeVariableLengthInteger(
+                            frame.getReasonPhraseLength().getValue()));
+            LOGGER.debug("Reason Phrase Length: {}", frame.getReasonPhraseLength().getValue());
+        }
     }
 
     private void writeReasonPhrase() {
-        if (frame.getReasonPhrase() != null) {
+        if (frame.getReasonPhrase() != null && frame.getReasonPhrase().getValue() != null) {
             appendBytes(frame.getReasonPhrase().getValue());
+            LOGGER.debug("Reason Phrase: {}", frame.getReasonPhrase().getValue());
         }
     }
 }

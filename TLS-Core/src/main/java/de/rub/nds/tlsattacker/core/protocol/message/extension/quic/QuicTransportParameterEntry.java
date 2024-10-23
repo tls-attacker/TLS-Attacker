@@ -14,16 +14,11 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.quic.constants.QuicTransportParameterEntryTypes;
-import de.rub.nds.tlsattacker.core.quic.VariableLengthIntegerEncoding;
-import java.io.Serializable;
+import de.rub.nds.tlsattacker.core.quic.util.VariableLengthIntegerEncoding;
 import java.util.Arrays;
 import java.util.Objects;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
-public class QuicTransportParameterEntry extends ModifiableVariableHolder implements Serializable {
-
-    private static final Logger LOGGER = LogManager.getLogger();
+public class QuicTransportParameterEntry extends ModifiableVariableHolder {
 
     private QuicTransportParameterEntryTypes entryType;
     private ModifiableByteArray entryValue;

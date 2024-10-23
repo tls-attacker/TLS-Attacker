@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
+import de.rub.nds.tlsattacker.core.unittest.helper.FakeTcpTransportHandler;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import jakarta.xml.bind.JAXBException;
 import java.io.IOException;
@@ -26,7 +26,7 @@ public class ReceiveAsciiActionTest extends AbstractActionTest<ReceiveAsciiActio
     public ReceiveAsciiActionTest() {
         super(new ReceiveAsciiAction("STARTTLS", "US-ASCII"), ReceiveAsciiAction.class);
         context = state.getTlsContext();
-        context.setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
+        context.setTransportHandler(new FakeTcpTransportHandler(ConnectionEndType.CLIENT));
     }
 
     /** Test of execute method, of class ReceiveAsciiAction. */
@@ -34,7 +34,7 @@ public class ReceiveAsciiActionTest extends AbstractActionTest<ReceiveAsciiActio
     @Override
     @Disabled("ASCII Actions are notfully implemented for layer system")
     public void testExecute() throws Exception {
-        ((FakeTransportHandler) context.getTransportHandler())
+        ((FakeTcpTransportHandler) context.getTransportHandler())
                 .setFetchableByte("STARTTLS".getBytes(StandardCharsets.US_ASCII));
         super.testExecute();
     }

@@ -8,36 +8,17 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.container;
 
-import de.rub.nds.tlsattacker.core.dtls.DtlsHandshakeMessageFragment;
-import de.rub.nds.tlsattacker.core.http.HttpMessage;
-import de.rub.nds.tlsattacker.core.layer.DataContainerFilter;
-import de.rub.nds.tlsattacker.core.layer.GenericReceiveLayerConfiguration;
-import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
-import de.rub.nds.tlsattacker.core.layer.LayerProcessingResult;
-import de.rub.nds.tlsattacker.core.layer.LayerStack;
-import de.rub.nds.tlsattacker.core.layer.LayerStackProcessingResult;
-import de.rub.nds.tlsattacker.core.layer.MissingReceiveLayerConfiguration;
-import de.rub.nds.tlsattacker.core.layer.MissingSendLayerConfiguration;
-import de.rub.nds.tlsattacker.core.layer.ReceiveLayerConfiguration;
-import de.rub.nds.tlsattacker.core.layer.ReceiveTillLayerConfiguration;
-import de.rub.nds.tlsattacker.core.layer.SpecificReceiveLayerConfiguration;
-import de.rub.nds.tlsattacker.core.layer.SpecificSendLayerConfiguration;
-import de.rub.nds.tlsattacker.core.layer.TightReceiveLayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.*;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.constant.LayerType;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.layer.impl.DataContainerFilters.GenericDataContainerFilter;
 import de.rub.nds.tlsattacker.core.layer.impl.DataContainerFilters.Tls.WarningAlertFilter;
-import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.KeyUpdateMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
-import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
-import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
-import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -67,149 +48,28 @@ public class ActionHelperUtil {
         }
     }
 
-    public static List<LayerConfiguration<?>> createReceiveLayerConfiguration(
-            TlsContext tlsContext,
+    public static List<LayerConfiguration<?>> sortAndAddOptions(
+            LayerStack layerStack,
+            boolean sending,
             Set<ActionOption> actionOptions,
-            List<ProtocolMessage> protocolMessagesToReceive,
-            List<DtlsHandshakeMessageFragment> fragmentsToReceive,
-            List<Record> recordsToReceive,
-            List<QuicFrame> framesToReceive,
-            List<QuicPacket> packetsToReceive,
-            List<HttpMessage> httpMessagesToReceive) {
-        LayerStack layerStack = tlsContext.getLayerStack();
-
-        List<LayerConfiguration<?>> layerConfigurationList;
-        layerConfigurationList =
-                sortLayerConfigurations(
-                        layerStack,
-                        false,
-                        createReceiveConfiguration(
-                                ImplementedLayers.DTLS_FRAGMENT, fragmentsToReceive, actionOptions),
-                        createReceiveConfiguration(
-                                ImplementedLayers.MESSAGE,
-                                protocolMessagesToReceive,
-                                actionOptions),
-                        createReceiveConfiguration(
-                                ImplementedLayers.SSL2, protocolMessagesToReceive, actionOptions),
-                        createReceiveConfiguration(
-                                ImplementedLayers.RECORD, recordsToReceive, actionOptions),
-                        createReceiveConfiguration(
-                                ImplementedLayers.HTTP, httpMessagesToReceive, actionOptions),
-                        createReceiveConfiguration(
-                                ImplementedLayers.QUICFRAME, framesToReceive, actionOptions),
-                        createReceiveConfiguration(
-                                ImplementedLayers.QUICPACKET, packetsToReceive, actionOptions));
-        return layerConfigurationList;
+            List<LayerConfiguration<?>> unsortedLayerConfigurations) {
+        unsortedLayerConfigurations =
+                sortLayerConfigurations(layerStack, sending, unsortedLayerConfigurations);
+        return applyAllMessageFilters(unsortedLayerConfigurations, actionOptions);
     }
 
-    public static ReceiveLayerConfiguration<?> createReceiveConfiguration(
-            LayerType layerType,
-            List<? extends DataContainer<?>> containersToReceive,
+    public static List<LayerConfiguration<?>> applyAllMessageFilters(
+            List<LayerConfiguration<?>> messageLayerConfiguration,
             Set<ActionOption> actionOptions) {
-        if (containersToReceive == null) {
-            return new MissingReceiveLayerConfiguration(layerType);
-
-        } else if (containersToReceive.isEmpty()) {
-            return new GenericReceiveLayerConfiguration(layerType);
-        } else {
-            if (layerType == ImplementedLayers.MESSAGE) {
-                return (ReceiveLayerConfiguration<?>)
-                        ActionHelperUtil.applyMessageFilters(
-                                new SpecificReceiveLayerConfiguration<>(
-                                        layerType, containersToReceive),
-                                actionOptions);
-            }
-            return new SpecificReceiveLayerConfiguration<>(layerType, containersToReceive);
+        for (LayerConfiguration<?> layerConfig : messageLayerConfiguration) {
+            applyMessageFilters(layerConfig, actionOptions);
         }
-    }
-
-    public static List<LayerConfiguration<?>> createReceiveTillConfiguration(
-            TlsContext tlsContext, List<QuicFrame> quicFrame, List<QuicPacket> quicPacket) {
-        LayerStack layerStack = tlsContext.getLayerStack();
-
-        LayerConfiguration<?> messageConfiguration =
-                new ReceiveTillLayerConfiguration<QuicFrame>(
-                        ImplementedLayers.QUICFRAME, quicFrame);
-
-        return ActionHelperUtil.sortLayerConfigurations(layerStack, false, messageConfiguration);
-    }
-
-    public static List<LayerConfiguration<?>> createReceiveTillConfiguration(
-            TlsContext tlsContext, ProtocolMessage protocolMessageToReceive) {
-        LayerStack layerStack = tlsContext.getLayerStack();
-
-        LayerConfiguration<?> messageConfiguration =
-                new ReceiveTillLayerConfiguration<ProtocolMessage>(
-                        ImplementedLayers.MESSAGE, protocolMessageToReceive);
-
-        return ActionHelperUtil.sortLayerConfigurations(layerStack, false, messageConfiguration);
-    }
-
-    public static List<LayerConfiguration<?>> createTightReceiveConfiguration(
-            TlsContext tlsContext, List<ProtocolMessage> protocolMessagesToReceive) {
-        LayerStack layerStack = tlsContext.getLayerStack();
-
-        LayerConfiguration<?> messageConfiguration =
-                new TightReceiveLayerConfiguration<ProtocolMessage>(
-                        ImplementedLayers.MESSAGE, protocolMessagesToReceive);
-
-        List<LayerConfiguration<?>> layerConfigurationList =
-                sortLayerConfigurations(layerStack, false, messageConfiguration);
-        return layerConfigurationList;
-    }
-
-    public static List<LayerConfiguration<?>> createSendConfiguration(
-            TlsContext tlsContext,
-            List<ProtocolMessage> protocolMessagesToSend,
-            List<DtlsHandshakeMessageFragment> fragmentsToSend,
-            List<Record> recordsToSend,
-            List<QuicFrame> framesToSend,
-            List<QuicPacket> packetsToSend,
-            List<HttpMessage> httpMessagesToSend) {
-        LayerStack layerStack = tlsContext.getLayerStack();
-        List<LayerConfiguration<?>> layerConfigurationsList = new LinkedList<>();
-
-        if (fragmentsToSend != null) {
-            layerConfigurationsList.add(
-                    new SpecificSendLayerConfiguration<>(
-                            ImplementedLayers.DTLS_FRAGMENT, fragmentsToSend));
-        }
-
-        if (protocolMessagesToSend != null) {
-            layerConfigurationsList.add(
-                    new SpecificSendLayerConfiguration<>(
-                            ImplementedLayers.MESSAGE, protocolMessagesToSend));
-        }
-
-        // TODO SSL2 missing here
-        if (recordsToSend != null) {
-            layerConfigurationsList.add(
-                    new SpecificSendLayerConfiguration<>(ImplementedLayers.RECORD, recordsToSend));
-        }
-        if (httpMessagesToSend != null) {
-            layerConfigurationsList.add(
-                    new SpecificSendLayerConfiguration<>(
-                            ImplementedLayers.HTTP, httpMessagesToSend));
-        }
-        if (framesToSend != null) {
-            layerConfigurationsList.add(
-                    new SpecificSendLayerConfiguration<>(
-                            ImplementedLayers.QUICFRAME, framesToSend));
-        }
-        if (packetsToSend != null) {
-            layerConfigurationsList.add(
-                    new SpecificSendLayerConfiguration<>(
-                            ImplementedLayers.QUICPACKET, packetsToSend));
-        }
-
-        layerConfigurationsList =
-                sortLayerConfigurations(layerStack, true, layerConfigurationsList);
-        return layerConfigurationsList;
+        return messageLayerConfiguration;
     }
 
     public static LayerConfiguration<?> applyMessageFilters(
             LayerConfiguration<?> messageLayerConfiguration, Set<ActionOption> actionOptions) {
-        List<DataContainerFilter> containerFilters = new LinkedList<>();
+        List<DataContainerFilter<?>> containerFilters = new LinkedList<>();
         if (actionOptions != null) {
             if (actionOptions.contains(ActionOption.IGNORE_UNEXPECTED_APP_DATA)) {
                 containerFilters.add(new GenericDataContainerFilter(ApplicationMessage.class));
@@ -231,21 +91,33 @@ public class ActionHelperUtil {
         return messageLayerConfiguration;
     }
 
-    public static List<LayerConfiguration<?>> sortLayerConfigurations(
-            LayerStack layerStack,
-            boolean sending,
-            LayerConfiguration<?>... unsortedLayerConfigurations) {
-        return sortLayerConfigurations(
-                layerStack, sending, new LinkedList<>(Arrays.asList(unsortedLayerConfigurations)));
+    public static List<LayerConfiguration<?>> createReceiveTillHttpContentConfiguration(
+            TlsContext tlsContext, String httpContent) {
+        LayerStack layerStack = tlsContext.getLayerStack();
+
+        LayerConfiguration httpConfiguration =
+                new ReceiveTillHttpContentConfiguration(null, httpContent);
+
+        SpecificReceiveLayerConfiguration messageConfiguration =
+                new SpecificReceiveLayerConfiguration(ImplementedLayers.MESSAGE);
+
+        // allow for additional application data to arrive unhandled
+        messageConfiguration.setAllowTrailingContainers(true);
+
+        return ActionHelperUtil.sortLayerConfigurations(
+                layerStack, false, List.of(httpConfiguration, messageConfiguration));
     }
 
-    public static List<LayerConfiguration<?>> sortLayerConfigurations(
+    private static List<LayerConfiguration<?>> sortLayerConfigurations(
             LayerStack layerStack,
             boolean sending,
             List<LayerConfiguration<?>> unsortedLayerConfigurations) {
         List<LayerConfiguration<?>> sortedLayerConfigurations = new LinkedList<>();
         // iterate over all layers in the stack and assign the correct configuration
         // reset configurations to only assign a configuration to the upper most layer
+        // Layer above configured layers will be set to ignore, layers below which are
+        // not configured will be set to "does not matter"
+        boolean alreadyConfiguredLayer = false;
         for (LayerType layerType : layerStack.getLayersInStack()) {
             ImplementedLayers layer;
             try {
@@ -266,14 +138,20 @@ public class ActionHelperUtil {
                             .findFirst();
 
             if (layerConfiguration.isPresent()) {
+                alreadyConfiguredLayer = true;
                 sortedLayerConfigurations.add(layerConfiguration.get());
                 unsortedLayerConfigurations.remove(layerConfiguration.get());
             } else {
-                if (sending) {
-                    sortedLayerConfigurations.add(new MissingSendLayerConfiguration<>(layerType));
+                if (alreadyConfiguredLayer) {
+                    if (sending) {
+                        sortedLayerConfigurations.add(
+                                new MissingSendLayerConfiguration<>(layerType));
+                    } else {
+                        sortedLayerConfigurations.add(
+                                new MissingReceiveLayerConfiguration<>(layerType));
+                    }
                 } else {
-                    sortedLayerConfigurations.add(
-                            new MissingReceiveLayerConfiguration<>(layerType));
+                    sortedLayerConfigurations.add(new IgnoreLayerConfiguration<>(layerType));
                 }
             }
         }

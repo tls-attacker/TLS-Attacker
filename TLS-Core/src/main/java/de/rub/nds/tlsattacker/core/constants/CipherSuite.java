@@ -369,7 +369,6 @@ public enum CipherSuite {
     TLS_PSK_WITH_AES_256_CCM_8(0xC0A9),
     TLS_PSK_DHE_WITH_AES_128_CCM_8(0xC0AA),
     TLS_PSK_DHE_WITH_AES_256_CCM_8(0xC0AB),
-    TLS_PSK_DHE_WITH_AES_256_CCM_80(0xC0AB),
     TLS_ECDHE_ECDSA_WITH_AES_128_CCM(0xC0AC),
     TLS_ECDHE_ECDSA_WITH_AES_256_CCM(0xC0AD),
     TLS_ECDHE_ECDSA_WITH_AES_128_CCM_8(0xC0AE),
@@ -810,7 +809,6 @@ public enum CipherSuite {
         list.add(TLS_PSK_WITH_AES_128_CBC_SHA);
         list.add(TLS_PSK_DHE_WITH_AES_128_CCM_8);
         list.add(TLS_PSK_DHE_WITH_AES_256_CCM_8);
-        list.add(TLS_PSK_DHE_WITH_AES_256_CCM_80);
         list.add(TLS_PSK_WITH_3DES_EDE_CBC_SHA);
         list.add(TLS_PSK_WITH_AES_128_CBC_SHA256);
         list.add(TLS_PSK_WITH_AES_128_CCM);
@@ -1057,7 +1055,7 @@ public enum CipherSuite {
     }
 
     public static List<CipherSuite> getEsniImplemented() {
-        List<CipherSuite> list = new LinkedList();
+        List<CipherSuite> list = new LinkedList<>();
         list.add(CipherSuite.TLS_AES_128_GCM_SHA256);
         list.add(CipherSuite.TLS_AES_256_GCM_SHA384);
         list.add(CipherSuite.TLS_CHACHA20_POLY1305_SHA256);
@@ -1067,7 +1065,7 @@ public enum CipherSuite {
     }
 
     public static List<CipherSuite> getTls13CipherSuites() {
-        List<CipherSuite> list = new LinkedList();
+        List<CipherSuite> list = new LinkedList<>();
         list.add(CipherSuite.TLS_AES_128_GCM_SHA256);
         list.add(CipherSuite.TLS_AES_256_GCM_SHA384);
         list.add(CipherSuite.TLS_CHACHA20_POLY1305_SHA256);
@@ -1079,7 +1077,7 @@ public enum CipherSuite {
     }
 
     public static List<CipherSuite> getImplementedTls13CipherSuites() {
-        List<CipherSuite> list = new LinkedList();
+        List<CipherSuite> list = new LinkedList<>();
         list.add(CipherSuite.TLS_AES_128_GCM_SHA256);
         list.add(CipherSuite.TLS_AES_256_GCM_SHA384);
         list.add(CipherSuite.TLS_CHACHA20_POLY1305_SHA256);

@@ -23,46 +23,7 @@ import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.http.HttpRequestMessage;
 import de.rub.nds.tlsattacker.core.http.HttpResponseMessage;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.EncryptedClientHelloMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.EncryptedExtensionsMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.EndOfEarlyDataMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.GOSTClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.HelloMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.HelloRequestMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.PWDClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.PWDServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.PskClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.PskDhClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.PskDheServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.PskEcDhClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.PskEcDheServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.PskRsaClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.PskServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.RSAServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.SrpClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.SrpServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.*;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EarlyDataExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PreSharedKeyExtensionMessage;
 import de.rub.nds.tlsattacker.core.quic.constants.QuicTransportErrorCodes;
@@ -268,22 +229,12 @@ public class WorkflowConfigurationFactory {
             workflowTrace.addTlsAction(new EchConfigDnsRequestAction());
         }
 
-        if (config.isAddEncryptedClientHelloExtension()
-                && connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
-            workflowTrace.addTlsAction(
-                    MessageActionFactory.createTLSAction(
-                            config,
-                            connection,
-                            ConnectionEndType.CLIENT,
-                            new EncryptedClientHelloMessage(config)));
-        } else {
-            workflowTrace.addTlsAction(
-                    MessageActionFactory.createTLSAction(
-                            config,
-                            connection,
-                            ConnectionEndType.CLIENT,
-                            new ClientHelloMessage(config)));
-        }
+        workflowTrace.addTlsAction(
+                MessageActionFactory.createTLSAction(
+                        config,
+                        connection,
+                        ConnectionEndType.CLIENT,
+                        generateClientHelloMessage(config, connection)));
 
         if (config.getHighestProtocolVersion().isDTLS() && config.isDtlsCookieExchange()) {
             workflowTrace.addTlsAction(
@@ -297,7 +248,7 @@ public class WorkflowConfigurationFactory {
                             config,
                             connection,
                             ConnectionEndType.CLIENT,
-                            new ClientHelloMessage(config)));
+                            generateClientHelloMessage(config, connection)));
         }
 
         workflowTrace.addTlsAction(
@@ -565,7 +516,7 @@ public class WorkflowConfigurationFactory {
                         config,
                         connection,
                         ConnectionEndType.CLIENT,
-                        new ClientHelloMessage(config)));
+                        generateClientHelloMessage(config, connection)));
 
         if (config.getHighestProtocolVersion().isDTLS() && config.isDtlsCookieExchange()) {
             trace.addTlsAction(
@@ -579,7 +530,7 @@ public class WorkflowConfigurationFactory {
                             config,
                             connection,
                             ConnectionEndType.CLIENT,
-                            new ClientHelloMessage(config)));
+                            generateClientHelloMessage(config, connection)));
         }
 
         trace.addTlsAction(
@@ -662,7 +613,10 @@ public class WorkflowConfigurationFactory {
     public void appendHttpMessages(AliasedConnection connection, WorkflowTrace trace) {
         MessageAction action =
                 MessageActionFactory.createHttpAction(
-                        config, connection, ConnectionEndType.CLIENT, new HttpRequestMessage());
+                        config,
+                        connection,
+                        ConnectionEndType.CLIENT,
+                        new HttpRequestMessage(config));
         trace.addTlsAction(action);
         action =
                 MessageActionFactory.createHttpAction(
@@ -802,15 +756,15 @@ public class WorkflowConfigurationFactory {
         List<ProtocolMessage> serverMessages = new LinkedList<>();
         List<ProtocolMessage> clientMessages = new LinkedList<>();
 
-        ClientHelloMessage clientHello;
+        CoreClientHelloMessage clientHello;
         ApplicationMessage earlyDataMsg;
 
         if (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
-            clientHello = new ClientHelloMessage(config);
+            clientHello = generateClientHelloMessage(config, connection);
             earlyDataMsg = new ApplicationMessage();
             earlyDataMsg.setDataConfig(config.getEarlyData());
         } else {
-            clientHello = new ClientHelloMessage();
+            clientHello = generateClientHelloMessage(config, connection);
             earlyDataMsg = new ApplicationMessage();
         }
         clientHelloMessages.add(clientHello);
@@ -1222,12 +1176,21 @@ public class WorkflowConfigurationFactory {
     public WorkflowTrace createDynamicHelloWorkflow(AliasedConnection connection) {
         WorkflowTrace trace = createTlsEntryWorkflowTrace(connection);
 
+        if (config.isAddEncryptedServerNameIndicationExtension()
+                && connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
+            trace.addTlsAction(new EsniKeyDnsRequestAction());
+        }
+        if (config.isAddEncryptedClientHelloExtension()
+                && connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
+            trace.addTlsAction(new EchConfigDnsRequestAction());
+        }
+
         trace.addTlsAction(
                 MessageActionFactory.createTLSAction(
                         config,
                         connection,
                         ConnectionEndType.CLIENT,
-                        new ClientHelloMessage(config)));
+                        generateClientHelloMessage(config, connection)));
 
         if (config.getHighestProtocolVersion().isDTLS() && config.isDtlsCookieExchange()) {
             trace.addTlsAction(
@@ -1241,7 +1204,7 @@ public class WorkflowConfigurationFactory {
                             config,
                             connection,
                             ConnectionEndType.CLIENT,
-                            new ClientHelloMessage(config)));
+                            generateClientHelloMessage(config, connection)));
         }
 
         if (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
@@ -1316,6 +1279,9 @@ public class WorkflowConfigurationFactory {
                 trace.addTlsAction(
                         MessageActionFactory.createTLSAction(
                                 config, connection, ConnectionEndType.CLIENT, tls13Messages));
+                if (config.getExpectHandshakeDoneQuicFrame()) {
+                    trace.addTlsAction(new ReceiveQuicTillAction(new HandshakeDoneFrame()));
+                }
             } else {
                 if (Objects.equals(config.isClientAuthentication(), Boolean.TRUE)) {
                     trace.addTlsAction(new SendAction(new CertificateMessage()));
@@ -1373,7 +1339,7 @@ public class WorkflowConfigurationFactory {
                         config, connection, ConnectionEndType.CLIENT, new PingFrame()));
         trace.addTlsAction(
                 MessageActionFactory.createQuicAction(
-                        config, connection, ConnectionEndType.SERVER, new AckFrame()));
+                        config, connection, ConnectionEndType.SERVER, new AckFrame(false)));
         return trace;
     }
 
@@ -1388,5 +1354,15 @@ public class WorkflowConfigurationFactory {
             }
         }
         return trace;
+    }
+
+    private CoreClientHelloMessage generateClientHelloMessage(
+            Config tlsConfig, AliasedConnection connection) {
+        if (config.isAddEncryptedClientHelloExtension()
+                && connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
+            return new EncryptedClientHelloMessage(config);
+        } else {
+            return new ClientHelloMessage(config);
+        }
     }
 }

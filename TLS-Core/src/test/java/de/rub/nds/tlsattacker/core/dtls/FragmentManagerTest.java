@@ -21,7 +21,7 @@ public class FragmentManagerTest {
 
     @BeforeEach
     public void setUp() {
-        manager = new FragmentManager(Config.createConfig());
+        manager = new FragmentManager(new Config());
     }
 
     @Test

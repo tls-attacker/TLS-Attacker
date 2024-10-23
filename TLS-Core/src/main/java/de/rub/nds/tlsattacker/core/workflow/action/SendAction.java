@@ -15,6 +15,8 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.dtls.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.http.HttpMessage;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.SpecificSendLayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.data.DataContainer;
 import de.rub.nds.tlsattacker.core.printer.LogPrinter;
@@ -33,14 +35,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /** todo print configured records */
 @XmlRootElement(name = "Send")
 public class SendAction extends CommonSendAction implements StaticSendingAction {
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
     protected List<ProtocolMessage> configuredMessages;
@@ -168,12 +166,20 @@ public class SendAction extends CommonSendAction implements StaticSendingAction 
         return configuredQuicFrames;
     }
 
+    public void setConfiguredQuicFrames(QuicFrame... configuredQuicFrames) {
+        this.configuredQuicFrames = new ArrayList<>(Arrays.asList(configuredQuicFrames));
+    }
+
     public void setConfiguredQuicFrames(List<QuicFrame> configuredQuicFrames) {
         this.configuredQuicFrames = configuredQuicFrames;
     }
 
     public List<QuicPacket> getConfiguredQuicPackets() {
         return configuredQuicPackets;
+    }
+
+    public void setConfiguredQuicPackets(QuicPacket... configuredQuicPackets) {
+        this.configuredQuicPackets = new ArrayList<>(Arrays.asList(configuredQuicPackets));
     }
 
     public void setConfiguredQuicPackets(List<QuicPacket> configuredQuicPackets) {
@@ -257,14 +263,43 @@ public class SendAction extends CommonSendAction implements StaticSendingAction 
     @Override
     protected List<LayerConfiguration<?>> createLayerConfiguration(State state) {
         TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
-        return ActionHelperUtil.createSendConfiguration(
-                tlsContext,
-                configuredMessages,
-                configuredDtlsHandshakeMessageFragments,
-                configuredRecords,
-                configuredQuicFrames,
-                configuredQuicPackets,
-                configuredHttpMessages);
+        List<LayerConfiguration<?>> configurationList = new LinkedList<>();
+        if (getConfiguredRecords() != null) {
+            configurationList.add(
+                    new SpecificSendLayerConfiguration<>(
+                            ImplementedLayers.RECORD, getConfiguredRecords()));
+        }
+        if (getConfiguredMessages() != null) {
+            configurationList.add(
+                    new SpecificSendLayerConfiguration<>(
+                            ImplementedLayers.SSL2, getConfiguredMessages()));
+            configurationList.add(
+                    new SpecificSendLayerConfiguration<>(
+                            ImplementedLayers.MESSAGE, getConfiguredMessages()));
+        }
+        if (getConfiguredDtlsHandshakeMessageFragments() != null) {
+            configurationList.add(
+                    new SpecificSendLayerConfiguration<>(
+                            ImplementedLayers.DTLS_FRAGMENT,
+                            getConfiguredDtlsHandshakeMessageFragments()));
+        }
+        if (getConfiguredHttpMessages() != null) {
+            configurationList.add(
+                    new SpecificSendLayerConfiguration<>(
+                            ImplementedLayers.HTTP, getConfiguredHttpMessages()));
+        }
+        if (getConfiguredQuicFrames() != null) {
+            configurationList.add(
+                    new SpecificSendLayerConfiguration<>(
+                            ImplementedLayers.QUICFRAME, getConfiguredQuicFrames()));
+        }
+        if (getConfiguredQuicPackets() != null) {
+            configurationList.add(
+                    new SpecificSendLayerConfiguration<>(
+                            ImplementedLayers.QUICPACKET, getConfiguredQuicPackets()));
+        }
+        return ActionHelperUtil.sortAndAddOptions(
+                tlsContext.getLayerStack(), true, getActionOptions(), configurationList);
     }
 
     @Override

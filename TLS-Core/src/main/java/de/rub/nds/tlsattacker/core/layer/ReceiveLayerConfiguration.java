@@ -25,6 +25,7 @@ public abstract class ReceiveLayerConfiguration<Container extends DataContainer<
         super(layerType, containerList);
     }
 
+    @SafeVarargs
     public ReceiveLayerConfiguration(LayerType layerType, Container... containers) {
         super(layerType, containers);
     }

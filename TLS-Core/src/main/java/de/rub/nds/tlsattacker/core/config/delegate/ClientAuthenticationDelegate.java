@@ -13,7 +13,9 @@ import de.rub.nds.tlsattacker.core.config.Config;
 
 public class ClientAuthenticationDelegate extends Delegate {
 
-    @Parameter(names = "-client_authentication", description = "YES or NO")
+    @Parameter(
+            names = "-client_authentication",
+            description = "Enables client authentication during TLS handshakes")
     private Boolean clientAuthentication;
 
     public ClientAuthenticationDelegate() {}

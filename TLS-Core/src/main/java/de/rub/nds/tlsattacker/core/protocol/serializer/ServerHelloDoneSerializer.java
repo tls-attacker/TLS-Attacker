@@ -16,8 +16,6 @@ public class ServerHelloDoneSerializer extends HandshakeMessageSerializer<Server
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final ServerHelloDoneMessage msg;
-
     /**
      * Constructor for the ServerHelloDoneSerializer
      *
@@ -25,7 +23,6 @@ public class ServerHelloDoneSerializer extends HandshakeMessageSerializer<Server
      */
     public ServerHelloDoneSerializer(ServerHelloDoneMessage message) {
         super(message);
-        this.msg = message;
     }
 
     @Override

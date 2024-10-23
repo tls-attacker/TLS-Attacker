@@ -16,6 +16,10 @@ import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2Message;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
+import de.rub.nds.tlsattacker.core.quic.constants.QuicFrameType;
+import de.rub.nds.tlsattacker.core.quic.constants.QuicPacketType;
+import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
+import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceivingAction;
@@ -25,12 +29,28 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class WorkflowTraceResultUtil {
 
-    private static final Logger LOGGER = LogManager.getLogger();
+    public static QuicFrame getFirstReceivedQuicFrame(WorkflowTrace trace, QuicFrameType type) {
+        List<QuicFrame> frameList = getAllReceivedQuicFrames(trace);
+        frameList = filterQuicFrameList(frameList, type);
+        if (frameList.isEmpty()) {
+            return null;
+        } else {
+            return frameList.get(0);
+        }
+    }
+
+    public static QuicPacket getFirstReceivedQuicPacket(WorkflowTrace trace, QuicPacketType type) {
+        List<QuicPacket> packetList = getAllReceivedQuicPackets(trace);
+        packetList = filterQuicPacketList(packetList, type);
+        if (packetList.isEmpty()) {
+            return null;
+        } else {
+            return packetList.get(0);
+        }
+    }
 
     public static ProtocolMessage getFirstReceivedMessage(
             WorkflowTrace trace, ProtocolMessageType type) {
@@ -99,6 +119,44 @@ public class WorkflowTraceResultUtil {
             return null;
         } else {
             return messageList.get(messageList.size() - 1);
+        }
+    }
+
+    public static QuicFrame getLastReceivedQuicFrame(WorkflowTrace trace, QuicFrameType type) {
+        List<QuicFrame> frameList = getAllReceivedQuicFrames(trace);
+        frameList = filterQuicFrameList(frameList, type);
+        if (frameList.isEmpty()) {
+            return null;
+        } else {
+            return frameList.get(frameList.size() - 1);
+        }
+    }
+
+    public static QuicFrame getLastReceivedQuicFrame(WorkflowTrace trace) {
+        List<QuicFrame> frameList = getAllReceivedQuicFrames(trace);
+        if (frameList.isEmpty()) {
+            return null;
+        } else {
+            return frameList.get(frameList.size() - 1);
+        }
+    }
+
+    public static QuicPacket getLastReceivedQuicPacket(WorkflowTrace trace, QuicPacketType type) {
+        List<QuicPacket> packetList = getAllReceivedQuicPackets(trace);
+        packetList = filterQuicPacketList(packetList, type);
+        if (packetList.isEmpty()) {
+            return null;
+        } else {
+            return packetList.get(packetList.size() - 1);
+        }
+    }
+
+    public static QuicPacket getLastReceivedQuicPacket(WorkflowTrace trace) {
+        List<QuicPacket> packetList = getAllReceivedQuicPackets(trace);
+        if (packetList.isEmpty()) {
+            return null;
+        } else {
+            return packetList.get(packetList.size() - 1);
         }
     }
 
@@ -202,6 +260,14 @@ public class WorkflowTraceResultUtil {
         }
     }
 
+    public static boolean didReceiveQuicFrame(WorkflowTrace trace, QuicFrameType type) {
+        return WorkflowTraceResultUtil.getFirstReceivedQuicFrame(trace, type) != null;
+    }
+
+    public static boolean didReceiveQuicPacket(WorkflowTrace trace, QuicPacketType type) {
+        return WorkflowTraceResultUtil.getFirstReceivedQuicPacket(trace, type) != null;
+    }
+
     public static boolean didReceiveMessage(WorkflowTrace trace, ProtocolMessageType type) {
         return WorkflowTraceResultUtil.getFirstReceivedMessage(trace, type) != null;
     }
@@ -220,6 +286,28 @@ public class WorkflowTraceResultUtil {
 
     public static boolean didSendMessage(WorkflowTrace trace, HandshakeMessageType type) {
         return getFirstSentMessage(trace, type) != null;
+    }
+
+    private static List<QuicFrame> filterQuicFrameList(List<QuicFrame> frame, QuicFrameType type) {
+        List<QuicFrame> returnedFrames = new LinkedList<>();
+        for (QuicFrame quicFrame : frame) {
+            // TODO: fix
+            if (QuicFrameType.getFrameType(quicFrame.getFrameType().getValue()) == type) {
+                returnedFrames.add(quicFrame);
+            }
+        }
+        return returnedFrames;
+    }
+
+    private static List<QuicPacket> filterQuicPacketList(
+            List<QuicPacket> packet, QuicPacketType type) {
+        List<QuicPacket> returnedPackets = new LinkedList<>();
+        for (QuicPacket quicPacket : packet) {
+            if (quicPacket.getPacketType() == type) {
+                returnedPackets.add(quicPacket);
+            }
+        }
+        return returnedPackets;
     }
 
     private static List<ProtocolMessage> filterMessageList(
@@ -275,6 +363,49 @@ public class WorkflowTraceResultUtil {
             }
         }
         return returnedMessages;
+    }
+
+    public static List<QuicFrame> getAllReceivedQuicFrames(WorkflowTrace trace) {
+        List<QuicFrame> receivedFrames = new LinkedList<>();
+        for (ReceivingAction action : trace.getReceivingActions()) {
+            if (action.getReceivedQuicFrames() != null) {
+                receivedFrames.addAll(action.getReceivedQuicFrames());
+            }
+        }
+        return receivedFrames;
+    }
+
+    public static List<QuicFrame> getAllReceivedQuicFramesOfType(
+            WorkflowTrace trace, QuicFrameType type) {
+        List<QuicFrame> receivedFrame = new LinkedList<>();
+        for (QuicFrame frame : getAllReceivedQuicFrames(trace)) {
+            // TODO: fix
+            if (QuicFrameType.getFrameType(frame.getFrameType().getValue()) == type) {
+                receivedFrame.add(frame);
+            }
+        }
+        return receivedFrame;
+    }
+
+    public static List<QuicPacket> getAllReceivedQuicPackets(WorkflowTrace trace) {
+        List<QuicPacket> receivedPackets = new LinkedList<>();
+        for (ReceivingAction action : trace.getReceivingActions()) {
+            if (action.getReceivedQuicPackets() != null) {
+                receivedPackets.addAll(action.getReceivedQuicPackets());
+            }
+        }
+        return receivedPackets;
+    }
+
+    public static List<QuicPacket> getAllReceivedQuicPacketsOfType(
+            WorkflowTrace trace, QuicPacketType type) {
+        List<QuicPacket> receivedPacket = new LinkedList<>();
+        for (QuicPacket packet : getAllReceivedQuicPackets(trace)) {
+            if (packet.getPacketType() == type) {
+                receivedPacket.add(packet);
+            }
+        }
+        return receivedPacket;
     }
 
     public static List<ProtocolMessage> getAllReceivedMessages(WorkflowTrace trace) {
@@ -344,6 +475,26 @@ public class WorkflowTraceResultUtil {
             }
         }
         return sendRecords;
+    }
+
+    public static List<QuicPacket> getAllSentQuicPackets(WorkflowTrace trace) {
+        List<QuicPacket> sendPackets = new LinkedList<>();
+        for (SendingAction action : trace.getSendingActions()) {
+            if (action.getSentRecords() != null) {
+                sendPackets.addAll(action.getSentQuicPackets());
+            }
+        }
+        return sendPackets;
+    }
+
+    public static List<QuicFrame> getAllSentQuicFrames(WorkflowTrace trace) {
+        List<QuicFrame> sentFrames = new LinkedList<>();
+        for (SendingAction action : trace.getSendingActions()) {
+            if (action.getSentRecords() != null) {
+                sentFrames.addAll(action.getSentQuicFrames());
+            }
+        }
+        return sentFrames;
     }
 
     public static List<ReceivingAction> getActionsThatReceived(

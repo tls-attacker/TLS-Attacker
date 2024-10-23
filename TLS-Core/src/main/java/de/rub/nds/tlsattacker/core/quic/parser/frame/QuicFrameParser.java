@@ -11,8 +11,12 @@ package de.rub.nds.tlsattacker.core.quic.parser.frame;
 import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
 import java.io.InputStream;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public abstract class QuicFrameParser<T extends QuicFrame> extends Parser<T> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public QuicFrameParser(InputStream stream) {
         super(stream);
@@ -20,5 +24,6 @@ public abstract class QuicFrameParser<T extends QuicFrame> extends Parser<T> {
 
     public void parseFrameType(QuicFrame frame) {
         frame.setFrameType((byte) parseVariableLengthInteger());
+        LOGGER.debug("Frame Type: {}", frame.getFrameType().getValue());
     }
 }

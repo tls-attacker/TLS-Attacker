@@ -15,6 +15,7 @@ import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -285,6 +286,32 @@ public class Record extends ModifiableVariableHolder implements DataContainer<Tl
                 + protocolVersion
                 + ", length="
                 + length
+                + '}';
+    }
+
+    @Override
+    public String toCompactString() {
+        String stringContentType = "unspecified";
+        String stringProtocolVersion = "unspecified";
+        String stringLength = "unspecified";
+        if (contentType != null) {
+            stringContentType = contentType.getValue().toString();
+        }
+        if (protocolVersion != null) {
+            stringContentType = ArrayConverter.bytesToHexString(protocolVersion.getValue());
+        }
+        if (length != null) {
+            stringLength = length.getValue().toString();
+        } else if (maxRecordLengthConfig != null) {
+            stringLength = maxRecordLengthConfig.toString();
+        }
+        return "Record{"
+                + "contentType="
+                + stringContentType
+                + ", protocolVersion="
+                + stringProtocolVersion
+                + ", length="
+                + stringLength
                 + '}';
     }
 

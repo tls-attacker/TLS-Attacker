@@ -29,10 +29,11 @@ public class PaddingFrame extends QuicFrame {
 
     public PaddingFrame() {
         super(QuicFrameType.PADDING_FRAME);
+        ackEliciting = false;
     }
 
     public PaddingFrame(int length) {
-        super(QuicFrameType.PADDING_FRAME);
+        this();
         this.length = length;
     }
 

@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
+import de.rub.nds.tcp.TcpStreamContainer;
 import de.rub.nds.tlsattacker.core.dtls.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.tlsattacker.core.http.HttpMessage;
@@ -22,6 +23,7 @@ import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.core.workflow.container.ActionHelperUtil;
+import de.rub.nds.udp.UdpDataPacket;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -154,6 +156,30 @@ public abstract class CommonReceiveAction extends MessageAction implements Recei
                         ImplementedLayers.QUICPACKET, getLayerStackProcessingResult())
                 .stream()
                 .map(container -> (QuicPacket) container)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<TcpStreamContainer> getReceivedTcpStreamContainers() {
+        if (getLayerStackProcessingResult() == null) {
+            return null;
+        }
+        return ActionHelperUtil.getDataContainersForLayer(
+                        ImplementedLayers.TCP, getLayerStackProcessingResult())
+                .stream()
+                .map(container -> (TcpStreamContainer) container)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<UdpDataPacket> getReceivedUdpDataPackets() {
+        if (getLayerStackProcessingResult() == null) {
+            return null;
+        }
+        return ActionHelperUtil.getDataContainersForLayer(
+                        ImplementedLayers.UDP, getLayerStackProcessingResult())
+                .stream()
+                .map(container -> (UdpDataPacket) container)
                 .collect(Collectors.toList());
     }
 

@@ -8,16 +8,15 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
+import de.rub.nds.protocol.exception.PreparationException;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedClientHelloExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptedServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
@@ -133,7 +132,6 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage>
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         if (message.getExtensions() != null) {
             for (ExtensionMessage extensionMessage : message.getExtensions()) {
-                HandshakeMessageType handshakeMessageType = message.getHandshakeMessageType();
                 if (extensionMessage instanceof KeyShareExtensionMessage
                         && message instanceof ServerHelloMessage) {
                     ServerHelloMessage serverHello = (ServerHelloMessage) message;
@@ -167,13 +165,6 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage>
                             .setClientHello((ClientHelloMessage) message);
                     preparator.afterPrepare();
                 } else if (extensionMessage instanceof EncryptedServerNameIndicationExtensionMessage
-                        && message instanceof ClientHelloMessage
-                        && chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
-                    ClientHelloMessage clientHelloMessage = (ClientHelloMessage) message;
-                    ((EncryptedServerNameIndicationExtensionPreparator) preparator)
-                            .setClientHelloMessage(clientHelloMessage);
-                    preparator.afterPrepare();
-                } else if (extensionMessage instanceof EncryptedClientHelloExtensionMessage
                         && message instanceof ClientHelloMessage
                         && chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
                     ClientHelloMessage clientHelloMessage = (ClientHelloMessage) message;

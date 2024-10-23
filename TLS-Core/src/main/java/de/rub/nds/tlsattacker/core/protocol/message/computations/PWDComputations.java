@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.protocol.crypto.CyclicGroup;
 import de.rub.nds.protocol.crypto.ec.EllipticCurve;
 import de.rub.nds.protocol.crypto.ec.Point;
+import de.rub.nds.protocol.exception.PreparationException;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.Bits;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
@@ -23,7 +24,6 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.crypto.PseudoRandomFunction;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.util.StaticTicketCrypto;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -38,6 +38,8 @@ import org.bouncycastle.crypto.tls.HashAlgorithm;
 import org.bouncycastle.crypto.tls.TlsUtils;
 
 public class PWDComputations extends KeyExchangeComputations {
+
+    public static final int MAX_HASH_ITERATIONS = 1000;
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -108,21 +110,19 @@ public class PWDComputations extends KeyExchangeComputations {
                     new BigInteger(1, tmp)
                             .mod(curve.getModulus().subtract(BigInteger.ONE))
                             .add(BigInteger.ONE);
-            Point tempPoint = curve.createAPointOnCurve(tmpX);
-
-            if (!found && curve.isOnCurve(tempPoint)) {
+            Point tempPoint = curve.createAPointOnCurve(tmpX, false);
+            if (tempPoint != null) {
                 createdPoint = tempPoint;
-                savedSeed = seed.clone();
                 found = true;
                 chooser.getContext().getTlsContext().getBadSecureRandom().nextBytes(base);
             }
-            if (counter > 1000) {
-                savedSeed = seed.clone();
-                createdPoint = tempPoint;
-                LOGGER.warn("Could not find a useful pwd point");
-                break;
-            }
-        } while (!found || counter < chooser.getConfig().getDefaultPWDIterations());
+            savedSeed = seed.clone();
+        } while (!found && counter < MAX_HASH_ITERATIONS);
+
+        if (createdPoint == null) {
+            LOGGER.warn("Could not find a useful pwd point. Falling back to base point of curve.");
+            createdPoint = curve.getBasePoint();
+        }
 
         // use the lsb of the saved seed and Y to determine which of the two
         // possible roots should be used

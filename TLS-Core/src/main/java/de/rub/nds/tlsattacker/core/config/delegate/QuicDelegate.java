@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SniType;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.layer.constant.StackConfiguration;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.quic.QuicTransportParameters;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import java.util.ArrayList;
@@ -27,6 +28,10 @@ public class QuicDelegate extends Delegate {
     private boolean quic = false;
 
     public QuicDelegate() {}
+
+    public QuicDelegate(boolean isQuic) {
+        this.quic = isQuic;
+    }
 
     public boolean isQuic() {
         return quic;
@@ -48,6 +53,7 @@ public class QuicDelegate extends Delegate {
 
             config.setDefaultLayerConfiguration(StackConfiguration.QUIC);
             config.setWorkflowExecutorType(WorkflowExecutorType.QUIC);
+            config.setFinishWithCloseNotify(true);
 
             // Protocol Version
             config.setHighestProtocolVersion(ProtocolVersion.TLS13);
@@ -75,12 +81,21 @@ public class QuicDelegate extends Delegate {
             config.setAddRenegotiationInfoExtension(false);
             config.setAddAlpnExtension(true);
             config.setQuicTransportParametersExtension(true);
+
+            // ALPN
             List<String> alpnEntries = new ArrayList<>();
             alpnEntries.add(AlpnProtocol.HTTP3.getConstant());
             alpnEntries.add("h3-27");
             alpnEntries.add("h3-28");
             alpnEntries.add("h3-29");
+            alpnEntries.add("hq-29");
+            alpnEntries.add("echo");
+            alpnEntries.add("hq-interop");
             config.setDefaultProposedAlpnProtocols(alpnEntries);
+
+            // QUIC Transport Parameters
+            QuicTransportParameters parameters = QuicTransportParameters.getDefaultParameters();
+            config.setDefaultQuicTransportParameters(parameters);
         }
     }
 }

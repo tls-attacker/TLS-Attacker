@@ -65,7 +65,7 @@ public class FindReceivedProtocolMessageActionTest {
                     OperatorCreationException,
                     UnrecoverableKeyException,
                     KeyManagementException {
-        Config config = Config.createConfig();
+        Config config = new Config();
         config.getDefaultClientConnection().setPort(SERVER_PORT);
 
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);

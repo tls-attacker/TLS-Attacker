@@ -19,11 +19,9 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.X509Certificate;
-import javax.net.ServerSocketFactory;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
-import javax.net.ssl.SSLServerSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509ExtendedTrustManager;
 import javax.security.cert.CertificateException;
@@ -42,7 +40,6 @@ public class HttpsProxy {
 
     public void start() throws IOException {
         LOGGER.info("Proxy started...");
-        ServerSocketFactory ssf = getServerSocketFactory();
         ServerSocket serverSocket = new ServerSocket(proxyConfig.getListeningPort());
         while (true) {
             try {
@@ -54,19 +51,6 @@ public class HttpsProxy {
             } catch (IOException ex) {
                 LOGGER.error("Caught an IO exception...", ex);
             }
-        }
-    }
-
-    private ServerSocketFactory getServerSocketFactory() {
-        SSLServerSocketFactory ssf = null;
-        try {
-            SSLContext ctx = createContext();
-
-            ssf = ctx.getServerSocketFactory();
-            return ssf;
-        } catch (Exception E) {
-            LOGGER.error("Could not create ServerSocketFactory", E);
-            throw new RuntimeException(E);
         }
     }
 

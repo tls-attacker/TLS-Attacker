@@ -11,6 +11,8 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.dtls.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.layer.LayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.SpecificSendLayerConfiguration;
+import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientKeyExchangeMessage;
@@ -18,15 +20,12 @@ import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.container.ActionHelperUtil;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.StringJoiner;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 @XmlRootElement(name = "SendDynamicClientKeyExchange")
 public class SendDynamicClientKeyExchangeAction extends CommonSendAction {
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     private List<DtlsHandshakeMessageFragment> configuredFragmentList = null;
 
@@ -95,14 +94,18 @@ public class SendDynamicClientKeyExchangeAction extends CommonSendAction {
                                 AlgorithmResolver.getKeyExchangeAlgorithm(
                                         tlsContext.getChooser().getSelectedCipherSuite()));
         if (clientKeyExchangeMessage != null) {
-            return ActionHelperUtil.createSendConfiguration(
-                    tlsContext,
-                    List.of(clientKeyExchangeMessage),
-                    configuredFragmentList,
-                    null,
-                    null,
-                    null,
-                    null);
+            List<LayerConfiguration<?>> configurationList = new LinkedList<>();
+            configurationList.add(
+                    new SpecificSendLayerConfiguration<>(
+                            ImplementedLayers.MESSAGE, clientKeyExchangeMessage));
+            if (configuredFragmentList != null) {
+                configurationList.add(
+                        new SpecificSendLayerConfiguration<>(
+                                ImplementedLayers.DTLS_FRAGMENT, configuredFragmentList));
+            }
+            return ActionHelperUtil.sortAndAddOptions(
+                    tlsContext.getLayerStack(), true, getActionOptions(), configurationList);
+
         } else {
             return null;
         }

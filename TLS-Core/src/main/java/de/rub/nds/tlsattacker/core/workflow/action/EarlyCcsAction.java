@@ -45,6 +45,8 @@ public class EarlyCcsAction extends TlsAction {
         this.targetOpenssl100 = targetsOpenssl100;
     }
 
+    /** Private no-arg constructor to please JAXB */
+    @SuppressWarnings("unused")
     private EarlyCcsAction() {
         this.targetOpenssl100 = false;
     }
