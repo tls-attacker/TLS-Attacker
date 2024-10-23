@@ -1253,6 +1253,21 @@ public class Config implements Serializable {
     private Integer defaultMaxEchAlpnPadding = 25;
 
     private String defaultSmtpReversePath = "seal@upb.de";
+    private List<String> defaultSmtpMessage = List.of("Hello!", "This is seal.", "Bye!");
+
+    public String getDefaultSmtpAuth() {
+        return defaultSmtpAuth;
+    }
+
+    public void setDefaultSmtpAuth(String defaultSmtpAuth) {
+        this.defaultSmtpAuth = defaultSmtpAuth;
+    }
+
+    // only works for one step authentication
+    // b64(\0seal@upb.de\0password)
+    private String defaultSmtpAuth = "PLAIN AHNlYWxAdXBiLmRlAHBhc3N3b3Jk";
+
+    private String defaultSmtpMailingList = "members@seal.upb.de";
 
     public String getDefaultSmtpClientIdentity() {
         return defaultSmtpClientIdentity;
@@ -4233,5 +4248,21 @@ public class Config implements Serializable {
 
     public void setQuicRetryFlowRequired(Boolean quicRetryFlowRequired) {
         this.quicRetryFlowRequired = quicRetryFlowRequired;
+    }
+
+    public List<String> getDefaultSmtpMessage() {
+        return defaultSmtpMessage;
+    }
+
+    public void setDefaultSmtpMessage(List<String> defaultSmtpMessage) {
+        this.defaultSmtpMessage = defaultSmtpMessage;
+    }
+
+    public String getDefaultSmtpMailingList() {
+        return defaultSmtpMailingList;
+    }
+
+    public void setDefaultSmtpMailingList(String defaultSmtpMailingList) {
+        this.defaultSmtpMailingList = defaultSmtpMailingList;
     }
 }

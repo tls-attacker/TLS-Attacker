@@ -11,6 +11,8 @@ package de.rub.nds.tlsattacker.core.smtp.preparator.command;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpDATAContentCommand;
 
+import java.util.List;
+
 public class DATAContentCommandPreparator extends SmtpCommandPreparator<SmtpDATAContentCommand> {
     public DATAContentCommandPreparator(SmtpContext context, SmtpDATAContentCommand command) {
         super(context.getChooser(), command);
@@ -18,6 +20,9 @@ public class DATAContentCommandPreparator extends SmtpCommandPreparator<SmtpDATA
 
     @Override
     public void prepare() {
+        if (this.getObject().getLines() == null) {
+            this.getObject().setLines(chooser.getConfig().getDefaultSmtpMessage());
+        }
         this.getObject().setParameters(String.join("\r\n", this.getObject().getLines()) + "\r\n.");
     }
 }

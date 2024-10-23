@@ -18,6 +18,7 @@ public class HELOCommandHandler extends SmtpCommandHandler<SmtpHELOCommand> {
 
     @Override
     public void adjustContextSpecific(SmtpHELOCommand smtpCommand) {
+
         this.getContext().setClientIdentity(smtpCommand.getDomain());
     }
 }

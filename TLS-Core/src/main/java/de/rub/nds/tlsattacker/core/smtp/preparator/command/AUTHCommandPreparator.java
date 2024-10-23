@@ -20,10 +20,14 @@ public class AUTHCommandPreparator extends SmtpCommandPreparator<SmtpAUTHCommand
     @Override
     public void prepare() {
         this.getObject().setVerb("AUTH");
-        this.getObject()
-                .setParameters(
-                        this.getObject().getSaslMechanism()
-                                + " "
-                                + this.getObject().getInitialResponse());
+        if (this.getObject() != null && this.getObject().getInitialResponse() != null) {
+            this.getObject()
+                    .setParameters(
+                            this.getObject().getSaslMechanism()
+                                    + " "
+                                    + this.getObject().getInitialResponse());
+        } else {
+            this.getObject().setParameters(chooser.getConfig().getDefaultSmtpAuth());
+        }
     }
 }

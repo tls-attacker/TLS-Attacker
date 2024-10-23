@@ -18,7 +18,11 @@ public class EXPNCommandPreparator extends SmtpCommandPreparator<SmtpEXPNCommand
 
     @Override
     public void prepare() {
-        this.getObject().setVerb("EXPN"); // TODO regarding PR: what exactly should be changed here?
-        this.getObject().setParameters(getObject().getMailingList());
+        this.getObject().setVerb("EXPN");
+        if(this.getObject().getMailingList() != null) {
+            this.getObject().setParameters(getObject().getMailingList());
+        } else {
+            this.getObject().setParameters(chooser.getConfig().getDefaultSmtpMailingList());
+        }
     }
 }

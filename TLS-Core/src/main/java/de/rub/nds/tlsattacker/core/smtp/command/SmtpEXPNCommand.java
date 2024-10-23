@@ -18,6 +18,7 @@ import java.io.InputStream;
 public class SmtpEXPNCommand extends SmtpCommand {
 
     private static final String COMMAND_NAME = "EXPN";
+    //email address of a mailing list
     private String mailingList;
 
     public SmtpEXPNCommand() {
