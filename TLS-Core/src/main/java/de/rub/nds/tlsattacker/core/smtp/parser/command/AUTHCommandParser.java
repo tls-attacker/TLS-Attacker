@@ -35,7 +35,8 @@ public class AUTHCommandParser extends SmtpCommandParser<SmtpAUTHCommand> {
             command.setSaslMechanism(saslMechanism);
             command.setInitialResponse(parts[1]);
         } else {
-            throw new ParserException("PLAIN AUTH command requires password b64(<NUL>username<NUL>password).");
+            throw new ParserException(
+                    "PLAIN AUTH command requires password b64(<NUL>username<NUL>password).");
         }
     }
 }

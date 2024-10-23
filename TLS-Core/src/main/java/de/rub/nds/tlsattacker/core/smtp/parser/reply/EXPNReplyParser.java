@@ -13,13 +13,13 @@ import java.io.InputStream;
 import java.util.List;
 
 /*
-* The EXPNReplyParser parses an EXPN reply that may either have a single-line
-* humanreadable response or a multiline mailbox list containing usernames
-* and mailboxes. An example EXPN reply may look like:
-* 250-Jon Postel <Postel@isi.edu>
-* 250 Sam Q. Smith <SQSmith@specific.generic.com>
-* If no username is given, "" is saved.
-* */
+ * The EXPNReplyParser parses an EXPN reply that may either have a single-line
+ * humanreadable response or a multiline mailbox list containing usernames
+ * and mailboxes. An example EXPN reply may look like:
+ * 250-Jon Postel <Postel@isi.edu>
+ * 250 Sam Q. Smith <SQSmith@specific.generic.com>
+ * If no username is given, "" is saved.
+ * */
 public class EXPNReplyParser extends SmtpReplyParser<SmtpEXPNReply> {
 
     public EXPNReplyParser(InputStream inputStream) {

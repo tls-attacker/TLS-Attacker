@@ -24,7 +24,13 @@ import java.io.InputStream;
  *
  * <p>SMTP HELO does not have its own reply, because the HELO Reply is a special case of the EHLO
  * reply.
- *
+ * Example:
+ * C: EHLO upb.de
+ * S: 250-upb.de Hello
+ * S: 250-SIZE 35882577
+ * S: 250-PIPELINING
+ * S: 250-AUTH PLAIN LOGIN
+ * S: 250 8BITMIME
  * @see SmtpEHLOCommand
  * @see SmtpEHLOReply
  */

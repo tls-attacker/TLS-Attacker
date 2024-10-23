@@ -268,5 +268,4 @@ public final class SmtpSyntaxParser {
                 }
         }
     }
-
 }

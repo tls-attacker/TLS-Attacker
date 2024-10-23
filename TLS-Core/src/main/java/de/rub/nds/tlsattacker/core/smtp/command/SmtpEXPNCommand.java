@@ -15,10 +15,17 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
 @XmlRootElement
+/**
+ * Represents the EXPN command in SMTP, which queries a mailing list for the members.
+ * C: EXPN staff@upb.de
+ * S: 250-Jane Doe <jane.doe@upb.de>
+ * S: 250-John Smith <john.smith@upb.de>
+ * S: 250-Bob Lee <bob.lee@upb.de>
+ */
 public class SmtpEXPNCommand extends SmtpCommand {
 
     private static final String COMMAND_NAME = "EXPN";
-    //email address of a mailing list
+    // email address of a mailing list
     private String mailingList;
 
     public SmtpEXPNCommand() {

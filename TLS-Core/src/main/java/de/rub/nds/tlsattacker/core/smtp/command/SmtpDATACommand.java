@@ -10,6 +10,19 @@ package de.rub.nds.tlsattacker.core.smtp.command;
 
 import jakarta.xml.bind.annotation.XmlRootElement;
 
+/**
+ * Represents the DATA command of the SMTP protocol, used for sending actual mail strings.
+ * This command models the first half of the interaction, which simply initiates the data transfer.
+ * The data transfer itself is performed by {@link SmtpDATAContentCommand}.
+ * Example:
+ * C: DATA
+ * S: 354 Start mail input; end with <CRLF>.<CRLF>
+ * C: Blah blah blah...
+ * C: ...etc. etc. etc.
+ * C: .
+ * S: 250 OK
+ * @see de.rub.nds.tlsattacker.core.smtp.command.SmtpDATAContentCommand
+ */
 @XmlRootElement
 public class SmtpDATACommand extends SmtpCommand {
     private static final String COMMAND = "DATA";

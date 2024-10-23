@@ -97,9 +97,9 @@ public class SmtpReply extends SmtpMessage {
         return replyCode;
     }
 
-//    public void setHumanReadableMessage(String humanReadableMessage) {
-//        this.humanReadableMessage = humanReadableMessage;
-//    }
+    //    public void setHumanReadableMessage(String humanReadableMessage) {
+    //        this.humanReadableMessage = humanReadableMessage;
+    //    }
 
     public String serialize() {
         char SP = ' ';

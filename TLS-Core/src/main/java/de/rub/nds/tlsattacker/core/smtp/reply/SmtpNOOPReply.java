@@ -11,4 +11,4 @@ package de.rub.nds.tlsattacker.core.smtp.reply;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class SmtpNOOPReply extends SmtpReply { }
+public class SmtpNOOPReply extends SmtpReply {}

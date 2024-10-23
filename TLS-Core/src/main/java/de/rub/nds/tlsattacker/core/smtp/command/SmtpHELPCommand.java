@@ -16,8 +16,11 @@ import java.io.InputStream;
 
 /**
  * This command causes the server to send helpful information to the client. The command MAY take an
- * argument (e.g., any command name) and return more specific information as a response. When the
- * content is not following the RFC 5321 syntax, the validParsing parameter is set to False.
+ * argument (e.g., any command name) and return more specific information as a response.
+ * Example:
+ C: HELP
+ S: 214-Commands supported:
+ S: 214 HELO EHLO MAIL RCPT DATA RSET VRFY EXPN HELP QUIT AUTH
  */
 @XmlRootElement
 public class SmtpHELPCommand extends SmtpCommand {

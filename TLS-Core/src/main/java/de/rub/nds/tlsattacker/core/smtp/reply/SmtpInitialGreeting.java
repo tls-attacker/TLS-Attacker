@@ -21,5 +21,4 @@ public class SmtpInitialGreeting extends SmtpReply {
     public String toShortString() {
         return "SMTP Initial Greeting";
     }
-
 }
