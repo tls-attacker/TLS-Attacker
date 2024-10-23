@@ -54,9 +54,9 @@ public enum SignatureAndHashAlgorithm {
     ED25519(0x080, SignatureAlgorithm.ED25519, HashAlgorithm.SHA256),
     ED448(0x0808, SignatureAlgorithm.ED448, HashAlgorithm.SHA3_256),
     /* RSASSA-PSS algorithms with public key OID rsaEncryption */
-    RSA_PSS_RSAE_SHA256(0x0804, SignatureAlgorithm.RSA_SSA_PSS, HashAlgorithm.SHA256),
-    RSA_PSS_RSAE_SHA384(0x0805, SignatureAlgorithm.RSA_SSA_PSS, HashAlgorithm.SHA384),
-    RSA_PSS_RSAE_SHA512(0x0806, SignatureAlgorithm.RSA_SSA_PSS, HashAlgorithm.SHA512),
+    RSA_PSS_RSAE_SHA256(0x0804, SignatureAlgorithm.RSA_PSS_RSAE, HashAlgorithm.SHA256),
+    RSA_PSS_RSAE_SHA384(0x0805, SignatureAlgorithm.RSA_PSS_RSAE, HashAlgorithm.SHA384),
+    RSA_PSS_RSAE_SHA512(0x0806, SignatureAlgorithm.RSA_PSS_RSAE, HashAlgorithm.SHA512),
     /* RSASSA-PSS algorithms with public key OID RSASSA-PSS */
     RSA_PSS_PSS_SHA256(0x0809, SignatureAlgorithm.RSA_SSA_PSS, HashAlgorithm.SHA256),
     RSA_PSS_PSS_SHA384(0x080a, SignatureAlgorithm.RSA_SSA_PSS, HashAlgorithm.SHA384),
