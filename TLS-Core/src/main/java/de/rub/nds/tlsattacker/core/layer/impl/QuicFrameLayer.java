@@ -350,7 +350,7 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
                     isAckEliciting = true;
                     break;
                 default:
-                    LOGGER.error("Undefined QUIC frame type");
+                    LOGGER.error("Undefined QUIC frame type: " + firstByte);
                     break;
             }
         }
