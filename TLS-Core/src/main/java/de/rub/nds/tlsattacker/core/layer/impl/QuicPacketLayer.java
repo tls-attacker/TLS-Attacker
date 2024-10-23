@@ -35,6 +35,8 @@ import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.PortUnreachableException;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -180,20 +182,21 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
         try {
             InputStream dataStream;
             do {
-                try {
-                    dataStream = getLowerLayer().getDataStream();
-                    readPackets(dataStream);
-                } catch (IOException ex) {
-                    LOGGER.warn("The lower layer did not produce a data stream: ", ex);
-                    return getLayerResult();
-                }
+                dataStream = getLowerLayer().getDataStream();
+                readPackets(dataStream);
+
             } while (shouldContinueProcessing());
-        } catch (TimeoutException ex) {
+        } catch (SocketTimeoutException | TimeoutException ex) {
             LOGGER.debug("Received a timeout");
+            LOGGER.trace(ex);
+        } catch (PortUnreachableException ex) {
+            LOGGER.debug("Destination port undreachable");
             LOGGER.trace(ex);
         } catch (EndOfStreamException ex) {
             LOGGER.debug("Reached end of stream, cannot parse more messages");
             LOGGER.trace(ex);
+        } catch (IOException ex) {
+            LOGGER.warn("The lower layer did not produce a data stream: ", ex);
         }
         return getLayerResult();
     }
@@ -207,15 +210,13 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
     @Override
     public void receiveMoreDataForHint(LayerProcessingHint hint) throws IOException {
         try {
-            InputStream dataStream;
-            try {
-                dataStream = getLowerLayer().getDataStream();
-                // For now, we ignore the hint.
-                readPackets(dataStream);
-            } catch (IOException ex) {
-                LOGGER.warn("The lower layer did not produce a data stream: ", ex);
-            }
-        } catch (TimeoutException ex) {
+            InputStream dataStream = getLowerLayer().getDataStream();
+            // For now, we ignore the hint.
+            readPackets(dataStream);
+        } catch (PortUnreachableException ex) {
+            LOGGER.debug("Received a ICMP Port Unreachable");
+            LOGGER.trace(ex);
+        } catch (SocketTimeoutException | TimeoutException ex) {
             LOGGER.debug("Received a timeout");
             LOGGER.trace(ex);
         } catch (EndOfStreamException ex) {
@@ -228,6 +229,9 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
     private void readPackets(InputStream dataStream) throws IOException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
+        if (dataStream.available() == 0) {
+            throw new EndOfStreamException();
+        }
         int firstByte = dataStream.read();
         if (firstByte == 0x00) {
             // If the first byte is 0, it indicates UDP padding. In this case, read all available
