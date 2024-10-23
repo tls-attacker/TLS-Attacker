@@ -460,21 +460,20 @@ public class QuicFrameLayer extends AcknowledgingProtocolLayer<QuicFrameLayerHin
     public void sendAck(byte[] data) {
         AckFrame frame = new AckFrame(false);
         if (context.getReceivedPackets().getLast() == QuicPacketType.INITIAL_PACKET) {
-            frame.setLargestAcknowledged(context.getReceivedInitialPacketNumbers().getLast());
-            LOGGER.debug(
-                    "Send Ack for Initial Packet #{}", frame.getLargestAcknowledged().getValue());
+            frame.setLargestAcknowledgedConfig(context.getReceivedInitialPacketNumbers().getLast());
+            LOGGER.debug("Send Ack for Initial Packet #{}", frame.getLargestAcknowledgedConfig());
         } else if (context.getReceivedPackets().getLast() == QuicPacketType.HANDSHAKE_PACKET) {
-            frame.setLargestAcknowledged(context.getReceivedHandshakePacketNumbers().getLast());
-            LOGGER.debug(
-                    "Send Ack for Handshake Packet #{}", frame.getLargestAcknowledged().getValue());
+            frame.setLargestAcknowledgedConfig(
+                    context.getReceivedHandshakePacketNumbers().getLast());
+            LOGGER.debug("Send Ack for Handshake Packet #{}", frame.getLargestAcknowledgedConfig());
         } else if (context.getReceivedPackets().getLast() == QuicPacketType.ONE_RTT_PACKET) {
-            frame.setLargestAcknowledged(context.getReceivedOneRTTPacketNumbers().getLast());
-            LOGGER.debug("Send Ack for 1RTT Packet #{}", frame.getLargestAcknowledged().getValue());
+            frame.setLargestAcknowledgedConfig(context.getReceivedOneRTTPacketNumbers().getLast());
+            LOGGER.debug("Send Ack for 1RTT Packet #{}", frame.getLargestAcknowledgedConfig());
         }
 
-        frame.setAckDelay(1);
-        frame.setAckRangeCount(0);
-        frame.setFirstACKRange(0);
+        frame.setAckDelayConfig(1);
+        frame.setAckRangeCountConfig(0);
+        frame.setFirstACKRangeConfig(0);
         ((AcknowledgingProtocolLayer) getLowerLayer()).sendAck(writeFrame(frame));
     }
 
