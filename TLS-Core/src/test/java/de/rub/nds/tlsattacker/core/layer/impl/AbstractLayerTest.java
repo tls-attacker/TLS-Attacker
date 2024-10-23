@@ -30,11 +30,14 @@ public abstract class AbstractLayerTest {
 
     protected State state;
 
-    public void setUpLayerSpecific(Config config) {}
+    public void setUpLayerSpecific() {}
+
+    public void applyDelegate() {}
 
     @BeforeEach
     public void setUp() throws IOException {
         config = new Config();
+        applyDelegate();
         state = new State(config);
         context = state.getContext();
         tlsContext = context.getTlsContext();
@@ -42,5 +45,6 @@ public abstract class AbstractLayerTest {
         transportHandler = fakeTcpTransportHandler;
         tlsContext.setTransportHandler(fakeTcpTransportHandler);
         ProviderUtil.addBouncyCastleProvider();
+        setUpLayerSpecific();
     }
 }

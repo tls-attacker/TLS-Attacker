@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.core.layer.impl;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.layer.SpecificSendLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
@@ -33,7 +32,7 @@ public class SSL2LayerTest extends AbstractLayerTest {
 
     private ArrayList<byte[]> messageByteList = new ArrayList<>();
 
-    public void setUpLayerSpecific(Config config) {
+    public void setUpLayerSpecific() {
         config.setDefaultLayerConfiguration(StackConfiguration.SSL2);
         config.setHighestProtocolVersion(ProtocolVersion.SSL2);
         messageByteList.add(clientHello);

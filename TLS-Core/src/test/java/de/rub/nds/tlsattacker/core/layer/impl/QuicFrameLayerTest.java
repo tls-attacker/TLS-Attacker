@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.layer.impl;
 import static junit.framework.Assert.assertEquals;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.delegate.QuicDelegate;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
@@ -55,19 +54,18 @@ public class QuicFrameLayerTest extends AbstractLayerTest {
         Security.addProvider(new BouncyCastleProvider());
     }
 
-    public void setUpLayerSpecific(Config config) {
+    public void setUpLayerSpecific() {
+        QuicDelegate delegate = new QuicDelegate(true);
+        delegate.applyDelegate(config);
         FakeUdpTransportHandler udpTransportHandler = new FakeUdpTransportHandler(null);
         tlsContext.setTransportHandler(udpTransportHandler);
         transportHandler = udpTransportHandler;
-        QuicDelegate delegate = new QuicDelegate(true);
-        delegate.applyDelegate(config);
-        context.setLayerStack(
-                new LayerStack(context, new QuicFrameLayer(quicContext), new UdpLayer(tlsContext)));
-        tlsContext = context.getTlsContext();
         quicContext = context.getQuicContext();
         quicContext.setSourceConnectionId(sourceConnectionId);
         quicContext.setFirstDestinationConnectionId(destinationConnectionId);
         quicContext.setDestinationConnectionId(destinationConnectionId);
+        context.setLayerStack(
+                new LayerStack(context, new QuicFrameLayer(quicContext), new UdpLayer(tlsContext)));
         try {
             QuicPacketCryptoComputations.calculateInitialSecrets(quicContext);
         } catch (NoSuchAlgorithmException | CryptoException e) {

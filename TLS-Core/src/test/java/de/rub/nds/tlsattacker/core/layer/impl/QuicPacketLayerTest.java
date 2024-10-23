@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.layer.impl;
 import static junit.framework.Assert.assertEquals;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.delegate.QuicDelegate;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.layer.SpecificSendLayerConfiguration;
@@ -54,13 +53,15 @@ public class QuicPacketLayerTest extends AbstractLayerTest {
         Security.addProvider(new BouncyCastleProvider());
     }
 
-    public void setUpLayerSpecific(Config config) {
+    public void applyDelegate() {
+        QuicDelegate delegate = new QuicDelegate(true);
+        delegate.applyDelegate(config);
+    }
+
+    public void setUpLayerSpecific() {
         FakeUdpTransportHandler udpTransportHandler = new FakeUdpTransportHandler(null);
         tlsContext.setTransportHandler(udpTransportHandler);
         transportHandler = udpTransportHandler;
-        QuicDelegate delegate = new QuicDelegate(true);
-        delegate.applyDelegate(config);
-        tlsContext = context.getTlsContext();
         quicContext = context.getQuicContext();
         quicContext.setSourceConnectionId(sourceConnectionId);
         quicContext.setFirstDestinationConnectionId(destinationConnectionId);
