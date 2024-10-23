@@ -35,10 +35,20 @@ public class STARTTLSAction extends ConnectionBoundAction {
 
     public STARTTLSAction() {}
 
+    /**
+     * This action dynamically inserts Record and Message layer from the StarttlsContext into the LayerStack during runtime.
+     * It is designed to work with protocols that define an explicit mechanism for upgrading from plain communication to TLS.
+     * The action only works with such protocols and will throw an exception if the highest layer in the LayerStack does not fit.
+     * For now, only SMTP is supported.
+     * Users are still responsible for performing the actual STARTTLS command in the protocol and adding a TLS handshake to the WorkflowTrace.
+     * @param state
+     * @throws ActionExecutionException
+     */
     @Override
     public void execute(State state) throws ActionExecutionException {
         LayerType topLevelType =
                 state.getContext().getLayerStack().getHighestLayer().getLayerType();
+        // only SMTP is supported for now, because explicit application command for upgrading is needed
         if (topLevelType != ImplementedLayers.SMTP) {
             throw new ActionExecutionException("STARTTLS is not defined for this protocol");
         }
@@ -49,6 +59,8 @@ public class STARTTLSAction extends ConnectionBoundAction {
         LayerStack layerStack = state.getContext().getLayerStack();
         int targetedLayerIndex = layerStack.getLayersInStack().indexOf(topLevelType);
 
+        // use common TlsContext, but save the old layers in StarttlsContext
+        // allows use to enable and disable STARTTLS multiple times
         TlsContext tlsContext = state.getTlsContext();
         StarttlsContext starttlsContext = state.getStarttlsContext();
 
