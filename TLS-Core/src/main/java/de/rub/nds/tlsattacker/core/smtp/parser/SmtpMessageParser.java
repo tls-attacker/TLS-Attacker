@@ -15,8 +15,6 @@ import java.io.InputStream;
 
 public abstract class SmtpMessageParser<MessageT extends SmtpMessage> extends Parser<MessageT> {
 
-    private static final byte SP = 0x20;
-    private static final byte CR = 0x0D;
     private static final byte LF = 0x0A;
 
     /**

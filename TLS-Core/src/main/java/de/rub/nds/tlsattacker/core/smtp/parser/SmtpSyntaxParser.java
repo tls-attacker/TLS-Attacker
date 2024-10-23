@@ -269,15 +269,4 @@ public final class SmtpSyntaxParser {
         }
     }
 
-    public static int startsWithValidReplyCode(
-            String reply, int[] validReplyCodes, boolean isFinalLine) {
-        char delimiter = ' ';
-        if (!isFinalLine) delimiter = '-';
-
-        for (int code : validReplyCodes) {
-            if (reply.startsWith(String.valueOf(code) + delimiter)) return code;
-        }
-
-        return -1;
-    }
 }
