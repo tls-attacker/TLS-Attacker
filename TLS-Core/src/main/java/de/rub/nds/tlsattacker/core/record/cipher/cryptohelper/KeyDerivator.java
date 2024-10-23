@@ -16,16 +16,63 @@ import de.rub.nds.tlsattacker.core.crypto.PseudoRandomFunction;
 import de.rub.nds.tlsattacker.core.crypto.SSLUtils;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class KeySetGenerator {
+public class KeyDerivator {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     private static final int AEAD_IV_LENGTH = 12;
+
+    public static byte[] calculateMasterSecret(TlsContext tlsContext, byte[] clientServerRandom)
+            throws CryptoException {
+        Chooser chooser = tlsContext.getChooser();
+        if (chooser.getSelectedProtocolVersion() == ProtocolVersion.SSL3) {
+            LOGGER.debug(
+                    "Calculate SSL MasterSecret with Client and Server Nonces, which are: {}",
+                    clientServerRandom); // message.getComputations().getClientServerRandom().getValue()
+            return SSLUtils.calculateMasterSecretSSL3(
+                    chooser.getPreMasterSecret(), clientServerRandom);
+        } else {
+            PRFAlgorithm prfAlgorithm =
+                    AlgorithmResolver.getPRFAlgorithm(
+                            chooser.getSelectedProtocolVersion(), chooser.getSelectedCipherSuite());
+            if (chooser.isUseExtendedMasterSecret()) {
+                LOGGER.debug("Calculating ExtendedMasterSecret");
+                byte[] sessionHash =
+                        tlsContext
+                                .getDigest()
+                                .digest(
+                                        chooser.getSelectedProtocolVersion(),
+                                        chooser.getSelectedCipherSuite());
+                LOGGER.debug("Premastersecret: {}", chooser.getPreMasterSecret());
+
+                LOGGER.debug("SessionHash: {}", sessionHash);
+                byte[] extendedMasterSecret =
+                        PseudoRandomFunction.compute(
+                                prfAlgorithm,
+                                chooser.getPreMasterSecret(),
+                                PseudoRandomFunction.EXTENDED_MASTER_SECRET_LABEL,
+                                sessionHash,
+                                HandshakeByteLength.MASTER_SECRET);
+                return extendedMasterSecret;
+            } else {
+                LOGGER.debug("Calculating MasterSecret");
+                byte[] masterSecret =
+                        PseudoRandomFunction.compute(
+                                prfAlgorithm,
+                                chooser.getPreMasterSecret(),
+                                PseudoRandomFunction.MASTER_SECRET_LABEL,
+                                clientServerRandom,
+                                HandshakeByteLength.MASTER_SECRET);
+                return masterSecret;
+            }
+        }
+    }
 
     public static KeySet generateKeySet(
             TlsContext tlsContext, ProtocolVersion protocolVersion, Tls13KeySetType keySetType)
@@ -258,5 +305,5 @@ public class KeySetGenerator {
         return secretSetSize;
     }
 
-    private KeySetGenerator() {}
+    private KeyDerivator() {}
 }

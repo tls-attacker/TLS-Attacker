@@ -281,7 +281,9 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
                     throw new UnsupportedOperationException("Unknown Packet - Not supported yet.");
 
                 case RETRY_PACKET:
-                    receivedPacketBuffer.get(packetType).add(readRetryPacket(dataStream));
+                    receivedPacketBuffer
+                            .get(packetType)
+                            .add(readRetryPacket(firstByte, dataStream));
                     break;
                 case VERSION_NEGOTIATION:
                     receivedPacketBuffer
@@ -435,8 +437,8 @@ public class QuicPacketLayer extends AcknowledgingProtocolLayer<QuicPacketLayerH
         return packet;
     }
 
-    private RetryPacket readRetryPacket(InputStream dataStream) {
-        RetryPacket packet = new RetryPacket();
+    private RetryPacket readRetryPacket(int flags, InputStream dataStream) {
+        RetryPacket packet = new RetryPacket((byte) flags);
         packet.getParser(context, dataStream).parse(packet);
         packet.getHandler(context).adjustContext(packet);
         addProducedContainer(packet);

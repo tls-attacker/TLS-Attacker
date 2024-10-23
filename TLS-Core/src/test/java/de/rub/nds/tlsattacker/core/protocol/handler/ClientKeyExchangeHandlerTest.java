@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeyDerivator;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import org.apache.commons.lang3.StringUtils;
@@ -93,7 +94,9 @@ public class ClientKeyExchangeHandlerTest
         byte[] expectedMasterSecret =
                 ArrayConverter.concatenate(md5Digest1, md5Digest2, md5Digest3);
 
-        byte[] calculatedMasterSecret = handler.calculateMasterSecret(message);
+        byte[] calculatedMasterSecret =
+                KeyDerivator.calculateMasterSecret(
+                        context, message.getComputations().getClientServerRandom().getValue());
 
         assertArrayEquals(expectedMasterSecret, calculatedMasterSecret);
     }
