@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.smtp.parser.reply;
 
-import de.rub.nds.tlsattacker.core.smtp.reply.specific.multiline.SmtpVRFYReply;
+import de.rub.nds.tlsattacker.core.smtp.reply.SmtpVRFYReply;
 import java.io.InputStream;
 import java.util.List;
 

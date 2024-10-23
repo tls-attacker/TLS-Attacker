@@ -9,8 +9,9 @@
 package de.rub.nds.tlsattacker.core.smtp.parser.reply;
 
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpReply;
-import de.rub.nds.tlsattacker.core.smtp.reply.generic.multiline.SmtpGenericMultilineReply;
+
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 public class SmtpGenericReplyParser<ReplyT extends SmtpReply> extends SmtpReplyParser<ReplyT> {
@@ -21,23 +22,16 @@ public class SmtpGenericReplyParser<ReplyT extends SmtpReply> extends SmtpReplyP
 
     @Override
     public void parse(ReplyT replyT) {
-        List<String> lines = this.readWholeReply();
+        List<String> rawLines = this.readWholeReply();
 
-        for (String line : lines) {
-            parseReplyLine(replyT, line);
+        List<String> reply = new ArrayList<>();
+        for (String line : rawLines) {
+            this.parseReplyCode(replyT, line);
+            if (line.length() <= 4)
+                return; // fourth char is delimiter, so at least five chars are needed
+            reply.add(line.substring(4));
         }
-    }
 
-    private void parseReplyLine(ReplyT replyT, String line) {
-        this.parseReplyCode(replyT, line);
-
-        if (line.length() <= 4)
-            return; // fourth char is delimiter, so at least five chars are needed
-
-        if (replyT instanceof SmtpGenericMultilineReply) {
-            ((SmtpGenericMultilineReply) replyT).addHumanReadableMessages(line.substring(4));
-        } else {
-            replyT.setHumanReadableMessage(line.substring(4));
-        }
+        replyT.setHumanReadableMessages(reply);
     }
 }

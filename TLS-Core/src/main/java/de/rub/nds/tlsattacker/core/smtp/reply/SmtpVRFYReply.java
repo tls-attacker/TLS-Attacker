@@ -6,28 +6,29 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-package de.rub.nds.tlsattacker.core.smtp.reply.specific.multiline;
+package de.rub.nds.tlsattacker.core.smtp.reply;
 
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
-import de.rub.nds.tlsattacker.core.smtp.parser.reply.EXPNReplyParser;
-import de.rub.nds.tlsattacker.core.smtp.reply.SmtpReply;
+import de.rub.nds.tlsattacker.core.smtp.parser.reply.SmtpReplyParser;
+import de.rub.nds.tlsattacker.core.smtp.parser.reply.VRFYReplyParser;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 @XmlRootElement
-public class SmtpEXPNReply extends SmtpReply {
-    public static class SmtpEXPNData {
+public class SmtpVRFYReply extends SmtpReply {
+
+    public static class SmtpVRFYData {
         String username;
         String mailbox;
 
-        SmtpEXPNData(String username, String mailbox) {
+        SmtpVRFYData(String username, String mailbox) {
             this.username = username;
             this.mailbox = mailbox;
         }
 
-        SmtpEXPNData(String mailbox) {
+        SmtpVRFYData(String mailbox) {
             this.mailbox = mailbox;
         }
 
@@ -52,23 +53,23 @@ public class SmtpEXPNReply extends SmtpReply {
         }
     }
 
-    private final List<SmtpEXPNData> data = new ArrayList<>();
+    private final List<SmtpVRFYData> data = new ArrayList<>();
 
     public void addMailbox(String mailbox) {
-        this.data.add(new SmtpEXPNData(mailbox));
+        this.data.add(new SmtpVRFYData(mailbox));
     }
 
     public void addUsernameAndMailbox(String username, String mailbox) {
-        this.data.add(new SmtpEXPNData(username, mailbox));
+        this.data.add(new SmtpVRFYData(username, mailbox));
     }
 
-    public List<SmtpEXPNData> getData() {
+    public List<SmtpVRFYData> getData() {
         return data;
     }
 
     @Override
-    public EXPNReplyParser getParser(SmtpContext context, InputStream stream) {
-        return new EXPNReplyParser(stream);
+    public SmtpReplyParser<? extends SmtpReply> getParser(SmtpContext context, InputStream stream) {
+        return new VRFYReplyParser(stream);
     }
 
     @Override
@@ -83,9 +84,9 @@ public class SmtpEXPNReply extends SmtpReply {
                 this.replyCode != null ? String.valueOf(this.replyCode) + DASH : "";
 
         for (int i = 0; i < this.data.size() - 1; i++) {
-            SmtpEXPNData expnData = this.data.get(i);
+            SmtpVRFYData vrfyData = this.data.get(i);
             sb.append(replyCodePrefix);
-            sb.append(expnData.serialize());
+            sb.append(vrfyData.serialize());
             sb.append(CRLF);
         }
 

@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.core.smtp.handler;
 
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
-import de.rub.nds.tlsattacker.core.smtp.reply.specific.multiline.SmtpEHLOReply;
+import de.rub.nds.tlsattacker.core.smtp.reply.SmtpEHLOReply;
 
 public class EHLOReplyHandler extends SmtpReplyHandler<SmtpEHLOReply> {
     public EHLOReplyHandler(SmtpContext smtpContext) {

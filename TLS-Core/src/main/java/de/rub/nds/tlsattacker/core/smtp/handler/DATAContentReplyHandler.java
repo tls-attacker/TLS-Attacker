@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.core.smtp.handler;
 
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
-import de.rub.nds.tlsattacker.core.smtp.reply.generic.multiline.SmtpDATAContentReply;
+import de.rub.nds.tlsattacker.core.smtp.reply.SmtpDATAContentReply;
 
 public class DATAContentReplyHandler extends SmtpReplyHandler<SmtpDATAContentReply> {
     public DATAContentReplyHandler(SmtpContext smtpContext) {

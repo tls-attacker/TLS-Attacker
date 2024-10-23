@@ -6,12 +6,11 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-package de.rub.nds.tlsattacker.core.smtp.reply.specific.multiline;
+package de.rub.nds.tlsattacker.core.smtp.reply;
 
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.extensions.SmtpServiceExtension;
 import de.rub.nds.tlsattacker.core.smtp.parser.reply.EHLOReplyParser;
-import de.rub.nds.tlsattacker.core.smtp.reply.SmtpReply;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -24,7 +23,7 @@ public class SmtpEHLOReply extends SmtpReply {
     private List<SmtpServiceExtension> extensions;
 
     public SmtpEHLOReply() {
-        super(250);
+        super();
         this.extensions = new ArrayList<>();
     }
 

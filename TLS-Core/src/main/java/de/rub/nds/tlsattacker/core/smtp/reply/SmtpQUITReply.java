@@ -6,14 +6,15 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-package de.rub.nds.tlsattacker.core.smtp.reply.generic.singleline;
+package de.rub.nds.tlsattacker.core.smtp.reply;
 
-import de.rub.nds.tlsattacker.core.smtp.reply.SmtpReply;
+import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
+import de.rub.nds.tlsattacker.core.smtp.handler.QUITReplyHandler;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
-// TODO: clarify if this class needs different treatment than other genericReplies
-
 @XmlRootElement
-public class SmtpNOOPReply extends SmtpReply {
-    // TODO: shift this to Config somehow
+public class SmtpQUITReply extends SmtpReply {
+    public QUITReplyHandler getHandler(SmtpContext context) {
+        return new QUITReplyHandler(context);
+    }
 }

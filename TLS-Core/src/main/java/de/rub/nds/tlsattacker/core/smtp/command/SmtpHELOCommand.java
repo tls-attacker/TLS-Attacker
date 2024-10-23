@@ -12,7 +12,7 @@ import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.handler.HELOCommandHandler;
 import de.rub.nds.tlsattacker.core.smtp.parser.command.HELOCommandParser;
 import de.rub.nds.tlsattacker.core.smtp.preparator.command.HELOCommandPreparator;
-import de.rub.nds.tlsattacker.core.smtp.reply.specific.multiline.SmtpEHLOReply;
+import de.rub.nds.tlsattacker.core.smtp.reply.SmtpEHLOReply;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 

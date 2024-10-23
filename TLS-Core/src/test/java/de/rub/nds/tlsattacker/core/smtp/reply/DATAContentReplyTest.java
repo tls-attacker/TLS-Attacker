@@ -13,9 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
-import de.rub.nds.tlsattacker.core.smtp.parser.reply.SmtpGenericReplyParser;
-import de.rub.nds.tlsattacker.core.smtp.reply.generic.multiline.SmtpDATAContentReply;
-import de.rub.nds.tlsattacker.core.smtp.reply.generic.multiline.SmtpGenericMultilineReply;
+import de.rub.nds.tlsattacker.core.smtp.parser.reply.SmtpReplyParser;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import java.io.ByteArrayInputStream;
@@ -38,10 +36,12 @@ public class DATAContentReplyTest {
         };
 
         for (String reply : validReplies) {
-            SmtpGenericReplyParser<SmtpGenericMultilineReply> parser =
-                    new SmtpGenericReplyParser<>(
-                            new ByteArrayInputStream(reply.getBytes(StandardCharsets.UTF_8)));
+            SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
             SmtpDATAContentReply dataContentReply = new SmtpDATAContentReply();
+            SmtpReplyParser parser =
+                    dataContentReply.getParser(
+                            context,
+                            new ByteArrayInputStream(reply.getBytes(StandardCharsets.UTF_8)));
             parser.parse(dataContentReply);
             assertEquals(Integer.parseInt(reply.substring(0, 3)), dataContentReply.getReplyCode());
             assertEquals(

@@ -19,7 +19,6 @@ import de.rub.nds.tlsattacker.core.smtp.extensions.HELPExtension;
 import de.rub.nds.tlsattacker.core.smtp.extensions.STARTTLSExtension;
 import de.rub.nds.tlsattacker.core.smtp.extensions._8BITMIMEExtension;
 import de.rub.nds.tlsattacker.core.smtp.parser.reply.EHLOReplyParser;
-import de.rub.nds.tlsattacker.core.smtp.reply.specific.multiline.SmtpEHLOReply;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import java.io.ByteArrayInputStream;

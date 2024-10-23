@@ -17,16 +17,45 @@ import de.rub.nds.tlsattacker.core.smtp.preparator.SmtpReplyPreparator;
 import de.rub.nds.tlsattacker.core.smtp.serializer.SmtpReplySerializer;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 @XmlRootElement
 public class SmtpReply extends SmtpMessage {
 
     protected Integer replyCode;
-    protected String humanReadableMessage;
 
-    public SmtpReply() {}
+    // hide from the user that there can be multiple human-readable messages
+    // (e.g. for multiline replies)
+    public List<String> getHumanReadableMessages() {
+        return humanReadableMessages;
+    }
+
+    public void setHumanReadableMessages(List<String> humanReadableMessages) {
+        this.humanReadableMessages = humanReadableMessages;
+    }
+
+    public void setHumanReadableMessage(String message) {
+        this.humanReadableMessages = new ArrayList<>(List.of(message));
+    }
+
+    public String getHumanReadableMessage() {
+        return this.humanReadableMessages.get(0);
+    }
+
+    public boolean isMultiline() {
+        return this.humanReadableMessages.size() > 1;
+    }
+
+    //    protected String humanReadableMessage;
+    protected List<String> humanReadableMessages;
+
+    public SmtpReply() {
+        this.humanReadableMessages = new ArrayList<>();
+    }
 
     public SmtpReply(Integer replyCode) {
+        super();
         this.replyCode = replyCode;
     }
 
@@ -68,28 +97,28 @@ public class SmtpReply extends SmtpMessage {
         return replyCode;
     }
 
-    public void setHumanReadableMessage(String humanReadableMessage) {
-        this.humanReadableMessage = humanReadableMessage;
-    }
-
-    public String getHumanReadableMessage() {
-        return humanReadableMessage;
-    }
+//    public void setHumanReadableMessage(String humanReadableMessage) {
+//        this.humanReadableMessage = humanReadableMessage;
+//    }
 
     public String serialize() {
         char SP = ' ';
+        char DASH = '-';
         String CRLF = "\r\n";
+
         StringBuilder sb = new StringBuilder();
+        String replyCodeString = this.replyCode != null ? String.valueOf(this.replyCode) : "";
+        String replyCodePrefix = this.replyCode != null ? replyCodeString + DASH : "";
 
-        if (this.replyCode != null) {
-            sb.append(this.replyCode);
-            sb.append(SP);
+        for (int i = 0; i < this.humanReadableMessages.size() - 1; i++) {
+            sb.append(replyCodePrefix);
+            sb.append(this.humanReadableMessages.get(i));
+            sb.append(CRLF);
         }
 
-        if (this.humanReadableMessage != null) {
-            sb.append(humanReadableMessage);
-        }
-
+        sb.append(replyCodeString);
+        sb.append(SP);
+        sb.append(this.humanReadableMessages.get(this.humanReadableMessages.size() - 1));
         sb.append(CRLF);
 
         return sb.toString();

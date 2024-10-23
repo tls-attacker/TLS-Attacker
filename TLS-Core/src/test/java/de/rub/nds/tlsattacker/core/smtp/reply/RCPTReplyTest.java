@@ -15,8 +15,7 @@ import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
-import de.rub.nds.tlsattacker.core.smtp.parser.reply.RCPTReplyParser;
-import de.rub.nds.tlsattacker.core.smtp.reply.generic.singleline.SmtpRCPTReply;
+import de.rub.nds.tlsattacker.core.smtp.parser.reply.SmtpReplyParser;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import java.io.ByteArrayInputStream;
@@ -61,11 +60,12 @@ class RCPTReplyTest {
         };
 
         for (String reply : validReplies) {
-            RCPTReplyParser parser =
-                    new RCPTReplyParser(
-                            new ByteArrayInputStream(reply.getBytes(StandardCharsets.UTF_8)));
-
+            SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
             SmtpRCPTReply RCPT = new SmtpRCPTReply();
+            SmtpReplyParser parser =
+                    RCPT.getParser(
+                            context,
+                            new ByteArrayInputStream(reply.getBytes(StandardCharsets.UTF_8)));
             parser.parse(RCPT);
             //            assertTrue(RCPT.isValidReply());
             assertEquals(Integer.parseInt(reply.substring(0, 3)), RCPT.getReplyCode());
@@ -77,11 +77,12 @@ class RCPTReplyTest {
         String[] invalidReplies = {"321 No such user here\r\n", "123 Everything fine\r\n"};
 
         for (String reply : invalidReplies) {
-            RCPTReplyParser parser =
-                    new RCPTReplyParser(
-                            new ByteArrayInputStream(reply.getBytes(StandardCharsets.UTF_8)));
-
+            SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
             SmtpRCPTReply RCPT = new SmtpRCPTReply();
+            SmtpReplyParser parser =
+                    RCPT.getParser(
+                            context,
+                            new ByteArrayInputStream(reply.getBytes(StandardCharsets.UTF_8)));
             parser.parse(RCPT);
             //            assertFalse(RCPT.isValidReply());
         }
@@ -94,11 +95,12 @@ class RCPTReplyTest {
         };
 
         for (String reply : invalidReplies) {
-            RCPTReplyParser parser =
-                    new RCPTReplyParser(
-                            new ByteArrayInputStream(reply.getBytes(StandardCharsets.UTF_8)));
-
+            SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
             SmtpRCPTReply RCPT = new SmtpRCPTReply();
+            SmtpReplyParser parser =
+                    RCPT.getParser(
+                            context,
+                            new ByteArrayInputStream(reply.getBytes(StandardCharsets.UTF_8)));
             assertThrows(ParserException.class, () -> parser.parse(RCPT));
         }
     }
