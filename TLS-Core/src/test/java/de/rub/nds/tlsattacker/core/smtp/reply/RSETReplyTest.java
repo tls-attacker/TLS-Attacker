@@ -14,21 +14,21 @@ import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import de.rub.nds.tlsattacker.core.smtp.parser.reply.SmtpGenericReplyParser;
-import de.rub.nds.tlsattacker.core.smtp.reply.generic.singleline.SmtpRESETReply;
+import de.rub.nds.tlsattacker.core.smtp.reply.generic.singleline.SmtpRSETReply;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.Test;
 
-public class RESETReplyTest {
+public class RSETReplyTest {
 
     @Test
     void testParse() {
         String message = "250 OK\r\n";
 
-        SmtpRESETReply resetReply = new SmtpRESETReply();
-        SmtpGenericReplyParser<SmtpRESETReply> parser =
+        SmtpRSETReply resetReply = new SmtpRSETReply();
+        SmtpGenericReplyParser<SmtpRSETReply> parser =
                 new SmtpGenericReplyParser<>(
                         new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8)));
 
@@ -39,7 +39,7 @@ public class RESETReplyTest {
 
     @Test
     public void testSerialize() {
-        SmtpRESETReply reply = new SmtpRESETReply();
+        SmtpRSETReply reply = new SmtpRSETReply();
         reply.setReplyCode(250);
         reply.setHumanReadableMessage("OK");
 

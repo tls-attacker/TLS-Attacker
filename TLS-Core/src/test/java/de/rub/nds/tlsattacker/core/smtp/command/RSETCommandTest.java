@@ -21,14 +21,14 @@ import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.Test;
 
-public class RESETCommandTest {
+public class RSETCommandTest {
 
     @Test
     void testParse() {
         String message = "RSET\r\n";
 
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
-        SmtpRESETCommand resetCommand = new SmtpRESETCommand();
+        SmtpRSETCommand resetCommand = new SmtpRSETCommand();
         Parser parser =
                 resetCommand.getParser(
                         context,
@@ -42,7 +42,7 @@ public class RESETCommandTest {
         String message = "RSET \r\n";
 
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
-        SmtpRESETCommand resetCommand = new SmtpRESETCommand();
+        SmtpRSETCommand resetCommand = new SmtpRSETCommand();
         Parser parser =
                 resetCommand.getParser(
                         context,
@@ -54,7 +54,7 @@ public class RESETCommandTest {
     @Test
     void testSerialize() {
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
-        SmtpRESETCommand resetCommand = new SmtpRESETCommand();
+        SmtpRSETCommand resetCommand = new SmtpRSETCommand();
         Serializer serializer = resetCommand.getSerializer(context);
         serializer.serialize();
         assertEquals("RSET\r\n", serializer.getOutputStream().toString());
@@ -63,7 +63,7 @@ public class RESETCommandTest {
     @Test
     void testHandle() {
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
-        SmtpRESETCommand resetCommand = new SmtpRESETCommand();
+        SmtpRSETCommand resetCommand = new SmtpRSETCommand();
         resetCommand.getHandler(context).adjustContext(resetCommand);
 
         assertTrue(context.getReversePathBuffer().isEmpty());

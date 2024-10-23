@@ -9,16 +9,16 @@
 package de.rub.nds.tlsattacker.core.smtp.handler;
 
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
-import de.rub.nds.tlsattacker.core.smtp.command.SmtpRESETCommand;
+import de.rub.nds.tlsattacker.core.smtp.command.SmtpRSETCommand;
 
 /** Handles the execution of the reset command by clearing all buffers. */
-public class RESETCommandHandler extends SmtpCommandHandler<SmtpRESETCommand> {
-    public RESETCommandHandler(SmtpContext smtpContext) {
+public class RSETCommandHandler extends SmtpCommandHandler<SmtpRSETCommand> {
+    public RSETCommandHandler(SmtpContext smtpContext) {
         super(smtpContext);
     }
 
     @Override
-    public void adjustContextSpecific(SmtpRESETCommand command) {
+    public void adjustContextSpecific(SmtpRSETCommand command) {
         this.getContext().resetContext();
     }
 }

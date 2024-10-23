@@ -12,4 +12,4 @@ import de.rub.nds.tlsattacker.core.smtp.reply.SmtpReply;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class SmtpRESETReply extends SmtpReply {}
+public class SmtpRSETReply extends SmtpReply {}

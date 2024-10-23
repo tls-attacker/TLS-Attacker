@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.core.smtp.command;
 
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
-import de.rub.nds.tlsattacker.core.smtp.handler.RESETCommandHandler;
+import de.rub.nds.tlsattacker.core.smtp.handler.RSETCommandHandler;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -17,10 +17,10 @@ import jakarta.xml.bind.annotation.XmlRootElement;
  * data are cleared
  */
 @XmlRootElement
-public class SmtpRESETCommand extends SmtpCommand {
+public class SmtpRSETCommand extends SmtpCommand {
     private static final String COMMAND = "RSET";
 
-    public SmtpRESETCommand() {
+    public SmtpRSETCommand() {
         super(COMMAND, null);
     }
 
@@ -30,7 +30,7 @@ public class SmtpRESETCommand extends SmtpCommand {
     }
 
     @Override
-    public RESETCommandHandler getHandler(SmtpContext smtpContext) {
-        return new RESETCommandHandler(smtpContext);
+    public RSETCommandHandler getHandler(SmtpContext smtpContext) {
+        return new RSETCommandHandler(smtpContext);
     }
 }
