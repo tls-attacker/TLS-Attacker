@@ -77,7 +77,7 @@ public abstract class QuicPacketParser<T extends QuicPacket> extends Parser<T> {
         byte[] r = parseByteArrayField(packet.getPacketLength().getValue());
         packet.setProtectedPacketNumberAndPayload(r);
         LOGGER.debug(
-                "Protected Packet Number And Payload",
+                "Protected Packet Number And Payload: {}",
                 packet.getProtectedPacketNumberAndPayload().getValue());
     }
 
