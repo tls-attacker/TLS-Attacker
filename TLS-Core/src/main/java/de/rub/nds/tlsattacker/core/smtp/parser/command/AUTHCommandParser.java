@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.smtp.parser.command;
 import de.rub.nds.protocol.exception.ParserException;
 import de.rub.nds.tlsattacker.core.smtp.command.SmtpAUTHCommand;
 import java.io.InputStream;
+import java.util.Objects;
 
 public class AUTHCommandParser extends SmtpCommandParser<SmtpAUTHCommand> {
     public AUTHCommandParser(InputStream stream) {
@@ -26,14 +27,15 @@ public class AUTHCommandParser extends SmtpCommandParser<SmtpAUTHCommand> {
         String[] parts = arguments.split(" ", 2);
 
         // TODO: make more complex. just works for most basic command at the moment.
-        if (parts.length >= 2) {
-            command.setSaslMechanism(parts[0]);
-            command.setInitialResponse(parts[1]);
-            return;
+        String saslMechanism = parts[0];
+        if (!Objects.equals(saslMechanism, "PLAIN")) {
+            throw new ParserException("Only PLAIN Auth is supported at the moment.");
         }
-
-        if (parts.length == 1) {
-            command.setSaslMechanism(parts[0]);
+        if (parts.length == 2) {
+            command.setSaslMechanism(saslMechanism);
+            command.setInitialResponse(parts[1]);
+        } else {
+            throw new ParserException("PLAIN AUTH command requires password b64(<NUL>username<NUL>password).");
         }
     }
 }
