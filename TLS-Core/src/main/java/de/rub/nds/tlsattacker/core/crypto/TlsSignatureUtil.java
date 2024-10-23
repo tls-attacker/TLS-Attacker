@@ -16,6 +16,7 @@ import de.rub.nds.protocol.crypto.key.RsaPrivateKey;
 import de.rub.nds.protocol.crypto.signature.DsaSignatureComputations;
 import de.rub.nds.protocol.crypto.signature.EcdsaSignatureComputations;
 import de.rub.nds.protocol.crypto.signature.RsaPkcs1SignatureComputations;
+import de.rub.nds.protocol.crypto.signature.RsaPssRsaeSignatureComputations;
 import de.rub.nds.protocol.crypto.signature.RsaSsaPssSignatureComputations;
 import de.rub.nds.protocol.crypto.signature.SignatureCalculator;
 import de.rub.nds.protocol.crypto.signature.SignatureComputations;
@@ -103,6 +104,31 @@ public class TlsSignatureUtil {
                         hashAlgorithm,
                         toBeHashedAndSigned,
                         (RsaPkcs1SignatureComputations) computations);
+                break;
+            case RSA_PSS_RSAE:
+                if (!(computations instanceof RsaPssRsaeSignatureComputations)) {
+                    throw new IllegalArgumentException(
+                            "Computations must be of type RsaPssRsaeSignatureComputations for "
+                                    + algorithm);
+                }
+                hashAlgorithm = algorithm.getHashAlgorithm();
+                RsaPrivateKey rsaPrivateKey =
+                        new RsaPrivateKey(
+                                chooser.getContext()
+                                        .getTlsContext()
+                                        .getTalkingX509Context()
+                                        .getChooser()
+                                        .getSubjectRsaPrivateKey(),
+                                chooser.getContext()
+                                        .getTlsContext()
+                                        .getTalkingX509Context()
+                                        .getChooser()
+                                        .getSubjectRsaModulus());
+                calculator.computeRsaPssRsaeSignature(
+                        (RsaPssRsaeSignatureComputations) computations,
+                        rsaPrivateKey,
+                        toBeHashedAndSigned,
+                        hashAlgorithm);
                 break;
             case RSA_SSA_PSS:
                 if (!(computations instanceof RsaSsaPssSignatureComputations)) {
