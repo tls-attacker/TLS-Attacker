@@ -253,7 +253,6 @@ public class TlsSignatureUtil {
                 new RsaPrivateKey(privateKey, modulus),
                 toBeHasedAndSigned,
                 algorithm,
-                salt,
-                algorithm);
+                salt);
     }
 }
