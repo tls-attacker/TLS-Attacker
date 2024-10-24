@@ -74,7 +74,9 @@ public abstract class Chooser {
 
     public abstract List<ECPointFormat> getClientSupportedPointFormats();
 
-    public abstract SignatureAndHashAlgorithm getSelectedSigHashAlgorithm();
+    public abstract SignatureAndHashAlgorithm getServerSelectedSigHashAlgorithm();
+
+    public abstract SignatureAndHashAlgorithm getClientSelectedSigHashAlgorithm();
 
     public abstract List<NamedGroup> getClientSupportedNamedGroups();
 

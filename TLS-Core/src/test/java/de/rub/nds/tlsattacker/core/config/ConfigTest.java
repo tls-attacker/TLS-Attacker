@@ -78,7 +78,7 @@ public class ConfigTest {
         ArrayList<SignatureAndHashAlgorithm> signatureAndHashAlgorithms = new ArrayList<>();
         signatureAndHashAlgorithms.add(SignatureAndHashAlgorithm.ECDSA_SHA256);
         config.setDefaultClientSupportedSignatureAndHashAlgorithms(signatureAndHashAlgorithms);
-        config.setDefaultSelectedSignatureAndHashAlgorithm(SignatureAndHashAlgorithm.ECDSA_SHA256);
+        config.setDefaultServerSelectedSignatureAndHashAlgorithm(SignatureAndHashAlgorithm.ECDSA_SHA256);
 
         ConfigIO.write(config, new File(RESOURCE_CONFIG_DIR, "ec_clientAuthentication.config"));
     }
@@ -357,7 +357,7 @@ public class ConfigTest {
         ArrayList<SignatureAndHashAlgorithm> list = new ArrayList<>();
         list.add(SignatureAndHashAlgorithm.RSA_SHA256);
         config.setDefaultClientSupportedSignatureAndHashAlgorithms(list);
-        config.setDefaultSelectedSignatureAndHashAlgorithm(SignatureAndHashAlgorithm.RSA_SHA256);
+        config.setDefaultServerSelectedSignatureAndHashAlgorithm(SignatureAndHashAlgorithm.RSA_SHA256);
 
         ConfigIO.write(config, new File(RESOURCE_CONFIG_DIR, "rsa_clientAuthentication.config"));
     }

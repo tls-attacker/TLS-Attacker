@@ -56,42 +56,38 @@ public class CertificateVerifyPreparator
         byte[] toBeSigned = chooser.getContext().getTlsContext().getDigest().getRawBytes();
         if (chooser.getSelectedProtocolVersion().isTLS13()) {
             if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
-                toBeSigned =
-                        ArrayConverter.concatenate(
-                                ArrayConverter.hexStringToByteArray(
-                                        "2020202020202020202020202020202020202020202020202020"
-                                                + "2020202020202020202020202020202020202020202020202020202020202020202020202020"),
-                                CertificateVerifyConstants.CLIENT_CERTIFICATE_VERIFY.getBytes(),
-                                new byte[] {(byte) 0x00},
-                                chooser.getContext()
-                                        .getTlsContext()
-                                        .getDigest()
-                                        .digest(
-                                                chooser.getSelectedProtocolVersion(),
-                                                chooser.getSelectedCipherSuite()));
+                toBeSigned = ArrayConverter.concatenate(
+                        ArrayConverter.hexStringToByteArray(
+                                "2020202020202020202020202020202020202020202020202020"
+                                        + "2020202020202020202020202020202020202020202020202020202020202020202020202020"),
+                        CertificateVerifyConstants.CLIENT_CERTIFICATE_VERIFY.getBytes(),
+                        new byte[] { (byte) 0x00 },
+                        chooser.getContext()
+                                .getTlsContext()
+                                .getDigest()
+                                .digest(
+                                        chooser.getSelectedProtocolVersion(),
+                                        chooser.getSelectedCipherSuite()));
             } else {
-                toBeSigned =
-                        ArrayConverter.concatenate(
-                                ArrayConverter.hexStringToByteArray(
-                                        "2020202020202020202020202020202020202020202020202020"
-                                                + "2020202020202020202020202020202020202020202020202020202020202020202020202020"),
-                                CertificateVerifyConstants.SERVER_CERTIFICATE_VERIFY.getBytes(),
-                                new byte[] {(byte) 0x00},
-                                chooser.getContext()
-                                        .getTlsContext()
-                                        .getDigest()
-                                        .digest(
-                                                chooser.getSelectedProtocolVersion(),
-                                                chooser.getSelectedCipherSuite()));
+                toBeSigned = ArrayConverter.concatenate(
+                        ArrayConverter.hexStringToByteArray(
+                                "2020202020202020202020202020202020202020202020202020"
+                                        + "2020202020202020202020202020202020202020202020202020202020202020202020202020"),
+                        CertificateVerifyConstants.SERVER_CERTIFICATE_VERIFY.getBytes(),
+                        new byte[] { (byte) 0x00 },
+                        chooser.getContext()
+                                .getTlsContext()
+                                .getDigest()
+                                .digest(
+                                        chooser.getSelectedProtocolVersion(),
+                                        chooser.getSelectedCipherSuite()));
             }
         } else if (chooser.getSelectedProtocolVersion().isSSL()) {
-            final byte[] handshakeMessageContent =
-                    chooser.getContext().getTlsContext().getDigest().getRawBytes();
+            final byte[] handshakeMessageContent = chooser.getContext().getTlsContext().getDigest().getRawBytes();
             final byte[] masterSecret = chooser.getMasterSecret();
             return SSLUtils.calculateSSLCertificateVerifySignature(
                     handshakeMessageContent, masterSecret);
         }
-        algorithm = chooser.getSelectedSigHashAlgorithm();
         TlsSignatureUtil signatureUtil = new TlsSignatureUtil();
         signatureUtil.computeSignature(
                 chooser,
@@ -108,23 +104,20 @@ public class CertificateVerifyPreparator
         if (chooser.getConfig().getAutoAdjustSignatureAndHashAlgorithm()) {
             X509PublicKeyType publicKeyType;
             if (chooser.getTalkingConnectionEnd() == ConnectionEndType.SERVER) {
-                publicKeyType =
-                        chooser.getContext()
-                                .getTlsContext()
-                                .getServerX509Context()
-                                .getChooser()
-                                .getSubjectPublicKeyType();
+                publicKeyType = chooser.getContext()
+                        .getTlsContext()
+                        .getServerX509Context()
+                        .getChooser()
+                        .getSubjectPublicKeyType();
             } else {
-                publicKeyType =
-                        chooser.getContext()
-                                .getTlsContext()
-                                .getClientX509Context()
-                                .getChooser()
-                                .getSubjectPublicKeyType();
+                publicKeyType = chooser.getContext()
+                        .getTlsContext()
+                        .getClientX509Context()
+                        .getChooser()
+                        .getSubjectPublicKeyType();
             }
             List<SignatureAndHashAlgorithm> candidateList = new LinkedList<>();
-            for (SignatureAndHashAlgorithm tempSignatureAndHashAlgorithm :
-                    SignatureAndHashAlgorithm.getImplemented()) {
+            for (SignatureAndHashAlgorithm tempSignatureAndHashAlgorithm : SignatureAndHashAlgorithm.getImplemented()) {
                 if (publicKeyType.canBeUsedWithSignatureAlgorithm(
                         tempSignatureAndHashAlgorithm.getSignatureAlgorithm())) {
                     candidateList.add(tempSignatureAndHashAlgorithm);
@@ -139,12 +132,21 @@ public class CertificateVerifyPreparator
             }
             candidateList.retainAll(peerSupported);
             if (candidateList.isEmpty()) {
-                signHashAlgo = chooser.getSelectedSigHashAlgorithm();
+                if (chooser.getTalkingConnectionEnd() == ConnectionEndType.SERVER) {
+                    signHashAlgo = chooser.getServerSelectedSigHashAlgorithm();
+                } else {
+                    signHashAlgo = chooser.getClientSelectedSigHashAlgorithm();
+
+                }
             } else {
                 signHashAlgo = candidateList.get(0);
             }
         } else {
-            signHashAlgo = chooser.getConfig().getDefaultSelectedSignatureAndHashAlgorithm();
+            if (chooser.getTalkingConnectionEnd() == ConnectionEndType.SERVER) {
+                signHashAlgo = chooser.getConfig().getDefaultServerSelectedSignatureAndHashAlgorithm();
+            } else {
+                signHashAlgo = chooser.getConfig().getDefaultClientSelectedSignatureAndHashAlgorithm();
+            }
         }
         return signHashAlgo;
     }

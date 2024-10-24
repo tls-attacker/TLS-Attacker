@@ -32,9 +32,9 @@ public abstract class ServerKeyExchangeHandler<MessageT extends ServerKeyExchang
                 && message.getSignatureAndHashAlgorithm().getValue() != null) {
 
             byte[] sigHashBytes = message.getSignatureAndHashAlgorithm().getValue();
-            SignatureAndHashAlgorithm signatureAndHashAlgorithm =
-                    SignatureAndHashAlgorithm.getSignatureAndHashAlgorithm(sigHashBytes);
-            tlsContext.setSelectedSignatureAndHashAlgorithm(signatureAndHashAlgorithm);
+            SignatureAndHashAlgorithm signatureAndHashAlgorithm = SignatureAndHashAlgorithm
+                    .getSignatureAndHashAlgorithm(sigHashBytes);
+            tlsContext.setServerSelectedSignatureAndHashAlgorithm(signatureAndHashAlgorithm);
         }
     }
 }

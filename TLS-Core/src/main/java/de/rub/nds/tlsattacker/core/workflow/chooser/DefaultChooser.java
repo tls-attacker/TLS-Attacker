@@ -77,11 +77,21 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public SignatureAndHashAlgorithm getSelectedSigHashAlgorithm() {
-        if (context.getTlsContext().getSelectedSignatureAndHashAlgorithm() != null) {
-            return context.getTlsContext().getSelectedSignatureAndHashAlgorithm();
+    public SignatureAndHashAlgorithm getServerSelectedSigHashAlgorithm() {
+        if (context.getTlsContext().getServerSelectedSignatureAndHashAlgorithm() != null) {
+            return context.getTlsContext().getServerSelectedSignatureAndHashAlgorithm();
         } else {
-            return config.getDefaultSelectedSignatureAndHashAlgorithm();
+            return config.getDefaultServerSelectedSignatureAndHashAlgorithm();
+        }
+    }
+
+
+    @Override
+    public SignatureAndHashAlgorithm getClientSelectedSigHashAlgorithm() {
+        if (context.getTlsContext().getClientSelectedSignatureAndHashAlgorithm() != null) {
+            return context.getTlsContext().getClientSelectedSignatureAndHashAlgorithm();
+        } else {
+            return config.getDefaultClientSelectedSignatureAndHashAlgorithm();
         }
     }
 
@@ -1129,8 +1139,7 @@ public class DefaultChooser extends Chooser {
         } else {
             KeyShareEntry keyShareEntry = new KeyShareEntry();
             keyShareEntry.setPrivateKey(config.getDefaultEchClientPrivateKey());
-            KeyShareEntryPreparator keyShareEntryPreparator =
-                    new KeyShareEntryPreparator(this, keyShareEntry);
+            KeyShareEntryPreparator keyShareEntryPreparator = new KeyShareEntryPreparator(this, keyShareEntry);
             keyShareEntry.setGroupConfig(getEchConfig().getKem().getNamedGroup());
             keyShareEntryPreparator.prepare();
             if (context != null) {
@@ -1149,8 +1158,7 @@ public class DefaultChooser extends Chooser {
         } else {
             KeyShareEntry keyShareEntry = new KeyShareEntry();
             keyShareEntry.setPrivateKey(config.getDefaultEchServerPrivateKey());
-            KeyShareEntryPreparator keyShareEntryPreparator =
-                    new KeyShareEntryPreparator(this, keyShareEntry);
+            KeyShareEntryPreparator keyShareEntryPreparator = new KeyShareEntryPreparator(this, keyShareEntry);
             keyShareEntry.setGroupConfig(getEchConfig().getKem().getNamedGroup());
             keyShareEntryPreparator.prepare();
             if (context != null) {
@@ -1168,4 +1176,5 @@ public class DefaultChooser extends Chooser {
             return config.getDefaultSelectedSrtpProtectionProfile();
         }
     }
+
 }

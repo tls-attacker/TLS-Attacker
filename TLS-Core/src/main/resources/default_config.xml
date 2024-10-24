@@ -1275,7 +1275,8 @@
         <defaultServerSupportedCertificateSignAlgorithms>RSA_PSS_RSAE_SHA512</defaultServerSupportedCertificateSignAlgorithms>
         <defaultServerSupportedCertificateSignAlgorithms>SM2_SM3</defaultServerSupportedCertificateSignAlgorithms>
     </defaultServerSupportedCertificateSignAlgorithms>
-    <defaultSelectedSignatureAndHashAlgorithm>RSA_SHA1</defaultSelectedSignatureAndHashAlgorithm>
+    <defaultServerSelectedSignatureAndHashAlgorithm>RSA_SHA1</defaultServerSelectedSignatureAndHashAlgorithm>
+    <defaultClientSelectedSignatureAndHashAlgorithm>RSA_SHA1</defaultClientSelectedSignatureAndHashAlgorithm>
     <defaultSelectedSignatureAlgorithmCert>RSA_SHA1</defaultSelectedSignatureAlgorithmCert>
     <initialRecordVersion>TLS10</initialRecordVersion>
     <defaultLastRecordProtocolVersion>TLS10</defaultLastRecordProtocolVersion>
