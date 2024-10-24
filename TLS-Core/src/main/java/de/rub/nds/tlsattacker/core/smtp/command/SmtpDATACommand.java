@@ -15,12 +15,12 @@ import jakarta.xml.bind.annotation.XmlRootElement;
  * This command models the first half of the interaction, which simply initiates the data transfer.
  * The data transfer itself is performed by {@link SmtpDATAContentCommand}.
  * Example:
- * C: DATA
- * S: 354 Start mail input; end with <CRLF>.<CRLF>
- * C: Blah blah blah...
- * C: ...etc. etc. etc.
- * C: .
- * S: 250 OK
+ * <p>C: DATA</p>
+ * <p>S: 354 Start mail input; end with &lt;CRLF&gt;.&lt;CRLF&gt;</p>
+ * <p>C: Blah blah blah...</p>
+ * <p>C: ...etc. etc. etc.</p>
+ * <p>C: .</p>
+ * <p>S: 250 OK</p>
  * @see de.rub.nds.tlsattacker.core.smtp.command.SmtpDATAContentCommand
  */
 @XmlRootElement

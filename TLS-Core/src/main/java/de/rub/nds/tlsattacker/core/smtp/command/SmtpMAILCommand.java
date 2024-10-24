@@ -23,8 +23,8 @@ import java.util.List;
  * argument clause contains a reverse-path and may contain optional parameter. The reverse path
  * represents the senders mailbox.
  * Example:
- * C: MAIL FROM:<seal@upb.de>
- * S: 250 2.1.0 Ok
+ * <p>C: MAIL FROM: &lt;seal@upb.de&gt;</p>
+ * <p>S: 250 2.1.0 Ok</p>
  */
 @XmlRootElement
 public class SmtpMAILCommand extends SmtpCommand {

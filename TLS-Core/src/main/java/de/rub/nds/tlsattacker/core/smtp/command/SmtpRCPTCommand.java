@@ -22,8 +22,8 @@ import java.util.List;
  * the mail data; multiple recipients are specified by multiple uses of this command. The argument
  * clause contains a forward-path and may contain optional parameters.
  * Example:
- * C: RCPT TO:<recipient@example.com>
- * S: 250 2.1.5 Ok
+ * <p>C: RCPT TO:&lt;recipient@example.com&gt;</p>
+ * <p>S: 250 2.1.5 Ok</p>
  */
 @XmlRootElement
 public class SmtpRCPTCommand extends SmtpCommand {
