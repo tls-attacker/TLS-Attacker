@@ -19,15 +19,14 @@ import org.bouncycastle.util.IPAddress;
 /**
  * This class represents an SMTP EHLO command, which is used to identify the client to the server.
  * The EHLO command mostly replaces the old HELO command: The difference is that EHLO can be used
- * with an address literal as well as a domain, rather than just a domain.
- *
- * <p>Example:
- * <p>C: EHLO client.example.com
- * <p>S: 250-smtp.example.com Hello client.example.com
- * <p>S: 250-SIZE 35882577
- * <p>S: 250-PIPELINING
- * <p>S: 250-AUTH PLAIN LOGIN
- * <p>S: 250 8BITMIME
+ * with an address literal as well as a domain, rather than just a domain. <br>
+ * Example: <br>
+ * C: EHLO client.example.com <br>
+ * S: 250-smtp.example.com Hello client.example.com <br>
+ * S: 250-SIZE 35882577 <br>
+ * S: 250-PIPELINING <br>
+ * S: 250-AUTH PLAIN LOGIN <br>
+ * S: 250 8BITMIME
  */
 @XmlRootElement
 public class SmtpEHLOCommand extends SmtpCommand {

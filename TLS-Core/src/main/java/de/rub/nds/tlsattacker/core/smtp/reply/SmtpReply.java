@@ -22,9 +22,9 @@ import java.util.List;
 
 /**
  * Base class for modelling replies to SMTP commands. Usually consists of status code and
- * human-readable message associated with it. For example:
- * <p>C: MAIL FROM:&lt;seal@upb.de&gt;
- * <p>S: 250 Ok
+ * human-readable message associated with it. For example: <br>
+ * C: MAIL FROM:&lt;seal@upb.de&gt; <br>
+ * S: 250 Ok
  */
 @XmlRootElement
 public class SmtpReply extends SmtpMessage {

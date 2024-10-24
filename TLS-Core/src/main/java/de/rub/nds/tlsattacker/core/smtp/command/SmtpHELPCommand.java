@@ -16,11 +16,11 @@ import java.io.InputStream;
 
 /**
  * This command causes the server to send helpful information to the client. The command MAY take an
- * argument (e.g., any command name) and return more specific information as a response.
- * Example:
- * <p>C: HELP
- * <p>S: 214-Commands supported:
- * <p>S: 214 HELO EHLO MAIL RCPT DATA RSET VRFY EXPN HELP QUIT AUTH
+ * argument (e.g., any command name) and return more specific information as a response. Example:
+ * <br>
+ * C: HELP <br>
+ * S: 214-Commands supported: <br>
+ * S: 214 HELO EHLO MAIL RCPT DATA RSET VRFY EXPN HELP QUIT AUTH
  */
 @XmlRootElement
 public class SmtpHELPCommand extends SmtpCommand {

@@ -15,9 +15,9 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
 /**
- * This class represents an SMTP VRFY command, which is used to verify whether a user exists:
- * <p>C: VRFY jane
- * <p>S: 250 Jane Doe &lt;jane.doe@upb.de&gt;
+ * This class represents an SMTP VRFY command, which is used to verify whether a user exists: <br>
+ * C: VRFY jane <br>
+ * S: 250 Jane Doe &lt;jane.doe@upb.de&gt;
  */
 @XmlRootElement
 public class SmtpVRFYCommand extends SmtpCommand {
