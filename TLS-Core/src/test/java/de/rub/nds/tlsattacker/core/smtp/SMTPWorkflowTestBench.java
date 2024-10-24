@@ -24,6 +24,7 @@ import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
+import de.rub.nds.tlsattacker.util.tests.TestCategories;
 import jakarta.xml.bind.JAXBException;
 import java.io.IOException;
 import java.security.Security;
@@ -31,6 +32,7 @@ import org.apache.logging.log4j.core.config.Configurator;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -44,7 +46,7 @@ public class SMTPWorkflowTestBench {
         Configurator.setAllLevels("de.rub.nds.tlsattacker", org.apache.logging.log4j.Level.ALL);
     }
 
-    @Disabled
+    @Tag(TestCategories.INTEGRATION_TEST)
     @Test
     public void testWorkFlow() throws IOException, JAXBException {
         Security.addProvider(new BouncyCastleProvider());
@@ -94,7 +96,7 @@ public class SMTPWorkflowTestBench {
         assert (state.getWorkflowTrace().executedAsPlanned());
     }
 
-    @Disabled
+    @Tag(TestCategories.INTEGRATION_TEST)
     @Test
     public void testWorkFlowSMTPS() throws IOException, JAXBException {
         Security.addProvider(new BouncyCastleProvider());
@@ -145,7 +147,7 @@ public class SMTPWorkflowTestBench {
         assert state.getWorkflowTrace().executedAsPlanned();
     }
 
-    @Disabled
+    @Tag(TestCategories.INTEGRATION_TEST)
     @Test
     public void testWorkFlowSTARTTLS() throws IOException, JAXBException {
         Security.addProvider(new BouncyCastleProvider());
@@ -205,6 +207,7 @@ public class SMTPWorkflowTestBench {
         assert state.getWorkflowTrace().executedAsPlanned();
     }
 
+    @Tag(TestCategories.INTEGRATION_TEST)
     @Test
     void testSMTPSTARTTLSWorkflowFromFactory() throws JAXBException, IOException {
         Security.addProvider(new BouncyCastleProvider());
