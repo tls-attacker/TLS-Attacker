@@ -14,10 +14,9 @@ import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.exceptions.EndOfStreamException;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
-import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
 import de.rub.nds.tlsattacker.core.smtp.extensions.*;
-import de.rub.nds.tlsattacker.core.smtp.parser.EHLOReplyParser;
+import de.rub.nds.tlsattacker.core.smtp.parser.reply.EHLOReplyParser;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import java.io.ByteArrayInputStream;
@@ -81,9 +80,7 @@ class EHLOReplyTest {
         ehlo.setGreeting("says Greetings");
 
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
-        Preparator preparator = ehlo.getPreparator(context);
-        Serializer serializer = ehlo.getSerializer(context);
-        preparator.prepare();
+        Serializer<?> serializer = ehlo.getSerializer(context);
         serializer.serialize();
         assertEquals(
                 "250 seal.cs.upb.de says Greetings\r\n", serializer.getOutputStream().toString());
@@ -103,9 +100,7 @@ class EHLOReplyTest {
                         new HELPExtension()));
 
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
-        Preparator preparator = ehlo.getPreparator(context);
-        Serializer serializer = ehlo.getSerializer(context);
-        preparator.prepare();
+        Serializer<?> serializer = ehlo.getSerializer(context);
         serializer.serialize();
         assertEquals(
                 "250-seal.cs.upb.de says Greetings\r\n250-8BITMIME\r\n250-ATRN\r\n250-STARTTLS\r\n250 HELP\r\n",

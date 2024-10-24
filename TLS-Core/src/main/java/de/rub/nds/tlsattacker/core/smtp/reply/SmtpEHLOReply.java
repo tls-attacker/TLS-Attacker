@@ -10,13 +10,17 @@ package de.rub.nds.tlsattacker.core.smtp.reply;
 
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.extensions.SmtpServiceExtension;
-import de.rub.nds.tlsattacker.core.smtp.parser.EHLOReplyParser;
-import de.rub.nds.tlsattacker.core.smtp.preparator.EHLOReplyPreparator;
+import de.rub.nds.tlsattacker.core.smtp.parser.reply.EHLOReplyParser;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Models the reply to the EHLO command.
+ *
+ * @see de.rub.nds.tlsattacker.core.smtp.command.SmtpEHLOCommand
+ */
 @XmlRootElement
 public class SmtpEHLOReply extends SmtpReply {
     private String domain;
@@ -24,18 +28,13 @@ public class SmtpEHLOReply extends SmtpReply {
     private List<SmtpServiceExtension> extensions;
 
     public SmtpEHLOReply() {
-        this.replyCode = 250;
+        super();
         this.extensions = new ArrayList<>();
     }
 
     @Override
     public EHLOReplyParser getParser(SmtpContext context, InputStream stream) {
         return new EHLOReplyParser(stream);
-    }
-
-    @Override
-    public EHLOReplyPreparator getPreparator(SmtpContext context) {
-        return new EHLOReplyPreparator(context, this);
     }
 
     public String getGreeting() {
@@ -60,5 +59,42 @@ public class SmtpEHLOReply extends SmtpReply {
 
     public void setExtensions(List<SmtpServiceExtension> extensions) {
         this.extensions = extensions;
+    }
+
+    @Override
+    public String serialize() {
+        char SP = ' ';
+        char DASH = '-';
+        String CRLF = "\r\n";
+
+        boolean hasExtensions = !this.extensions.isEmpty();
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(this.replyCode);
+        sb.append(hasExtensions ? DASH : SP);
+        sb.append(this.domain);
+        if (this.greeting != null) {
+            sb.append(SP);
+            sb.append(this.greeting);
+        }
+        sb.append(CRLF);
+
+        if (!hasExtensions) return sb.toString();
+
+        for (int i = 0; i < this.extensions.size() - 1; i++) {
+            SmtpServiceExtension ext = this.extensions.get(i);
+            sb.append(this.replyCode);
+            sb.append(DASH);
+            sb.append(ext.serialize());
+            sb.append(CRLF);
+        }
+
+        sb.append(this.replyCode);
+        sb.append(SP);
+        sb.append(this.extensions.get(this.extensions.size() - 1).serialize());
+        sb.append(CRLF);
+
+        return sb.toString();
     }
 }

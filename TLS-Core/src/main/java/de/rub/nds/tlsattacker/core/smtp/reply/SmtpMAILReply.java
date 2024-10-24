@@ -8,24 +8,13 @@
  */
 package de.rub.nds.tlsattacker.core.smtp.reply;
 
-import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
-import de.rub.nds.tlsattacker.core.smtp.parser.MAILReplyParser;
-import de.rub.nds.tlsattacker.core.smtp.preparator.MAILReplyPreparator;
 import jakarta.xml.bind.annotation.XmlRootElement;
-import java.io.InputStream;
 
+/**
+ * Models the reply to the MAIL command.
+ *
+ * @see de.rub.nds.tlsattacker.core.smtp.command.SmtpMAILCommand
+ * @see SmtpReply
+ */
 @XmlRootElement
-public class SmtpMAILReply extends SmtpReply {
-    public SmtpMAILReply() {
-        super();
-    }
-
-    @Override
-    public MAILReplyParser getParser(SmtpContext context, InputStream stream) {
-        return new MAILReplyParser(stream);
-    }
-
-    public MAILReplyPreparator getPreparator(SmtpContext context) {
-        return new MAILReplyPreparator(context, this);
-    }
-}
+public class SmtpMAILReply extends SmtpReply {}

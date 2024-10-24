@@ -9,15 +9,15 @@
 package de.rub.nds.tlsattacker.core.smtp.command;
 
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
-import de.rub.nds.tlsattacker.core.smtp.parser.VRFYCommandParser;
-import de.rub.nds.tlsattacker.core.smtp.preparator.VRFYCommandPreparator;
+import de.rub.nds.tlsattacker.core.smtp.parser.command.VRFYCommandParser;
+import de.rub.nds.tlsattacker.core.smtp.preparator.command.VRFYCommandPreparator;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
 /**
- * This class represents an SMTP VRFY command, which is used to verify whether an e-mail address
- * exists. The VRFY command can have the parameters: username OR mailboxAddress OR username and
- * mailboxAddress.
+ * This class represents an SMTP VRFY command, which is used to verify whether a user exists: <br>
+ * C: VRFY jane <br>
+ * S: 250 Jane Doe &lt;jane.doe@upb.de&gt;
  */
 @XmlRootElement
 public class SmtpVRFYCommand extends SmtpCommand {
@@ -26,7 +26,7 @@ public class SmtpVRFYCommand extends SmtpCommand {
     private String username;
 
     public SmtpVRFYCommand() {
-        super(COMMAND_NAME, null);
+        super(COMMAND_NAME);
     }
 
     public SmtpVRFYCommand(String username) {

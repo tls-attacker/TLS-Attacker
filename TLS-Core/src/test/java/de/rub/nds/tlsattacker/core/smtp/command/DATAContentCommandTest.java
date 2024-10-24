@@ -22,8 +22,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.layer.data.Handler;
+import de.rub.nds.tlsattacker.core.layer.data.Preparator;
 import de.rub.nds.tlsattacker.core.layer.data.Serializer;
-import de.rub.nds.tlsattacker.core.smtp.parser.DATAContentParser;
+import de.rub.nds.tlsattacker.core.smtp.parser.command.DATAContentParser;
 import de.rub.nds.tlsattacker.core.state.Context;
 import de.rub.nds.tlsattacker.core.state.State;
 import java.io.ByteArrayInputStream;
@@ -67,11 +68,13 @@ public class DATAContentCommandTest {
         SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
 
         String content = lines[0] + CRLF + lines[1] + CRLF + lines[2] + CRLF + "." + CRLF;
-        SmtpDATAContentCommand dcc = new SmtpDATAContentCommand(content);
+        SmtpDATAContentCommand dcc = new SmtpDATAContentCommand(lines);
 
+        Preparator preparator = dcc.getPreparator(context);
         Serializer serializer = dcc.getSerializer(context);
+        preparator.prepare();
         serializer.serialize();
-        assertEquals(content + CRLF, serializer.getOutputStream().toString());
+        assertEquals(content, serializer.getOutputStream().toString());
     }
 
     @Test

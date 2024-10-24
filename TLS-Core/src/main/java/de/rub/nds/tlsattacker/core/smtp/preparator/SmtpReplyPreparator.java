@@ -8,14 +8,23 @@
  */
 package de.rub.nds.tlsattacker.core.smtp.preparator;
 
+import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.reply.SmtpReply;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 public class SmtpReplyPreparator<ReplyT extends SmtpReply> extends SmtpMessagePreparator<ReplyT> {
-    public SmtpReplyPreparator(Chooser chooser, ReplyT reply) {
-        super(chooser, reply);
+
+    protected final SmtpContext context;
+
+    public SmtpReplyPreparator(Chooser chooser, ReplyT message) {
+        super(chooser, message);
+        this.context = chooser.getContext().getSmtpContext();
     }
 
     @Override
     public void prepare() {}
+
+    public SmtpContext getContext() {
+        return context;
+    }
 }

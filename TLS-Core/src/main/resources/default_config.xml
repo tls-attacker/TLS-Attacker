@@ -1437,6 +1437,14 @@
     </defaultEchConfig>
     <addEncryptedClientHelloExtension>false</addEncryptedClientHelloExtension>
     <defaultMaxEchAlpnPadding>25</defaultMaxEchAlpnPadding>
+    <defaultSmtpReversePath>seal@upb.de</defaultSmtpReversePath>
+    <defaultSmtpMessage>Hello!</defaultSmtpMessage>
+    <defaultSmtpMessage>This is seal.</defaultSmtpMessage>
+    <defaultSmtpMessage>Bye!</defaultSmtpMessage>
+    <defaultSmtpAuth>PLAIN AHNlYWxAdXBiLmRlAHBhc3N3b3Jk</defaultSmtpAuth>
+    <defaultSmtpMailingList>members@seal.upb.de</defaultSmtpMailingList>
+    <defaultSmtpClientIdentity>seal.upb.de</defaultSmtpClientIdentity>
+    <defaultSmtpForwardPath>test@example.com</defaultSmtpForwardPath>
     <acceptOnlyFittingDtlsFragments>false</acceptOnlyFittingDtlsFragments>
     <acceptContentRewritingDtlsFragments>true</acceptContentRewritingDtlsFragments>
     <writeKeylogFile>false</writeKeylogFile>

@@ -11,8 +11,8 @@ package de.rub.nds.tlsattacker.core.smtp.command;
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.handler.MAILCommandHandler;
 import de.rub.nds.tlsattacker.core.smtp.parameters.SmtpParameters;
-import de.rub.nds.tlsattacker.core.smtp.parser.MAILCommandParser;
-import de.rub.nds.tlsattacker.core.smtp.preparator.MAILCommandPreparator;
+import de.rub.nds.tlsattacker.core.smtp.parser.command.MAILCommandParser;
+import de.rub.nds.tlsattacker.core.smtp.preparator.command.MAILCommandPreparator;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -21,7 +21,9 @@ import java.util.List;
 /**
  * This class represents an SMTP MAIL command, which is used to initiate a mail transaction. The
  * argument clause contains a reverse-path and may contain optional parameter. The reverse path
- * represents the senders mailbox.
+ * represents the senders mailbox. Example: <br>
+ * C: MAIL FROM: &lt;seal@upb.de&gt; <br>
+ * S: 250 2.1.0 Ok
  */
 @XmlRootElement
 public class SmtpMAILCommand extends SmtpCommand {
@@ -30,15 +32,16 @@ public class SmtpMAILCommand extends SmtpCommand {
 
     private String reversePath;
 
-    private List<SmtpParameters> MAILparameters;
+    private final List<SmtpParameters> MAILparameters;
 
     public SmtpMAILCommand() {
-        super(COMMAND, null);
+        super(COMMAND);
         this.MAILparameters = new ArrayList<>();
     }
 
     public SmtpMAILCommand(String reversePath) {
         super(COMMAND, reversePath);
+        this.reversePath = reversePath;
         this.MAILparameters = new ArrayList<>();
     }
 

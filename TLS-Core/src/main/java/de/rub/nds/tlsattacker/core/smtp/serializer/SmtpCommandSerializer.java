@@ -34,17 +34,17 @@ public class SmtpCommandSerializer<CommandT extends SmtpCommand>
 
     @Override
     protected byte[] serializeBytes() {
-        StringBuilder builder = new StringBuilder();
+        StringBuilder sb = new StringBuilder();
 
         boolean verbExists = this.command.getVerb() != null;
         boolean parametersExist = this.command.getParameters() != null;
 
-        if (verbExists) builder.append(this.command.getVerb());
-        if (verbExists && parametersExist) builder.append(SP);
-        if (parametersExist) builder.append(this.command.getParameters());
+        if (verbExists) sb.append(this.command.getVerb());
+        if (verbExists && parametersExist) sb.append(SP);
+        if (parametersExist) sb.append(this.command.getParameters());
 
-        builder.append(CRLF);
-        byte[] output = builder.toString().getBytes();
+        sb.append(CRLF);
+        byte[] output = sb.toString().getBytes();
         appendBytes(output);
         return getAlreadySerialized();
     }

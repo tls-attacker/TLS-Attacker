@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.http.HttpMessage;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacket;
+import de.rub.nds.tlsattacker.core.smtp.SmtpMessage;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.ArrayList;
@@ -50,6 +51,22 @@ public class MessageActionFactory {
             action = new SendAction(httpMessages);
         } else {
             action = new ReceiveAction(httpMessages);
+            action.setActionOptions(getFactoryReceiveActionOptions(tlsConfig));
+        }
+        action.setConnectionAlias(connection.getAlias());
+        return action;
+    }
+
+    public static MessageAction createSmtpAction(
+            Config tlsConfig,
+            AliasedConnection connection,
+            ConnectionEndType sendingConnectionEndType,
+            SmtpMessage... smtpMessages) {
+        MessageAction action;
+        if (connection.getLocalConnectionEndType() == sendingConnectionEndType) {
+            action = new SendAction(smtpMessages);
+        } else {
+            action = new ReceiveAction(smtpMessages);
             action.setActionOptions(getFactoryReceiveActionOptions(tlsConfig));
         }
         action.setConnectionAlias(connection.getAlias());

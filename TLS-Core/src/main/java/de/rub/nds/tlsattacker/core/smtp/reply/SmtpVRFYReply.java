@@ -9,52 +9,100 @@
 package de.rub.nds.tlsattacker.core.smtp.reply;
 
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
-import de.rub.nds.tlsattacker.core.smtp.SmtpMessage;
-import de.rub.nds.tlsattacker.core.smtp.parser.SmtpMessageParser;
-import de.rub.nds.tlsattacker.core.smtp.parser.VRFYCommandParser;
-import de.rub.nds.tlsattacker.core.smtp.preparator.SmtpMessagePreparator;
-import de.rub.nds.tlsattacker.core.smtp.preparator.VRFYReplyPreparator;
+import de.rub.nds.tlsattacker.core.smtp.parser.reply.SmtpReplyParser;
+import de.rub.nds.tlsattacker.core.smtp.parser.reply.VRFYReplyParser;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Models the reply to a VRFY command. If the user is associated with several mailboxes, the
+ * ambiguity has to be noted, usually by listing the alternatives: <br>
+ * C: VRFY jane <br>
+ * S: 250-Jane Doe &lt;jane.doe@upb.de&gt; <br>
+ * S: 250-Jane Smith &lt;jane.smith@upb.de&gt; <br>
+ * S: 250-Jane Lee &lt;jane.lee@upb.de&gt;
+ */
 @XmlRootElement
 public class SmtpVRFYReply extends SmtpReply {
 
-    private List<String> mailboxes = new LinkedList<>();
-    private List<String> lineContents;
+    public static class SmtpVRFYData {
+        String username;
+        String mailbox;
 
-    public SmtpVRFYReply() {}
+        SmtpVRFYData(String username, String mailbox) {
+            this.username = username;
+            this.mailbox = mailbox;
+        }
 
-    @Override
-    public SmtpMessageParser<? extends SmtpMessage> getParser(
-            SmtpContext context, InputStream stream) {
-        return new VRFYCommandParser(stream);
+        SmtpVRFYData(String mailbox) {
+            this.mailbox = mailbox;
+        }
+
+        public String getUsername() {
+            return username;
+        }
+
+        public String getMailbox() {
+            return mailbox;
+        }
+
+        public String serialize() {
+            StringBuilder sb = new StringBuilder();
+
+            if (this.username != null) {
+                sb.append(this.username);
+                sb.append(' ');
+            }
+            sb.append(this.mailbox);
+
+            return sb.toString();
+        }
     }
 
-    @Override
-    public SmtpMessagePreparator<? extends SmtpMessage> getPreparator(SmtpContext context) {
-        return new VRFYReplyPreparator(context, this);
-    }
-
-    public List<String> getMailboxes() {
-        return mailboxes;
-    }
-
-    public void setMailboxes(List<String> mailboxes) {
-        this.mailboxes = mailboxes;
-    }
+    private final List<SmtpVRFYData> data = new ArrayList<>();
 
     public void addMailbox(String mailbox) {
-        if (mailbox != null) this.mailboxes.add(mailbox);
+        this.data.add(new SmtpVRFYData(mailbox));
     }
 
-    public List<String> getLineContents() {
-        return lineContents;
+    public void addUsernameAndMailbox(String username, String mailbox) {
+        this.data.add(new SmtpVRFYData(username, mailbox));
     }
 
-    public void setLineContents(List<String> lineContents) {
-        this.lineContents = lineContents;
+    public List<SmtpVRFYData> getData() {
+        return data;
+    }
+
+    @Override
+    public SmtpReplyParser<? extends SmtpReply> getParser(SmtpContext context, InputStream stream) {
+        return new VRFYReplyParser(stream);
+    }
+
+    @Override
+    public String serialize() {
+        char SP = ' ';
+        char DASH = '-';
+        String CRLF = "\r\n";
+
+        StringBuilder sb = new StringBuilder();
+
+        String replyCodePrefix =
+                this.replyCode != null ? String.valueOf(this.replyCode) + DASH : "";
+
+        for (int i = 0; i < this.data.size() - 1; i++) {
+            SmtpVRFYData vrfyData = this.data.get(i);
+            sb.append(replyCodePrefix);
+            sb.append(vrfyData.serialize());
+            sb.append(CRLF);
+        }
+
+        sb.append(this.replyCode);
+        sb.append(SP);
+        sb.append(this.data.get(this.data.size() - 1).serialize());
+        sb.append(CRLF);
+
+        return sb.toString();
     }
 }

@@ -22,6 +22,7 @@ import de.rub.nds.tlsattacker.core.constants.StarttlsType;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.http.HttpRequestMessage;
 import de.rub.nds.tlsattacker.core.http.HttpResponseMessage;
+import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.protocol.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
@@ -72,40 +73,12 @@ import de.rub.nds.tlsattacker.core.quic.frame.HandshakeDoneFrame;
 import de.rub.nds.tlsattacker.core.quic.frame.PingFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.RetryPacket;
 import de.rub.nds.tlsattacker.core.quic.packet.VersionNegotiationPacket;
+import de.rub.nds.tlsattacker.core.smtp.command.*;
+import de.rub.nds.tlsattacker.core.smtp.reply.SmtpEHLOReply;
+import de.rub.nds.tlsattacker.core.smtp.reply.SmtpSTARTTLSReply;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceConfigurationUtil;
-import de.rub.nds.tlsattacker.core.workflow.action.BufferedGenericReceiveAction;
-import de.rub.nds.tlsattacker.core.workflow.action.BufferedSendAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ClearBuffersAction;
-import de.rub.nds.tlsattacker.core.workflow.action.CopyBuffersAction;
-import de.rub.nds.tlsattacker.core.workflow.action.CopyPreMasterSecretAction;
-import de.rub.nds.tlsattacker.core.workflow.action.EchConfigDnsRequestAction;
-import de.rub.nds.tlsattacker.core.workflow.action.EsniKeyDnsRequestAction;
-import de.rub.nds.tlsattacker.core.workflow.action.FlushSessionCacheAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ForwardDataAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ForwardMessagesAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ForwardRecordsAction;
-import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
-import de.rub.nds.tlsattacker.core.workflow.action.MessageActionFactory;
-import de.rub.nds.tlsattacker.core.workflow.action.PopAndSendAction;
-import de.rub.nds.tlsattacker.core.workflow.action.PopBufferedMessageAction;
-import de.rub.nds.tlsattacker.core.workflow.action.PopBufferedRecordAction;
-import de.rub.nds.tlsattacker.core.workflow.action.PopBuffersAction;
-import de.rub.nds.tlsattacker.core.workflow.action.PrintLastHandledApplicationDataAction;
-import de.rub.nds.tlsattacker.core.workflow.action.PrintSecretsAction;
-import de.rub.nds.tlsattacker.core.workflow.action.QuicPathChallengeAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ReceiveQuicTillAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ReceiveTillAction;
-import de.rub.nds.tlsattacker.core.workflow.action.RemBufferedChCiphersAction;
-import de.rub.nds.tlsattacker.core.workflow.action.RemBufferedChExtensionsAction;
-import de.rub.nds.tlsattacker.core.workflow.action.RenegotiationAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ResetConnectionAction;
-import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
-import de.rub.nds.tlsattacker.core.workflow.action.SendDynamicClientKeyExchangeAction;
-import de.rub.nds.tlsattacker.core.workflow.action.SendDynamicServerCertificateAction;
-import de.rub.nds.tlsattacker.core.workflow.action.SendDynamicServerKeyExchangeAction;
-import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
+import de.rub.nds.tlsattacker.core.workflow.action.*;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionOption;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.ArrayList;
@@ -153,6 +126,10 @@ public class WorkflowConfigurationFactory {
                 return createDynamicClientRenegotiationWithoutResumption();
             case HTTPS:
                 return createHttpsWorkflow();
+            case SMTP:
+                return createSmtpWorkflow();
+            case SMTP_STARTTLS:
+                return createSmtpStarttlsWorkflow();
             case RESUMPTION:
                 return createResumptionWorkflow();
             case FULL_RESUMPTION:
@@ -650,6 +627,59 @@ public class WorkflowConfigurationFactory {
         WorkflowTrace trace = createHandshakeWorkflow(connection);
         appendHttpMessages(connection, trace);
         return trace;
+    }
+
+    private WorkflowTrace createSmtpWorkflow() {
+        AliasedConnection connection = getConnection();
+        WorkflowTrace trace = new WorkflowTrace();
+        if (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
+            trace.addTlsAction(
+                    MessageActionFactory.createSmtpAction(
+                            config, connection, ConnectionEndType.CLIENT, new SmtpEHLOCommand()));
+            trace.addTlsAction(
+                    MessageActionFactory.createSmtpAction(
+                            config, connection, ConnectionEndType.SERVER, new SmtpEHLOReply()));
+        }
+        appendSmtpCommandAndReplyActions(connection, trace, new SmtpEHLOCommand());
+        //        appendSmtpCommandAndReplyActions(connection, trace, new SmtpHELPCommand());
+        appendSmtpCommandAndReplyActions(connection, trace, new SmtpNOOPCommand());
+        appendSmtpCommandAndReplyActions(connection, trace, new SmtpMAILCommand());
+        appendSmtpCommandAndReplyActions(connection, trace, new SmtpRCPTCommand());
+        appendSmtpCommandAndReplyActions(connection, trace, new SmtpDATACommand());
+        appendSmtpCommandAndReplyActions(connection, trace, new SmtpDATAContentCommand("Test"));
+        appendSmtpCommandAndReplyActions(connection, trace, new SmtpQUITCommand());
+
+        return trace;
+    }
+
+    private WorkflowTrace createSmtpStarttlsWorkflow() {
+
+        AliasedConnection connection = getConnection();
+        WorkflowTrace trace = createDynamicHandshakeWorkflow(connection);
+        // kind of dirty changing it from the back, but otherwise we have to rework the whole
+        // dynamic handshake mechanism
+        trace.addTlsAction(0, new SendAction(new SmtpSTARTTLSCommand()));
+        trace.addTlsAction(1, new ReceiveAction(new SmtpSTARTTLSReply()));
+        trace.addTlsAction(2, new STARTTLSAction());
+
+        trace.addTlsActions(createSmtpWorkflow().getTlsActions());
+
+        return trace;
+    }
+
+    private void appendSmtpCommandAndReplyActions(
+            AliasedConnection connection, WorkflowTrace trace, SmtpCommand command) {
+        MessageAction clientAction =
+                MessageActionFactory.createSmtpAction(
+                        config, connection, ConnectionEndType.CLIENT, command);
+        trace.addTlsAction(clientAction);
+        MessageAction serverAction =
+                MessageActionFactory.createSmtpAction(
+                        config,
+                        connection,
+                        ConnectionEndType.SERVER,
+                        SmtpContext.getExpectedReplyType(command));
+        trace.addTlsAction(serverAction);
     }
 
     private WorkflowTrace createHttpsDynamicWorkflow() {

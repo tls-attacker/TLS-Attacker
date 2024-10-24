@@ -10,13 +10,20 @@ package de.rub.nds.tlsattacker.core.smtp.reply;
 
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.SmtpMessage;
-import de.rub.nds.tlsattacker.core.smtp.parser.SmtpMessageParser;
+import de.rub.nds.tlsattacker.core.smtp.parser.reply.SmtpGenericReplyParser;
+import de.rub.nds.tlsattacker.core.smtp.parser.reply.SmtpReplyParser;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
+/**
+ * Models unrecognized replies. This should not happen in practice, but is included for
+ * completeness.
+ */
+@XmlRootElement
 public class SmtpUnknownReply extends SmtpReply {
     @Override
-    public SmtpMessageParser<? extends SmtpMessage> getParser(
+    public SmtpReplyParser<? extends SmtpMessage> getParser(
             SmtpContext context, InputStream stream) {
-        throw new UnsupportedOperationException("Unknown replies are not supported yet.");
+        return new SmtpGenericReplyParser<>(stream);
     }
 }

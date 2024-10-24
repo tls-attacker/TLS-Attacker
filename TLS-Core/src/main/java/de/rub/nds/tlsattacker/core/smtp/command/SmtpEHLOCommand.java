@@ -10,8 +10,8 @@ package de.rub.nds.tlsattacker.core.smtp.command;
 
 import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.handler.EHLOCommandHandler;
-import de.rub.nds.tlsattacker.core.smtp.parser.EHLOCommandParser;
-import de.rub.nds.tlsattacker.core.smtp.preparator.EHLOCommandPreparator;
+import de.rub.nds.tlsattacker.core.smtp.parser.command.EHLOCommandParser;
+import de.rub.nds.tlsattacker.core.smtp.preparator.command.EHLOCommandPreparator;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import org.bouncycastle.util.IPAddress;
@@ -19,7 +19,14 @@ import org.bouncycastle.util.IPAddress;
 /**
  * This class represents an SMTP EHLO command, which is used to identify the client to the server.
  * The EHLO command mostly replaces the old HELO command: The difference is that EHLO can be used
- * with an address literal as well as a domain, rather than just a domain.
+ * with an address literal as well as a domain, rather than just a domain. <br>
+ * Example: <br>
+ * C: EHLO client.example.com <br>
+ * S: 250-smtp.example.com Hello client.example.com <br>
+ * S: 250-SIZE 35882577 <br>
+ * S: 250-PIPELINING <br>
+ * S: 250-AUTH PLAIN LOGIN <br>
+ * S: 250 8BITMIME
  */
 @XmlRootElement
 public class SmtpEHLOCommand extends SmtpCommand {

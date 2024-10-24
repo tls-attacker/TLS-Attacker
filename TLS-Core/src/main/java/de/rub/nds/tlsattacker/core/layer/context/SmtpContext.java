@@ -10,14 +10,23 @@ package de.rub.nds.tlsattacker.core.layer.context;
 
 import de.rub.nds.tlsattacker.core.smtp.command.*;
 import de.rub.nds.tlsattacker.core.smtp.reply.*;
+import de.rub.nds.tlsattacker.core.smtp.reply.SmtpDATAContentReply;
+import de.rub.nds.tlsattacker.core.smtp.reply.SmtpEHLOReply;
+import de.rub.nds.tlsattacker.core.smtp.reply.SmtpEXPNReply;
+import de.rub.nds.tlsattacker.core.smtp.reply.SmtpVRFYReply;
 import de.rub.nds.tlsattacker.core.state.Context;
 import java.util.ArrayList;
 import java.util.List;
 
 public class SmtpContext extends LayerContext {
 
+    // describes the source of the mail (supplied via MAIL FROM)
     private List<String> reversePathBuffer = new ArrayList<>();
-    private List<String> forwardPathBuffer = new ArrayList<>();
+
+    // describes the destination of the mail (supplied via RCPT TO)
+    private String forwardPathBuffer = "";
+
+    private List<String> recipientBuffer = new ArrayList<>();
     private List<String> mailDataBuffer = new ArrayList<>();
     private String clientIdentity;
     private boolean serverOnlySupportsEHLO = false;
@@ -29,8 +38,11 @@ public class SmtpContext extends LayerContext {
     // server has
     private boolean serverAcknowledgedClose = false;
 
+    // store the old context to evaluate command injection type vulns with SmtpContext through RESET
+    private SmtpContext oldContext;
+
     // SMTP is a back and forth of commands and replies. We need to keep track of each to correctly
-    // get the type of the reply
+    // get the type of the reply, because the reply type cannot be determined by the content alone.
     private SmtpCommand lastCommand = new SmtpInitialGreetingDummy();
 
     public SmtpContext(Context context) {
@@ -39,8 +51,19 @@ public class SmtpContext extends LayerContext {
 
     public void clearBuffers() {
         reversePathBuffer.clear();
-        forwardPathBuffer.clear();
+        forwardPathBuffer = "";
         mailDataBuffer.clear();
+    }
+
+    /**
+     * Reset the context as intended by the RESET command. The old context is stored to evaluate
+     * command injection type vulns with TLSStateVulnFinder.
+     */
+    public void resetContext() {
+        oldContext = new SmtpContext(getContext());
+        oldContext.setReversePathBuffer(getReversePathBuffer());
+        oldContext.setForwardPathBuffer(getForwardPathBuffer());
+        oldContext.setMailDataBuffer(getMailDataBuffer());
     }
 
     public void insertReversePath(String reversePath) {
@@ -51,7 +74,7 @@ public class SmtpContext extends LayerContext {
         return reversePathBuffer;
     }
 
-    public List<String> getForwardPathBuffer() {
+    public String getForwardPathBuffer() {
         return forwardPathBuffer;
     }
 
@@ -63,7 +86,7 @@ public class SmtpContext extends LayerContext {
         this.reversePathBuffer = reversePathBuffer;
     }
 
-    public void setForwardPathBuffer(List<String> forwardPathBuffer) {
+    public void setForwardPathBuffer(String forwardPathBuffer) {
         this.forwardPathBuffer = forwardPathBuffer;
     }
 
@@ -89,6 +112,17 @@ public class SmtpContext extends LayerContext {
 
     public SmtpReply getExpectedNextReplyType() {
         SmtpCommand command = getLastCommand();
+        return getExpectedReplyType(command);
+    }
+
+    /**
+     * Given a command return an instance of the Reply object expected fpr ot. Raises an exception
+     * when a command is not implemented.
+     *
+     * @param command The command for which to get the expected reply
+     * @return The expected reply object
+     */
+    public static SmtpReply getExpectedReplyType(SmtpCommand command) {
         if (command == null) {
             return null;
         } else {
@@ -98,17 +132,33 @@ public class SmtpContext extends LayerContext {
                 return new SmtpEHLOReply();
             } else if (command instanceof SmtpNOOPCommand) {
                 return new SmtpNOOPReply();
+            } else if (command instanceof SmtpAUTHCommand) {
+                return new SmtpAUTHReply();
+            } else if (command instanceof SmtpEXPNCommand) {
+                return new SmtpEXPNReply();
+            } else if (command instanceof SmtpVRFYCommand) {
+                return new SmtpVRFYReply();
+            } else if (command instanceof SmtpMAILCommand) {
+                return new SmtpMAILReply();
+            } else if (command instanceof SmtpRSETCommand) {
+                return new SmtpRSETReply();
             } else if (command instanceof SmtpInitialGreetingDummy) {
                 return new SmtpInitialGreeting();
             } else if (command instanceof SmtpDATACommand) {
                 return new SmtpDATAReply();
+            } else if (command instanceof SmtpRCPTCommand) {
+                return new SmtpRCPTReply();
             } else if (command instanceof SmtpDATAContentCommand) {
                 return new SmtpDATAContentReply();
+            } else if (command instanceof SmtpHELPCommand) {
+                return new SmtpHELPReply();
             } else if (command instanceof SmtpQUITCommand) {
                 return new SmtpQUITReply();
+            } else if (command instanceof SmtpSTARTTLSCommand) {
+                return new SmtpSTARTTLSReply();
             } else {
                 throw new UnsupportedOperationException(
-                        "No reply implemented for :" + command.getClass());
+                        "No reply implemented for class in SmtpContext:" + command.getClass());
             }
         }
     }
@@ -135,5 +185,13 @@ public class SmtpContext extends LayerContext {
 
     public void setServerAcknowledgedClose(boolean serverAcknowledgedClose) {
         this.serverAcknowledgedClose = serverAcknowledgedClose;
+    }
+
+    public List<String> getRecipientBuffer() {
+        return recipientBuffer;
+    }
+
+    public void setRecipientBuffer(List<String> recipientBuffer) {
+        this.recipientBuffer = recipientBuffer;
     }
 }
