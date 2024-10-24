@@ -16,10 +16,11 @@ import java.io.InputStream;
 
 /**
  * Represents the EXPN command in SMTP, which queries a mailing list for the members.
- * <p>C: EXPN staff@upb.de</p>
- * <p>S: 250-Jane Doe &lt;jane.doe@upb.de&gt;</p>
- * <p>S: 250-John Smith &lt;john.smith@upb.de&gt;</p>
- * <p>S: 250-Bob Lee &lt;bob.lee@upb.de&gt;</p>
+ *
+ * <p>C: EXPN staff@upb.de
+ * <p>S: 250-Jane Doe &lt;jane.doe@upb.de&gt;
+ * <p>S: 250-John Smith &lt;john.smith@upb.de&gt;
+ * <p>S: 250-Bob Lee &lt;bob.lee@upb.de&gt;
  */
 @XmlRootElement
 public class SmtpEXPNCommand extends SmtpCommand {

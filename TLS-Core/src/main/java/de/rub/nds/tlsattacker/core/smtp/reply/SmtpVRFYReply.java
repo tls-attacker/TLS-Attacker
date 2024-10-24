@@ -17,13 +17,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Models the reply to a VRFY command. If the user is associated with several mailboxes,
- * the ambiguity has to be noted, usually by listing the alternatives:
- * <p>C: VRFY jane</p>
- * <p>S: 250-Jane Doe &lt;jane.doe@upb.de&gt;</p>
- * <p>S: 250-Jane Smith &lt;jane.smith@upb.de&gt;</p>
- * <p>S: 250-Jane Lee &lt;jane.lee@upb.de&gt;</p>
- *
+ * Models the reply to a VRFY command. If the user is associated with several mailboxes, the
+ * ambiguity has to be noted, usually by listing the alternatives:
+ * <p>C: VRFY jane
+ * <p>S: 250-Jane Doe &lt;jane.doe@upb.de&gt;
+ * <p>S: 250-Jane Smith &lt;jane.smith@upb.de&gt;
+ * <p>S: 250-Jane Lee &lt;jane.lee@upb.de&gt;
  */
 @XmlRootElement
 public class SmtpVRFYReply extends SmtpReply {

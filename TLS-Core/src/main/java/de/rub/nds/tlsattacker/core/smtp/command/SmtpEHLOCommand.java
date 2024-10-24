@@ -21,14 +21,13 @@ import org.bouncycastle.util.IPAddress;
  * The EHLO command mostly replaces the old HELO command: The difference is that EHLO can be used
  * with an address literal as well as a domain, rather than just a domain.
  *
- * Example:
- * <p>C: EHLO client.example.com</p>
- * <p>S: 250-smtp.example.com Hello client.example.com</p>
- * <p>S: 250-SIZE 35882577</p>
- * <p>S: 250-PIPELINING</p>
- * <p>S: 250-AUTH PLAIN LOGIN</p>
- * <p>S: 250 8BITMIME</p>
- *
+ * <p>Example:
+ * <p>C: EHLO client.example.com
+ * <p>S: 250-smtp.example.com Hello client.example.com
+ * <p>S: 250-SIZE 35882577
+ * <p>S: 250-PIPELINING
+ * <p>S: 250-AUTH PLAIN LOGIN
+ * <p>S: 250 8BITMIME
  */
 @XmlRootElement
 public class SmtpEHLOCommand extends SmtpCommand {

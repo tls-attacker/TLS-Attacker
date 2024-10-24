@@ -17,6 +17,7 @@ import java.util.List;
 
 /**
  * Models the reply to the EXPN command.
+ *
  * @see de.rub.nds.tlsattacker.core.smtp.command.SmtpEXPNCommand
  */
 @XmlRootElement

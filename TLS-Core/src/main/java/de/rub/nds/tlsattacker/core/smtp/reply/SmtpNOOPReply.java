@@ -12,6 +12,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  * Models the reply to the NOOP command.
+ *
  * @see de.rub.nds.tlsattacker.core.smtp.command.SmtpNOOPCommand
  * @see SmtpReply
  */

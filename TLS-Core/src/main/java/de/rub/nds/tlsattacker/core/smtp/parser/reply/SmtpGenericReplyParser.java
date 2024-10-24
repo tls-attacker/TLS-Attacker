@@ -14,11 +14,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The SmtpGenericReplyParser is used to parse simple SMTP replies that don't require their own parsing logic.
- * The parser reads the whole reply and checks for reply codes and human-readable messages.
+ * The SmtpGenericReplyParser is used to parse simple SMTP replies that don't require their own
+ * parsing logic. The parser reads the whole reply and checks for reply codes and human-readable
+ * messages.
+ *
  * @param <ReplyT> The specific SMTP reply class, i.e. child class of SmtpReply.
  */
-
 public class SmtpGenericReplyParser<ReplyT extends SmtpReply> extends SmtpReplyParser<ReplyT> {
 
     public SmtpGenericReplyParser(InputStream inputStream) {

@@ -14,10 +14,9 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  * The RESET command aborts the current mail transaction. Buffers with senders, recipients and mail
- * data are cleared, but we store the old context for debugging purposes.
- * Example:
- * <p>C: RSET</p>
- * <p>S: 250 2.0.0 Ok</p>
+ * data are cleared, but we store the old context for debugging purposes. Example:
+ * <p>C: RSET
+ * <p>S: 250 2.0.0 Ok
  */
 @XmlRootElement
 public class SmtpRSETCommand extends SmtpCommand {

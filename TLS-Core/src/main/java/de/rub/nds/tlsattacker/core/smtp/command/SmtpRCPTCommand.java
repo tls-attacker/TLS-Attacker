@@ -20,10 +20,9 @@ import java.util.List;
 /**
  * This class represents an SMTP RCPT command, which is used to identify an individual recipient of
  * the mail data; multiple recipients are specified by multiple uses of this command. The argument
- * clause contains a forward-path and may contain optional parameters.
- * Example:
- * <p>C: RCPT TO:&lt;recipient@example.com&gt;</p>
- * <p>S: 250 2.1.5 Ok</p>
+ * clause contains a forward-path and may contain optional parameters. Example:
+ * <p>C: RCPT TO:&lt;recipient@example.com&gt;
+ * <p>S: 250 2.1.5 Ok
  */
 @XmlRootElement
 public class SmtpRCPTCommand extends SmtpCommand {

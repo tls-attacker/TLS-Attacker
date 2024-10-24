@@ -36,7 +36,8 @@ public class DATAContentReplyTest {
         };
 
         for (String reply : validReplies) {
-            SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
+            SmtpContext context =
+                    new SmtpContext(new Context(new State(), new OutboundConnection()));
             SmtpDATAContentReply dataContentReply = new SmtpDATAContentReply();
             SmtpReplyParser parser =
                     dataContentReply.getParser(

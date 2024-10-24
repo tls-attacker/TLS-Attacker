@@ -19,8 +19,9 @@ import java.io.InputStream;
  * authenticate the client to the server. So far only the PLAIN mechanism is supported. Multistep
  * authentication is not supported.
  *
- * <p>Example: C: AUTH PLAIN AHNlYWxAdXBiLmRlAHBhc3N3b3Jk</p>
- * <p>S: 235 2.7.0 Authentication successful</p>
+ * <p>Example: C: AUTH PLAIN AHNlYWxAdXBiLmRlAHBhc3N3b3Jk
+ *
+ * <p>S: 235 2.7.0 Authentication successful
  *
  * @see <a href="https://datatracker.ietf.org/doc/html/rfc4954">RFC 4954</a>
  */

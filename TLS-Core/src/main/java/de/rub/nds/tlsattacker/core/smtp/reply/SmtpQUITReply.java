@@ -14,6 +14,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  * Models the reply to the QUIT command.
+ *
  * @see de.rub.nds.tlsattacker.core.smtp.command.SmtpQUITCommand
  * @see SmtpReply
  */

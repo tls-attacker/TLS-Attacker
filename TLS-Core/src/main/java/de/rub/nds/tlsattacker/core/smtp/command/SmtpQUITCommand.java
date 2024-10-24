@@ -16,8 +16,8 @@ import jakarta.xml.bind.annotation.XmlRootElement;
  * The QUIT command causes the server to send an 221 OK reply, and then close the transmission
  * channel. The client SHOULD NOT close the transmission channel until it receives the reply.
  * Example:
- * <p>C: QUIT</p>
- * <p>S: 221 2.0.0 Bye</p>
+ * <p>C: QUIT
+ * <p>S: 221 2.0.0 Bye
  */
 @XmlRootElement
 public class SmtpQUITCommand extends SmtpCommand {

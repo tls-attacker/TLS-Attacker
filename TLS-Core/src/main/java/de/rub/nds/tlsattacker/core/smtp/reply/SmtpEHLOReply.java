@@ -18,6 +18,7 @@ import java.util.List;
 
 /**
  * Models the reply to the EHLO command.
+ *
  * @see de.rub.nds.tlsattacker.core.smtp.command.SmtpEHLOCommand
  */
 @XmlRootElement

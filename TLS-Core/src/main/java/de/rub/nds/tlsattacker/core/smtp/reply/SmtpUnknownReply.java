@@ -14,9 +14,7 @@ import de.rub.nds.tlsattacker.core.smtp.parser.reply.SmtpReplyParser;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
-/**
-    Models unrecognized replies. This class is not supported yet.
- */
+/** Models unrecognized replies. This class is not supported yet. */
 @XmlRootElement
 public class SmtpUnknownReply extends SmtpReply {
 
