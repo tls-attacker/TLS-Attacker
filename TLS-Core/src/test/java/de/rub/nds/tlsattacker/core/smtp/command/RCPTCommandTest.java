@@ -202,6 +202,6 @@ public class RCPTCommandTest {
 
         assertEquals(context.getRecipientBuffer().get(0), rcptCommand.getRecipient());
         assertTrue(context.getReversePathBuffer().isEmpty());
-        assertTrue(context.getForwardPathBuffer().isEmpty());
+        assertTrue(context.getForwardPathBuffer().equals("seal@upb.de"));
     }
 }

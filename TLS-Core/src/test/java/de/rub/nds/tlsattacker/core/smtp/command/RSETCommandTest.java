@@ -67,7 +67,7 @@ public class RSETCommandTest {
         resetCommand.getHandler(context).adjustContext(resetCommand);
 
         assertTrue(context.getReversePathBuffer().isEmpty());
-        assertTrue(context.getForwardPathBuffer().isEmpty());
+        assertTrue(context.getForwardPathBuffer().isBlank());
         assertEquals(context.getMailDataBuffer().size(), 0);
     }
 }

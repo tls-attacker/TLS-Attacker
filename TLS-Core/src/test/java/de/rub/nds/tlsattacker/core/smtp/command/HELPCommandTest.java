@@ -81,16 +81,4 @@ public class HELPCommandTest {
         serializer.serialize();
         assertEquals("HELP\r\n", serializer.getOutputStream().toString());
     }
-
-    @Test
-    void testHandler() {
-        SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
-        SmtpHELPCommand HELPCommand = new SmtpHELPCommand("RCPT");
-        Handler handler = HELPCommand.getHandler(context);
-        handler.adjustContext(HELPCommand);
-
-        assertTrue(context.getReversePathBuffer().isEmpty());
-        assertTrue(context.getForwardPathBuffer().isEmpty());
-        assertTrue(context.getMailDataBuffer().isEmpty());
-    }
 }

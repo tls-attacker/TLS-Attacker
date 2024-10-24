@@ -20,8 +20,12 @@ import java.util.List;
 
 public class SmtpContext extends LayerContext {
 
+    // describes the source of the mail (supplied via MAIL FROM)
     private List<String> reversePathBuffer = new ArrayList<>();
-    private List<String> forwardPathBuffer = new ArrayList<>();
+
+    // describes the destination of the mail (supplied via RCPT TO)
+    private String forwardPathBuffer = "";
+
     private List<String> recipientBuffer = new ArrayList<>();
     private List<String> mailDataBuffer = new ArrayList<>();
     private String clientIdentity;
@@ -47,7 +51,7 @@ public class SmtpContext extends LayerContext {
 
     public void clearBuffers() {
         reversePathBuffer.clear();
-        forwardPathBuffer.clear();
+        forwardPathBuffer = "";
         mailDataBuffer.clear();
     }
 
@@ -70,7 +74,7 @@ public class SmtpContext extends LayerContext {
         return reversePathBuffer;
     }
 
-    public List<String> getForwardPathBuffer() {
+    public String getForwardPathBuffer() {
         return forwardPathBuffer;
     }
 
@@ -82,7 +86,7 @@ public class SmtpContext extends LayerContext {
         this.reversePathBuffer = reversePathBuffer;
     }
 
-    public void setForwardPathBuffer(List<String> forwardPathBuffer) {
+    public void setForwardPathBuffer(String forwardPathBuffer) {
         this.forwardPathBuffer = forwardPathBuffer;
     }
 

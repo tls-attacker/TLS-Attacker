@@ -24,8 +24,8 @@ public class RCPTCommandHandler extends SmtpCommandHandler<SmtpRCPTCommand> {
      */
     @Override
     public void adjustContextSpecific(SmtpRCPTCommand smtpRCPTCommand) {
+        this.getContext().setForwardPathBuffer(smtpRCPTCommand.getRecipient());
         List<String> recipients = this.getContext().getRecipientBuffer();
-        recipients.add(smtpRCPTCommand.getRecipient());
-        this.getContext().setRecipientBuffer(recipients);
+        recipients.add(this.getContext().getForwardPathBuffer());
     }
 }
