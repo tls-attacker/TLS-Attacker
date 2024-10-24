@@ -16,8 +16,8 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
 /**
- * Models unrecognized replies.
- * This should not happen in practice, but is included for completeness.
+ * Models unrecognized replies. This should not happen in practice, but is included for
+ * completeness.
  */
 @XmlRootElement
 public class SmtpUnknownReply extends SmtpReply {
