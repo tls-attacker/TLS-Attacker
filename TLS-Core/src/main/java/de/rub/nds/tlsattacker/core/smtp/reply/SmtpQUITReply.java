@@ -12,6 +12,12 @@ import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
 import de.rub.nds.tlsattacker.core.smtp.handler.QUITReplyHandler;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
+/**
+ * Models the reply to the QUIT command.
+ *
+ * @see de.rub.nds.tlsattacker.core.smtp.command.SmtpQUITCommand
+ * @see SmtpReply
+ */
 @XmlRootElement
 public class SmtpQUITReply extends SmtpReply {
     public QUITReplyHandler getHandler(SmtpContext context) {

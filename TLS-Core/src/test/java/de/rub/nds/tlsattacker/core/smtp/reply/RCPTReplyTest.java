@@ -60,7 +60,8 @@ class RCPTReplyTest {
         };
 
         for (String reply : validReplies) {
-            SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
+            SmtpContext context =
+                    new SmtpContext(new Context(new State(), new OutboundConnection()));
             SmtpRCPTReply RCPT = new SmtpRCPTReply();
             SmtpReplyParser parser =
                     RCPT.getParser(
@@ -77,7 +78,8 @@ class RCPTReplyTest {
         String[] invalidReplies = {"321 No such user here\r\n", "123 Everything fine\r\n"};
 
         for (String reply : invalidReplies) {
-            SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
+            SmtpContext context =
+                    new SmtpContext(new Context(new State(), new OutboundConnection()));
             SmtpRCPTReply RCPT = new SmtpRCPTReply();
             SmtpReplyParser parser =
                     RCPT.getParser(
@@ -95,7 +97,8 @@ class RCPTReplyTest {
         };
 
         for (String reply : invalidReplies) {
-            SmtpContext context = new SmtpContext(new Context(new State(), new OutboundConnection()));
+            SmtpContext context =
+                    new SmtpContext(new Context(new State(), new OutboundConnection()));
             SmtpRCPTReply RCPT = new SmtpRCPTReply();
             SmtpReplyParser parser =
                     RCPT.getParser(

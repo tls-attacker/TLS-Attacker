@@ -17,9 +17,9 @@ import java.io.InputStream;
 /**
  * This class represents the AUTH command of the SMTP protocol. The AUTH command is used to
  * authenticate the client to the server. So far only the PLAIN mechanism is supported. Multistep
- * authentication is not supported.
- *
- * <p>Example: C: AUTH PLAIN AHNlYWxAdXBiLmRlAHBhc3N3b3Jk S: 235 2.7.0 Authentication successful
+ * authentication is not supported. Example: <br>
+ * C: AUTH PLAIN AHNlYWxAdXBiLmRlAHBhc3N3b3Jk <br>
+ * S: 235 2.7.0 Authentication successful
  *
  * @see <a href="https://datatracker.ietf.org/doc/html/rfc4954">RFC 4954</a>
  */

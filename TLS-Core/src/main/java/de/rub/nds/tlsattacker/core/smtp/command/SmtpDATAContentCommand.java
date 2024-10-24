@@ -16,6 +16,10 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.util.List;
 
+/**
+ * Models the content associated with the DATA command. This can be any text spanning over several
+ * lines and ending with a terminating line containing only one dot: &lt;CRLF&gt;.&lt;/CRLF&gt;.
+ */
 @XmlRootElement
 public class SmtpDATAContentCommand extends SmtpCommand {
     private List<String> lines;

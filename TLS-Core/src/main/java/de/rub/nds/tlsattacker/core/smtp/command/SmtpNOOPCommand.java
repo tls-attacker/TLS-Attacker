@@ -10,13 +10,12 @@ package de.rub.nds.tlsattacker.core.smtp.command;
 
 import jakarta.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement
 /**
- * Implements the NOOP command, which does nothing.
- * Example:
- * C: NOOP
+ * Implements the NOOP command, which does nothing. Example: <br>
+ * C: NOOP <br>
  * S: 250 2.0.0 Ok
  */
+@XmlRootElement
 public class SmtpNOOPCommand extends SmtpCommand {
     private static final String COMMAND = "NOOP";
 

@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.smtp.reply;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import de.rub.nds.tlsattacker.core.smtp.parser.reply.SmtpGenericReplyParser;
-
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.Test;

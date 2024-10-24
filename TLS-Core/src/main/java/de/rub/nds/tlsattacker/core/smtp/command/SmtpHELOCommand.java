@@ -20,17 +20,16 @@ import java.io.InputStream;
  * This class represents an SMTP HELO command, which is used to identify the client to the server.
  * The HELO command is used with a domain, rather than an address literal. Although it is very
  * similar to the EHLO command, it is implemented not as a subclass, because it does carry some
- * implications regarding the client version and how to handle messages.
- *
- * <p>SMTP HELO does not have its own reply, because the HELO Reply is a special case of the EHLO
- * reply.
- * Example:
- * C: EHLO upb.de
- * S: 250-upb.de Hello
- * S: 250-SIZE 35882577
- * S: 250-PIPELINING
- * S: 250-AUTH PLAIN LOGIN
+ * implications regarding the client version and how to handle messages. <br>
+ * SMTP HELO does not have its own reply, because the HELO Reply is a special case of the EHLO
+ * reply. Example: <br>
+ * C: EHLO upb.de <br>
+ * S: 250-upb.de Hello <br>
+ * S: 250-SIZE 35882577 <br>
+ * S: 250-PIPELINING <br>
+ * S: 250-AUTH PLAIN LOGIN/p> <br>
  * S: 250 8BITMIME
+ *
  * @see SmtpEHLOCommand
  * @see SmtpEHLOReply
  */
