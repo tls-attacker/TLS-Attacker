@@ -14,7 +14,6 @@ import de.rub.nds.tlsattacker.core.smtp.preparator.command.EXPNCommandPreparator
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
-@XmlRootElement
 /**
  * Represents the EXPN command in SMTP, which queries a mailing list for the members.
  * C: EXPN staff@upb.de
@@ -22,6 +21,7 @@ import java.io.InputStream;
  * S: 250-John Smith <john.smith@upb.de>
  * S: 250-Bob Lee <bob.lee@upb.de>
  */
+@XmlRootElement
 public class SmtpEXPNCommand extends SmtpCommand {
 
     private static final String COMMAND_NAME = "EXPN";

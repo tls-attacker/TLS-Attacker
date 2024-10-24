@@ -10,5 +10,10 @@ package de.rub.nds.tlsattacker.core.smtp.reply;
 
 import jakarta.xml.bind.annotation.XmlRootElement;
 
+/**
+ * Models the content of the DATA command.
+ * @see de.rub.nds.tlsattacker.core.smtp.command.SmtpDATAContentCommand
+ * @see SmtpReply
+ */
 @XmlRootElement
 public class SmtpDATAContentReply extends SmtpReply {}

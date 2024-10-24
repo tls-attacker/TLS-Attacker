@@ -16,6 +16,14 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Models the reply to a VRFY command. If the user is associated with several mailboxes,
+ * the ambiguity has to be noted, usually by listing the alternatives:
+ *  * C: VRFY jane
+ *  * S: 250-Jane Doe <jane.doe@upb.de>
+ *  * S: 250-Jane Smith <jane.smith@upb.de>
+ *  * S: 250-Jane Lee <jane.lee@upb.de>
+ */
 @XmlRootElement
 public class SmtpVRFYReply extends SmtpReply {
 

@@ -13,6 +13,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 /**
  * This class represents the initial greeting of the SMTP server when a connection is established.
  * It does not have a command counterpart, but follows the same structure as the other replies.
+ * @see SmtpReply
  */
 @XmlRootElement
 public class SmtpInitialGreeting extends SmtpReply {

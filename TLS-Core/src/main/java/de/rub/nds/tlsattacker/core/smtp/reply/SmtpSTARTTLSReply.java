@@ -10,5 +10,10 @@ package de.rub.nds.tlsattacker.core.smtp.reply;
 
 import jakarta.xml.bind.annotation.XmlRootElement;
 
+/**
+ * Models the reply to the STARTTLS command.
+ * @see de.rub.nds.tlsattacker.core.smtp.command.SmtpSTARTTLSCommand
+ * @see SmtpReply
+ */
 @XmlRootElement
 public class SmtpSTARTTLSReply extends SmtpReply {}

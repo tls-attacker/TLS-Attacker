@@ -16,6 +16,10 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Models the reply to the EHLO command.
+ * @see de.rub.nds.tlsattacker.core.smtp.command.SmtpEHLOCommand
+ */
 @XmlRootElement
 public class SmtpEHLOReply extends SmtpReply {
     private String domain;

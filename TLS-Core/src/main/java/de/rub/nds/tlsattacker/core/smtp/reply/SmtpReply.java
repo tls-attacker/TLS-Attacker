@@ -20,6 +20,12 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Base class for modelling replies to SMTP commands. Usually consists of status code and human-readable
+ * message associated with it. For example:
+ * C: MAIL FROM:<seal@upb.de>
+ * S: 250 Ok
+ */
 @XmlRootElement
 public class SmtpReply extends SmtpMessage {
 

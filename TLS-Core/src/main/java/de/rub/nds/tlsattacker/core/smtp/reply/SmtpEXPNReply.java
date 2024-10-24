@@ -15,6 +15,10 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Models the reply to the EXPN command.
+ * @see de.rub.nds.tlsattacker.core.smtp.command.SmtpEXPNCommand
+ */
 @XmlRootElement
 public class SmtpEXPNReply extends SmtpReply {
     public static class SmtpEXPNData {
