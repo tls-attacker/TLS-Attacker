@@ -104,7 +104,6 @@ public class TlsSignatureUtil {
                         toBeHashedAndSigned,
                         (RsaPkcs1SignatureComputations) computations);
                 break;
-            case RSA_PSS_RSAE:
             case RSA_SSA_PSS:
                 if (!(computations instanceof RsaSsaPssSignatureComputations)) {
                     throw new IllegalArgumentException(

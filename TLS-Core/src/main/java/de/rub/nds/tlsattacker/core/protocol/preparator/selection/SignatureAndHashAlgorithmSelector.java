@@ -49,8 +49,7 @@ public class SignatureAndHashAlgorithmSelector {
                 ourSupported = chooser.getClientSupportedSignatureAndHashAlgorithms();
             }
             for (SignatureAndHashAlgorithm tempSignatureAndHashAlgorithm : ourSupported) {
-                if (publicKeyType.canBeUsedWithSignatureAlgorithm(
-                        tempSignatureAndHashAlgorithm.getSignatureAlgorithm())) {
+                if (tempSignatureAndHashAlgorithm.suitableForSignatureKeyType(publicKeyType)) {
                     candidateList.add(tempSignatureAndHashAlgorithm);
                 }
             }

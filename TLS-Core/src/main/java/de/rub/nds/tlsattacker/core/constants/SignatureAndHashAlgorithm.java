@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.protocol.constants.HashAlgorithm;
 import de.rub.nds.protocol.constants.SignatureAlgorithm;
 import de.rub.nds.protocol.exception.ParserException;
+import de.rub.nds.x509attacker.constants.X509PublicKeyType;
 import java.io.ByteArrayInputStream;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -54,9 +55,9 @@ public enum SignatureAndHashAlgorithm {
     ED25519(0x080, SignatureAlgorithm.ED25519, HashAlgorithm.SHA256),
     ED448(0x0808, SignatureAlgorithm.ED448, HashAlgorithm.SHA3_256),
     /* RSASSA-PSS algorithms with public key OID rsaEncryption */
-    RSA_PSS_RSAE_SHA256(0x0804, SignatureAlgorithm.RSA_PSS_RSAE, HashAlgorithm.SHA256),
-    RSA_PSS_RSAE_SHA384(0x0805, SignatureAlgorithm.RSA_PSS_RSAE, HashAlgorithm.SHA384),
-    RSA_PSS_RSAE_SHA512(0x0806, SignatureAlgorithm.RSA_PSS_RSAE, HashAlgorithm.SHA512),
+    RSA_PSS_RSAE_SHA256(0x0804, SignatureAlgorithm.RSA_SSA_PSS, HashAlgorithm.SHA256),
+    RSA_PSS_RSAE_SHA384(0x0805, SignatureAlgorithm.RSA_SSA_PSS, HashAlgorithm.SHA384),
+    RSA_PSS_RSAE_SHA512(0x0806, SignatureAlgorithm.RSA_SSA_PSS, HashAlgorithm.SHA512),
     /* RSASSA-PSS algorithms with public key OID RSASSA-PSS */
     RSA_PSS_PSS_SHA256(0x0809, SignatureAlgorithm.RSA_SSA_PSS, HashAlgorithm.SHA256),
     RSA_PSS_PSS_SHA384(0x080a, SignatureAlgorithm.RSA_SSA_PSS, HashAlgorithm.SHA384),
@@ -286,5 +287,19 @@ public enum SignatureAndHashAlgorithm {
 
     public boolean isGrease() {
         return this.name().startsWith("GREASE");
+    }
+
+    public boolean isRsaPssRsae() {
+        return this == RSA_PSS_RSAE_SHA256
+                || this == RSA_PSS_RSAE_SHA384
+                || this == RSA_PSS_RSAE_SHA512;
+    }
+
+    public boolean suitableForSignatureKeyType(X509PublicKeyType publicKeyType) {
+        if (isRsaPssRsae()) {
+            return publicKeyType == X509PublicKeyType.RSA;
+        } else {
+            return publicKeyType.canBeUsedWithSignatureAlgorithm(this.getSignatureAlgorithm());
+        }
     }
 }
