@@ -17,6 +17,15 @@ import de.rub.nds.tlsattacker.core.smtp.serializer.SmtpCommandSerializer;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 
+/**
+ * High level representation of an SMTP command.
+ * Commands are one line consisting of a verb and optional parameters ending with CRLF.
+ * Example
+ * <pre>
+ *     C: RCPT TO:&lt;seal@upb.de&gt;
+ * </pre>
+ * where RCPT is the verb and TO:&lt;seal@upb.de&gt; is the parameter.
+ */
 @XmlRootElement
 public class SmtpCommand extends SmtpMessage {
 

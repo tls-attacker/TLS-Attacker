@@ -28,6 +28,13 @@ import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * A layer that handles the SMTP protocol.
+ * It can send and receive SmtpMessages, which represent both commands and replies.
+ * Mainly supports acting as a client right now.
+ * Currently it does not parse received commands into the correct subclass, but rather into a generic SmtpReply object.
+ * Will fallback to SmtpUnknownReply if the type of reply is unclear, but falling back for nonsensical replies is not yet implemented.
+ */
 public class SmtpLayer extends ProtocolLayer<SmtpLayerHint, SmtpMessage> {
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -38,6 +45,14 @@ public class SmtpLayer extends ProtocolLayer<SmtpLayerHint, SmtpMessage> {
         this.context = smtpContext;
     }
 
+    /**
+     * Sends any type of SmtpMessage to lower layers.
+     * Because SmtpMessages represent both commands and replies, this method can be used to send both in the same way.
+     * It is up to the caller to ensure that the SmtpMessage is of the correct type.
+     * There are no LayerProcessingHints for this layer.
+     * @return a LayerProcessingResult containing the SmtpMessage that was sent across the different layers
+     * @throws IOException if sending the message fails for any reason
+     */
     @Override
     public LayerProcessingResult sendConfiguration() throws IOException {
         LayerConfiguration<SmtpMessage> configuration = getLayerConfiguration();
@@ -63,6 +78,19 @@ public class SmtpLayer extends ProtocolLayer<SmtpLayerHint, SmtpMessage> {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     * Receives data by querying the lower layer and processing it.
+     * The SmtpLayer can receive both SmtpCommands and SmtpReplies.
+     * There are several shortcomings at the moment:
+     * Because of the command-reply structure, the type of reply is currently inferred from the preceding command.
+     * This is not ideal, as it may lead to incorrect parsing if the server sends an unexpected reply.
+     * In the future, we want to parse this into an UnknownReply and handle it accordingly.
+     *
+     * When receiving a command, the SmtpLayer will parse it into a SmtpCommand object and does not parse it into the correct subclass.
+     * This is because it essentially reading the stream to infer the correct Parser and then repeating the stream again to parse it.
+     * Will hopefully be implemented in the future.
+     * @return a LayerProcessingResult containing the SmtpMessage that was received across the different layers
+     */
     @Override
     public LayerProcessingResult receiveData() {
         try {
@@ -83,12 +111,9 @@ public class SmtpLayer extends ProtocolLayer<SmtpLayerHint, SmtpMessage> {
                     readDataContainer(smtpReply, context);
                 } else if (context.getContext().getConnection().getLocalConnectionEndType()
                         == ConnectionEndType.SERVER) {
-                    // TODO: What to do when the client receives an unknown reply?
                     SmtpCommand smtpCommand = new SmtpCommand();
                     readDataContainer(smtpCommand, context);
                 }
-                //                LOGGER.trace("Should continue processing: {}",
-                // shouldContinueProcessing());
             } while (shouldContinueProcessing());
         } catch (TimeoutException e) {
             LOGGER.debug(e);
@@ -115,9 +140,9 @@ public class SmtpLayer extends ProtocolLayer<SmtpLayerHint, SmtpMessage> {
 
     @Override
     public boolean executedAsPlanned() {
-        //        for(DataContainer<SmtpContext> produced : getLayerResult().getUsedContainers()) {
-        //
-        //        }
+        //TODO: Properly check status codes etc here
+        //SMTP does not work with the current TLSA semantics, as essentially every execution is valid in the sense that the server will always reply with something, that could be a valid reply.
+        //e.g. "550 User unknown" would be a valid reply to a HELP command because the status code 550 is overloaded and the message is not standardized.
         return true;
     }
 }
