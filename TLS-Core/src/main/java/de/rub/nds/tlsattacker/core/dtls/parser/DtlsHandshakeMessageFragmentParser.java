@@ -6,22 +6,25 @@
  * Licensed under Apache License, Version 2.0
  * http://www.apache.org/licenses/LICENSE-2.0.txt
  */
-package de.rub.nds.tlsattacker.core.protocol.parser;
+package de.rub.nds.tlsattacker.core.dtls.parser;
 
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.core.dtls.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
+import de.rub.nds.tlsattacker.core.layer.data.Parser;
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class DtlsHandshakeMessageFragmentParser
-        extends HandshakeMessageParser<DtlsHandshakeMessageFragment> {
+public class DtlsHandshakeMessageFragmentParser extends Parser<DtlsHandshakeMessageFragment> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public DtlsHandshakeMessageFragmentParser(InputStream stream, TlsContext tlsContext) {
-        super(stream, tlsContext);
+    private TlsContext context;
+
+    public DtlsHandshakeMessageFragmentParser(InputStream stream, TlsContext context) {
+        super(stream);
+        this.context = context;
     }
 
     @Override
@@ -31,7 +34,7 @@ public class DtlsHandshakeMessageFragmentParser
         parseMessageSequence(msg);
         parseFragmentOffset(msg);
         parseFragmentLength(msg);
-        msg.setMessageContent(parseByteArrayField(msg.getFragmentLength().getValue()));
+        msg.setFragmentContent(parseByteArrayField(msg.getFragmentLength().getValue()));
     }
 
     private void parseType(DtlsHandshakeMessageFragment msg) {

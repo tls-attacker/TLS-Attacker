@@ -15,7 +15,6 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.layer.Message;
 import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
-import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
@@ -123,10 +122,6 @@ public abstract class ProtocolMessage extends Message<TlsContext> {
 
     public boolean isHandshakeMessage() {
         return this instanceof HandshakeMessage;
-    }
-
-    public boolean isDtlsHandshakeMessageFragment() {
-        return this instanceof DtlsHandshakeMessageFragment;
     }
 
     public ProtocolMessageType getProtocolMessageType() {
