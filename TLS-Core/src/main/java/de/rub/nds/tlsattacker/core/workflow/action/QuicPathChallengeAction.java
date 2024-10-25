@@ -55,6 +55,11 @@ public class QuicPathChallengeAction extends ConnectionBoundAction {
         super(connectionAlias);
     }
 
+    public QuicPathChallengeAction(String connectionAlias, boolean requireAtLeastOnePathChallenge) {
+        super(connectionAlias);
+        this.requireAtLeastOnePathChallenge = requireAtLeastOnePathChallenge;
+    }
+
     public QuicPathChallengeAction() {
         super();
     }

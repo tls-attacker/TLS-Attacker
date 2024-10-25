@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.preparator.selection.SignatureAndHashAlgorithmSelector;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -35,7 +36,8 @@ public class RSAServerKeyExchangePreparator<T extends RSAServerKeyExchangeMessag
         setRsaParams();
         prepareRsaParams();
 
-        selectedSignatureHashAlgo = chooseSignatureAndHashAlgorithm();
+        selectedSignatureHashAlgo =
+                SignatureAndHashAlgorithmSelector.selectSignatureAndHashAlgorithm(chooser, false);
         prepareSignatureAndHashAlgorithm(msg);
         signature = generateSignature(selectedSignatureHashAlgo, generateToBeSigned());
         prepareSignature(msg);

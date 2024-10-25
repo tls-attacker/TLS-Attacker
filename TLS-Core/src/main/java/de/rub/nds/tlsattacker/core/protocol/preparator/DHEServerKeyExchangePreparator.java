@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.preparator.selection.SignatureAndHashAlgorithmSelector;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
@@ -44,7 +45,8 @@ public class DHEServerKeyExchangePreparator<T extends DHEServerKeyExchangeMessag
         // Compute PublicKeys
         preparePublicKey(msg);
         prepareDheParams();
-        selectedSignatureHashAlgo = chooseSignatureAndHashAlgorithm();
+        selectedSignatureHashAlgo =
+                SignatureAndHashAlgorithmSelector.selectSignatureAndHashAlgorithm(chooser, false);
         prepareSignatureAndHashAlgorithm(msg);
         signature = generateSignature(selectedSignatureHashAlgo, generateToBeSigned());
         prepareSignature(msg);

@@ -11,15 +11,12 @@ package de.rub.nds.tlsattacker.core.layer.impl;
 import static junit.framework.Assert.assertEquals;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.delegate.QuicDelegate;
-import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.layer.LayerStack;
 import de.rub.nds.tlsattacker.core.layer.SpecificSendLayerConfiguration;
 import de.rub.nds.tlsattacker.core.layer.constant.ImplementedLayers;
-import de.rub.nds.tlsattacker.core.layer.context.TlsContext;
 import de.rub.nds.tlsattacker.core.layer.hints.QuicFrameLayerHint;
 import de.rub.nds.tlsattacker.core.quic.frame.CryptoFrame;
 import de.rub.nds.tlsattacker.core.quic.frame.HandshakeDoneFrame;
@@ -27,8 +24,6 @@ import de.rub.nds.tlsattacker.core.quic.frame.PaddingFrame;
 import de.rub.nds.tlsattacker.core.quic.frame.PingFrame;
 import de.rub.nds.tlsattacker.core.quic.frame.QuicFrame;
 import de.rub.nds.tlsattacker.core.quic.packet.QuicPacketCryptoComputations;
-import de.rub.nds.tlsattacker.core.state.Context;
-import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeUdpTransportHandler;
 import java.io.IOException;
@@ -39,16 +34,11 @@ import java.util.Arrays;
 import java.util.List;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class QuicFrameLayerTest {
+public class QuicFrameLayerTest extends AbstractLayerTest {
 
-    private Config config;
-    private TlsContext tlsContext;
     private QuicContext quicContext;
-    private FakeUdpTransportHandler transportHandler;
-
     private final byte[] handshakeDoneFrame = ArrayConverter.hexStringToByteArray("1E");
     private final byte[] pingFrame = ArrayConverter.hexStringToByteArray("01");
     private final byte[] paddingFrame = ArrayConverter.hexStringToByteArray("0000000000");
@@ -64,24 +54,23 @@ public class QuicFrameLayerTest {
         Security.addProvider(new BouncyCastleProvider());
     }
 
-    @BeforeEach
-    public void setUp() throws IOException, CryptoException, NoSuchAlgorithmException {
-        config = new Config();
+    public void setUpLayerSpecific() {
         QuicDelegate delegate = new QuicDelegate(true);
         delegate.applyDelegate(config);
-        Context context = new Context(new State(config), new OutboundConnection());
-        tlsContext = context.getTlsContext();
+        FakeUdpTransportHandler udpTransportHandler = new FakeUdpTransportHandler(null);
+        tlsContext.setTransportHandler(udpTransportHandler);
+        transportHandler = udpTransportHandler;
         quicContext = context.getQuicContext();
-        context.setLayerStack(
-                new LayerStack(context, new QuicFrameLayer(quicContext), new UdpLayer(tlsContext)));
-
-        transportHandler = new FakeUdpTransportHandler(null);
-        tlsContext.setTransportHandler(transportHandler);
-
         quicContext.setSourceConnectionId(sourceConnectionId);
         quicContext.setFirstDestinationConnectionId(destinationConnectionId);
         quicContext.setDestinationConnectionId(destinationConnectionId);
-        QuicPacketCryptoComputations.calculateInitialSecrets(quicContext);
+        context.setLayerStack(
+                new LayerStack(context, new QuicFrameLayer(quicContext), new UdpLayer(tlsContext)));
+        try {
+            QuicPacketCryptoComputations.calculateInitialSecrets(quicContext);
+        } catch (NoSuchAlgorithmException | CryptoException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private ArrayList<byte[]> getQuicFramesBytes() {
@@ -124,7 +113,7 @@ public class QuicFrameLayerTest {
             assertEquals(quicFrames.get(i), usedQuicFrames.get(i));
             assertEquals(
                     Arrays.toString(quicFramesBytes.get(i)),
-                    Arrays.toString(transportHandler.getSendByte()));
+                    Arrays.toString(transportHandler.getSentBytes()));
             transportHandler.resetOutputStream();
         }
     }
@@ -145,7 +134,7 @@ public class QuicFrameLayerTest {
                 .getLayer(QuicFrameLayer.class)
                 .sendData(new QuicFrameLayerHint(ProtocolMessageType.HANDSHAKE), quicFramePayload);
         assertEquals(
-                Arrays.toString(quicFrameBytes), Arrays.toString(transportHandler.getSendByte()));
+                Arrays.toString(quicFrameBytes), Arrays.toString(transportHandler.getSentBytes()));
 
         // Reset
         transportHandler.resetOutputStream();
@@ -168,7 +157,7 @@ public class QuicFrameLayerTest {
                         new QuicFrameLayerHint(ProtocolMessageType.APPLICATION_DATA),
                         quicFramePayload);
         assertEquals(
-                Arrays.toString(quicFrameBytes), Arrays.toString(transportHandler.getSendByte()));
+                Arrays.toString(quicFrameBytes), Arrays.toString(transportHandler.getSentBytes()));
     }
 
     @Test

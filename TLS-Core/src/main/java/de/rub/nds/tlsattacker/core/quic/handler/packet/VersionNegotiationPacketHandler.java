@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.quic.handler.packet;
 
+import de.rub.nds.tlsattacker.core.quic.constants.QuicPacketByteLength;
 import de.rub.nds.tlsattacker.core.quic.packet.VersionNegotiationPacket;
 import de.rub.nds.tlsattacker.core.state.quic.QuicContext;
 import java.util.LinkedList;
@@ -40,15 +41,15 @@ public class VersionNegotiationPacketHandler
     }
 
     private List<byte[]> convertVersions(byte[] bytesToConvert) {
-        if (bytesToConvert.length % 8 != 0) {
+        if (bytesToConvert.length % QuicPacketByteLength.QUIC_VERSION_LENGTH != 0) {
             LOGGER.warn("Cannot convert: {} to a List<byte[]>", bytesToConvert);
             return null;
         }
 
         List<byte[]> list = new LinkedList<>();
-        for (int i = 0; i < bytesToConvert.length; i += 8) {
-            byte[] chunk = new byte[8];
-            System.arraycopy(bytesToConvert, i, chunk, 0, 8);
+        for (int i = 0; i < bytesToConvert.length; i += QuicPacketByteLength.QUIC_VERSION_LENGTH) {
+            byte[] chunk = new byte[QuicPacketByteLength.QUIC_VERSION_LENGTH];
+            System.arraycopy(bytesToConvert, i, chunk, 0, QuicPacketByteLength.QUIC_VERSION_LENGTH);
             list.add(chunk);
         }
         return list;
