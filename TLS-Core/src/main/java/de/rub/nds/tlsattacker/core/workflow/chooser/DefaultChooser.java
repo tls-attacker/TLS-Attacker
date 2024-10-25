@@ -85,7 +85,6 @@ public class DefaultChooser extends Chooser {
         }
     }
 
-
     @Override
     public SignatureAndHashAlgorithm getClientSelectedSigHashAlgorithm() {
         if (context.getTlsContext().getClientSelectedSignatureAndHashAlgorithm() != null) {
@@ -1139,7 +1138,8 @@ public class DefaultChooser extends Chooser {
         } else {
             KeyShareEntry keyShareEntry = new KeyShareEntry();
             keyShareEntry.setPrivateKey(config.getDefaultEchClientPrivateKey());
-            KeyShareEntryPreparator keyShareEntryPreparator = new KeyShareEntryPreparator(this, keyShareEntry);
+            KeyShareEntryPreparator keyShareEntryPreparator =
+                    new KeyShareEntryPreparator(this, keyShareEntry);
             keyShareEntry.setGroupConfig(getEchConfig().getKem().getNamedGroup());
             keyShareEntryPreparator.prepare();
             if (context != null) {
@@ -1158,7 +1158,8 @@ public class DefaultChooser extends Chooser {
         } else {
             KeyShareEntry keyShareEntry = new KeyShareEntry();
             keyShareEntry.setPrivateKey(config.getDefaultEchServerPrivateKey());
-            KeyShareEntryPreparator keyShareEntryPreparator = new KeyShareEntryPreparator(this, keyShareEntry);
+            KeyShareEntryPreparator keyShareEntryPreparator =
+                    new KeyShareEntryPreparator(this, keyShareEntry);
             keyShareEntry.setGroupConfig(getEchConfig().getKem().getNamedGroup());
             keyShareEntryPreparator.prepare();
             if (context != null) {
@@ -1176,5 +1177,4 @@ public class DefaultChooser extends Chooser {
             return config.getDefaultSelectedSrtpProtectionProfile();
         }
     }
-
 }

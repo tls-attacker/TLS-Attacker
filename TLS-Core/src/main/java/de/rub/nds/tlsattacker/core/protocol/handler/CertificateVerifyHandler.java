@@ -21,8 +21,9 @@ public class CertificateVerifyHandler extends HandshakeMessageHandler<Certificat
     @Override
     public void adjustContext(CertificateVerifyMessage message) {
         byte[] signatureAndHashAlgorithmBytes = message.getSignatureHashAlgorithm().getValue();
-        SignatureAndHashAlgorithm signatureAndHashAlgorithm = SignatureAndHashAlgorithm.getSignatureAndHashAlgorithm(
-                signatureAndHashAlgorithmBytes);
+        SignatureAndHashAlgorithm signatureAndHashAlgorithm =
+                SignatureAndHashAlgorithm.getSignatureAndHashAlgorithm(
+                        signatureAndHashAlgorithmBytes);
         tlsContext.setServerSelectedSignatureAndHashAlgorithm(signatureAndHashAlgorithm);
     }
 }

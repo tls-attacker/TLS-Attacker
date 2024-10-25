@@ -16,11 +16,13 @@ import java.util.List;
 
 public class SignatureAndHashAlgorithmDelegate extends Delegate {
 
-    @Parameter(names = "-signature_hash_algo", description = "Supported Signature and Hash Algorithms separated by comma eg. RSA_SHA512,DSA_SHA512")
+    @Parameter(
+            names = "-signature_hash_algo",
+            description =
+                    "Supported Signature and Hash Algorithms separated by comma eg. RSA_SHA512,DSA_SHA512")
     private List<SignatureAndHashAlgorithm> signatureAndHashAlgorithms = null;
 
-    public SignatureAndHashAlgorithmDelegate() {
-    }
+    public SignatureAndHashAlgorithmDelegate() {}
 
     public List<SignatureAndHashAlgorithm> getSignatureAndHashAlgorithms() {
         if (signatureAndHashAlgorithms == null) {
@@ -40,7 +42,8 @@ public class SignatureAndHashAlgorithmDelegate extends Delegate {
             config.setAddSignatureAndHashAlgorithmsExtension(true);
             config.setDefaultClientSupportedSignatureAndHashAlgorithms(signatureAndHashAlgorithms);
             config.setDefaultServerSupportedSignatureAndHashAlgorithms(signatureAndHashAlgorithms);
-            config.setDefaultServerSelectedSignatureAndHashAlgorithm(signatureAndHashAlgorithms.get(0));
+            config.setDefaultServerSelectedSignatureAndHashAlgorithm(
+                    signatureAndHashAlgorithms.get(0));
         }
     }
 }
