@@ -103,7 +103,9 @@ public class Context {
         return pop3Context;
     }
 
-    public void setPop3Context(Pop3Context pop3Context) { this.pop3Context = pop3Context;}
+    public void setPop3Context(Pop3Context pop3Context) {
+        this.pop3Context = pop3Context;
+    }
 
     public StarttlsContext getStarttlsContext() {
         return starttlsContext;

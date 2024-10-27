@@ -1,19 +1,17 @@
+/*
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
+ *
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
+ */
 package de.rub.nds.tlsattacker.core.pop3;
 
 import de.rub.nds.tlsattacker.core.layer.Message;
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
-import de.rub.nds.tlsattacker.core.layer.context.SmtpContext;
-import de.rub.nds.tlsattacker.core.smtp.SmtpMessage;
-import de.rub.nds.tlsattacker.core.smtp.handler.SmtpMessageHandler;
-import de.rub.nds.tlsattacker.core.smtp.parser.SmtpMessageParser;
-import de.rub.nds.tlsattacker.core.smtp.preparator.SmtpMessagePreparator;
-import de.rub.nds.tlsattacker.core.smtp.serializer.SmtpMessageSerializer;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 
-import java.io.InputStream;
-
 @XmlAccessorType(XmlAccessType.FIELD)
-public abstract class Pop3Message extends Message<Pop3Context> {
-
-}
+public abstract class Pop3Message extends Message<Pop3Context> {}
