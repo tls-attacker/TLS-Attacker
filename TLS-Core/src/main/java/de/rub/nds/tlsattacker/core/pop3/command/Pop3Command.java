@@ -1,3 +1,11 @@
+/*
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
+ *
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
+ */
 package de.rub.nds.tlsattacker.core.pop3.command;
 
 import de.rub.nds.tlsattacker.core.layer.context.Pop3Context;
@@ -11,15 +19,12 @@ import de.rub.nds.tlsattacker.core.pop3.preparator.Pop3MessagePreparator;
 import de.rub.nds.tlsattacker.core.pop3.serializer.Pop3CommandSerializer;
 import de.rub.nds.tlsattacker.core.pop3.serializer.Pop3MessageSerializer;
 import jakarta.xml.bind.annotation.XmlRootElement;
-
 import java.io.InputStream;
 
 /**
- * Representation of an POP3 Command. Commands consist of a single line with a keyword
- * and optional arguments seperated by a single space. Commands are terminated by CRLF.
- * All according to RFC 1939
+ * Representation of an POP3 Command. Commands consist of a single line with a keyword and optional
+ * arguments seperated by a single space. Commands are terminated by CRLF. All according to RFC 1939
  */
-
 @XmlRootElement
 public class Pop3Command extends Pop3Message {
 
@@ -45,7 +50,8 @@ public class Pop3Command extends Pop3Message {
     }
 
     @Override
-    public Pop3MessageParser<? extends Pop3Message> getParser(Pop3Context context, InputStream stream) {
+    public Pop3MessageParser<? extends Pop3Message> getParser(
+            Pop3Context context, InputStream stream) {
         return new Pop3CommandParser<>(stream);
     }
 

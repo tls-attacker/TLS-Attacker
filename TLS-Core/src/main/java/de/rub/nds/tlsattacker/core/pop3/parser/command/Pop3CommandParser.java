@@ -1,3 +1,11 @@
+/*
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, Technology Innovation Institute, and Hackmanit GmbH
+ *
+ * Licensed under Apache License, Version 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
+ */
 package de.rub.nds.tlsattacker.core.pop3.parser.command;
 
 import de.rub.nds.tlsattacker.core.pop3.command.Pop3Command;
@@ -10,7 +18,6 @@ import java.io.InputStream;
  *
  * @param <CommandT> command to be parsed
  */
-
 public class Pop3CommandParser<CommandT extends Pop3Command> extends Pop3MessageParser<CommandT> {
 
     /**
@@ -23,8 +30,9 @@ public class Pop3CommandParser<CommandT extends Pop3Command> extends Pop3Message
     }
 
     /**
-     * Does general parsing of setting the keyword and arguments
-     * specific parsing of arguments is implemented by specific command parser
+     * Does general parsing of setting the keyword and arguments specific parsing of arguments is
+     * implemented by specific command parser
+     *
      * @param pop3Command Command that is parsed
      */
     public void parse(CommandT pop3Command) {
@@ -38,8 +46,9 @@ public class Pop3CommandParser<CommandT extends Pop3Command> extends Pop3Message
     }
 
     /**
-     * Parse arguments of Pop3Command. Subclass needs to implement this method.
-     * For invalid arguments a ParserException should be thrown
+     * Parse arguments of Pop3Command. Subclass needs to implement this method. For invalid
+     * arguments a ParserException should be thrown
+     *
      * @param command pop3Command to parse arguments for
      * @param arguments arguments string containing everything after first space
      */
