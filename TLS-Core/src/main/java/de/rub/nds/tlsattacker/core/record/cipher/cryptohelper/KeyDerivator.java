@@ -219,7 +219,7 @@ public class KeyDerivator {
 
         byte[] clientAndServerRandom = ArrayConverter.concatenate(clientRandom, serverRandom);
         PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(protocolVersion, cipherSuite);
-        int keySize = cipherSuite.getCipherAlgorithm().getKeySize();
+        int keySize = cipherSuite.getCipherAlgorithm().getExportFinalKeySize();
 
         keySet.setClientWriteKey(
                 PseudoRandomFunction.compute(
