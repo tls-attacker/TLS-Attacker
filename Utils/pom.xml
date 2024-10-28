@@ -23,14 +23,12 @@
 
     <build>
         <plugins>
-            <!--##################
-            clean lifecycle plugins ##################-->
+            <!--################## clean lifecycle plugins ##################-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-clean-plugin</artifactId>
             </plugin>
-            <!--#################
-            default lifecycle plugins #################-->
+            <!--################# default lifecycle plugins #################-->
             <!-- Copy project resources to output directory -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
