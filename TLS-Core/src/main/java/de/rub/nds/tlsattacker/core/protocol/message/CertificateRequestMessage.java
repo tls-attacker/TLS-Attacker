@@ -268,13 +268,13 @@ public class CertificateRequestMessage extends HandshakeMessage {
 
     @Override
     public CertificateRequestPreparator getPreparator(Context context) {
-        return new CertificateRequestPreparator(context.getTlsContext().getChooser(), this);
+        return new CertificateRequestPreparator(context.getChooser(), this);
     }
 
     @Override
     public CertificateRequestSerializer getSerializer(Context context) {
         return new CertificateRequestSerializer(
-                this, context.getTlsContext().getChooser().getSelectedProtocolVersion());
+                this, context.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

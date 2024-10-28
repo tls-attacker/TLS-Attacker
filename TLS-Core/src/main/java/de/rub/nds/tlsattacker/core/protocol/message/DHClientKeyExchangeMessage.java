@@ -56,7 +56,7 @@ public class DHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     @Override
     public DHClientKeyExchangePreparator<? extends DHClientKeyExchangeMessage> getPreparator(
             Context context) {
-        return new DHClientKeyExchangePreparator<>(context.getTlsContext().getChooser(), this);
+        return new DHClientKeyExchangePreparator<>(context.getChooser(), this);
     }
 
     @Override
